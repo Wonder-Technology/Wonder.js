@@ -119,19 +119,17 @@
             material.refractionLevel = 0.8;
             material.reflectionLevel = 0.8;
 
-//            material.bumpMap = wd.LoaderManager.getInstance().get("bump").toTexture();
+            material.bumpMap = wd.LoaderManager.getInstance().get("bump").toTexture();
 
             var reflectionTexture = wd.MirrorTexture.create();
             reflectionTexture.width = 512;
             reflectionTexture.height = 512;
-            reflectionTexture.renderList = [skybox, sphere];
+            reflectionTexture.renderList = [skybox, sphere, ground];
 
             var refractionTexture = wd.RefractionTexture.create();
             refractionTexture.width = 512;
             refractionTexture.height = 512;
-//            refractionTexture.renderList = [skybox, sphere];
-            //todo test with sphere
-            refractionTexture.renderList = [skybox, ground];
+            refractionTexture.renderList = [skybox, sphere, ground];
 
             material.reflectionMap = reflectionTexture;
             material.refractionMap = refractionTexture;
