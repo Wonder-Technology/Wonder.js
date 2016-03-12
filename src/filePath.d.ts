@@ -489,6 +489,7 @@
 /// <reference path="texture/renderTargetTexture/TwoDRenderTargetTexture"/>
 /// <reference path="texture/renderTargetTexture/utils/ShadowMapTextureUtils"/>
 /// <reference path="texture/renderTargetTexture/utils/IShadowMapTexture"/>
+/// <reference path="texture/renderTargetTexture/LightEffectTexture"/>
 /// <reference path="texture/renderTargetTexture/MirrorTexture"/>
 /// <reference path="texture/renderTargetTexture/RefractionTexture"/>
 /// <reference path="texture/renderTargetTexture/TwoDShadowMapTexture"/>

@@ -27,7 +27,7 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        'test/unit/**',
+        //'test/unit/**',
 
         //'test/unit/lib/**',
 
@@ -37,9 +37,9 @@
         //'test/unit/**/*ShaderLib*',
         //'test/unit/**/ShaderLib*',
         //
-        //'test/unit/texture/**',
+        'test/unit/texture/**',
 
-        'test/unit/**/material/**',
+        //'test/unit/**/material/**',
         //
         //'test/unit/**/MapManager*',
 
@@ -97,7 +97,7 @@
 
         //'test/unit/**/RigidBodySpec*',
 
-        //'test/unit/**/MirrorRender*',
+        'test/unit/**/MirrorRender*',
 
 
         //'test/unit/**/ColorSpec*',
