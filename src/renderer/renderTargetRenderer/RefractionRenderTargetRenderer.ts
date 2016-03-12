@@ -17,6 +17,7 @@ module wd {
         protected getRenderList():wdCb.Collection<GameObject>{
             return this.texture.renderList;
         }
+
         protected renderRenderer(renderer){
             renderer.render();
         }

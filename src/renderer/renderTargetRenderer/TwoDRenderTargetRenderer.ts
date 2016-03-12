@@ -37,7 +37,6 @@ module wd {
             var isNeedCreateCamera:boolean = this.isNeedCreateCamera(),
                 renderCamera:GameObject = null;
 
-            //todo test
             if(isNeedCreateCamera){
                 renderCamera = this.createCamera(camera);
 
