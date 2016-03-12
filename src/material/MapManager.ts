@@ -155,10 +155,12 @@ module wd{
         }
 
         @require(function(program:Program){
-            var mapMap = {};
+            var mapMap = {},
+                maps = this._getAllMaps();
 
-            for(let map of this._getAllMaps()){
-                let samplerName:string = map.getSamplerName();
+            for(let i = 0, len = maps.length; i < len; i++){
+                let map = maps[i],
+                    samplerName:string = map.getSamplerName(i);
 
                 assert(mapMap[samplerName] !== 1, Log.info.FUNC_SHOULD_NOT(`has duplicate maps, but actual has the ones with the same samplerName:${samplerName}`));
 
