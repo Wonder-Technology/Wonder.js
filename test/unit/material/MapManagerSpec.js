@@ -342,6 +342,17 @@ describe("MapManager", function() {
             });
         });
 
+        it("if has duplicate maps(the ones has the same samplerName), contract error", function () {
+            testTool.openContractCheck(sandbox);
+
+            var mirrorTexture2 = wd.MirrorTexture.create();
+            manager.setReflectionMap(mirrorTexture2);
+
+            expect(function(){
+                manager.sendData(program);
+            }).toThrow();
+        });
+
         it("send texture data", function(){
             manager.sendData(program);
 

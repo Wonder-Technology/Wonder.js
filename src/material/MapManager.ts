@@ -171,6 +171,17 @@ module wd{
             }
         }
 
+        @require(function(program:Program){
+            var mapMap = {};
+
+            for(let map of this._getAllMaps()){
+                let samplerName:string = map.getSamplerName();
+
+                assert(mapMap[samplerName] !== 1, Log.info.FUNC_SHOULD_NOT(`has duplicate maps, but actual has the ones with the same samplerName:${samplerName}`));
+
+                mapMap[samplerName] = 1;
+            }
+        })
         public sendData(program:Program){
             this._sendSingleMapData(program);
             this._sendArrayMapData(program);

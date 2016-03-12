@@ -29,7 +29,7 @@
 
         //'test/unit/**',
 
-        'test/unit/**/water*',
+        //'test/unit/**/water*',
 
         //'test/unit/lib/**',
 
@@ -43,7 +43,7 @@
 
         //'test/unit/**/material/**',
         //
-        //'test/unit/**/MapManager*',
+        'test/unit/**/MapManager*',
 
         //'test/unit/renderer/**',
         //'test/unit/renderer/renderTargetRenderer/**',
