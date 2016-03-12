@@ -169,8 +169,6 @@ module wd{
                 this._setEnvMapShaderLib(envMap);
             }
 
-            this.setReflectionMapShaderLib();
-
             this.addExtendShaderLib();
 
             this.shader.addLib(LightEndShaderLib.create());

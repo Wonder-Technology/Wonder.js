@@ -162,14 +162,12 @@ describe("MirrorTexture", function () {
         });
 
         it("send mirror sampler", function () {
-            var material = wd.BasicMaterial.create();
-            var map = new wd.ImageTexture();
-            material.map = map;
+            var material = wd.MirrorMaterial.create();
             material.reflectionMap = texture;
 
             material.mapManager.sendData(program);
 
-            expect(program.sendUniformData).toCalledWith("u_reflectionMapSampler", wd.EVariableType.SAMPLER_2D, 1);
+            expect(program.sendUniformData).toCalledWith("u_reflectionMapSampler", wd.EVariableType.SAMPLER_2D, 0);
         });
     });
 });

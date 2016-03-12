@@ -25,6 +25,13 @@ module wd{
             this._bumpMap = bumpMap;
         }
 
+        get reflectionMap(){
+            return this.mapManager.getReflectionMap();
+        }
+        set reflectionMap(reflectionMap:Texture){
+            this.mapManager.setReflectionMap(reflectionMap);
+        }
+
         private _refractionMap:Texture = null;
         get refractionMap(){
             return this._refractionMap;
@@ -73,13 +80,6 @@ module wd{
             else{
                 this.shader.addLib(WaterNoLightEffectShaderLib.create());
             }
-        }
-
-        //todo refactor? add WaterReflectionMapShaderLib?
-        protected setReflectionMapShaderLib(){
-            //if(this.reflectionMap){
-            //    this.shader.addLib(wd.WaterReflectionMapShaderLib.create());
-            //}
         }
 
         private _computeTime(){

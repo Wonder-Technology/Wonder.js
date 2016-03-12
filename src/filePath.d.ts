@@ -372,7 +372,6 @@
 /// <reference path="renderer/shader/lib/map/MapShaderLib"/>
 /// <reference path="renderer/shader/lib/map/BasicMapShaderLib"/>
 /// <reference path="renderer/shader/lib/map/MultiMapShaderLib"/>
-/// <reference path="renderer/shader/lib/reflectionMap/ReflectionMapShaderLib"/>
 
 /// <reference path="renderer/shader/lib/procedural/ProceduralShaderLib"/>
 
@@ -578,4 +577,7 @@
 /// <reference path="lib/material_lib/water/WaterNoLightEffectShaderLib"/>
 /// <reference path="lib/material_lib/water/WaterBumpMapShaderLib"/>
 /// <reference path="lib/material_lib/water/WaterNoBumpMapShaderLib"/>
+
+/// <reference path="lib/material_lib/mirror/MirrorMaterial"/>
+/// <reference path="lib/material_lib/mirror/MirrorShaderLib"/>
 

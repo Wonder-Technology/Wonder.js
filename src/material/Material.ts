@@ -97,12 +97,7 @@ module wd {
             this.mapManager.setEnvMap(envMap);
         }
 
-        get reflectionMap(){
-            return this.mapManager.getReflectionMap();
-        }
-        set reflectionMap(reflectionMap:Texture){
-            this.mapManager.setReflectionMap(reflectionMap);
-        }
+        //todo remove mapManager->xxx method?
 
         private _blendSrc:EBlendFunc= EBlendFunc.ONE;
         get blendSrc(){
@@ -191,13 +186,6 @@ module wd {
         }
 
         protected abstract createShader():Shader;
-
-        @virtual
-        protected setReflectionMapShaderLib(){
-            if(this.reflectionMap){
-                this.shader.addLib(wd.ReflectionMapShaderLib.create());
-            }
-        }
 
         private _isColorEqual(color1:Color, color2:Color){
             return color1.r === color2.r && color1.g === color2.g && color1.b === color2.b && color1.a === color2.a;

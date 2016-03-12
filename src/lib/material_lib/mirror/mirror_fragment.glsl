@@ -19,3 +19,4 @@
 @body
 totalColor *= getReflectionMapColor(totalColor);
 @end
+

@@ -57,8 +57,6 @@ module wd{
                 this._setEnvMapShaderLib(envMap);
             }
 
-            this.setReflectionMapShaderLib();
-
             this.shader.addLib(BasicEndShaderLib.create());
         }
 
