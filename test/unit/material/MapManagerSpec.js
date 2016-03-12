@@ -19,7 +19,9 @@ describe("MapManager", function() {
         manager.addMap(proceduralTexture);
 
         mirrorTexture = wd.MirrorTexture.create();
-        manager.setReflectionMap(mirrorTexture);
+        manager.addMap(mirrorTexture, {
+            samplerVariableName: wd.VariableNameTable.getVariableName("reflectionMap")
+        });
 
         asset3 = {
             asset: wd.CompressedTextureAsset.create({})
@@ -346,7 +348,9 @@ describe("MapManager", function() {
             testTool.openContractCheck(sandbox);
 
             var mirrorTexture2 = wd.MirrorTexture.create();
-            manager.setReflectionMap(mirrorTexture2);
+            manager.addMap(mirrorTexture2, {
+                samplerVariableName: wd.VariableNameTable.getVariableName("reflectionMap")
+            });
 
             expect(function(){
                 manager.sendData(program);

@@ -97,8 +97,6 @@ module wd {
             this.mapManager.setEnvMap(envMap);
         }
 
-        //todo remove mapManager->xxx method?
-
         private _blendSrc:EBlendFunc= EBlendFunc.ONE;
         get blendSrc(){
             return this._blendSrc;

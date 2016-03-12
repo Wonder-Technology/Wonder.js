@@ -13,7 +13,6 @@ module wd{
         private _material:Material = null;
         private _mapTable:wdCb.Hash<any> = wdCb.Hash.create<any>();
         private _arrayMapList:wdCb.Collection<ArrayMapData> = wdCb.Collection.create<ArrayMapData>();
-        private _reflectionMap:Texture = null;
         private _textureDirty:boolean = false;
         private _allMapsCache:Array<Texture> = null;
         private _allSingleMapsCache:Array<Texture> = null;
@@ -120,22 +119,6 @@ module wd{
 
         public setEnvMap(envMap:CubemapTexture){
             this._setMap("envMap", envMap);
-        }
-
-        public getReflectionMap(){
-            return this._reflectionMap;
-        }
-
-        public setReflectionMap(reflectionMap:Texture){
-            this.addMap(reflectionMap, {
-                samplerVariableName: VariableNameTable.getVariableName("reflectionMap")
-            });
-
-            this._reflectionMap = reflectionMap;
-        }
-
-        public isReflectionMap(map:Texture){
-            return map === this._reflectionMap;
         }
 
         public removeAllChildren(){

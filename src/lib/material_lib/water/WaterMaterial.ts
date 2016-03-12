@@ -25,11 +25,16 @@ module wd{
             this._bumpMap = bumpMap;
         }
 
+        private _reflectionMap:Texture = null;
         get reflectionMap(){
-            return this.mapManager.getReflectionMap();
+            return this._reflectionMap;
         }
         set reflectionMap(reflectionMap:Texture){
-            this.mapManager.setReflectionMap(reflectionMap);
+            this.mapManager.addMap(reflectionMap, {
+                samplerVariableName: VariableNameTable.getVariableName("reflectionMap")
+            });
+
+            this._reflectionMap = reflectionMap;
         }
 
         private _refractionMap:Texture = null;
