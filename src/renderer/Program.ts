@@ -10,6 +10,7 @@ module wd{
         private _shader:Shader = null;
         private _getAttribLocationCache:wdCb.Hash<number> = wdCb.Hash.create<number>();
         private _getUniformLocationCache:wdCb.Hash<number> = wdCb.Hash.create<number>();
+        private _vertexAttribHistory:wdCb.Hash<number> = wdCb.Hash.create<number>();
 
         public use(){
             DeviceManager.getInstance().gl.useProgram(this._program);
@@ -123,6 +124,8 @@ module wd{
 
             switch (type){
                 case EVariableType.BUFFER:
+                    this._vertexAttribHistory.addChild(String(pos), true);
+
                     gl.bindBuffer(gl.ARRAY_BUFFER, buffer.buffer);
                     gl.vertexAttribPointer(pos, buffer.size, buffer.type, false, 0, 0);
                     gl.enableVertexAttribArray(pos);
@@ -205,6 +208,16 @@ module wd{
 
             gl.deleteProgram(this._program);
             this._program = undefined;
+
+            this._vertexAttribHistory.forEach((value:boolean, pos:string) => {
+                var position = Number(pos);
+
+                if (position > gl.VERTEX_ATTRIB_ARRAY_ENABLED) {
+                    return;
+                }
+
+                gl.disableVertexAttribArray(position);
+            });
         }
 
         public isUniformDataNotExistByLocation(pos:any){

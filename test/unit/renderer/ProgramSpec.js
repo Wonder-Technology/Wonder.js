@@ -1,8 +1,8 @@
-describe("Program", function() {
-    var sandbox = null;
+describe("Program", function(){
     var program = null;
     var gl = null;
     var device;
+    var sandbox;
 
     function setShaderDirty(dirty){
         testTool.stubGetter(sinon, program._shader, "dirty", function(){
@@ -22,14 +22,14 @@ describe("Program", function() {
         sandbox.restore();
         testTool.clearInstance();
     });
-    
+
     describe("getUniformLocation", function(){
         var pos;
 
         beforeEach(function(){
             pos = 1;
         });
-        
+
         describe("test cache", function(){
             beforeEach(function(){
                 device.gl.getUniformLocation.returns(pos);
@@ -192,9 +192,9 @@ describe("Program", function() {
             expect(gl.uniformMatrix4fv).toCalledWith(pos, false, mat.values);
         });
         it("test send NUMBER_1", function () {
-                program.sendUniformData("u_a", wd.EVariableType.NUMBER_1, "1");
+            program.sendUniformData("u_a", wd.EVariableType.NUMBER_1, "1");
 
-                expect(gl.uniform1i).toCalledWith(pos, 1);
+            expect(gl.uniform1i).toCalledWith(pos, 1);
         });
         it("test send SAMPLER_CUBE", function () {
             program.sendUniformData("u_a", wd.EVariableType.SAMPLER_CUBE, 1);
@@ -205,6 +205,45 @@ describe("Program", function() {
             program.sendUniformData("u_a", wd.EVariableType.SAMPLER_2D, 1);
 
             expect(gl.uniform1i).toCalledWith(pos, 1);
+        });
+    });
+
+    describe("dispose", function(){
+        beforeEach(function(){
+        });
+
+        it("delete program", function(){
+            program.dispose();
+
+            expect(gl.deleteProgram).toCalledOnce();
+        });
+
+        describe("unbind vertex buffer", function () {
+            beforeEach(function(){
+                gl.VERTEX_ATTRIB_ARRAY_ENABLED = 2;
+
+                program.initWithShader(wd.CommonShader.create());
+            });
+
+            it("if position > gl.VERTEX_ATTRIB_ARRAY_ENABLED, not disable", function () {
+                gl.VERTEX_ATTRIB_ARRAY_ENABLED = 1;
+                var pos = 2;
+                gl.getAttribLocation.returns(pos);
+                program.sendAttributeData("a", wd.EVariableType.BUFFER, {});
+
+                program.dispose();
+
+                expect(gl.disableVertexAttribArray).not.toCalled();
+            });
+            it("else, disable", function () {
+                var pos = 1;
+                gl.getAttribLocation.returns(pos);
+                program.sendAttributeData("a", wd.EVariableType.BUFFER, {});
+
+                program.dispose();
+
+                expect(gl.disableVertexAttribArray).toCalledOnce();
+            });
         });
     });
 });
