@@ -304,7 +304,6 @@
 /// <reference path="renderer/renderTargetRenderer/utils/ShadowMapRenderTargetRendererUtils"/>
 /// <reference path="renderer/renderTargetRenderer/utils/CubemapShadowMapRenderTargetRendererUtils"/>
 /// <reference path="renderer/renderTargetRenderer/utils/TwoDShadowMapRenderTargetRendererUtils"/>
-/// <reference path="renderer/renderTargetRenderer/proceduralRTT/ProceduralRenderTargetRenderer"/>
 
 /// <reference path="renderer/renderer/Renderer"/>
 /// <reference path="renderer/renderer/WebGLRenderer"/>
@@ -373,7 +372,7 @@
 /// <reference path="renderer/shader/lib/map/BasicMapShaderLib"/>
 /// <reference path="renderer/shader/lib/map/MultiMapShaderLib"/>
 
-/// <reference path="renderer/shader/lib/procedural/ProceduralShaderLib"/>
+
 
 /// <reference path="renderer/shader/lib/light/LightCommonShaderLib"/>
 /// <reference path="renderer/shader/lib/light/LightShaderLib"/>
@@ -531,6 +530,9 @@
 
 
 
+
+/// <reference path="lib/procedural_texture_lib/ProceduralShaderLib"/>
+/// <reference path="lib/procedural_texture_lib/ProceduralRenderTargetRenderer"/>
 
 
 /// <reference path="lib/procedural_texture_lib/common/CommonProceduralShaderLib"/>
