@@ -22,11 +22,11 @@ module wd {
         }
 
         public getMin() {
-            return this.center.copy().sub(this.halfExtents);
+            return this.center.clone().sub(this.halfExtents);
         }
 
         public getMax() {
-            return this.center.copy().add(this.halfExtents);
+            return this.center.clone().add(this.halfExtents);
         }
 
         public setFromShapeParam(center:Vector3, halfExtents:Vector3){
@@ -96,12 +96,12 @@ module wd {
             var translation = matrix.getTranslation(),
                 scale = matrix.getScale();
 
-            this.center = aabb.center.copy().add(translation);
+            this.center = aabb.center.clone().add(translation);
             /*!
             the scale may has float deviation, so may the halfExtents.
             todo fix halfExtents float deviation?(use toFixed?)
              */
-            this.halfExtents = aabb.halfExtents.copy().mul(scale);
+            this.halfExtents = aabb.halfExtents.clone().mul(scale);
         }
 
         @require(function (entityObject:GameObject) {
@@ -209,11 +209,11 @@ module wd {
             return true;
         }
 
-        public copy() {
+        public clone() {
             var shape = AABBShape.create();
 
-            shape.center = this.center.copy();
-            shape.halfExtents = this.halfExtents.copy();
+            shape.center = this.center.clone();
+            shape.halfExtents = this.halfExtents.clone();
 
             return shape;
         }

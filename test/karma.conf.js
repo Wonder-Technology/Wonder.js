@@ -29,6 +29,8 @@
 
         //'test/unit/**',
 
+        'test/unit/**/instanceSpec*',
+
         //'test/unit/**/water*',
 
         //'test/unit/lib/**',
@@ -150,7 +152,7 @@
         //'test/unit/**/SphereShapeSpec*',
         //'test/unit/**/ActionManagerSpec*',
         //'test/unit/**/TwoDShadow*Spec.js',
-        'test/unit/**/ProgramSpec.js',
+        //'test/unit/**/ProgramSpec.js',
         //'test/unit/**/*CustomGeo*.js',
         //'test/unit/**/SphereColliderSpec.js',
         //'test/unit/**/*ColliderSpec.js',

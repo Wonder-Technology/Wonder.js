@@ -20,7 +20,7 @@ module wd{
         public isStopPropagation:boolean = false;
         public phase:EEventPhase = null;
 
-        public abstract copy();
+        public abstract clone();
 
         public stopPropagation() {
             this.isStopPropagation = true;

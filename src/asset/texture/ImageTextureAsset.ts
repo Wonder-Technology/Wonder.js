@@ -22,7 +22,7 @@ module wd{
             return CubemapFaceImageTexture.create(this);
         }
 
-        public copyToCubemapFaceTexture(cubemapFaceTexture:ICubemapFaceTwoDTextureAsset){
+        public cloneToCubemapFaceTexture(cubemapFaceTexture:ICubemapFaceTwoDTextureAsset){
             cubemapFaceTexture.source = this.source;
             cubemapFaceTexture.type = this.type;
             cubemapFaceTexture.format = this.format;

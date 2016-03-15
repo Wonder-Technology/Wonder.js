@@ -90,7 +90,7 @@ module wd {
             this.isClearCanvas = true;
         }
 
-        //todo add copy
+        //todo add clone
 
         private _createOverlayCanvas(){
             var canvas = null,

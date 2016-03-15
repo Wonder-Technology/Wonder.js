@@ -44,8 +44,8 @@ module wd {
             }
         }
 
-        public copy() {
-            return Repeat.create(this._innerAction.copy(), this._times);
+        public clone() {
+            return Repeat.create(this._innerAction.clone(), this._times);
         }
 
         public reset() {

@@ -29,8 +29,8 @@ module wd {
 
             this.finish();
         }
-        public copy() {
-            return new CallFunc(this._context, this._callFunc, this._dataArr.copy(true).getChildren());
+        public clone() {
+            return new CallFunc(this._context, this._callFunc, this._dataArr.clone(true).getChildren());
         }
     }
 }

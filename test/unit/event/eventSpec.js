@@ -119,24 +119,24 @@ describe("event", function () {
 
             manager.fromEvent(mesh1, eventName)
                 .subscribe(function (e) {
-                    eventTarget1 = e.copy();
+                    eventTarget1 = e.clone();
                     fakeObj.a();
                 });
             manager.fromEvent(mesh2, eventName)
                 .subscribe(function (e) {
                     e.stopPropagation();
 
-                    eventTarget2 = e.copy();
+                    eventTarget2 = e.clone();
                     fakeObj.b();
                 });
             manager.fromEvent(mesh3, eventName)
                 .subscribe(function (e) {
-                    eventTarget3 = e.copy();
+                    eventTarget3 = e.clone();
                     fakeObj.c();
                 });
             manager.fromEvent(mesh4, eventName)
                 .subscribe(function (e) {
-                    eventTarget4 = e.copy();
+                    eventTarget4 = e.clone();
                     fakeObj.d();
                 });
         });

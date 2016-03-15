@@ -13,7 +13,7 @@ module wd{
         public heightSegments:number = 1;
         public depthSegments:number = 1;
 
-        public copy(){
+        public clone(){
             var result = BoxGeometry.create();
 
             result.width = this.width;

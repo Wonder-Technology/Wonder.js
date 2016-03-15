@@ -24,7 +24,7 @@ module wd {
             var translation = matrix.getTranslation(),
                 scale = matrix.getScale();
 
-            this.center = sphere.center.copy().add(translation);
+            this.center = sphere.center.clone().add(translation);
             this.radius = sphere.radius * Math.max(scale.x, scale.y, scale.z);
         }
 
@@ -63,10 +63,10 @@ module wd {
             return point.distanceToSquared(this.center) <= (this.radius**2);
         }
 
-        public copy() {
+        public clone() {
             var shape = SphereShape.create();
 
-            shape.center = this.center.copy();
+            shape.center = this.center.clone();
             shape.radius = this.radius;
 
             return shape;

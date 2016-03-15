@@ -78,7 +78,7 @@ module wd{
             return this;
         }
 
-        public copy():Vector4{
+        public clone():Vector4{
             return this.copyHelper(Vector4.create());
         }
 

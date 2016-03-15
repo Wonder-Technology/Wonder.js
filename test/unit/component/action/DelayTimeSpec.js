@@ -28,9 +28,9 @@ describe("DelayTime", function () {
         expect(action.isFinish).toBeTruthy();
     });
 
-    describe("copy", function(){
-        it("return copy one", function () {
-            var a = action.copy();
+    describe("clone", function(){
+        it("return clone one", function () {
+            var a = action.clone();
 
             expect(a).toBeInstanceOf(DelayTime);
             expect(a === action).toBeFalsy();

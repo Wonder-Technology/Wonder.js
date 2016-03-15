@@ -11,10 +11,10 @@ module wd{
         }
 
         //todo to be abstract method
-        //public abstract copy():Component;
+        //public abstract clone():Component;
         @virtual
-        public copy():Component{
-            Log.error(true, Log.info.FUNC_SHOULD("implement copy method"));
+        public clone():Component{
+            Log.error(true, Log.info.FUNC_SHOULD("implement clone method"));
 
             return null;
         }

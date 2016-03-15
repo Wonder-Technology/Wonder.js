@@ -4,7 +4,7 @@ module wd {
 
         public abstract setFromShapeParam(...args);
         public abstract setFromPoints(points:Array<number>);
-        public abstract copy():Shape;
+        public abstract clone():Shape;
 
         public abstract isIntersectWithBox(shape:AABBShape);
         public abstract isIntersectWithBox(min:Vector3, max:Vector3);

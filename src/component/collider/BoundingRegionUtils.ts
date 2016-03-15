@@ -73,25 +73,25 @@ module wd{
         public static buildBoundingVectors(minPoint:Vector3, maxPoint:Vector3){
             var boundingVectors = [];
 
-            boundingVectors.push(minPoint.copy());
-            boundingVectors.push(maxPoint.copy());
+            boundingVectors.push(minPoint.clone());
+            boundingVectors.push(maxPoint.clone());
 
-            boundingVectors.push(minPoint.copy());
+            boundingVectors.push(minPoint.clone());
             boundingVectors[2].x = maxPoint.x;
 
-            boundingVectors.push(minPoint.copy());
+            boundingVectors.push(minPoint.clone());
             boundingVectors[3].y = maxPoint.y;
 
-            boundingVectors.push(minPoint.copy());
+            boundingVectors.push(minPoint.clone());
             boundingVectors[4].z = maxPoint.z;
 
-            boundingVectors.push(maxPoint.copy());
+            boundingVectors.push(maxPoint.clone());
             boundingVectors[5].z = minPoint.z;
 
-            boundingVectors.push(maxPoint.copy());
+            boundingVectors.push(maxPoint.clone());
             boundingVectors[6].x = minPoint.x;
 
-            boundingVectors.push(maxPoint.copy());
+            boundingVectors.push(maxPoint.clone());
             boundingVectors[7].y = minPoint.y;
 
             return boundingVectors;

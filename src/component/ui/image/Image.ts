@@ -135,7 +135,7 @@ module wd {
                 pixelData = null,
                 pixels = null;
 
-            context.globalCompositeOperation = "copy";
+            context.globalCompositeOperation = "clone";
 
             this.drawInCenterPoint(this.context, this._getDrawSource().source, this.entityObject.transform.position, this.width, this.height);
 

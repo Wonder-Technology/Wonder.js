@@ -49,11 +49,11 @@ module wd {
             return null;
         }
 
-        public copy() {
+        public clone() {
             var actionArr = [];
 
             this._actions.forEach(function (action) {
-                actionArr.push(action.copy());
+                actionArr.push(action.clone());
             });
 
             return Sequence.create.apply(Sequence, actionArr);

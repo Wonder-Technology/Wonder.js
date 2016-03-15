@@ -31,19 +31,19 @@ describe("CallFunc", function () {
         expect(context.a).toEqual(7);
     });
 
-    describe("copy", function(){
-        it("return copy one", function () {
-            var a = action.copy();
+    describe("clone", function(){
+        it("return clone one", function () {
+            var a = action.clone();
 
             expect(a).toBeInstanceOf(CallFunc);
             expect(a === action).toBeFalsy();
 
         });
-        it("deep copy the dataArr", function () {
+        it("deep clone the dataArr", function () {
             var data = {a: 1};
             action._dataArr = wdCb.Collection.create([data]);
 
-            var a = action.copy();
+            var a = action.clone();
             a._dataArr.getChildren().a = 100;
 
             expect(data.a).toEqual(1);

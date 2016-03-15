@@ -48,7 +48,7 @@ module wd{
                 )
                 .subscribe(([triggerList, e]) => {
                     triggerList.forEach((entityObject:EntityObject) => {
-                        self._trigger(e.copy(), entityObject);
+                        self._trigger(e.clone(), entityObject);
                     })
                 });
         }
@@ -101,7 +101,7 @@ module wd{
                     self._setMouseOverTag(mouseoverObjects);
                     self._setMouseOutTag(mouseoutObjects);
 
-                    self._lastTriggerList = triggerList.copy();
+                    self._lastTriggerList = triggerList.clone();
 
                     triggerList = mouseoutObjects.addChildren(triggerList);
 
@@ -203,7 +203,7 @@ module wd{
             entityObject.execEventScript(handlerName, event);
 
             if (!event.isStopPropagation && entityObject.bubbleParent) {
-                this._trigger(event.copy(), entityObject.bubbleParent, true);
+                this._trigger(event.clone(), entityObject.bubbleParent, true);
             }
         }
 
@@ -250,7 +250,7 @@ module wd{
         }
 
         private _getDistanceToCamera(obj:GameObject){
-            return obj.transform.position.copy().sub(Director.getInstance().scene.currentCamera.transform.position).length();
+            return obj.transform.position.clone().sub(Director.getInstance().scene.currentCamera.transform.position).length();
         }
 
         private _findTopUIObject(e:MouseEvent, uiObjectScene:UIObjectScene){

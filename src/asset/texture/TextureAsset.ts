@@ -47,9 +47,9 @@ module wd{
 
         public abstract toCubemapFaceTexture():CubemapFaceTexture;
 
-        public abstract copyToCubemapFaceTexture(cubemapFaceTexture:any);
+        public abstract cloneToCubemapFaceTexture(cubemapFaceTexture:any);
 
-        public copyToCubemapTexture(cubemapFaceTexture:ICubemapTextureAsset){
+        public cloneToCubemapTexture(cubemapFaceTexture:ICubemapTextureAsset){
             cubemapFaceTexture.generateMipmaps = this.generateMipmaps;
             cubemapFaceTexture.minFilter = this.minFilter;
             cubemapFaceTexture.magFilter = this.magFilter;
@@ -64,7 +64,7 @@ module wd{
             cubemapFaceTexture.mode = EEnvMapMode.BASIC;
         }
 
-        public copyTo(texture:BasicTexture){
+        public cloneTo(texture:BasicTexture){
             Log.error(!texture, Log.info.FUNC_MUST_DEFINE("texture"));
 
             texture.source = this.source;
@@ -72,7 +72,7 @@ module wd{
             texture.width = this.width;
             texture.height = this.height;
 
-            texture.mipmaps = this.mipmaps.copy();
+            texture.mipmaps = this.mipmaps.clone();
 
             texture.wrapS = this.wrapS;
             texture.wrapT = this.wrapT;
@@ -85,8 +85,8 @@ module wd{
             texture.format = this.format;
             texture.type = this.type;
 
-            texture.repeatRegion = this.repeatRegion.copy();
-            texture.sourceRegion = this.sourceRegion && this.sourceRegion.copy();
+            texture.repeatRegion = this.repeatRegion.clone();
+            texture.sourceRegion = this.sourceRegion && this.sourceRegion.clone();
             texture.sourceRegionMapping = this.sourceRegionMapping;
 
             texture.sourceRegionMethod = this.sourceRegionMethod;

@@ -3,7 +3,7 @@ module wd{
         public initWhenCreate(asset:TextureAsset){
             super.initWhenCreate();
 
-            asset.copyTo(this);
+            asset.cloneTo(this);
         }
     }
 }

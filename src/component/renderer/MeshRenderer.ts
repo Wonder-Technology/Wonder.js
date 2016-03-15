@@ -12,7 +12,7 @@ module wd {
             renderer.addCommand(this.createDrawCommand(geometry, camera));
         }
 
-        public copy(){
+        public clone(){
             return MeshRenderer.create();
         }
 

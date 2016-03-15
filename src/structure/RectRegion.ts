@@ -14,7 +14,7 @@ module wd {
             this.w = height;
         }
 
-        public copy():RectRegion{
+        public clone():RectRegion{
             return this.copyHelper(RectRegion.create());
         }
 

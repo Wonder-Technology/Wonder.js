@@ -36,7 +36,7 @@ module wd{
             return Log.error(true, Log.info.FUNC_NOT_SUPPORT("video texture", "cubemap"));
         }
 
-        public copyToCubemapFaceTexture(cubemapFaceTexture:ICubemapFaceTwoDTextureAsset){
+        public cloneToCubemapFaceTexture(cubemapFaceTexture:ICubemapFaceTwoDTextureAsset){
             Log.error(true, Log.info.FUNC_NOT_SUPPORT("video texture", "cubemap"));
         }
     }

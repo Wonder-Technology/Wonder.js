@@ -47,14 +47,14 @@ describe("Repeat", function () {
         expect(action.isFinish).toBeTruthy();
     });
 
-    describe("copy", function(){
-        it("return copy one, copy inner action", function () {
+    describe("clone", function(){
+        it("return clone one, clone inner action", function () {
             var copy1 = {};
             var fakeAction = {
-                    copy:sandbox.stub().returns(copy1)
+                    clone:sandbox.stub().returns(copy1)
                 };
             action = Repeat.create(fakeAction, 2);
-            var a = action.copy();
+            var a = action.clone();
 
             expect(a).toBeInstanceOf(Repeat);
             expect(a === action).toBeFalsy();

@@ -162,7 +162,7 @@ module wd {
 
         public keyState:any = null;
 
-        public copy():KeyboardEvent{
+        public clone():KeyboardEvent{
             var eventObj = KeyboardEvent.create(this.event, this.name);
 
             return <KeyboardEvent>this.copyMember(eventObj, this, ["target", "currentTarget", "isStopPropagation", "phase", "altKey", "shiftKey", "ctrlKey", "metaKey", "keyCode", "key"]);

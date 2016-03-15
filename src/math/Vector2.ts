@@ -62,7 +62,7 @@ module wd{
             return this;
         }
 
-        public copy(){
+        public clone(){
             return Vector2.create(this.x, this.y);
         }
     }

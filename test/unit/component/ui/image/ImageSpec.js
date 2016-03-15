@@ -183,7 +183,7 @@ describe("Image", function () {
 
                             image.update(1);
 
-                            expect(context.globalCompositeOperation).toEqual("copy");
+                            expect(context.globalCompositeOperation).toEqual("clone");
                             expect(context.getImageData).toCalledWith(0, 0, 100, 50);
                             expect(context.putImageData).toCalledWith({data:[0.1 * color.r, 0.2 * color.g, 0.3 * color.b, 0.5]}, 0, 0);
                         });

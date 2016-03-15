@@ -111,7 +111,7 @@ module wd {
             }
 
             registerDataList.forEach((registerData:CustomEventRegisterData) => {
-                //var eventCopy = event.copy();
+                //var eventCopy = event.clone();
                 //
                 //eventCopy.currentTarget = registerData.target;
                 //eventCopy.target = registerData.target;
@@ -146,7 +146,7 @@ module wd {
             }
 
             registerDataList.forEach((registerData:CustomEventRegisterData) => {
-                //var eventCopy = event.copy();
+                //var eventCopy = event.clone();
 
                 //eventCopy.currentTarget = registerData.target;
                 //

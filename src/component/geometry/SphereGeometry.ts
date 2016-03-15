@@ -12,7 +12,7 @@ module wd{
         public sphereDrawMode:ESphereDrawMode = ESphereDrawMode.LATITUDELONGTITUDE;
         public segments:number = 20;
 
-        public copy(){
+        public clone(){
             var result = SphereGeometry.create();
 
             result.radius = this.radius;

@@ -22,7 +22,7 @@ module wd{
         public source:any = null;
 
         public initWhenCreate(asset:ImageTextureAsset){
-            asset.copyToCubemapFaceTexture(this);
+            asset.cloneToCubemapFaceTexture(this);
         }
 
         public isSourcePowerOfTwo():boolean{

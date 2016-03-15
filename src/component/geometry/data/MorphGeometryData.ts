@@ -93,7 +93,7 @@ module wd {
             var copyFaces = [];
 
             for (let face of faces){
-                copyFaces.push(face.copy());
+                copyFaces.push(face.clone());
             }
 
             return copyFaces;

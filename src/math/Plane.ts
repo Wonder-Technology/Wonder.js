@@ -63,7 +63,7 @@ module wd {
             return this;
         }
 
-        public copy(): Plane {
+        public clone(): Plane {
             return Plane.create(this.normal.x, this.normal.y, this.normal.z, this.d);
         }
 

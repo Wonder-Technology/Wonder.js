@@ -474,7 +474,7 @@ module wd {
                         return;
                     }
 
-                    // create a local copy of the Array with the start value at the front
+                    // create a local clone of the Array with the start value at the front
                     self._valuesEnd.setValue(key, [self._object.getChild(key)].concat(self._valuesEnd.getChild(key)));
                 }
 
@@ -504,7 +504,7 @@ module wd {
             return this;
         }
 
-        public copy() {
+        public clone() {
             return Tween.create().from(this._valuesStart.getChildren())
             .to(this._valuesEnd.getChildren(), this.duration)
                 .easing(this._easingFunction)

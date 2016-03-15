@@ -188,7 +188,7 @@ module wd {
                 var instancesCount = 0;
 
                 //add self
-                this.mMatrix.copyToArray(this._worldMatricesInstancesArray, offset);
+                this.mMatrix.cloneToArray(this._worldMatricesInstancesArray, offset);
                 offset += 16;
                 instancesCount++;
 
@@ -197,7 +197,7 @@ module wd {
                 //add instances
 
                 this.instanceList.forEach((instance:GameObject) => {
-                    instance.transform.localToWorldMatrix.copyToArray(this._worldMatricesInstancesArray, offset);
+                    instance.transform.localToWorldMatrix.cloneToArray(this._worldMatricesInstancesArray, offset);
                     offset += 16;
                     instancesCount++;
                 });

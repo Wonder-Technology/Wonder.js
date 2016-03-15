@@ -195,7 +195,7 @@ module wd{
             return this;
         }
 
-        public copy(): Vector3{
+        public clone(): Vector3{
             var result = Vector3.create(),
                 i = 0,
                 len = this.values.length;

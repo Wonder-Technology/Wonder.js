@@ -50,18 +50,18 @@ describe("Spawn", function () {
         expect(x2).toEqual(-4);
     });
 
-    describe("copy", function(){
-        it("return copy one, copy inner action", function () {
+    describe("clone", function(){
+        it("return clone one, clone inner action", function () {
             var copy1 = {},
                 copy2 = {a:1};
             var fakeAction1 = {
-                    copy:sandbox.stub().returns(copy1)
+                    clone:sandbox.stub().returns(copy1)
                 },
                 fakeAction2 = {
-                    copy:sandbox.stub().returns(copy2)
+                    clone:sandbox.stub().returns(copy2)
                 };
             action = Spawn.create(fakeAction1, fakeAction2);
-            var a = action.copy();
+            var a = action.clone();
 
             expect(a).toBeInstanceOf(Spawn);
             expect(a === action).toBeFalsy();

@@ -44,7 +44,7 @@
             arr.push(model);
 
             for(var i = 0; i < count; i++){
-                var instance = model.copyInstance("index" + String(i));
+                var instance = model.cloneInstance("index" + String(i));
 
                 instance.transform.position = wd.Vector3.create(range / 2 - Math.random() * range, range / 2 - Math.random() * range, range / 2 - Math.random() * range);
                 instance.transform.rotate(90 * Math.random(), 90 * Math.random(),0);

@@ -239,7 +239,7 @@ describe("Matrix4", function(){
             var mat = Matrix4.create();
            mat.setTranslate(1,2,3);
            matrix.setTranslate(10,11,12);
-           var matrixCopy = matrix.copy();
+           var matrixCopy = matrix.clone();
 
            var result = matrix.applyMatrix(mat);
 
@@ -249,7 +249,7 @@ describe("Matrix4", function(){
             var mat = Matrix4.create();
             mat.setTranslate(1,2,3);
             matrix.setTranslate(10,11,12);
-            var matrixCopy = matrix.copy();
+            var matrixCopy = matrix.clone();
 
             var result = matrix.applyMatrix(mat, true);
 
@@ -287,13 +287,13 @@ describe("Matrix4", function(){
         });
     });
 
-    describe("copy", function(){
-       it("return matrix copy", function(){
-           var copy = matrix.copy();
+    describe("clone", function(){
+       it("return matrix clone", function(){
+           var clone = matrix.clone();
 
            matrix.translate(10,11,12);
 
-           mathTestUtils.isMatrixEqual(copy, Matrix4.create());
+           mathTestUtils.isMatrixEqual(clone, Matrix4.create());
        });
     });
 

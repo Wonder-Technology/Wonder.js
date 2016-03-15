@@ -255,7 +255,7 @@ module wd {
         /**
          * @function
          * @name clone
-         * @description Returns an identical copy of the specified quaternion.
+         * @description Returns an identical clone of the specified quaternion.
          * @returns {Quat} A quaternion containing the result of the cloning.
          * @example
          * var q = new Quat(-0.11, -0.15, -0.46, 0.87);
@@ -264,11 +264,6 @@ module wd {
          * console.log("The result of the cloning is: " + q.toString());
          */
         public clone() {
-            return Quaternion.create(this.x, this.y, this.z, this.w);
-        }
-
-        //todo remove
-        public copy() {
             return Quaternion.create(this.x, this.y, this.z, this.w);
         }
 
@@ -359,7 +354,7 @@ module wd {
         }
 
         public sub(quat:Quaternion){
-            var result = quat.copy().invert().multiply(this);
+            var result = quat.clone().invert().multiply(this);
 
             this.set(result.x, result.y, result.z, result.w);
 

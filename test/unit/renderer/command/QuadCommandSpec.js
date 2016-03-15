@@ -21,7 +21,7 @@ describe("QuadCommand", function() {
 
         it("get normal matrix", function(){
             var mMatrix = wd.Matrix4.create([ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 2, 3, 1 ]);
-            cmd.mMatrix = mMatrix.copy();
+            cmd.mMatrix = mMatrix.clone();
 
             expect(cmd.normalMatrix.values).toEqual(
                 cmd.mMatrix.invertTo3x3().transpose().values
@@ -76,7 +76,7 @@ describe("QuadCommand", function() {
 
         it("get mvp matrix", function(){
             var mMatrix = wd.Matrix4.create([ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 2, 3, 1 ]);
-            cmd.mMatrix = mMatrix.copy();
+            cmd.mMatrix = mMatrix.clone();
             cmd.vMatrix = wd.Matrix4.create([ 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 2, 3, 1 ]);
             cmd.pMatrix = wd.Matrix4.create([ 3, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 2, 3, 1 ]);
 

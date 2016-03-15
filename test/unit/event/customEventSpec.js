@@ -126,16 +126,16 @@ describe("custom event", function () {
 
                 var subscription1 = manager.fromEvent(eventName, 1)
                     .subscribe(function (e) {
-                        eventTarget = e.copy();
+                        eventTarget = e.clone();
                         fakeObj.a();
                     });
                 manager.fromEvent(eventName, 2).subscribe(subject);
                 var subscription2 = subject.subscribe(function (e) {
-                        eventTarget2 = e.copy();
+                        eventTarget2 = e.clone();
                         fakeObj.b();
                     });
                 var subscription3 = subject.subscribe(function (e) {
-                    eventTarget3 = e.copy();
+                    eventTarget3 = e.clone();
                     fakeObj.c();
                 });
                 subject.start();
@@ -258,22 +258,22 @@ describe("custom event", function () {
 
             manager.fromEvent(mesh1, eventName)
                 .subscribe(function (e) {
-                    eventTarget1 = e.copy();
+                    eventTarget1 = e.clone();
                     fakeObj.a();
                 });
             manager.fromEvent(mesh2, eventName)
                 .subscribe(function (e) {
-                    eventTarget2 = e.copy();
+                    eventTarget2 = e.clone();
                     fakeObj.b();
                 });
             manager.fromEvent(mesh3, eventName)
                 .subscribe(function (e) {
-                    eventTarget3 = e.copy();
+                    eventTarget3 = e.clone();
                     fakeObj.c();
                 });
             manager.fromEvent(mesh4, eventName)
                 .subscribe(function (e) {
-                    eventTarget4 = e.copy();
+                    eventTarget4 = e.clone();
                     fakeObj.d();
                 });
         });
@@ -283,7 +283,7 @@ describe("custom event", function () {
 
             manager.fromEvent(eventName)
                 .subscribe(function (e) {
-                    eventTarget5 = e.copy();
+                    eventTarget5 = e.clone();
                 });
 
 

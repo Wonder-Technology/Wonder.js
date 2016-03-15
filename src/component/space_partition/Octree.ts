@@ -31,8 +31,8 @@ module wd {
                 for (let x = 0; x < 2; x++) {
                     for (let y = 0; y < 2; y++) {
                         for (let z = 0; z < 2; z++) {
-                            let localMin = worldMin.copy().add(halfExtends.copy().scale(x, y, z)),
-                                localMax = worldMin.copy().add(halfExtends.copy().scale(x + 1, y + 1, z + 1)),
+                            let localMin = worldMin.clone().add(halfExtends.clone().scale(x, y, z)),
+                                localMax = worldMin.clone().add(halfExtends.clone().scale(x + 1, y + 1, z + 1)),
                                 node = OctreeNode.create(localMin, localMax, maxNodeCapacity, currentDepth + 1, maxDepth);
 
                             node.addGameObjects(gameObjectList);

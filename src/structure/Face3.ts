@@ -35,15 +35,15 @@ module wd {
             return this.vertexNormals.getCount() > 0;
         }
 
-        public copy(){
-            var copyFaceNormal = this._faceNormal ? this._faceNormal.copy() : null,
+        public clone(){
+            var copyFaceNormal = this._faceNormal ? this._faceNormal.clone() : null,
                 copyVertexNormals = null;
 
             if(this.vertexNormals){
                 copyVertexNormals = wdCb.Collection.create();
 
                 this.vertexNormals.forEach((vertexNormal:Vector3) => {
-                    copyVertexNormals.addChild(vertexNormal.copy());
+                    copyVertexNormals.addChild(vertexNormal.clone());
                 });
             }
 

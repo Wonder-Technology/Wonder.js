@@ -435,9 +435,9 @@ module wd{
             }
             x = Vector3.create();
 
-            z = eye.copy().sub(center).normalize();
+            z = eye.clone().sub(center).normalize();
 
-            y = up.copy().normalize();
+            y = up.clone().normalize();
             x.cross(y, z).normalize();
             y.cross(z, x);
 
@@ -583,7 +583,7 @@ module wd{
 
         public applyMatrix (other:Matrix4, notChangeSelf:boolean = false):Matrix4{
             var a = this,
-                b = other.copy();
+                b = other.clone();
 
             /*!
              b*a，而不是a*b
@@ -686,7 +686,7 @@ module wd{
             return Vector3.create(result[0], result[1], result[2]);
         }
 
-        public copy(): Matrix4{
+        public clone(): Matrix4{
             var result = Matrix4.create(),
                 i = 0,
                 len = this.values.length;
@@ -700,7 +700,7 @@ module wd{
         }
 
         //todo test
-        public copyToArray(array: Float32Array, offset: number = 0): Matrix4 {
+        public cloneToArray(array: Float32Array, offset: number = 0): Matrix4 {
             var values = this.values;
 
             for (let index = 0; index < 16; index++) {

@@ -52,27 +52,27 @@ module wd {
 
 
 
-        public copyInstance(name:string):GameObject{
+        public cloneInstance(name:string):GameObject{
             //var self = this,
             var instance = GameObject.create();
 
-            //copy transform
+            //clone transform
             //
             //instance
             //com,tags,
             //    children
 
-            instance.transform = this.transform.copy();
+            instance.transform = this.transform.clone();
 
             this.components.filter((component:Component) => {
                 return !(component instanceof Transform);
             })
             .forEach((component:Component) => {
                 //instance.addComponent(component, true);
-                instance.addComponent(component.copy());
+                instance.addComponent(component.clone());
             });
 
-            //todo copy scriptList?
+            //todo clone scriptList?
 
             instance.p_scriptList = this.scriptList;
             instance.bubbleParent = this.bubbleParent;
@@ -91,7 +91,7 @@ module wd {
 
 
             this.forEach((child:GameObject) => {
-                instance.addChild(child.copyInstance(`${name}_${child.name}`));
+                instance.addChild(child.cloneInstance(`${name}_${child.name}`));
             });
 
             return instance;

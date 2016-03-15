@@ -37,7 +37,7 @@ module wd {
                 this.shape.setFromPoints(ColliderUtils.getVertices(this.entityObject));
             }
 
-            this.originShape = this.shape.copy();
+            this.originShape = this.shape.clone();
 
             if(DebugConfig.debugCollision){
                 this.debugObject = this.buildDebugObjectFromShape(this.shape);

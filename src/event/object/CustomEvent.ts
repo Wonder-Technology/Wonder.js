@@ -22,7 +22,7 @@ module wd {
             return destination;
         }
 
-        public copy():CustomEvent{
+        public clone():CustomEvent{
             var eventObj = CustomEvent.create(<any>this.name);
 
             return <CustomEvent>this.copyMember(eventObj, this, ["target", "currentTarget", "isStopPropagation", "phase"]);

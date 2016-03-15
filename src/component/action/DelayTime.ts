@@ -16,7 +16,7 @@ module wd {
             return this;
         }
 
-        public copy() {
+        public clone() {
             return DelayTime.create(this.duration);
         }
 

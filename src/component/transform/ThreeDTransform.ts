@@ -33,10 +33,10 @@ module wd{
         }
         set position(position:Vector3){
             if (this.p_parent === null) {
-                this._localPosition = position.copy();
+                this._localPosition = position.clone();
             }
             else {
-                this._localPosition = this.p_parent.localToWorldMatrix.copy().invert().multiplyPoint(position);
+                this._localPosition = this.p_parent.localToWorldMatrix.clone().invert().multiplyPoint(position);
             }
 
             this.isTranslate = true;
@@ -57,10 +57,10 @@ module wd{
         }
         set rotation(rotation:Quaternion){
             if (this.p_parent === null) {
-                this._localRotation = rotation.copy();
+                this._localRotation = rotation.clone();
             }
             else {
-                this._localRotation = this.p_parent.rotation.copy().invert().multiply(rotation);
+                this._localRotation = this.p_parent.rotation.clone().invert().multiply(rotation);
             }
 
             this.isRotate = true;
@@ -81,10 +81,10 @@ module wd{
         }
         set scale(scale:Vector3){
             if (this.p_parent === null) {
-                this._localScale = scale.copy();
+                this._localScale = scale.clone();
             }
             else {
-                this._localScale = this.p_parent.localToWorldMatrix.copy().invert().multiplyVector3(scale);
+                this._localScale = this.p_parent.localToWorldMatrix.clone().invert().multiplyVector3(scale);
             }
 
             this.isScale = true;
@@ -106,7 +106,7 @@ module wd{
             this._localRotation.setFromEulerAngles(eulerAngles);
 
             if (this.p_parent !== null) {
-                this._localRotation = this.p_parent.rotation.copy().invert().multiply(this._localRotation);
+                this._localRotation = this.p_parent.rotation.clone().invert().multiply(this._localRotation);
             }
 
             this.isRotate = true;
@@ -117,7 +117,7 @@ module wd{
             return this._localPosition;
         }
         set localPosition(position:Vector3){
-            this._localPosition = position.copy();
+            this._localPosition = position.clone();
 
             this.isLocalTranslate = true;
         }
@@ -127,7 +127,7 @@ module wd{
             return this._localRotation;
         }
         set localRotation(rotation:Quaternion){
-            this._localRotation = rotation.copy();
+            this._localRotation = rotation.clone();
 
             this.isLocalRotate = true;
         }
@@ -156,7 +156,7 @@ module wd{
             return this._localScale;
         }
         set localScale(scale:Vector3){
-            this._localScale = scale.copy();
+            this._localScale = scale.clone();
 
             this.isLocalScale = true;
         }
@@ -216,10 +216,10 @@ module wd{
 
             if (this.dirtyWorld) {
                 if (this.p_parent === null) {
-                    this._localToWorldMatrix = this._localToParentMatrix.copy();
+                    this._localToWorldMatrix = this._localToParentMatrix.clone();
                 }
                 else {
-                    this._localToWorldMatrix = this.p_parent.localToWorldMatrix.copy().multiply(this._localToParentMatrix);
+                    this._localToWorldMatrix = this.p_parent.localToWorldMatrix.clone().multiply(this._localToParentMatrix);
                 }
 
                 this.dirtyWorld = false;
@@ -290,7 +290,7 @@ module wd{
             }
             else {
                 //todo why?
-                quaternion = this.p_parent.rotation.copy().invert().multiply(quaternion);
+                quaternion = this.p_parent.rotation.clone().invert().multiply(quaternion);
                 this._localRotation = quaternion.multiply(this.rotation);
             }
 
@@ -345,7 +345,7 @@ module wd{
 
             rot = Quaternion.create().setFromAxisAngle(angle, axis);
             // find current direction relative to center
-            dir = this.position.copy().sub(center);
+            dir = this.position.clone().sub(center);
 
             // rotate the direction
             dir = rot.multiplyVector3(dir);
@@ -389,14 +389,14 @@ module wd{
             return this;
         }
 
-        public copy(){
+        public clone(){
             var transform = ThreeDTransform.create();
 
             this.copyHelper(transform);
 
-            transform.position = this.position.copy();
-            transform.rotation = this.rotation.copy();
-            transform.scale = this.scale.copy();
+            transform.position = this.position.clone();
+            transform.rotation = this.rotation.clone();
+            transform.scale = this.scale.clone();
 
             return transform;
         }

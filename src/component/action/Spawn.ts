@@ -63,11 +63,11 @@ module wd {
             return this;
         }
 
-        public copy() {
+        public clone() {
             var actions = [];
 
             this._actions.forEach(function (action) {
-                actions.push(action.copy());
+                actions.push(action.clone());
             });
             return Spawn.create.apply(Spawn, actions);
         }

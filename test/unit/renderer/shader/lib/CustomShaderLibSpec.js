@@ -200,17 +200,17 @@ describe("CustomShaderLib", function () {
                 it("MODEL_INVERSE", function(){
                     lib.sendShaderVariables(program, cmd, material);
 
-                    expect(program.sendUniformData).toCalledWith("u_mInverseMatrix", wd.EVariableType.FLOAT_MAT4, cmd.mMatrix.copy().invert());
+                    expect(program.sendUniformData).toCalledWith("u_mInverseMatrix", wd.EVariableType.FLOAT_MAT4, cmd.mMatrix.clone().invert());
                 });
                 it("VIEW_INVERSE", function(){
                     lib.sendShaderVariables(program, cmd, material);
 
-                    expect(program.sendUniformData).toCalledWith("u_vInverseMatrix", wd.EVariableType.FLOAT_MAT4, cmd.vMatrix.copy().invert());
+                    expect(program.sendUniformData).toCalledWith("u_vInverseMatrix", wd.EVariableType.FLOAT_MAT4, cmd.vMatrix.clone().invert());
                 });
                 it("PROJECTION_INVERSE", function(){
                     lib.sendShaderVariables(program, cmd, material);
 
-                    expect(program.sendUniformData).toCalledWith("u_pInverseMatrix", wd.EVariableType.FLOAT_MAT4, cmd.pMatrix.copy().invert());
+                    expect(program.sendUniformData).toCalledWith("u_pInverseMatrix", wd.EVariableType.FLOAT_MAT4, cmd.pMatrix.clone().invert());
                 });
                 it("MODEL_VIEW_INVERSE", function(){
                     lib.sendShaderVariables(program, cmd, material);

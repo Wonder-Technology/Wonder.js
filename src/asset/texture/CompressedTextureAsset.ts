@@ -26,7 +26,7 @@ module wd{
             return CubemapFaceCompressedTexture.create(this);
         }
 
-        public copyToCubemapFaceTexture(cubemapFaceTexture:ICubemapFaceCompressedTextureAsset){
+        public cloneToCubemapFaceTexture(cubemapFaceTexture:ICubemapFaceCompressedTextureAsset){
             cubemapFaceTexture.type = this.type;
             cubemapFaceTexture.format = this.format;
             cubemapFaceTexture.width = this.width;

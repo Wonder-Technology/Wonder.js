@@ -159,7 +159,7 @@ module wd {
         protected p_type:EEventType = EEventType.MOUSE;
 
 
-        public copy():MouseEvent{
+        public clone():MouseEvent{
             var eventObj = MouseEvent.create(this.event, this.name);
 
             return <MouseEvent>this.copyMember(eventObj, this, ["target", "currentTarget", "isStopPropagation", "phase", "lastX", "lastY"]);

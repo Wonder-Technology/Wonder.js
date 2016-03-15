@@ -114,11 +114,11 @@ module wd{
                 case EVariableSemantic.MODEL_VIEW_PROJECTION:
                     return cmd.mvpMatrix;
                 case EVariableSemantic.MODEL_INVERSE:
-                    return cmd.mMatrix.copy().invert();
+                    return cmd.mMatrix.clone().invert();
                 case EVariableSemantic.VIEW_INVERSE:
-                    return cmd.vMatrix.copy().invert();
+                    return cmd.vMatrix.clone().invert();
                 case EVariableSemantic.PROJECTION_INVERSE:
-                    return cmd.pMatrix.copy().invert();
+                    return cmd.pMatrix.clone().invert();
                 case EVariableSemantic.MODEL_VIEW_INVERSE:
                     return cmd.mMatrix.applyMatrix(cmd.vMatrix, true).invert();
                 case EVariableSemantic.MODEL_VIEW_PROJECTION_INVERSE:

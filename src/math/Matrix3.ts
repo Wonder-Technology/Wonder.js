@@ -183,7 +183,7 @@ module wd {
             return this;
         }
 
-        public copy() {
+        public clone() {
             return Matrix3.create().set(this);
         }
 

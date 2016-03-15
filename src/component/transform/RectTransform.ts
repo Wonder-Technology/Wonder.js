@@ -40,10 +40,10 @@ module wd{
         }
         set position(position:Vector2){
             if (this.p_parent === null) {
-                this._localPosition = position.copy();
+                this._localPosition = position.clone();
             }
             else {
-                this._localPosition = this.p_parent.localPositionAndScaleMatrix.copy().invert().multiplyPoint(position);
+                this._localPosition = this.p_parent.localPositionAndScaleMatrix.clone().invert().multiplyPoint(position);
             }
 
             this.isTranslate = true;
@@ -71,10 +71,10 @@ module wd{
         }
         set scale(scale:Vector2){
             if (this.p_parent === null) {
-                this._localScale = scale.copy();
+                this._localScale = scale.clone();
             }
             else {
-                this._localScale = this.p_parent.localPositionAndScaleMatrix.copy().invert().multiplyVector2(scale);
+                this._localScale = this.p_parent.localPositionAndScaleMatrix.clone().invert().multiplyVector2(scale);
             }
 
             this.isScale = true;
@@ -88,7 +88,7 @@ module wd{
             return this._localPosition;
         }
         set localPosition(position:Vector2){
-            this._localPosition = position.copy();
+            this._localPosition = position.clone();
 
             this.isLocalTranslate = true;
         }
@@ -98,7 +98,7 @@ module wd{
             return this._localScale;
         }
         set localScale(scale:Vector2){
-            this._localScale = scale.copy();
+            this._localScale = scale.clone();
 
             this.isLocalScale = true;
         }
@@ -214,10 +214,10 @@ module wd{
         public syncRotation(){
             if(this.dirtyRotation){
                 if (this.p_parent === null) {
-                    this._rotationMatrix = this._localRotationMatrix.copy();
+                    this._rotationMatrix = this._localRotationMatrix.clone();
                 }
                 else {
-                    this._rotationMatrix = this.p_parent.rotationMatrix.copy().multiply(this._localRotationMatrix);
+                    this._rotationMatrix = this.p_parent.rotationMatrix.clone().multiply(this._localRotationMatrix);
                 }
 
                 this.children.forEach((child:RectTransform) => {
@@ -236,10 +236,10 @@ module wd{
 
             if (this.dirtyPositionAndScale) {
                 if (this.p_parent === null) {
-                    this._localPositionAndScaleMatrix = this._localToParentMatrix.copy();
+                    this._localPositionAndScaleMatrix = this._localToParentMatrix.clone();
                 }
                 else {
-                    this._localPositionAndScaleMatrix = this.p_parent.localPositionAndScaleMatrix.copy().multiply(this._localToParentMatrix);
+                    this._localPositionAndScaleMatrix = this.p_parent.localPositionAndScaleMatrix.clone().multiply(this._localToParentMatrix);
                 }
 
                 this.dirtyLocal = false;

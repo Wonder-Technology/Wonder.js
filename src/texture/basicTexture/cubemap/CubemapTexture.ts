@@ -44,7 +44,7 @@ module wd{
 
             this._createTextures(assets);
 
-            this._getRepresentAsset(assets).copyToCubemapTexture(this);
+            this._getRepresentAsset(assets).cloneToCubemapTexture(this);
 
             if(this._areAllCompressedAsset){
                 this.generateMipmaps = false;

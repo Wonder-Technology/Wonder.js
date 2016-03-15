@@ -15,7 +15,7 @@ module wd{
                 return this._worldToCameraMatrix;
             }
 
-            return this.cameraToWorldMatrix.copy().invert();
+            return this.cameraToWorldMatrix.clone().invert();
         }
         set worldToCameraMatrix(matrix:Matrix4){
             this._worldToCameraMatrix = matrix;
@@ -79,7 +79,7 @@ module wd{
         protected abstract updateProjectionMatrix();
 
         protected getInvViewProjMat(){
-            return this.pMatrix.copy().multiply(this.worldToCameraMatrix).invert();
+            return this.pMatrix.clone().multiply(this.worldToCameraMatrix).invert();
         }
     }
 }

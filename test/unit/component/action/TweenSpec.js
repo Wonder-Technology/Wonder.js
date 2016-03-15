@@ -118,8 +118,8 @@ describe("Tween", function () {
         });
     });
     
-    describe("copy", function(){
-        it("return copy one, copy inner action", function () {
+    describe("clone", function(){
+        it("return clone one, clone inner action", function () {
             var onStart = onStop = onFinish = onUpdate = function(){};
             action.from({x:0}).to({x: [0, 50, 100]}, 100)
                 .easing( wd.Tween.Easing.Linear.None)
@@ -129,7 +129,7 @@ describe("Tween", function () {
                 .onFinish(onFinish)
                 .onUpdate(onUpdate);
 
-            var a = action.copy();
+            var a = action.clone();
 
             expect(a).toBeInstanceOf(Tween);
             expect(a === action).toBeFalsy();

@@ -447,7 +447,7 @@ module wd {
 
                 // Gram-Schmidt orthogonalize
                 ndott = n.dot(t1);
-                temp = n.copy().scale(ndott);
+                temp = n.clone().scale(ndott);
                 temp.sub2(t1, temp).normalize();
 
                 tangents[i * 4] = temp.x;

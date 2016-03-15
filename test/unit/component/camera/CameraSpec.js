@@ -45,7 +45,7 @@ describe("Camera", function() {
             };
             setTransform({
                 localToWorldMatrix: {
-                    copy: sandbox.stub().returns(cameraToWorldMatrix)
+                    clone: sandbox.stub().returns(cameraToWorldMatrix)
                 }
             });
 

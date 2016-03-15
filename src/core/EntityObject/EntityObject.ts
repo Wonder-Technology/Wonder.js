@@ -1,5 +1,5 @@
 module wd {
-    //todo add copy method
+    //todo add clone method
     export abstract class EntityObject extends Entity{
         protected p_scriptList:wdCb.Hash<IScriptBehavior> = wdCb.Hash.create<IScriptBehavior>();
         get scriptList(){

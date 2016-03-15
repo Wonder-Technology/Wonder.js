@@ -52,7 +52,7 @@ module wd {
             }
 
             registerDataList.forEach((registerData:DomEventRegisterData) => {
-                var eventCopy = event.copy();
+                var eventCopy = event.clone();
 
                 registerData.handler(eventCopy, registerData.eventData);
             });

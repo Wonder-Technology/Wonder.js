@@ -102,7 +102,7 @@ describe("LightShaderLib", function () {
         it("send u_normalMatrix", function(){
             lib.sendShaderVariables(program, quadCmd, material);
 
-            expect(program.sendUniformData).toCalledWith("u_normalMatrix", wd.EVariableType.FLOAT_MAT3, mMatrix.copy().invertTo3x3().transpose());
+            expect(program.sendUniformData).toCalledWith("u_normalMatrix", wd.EVariableType.FLOAT_MAT3, mMatrix.clone().invertTo3x3().transpose());
         });
         it("send u_opacity", function(){
             material.opacity = 0.1;

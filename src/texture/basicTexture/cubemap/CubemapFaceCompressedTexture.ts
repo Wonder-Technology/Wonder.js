@@ -12,7 +12,7 @@ module wd{
         public minFilter:ETextureFilterMode = null;
 
         public initWhenCreate(asset:CompressedTextureAsset){
-            asset.copyToCubemapFaceTexture(this);
+            asset.cloneToCubemapFaceTexture(this);
         }
 
         public isSourcePowerOfTwo():boolean{

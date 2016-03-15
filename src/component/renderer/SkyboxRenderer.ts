@@ -10,7 +10,7 @@ module wd {
             renderer.skyboxCommand = this.createDrawCommand(geometry, camera);
         }
 
-        public copy(){
+        public clone(){
             return SkyboxRenderer.create();
         }
     }

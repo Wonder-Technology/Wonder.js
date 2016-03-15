@@ -23,8 +23,8 @@ module wd {
             }
         }
 
-        public copy() {
-            return RepeatForever.create(this._innerAction.copy());
+        public clone() {
+            return RepeatForever.create(this._innerAction.clone());
         }
 
         public start() {

@@ -114,8 +114,8 @@ module wd {
             children.forEach((child:GameObject) => {
                 body.addShape(
                     this._createShape(child.getComponent<Collider>(Collider).shape),
-                    CannonUtils.convertToCannonVector3(child.transform.position.copy().sub(position)),
-                    CannonUtils.convertToCannonQuaternion(child.transform.rotation.copy().sub(rotation))
+                    CannonUtils.convertToCannonVector3(child.transform.position.clone().sub(position)),
+                    CannonUtils.convertToCannonQuaternion(child.transform.rotation.clone().sub(rotation))
                 );
             }, this);
         }

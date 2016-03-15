@@ -40,7 +40,7 @@ module wd {
             //todo optimize(dirty)
             projectionMatrix = this._setClipPlane(mirrorCameraViewMatrix, cameraComponent.pMatrix, plane);
             mirrorCameraComponent = PerspectiveCamera.create();
-            mirrorCameraComponent.worldToCameraMatrix = mirrorCameraViewMatrix.copy();
+            mirrorCameraComponent.worldToCameraMatrix = mirrorCameraViewMatrix.clone();
             mirrorCameraComponent.pMatrix = projectionMatrix;
 
             return GameObject.create().addComponent(wd.BasicCameraController.create(mirrorCameraComponent)).init();
@@ -53,7 +53,7 @@ module wd {
         }
 
         private _setClipPlane(vMatrix:Matrix4, pMatrix:Matrix4, plane:Plane):Matrix4{
-            var projectionMatrix = pMatrix.copy(),
+            var projectionMatrix = pMatrix.clone(),
                 q = Vector4.create(),
                 clipPlane = this._getClipPlaneInCameraSpace(vMatrix, plane),
                 c = Vector4.create();
@@ -76,7 +76,7 @@ module wd {
         private _getClipPlaneInCameraSpace(vMatrix:Matrix4, plane:Plane){
             var clipPlane = Vector4.create(),
                 p = vMatrix.multiplyPoint(this.texture.getPosition()),
-                n = vMatrix.copy().invert().transpose().multiplyPoint(plane.normal).normalize();
+                n = vMatrix.clone().invert().transpose().multiplyPoint(plane.normal).normalize();
 
             clipPlane.set(n.x, n.y, n.z, -p.dot(n));
 
