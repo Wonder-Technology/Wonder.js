@@ -699,6 +699,17 @@ module wd{
             return result;
         }
 
+        //todo test
+        public copyToArray(array: Float32Array, offset: number = 0): Matrix4 {
+            var values = this.values;
+
+            for (let index = 0; index < 16; index++) {
+                array[offset + index] = values[index];
+            }
+
+            return this;
+        }
+
         public getX(){
             return Vector3.create(this.values[0], this.values[1], this.values[2]);
         }

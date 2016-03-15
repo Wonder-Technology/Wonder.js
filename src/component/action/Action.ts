@@ -22,23 +22,18 @@ module wd{
 
         public isFinish:boolean = false;
 
+        public abstract update(elapsedTime:number);
+        public abstract start();
+        public abstract stop();
+        public abstract pause();
+        public abstract resume();
+        public abstract copy();
+        public abstract reverse();
+
         public reset() {
             this.isFinish = false;
         }
 
-        public abstract update(elapsedTime:number);
-
-        public abstract start();
-
-        public abstract stop();
-
-        public abstract pause();
-
-        public abstract resume();
-
-        public abstract copy();
-
-        public abstract reverse();
 
         public addToObject(entityObject:EntityObject){
             super.addToObject(entityObject);

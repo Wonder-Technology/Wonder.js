@@ -1,9 +1,9 @@
 module wd {
     //todo add copy method
     export abstract class EntityObject extends Entity{
-        private _scriptList:wdCb.Hash<IScriptBehavior> = wdCb.Hash.create<IScriptBehavior>();
+        protected p_scriptList:wdCb.Hash<IScriptBehavior> = wdCb.Hash.create<IScriptBehavior>();
         get scriptList(){
-            return this._scriptList;
+            return this.p_scriptList;
         }
 
         private _bubbleParent:EntityObject = null;
@@ -40,6 +40,8 @@ module wd {
         public name:string = null;
         public parent:EntityObject = null;
         public isVisible:boolean = true;
+        public instanceSource:EntityObject = null;
+        public instanceList:wdCb.Collection<GameObject> = null;
 
         public actionManager:ActionManager = ActionManager.create();
 
@@ -247,6 +249,8 @@ module wd {
         }
 
         public removeChild(child:EntityObject):EntityObject {
+            //todo remove child->instances
+
             child.onExit();
 
             this.children.removeChild(child);
@@ -406,7 +410,7 @@ module wd {
                 self = this;
 
             if(args.length === 1){
-                this._scriptList.forEach((script:IScriptBehavior, scriptName:string) => {
+                this.p_scriptList.forEach((script:IScriptBehavior, scriptName:string) => {
                     script[method] && script[method]();
 
                     self._addToScriptExecuteHistory(scriptName, method);
@@ -415,7 +419,7 @@ module wd {
             else if(args.length === 2){
                 let arg:any = args[1];
 
-                this._scriptList.forEach((script:IScriptBehavior, scriptName:string) => {
+                this.p_scriptList.forEach((script:IScriptBehavior, scriptName:string) => {
                     script[method] && script[method](arg);
 
                     self._addToScriptExecuteHistory(scriptName, method);
@@ -425,7 +429,7 @@ module wd {
                 let arg:any = args[1],
                     isExecOnlyOnce:boolean = args[2];
 
-                this._scriptList.forEach((script:IScriptBehavior, scriptName:string) => {
+                this.p_scriptList.forEach((script:IScriptBehavior, scriptName:string) => {
                     if(isExecOnlyOnce && self._isScriptExecuted(scriptName, method)){
                         return;
                     }
@@ -438,7 +442,7 @@ module wd {
         }
 
         public execEventScript(method:string, arg?:any){
-            this._scriptList.forEach((script:IEventScriptBehavior) => {
+            this.p_scriptList.forEach((script:IEventScriptBehavior) => {
                 script[method] && (arg ? script[method](arg) : script[method]());
             });
         }
@@ -447,6 +451,33 @@ module wd {
             return this.components.filter((component:Component) => {
                 return component instanceof _class;
             }).getCount();
+        }
+
+
+
+
+        //todo refactor: move instance to GameObject?
+        //todo extract InstanceGameObject? or extract Instance component?
+
+        @ensure(function(hasInstance){
+            if(hasInstance){
+                assert(!this.isInstance(), Log.info.FUNC_SHOULD_NOT("instance", "contain instance"));
+            }
+        })
+        public hasInstance(){
+            return this.instanceList && this.instanceList.getCount() > 0;
+        }
+
+        public hasInstanceAndHardwareSupport(){
+            return GPUDetector.getInstance().extensionInstancedArrays !== null && this.hasInstance();
+        }
+
+        public isInstance(){
+            return this.instanceSource !== null;
+        }
+
+        public isInstanceAndHardwareSupport(){
+            return GPUDetector.getInstance().extensionInstancedArrays !== null && this.instanceSource !== null;
         }
 
         protected abstract createTransform():Transform;

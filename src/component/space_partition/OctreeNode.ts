@@ -8,11 +8,11 @@ module wd{
             return obj;
         }
 
-        get entityObjectCount(){
-            return this.entityObjectList.getCount();
+        get gameObjectCount(){
+            return this.gameObjectList.getCount();
         }
 
-        public entityObjectList:wdCb.Collection<EntityObject> = wdCb.Collection.create<EntityObject>();
+        public gameObjectList:wdCb.Collection<GameObject> = wdCb.Collection.create<GameObject>();
         public nodeList:wdCb.Collection<OctreeNode> = wdCb.Collection.create<OctreeNode>();
 
         private _depth:number = null;
@@ -35,19 +35,19 @@ module wd{
             this._boundingVectors = BoundingRegionUtils.buildBoundingVectors(this._minPoint, this._maxPoint);
         }
 
-        @require(function(entityObjectList:wdCb.Collection<GameObject>){
-            entityObjectList.forEach((entityObject:GameObject) => {
-                assert(entityObject instanceof GameObject, Log.info.FUNC_SHOULD("add gameObjects"));
+        @require(function(gameObjectList:wdCb.Collection<GameObject>){
+            gameObjectList.forEach((gameObject:GameObject) => {
+                assert(gameObject instanceof GameObject, Log.info.FUNC_SHOULD("add gameObjects"));
             });
         })
-        public addEntityObjects(entityObjectList:wdCb.Collection<GameObject>){
+        public addGameObjects(gameObjectList:wdCb.Collection<GameObject>){
             var self = this,
                 localMin = this._minPoint,
                 localMax = this._maxPoint;
 
-            entityObjectList.forEach((entityObject:GameObject) => {
-                if(entityObject.getComponent<BoxColliderForFirstCheck>(BoxColliderForFirstCheck).shape.isIntersectWithBox(localMin, localMax)){
-                    self.entityObjectList.addChild(entityObject);
+            gameObjectList.forEach((gameObject:GameObject) => {
+                if(gameObject.getComponent<BoxColliderForFirstCheck>(BoxColliderForFirstCheck).shape.isIntersectWithBox(localMin, localMax)){
+                    self.gameObjectList.addChild(gameObject);
                 }
             });
         }
@@ -56,7 +56,7 @@ module wd{
             this.nodeList.addChild(node);
         }
 
-        public findAndAddToRenderList(frustumPlanes:Array<Plane>, selectionList:wdCb.Collection<EntityObject>):void{
+        public findAndAddToRenderList(frustumPlanes:Array<Plane>, selectionList:wdCb.Collection<GameObject>):void{
             if (BoundingRegionUtils.isAABBIntersectFrustum(this._boundingVectors, frustumPlanes)) {
                 if (this._hasNode()) {
                     this.nodeList.forEach((node:OctreeNode) => {
@@ -66,13 +66,11 @@ module wd{
                     return;
                 }
 
-                selectionList.addChildren(this.entityObjectList.filter((entityObject:EntityObject) => {
-                    return entityObject.isVisible;
-                }));
+                selectionList.addChildren(RenderUtils.getGameObjectRenderList(this.gameObjectList));
             }
         }
 
-        public findAndAddToIntersectList(ray:Ray, selectionList:wdCb.Collection<EntityObject>){
+        public findAndAddToIntersectList(ray:Ray, selectionList:wdCb.Collection<GameObject>){
             if (ray.isIntersectWithAABB(this._minPoint, this._maxPoint)) {
                 if (this._hasNode()) {
                     this.nodeList.forEach((node:OctreeNode) => {
@@ -82,11 +80,11 @@ module wd{
                     return;
                 }
 
-                selectionList.addChildren(this.entityObjectList);
+                selectionList.addChildren(this.gameObjectList);
             }
         }
 
-        public findAndAddToCollideList(shape:Shape, selectionList:wdCb.Collection<EntityObject>):void{
+        public findAndAddToCollideList(shape:Shape, selectionList:wdCb.Collection<GameObject>):void{
             if(shape.isIntersectWithBox(this._minPoint, this._maxPoint)){
                 if (this._hasNode()) {
                     this.nodeList.forEach((node:OctreeNode) => {
@@ -96,7 +94,7 @@ module wd{
                     return;
                 }
 
-                selectionList.addChildren(this.entityObjectList);
+                selectionList.addChildren(this.gameObjectList);
             }
         }
 

@@ -267,6 +267,7 @@ module wd {
             return Quaternion.create(this.x, this.y, this.z, this.w);
         }
 
+        //todo remove
         public copy() {
             return Quaternion.create(this.x, this.y, this.z, this.w);
         }

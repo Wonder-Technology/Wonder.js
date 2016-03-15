@@ -12,20 +12,20 @@ module wd {
         private _root:OctreeNode = null;
         private _selectionList:wdCb.Collection<GameObject> = wdCb.Collection.create<GameObject>();
 
-        @require(function(entityObject:GameObject){
-            assert(entityObject instanceof GameObject, Log.info.FUNC_SHOULD("Octree component", "add to GameObject"));
+        @require(function(gameObject:GameObject){
+            assert(gameObject instanceof GameObject, Log.info.FUNC_SHOULD("Octree component", "add to GameObject"));
         })
-        public addToObject(entityObject:GameObject){
-            super.addToObject(entityObject);
+        public addToObject(gameObject:GameObject){
+            super.addToObject(gameObject);
         }
 
         public build() {
-            var entityObjectList:wdCb.Collection<GameObject> = this.getChildren(),
+            var gameObjectList:wdCb.Collection<GameObject> = this.getChildren(),
                 currentDepth = 0,
                 maxNodeCapacity = this.maxNodeCapacity,
                 maxDepth = this.maxDepth;
 
-            var buildTree = (worldMin:Vector3, worldMax:Vector3, currentDepth, entityObjectList:wdCb.Collection<GameObject>, parentNode:OctreeNode) => {
+            var buildTree = (worldMin:Vector3, worldMax:Vector3, currentDepth, gameObjectList:wdCb.Collection<GameObject>, parentNode:OctreeNode) => {
                 var halfExtends = new Vector3((worldMax.x - worldMin.x) / 2, (worldMax.y - worldMin.y) / 2, (worldMax.z - worldMin.z) / 2);
 
                 for (let x = 0; x < 2; x++) {
@@ -35,10 +35,10 @@ module wd {
                                 localMax = worldMin.copy().add(halfExtends.copy().scale(x + 1, y + 1, z + 1)),
                                 node = OctreeNode.create(localMin, localMax, maxNodeCapacity, currentDepth + 1, maxDepth);
 
-                            node.addEntityObjects(entityObjectList);
+                            node.addGameObjects(gameObjectList);
 
-                            if (node.entityObjectCount > maxNodeCapacity && currentDepth < maxDepth) {
-                                buildTree(localMin, localMax, currentDepth + 1, entityObjectList, node);
+                            if (node.gameObjectCount > maxNodeCapacity && currentDepth < maxDepth) {
+                                buildTree(localMin, localMax, currentDepth + 1, gameObjectList, node);
                             }
 
                             parentNode.addNode(node);
@@ -47,13 +47,13 @@ module wd {
                 }
             }
 
-            this._updateColliderForFirstCheck(entityObjectList);
+            this._updateColliderForFirstCheck(gameObjectList);
 
-            var { worldMin, worldMax } = this._getWorldExtends(entityObjectList);
+            var { worldMin, worldMax } = this._getWorldExtends(gameObjectList);
 
             this._root = OctreeNode.create(worldMin, worldMax, maxNodeCapacity, currentDepth + 1, maxDepth);
 
-            buildTree(worldMin, worldMax, currentDepth, entityObjectList, this._root);
+            buildTree(worldMin, worldMax, currentDepth, gameObjectList, this._root);
         }
 
         @require(function(){
@@ -94,38 +94,38 @@ module wd {
             return this._selectionList;
         }
 
-        private _updateColliderForFirstCheck(entityObjectList:wdCb.Collection<GameObject>) {
+        private _updateColliderForFirstCheck(gameObjectList:wdCb.Collection<GameObject>) {
             var collider:BoxColliderForFirstCheck = null,
                 self = this;
 
-            entityObjectList.forEach((entityObject:GameObject) => {
-                if (!entityObject.hasComponent(ColliderForFirstCheck)) {
+            gameObjectList.forEach((gameObject:GameObject) => {
+                if (!gameObject.hasComponent(ColliderForFirstCheck)) {
                     collider = self._createCollider();
 
-                    entityObject.addComponent(collider);
+                    gameObject.addComponent(collider);
 
                     collider.init();
                 }
                 else{
-                    collider = entityObject.getComponent<BoxColliderForFirstCheck>(BoxColliderForFirstCheck);
+                    collider = gameObject.getComponent<BoxColliderForFirstCheck>(BoxColliderForFirstCheck);
                 }
 
                 collider.update(null);
             });
         }
 
-        private _getWorldExtends(entityObjectList:wdCb.Collection<GameObject>):{worldMin:Vector3, worldMax:Vector3} {
+        private _getWorldExtends(gameObjectList:wdCb.Collection<GameObject>):{worldMin:Vector3, worldMax:Vector3} {
             var worldMin = Vector3.create(Number.MAX_VALUE, Number.MAX_VALUE, Number.MAX_VALUE),
             worldMax = Vector3.create(-Number.MAX_VALUE, -Number.MAX_VALUE, -Number.MAX_VALUE),
                 self = this;
 
-            entityObjectList.forEach((entityObject:GameObject) => {
+            gameObjectList.forEach((gameObject:GameObject) => {
                 let min = null,
                     max = null,
                     collider:BoxColliderForFirstCheck = null,
                     shape:AABBShape = null;
 
-                collider = entityObject.getComponent<BoxColliderForFirstCheck>(BoxColliderForFirstCheck);
+                collider = gameObject.getComponent<BoxColliderForFirstCheck>(BoxColliderForFirstCheck);
 
                 shape = <AABBShape>collider.shape;
                 min = shape.getMin();

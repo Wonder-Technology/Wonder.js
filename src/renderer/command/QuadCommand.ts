@@ -72,6 +72,7 @@ module wd {
         public buffers:BufferContainer = null;
         public material:Material = null;
         public animation:Animation = null;
+        public instanceList:wdCb.Collection<GameObject> = null;
 
         private _normalMatrixCache:Matrix4 = null;
         private _mvpMatrixCache:Matrix4 = null;
@@ -85,6 +86,68 @@ module wd {
             this._draw(material);
         }
 
+
+        private _instancesBufferSize = 32 * 16 * 4; // let's start with a maximum of 32 instances
+        //private _worldMatricesInstancesBuffer: WebGLBuffer = null;
+        private _worldMatricesInstancesBuffer: any = null;
+        private _worldMatricesInstancesArray: Float32Array = null;
+
+
+        @ensure(function(isInstance:boolean){
+            if(isInstance){
+                assert(GPUDetector.getInstance().extensionInstancedArrays !== null, Log.info.FUNC_SHOULD("hardware", "support instance"));
+            }
+        })
+        public hasInstance(){
+            return this.instanceList && this.instanceList.getCount() > 0;
+        }
+
+        public createInstancesBuffer(capacity: number): WebGLBuffer {
+            var gl = DeviceManager.getInstance().gl;
+            var buffer = gl.createBuffer();
+
+            //todo refactor: add capacity to InstanceBuffer
+            buffer.capacity = capacity;
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+            gl.bufferData(gl.ARRAY_BUFFER, capacity, gl.DYNAMIC_DRAW);
+            return buffer;
+        }
+
+        @require(function(){
+            assert(GPUDetector.getInstance().extensionInstancedArrays !== null, Log.info.FUNC_SHOULD("hardware", "support instance"));
+        })
+        public updateAndBindInstancesBuffer(instancesBuffer: WebGLBuffer, data: Float32Array, offsetLocations: number[]): void {
+            var gl = DeviceManager.getInstance().gl;
+            var extension = GPUDetector.getInstance().extensionInstancedArrays;
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, instancesBuffer);
+            gl.bufferSubData(gl.ARRAY_BUFFER, 0, data);
+
+            for (var index = 0; index < 4; index++) {
+                var offsetLocation = offsetLocations[index];
+                gl.enableVertexAttribArray(offsetLocation);
+                gl.vertexAttribPointer(offsetLocation, 4, gl.FLOAT, false, 64, index * 16);
+                extension.vertexAttribDivisorANGLE(offsetLocation, 1);
+            }
+        }
+
+        @require(function(){
+            assert(GPUDetector.getInstance().extensionInstancedArrays !== null, Log.info.FUNC_SHOULD("hardware", "support instance"));
+        })
+        public unBindInstancesBuffer(instancesBuffer: WebGLBuffer, offsetLocations: number[]): void {
+            var gl = DeviceManager.getInstance().gl;
+            var extension = GPUDetector.getInstance().extensionInstancedArrays;
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, instancesBuffer);
+            for (var index = 0; index < 4; index++) {
+                var offsetLocation = offsetLocations[index];
+                gl.disableVertexAttribArray(offsetLocation);
+                extension.vertexAttribDivisorANGLE(offsetLocation, 0);
+            }
+        }
+
+
         private _draw(material:Material) {
             var startOffset:number = 0,
                 vertexBuffer:ArrayBuffer = null,
@@ -94,6 +157,91 @@ module wd {
             this._setEffects(material);
 
             indexBuffer = <ElementBuffer>this.buffers.getChild(EBufferDataType.INDICE);
+
+
+            //todo refactor
+
+            if(this.hasInstance()){
+
+                var matricesCount = this.instanceList.getCount() + 1;
+                var bufferSize = matricesCount * 16 * 4;
+
+                while (this._instancesBufferSize < bufferSize) {
+                    this._instancesBufferSize *= 2;
+                }
+
+
+                if (!this._worldMatricesInstancesBuffer || this._worldMatricesInstancesBuffer.capacity < this._instancesBufferSize) {
+                    if (this._worldMatricesInstancesBuffer) {
+                        //engine.deleteInstancesBuffer(this._worldMatricesInstancesBuffer);
+                        gl.deleteBuffer(this._worldMatricesInstancesBuffer);
+                    }
+
+                    this._worldMatricesInstancesBuffer = this.createInstancesBuffer(this._instancesBufferSize);
+                    this._worldMatricesInstancesArray = new Float32Array(this._instancesBufferSize / 4);
+                }
+
+                var offset = 0;
+                //todo remove it, use this.instanceList.getCount()
+                var instancesCount = 0;
+
+                //add self
+                this.mMatrix.copyToArray(this._worldMatricesInstancesArray, offset);
+                offset += 16;
+                instancesCount++;
+
+
+
+                //add instances
+
+                this.instanceList.forEach((instance:GameObject) => {
+                    instance.transform.localToWorldMatrix.copyToArray(this._worldMatricesInstancesArray, offset);
+                    offset += 16;
+                    instancesCount++;
+                });
+
+                var program = this.program;
+
+                var offsetLocation0 = program.getUniformLocation("u_mVec4_0");
+                var offsetLocation1 = program.getUniformLocation("u_mVec4_1");
+                var offsetLocation2 = program.getUniformLocation("u_mVec4_2");
+                var offsetLocation3 = program.getUniformLocation("u_mVec4_3");
+
+                var offsetLocations = [offsetLocation0, offsetLocation1, offsetLocation2, offsetLocation3];
+
+
+                this.updateAndBindInstancesBuffer(this._worldMatricesInstancesBuffer, this._worldMatricesInstancesArray, offsetLocations);
+
+                //this._draw(subMesh, fillMode, instancesCount);
+                var extension = GPUDetector.getInstance().extensionInstancedArrays;
+                if(indexBuffer){
+                    //this.drawElements(indexBuffer);
+                    //var extension = GPUDetector.getInstance().extensionInstancedArrays;
+                    extension.drawElementsInstancedANGLE(gl[this.drawMode], indexBuffer.count, indexBuffer.type, indexBuffer.typeSize * startOffset, instancesCount);
+                }
+                else{
+                    vertexBuffer = this.buffers.getChild(EBufferDataType.VERTICE);
+                    //GlUtils.drawArrays(gl[this.drawMode], startOffset, vertexBuffer.count);
+
+
+
+                    extension.drawArraysInstancedANGLE(gl[this.drawMode], startOffset, vertexBuffer.count, instancesCount);
+                    //return;
+                }
+
+                return;
+            }
+
+
+
+
+            ////todo handle if not hardware support instance
+
+
+
+
+
+
 
             if(indexBuffer){
                 this.drawElements(indexBuffer);

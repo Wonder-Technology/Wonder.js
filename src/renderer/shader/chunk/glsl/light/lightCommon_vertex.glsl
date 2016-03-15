@@ -35,5 +35,5 @@ uniform DirectionLight u_directionLights[DIRECTION_LIGHTS_COUNT];
 
 
 @body
-    v_worldPosition = vec3(u_mMatrix * vec4(a_position, 1.0));
+    v_worldPosition = vec3(mMatrix * vec4(a_position, 1.0));
 @end

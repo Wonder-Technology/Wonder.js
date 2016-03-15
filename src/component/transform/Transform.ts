@@ -75,6 +75,14 @@ module wd{
         protected handleWhenSetTransformState(transformState:ETransformState):void{
         }
 
+        protected copyHelper(newTransform:Transform){
+            newTransform.parent = this.parent;
+
+            //todo set transform state(isTranslate...)?
+
+            return newTransform;
+        }
+
         protected setParent(parent:Transform){
             if(this.p_parent){
                 this.p_parent.removeChild(this);

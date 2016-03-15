@@ -14,6 +14,11 @@ module wd {
 
         protected children:wdCb.Collection<GameObject>;
 
+        public initWhenCreate(){
+            super.initWhenCreate();
+
+            this.instanceList = wdCb.Collection.create<GameObject>();
+        }
 
         public getSpacePartition(){
             return this.getComponent<SpacePartition>(SpacePartition);
@@ -41,16 +46,102 @@ module wd {
             super.update(elapsedTime);
         }
 
+
+
+
+
+
+
+        public copyInstance(name:string):GameObject{
+            //var self = this,
+            var instance = GameObject.create();
+
+            //copy transform
+            //
+            //instance
+            //com,tags,
+            //    children
+
+            instance.transform = this.transform.copy();
+
+            this.components.filter((component:Component) => {
+                return !(component instanceof Transform);
+            })
+            .forEach((component:Component) => {
+                //instance.addComponent(component, true);
+                instance.addComponent(component.copy());
+            });
+
+            //todo copy scriptList?
+
+            instance.p_scriptList = this.scriptList;
+            instance.bubbleParent = this.bubbleParent;
+            instance.parent = this.parent;
+            instance.isVisible = this.isVisible;
+
+            this.getTagList().forEach((tag:string) => {
+                instance.addTag(tag);
+            });
+
+            instance.name = name;
+
+            instance.instanceSource = this;
+
+            this.instanceList.addChild(instance);
+
+
+            //todo consider children
+
+            //this.forEach((child:GameObject) => {
+            //    instance.addChild(child.copyInstance(name));
+            //});
+
+            return instance;
+        }
+
+        public instanceSource:GameObject;
+
+
+
+        //todo removeChild should remove its instances? no?
+
+        public onDispose() {
+            super.onDispose();
+
+            //todo dispose instance
+        }
+
+        //public init(){
+        //    if(this.hasInstance()){
+        //        this.instanceList.forEach((instance:any) => {
+        //            instance.init();
+        //        })
+        //    }
+        //
+        //    return <any>super.init();
+        //}
+
+
+
+
+
         protected createTransform(){
             return ThreeDTransform.create();
         }
 
+        //todo optimize:add cache
         protected getRenderList(){
             if(this.hasComponent(Octree)){
+                //todo change
                 return this.getSpacePartition().getRenderListByFrustumCull();
             }
 
-            return this.children;
+            //todo refactor with GameObjectScene->getRenderList
+            //return this.children.filter((child:GameObject) => {
+            //    //todo test isVisible
+            //    return child.isVisible && !child.isInstanceAndHardwareSupport();
+            //});
+            return RenderUtils.getGameObjectRenderList(this.children);
         }
 
         protected afterInitChildren(){

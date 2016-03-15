@@ -20,10 +20,12 @@ module wd {
         public maxAnisotropy:number = null;
         public extensionCompressedTextureS3TC:any = null;
         public extensionTextureFilterAnisotropic:any = null;
+        public extensionInstancedArrays:any = null;
         public precision:number = null;
 
         private _isDetected:boolean = false;
 
+        //todo test
         public detect() {
             this._isDetected = true;
 
@@ -33,8 +35,8 @@ module wd {
 
         private _detectExtension() {
             this.extensionCompressedTextureS3TC = this._getExtension("WEBGL_compressed_texture_s3tc");
-
             this.extensionTextureFilterAnisotropic = this._getExtension("EXT_texture_filter_anisotropic");
+            this.extensionInstancedArrays = this._getExtension("ANGLE_instanced_arrays");
         }
 
         private _detectCapabilty() {
@@ -60,6 +62,9 @@ module wd {
                     break;
                 case "WEBGL_compressed_texture_pvrtc":
                     extension = gl.getExtension("WEBGL_compressed_texture_pvrtc") || gl.getExtension("WEBKIT_WEBGL_compressed_texture_pvrtc");
+                    break;
+                case "ANGLE_instanced_arrays":
+                    extension = gl.getExtension("ANGLE_instanced_arrays");
                     break;
                 default:
                     extension = gl.getExtension(name);

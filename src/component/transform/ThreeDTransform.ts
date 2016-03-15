@@ -389,6 +389,18 @@ module wd{
             return this;
         }
 
+        public copy(){
+            var transform = ThreeDTransform.create();
+
+            this.copyHelper(transform);
+
+            transform.position = this.position.copy();
+            transform.rotation = this.rotation.copy();
+            transform.scale = this.scale.copy();
+
+            return transform;
+        }
+
         protected clearCache(){
             this._localToWorldMatrixCache = null;
             this._positionCache = null;

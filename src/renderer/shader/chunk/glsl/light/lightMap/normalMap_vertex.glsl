@@ -45,7 +45,7 @@ varying vec3 v_directionLightDir[DIRECTION_LIGHTS_COUNT];
     //v_tangentPos  = TBN * v_position;
 
 
-    vec3 tangentPosition = TBN * vec3(u_mMatrix * vec4(a_position, 1.0));
+    vec3 tangentPosition = TBN * vec3(mMatrix * vec4(a_position, 1.0));
 
     v_normalMapTexCoord = a_texCoord;
 

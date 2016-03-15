@@ -10,6 +10,15 @@ module wd{
         public dispose(){
         }
 
+        //todo to be abstract method
+        //public abstract copy():Component;
+        @virtual
+        public copy():Component{
+            Log.error(true, Log.info.FUNC_SHOULD("implement copy method"));
+
+            return null;
+        }
+
         public get transform():Transform {
             if(!this.entityObject) {
                 return null;

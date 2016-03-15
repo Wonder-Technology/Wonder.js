@@ -288,6 +288,7 @@
 /// <reference path="utils/JudgeUtils"/>
 /// <reference path="utils/MathUtils"/>
 /// <reference path="utils/CoordinateUtils"/>
+/// <reference path="utils/RenderUtils"/>
 /// <reference path="utils/Log"/>
 /// <reference path="utils/time/TimeController"/>
 /// <reference path="utils/time/DirectorTimeController"/>
@@ -399,6 +400,11 @@
 /// <reference path="renderer/shader/lib/light/shadowMap/NoShadowMapShaderLib"/>
 
 /// <reference path="renderer/shader/lib/utils/CustomShaderLibUtils"/>
+
+
+/// <reference path="renderer/shader/lib/instance/InstanceShaderLib"/>
+/// <reference path="renderer/shader/lib/instance/NoInstanceShaderLib"/>
+
 
 /// <reference path="renderer/shader/chunk/ShaderChunk"/>
 

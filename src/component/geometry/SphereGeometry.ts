@@ -12,6 +12,22 @@ module wd{
         public sphereDrawMode:ESphereDrawMode = ESphereDrawMode.LATITUDELONGTITUDE;
         public segments:number = 20;
 
+        public copy(){
+            var result = SphereGeometry.create();
+
+            result.radius = this.radius;
+            result.sphereDrawMode = this.sphereDrawMode;
+            result.segments = this.segments;
+
+            //todo fix
+            var material = LightMaterial.create();
+            material.color = Color.create("rgb(0, 255, 255)");
+
+            result.material = material;
+
+            return result;
+        }
+
         protected computeData(){
             var radius = this.radius,
                 sphereDrawMode = this.sphereDrawMode,

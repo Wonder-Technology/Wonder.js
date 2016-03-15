@@ -43,6 +43,13 @@ module wd {
 
         private _addTopShaderLib(){
             this.shader.addLib(CommonShaderLib.create());
+            //todo refactor: add get entityObject(){}
+            if(this.geometry.entityObject.hasInstanceAndHardwareSupport()){
+                this.shader.addLib(InstanceShaderLib.create());
+            }
+            else{
+                this.shader.addLib(NoInstanceShaderLib.create());
+            }
 
             if(this._hasAnimation()){
                 this.shader.addLib(MorphCommonShaderLib.create());
