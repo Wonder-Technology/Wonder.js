@@ -9,25 +9,27 @@
 </head>
 <body>
 
+<canvas id="renderCanvas" touch-action="none"></canvas>
 <script>
     window.onload = function () {
         wd.Main.setConfig({
+//            canvasId: "#renderCanvas",
             //open contract check
-            isTest: true,
+//            isTest: true,
             screenSize: wd.EScreenSize.FULL
         }).init();
 
         //simulate that hardware not support instance
-        wd.GPUDetector.getInstance().extensionInstancedArrays = null;
-
+//        wd.GPUDetector.getInstance().extensionInstancedArrays = null;
+//
         initSample();
 
         function initSample() {
             var director = wd.Director.getInstance();
 
             director.scene.addChildren(createModels());
-            director.scene.addChild(createAmbientLight());
-            director.scene.addChild(createDirectionLight());
+//            director.scene.addChild(createAmbientLight());
+//            director.scene.addChild(createDirectionLight());
             director.scene.addChild(createCamera());
 
             director.start();
@@ -37,7 +39,7 @@
             var arr = [],
                     model = createSphere(),
                     range = 100,
-                    count = 2;
+                    count = 50;
 
             arr.push(model);
 
@@ -58,7 +60,7 @@
 
 
         function createSphere(){
-            var material = wd.LightMaterial.create();
+            var material = wd.BasicMaterial.create();
             material.color = wd.Color.create("rgb(0, 255, 255)");
 //            material.specularColor = wd.Color.create("#ffdd99");
 //            material.shininess = 16;

@@ -15,7 +15,7 @@ module wd{
         public setShaderDefinition(quadCmd:QuadCommand, material:EngineMaterial){
             super.setShaderDefinition(quadCmd, material);
 
-            this.addUniformVariable(["u_mVec4_0", "u_mVec4_1","u_mVec4_2","u_mVec4_3"]);
+            this.addAttributeVariable(["a_mVec4_0", "a_mVec4_1","a_mVec4_2","a_mVec4_3"]);
         }
     }
 }

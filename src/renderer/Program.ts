@@ -21,7 +21,8 @@ module wd{
          here judge return pos of "getChild", so it don't need to invoke "hasChild"
          */
         public getUniformLocation(name:string){
-            var pos = null;
+            var pos = null,
+                gl = DeviceManager.getInstance().gl;
 
             if(!this._shader.dirty){
                 pos = this._getUniformLocationCache.getChild(name);
@@ -31,9 +32,32 @@ module wd{
                 }
             }
 
-            pos = DeviceManager.getInstance().gl.getUniformLocation(this._program, name);
+            pos = gl.getUniformLocation(this._program, name);
 
             this._getUniformLocationCache.addChild(name, pos);
+
+            return pos;
+        }
+
+        /*!
+         not use @cache,
+         here judge return pos of "getChild", so it don't need to invoke "hasChild"
+         */
+        public getAttribLocation(name:string){
+            var pos = null,
+                gl = DeviceManager.getInstance().gl;
+
+            if(!this._shader.dirty){
+                pos = this._getAttribLocationCache.getChild(name);
+
+                if(pos !== void 0){
+                    return pos;
+                }
+            }
+
+            pos = gl.getAttribLocation(this._program, name);
+
+            this._getAttribLocationCache.addChild(name, pos);
 
             return pos;
         }
@@ -114,7 +138,7 @@ module wd{
                 pos:number = null,
                 buffer:ArrayBuffer = null;
 
-            pos = this._getAttribLocation(gl, name);
+            pos = this.getAttribLocation(name);
 
             if (pos === -1 || data === null) {
                 return;
@@ -264,28 +288,6 @@ module wd{
             }
 
             return [data.x, data.y, data.z, data.w];
-        }
-
-        /*!
-         not use @cache,
-         here judge return pos of "getChild", so it don't need to invoke "hasChild"
-         */
-        private _getAttribLocation(gl:any, name:string){
-            var pos = null;
-
-            if(!this._shader.dirty){
-                pos = this._getAttribLocationCache.getChild(name);
-
-                if(pos !== void 0){
-                    return pos;
-                }
-            }
-
-            pos = gl.getAttribLocation(this._program, name);
-
-            this._getAttribLocationCache.addChild(name, pos);
-
-            return pos;
         }
 
         @require(function(gl:any, pos:string, data:Array<number>){

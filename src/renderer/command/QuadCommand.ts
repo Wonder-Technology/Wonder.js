@@ -125,6 +125,7 @@ module wd {
             gl.bufferSubData(gl.ARRAY_BUFFER, 0, data);
 
             for (var index = 0; index < 4; index++) {
+                //for (var index = 0; index < 1; index++) {
                 var offsetLocation = offsetLocations[index];
                 gl.enableVertexAttribArray(offsetLocation);
                 gl.vertexAttribPointer(offsetLocation, 4, gl.FLOAT, false, 64, index * 16);
@@ -162,6 +163,7 @@ module wd {
             //todo refactor
 
             if(this.hasInstance()){
+                //todo optimize: add cache
 
                 var matricesCount = this.instanceList.getCount() + 1;
                 var bufferSize = matricesCount * 16 * 4;
@@ -202,41 +204,43 @@ module wd {
 
                 var program = this.program;
 
-                var offsetLocation0 = program.getUniformLocation("u_mVec4_0");
-                var offsetLocation1 = program.getUniformLocation("u_mVec4_1");
-                var offsetLocation2 = program.getUniformLocation("u_mVec4_2");
-                var offsetLocation3 = program.getUniformLocation("u_mVec4_3");
+                var offsetLocation0 = program.getAttribLocation("a_mVec4_0");
+                var offsetLocation1 = program.getAttribLocation("a_mVec4_1");
+                var offsetLocation2 = program.getAttribLocation("a_mVec4_2");
+                var offsetLocation3 = program.getAttribLocation("a_mVec4_3");
 
                 var offsetLocations = [offsetLocation0, offsetLocation1, offsetLocation2, offsetLocation3];
 
+                //return;
 
                 this.updateAndBindInstancesBuffer(this._worldMatricesInstancesBuffer, this._worldMatricesInstancesArray, offsetLocations);
 
-                //this._draw(subMesh, fillMode, instancesCount);
                 var extension = GPUDetector.getInstance().extensionInstancedArrays;
                 if(indexBuffer){
-                    //this.drawElements(indexBuffer);
-                    //var extension = GPUDetector.getInstance().extensionInstancedArrays;
+
+
+                    //gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer.buffer);
+
+
                     extension.drawElementsInstancedANGLE(gl[this.drawMode], indexBuffer.count, indexBuffer.type, indexBuffer.typeSize * startOffset, instancesCount);
                 }
                 else{
                     vertexBuffer = this.buffers.getChild(EBufferDataType.VERTICE);
-                    //GlUtils.drawArrays(gl[this.drawMode], startOffset, vertexBuffer.count);
 
-
+                    //todo test
 
                     extension.drawArraysInstancedANGLE(gl[this.drawMode], startOffset, vertexBuffer.count, instancesCount);
                     //return;
                 }
 
+
+                this.unBindInstancesBuffer(this._worldMatricesInstancesBuffer, offsetLocations);
+
+
+
+
                 return;
             }
-
-
-
-
-            ////todo handle if not hardware support instance
-
 
 
 
