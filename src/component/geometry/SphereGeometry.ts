@@ -20,7 +20,7 @@ module wd{
             result.segments = this.segments;
 
             //todo fix
-            var material = LightMaterial.create();
+            var material = BasicMaterial.create();
             material.color = Color.create("rgb(0, 255, 255)");
 
             result.material = material;

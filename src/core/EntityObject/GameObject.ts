@@ -90,11 +90,9 @@ module wd {
             this.instanceList.addChild(instance);
 
 
-            //todo consider children
-
-            //this.forEach((child:GameObject) => {
-            //    instance.addChild(child.copyInstance(name));
-            //});
+            this.forEach((child:GameObject) => {
+                instance.addChild(child.copyInstance(`${name}_${child.name}`));
+            });
 
             return instance;
         }

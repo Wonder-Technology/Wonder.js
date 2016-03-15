@@ -38,8 +38,8 @@
         function createModels(){
             var arr = [],
                     model = createSphere(),
-                    range = 100,
-                    count = 50;
+                    range = 300,
+                    count = 2;
 
             arr.push(model);
 
@@ -47,9 +47,8 @@
                 var instance = model.copyInstance("index" + String(i));
 
                 instance.transform.position = wd.Vector3.create(range / 2 - Math.random() * range, range / 2 - Math.random() * range, range / 2 - Math.random() * range);
-                //todo rotate,scale
-//                boxInstance.transform.rotation = wd.Quaternion.create(i, i, i, 1);
-//                boxInstance.transform.scale = wd.Vector3.create(i, i, i);
+                instance.transform.rotate(90 * Math.random(), 90 * Math.random(),0);
+                instance.transform.scale = wd.Vector3.create(3,3,3);
 
                 arr.push(instance);
             }
@@ -72,6 +71,43 @@
             geometry.material = material;
             geometry.radius = 5;
             geometry.segment = 5;
+
+
+            var gameObject = wd.GameObject.create();
+
+            gameObject.addComponent(wd.MeshRenderer.create());
+            gameObject.addComponent(geometry);
+
+
+            var boxChild1 = createBox();
+            var boxChild2 = createBox();
+            var boxChild21 = createBox();
+
+            gameObject.addChild(boxChild1);
+            gameObject.addChild(boxChild2);
+
+            boxChild2.addChild(boxChild21);
+
+
+            boxChild1.transform.translate(20, 0, 0);
+            boxChild2.transform.translate(-20, 0, 0);
+
+            boxChild21.transform.translate(-25, 0, 0);
+
+
+            return gameObject;
+        }
+
+        function createBox(){
+            var material = wd.BasicMaterial.create();
+            material.color = wd.Color.create("rgb(255, 0, 255)");
+
+
+            var geometry = wd.BoxGeometry.create();
+            geometry.material = material;
+            geometry.width = 5;
+            geometry.height = 5;
+            geometry.depth = 5;
 
 
             var gameObject = wd.GameObject.create();
@@ -117,7 +153,7 @@
             cameraComponent.far = 1000;
 
             var controller = wd.ArcballCameraController.create(cameraComponent);
-            controller.distance = 200;
+            controller.distance = 500;
 
             camera.addComponent(controller);
 

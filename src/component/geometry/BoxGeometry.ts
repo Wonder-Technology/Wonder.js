@@ -13,6 +13,25 @@ module wd{
         public heightSegments:number = 1;
         public depthSegments:number = 1;
 
+        public copy(){
+            var result = BoxGeometry.create();
+
+            result.width = this.width;
+            result.height = this.height;
+            result.depth = this.depth;
+            result.widthSegments = this.widthSegments;
+            result.heightSegments = this.heightSegments;
+            result.depthSegments = this.depthSegments;
+
+            //todo fix
+            var material = BasicMaterial.create();
+            material.color = Color.create("rgb(0, 255, 255)");
+
+            result.material = material;
+
+            return result;
+        }
+
         protected computeData(){
             var width = this.width,
                 height = this.height,
