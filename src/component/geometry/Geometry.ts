@@ -29,6 +29,7 @@ module wd{
             assert(geometryData.vertices.length > 0, Log.info.FUNC_MUST("vertices.count", "> 0"));
             assert(geometryData.faces.length * 3 === geometryData.indices.length, Log.info.FUNC_SHOULD("faces.count", `be ${geometryData.indices.length / 3}, but actual is ${geometryData.faces.length}`));
         })
+        @execOnlyOnce("_isInit")
         public init(){
             var geometryData = null,
                 {

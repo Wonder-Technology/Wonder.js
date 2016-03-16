@@ -68,8 +68,13 @@ module wd {
                 return !(component instanceof Transform);
             })
             .forEach((component:Component) => {
-                //instance.addComponent(component, true);
-                instance.addComponent(component.clone());
+                //todo any more component should be share, not clone(to save the memory)?
+                if(component instanceof Geometry){
+                    instance.addComponent(component, true);
+                }
+                else{
+                    instance.addComponent(component.clone());
+                }
             });
 
             //todo clone scriptList?

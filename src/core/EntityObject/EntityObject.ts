@@ -293,7 +293,7 @@ module wd {
             return result;
         }
 
-        public addComponent(component:Component){
+        public addComponent(component:Component, isShareComponent:boolean = false){
             if(this.hasComponent(component)){
                 Log.assert(false, "the component already exist");
                 return this;
@@ -311,7 +311,7 @@ module wd {
 
             this.components.addChild(component);
 
-            component.addToObject(this);
+            component.addToObject(this, isShareComponent);
 
             this.componentDirty = true;
 

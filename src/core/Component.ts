@@ -27,7 +27,12 @@ module wd{
             return this.entityObject.transform;
         }
 
-        public addToObject(entityObject:EntityObject){
+        //todo test
+        public addToObject(entityObject:EntityObject, isShareComponent:boolean = false){
+            if(isShareComponent){
+                return;
+            }
+
             if(this.entityObject) {
                 this.entityObject.removeComponent(this);
             }
