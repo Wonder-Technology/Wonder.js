@@ -12,7 +12,7 @@ var testTool = (function () {
                 TRIANGLES: "TRIANGLES",
 
                 ARRAY_BUFFER:"ARRAY_BUFFER",
-
+                ELEMENT_ARRAY_BUFFER:"ELEMENT_ARRAY_BUFFER",
 
 
                 getParameter: sandbox.stub(),
