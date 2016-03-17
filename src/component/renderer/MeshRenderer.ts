@@ -35,7 +35,8 @@ module wd {
 
             quadCmd.drawMode = geometry.drawMode;
 
-            quadCmd.mMatrix = this.entityObject.transform.localToWorldMatrix;
+            //todo ?
+            //quadCmd.mMatrix = this.entityObject.transform.localToWorldMatrix;
 
             quadCmd.vMatrix = cameraComponent.worldToCameraMatrix;
             quadCmd.pMatrix = cameraComponent.pMatrix;
@@ -57,8 +58,11 @@ module wd {
             }
         })
         private _setInstance(quadCmd:QuadCommand, target:GameObject){
-            if(target.hasInstanceAndHardwareSupport()){
-                quadCmd.instanceList = target.instanceList;
+            if(target.hasToRenderInstance()){
+                quadCmd.instanceList = target.toRenderInstanceList;
+            }
+            else{
+                quadCmd.mMatrix = this.entityObject.transform.localToWorldMatrix;
             }
         }
     }

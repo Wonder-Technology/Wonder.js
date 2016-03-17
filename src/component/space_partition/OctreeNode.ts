@@ -66,7 +66,7 @@ module wd{
                     return;
                 }
 
-                selectionList.addChildren(RenderUtils.getGameObjectRenderList(this.gameObjectList));
+                selectionList.addChildren(RenderUtils.getGameObjectRenderListForOctree(this.gameObjectList));
             }
         }
 

@@ -17,7 +17,16 @@ module wd {
         public initWhenCreate(){
             super.initWhenCreate();
 
+            //todo refactor?
             this.instanceList = wdCb.Collection.create<GameObject>();
+            this.toRenderInstanceList = wdCb.Collection.create<GameObject>();
+        }
+
+        //todo refactor?
+        public onEndLoop() {
+            super.onEndLoop();
+
+            this.toRenderInstanceList.removeAllChildren();
         }
 
         public getSpacePartition(){
@@ -52,6 +61,11 @@ module wd {
 
 
 
+        @require(function(){
+            assert(!this.getSpacePartition(), Log.info.FUNC_NOT_SUPPORT("space partition", "instance"));
+            assert(!this.getComponent(LODController), Log.info.FUNC_NOT_SUPPORT("lod", "instance"));
+            //todo more?
+        })
         public cloneInstance(name:string):GameObject{
             //var self = this,
             var instance = GameObject.create();
@@ -62,20 +76,17 @@ module wd {
             //com,tags,
             //    children
 
-            instance.transform = this.transform.clone();
 
-            this.components.filter((component:Component) => {
-                return !(component instanceof Transform);
-            })
-            .forEach((component:Component) => {
-                //todo any more component should be share, not clone(to save the memory)?
-                if(component instanceof Geometry){
-                    instance.addComponent(component, true);
-                }
-                else{
-                    instance.addComponent(component.clone());
-                }
-            });
+            this.components
+                .forEach((component:Component) => {
+                    //todo any more component should be share, not clone(to save the memory)?
+                    if(component instanceof Geometry){
+                        instance.addComponent(component, true);
+                    }
+                    else{
+                        instance.addComponent(component.clone());
+                    }
+                });
 
             //todo clone scriptList?
 
@@ -135,8 +146,55 @@ module wd {
         //todo optimize:add cache
         protected getRenderList(){
             if(this.hasComponent(Octree)){
-                //todo change
-                return this.getSpacePartition().getRenderListByFrustumCull();
+                //todo optimize
+                let renderList = this.getSpacePartition().getRenderListByFrustumCull();
+
+                var instanceSourceMap = wdCb.Hash.create<GameObject>();
+
+                //var list = wdCb.Collection.create<GameObject>();
+                var map = wdCb.Hash.create<GameObject>();
+
+
+
+
+
+                renderList.forEach((child:GameObject) => {
+                    if(!child.isInstance()){
+                        if(child.hasInstance()) {
+                            child.toRenderInstanceList.addChild(child);
+                        }
+
+                        map.addChild(String(child.uid), child);
+                        return;
+                    }
+
+                    child.instanceSource.toRenderInstanceList.addChild(child);
+                    instanceSourceMap.addChild(String(child.instanceSource.uid), child.instanceSource);
+                });
+
+
+
+                var self = this;
+
+                instanceSourceMap.forEach((instanceSource:GameObject, uid:string) => {
+                    map.addChild(uid, instanceSource);
+
+
+
+                    if(instanceSource.hasToRenderInstance()){
+                        self._setToRenderInstanceListOfChildren(instanceSource);
+                    }
+                });
+
+
+                //instanceSourceMap
+                //.forEach((child:GameObject) => {
+                //    if(child.hasToRenderInstance()){
+                //
+                //    }
+                //});
+
+                //return map.toCollection();
             }
 
             //todo refactor with GameObjectScene->getRenderList
@@ -146,6 +204,25 @@ module wd {
             //});
             return RenderUtils.getGameObjectRenderList(this.children);
         }
+
+        private _setToRenderInstanceListOfChildren(instanceSource:GameObject){
+            var set = (instanceSource:GameObject) => {
+                instanceSource.forEach((childSource:GameObject, index:number) => {
+                    instanceSource.toRenderInstanceList.forEach((toRenderInstance:GameObject) => {
+                        childSource.toRenderInstanceList.addChild(toRenderInstance.getChild(index));
+
+                    });
+                    set(childSource);
+                })
+            }
+
+            set(instanceSource);
+        }
+
+
+
+
+
 
         protected afterInitChildren(){
             if(this.hasComponent(Octree)){

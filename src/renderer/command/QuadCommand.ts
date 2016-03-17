@@ -165,7 +165,10 @@ module wd {
             if(this.hasInstance()){
                 //todo optimize: add cache
 
-                var matricesCount = this.instanceList.getCount() + 1;
+                ////todo @ensure matricesCount >= 1
+                //var matricesCount = this.instanceList.getCount() + 1;
+                //todo @ensure matricesCount >= 1
+                var matricesCount = this.instanceList.getCount();
                 var bufferSize = matricesCount * 16 * 4;
 
                 while (this._instancesBufferSize < bufferSize) {
@@ -188,9 +191,9 @@ module wd {
                 var instancesCount = 0;
 
                 //add self
-                this.mMatrix.cloneToArray(this._worldMatricesInstancesArray, offset);
-                offset += 16;
-                instancesCount++;
+                //this.mMatrix.cloneToArray(this._worldMatricesInstancesArray, offset);
+                //offset += 16;
+                //instancesCount++;
 
 
 
@@ -215,22 +218,17 @@ module wd {
 
                 this.updateAndBindInstancesBuffer(this._worldMatricesInstancesBuffer, this._worldMatricesInstancesArray, offsetLocations);
 
-                var extension = GPUDetector.getInstance().extensionInstancedArrays;
+                //var extension = GPUDetector.getInstance().extensionInstancedArrays;
                 if(indexBuffer){
+                    this.drawElementsInstancedANGLE(indexBuffer, instancesCount);
 
-
-                    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer.buffer);
-
-
-                    extension.drawElementsInstancedANGLE(gl[this.drawMode], indexBuffer.count, indexBuffer.type, indexBuffer.typeSize * startOffset, instancesCount);
                 }
                 else{
                     vertexBuffer = this.buffers.getChild(EBufferDataType.VERTICE);
 
                     //todo test
 
-                    extension.drawArraysInstancedANGLE(gl[this.drawMode], startOffset, vertexBuffer.count, instancesCount);
-                    //return;
+                    GlUtils.drawArraysInstancedANGLE(gl[this.drawMode], startOffset, vertexBuffer.count, instancesCount);
                 }
 
 

@@ -13,6 +13,8 @@ var testTool = (function () {
 
                 ARRAY_BUFFER:"ARRAY_BUFFER",
 
+
+
                 getParameter: sandbox.stub(),
                 getExtension: sandbox.stub(),
                 viewport: sandbox.stub(),
@@ -64,6 +66,7 @@ var testTool = (function () {
                 createShader: sandbox.stub(),
                 bindBuffer: sandbox.stub(),
                 bufferData: sandbox.stub(),
+                bufferSubData: sandbox.stub(),
                 createBuffer: sandbox.stub().returns({}),
                 enable: sandbox.stub(),
                 disable: sandbox.stub(),

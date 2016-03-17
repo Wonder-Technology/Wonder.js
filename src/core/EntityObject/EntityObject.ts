@@ -14,23 +14,6 @@ module wd {
             this._bubbleParent = bubbleParent;
         }
 
-        private _transform:Transform = null;
-        get transform(){
-            return this._transform;
-        }
-        set transform(transform:Transform){
-            if(!transform) {
-                return
-            }
-
-            if(this._transform){
-                this.removeComponent(this._transform);
-            }
-
-            this.addComponent(transform);
-            this._transform = transform;
-        }
-
         set componentDirty(componentDirty:boolean){
             if(componentDirty === true){
                 this.clearCache();
@@ -40,8 +23,13 @@ module wd {
         public name:string = null;
         public parent:EntityObject = null;
         public isVisible:boolean = true;
+
+        //todo move away?
         public instanceSource:EntityObject = null;
-        public instanceList:wdCb.Collection<GameObject> = null;
+        public instanceList:wdCb.Collection<any> = null;
+        public toRenderInstanceList:wdCb.Collection<any> = null;
+
+        public transform:Transform = null;
 
         public actionManager:ActionManager = ActionManager.create();
 
@@ -60,7 +48,7 @@ module wd {
 
         @virtual
         public initWhenCreate(){
-            this.transform = this.createTransform();
+            this.addComponent(this.createTransform());
         }
 
         public init() {
@@ -173,7 +161,7 @@ module wd {
             return this;
         }
 
-        public forEach(func:(entityObject:EntityObject) => void){
+        public forEach(func:(entityObject:EntityObject, index:number) => void){
             this.children.forEach(func);
 
             return this;
@@ -294,6 +282,10 @@ module wd {
         }
 
         public addComponent(component:Component, isShareComponent:boolean = false){
+            if(!component){
+                return;
+            }
+
             if(this.hasComponent(component)){
                 Log.assert(false, "the component already exist");
                 return this;
@@ -307,6 +299,9 @@ module wd {
             }
             else if(component instanceof Collider){
                 this._collider = component;
+            }
+            else if(component instanceof Transform){
+                this.transform = component;
             }
 
             this.components.addChild(component);
@@ -368,9 +363,18 @@ module wd {
             rendererComponent = this._getRendererComponent();
 
             if(rendererComponent && geometry){
+                if(this.hasToRenderInstance()){
+                    DebugStatistics.count.renderGameObjects += this.toRenderInstanceList.getCount();
+                }
+                else{
+                    DebugStatistics.count.renderGameObjects++;
+                }
+                //if(this.isInstance()){
+                //    //this.instanceSource.toRenderInstanceList.addChild(this);
+                //}
+                //else{
                 rendererComponent.render(renderer, geometry,  camera);
-
-                DebugStatistics.count.renderGameObjects++;
+                //}
             }
 
             this.getRenderList().forEach((child:EntityObject) => {
@@ -471,6 +475,14 @@ module wd {
         public hasInstanceAndHardwareSupport(){
             return GPUDetector.getInstance().extensionInstancedArrays !== null && this.hasInstance();
         }
+
+        public hasToRenderInstance(){
+            return this.toRenderInstanceList && this.toRenderInstanceList.getCount() > 0;
+        }
+
+        //public hasToRenderInstanceAndHardwareSupport(){
+        //    return GPUDetector.getInstance().extensionInstancedArrays !== null && this.hasToRenderInstance();
+        //}
 
         public isInstance(){
             return this.instanceSource !== null;

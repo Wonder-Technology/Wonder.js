@@ -29,7 +29,7 @@
 
         //'test/unit/**',
 
-        'test/unit/**/instanceSpec*',
+        'test/unit/**/instance*',
 
         //'test/unit/**/water*',
 
