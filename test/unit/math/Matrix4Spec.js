@@ -297,6 +297,22 @@ describe("Matrix4", function(){
        });
     });
 
+    describe("cloneToArray", function(){
+        beforeEach(function(){
+            
+        });
+        
+        it("clone value to array", function(){
+            var arr = new Float32Array(17);
+            arr[0] = 100;
+
+            matrix.cloneToArray(arr, 1);
+
+            expect(testTool.getValues(arr)).toEqual(
+                [ 100, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 ]
+            )
+        });
+    });
 
     describe("integration test", function(){
         it("平移->缩放->绕y轴旋转坐标", function(){

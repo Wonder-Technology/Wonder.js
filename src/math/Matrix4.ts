@@ -699,7 +699,6 @@ module wd{
             return result;
         }
 
-        //todo test
         public cloneToArray(array: Float32Array, offset: number = 0): Matrix4 {
             var values = this.values;
 
