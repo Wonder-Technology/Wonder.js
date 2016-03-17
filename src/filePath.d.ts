@@ -316,6 +316,7 @@
 /// <reference path="renderer/buffer/Buffer"/>
 /// <reference path="renderer/buffer/ElementBuffer"/>
 /// <reference path="renderer/buffer/ArrayBuffer"/>
+/// <reference path="renderer/buffer/InstanceBuffer"/>
 /// <reference path="renderer/buffer/BufferDataTable"/>
 /// <reference path="renderer/Program"/>
 /// <reference path="renderer/command/RenderCommand"/>

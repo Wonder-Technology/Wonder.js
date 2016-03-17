@@ -165,6 +165,10 @@ describe("QuadCommand", function() {
             material.shader = shader;
 
 
+
+            sandbox.stub(material, "init");
+
+
             geometry = wd.BoxGeometry.create();
             geometry.width = 5;
             geometry.height = 5;
@@ -318,6 +322,7 @@ describe("QuadCommand", function() {
                     expect(deviceManager.setBlendFuncSeparate).not.toCalled();
                 });
             });
+
             it("if geometry has no index buffer, then drawArray", function(){
                 var result = addCommand(true);
 

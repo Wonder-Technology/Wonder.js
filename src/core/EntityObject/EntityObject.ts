@@ -28,6 +28,7 @@ module wd {
         public instanceSource:EntityObject = null;
         public instanceList:wdCb.Collection<any> = null;
         public toRenderInstanceList:wdCb.Collection<any> = null;
+        public instanceBuffer:InstanceBuffer = null;
 
         public transform:Transform = null;
 

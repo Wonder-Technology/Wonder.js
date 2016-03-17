@@ -68,6 +68,7 @@ var testTool = (function () {
                 bufferData: sandbox.stub(),
                 bufferSubData: sandbox.stub(),
                 createBuffer: sandbox.stub().returns({}),
+                deleteBuffer: sandbox.stub(),
                 enable: sandbox.stub(),
                 disable: sandbox.stub(),
                 polygonOffset: sandbox.stub(),

@@ -60,6 +60,13 @@ module wd {
         private _setInstance(quadCmd:QuadCommand, target:GameObject){
             if(target.hasToRenderInstance()){
                 quadCmd.instanceList = target.toRenderInstanceList;
+
+                //todo refactor
+                if(!target.instanceBuffer){
+                    target.instanceBuffer = InstanceBuffer.create();
+                }
+
+                quadCmd.instanceBuffer = target.instanceBuffer;
             }
             else{
                 quadCmd.mMatrix = this.entityObject.transform.localToWorldMatrix;
