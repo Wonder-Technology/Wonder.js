@@ -38,8 +38,11 @@ module wd {
             this.context = this.getContext();
         }
 
-        public addToObject(entityObject:UIObject){
-            super.addToObject(entityObject);
+        @require(function(entityObject:UIObject){
+            assert(entityObject instanceof UIObject, Log.info.FUNC_SHOULD("Octree component", "add to GameObject"));
+        })
+        public addToObject(entityObject:UIObject, isShareComponent:boolean = false){
+            super.addToObject(entityObject, isShareComponent);
 
             entityObject.uiManager.addChild(this);
         }

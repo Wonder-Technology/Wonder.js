@@ -35,8 +35,8 @@ module wd{
         }
 
 
-        public addToObject(entityObject:EntityObject){
-            super.addToObject(entityObject);
+        public addToObject(entityObject:EntityObject, isShareComponent:boolean = false){
+            super.addToObject(entityObject, isShareComponent);
 
             this.target = entityObject;
             entityObject.actionManager.addChild(this);

@@ -101,6 +101,11 @@
 /// <reference path="component/lod/LODController"/>
 /// <reference path="component/lod/ELODGeometryState"/>
 
+
+/// <reference path="component/instance/Instance"/>
+/// <reference path="component/instance/SourceInstance"/>
+/// <reference path="component/instance/ObjectInstance"/>
+
 /// <reference path="component/event/detector/EventTriggerDetector"/>
 /// <reference path="component/event/detector/UIEventTriggerDetector"/>
 /// <reference path="component/event/detector/RayCasterEventTriggerDetector"/>

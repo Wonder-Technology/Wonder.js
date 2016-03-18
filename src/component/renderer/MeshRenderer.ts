@@ -31,12 +31,14 @@ module wd {
 
             quadCmd.buffers = geometry.buffers;
 
+            //todo remove shader lib data(animation, vMatrix,pMatrix,z)(only remain render data), get it from this.entityObject(QuadCommand add entityObject getter)
+
+
+
+
             quadCmd.animation = target.getComponent<Animation>(Animation);
 
             quadCmd.drawMode = geometry.drawMode;
-
-            //todo ?
-            //quadCmd.mMatrix = this.entityObject.transform.localToWorldMatrix;
 
             quadCmd.vMatrix = cameraComponent.worldToCameraMatrix;
             quadCmd.pMatrix = cameraComponent.pMatrix;
@@ -58,16 +60,21 @@ module wd {
             }
         })
         private _setInstance(quadCmd:QuadCommand, target:GameObject){
-            if(target.hasToRenderInstance()){
-                quadCmd.instanceList = target.toRenderInstanceList;
-
-                //todo refactor
-                if(!target.instanceBuffer){
-                    target.instanceBuffer = InstanceBuffer.create();
-                }
-
-                quadCmd.instanceBuffer = target.instanceBuffer;
+            if(target.hasComponent(Instance) && GPUDetector.getInstance().extensionInstancedArrays !== null){
+                let instanceComponent:Instance = target.getComponent<Instance>(Instance);
+                quadCmd.instanceList = instanceComponent.toRenderInstanceListForDraw;
+                quadCmd.instanceBuffer = instanceComponent.instanceBuffer;
             }
+            //if(target.hasToRenderInstance()){
+            //    quadCmd.instanceList = target.toRenderInstanceList;
+            //
+            //    //todo refactor
+            //    if(!target.instanceBuffer){
+            //        target.instanceBuffer = InstanceBuffer.create();
+            //    }
+            //
+            //    quadCmd.instanceBuffer = target.instanceBuffer;
+            //}
             else{
                 quadCmd.mMatrix = this.entityObject.transform.localToWorldMatrix;
             }

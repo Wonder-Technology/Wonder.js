@@ -18,6 +18,9 @@ describe("instance with spacePartition", function() {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
+
+        wd.DebugStatistics.clear();
+
         device = wd.DeviceManager.getInstance();
         sandbox.stub(device, "gl", testTool.buildFakeGl(sandbox));
         gl = device.gl;
@@ -29,15 +32,13 @@ describe("instance with spacePartition", function() {
     afterEach(function () {
         sandbox.restore();
         testTool.clearInstance();
-
-        wd.DebugStatistics.clear();
     });
 
 
     it("if the instanceSource obj is culled but it's instance isn't culled, it's instance should be rendered", function () {
         var octreeContainer = createOctree();
 
-        var box1 = prepareTool.createBox(1);
+        var box1 = instanceTool.createBox();
         box1.name = "box1";
         var child1 = prepareTool.createSphere(1)
         var child11 = prepareTool.createSphere(1)
@@ -52,8 +53,8 @@ describe("instance with spacePartition", function() {
 
         instanceArr.push(box1);
 
-        var boxInstance1 = box1.cloneInstance(String(0));
-        var boxInstance2 = box1.cloneInstance(String(1));
+        var boxInstance1 = instanceTool.cloneInstance(box1, "0");
+        var boxInstance2 = instanceTool.cloneInstance(box1, "1");
 
         instanceArr.push(boxInstance1, boxInstance2);
 

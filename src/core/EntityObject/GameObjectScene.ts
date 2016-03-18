@@ -138,22 +138,6 @@ module wd {
         //todo test
         protected getRenderList(){
             return RenderUtils.getGameObjectRenderList(this.children);
-            //var list = wdCb.Collection.create<GameObject>(),
-            //    isHardwareSupportInstance = GPUDetector.getInstance().extensionInstancedArrays !== null;
-            //
-            //this.children.forEach((child:GameObject) => {
-            //    if(!child.isVisible){
-            //        return;
-            //    }
-            //
-            //    list.addChild(child);
-            //
-            //    if(child.hasInstance() && !isHardwareSupportInstance){
-            //        list.addChildren(child.instanceList);
-            //    }
-            //});
-            //
-            //return list;
         }
 
         protected createTransform(){

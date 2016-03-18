@@ -39,10 +39,13 @@
                     range = 300,
                     count = 2;
 
+            var sourceInstanceComponent = wd.SourceInstance.create();
+            model.addComponent(sourceInstanceComponent);
+
             arr.push(model);
 
             for(var i = 0; i < count; i++){
-                var instance = model.cloneInstance("index" + String(i));
+                var instance = sourceInstanceComponent.cloneInstance("index" + String(i));
 
                 instance.transform.position = wd.Vector3.create(range / 2 - Math.random() * range, range / 2 - Math.random() * range, range / 2 - Math.random() * range);
                 instance.transform.rotate(90 * Math.random(), 90 * Math.random(),0);

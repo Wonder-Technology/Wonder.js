@@ -40,10 +40,10 @@ module wd{
                 });
         }
 
-        public addToObject(entityObject:EntityObject){
+        public addToObject(entityObject:EntityObject, isShareComponent:boolean = false){
             var self = this;
 
-            super.addToObject(entityObject);
+            super.addToObject(entityObject, isShareComponent);
 
             this.createLoadJsStream()
                 .subscribe((data:ScriptFileData) => {

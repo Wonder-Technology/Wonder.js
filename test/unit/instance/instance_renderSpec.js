@@ -13,13 +13,14 @@ describe("use instance to batch draw calls", function(){
     var camera;
 
     function prepareWithoutChild(){
-        box1 = prepareTool.createBox(1);
+        box1 = instanceTool.createBox();
+
         var instanceArr = [];
 
         instanceArr.push(box1);
 
-        box1Instance1 = box1.cloneInstance(String(0));
-        box1Instance2 = box1.cloneInstance(String(1));
+        box1Instance1 = instanceTool.cloneInstance(box1, "0");
+        box1Instance2 = instanceTool.cloneInstance(box1, "1");
 
         instanceArr.push(box1Instance1, box1Instance2);
 
@@ -37,7 +38,8 @@ describe("use instance to batch draw calls", function(){
     }
 
     function prepareWithChild(){
-        box1 = prepareTool.createBox(1);
+        box1 = instanceTool.createBox(1);
+
         box1Child1 = prepareTool.createSphere(1)
 
         box1.addChild(box1Child1);
@@ -46,8 +48,8 @@ describe("use instance to batch draw calls", function(){
 
         instanceArr.push(box1);
 
-        box1Instance1 = box1.cloneInstance(String(0));
-        box1Instance2 = box1.cloneInstance(String(1));
+        box1Instance1 = instanceTool.cloneInstance(box1, "0");
+        box1Instance2 = instanceTool.cloneInstance(box1, "1");
 
         instanceArr.push(box1Instance1, box1Instance2);
 
@@ -64,7 +66,11 @@ describe("use instance to batch draw calls", function(){
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
+
+        wd.DebugStatistics.clear();
+
         device = wd.DeviceManager.getInstance();
+
         sandbox.stub(device, "gl", testTool.buildFakeGl(sandbox));
         gl = device.gl;
 
@@ -79,9 +85,8 @@ describe("use instance to batch draw calls", function(){
     });
     afterEach(function () {
         sandbox.restore();
-        testTool.clearInstance();
 
-        wd.DebugStatistics.clear();
+        testTool.clearInstance();
     });
 
     describe("test render count", function(){
@@ -342,9 +347,9 @@ describe("use instance to batch draw calls", function(){
         });
 
         it("test instance name", function () {
-            box1 = prepareTool.createBox(1);
+            box1 = instanceTool.createBox();
 
-            box1Instance1 = box1.cloneInstance("instance1");
+            box1Instance1 = instanceTool.cloneInstance(box1, "instance1");
 
             expect(box1Instance1.name).toEqual("instance1");
         });
@@ -353,28 +358,39 @@ describe("use instance to batch draw calls", function(){
             beforeEach(function(){
             });
 
-            it("share source->geometry", function(){
-                box1 = prepareTool.createBox(1);
+            it("instance should add ObjectInstance component instead, not add source->SourceInstance", function () {
+                box1 = instanceTool.createBox();
 
-                box1Instance1 = box1.cloneInstance();
+                box1Instance1 = instanceTool.cloneInstance(box1, "instance1");
+
+                expect(box1Instance1.hasComponent(wd.ObjectInstance)).toBeTruthy();
+                expect(box1Instance1.hasComponent(wd.SourceInstance)).toBeFalsy();
+            });
+
+            it("share source->geometry", function(){
+                box1 = instanceTool.createBox();
+
+                box1Instance1 = instanceTool.cloneInstance(box1, "instance1");
 
                 expect(box1Instance1.getComponent(wd.Geometry) === box1.getComponent(wd.Geometry)).toBeTruthy();
             });
-            it("clone other components", function () {
-                box1 = prepareTool.createBox(1);
+            it("clone other components(except SourceInstance)", function () {
+                box1 = instanceTool.createBox();
                 box1.forEachComponent(function(component){
                     sandbox.spy(component, "clone");
                 });
 
-                box1Instance1 = box1.cloneInstance();
+                box1Instance1 = instanceTool.cloneInstance(box1, "instance1");
 
                 expect(box1Instance1.getComponent(wd.MeshRenderer) === box1.getComponent(wd.MeshRenderer)).toBeFalsy();
                 box1.forEachComponent(function(component){
-                    if(!(component instanceof wd.Geometry)){
+                    if(!(component instanceof wd.Geometry) && !(component instanceof wd.SourceInstance)){
                         expect(component.clone).toCalledOnce();
                     }
                 });
             });
+
+            //todo test init shared component once
 
             //todo test more(clone scriptList? ...)
         });

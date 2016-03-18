@@ -44,7 +44,7 @@ module wd {
         private _addTopShaderLib(){
             this.shader.addLib(CommonShaderLib.create());
             //todo refactor: add get entityObject(){}
-            if(this.geometry.entityObject.hasInstanceAndHardwareSupport()){
+            if(this.geometry.entityObject.hasComponent(SourceInstance)){
                 this.shader.addLib(InstanceShaderLib.create());
             }
             else{

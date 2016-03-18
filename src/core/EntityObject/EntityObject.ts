@@ -24,12 +24,6 @@ module wd {
         public parent:EntityObject = null;
         public isVisible:boolean = true;
 
-        //todo move away?
-        public instanceSource:EntityObject = null;
-        public instanceList:wdCb.Collection<any> = null;
-        public toRenderInstanceList:wdCb.Collection<any> = null;
-        public instanceBuffer:InstanceBuffer = null;
-
         public transform:Transform = null;
 
         public actionManager:ActionManager = ActionManager.create();
@@ -364,18 +358,7 @@ module wd {
             rendererComponent = this._getRendererComponent();
 
             if(rendererComponent && geometry){
-                if(this.hasToRenderInstance()){
-                    DebugStatistics.count.renderGameObjects += this.toRenderInstanceList.getCount();
-                }
-                else{
-                    DebugStatistics.count.renderGameObjects++;
-                }
-                //if(this.isInstance()){
-                //    //this.instanceSource.toRenderInstanceList.addChild(this);
-                //}
-                //else{
                 rendererComponent.render(renderer, geometry,  camera);
-                //}
             }
 
             this.getRenderList().forEach((child:EntityObject) => {
@@ -456,41 +439,6 @@ module wd {
             return this.components.filter((component:Component) => {
                 return component instanceof _class;
             }).getCount();
-        }
-
-
-
-
-        //todo refactor: move instance to GameObject?
-        //todo extract InstanceGameObject? or extract Instance component?
-
-        @ensure(function(hasInstance){
-            if(hasInstance){
-                assert(!this.isInstance(), Log.info.FUNC_SHOULD_NOT("instance", "contain instance"));
-            }
-        })
-        public hasInstance(){
-            return this.instanceList && this.instanceList.getCount() > 0;
-        }
-
-        public hasInstanceAndHardwareSupport(){
-            return GPUDetector.getInstance().extensionInstancedArrays !== null && this.hasInstance();
-        }
-
-        public hasToRenderInstance(){
-            return this.toRenderInstanceList && this.toRenderInstanceList.getCount() > 0;
-        }
-
-        //public hasToRenderInstanceAndHardwareSupport(){
-        //    return GPUDetector.getInstance().extensionInstancedArrays !== null && this.hasToRenderInstance();
-        //}
-
-        public isInstance(){
-            return this.instanceSource !== null;
-        }
-
-        public isInstanceAndHardwareSupport(){
-            return GPUDetector.getInstance().extensionInstancedArrays !== null && this.instanceSource !== null;
         }
 
         protected abstract createTransform():Transform;

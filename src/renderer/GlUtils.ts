@@ -2,12 +2,14 @@ module wd {
     export class GlUtils {
         public static drawElements(mode:any, count:number, type:any, offset:number){
             DebugStatistics.count.drawCalls++;
+            DebugStatistics.count.renderGameObjects ++;
 
             this._getGl().drawElements(mode, count, type, offset);
         }
 
         public static drawArrays(mode:any, first:number, count:number) {
             DebugStatistics.count.drawCalls++;
+            DebugStatistics.count.renderGameObjects ++;
 
             this._getGl().drawArrays(mode, first, count);
         }
@@ -16,16 +18,18 @@ module wd {
             var extension = GPUDetector.getInstance().extensionInstancedArrays;
 
             DebugStatistics.count.drawCalls++;
+            DebugStatistics.count.renderGameObjects += instancesCount;
 
             extension.drawElementsInstancedANGLE(mode, count, type, offset, instancesCount);
         }
 
-        public static drawArraysInstancedANGLE(mode:any, first:number, count:number, instancesCount:number){
+        public static drawArraysInstancedANGLE(mode:any, startOffset:number, count:number, instancesCount:number){
             var extension = GPUDetector.getInstance().extensionInstancedArrays;
 
             DebugStatistics.count.drawCalls++;
+            DebugStatistics.count.renderGameObjects += instancesCount;
 
-            extension.drawArraysInstancedANGLE(mode, first, count, instancesCount);
+            extension.drawArraysInstancedANGLE(mode, startOffset, count, instancesCount);
         }
 
         private static _getGl() {

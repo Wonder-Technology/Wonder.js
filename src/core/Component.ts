@@ -28,6 +28,7 @@ module wd{
         }
 
         //todo test
+        @virtual
         public addToObject(entityObject:EntityObject, isShareComponent:boolean = false){
             if(isShareComponent){
                 return;
@@ -39,6 +40,7 @@ module wd{
             this.entityObject = entityObject;
         }
 
+        @virtual
         public removeFromObject(entityObject:EntityObject){
             this.entityObject = null;
         }

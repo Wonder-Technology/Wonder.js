@@ -12,11 +12,11 @@ module wd {
         private _root:OctreeNode = null;
         private _selectionList:wdCb.Collection<GameObject> = wdCb.Collection.create<GameObject>();
 
-        @require(function(gameObject:GameObject){
-            assert(gameObject instanceof GameObject, Log.info.FUNC_SHOULD("Octree component", "add to GameObject"));
+        @require(function(entityObject:GameObject){
+            assert(entityObject instanceof GameObject, Log.info.FUNC_SHOULD("Octree component", "add to GameObject"));
         })
-        public addToObject(gameObject:GameObject){
-            super.addToObject(gameObject);
+        public addToObject(entityObject:GameObject, isShareComponent:boolean = false){
+            super.addToObject(entityObject, isShareComponent);
         }
 
         public build() {

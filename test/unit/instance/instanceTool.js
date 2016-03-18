@@ -1,5 +1,15 @@
 var instanceTool = (function(){
     return {
+        createBox: function(){
+            var box1 = prepareTool.createBox(1);
+            var sourceInstance = wd.SourceInstance.create();
+            box1.addComponent(sourceInstance);
+
+            return box1;
+        },
+        cloneInstance:function(source, name){
+            return source.getComponent(wd.SourceInstance).cloneInstance(name);
+        },
         spyInstanceMethod:function(sandbox, instanceArr, methodName){
             var spy = function(instance){
                 sandbox.spy(instance, methodName);
