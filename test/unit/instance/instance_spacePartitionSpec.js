@@ -19,6 +19,8 @@ describe("instance with spacePartition", function() {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
+        testTool.openContractCheck(sandbox);
+
         wd.DebugStatistics.clear();
 
         device = wd.DeviceManager.getInstance();
@@ -146,6 +148,10 @@ describe("instance with spacePartition", function() {
         instanceTool.judgeInstanceCount(extensionInstancedArrays, 1, 2);
         instanceTool.judgeInstanceCount(extensionInstancedArrays, 2, 2);
         instanceTool.judgeInstanceCount(extensionInstancedArrays, 3, 2);
+    });
+
+    it("if the instanceSource obj and it's instance isn't culled, they should be rendered", function () {
+        //todo
     });
 });
 

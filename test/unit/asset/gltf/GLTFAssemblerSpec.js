@@ -181,7 +181,8 @@ describe("GLTFAssembler", function () {
                     var matrix;
 
                     function getComponent(data){
-                        return getSingleModel(data).getFirstComponent();
+                        //return getSingleModel(data).getFirstComponent();
+                        return getSingleModel(data).components.getChild(0);
                     }
 
                     beforeEach(function(){

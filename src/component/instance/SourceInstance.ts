@@ -7,6 +7,16 @@ module wd{
         }
 
         private _toRenderInstanceList:wdCb.Collection<any> = wdCb.Collection.create<GameObject>();
+
+        @ensureGetter(function(toRenderInstanceListForDraw){
+            var self = this;
+
+            assert(toRenderInstanceListForDraw.getCount() > 0, Log.info.FUNC_SHOULD("contain one at least"));
+
+            toRenderInstanceListForDraw.forEach((instance:GameObject) => {
+                assert(JudgeUtils.isEqual(instance, self.entityObject) || self.instanceList.hasChild(instance), Log.info.FUNC_SHOULD("render self entityObject or the entityObject in instanceList"));
+            });
+        })
         get toRenderInstanceListForDraw(){
             if(!this.hasToRenderInstance()){
                 return this._toRenderInstanceList.addChild(this.entityObject).addChildren(this.instanceList);
@@ -45,8 +55,10 @@ module wd{
             var entityObject = this.entityObject;
 
             assert(!entityObject.getSpacePartition(), Log.info.FUNC_NOT_SUPPORT("space partition", "instance"));
-            //assert(!entityObject.getComponent(LODController), Log.info.FUNC_NOT_SUPPORT("lod", "instance"));
             //todo more?
+        })
+        @ensure(function(instance:GameObject){
+            assert(instance.hasComponent(ObjectInstance));
         })
         public cloneInstance(name:string):GameObject{
             var clone = (name:string, entityObject:GameObject) => {
@@ -54,6 +66,7 @@ module wd{
                     objectInstanceComponent = ObjectInstance.create(),
                     //todo check exist
                     sourceInstanceList = null;
+
 
                 if(!entityObject.hasComponent(SourceInstance)){
                     let sourceInstanceComponent = SourceInstance.create();
@@ -65,34 +78,11 @@ module wd{
                     sourceInstanceList = entityObject.getComponent<SourceInstance>(SourceInstance).instanceList;
                 }
 
-
-
-
-                //todo @ensure
-
-                entityObject.forEachComponent((component:Component) => {
-                    if(component instanceof SourceInstance){
-                        return;
-                    }
-
-                    //todo any more component should be share, not clone(to save the memory)?
-                    if(component instanceof Geometry){
-                        instance.addComponent(component, true);
-                    }
-                    else{
-                        instance.addComponent(component.clone());
-                    }
-                });
-
-
+                this._addInstanceComponentsFromSource(entityObject, instance);
 
                 objectInstanceComponent.sourceObject = entityObject;
 
-                sourceInstanceList.addChild(instance);
-
-                //todo test
                 instance.addComponent(objectInstanceComponent);
-
 
                 //todo clone scriptList?
 
@@ -106,6 +96,8 @@ module wd{
                 });
 
                 instance.name = name;
+
+                sourceInstanceList.addChild(instance);
 
                 entityObject.forEach((child:GameObject) => {
                     instance.addChild(clone(`${name}_${child.name}`, child));
@@ -148,6 +140,24 @@ module wd{
 
         public forEachToRenderInstanceList(func:(toRenderInstance:GameObject) => void){
             this._toRenderInstanceList.forEach(func);
+        }
+
+        private _addInstanceComponentsFromSource(source:GameObject, instance:GameObject){
+            instance.removeComponent(Transform);
+
+            source.forEachComponent((component:Component) => {
+                if(component instanceof SourceInstance){
+                    return;
+                }
+
+                //todo any more component should be share, not clone(to save the memory)?
+                if(component instanceof Geometry){
+                    instance.addComponent(component, true);
+                }
+                else{
+                    instance.addComponent(component.clone());
+                }
+            });
         }
     }
 }

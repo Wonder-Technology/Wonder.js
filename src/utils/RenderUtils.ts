@@ -1,6 +1,5 @@
 module wd{
     export class RenderUtils{
-        //todo test
         public static getGameObjectRenderList(sourceList:wdCb.Collection<GameObject>){
             return sourceList.filter((child:GameObject, index:number) => {
                 return child.isVisible && (GPUDetector.getInstance().extensionInstancedArrays === null || !child.hasComponent(ObjectInstance));
@@ -13,14 +12,10 @@ module wd{
             });
         }
 
-        //todo refactor
         public static getGameObjectRenderListFromSpacePartition(renderList:wdCb.Collection<GameObject>){
-            var instanceSourceMap = wdCb.Hash.create<GameObject>();
-
-            var map = wdCb.Hash.create<GameObject>();
-
-
-
+            var self = this,
+                instanceSourceMap = wdCb.Hash.create<GameObject>(),
+                map = wdCb.Hash.create<GameObject>();
 
             renderList.forEach((child:GameObject) => {
                 if(!child.hasComponent(Instance)){
@@ -28,28 +23,21 @@ module wd{
                     return;
                 }
 
-
                 if(child.hasComponent(SourceInstance)){
                     let instanceComponent:SourceInstance = child.getComponent<SourceInstance>(SourceInstance);
 
-                    instanceComponent.addToRenderIntance(child);
+                    self._addSelfToToRenderInstanceList(child, instanceComponent);
 
                     map.addChild(String(child.uid), child);
                     return;
                 }
 
-                //todo add ensure ObjectInstance exist
-
                 let sourceObject:GameObject = (child.getComponent<ObjectInstance>(ObjectInstance)).sourceObject,
                     sourceInstanceComponent:SourceInstance = sourceObject.getComponent<SourceInstance>(SourceInstance);
 
-                sourceInstanceComponent.addToRenderIntance(child);
+                self._addSelfToToRenderInstanceList(child, sourceInstanceComponent);
                 instanceSourceMap.addChild(String(sourceObject.uid), sourceObject);
             });
-
-
-
-            var self = this;
 
             instanceSourceMap.forEach((sourceObject:GameObject, uid:string) => {
                 var sourceInstanceComponent:SourceInstance = sourceObject.getComponent<SourceInstance>(SourceInstance);
@@ -67,17 +55,30 @@ module wd{
         }
 
         private static _setToRenderInstanceListOfChildren(sourceObject:GameObject, sourceInstanceComponent:SourceInstance){
-            var set = (sourceObject:GameObject) => {
+            var set = (sourceObject:GameObject, sourceInstanceComponent:SourceInstance) => {
                 sourceObject.forEach((childSource:GameObject, index:number) => {
+                    var childSourceInstance:SourceInstance = childSource.getComponent<SourceInstance>(SourceInstance);
+
                     sourceInstanceComponent.forEachToRenderInstanceList((toRenderInstance:GameObject) => {
-                        childSource.getComponent<SourceInstance>(SourceInstance).addToRenderIntance(toRenderInstance.getChild(index));
+                        childSourceInstance.addToRenderIntance(toRenderInstance.getChild(index));
 
                     });
-                    set(childSource);
+                    set(childSource, childSourceInstance);
                 })
-            }
+            };
 
-            set(sourceObject);
+            set(sourceObject, sourceInstanceComponent);
+        }
+
+        @require(function(self:GameObject, instanceComponent:SourceInstance){
+            assert(instanceComponent instanceof SourceInstance, "only SourceInstance has toRenderList")
+
+            instanceComponent.forEachToRenderInstanceList((instance:GameObject) => {
+                assert(!JudgeUtils.isEqual(instance, self), Log.info.FUNC_SHOULD_NOT("toRenderInstanceList", "contain self"));
+            })
+        })
+        private static _addSelfToToRenderInstanceList(self:GameObject, instanceComponent:SourceInstance){
+            instanceComponent.addToRenderIntance(self);
         }
     }
 }

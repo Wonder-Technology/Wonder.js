@@ -265,11 +265,8 @@ describe("use instance to batch draw calls", function(){
         expect(extensionInstancedArrays.drawArraysInstancedANGLE).toCalledWith(gl.TRIANGLES, 0, 100, 3);
     });
 
-    //todo test instance buffer(bufferData,bindBuffer...) (modelMatricesInstancesArray->size)
-    //todo test cache instance buffer
     describe("test instance buffer", function(){
         beforeEach(function(){
-
         });
 
         it("create buffer one time only when first draw", function(){
@@ -287,51 +284,6 @@ describe("use instance to batch draw calls", function(){
             expect(gl.createBuffer.callCount).toEqual(createCount);
             expect(gl.bufferSubData).toCalledTwice();
         });
-
-        //describe("test buffer size", function(){
-        //    beforeEach(function(){
-        //
-        //    });
-        //
-        //    it("if instance matrixs size not exceed buffer size, not recreate buffer", function(){
-        //        prepareWithoutChild();
-        //
-        //        director.scene.gameObjectScene.render(renderer);
-        //
-        //        //expect(gl.createBuffer).toCalledOnce();
-        //
-        //        var cmd = renderer._commandQueue.getChild(0);
-        //        //cmd.instanceBuffer = wd.InstanceBuffer.create();
-        //        cmd.instanceBuffer.size = 10 * 16 * 4;
-        //
-        //        renderer.render();
-        //
-        //        expect(gl.createBuffer.callCount).toEqual(4);
-        //    });
-        //    it("else, recreate buffer and update the size", function () {
-        //        prepareWithoutChild();
-        //
-        //        director.scene.gameObjectScene.render(renderer);
-        //
-        //        expect(gl.createBuffer).toCalledOnce();
-        //
-        //        var cmd = renderer._commandQueue.getChild(0);
-        //        //cmd.instanceBuffer = wd.InstanceBuffer.create();
-        //        cmd.instanceBuffer.size = 1 * 16 * 4;
-        //
-        //        renderer.render();
-        //
-        //        expect(gl.deleteBuffer).toCalledOnce();
-        //        expect(gl.createBuffer.callCount).toEqual(5);
-        //    });
-        //    it("", function () {
-        //
-        //    });
-        //
-        //});
-
-
-        //todo test delete buffer
     });
 
 
@@ -339,62 +291,6 @@ describe("use instance to batch draw calls", function(){
 
     //todo instance transform can vary independent
 
-
-
-    describe("cloneInstance", function(){
-        beforeEach(function(){
-
-        });
-
-        it("test instance name", function () {
-            box1 = instanceTool.createBox();
-
-            box1Instance1 = instanceTool.cloneInstance(box1, "instance1");
-
-            expect(box1Instance1.name).toEqual("instance1");
-        });
-
-        describe("test instance->components", function(){
-            beforeEach(function(){
-            });
-
-            it("instance should add ObjectInstance component instead, not add source->SourceInstance", function () {
-                box1 = instanceTool.createBox();
-
-                box1Instance1 = instanceTool.cloneInstance(box1, "instance1");
-
-                expect(box1Instance1.hasComponent(wd.ObjectInstance)).toBeTruthy();
-                expect(box1Instance1.hasComponent(wd.SourceInstance)).toBeFalsy();
-            });
-
-            it("share source->geometry", function(){
-                box1 = instanceTool.createBox();
-
-                box1Instance1 = instanceTool.cloneInstance(box1, "instance1");
-
-                expect(box1Instance1.getComponent(wd.Geometry) === box1.getComponent(wd.Geometry)).toBeTruthy();
-            });
-            it("clone other components(except SourceInstance)", function () {
-                box1 = instanceTool.createBox();
-                box1.forEachComponent(function(component){
-                    sandbox.spy(component, "clone");
-                });
-
-                box1Instance1 = instanceTool.cloneInstance(box1, "instance1");
-
-                expect(box1Instance1.getComponent(wd.MeshRenderer) === box1.getComponent(wd.MeshRenderer)).toBeFalsy();
-                box1.forEachComponent(function(component){
-                    if(!(component instanceof wd.Geometry) && !(component instanceof wd.SourceInstance)){
-                        expect(component.clone).toCalledOnce();
-                    }
-                });
-            });
-
-            //todo test init shared component once
-
-            //todo test more(clone scriptList? ...)
-        });
-    });
 
     //todo test procedural texture(ProceduralCommand)?
 

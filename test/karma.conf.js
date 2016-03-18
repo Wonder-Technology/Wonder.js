@@ -29,8 +29,10 @@
 
         //'test/unit/**',
 
-        'test/unit/**/QuadCommand*',
-
+        //'test/unit/**/RenderUtils*',
+        //
+        //'test/unit/**/QuadCommand*',
+        //
         'test/unit/**/instance/*',
 
         //'test/unit/**/instance*',

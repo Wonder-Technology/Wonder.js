@@ -308,6 +308,11 @@ var testTool = (function () {
             it(str, function(){
                 expect().toPass();
             })
+        },
+        getAllComponents:function(entityObject, componentClass){
+            return entityObject.components.filter(function(component){
+                return component instanceof componentClass;
+            });
         }
     }
 }());

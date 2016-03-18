@@ -221,10 +221,6 @@ module wd {
             });
         }
 
-        public getFirstComponent():Component {
-            return this.components.getChild(0);
-        }
-
         public forEachComponent(func:(component:Component) => void){
             this.components.forEach(func);
 
