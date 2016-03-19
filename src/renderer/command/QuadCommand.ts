@@ -72,12 +72,10 @@ module wd {
         public buffers:BufferContainer = null;
         public material:Material = null;
         public animation:Animation = null;
-        public instanceList:wdCb.Collection<GameObject> = null;
-        public instanceBuffer:InstanceBuffer = null;
+        public instanceDrawer:InstanceDrawer = InstanceDrawer.create();
 
         private _normalMatrixCache:Matrix4 = null;
         private _mvpMatrixCache:Matrix4 = null;
-        private _modelMatricesArrayForInstancesray: Float32Array = null;
 
         public execute() {
             var material = this.material;
@@ -88,35 +86,19 @@ module wd {
             this._draw(material);
         }
 
-
-
-
-        @ensure(function(hasInstance:boolean){
-            if(hasInstance){
-                assert(GPUDetector.getInstance().extensionInstancedArrays !== null, Log.info.FUNC_SHOULD("hardware", "support instance"));
-
-                assert(!!this.instanceBuffer, Log.info.FUNC_MUST_DEFINE("instanceBuffer"))
-            }
-        })
-        public hasInstance(){
-            return this.instanceList && this.instanceList.getCount() > 0;
-        }
-
-
         private _draw(material:Material) {
             var vertexBuffer:ArrayBuffer = null,
                 indexBuffer:ElementBuffer = null;
 
             this._setEffects(material);
 
-            indexBuffer = <ElementBuffer>this.buffers.getChild(EBufferDataType.INDICE);
-
-
-            if(this.hasInstance()){
-                this._drawInstance(indexBuffer);
+            if(this.instanceDrawer.hasInstance()){
+                this.instanceDrawer.draw(this.program, this.buffers, this.drawMode);
 
                 return;
             }
+
+            indexBuffer = <ElementBuffer>this.buffers.getChild(EBufferDataType.INDICE);
 
             if(indexBuffer){
                 this.drawElements(indexBuffer);
@@ -158,59 +140,6 @@ module wd {
             var scene:SceneDispatcher = Director.getInstance().scene;
 
             return scene.side ? scene.side : this.material.side;
-        }
-
-        private _drawInstance(indexBuffer:ElementBuffer){
-            this.instanceBuffer.setCapacity(this.instanceList.getCount());
-
-            //todo test
-            this._modelMatricesArrayForInstancesray = new Float32Array(this.instanceBuffer.float32InstanceArraySize);
-
-            var offset = 0;
-            //todo remove it, use this.instanceList.getCount()
-            var instancesCount = 0;
-
-            //add self
-            //this.mMatrix.cloneToArray(this._modelMatricesArrayForInstancesray, offset);
-            //offset += 16;
-            //instancesCount++;
-
-
-
-            //add instances
-
-            this.instanceList.forEach((instance:GameObject) => {
-                instance.transform.localToWorldMatrix.cloneToArray(this._modelMatricesArrayForInstancesray, offset);
-                offset += 16;
-                instancesCount++;
-            });
-
-            var program = this.program;
-
-            var offsetLocation0 = program.getAttribLocation("a_mVec4_0");
-            var offsetLocation1 = program.getAttribLocation("a_mVec4_1");
-            var offsetLocation2 = program.getAttribLocation("a_mVec4_2");
-            var offsetLocation3 = program.getAttribLocation("a_mVec4_3");
-
-            var offsetLocations = [offsetLocation0, offsetLocation1, offsetLocation2, offsetLocation3];
-
-            //return;
-
-            //this.updateAndBindInstancesBuffer(this.instanceBuffer, this._modelMatricesArrayForInstancesray, offsetLocations);
-            this.instanceBuffer.resetData(this._modelMatricesArrayForInstancesray, offsetLocations);
-
-            //var extension = GPUDetector.getInstance().extensionInstancedArrays;
-            if(indexBuffer){
-                this.drawElementsInstancedANGLE(indexBuffer, instancesCount);
-            }
-            else{
-                let vertexBuffer = this.buffers.getChild(EBufferDataType.VERTICE);
-
-                this.drawArraysInstancedANGLE(vertexBuffer, instancesCount);
-
-            }
-
-            this.instanceBuffer.unBind(offsetLocations);
         }
     }
 }

@@ -327,6 +327,7 @@
 /// <reference path="renderer/command/RenderCommand"/>
 /// <reference path="renderer/command/QuadCommand"/>
 /// <reference path="renderer/command/ProceduralCommand"/>
+/// <reference path="renderer/command/InstanceDrawer"/>
 
 /// <reference path="renderer/GlUtils"/>
 

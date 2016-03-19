@@ -338,14 +338,16 @@ describe("QuadCommand", function() {
 
                     sourceInstance.init();
 
-                    result.quadCmd.instanceList = sourceInstance.toRenderInstanceListForDraw;
-                    result.quadCmd.instanceBuffer = sourceInstance.instanceBuffer;
+                    var instanceDrawer = result.quadCmd.instanceDrawer;
+
+                    instanceDrawer.instanceList = sourceInstance.toRenderInstanceListForDraw;
+                    instanceDrawer.instanceBuffer = sourceInstance.instanceBuffer;
 
 
-                    sandbox.stub(result.quadCmd.instanceBuffer, "resetData");
+                    sandbox.stub(instanceDrawer.instanceBuffer, "resetData");
 
    var float32InstanceArraySize = 10;
-                    testTool.stubGetter(sinon, result.quadCmd.instanceBuffer, "float32InstanceArraySize", function(){
+                    testTool.stubGetter(sinon, instanceDrawer.instanceBuffer, "float32InstanceArraySize", function(){
                         return float32InstanceArraySize;
                     });
 
@@ -355,7 +357,7 @@ describe("QuadCommand", function() {
                     result.quadCmd.execute();
 
 
-                    expect(result.quadCmd.instanceBuffer.resetData.firstCall.args[0].length).toEqual(float32InstanceArraySize);
+                    expect(instanceDrawer.instanceBuffer.resetData.firstCall.args[0].length).toEqual(float32InstanceArraySize);
                 });
             });
 

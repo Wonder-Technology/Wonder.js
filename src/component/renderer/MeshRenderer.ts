@@ -60,15 +60,15 @@ module wd {
             }
         })
         @ensure(function(returnVal, quadCmd:QuadCommand, target:GameObject){
-            if(quadCmd.hasInstance()){
+            if(quadCmd.instanceDrawer.hasInstance()){
                 assert(GPUDetector.getInstance().extensionInstancedArrays !== null, Log.info.FUNC_SHOULD("hardware", "support instance"));
             }
         })
         private _setInstance(quadCmd:QuadCommand, target:GameObject){
             if(target.hasComponent(Instance) && GPUDetector.getInstance().extensionInstancedArrays !== null){
                 let instanceComponent:Instance = target.getComponent<Instance>(Instance);
-                quadCmd.instanceList = instanceComponent.toRenderInstanceListForDraw;
-                quadCmd.instanceBuffer = instanceComponent.instanceBuffer;
+                quadCmd.instanceDrawer.instanceList = instanceComponent.toRenderInstanceListForDraw;
+                quadCmd.instanceDrawer.instanceBuffer = instanceComponent.instanceBuffer;
             }
             else{
                 quadCmd.mMatrix = this.entityObject.transform.localToWorldMatrix;
