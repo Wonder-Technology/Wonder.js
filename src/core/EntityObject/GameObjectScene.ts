@@ -135,7 +135,6 @@ module wd {
             super.render(renderer, this.currentCamera);
         }
 
-        //todo test
         protected getRenderList(){
             return RenderUtils.getGameObjectRenderList(this.children);
         }

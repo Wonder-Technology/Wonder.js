@@ -47,6 +47,10 @@ module wd{
             });
         }
 
+        @require(function(){
+            /*! so here not dispose instance in instanceList */
+            this._checkInstanceIsNotOnlyInInstanceListButAlsoInLoop();
+        })
         public dispose(){
             this._endLoopSubscription.dispose();
         }
@@ -136,6 +140,29 @@ module wd{
                     instance.addComponent(component.clone());
                 }
             });
+        }
+
+        private _checkInstanceIsNotOnlyInInstanceListButAlsoInLoop(){
+            var scene:SceneDispatcher = Director.getInstance().scene,
+                isInLoop:boolean = false;
+            var isContainInstance = (instance, gameObject) => {
+                gameObject.forEach((child:GameObject) => {
+                    if(JudgeUtils.isEqual(child, instance)){
+                        isInLoop = true;
+                        return wdCb.$BREAK;
+                    }
+
+                    if(!isInLoop){
+                        isContainInstance(instance, child);
+                    }
+                })
+            };
+
+            this.instanceList.forEach((instance:GameObject) => {
+                isContainInstance(instance, scene);
+            });
+
+            assert(isInLoop, Log.info.FUNC_SHOULD("instance", "not only in instanceList, but also in the main loop"));
         }
     }
 }

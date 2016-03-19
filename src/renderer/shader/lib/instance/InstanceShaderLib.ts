@@ -9,7 +9,6 @@ module wd{
         public type:string = "instance";
 
         public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:EngineMaterial){
-            //todo send?
         }
 
         public setShaderDefinition(quadCmd:QuadCommand, material:EngineMaterial){

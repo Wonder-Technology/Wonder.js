@@ -210,4 +210,22 @@ describe("SourceInstance", function(){
             expect(box1.getComponent(wd.SourceInstance)._toRenderInstanceList.getCount()).toEqual(1);
         });
     });
+
+    describe("not dispose instance in instanceList(because instance is not only in instanceList, but also in the main loop, so it will be disposed in EntityObject->dispose)", function(){
+        it("instance should be dispose one time when dispose", function () {
+            box1Instance1 = instanceTool.cloneInstance(box1, "instance1");
+            sandbox.stub(box1, "dispose");
+            sandbox.stub(box1Instance1, "dispose");
+            var director = wd.Director.getInstance();
+            director.scene.addChildren([box1, box1Instance1]);
+
+            director._init();
+
+            director.scene.dispose();
+
+
+            expect(box1.dispose).toCalledOnce();
+            expect(box1Instance1.dispose).toCalledOnce();
+        });
+    });
 });

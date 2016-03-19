@@ -228,8 +228,6 @@ module wd {
         }
 
         public removeChild(child:EntityObject):EntityObject {
-            //todo remove child->instances
-
             child.onExit();
 
             this.children.removeChild(child);

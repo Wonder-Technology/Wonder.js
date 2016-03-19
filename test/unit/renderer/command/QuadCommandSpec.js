@@ -325,25 +325,31 @@ describe("QuadCommand", function() {
 
             describe("if has instance to draw", function(){
                 var extensionInstancedArrays;
+                var result;
+                var data;
+                var sourceInstance;
+                var instanceDrawer;
 
                 beforeEach(function(){
                     extensionInstancedArrays = instanceTool.prepareExtensionInstancedArrays(sandbox);
-                });
 
-                it("instance array size should be instance buffer->float32InstanceArraySize", function () {
-                    var result = addCommand();
+                    result = addCommand();
 
-                    var data = instanceTool.createInstance();
-                    var sourceInstance = data.source.getComponent(wd.SourceInstance);
+                    data = instanceTool.createInstance();
+
+                    sourceInstance = data.source.getComponent(wd.SourceInstance);
 
                     sourceInstance.init();
 
-                    var instanceDrawer = result.quadCmd.instanceDrawer;
+                    instanceDrawer = result.quadCmd.instanceDrawer;
 
                     instanceDrawer.instanceList = sourceInstance.toRenderInstanceListForDraw;
                     instanceDrawer.instanceBuffer = sourceInstance.instanceBuffer;
 
+                    sandbox.stub(result.quadCmd.program, "getAttribLocation");
+                });
 
+                it("instance array size should be instance buffer->float32InstanceArraySize", function () {
                     sandbox.stub(instanceDrawer.instanceBuffer, "resetData");
 
    var float32InstanceArraySize = 10;
@@ -351,7 +357,7 @@ describe("QuadCommand", function() {
                         return float32InstanceArraySize;
                     });
 
-                    sandbox.stub(result.quadCmd.program, "getAttribLocation");
+                    //sandbox.stub(result.quadCmd.program, "getAttribLocation");
 
 
                     result.quadCmd.execute();
