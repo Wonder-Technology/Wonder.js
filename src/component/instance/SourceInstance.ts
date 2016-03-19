@@ -64,7 +64,6 @@ module wd{
             var clone = (name:string, entityObject:GameObject) => {
                 var instance:GameObject = GameObject.create(),
                     objectInstanceComponent = ObjectInstance.create(),
-                    //todo check exist
                     sourceInstanceList = null;
 
 
@@ -109,29 +108,8 @@ module wd{
             return clone(name, this.entityObject);
         }
 
-        @ensure(function(hasInstance){
-            if(hasInstance){
-                assert(!this.isInstance(), Log.info.FUNC_SHOULD_NOT("instance", "contain instance"));
-            }
-        })
-        public hasInstance(){
-            return this.instanceList && this.instanceList.getCount() > 0;
-        }
-
-        public hasInstanceAndHardwareSupport(){
-            return GPUDetector.getInstance().extensionInstancedArrays !== null && this.hasInstance();
-        }
-
         public hasToRenderInstance(){
             return this._toRenderInstanceList && this._toRenderInstanceList.getCount() > 0;
-        }
-
-        public isInstance(){
-            return false;
-        }
-
-        public isInstanceAndHardwareSupport(){
-            return false;
         }
 
         public addToRenderIntance(instanceObj:GameObject){

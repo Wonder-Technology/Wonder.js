@@ -180,7 +180,7 @@ describe("use instance to batch draw calls", function(){
             box1Instance2.transform.rotation = wd.Quaternion.create(2,2,2,1);
 
             mMatrixPos = 1;
-            gl.getUniformLocation.withArgs("mMatrix").returns(mMatrixPos);
+            gl.getUniformLocation.withArgs(sinon.match.any, "u_mMatrix").returns(mMatrixPos);
 
             var offsetLocation0 = 11,
                 offsetLocation1 = 12,
@@ -237,16 +237,30 @@ describe("use instance to batch draw calls", function(){
         expect(extensionInstancedArrays.drawElementsInstancedANGLE).toCalledAfter(gl.bindBuffer.withArgs(gl.ELEMENT_ARRAY_BUFFER));
     });
 
-    it("if hardware not support instance, draw one instance in one draw call", function(){
-        wd.GPUDetector.getInstance().extensionInstancedArrays = null;
-        prepareWithoutChild();
+    describe("if hardware not support instance", function(){
+        beforeEach(function(){
+            wd.GPUDetector.getInstance().extensionInstancedArrays = null;
+            prepareWithoutChild();
+        });
 
-        director.scene.gameObjectScene.render(renderer);
-        renderer.render();
+        it("draw one instance in one draw call", function () {
 
-        expect(gl.drawElements.callCount).toEqual(3);
-        expect(wd.DebugStatistics.count.drawCalls).toEqual(3);
-        expect(extensionInstancedArrays.drawElementsInstancedANGLE).not.toCalled();
+            director.scene.gameObjectScene.render(renderer);
+            renderer.render();
+
+            expect(gl.drawElements.callCount).toEqual(3);
+            expect(wd.DebugStatistics.count.drawCalls).toEqual(3);
+            expect(extensionInstancedArrays.drawElementsInstancedANGLE).not.toCalled();
+        });
+        it("send mMatrix data to glsl", function () {
+            var mMatrixPos = 1;
+            gl.getUniformLocation.withArgs(sinon.match.any, "u_mMatrix").returns(mMatrixPos);
+
+            director.scene.gameObjectScene.render(renderer);
+            renderer.render();
+
+            expect(gl.uniformMatrix4fv.withArgs(mMatrixPos).callCount).toEqual(3);
+        });
     });
 
     it("if no indices, drawArraysInstancedANGLE", function () {

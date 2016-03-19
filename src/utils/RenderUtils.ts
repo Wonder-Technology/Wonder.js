@@ -44,16 +44,15 @@ module wd{
 
                 map.addChild(uid, sourceObject);
 
-
-
-                if(sourceInstanceComponent.hasToRenderInstance()){
-                    self._setToRenderInstanceListOfChildren(sourceObject, sourceInstanceComponent);
-                }
+                self._setToRenderInstanceListOfChildren(sourceObject, sourceInstanceComponent);
             });
 
             return map.toCollection();
         }
 
+        @require(function(sourceObject:GameObject, sourceInstanceComponent:SourceInstance){
+            assert(sourceInstanceComponent.hasToRenderInstance(), Log.info.FUNC_SHOULD("top SourceInstance", "has to render instance"));
+        })
         private static _setToRenderInstanceListOfChildren(sourceObject:GameObject, sourceInstanceComponent:SourceInstance){
             var set = (sourceObject:GameObject, sourceInstanceComponent:SourceInstance) => {
                 sourceObject.forEach((childSource:GameObject, index:number) => {
@@ -71,7 +70,7 @@ module wd{
         }
 
         @require(function(self:GameObject, instanceComponent:SourceInstance){
-            assert(instanceComponent instanceof SourceInstance, "only SourceInstance has toRenderList")
+            assert(instanceComponent instanceof SourceInstance, Log.info.FUNC_ONLY("SourceInstance has toRenderList"));
 
             instanceComponent.forEachToRenderInstanceList((instance:GameObject) => {
                 assert(!JudgeUtils.isEqual(instance, self), Log.info.FUNC_SHOULD_NOT("toRenderInstanceList", "contain self"));

@@ -54,6 +54,11 @@ module wd {
             return quadCmd;
         }
 
+        @require(function(quadCmd:QuadCommand, target:GameObject){
+            if(target.hasComponent(Instance) && GPUDetector.getInstance().extensionInstancedArrays !== null){
+                assert(target.hasComponent(SourceInstance) && !target.hasComponent(ObjectInstance), Log.info.FUNC_SHOULD("if use instance to batch draw, target", "be SourceInstance"));
+            }
+        })
         @ensure(function(returnVal, quadCmd:QuadCommand, target:GameObject){
             if(quadCmd.hasInstance()){
                 assert(GPUDetector.getInstance().extensionInstancedArrays !== null, Log.info.FUNC_SHOULD("hardware", "support instance"));
@@ -65,16 +70,6 @@ module wd {
                 quadCmd.instanceList = instanceComponent.toRenderInstanceListForDraw;
                 quadCmd.instanceBuffer = instanceComponent.instanceBuffer;
             }
-            //if(target.hasToRenderInstance()){
-            //    quadCmd.instanceList = target.toRenderInstanceList;
-            //
-            //    //todo refactor
-            //    if(!target.instanceBuffer){
-            //        target.instanceBuffer = InstanceBuffer.create();
-            //    }
-            //
-            //    quadCmd.instanceBuffer = target.instanceBuffer;
-            //}
             else{
                 quadCmd.mMatrix = this.entityObject.transform.localToWorldMatrix;
             }

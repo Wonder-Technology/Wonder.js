@@ -29,9 +29,9 @@
 
         //'test/unit/**',
 
-        //'test/unit/**/RenderUtils*',
+        'test/unit/**/RenderUtils*',
         //
-        //'test/unit/**/QuadCommand*',
+        'test/unit/**/QuadCommand*',
         //
         'test/unit/**/instance/*',
 
