@@ -511,7 +511,6 @@
 /// <reference path="texture/renderTargetTexture/CubemapShadowMapTexture"/>
 /// <reference path="texture/renderTargetTexture/DynamicCubemapTexture"/>
 
-/// <reference path="texture/renderTargetTexture/proceduralTexture/ProceduralTexture"/>
 
 
 /// <reference path="texture/basicTexture/BasicTexture"/>
@@ -544,9 +543,9 @@
 
 
 
-
 /// <reference path="lib/procedural_texture_lib/ProceduralShaderLib"/>
 /// <reference path="lib/procedural_texture_lib/ProceduralRenderTargetRenderer"/>
+/// <reference path="lib/procedural_texture_lib/ProceduralTexture"/>
 
 
 /// <reference path="lib/procedural_texture_lib/common/CommonProceduralShaderLib"/>
