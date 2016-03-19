@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>instance->lod</title>
+
+    <script src="../../../dist/wd.innerLib.js" type="text/javascript"></script>
+    <script src="../../../dist/wd.debug.js" type="text/javascript"></script>
+</head>
+<body>
+<script>
+    window.onload = function () {
+        wd.Main.setConfig({
+            isTest: true,
+            screenSize: wd.EScreenSize.FULL
+        }).init();
+
+        wd.DebugConfig.showDebugPanel = true;
+
+        var director = wd.Director.getInstance();
+
+
+
+        director.scene.addChildren(createModels());
+
+        director.scene.addChild(createCamera());
+
+
+        director.start();
+
+
+        function createModels(){
+            var arr = [],
+                    model = createSphere(),
+//                    range = 10000,
+//                    count = 1000;
+            range = 1000,
+                    count = 40;
+
+//            model.transform.translate(100,100,100);
+//            model.transform.scale = wd.Vector3.create(3,3,3);
+
+            var sourceInstanceComponent = wd.SourceInstance.create();
+            model.addComponent(sourceInstanceComponent);
+
+            arr.push(model);
+
+            for(var i = 0; i < count; i++){
+                var instance = sourceInstanceComponent.cloneInstance("index" + String(i));
+
+                instance.transform.position = wd.Vector3.create(range / 2 - Math.random() * range, range / 2 - Math.random() * range, range / 2 - Math.random() * range);
+                instance.transform.rotate(90 * Math.random(), 90 * Math.random(),0);
+                instance.transform.scale = wd.Vector3.create(1,1,1);
+                instance.transform.scale = wd.Vector3.create(3,3,3);
+
+                arr.push(instance);
+            }
+
+//            return model;
+            return arr;
+        }
+
+
+        function createSphere(){
+            var geometry = createSphereGeometry(wd.Color.create("rgb(1.0, 0.0, 0.0)"), 20);
+
+            var gameObject = wd.GameObject.create();
+            gameObject.addComponent(geometry);
+
+            gameObject.addComponent(wd.MeshRenderer.create());
+
+
+
+
+            var geometryLevel1 = createSphereGeometry(wd.Color.create("rgb(0.0, 1.0, 0.0)"), 5);
+            var geometryLevel2 = createSphereGeometry(wd.Color.create("#ffffff"), 2);
+
+            var lod = wd.LOD.create();
+
+            lod.addGeometryLevel(100, geometryLevel1);
+            lod.addGeometryLevel(300, geometryLevel2);
+            lod.addGeometryLevel(500, wd.ELODGeometryState.INVISIBLE);
+
+
+            gameObject.addComponent(lod);
+
+            return gameObject;
+        }
+
+        function createSphereGeometry(color, segments){
+            var material = wd.BasicMaterial.create();
+            material.color = color;
+
+            var geometry = wd.SphereGeometry.create();
+            geometry.material = material;
+            geometry.radius = 1;
+            geometry.segments = segments;
+
+
+            return geometry;
+        }
+
+//        function createBox(){
+//            var material = wd.BasicMaterial.create();
+//            material.color = wd.Color.create("rgb(255, 0, 255)");
+//
+//
+//            var geometry = wd.BoxGeometry.create();
+//            geometry.material = material;
+//            geometry.width = 5;
+//            geometry.height = 5;
+//            geometry.depth = 5;
+//
+//
+//            var gameObject = wd.GameObject.create();
+//
+//            gameObject.addComponent(wd.MeshRenderer.create());
+//            gameObject.addComponent(geometry);
+//
+//
+//            return gameObject;
+//        }
+
+        function createCamera() {
+            var camera = wd.GameObject.create(),
+                    view = wd.Director.getInstance().view,
+                    cameraComponent = wd.PerspectiveCamera.create();
+
+            cameraComponent.fovy = 60;
+            cameraComponent.aspect = view.width / view.height;
+            cameraComponent.near = 0.1;
+            cameraComponent.far = 100000;
+
+            var controller = wd.ArcballCameraController.create(cameraComponent);
+
+            controller.distance = 400;
+            controller.wheelSpeed = 10;
+
+
+            camera.addComponent(controller);
+
+
+            return camera;
+        }
+    };
+</script>
+</body>
+</html>
+

@@ -133,7 +133,7 @@ module wd{
                 }
 
                 //todo any more component should be share, not clone(to save the memory)?
-                if(component instanceof Geometry){
+                if(component instanceof Geometry || component instanceof LOD){
                     instance.addComponent(component, true);
                 }
                 else{

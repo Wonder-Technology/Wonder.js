@@ -29,15 +29,13 @@
 
         //'test/unit/**',
 
-        'test/unit/**/action/*',
+        //'test/unit/**/action/*',
 
         //'test/unit/**/RenderUtils*',
         ////
         //'test/unit/**/QuadCommand*',
         ////
-        //'test/unit/**/instance/*',
-
-        //'test/unit/**/instance*',
+        'test/unit/**/instance/*',
 
         //'test/unit/**/water*',
 
@@ -51,7 +49,7 @@
         //
         //'test/unit/texture/**',
 
-        //'test/unit/**/material/**',
+        'test/unit/**/material/**',
         //
         //'test/unit/**/MapManager*',
 
@@ -75,9 +73,8 @@
         //
         //
 
-        //'test/unit/**/lod/*',
 
-        //'test/unit/**/lod/*',
+        'test/unit/**/lod/*',
 
         //'test/unit/**/CameraController*',
 
@@ -97,11 +94,11 @@
 
         //'test/unit/**/Debug*',
 
-        'test/unit/**/EntityObjectSpec*',
+        //'test/unit/**/EntityObjectSpec*',
 
         //'test/unit/component/physics/**/eventSpec*',
 
-        'test/unit/**/OctreeSpec*',
+        //'test/unit/**/OctreeSpec*',
         //'test/unit/**/CollisionDetectorSpec*',
         //'test/unit/**/BoundingRegionUtilsSpec*',
 

@@ -8,22 +8,29 @@ module wd{
             return geom;
         }
 
+        @cloneAttributeAsBasicType()
         public radius:number = 1;
+        @cloneAttributeAsBasicType()
         public sphereDrawMode:ESphereDrawMode = ESphereDrawMode.LATITUDELONGTITUDE;
+        @cloneAttributeAsBasicType()
         public segments:number = 20;
 
         public clone(){
-            var result = SphereGeometry.create();
+            var result = CloneHelper.clone(this, SphereGeometry.create());
 
-            result.radius = this.radius;
-            result.sphereDrawMode = this.sphereDrawMode;
-            result.segments = this.segments;
 
+            //var result = SphereGeometry.create();
+
+            //result.radius = this.radius;
+            //result.sphereDrawMode = this.sphereDrawMode;
+            //result.segments = this.segments;
+
+            //var material = BasicMaterial.create();
+            //material.color = Color.create("rgb(0, 255, 255)");
+
+            //result.material = material;
             //todo fix
-            var material = BasicMaterial.create();
-            material.color = Color.create("rgb(0, 255, 255)");
-
-            result.material = material;
+            result.material = (<BasicMaterial>this.material).clone();
 
             return result;
         }

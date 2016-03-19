@@ -9,8 +9,13 @@ module wd{
         public entityObject:GameObject;
 
         public activeGeometry:Geometry = null;
+        @cloneAttributeAsCustomType(function(source:LOD, target:LOD){
+            source.levelList.forEach((levelData:LevelData) => {
+                target.addGeometryLevel(levelData.distanceBetweenCameraAndObject, levelData.geometry === ELODGeometryState.INVISIBLE ? ELODGeometryState.INVISIBLE : (<Geometry>levelData.geometry).clone());
+            });
+        })
+        public levelList:wdCb.Collection<LevelData> = wdCb.Collection.create<LevelData>();
 
-        private _levelList:wdCb.Collection<LevelData> = wdCb.Collection.create<LevelData>();
         private _originGeometry:Geometry = null;
 
         public init(){
@@ -20,7 +25,7 @@ module wd{
 
             this._originGeometry = this.activeGeometry;
 
-            this._levelList
+            this.levelList
                 .filter(({geometry, distanceBetweenCameraAndObject}) => {
                     return !!geometry;
                 })
@@ -35,13 +40,13 @@ module wd{
             super.init();
         }
 
-        public addGeometryLevel(distanceBetweenCameraAndObject, levelGeometry:Geometry){
-            this._levelList.addChild({
+        public addGeometryLevel(distanceBetweenCameraAndObject, levelGeometry:Geometry|ELODGeometryState){
+            this.levelList.addChild({
                 distanceBetweenCameraAndObject: distanceBetweenCameraAndObject,
                 geometry:levelGeometry
             });
 
-            this._levelList.sort((levelData1:LevelData, levelData2) => {
+            this.levelList.sort((levelData1:LevelData, levelData2) => {
                 return levelData2.distanceBetweenCameraAndObject - levelData1.distanceBetweenCameraAndObject;
             }, true);
         }
@@ -52,7 +57,7 @@ module wd{
                 useOriginGeometry:boolean = true,
                 activeGeometry:any = null;
 
-            this._levelList.forEach(({geometry, distanceBetweenCameraAndObject}) => {
+            this.levelList.forEach(({geometry, distanceBetweenCameraAndObject}) => {
                 if(currentDistanceBetweenCameraAndObject >= distanceBetweenCameraAndObject){
                     activeGeometry = geometry;
                     useOriginGeometry = false;
@@ -79,10 +84,14 @@ module wd{
                 this.activeGeometry = this._originGeometry;
             }
         }
+
+        public clone(){
+            return CloneHelper.clone(this, LOD.create());
+        }
     }
 
     type LevelData = {
         distanceBetweenCameraAndObject:number;
-        geometry:Geometry;
+        geometry:Geometry|ELODGeometryState;
     }
 }

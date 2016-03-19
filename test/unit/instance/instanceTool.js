@@ -7,6 +7,13 @@ var instanceTool = (function(){
 
             return box1;
         },
+        createSphere: function(){
+            var sphere = prepareTool.createSphere(1);
+            var sourceInstance = wd.SourceInstance.create();
+            sphere.addComponent(sourceInstance);
+
+            return sphere;
+        },
         cloneInstance:function(source, name){
             return source.getComponent(wd.SourceInstance).cloneInstance(name);
         },

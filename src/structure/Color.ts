@@ -17,6 +17,9 @@ module wd{
         }
 
         private _r:number = null;
+        @ensureGetter(function(r:number){
+            assert(r >= 0, Log.info.FUNC_SHOULD("r", `>= 0, but actual is ${r}`));
+        })
         get r(){
             return this._r;
         }
@@ -29,6 +32,9 @@ module wd{
         }
 
         private _g:number = null;
+        @ensureGetter(function(g:number){
+            assert(g >= 0, Log.info.FUNC_SHOULD("g", `>= 0, but actual is ${g}`));
+        })
         get g(){
             return this._g;
         }
@@ -41,6 +47,9 @@ module wd{
         }
 
         private _b:number = null;
+        @ensureGetter(function(b:number){
+            assert(b >= 0, Log.info.FUNC_SHOULD("b", `>= 0, but actual is ${b}`));
+        })
         get b(){
             return this._b;
         }
@@ -53,6 +62,9 @@ module wd{
         }
 
         private _a:number = null;
+        @ensureGetter(function(a:number){
+            assert(a >= 0, Log.info.FUNC_SHOULD("a", `>= 0, but actual is ${a}`));
+        })
         get a(){
             return this._a;
         }
@@ -103,8 +115,13 @@ module wd{
             return this._colorString;
         }
 
+        public clone(){
+            return Color.create(this._colorString);
+        }
+
         private _setColor(colorVal:string) {
-            var REGEX_RGBA = /^rgba\((\d+),\s*(\d+),\s*(\d+),\s*([^\)]+)\)$/i,
+            const REGEX_RGBA = /^rgba\((\d+),\s*(\d+),\s*(\d+),\s*([^\)]+)\)$/i,
+                REGEX_RGBA_2 = /^rgba\((\d+\.\d+),\s*(\d+\.\d+),\s*(\d+\.\d+),\s*([^\)]+)\)$/i,
                 REGEX_RGB = /^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/i,
                 REGEX_RGB_2 = /^rgb\((\d+\.\d+),\s*(\d+\.\d+),\s*(\d+\.\d+)\)$/i,
                 REGEX_NUM = /^\#([0-9a-f]{6})$/i;
@@ -118,6 +135,20 @@ module wd{
                 this.r = this._getColorValue(color, 1) ;
                 this.g = this._getColorValue(color, 2) ;
                 this.b = this._getColorValue(color, 3) ;
+                this.a = Number(color[4]);
+
+                return this;
+
+            }
+
+            // rgba(0.1,0.0,0.3,0.2)
+
+            if ( REGEX_RGBA_2.test( colorVal ) ) {
+                color = REGEX_RGBA_2.exec( colorVal );
+
+                this.r = parseFloat(color[1]);
+                this.g = parseFloat(color[2]);
+                this.b = parseFloat(color[3]);
                 this.a = Number(color[4]);
 
                 return this;
@@ -149,7 +180,6 @@ module wd{
                 this.r = parseFloat(color[1]);
                 this.g = parseFloat(color[2]);
                 this.b = parseFloat(color[3]);
-
                 this.a = 1;
 
                 return this;

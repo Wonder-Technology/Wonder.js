@@ -59,7 +59,7 @@ describe("SourceInstance", function(){
             beforeEach(function(){
             });
 
-            it("instance should add ObjectInstance component instead, not add source->SourceInstance", function () {
+            it("instance should add ObjectInstance component, not add source->SourceInstance", function () {
                 box1Instance1 = instanceTool.cloneInstance(box1, "instance1");
 
                 expect(box1Instance1.hasComponent(wd.ObjectInstance)).toBeTruthy();
@@ -75,6 +75,12 @@ describe("SourceInstance", function(){
                     box1Instance1 = instanceTool.cloneInstance(box1, "instance1");
 
                     expect(box1Instance1.getComponent(wd.Geometry) === box1.getComponent(wd.Geometry)).toBeTruthy();
+                });
+                it("share source->lod", function(){
+                    box1.addComponent(wd.LOD.create());
+                    box1Instance1 = instanceTool.cloneInstance(box1, "instance1");
+
+                    expect(box1Instance1.getComponent(wd.LOD) === box1.getComponent(wd.LOD)).toBeTruthy();
                 });
 
                 it("shared component should be init only once", function(){

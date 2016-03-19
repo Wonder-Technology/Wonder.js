@@ -5,6 +5,12 @@ module wd{
 
             return obj;
         }
+
+        public clone(){
+            var result = CloneHelper.clone(this, BasicMaterial.create());
+
+            return result;
+        }
     }
 }
 

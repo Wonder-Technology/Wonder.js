@@ -125,6 +125,7 @@ module wd {
         }
 
         private _color:Color = Color.create("#ffffff");
+        @cloneAttributeAsCloneable()
         get color(){
             return this._color;
         }
@@ -151,6 +152,8 @@ module wd {
         public shading = EShading.FLAT;
         public mapManager:MapManager = MapManager.create(this);
         public geometry:Geometry = null;
+
+        //public abstract copy():Material;
 
         public init(){
             this.shader.init(this);

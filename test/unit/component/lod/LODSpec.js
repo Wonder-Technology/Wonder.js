@@ -6,16 +6,6 @@ describe("LOD", function() {
     var geoLevel1,geoLevel2;
     var geo;
 
-    function createGeo(){
-        var geoLevel1 = wd.SphereGeometry.create();
-
-        var matLevel1 = wd.LightMaterial.create();
-
-        geoLevel1.material = matLevel1;
-
-        return geoLevel1;
-    }
-
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
         lod = wd.LOD.create();
@@ -42,33 +32,15 @@ describe("LOD", function() {
         });
 
         describe("select level geometry by range-base", function(){
-            var renderer;
-
-            function judgeSelectGeometry(callCount, geo){
-                expect(renderer.render.getCall(callCount).args[1]).toEqual(geo);
-            }
-
-            function setCameraPos(pos){
-                camera.transform.position = pos;
-            }
-
+            var rendererComponent;
 
             beforeEach(function(){
-                model = prepareTool.createSphere();
-                geo = model.getComponent(wd.Geometry);
-                renderer = model.getComponent(wd.MeshRenderer);
-                sandbox.stub(renderer, "render");
-
-                geoLevel1 = createGeo();
-
-                geoLevel2 = createGeo();
-
-                lod.addGeometryLevel(15, geoLevel1);
-                lod.addGeometryLevel(30, geoLevel2);
-                lod.addGeometryLevel(40, wd.ELODGeometryState.INVISIBLE);
-
-                model.addComponent(lod);
-
+                var result = lodTool.prepareLod(sandbox);
+                rendererComponent = result.rendererComponent;
+                model = result.model;
+                geo = result.geo;
+                geoLevel1 = result.geoLevel1;
+                geoLevel2 = result.geoLevel2;
 
                 director.scene.addChild(model);
 
@@ -78,63 +50,63 @@ describe("LOD", function() {
             it("defaultly, select object->geometry", function () {
                 director._run(1);
 
-                judgeSelectGeometry(0, geo);
+                lodTool.judgeSelectGeometry(0, geo);
             });
             it("if distance of camera->position to object->position >= geoLevel1 distance, use level1 geometry", function () {
-                setCameraPos(wd.Vector3.create(15, 0, 0));
+                lodTool.setCameraPos(camera, wd.Vector3.create(15, 0, 0));
 
                 director._run(1);
 
-                judgeSelectGeometry(0, geoLevel1);
+                lodTool.judgeSelectGeometry(0, geoLevel1);
             });
             it("if distance of camera->position to object->position >= geoLevel2 distance, use level2 geometry", function () {
-                setCameraPos(wd.Vector3.create(30, 0, 0));
+                lodTool.setCameraPos(camera, wd.Vector3.create(30, 0, 0));
 
                 director._run(1);
 
-                judgeSelectGeometry(0, geoLevel2);
+                lodTool.judgeSelectGeometry(0, geoLevel2);
             });
             it("if distance of camera->position to object->position >= 40, object.isVisible should be false", function () {
-                setCameraPos(wd.Vector3.create(40, 0, 0));
+                lodTool.setCameraPos(camera, wd.Vector3.create(40, 0, 0));
 
                 director._run(1);
 
                 expect(model.isVisible).toBeFalsy();
             });
             it("if distance of camera->position to object->position < level1 distance, use object->geometry", function () {
-                setCameraPos(wd.Vector3.create(10, 0, 0));
+                lodTool.setCameraPos(camera, wd.Vector3.create(10, 0, 0));
 
                 director._run(1);
 
-                judgeSelectGeometry(0, geo);
+                lodTool.judgeSelectGeometry(0, geo);
             });
-            
+
             describe("test special case", function() {
                 beforeEach(function () {
                 });
 
                 it("if distance of camera->position to object->position >= geoLevel2 distance happen multi times, it should always use level2 geometry", function () {
-                    setCameraPos(wd.Vector3.create(30, 0, 0));
+                    lodTool.setCameraPos(camera, wd.Vector3.create(30, 0, 0));
 
                     director._run(1);
 
-                    judgeSelectGeometry(0, geoLevel2);
+                    lodTool.judgeSelectGeometry(0, geoLevel2);
 
 
-                    setCameraPos(wd.Vector3.create(30, 0, 0));
+                    lodTool.setCameraPos(camera, wd.Vector3.create(30, 0, 0));
 
                     director._run(2);
 
-                    judgeSelectGeometry(1, geoLevel2);
+                    lodTool.judgeSelectGeometry(1, geoLevel2);
                 });
                 it("if switch from invisible to visible, object.isVisible should be true", function () {
-                    setCameraPos(wd.Vector3.create(41, 0, 0));
+                    lodTool.setCameraPos(camera, wd.Vector3.create(41, 0, 0));
 
                     director._run(1);
 
 
 
-                    setCameraPos(wd.Vector3.create(30, 0, 0));
+                    lodTool.setCameraPos(camera, wd.Vector3.create(30, 0, 0));
 
                     director._run(2);
 
@@ -151,9 +123,9 @@ describe("LOD", function() {
 
             lod.entityObject = model;
 
-            geoLevel1 = createGeo();
+            geoLevel1 = lodTool.createGeo();
 
-            geoLevel2 = createGeo();
+            geoLevel2 = lodTool.createGeo();
 
             lod.addGeometryLevel(15, geoLevel1);
             lod.addGeometryLevel(30, geoLevel2);
@@ -188,19 +160,15 @@ describe("LOD", function() {
     describe("update", function(){
         var currentCamera;
 
-        function setCameraPos(pos){
-            currentCamera.transform.position = pos;
-        }
-
         beforeEach(function(){
             model = prepareTool.createSphere();
 
 
             lod.entityObject = model;
 
-            geoLevel1 = createGeo();
+            geoLevel1 = lodTool.createGeo();
 
-            geoLevel2 = createGeo();
+            geoLevel2 = lodTool.createGeo();
 
             lod.addGeometryLevel(15, geoLevel1);
             lod.addGeometryLevel(30, geoLevel2);
@@ -218,12 +186,40 @@ describe("LOD", function() {
         });
 
         it("if change activeGeometry, trigger component_change event", function(){
-            setCameraPos(wd.Vector3.create(0,15,0));
+            lodTool.setCameraPos(currentCamera, wd.Vector3.create(0,15,0));
             sandbox.stub(wd.EventManager, "trigger");
 
             lod.update(1);
 
             expect(wd.EventManager.trigger).toCalledWith(model, wd.CustomEvent.create(wd.EEngineEvent.COMPONENT_CHANGE));
+        });
+    });
+
+    describe("clone", function(){
+        beforeEach(function(){
+        });
+
+        it("clone levelList", function(){
+            var geo = lodTool.createGeo();
+            var cloneGeo = lodTool.createGeo();
+            lod.addGeometryLevel(10, geo);
+            lod.addGeometryLevel(20, wd.ELODGeometryState.INVISIBLE);
+            sandbox.stub(geo, "clone").returns(cloneGeo);
+
+            var result = lod.clone();
+
+            expect(result.levelList.getChildren()).toEqual( [
+                    {
+                        distanceBetweenCameraAndObject: 20,
+                        geometry:wd.ELODGeometryState.INVISIBLE
+                    },
+                    {
+                        distanceBetweenCameraAndObject: 10,
+                        geometry:cloneGeo
+                    }
+                ]
+            );
+            expect(result !== lod).toBeTruthy();
         });
     });
 });
