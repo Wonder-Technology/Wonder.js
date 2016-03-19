@@ -29,14 +29,9 @@ module wd {
                  position:Vector3 = this.entityObject.transform.position,
                  target:GameObject = geometry.entityObject;
 
+            quadCmd.target = target;
+
             quadCmd.buffers = geometry.buffers;
-
-            //todo remove shader lib data(animation, vMatrix,pMatrix,z)(only remain render data), get it from this.entityObject(QuadCommand add entityObject getter)
-
-
-
-
-            quadCmd.animation = target.getComponent<Animation>(Animation);
 
             quadCmd.drawMode = geometry.drawMode;
 

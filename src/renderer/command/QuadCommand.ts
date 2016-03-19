@@ -71,8 +71,9 @@ module wd {
 
         public buffers:BufferContainer = null;
         public material:Material = null;
-        public animation:Animation = null;
+        public z:number = null;
         public instanceDrawer:InstanceDrawer = InstanceDrawer.create();
+        public target:GameObject = null;
 
         private _normalMatrixCache:Matrix4 = null;
         private _mvpMatrixCache:Matrix4 = null;

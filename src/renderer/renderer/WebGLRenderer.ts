@@ -74,21 +74,25 @@ module wd{
 
         @require(function(transparentCommands:Array<RenderCommand>){
             assert(!!Director.getInstance().scene.currentCamera, Log.info.FUNC_NOT_EXIST("current camera"));
+
+            for (let command of transparentCommands){
+                assert(command instanceof QuadCommand, Log.info.FUNC_MUST_BE("transparent command", "QuadCommand"));
+            }
         })
-        private _renderSortedTransparentCommands(transparentCommands:Array<RenderCommand>) {
+        private _renderSortedTransparentCommands(transparentCommands:Array<QuadCommand>) {
             var self = this,
                 cameraPositionZ = Director.getInstance().scene.currentCamera.transform.position.z;
 
             transparentCommands
-                .sort((a:RenderCommand, b:RenderCommand) => {
+                .sort((a:QuadCommand, b:QuadCommand) => {
                     return self._getObjectToCameraZDistance(cameraPositionZ, b) - self._getObjectToCameraZDistance(cameraPositionZ, a);
                 })
-                .forEach((command:RenderCommand) => {
+                .forEach((command:QuadCommand) => {
                     command.execute();
                 });
         }
 
-        private _getObjectToCameraZDistance(cameraPositionZ:number, cmd:RenderCommand){
+        private _getObjectToCameraZDistance(cameraPositionZ:number, cmd:QuadCommand){
             return cameraPositionZ - cmd.z;
         }
 

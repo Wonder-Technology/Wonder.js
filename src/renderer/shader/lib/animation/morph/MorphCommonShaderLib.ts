@@ -9,10 +9,10 @@ module wd{
         public type:string = "morphCommon";
 
         @require(function(program:Program, quadCmd:QuadCommand, material:EngineMaterial){
-            assert(!!quadCmd.animation, Log.info.FUNC_SHOULD("entityObject", "add MorphAnimation component"));
+            assert(quadCmd.target.hasComponent(MorphAnimation), Log.info.FUNC_SHOULD("entityObject", "has MorphAnimation component"));
         })
         public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:EngineMaterial){
-            var anim = <MorphAnimation>(quadCmd.animation);
+            var anim = quadCmd.target.getComponent<MorphAnimation>(MorphAnimation);
 
             this.sendUniformData(program, "u_interpolation", anim.interpolation);
         }

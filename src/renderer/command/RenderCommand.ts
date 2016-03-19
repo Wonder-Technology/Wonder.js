@@ -2,7 +2,6 @@ module wd {
     export abstract class RenderCommand {
         public drawMode:EDrawMode = EDrawMode.TRIANGLES;
         public blend:boolean = false;
-        public z:number = null;
 
         public abstract execute():void;
 

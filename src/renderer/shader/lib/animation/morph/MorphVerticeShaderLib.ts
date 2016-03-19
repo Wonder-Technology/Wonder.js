@@ -9,7 +9,7 @@ module wd{
         public type:string = "morphVertice";
 
         @require(function(program:Program, quadCmd:QuadCommand, material:EngineMaterial){
-            assert(!!quadCmd.animation, Log.info.FUNC_SHOULD("entityObject", "add MorphAnimation component"));
+            assert(quadCmd.target.hasComponent(MorphAnimation), Log.info.FUNC_SHOULD("entityObject", "has MorphAnimation component"));
         })
         public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:EngineMaterial){
             var morphVerticeData = quadCmd.buffers.getChild(EBufferDataType.VERTICE);

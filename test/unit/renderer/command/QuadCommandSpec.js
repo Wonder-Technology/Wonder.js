@@ -191,7 +191,7 @@ describe("QuadCommand", function() {
                 quadCmd.buffers.geometryData.faces = [];
             }
 
-            quadCmd.shader = geometry.material.shader;
+            //quadCmd.shader = geometry.material.shader;
             quadCmd.mMatrix = mMatrix;
             quadCmd.vMatrix = vMatrix;
             quadCmd.pMatrix = pMatrix;
