@@ -19,7 +19,6 @@ module wd {
         public clone() {
             return DelayTime.create(this.duration);
         }
-
     }
 }
 

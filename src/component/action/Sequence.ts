@@ -1,11 +1,10 @@
 module wd {
     export class Sequence extends Control{
-        public static create(...args) {
-            var sequence = null;
-
+        @require(function(...args){
             Log.assert(args.length >= 2, "Sequence should has two actions at least");
-
-            sequence = new this(args);
+        })
+        public static create(...args) {
+            var sequence = new this(args);
 
             sequence.initWhenCreate();
 

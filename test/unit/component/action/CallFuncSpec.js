@@ -33,10 +33,17 @@ describe("CallFunc", function () {
 
     describe("clone", function(){
         it("return clone one", function () {
+            var func = function(){};
+            var context = {};
+            action = CallFunc.create(func, context);
+
             var a = action.clone();
 
             expect(a).toBeInstanceOf(CallFunc);
-            expect(a === action).toBeFalsy();
+            expect(a !== action).toBeTruthy();
+
+            expect(a._callFunc === func).toBeTruthy();
+            expect(a._context === context).toBeTruthy();
 
         });
         it("deep clone the dataArr", function () {

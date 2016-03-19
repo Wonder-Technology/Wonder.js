@@ -27,7 +27,6 @@ module wd{
         public abstract stop();
         public abstract pause();
         public abstract resume();
-        public abstract clone();
         public abstract reverse();
 
         public reset() {

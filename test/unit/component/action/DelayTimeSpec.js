@@ -30,10 +30,13 @@ describe("DelayTime", function () {
 
     describe("clone", function(){
         it("return clone one", function () {
+            action.duration = 1;
+
             var a = action.clone();
 
             expect(a).toBeInstanceOf(DelayTime);
             expect(a === action).toBeFalsy();
+            expect(a.duration).toEqual(1);
         });
     });
 

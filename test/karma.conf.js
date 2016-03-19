@@ -27,13 +27,15 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        'test/unit/**',
+        //'test/unit/**',
 
-        'test/unit/**/RenderUtils*',
-        //
-        'test/unit/**/QuadCommand*',
-        //
-        'test/unit/**/instance/*',
+        'test/unit/**/action/*',
+
+        //'test/unit/**/RenderUtils*',
+        ////
+        //'test/unit/**/QuadCommand*',
+        ////
+        //'test/unit/**/instance/*',
 
         //'test/unit/**/instance*',
 
@@ -95,7 +97,7 @@
 
         //'test/unit/**/Debug*',
 
-        //'test/unit/**/EntityObjectSpec*',
+        'test/unit/**/EntityObjectSpec*',
 
         //'test/unit/component/physics/**/eventSpec*',
 

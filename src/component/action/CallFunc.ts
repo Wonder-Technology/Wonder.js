@@ -29,8 +29,9 @@ module wd {
 
             this.finish();
         }
+
         public clone() {
-            return new CallFunc(this._context, this._callFunc, this._dataArr.clone(true).getChildren());
+            return CallFunc.create(this._callFunc, this._context, this._dataArr.clone(true).getChildren());
         }
     }
 }
