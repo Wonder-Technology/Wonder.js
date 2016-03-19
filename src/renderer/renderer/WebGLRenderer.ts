@@ -93,8 +93,16 @@ module wd{
         }
 
         private _clearCommand(){
+            this._commandQueue.forEach((command:RenderCommand) => {
+                command.dispose();
+            });
+
             this._commandQueue.removeAllChildren();
-            this.skyboxCommand = null;
+
+            if(this.skyboxCommand){
+                this.skyboxCommand.dispose();
+                this.skyboxCommand = null;
+            }
         }
 
         private _setClearOptions(clearOptions:any){

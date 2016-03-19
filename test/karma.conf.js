@@ -64,7 +64,7 @@
         //'test/unit/**/ShaderSpec*',
         //'test/unit/**/*ShaderSpec*',
 
-        //'test/unit/**/renderWebGL*',
+        'test/unit/**/renderWebGL*',
         //'test/unit/**/*CommandSpec*',
 
         //'test/unit/renderer/**/DiffuseMapShaderLib*',

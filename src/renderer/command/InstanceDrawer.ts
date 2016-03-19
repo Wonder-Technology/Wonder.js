@@ -11,6 +11,9 @@ module wd {
 
         private _modelMatricesArrayForInstancesray: Float32Array = null;
 
+        public dispose(){
+        }
+
         @ensure(function(hasInstance:boolean){
             if(hasInstance){
                 assert(GPUDetector.getInstance().extensionInstancedArrays !== null, Log.info.FUNC_SHOULD("hardware", "support instance"));

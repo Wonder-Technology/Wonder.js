@@ -389,5 +389,19 @@ describe("QuadCommand", function() {
             });
         });
     });
+
+    describe("dispose", function(){
+        beforeEach(function(){
+
+        });
+
+        it("dispose instanceDrawer", function(){
+            sandbox.stub(cmd.instanceDrawer, "dispose");
+
+            cmd.dispose();
+
+            expect(cmd.instanceDrawer.dispose).toCalledOnce();
+        });
+    });
 });
 

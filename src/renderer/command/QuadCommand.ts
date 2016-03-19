@@ -86,6 +86,10 @@ module wd {
             this._draw(material);
         }
 
+        public dispose(){
+            this.instanceDrawer.dispose();
+        }
+
         private _draw(material:Material) {
             var vertexBuffer:ArrayBuffer = null,
                 indexBuffer:ElementBuffer = null;

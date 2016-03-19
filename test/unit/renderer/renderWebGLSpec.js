@@ -153,6 +153,7 @@ describe("renderWebGL", function() {
                         depthFuncValArr.push(val);
                     });
                 var cmd = {
+                    dispose:sandbox.stub(),
                     execute: sandbox.stub()
                 };
                 renderer.skyboxCommand = cmd;
@@ -166,12 +167,34 @@ describe("renderWebGL", function() {
             });
         });
 
-        it("clear command", function(){
-            var result = addCommand();
+        describe("clear command", function(){
+            it("dispose command", function () {
+                var result = addCommand();
+                sandbox.stub(result.quadCmd, "dispose");
 
-            renderer.render();
+                renderer.render();
 
-            expect(renderer._commandQueue.getCount()).toEqual(0);
+                expect(result.quadCmd.dispose).toCalledOnce();
+            });
+            it("clear command queue", function () {
+                var result = addCommand();
+
+                renderer.render();
+
+                expect(renderer._commandQueue.getCount()).toEqual(0);
+            });
+            it("dispose and clear skybox command", function () {
+                var skyboxCommand = {
+                    execute:sandbox.stub(),
+                    dispose:sandbox.stub()
+                }
+                renderer.skyboxCommand = skyboxCommand;
+
+                renderer.render();
+
+                expect(skyboxCommand.dispose).toCalledOnce();
+                expect(renderer.skyboxCommand).toBeNull();
+            });
         });
     });
 

@@ -10,6 +10,10 @@ module wd {
         public init() {
         }
 
+        @virtual
+        public dispose() {
+        }
+
         protected drawElements(indexBuffer:ElementBuffer){
             var startOffset:number = 0,
                 gl = DeviceManager.getInstance().gl;
