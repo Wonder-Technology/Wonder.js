@@ -98,7 +98,7 @@
 
 
 
-/// <reference path="component/lod/LODController"/>
+/// <reference path="component/lod/LOD"/>
 /// <reference path="component/lod/ELODGeometryState"/>
 
 

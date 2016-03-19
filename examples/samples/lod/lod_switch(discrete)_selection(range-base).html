@@ -64,7 +64,7 @@
             var geometryLevel1 = createSphereGeometry(wd.Color.create("rgb(0.0, 1.0, 0.0)"), 5);
             var geometryLevel2 = createSphereGeometry(wd.Color.create("#ffffff"), 2);
 
-            var lod = wd.LODController.create();
+            var lod = wd.LOD.create();
 
             lod.addGeometryLevel(15, geometryLevel1);
             lod.addGeometryLevel(30, geometryLevel2);

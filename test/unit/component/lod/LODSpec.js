@@ -1,4 +1,4 @@
-describe("LODController", function() {
+describe("LOD", function() {
     var sandbox = null;
     var lod = null;
 
@@ -18,7 +18,7 @@ describe("LODController", function() {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        lod = wd.LODController.create();
+        lod = wd.LOD.create();
 
         sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
 

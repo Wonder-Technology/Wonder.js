@@ -1,5 +1,5 @@
 module wd{
-    export class LODController extends Component{
+    export class LOD extends Component{
         public static create() {
             var obj = new this();
 

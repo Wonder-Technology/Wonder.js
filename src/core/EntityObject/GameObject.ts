@@ -20,7 +20,7 @@ module wd {
 
         public getComponent<T>(_class:any):T{
             if(this._isGeometry(_class)){
-                let lod:LODController = this.getComponent<LODController>(LODController);
+                let lod:LOD = this.getComponent<LOD>(LOD);
 
                 if(lod && lod.activeGeometry) {
                     return <any>lod.activeGeometry;
@@ -31,7 +31,7 @@ module wd {
         }
 
         public update(elapsedTime:number):void {
-            var lod = this.getComponent<LODController>(LODController);
+            var lod = this.getComponent<LOD>(LOD);
 
             if(lod){
                 lod.update(elapsedTime);
