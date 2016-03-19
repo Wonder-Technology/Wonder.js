@@ -27,7 +27,7 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        //'test/unit/**',
+        'test/unit/**',
 
         'test/unit/**/RenderUtils*',
         //
@@ -64,7 +64,7 @@
         //'test/unit/**/ShaderSpec*',
         //'test/unit/**/*ShaderSpec*',
 
-        'test/unit/**/renderWebGL*',
+        //'test/unit/**/renderWebGL*',
         //'test/unit/**/*CommandSpec*',
 
         //'test/unit/renderer/**/DiffuseMapShaderLib*',
@@ -88,7 +88,7 @@
 
         //'test/unit/**/*animation*',
         //'test/unit/component/**/*Animation*.js',
-        'test/unit/component/**/morphAnimation*.js',
+        //'test/unit/component/**/morphAnimation*.js',
 
         //'test/unit/**/GLTFParserSpec*',
         //'test/unit/**/GLTFAssemblerSpec*',
@@ -99,7 +99,7 @@
 
         //'test/unit/component/physics/**/eventSpec*',
 
-        //'test/unit/**/OctreeSpec*',
+        'test/unit/**/OctreeSpec*',
         //'test/unit/**/CollisionDetectorSpec*',
         //'test/unit/**/BoundingRegionUtilsSpec*',
 
@@ -193,12 +193,12 @@
       //  'test/unit/asset/loaderSpec.js',
         //'test/unit/asset/wd/WDParserSpec.js',
         //'test/unit/asset/wd/WDBuilderSpec.js',
-        'test/unit/math/*.js',
+        //'test/unit/math/*.js',
         //'test/unit/component/**/GeometrySpec.js',
         //'test/unit/component/**/TerrainGeometrySpec.js',
         //'test/unit/component/**/ModelGeometrySpec.js',
         //'test/unit/**/CommonBufferContainerSpec.js',
-        'test/unit/**/MorphBufferContainerSpec.js',
+        //'test/unit/**/MorphBufferContainerSpec.js',
         //'test/unit/core/*.js',
         //'test/unit/device/*.js',
         //'test/unit/event/**',

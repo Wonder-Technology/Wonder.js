@@ -144,6 +144,20 @@ describe("EntityObject", function() {
                 expect(entityObject._hasComponentCache.getCount()).toEqual(0);
                 expect(entityObject._getComponentCache.getCount()).toEqual(0);
             });
+
+            describe("if component is transform, ", function () {
+                it("if already add transform component, replace it to be the new one", function () {
+                    var transform1 = wd.ThreeDTransform.create();
+                    var transform2 = wd.ThreeDTransform.create();
+
+                    entityObject.addComponent(transform1);
+                    entityObject.addComponent(transform2);
+
+                    expect(testTool.getAllComponents(entityObject, wd.ThreeDTransform).getCount()).toEqual(1);
+                    expect(entityObject.hasComponent(transform2)).toBeTruthy();
+                });
+            });
+
             //todo test more
         });
 

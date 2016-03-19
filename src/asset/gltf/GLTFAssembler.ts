@@ -74,7 +74,7 @@ module wd{
 
             components.forEach((component:IGLTFComponent) => {
                 if(self._isTransform(component)){
-                    model.transform = self._createTransform(<IGLTFTransform>component);
+                    model.addComponent(self._createTransform(<IGLTFTransform>component));
                 }
                 else if(self._isCamera(component)){
                     model.addComponent(self._createCamera(<IGLTFCamera>component));

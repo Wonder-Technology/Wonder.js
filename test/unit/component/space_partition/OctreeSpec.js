@@ -53,17 +53,17 @@ describe("Octree", function () {
         function judgeRoot(){
             var root = getRoot();
             expect(root.nodeList.getCount()).toEqual(8);
-            expect(root.entityObjectList.getCount()).toEqual(0);
+            expect(root.gameObjectList.getCount()).toEqual(0);
         }
 
-        function judgeFirstDepthChild(index, entityObjectListCount, entityObject){
+        function judgeFirstDepthChild(index, gameObjectListCount, entityObject){
             var root = getRoot();
             var child = root.nodeList.getChild(index);
             expect(child.nodeList.getCount()).toEqual(0);
-            expect(child.entityObjectList.getCount()).toEqual(entityObjectListCount);
+            expect(child.gameObjectList.getCount()).toEqual(gameObjectListCount);
 
-            if(entityObjectListCount > 0){
-                expect(child.entityObjectList.getChild(0)).toEqual(entityObject);
+            if(gameObjectListCount > 0){
+                expect(child.gameObjectList.getChild(0)).toEqual(entityObject);
             }
         }
 
@@ -107,13 +107,13 @@ describe("Octree", function () {
         });
 
         describe("test when depth === 2", function(){
-            function judgeSecondDepthChild(root, index, entityObjectListCount, entityObject){
+            function judgeSecondDepthChild(root, index, gameObjectListCount, entityObject){
                 var child = root.nodeList.getChild(index);
                 expect(child.nodeList.getCount()).toEqual(0);
-                expect(child.entityObjectList.getCount()).toEqual(entityObjectListCount);
+                expect(child.gameObjectList.getCount()).toEqual(gameObjectListCount);
 
-                if(entityObjectListCount > 0){
-                    expect(child.entityObjectList.getChild(0)).toEqual(entityObject);
+                if(gameObjectListCount > 0){
+                    expect(child.gameObjectList.getChild(0)).toEqual(entityObject);
                 }
             }
 
@@ -147,7 +147,7 @@ describe("Octree", function () {
                 var root = getRoot();
                 var child = root.nodeList.getChild(0);
                 expect(child.nodeList.getCount()).toEqual(8);
-                expect(child.entityObjectList.getCount()).toEqual(2);
+                expect(child.gameObjectList.getCount()).toEqual(2);
 
                 judgeSecondDepthChild(child, 0, 1, obj2);
                 judgeSecondDepthChild(child, 1, 0);
@@ -197,7 +197,7 @@ describe("Octree", function () {
             var root = getRoot();
             var child = root.nodeList.getChild(0);
             expect(child.nodeList.getCount()).toEqual(0);
-            expect(child.entityObjectList.getCount()).toEqual(2);
+            expect(child.gameObjectList.getCount()).toEqual(2);
 
             judgeFirstDepthChild(1, 0);
             judgeFirstDepthChild(2, 0);

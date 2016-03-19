@@ -228,6 +228,8 @@ module wd {
         }
 
         public removeChild(child:EntityObject):EntityObject {
+            //todo remove child->instances
+
             child.onExit();
 
             this.children.removeChild(child);
@@ -290,6 +292,11 @@ module wd {
                 this._collider = component;
             }
             else if(component instanceof Transform){
+                //todo test
+                if(this.transform){
+                    this.removeComponent(this.transform);
+                }
+
                 this.transform = component;
             }
 
