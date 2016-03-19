@@ -323,23 +323,61 @@ describe("QuadCommand", function() {
                 });
             });
 
-            it("if geometry has no index buffer, then drawArray", function(){
-                var result = addCommand(true);
+            describe("if has instance to draw", function(){
+                var extensionInstancedArrays;
 
-                result.quadCmd.execute();
+                beforeEach(function(){
+                    extensionInstancedArrays = instanceTool.prepareExtensionInstancedArrays(sandbox);
+                });
 
-                expect(gl.drawArrays).toCalledWith("TRIANGLES",0,24);
+                it("instance array size should be instance buffer->float32InstanceArraySize", function () {
+                    var result = addCommand();
+
+                    var data = instanceTool.createInstance();
+                    var sourceInstance = data.source.getComponent(wd.SourceInstance);
+
+                    sourceInstance.init();
+
+                    result.quadCmd.instanceList = sourceInstance.toRenderInstanceListForDraw;
+                    result.quadCmd.instanceBuffer = sourceInstance.instanceBuffer;
+
+
+                    sandbox.stub(result.quadCmd.instanceBuffer, "resetData");
+
+   var float32InstanceArraySize = 10;
+                    testTool.stubGetter(sinon, result.quadCmd.instanceBuffer, "float32InstanceArraySize", function(){
+                        return float32InstanceArraySize;
+                    });
+
+                    sandbox.stub(result.quadCmd.program, "getAttribLocation");
+
+
+                    result.quadCmd.execute();
+
+
+                    expect(result.quadCmd.instanceBuffer.resetData.firstCall.args[0].length).toEqual(float32InstanceArraySize);
+                });
             });
-            it("else, drawElements", function(){
-                var result = addCommand();
-                var quadCmd = result.quadCmd;
 
-                result.quadCmd.execute();
+            describe("else", function(){
+                it("if geometry has no index buffer, then drawArray", function(){
+                    var result = addCommand(true);
 
-                var indexBuffer = quadCmd.buffers.getChild(wd.EBufferDataType.INDICE);
+                    result.quadCmd.execute();
 
-                expect(gl.bindBuffer.args.slice(-1)).toEqual([[gl.ELEMENT_ARRAY_BUFFER, indexBuffer.buffer]]);
-                expect(gl.drawElements).toCalledWith(gl.TRIANGLES, indexBuffer.count, indexBuffer.type, indexBuffer.typeSize * 0);
+                    expect(gl.drawArrays).toCalledWith("TRIANGLES",0,24);
+                });
+                it("else, drawElements", function(){
+                    var result = addCommand();
+                    var quadCmd = result.quadCmd;
+
+                    result.quadCmd.execute();
+
+                    var indexBuffer = quadCmd.buffers.getChild(wd.EBufferDataType.INDICE);
+
+                    expect(gl.bindBuffer.args.slice(-1)).toEqual([[gl.ELEMENT_ARRAY_BUFFER, indexBuffer.buffer]]);
+                    expect(gl.drawElements).toCalledWith(gl.TRIANGLES, indexBuffer.count, indexBuffer.type, indexBuffer.typeSize * 0);
+                });
             });
         });
     });

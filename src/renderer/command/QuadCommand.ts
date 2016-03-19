@@ -72,7 +72,6 @@ module wd {
         public buffers:BufferContainer = null;
         public material:Material = null;
         public animation:Animation = null;
-        //todo rename to toRenderList?
         public instanceList:wdCb.Collection<GameObject> = null;
         public instanceBuffer:InstanceBuffer = null;
 
@@ -92,8 +91,8 @@ module wd {
 
 
 
-        @ensure(function(isInstance:boolean){
-            if(isInstance){
+        @ensure(function(hasInstance:boolean){
+            if(hasInstance){
                 assert(GPUDetector.getInstance().extensionInstancedArrays !== null, Log.info.FUNC_SHOULD("hardware", "support instance"));
 
                 assert(!!this.instanceBuffer, Log.info.FUNC_MUST_DEFINE("instanceBuffer"))
@@ -106,8 +105,7 @@ module wd {
 
         private _draw(material:Material) {
             var vertexBuffer:ArrayBuffer = null,
-                indexBuffer:ElementBuffer = null,
-                gl = DeviceManager.getInstance().gl;
+                indexBuffer:ElementBuffer = null;
 
             this._setEffects(material);
 
@@ -163,13 +161,10 @@ module wd {
         }
 
         private _drawInstance(indexBuffer:ElementBuffer){
-            //todo @ensure matricesCount >= 1
-            //var matricesCount = this.instanceList.getCount();
-
-            this.instanceBuffer.setSize(this.instanceList.getCount());
+            this.instanceBuffer.setCapacity(this.instanceList.getCount());
 
             //todo test
-            this._modelMatricesArrayForInstancesray = new Float32Array(this.instanceBuffer.size / 4);
+            this._modelMatricesArrayForInstancesray = new Float32Array(this.instanceBuffer.float32InstanceArraySize);
 
             var offset = 0;
             //todo remove it, use this.instanceList.getCount()

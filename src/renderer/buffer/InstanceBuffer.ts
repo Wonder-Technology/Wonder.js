@@ -8,22 +8,26 @@ module wd{
             return obj;
         }
 
-        public size:number = 32 * 16 * 4; // let's start with a maximum of 32 instances
+        get float32InstanceArraySize(){
+            return this._capacity / 4;
+        }
+
+        private _capacity:number = 32 * 16 * 4; // let's start with a maximum of 32 instances
 
         public initWhenCreate() {
             this.buffer = this._createBuffer();
         }
 
-        public setSize(instanceCount:number){
-            var bufferSize:number = instanceCount * 16 * 4,
-                size:number = this.size;
+        public setCapacity(instanceCount:number){
+            var bufferCapacity:number = instanceCount * 16 * 4,
+                capacity:number = this._capacity;
 
-            while (size < bufferSize) {
-                size *= 2;
+            while (capacity < bufferCapacity) {
+                capacity *= 2;
             }
 
-            if (this.size < size) {
-                this.size = size;
+            if (this._capacity < capacity) {
+                this._capacity = capacity;
 
                 if (this.buffer) {
                     DeviceManager.getInstance().gl.deleteBuffer(this.buffer);
@@ -73,7 +77,7 @@ module wd{
             var buffer = gl.createBuffer();
 
             gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-            gl.bufferData(gl.ARRAY_BUFFER, this.size, gl.DYNAMIC_DRAW);
+            gl.bufferData(gl.ARRAY_BUFFER, this._capacity, gl.DYNAMIC_DRAW);
 
             return buffer;
         }

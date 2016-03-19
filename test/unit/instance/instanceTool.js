@@ -10,6 +10,15 @@ var instanceTool = (function(){
         cloneInstance:function(source, name){
             return source.getComponent(wd.SourceInstance).cloneInstance(name);
         },
+        createInstance: function(){
+            var box = this.createBox();
+            var instance = this.cloneInstance(box, "instance");
+
+            return {
+                source:box,
+                instance:instance
+            }
+        },
         spyInstanceMethod:function(sandbox, instanceArr, methodName){
             var spy = function(instance){
                 sandbox.spy(instance, methodName);
