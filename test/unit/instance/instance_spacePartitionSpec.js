@@ -6,6 +6,39 @@ describe("instance with spacePartition", function() {
 
     var extensionInstancedArrays;
 
+    var octreeContainer;
+    var box1,child1,child11,child2;
+    var boxInstance1,boxInstance2;
+
+    function prepareBox1AndInstances(){
+        octreeContainer = createOctree();
+
+        box1 = instanceTool.createBox();
+        box1.name = "box1";
+        child1 = prepareTool.createSphere(1);
+        child11 = prepareTool.createSphere(1);
+
+        child2 = prepareTool.createSphere(1);
+
+        child1.addChild(child11);
+        box1.addChild(child1);
+        box1.addChild(child2);
+
+        var instanceArr = [];
+
+        instanceArr.push(box1);
+
+        boxInstance1 = instanceTool.cloneInstance(box1, "0");
+        boxInstance2 = instanceTool.cloneInstance(box1, "1");
+
+        instanceArr.push(boxInstance1, boxInstance2);
+
+        instanceTool.spyInstanceMethod(sandbox, instanceArr, "render");
+
+
+        octreeContainer.addChildren(instanceArr);
+    }
+
     function createOctree() {
         var octreeContainer = wd.GameObject.create();
 
@@ -38,33 +71,7 @@ describe("instance with spacePartition", function() {
 
 
     it("if the instanceSource obj is culled but it's instance isn't culled, it's instance should be rendered", function () {
-        var octreeContainer = createOctree();
-
-        var box1 = instanceTool.createBox();
-        box1.name = "box1";
-        var child1 = prepareTool.createSphere(1)
-        var child11 = prepareTool.createSphere(1)
-
-        var child2 = prepareTool.createSphere(1)
-
-        child1.addChild(child11);
-        box1.addChild(child1);
-        box1.addChild(child2);
-
-        var instanceArr = [];
-
-        instanceArr.push(box1);
-
-        var boxInstance1 = instanceTool.cloneInstance(box1, "0");
-        var boxInstance2 = instanceTool.cloneInstance(box1, "1");
-
-        instanceArr.push(boxInstance1, boxInstance2);
-
-        instanceTool.spyInstanceMethod(sandbox, instanceArr, "render");
-
-
-        octreeContainer.addChildren(instanceArr);
-
+        prepareBox1AndInstances();
 
         var box2 = prepareTool.createBox(1);
         box2.name = "box2";
@@ -112,8 +119,8 @@ describe("instance with spacePartition", function() {
 
         expect(box1.render).toCalledOnce();
 
-                expect(boxInstance1.render).not.toCalled();
-                expect(boxInstance2.render).not.toCalled();
+        expect(boxInstance1.render).not.toCalled();
+        expect(boxInstance2.render).not.toCalled();
 
 
         expect(child1.render).toCalledOnce();
@@ -152,6 +159,78 @@ describe("instance with spacePartition", function() {
 
     it("if the instanceSource obj and it's instance isn't culled, they should be rendered", function () {
         //todo
+    });
+
+
+    describe("if hardware not support instance", function(){
+        beforeEach(function(){
+            wd.GPUDetector.getInstance().extensionInstancedArrays = null;
+        });
+
+        it("render all the no-culled objects(whether the source nor the instance)", function () {
+            prepareBox1AndInstances();
+
+            director.scene.addChild(octreeContainer);
+
+
+            var octreeRenderList = wdCb.Collection.create(
+                [
+                    box1,
+                    boxInstance2
+                ]
+            );
+            sandbox.stub(octreeContainer.getSpacePartition(), "getRenderListByFrustumCull").returns(octreeRenderList);
+
+
+            var camera = testTool.createCamera();
+            var renderer = wd.WebGLRenderer.create();
+
+
+            director.scene.addChild(camera);
+
+            director._init();
+
+
+            director.scene.gameObjectScene.render(renderer);
+
+            renderer.render();
+
+
+
+
+            expect(wd.DebugStatistics.count.renderGameObjects).toEqual(4 * 2);
+
+            expect(box1.render).toCalledOnce();
+
+            expect(boxInstance1.render).not.toCalled();
+            expect(boxInstance2.render).toCalledOnce();
+
+
+            expect(child1.render).toCalledOnce();
+
+            expect(boxInstance1.getChild(0).render).not.toCalled();
+            expect(boxInstance2.getChild(0).render).toCalledOnce();
+
+
+            expect(child11.render).toCalledOnce();
+
+            expect(boxInstance1.getChild(0).getChild(0).render).not.toCalled();
+            expect(boxInstance2.getChild(0).getChild(0).render).toCalledOnce();
+
+
+
+            expect(child2.render).toCalledOnce();
+
+            expect(boxInstance1.getChild(1).render).not.toCalled();
+            expect(boxInstance2.getChild(1).render).toCalledOnce();
+
+
+
+
+            expect(gl.drawElements.callCount).toEqual(4 * 2);
+
+            expect(extensionInstancedArrays.drawElementsInstancedANGLE.callCount).toEqual(0);
+        });
     });
 });
 
