@@ -40,7 +40,7 @@ module wd{
         }
         set position(position:Vector2){
             if (this.p_parent === null) {
-                this._localPosition = position.clone();
+                this._localPosition = position;
             }
             else {
                 this._localPosition = this.p_parent.localPositionAndScaleMatrix.clone().invert().multiplyPoint(position);
@@ -71,7 +71,7 @@ module wd{
         }
         set scale(scale:Vector2){
             if (this.p_parent === null) {
-                this._localScale = scale.clone();
+                this._localScale = scale;
             }
             else {
                 this._localScale = this.p_parent.localPositionAndScaleMatrix.clone().invert().multiplyVector2(scale);
@@ -88,7 +88,7 @@ module wd{
             return this._localPosition;
         }
         set localPosition(position:Vector2){
-            this._localPosition = position.clone();
+            this._localPosition = position;
 
             this.isLocalTranslate = true;
         }
@@ -98,7 +98,7 @@ module wd{
             return this._localScale;
         }
         set localScale(scale:Vector2){
-            this._localScale = scale.clone();
+            this._localScale = scale;
 
             this.isLocalScale = true;
         }

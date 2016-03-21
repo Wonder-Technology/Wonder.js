@@ -115,6 +115,15 @@ describe("RectTransform", function(){
             tra2.position = Vector2.create(2, 2);
         });
 
+        it("not clone if no parent", function () {
+            var pos = {clone:sandbox.stub()};
+            tra1.parent = null;
+
+            tra1.position = pos;
+
+            expect(pos.clone).not.toCalled();
+        });
+
         it("set position", function(){
             expect(getValues(tra2.position)).toEqual([2, 2]);
             expect(getValues(tra1.position)).toEqual([3, 4]);
@@ -153,6 +162,14 @@ describe("RectTransform", function(){
             tra1.parent = tra2;
         });
 
+        it("not clone if no parent", function () {
+            var data = {clone:sandbox.stub()};
+            tra1.parent = null;
+
+            tra1.scale = data;
+
+            expect(data.clone).not.toCalled();
+        });
         it("set scale", function(){
             tra1.position = Vector2.create(100, -50);
 

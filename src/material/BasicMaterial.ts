@@ -7,9 +7,7 @@ module wd{
         }
 
         public clone(){
-            var result = CloneHelper.clone(this, BasicMaterial.create());
-
-            return result;
+            return CloneHelper.clone(this);
         }
     }
 }

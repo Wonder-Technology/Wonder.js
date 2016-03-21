@@ -19,6 +19,7 @@ module wd{
         }
 
         private _position:Vector3 = Vector3.create();
+        @cloneAttributeAsCloneable()
         @cacheGetter(function(){
             return this._positionCache !== null;
         }, function(){
@@ -33,7 +34,7 @@ module wd{
         }
         set position(position:Vector3){
             if (this.p_parent === null) {
-                this._localPosition = position.clone();
+                this._localPosition = position;
             }
             else {
                 this._localPosition = this.p_parent.localToWorldMatrix.clone().invert().multiplyPoint(position);
@@ -43,6 +44,7 @@ module wd{
         }
 
         private _rotation:Quaternion = Quaternion.create(0, 0, 0, 1);
+        @cloneAttributeAsCloneable()
         @cacheGetter(function(){
             return this._rotationCache !== null;
         }, function(){
@@ -57,7 +59,7 @@ module wd{
         }
         set rotation(rotation:Quaternion){
             if (this.p_parent === null) {
-                this._localRotation = rotation.clone();
+                this._localRotation = rotation;
             }
             else {
                 this._localRotation = this.p_parent.rotation.clone().invert().multiply(rotation);
@@ -67,6 +69,7 @@ module wd{
         }
 
         private _scale:Vector3 = Vector3.create(1, 1, 1);
+        @cloneAttributeAsCloneable()
         @cacheGetter(function(){
             return this._scaleCache !== null;
         }, function(){
@@ -81,7 +84,7 @@ module wd{
         }
         set scale(scale:Vector3){
             if (this.p_parent === null) {
-                this._localScale = scale.clone();
+                this._localScale = scale;
             }
             else {
                 this._localScale = this.p_parent.localToWorldMatrix.clone().invert().multiplyVector3(scale);
@@ -117,7 +120,7 @@ module wd{
             return this._localPosition;
         }
         set localPosition(position:Vector3){
-            this._localPosition = position.clone();
+            this._localPosition = position;
 
             this.isLocalTranslate = true;
         }
@@ -127,7 +130,7 @@ module wd{
             return this._localRotation;
         }
         set localRotation(rotation:Quaternion){
-            this._localRotation = rotation.clone();
+            this._localRotation = rotation;
 
             this.isLocalRotate = true;
         }
@@ -156,7 +159,7 @@ module wd{
             return this._localScale;
         }
         set localScale(scale:Vector3){
-            this._localScale = scale.clone();
+            this._localScale = scale;
 
             this.isLocalScale = true;
         }
@@ -390,15 +393,7 @@ module wd{
         }
 
         public clone(){
-            var transform = ThreeDTransform.create();
-
-            this.copyHelper(transform);
-
-            transform.position = this.position.clone();
-            transform.rotation = this.rotation.clone();
-            transform.scale = this.scale.clone();
-
-            return transform;
+            return CloneHelper.clone(this);
         }
 
         protected clearCache(){

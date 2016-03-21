@@ -1,6 +1,7 @@
 module wd{
     export abstract class Transform extends Component{
         protected p_parent:Transform = null;
+        @cloneAttributeAsBasicType()
         get parent(){
             return this.p_parent;
         }
@@ -73,14 +74,6 @@ module wd{
 
         @virtual
         protected handleWhenSetTransformState(transformState:ETransformState):void{
-        }
-
-        protected copyHelper(newTransform:Transform){
-            newTransform.parent = this.parent;
-
-            //todo set transform state(isTranslate...)?
-
-            return newTransform;
         }
 
         protected setParent(parent:Transform){

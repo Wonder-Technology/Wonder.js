@@ -16,7 +16,7 @@ module wd{
         public segments:number = 20;
 
         public clone(){
-            var result = CloneHelper.clone(this, SphereGeometry.create());
+            var result = CloneHelper.clone(this);
 
 
             //var result = SphereGeometry.create();

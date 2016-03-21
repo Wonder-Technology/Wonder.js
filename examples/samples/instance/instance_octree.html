@@ -55,6 +55,7 @@
                     count = 40;
 
             model.transform.translate(100,100,100);
+            model.transform.rotate(45,45,45);
             model.transform.scale = wd.Vector3.create(3,3,3);
 
             var sourceInstanceComponent = wd.SourceInstance.create();
@@ -66,7 +67,7 @@
                 var instance = sourceInstanceComponent.cloneInstance("index" + String(i));
 
                 instance.transform.position = wd.Vector3.create(range / 2 - Math.random() * range, range / 2 - Math.random() * range, range / 2 - Math.random() * range);
-                instance.transform.rotate(90 * Math.random(), 90 * Math.random(),0);
+//                instance.transform.rotate(90 * Math.random(), 90 * Math.random(),0);
                 instance.transform.scale = wd.Vector3.create(1,1,1);
 //                instance.transform.scale = wd.Vector3.create(3,3,3);
 

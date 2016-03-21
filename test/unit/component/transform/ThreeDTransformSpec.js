@@ -175,6 +175,15 @@ describe("ThreeDTransform", function(){
             tra2.position = Vector3.create(2, 2, 2);
         });
 
+        it("not clone if no parent", function () {
+            var pos = {clone:sandbox.stub()};
+            tra1.parent = null;
+
+            tra1.position = pos;
+
+            expect(pos.clone).not.toCalled();
+        });
+
         it("set position", function(){
             expect(getValues(tra2.position)).toEqual([2, 2, 2]);
             expect(getValues(tra2.localPosition)).toEqual([2, 2, 2]);
@@ -189,21 +198,32 @@ describe("ThreeDTransform", function(){
 
             expect(getValues(obj.transform.position)).toEqual([10, 0, 0]);
         });
-        it("set local position", function(){
-            sandbox.stub(tra3, "_setLocalTransformState");
-            sandbox.stub(tra2, "_setLocalTransformState");
-            tra3.localPosition = Vector3.create(1, 1, 1);
-            tra2.localPosition = Vector3.create(3, 3, 3);
 
-            expect(getValues(tra2.position)).toEqual([3, 3, 3]);
-            expect(getValues(tra2.localPosition)).toEqual([3, 3, 3]);
-            expect(getValues(tra3.position)).toEqual([4, 4, 4]);
-            expect(getValues(tra3.localPosition)).toEqual([1, 1, 1]);
-            expect(getValues(tra1.position)).toEqual([4, 5, 6]);
-            expect(getValues(tra1.localPosition)).toEqual([1, 2, 3]);
+        describe("set local position", function(){
+            it("test", function () {
+                sandbox.stub(tra3, "_setLocalTransformState");
+                sandbox.stub(tra2, "_setLocalTransformState");
+                tra3.localPosition = Vector3.create(1, 1, 1);
+                tra2.localPosition = Vector3.create(3, 3, 3);
 
-            expect(tra3._setLocalTransformState).toCalledOnce();
-            expect(tra2._setLocalTransformState).toCalledOnce();
+                expect(getValues(tra2.position)).toEqual([3, 3, 3]);
+                expect(getValues(tra2.localPosition)).toEqual([3, 3, 3]);
+                expect(getValues(tra3.position)).toEqual([4, 4, 4]);
+                expect(getValues(tra3.localPosition)).toEqual([1, 1, 1]);
+                expect(getValues(tra1.position)).toEqual([4, 5, 6]);
+                expect(getValues(tra1.localPosition)).toEqual([1, 2, 3]);
+
+                expect(tra3._setLocalTransformState).toCalledOnce();
+                expect(tra2._setLocalTransformState).toCalledOnce();
+            });
+            it("not clone if no parent", function () {
+                var pos = {clone:sandbox.stub()};
+                tra1.parent = null;
+
+                tra1.localPosition = pos;
+
+                expect(pos.clone).not.toCalled();
+            });
         });
     });
 
@@ -269,6 +289,14 @@ describe("ThreeDTransform", function(){
         });
 
         describe("set scale", function(){
+            it("not clone if no parent", function () {
+                var data = {clone:sandbox.stub()};
+                tra1.parent = null;
+
+                tra1.scale = data;
+
+                expect(data.clone).not.toCalled();
+            });
             it("test scale", function(){
                 var tra2 = Transform.create();
                 tra2.parent = tra1;
@@ -281,25 +309,35 @@ describe("ThreeDTransform", function(){
             });
         });
 
-        it("set local scale", function(){
-            var tra2 = Transform.create();
-            sandbox.stub(tra2, "_setLocalTransformState");
-            sandbox.stub(tra1, "_setLocalTransformState");
+        describe("set local scale", function(){
+            it("not clone if no parent", function () {
+                var data = {clone:sandbox.stub()};
+                tra1.parent = null;
+
+                tra1.localScale = data;
+
+                expect(data.clone).not.toCalled();
+            });
+            it("test", function () {
+                var tra2 = Transform.create();
+                sandbox.stub(tra2, "_setLocalTransformState");
+                sandbox.stub(tra1, "_setLocalTransformState");
 
 
-            tra2.localScale = Vector3.create(2, 2, 0.5);
-            tra1.parent = tra2;
+                tra2.localScale = Vector3.create(2, 2, 0.5);
+                tra1.parent = tra2;
 
-            tra2.localScale = Vector3.create(2, 1, 1);
-            tra1.localScale = Vector3.create(1, 2, 2);
+                tra2.localScale = Vector3.create(2, 1, 1);
+                tra1.localScale = Vector3.create(1, 2, 2);
 
-            expect(getValues(tra2.localScale)).toEqual([2, 1, 1]);
-            expect(getValues(tra2.scale)).toEqual([2, 1, 1]);
-            expect(getValues(tra1.localScale)).toEqual([1, 2, 2]);
-            expect(getValues(tra1.scale)).toEqual([2, 2, 2]);
+                expect(getValues(tra2.localScale)).toEqual([2, 1, 1]);
+                expect(getValues(tra2.scale)).toEqual([2, 1, 1]);
+                expect(getValues(tra1.localScale)).toEqual([1, 2, 2]);
+                expect(getValues(tra1.scale)).toEqual([2, 2, 2]);
 
-            expect(tra2._setLocalTransformState).toCalledTwice();
-            expect(tra1._setLocalTransformState).toCalledOnce();
+                expect(tra2._setLocalTransformState).toCalledTwice();
+                expect(tra1._setLocalTransformState).toCalledOnce();
+            });
         });
     });
 
@@ -686,6 +724,33 @@ describe("ThreeDTransform", function(){
             wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.ENDLOOP));
 
             expect(tra1.isTranslate).toBeTruthy();
+        });
+    });
+    
+    describe("clone", function(){
+        beforeEach(function(){
+            
+        });
+        
+        it("clone position,rotate,scale", function(){
+            tra1.position = wd.Vector3.create(1,2,3);
+            tra1.scale = wd.Vector3.create(2,2,3);
+            tra1.rotate(1,2,3);
+
+            var result = tra1.clone();
+
+            expect(result !== tra1).toBeTruthy();
+            expect(result.position).toEqual(tra1.position);
+            expect(result.scale).toEqual(tra1.scale);
+            expect(testTool.getValues(result.rotation)).toEqual(testTool.getValues(tra1.rotation));
+        });
+        it("set parent", function () {
+            var parent = Transform.create();
+            tra1.parent = parent;
+
+            var result = tra1.clone();
+
+            expect(result.parent === tra1.parent).toBeTruthy();
         });
     });
 });
