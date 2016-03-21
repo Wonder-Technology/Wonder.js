@@ -66,6 +66,34 @@ describe("SourceInstance", function(){
                 expect(box1Instance1.hasComponent(wd.SourceInstance)).toBeFalsy();
             });
 
+            describe("test lod component", function(){
+                beforeEach(function(){
+                });
+
+                it("if hardware support instance, instance object don't add lod component", function(){
+                    wd.GPUDetector.getInstance().extensionInstancedArrays = {};
+                    box1.addComponent(wd.LOD.create());
+                    box1Instance1 = instanceTool.cloneInstance(box1, "instance1");
+
+                    expect(box1Instance1.hasComponent(wd.LOD)).toBeFalsy();
+                });
+
+                it("else, instance->lod clone source->lod and share geometry with source->lod->geometry", function () {
+                    wd.GPUDetector.getInstance().extensionInstancedArrays = null;
+                    box1.addComponent(wd.LOD.create());
+                    box1Instance1 = instanceTool.cloneInstance(box1, "instance1");
+
+
+                    expect(box1Instance1.getComponent(wd.LOD) !== box1.getComponent(wd.LOD)).toBeTruthy();
+
+                    var instanceLevelList = box1Instance1.getComponent(wd.LOD).levelList;
+                    var sourceLevelList = box1.getComponent(wd.LOD).levelList;
+                    instanceLevelList.forEach(function(data, index){
+                        expect(data.geometry === sourceLevelList.getChild(index).geometry).toBeTruthy();
+                    })
+                });
+            });
+
             describe("test shared component", function(){
                 beforeEach(function(){
 
@@ -75,12 +103,6 @@ describe("SourceInstance", function(){
                     box1Instance1 = instanceTool.cloneInstance(box1, "instance1");
 
                     expect(box1Instance1.getComponent(wd.Geometry) === box1.getComponent(wd.Geometry)).toBeTruthy();
-                });
-                it("share source->lod", function(){
-                    box1.addComponent(wd.LOD.create());
-                    box1Instance1 = instanceTool.cloneInstance(box1, "instance1");
-
-                    expect(box1Instance1.getComponent(wd.LOD) === box1.getComponent(wd.LOD)).toBeTruthy();
                 });
 
                 it("shared component should be init only once", function(){

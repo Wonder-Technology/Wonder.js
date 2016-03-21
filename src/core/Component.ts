@@ -13,7 +13,7 @@ module wd{
         //todo to be abstract method
         //public abstract clone():Component;
         @virtual
-        public clone():Component{
+        public clone(...datas):any{
             Log.error(true, Log.info.FUNC_SHOULD("implement clone method"));
 
             return null;

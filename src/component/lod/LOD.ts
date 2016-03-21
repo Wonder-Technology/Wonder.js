@@ -9,9 +9,21 @@ module wd{
         public entityObject:GameObject;
 
         public activeGeometry:Geometry = null;
-        @cloneAttributeAsCustomType(function(source:LOD, target:LOD){
+        @cloneAttributeAsCustomType(function(source:LOD, target:LOD, memberName:string, isShareGeometry:boolean){
             source.levelList.forEach((levelData:LevelData) => {
-                target.addGeometryLevel(levelData.distanceBetweenCameraAndObject, levelData.geometry === ELODGeometryState.INVISIBLE ? ELODGeometryState.INVISIBLE : (<Geometry>levelData.geometry).clone());
+                var levelDataGeometry:ELODGeometryState|Geometry = null;
+
+                if(levelData.geometry === ELODGeometryState.INVISIBLE){
+                    levelDataGeometry = ELODGeometryState.INVISIBLE;
+                }
+                else if(isShareGeometry){
+                    levelDataGeometry = (<Geometry>levelData.geometry);
+                }
+                else{
+                    levelDataGeometry = (<Geometry>levelData.geometry).clone();
+                }
+
+                target.addGeometryLevel(levelData.distanceBetweenCameraAndObject, levelDataGeometry);
             });
         })
         public levelList:wdCb.Collection<LevelData> = wdCb.Collection.create<LevelData>();
@@ -51,6 +63,11 @@ module wd{
             }, true);
         }
 
+        @require(function(){
+            if(GPUDetector.getInstance().extensionInstancedArrays !== null){
+                assert(!this.entityObject.hasComponent(ObjectInstance), Log.info.FUNC_SHOULD("if hardware support instance, instance object don't add lod component"));
+            }
+        })
         public update(elapsedTime:number):void {
             //todo optimize: only when camera move, then compute lod; reduce compute rate
             var currentDistanceBetweenCameraAndObject:number = Vector3.create().sub2(Director.getInstance().scene.currentCamera.transform.position, this.entityObject.transform.position).length(),
@@ -85,12 +102,12 @@ module wd{
             }
         }
 
-        public clone(){
-            return CloneHelper.clone(this, LOD.create());
+        public clone(isShareGeometry:boolean = false){
+            return CloneHelper.clone(this, LOD.create(), isShareGeometry);
         }
     }
 
-    type LevelData = {
+    export type LevelData = {
         distanceBetweenCameraAndObject:number;
         geometry:Geometry|ELODGeometryState;
     }

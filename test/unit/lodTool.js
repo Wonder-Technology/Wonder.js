@@ -30,8 +30,10 @@ var lodTool = (function () {
                 geoLevel2:geoLevel2
             }
         },
-        judgeSelectGeometry: function (callCount, geo) {
-            expect(rendererComponent.render.getCall(callCount).args[1].uid).toEqual(geo.uid);
+        judgeSelectGeometry: function (callCount, geo, renderer) {
+            var r = renderer || rendererComponent;
+
+            expect(r.render.getCall(callCount).args[1].uid).toEqual(geo.uid);
         },
         setCameraPos: function (camera, pos) {
             camera.transform.position = pos;

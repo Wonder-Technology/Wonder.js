@@ -196,14 +196,16 @@ describe("LOD", function() {
     });
 
     describe("clone", function(){
+        var geo;
+
         beforeEach(function(){
+            geo = lodTool.createGeo();
+            lod.addGeometryLevel(10, geo);
+            lod.addGeometryLevel(20, wd.ELODGeometryState.INVISIBLE);
         });
 
         it("clone levelList", function(){
-            var geo = lodTool.createGeo();
             var cloneGeo = lodTool.createGeo();
-            lod.addGeometryLevel(10, geo);
-            lod.addGeometryLevel(20, wd.ELODGeometryState.INVISIBLE);
             sandbox.stub(geo, "clone").returns(cloneGeo);
 
             var result = lod.clone();
@@ -216,6 +218,22 @@ describe("LOD", function() {
                     {
                         distanceBetweenCameraAndObject: 10,
                         geometry:cloneGeo
+                    }
+                ]
+            );
+            expect(result !== lod).toBeTruthy();
+        });
+        it("if param->isShareGeometry is true, cloned levelList->geometry share with source->levelList->geometry", function(){
+            var result = lod.clone(true);
+
+            expect(result.levelList.getChildren()).toEqual( [
+                    {
+                        distanceBetweenCameraAndObject: 20,
+                        geometry:wd.ELODGeometryState.INVISIBLE
+                    },
+                    {
+                        distanceBetweenCameraAndObject: 10,
+                        geometry:geo
                     }
                 ]
             );

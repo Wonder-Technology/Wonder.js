@@ -28,12 +28,12 @@ module wd {
         return generateCloneableMember(CloneType.CLONEABLE);
     }
 
-    export function cloneAttributeAsCustomType(cloneFunc:(target:any, member:any) => void) {
+    export function cloneAttributeAsCustomType(cloneFunc:(source:any, target:any, memberName:string, data:any) => void) {
         return generateCloneableMember(CloneType.CUSTOM, cloneFunc);
     }
 
     export class CloneHelper{
-        public static clone<T>(source:T, target:T):T{
+        public static clone<T>(source:T, target:T, data:any = null):T{
             var cloneAttributeMembers = (<any>source).__decorator_cloneAttributeMembers;
 
             if(!cloneAttributeMembers){
@@ -51,7 +51,7 @@ module wd {
                     case CloneType.CUSTOM:
                         let cloneFunc = dataArr[0];
 
-                        cloneFunc(source, target, memberName);
+                        cloneFunc(source, target, memberName, data);
                         break;
                 }
             });

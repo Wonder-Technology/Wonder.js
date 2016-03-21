@@ -128,12 +128,25 @@ module wd{
             instance.removeComponent(Transform);
 
             source.forEachComponent((component:Component) => {
+                //todo if hardware support, not add lod
                 if(component instanceof SourceInstance){
                     return;
                 }
 
+                if(GPUDetector.getInstance().extensionInstancedArrays !== null){
+                    if(component instanceof LOD){
+                        return;
+                    }
+                }
+                else if(component instanceof LOD){
+                    instance.addComponent(component.clone(true));
+                    return;
+                }
+
                 //todo any more component should be share, not clone(to save the memory)?
-                if(component instanceof Geometry || component instanceof LOD){
+                //if(component instanceof Geometry || component instanceof LOD){
+                    //if(component instanceof LOD){
+                if(component instanceof Geometry){
                     instance.addComponent(component, true);
                 }
                 else{
