@@ -152,6 +152,14 @@ module wd{
         protected addShaderLib(){
             var envMap = null;
 
+            //todo test
+            if(GPUDetector.getInstance().extensionInstancedArrays !== null && this.geometry.entityObject.hasComponent(SourceInstance)){
+                this.shader.addLib(InstanceNormalMatrixShaderLib.create());
+            }
+            else{
+                this.shader.addLib(NoInstanceNormalMatrixShaderLib.create());
+            }
+
             this.addNormalShaderLib();
             this.shader.addLib(LightCommonShaderLib.create());
             this._setLightMapShaderLib();

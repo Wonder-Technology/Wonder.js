@@ -103,7 +103,8 @@ module wd{
             return EVariableType.BUFFER;
         }
 
-        private static _getUniformData(data:any, cmd:QuadCommand){
+        //todo modify
+        private static _getUniformData(data:any, cmd:any){
             switch (data){
                 case EVariableSemantic.MODEL:
                     return cmd.mMatrix;

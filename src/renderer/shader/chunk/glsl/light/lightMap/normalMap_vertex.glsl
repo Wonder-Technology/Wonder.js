@@ -20,12 +20,8 @@ varying vec3 v_directionLightDir[DIRECTION_LIGHTS_COUNT];
 
 @funcDefine
         mat3 computeTBN(){
-            //vec3 T = normalize(normalMatrix * tangent);
-            //vec3 B = normalize(normalMatrix * bitangent);
-            //vec3 N = normalize(normalMatrix * normal);
-
-            vec3 T = normalize(u_normalMatrix * a_tangent);
-            vec3 N = normalize(u_normalMatrix * a_normal);
+            vec3 T = normalize(normalMatrix * a_tangent);
+            vec3 N = normalize(normalMatrix * a_normal);
             // re-orthogonalize T with respect to N
             T = normalize(T - dot(T, N) * N);
             // then retrieve perpendicular vector B with the cross product of T and N

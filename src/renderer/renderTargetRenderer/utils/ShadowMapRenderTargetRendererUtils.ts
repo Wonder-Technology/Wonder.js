@@ -66,7 +66,7 @@ module wd {
             this._shader = CommonShader.create();
             this._shader.addLib(CommonShaderLib.create());
             this._shader.addLib(CommonVerticeShaderLib.create());
-            this._shader.addLib(NoInstanceShaderLib.create());
+            this._shader.addLib(NoInstanceModelMatrixShaderLib.create());
             this._shader.addLib(lib);
         }
 

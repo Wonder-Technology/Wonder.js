@@ -397,6 +397,21 @@ module wd{
             type:EVariableType.FLOAT_4,
             value:EVariableCategory.ENGINE
         };
+
+        public static a_normalVec4_0 :ShaderVariable = {
+            type:EVariableType.FLOAT_3,
+            value:EVariableCategory.ENGINE
+        };
+
+        public static a_normalVec4_1 :ShaderVariable = {
+            type:EVariableType.FLOAT_3,
+            value:EVariableCategory.ENGINE
+        };
+
+        public static a_normalVec4_2 :ShaderVariable = {
+            type:EVariableType.FLOAT_3,
+            value:EVariableCategory.ENGINE
+        };
     }
 
     export type ShaderVariable = {

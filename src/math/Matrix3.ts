@@ -187,6 +187,17 @@ module wd {
             return Matrix3.create().set(this);
         }
 
+        //todo test
+        public cloneToArray(array: Float32Array, offset: number = 0): Matrix3 {
+            var values = this.values;
+
+            for (let index = 0; index < 9; index++) {
+                array[offset + index] = values[index];
+            }
+
+            return this;
+        }
+
         public set(matrix:Matrix3) {
             var te = this.values,
                 values = matrix.values;

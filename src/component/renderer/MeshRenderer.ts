@@ -23,51 +23,65 @@ module wd {
             assert(!!geometry, Log.info.FUNC_MUST("Mesh", "add geometry component"));
         })
         protected createDrawCommand(geometry:Geometry, camera:GameObject){
-             var quadCmd:QuadCommand = QuadCommand.create(),
+             var cmd:QuadCommand = null,
                 cameraComponent = camera.getComponent<CameraController>(CameraController),
                 material:Material = geometry.material,
                  position:Vector3 = this.entityObject.transform.position,
                  target:GameObject = geometry.entityObject;
 
-            quadCmd.target = target;
+            cmd = this._createCommand(target, material);
 
-            quadCmd.buffers = geometry.buffers;
+            cmd.target = target;
 
-            quadCmd.drawMode = geometry.drawMode;
+            cmd.buffers = geometry.buffers;
 
-            quadCmd.vMatrix = cameraComponent.worldToCameraMatrix;
-            quadCmd.pMatrix = cameraComponent.pMatrix;
+            cmd.drawMode = geometry.drawMode;
 
-            quadCmd.material = material;
+            cmd.vMatrix = cameraComponent.worldToCameraMatrix;
+            cmd.pMatrix = cameraComponent.pMatrix;
 
-            quadCmd.z = position.z;
+            cmd.material = material;
 
-            quadCmd.blend = material.blend;
+            cmd.z = position.z;
 
-            this._setInstance(quadCmd, target);
+            cmd.blend = material.blend;
 
-            return quadCmd;
+            return cmd;
         }
 
-        @require(function(quadCmd:QuadCommand, target:GameObject){
+        @require(function(target:GameObject){
             if(target.hasComponent(Instance) && GPUDetector.getInstance().extensionInstancedArrays !== null){
                 assert(target.hasComponent(SourceInstance) && !target.hasComponent(ObjectInstance), Log.info.FUNC_SHOULD("if use instance to batch draw, target", "be SourceInstance"));
             }
         })
-        @ensure(function(returnVal, quadCmd:QuadCommand, target:GameObject){
-            if(quadCmd.instanceDrawer.hasInstance()){
+        @ensure(function(cmd, target:GameObject){
+            if(cmd instanceof InstanceCommand){
                 assert(GPUDetector.getInstance().extensionInstancedArrays !== null, Log.info.FUNC_SHOULD("hardware", "support instance"));
             }
         })
-        private _setInstance(quadCmd:QuadCommand, target:GameObject){
+        private _createCommand(target:GameObject, material:Material){
+            var cmd:any = null;
+
             if(target.hasComponent(Instance) && GPUDetector.getInstance().extensionInstancedArrays !== null){
                 let instanceComponent:Instance = target.getComponent<Instance>(Instance);
-                quadCmd.instanceDrawer.instanceList = instanceComponent.toRenderInstanceListForDraw;
-                quadCmd.instanceDrawer.instanceBuffer = instanceComponent.instanceBuffer;
+
+                cmd = InstanceCommand.create();
+
+                cmd.instanceList = instanceComponent.toRenderInstanceListForDraw;
+                cmd.instanceBuffer = instanceComponent.instanceBuffer;
+
+                //todo test
+                if(material instanceof StandardLightMaterial){
+                    cmd.glslData = EInstanceGLSLData.NORMALMATRIX_MODELMATRIX;
+                }
             }
             else{
-                quadCmd.mMatrix = this.entityObject.transform.localToWorldMatrix;
+                cmd = SingleDrawCommand.create();
+
+                cmd.mMatrix = this.entityObject.transform.localToWorldMatrix;
             }
+
+            return cmd;
         }
     }
 }

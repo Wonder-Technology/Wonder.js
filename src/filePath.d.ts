@@ -326,8 +326,14 @@
 /// <reference path="renderer/Program"/>
 /// <reference path="renderer/command/RenderCommand"/>
 /// <reference path="renderer/command/QuadCommand"/>
+/// <reference path="renderer/command/SingleDrawCommand"/>
+/// <reference path="renderer/command/InstanceCommand"/>
 /// <reference path="renderer/command/ProceduralCommand"/>
 /// <reference path="renderer/command/InstanceDrawer"/>
+/// <reference path="renderer/command/InstanceDrawerProxy"/>
+/// <reference path="renderer/command/ModelMatrixInstanceDrawer"/>
+/// <reference path="renderer/command/NormalMatrixModelMatrixInstanceDrawer"/>
+/// <reference path="renderer/command/EInstanceGLSLData"/>
 
 /// <reference path="renderer/GlUtils"/>
 
@@ -410,8 +416,10 @@
 /// <reference path="renderer/shader/lib/utils/CustomShaderLibUtils"/>
 
 
-/// <reference path="renderer/shader/lib/instance/InstanceShaderLib"/>
-/// <reference path="renderer/shader/lib/instance/NoInstanceShaderLib"/>
+/// <reference path="renderer/shader/lib/instance/InstanceModelMatrixShaderLib"/>
+/// <reference path="renderer/shader/lib/instance/InstanceNormalMatrixShaderLib"/>
+/// <reference path="renderer/shader/lib/instance/NoInstanceModelMatrixShaderLib"/>
+/// <reference path="renderer/shader/lib/instance/NoInstanceNormalMatrixShaderLib"/>
 
 
 /// <reference path="renderer/shader/chunk/ShaderChunk"/>

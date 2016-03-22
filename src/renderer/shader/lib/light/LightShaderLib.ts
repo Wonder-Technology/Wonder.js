@@ -9,7 +9,6 @@ module wd{
         public type:string = "light";
 
         public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
-            this.sendUniformData(program, "u_normalMatrix", quadCmd.normalMatrix);
             this.sendUniformData(program, "u_cameraPos", Director.getInstance().scene.currentCamera.transform.position);
 
 

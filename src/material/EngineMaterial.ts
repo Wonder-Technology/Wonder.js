@@ -44,10 +44,10 @@ module wd {
         private _addTopShaderLib(){
             this.shader.addLib(CommonShaderLib.create());
             if(GPUDetector.getInstance().extensionInstancedArrays !== null && this.geometry.entityObject.hasComponent(SourceInstance)){
-                this.shader.addLib(InstanceShaderLib.create());
+                this.shader.addLib(InstanceModelMatrixShaderLib.create());
             }
             else{
-                this.shader.addLib(NoInstanceShaderLib.create());
+                this.shader.addLib(NoInstanceModelMatrixShaderLib.create());
             }
 
             if(this._hasAnimation()){
