@@ -4,7 +4,6 @@ module wd {
             return this.material.program;
         }
 
-
         private _vMatrix:Matrix4 = null;
         get vMatrix(){
             return this._vMatrix;

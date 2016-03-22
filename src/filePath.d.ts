@@ -329,6 +329,7 @@
 /// <reference path="renderer/command/SingleDrawCommand"/>
 /// <reference path="renderer/command/InstanceCommand"/>
 /// <reference path="renderer/command/ProceduralCommand"/>
+/// <reference path="renderer/command/IInstanceDrawer"/>
 /// <reference path="renderer/command/InstanceDrawer"/>
 /// <reference path="renderer/command/InstanceDrawerProxy"/>
 /// <reference path="renderer/command/ModelMatrixInstanceDrawer"/>

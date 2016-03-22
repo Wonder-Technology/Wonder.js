@@ -1,5 +1,5 @@
 module wd{
-    export class InstanceDrawerProxy extends InstanceDrawer{
+    export class InstanceDrawerProxy implements IInstanceDrawer{
         public static create() {
         	var obj = new this();
 

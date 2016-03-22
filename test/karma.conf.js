@@ -32,9 +32,9 @@
         //'test/unit/**/action/*',
 
         //'test/unit/**/RenderUtils*',
-        ////
-        //'test/unit/**/QuadCommand*',
-        ////
+
+        'test/unit/**/command/*',
+
         'test/unit/**/instance/*',
 
         //'test/unit/**/water*',
@@ -49,7 +49,7 @@
         //
         //'test/unit/texture/**',
 
-        'test/unit/**/material/**',
+        //'test/unit/**/material/**',
         //
         //'test/unit/**/MapManager*',
 
@@ -74,7 +74,7 @@
         //
 
 
-        'test/unit/**/lod/*',
+        //'test/unit/**/lod/*',
 
         //'test/unit/**/CameraController*',
 
@@ -139,8 +139,8 @@
         //
         //'test/unit/**/ImageSpec*',
         //
-        'test/unit/**/ThreeDTransformSpec.js',
-        'test/unit/**/RectTransformSpec*',
+        //'test/unit/**/ThreeDTransformSpec.js',
+        //'test/unit/**/RectTransformSpec*',
         //'test/unit/**/TransformSpec*',
         //'test/unit/**/component/**',
         //'test/unit/**/PanelSpec*',

@@ -8,7 +8,8 @@ var rendererTool = {
         return source.split("\n").join("")
     },
     createQuadCommand: function(sandbox){
-        var quadCmd = wd.QuadCommand.create();
+        var quadCmd = new wd.QuadCommand();
+        quadCmd.draw = sandbox.stub();
 
 
         vertices = [1,2,3];
@@ -20,7 +21,7 @@ var rendererTool = {
 
 
 
-        quadCmd.mMatrix = wd.Matrix4.create();
+        //quadCmd.mMatrix = wd.Matrix4.create();
         quadCmd.vMatrix = wd.Matrix4.create();
         quadCmd.pMatrix = wd.Matrix4.create();
 

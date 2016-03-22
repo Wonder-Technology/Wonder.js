@@ -34,13 +34,13 @@ describe("InstanceBuffer", function () {
         });
 
         it("if instance matrixs capacity not exceed buffer capacity, not recreate buffer and not update capacity", function () {
-            buffer.setCapacity(2);
+            buffer.setCapacity(2 * 16 * 4);
 
             expect(gl.createBuffer).not.toCalledTwice();
             expect(buffer._capacity).toEqual(3 * 16 * 4);
         });
         it("else, increate capacity by 2 times and recreate buffer", function () {
-            buffer.setCapacity(4);
+            buffer.setCapacity(4 * 16 * 4);
 
             expect(gl.createBuffer).toCalledTwice();
             expect(gl.deleteBuffer).toCalledOnce();

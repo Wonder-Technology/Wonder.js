@@ -152,7 +152,6 @@ module wd{
         protected addShaderLib(){
             var envMap = null;
 
-            //todo test
             if(GPUDetector.getInstance().extensionInstancedArrays !== null && this.geometry.entityObject.hasComponent(SourceInstance)){
                 this.shader.addLib(InstanceNormalMatrixShaderLib.create());
             }
