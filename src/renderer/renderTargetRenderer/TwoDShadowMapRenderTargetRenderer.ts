@@ -34,6 +34,7 @@ module wd {
 
             this._shadowMapRendererUtils.bindEndLoop(() => {
                 //here not need removeRepeatItems
+                //todo getRenderList()?
                 self._light.shadowRenderList.forEach((child:GameObject) => {
                     self._shadowMapRendererUtils.clearTwoDShadowMapData(child);
                 });
@@ -59,7 +60,14 @@ module wd {
             });
         }
         protected getRenderList():wdCb.Collection<GameObject>{
-            return this._light.shadowRenderList;
+            //return this._light.shadowRenderList;
+
+
+            return this._light.shadowRenderList
+                .filter((child:GameObject, index:number) => {
+                    //return child.name === "ground";
+                    return child.isVisible && (GPUDetector.getInstance().extensionInstancedArrays === null || !child.hasComponent(ObjectInstance));
+                });
         }
         protected renderRenderer(renderer){
             renderer.render();

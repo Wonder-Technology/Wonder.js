@@ -75,7 +75,7 @@ module wd{
                 lib.init();
             });
 
-            this.judgeRefreshShader(material);
+            this.judgeRefreshShader(null, material);
         }
 
         public dispose(){
@@ -177,9 +177,10 @@ module wd{
         protected abstract buildDefinitionData(cmd:RenderCommand, material:Material):void;
 
 
-        protected judgeRefreshShader(material:Material){
+        //todo test
+        protected judgeRefreshShader(cmd:RenderCommand, material:Material){
             if(this.libDirty){
-                this.buildDefinitionData(null, material);
+                this.buildDefinitionData(cmd, material);
             }
 
             if(this._definitionDataDirty){

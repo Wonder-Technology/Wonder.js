@@ -20,7 +20,9 @@ module wd {
 
         protected sendGLSLData(instanceList:wdCb.Collection<GameObject>, instanceBuffer:InstanceBuffer, offsetLocationArr: Array<number>):void{
             var matricesArrayForInstance = new Float32Array(instanceBuffer.float32InstanceArraySize),
-                offset = 0;
+                offset = 0,
+                gl = DeviceManager.getInstance().gl,
+                extension = GPUDetector.getInstance().extensionInstancedArrays;
 
             instanceList.forEach((instance:GameObject) => {
                 var mMatrix:Matrix4 = instance.transform.localToWorldMatrix,
@@ -36,18 +38,15 @@ module wd {
 
             instanceBuffer.resetData(matricesArrayForInstance, offsetLocationArr);
 
-            var gl = DeviceManager.getInstance().gl;
-            var extension = GPUDetector.getInstance().extensionInstancedArrays;
-
-            for (var index = 0; index < 4; index++) {
-                var offsetLocation = offsetLocationArr[index];
+            for (let index = 0; index < 4; index++) {
+                let offsetLocation = offsetLocationArr[index];
                 gl.enableVertexAttribArray(offsetLocation);
                 /*! stride: 4 * 4 * 4 + 4 * 3 * 3, offset: index * 4 * 4 */
                 gl.vertexAttribPointer(offsetLocation, 4, gl.FLOAT, false, 100, index * 16);
                 extension.vertexAttribDivisorANGLE(offsetLocation, 1);
             }
-            for (var index = 4; index < 7; index++) {
-                var offsetLocation = offsetLocationArr[index];
+            for (let index = 4; index < 7; index++) {
+                let offsetLocation = offsetLocationArr[index];
                 gl.enableVertexAttribArray(offsetLocation);
                 /*! stride: 4 * 4 * 4 + 4 * 3 * 3, offset: (index - 4) * 4 * 3 + 4 * 16 */
                 gl.vertexAttribPointer(offsetLocation, 3, gl.FLOAT, false, 100, (index - 4) * 12 + 64);

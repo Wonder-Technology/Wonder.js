@@ -11,7 +11,7 @@ module wd{
         public update(cmd:ProceduralCommand){
             var program = this.program;
 
-            this.judgeRefreshShader(null);
+            this.judgeRefreshShader(cmd, null);
 
             this.program.use();
 
