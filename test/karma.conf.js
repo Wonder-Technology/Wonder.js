@@ -33,9 +33,9 @@
 
         //'test/unit/**/RenderUtils*',
 
-        'test/unit/**/command/*',
+        //'test/unit/**/command/*',
 
-        'test/unit/**/instance/*',
+        //'test/unit/**/instance/*',
 
         //'test/unit/**/water*',
 
@@ -43,15 +43,15 @@
 
         //'test/unit/**/terrain*',
 
-        'test/unit/**/shaderLibSpec*',
-        'test/unit/**/*ShaderLib*',
-        'test/unit/**/ShaderLib*',
-
-        'test/unit/**/envMap*',
+        //'test/unit/**/shaderLibSpec*',
+        //'test/unit/**/*ShaderLib*',
+        //'test/unit/**/ShaderLib*',
+        //
+        //'test/unit/**/envMap*',
         //
         //'test/unit/texture/**',
 
-        'test/unit/**/material/**',
+        //'test/unit/**/material/**',
         //
         //'test/unit/**/MapManager*',
 
@@ -141,9 +141,9 @@
         //
         //'test/unit/**/ImageSpec*',
         //
-        //'test/unit/**/ThreeDTransformSpec.js',
-        //'test/unit/**/RectTransformSpec*',
-        //'test/unit/**/TransformSpec*',
+        'test/unit/**/ThreeDTransformSpec.js',
+        'test/unit/**/RectTransformSpec*',
+        'test/unit/**/TransformSpec*',
         //'test/unit/**/component/**',
         //'test/unit/**/PanelSpec*',
         //

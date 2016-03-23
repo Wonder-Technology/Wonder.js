@@ -732,17 +732,56 @@ describe("ThreeDTransform", function(){
             
         });
         
-        it("clone position,rotate,scale", function(){
-            tra1.position = wd.Vector3.create(1,2,3);
-            tra1.scale = wd.Vector3.create(2,2,3);
-            tra1.rotate(1,2,3);
+        describe("clone position,rotate,scale, localPosition,localRotation, localScale", function(){
+            var result;
 
-            var result = tra1.clone();
+            function judge(){
+                expect(result !== tra1).toBeTruthy();
+                expect(result.position).toEqual(tra1.position);
+                expect(result.scale).toEqual(tra1.scale);
+                expect(testTool.getValues(result.rotation)).toEqual(testTool.getValues(tra1.rotation));
 
-            expect(result !== tra1).toBeTruthy();
-            expect(result.position).toEqual(tra1.position);
-            expect(result.scale).toEqual(tra1.scale);
-            expect(testTool.getValues(result.rotation)).toEqual(testTool.getValues(tra1.rotation));
+                expect(result.localPosition).toEqual(tra1.localPosition);
+                expect(result.localScale).toEqual(tra1.localScale);
+                expect(testTool.getValues(result.localRotation)).toEqual(testTool.getValues(tra1.localRotation));
+            }
+
+            it("test1", function () {
+                tra1.position = wd.Vector3.create(1,2,3);
+                tra1.scale = wd.Vector3.create(2,2,3);
+                tra1.rotate(1,2,3);
+
+                result = tra1.clone();
+
+                judge();
+            });
+            it("test2", function () {
+                tra1.position = wd.Vector3.create(1,2,3);
+                tra1.rotation = wd.Quaternion.create(1,20,30,1);
+                tra1.scale = wd.Vector3.create(2,2,3);
+
+                result = tra1.clone();
+
+                judge();
+            });
+            it("test3", function () {
+                tra1.position = wd.Vector3.create(1,2,3);
+                tra1.eulerAngles = wd.Vector3.create(10,20,30);
+                tra1.scale = wd.Vector3.create(2,2,3);
+
+                result = tra1.clone();
+
+                judge();
+            });
+            it("test3", function () {
+                tra1.position = wd.Vector3.create(1,2,3);
+                tra1.localRotation = wd.Quaternion.create(1,20,30,1);
+                tra1.localScale = wd.Vector3.create(2,2,3);
+
+                result = tra1.clone();
+
+                judge();
+            });
         });
         it("set parent", function () {
             var parent = Transform.create();

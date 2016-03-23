@@ -58,6 +58,12 @@
             model.addComponent(sourceInstanceComponent);
 
             arr.push(model);
+            model.transform.translate(100,100,100);
+            model.transform.scale = wd.Vector3.create(3,3,3);
+            model.transform.rotate(0,0,30);
+//            model.transform.eulerAngles = wd.Vector3.create(0,0,30);
+//            model.transform.localEulerAngles = wd.Vector3.create(0,0,40);
+
 
             for(var i = 0; i < count; i++){
                 var instance = sourceInstanceComponent.cloneInstance("index" + String(i));
@@ -72,9 +78,6 @@
 
 
 
-            model.transform.translate(100,100,100);
-//            model.transform.rotate(45,45,45);
-            model.transform.scale = wd.Vector3.create(3,3,3);
 
 //            return model;
             return arr;

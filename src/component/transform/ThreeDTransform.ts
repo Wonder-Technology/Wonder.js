@@ -116,6 +116,7 @@ module wd{
         }
 
         private _localPosition:Vector3 = Vector3.create(0, 0, 0);
+        @cloneAttributeAsCloneable()
         get localPosition(){
             return this._localPosition;
         }
@@ -126,6 +127,7 @@ module wd{
         }
 
         private _localRotation:Quaternion = Quaternion.create(0, 0, 0, 1);
+        @cloneAttributeAsCloneable()
         get localRotation(){
             return this._localRotation;
         }
@@ -155,6 +157,7 @@ module wd{
         }
 
         private _localScale:Vector3 = Vector3.create(1, 1, 1);
+        @cloneAttributeAsCloneable()
         get localScale(){
             return this._localScale;
         }
