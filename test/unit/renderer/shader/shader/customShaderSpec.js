@@ -147,7 +147,7 @@ describe("custom shader", function () {
                     sandbox.stub(shader.program, "sendUniformData");
                     sandbox.stub(shader.program, "use");
 
-                    quadCmd = rendererTool.createQuadCommand(sandbox);
+                    quadCmd = rendererTool.createSingleDrawCommand(sandbox);
 
 
                     vertices = [1,2,3];

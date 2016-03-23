@@ -24,7 +24,7 @@ describe("water fresnel", function () {
             wd.Director.getInstance().scene.currentCamera = wd.GameObject.create();
 
 
-            quadCmd = rendererTool.createQuadCommand(sandbox);
+            quadCmd = rendererTool.createSingleDrawCommand(sandbox);
 
             quadCmd.material = material;
         });

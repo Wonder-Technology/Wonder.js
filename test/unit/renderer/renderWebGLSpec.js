@@ -204,13 +204,13 @@ describe("renderWebGL", function() {
         });
 
         it("if has skyboxCommand, return true", function(){
-            renderer.skyboxCommand = wd.QuadCommand.create();
+            renderer.skyboxCommand = wd.SingleDrawCommand.create();
 
             expect(renderer.hasCommand()).toBeTruthy();
         });
         it("if has QuadCommand, return true", function(){
             renderer.skyboxCommand = null;
-            renderer.addCommand(wd.QuadCommand.create());
+            renderer.addCommand(new wd.QuadCommand());
 
             expect(renderer.hasCommand()).toBeTruthy();
         });

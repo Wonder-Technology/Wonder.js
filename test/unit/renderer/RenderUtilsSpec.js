@@ -7,6 +7,9 @@ describe("RenderUtils", function() {
 
         testTool.openContractCheck(sandbox);
 
+
+        instanceTool.prepareExtensionInstancedArrays(sandbox);
+
         Utils = wd.RenderUtils;
     });
     afterEach(function () {
@@ -52,8 +55,8 @@ describe("RenderUtils", function() {
 
                     var list = Utils.getGameObjectRenderListFromSpacePartition(renderList);
 
-                    expect(list.hasChild(box1)).toBeTruthy();
                     expect(list.getCount()).toEqual(1);
+                    expect(list.hasChild(box1)).toBeTruthy();
 
 
                     var box1Instance = box1.getComponent(wd.SourceInstance);

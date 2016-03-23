@@ -17,7 +17,7 @@ describe("CommonShader", function() {
         var lib;
 
         beforeEach(function(){
-            quadCmd = wd.QuadCommand.create();
+            quadCmd = rendererTool.createQuadCommand(sandbox);
             material = wd.LightMaterial.create();
 
             shader.program = wd.Program.create();

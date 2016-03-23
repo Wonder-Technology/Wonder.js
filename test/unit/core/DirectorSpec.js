@@ -326,7 +326,7 @@ describe("Director", function () {
 
 
 
-            director.renderer.skyboxCommand = wd.QuadCommand.create();
+            director.renderer.skyboxCommand = rendererTool.createQuadCommand(sandbox);
 
             director._runGameObjectScene(1);
 
