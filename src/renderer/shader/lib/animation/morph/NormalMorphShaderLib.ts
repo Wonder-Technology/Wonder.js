@@ -1,12 +1,12 @@
 module wd{
-    export class MorphNormalShaderLib extends EngineShaderLib{
+    export class NormalMorphShaderLib extends EngineShaderLib{
         public static create() {
             var obj = new this();
 
             return obj;
         }
 
-        public type:string = "morphNormal";
+        public type:string = "normal_morph";
 
         public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:EngineMaterial){
             var morphNormalData = quadCmd.buffers.getChild(EBufferDataType.NORMAL);

@@ -1,21 +1,21 @@
 module wd{
-    export class NoInstanceNormalMatrixShaderLib extends EngineShaderLib{
+    export class ModelMatrixNoInstanceShaderLib extends EngineShaderLib{
         public static create() {
             var obj = new this();
 
             return obj;
         }
 
-        public type:string = "noInstance_normalMatrix";
+        public type:string = "modelMatrix_noInstance";
 
         public sendShaderVariables(program:Program, cmd:SingleDrawCommand, material:EngineMaterial){
-            this.sendUniformData(program, "u_normalMatrix", cmd.normalMatrix);
+            this.sendUniformData(program, "u_mMatrix", cmd.mMatrix);
         }
 
         public setShaderDefinition(cmd:SingleDrawCommand, material:EngineMaterial){
             super.setShaderDefinition(cmd, material);
 
-            this.addUniformVariable(["u_normalMatrix"]);
+            this.addUniformVariable(["u_mMatrix"]);
         }
     }
 }

@@ -1,12 +1,12 @@
 module wd{
-    export class MorphCommonShaderLib extends EngineShaderLib{
+    export class CommonMorphShaderLib extends EngineShaderLib{
         public static create() {
             var obj = new this();
 
             return obj;
         }
 
-        public type:string = "morphCommon";
+        public type:string = "common_morph";
 
         @require(function(program:Program, quadCmd:QuadCommand, material:EngineMaterial){
             assert(quadCmd.target.hasComponent(MorphAnimation), Log.info.FUNC_SHOULD("entityObject", "has MorphAnimation component"));

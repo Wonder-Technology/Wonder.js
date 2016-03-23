@@ -20,11 +20,11 @@ module wd {
         }
 
         protected addNormalShaderLib(){
-            if(this._hasAnimation() && !this.shader.hasLib(MorphNormalShaderLib)){
-                this._addShaderLibToTop(MorphNormalShaderLib.create());
+            if(this._hasAnimation() && !this.shader.hasLib(NormalMorphShaderLib)){
+                this._addShaderLibToTop(NormalMorphShaderLib.create());
             }
-            else if(!this.shader.hasLib(CommonNormalShaderLib)){
-                this._addShaderLibToTop(CommonNormalShaderLib.create());
+            else if(!this.shader.hasLib(NormalCommonShaderLib)){
+                this._addShaderLibToTop(NormalCommonShaderLib.create());
             }
         }
 
@@ -44,18 +44,18 @@ module wd {
         private _addTopShaderLib(){
             this.shader.addLib(CommonShaderLib.create());
             if(GPUDetector.getInstance().extensionInstancedArrays !== null && this.geometry.entityObject.hasComponent(SourceInstance)){
-                this.shader.addLib(InstanceModelMatrixShaderLib.create());
+                this.shader.addLib(ModelMatrixInstanceShaderLib.create());
             }
             else{
-                this.shader.addLib(NoInstanceModelMatrixShaderLib.create());
+                this.shader.addLib(ModelMatrixNoInstanceShaderLib.create());
             }
 
             if(this._hasAnimation()){
-                this.shader.addLib(MorphCommonShaderLib.create());
-                this.shader.addLib(MorphVerticeShaderLib.create());
+                this.shader.addLib(CommonMorphShaderLib.create());
+                this.shader.addLib(VerticeMorphShaderLib.create());
             }
             else{
-                this.shader.addLib(CommonVerticeShaderLib.create());
+                this.shader.addLib(VerticeCommonShaderLib.create());
             }
         }
 

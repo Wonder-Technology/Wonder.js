@@ -1,12 +1,12 @@
 module wd{
-    export class EnvMapReflectionForBasicShaderLib extends EnvMapForBasicShaderLib{
+    export class ReflectionForLightEnvMapShaderLib extends ForLightEnvMapShaderLib{
         public static create() {
             var obj = new this();
 
             return obj;
         }
 
-        public type:string = "envMap_reflection_forBasic";
+        public type:string = "reflection_forLight_envMap";
 
         public setShaderDefinition(quadCmd:QuadCommand, material:EngineMaterial){
             super.setShaderDefinition(quadCmd, material);

@@ -153,10 +153,10 @@ module wd{
             var envMap = null;
 
             if(GPUDetector.getInstance().extensionInstancedArrays !== null && this.geometry.entityObject.hasComponent(SourceInstance)){
-                this.shader.addLib(InstanceNormalMatrixShaderLib.create());
+                this.shader.addLib(NormalMatrixInstanceShaderLib.create());
             }
             else{
-                this.shader.addLib(NoInstanceNormalMatrixShaderLib.create());
+                this.shader.addLib(NormalMatrixNoInstanceShaderLib.create());
             }
 
             this.addNormalShaderLib();
@@ -233,16 +233,16 @@ module wd{
         private _setEnvMapShaderLib(envMap:CubemapTexture){
             switch (envMap.mode){
                 case EEnvMapMode.BASIC:
-                    this.shader.addLib(EnvMapBasicForLightShaderLib.create());
+                    this.shader.addLib(BasicForLightEnvMapShaderLib.create());
                     break;
                 case EEnvMapMode.REFLECTION:
-                    this.shader.addLib(EnvMapReflectionForLightShaderLib.create());
+                    this.shader.addLib(ReflectionForLightEnvMapShaderLib.create());
                     break;
                 case EEnvMapMode.REFRACTION:
-                    this.shader.addLib(EnvMapRefractionForLightShaderLib.create());
+                    this.shader.addLib(RefractionForLightEnvMapShaderLib.create());
                     break;
                 case EEnvMapMode.FRESNEL:
-                    this.shader.addLib(EnvMapFresnelForLightShaderLib.create());
+                    this.shader.addLib(FresnelForLightEnvMapShaderLib.create());
                     break;
                 default:
                     Log.error(true, Log.info.FUNC_INVALID("EEnvMapMode"));

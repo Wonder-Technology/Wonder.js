@@ -1,12 +1,12 @@
 module wd{
-    export class InstanceModelMatrixShaderLib extends EngineShaderLib{
+    export class NormalMatrixInstanceShaderLib extends EngineShaderLib{
         public static create() {
             var obj = new this();
 
             return obj;
         }
 
-        public type:string = "instance_modelMatrix";
+        public type:string = "normalMatrix_instance";
 
         public sendShaderVariables(program:Program, cmd:InstanceCommand, material:EngineMaterial){
         }
@@ -14,8 +14,7 @@ module wd{
         public setShaderDefinition(cmd:InstanceCommand, material:EngineMaterial){
             super.setShaderDefinition(cmd, material);
 
-            this.addAttributeVariable(["a_mVec4_0", "a_mVec4_1","a_mVec4_2","a_mVec4_3"
-            ]);
+            this.addAttributeVariable(["a_normalVec4_0", "a_normalVec4_1","a_normalVec4_2"]);
         }
     }
 }

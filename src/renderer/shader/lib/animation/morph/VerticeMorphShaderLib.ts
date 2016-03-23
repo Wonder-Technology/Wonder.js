@@ -1,12 +1,12 @@
 module wd{
-    export class MorphVerticeShaderLib extends EngineShaderLib{
+    export class VerticeMorphShaderLib extends EngineShaderLib{
         public static create() {
             var obj = new this();
 
             return obj;
         }
 
-        public type:string = "morphVertice";
+        public type:string = "vertice_morph";
 
         @require(function(program:Program, quadCmd:QuadCommand, material:EngineMaterial){
             assert(quadCmd.target.hasComponent(MorphAnimation), Log.info.FUNC_SHOULD("entityObject", "has MorphAnimation component"));

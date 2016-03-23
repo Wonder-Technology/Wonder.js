@@ -173,7 +173,7 @@ describe("BasicMaterial", function () {
 
             director._init();
 
-            expect(material.shader.hasLib(wd.EnvMapReflectionForBasicShaderLib)).toBeFalsy();
+            expect(material.shader.hasLib(wd.ReflectionForBasicEnvMapShaderLib)).toBeFalsy();
         });
         it("add normal shader lib", function () {
             envMap.mode = wd.EEnvMapMode.BASIC;
@@ -188,12 +188,12 @@ describe("BasicMaterial", function () {
                 normals
             )
         });
-        it("if mode is BASIC, add BasicEnvMapForBasicShaderLib", function () {
+        it("if mode is BASIC, add BasicForBasicEnvMapShaderLib", function () {
             envMap.mode = wd.EEnvMapMode.BASIC;
 
             director._init();
 
-            expect(material.shader.hasLib(wd.EnvMapBasicForBasicShaderLib)).toBeTruthy();
+            expect(material.shader.hasLib(wd.BasicForBasicEnvMapShaderLib)).toBeTruthy();
 
             director._loopBody(1);
 
@@ -205,7 +205,7 @@ describe("BasicMaterial", function () {
 
             director._init();
 
-            expect(material.shader.hasLib(wd.EnvMapReflectionForBasicShaderLib)).toBeTruthy();
+            expect(material.shader.hasLib(wd.ReflectionForBasicEnvMapShaderLib)).toBeTruthy();
 
             director._loopBody(1);
 
@@ -218,7 +218,7 @@ describe("BasicMaterial", function () {
 
             director._init();
 
-            expect(material.shader.hasLib(wd.EnvMapRefractionForBasicShaderLib)).toBeTruthy();
+            expect(material.shader.hasLib(wd.RefractionForBasicEnvMapShaderLib)).toBeTruthy();
 
             director._loopBody(1);
 
@@ -234,7 +234,7 @@ describe("BasicMaterial", function () {
 
                 director._init();
 
-                expect(material.shader.hasLib(wd.EnvMapFresnelForBasicShaderLib)).toBeTruthy();
+                expect(material.shader.hasLib(wd.FresnelForBasicEnvMapShaderLib)).toBeTruthy();
 
                 director._loopBody(1);
 
@@ -248,7 +248,7 @@ describe("BasicMaterial", function () {
 
                 director._init();
 
-                expect(material.shader.hasLib(wd.EnvMapFresnelForBasicShaderLib)).toBeTruthy();
+                expect(material.shader.hasLib(wd.FresnelForBasicEnvMapShaderLib)).toBeTruthy();
 
                 director._loopBody(1);
 

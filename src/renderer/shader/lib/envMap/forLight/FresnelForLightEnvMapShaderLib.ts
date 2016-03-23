@@ -1,20 +1,22 @@
 module wd{
-    export class EnvMapFresnelForBasicShaderLib extends EnvMapForBasicShaderLib{
+    export class FresnelForLightEnvMapShaderLib extends ForLightEnvMapShaderLib{
         public static create() {
             var obj = new this();
 
             return obj;
         }
 
-        public type:string = "envMap_fresnel_forBasic";
+        public type:string = "fresnel_forLight_envMap";
 
         public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:EngineMaterial) {
             super.sendShaderVariables(program, quadCmd, material);
-
-            this.sendUniformData(program, "u_refractionRatio", material.refractionRatio);
-
-
-            this.sendUniformData(program, "u_reflectivity", material.reflectivity);
+            if(material.reflectivity !== null){
+                this.sendUniformData(program, "u_reflectivity", material.reflectivity);
+            }
+            else{
+                this.sendUniformData(program, "u_reflectivity", ShaderChunk.NULL);
+                this.sendUniformData(program, "u_refractionRatio", material.refractionRatio);
+            }
         }
 
         public setShaderDefinition(quadCmd:QuadCommand, material:EngineMaterial){

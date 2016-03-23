@@ -32,20 +32,20 @@ describe("EngineMaterial", function() {
                 expect(material.shader.libs.getChild(0)).toEqual(jasmine.any(wd.CommonShaderLib));
             });
 
-            it("if has animation component, add MorphCommonShaderLib and MorphVerticeShaderLib", function () {
+            it("if has animation component, add CommonMorphShaderLib and VerticeMorphShaderLib", function () {
                 var geo = wd.ModelGeometry.create();
                 sandbox.stub(geo, "hasAnimation").returns(true);
                 material.geometry = geo;
 
                 material.init();
 
-                expect(material.shader.hasLib(wd.MorphCommonShaderLib)).toBeTruthy();
-                expect(material.shader.hasLib(wd.MorphVerticeShaderLib)).toBeTruthy();
+                expect(material.shader.hasLib(wd.CommonMorphShaderLib)).toBeTruthy();
+                expect(material.shader.hasLib(wd.VerticeMorphShaderLib)).toBeTruthy();
             });
-            it("else, add CommonVerticeShaderLib", function () {
+            it("else, add VerticeCommonShaderLib", function () {
                 material.init();
 
-                expect(material.shader.hasLib(wd.CommonVerticeShaderLib)).toBeTruthy();
+                expect(material.shader.hasLib(wd.VerticeCommonShaderLib)).toBeTruthy();
             });
 
         });

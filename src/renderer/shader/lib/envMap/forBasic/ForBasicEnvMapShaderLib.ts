@@ -1,5 +1,5 @@
 module wd{
-    export abstract class EnvMapForBasicShaderLib extends EngineShaderLib{
+    export abstract class ForBasicEnvMapShaderLib extends EngineShaderLib{
         //todo modify
         public sendShaderVariables(program:Program, quadCmd:any, material:EngineMaterial) {
             this.sendUniformData(program, "u_normalMatrix", quadCmd.normalMatrix);
@@ -15,8 +15,8 @@ module wd{
         }
 
         protected setEnvMapSource(){
-            var vs = this.getVsChunk("envMap_forBasic"),
-                fs = this.getFsChunk("envMap_forBasic");
+            var vs = this.getVsChunk("forBasic_envMap"),
+                fs = this.getFsChunk("forBasic_envMap");
 
             this.vsSourceTop= vs.top;
             this.vsSourceDefine= vs.define;

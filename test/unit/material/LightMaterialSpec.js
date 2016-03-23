@@ -193,14 +193,14 @@ describe("LightMaterial", function() {
 
             director._init();
 
-            expect(material.shader.hasLib(wd.EnvMapReflectionForLightShaderLib)).toBeFalsy();
+            expect(material.shader.hasLib(wd.ReflectionForLightEnvMapShaderLib)).toBeFalsy();
         });
-        it("if mode is BASIC, add BasicEnvMapForLightShaderLib", function(){
+        it("if mode is BASIC, add BasicForLightEnvMapShaderLib", function(){
             envMap.mode = wd.EEnvMapMode.BASIC;
 
             director._init();
 
-            expect(material.shader.hasLib(wd.EnvMapBasicForLightShaderLib)).toBeTruthy();
+            expect(material.shader.hasLib(wd.BasicForLightEnvMapShaderLib)).toBeTruthy();
 
             director._loopBody(1);
 
@@ -212,7 +212,7 @@ describe("LightMaterial", function() {
 
             director._init();
 
-            expect(material.shader.hasLib(wd.EnvMapReflectionForLightShaderLib)).toBeTruthy();
+            expect(material.shader.hasLib(wd.ReflectionForLightEnvMapShaderLib)).toBeTruthy();
 
             director._loopBody(1);
 
@@ -225,7 +225,7 @@ describe("LightMaterial", function() {
 
             director._init();
 
-            expect(material.shader.hasLib(wd.EnvMapRefractionForLightShaderLib)).toBeTruthy();
+            expect(material.shader.hasLib(wd.RefractionForLightEnvMapShaderLib)).toBeTruthy();
 
             director._loopBody(1);
 
@@ -241,7 +241,7 @@ describe("LightMaterial", function() {
 
                 director._init();
 
-                expect(material.shader.hasLib(wd.EnvMapFresnelForLightShaderLib)).toBeTruthy();
+                expect(material.shader.hasLib(wd.FresnelForLightEnvMapShaderLib)).toBeTruthy();
 
                 director._loopBody(1);
 
@@ -255,7 +255,7 @@ describe("LightMaterial", function() {
 
                 director._init();
 
-                expect(material.shader.hasLib(wd.EnvMapFresnelForLightShaderLib)).toBeTruthy();
+                expect(material.shader.hasLib(wd.FresnelForLightEnvMapShaderLib)).toBeTruthy();
 
                 director._loopBody(1);
 

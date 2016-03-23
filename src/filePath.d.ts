@@ -363,26 +363,26 @@
 /// <reference path="renderer/shader/lib/CustomShaderLib"/>
 /// <reference path="renderer/shader/lib/EngineShaderLib"/>
 /// <reference path="renderer/shader/lib/common/CommonShaderLib"/>
-/// <reference path="renderer/shader/lib/common/CommonVerticeShaderLib"/>
-/// <reference path="renderer/shader/lib/common/CommonNormalShaderLib"/>
+/// <reference path="renderer/shader/lib/common/VerticeCommonShaderLib"/>
+/// <reference path="renderer/shader/lib/common/NormalCommonShaderLib"/>
 /// <reference path="renderer/shader/lib/basic/BasicShaderLib"/>
-/// <reference path="renderer/shader/lib/basic/BasicEndShaderLib"/>
-/// <reference path="renderer/shader/lib/animation/morph/MorphCommonShaderLib"/>
-/// <reference path="renderer/shader/lib/animation/morph/MorphVerticeShaderLib"/>
-/// <reference path="renderer/shader/lib/animation/morph/MorphNormalShaderLib"/>
+/// <reference path="renderer/shader/lib/basic/EndBasicShaderLib"/>
+/// <reference path="renderer/shader/lib/animation/morph/CommonMorphShaderLib"/>
+/// <reference path="renderer/shader/lib/animation/morph/VerticeMorphShaderLib"/>
+/// <reference path="renderer/shader/lib/animation/morph/NormalMorphShaderLib"/>
 /// <reference path="renderer/shader/lib/skybox/SkyboxShaderLib"/>
-/// <reference path="renderer/shader/lib/envMap/forBasic/EnvMapForBasicShaderLib"/>
-/// <reference path="renderer/shader/lib/envMap/forBasic/EnvMapBasicForBasicShaderLib"/>
-/// <reference path="renderer/shader/lib/envMap/forBasic/EnvMapReflectionForBasicShaderLib"/>
-/// <reference path="renderer/shader/lib/envMap/forBasic/EnvMapRefractionForBasicShaderLib"/>
-/// <reference path="renderer/shader/lib/envMap/forBasic/EnvMapFresnelForBasicShaderLib"/>
+/// <reference path="renderer/shader/lib/envMap/forBasic/ForBasicEnvMapShaderLib"/>
+/// <reference path="renderer/shader/lib/envMap/forBasic/BasicForBasicEnvMapShaderLib"/>
+/// <reference path="renderer/shader/lib/envMap/forBasic/ReflectionForBasicEnvMapShaderLib"/>
+/// <reference path="renderer/shader/lib/envMap/forBasic/RefractionForBasicEnvMapShaderLib"/>
+/// <reference path="renderer/shader/lib/envMap/forBasic/FresnelForBasicEnvMapShaderLib"/>
 
-/// <reference path="renderer/shader/lib/envMap/forLight/EnvMapForLightShaderLib"/>
-/// <reference path="renderer/shader/lib/envMap/forLight/EnvMapForLightShaderLib"/>
-/// <reference path="renderer/shader/lib/envMap/forLight/EnvMapBasicForLightShaderLib"/>
-/// <reference path="renderer/shader/lib/envMap/forLight/EnvMapReflectionForLightShaderLib"/>
-/// <reference path="renderer/shader/lib/envMap/forLight/EnvMapRefractionForLightShaderLib"/>
-/// <reference path="renderer/shader/lib/envMap/forLight/EnvMapFresnelForLightShaderLib"/>
+/// <reference path="renderer/shader/lib/envMap/forLight/ForLightEnvMapShaderLib"/>
+/// <reference path="renderer/shader/lib/envMap/forLight/ForLightEnvMapShaderLib"/>
+/// <reference path="renderer/shader/lib/envMap/forLight/BasicForLightEnvMapShaderLib"/>
+/// <reference path="renderer/shader/lib/envMap/forLight/ReflectionForLightEnvMapShaderLib"/>
+/// <reference path="renderer/shader/lib/envMap/forLight/RefractionForLightEnvMapShaderLib"/>
+/// <reference path="renderer/shader/lib/envMap/forLight/FresnelForLightEnvMapShaderLib"/>
 
 /// <reference path="renderer/shader/lib/map/MapShaderLib"/>
 /// <reference path="renderer/shader/lib/map/BasicMapShaderLib"/>
@@ -417,10 +417,10 @@
 /// <reference path="renderer/shader/lib/utils/CustomShaderLibUtils"/>
 
 
-/// <reference path="renderer/shader/lib/instance/InstanceModelMatrixShaderLib"/>
-/// <reference path="renderer/shader/lib/instance/InstanceNormalMatrixShaderLib"/>
-/// <reference path="renderer/shader/lib/instance/NoInstanceModelMatrixShaderLib"/>
-/// <reference path="renderer/shader/lib/instance/NoInstanceNormalMatrixShaderLib"/>
+/// <reference path="renderer/shader/lib/instance/ModelMatrixInstanceShaderLib"/>
+/// <reference path="renderer/shader/lib/instance/NormalMatrixInstanceShaderLib"/>
+/// <reference path="renderer/shader/lib/instance/ModelMatrixNoInstanceShaderLib"/>
+/// <reference path="renderer/shader/lib/instance/NormalMatrixNoInstanceShaderLib"/>
 
 
 /// <reference path="renderer/shader/chunk/ShaderChunk"/>
