@@ -191,13 +191,13 @@ describe("instance with light", function () {
             var box1Instance1Shader = box1Instance1.getComponent(wd.Geometry).material.shader;
             var box1Instance2Shader = box1Instance2.getComponent(wd.Geometry).material.shader;
 
-            expect(box1Shader.vsSource.indexOf("mat4 mMatrix = mat4(a_mVec4_0, a_mVec4_1, a_mVec4_2, a_mVec4_3);") > -1).toBeTruthy();
-            expect(box1Shader.vsSource.indexOf("mat3 normalMatrix = mat3(a_normalVec4_0, a_normalVec4_1, a_normalVec4_2);") > -1).toBeTruthy();
+            expect(glslTool.contain(box1Shader.vsSource, "mat4 mMatrix = mat4(a_mVec4_0, a_mVec4_1, a_mVec4_2, a_mVec4_3)")).toBeTruthy();
+            expect(glslTool.contain(box1Shader.vsSource, "mat3 normalMatrix = mat3(a_normalVec4_0, a_normalVec4_1, a_normalVec4_2)")).toBeTruthy();
 
-            expect(box1Instance1Shader.vsSource.indexOf("mat4 mMatrix = mat4(a_mVec4_0, a_mVec4_1, a_mVec4_2, a_mVec4_3);") > -1).toBeTruthy();
-            expect(box1Instance1Shader.vsSource.indexOf("mat3 normalMatrix = mat3(a_normalVec4_0, a_normalVec4_1, a_normalVec4_2);") > -1).toBeTruthy();
-            expect(box1Instance2Shader.vsSource.indexOf("mat4 mMatrix = mat4(a_mVec4_0, a_mVec4_1, a_mVec4_2, a_mVec4_3);") > -1).toBeTruthy();
-            expect(box1Instance2Shader.vsSource.indexOf("mat3 normalMatrix = mat3(a_normalVec4_0, a_normalVec4_1, a_normalVec4_2);") > -1).toBeTruthy();
+            expect(glslTool.contain(box1Instance1Shader.vsSource, "mat4 mMatrix = mat4(a_mVec4_0, a_mVec4_1, a_mVec4_2, a_mVec4_3)")).toBeTruthy();
+            expect(glslTool.contain(box1Instance1Shader.vsSource, "mat3 normalMatrix = mat3(a_normalVec4_0, a_normalVec4_1, a_normalVec4_2)")).toBeTruthy();
+            expect(glslTool.contain(box1Instance2Shader.vsSource, "mat4 mMatrix = mat4(a_mVec4_0, a_mVec4_1, a_mVec4_2, a_mVec4_3)")).toBeTruthy();
+            expect(glslTool.contain(box1Instance2Shader.vsSource, "mat3 normalMatrix = mat3(a_normalVec4_0, a_normalVec4_1, a_normalVec4_2)")).toBeTruthy();
         });
     });
 
@@ -225,13 +225,13 @@ describe("instance with light", function () {
             var box1Instance1Shader = box1Instance1.getComponent(wd.Geometry).material.shader;
             var box1Instance2Shader = box1Instance2.getComponent(wd.Geometry).material.shader;
 
-            expect(box1Shader.vsSource.indexOf("mat4 mMatrix = u_mMatrix;") > -1).toBeTruthy();
-            expect(box1Shader.vsSource.indexOf("mat3 normalMatrix = u_normalMatrix;") > -1).toBeTruthy();
+            expect(glslTool.contain(box1Shader.vsSource, "mat4 mMatrix = u_mMatrix;")).toBeTruthy();
+            expect(glslTool.contain(box1Shader.vsSource, "mat3 normalMatrix = u_normalMatrix;")).toBeTruthy();
 
-            expect(box1Instance1Shader.vsSource.indexOf("mat4 mMatrix = u_mMatrix;") > -1).toBeTruthy();
-            expect(box1Instance1Shader.vsSource.indexOf("mat3 normalMatrix = u_normalMatrix;") > -1).toBeTruthy();
-            expect(box1Instance2Shader.vsSource.indexOf("mat4 mMatrix = u_mMatrix;") > -1).toBeTruthy();
-            expect(box1Instance2Shader.vsSource.indexOf("mat3 normalMatrix = u_normalMatrix;") > -1).toBeTruthy();
+            expect(glslTool.contain(box1Instance1Shader.vsSource, "mat4 mMatrix = u_mMatrix;")).toBeTruthy();
+            expect(glslTool.contain(box1Instance1Shader.vsSource, "mat3 normalMatrix = u_normalMatrix;")).toBeTruthy();
+            expect(glslTool.contain(box1Instance2Shader.vsSource, "mat4 mMatrix = u_mMatrix;")).toBeTruthy();
+            expect(glslTool.contain(box1Instance2Shader.vsSource, "mat3 normalMatrix = u_normalMatrix;")).toBeTruthy();
         });
     });
 });

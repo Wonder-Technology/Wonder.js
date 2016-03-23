@@ -417,6 +417,8 @@
 /// <reference path="renderer/shader/lib/utils/CustomShaderLibUtils"/>
 
 
+/// <reference path="renderer/shader/lib/instance/InstanceShaderLib"/>
+/// <reference path="renderer/shader/lib/instance/NoInstanceShaderLib"/>
 /// <reference path="renderer/shader/lib/instance/ModelMatrixInstanceShaderLib"/>
 /// <reference path="renderer/shader/lib/instance/NormalMatrixInstanceShaderLib"/>
 /// <reference path="renderer/shader/lib/instance/ModelMatrixNoInstanceShaderLib"/>

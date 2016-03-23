@@ -70,8 +70,7 @@ module wd {
                 cmd.instanceList = instanceComponent.toRenderInstanceListForDraw;
                 cmd.instanceBuffer = instanceComponent.instanceBuffer;
 
-                //todo test
-                if(material instanceof StandardLightMaterial){
+                if(material.shader.hasLib(NormalMatrixInstanceShaderLib)){
                     cmd.glslData = EInstanceGLSLData.NORMALMATRIX_MODELMATRIX;
                 }
             }

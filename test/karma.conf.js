@@ -43,13 +43,15 @@
 
         //'test/unit/**/terrain*',
 
-        //'test/unit/**/shaderLibSpec*',
-        //'test/unit/**/*ShaderLib*',
-        //'test/unit/**/ShaderLib*',
+        'test/unit/**/shaderLibSpec*',
+        'test/unit/**/*ShaderLib*',
+        'test/unit/**/ShaderLib*',
+
+        'test/unit/**/envMap*',
         //
         //'test/unit/texture/**',
 
-        //'test/unit/**/material/**',
+        'test/unit/**/material/**',
         //
         //'test/unit/**/MapManager*',
 

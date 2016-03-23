@@ -8,7 +8,7 @@ module wd{
 
             this.addUniformVariable(["u_samplerCube0"]);
 
-            this.vsSourceBody = ShaderSnippet.setPos_mvp + this.getVsChunk().body;
+            this.vsSourceBody = this.getVsChunk().body;
         }
 
         protected setEnvMapSource(){

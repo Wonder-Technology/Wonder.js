@@ -1,5 +1,5 @@
 module wd{
-    export class ModelMatrixNoInstanceShaderLib extends EngineShaderLib{
+    export class ModelMatrixNoInstanceShaderLib extends NoInstanceShaderLib{
         public static create() {
             var obj = new this();
 

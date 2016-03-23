@@ -5,6 +5,6 @@ varying vec3 v_position;
 
 
 @body
-    v_normal = normalize( u_normalMatrix * a_normal);
+    v_normal = normalize( normalMatrix * a_normal);
     v_position = vec3(mMatrix * vec4(a_position, 1.0));
 @end
