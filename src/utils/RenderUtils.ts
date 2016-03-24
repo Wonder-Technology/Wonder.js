@@ -1,5 +1,10 @@
 module wd{
     export class RenderUtils{
+        //todo correspond refactor related class
+        public static isInstanceAndHardwareSupport(gameObject:GameObject){
+            return GPUDetector.getInstance().extensionInstancedArrays !== null && gameObject.hasComponent(Instance);
+        }
+
         public static getGameObjectRenderList(sourceList:wdCb.Collection<GameObject>){
             return sourceList.filter((child:GameObject, index:number) => {
                 return child.isVisible && (GPUDetector.getInstance().extensionInstancedArrays === null || !child.hasComponent(ObjectInstance));

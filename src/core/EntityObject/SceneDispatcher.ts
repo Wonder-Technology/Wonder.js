@@ -48,25 +48,11 @@ module wd {
             this.gameObjectScene.shadowMap = shadowMap;
         }
 
-        get shader(){
-            return this.gameObjectScene.shader;
-        }
-        set shader(shader:CommonShader){
-            this.gameObjectScene.shader = shader;
-        }
-
         get currentCamera():GameObject{
             return this.gameObjectScene.currentCamera;
         }
         set currentCamera(arg:GameObject){
             this.gameObjectScene.currentCamera = arg;
-        }
-
-        get isUseProgram(){
-            return this.gameObjectScene.isUseProgram;
-        }
-        set isUseProgram(isUseProgram:boolean){
-            this.gameObjectScene.isUseProgram = isUseProgram;
         }
 
         get physics(){
@@ -83,11 +69,16 @@ module wd {
             this.gameObjectScene.physicsEngineAdapter = physicsEngineAdapter;
         }
 
+        get isUseShader(){
+            return this.currentShaderKey !== null;
+        }
 
         public name:string = `scene${String(this.uid)}`;
+        public currentShaderKey:EShaderMapKey = null;
 
         public uiObjectScene:UIObjectScene = UIObjectScene.create();
         public gameObjectScene:GameObjectScene = GameObjectScene.create();
+
 
         public initWhenCreate(){
             super.initWhenCreate();
@@ -95,12 +86,12 @@ module wd {
             this.addComponent(SceneEventTriggerDetector.create());
         }
 
-        public useProgram(shader:CommonShader){
-            this.gameObjectScene.useProgram(shader);
+        public useShader(shaderKey:EShaderMapKey){
+            this.currentShaderKey = shaderKey;
         }
 
-        public unUseProgram(){
-            this.gameObjectScene.unUseProgram();
+        public unUseShader(){
+            this.currentShaderKey = null;
         }
 
         public addChild(child:EntityObject):EntityObject{

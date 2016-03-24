@@ -54,7 +54,7 @@ module wd{
 
         public program:Program = Program.create();
         public libDirty:boolean = false;
-        public mapManager:MapManager = MapManager.create(this._material);
+        public mapManager:MapManager = null;
 
         protected libs:wdCb.Collection<ShaderLib> = wdCb.Collection.create<ShaderLib>();
         protected sourceBuilder:ShaderSourceBuilder = this.createShaderSourceBuilder();
@@ -63,6 +63,10 @@ module wd{
         private _material:Material = null;
 
         public abstract update(cmd:RenderCommand, material:Material);
+
+        public initWhenCreate(){
+            this.mapManager = MapManager.create(this._material);
+        }
 
         public createVsShader(){
             var gl = DeviceManager.getInstance().gl;
@@ -76,6 +80,7 @@ module wd{
             return this._initShader(gl.createShader(gl.FRAGMENT_SHADER), this.fsSource);
         }
 
+        @execOnlyOnce("_isInit")
         public init(material:Material){
             this.libs.forEach((lib:ShaderLib) => {
                 lib.init();

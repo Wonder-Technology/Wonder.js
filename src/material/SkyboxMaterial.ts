@@ -9,6 +9,8 @@ module wd{
         }
 
         public initWhenCreate(){
+            super.initWhenCreate();
+
             this.side = ESide.BACK;
         }
 

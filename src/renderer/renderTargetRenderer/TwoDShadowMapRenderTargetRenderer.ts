@@ -26,12 +26,12 @@ module wd {
             super.initWhenCreate();
         }
 
-
         public init(){
             var self = this;
 
             this._handleShadowRendererList();
 
+            //todo optimize: clear it before set?
             this._shadowMapRendererUtils.bindEndLoop(() => {
                 //here not need removeRepeatItems
                 //todo getRenderList()?
@@ -40,7 +40,33 @@ module wd {
                 });
             });
 
-            this._shadowMapRendererUtils.createShaderWithShaderLib(BuildTwoDShadowMapShaderLib.create());
+            //this._shadowMapRendererUtils.createShaderWithShaderLib(BuildTwoDShadowMapShaderLib.create());
+
+            this.getRenderList().forEach((child:GameObject) => {
+                var material:Material = child.getComponent<Geometry>(Geometry).material,
+                    //todo create BuildShadowMapShader
+                    shader:CommonShader = CommonShader.create(null);
+                shader["name"] = "shadow";
+
+                shader.addLib(CommonShaderLib.create());
+                shader.addLib(VerticeCommonShaderLib.create());
+
+                if(RenderUtils.isInstanceAndHardwareSupport(child)){
+                    shader.addLib(ModelMatrixInstanceShaderLib.create());
+                }
+                else{
+                    shader.addLib(ModelMatrixNoInstanceShaderLib.create());
+                }
+
+                shader.addLib(BuildTwoDShadowMapShaderLib.create());
+
+                //todo note!
+                shader.init(material);
+
+                material.addShader(<any>EShaderMapKey.BUILD_SHADOWMAP, shader);
+            });
+
+
 
             super.init();
         }
@@ -59,6 +85,7 @@ module wd {
                 self._shadowMapRendererUtils.setShadowMapData(child, renderCamera);
             });
         }
+
         protected getRenderList():wdCb.Collection<GameObject>{
             //return this._light.shadowRenderList;
 
@@ -69,6 +96,7 @@ module wd {
                     return child.isVisible && (GPUDetector.getInstance().extensionInstancedArrays === null || !child.hasComponent(ObjectInstance));
                 });
         }
+
         protected renderRenderer(renderer){
             renderer.render();
         }
@@ -104,6 +132,8 @@ module wd {
             return camera;
         }
 
+        //todo refactor: rename(addAllChildren)? other refactor?
+        //todo not add children? need pass compound shadow
         private _handleShadowRendererList(){
             var self = this,
                 children = [];

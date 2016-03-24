@@ -47,7 +47,6 @@ module wd {
         public side:ESide = null;
         public shadowMap = ShadowMapModel.create(this);
         public shader:CommonShader = null;
-        public isUseProgram:boolean = false;
         public physics = PhysicsConfig.create();
         public physicsEngineAdapter:IPhysicsEngineAdapter = null;
 
@@ -69,16 +68,6 @@ module wd {
             this._proceduralRendererList.forEach((renderTargetRenderer:ProceduralRenderTargetRenderer) => renderTargetRenderer.init());
 
             return this;
-        }
-
-        public useProgram(shader:CommonShader){
-            this.isUseProgram = true;
-
-            this.shader = shader;
-        }
-
-        public unUseProgram(){
-            this.isUseProgram = false;
         }
 
         public addChild(child:GameObject):GameObject{

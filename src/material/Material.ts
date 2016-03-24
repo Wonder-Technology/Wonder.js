@@ -143,7 +143,6 @@ module wd {
             }
         }
 
-        public shader:Shader = this.createShader();
         public redWrite:boolean = true;
         public greenWrite:boolean = true;
         public blueWrite:boolean = true;
@@ -156,16 +155,32 @@ module wd {
         public shading = EShading.FLAT;
         public geometry:Geometry = null;
 
+        private _shaderMap:wdCb.Hash<Shader> = wdCb.Hash.create<Shader>();
+        private _currentShader:Shader = null;
+
         //public abstract copy():Material;
 
-        public init(){
-            this.shader.init(this);
+        public initWhenCreate(){
+            this._currentShader = CommonShader.create(this);
+            this.addShader(<any>EShaderMapKey.DEFAULT, this._currentShader);
+        }
 
+        public init(){
+            var self = this;
+
+            this._shaderMap.forEach((shader:Shader) => {
+                shader.init(self);
+            });
+
+            //todo refactor
             this.mapManager.init();
         }
 
         public dispose(){
-            this.shader.dispose();
+            //todo test
+            this._shaderMap.forEach((shader:Shader) => {
+                shader.dispose();
+            });
 
             this.mapManager.dispose();
         }
@@ -179,15 +194,43 @@ module wd {
         }
 
         public updateShader(quadCmd:QuadCommand){
-            var scene:SceneDispatcher = Director.getInstance().scene;
+            var scene:SceneDispatcher = Director.getInstance().scene,
+                shader:Shader = null;
 
-            if(scene.isUseProgram){
-                scene.shader.update(quadCmd, this);
+            //todo test
+            if(scene.isUseShader){
+                shader = this._shaderMap.getChild(<any>scene.currentShaderKey);
             }
             else{
-                this.shader.update(quadCmd, this);
+                shader = this._currentShader;
             }
+
+            shader.update(quadCmd, this);
         }
+
+        @ensureGetter(function(shader:Shader){
+            assert(!!shader, Log.info.FUNC_NOT_EXIST("current shader"));
+        })
+        get shader(){
+            var scene:SceneDispatcher = Director.getInstance().scene;
+
+            return scene.isUseShader ? this._shaderMap.getChild(<any>scene.currentShaderKey) : this._currentShader;
+        }
+
+        public addShader(shaderKey:string, shader:Shader){
+            this._shaderMap.addChild(shaderKey, shader);
+        }
+
+        public removeShader(shaderKey:string){
+            this._shaderMap.removeChild(shaderKey);
+        }
+
+
+
+
+
+
+
 
         protected abstract createShader():Shader;
 

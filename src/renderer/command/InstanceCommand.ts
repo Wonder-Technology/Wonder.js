@@ -21,21 +21,7 @@ module wd{
 
             this._instanceDrawerProxy.glslData = this.glslData;
 
-            //this._instanceDrawerProxy.draw(this.instanceList, this.instanceBuffer, this.program, this.buffers, this.drawMode);
-
-            //todo refactor
-            var program = null;
-            var scene:SceneDispatcher = Director.getInstance().scene;
-
-            if(scene.isUseProgram){
-                program = scene.shader.program;
-            }
-            else{
-                program = this.program;
-            }
-
-
-            this._instanceDrawerProxy.draw(this.instanceList, this.instanceBuffer, program, this.buffers, this.drawMode);
+            this._instanceDrawerProxy.draw(this.instanceList, this.instanceBuffer, this.program, this.buffers, this.drawMode);
         }
 
         @ensure(function(hasInstance:boolean){

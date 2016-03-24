@@ -3,6 +3,8 @@ module wd{
         public static create(texture:CustomProceduralTexture){
             var obj = new this(texture);
 
+            obj.initWhenCreate();
+
             return obj;
         }
 

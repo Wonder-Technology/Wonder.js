@@ -423,7 +423,6 @@
 /// <reference path="renderer/shader/lib/instance/NormalMatrixInstanceShaderLib"/>
 /// <reference path="renderer/shader/lib/instance/ModelMatrixNoInstanceShaderLib"/>
 /// <reference path="renderer/shader/lib/instance/NormalMatrixNoInstanceShaderLib"/>
-/// <reference path="renderer/shader/lib/instance/ModelMatrixForBuildShadowMapShaderLib"/>
 
 
 /// <reference path="renderer/shader/chunk/ShaderChunk"/>
@@ -441,6 +440,8 @@
 /// <reference path="material/ShaderMaterial"/>
 /// <reference path="material/EShading"/>
 /// <reference path="material/MapManager"/>
+/// <reference path="material/EShaderMapKey"/>
+
 
 
 /// <reference path="asset/EAssetType"/>

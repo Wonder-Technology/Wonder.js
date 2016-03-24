@@ -3,6 +3,8 @@ module wd{
         public static create(){
             var obj = new this(null);
 
+            obj.initWhenCreate();
+
             return obj;
         }
     }

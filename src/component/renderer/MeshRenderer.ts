@@ -71,15 +71,7 @@ module wd {
                 cmd.instanceBuffer = instanceComponent.instanceBuffer;
 
                 if(material.shader.hasLib(NormalMatrixInstanceShaderLib)){
-                    //todo refactor
-                    var scene:SceneDispatcher = Director.getInstance().scene;
-
-                    if(scene.isUseProgram){
-                    }
-                    else{
-                        cmd.glslData = EInstanceGLSLData.NORMALMATRIX_MODELMATRIX;
-                    }
-                    //cmd.glslData = EInstanceGLSLData.NORMALMATRIX_MODELMATRIX;
+                    cmd.glslData = EInstanceGLSLData.NORMALMATRIX_MODELMATRIX;
                 }
             }
             else{

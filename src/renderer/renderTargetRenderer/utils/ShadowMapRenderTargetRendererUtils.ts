@@ -53,22 +53,22 @@ module wd {
         public beforeRender(){
             var scene:SceneDispatcher = Director.getInstance().scene;
 
-            scene.useProgram(this._shader);
+            scene.useShader(EShaderMapKey.BUILD_SHADOWMAP);
         }
 
         public afterRender(){
             var scene:SceneDispatcher = Director.getInstance().scene;
 
-            scene.unUseProgram();
+            scene.unUseShader();
         }
 
         public createShaderWithShaderLib(lib:BuildShadowMapShaderLib){
-            //todo refactor
-            this._shader = CommonShader.create(null);
-            this._shader.addLib(CommonShaderLib.create());
-            this._shader.addLib(VerticeCommonShaderLib.create());
-            this._shader.addLib(ModelMatrixForBuildShadowMapShaderLib.create());
-            this._shader.addLib(lib);
+            ////todo refactor
+            //this._shader = CommonShader.create(null);
+            //this._shader.addLib(CommonShaderLib.create());
+            //this._shader.addLib(VerticeCommonShaderLib.create());
+            //this._shader.addLib(ModelMatrixForBuildShadowMapShaderLib.create());
+            //this._shader.addLib(lib);
         }
 
         public isContainer(entityObject:GameObject){

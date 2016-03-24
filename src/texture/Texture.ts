@@ -4,6 +4,8 @@ module wd{
             return this.material.geometry;
         }
 
+        //todo add to asset->toTexture copy attri
+        public name:string = "";
         public material:Material = null;
         public width:number = null;
         public height:number = null;
@@ -36,6 +38,7 @@ module wd{
             return this;
         }
 
+        //todo move to MapManager
         public sendData(program:Program, name:string, unit:number){
             program.sendUniformData(name, this.getSamplerType(), unit);
         }

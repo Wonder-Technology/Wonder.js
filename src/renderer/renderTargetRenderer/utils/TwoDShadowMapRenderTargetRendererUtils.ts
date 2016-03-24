@@ -17,6 +17,7 @@ module wd {
 
             super.initWhenCreate();
 
+            //todo refactor
             //todo if renderList is null, draw all
             this.light.shadowRenderList.forEach((child:GameObject) => {
                 self.setShadowMap(child, self.texture);

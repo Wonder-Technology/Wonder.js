@@ -3,6 +3,8 @@ module wd{
         public static create(material:Material){
         	var obj = new this(material);
 
+            obj.initWhenCreate();
+
         	return obj;
         }
 
