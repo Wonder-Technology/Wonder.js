@@ -1,7 +1,7 @@
 module wd{
     export class CommonShader extends EngineShader{
-        public static create(){
-        	var obj = new this();
+        public static create(material:Material){
+        	var obj = new this(material);
 
         	return obj;
         }

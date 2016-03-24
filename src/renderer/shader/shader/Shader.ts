@@ -1,5 +1,9 @@
 module wd{
     export abstract class Shader{
+        constructor(material:Material){
+            this._material = material;
+        }
+
         private _attributes:wdCb.Hash<ShaderData> = wdCb.Hash.create<ShaderData>();
         get attributes(){
             return this._attributes;
@@ -50,11 +54,13 @@ module wd{
 
         public program:Program = Program.create();
         public libDirty:boolean = false;
+        public mapManager:MapManager = MapManager.create(this._material);
 
         protected libs:wdCb.Collection<ShaderLib> = wdCb.Collection.create<ShaderLib>();
         protected sourceBuilder:ShaderSourceBuilder = this.createShaderSourceBuilder();
 
         private _definitionDataDirty:boolean = false;
+        private _material:Material = null;
 
         public abstract update(cmd:RenderCommand, material:Material);
 

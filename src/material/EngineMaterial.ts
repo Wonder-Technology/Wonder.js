@@ -38,7 +38,7 @@ module wd {
         }
 
         protected createShader():Shader{
-            return CommonShader.create();
+            return CommonShader.create(this);
         }
 
         private _addTopShaderLib(){

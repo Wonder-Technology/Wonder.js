@@ -1,7 +1,7 @@
 module wd{
     export class CustomShader extends Shader{
-        public static create() {
-        	var obj = new this();
+        public static create(material:Material) {
+        	var obj = new this(material);
 
         	return obj;
         }

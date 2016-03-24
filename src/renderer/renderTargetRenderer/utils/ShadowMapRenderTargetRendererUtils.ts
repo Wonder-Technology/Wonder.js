@@ -63,7 +63,8 @@ module wd {
         }
 
         public createShaderWithShaderLib(lib:BuildShadowMapShaderLib){
-            this._shader = CommonShader.create();
+            //todo refactor
+            this._shader = CommonShader.create(null);
             this._shader.addLib(CommonShaderLib.create());
             this._shader.addLib(VerticeCommonShaderLib.create());
             this._shader.addLib(ModelMatrixForBuildShadowMapShaderLib.create());

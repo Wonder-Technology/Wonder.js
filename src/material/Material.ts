@@ -4,6 +4,10 @@ module wd {
             return this.shader.program;
         }
 
+        get mapManager(){
+            return this.shader.mapManager;
+        }
+
         private _blendType:EBlendType = null;
         get blendType(){
             if(this._blendType){
@@ -150,7 +154,6 @@ module wd {
         public blendFuncSeparate:Array<EBlendFunc> = null;
         public blendEquationSeparate:Array<EBlendEquation> = [EBlendEquation.ADD, EBlendEquation.ADD];
         public shading = EShading.FLAT;
-        public mapManager:MapManager = MapManager.create(this);
         public geometry:Geometry = null;
 
         //public abstract copy():Material;

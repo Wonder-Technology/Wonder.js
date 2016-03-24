@@ -7,7 +7,7 @@ module wd{
         }
 
         constructor(texture:CustomProceduralTexture){
-            super();
+            super(null);
 
             this._texture = texture;
         }
