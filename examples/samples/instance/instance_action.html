@@ -47,12 +47,6 @@
 
 
 
-                var action = wd.RepeatForever.create(wd.CallFunc.create(function () {
-                    this.transform.rotate(0, 0, Math.random() * 10);
-                }, instance));
-
-                instance.addComponent(action);
-
 
                 arr.push(instance);
             }
@@ -95,9 +89,9 @@
 
 
 
-            var action = wd.RepeatForever.create(wd.CallFunc.create(function () {
-                this.transform.rotate(0, 1, 0);
-            }, boxChild21));
+            var action = wd.RepeatForever.create(wd.CallFunc.create(function (box) {
+                box.transform.rotate(0, 1, 0);
+            }));
 
             boxChild21.addComponent(action);
 
