@@ -168,12 +168,10 @@ module wd {
         public init(){
             var self = this;
 
+            //todo test
             this._shaderMap.forEach((shader:Shader) => {
                 shader.init(self);
             });
-
-            //todo refactor
-            this.mapManager.init();
         }
 
         public dispose(){
@@ -181,16 +179,6 @@ module wd {
             this._shaderMap.forEach((shader:Shader) => {
                 shader.dispose();
             });
-
-            this.mapManager.dispose();
-        }
-
-        public bindAndUpdateTexture(){
-            this.mapManager.bindAndUpdate();
-        }
-
-        public sendTexture(program){
-            this.mapManager.sendData(program);
         }
 
         public updateShader(quadCmd:QuadCommand){
@@ -204,6 +192,9 @@ module wd {
             else{
                 shader = this._currentShader;
             }
+
+
+            shader.mapManager.bindAndUpdate();
 
             shader.update(quadCmd, this);
         }

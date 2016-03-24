@@ -87,6 +87,8 @@ module wd{
             });
 
             this.judgeRefreshShader(null, material);
+
+            this.mapManager.init();
         }
 
         public dispose(){
@@ -97,6 +99,8 @@ module wd{
             this.libs.forEach((lib:ShaderLib) => {
                 lib.dispose();
             });
+
+            this.mapManager.dispose();
         }
 
         public hasLib(lib:ShaderLib);

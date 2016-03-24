@@ -59,8 +59,8 @@ module wd{
         public refractionLevel:number = 0.8;
 
 
-        public bindAndUpdateTexture(){
-            super.bindAndUpdateTexture();
+        public updateShader(quadCmd:QuadCommand){
+            super.updateShader(quadCmd);
 
             this._computeTime();
         }
@@ -96,9 +96,9 @@ module wd{
 
     export class WaterWindModel{
         public static create() {
-        	var obj = new this();
+            var obj = new this();
 
-        	return obj;
+            return obj;
         }
 
 
@@ -113,13 +113,14 @@ module wd{
 
     export class WaterWaveModel{
         public static create() {
-        	var obj = new this();
+            var obj = new this();
 
-        	return obj;
+            return obj;
         }
 
         public height:number = 0.15;
         public length:number = 0.1;
     }
 }
+
 
