@@ -30,10 +30,10 @@
             var models = createModels();
             var ground = createGround();
 
-            director.scene.addChildren(models);
             director.scene.addChild(ground);
+            director.scene.addChildren(models);
             director.scene.addChild(createAmbientLight());
-            director.scene.addChild(createDirectionLight([ground].concat(models)));
+            director.scene.addChild(createDirectionLight(models.concat([ground])));
             director.scene.addChild(createCamera());
 
             director.start();
@@ -43,7 +43,7 @@
             var arr = [],
                     model = createSphere(),
                     range = 300,
-                    count = 2;
+                    count = 1;
 
             model.transform.position = wd.Vector3.create(60, 20, 0);
 
@@ -130,6 +130,7 @@
             material.specularColor = wd.Color.create("#ffdd99");
             material.shininess = 16;
             material.diffuseMap = wd.TextureLoader.getInstance().get("texture").toTexture();
+            material.diffuseMap.name = "sphereMap";
             material.shading = wd.EShading.SMOOTH;
 
 
@@ -154,8 +155,21 @@
 
 
             var boxChild1 = createBox();
+            var boxChild2 = createBox();
+            var boxChild21 = createBox();
 
-//            gameObject.addChild(boxChild1);
+            gameObject.addChild(boxChild1);
+            gameObject.addChild(boxChild2);
+
+            boxChild2.addChild(boxChild21);
+
+
+            boxChild1.transform.translate(50, 0, 0);
+            boxChild2.transform.translate(-50, 0, 0);
+
+            boxChild21.transform.translate(-60, 0, 0);
+
+
 
 
 
@@ -163,8 +177,8 @@
             gameObject.transform.translate(wd.Vector3.create(-30, 20, 0));
 
 
-            boxChild1.transform.translate(wd.Vector3.create(20, 10, 30));
-            boxChild1.transform.eulerAngles = wd.Vector3.create(0, 45, 0);
+//            boxChild1.transform.translate(wd.Vector3.create(20, 10, 30));
+//            boxChild1.transform.eulerAngles = wd.Vector3.create(0, 45, 0);
 
 
             return gameObject;
@@ -191,7 +205,7 @@
 
 
 
-            var action = wd.RepeatForever.create(wd.CallFunc.create(function(){
+            var action = wd.RepeatForever.create(wd.CallFunc.create(function(gameObject){
                 gameObject.transform.rotate(0, 1, 0);
             }));
 
@@ -202,6 +216,7 @@
 
         function createGround(){
             var map = wd.LoaderManager.getInstance().get("ground").toTexture();
+            map.name = "groundMap";
             map.wrapS = wd.ETextureWrapMode.REPEAT;
             map.wrapT = wd.ETextureWrapMode.REPEAT;
             map.repeatRegion = wd.RectRegion.create(0.5, 0, 5, 5);

@@ -29,23 +29,23 @@ module wd {
         public init(){
             var self = this;
 
-            this._handleShadowRendererList();
+            this._list = this._getAllShadowRenderList();
 
             //todo optimize: clear it before set?
             this._shadowMapRendererUtils.bindEndLoop(() => {
                 //here not need removeRepeatItems
                 //todo getRenderList()?
-                self._light.shadowRenderList.forEach((child:GameObject) => {
+                self._list.forEach((child:GameObject) => {
                     self._shadowMapRendererUtils.clearTwoDShadowMapData(child);
                 });
             });
 
-            //this._shadowMapRendererUtils.createShaderWithShaderLib(BuildTwoDShadowMapShaderLib.create());
 
-            this.getRenderList().forEach((child:GameObject) => {
+            this._list.forEach((child:GameObject) => {
                 var material:Material = child.getComponent<Geometry>(Geometry).material,
                     //todo create BuildShadowMapShader
                     shader:CommonShader = CommonShader.create(null);
+                //todo remove
                 shader["name"] = "shadow";
 
                 shader.addLib(CommonShaderLib.create());
@@ -81,7 +81,7 @@ module wd {
             var self = this;
 
             //here need removeRepeatItems
-            this._light.shadowRenderList.removeRepeatItems().forEach((child:GameObject) => {
+            this._list.removeRepeatItems().forEach((child:GameObject) => {
                 self._shadowMapRendererUtils.setShadowMapData(child, renderCamera);
             });
         }
@@ -89,10 +89,9 @@ module wd {
         protected getRenderList():wdCb.Collection<GameObject>{
             //return this._light.shadowRenderList;
 
-
+            //todo test
             return this._light.shadowRenderList
                 .filter((child:GameObject, index:number) => {
-                    //return child.name === "ground";
                     return child.isVisible && (GPUDetector.getInstance().extensionInstancedArrays === null || !child.hasComponent(ObjectInstance));
                 });
         }
@@ -132,22 +131,25 @@ module wd {
             return camera;
         }
 
-        //todo refactor: rename(addAllChildren)? other refactor?
-        //todo not add children? need pass compound shadow
-        private _handleShadowRendererList(){
-            var self = this,
-                children = [];
+        private _getAllShadowRenderList(){
+            var list = this._light.shadowRenderList.clone(),
+            self = this,
+            children = [];
 
-            this._light.shadowRenderList.forEach((renderTarget:GameObject) => {
+            list.forEach((renderTarget:GameObject) => {
                 children = children.concat(this._shadowMapRendererUtils.addAllChildren(renderTarget));
             },this);
 
-            this._light.shadowRenderList.addChildren(children);
+            list.addChildren(children);
 
-            this._light.shadowRenderList.removeChild((renderTarget:GameObject) => {
+            list.removeChild((renderTarget:GameObject) => {
                 return self._shadowMapRendererUtils.isContainer(renderTarget);
             });
+
+            return list;
         }
+
+        private _list = null;
     }
 }
 
