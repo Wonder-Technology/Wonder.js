@@ -98,10 +98,10 @@ module wd{
 
         public lightModel:ELightModel = ELightModel.PHONG;
 
-        public twoDShadowMapDatas:wdCb.Collection<TwoDShadowMapData> = wdCb.Collection.create<TwoDShadowMapData>();
+        //public twoDShadowMapDatas:wdCb.Collection<TwoDShadowMapData> = wdCb.Collection.create<TwoDShadowMapData>();
         public cubemapShadowMapDatas:wdCb.Collection<CubemapShadowMapData> = wdCb.Collection.create<CubemapShadowMapData>();
 
-        public buildTwoDShadowMapData:BuildTwoDShadowMapData = null;
+        //public buildTwoDShadowMapData:BuildTwoDShadowMapData = null;
         public buildCubemapShadowMapData:BuildCubemapShadowMapData = null;
 
         public specularColor:Color = Color.create("#ffffff");
@@ -129,17 +129,17 @@ module wd{
             return this.mapManager.hasMap(<Texture>map);
         }
 
-        public addTwoDShadowMapData(shadowMapData:TwoDShadowMapData){
-            this.twoDShadowMapDatas.addChild(shadowMapData);
-        }
+        //public addTwoDShadowMapData(shadowMapData:TwoDShadowMapData){
+        //    this.twoDShadowMapDatas.addChild(shadowMapData);
+        //}
 
         public addCubemapShadowMapData(shadowMapData:CubemapShadowMapData){
             this.cubemapShadowMapDatas.addChild(shadowMapData);
         }
 
-        public clearTwoDShadowMapData(){
-            this.twoDShadowMapDatas.removeAllChildren();
-        }
+        //public clearTwoDShadowMapData(){
+        //    this.twoDShadowMapDatas.removeAllChildren();
+        //}
 
         public clearCubemapShadowMapData(){
             this.cubemapShadowMapDatas.removeAllChildren();

@@ -25,6 +25,12 @@ module wd {
         public setShadowMapData(target:GameObject);
         public setShadowMapData(target:GameObject, shadowMapCamera:GameObject);
 
+        @require(function(...args){
+            var target:GameObject = args[0],
+                material:LightMaterial = <LightMaterial>target.getComponent<Geometry>(Geometry).material;
+
+            assert(material instanceof StandardLightMaterial, Log.info.FUNC_MUST_BE("material", "LightMaterial when render shadowMap"));
+        })
         public setShadowMapData(...args){
             var target:GameObject = args[0],
                 material:LightMaterial = <LightMaterial>target.getComponent<Geometry>(Geometry).material,
@@ -33,8 +39,6 @@ module wd {
             if(args.length === 2){
                 shadowMapCamera = args[1];
             }
-
-            Log.error(!(material instanceof LightMaterial), Log.info.FUNC_MUST_BE("material", "LightMaterial when set shadowMap"));
 
             this.setMaterialShadowMapData(material, target, shadowMapCamera);
         }

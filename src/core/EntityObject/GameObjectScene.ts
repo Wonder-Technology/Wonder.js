@@ -46,7 +46,6 @@ module wd {
 
         public side:ESide = null;
         public shadowMap = ShadowMapModel.create(this);
-        public shader:CommonShader = null;
         public physics = PhysicsConfig.create();
         public physicsEngineAdapter:IPhysicsEngineAdapter = null;
 

@@ -154,6 +154,7 @@ module wd {
         public blendEquationSeparate:Array<EBlendEquation> = [EBlendEquation.ADD, EBlendEquation.ADD];
         public shading = EShading.FLAT;
         public geometry:Geometry = null;
+        public glslData:wdCb.Hash<any> = wdCb.Hash.create<any>();
 
         private _shaderMap:wdCb.Hash<Shader> = wdCb.Hash.create<Shader>();
         private _currentShader:Shader = null;

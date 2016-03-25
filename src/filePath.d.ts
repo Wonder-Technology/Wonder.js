@@ -347,6 +347,7 @@
 /// <reference path="renderer/shader/shader/ProceduralShader"/>
 /// <reference path="renderer/shader/shader/CommonProceduralShader"/>
 /// <reference path="renderer/shader/shader/CustomProceduralShader"/>
+/// <reference path="renderer/shader/shader/EShaderGLSLData"/>
 
 /// <reference path="renderer/shader/sourceBuilder/ShaderSourceBuilder"/>
 /// <reference path="renderer/shader/sourceBuilder/CustomShaderSourceBuilder"/>

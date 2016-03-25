@@ -31,7 +31,6 @@ module wd {
 
             this._list = this._getAllShadowRenderList();
 
-            //todo optimize: clear it before set?
             this._shadowMapRendererUtils.bindEndLoop(() => {
                 //here not need removeRepeatItems
                 //todo getRenderList()?
@@ -43,7 +42,6 @@ module wd {
 
             this._list.forEach((child:GameObject) => {
                 var material:Material = child.getComponent<Geometry>(Geometry).material,
-                    //todo create BuildShadowMapShader
                     shader:CommonShader = CommonShader.create(null);
                 //todo remove
                 shader["name"] = "shadow";
@@ -59,6 +57,11 @@ module wd {
                 }
 
                 shader.addLib(BuildTwoDShadowMapShaderLib.create());
+
+
+
+
+
 
                 //todo note!
                 shader.init(material);
@@ -80,8 +83,9 @@ module wd {
         protected beforeRenderFrameBufferTexture(renderCamera:GameObject){
             var self = this;
 
-            //here need removeRepeatItems
-            this._list.removeRepeatItems().forEach((child:GameObject) => {
+            //todo optimize: if light not translate and not change light(not dirty), not set(refresh) shadow map data
+            //here need removeRepeatItems??????
+            this._list.forEach((child:GameObject) => {
                 self._shadowMapRendererUtils.setShadowMapData(child, renderCamera);
             });
         }
@@ -108,6 +112,7 @@ module wd {
             this._shadowMapRendererUtils.afterRender();
         }
 
+        //todo optimize: if light not translate, not create camera
         protected createCamera():GameObject{
             var orthoCameraComponent = OrthographicCamera.create(),
                 light:DirectionLight = this._light,
@@ -146,7 +151,7 @@ module wd {
                 return self._shadowMapRendererUtils.isContainer(renderTarget);
             });
 
-            return list;
+            return list.removeRepeatItems();
         }
 
         private _list = null;
