@@ -35,9 +35,11 @@
 
         //'test/unit/**/command/*',
 
+        'test/unit/renderer/*ShadowMapSpec.js',
+        'test/unit/**/instance_shadow*',
         //'test/unit/**/instance/*',
 
-        //'test/unit/**/water*',
+        //qtest/unit/**/water*',
 
         //'test/unit/lib/**',
 
@@ -53,7 +55,7 @@
 
         //'test/unit/**/material/**',
         //
-        //'test/unit/**/MapManager*',
+        'test/unit/**/MapManager*',
 
         //'test/unit/renderer/**',
         //'test/unit/renderer/renderTargetRenderer/**',
@@ -141,9 +143,9 @@
         //
         //'test/unit/**/ImageSpec*',
         //
-        'test/unit/**/ThreeDTransformSpec.js',
-        'test/unit/**/RectTransformSpec*',
-        'test/unit/**/TransformSpec*',
+        //'test/unit/**/ThreeDTransformSpec.js',
+        //'test/unit/**/RectTransformSpec*',
+        //'test/unit/**/TransformSpec*',
         //'test/unit/**/component/**',
         //'test/unit/**/PanelSpec*',
         //
@@ -186,7 +188,6 @@
       //  'test/unit/**/scriptSpec.js',
       //
       //  'test/unit/**/*ControllerSpec.js',
-      //'test/unit/renderer/shadowMapSpec.js',
       //'test/unit/core/Tran*.js',
       //  'test/unit/asset/*.js',
       //  'test/unit/asset/obj/*.js',

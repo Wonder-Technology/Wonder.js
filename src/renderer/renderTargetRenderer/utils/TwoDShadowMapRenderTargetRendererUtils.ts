@@ -12,18 +12,6 @@ module wd {
 
         protected light:DirectionLight;
 
-        public initWhenCreate(){
-            var self = this;
-
-            super.initWhenCreate();
-
-            //todo refactor
-            //todo if renderList is null, draw all
-            this.light.shadowRenderList.forEach((child:GameObject) => {
-                self.setShadowMap(child, self.texture);
-            });
-        }
-
         @require(function(target:GameObject){
             var material:LightMaterial = <LightMaterial>target.getComponent<Geometry>(Geometry).material;
 
@@ -53,8 +41,9 @@ module wd {
             });
         }
 
+        //todo remove
         protected addShadowMap(material:LightMaterial, shadowMap:TwoDShadowMapTexture){
-            material.addTwoDShadowMap(shadowMap);
+            //material.twoDShadowMap = shadowMap;
         }
     }
 }

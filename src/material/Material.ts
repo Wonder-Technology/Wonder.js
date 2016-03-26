@@ -217,7 +217,17 @@ module wd {
             this._shaderMap.removeChild(shaderKey);
         }
 
+        public getShader(shaderKey:string){
+            return this._shaderMap.getChild(shaderKey);
+        }
 
+        public forEachShader(func:(shader:Shader) => void){
+            this._shaderMap.forEach(func);
+        }
+
+        public hasMap(map:Texture){
+            return this.mapManager.hasMap(<Texture>map);
+        }
 
 
 

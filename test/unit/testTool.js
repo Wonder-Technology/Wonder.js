@@ -14,6 +14,26 @@ var testTool = (function () {
                 ARRAY_BUFFER:"ARRAY_BUFFER",
                 ELEMENT_ARRAY_BUFFER:"ELEMENT_ARRAY_BUFFER",
 
+                REPEAT: "REPEAT",
+                MIRRORED_REPEAT: "MIRRORED_REPEAT",
+                CLAMP_TO_EDGE: "CLAMP_TO_EDGE",
+
+                TEXTURE_WRAP_S: "TEXTURE_WRAP_S",
+                TEXTURE_WRAP_T: "TEXTURE_WRAP_T",
+                TEXTURE_MAG_FILTER: "TEXTURE_MAG_FILTER",
+                TEXTURE_MIN_FILTER: "TEXTURE_MIN_FILTER",
+
+
+                NEAREST: "NEAREST",
+                NEAREST_MIPMAP_MEAREST: "NEAREST_MIPMAP_MEAREST",
+                NEAREST_MIPMAP_LINEAR: "NEAREST_MIPMAP_LINEAR",
+                LINEAR: "LINEAR",
+                LINEAR_MIPMAP_NEAREST: "LINEAR_MIPMAP_NEAREST",
+                LINEAR_MIPMAP_LINEAR: "LINEAR_MIPMAP_LINEAR",
+
+                TEXTURE_2D: "TEXTURE_2D",
+                TEXTURE_CUBE_MAP:"TEXTURE_CUBE_MAP",
+
 
                 getParameter: sandbox.stub(),
                 getExtension: sandbox.stub(),

@@ -28,7 +28,6 @@ module wd {
         public execute() {
             var material = this.material;
 
-            //material.bindAndUpdateTexture();
             material.updateShader(this);
 
             this.draw(material);
@@ -40,7 +39,7 @@ module wd {
             if(material.blendFuncSeparate && material.blendEquationSeparate){
             }
             else{
-                wdCb.Log.error(!material.blendSrc || !material.blendDst || !material.blendEquation, wdCb.Log.info.FUNC_MUST("material.blendSrc || material.blendDst || material.blendEquation", "be set"));
+                assert(!!material.blendSrc && !!material.blendDst && !!material.blendEquation, wdCb.Log.info.FUNC_MUST("material.blendSrc && material.blendDst && material.blendEquation", "be set"));
             }
         })
         protected setEffects(material:Material){

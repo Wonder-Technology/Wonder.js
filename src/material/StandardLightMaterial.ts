@@ -108,25 +108,15 @@ module wd{
         public emissionColor:Color = Color.create("rgba(0,0,0,0)");
         public lightMapIntensity:number = 1;
 
-        private _twoDShadowMapSamplerIndex:number = 0;
+        //private _twoDShadowMapSamplerIndex:number = 0;
         private _cubemapShadowMapSamplerIndex:number = 0;
 
-        public addTwoDShadowMap(shadowMap:TwoDShadowMapTexture){
-            this.mapManager.addMap(shadowMap, {
-                samplerData: this._twoDShadowMapSamplerIndex
-            });
-            this._twoDShadowMapSamplerIndex++;
-        }
 
         public addCubemapShadowMap(shadowMap:CubemapShadowMapTexture){
             this.mapManager.addMap(shadowMap, {
                 samplerData: this._cubemapShadowMapSamplerIndex
             });
             this._cubemapShadowMapSamplerIndex++;
-        }
-
-        public hasShadowMap(map:IShadowMapTexture){
-            return this.mapManager.hasMap(<Texture>map);
         }
 
         //public addTwoDShadowMapData(shadowMapData:TwoDShadowMapData){
@@ -251,9 +241,7 @@ module wd{
         }
 
         private _hasTwoDShadowMap(){
-            return this.mapManager.hasMap((map:Texture) => {
-                return map instanceof TwoDShadowMapTexture;
-            });
+            return this.mapManager.getTwoDShadowMapList().getCount() > 0;
         }
 
         private _hasCubemapShadowMap(){

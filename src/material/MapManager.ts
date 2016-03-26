@@ -3,6 +3,8 @@ module wd{
         public static create(material:Material) {
             var obj = new this(material);
 
+            obj.initWhenCreate();
+
             return obj;
         }
 
@@ -16,6 +18,12 @@ module wd{
         private _textureDirty:boolean = false;
         private _allMapsCache:Array<Texture> = null;
         private _allSingleMapsCache:Array<Texture> = null;
+
+        private _shadowMapController:ShadowMapController = null;
+
+        public initWhenCreate(){
+            this._shadowMapController = ShadowMapController.create(this._material);
+        }
 
         public init(){
             var mapArr = this._getAllMaps();
@@ -74,6 +82,40 @@ module wd{
 
             this._textureDirty = true;
         }
+
+        @require(function(shadowMap:IShadowMapTexture){
+            assert(!this._shadowMapController.hasTwoDShadowMap(shadowMap), Log.info.FUNC_SHOULD_NOT("add the shadowMap which is already exist"));
+        })
+        public addTwoDShadowMap(shadowMap:TwoDShadowMapTexture){
+            this._shadowMapController.addTwoDShadowMap(shadowMap);
+
+            this._textureDirty = true;
+        }
+
+        public getTwoDShadowMapList(){
+            return this._shadowMapController.getTwoDShadowMapList();
+        }
+
+        public hasTwoDShadowMap(shadowMap:TwoDShadowMapTexture){
+            return this._shadowMapController.hasTwoDShadowMap(shadowMap);
+        }
+        //
+        //private _shadowMap = null;
+        //
+        //private _list:wdCb.Collection<IShadowMapTexture> = wdCb.Collection.create<IShadowMapTexture>();
+
+        //get twoDShadowMap(){
+        //    return this._twoDShadowMap;
+        //}
+        //set twoDShadowMap(shadowMap:TwoDShadowMapTexture){
+        //    this.mapManager.addMap(shadowMap, {
+        //        samplerData: this._twoDShadowMapSamplerIndex
+        //    });
+        //    //todo solve!
+        //    this._twoDShadowMapSamplerIndex++;
+        //
+        //    this._twoDShadowMap = shadowMap;
+        //}
 
         @ensure(function(mapList:wdCb.Collection<BasicTexture|ProceduralTexture>){
             mapList.forEach((map:BasicTexture|ProceduralTexture) => {
@@ -246,7 +288,7 @@ module wd{
             this._textureDirty = false;
         })
         private _getAllSingleMaps(){
-            return this._mapTable.toArray();
+            return this._mapTable.toArray().concat(this._shadowMapController.getAllMaps())
         }
 
         @ensure(function(mapArr:Array<Texture>){

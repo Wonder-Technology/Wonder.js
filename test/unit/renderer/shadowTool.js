@@ -67,5 +67,11 @@ var shadowTool = {
         pointLight.addComponent(wd.MeshRenderer.create());
 
         return pointLight;
+    },
+    getDefaultMapManager: function (obj){
+        return obj.getComponent(wd.Geometry).material.getShader(wd.EShaderMapKey.DEFAULT).mapManager;
+    },
+    getBuildShadowMapMapManager:function (obj){
+        return obj.getComponent(wd.Geometry).material.getShader(wd.EShaderMapKey.BUILD_SHADOWMAP).mapManager;
     }
 }

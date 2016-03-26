@@ -441,6 +441,8 @@
 /// <reference path="material/ShaderMaterial"/>
 /// <reference path="material/EShading"/>
 /// <reference path="material/MapManager"/>
+/// <reference path="material/MapController"/>
+/// <reference path="material/ShadowMapController"/>
 /// <reference path="material/EShaderMapKey"/>
 
 

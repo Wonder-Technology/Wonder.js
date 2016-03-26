@@ -33,10 +33,9 @@ describe("MapManager", function() {
 
 
         twoDShadowMap = wd.TwoDShadowMapTexture.create();
-        manager.addMap(twoDShadowMap, {
-            samplerData: 0
-        });
+        manager.addTwoDShadowMap(twoDShadowMap);
 
+        //todo modify cubeShadowMap test
         cubemapShadowMap = wd.CubemapShadowMapTexture.create();
         manager.addMap(cubemapShadowMap, {
             samplerData: 1
@@ -55,7 +54,7 @@ describe("MapManager", function() {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
         Manager = wd.MapManager;
-        manager = new Manager();
+        manager = Manager.create();
         sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
 
         gl = wd.DeviceManager.getInstance().gl;
@@ -217,11 +216,11 @@ describe("MapManager", function() {
 
                         expect(expectFunc()).toCalledTwice();
                     });
-                    it("addMap make texture dirty", function(){
-                        var texture2 = wd.ImageTexture.create({});
+                    it("addTwoDShadowMap make texture dirty", function(){
+                        var texture2 = wd.TwoDShadowMapTexture.create();
                         var list1 = manager[testMethodName]();
 
-                        manager.addMap(texture2);
+                        manager.addTwoDShadowMap(texture2);
 
                         var list2 = manager[testMethodName]();
 
@@ -302,6 +301,16 @@ describe("MapManager", function() {
 
                     expect(manager._mapTable.toArray).toCalledTwice();
                 });
+                it("addTwoDShadowMap make texture dirty", function(){
+                    var texture2 = wd.TwoDShadowMapTexture.create();
+                    var list1 = manager._getAllMaps();
+
+                    manager.addTwoDShadowMap(texture2);
+
+                    var list2 = manager._getAllMaps();
+
+                    expect(manager._mapTable.toArray).toCalledTwice();
+                });
                 it("removeAllChildren make texture dirty", function(){
                     var list1 = manager._getAllMaps();
 
@@ -364,9 +373,10 @@ describe("MapManager", function() {
             expect(compressedTexture.sendData).toCalledWith(program, samplerName, 1);
             expect(proceduralTexture.sendData).toCalledWith(program, samplerName, 2);
             expect(mirrorTexture.sendData).toCalledWith(program, samplerName, 3);
-            expect(twoDShadowMap.sendData).toCalledWith(program, samplerName, 4);
-            expect(cubemapShadowMap.sendData).toCalledWith(program, samplerName, 5);
-            expect(cubemapTexture.sendData).toCalledWith(program, samplerName, 6);
+            expect(cubemapShadowMap.sendData).toCalledWith(program, samplerName, 4);
+            expect(cubemapTexture.sendData).toCalledWith(program, samplerName, 5);
+
+            expect(twoDShadowMap.sendData).toCalledWith(program, samplerName, 6);
         });
     });
 
@@ -387,6 +397,7 @@ describe("MapManager", function() {
             manager.sendData(program);
 
             expect(twoDTexture.bindToUnit).toCalledOnce();
+            expect(twoDShadowMap.bindToUnit).toCalledOnce();
             expect(cubemapShadowMap.bindToUnit).toCalledOnce();
             expect(cubemapTexture.bindToUnit).toCalledOnce();
             expect(proceduralTexture.bindToUnit).toCalledOnce();
@@ -400,6 +411,7 @@ describe("MapManager", function() {
 
 
             expect(twoDTexture.bindToUnit).toCalledTwice();
+            expect(twoDShadowMap.bindToUnit).toCalledTwice();
             expect(cubemapShadowMap.bindToUnit).toCalledTwice();
             expect(cubemapTexture.bindToUnit).toCalledTwice();
             expect(proceduralTexture.bindToUnit).toCalledTwice();
@@ -407,7 +419,7 @@ describe("MapManager", function() {
         it("bind texture, then update texture, then bind and update the next one", function () {
             stubAllTypeMaps(function(texture){
                 sandbox.stub(texture, "update");
-            })
+            });
 
             manager.bindAndUpdate();
 
