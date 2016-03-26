@@ -443,6 +443,9 @@
 /// <reference path="material/MapManager"/>
 /// <reference path="material/MapController"/>
 /// <reference path="material/ShadowMapController"/>
+/// <reference path="material/EnvMapController"/>
+/// <reference path="material/ArrayMapController"/>
+/// <reference path="material/CommonMapController"/>
 /// <reference path="material/EShaderMapKey"/>
 
 

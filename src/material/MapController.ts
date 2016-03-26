@@ -6,12 +6,19 @@ module wd{
 
         private _material:Material = null;
 
-        protected hasMap(source:wdCb.Collection<Texture>, target:Texture){
+        public abstract removeAllChildren():void;
+        public abstract getAllMapArr():Array<Texture>;
+
+        protected hasMapHelper(source:wdCb.Collection<Texture>, target:Texture){
             if(!source){
                 return false;
             }
 
             return source.hasChild(target);
+        }
+
+        protected setMapMaterial(map:Texture){
+            map.material = this._material;
         }
 
         protected setMapOption(map:Texture, option:MapVariableData){

@@ -245,9 +245,10 @@ module wd{
         }
 
         private _hasCubemapShadowMap(){
-            return this.mapManager.hasMap((map:Texture) => {
-                return map instanceof CubemapShadowMapTexture;
-            });
+            //todo refactor
+            //return this.mapManager.hasMap((map:Texture) => {
+            //    return map instanceof CubemapShadowMapTexture;
+            //});
         }
     }
 

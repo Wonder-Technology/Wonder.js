@@ -5,7 +5,9 @@ describe("MapManager", function() {
     var gl;
 
     var asset1,asset2,asset3;
-    var twoDTexture,compressedTexture,proceduralTexture,mirrorTexture,cubemapTexture,twoDShadowMap,cubemapShadowMap;
+    var twoDTexture,compressedTexture,proceduralTexture,cubemapTexture,twoDShadowMap,cubemapShadowMap;
+    var arrayMap11,arrayMap12;
+    var arrayMapSamplerName;
 
     function addAllTypeMaps(){
         asset1 = wd.ImageTextureAsset.create({});
@@ -18,10 +20,6 @@ describe("MapManager", function() {
         proceduralTexture = wd.MarbleProceduralTexture.create();
         manager.addMap(proceduralTexture);
 
-        mirrorTexture = wd.MirrorTexture.create();
-        manager.addMap(mirrorTexture, {
-            samplerVariableName: wd.VariableNameTable.getVariableName("reflectionMap")
-        });
 
         asset3 = {
             asset: wd.CompressedTextureAsset.create({})
@@ -40,11 +38,19 @@ describe("MapManager", function() {
         manager.addMap(cubemapShadowMap, {
             samplerData: 1
         });
+
+        arrayMap11 = wd.ImageTexture.create({a:1});
+        arrayMap12 = wd.ImageTexture.create({});
+
+        arrayMapSamplerName = "u_layerSampler2Ds";
+
+        manager.addArrayMap(arrayMapSamplerName, [arrayMap11, arrayMap12]);
     }
 
     function stubAllTypeMaps(stubFunc){
         [
-         twoDTexture,compressedTexture,proceduralTexture,mirrorTexture,cubemapTexture,twoDShadowMap,cubemapShadowMap
+         twoDTexture,compressedTexture,proceduralTexture,cubemapTexture,twoDShadowMap,cubemapShadowMap,
+            arrayMap11, arrayMap12
         ]
             .forEach(function(texture){
                 stubFunc(texture);
@@ -130,11 +136,12 @@ describe("MapManager", function() {
             expect(twoDTexture.dispose).toCalledOnce();
             expect(compressedTexture.dispose).toCalledOnce();
             expect(proceduralTexture.dispose).toCalledOnce();
-            expect(mirrorTexture.dispose).toCalledOnce();
             expect(cubemapTexture.dispose).toCalledOnce();
             expect(twoDShadowMap.dispose).toCalledOnce();
             expect(cubemapShadowMap.dispose).toCalledOnce();
-            expect(manager._mapTable.getCount()).toEqual(0);
+            expect(arrayMap11.dispose).toCalledOnce();
+            expect(arrayMap12.dispose).toCalledOnce();
+            expect(manager._getAllMaps().length).toEqual(0);
         });
     });
 
@@ -258,9 +265,9 @@ describe("MapManager", function() {
         });
 
         judge("_getAllSingleMaps", function(){
-            sandbox.spy(manager._mapTable, "toArray");
+            sandbox.spy(manager._commonMapController, "getAllMapArr");
         }, function(){
-            return manager._mapTable.toArray;
+            return manager._commonMapController.getAllMapArr;
         });
     });
 
@@ -271,8 +278,16 @@ describe("MapManager", function() {
         describe("test cache", function(){
             var texture;
 
+            function judgeIsCached(){
+                expect(manager._getAllSingleMaps).toCalledOnce();
+            }
+
+            function judgeIsNotCached(){
+                expect(manager._getAllSingleMaps).toCalledTwice();
+            }
+
             beforeEach(function(){
-                sandbox.spy(manager._mapTable, "toArray");
+                sandbox.spy(manager, "_getAllSingleMaps");
                 texture = wd.ImageTexture.create({});
 
                 manager.addMap(texture);
@@ -283,7 +298,7 @@ describe("MapManager", function() {
                 var list2 = manager._getAllMaps();
 
                 expect(list1 === list2).toBeTruthy();
-                expect(manager._mapTable.toArray).toCalledOnce();
+                judgeIsCached();
             });
 
             describe("if texture dirty, not cache", function(){
@@ -299,7 +314,7 @@ describe("MapManager", function() {
 
                     var list2 = manager._getAllMaps();
 
-                    expect(manager._mapTable.toArray).toCalledTwice();
+                    judgeIsNotCached();
                 });
                 it("addTwoDShadowMap make texture dirty", function(){
                     var texture2 = wd.TwoDShadowMapTexture.create();
@@ -309,7 +324,7 @@ describe("MapManager", function() {
 
                     var list2 = manager._getAllMaps();
 
-                    expect(manager._mapTable.toArray).toCalledTwice();
+                    judgeIsNotCached();
                 });
                 it("removeAllChildren make texture dirty", function(){
                     var list1 = manager._getAllMaps();
@@ -318,7 +333,7 @@ describe("MapManager", function() {
 
                     var list2 = manager._getAllMaps();
 
-                    expect(manager._mapTable.toArray).toCalledTwice();
+                    judgeIsNotCached();
                 });
                 it("set empty envMap make texture dirty", function(){
                     var list1 = manager._getAllMaps();
@@ -327,7 +342,7 @@ describe("MapManager", function() {
 
                     var list2 = manager._getAllMaps();
 
-                    expect(manager._mapTable.toArray).toCalledTwice();
+                    judgeIsNotCached();
                 });
             });
         });
@@ -366,17 +381,25 @@ describe("MapManager", function() {
             }).toThrow();
         });
 
-        it("send texture data", function(){
+        it("send single textures data", function(){
             manager.sendData(program);
 
-            expect(twoDTexture.sendData).toCalledWith(program, samplerName, 0);
-            expect(compressedTexture.sendData).toCalledWith(program, samplerName, 1);
-            expect(proceduralTexture.sendData).toCalledWith(program, samplerName, 2);
-            expect(mirrorTexture.sendData).toCalledWith(program, samplerName, 3);
-            expect(cubemapShadowMap.sendData).toCalledWith(program, samplerName, 4);
-            expect(cubemapTexture.sendData).toCalledWith(program, samplerName, 5);
+            expect(twoDShadowMap.sendData).toCalledWith(program, samplerName, 0);
+            //todo fix
+            expect(cubemapShadowMap.sendData).toCalledWith(program, samplerName, 5);
 
-            expect(twoDShadowMap.sendData).toCalledWith(program, samplerName, 6);
+            expect(cubemapTexture.sendData).toCalledWith(program, samplerName, 1);
+            expect(twoDTexture.sendData).toCalledWith(program, samplerName, 2);
+            expect(compressedTexture.sendData).toCalledWith(program, samplerName, 3);
+            expect(proceduralTexture.sendData).toCalledWith(program, samplerName, 4);
+        });
+        it("send array textures data", function(){
+            sandbox.stub(program, "sendUniformData");
+
+            manager.sendData(program);
+
+            expect(program.sendUniformData).toCalledOnce();
+            expect(program.sendUniformData).toCalledWith(arrayMapSamplerName + "[0]", wd.EVariableType.SAMPLER_ARRAY, [6, 7]);
         });
     });
 
@@ -427,6 +450,16 @@ describe("MapManager", function() {
             expect(twoDTexture.bindToUnit).toCalledBefore(twoDTexture.update);
             expect(twoDTexture.update).toCalledBefore(compressedTexture.bindToUnit);
             expect(compressedTexture.bindToUnit).toCalledBefore(compressedTexture.update);
+        });
+    });
+    
+    describe("removeAllChildren", function(){
+        it("remove all maps", function(){
+            addAllTypeMaps();
+
+            manager.removeAllChildren();
+
+            expect(manager._getAllMaps().length).toEqual(0);
         });
     });
 });

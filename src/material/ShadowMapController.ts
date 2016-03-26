@@ -21,11 +21,15 @@ module wd{
         }
 
         public hasTwoDShadowMap(shadowMap:TwoDShadowMapTexture){
-            return this.hasMap(this._twoDShadowMapList, shadowMap);
+            return this.hasMapHelper(this._twoDShadowMapList, shadowMap);
         }
 
-        public getAllMaps(){
+        public getAllMapArr(){
             return this._twoDShadowMapList.toArray();
+        }
+
+        public removeAllChildren(){
+            this._twoDShadowMapList.removeAllChildren();
         }
     }
 }
