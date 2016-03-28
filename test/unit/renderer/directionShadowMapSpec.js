@@ -10,6 +10,12 @@ describe("direction shadow map", function() {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
+
+
+        testTool.clearInstance();
+        director = wd.Director.getInstance();
+
+
         sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
 
         renderer = wd.WebGLRenderer.create();
@@ -24,7 +30,7 @@ describe("direction shadow map", function() {
             var material = wd.LightMaterial.create();
             material.specularColor = wd.Color.create("#ffdd99");
             material.shininess = 16;
-            material.diffuseMap = wd.ImageTexture.create(wd.TextureLoader.getInstance().get("texture"));
+            material.diffuseMap = wd.ImageTexture.create({});
             material.shading = wd.EShading.SMOOTH;
 
 
@@ -46,8 +52,6 @@ describe("direction shadow map", function() {
         }
 
         beforeEach(function(){
-            director = wd.Director.getInstance();
-
             sphere = createSphere();
             light = shadowTool.createDirectionLight([sphere]);
 

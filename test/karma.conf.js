@@ -35,6 +35,10 @@
 
         //'test/unit/**/command/*',
 
+
+        'test/unit/**/scene/**',
+
+
         'test/unit/renderer/*ShadowMapSpec.js',
         'test/unit/**/instance_shadow*',
         //'test/unit/**/instance/*',

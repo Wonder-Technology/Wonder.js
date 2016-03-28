@@ -52,35 +52,13 @@ module wd {
         private _lightManager:LightManager = LightManager.create();
         private _renderTargetRendererList:wdCb.Collection<RenderTargetRenderer> = wdCb.Collection.create<RenderTargetRenderer>();
         private _proceduralRendererList:wdCb.Collection<ProceduralRenderTargetRenderer> = wdCb.Collection.create<ProceduralRenderTargetRenderer>();
-        //private _twoDShadowMapRendererList:wdCb.Collection<TwoDShadowMapRenderTargetRenderer> = wdCb.Collection.create<TwoDShadowMapRenderTargetRenderer>();
-        //private _twoDShadowMapRenderer:TwoDShadowMapRenderTargetRenderer = null;
         private _collisionDetector:CollisionDetector = CollisionDetector.create();
         private _cameraList:wdCb.Collection<GameObject> = wdCb.Collection.create<GameObject>();
-        private _beforeInitSubscription:wdFrp.IDisposable = null;
 
         public initWhenCreate(){
-            var self = this;
-
             super.initWhenCreate();
 
-            this._beforeInitSubscription = EventManager.fromEvent(<any>EEngineEvent.BEFORE_GAMEOBJECT_INIT)
-                .subscribe(() => {
-                    self._beforeInitHandler();
-                });
-        }
-
-        private _beforeInitHandler(){
-            //todo move to ShadowManager component
-            this.directionLights.forEach((lightObject:GameObject) => {
-                var light:DirectionLight = lightObject.getComponent<DirectionLight>(DirectionLight);
-
-                if(light.castShadow){
-
-                    let renderer = TwoDShadowMapRenderTargetRenderer.create(TwoDShadowMapTexture.create(), light);
-
-                    this._renderTargetRendererList.addChild(renderer);
-                }
-            });
+            this.addComponent(ShadowManager.create());
         }
 
         public init(){

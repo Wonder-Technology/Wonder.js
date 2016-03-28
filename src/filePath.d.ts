@@ -131,6 +131,11 @@
 /// <reference path="component/container/UIManager"/>
 /// <reference path="component/container/LightManager"/>
 
+
+/// <reference path="component/scene/SceneComponent"/>
+/// <reference path="component/scene/manager/ShadowManager"/>
+
+
 /// <reference path="component/animation/Animation"/>
 /// <reference path="component/animation/MorphAnimation"/>
 /// <reference path="component/animation/ArticulatedAnimation"/>
