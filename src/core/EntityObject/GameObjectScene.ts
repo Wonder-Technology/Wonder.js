@@ -49,7 +49,7 @@ module wd {
         public physics = PhysicsConfig.create();
         public physicsEngineAdapter:IPhysicsEngineAdapter = null;
 
-        private _lightManager:LightManager = LightManager.create();
+        private _lightManager:LightManager = null;
         private _renderTargetRendererList:wdCb.Collection<RenderTargetRenderer> = wdCb.Collection.create<RenderTargetRenderer>();
         private _proceduralRendererList:wdCb.Collection<ProceduralRenderTargetRenderer> = wdCb.Collection.create<ProceduralRenderTargetRenderer>();
         private _collisionDetector:CollisionDetector = CollisionDetector.create();
@@ -59,6 +59,9 @@ module wd {
             super.initWhenCreate();
 
             this.addComponent(ShadowManager.create());
+
+            this._lightManager = LightManager.create();
+            this.addComponent(this._lightManager);
         }
 
         public init(){

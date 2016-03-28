@@ -129,11 +129,12 @@
 /// <reference path="component/container/ComponentContainer"/>
 /// <reference path="component/container/ActionManager"/>
 /// <reference path="component/container/UIManager"/>
-/// <reference path="component/container/LightManager"/>
 
 
 /// <reference path="component/scene/SceneComponent"/>
+
 /// <reference path="component/scene/manager/ShadowManager"/>
+/// <reference path="component/scene/manager/LightManager"/>
 
 
 /// <reference path="component/animation/Animation"/>

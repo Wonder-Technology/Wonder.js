@@ -1,5 +1,5 @@
 module wd {
-    export class LightManager {
+    export class LightManager extends SceneComponent{
         public static create() {
             var obj = new this();
 
