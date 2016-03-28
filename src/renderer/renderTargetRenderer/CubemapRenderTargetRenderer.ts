@@ -40,6 +40,7 @@ module wd {
                 renderList = null;
 
             renderList = this.getRenderList();
+            //todo remove
             this.texture.bindToUnit(0);
 
             if(this._needCreateCamera(position)){

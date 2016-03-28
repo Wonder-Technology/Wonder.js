@@ -58,11 +58,13 @@ module wd{
             gl.bindRenderbuffer(gl.RENDERBUFFER, null);
         }
 
+        @ensure(function(renderBuffer){
+            Log.assert(!!renderBuffer, Log.info.FUNC_NOT_EXIST("renderbuffer object"));
+
+        })
         public createRenderBuffer(){
             var gl = this.gl,
                 renderBuffer = gl.createRenderbuffer();
-
-            Log.error(!renderBuffer, "Failed to create renderbuffer object");
 
             return renderBuffer;
         }

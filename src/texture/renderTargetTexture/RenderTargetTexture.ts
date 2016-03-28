@@ -24,10 +24,11 @@ module wd {
             return this.geometry.entityObject.transform.position;
         }
 
-        protected setEmptyTexture(texture){
+        @require(function(texture:any){
+            Log.assert(!!texture, Log.info.FUNC_NOT_EXIST("texture object"));
+        })
+        protected setEmptyTexture(texture:any){
             var gl = DeviceManager.getInstance().gl;
-
-            Log.error(!texture, "Failed to create texture object");
 
             gl.bindTexture(gl[this.target], texture);
 
