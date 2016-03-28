@@ -75,6 +75,7 @@ module wd {
 
         public name:string = `scene${String(this.uid)}`;
         public currentShaderKey:EShaderMapKey = null;
+        public glslData:wdCb.Hash<any> = wdCb.Hash.create<any>();
 
         public uiObjectScene:UIObjectScene = UIObjectScene.create();
         public gameObjectScene:GameObjectScene = GameObjectScene.create();

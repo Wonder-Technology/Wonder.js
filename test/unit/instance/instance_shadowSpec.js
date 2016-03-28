@@ -13,6 +13,8 @@ describe("instance with shadow", function () {
     var renderer;
     var camera;
 
+    var light;
+
     function createSphere() {
         var material = wd.LightMaterial.create();
         material.specularColor = wd.Color.create("#ffdd99");
@@ -269,6 +271,72 @@ describe("instance with shadow", function () {
                 instanceArr.forEach(function (instance) {
                     expect(shadowTool.getDefaultMapManager(instance).getTwoDShadowMapList().getCount()).toEqual(1);
                     expect(shadowTool.getBuildShadowMapMapManager(instance).getTwoDShadowMapList().getCount()).toEqual(1);
+                });
+            });
+
+            describe("test multi direction lights", function() {
+                var light2;
+
+                beforeEach(function () {
+                    light2 = shadowTool.createDirectionLight(instanceArr.concat([sphere2]));
+
+                    director.scene.addChild(light2);
+                });
+
+                describe("send u_vpMatrixFromLight,u_twoDShadowSize,u_twoDShadowBias,u_twoDShadowDarkness,u_twoDLightPos", function () {
+                    it("test instances", function () {
+                        var direLight1 = light.getComponent(wd.DirectionLight);
+                        var direLight2 = light2.getComponent(wd.DirectionLight);
+
+                        testTool.stubGetter(sinon, direLight1, "shadowMapWidth", function () {
+                            return 100;
+                        })
+                        testTool.stubGetter(sinon, direLight1, "shadowMapHeight", function () {
+                            return 200;
+                        })
+                        direLight1.shadowBias = 0.1;
+                        direLight1.shadowDarkness = 0.5;
+
+                        var position1 = wd.Vector3.create(1, 1, 1);
+                        light.transform.position = position1;
+
+
+                        testTool.stubGetter(sinon, direLight2, "shadowMapWidth", function () {
+                            return 101;
+                        })
+                        testTool.stubGetter(sinon, direLight2, "shadowMapHeight", function () {
+                            return 201;
+                        })
+                        direLight2.shadowBias = 0.2;
+                        direLight2.shadowDarkness = 0.6;
+
+                        var position2 = wd.Vector3.create(1, 2, 1);
+                        light2.transform.position = position2;
+
+
+                        director._init();
+
+                        var sphere1Program = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere1, true).program;
+                        var sphere1Instance1Program = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere1Instance1).program;
+
+                        director._loopBody();
+
+
+                        expect(sphere1Program.sendUniformData.withArgs("u_twoDLightPos[0]").firstCall.args[2]).toEqual(position1);
+                        expect(sphere1Program.sendUniformData.withArgs("u_twoDLightPos[0]").secondCall.args[2]).toEqual(position1);
+
+                        expect(sphere1Instance1Program.sendUniformData.withArgs("u_twoDLightPos[0]").firstCall.args[2]).toEqual(position1);
+                        expect(sphere1Instance1Program.sendUniformData.withArgs("u_twoDLightPos[0]").secondCall.args[2]).toEqual(position1);
+
+
+
+
+                        expect(sphere1Program.sendUniformData.withArgs("u_twoDLightPos[1]").firstCall.args[2]).toEqual(position2);
+                        expect(sphere1Program.sendUniformData.withArgs("u_twoDLightPos[1]").secondCall.args[2]).toEqual(position2);
+
+                        expect(sphere1Instance1Program.sendUniformData.withArgs("u_twoDLightPos[1]").firstCall.args[2]).toEqual(position2);
+                        expect(sphere1Instance1Program.sendUniformData.withArgs("u_twoDLightPos[1]").secondCall.args[2]).toEqual(position2);
+                    });
                 });
             });
         });

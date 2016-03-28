@@ -153,10 +153,10 @@ describe("direction shadow map", function() {
             var shader, program;
 
             function setDrawShadowMapShaderAndProgram(){
-                shader = sphere.getComponent(wd.Geometry).material.shader;
+                var data = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
 
-                program = shader.program;
-                sandbox.stub(program, "sendUniformData");
+                shader = data.shader;
+                program = data.program;
             }
 
             describe("test shadow map", function(){
@@ -196,36 +196,35 @@ describe("direction shadow map", function() {
                     expect(program.sendUniformData.withArgs("u_twoDShadowMapSampler[1]", sinon.match.any, 1)).toCalledOnce();
                     expect(program.sendUniformData.withArgs("u_diffuseMapSampler", sinon.match.any, 2)).toCalledOnce();
                 });
+
                 it("send u_vpMatrixFromLight,u_twoDShadowSize,u_twoDShadowBias,u_twoDShadowDarkness,u_twoDLightPos", function () {
                     var direLight1 = light.getComponent(wd.DirectionLight);
                     var direLight2 = light2.getComponent(wd.DirectionLight);
 
-                    testTool.stubGetter(sinon, direLight1, "shadowMapWidth", function(){
+                    testTool.stubGetter(sinon, direLight1, "shadowMapWidth", function () {
                         return 100;
                     })
-                    testTool.stubGetter(sinon, direLight1, "shadowMapHeight", function(){
+                    testTool.stubGetter(sinon, direLight1, "shadowMapHeight", function () {
                         return 200;
                     })
                     direLight1.shadowBias = 0.1;
                     direLight1.shadowDarkness = 0.5;
 
-                    var position1 = wd.Vector3.create(1,1,1);
+                    var position1 = wd.Vector3.create(1, 1, 1);
                     light.transform.position = position1;
 
 
-                    testTool.stubGetter(sinon, direLight2, "shadowMapWidth", function(){
+                    testTool.stubGetter(sinon, direLight2, "shadowMapWidth", function () {
                         return 101;
                     })
-                    testTool.stubGetter(sinon, direLight2, "shadowMapHeight", function(){
+                    testTool.stubGetter(sinon, direLight2, "shadowMapHeight", function () {
                         return 201;
                     })
                     direLight2.shadowBias = 0.2;
                     direLight2.shadowDarkness = 0.6;
 
-                    var position2 = wd.Vector3.create(1,2,1);
+                    var position2 = wd.Vector3.create(1, 2, 1);
                     light2.transform.position = position2;
-
-
 
 
                     director._init();
@@ -234,15 +233,13 @@ describe("direction shadow map", function() {
                     director._loopBody();
 
 
-
-
                     expect(program.sendUniformData.withArgs("u_vpMatrixFromLight[0]")).toCalledOnce();
                     expect(program.sendUniformData.withArgs("u_vpMatrixFromLight[1]")).toCalledOnce();
 
                     expect(program.sendUniformData.withArgs("u_twoDShadowSize[0]")).toCalledOnce();
-                    expect(program.sendUniformData.withArgs("u_twoDShadowSize[0]").firstCall.args[2]).toEqual([100,200]);
+                    expect(program.sendUniformData.withArgs("u_twoDShadowSize[0]").firstCall.args[2]).toEqual([100, 200]);
                     expect(program.sendUniformData.withArgs("u_twoDShadowSize[1]")).toCalledOnce();
-                    expect(program.sendUniformData.withArgs("u_twoDShadowSize[1]").firstCall.args[2]).toEqual([101,201]);
+                    expect(program.sendUniformData.withArgs("u_twoDShadowSize[1]").firstCall.args[2]).toEqual([101, 201]);
 
                     expect(program.sendUniformData.withArgs("u_twoDShadowBias[0]")).toCalledOnce();
                     expect(program.sendUniformData.withArgs("u_twoDShadowBias[0]").firstCall.args[2]).toEqual(0.1);
@@ -259,6 +256,7 @@ describe("direction shadow map", function() {
                     expect(program.sendUniformData.withArgs("u_twoDLightPos[1]")).toCalledOnce();
                     expect(program.sendUniformData.withArgs("u_twoDLightPos[1]").firstCall.args[2]).toEqual(position2);
                 });
+
                 it("test change glsl data", function () {
                     var direLight1 = light.getComponent(wd.DirectionLight);
                     var direLight2 = light2.getComponent(wd.DirectionLight);
@@ -369,6 +367,21 @@ describe("direction shadow map", function() {
                 renderer.render();
 
                 expect(shadowMap.bindToUnit.callCount).toEqual(6);
+            });
+
+            it("all objects should be drawed only twice(one for build shadow map, one for draw shadow map)", function(){
+                sandbox.spy(sphere, "render");
+                sandbox.spy(part1, "render");
+                sandbox.spy(part2, "render");
+
+                director._init();
+
+
+                director.scene.gameObjectScene.render(renderer);
+
+                expect(sphere.render).toCalledTwice();
+                expect(part1.render).toCalledTwice();
+                expect(part2.render).toCalledTwice();
             });
         });
     });

@@ -37,9 +37,12 @@ module wd {
 
             this._shadowMapRendererUtils.bindEndLoop(() => {
                 //here not need removeRepeatItems
-                self._allShadowRenderList.forEach((child:GameObject) => {
-                    self._shadowMapRendererUtils.clearTwoDShadowMapData(child);
-                });
+                //self._allShadowRenderList.forEach((child:GameObject) => {
+                //    self._shadowMapRendererUtils.clearTwoDShadowMapData(child);
+                //});
+
+
+                Director.getInstance().scene.glslData.removeChild(<any>EShaderGLSLData.TWOD_SHADOWMAP);
             });
 
 
@@ -91,11 +94,16 @@ module wd {
         protected beforeRenderFrameBufferTexture(renderCamera:GameObject){
             var self = this;
 
-            //todo optimize: if light not translate and not change light(not dirty), not set(refresh) shadow map data
-            //here need removeRepeatItems??????
-            this._allShadowRenderList.forEach((child:GameObject) => {
-                self._shadowMapRendererUtils.setShadowMapData(child, renderCamera);
+            Director.getInstance().scene.glslData.appendChild(<any>EShaderGLSLData.TWOD_SHADOWMAP, {
+                camera: renderCamera.getComponent(CameraController),
+                light: this._light
             });
+            //
+            ////todo optimize: if light not translate and not change light(not dirty), not set(refresh) shadow map data
+            ////here need removeRepeatItems??????
+            //this._allShadowRenderList.forEach((child:GameObject) => {
+            //    self._shadowMapRendererUtils.setShadowMapData(child, renderCamera);
+            //});
         }
 
         protected getRenderList():wdCb.Collection<GameObject>{

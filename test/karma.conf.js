@@ -36,7 +36,7 @@
         //'test/unit/**/command/*',
 
         'test/unit/renderer/*ShadowMapSpec.js',
-        //'test/unit/**/instance_shadow*',
+        'test/unit/**/instance_shadow*',
         //'test/unit/**/instance/*',
 
         //qtest/unit/**/water*',

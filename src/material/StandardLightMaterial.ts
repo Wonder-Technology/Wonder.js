@@ -252,18 +252,19 @@ module wd{
         }
     }
 
-    export type BuildTwoDShadowMapData = {
-        vpMatrixFromLight:Matrix4
-    }
+    //export type BuildTwoDShadowMapData = {
+    //    vpMatrixFromLight:Matrix4
+    //}
+    //
+    //export type TwoDShadowMapData = {
+    //    shadowBias:number,
+    //    shadowDarkness:number,
+    //    shadowSize:Array<number>,
+    //    lightPos:Vector3,
+    //    vpMatrixFromLight:Matrix4
+    //}
 
-    export type TwoDShadowMapData = {
-        shadowBias:number,
-        shadowDarkness:number,
-        shadowSize:Array<number>,
-        lightPos:Vector3,
-        vpMatrixFromLight:Matrix4
-    }
-
+    //todo remove
     export type CubemapShadowMapData = {
         shadowBias:number,
         shadowDarkness:number,

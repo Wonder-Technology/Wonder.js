@@ -73,5 +73,19 @@ var shadowTool = {
     },
     getBuildShadowMapMapManager:function (obj){
         return obj.getComponent(wd.Geometry).material.getShader(wd.EShaderMapKey.BUILD_SHADOWMAP).mapManager;
+    },
+    setDrawShadowMapShaderAndProgramHelper:function (sandbox, obj, isNotStub){
+        var shader = obj.getComponent(wd.Geometry).material.shader;
+
+        var program = shader.program;
+
+        if(!isNotStub){
+            sandbox.stub(program, "sendUniformData");
+        }
+
+        return {
+            shader: shader,
+            program: program
+        };
     }
 }
