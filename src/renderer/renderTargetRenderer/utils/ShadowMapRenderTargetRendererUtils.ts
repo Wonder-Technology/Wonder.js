@@ -1,5 +1,6 @@
 module wd {
     export abstract class ShadowMapRenderTargetRendererUtils{
+        //todo refactor
         constructor(light:Light, texture:Texture){
             this.light = light;
             this.texture = texture;
@@ -15,15 +16,21 @@ module wd {
         public initWhenCreate(){
             this.texture.width = this.light.shadowMapWidth;
             this.texture.height = this.light.shadowMapHeight;
+
+            //todo fix
+            //this.texture.width = 1024;
+            //this.texture.height = 1024;
         }
 
         public init(){
-            this.texture.init();
+            //this.texture.init();
         }
 
 
+        //todo remove
         public setShadowMapData(target:GameObject);
         public setShadowMapData(target:GameObject, shadowMapCamera:GameObject);
+        public setShadowMapData(target:GameObject, shadowMapCamera:GameObject, light);
 
         @require(function(...args){
             var target:GameObject = args[0],
@@ -42,6 +49,14 @@ module wd {
 
             this.setMaterialShadowMapData(material, target, shadowMapCamera);
         }
+
+
+
+
+
+
+
+
 
         public bindEndLoop(func:Function){
             this._endLoopSubscription = EventManager.fromEvent(<any>EEngineEvent.ENDLOOP)

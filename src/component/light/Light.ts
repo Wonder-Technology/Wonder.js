@@ -40,6 +40,7 @@ module wd {
         public shadowCameraFar:number = 5000;
         public shadowBias:number = ShaderChunk.NULL;
         public shadowDarkness:number = 0;
+        //todo remove
         public shadowMap:IShadowMapTexture = null;
         public shadowMapRenderer:RenderTargetRenderer = null;
     }

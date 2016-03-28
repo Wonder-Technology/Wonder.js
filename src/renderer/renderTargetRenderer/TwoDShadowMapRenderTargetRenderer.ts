@@ -1,15 +1,15 @@
 module wd {
     export class TwoDShadowMapRenderTargetRenderer extends TwoDRenderTargetRenderer{
-        public static create(light:DirectionLight) {
-            var obj = new this(light);
+        public static create(shadowMap:TwoDShadowMapTexture, light:DirectionLight) {
+            var obj = new this(shadowMap, light);
 
             obj.initWhenCreate();
 
             return obj;
         }
 
-        constructor(light:DirectionLight){
-            super(light.shadowMap);
+        constructor(shadowMap:TwoDShadowMapTexture, light:DirectionLight){
+            super(shadowMap);
 
             this._light = light;
         }
@@ -17,60 +17,65 @@ module wd {
         protected texture:TwoDShadowMapTexture;
 
         private _light:DirectionLight = null;
-        private _allShadowRenbderList:wdCb.Collection<GameObject> = null;
+        private _allShadowRenderList:wdCb.Collection<GameObject> = null;
 
         private _shadowMapRendererUtils:TwoDShadowMapRenderTargetRendererUtils = null;
 
         @require(function(){
-            assert(!!this._light.shadowMap, Log.info.FUNC_SHOULD("create shadowMap before create shadowMap renderTargetRenderer"));
+            //assert(!!this._light.shadowMap, Log.info.FUNC_SHOULD("create shadowMap before create shadowMap renderTargetRenderer"));
         })
         public initWhenCreate(){
-            this._shadowMapRendererUtils = TwoDShadowMapRenderTargetRendererUtils.create(this._light, this.texture);
+            var self = this;
 
+            this._shadowMapRendererUtils = TwoDShadowMapRenderTargetRendererUtils.create(this._light, this.texture);
 
             super.initWhenCreate();
 
-            var self = this;
+            this._allShadowRenderList = this._getAllShadowRenderList();
 
-            this._allShadowRenbderList = this._getAllShadowRenderList();
+            //todo optimize:operate these logic once
 
             this._shadowMapRendererUtils.bindEndLoop(() => {
                 //here not need removeRepeatItems
-                self._allShadowRenbderList.forEach((child:GameObject) => {
+                self._allShadowRenderList.forEach((child:GameObject) => {
                     self._shadowMapRendererUtils.clearTwoDShadowMapData(child);
                 });
             });
 
 
-            this._allShadowRenbderList.forEach((child:GameObject) => {
-                var material:Material = child.getComponent<Geometry>(Geometry).material,
-                    shader:CommonShader = CommonShader.create(null);
+            this._allShadowRenderList.forEach((child:GameObject) => {
+                var material:Material = child.getComponent<Geometry>(Geometry).material;
 
-                shader.addLib(CommonShaderLib.create());
-                shader.addLib(VerticeCommonShaderLib.create());
+                if(!material.hasShader(<any>EShaderMapKey.BUILD_SHADOWMAP)){
+                    let shader:CommonShader = CommonShader.create(null);
 
-                if(RenderUtils.isInstanceAndHardwareSupport(child)){
-                    shader.addLib(ModelMatrixInstanceShaderLib.create());
+                    shader.addLib(CommonShaderLib.create());
+                    shader.addLib(VerticeCommonShaderLib.create());
+
+                    if(RenderUtils.isInstanceAndHardwareSupport(child)){
+                        shader.addLib(ModelMatrixInstanceShaderLib.create());
+                    }
+                    else{
+                        shader.addLib(ModelMatrixNoInstanceShaderLib.create());
+                    }
+
+                    shader.addLib(BuildTwoDShadowMapShaderLib.create());
+
+
+
+
+
+
+                    //todo note!
+                    shader.init(material);
+
+                    material.addShader(<any>EShaderMapKey.BUILD_SHADOWMAP, shader);
                 }
-                else{
-                    shader.addLib(ModelMatrixNoInstanceShaderLib.create());
-                }
-
-                shader.addLib(BuildTwoDShadowMapShaderLib.create());
-
-
-
-
-
-
-                //todo note!
-                shader.init(material);
-
-                material.addShader(<any>EShaderMapKey.BUILD_SHADOWMAP, shader);
 
 
                 material.forEachShader((shader:Shader) => {
                     if(!shader.mapManager.hasTwoDShadowMap(self.texture)){
+                        //todo optimize:addArrayMap?
                         shader.mapManager.addTwoDShadowMap(self.texture);
                     }
                 });
@@ -88,11 +93,8 @@ module wd {
 
             //todo optimize: if light not translate and not change light(not dirty), not set(refresh) shadow map data
             //here need removeRepeatItems??????
-            this._allShadowRenbderList.forEach((child:GameObject) => {
+            this._allShadowRenderList.forEach((child:GameObject) => {
                 self._shadowMapRendererUtils.setShadowMapData(child, renderCamera);
-
-
-                //self._shadowMapRendererUtils.setShadowMap(child, self.texture);
             });
         }
 

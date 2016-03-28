@@ -221,6 +221,10 @@ module wd {
             return this._shaderMap.getChild(shaderKey);
         }
 
+        public hasShader(shaderKey:string){
+            return this._shaderMap.hasChild(shaderKey);
+        }
+
         public forEachShader(func:(shader:Shader) => void){
             this._shaderMap.forEach(func);
         }

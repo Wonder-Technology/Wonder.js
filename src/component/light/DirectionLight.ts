@@ -27,17 +27,6 @@ module wd{
         public shadowCameraRight:number = 1000;
         public shadowCameraTop:number = 1000;
         public shadowCameraBottom:number = -1000;
-
-        public shadowMap:TwoDShadowMapTexture;
-        public shadowMapRenderer:TwoDShadowMapRenderTargetRenderer;
-
-        protected createShadowMap(){
-            return TwoDShadowMapTexture.create();
-        }
-
-        protected createShadowMapRenderer(){
-            return TwoDShadowMapRenderTargetRenderer.create(this);
-        }
     }
 }
 
