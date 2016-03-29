@@ -1,5 +1,5 @@
 module wd{
-    export class ShadowManager extends Component{
+    export class ShadowManager extends SceneComponent{
         public static create() {
         	var obj = new this();
 

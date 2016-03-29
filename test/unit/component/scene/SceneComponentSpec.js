@@ -17,12 +17,7 @@ describe("SceneComponent", function() {
         it("the sub class->addToObject should trigger the check:should add to GameObjectScene", function(){
             testTool.openContractCheck(sandbox);
 
-            function Sub(){
-            }
-
-            YYC.Tool.extend.inherit(Sub, Scene);
-
-            var s = new Sub();
+            var s = wd.ShadowManager.create();
 
             expect(function(){
                 var gameObject = wd.GameObject.create();
