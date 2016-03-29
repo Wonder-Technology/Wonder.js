@@ -17,7 +17,7 @@ module wd {
         protected texture:TwoDShadowMapTexture;
 
         private _light:DirectionLight = null;
-        private _allShadowRenderList:wdCb.Collection<GameObject> = null;
+        //private _allShadowRenderList:wdCb.Collection<GameObject> = null;
 
         private _shadowMapRendererUtils:TwoDShadowMapRenderTargetRendererUtils = null;
 
@@ -25,64 +25,64 @@ module wd {
             //assert(!!this._light.shadowMap, Log.info.FUNC_SHOULD("create shadowMap before create shadowMap renderTargetRenderer"));
         })
         public initWhenCreate(){
-            var self = this;
+            //var self = this;
 
             this._shadowMapRendererUtils = TwoDShadowMapRenderTargetRendererUtils.create(this._light, this.texture);
 
             super.initWhenCreate();
-
-            this._allShadowRenderList = this._getAllShadowRenderList();
-
-            //todo optimize:operate these logic once
-
-            this._shadowMapRendererUtils.bindEndLoop(() => {
-                //here not need removeRepeatItems
-                //self._allShadowRenderList.forEach((child:GameObject) => {
-                //    self._shadowMapRendererUtils.clearTwoDShadowMapData(child);
-                //});
-
-
-                Director.getInstance().scene.glslData.removeChild(<any>EShaderGLSLData.TWOD_SHADOWMAP);
-            });
-
-
-            this._allShadowRenderList.forEach((child:GameObject) => {
-                var material:Material = child.getComponent<Geometry>(Geometry).material;
-
-                if(!material.hasShader(<any>EShaderMapKey.BUILD_SHADOWMAP)){
-                    let shader:CommonShader = CommonShader.create(null);
-
-                    shader.addLib(CommonShaderLib.create());
-                    shader.addLib(VerticeCommonShaderLib.create());
-
-                    if(RenderUtils.isInstanceAndHardwareSupport(child)){
-                        shader.addLib(ModelMatrixInstanceShaderLib.create());
-                    }
-                    else{
-                        shader.addLib(ModelMatrixNoInstanceShaderLib.create());
-                    }
-
-                    shader.addLib(BuildTwoDShadowMapShaderLib.create());
-
-
-
-
-
-
-                    //todo note!
-                    shader.init(material);
-
-                    material.addShader(<any>EShaderMapKey.BUILD_SHADOWMAP, shader);
-                }
-
-
-                material.forEachShader((shader:Shader) => {
-                    if(!shader.mapManager.hasTwoDShadowMap(self.texture)){
-                        //todo optimize:addArrayMap?
-                        shader.mapManager.addTwoDShadowMap(self.texture);
-                    }
-                });
-            });
+            //
+            //this._allShadowRenderList = this._getAllShadowRenderList();
+            //
+            ////todo optimize:operate these logic once
+            //
+            //this._shadowMapRendererUtils.bindEndLoop(() => {
+            //    //here not need removeRepeatItems
+            //    //self._allShadowRenderList.forEach((child:GameObject) => {
+            //    //    self._shadowMapRendererUtils.clearTwoDShadowMapData(child);
+            //    //});
+            //
+            //
+            //    Director.getInstance().scene.glslData.removeChild(<any>EShaderGLSLData.TWOD_SHADOWMAP);
+            //});
+            //
+            //
+            //this._allShadowRenderList.forEach((child:GameObject) => {
+            //    var material:Material = child.getComponent<Geometry>(Geometry).material;
+            //
+            //    if(!material.hasShader(<any>EShaderMapKey.BUILD_SHADOWMAP)){
+            //        let shader:CommonShader = CommonShader.create(null);
+            //
+            //        shader.addLib(CommonShaderLib.create());
+            //        shader.addLib(VerticeCommonShaderLib.create());
+            //
+            //        if(RenderUtils.isInstanceAndHardwareSupport(child)){
+            //            shader.addLib(ModelMatrixInstanceShaderLib.create());
+            //        }
+            //        else{
+            //            shader.addLib(ModelMatrixNoInstanceShaderLib.create());
+            //        }
+            //
+            //        shader.addLib(BuildTwoDShadowMapShaderLib.create());
+            //
+            //
+            //
+            //
+            //
+            //
+            //        //todo note!
+            //        shader.init(material);
+            //
+            //        material.addShader(<any>EShaderMapKey.BUILD_SHADOWMAP, shader);
+            //    }
+            //
+            //
+            //    material.forEachShader((shader:Shader) => {
+            //        if(!shader.mapManager.hasTwoDShadowMap(self.texture)){
+            //            //todo optimize:addArrayMap?
+            //            shader.mapManager.addTwoDShadowMap(self.texture);
+            //        }
+            //    });
+            //});
         }
 
         public dispose(){
@@ -109,11 +109,12 @@ module wd {
         protected getRenderList():wdCb.Collection<GameObject>{
             //return this._light.shadowRenderList;
 
-            //todo test
-            return this._light.shadowRenderList
-                .filter((child:GameObject, index:number) => {
-                    return child.isVisible && (GPUDetector.getInstance().extensionInstancedArrays === null || !child.hasComponent(ObjectInstance));
-                });
+            //return this._light.shadowRenderList
+            //    .filter((child:GameObject, index:number) => {
+            //        return child.isVisible && (GPUDetector.getInstance().extensionInstancedArrays === null || !child.hasComponent(ObjectInstance));
+            //    });
+
+            return Director.getInstance().scene.gameObjectScene.shadowRenderListForBuildShadowMap;
         }
 
         protected renderRenderer(renderer){

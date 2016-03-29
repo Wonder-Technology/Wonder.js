@@ -16,25 +16,7 @@ describe("instance with shadow", function () {
     var light;
 
     function createSphere() {
-        var material = wd.LightMaterial.create();
-        material.specularColor = wd.Color.create("#ffdd99");
-        material.shininess = 16;
-        material.shading = wd.EShading.SMOOTH;
-
-
-        var geometry = wd.SphereGeometry.create();
-        geometry.material = material;
-        geometry.radius = 20;
-        geometry.segment = 20;
-
-
-        var gameObject = wd.GameObject.create();
-
-        gameObject.addComponent(wd.MeshRenderer.create());
-        gameObject.addComponent(geometry);
-
-
-        return gameObject;
+        return shadowTool.createSphere();
     }
 
     function prepareWithoutChild() {

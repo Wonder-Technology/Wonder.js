@@ -241,7 +241,7 @@ module wd{
         }
 
         private _hasTwoDShadowMap(){
-            return this.mapManager.getTwoDShadowMapList().getCount() > 0;
+            return ShadowUtils.isReceive(this.geometry.entityObject) && this.mapManager.getTwoDShadowMapList().getCount() > 0;
         }
 
         private _hasCubemapShadowMap(){

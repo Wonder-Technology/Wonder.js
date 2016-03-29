@@ -33,8 +33,8 @@
             director.scene.addChild(ground);
             director.scene.addChildren(models);
             director.scene.addChild(createAmbientLight());
-            director.scene.addChild(createDirectionLight(models.concat([ground]), wd.Vector3.create(0, 500, 500)));
-            director.scene.addChild(createDirectionLight(models.concat([ground]), wd.Vector3.create(500, 500, 0)));
+            director.scene.addChild(createDirectionLight(wd.Vector3.create(0, 500, 500)));
+            director.scene.addChild(createDirectionLight(wd.Vector3.create(500, 500, 0)));
             director.scene.addChild(createCamera());
 
             director.start();
@@ -56,7 +56,8 @@
                 var instance = sourceInstanceComponent.cloneInstance("index" + String(i));
 
 //                instance.transform.position = wd.Vector3.create(range / 2 - Math.random() * range, range / 2 - Math.random() * range, range / 2 - Math.random() * range);
-                instance.transform.position = wd.Vector3.create(range / 2 - Math.random() * range, 60, 0);
+//                instance.transform.position = wd.Vector3.create(range / 2 - Math.random() * range, 60, 0);
+                instance.transform.position = wd.Vector3.create(60, 60, 0);
 //                instance.transform.rotate(90 * Math.random(), 90 * Math.random(),0);
 //                instance.transform.scale = wd.Vector3.create(3,3,3);
 
@@ -154,6 +155,13 @@
             gameObject.addComponent(sourceInstanceComponent);
 
 
+            var shadow = wd.Shadow.create();
+            shadow.cast = true;
+            shadow.receive = true;
+
+            gameObject.addComponent(shadow);
+
+
 
             var boxChild1 = createBox();
             var boxChild2 = createBox();
@@ -241,6 +249,11 @@
 
             gameObject.name = "ground";
 
+            var shadow = wd.Shadow.create();
+            shadow.cast = false;
+            shadow.receive = true;
+
+            gameObject.addComponent(shadow);
 
 
             gameObject.transform.translate(wd.Vector3.create(1,1,1));
@@ -259,7 +272,7 @@
             return ambientLight;
         }
 
-        function createDirectionLight(shadowList, pos) {
+        function createDirectionLight(pos) {
             var SHADOW_MAP_WIDTH = 1024,
                     SHADOW_MAP_HEIGHT = 1024;
 
@@ -277,8 +290,6 @@
             directionLightComponent.shadowDarkness = 0.2;
             directionLightComponent.shadowMapWidth = SHADOW_MAP_WIDTH;
             directionLightComponent.shadowMapHeight = SHADOW_MAP_HEIGHT;
-
-            directionLightComponent.shadowRenderList = shadowList;
 
             var directionLight = wd.GameObject.create();
             directionLight.addComponent(directionLightComponent);

@@ -137,6 +137,11 @@
 /// <reference path="component/scene/manager/LightManager"/>
 
 
+
+/// <reference path="component/shadow/Shadow"/>
+/// <reference path="component/shadow/ShadowUtils"/>
+
+
 /// <reference path="component/animation/Animation"/>
 /// <reference path="component/animation/MorphAnimation"/>
 /// <reference path="component/animation/ArticulatedAnimation"/>

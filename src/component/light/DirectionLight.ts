@@ -11,17 +11,6 @@ module wd{
             return obj;
         }
 
-        private _shadowRenderList:wdCb.Collection<GameObject> = null;
-        get shadowRenderList(){
-            return this._shadowRenderList;
-        }
-        @requireSetter(function(shadowRenderList:any){
-            assert(JudgeUtils.isArrayExactly(shadowRenderList), Log.info.FUNC_MUST_BE("shadowRenderList", "array"));
-        })
-        set shadowRenderList(shadowRenderList:any) {
-            this._shadowRenderList = wdCb.Collection.create<GameObject>(shadowRenderList);
-        }
-
         //todo extract Shadow class?
         public shadowCameraLeft:number = -1000;
         public shadowCameraRight:number = 1000;

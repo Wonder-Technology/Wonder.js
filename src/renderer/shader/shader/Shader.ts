@@ -91,6 +91,7 @@ module wd{
             this.mapManager.init();
         }
 
+        //todo exec only once?
         public dispose(){
             this.program.dispose();
             this.attributes.removeAllChildren();

@@ -472,12 +472,16 @@ module wd {
         }
 
         protected initComponent(){
+            //todo refactor:initOrder
+            if(this.hasComponent(Shadow)){
+                this.getComponent<Shadow>(Shadow).init();
+            }
             if(this.hasComponent(Geometry)){
                 this.getComponent<Geometry>(Geometry).init();
             }
 
             this.components.filter((component:Component) => {
-                    return !(component instanceof Geometry);
+                    return !(component instanceof Geometry) || !(component instanceof Geometry);
                 })
                 .forEach((component:Component) => {
                     component.init();

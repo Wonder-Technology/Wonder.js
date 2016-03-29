@@ -9,6 +9,7 @@ module wd {
         }
 
         public transform:ThreeDTransform;
+        public parent:GameObject;
 
         public name:string = `gameObject${String(this.uid)}`;
 

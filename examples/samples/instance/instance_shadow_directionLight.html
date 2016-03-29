@@ -33,7 +33,7 @@
             director.scene.addChild(ground);
             director.scene.addChildren(models);
             director.scene.addChild(createAmbientLight());
-            director.scene.addChild(createDirectionLight(models.concat([ground])));
+            director.scene.addChild(createDirectionLight());
             director.scene.addChild(createCamera());
 
             director.start();
@@ -43,7 +43,7 @@
             var arr = [],
                     model = createSphere(),
                     range = 300,
-                    count = 10;
+                    count = 1;
 
             model.transform.position = wd.Vector3.create(60, 20, 0);
 
@@ -76,56 +76,6 @@
 
 
         function createSphere(){
-//            var material = wd.BasicMaterial.create();
-//            material.color = wd.Color.create("rgb(0, 255, 255)");
-//
-//
-//            var geometry = wd.SphereGeometry.create();
-//            geometry.material = material;
-//            geometry.radius = 5;
-//            geometry.segment = 5;
-//
-//
-//            var gameObject = wd.GameObject.create();
-//
-//            gameObject.addComponent(wd.MeshRenderer.create());
-//            gameObject.addComponent(geometry);
-//
-//
-//            var boxChild1 = createBox();
-//            var boxChild2 = createBox();
-//            var boxChild21 = createBox();
-//
-//            gameObject.addChild(boxChild1);
-//            gameObject.addChild(boxChild2);
-//
-//            boxChild2.addChild(boxChild21);
-//
-//
-//            boxChild1.transform.translate(20, 0, 0);
-//            boxChild2.transform.translate(-20, 0, 0);
-//
-//            boxChild21.transform.translate(-25, 0, 0);
-//
-//
-//
-////            var action = wd.RepeatForever.create(wd.CallFunc.create(function () {
-////                this.transform.rotate(0, 1, 0);
-////            }, boxChild21));
-////
-////            boxChild21.addComponent(action);
-//
-//
-//
-//
-//            var sourceInstanceComponent = wd.SourceInstance.create();
-//
-//            gameObject.addComponent(sourceInstanceComponent);
-//
-//
-//
-//            return gameObject;
-
             var material = wd.LightMaterial.create();
             material.specularColor = wd.Color.create("#ffdd99");
             material.shininess = 16;
@@ -151,6 +101,15 @@
             var sourceInstanceComponent = wd.SourceInstance.create();
 
             gameObject.addComponent(sourceInstanceComponent);
+
+
+            var shadow = wd.Shadow.create();
+            shadow.cast = true;
+            shadow.receive = true;
+
+            gameObject.addComponent(shadow);
+
+
 
 
 
@@ -242,6 +201,16 @@
 
 
 
+
+            var shadow = wd.Shadow.create();
+            shadow.cast = false;
+            shadow.receive = true;
+
+            gameObject.addComponent(shadow);
+
+
+
+
             gameObject.transform.translate(wd.Vector3.create(1,1,1));
 
 
@@ -258,7 +227,7 @@
             return ambientLight;
         }
 
-        function createDirectionLight(shadowList) {
+        function createDirectionLight() {
             var SHADOW_MAP_WIDTH = 1024,
                     SHADOW_MAP_HEIGHT = 1024;
 
@@ -277,7 +246,6 @@
             directionLightComponent.shadowMapWidth = SHADOW_MAP_WIDTH;
             directionLightComponent.shadowMapHeight = SHADOW_MAP_HEIGHT;
 
-            directionLightComponent.shadowRenderList = shadowList;
 
             var directionLight = wd.GameObject.create();
             directionLight.addComponent(directionLightComponent);

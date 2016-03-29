@@ -42,7 +42,6 @@ module wd {
         public shadowDarkness:number = 0;
         //todo remove
         public shadowMap:IShadowMapTexture = null;
-        public shadowMapRenderer:RenderTargetRenderer = null;
     }
 }
 

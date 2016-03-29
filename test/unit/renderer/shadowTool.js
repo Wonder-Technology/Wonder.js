@@ -1,5 +1,5 @@
 var shadowTool = {
-    createDirectionLight: function (shadowList) {
+    createDirectionLight: function () {
         var SHADOW_MAP_WIDTH = 1024,
             SHADOW_MAP_HEIGHT = 1024;
 
@@ -18,7 +18,7 @@ var shadowTool = {
         directionLightComponent.shadowMapWidth = SHADOW_MAP_WIDTH;
         directionLightComponent.shadowMapHeight = SHADOW_MAP_HEIGHT;
 
-        directionLightComponent.shadowRenderList = shadowList;
+        //directionLightComponent.shadowRenderList = shadowList;
 
         var directionLight = wd.GameObject.create();
         directionLight.addComponent(directionLightComponent);
@@ -87,5 +87,37 @@ var shadowTool = {
             shader: shader,
             program: program
         };
+    },
+    createSphere: function(){
+        var material = wd.LightMaterial.create();
+        material.specularColor = wd.Color.create("#ffdd99");
+        material.shininess = 16;
+        material.diffuseMap = wd.ImageTexture.create({});
+        material.shading = wd.EShading.SMOOTH;
+
+
+        var geometry = wd.SphereGeometry.create();
+        geometry.material = material;
+        geometry.radius = 20;
+        geometry.segment = 20;
+
+
+        var gameObject = wd.GameObject.create();
+
+        gameObject.addComponent(wd.MeshRenderer.create());
+        gameObject.addComponent(geometry);
+
+
+        var shadow = wd.Shadow.create();
+        shadow.receive = true;
+        shadow.cast = true;
+
+        gameObject.addComponent(shadow);
+
+
+
+        //gameObject.transform.translate(wd.Vector3.create(-30, 20, 0));
+
+        return gameObject;
     }
 }

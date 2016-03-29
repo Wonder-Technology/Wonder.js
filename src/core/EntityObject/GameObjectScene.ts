@@ -49,6 +49,7 @@ module wd {
         public physics = PhysicsConfig.create();
         public physicsEngineAdapter:IPhysicsEngineAdapter = null;
 
+        private _shadowManager:ShadowManager = null;
         private _lightManager:LightManager = null;
         private _renderTargetRendererList:wdCb.Collection<RenderTargetRenderer> = wdCb.Collection.create<RenderTargetRenderer>();
         private _proceduralRendererList:wdCb.Collection<ProceduralRenderTargetRenderer> = wdCb.Collection.create<ProceduralRenderTargetRenderer>();
@@ -58,7 +59,8 @@ module wd {
         public initWhenCreate(){
             super.initWhenCreate();
 
-            this.addComponent(ShadowManager.create());
+            this._shadowManager = ShadowManager.create();
+            this.addComponent(this._shadowManager);
 
             this._lightManager = LightManager.create();
             this.addComponent(this._lightManager);
@@ -123,6 +125,8 @@ module wd {
         public render(renderer:Renderer) {
             var self = this;
 
+            this.shadowRenderListForBuildShadowMap = this._shadowManager.getShadowRenderListForBuildShadowMap();
+
             this._renderTargetRendererList.forEach((target:RenderTargetRenderer) =>{
                 target.render(renderer, self.currentCamera);
             });
@@ -131,6 +135,8 @@ module wd {
 
             super.render(renderer, this.currentCamera);
         }
+
+        public shadowRenderListForBuildShadowMap:wdCb.Collection<GameObject> = null;
 
         protected getRenderList(){
             return RenderUtils.getGameObjectRenderList(this.children);

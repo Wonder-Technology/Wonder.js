@@ -9,6 +9,7 @@ module wd {
         }
 
         public transform:RectTransform;
+        public parent:UIObject;
 
         public name:string = `uiObject${String(this.uid)}`;
         public uiManager:UIManager = UIManager.create(this);
