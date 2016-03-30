@@ -38,6 +38,8 @@ module wd{
 
         private _endLoopSubscription:wdFrp.IDisposable = null;
         private _isAddSourceInstanceToChildren:boolean = false;
+        private _enterSubscription:wdFrp.IDisposable = null;
+        private _exitSubscription:wdFrp.IDisposable = null;
 
         @ensure(function(){
             var checkChildren = (child:GameObject) => {
@@ -77,46 +79,18 @@ module wd{
                 });
         }
 
-        private _enterSubscription:wdFrp.IDisposable = null;
-        private _exitSubscription:wdFrp.IDisposable = null;
-
-        @ensure(function(){
-            this.instanceList.forEach((instance:GameObject) => {
-                assert(!instance.hasTag(<any>EInstanceTag.isAddSourceInstance), Log.info.FUNC_SHOULD_NOT("instance", "add EInstanceTag.isAddSourceInstance tag here"));
-            });
-        })
-        private _addAllInstances(){
-            var parent = this.entityObject.parent,
-                tag:string = <any>(EInstanceTag.isAddSourceInstance);
-
-            this.instanceList.forEach((instance:GameObject) => {
-                instance.addTag(tag);
-                parent.addChild(instance);
-                instance.removeTag(tag);
-            });
-        }
-
-        @ensure(function(){
-            this.instanceList.forEach((instance:GameObject) => {
-                assert(!instance.hasTag(<any>EInstanceTag.isRemoveSourceInstance), Log.info.FUNC_SHOULD_NOT("instance", "add EInstanceTag.isRemoveSourceInstance tag here"));
-            });
-        })
-        private _removeAllInstances(){
-            var tag:string = <any>(EInstanceTag.isRemoveSourceInstance);
-
-            this.instanceList.forEach((instance:GameObject) => {
-                instance.addTag(tag);
-                instance.parent.removeChild(instance);
-                instance.removeTag(tag);
-            });
-        }
-
         @require(function(){
             /*! so here not dispose instance in instanceList */
             this._checkInstanceIsNotOnlyInInstanceListButAlsoInLoop();
         })
         public dispose(){
             this._endLoopSubscription.dispose();
+            this._enterSubscription.dispose();
+            this._exitSubscription.dispose();
+
+            this.instanceList.forEach((instance:GameObject) => {
+                instance.dispose();
+            })
         }
 
         @require(function(){
@@ -258,6 +232,37 @@ module wd{
             });
 
             assert(isInLoop, Log.info.FUNC_SHOULD("instance", "not only in instanceList, but also in the main loop"));
+        }
+
+        @ensure(function(){
+            this.instanceList.forEach((instance:GameObject) => {
+                assert(!instance.hasTag(<any>EInstanceTag.isAddSourceInstance), Log.info.FUNC_SHOULD_NOT("instance", "add EInstanceTag.isAddSourceInstance tag here"));
+            });
+        })
+        private _addAllInstances(){
+            var parent = this.entityObject.parent,
+                tag:string = <any>(EInstanceTag.isAddSourceInstance);
+
+            this.instanceList.forEach((instance:GameObject) => {
+                instance.addTag(tag);
+                parent.addChild(instance);
+                instance.removeTag(tag);
+            });
+        }
+
+        @ensure(function(){
+            this.instanceList.forEach((instance:GameObject) => {
+                assert(!instance.hasTag(<any>EInstanceTag.isRemoveSourceInstance), Log.info.FUNC_SHOULD_NOT("instance", "add EInstanceTag.isRemoveSourceInstance tag here"));
+            });
+        })
+        private _removeAllInstances(){
+            var tag:string = <any>(EInstanceTag.isRemoveSourceInstance);
+
+            this.instanceList.forEach((instance:GameObject) => {
+                instance.addTag(tag);
+                instance.parent.removeChild(instance);
+                instance.removeTag(tag);
+            });
         }
     }
 }

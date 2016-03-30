@@ -122,6 +122,8 @@ module wd {
                 component.dispose();
             });
 
+            this.components.removeAllChildren();
+
             this.forEach((child:EntityObject) => {
                 child.dispose();
             });
@@ -360,8 +362,6 @@ module wd {
 
                 result.addChild(component)
             }, this);
-
-            this.components.removeAllChildren();
 
             this.componentDirty = true;
 

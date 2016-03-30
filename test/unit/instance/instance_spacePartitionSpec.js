@@ -363,6 +363,34 @@ describe("instance with spacePartition", function() {
                 expect(extensionInstancedArrays.drawElementsInstancedANGLE.callCount).toEqual(0);
             });
         });
+
+        describe("dispose source instance", function () {
+            beforeEach(function () {
+            });
+
+            it("not render it and its children and dispose its object instances", function () {
+                prepareBox1AndInstances();
+
+                director._init();
+
+                box1.dispose();
+
+                octreeContainer.getComponent(wd.Octree).build();
+
+
+
+                director._loopBody(1);
+
+
+
+                expect(wd.DebugStatistics.count.renderGameObjects).toEqual(0);
+
+
+                expect(gl.drawElements.callCount).toEqual(0);
+
+                expect(extensionInstancedArrays.drawElementsInstancedANGLE.callCount).toEqual(0);
+            });
+        });
     });
 });
 

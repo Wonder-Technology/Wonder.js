@@ -269,6 +269,7 @@ describe("use instance to batch draw calls", function(){
         });
     });
 
+
     describe("remove object instance", function () {
         beforeEach(function () {
         });
@@ -329,14 +330,6 @@ describe("use instance to batch draw calls", function(){
             renderer.render();
 
 
-
-            //expect(box1.render).toCalledOnce();
-            //expect(box1Instance1.render).not.toCalled();
-            //expect(box1Instance2.render).not.toCalled();
-            //
-            //expect(box1Child1.render).toCalledOnce();
-            //expect(box1Instance1.getChild(0).render).not.toCalled();
-            //expect(box1Instance2.getChild(0).render).not.toCalled();
 
             expect(wd.DebugStatistics.count.renderGameObjects).toEqual(2 * 3);
 
@@ -449,7 +442,45 @@ describe("use instance to batch draw calls", function(){
         });
     });
 
+    describe("dispose source instance", function () {
+        beforeEach(function () {
+        });
 
+        it("not render it and its children and dispose its object instances", function () {
+            prepareWithChild();
+
+            director._init();
+
+
+            sandbox.spy(box1Instance1, "dispose");
+            var box1Instance1Child = box1Instance1.getChild(0);
+            sandbox.spy(box1Instance1Child, "dispose");
+
+            sandbox.spy(box1Instance2, "dispose");
+
+
+            box1.dispose();
+
+            expect(box1Instance1.dispose).toCalledOnce();
+            expect(box1Instance1Child.dispose).toCalledOnce();
+
+            expect(box1Instance2.dispose).toCalledOnce();
+
+
+
+            director.scene.gameObjectScene.render(renderer);
+            renderer.render();
+
+
+
+            expect(wd.DebugStatistics.count.renderGameObjects).toEqual(0);
+
+
+            expect(gl.drawElements).not.toCalled();
+
+            expect(extensionInstancedArrays.drawElementsInstancedANGLE).not.toCalled();
+        });
+    });
 
     describe("if hardware not support instance", function(){
         beforeEach(function(){
@@ -635,6 +666,34 @@ describe("use instance to batch draw calls", function(){
 
 
                 expect(gl.drawElements.callCount).toEqual(2 * 2);
+            });
+        });
+
+        describe("dispose source instance", function () {
+            beforeEach(function () {
+            });
+
+            it("not render it and its children and dispose its object instances", function () {
+                prepareWithChild();
+
+                director._init();
+
+
+                box1.dispose();
+
+
+
+                director.scene.gameObjectScene.render(renderer);
+                renderer.render();
+
+
+
+                expect(wd.DebugStatistics.count.renderGameObjects).toEqual(0);
+
+
+                expect(gl.drawElements).not.toCalled();
+
+                expect(extensionInstancedArrays.drawElementsInstancedANGLE).not.toCalled();
             });
         });
     });
