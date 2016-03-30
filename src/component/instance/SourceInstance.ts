@@ -65,6 +65,50 @@ module wd{
             .subscribe(() => {
                 self._toRenderInstanceList.removeAllChildren();
             });
+
+            this._enterSubscription = EventManager.fromEvent(this.entityObject, <any>EEngineEvent.ENTER)
+                .subscribe(() => {
+                    self._addAllInstances();
+                });
+
+            this._exitSubscription = EventManager.fromEvent(this.entityObject, <any>EEngineEvent.EXIT)
+                .subscribe(() => {
+                    self._removeAllInstances();
+                });
+        }
+
+        private _enterSubscription:wdFrp.IDisposable = null;
+        private _exitSubscription:wdFrp.IDisposable = null;
+
+        @ensure(function(){
+            this.instanceList.forEach((instance:GameObject) => {
+                assert(!instance.hasTag(<any>EInstanceTag.isAddSourceInstance), Log.info.FUNC_SHOULD_NOT("instance", "add EInstanceTag.isAddSourceInstance tag here"));
+            });
+        })
+        private _addAllInstances(){
+            var parent = this.entityObject.parent,
+                tag:string = <any>(EInstanceTag.isAddSourceInstance);
+
+            this.instanceList.forEach((instance:GameObject) => {
+                instance.addTag(tag);
+                parent.addChild(instance);
+                instance.removeTag(tag);
+            });
+        }
+
+        @ensure(function(){
+            this.instanceList.forEach((instance:GameObject) => {
+                assert(!instance.hasTag(<any>EInstanceTag.isRemoveSourceInstance), Log.info.FUNC_SHOULD_NOT("instance", "add EInstanceTag.isRemoveSourceInstance tag here"));
+            });
+        })
+        private _removeAllInstances(){
+            var tag:string = <any>(EInstanceTag.isRemoveSourceInstance);
+
+            this.instanceList.forEach((instance:GameObject) => {
+                instance.addTag(tag);
+                instance.parent.removeChild(instance);
+                instance.removeTag(tag);
+            });
         }
 
         @require(function(){

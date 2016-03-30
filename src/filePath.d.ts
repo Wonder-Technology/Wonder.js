@@ -105,6 +105,7 @@
 /// <reference path="component/instance/Instance"/>
 /// <reference path="component/instance/SourceInstance"/>
 /// <reference path="component/instance/ObjectInstance"/>
+/// <reference path="component/instance/EInstanceTag"/>
 
 /// <reference path="component/event/detector/EventTriggerDetector"/>
 /// <reference path="component/event/detector/UIEventTriggerDetector"/>

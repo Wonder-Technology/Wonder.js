@@ -350,6 +350,73 @@ describe("use instance to batch draw calls", function(){
         });
     });
 
+    describe("remove source instance", function () {
+        beforeEach(function () {
+        });
+
+        it("not render it and its children and its object instances", function () {
+            prepareWithChild();
+
+            director._init();
+
+
+            director.scene.removeChild(box1);
+
+
+            director.scene.gameObjectScene.render(renderer);
+            renderer.render();
+
+
+            expect(box1.render).not.toCalled();
+            expect(box1Instance1.render).not.toCalled();
+            expect(box1Instance2.render).not.toCalled();
+
+            expect(box1Child1.render).not.toCalled();
+            expect(box1Instance1.getChild(0).render).not.toCalled();
+            expect(box1Instance2.getChild(0).render).not.toCalled();
+
+            expect(wd.DebugStatistics.count.renderGameObjects).toEqual(0);
+
+
+            expect(gl.drawElements).not.toCalled();
+
+            expect(extensionInstancedArrays.drawElementsInstancedANGLE).not.toCalled();
+        });
+    });
+
+    describe("add source instance after remove", function () {
+        beforeEach(function () {
+        });
+
+        it("render it and its children and its instances", function () {
+            prepareWithChild();
+
+            director._init();
+
+
+
+            director.scene.removeChild(box1);
+            director.scene.addChild(box1);
+
+
+
+            director.scene.gameObjectScene.render(renderer);
+            renderer.render();
+
+
+
+            expect(wd.DebugStatistics.count.renderGameObjects).toEqual(2 * 3);
+
+
+            expect(gl.drawElements).not.toCalled();
+
+            expect(extensionInstancedArrays.drawElementsInstancedANGLE).toCalledTwice();
+
+            instanceTool.judgeInstanceCount(extensionInstancedArrays, 0, 3);
+            instanceTool.judgeInstanceCount(extensionInstancedArrays, 1, 3);
+        });
+    });
+
     describe("if hardware not support instance", function(){
         beforeEach(function(){
             wd.GPUDetector.getInstance().extensionInstancedArrays = null;
@@ -445,6 +512,70 @@ describe("use instance to batch draw calls", function(){
                 expect(extensionInstancedArrays.drawElementsInstancedANGLE).not.toCalled();
             });
         });
+
+        describe("remove source instance", function () {
+            beforeEach(function () {
+            });
+
+            it("not render it and its children and its object instances", function () {
+                prepareWithChild();
+
+                director._init();
+
+
+                director.scene.removeChild(box1);
+
+
+                director.scene.gameObjectScene.render(renderer);
+                renderer.render();
+
+
+                expect(box1.render).not.toCalled();
+                expect(box1Instance1.render).not.toCalled();
+                expect(box1Instance2.render).not.toCalled();
+
+                expect(box1Child1.render).not.toCalled();
+                expect(box1Instance1.getChild(0).render).not.toCalled();
+                expect(box1Instance2.getChild(0).render).not.toCalled();
+
+                expect(wd.DebugStatistics.count.renderGameObjects).toEqual(0);
+
+
+                expect(gl.drawElements).not.toCalled();
+
+                expect(extensionInstancedArrays.drawElementsInstancedANGLE).not.toCalled();
+            });
+        });
+
+        describe("add source instance after remove", function () {
+            beforeEach(function () {
+            });
+
+            it("render it and its children and its instances", function () {
+                prepareWithChild();
+
+                director._init();
+
+
+
+                director.scene.removeChild(box1Instance1);
+                director.scene.addChild(box1Instance1);
+
+
+
+                director.scene.gameObjectScene.render(renderer);
+                renderer.render();
+
+
+
+                expect(wd.DebugStatistics.count.renderGameObjects).toEqual(2 * 3);
+
+
+                expect(gl.drawElements.callCount).toEqual(2 * 3);
+
+                expect(extensionInstancedArrays.drawElementsInstancedANGLE).not.toCalled();
+            });
+        });
     });
 
     it("if no indices, drawArraysInstancedANGLE", function () {
@@ -487,8 +618,6 @@ describe("use instance to batch draw calls", function(){
         });
     });
 
-
-    //todo test dynamic add/remove instance
 
     //todo instance transform can vary independent
 

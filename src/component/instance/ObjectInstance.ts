@@ -12,15 +12,24 @@ module wd{
         private _exitSubscription:wdFrp.IDisposable = null;
 
         public init(){
-            var self = this;
+            var self = this,
+                entityObject = this.entityObject;
 
-            this._enterSubscription = EventManager.fromEvent(this.entityObject, <any>EEngineEvent.ENTER)
+            this._enterSubscription = EventManager.fromEvent(entityObject, <any>EEngineEvent.ENTER)
                 .subscribe(() => {
+                    if(entityObject.hasTag(<any>EInstanceTag.isAddSourceInstance)){
+                        return;
+                    }
+
                     self._addToSourceAndItsChildren();
                 });
 
-            this._exitSubscription = EventManager.fromEvent(this.entityObject, <any>EEngineEvent.EXIT)
+            this._exitSubscription = EventManager.fromEvent(entityObject, <any>EEngineEvent.EXIT)
                 .subscribe(() => {
+                    if(entityObject.hasTag(<any>EInstanceTag.isRemoveSourceInstance)){
+                        return;
+                    }
+
                     self._removeFromSourceAndItsChildren();
                 });
         }
