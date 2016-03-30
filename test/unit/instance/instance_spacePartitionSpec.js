@@ -10,6 +10,10 @@ describe("instance with spacePartition", function() {
     var box1,child1,child11,child2;
     var boxInstance1,boxInstance2;
 
+
+    var renderer;
+    var camera;
+
     function prepareBox1AndInstances(){
         octreeContainer = createOctree();
 
@@ -37,6 +41,10 @@ describe("instance with spacePartition", function() {
 
 
         octreeContainer.addChildren(instanceArr);
+
+
+
+        director.scene.addChild(octreeContainer);
     }
 
     function createOctree() {
@@ -57,6 +65,14 @@ describe("instance with spacePartition", function() {
         director = wd.Director.getInstance();
 
         extensionInstancedArrays = instanceTool.prepareExtensionInstancedArrays(sandbox);
+
+
+
+        camera = testTool.createCamera();
+        renderer = wd.WebGLRenderer.create();
+
+
+        director.scene.addChild(camera);
     });
     afterEach(function () {
         sandbox.restore();
@@ -80,8 +96,6 @@ describe("instance with spacePartition", function() {
 
 
 
-        director.scene.addChild(octreeContainer);
-
 
         var octreeRenderList = wdCb.Collection.create(
             [
@@ -92,11 +106,6 @@ describe("instance with spacePartition", function() {
         );
         sandbox.stub(octreeContainer.getSpacePartition(), "getRenderListByFrustumCull").returns(octreeRenderList);
 
-
-        var camera = testTool.createCamera();
-
-
-        director.scene.addChild(camera);
 
 
         director._init();
@@ -152,6 +161,75 @@ describe("instance with spacePartition", function() {
         //todo
     });
 
+
+    describe("remove object instance", function () {
+        beforeEach(function () {
+        });
+
+        it("should rebuild by user to not render it and its children", function () {
+            prepareBox1AndInstances();
+
+            director._init();
+
+            octreeContainer.removeChild(boxInstance1);
+
+            octreeContainer.getComponent(wd.Octree).build();
+
+
+
+            director._loopBody(1);
+
+
+
+            expect(wd.DebugStatistics.count.renderGameObjects).toEqual(4 * 2);
+
+
+            expect(gl.drawElements).not.toCalled();
+
+            expect(extensionInstancedArrays.drawElementsInstancedANGLE.callCount).toEqual(4);
+
+            instanceTool.judgeInstanceCount(extensionInstancedArrays, 0, 2);
+            instanceTool.judgeInstanceCount(extensionInstancedArrays, 1, 2);
+            instanceTool.judgeInstanceCount(extensionInstancedArrays, 2, 2);
+            instanceTool.judgeInstanceCount(extensionInstancedArrays, 3, 2);
+        });
+    });
+
+    describe("add object instance", function () {
+        beforeEach(function () {
+        });
+
+        it("should rebuild by user to render it and its children", function () {
+            prepareBox1AndInstances();
+
+            octreeContainer.removeChild(boxInstance1);
+
+            director._init();
+
+            octreeContainer.addChild(boxInstance1);
+
+            octreeContainer.getComponent(wd.Octree).build();
+
+
+
+
+            director._loopBody(1);
+
+
+
+            expect(wd.DebugStatistics.count.renderGameObjects).toEqual(4 * 3);
+
+
+            expect(gl.drawElements).not.toCalled();
+
+            expect(extensionInstancedArrays.drawElementsInstancedANGLE.callCount).toEqual(4);
+
+            instanceTool.judgeInstanceCount(extensionInstancedArrays, 0, 3);
+            instanceTool.judgeInstanceCount(extensionInstancedArrays, 1, 3);
+            instanceTool.judgeInstanceCount(extensionInstancedArrays, 2, 3);
+            instanceTool.judgeInstanceCount(extensionInstancedArrays, 3, 3);
+        });
+    });
 
     describe("if hardware not support instance", function(){
         beforeEach(function(){

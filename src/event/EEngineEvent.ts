@@ -29,6 +29,9 @@ module wd{
         SHADOWMAP_SOFTTYPE_CHANGE = <any>"wd_shadowMap_softType_change",
 
 
-        COMPONENT_CHANGE = <any>"wd_component_change"
+        COMPONENT_CHANGE = <any>"wd_component_change",
+
+        EXIT = <any>"wd_exit",
+        ENTER = <any>"wd_enter"
     }
 }

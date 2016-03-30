@@ -84,10 +84,15 @@ module wd {
         }
 
         public onEnter() {
+            this.execScript("onEnter");
+
+            EventManager.trigger(this, CustomEvent.create(<any>EEngineEvent.ENTER));
         }
 
         public onExit() {
             this.execScript("onExit");
+
+            EventManager.trigger(this, CustomEvent.create(<any>EEngineEvent.EXIT));
         }
 
         public onDispose(){
@@ -229,7 +234,6 @@ module wd {
 
         public removeChild(child:EntityObject):EntityObject {
             //todo remove child->instances
-            //todo test
 
             child.onExit();
 

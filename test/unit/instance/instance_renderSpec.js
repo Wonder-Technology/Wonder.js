@@ -14,6 +14,7 @@ describe("use instance to batch draw calls", function(){
 
     function prepareWithoutChild(){
         box1 = instanceTool.createBox();
+        box1.name = "box1";
 
         var instanceArr = [];
 
@@ -31,16 +32,14 @@ describe("use instance to batch draw calls", function(){
 
 
 
-
-        director.scene.addChild(camera);
-
-        director._init();
     }
 
     function prepareWithChild(){
         box1 = instanceTool.createBox(1);
+        box1.name = "box1";
 
         box1Child1 = prepareTool.createSphere(1)
+        box1Child1.name = "box1Child1";
 
         box1.addChild(box1Child1);
 
@@ -57,9 +56,6 @@ describe("use instance to batch draw calls", function(){
 
 
         director.scene.addChildren(instanceArr);
-
-
-        director.scene.addChild(camera);
     }
 
     beforeEach(function () {
@@ -80,6 +76,9 @@ describe("use instance to batch draw calls", function(){
 
         camera = testTool.createCamera();
         renderer = wd.WebGLRenderer.create();
+
+
+        director.scene.addChild(camera);
     });
     afterEach(function () {
         sandbox.restore();
@@ -93,6 +92,7 @@ describe("use instance to batch draw calls", function(){
 
         it("test no box1Child1", function(){
             prepareWithoutChild();
+            director._init();
 
             director.scene.gameObjectScene.render(renderer);
             renderer.render();
@@ -171,6 +171,7 @@ describe("use instance to batch draw calls", function(){
 
         beforeEach(function(){
             prepareWithoutChild();
+            director._init();
         });
 
         it("send the model matrix data by send 4 vec4 attribute data(because the max attribute data is vec4, not support mat)", function () {
@@ -251,6 +252,7 @@ describe("use instance to batch draw calls", function(){
         });
         it("test multi instances", function () {
             prepareWithoutChild();
+            director._init();
 
             director.scene.gameObjectScene.render(renderer);
             renderer.render();
@@ -267,13 +269,95 @@ describe("use instance to batch draw calls", function(){
         });
     });
 
+    describe("remove object instance", function () {
+        beforeEach(function () {
+        });
+
+        it("not render it and its children", function () {
+            prepareWithChild();
+
+            director._init();
+
+
+
+            director.scene.removeChild(box1Instance1);
+
+
+
+            director.scene.gameObjectScene.render(renderer);
+            renderer.render();
+
+
+
+            expect(box1.render).toCalledOnce();
+            expect(box1Instance1.render).not.toCalled();
+            expect(box1Instance2.render).not.toCalled();
+
+            expect(box1Child1.render).toCalledOnce();
+            expect(box1Instance1.getChild(0).render).not.toCalled();
+            expect(box1Instance2.getChild(0).render).not.toCalled();
+
+            expect(wd.DebugStatistics.count.renderGameObjects).toEqual(2 * 2);
+
+
+            expect(gl.drawElements).not.toCalled();
+
+            expect(extensionInstancedArrays.drawElementsInstancedANGLE).toCalledTwice();
+
+            instanceTool.judgeInstanceCount(extensionInstancedArrays, 0, 2);
+            instanceTool.judgeInstanceCount(extensionInstancedArrays, 1, 2);
+        });
+    });
+
+    describe("add object instance after remove", function () {
+        beforeEach(function () {
+        });
+
+        it("render it and its children", function () {
+            prepareWithChild();
+
+            director._init();
+
+
+
+            director.scene.removeChild(box1Instance1);
+            director.scene.addChild(box1Instance1);
+
+
+
+            director.scene.gameObjectScene.render(renderer);
+            renderer.render();
+
+
+
+            //expect(box1.render).toCalledOnce();
+            //expect(box1Instance1.render).not.toCalled();
+            //expect(box1Instance2.render).not.toCalled();
+            //
+            //expect(box1Child1.render).toCalledOnce();
+            //expect(box1Instance1.getChild(0).render).not.toCalled();
+            //expect(box1Instance2.getChild(0).render).not.toCalled();
+
+            expect(wd.DebugStatistics.count.renderGameObjects).toEqual(2 * 3);
+
+
+            expect(gl.drawElements).not.toCalled();
+
+            expect(extensionInstancedArrays.drawElementsInstancedANGLE).toCalledTwice();
+
+            instanceTool.judgeInstanceCount(extensionInstancedArrays, 0, 3);
+            instanceTool.judgeInstanceCount(extensionInstancedArrays, 1, 3);
+        });
+    });
+
     describe("if hardware not support instance", function(){
         beforeEach(function(){
             wd.GPUDetector.getInstance().extensionInstancedArrays = null;
-            prepareWithoutChild();
         });
 
         it("draw one instance in one draw call", function () {
+            prepareWithoutChild();
+            director._init();
 
             director.scene.gameObjectScene.render(renderer);
             renderer.render();
@@ -283,6 +367,9 @@ describe("use instance to batch draw calls", function(){
             expect(extensionInstancedArrays.drawElementsInstancedANGLE).not.toCalled();
         });
         it("send mMatrix data to glsl", function () {
+            prepareWithoutChild();
+            director._init();
+
             var mMatrixPos = 1;
             gl.getUniformLocation.withArgs(sinon.match.any, "u_mMatrix").returns(mMatrixPos);
 
@@ -291,10 +378,79 @@ describe("use instance to batch draw calls", function(){
 
             expect(gl.uniformMatrix4fv.withArgs(mMatrixPos).callCount).toEqual(3);
         });
+
+        describe("remove object instance", function () {
+            beforeEach(function () {
+            });
+
+            it("not render it and its children", function () {
+                prepareWithChild();
+
+                director._init();
+
+
+
+                director.scene.removeChild(box1Instance1);
+
+
+
+                director.scene.gameObjectScene.render(renderer);
+                renderer.render();
+
+
+
+                expect(box1.render).toCalledOnce();
+                expect(box1Instance1.render).not.toCalled();
+                expect(box1Instance2.render).toCalledOnce();
+
+                expect(box1Child1.render).toCalledOnce();
+                expect(box1Instance1.getChild(0).render).not.toCalled();
+                expect(box1Instance2.getChild(0).render).toCalledOnce();
+
+                expect(wd.DebugStatistics.count.renderGameObjects).toEqual(2 * 2);
+
+
+                expect(gl.drawElements.callCount).toEqual(2 * 2);
+
+                expect(extensionInstancedArrays.drawElementsInstancedANGLE).not.toCalled();
+            });
+        });
+
+        describe("add object instance after remove", function () {
+            beforeEach(function () {
+            });
+
+            it("render it and its children", function () {
+                prepareWithChild();
+
+                director._init();
+
+
+
+                director.scene.removeChild(box1Instance1);
+                director.scene.addChild(box1Instance1);
+
+
+
+                director.scene.gameObjectScene.render(renderer);
+                renderer.render();
+
+
+
+                expect(wd.DebugStatistics.count.renderGameObjects).toEqual(2 * 3);
+
+
+                expect(gl.drawElements.callCount).toEqual(2 * 3);
+
+                expect(extensionInstancedArrays.drawElementsInstancedANGLE).not.toCalled();
+            });
+        });
     });
 
     it("if no indices, drawArraysInstancedANGLE", function () {
         prepareWithoutChild();
+        director._init();
+
         sandbox.stub(box1.getComponent(wd.Geometry).buffers, "getChild").withArgs(wd.EBufferDataType.INDICE).returns(null);
         var vertexBuffer = {
             count:100
@@ -315,6 +471,7 @@ describe("use instance to batch draw calls", function(){
 
         it("create buffer one time only when first draw", function(){
             prepareWithoutChild();
+            director._init();
 
             director.scene.gameObjectScene.render(renderer);
             renderer.render();

@@ -8,7 +8,7 @@ module wd{
 
         private _toRenderInstanceList:wdCb.Collection<any> = wdCb.Collection.create<GameObject>();
 
-        @ensureGetter(function(toRenderInstanceListForDraw){
+        @ensureGetter(function(toRenderInstanceListForDraw:wdCb.Collection<GameObject>){
             var self = this;
 
             assert(toRenderInstanceListForDraw.getCount() > 0, Log.info.FUNC_SHOULD("contain one at least"));
@@ -16,6 +16,8 @@ module wd{
             toRenderInstanceListForDraw.forEach((instance:GameObject) => {
                 assert(JudgeUtils.isEqual(instance, self.entityObject) || self.instanceList.hasChild(instance), Log.info.FUNC_SHOULD("render self entityObject or the entityObject in instanceList"));
             });
+
+            assert(toRenderInstanceListForDraw.clone().removeRepeatItems().getCount() === toRenderInstanceListForDraw.getCount(), Log.info.FUNC_SHOULD_NOT("has repeat instance which is to render"));
         })
         get toRenderInstanceListForDraw(){
             if(!this.hasToRenderInstance()){
@@ -99,7 +101,7 @@ module wd{
                     sourceInstanceList = entityObject.getComponent<SourceInstance>(SourceInstance).instanceList;
                 //}
 
-                this._addInstanceComponentsFromSource(entityObject, instance);
+                this._addComponentsFromSourceToObject(entityObject, instance);
 
                 objectInstanceComponent.sourceObject = entityObject;
 
@@ -145,11 +147,10 @@ module wd{
             this._toRenderInstanceList.forEach(func);
         }
 
-        private _addInstanceComponentsFromSource(source:GameObject, instance:GameObject){
+        private _addComponentsFromSourceToObject(source:GameObject, instance:GameObject){
             instance.removeComponent(Transform);
 
             source.forEachComponent((component:Component) => {
-                //todo if hardware support, not add lod
                 if(component instanceof SourceInstance){
                     return;
                 }

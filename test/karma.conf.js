@@ -39,11 +39,13 @@
         //'test/unit/**/scene/**',
 
 
-        'test/unit/renderer/*ShadowMapSpec.js',
-        'test/unit/renderer/*ShadowMap*Spec.js',
-        'test/unit/**/instance_shadow*',
-        'test/unit/**/instance_shadow_*',
+        //'test/unit/renderer/*ShadowMapSpec.js',
+        //'test/unit/renderer/*ShadowMap*Spec.js',
+        //'test/unit/**/instance_shadow*',
+        //'test/unit/**/instance_shadow_*',
         //'test/unit/**/instance/*',
+        'test/unit/**/instance_render*',
+        'test/unit/**/instance_space*',
 
         //qtest/unit/**/water*',
 
