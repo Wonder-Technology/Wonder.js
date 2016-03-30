@@ -19,6 +19,20 @@ module wd {
             super.addToObject(entityObject, isShareComponent);
         }
 
+        @require(function(){
+            assert(JudgeUtils.isEqual(this.entityObject.parent, Director.getInstance().scene) && Director.getInstance().scene.gameObjectScene.hasChild(this.entityObject), Log.info.FUNC_SHOULD("be added to the one which is the firstLevel child of gameObjectScene"));
+        })
+        public init(){
+            super.init();
+        }
+
+        public update(elapsedTime:number):void {
+            if(GPUDetector.getInstance().extensionInstancedArrays !== null){
+                //todo optimize:cache renderListByFrustumCull
+                this._setToRenderInstanceListWhenGetGameObjectRenderListFromSpacePartition(this.getRenderListByFrustumCull());
+            }
+        }
+
         public build() {
             var gameObjectList:wdCb.Collection<GameObject> = this.getChildren(),
                 currentDepth = 0,
@@ -169,6 +183,67 @@ module wd {
             if (v.z > max.z){
                 max.z = v.z;
             }
+        }
+
+        private _setToRenderInstanceListWhenGetGameObjectRenderListFromSpacePartition(renderList:wdCb.Collection<GameObject>){
+            var self = this,
+                instanceSourceMap = wdCb.Hash.create<GameObject>();
+
+            renderList.forEach((child:GameObject) => {
+                if(!child.hasComponent(Instance)){
+                    return;
+                }
+
+                if(child.hasComponent(SourceInstance)){
+                    let instanceComponent:SourceInstance = child.getComponent<SourceInstance>(SourceInstance);
+
+                    self._addSelfToToRenderInstanceList(child, instanceComponent);
+
+                    return;
+                }
+
+                let sourceObject:GameObject = (child.getComponent<ObjectInstance>(ObjectInstance)).sourceObject,
+                    sourceInstanceComponent:SourceInstance = sourceObject.getComponent<SourceInstance>(SourceInstance);
+
+                self._addSelfToToRenderInstanceList(child, sourceInstanceComponent);
+                instanceSourceMap.addChild(String(sourceObject.uid), sourceObject);
+            });
+
+            instanceSourceMap.forEach((sourceObject:GameObject, uid:string) => {
+                var sourceInstanceComponent:SourceInstance = sourceObject.getComponent<SourceInstance>(SourceInstance);
+
+                self._setToRenderInstanceListOfChildren(sourceObject, sourceInstanceComponent);
+            });
+        }
+
+        @require(function(sourceObject:GameObject, sourceInstanceComponent:SourceInstance){
+            assert(sourceInstanceComponent.hasToRenderInstance(), Log.info.FUNC_SHOULD("top SourceInstance", "has to render instance"));
+        })
+        private _setToRenderInstanceListOfChildren(sourceObject:GameObject, sourceInstanceComponent:SourceInstance){
+            var set = (sourceObject:GameObject, sourceInstanceComponent:SourceInstance) => {
+                sourceObject.forEach((childSource:GameObject, index:number) => {
+                    var childSourceInstance:SourceInstance = childSource.getComponent<SourceInstance>(SourceInstance);
+
+                    sourceInstanceComponent.forEachToRenderInstanceList((toRenderInstance:GameObject) => {
+                        childSourceInstance.addToRenderIntance(toRenderInstance.getChild(index));
+
+                    });
+                    set(childSource, childSourceInstance);
+                })
+            };
+
+            set(sourceObject, sourceInstanceComponent);
+        }
+
+        @require(function(self:GameObject, instanceComponent:SourceInstance){
+            assert(instanceComponent instanceof SourceInstance, Log.info.FUNC_ONLY("SourceInstance has toRenderList"));
+
+            instanceComponent.forEachToRenderInstanceList((instance:GameObject) => {
+                assert(!JudgeUtils.isEqual(instance, self), Log.info.FUNC_SHOULD_NOT("toRenderInstanceList", "contain self"));
+            })
+        })
+        private _addSelfToToRenderInstanceList(self:GameObject, instanceComponent:SourceInstance){
+            instanceComponent.addToRenderIntance(self);
         }
     }
 }

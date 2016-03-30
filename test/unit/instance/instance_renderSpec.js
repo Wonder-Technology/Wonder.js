@@ -60,8 +60,6 @@ describe("use instance to batch draw calls", function(){
 
 
         director.scene.addChild(camera);
-
-        director._init();
     }
 
     beforeEach(function () {
@@ -113,6 +111,8 @@ describe("use instance to batch draw calls", function(){
         });
         it("test with child", function(){
             prepareWithChild();
+
+            director._init();
 
             director.scene.gameObjectScene.render(renderer);
             renderer.render();
@@ -220,21 +220,51 @@ describe("use instance to batch draw calls", function(){
         });
     });
 
-    it("batch draw call", function () {
-        prepareWithoutChild();
+    describe("batch draw call", function () {
+        it("test when only one instance with children", function () {
+            box1 = instanceTool.createBox(1);
 
-        director.scene.gameObjectScene.render(renderer);
-        renderer.render();
+            box1Child1 = prepareTool.createSphere(1);
 
-        expect(gl.drawElements).not.toCalled();
+            box1.addChild(box1Child1);
 
-        expect(wd.DebugStatistics.count.drawCalls).toEqual(1);
+            var instanceArr = [];
 
-        expect(extensionInstancedArrays.drawElementsInstancedANGLE).toCalledOnce();
+            instanceArr.push(box1);
 
-        expect(gl.bindBuffer.withArgs(gl.ELEMENT_ARRAY_BUFFER).callCount).toEqual(2);
+            director.scene.addChildren(instanceArr);
 
-        expect(extensionInstancedArrays.drawElementsInstancedANGLE).toCalledAfter(gl.bindBuffer.withArgs(gl.ELEMENT_ARRAY_BUFFER));
+            director.scene.addChild(camera);
+
+
+
+            director._init();
+
+            director.scene.gameObjectScene.render(renderer);
+            renderer.render();
+
+            expect(gl.drawElements).not.toCalled();
+
+            expect(wd.DebugStatistics.count.drawCalls).toEqual(2);
+
+            expect(extensionInstancedArrays.drawElementsInstancedANGLE).toCalledTwice();
+        });
+        it("test multi instances", function () {
+            prepareWithoutChild();
+
+            director.scene.gameObjectScene.render(renderer);
+            renderer.render();
+
+            expect(gl.drawElements).not.toCalled();
+
+            expect(wd.DebugStatistics.count.drawCalls).toEqual(1);
+
+            expect(extensionInstancedArrays.drawElementsInstancedANGLE).toCalledOnce();
+
+            expect(gl.bindBuffer.withArgs(gl.ELEMENT_ARRAY_BUFFER).callCount).toEqual(2);
+
+            expect(extensionInstancedArrays.drawElementsInstancedANGLE).toCalledAfter(gl.bindBuffer.withArgs(gl.ELEMENT_ARRAY_BUFFER));
+        });
     });
 
     describe("if hardware not support instance", function(){

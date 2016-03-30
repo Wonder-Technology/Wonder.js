@@ -21,8 +21,6 @@ describe("Octree", function () {
 
         sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
 
-        testTool.openContractCheck(sandbox);
-
 
 
         tree = Octree.create();
@@ -38,9 +36,45 @@ describe("Octree", function () {
 
     describe("addToObject", function(){
         it("if not add to GameObject, contract error", function(){
+            testTool.openContractCheck(sandbox);
+
             expect(function(){
                 tree.addToObject(wd.UIObject.create())
             }).toThrow();
+        });
+    });
+
+    describe("init", function(){
+        beforeEach(function(){
+
+        });
+
+        it("should be added to the one which is the firstLevel child of gameObjectScene", function () {
+            testTool.openContractCheck(sandbox);
+
+            var director = wd.Director.getInstance();
+
+            expect(function(){
+                var obj = wd.GameObject.create();
+                var child = wd.GameObject.create();
+                obj.addChild(child);
+
+
+                director.scene.addChild(obj);
+
+                child.addComponent(tree);
+
+                tree.init();
+            }).toThrow();
+
+            expect(function(){
+                var obj = wd.GameObject.create();
+                director.scene.addChild(obj);
+
+                obj.addComponent(tree);
+
+                tree.init();
+            }).not.toThrow();
         });
     });
 

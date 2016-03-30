@@ -229,6 +229,7 @@ module wd {
 
         public removeChild(child:EntityObject):EntityObject {
             //todo remove child->instances
+            //todo test
 
             child.onExit();
 
@@ -481,7 +482,7 @@ module wd {
             }
 
             this.components.filter((component:Component) => {
-                    return !(component instanceof Geometry) || !(component instanceof Geometry);
+                    return !(component instanceof Geometry) && !(component instanceof Shadow);
                 })
                 .forEach((component:Component) => {
                     component.init();

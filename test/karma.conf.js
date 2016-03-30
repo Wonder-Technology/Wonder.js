@@ -40,7 +40,9 @@
 
 
         'test/unit/renderer/*ShadowMapSpec.js',
+        'test/unit/renderer/*ShadowMap*Spec.js',
         'test/unit/**/instance_shadow*',
+        'test/unit/**/instance_shadow_*',
         //'test/unit/**/instance/*',
 
         //qtest/unit/**/water*',

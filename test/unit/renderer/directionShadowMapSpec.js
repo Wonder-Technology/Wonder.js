@@ -44,21 +44,42 @@ describe("direction shadow map", function() {
             prepareTool.prepareForMap(sandbox);
         });
         
-        it("not allow: the first level object of gameObjectScene not contain shadow component but its children contain", function(){
-            testTool.openContractCheck(sandbox);
-            sphere.removeComponent(wd.Shadow);
+        describe("not allow: the first level object of gameObjectScene not contain shadow component but its children contain", function(){
+            beforeEach(function(){
+                testTool.openContractCheck(sandbox);
+                sphere.removeComponent(wd.Shadow);
+            });
 
-            var child = createSphere();
-            child.addComponent(wd.Shadow.create());
+            it("except the first level object contain space partition component", function(){
+                var octreeObject = octreeTool.createOctree();
 
-            sphere.addChild(child);
+                var child = createSphere();
+                child.addComponent(wd.Shadow.create());
+
+                octreeObject.addChild(child);
+
+                director.scene.addChild(octreeObject);
 
 
-            expect(function(){
-                director._init();
+                expect(function(){
+                    director._init();
 
-                director.scene.gameObjectScene.render(renderer);
-            }).toThrow();
+                    director.scene.gameObjectScene.render(renderer);
+                }).not.toThrow();
+            });
+            it("otherwise, error", function () {
+                var child = createSphere();
+                child.addComponent(wd.Shadow.create());
+
+                sphere.addChild(child);
+
+
+                expect(function(){
+                    director._init();
+
+                    director.scene.gameObjectScene.render(renderer);
+                }).toThrow();
+            });
         });
 
         it("set shadow map->texParameteri", function () {
@@ -203,12 +224,9 @@ describe("direction shadow map", function() {
                         director._init();
 
                         setDrawShadowMapShaderAndProgram();
-                        director._loopBody();
 
                         expect(glslTool.contain(shader.fsSource, "u_twoDShadowMapSampler")).toBeTruthy();
                     });
-
-
                 });
 
                 describe("if not receive shadow", function () {
@@ -267,11 +285,12 @@ describe("direction shadow map", function() {
                             director._init();
 
                             setChildrenDrawShadowMapShaderAndProgram();
-                            director._loopBody();
 
                         });
 
                         it("children should send shadow map data", function () {
+                            director._loopBody();
+
                             expect(program1.sendUniformData.withArgs("u_twoDShadowMapSampler[0]", sinon.match.any, 0)).toCalledOnce();
                             expect(program1.sendUniformData.withArgs("u_diffuseMapSampler", sinon.match.any, 1)).toCalledOnce();
 
@@ -292,11 +311,11 @@ describe("direction shadow map", function() {
                             director._init();
 
                             setChildrenDrawShadowMapShaderAndProgram();
-                            director._loopBody();
-
                         });
 
                         it("shouldn't send shadow map data", function () {
+                            director._loopBody();
+
                             expect(program1.sendUniformData.withArgs("u_twoDShadowMapSampler[0]", sinon.match.any, 0)).not.toCalled();
 
                             expect(program2.sendUniformData.withArgs("u_twoDShadowMapSampler[0]", sinon.match.any, 0)).not.toCalled();

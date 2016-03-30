@@ -35,9 +35,27 @@ module wd{
         public instanceList:wdCb.Collection<any> = wdCb.Collection.create<GameObject>();
 
         private _endLoopSubscription:wdFrp.IDisposable = null;
+        private _isAddSourceInstanceToChildren:boolean = false;
 
+        @ensure(function(){
+            var checkChildren = (child:GameObject) => {
+                assert(child.hasComponent(SourceInstance), Log.info.FUNC_SHOULD("children", "contain SourceInstance component"));
+
+                child.forEach((c:GameObject) => {
+                    checkChildren(c);
+                });
+            };
+
+            this.entityObject.forEach((child:GameObject) => {
+                checkChildren(child);
+            });
+        })
         public init(){
             var self = this;
+
+            if(!this._isAddSourceInstanceToChildren){
+                this._addSourceInstanceToChildren();
+            }
 
             this._instanceBuffer = InstanceBuffer.create();
 
@@ -71,15 +89,15 @@ module wd{
                     sourceInstanceList = null;
 
 
-                if(!entityObject.hasComponent(SourceInstance)){
-                    let sourceInstanceComponent = SourceInstance.create();
-                    sourceInstanceList = sourceInstanceComponent.instanceList;
-
-                    entityObject.addComponent(sourceInstanceComponent);
-                }
-                else{
+                //if(!entityObject.hasComponent(SourceInstance)){
+                //    let sourceInstanceComponent = SourceInstance.create();
+                //    sourceInstanceList = sourceInstanceComponent.instanceList;
+                //
+                //    entityObject.addComponent(sourceInstanceComponent);
+                //}
+                //else{
                     sourceInstanceList = entityObject.getComponent<SourceInstance>(SourceInstance).instanceList;
-                }
+                //}
 
                 this._addInstanceComponentsFromSource(entityObject, instance);
 
@@ -108,6 +126,9 @@ module wd{
 
                 return instance;
             };
+
+            this._addSourceInstanceToChildren();
+            this._isAddSourceInstanceToChildren = true;
 
             return clone(name, this.entityObject);
         }
@@ -155,6 +176,24 @@ module wd{
             });
         }
 
+        private _addSourceInstanceToChildren(){
+            var add = (child:GameObject) => {
+                if(!child.hasComponent(SourceInstance)){
+                    let sourceInstanceComponent = SourceInstance.create();
+
+                    child.addComponent(sourceInstanceComponent);
+
+                    child.forEach((c:GameObject) => {
+                        add(c);
+                    })
+                }
+            };
+
+            this.entityObject.forEach((child:GameObject) => {
+                add(child);
+            });
+        }
+
         private _checkInstanceIsNotOnlyInInstanceListButAlsoInLoop(){
             var scene:SceneDispatcher = Director.getInstance().scene,
                 isInLoop:boolean = false;
@@ -165,9 +204,7 @@ module wd{
                         return wdCb.$BREAK;
                     }
 
-                    if(!isInLoop){
-                        isContainInstance(instance, child);
-                    }
+                    isContainInstance(instance, child);
                 })
             };
 

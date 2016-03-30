@@ -40,19 +40,13 @@ describe("instance with spacePartition", function() {
     }
 
     function createOctree() {
-        var octreeContainer = wd.GameObject.create();
-
-        var octree = wd.Octree.create();
-
-        octreeContainer.addComponent(octree);
-
-        return octreeContainer;
+        return octreeTool.createOctree();
     }
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
-        testTool.openContractCheck(sandbox);
+        //testTool.openContractCheck(sandbox);
 
         wd.DebugStatistics.clear();
 
@@ -70,7 +64,7 @@ describe("instance with spacePartition", function() {
     });
 
 
-    it("if the instanceSource obj is culled but it's instance isn't culled, it's instance should be rendered", function () {
+    it("if the instanceSource obj is culled but its object instance isn't culled, its object instance should be rendered", function () {
         prepareBox1AndInstances();
 
         var box2 = prepareTool.createBox(1);
@@ -100,17 +94,14 @@ describe("instance with spacePartition", function() {
 
 
         var camera = testTool.createCamera();
-        var renderer = wd.WebGLRenderer.create();
 
 
         director.scene.addChild(camera);
 
+
         director._init();
 
-
-        director.scene.gameObjectScene.render(renderer);
-
-        renderer.render();
+        director._loopBody(1);
 
 
 

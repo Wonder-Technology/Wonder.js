@@ -81,7 +81,7 @@ describe("instance with shadow", function () {
 
             director.scene.addChild(sphere2);
 
-            light = shadowTool.createDirectionLight(instanceArr.concat([sphere2]));
+            light = shadowTool.createDirectionLight();
 
             director.scene.addChild(light);
         });
@@ -90,150 +90,141 @@ describe("instance with shadow", function () {
             beforeEach(function () {
             });
 
-            describe("test build shadow map", function () {
+            describe("test instances", function () {
+                function setBuildShadowMapShaderAndProgram(handleProgramFunc) {
+                    var useShader = director.scene.useShader;
+
+                    sandbox.stub(director.scene, "useShader", function (shaderKey) {
+                        useShader.call(director.scene, shaderKey);
+
+                        var source = instanceArr[0];
+                        var material = source.getComponent(wd.Geometry).material;
+
+                        shader = material.shader;
+                        program = shader.program;
+
+                        if (handleProgramFunc) {
+                            handleProgramFunc(program);
+                        }
+                    });
+                }
+
                 beforeEach(function () {
                 });
 
+                it("should send the model matrix data by send 4 vec4 attribute data", function () {
+                    var offsetLocation0,
+                        offsetLocation1,
+                        offsetLocation2,
+                        offsetLocation3;
 
-                describe("test instances", function () {
-                    function setBuildShadowMapShaderAndProgram(handleProgramFunc) {
-                        var useShader = director.scene.useShader;
+                    offsetLocation0 = 11;
+                    offsetLocation1 = 12;
+                    offsetLocation2 = 13;
+                    offsetLocation3 = 14;
+                    setBuildShadowMapShaderAndProgram(function (program) {
 
-                        sandbox.stub(director.scene, "useShader", function (shaderKey) {
-                            useShader.call(director.scene, shaderKey);
 
-                            var source = instanceArr[0];
-                            var material = source.getComponent(wd.Geometry).material;
-
-                            shader = material.shader;
-                            program = shader.program;
-
-                            if (handleProgramFunc) {
-                                handleProgramFunc(program);
-                            }
-                        });
-                    }
-
-                    beforeEach(function () {
+                        sandbox.stub(program, "sendAttributeData");
+                        sandbox.stub(program, "sendUniformData");
+                        sandbox.stub(program, "getAttribLocation");
+                        program.getAttribLocation.withArgs("a_mVec4_0").returns(offsetLocation0);
+                        program.getAttribLocation.withArgs("a_mVec4_1").returns(offsetLocation1);
+                        program.getAttribLocation.withArgs("a_mVec4_2").returns(offsetLocation2);
+                        program.getAttribLocation.withArgs("a_mVec4_3").returns(offsetLocation3);
                     });
 
-                    it("should send the model matrix data by send 4 vec4 attribute data", function () {
-                        var offsetLocation0,
-                            offsetLocation1,
-                            offsetLocation2,
-                            offsetLocation3;
+                    director._init();
 
-                        offsetLocation0 = 11;
-                        offsetLocation1 = 12;
-                        offsetLocation2 = 13;
-                        offsetLocation3 = 14;
-                        setBuildShadowMapShaderAndProgram(function (program) {
+                    director.scene.gameObjectScene.render(renderer);
+                    renderer.render();
 
 
-                            sandbox.stub(program, "sendAttributeData");
-                            sandbox.stub(program, "sendUniformData");
-                            sandbox.stub(program, "getAttribLocation");
-                            program.getAttribLocation.withArgs("a_mVec4_0").returns(offsetLocation0);
-                            program.getAttribLocation.withArgs("a_mVec4_1").returns(offsetLocation1);
-                            program.getAttribLocation.withArgs("a_mVec4_2").returns(offsetLocation2);
-                            program.getAttribLocation.withArgs("a_mVec4_3").returns(offsetLocation3);
-                        });
+                    expect(program.getAttribLocation.withArgs("a_mVec4_0")).toCalledOnce();
+                    expect(program.getAttribLocation.withArgs("a_mVec4_1")).toCalledOnce();
+                    expect(program.getAttribLocation.withArgs("a_mVec4_2")).toCalledOnce();
+                    expect(program.getAttribLocation.withArgs("a_mVec4_3")).toCalledOnce();
 
-                        director._init();
+                    expect(extensionInstancedArrays.vertexAttribDivisorANGLE.withArgs(offsetLocation0, 1)).toCalledOnce();
+                    expect(extensionInstancedArrays.vertexAttribDivisorANGLE.withArgs(offsetLocation1, 1)).toCalledOnce();
+                    expect(extensionInstancedArrays.vertexAttribDivisorANGLE.withArgs(offsetLocation2, 1)).toCalledOnce();
+                    expect(extensionInstancedArrays.vertexAttribDivisorANGLE.withArgs(offsetLocation3, 1)).toCalledOnce();
+                });
+                it("should use drawElementsInstancedANGLE to batch draw", function () {
+                    director._init();
 
-                        director.scene.gameObjectScene.render(renderer);
-                        renderer.render();
+                    director.scene.gameObjectScene.render(renderer);
+                    renderer.render();
 
-
-                        expect(program.getAttribLocation.withArgs("a_mVec4_0")).toCalledOnce();
-                        expect(program.getAttribLocation.withArgs("a_mVec4_1")).toCalledOnce();
-                        expect(program.getAttribLocation.withArgs("a_mVec4_2")).toCalledOnce();
-                        expect(program.getAttribLocation.withArgs("a_mVec4_3")).toCalledOnce();
-
-                        expect(extensionInstancedArrays.vertexAttribDivisorANGLE.withArgs(offsetLocation0, 1)).toCalledOnce();
-                        expect(extensionInstancedArrays.vertexAttribDivisorANGLE.withArgs(offsetLocation1, 1)).toCalledOnce();
-                        expect(extensionInstancedArrays.vertexAttribDivisorANGLE.withArgs(offsetLocation2, 1)).toCalledOnce();
-                        expect(extensionInstancedArrays.vertexAttribDivisorANGLE.withArgs(offsetLocation3, 1)).toCalledOnce();
-                    });
-                    it("should use drawElementsInstancedANGLE to batch draw", function () {
-                        director._init();
-
-                        director.scene.gameObjectScene.render(renderer);
-                        renderer.render();
-
-                        instanceTool.judgeInstanceCount(extensionInstancedArrays, 0, 2);
-                    });
-
-                    it("glsl should contain vec4 attribute define and mMatrix should consist of these 4 vec4 datas", function () {
-                        setBuildShadowMapShaderAndProgram();
-
-
-                        director._init();
-
-                        director.scene.gameObjectScene.render(renderer);
-                        renderer.render();
-
-
-                        expect(glslTool.contain(shader.vsSource, "attribute vec4 a_mVec4_0")).toBeTruthy();
-                        expect(glslTool.contain(shader.vsSource, "mat4 mMatrix = mat4(a_mVec4_0, a_mVec4_1, a_mVec4_2, a_mVec4_3);")).toBeTruthy();
-                    });
+                    instanceTool.judgeInstanceCount(extensionInstancedArrays, 0, 2);
                 });
 
-                describe("test other objects", function () {
-                    function setBuildShadowMapShaderAndProgram(obj, handleProgramFunc) {
-                        var useShader = director.scene.useShader;
-
-                        sandbox.stub(director.scene, "useShader", function (shaderKey) {
-                            useShader.call(director.scene, shaderKey);
-
-                            var material = obj.getComponent(wd.Geometry).material;
-
-                            shader = material.shader;
-                            program = shader.program;
-
-                            if (handleProgramFunc) {
-                                handleProgramFunc(program);
-                            }
-                        });
-                    }
-
-                    it("should send u_mMatrix data", function () {
-                        setBuildShadowMapShaderAndProgram(sphere2, function (program) {
-                            sandbox.stub(program, "sendUniformData");
-                        });
+                it("glsl should contain vec4 attribute define and mMatrix should consist of these 4 vec4 datas", function () {
+                    setBuildShadowMapShaderAndProgram();
 
 
-                        director._init();
+                    director._init();
 
-                        director.scene.gameObjectScene.render(renderer);
-                        renderer.render();
+                    director.scene.gameObjectScene.render(renderer);
+                    renderer.render();
 
 
-                        expect(program.sendUniformData.withArgs("u_mMatrix")).toCalledOnce();
+                    expect(glslTool.contain(shader.vsSource, "attribute vec4 a_mVec4_0")).toBeTruthy();
+                    expect(glslTool.contain(shader.vsSource, "mat4 mMatrix = mat4(a_mVec4_0, a_mVec4_1, a_mVec4_2, a_mVec4_3);")).toBeTruthy();
+                });
+            });
+
+            describe("test other objects", function () {
+                function setBuildShadowMapShaderAndProgram(obj, handleProgramFunc) {
+                    var useShader = director.scene.useShader;
+
+                    sandbox.stub(director.scene, "useShader", function (shaderKey) {
+                        useShader.call(director.scene, shaderKey);
+
+                        var material = obj.getComponent(wd.Geometry).material;
+
+                        shader = material.shader;
+                        program = shader.program;
+
+                        if (handleProgramFunc) {
+                            handleProgramFunc(program);
+                        }
                     });
-                    it("should use drawElements to draw", function () {
-                        director._init();
+                }
 
-                        director.scene.gameObjectScene.render(renderer);
-                        renderer.render();
-
-                        expect(gl.drawElements).toCalledTwice();
+                it("should send u_mMatrix data", function () {
+                    setBuildShadowMapShaderAndProgram(sphere2, function (program) {
+                        sandbox.stub(program, "sendUniformData");
                     });
-                    it("glsl should contain u_matrix define and mMatrix should equal the data", function () {
-                        var shader;
-
-                        shader = sphere2.getComponent(wd.Geometry).material.shader;
 
 
-                        director._init();
+                    director._init();
 
-                        director.scene.gameObjectScene.render(renderer);
-                        renderer.render();
+                    director.scene.gameObjectScene.render(renderer);
+                    renderer.render();
 
 
-                        expect(glslTool.contain(shader.vsSource, "uniform mat4 u_mMatrix")).toBeTruthy();
-                        expect(glslTool.contain(shader.vsSource, "mat4 mMatrix = u_mMatrix")).toBeTruthy();
-                    });
+                    expect(program.sendUniformData.withArgs("u_mMatrix")).toCalledOnce();
+                });
+                it("should use drawElements to draw", function () {
+                    director._init();
+
+                    director.scene.gameObjectScene.render(renderer);
+                    renderer.render();
+
+                    expect(gl.drawElements).toCalledTwice();
+                });
+                it("glsl should contain u_matrix define and mMatrix should equal the data", function () {
+                    var shader;
+
+                    shader = sphere2.getComponent(wd.Geometry).material.shader;
+
+
+                    director._init();
+
+
+                    expect(glslTool.contain(shader.vsSource, "uniform mat4 u_mMatrix")).toBeTruthy();
+                    expect(glslTool.contain(shader.vsSource, "mat4 mMatrix = u_mMatrix")).toBeTruthy();
                 });
             });
         });
@@ -260,7 +251,7 @@ describe("instance with shadow", function () {
                 var light2;
 
                 beforeEach(function () {
-                    light2 = shadowTool.createDirectionLight(instanceArr.concat([sphere2]));
+                    light2 = shadowTool.createDirectionLight();
 
                     director.scene.addChild(light2);
                 });
@@ -301,7 +292,7 @@ describe("instance with shadow", function () {
                         var sphere1Program = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere1, true).program;
                         var sphere1Instance1Program = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere1Instance1).program;
 
-                        director._loopBody();
+                        director._loopBody(1);
 
 
                         expect(sphere1Program.sendUniformData.withArgs("u_twoDLightPos[0]").firstCall.args[2]).toEqual(position1);

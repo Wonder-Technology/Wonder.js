@@ -5,7 +5,7 @@ module wd{
                 parent:GameObject = gameObject,
                 result:boolean = false;
 
-            while(parent.parent){
+            do{
                 shadow = parent.getComponent<Shadow>(Shadow);
 
                 if(!!shadow && shadow.receive){
@@ -14,7 +14,8 @@ module wd{
                 }
 
                 parent = parent.parent;
-            }
+            } while(parent);
+
 
             return result;
         }
