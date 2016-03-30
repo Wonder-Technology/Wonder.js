@@ -256,4 +256,41 @@ describe("SourceInstance", function(){
             expect(box1Instance1.dispose).toCalledOnce();
         });
     });
+
+    describe("dispose", function(){
+        var sourceInstance;
+
+        beforeEach(function(){
+            sourceInstance = box1.getComponent(wd.SourceInstance);
+            sourceInstance.init();
+        });
+
+        it("unbind endLoop event", function () {
+            sandbox.stub(sourceInstance._toRenderInstanceList, "removeAllChildren");
+
+            sourceInstance.dispose();
+
+            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.ENDLOOP));
+
+            expect(sourceInstance._toRenderInstanceList.removeAllChildren).not.toCalled();
+        });
+        it("unbind enter event", function () {
+            sandbox.stub(sourceInstance, "_addAllInstances");
+
+            sourceInstance.dispose();
+
+            wd.EventManager.trigger(box1Instance1, wd.CustomEvent.create(wd.EEngineEvent.ENTER));
+
+            expect(sourceInstance._addAllInstances).not.toCalled();
+        });
+        it("unbind exit event", function () {
+            sandbox.stub(sourceInstance, "_removeAllInstances");
+
+            sourceInstance.dispose();
+
+            wd.EventManager.trigger(box1Instance1, wd.CustomEvent.create(wd.EEngineEvent.EXIT));
+
+            expect(sourceInstance._removeAllInstances).not.toCalled();
+        });
+    });
 });
