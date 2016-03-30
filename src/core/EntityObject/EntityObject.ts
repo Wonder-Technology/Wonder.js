@@ -156,7 +156,23 @@ module wd {
         public addChildren(children:wdCb.Collection<EntityObject>);
 
         public addChildren(...args) {
-            this.children.addChildren(args[0]);
+            if(JudgeUtils.isArray(args[0])){
+                let children:Array<EntityObject> = args[0];
+
+                for (let child of children){
+                    this.addChild(child);
+                }
+            }
+            else if(JudgeUtils.isCollection(args[0])){
+                let children:wdCb.Collection<EntityObject> = args[0];
+
+                children.forEach((child:EntityObject) => {
+                    this.addChild(child);
+                });
+            }
+            else{
+                this.addChild(args[0]);
+            }
 
             return this;
         }

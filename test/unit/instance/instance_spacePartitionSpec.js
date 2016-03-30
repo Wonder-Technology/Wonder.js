@@ -231,6 +231,41 @@ describe("instance with spacePartition", function() {
         });
     });
 
+
+    describe("dispose object instance", function () {
+        beforeEach(function () {
+        });
+
+        it("not render it and its children", function () {
+            prepareBox1AndInstances();
+
+            director._init();
+
+            boxInstance1.dispose();
+
+            octreeContainer.getComponent(wd.Octree).build();
+
+
+
+            director._loopBody(1);
+
+
+
+            expect(wd.DebugStatistics.count.renderGameObjects).toEqual(4 * 2);
+
+
+            expect(gl.drawElements).not.toCalled();
+
+            expect(extensionInstancedArrays.drawElementsInstancedANGLE.callCount).toEqual(4);
+
+            instanceTool.judgeInstanceCount(extensionInstancedArrays, 0, 2);
+            instanceTool.judgeInstanceCount(extensionInstancedArrays, 1, 2);
+            instanceTool.judgeInstanceCount(extensionInstancedArrays, 2, 2);
+            instanceTool.judgeInstanceCount(extensionInstancedArrays, 3, 2);
+        });
+    });
+
+
     describe("if hardware not support instance", function(){
         beforeEach(function(){
             wd.GPUDetector.getInstance().extensionInstancedArrays = null;
@@ -299,6 +334,34 @@ describe("instance with spacePartition", function() {
             expect(gl.drawElements.callCount).toEqual(4 * 2);
 
             expect(extensionInstancedArrays.drawElementsInstancedANGLE.callCount).toEqual(0);
+        });
+
+        describe("dispose object instance", function () {
+            beforeEach(function () {
+            });
+
+            it("not render it and its children", function () {
+                prepareBox1AndInstances();
+
+                director._init();
+
+                boxInstance1.dispose();
+
+                octreeContainer.getComponent(wd.Octree).build();
+
+
+
+                director._loopBody(1);
+
+
+
+                expect(wd.DebugStatistics.count.renderGameObjects).toEqual(4 * 2);
+
+
+                expect(gl.drawElements.callCount).toEqual(4 * 2);
+
+                expect(extensionInstancedArrays.drawElementsInstancedANGLE.callCount).toEqual(0);
+            });
         });
     });
 });

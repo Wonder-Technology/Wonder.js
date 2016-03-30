@@ -42,7 +42,7 @@ module wd{
 
         @virtual
         public removeFromObject(entityObject:EntityObject){
-            this.entityObject = null;
+            //this.entityObject = null;
         }
     }
 }

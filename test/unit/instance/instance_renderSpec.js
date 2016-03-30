@@ -417,6 +417,40 @@ describe("use instance to batch draw calls", function(){
         });
     });
 
+    describe("dispose object instance", function () {
+        beforeEach(function () {
+        });
+
+        it("not render it and its children", function () {
+            prepareWithChild();
+
+            director._init();
+
+
+
+            box1Instance1.dispose();
+
+
+
+            director.scene.gameObjectScene.render(renderer);
+            renderer.render();
+
+
+
+            expect(wd.DebugStatistics.count.renderGameObjects).toEqual(2 * 2);
+
+
+            expect(gl.drawElements).not.toCalled();
+
+            expect(extensionInstancedArrays.drawElementsInstancedANGLE).toCalledTwice();
+
+            instanceTool.judgeInstanceCount(extensionInstancedArrays, 0, 2);
+            instanceTool.judgeInstanceCount(extensionInstancedArrays, 1, 2);
+        });
+    });
+
+
+
     describe("if hardware not support instance", function(){
         beforeEach(function(){
             wd.GPUDetector.getInstance().extensionInstancedArrays = null;
@@ -574,6 +608,33 @@ describe("use instance to batch draw calls", function(){
                 expect(gl.drawElements.callCount).toEqual(2 * 3);
 
                 expect(extensionInstancedArrays.drawElementsInstancedANGLE).not.toCalled();
+            });
+        });
+
+        describe("dispose object instance", function () {
+            beforeEach(function () {
+            });
+
+            it("not render it and its children", function () {
+                prepareWithChild();
+
+                director._init();
+
+
+
+                box1Instance1.dispose();
+
+
+
+                director.scene.gameObjectScene.render(renderer);
+                renderer.render();
+
+
+
+                expect(wd.DebugStatistics.count.renderGameObjects).toEqual(2 * 2);
+
+
+                expect(gl.drawElements.callCount).toEqual(2 * 2);
             });
         });
     });

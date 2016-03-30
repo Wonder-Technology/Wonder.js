@@ -51,5 +51,9 @@ module wd {
         public static isDom(obj) {
             return Object.prototype.toString.call(obj).match(/\[object HTML\w+/) !== null;
         }
+
+        public static isCollection(list:wdCb.Collection<any>){
+            return list instanceof wdCb.Collection;
+        }
     }
 }

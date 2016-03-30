@@ -37,6 +37,8 @@ module wd{
         public dispose(){
             this._enterSubscription.dispose();
             this._exitSubscription.dispose();
+
+            this._removeFromSourceAndItsChildren();
         }
 
         private _addToSourceAndItsChildren(){
