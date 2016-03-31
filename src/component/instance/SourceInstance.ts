@@ -17,7 +17,7 @@ module wd{
                 assert(JudgeUtils.isEqual(instance, self.entityObject) || self.instanceList.hasChild(instance), Log.info.FUNC_SHOULD("render self entityObject or the entityObject in instanceList"));
             });
 
-            assert(toRenderInstanceListForDraw.clone().removeRepeatItems().getCount() === toRenderInstanceListForDraw.getCount(), Log.info.FUNC_SHOULD_NOT("has repeat instance which is to render"));
+            assert(!toRenderInstanceListForDraw.hasRepeatItems(), Log.info.FUNC_SHOULD_NOT("has repeat instance which is to render"));
         })
         get toRenderInstanceListForDraw(){
             if(!this.hasToRenderInstance()){
