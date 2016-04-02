@@ -12,6 +12,10 @@ module wd {
             this._shadowManager = shadowManager;
         }
 
+        get twoDShadowMapCount(){
+            return this.twoDShadowMapDataMap.getCount() * this._shadowManager.entityObject.directionLights.getCount();
+        }
+
         public twoDShadowMapDataMap:wdCb.Hash<wdCb.Collection<TwoDShadowMapData>> = wdCb.Hash.create<wdCb.Collection<TwoDShadowMapData>>();
 
         private _shadowManager:ShadowManager = null;

@@ -23,9 +23,9 @@ module wd{
 
         private _setShadowMapSource(){
             var scene:SceneDispatcher = Director.getInstance().scene,
-                twoDShadowMapCount = scene.directionLights? scene.directionLights.filter((light:GameObject) => {
-                    return light.getComponent<DirectionLight>(DirectionLight).castShadow;
-                }).getCount() : 0,
+                shadowManager:ShadowManager = scene.gameObjectScene.getComponent<ShadowManager>(ShadowManager),
+                twoDShadowMapCount = shadowManager.twoDShadowMapCount,
+                //todo fix
                 cubemapShadowMapCount = scene.pointLights ? scene.pointLights.filter((light:GameObject) => {
                     return light.getComponent<PointLight>(PointLight).castShadow;
                 }).getCount() : 0;

@@ -10,6 +10,10 @@ module wd{
             return this._shadowMapManager.twoDShadowMapDataMap;
         }
 
+        get twoDShadowMapCount(){
+            return this._shadowMapManager.twoDShadowMapCount;
+        }
+
         public entityObject:GameObjectScene;
 
         private _shadowRenderList:wdCb.Collection<GameObject> = wdCb.Collection.create<GameObject>();
@@ -106,13 +110,13 @@ module wd{
             RenderUtils.getGameObjectRenderList(this.entityObject.getChildren())
                 .forEach((child:GameObject) => {
                     if(JudgeUtils.isSpacePartitionObject(child)){
-                        list.addChildren(
-                            child.forEach((c:GameObject) => {
-                                if(self._isCastShadow(c)){
-                                    list.addChild(c.getComponent<Shadow>(Shadow).layer);
-                                }
-                            })
-                        );
+                        //list.addChildren(
+                        child.forEach((c:GameObject) => {
+                            if(self._isCastShadow(c)){
+                                list.addChild(c.getComponent<Shadow>(Shadow).layer);
+                            }
+                        })
+                        //);
 
                         return;
                     }

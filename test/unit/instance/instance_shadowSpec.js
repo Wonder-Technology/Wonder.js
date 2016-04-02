@@ -332,34 +332,90 @@ describe("instance with shadow", function () {
                     expect(shadow2.layer).toEqual(shadow1.layer);
 
 
-                    //var shadow3 = sphere2.getComponent(wd.Shadow);
-                    //shadow3.layer = "layer2";
-
 
                     director._init();
 
                     var shadowMap1 = shadowTool.getBuildShadowMapMapManager(sphere1).getTwoDShadowMapList().getChild(0);
                     var shadowMap2 = shadowTool.getBuildShadowMapMapManager(sphere1Instance1).getTwoDShadowMapList().getChild(0);
-                    //var shadowMap3 = shadowTool.getBuildShadowMapMapManager(sphere2).getTwoDShadowMapList().getChild(0);
 
                     expect(shadowMap1 === shadowMap2).toBeTruthy();
-                    //expect(shadowMap2 !== shadowMap3).toBeTruthy();
 
                     sandbox.stub(shadowMap1, "bindToUnit");
-                    //sandbox.stub(shadowMap2, "bindToUnit");
 
 
                     director.scene.gameObjectScene.render(renderer);
 
 
                     expect(shadowMap1.bindToUnit).toCalledTwice();
-                    //expect(shadowMap2.bindToUnit).toCalledTwice();
 
                     renderer.render();
 
                     expect(shadowMap1.bindToUnit.callCount).toEqual(2 + 3);
-                    //expect(shadowMap2.bindToUnit.callCount).toEqual(2 + 3);
                 });
+
+                //describe("test draw based on shadow map", function(){
+                //    beforeEach(function(){
+                //    });
+                //
+                //    //it("bind the shadow maps of all layers when draw shadow map", function () {
+                //    //    director._init();
+                //    //
+                //    //    var twoDShadowMapList1 = shadowTool.getDefaultMapManager(sphere).getTwoDShadowMapList();
+                //    //    var twoDShadowMapList2 = shadowTool.getDefaultMapManager(sphere2).getTwoDShadowMapList();
+                //    //    var twoDShadowMapList3 = shadowTool.getDefaultMapManager(sphere3).getTwoDShadowMapList();
+                //    //
+                //    //    expect(twoDShadowMapList1.getCount()).toEqual(2);
+                //    //    expect(twoDShadowMapList2.getCount()).toEqual(2);
+                //    //    expect(twoDShadowMapList3.getCount()).toEqual(2);
+                //    //
+                //    //    var shadowMap1 = twoDShadowMapList1.getChild(0);
+                //    //    var shadowMap2 = twoDShadowMapList1.getChild(1);
+                //    //    sandbox.stub(shadowMap1, "bindToUnit");
+                //    //    sandbox.stub(shadowMap2, "bindToUnit");
+                //    //
+                //    //
+                //    //    director.scene.gameObjectScene.render(renderer);
+                //    //    renderer.render();
+                //    //
+                //    //    expect(shadowMap1.bindToUnit.callCount).toEqual(1 + 3);
+                //    //    expect(shadowMap2.bindToUnit.callCount).toEqual(2 + 3);
+                //    //});
+                //    it("should send shadow map data", function () {
+                //        var shadow1 = sphere1.getComponent(wd.Shadow);
+                //        shadow1.layer = "layer1";
+                //
+                //
+                //        var shadow2 = sphere2.getComponent(wd.Shadow);
+                //        shadow2.layer = "layer2";
+                //
+                //
+                //
+                //        director._init();
+                //
+                //        //setDrawShadowMapShaderAndProgram();
+                //        var data1 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere1);
+                //        var program1 = data1.program;
+                //
+                //        var data2 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere2);
+                //        var program2 = data2.program;
+                //
+                //        //var data3 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere3);
+                //        //var program3 = data3.program;
+                //
+                //
+                //        director.scene.gameObjectScene.render(renderer);
+                //        renderer.render();
+                //
+                //        expect(program1.sendUniformData.withArgs("u_twoDShadowMapSampler[0]", sinon.match.any, 0)).toCalledTwice();
+                //        expect(program1.sendUniformData.withArgs("u_twoDShadowMapSampler[1]", sinon.match.any, 1)).toCalledTwice();
+                //        expect(program1.sendUniformData.withArgs("u_diffuseMapSampler", sinon.match.any, 2)).toCalledTwice();
+                //
+                //
+                //        expect(program2.sendUniformData.withArgs("u_twoDShadowMapSampler[0]", sinon.match.any, 0)).toCalledOnce();
+                //        expect(program2.sendUniformData.withArgs("u_twoDShadowMapSampler[1]", sinon.match.any, 1)).toCalledOnce();
+                //        expect(program2.sendUniformData.withArgs("u_diffuseMapSampler", sinon.match.any, 2)).toCalledOnce();
+                //    });
+                //});
             });
         });
     });

@@ -39,6 +39,7 @@ describe("direction shadow map with octree", function() {
 
         beforeEach(function(){
             sphere = createSphere();
+            sphere.name = "sphere";
 
             octreeObject = createOctree();
 
@@ -240,6 +241,54 @@ describe("direction shadow map with octree", function() {
                 });
             });
 
+        });
+
+        describe("test shadow layer", function(){
+            var shadow1,shadow2;
+            var sphere2;
+
+            beforeEach(function(){
+            });
+
+            it("test if only has one layer(in this case:the layer of gameObject which is outside the octree is the same with objects inside the octree), it should only has one shadow map", function () {
+                shadow1 = sphere.getComponent(wd.Shadow);
+
+                sphere2 = shadowTool.createSphere();
+                sphere2.name = "sphere2";
+                shadow2 = sphere2.getComponent(wd.Shadow);
+
+                octreeObject.addChild(sphere2);
+
+                director._init();
+
+                var twoDShadowMapList1 = shadowTool.getDefaultMapManager(sphere).getTwoDShadowMapList();
+                var twoDShadowMapList2 = shadowTool.getDefaultMapManager(sphere2).getTwoDShadowMapList();
+
+                expect(twoDShadowMapList1.getCount()).toEqual(1);
+                expect(twoDShadowMapList2.getCount()).toEqual(1);
+
+
+                var shadowMap1 = shadowTool.getBuildShadowMapMapManager(sphere).getTwoDShadowMapList().getChild(0);
+                var shadowMap2 = shadowTool.getBuildShadowMapMapManager(sphere2).getTwoDShadowMapList().getChild(0);
+
+                expect(shadowMap1 === shadowMap2).toBeTruthy();
+
+                sandbox.stub(shadowMap1, "bindToUnit");
+
+
+                director.scene.gameObjectScene.render(renderer);
+
+
+                expect(shadowMap1.bindToUnit).toCalledTwice();
+
+
+
+                renderer.render();
+
+
+
+                expect(shadowMap1.bindToUnit.callCount).toEqual(2 + 2);
+            });
         });
     });
 });
