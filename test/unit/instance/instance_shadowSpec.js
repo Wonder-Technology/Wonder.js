@@ -21,6 +21,8 @@ describe("instance with shadow", function () {
 
     function prepareWithoutChild() {
         sphere1 = createSphere();
+        sphere1.name = "sphere1";
+
         var sourceInstance = wd.SourceInstance.create();
         sphere1.addComponent(sourceInstance);
 
@@ -78,6 +80,7 @@ describe("instance with shadow", function () {
 
 
             sphere2 = createSphere();
+            sphere2.name = "sphere2";
 
             director.scene.addChild(sphere2);
 
@@ -310,6 +313,52 @@ describe("instance with shadow", function () {
                         expect(sphere1Instance1Program.sendUniformData.withArgs("u_twoDLightPos[1]").firstCall.args[2]).toEqual(position2);
                         expect(sphere1Instance1Program.sendUniformData.withArgs("u_twoDLightPos[1]").secondCall.args[2]).toEqual(position2);
                     });
+                });
+            });
+
+            describe("test shadow layer", function(){
+                beforeEach(function(){
+                    testTool.openContractCheck(sandbox);
+                });
+
+                it("instance shadow layer should always be the same with its source object's shadow layer", function () {
+                    var shadow1 = sphere1.getComponent(wd.Shadow);
+                    shadow1.layer = "layer1";
+
+
+                    var shadow2 = sphere1Instance1.getComponent(wd.Shadow);
+                    shadow2.layer = "layer2";
+
+                    expect(shadow2.layer).toEqual(shadow1.layer);
+
+
+                    //var shadow3 = sphere2.getComponent(wd.Shadow);
+                    //shadow3.layer = "layer2";
+
+
+                    director._init();
+
+                    var shadowMap1 = shadowTool.getBuildShadowMapMapManager(sphere1).getTwoDShadowMapList().getChild(0);
+                    var shadowMap2 = shadowTool.getBuildShadowMapMapManager(sphere1Instance1).getTwoDShadowMapList().getChild(0);
+                    //var shadowMap3 = shadowTool.getBuildShadowMapMapManager(sphere2).getTwoDShadowMapList().getChild(0);
+
+                    expect(shadowMap1 === shadowMap2).toBeTruthy();
+                    //expect(shadowMap2 !== shadowMap3).toBeTruthy();
+
+                    sandbox.stub(shadowMap1, "bindToUnit");
+                    //sandbox.stub(shadowMap2, "bindToUnit");
+
+
+                    director.scene.gameObjectScene.render(renderer);
+
+
+                    expect(shadowMap1.bindToUnit).toCalledTwice();
+                    //expect(shadowMap2.bindToUnit).toCalledTwice();
+
+                    renderer.render();
+
+                    expect(shadowMap1.bindToUnit.callCount).toEqual(2 + 3);
+                    //expect(shadowMap2.bindToUnit.callCount).toEqual(2 + 3);
                 });
             });
         });

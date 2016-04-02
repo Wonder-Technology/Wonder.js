@@ -14,6 +14,8 @@ module wd {
             this._light = light;
         }
 
+        public layer:string = null;
+
         protected texture:TwoDShadowMapTexture;
 
         private _light:DirectionLight = null;
@@ -92,7 +94,7 @@ module wd {
         }
 
         protected beforeRenderFrameBufferTexture(renderCamera:GameObject){
-            var self = this;
+            //var self = this;
 
             Director.getInstance().scene.glslData.appendChild(<any>EShaderGLSLData.TWOD_SHADOWMAP, {
                 camera: renderCamera.getComponent(CameraController),
@@ -107,14 +109,8 @@ module wd {
         }
 
         protected getRenderList():wdCb.Collection<GameObject>{
-            //return this._light.shadowRenderList;
-
-            //return this._light.shadowRenderList
-            //    .filter((child:GameObject, index:number) => {
-            //        return child.isVisible && (GPUDetector.getInstance().extensionInstancedArrays === null || !child.hasComponent(ObjectInstance));
-            //    });
-
-            return Director.getInstance().scene.gameObjectScene.shadowRenderListForBuildShadowMap;
+            //return Director.getInstance().scene.gameObjectScene.shadowRenderListForBuildShadowMap;
+            return Director.getInstance().scene.gameObjectScene.getComponent(ShadowManager).getShadowRenderListByLayer(this.layer);
         }
 
         protected renderRenderer(renderer){

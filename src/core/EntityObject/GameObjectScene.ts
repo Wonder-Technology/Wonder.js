@@ -125,7 +125,7 @@ module wd {
         public render(renderer:Renderer) {
             var self = this;
 
-            this.shadowRenderListForBuildShadowMap = this._shadowManager.getShadowRenderListForBuildShadowMap();
+            this._shadowManager.setShadowRenderListInEachLoop();
 
             this._renderTargetRendererList.forEach((target:RenderTargetRenderer) =>{
                 target.render(renderer, self.currentCamera);
@@ -136,7 +136,7 @@ module wd {
             super.render(renderer, this.currentCamera);
         }
 
-        public shadowRenderListForBuildShadowMap:wdCb.Collection<GameObject> = null;
+        //public shadowRenderListForBuildShadowMap:wdCb.Collection<GameObject> = null;
 
         protected getRenderList(){
             return RenderUtils.getGameObjectRenderList(this.children);

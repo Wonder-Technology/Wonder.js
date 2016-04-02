@@ -494,6 +494,12 @@ module wd {
 
         protected initComponent(){
             //todo refactor:initOrder
+            //if(this.hasComponent(CameraController)){
+            //    this.getComponent<CameraController>(CameraController).init();
+            //}
+            //if(this.hasComponent(ShadowManager)){
+            //    this.getComponent<ShadowManager>(ShadowManager).init();
+            //}
             if(this.hasComponent(Shadow)){
                 this.getComponent<Shadow>(Shadow).init();
             }
@@ -503,6 +509,7 @@ module wd {
 
             this.components.filter((component:Component) => {
                     return !(component instanceof Geometry) && !(component instanceof Shadow);
+                        //&& !(component instanceof CameraController) && !(component instanceof ShadowManager);
                 })
                 .forEach((component:Component) => {
                     component.init();

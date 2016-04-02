@@ -14,17 +14,17 @@ describe("ShadowManager", function() {
         beforeEach(function(){
         });
 
-        it("unbind beforeInit event", function(){
+        it("unbind endLoop event", function(){
             wd.EventManager.off();
             manager.init();
 
-            sandbox.stub(manager, "_beforeInitHandler");
+            sandbox.stub(manager, "_removeShadowMapGLSLData");
 
             manager.dispose();
 
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.BEFORE_GAMEOBJECT_INIT));
+            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.ENDLOOP));
 
-            expect(manager._beforeInitHandler).not.toCalled();
+            expect(manager._removeShadowMapGLSLData).not.toCalled();
         });
     });
 });

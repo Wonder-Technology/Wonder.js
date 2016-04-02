@@ -2,7 +2,7 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-    <title>instance with shadow-multi direction lights</title>
+    <title>instance with shadow-independent shadow map per layer</title>
 
     <script src="../../../dist/wd.innerLib.js" type="text/javascript"></script>
     <script src="../../../dist/wd.debug.js" type="text/javascript"></script>
@@ -27,11 +27,18 @@
         function initSample() {
             var director = wd.Director.getInstance();
 
-            var models = createModels();
+            var instances = createInstances();
+            var sphere2 = createSphere();
+            sphere2.getComponent(wd.Shadow).layer = "layer_sphere2";
+
+            sphere2.transform.translate(50,50,50);
+
+
             var ground = createGround();
 
             director.scene.addChild(ground);
-            director.scene.addChildren(models);
+            director.scene.addChildren(instances);
+            director.scene.addChild(sphere2);
             director.scene.addChild(createAmbientLight());
             director.scene.addChild(createDirectionLight(wd.Vector3.create(0, 500, 500)));
             director.scene.addChild(createDirectionLight(wd.Vector3.create(500, 500, 0)));
@@ -40,7 +47,7 @@
             director.start();
         }
 
-        function createModels(){
+        function createInstances(){
             var arr = [],
                     model = createSphere(),
                     range = 300,
@@ -55,21 +62,11 @@
             for(var i = 0; i < count; i++){
                 var instance = sourceInstanceComponent.cloneInstance("index" + String(i));
 
-//                instance.transform.position = wd.Vector3.create(range / 2 - Math.random() * range, range / 2 - Math.random() * range, range / 2 - Math.random() * range);
+                /*! setting instance shadow layer should not work(if ).its layer should always be the same with its source object's shadow layer */
+                instance.getComponent(wd.Shadow).layer = "layer_instance";
+
                 instance.transform.position = wd.Vector3.create(range / 2 - Math.random() * range, 60, 0);
-//                instance.transform.position = wd.Vector3.create(60, 60, 0);
-//                instance.transform.rotate(90 * Math.random(), 90 * Math.random(),0);
-//                instance.transform.scale = wd.Vector3.create(3,3,3);
 
-
-//
-//                var action = wd.RepeatForever.create(wd.CallFunc.create(function () {
-//                    this.transform.rotate(0, 0, Math.random() * 10);
-//                }, instance));
-//
-//                instance.addComponent(action);
-//
-//
                 arr.push(instance);
             }
 
@@ -134,10 +131,6 @@
 
 
             gameObject.transform.translate(wd.Vector3.create(-30, 20, 0));
-
-
-//            boxChild1.transform.translate(wd.Vector3.create(20, 10, 30));
-//            boxChild1.transform.eulerAngles = wd.Vector3.create(0, 45, 0);
 
 
             return gameObject;

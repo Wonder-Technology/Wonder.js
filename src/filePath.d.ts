@@ -135,12 +135,14 @@
 /// <reference path="component/scene/SceneComponent"/>
 
 /// <reference path="component/scene/manager/ShadowManager"/>
+/// <reference path="component/scene/manager/ShadowMapManager"/>
 /// <reference path="component/scene/manager/LightManager"/>
 
 
 
 /// <reference path="component/shadow/Shadow"/>
 /// <reference path="component/shadow/ShadowUtils"/>
+/// <reference path="component/shadow/EShadowLayer"/>
 
 
 /// <reference path="component/animation/Animation"/>
