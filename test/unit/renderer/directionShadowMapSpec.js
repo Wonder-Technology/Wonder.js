@@ -45,41 +45,124 @@ describe("direction shadow map", function() {
             prepareTool.prepareForMap(sandbox);
         });
         
-        describe("not allow: the first level object of gameObjectScene not contain shadow component but its children contain", function(){
+        describe("test Shadow component of first level object and its children", function(){
             beforeEach(function(){
                 testTool.openContractCheck(sandbox);
-                sphere.removeComponent(wd.Shadow);
             });
 
-            it("except the first level object contain space partition component", function(){
-                var octreeObject = octreeTool.createOctree();
+            describe("not allow: the first level object of gameObjectScene not contain Shadow component but its children contain", function(){
+                beforeEach(function(){
+                    sphere.removeComponent(wd.Shadow);
+                });
 
-                var child = createSphere();
-                child.addComponent(wd.Shadow.create());
+                it("except the first level object contain space partition component", function(){
+                    var octreeObject = octreeTool.createOctree();
 
-                octreeObject.addChild(child);
+                    var child = createSphere();
+                    child.addComponent(wd.Shadow.create());
 
-                director.scene.addChild(octreeObject);
+                    octreeObject.addChild(child);
+
+                    director.scene.addChild(octreeObject);
 
 
-                expect(function(){
-                    director._init();
+                    expect(function(){
+                        director._init();
 
-                    director.scene.gameObjectScene.render(renderer);
-                }).not.toThrow();
+                        director.scene.gameObjectScene.render(renderer);
+                    }).not.toThrow();
+                });
+                it("otherwise, error", function () {
+                    var child = createSphere();
+                    child.addComponent(wd.Shadow.create());
+
+                    sphere.addChild(child);
+
+
+                    expect(function(){
+                        director._init();
+
+                        director.scene.gameObjectScene.render(renderer);
+                    }).toThrow();
+                });
             });
-            it("otherwise, error", function () {
-                var child = createSphere();
-                child.addComponent(wd.Shadow.create());
 
-                sphere.addChild(child);
+            describe("test the first level object and its children both has Shadow component", function(){
+                var shadow1,shadow2;
+                var child;
+
+                beforeEach(function(){
+                    shadow1 = sphere.getComponent(wd.Shadow);
+
+                    child = createSphere();
+                    shadow2 = wd.Shadow.create();
+                    child.addComponent(shadow2);
 
 
-                expect(function(){
+                    sphere.addChild(child);
+                });
+
+                it("the Shadow's cast is determined by the first level object's shadow", function () {
+                    shadow1.cast = true;
+                    shadow2.cast = false;
+
+                    sandbox.spy(sphere, "render");
+                    sandbox.spy(child, "render");
+
+
                     director._init();
 
+
                     director.scene.gameObjectScene.render(renderer);
-                }).toThrow();
+
+                    expect(sphere.render).toCalledTwice();
+                    expect(child.render).toCalledTwice();
+                });
+                it("the Shadow's receive is determined by the first level object's shadow", function () {
+                    shadow1.receive = false;
+                    shadow2.receive = true;
+
+
+                    director._init();
+
+                    var shader1 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere).shader;
+                    var shader2 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, child).shader;
+
+                    expect(glslTool.contain(shader1.fsSource, "u_twoDShadowMapSampler")).toBeFalsy();
+                    expect(glslTool.contain(shader2.fsSource, "u_twoDShadowMapSampler")).toBeFalsy();
+                });
+                it("if cast shadow, only add build shadow map shader of children once", function () {
+                    shadow1.cast = true;
+                    shadow2.cast = true;
+                    var material1 = sphere.getComponent(wd.Geometry).material;
+                    var material2 = child.getComponent(wd.Geometry).material;
+
+                    sandbox.spy(material1, "addShader");
+                    sandbox.spy(material2, "addShader");
+
+
+                    director._init();
+
+
+                    expect(material1.addShader).toCalledOnce();
+                    expect(material2.addShader).toCalledOnce();
+                });
+                it("if receive shadow, only add shadow maps of children once", function () {
+                    shadow1.receive = true;
+                    shadow2.receive = true;
+                    var shader1 = sphere.getComponent(wd.Geometry).material.getShader(wd.EShaderMapKey.DEFAULT);
+                    var shader2 = child.getComponent(wd.Geometry).material.getShader(wd.EShaderMapKey.DEFAULT);
+
+                    sandbox.spy(shader1.mapManager, "addTwoDShadowMap");
+                    sandbox.spy(shader2.mapManager, "addTwoDShadowMap");
+
+
+                    director._init();
+
+
+                    expect(shader1.mapManager.addTwoDShadowMap).toCalledOnce();
+                    expect(shader2.mapManager.addTwoDShadowMap).toCalledOnce();
+                });
             });
         });
 

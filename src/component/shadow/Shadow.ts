@@ -69,7 +69,8 @@ module wd{
                 twoDShadowMapDataMap:wdCb.Hash<wdCb.Collection<TwoDShadowMapData>> = Director.getInstance().scene.gameObjectScene.getComponent(ShadowManager).twoDShadowMapDataMap;
 
 
-            if(this.entityObject.hasComponent(ObjectInstance)){
+            if(this.entityObject.hasComponent(ObjectInstance)
+            || !this._isFirstLevelObjectOfSceneOrSpacePartition()){
                 return;
             }
 
@@ -173,6 +174,12 @@ module wd{
         })
         private _addBuildShadowMapShader(material:Material, shader:CommonShader) {
             material.addShader(<any>EShaderMapKey.BUILD_SHADOWMAP, shader);
+        }
+
+        private _isFirstLevelObjectOfSceneOrSpacePartition(){
+            var parent:GameObject = this.entityObject.parent;
+
+            return JudgeUtils.isEqual(parent, Director.getInstance().scene) || JudgeUtils.isSpacePartitionObject(parent);
         }
     }
 }
