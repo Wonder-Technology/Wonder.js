@@ -14,9 +14,9 @@ describe("SourceInstance", function(){
         box1 = instanceTool.createBox();
     });
     afterEach(function () {
-        sandbox.restore();
-
         testTool.clearInstance();
+
+        sandbox.restore();
     });
 
     describe("toRenderInstanceListForDraw(getter)", function(){
@@ -33,6 +33,7 @@ describe("SourceInstance", function(){
             ))
         });
         it("else, return to render list", function () {
+            testTool.closeContractCheck(sandbox);
             var toRenderIntance = prepareTool.createSphere();
 
             box1.getComponent(wd.SourceInstance).addToRenderIntance(toRenderIntance);

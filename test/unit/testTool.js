@@ -256,6 +256,9 @@ var testTool = (function () {
         openContractCheck: function (sandbox) {
             sandbox.stub(wd.Main, "isTest", true);
         },
+        closeContractCheck: function (sandbox) {
+            sandbox.stub(wd.Main, "isTest", false);
+        },
 
 
 

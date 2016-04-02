@@ -21,7 +21,7 @@ module wd{
         })
         get toRenderInstanceListForDraw(){
             if(!this.hasToRenderInstance()){
-                return this._toRenderInstanceList.addChild(this.entityObject).addChildren(this.instanceList);
+                return this._toRenderInstanceList.clone().addChild(this.entityObject).addChildren(this.instanceList);
             }
 
             return this._toRenderInstanceList;
@@ -215,20 +215,34 @@ module wd{
 
         private _checkInstanceIsNotOnlyInInstanceListButAlsoInLoop(){
             var scene:SceneDispatcher = Director.getInstance().scene,
-                isInLoop:boolean = false;
-            var isContainInstance = (instance, gameObject) => {
-                gameObject.forEach((child:GameObject) => {
-                    if(JudgeUtils.isEqual(child, instance)){
-                        isInLoop = true;
-                        return wdCb.$BREAK;
-                    }
+                isInLoop:boolean = true;
+            //var isContainInstance = (instance, gameObject) => {
+            //    gameObject.forEach((child:GameObject) => {
+            //        if(JudgeUtils.isEqual(child, instance)){
+            //            isInLoop = true;
+            //            return wdCb.$BREAK;
+            //        }
+            //
+            //        isContainInstance(instance, child);
+            //    })
+            //};
 
-                    isContainInstance(instance, child);
-                })
-            };
+            if(this.instanceList.getCount() === 0){
+                return;
+            }
+
+            let children = wdCb.Collection.create<GameObject>();
+
+            IterateUtils.forEachAll(scene.gameObjectScene, (gameObject:GameObject) => {
+                children.addChild(gameObject);
+            });
 
             this.instanceList.forEach((instance:GameObject) => {
-                isContainInstance(instance, scene);
+                //isContainInstance(instance, scene);
+                if(!children.hasChild(instance)){
+                    isInLoop = false;
+                    return wdCb.$BREAK;
+                }
             });
 
             assert(isInLoop, Log.info.FUNC_SHOULD("instance", "not only in instanceList, but also in the main loop"));

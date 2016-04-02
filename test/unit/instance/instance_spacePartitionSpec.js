@@ -369,6 +369,7 @@ describe("instance with spacePartition", function() {
             });
 
             it("not render it and its children and dispose its object instances", function () {
+                testTool.closeContractCheck(sandbox);
                 prepareBox1AndInstances();
 
                 director._init();

@@ -447,6 +447,7 @@ describe("use instance to batch draw calls", function(){
         });
 
         it("not render it and its children and dispose its object instances", function () {
+            testTool.closeContractCheck(sandbox);
             prepareWithChild();
 
             director._init();
@@ -674,6 +675,7 @@ describe("use instance to batch draw calls", function(){
             });
 
             it("not render it and its children and dispose its object instances", function () {
+                testTool.closeContractCheck(sandbox);
                 prepareWithChild();
 
                 director._init();
@@ -699,6 +701,7 @@ describe("use instance to batch draw calls", function(){
     });
 
     it("if no indices, drawArraysInstancedANGLE", function () {
+        testTool.closeContractCheck(sandbox);
         prepareWithoutChild();
         director._init();
 
