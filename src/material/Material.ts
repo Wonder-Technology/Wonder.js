@@ -195,6 +195,7 @@ module wd {
             }
 
 
+            //todo move to shader->update?
             shader.mapManager.bindAndUpdate();
 
             shader.update(quadCmd, this);

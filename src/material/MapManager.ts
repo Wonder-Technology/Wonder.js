@@ -23,9 +23,10 @@ module wd{
         private _commonMapController:CommonMapController = null;
 
         public initWhenCreate(){
-            this._shadowMapController = ShadowMapController.create(this._material);
+            this._shadowMapController = ShadowMapController.create();
+            this._arrayMapController = ArrayMapController.create();
+
             this._envMapController = EnvMapController.create(this._material);
-            this._arrayMapController = ArrayMapController.create(this._material);
             this._commonMapController = CommonMapController.create(this._material);
         }
 

@@ -1,25 +1,25 @@
 module wd {
     export class TwoDShadowMapRenderTargetRenderer extends TwoDRenderTargetRenderer{
-        public static create(shadowMap:TwoDShadowMapTexture, light:DirectionLight) {
-            var obj = new this(shadowMap, light);
+        public static create(shadowMap:TwoDShadowMapTexture, light:DirectionLight, layer:string) {
+            var obj = new this(shadowMap, light, layer);
 
             obj.initWhenCreate();
 
             return obj;
         }
 
-        constructor(shadowMap:TwoDShadowMapTexture, light:DirectionLight){
+        constructor(shadowMap:TwoDShadowMapTexture, light:DirectionLight, layer:string){
             super(shadowMap);
 
             this._light = light;
+            this._layer = layer;
         }
-
-        public layer:string = null;
 
         protected texture:TwoDShadowMapTexture;
 
         private _light:DirectionLight = null;
-        //private _allShadowRenderList:wdCb.Collection<GameObject> = null;
+        private _layer:string = null;
+        private _mapManager:MapManager = MapManager.create(null);
 
         private _shadowMapRendererUtils:TwoDShadowMapRenderTargetRendererUtils = null;
 
@@ -30,6 +30,10 @@ module wd {
             //var self = this;
 
             this._shadowMapRendererUtils = TwoDShadowMapRenderTargetRendererUtils.create(this._light, this.texture);
+
+            if (!this._mapManager.hasTwoDShadowMap(this.texture)) {
+                this._mapManager.addTwoDShadowMap(this.texture);
+            }
 
             super.initWhenCreate();
             //
@@ -109,8 +113,7 @@ module wd {
         }
 
         protected getRenderList():wdCb.Collection<GameObject>{
-            //return Director.getInstance().scene.gameObjectScene.shadowRenderListForBuildShadowMap;
-            return Director.getInstance().scene.gameObjectScene.getComponent(ShadowManager).getShadowRenderListByLayer(this.layer);
+            return Director.getInstance().scene.gameObjectScene.getComponent(ShadowManager).getShadowRenderListByLayer(this._layer);
         }
 
         protected renderRenderer(renderer){
@@ -119,6 +122,13 @@ module wd {
 
         protected beforeRender(){
             this._shadowMapRendererUtils.beforeRender();
+
+            this._mapManager.bindAndUpdate();
+            /*! no need to send texture unit data
+            because glsl only bind one texture, and its unit is 0 defaultly
+
+             //this._mapManager.sendData();
+             */
         }
 
         protected afterRender(){
@@ -147,25 +157,6 @@ module wd {
             camera.init();
 
             return camera;
-        }
-
-        private _getAllShadowRenderList(){
-            var list = wdCb.Collection.create<GameObject>();
-            var find = (renderObject:GameObject) => {
-                if(renderObject.hasComponent(Geometry)){
-                    list.addChild(renderObject);
-                }
-
-                renderObject.forEach((child:GameObject) => {
-                    find(child);
-                })
-            };
-
-            this.getRenderList().forEach((renderObject:GameObject) => {
-                find(renderObject);
-            });
-
-            return list.removeRepeatItems();
         }
     }
 }

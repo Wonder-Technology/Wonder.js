@@ -63,7 +63,7 @@ module wd{
         }
 
         //todo refactor
-        //todo optimize
+        //todo optimize: only iterate children once if cast and receive
         public init() {
             var material:Material = null,
                 twoDShadowMapDataMap:wdCb.Hash<wdCb.Collection<TwoDShadowMapData>> = Director.getInstance().scene.gameObjectScene.getComponent(ShadowManager).twoDShadowMapDataMap;
@@ -86,14 +86,7 @@ module wd{
             let self = this;
 
             if (this.cast) {
-                let shader = this._createBuildShadowMapShader(this.entityObject),
-                twoDShadowMapDataListOfSelfLayer:wdCb.Collection<TwoDShadowMapData> =  twoDShadowMapDataMap.getChild(this.layer);
-
-                twoDShadowMapDataListOfSelfLayer.forEach(({shadowMap}) => {
-                    if (!shader.mapManager.hasTwoDShadowMap(shadowMap)) {
-                        shader.mapManager.addTwoDShadowMap(shadowMap);
-                    }
-                });
+                let shader = this._createBuildShadowMapShader(this.entityObject);
 
                 if (material) {
                     this._addBuildShadowMapShader(material, shader);

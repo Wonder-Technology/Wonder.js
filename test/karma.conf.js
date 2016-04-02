@@ -40,9 +40,9 @@
 
 
         'test/unit/renderer/*ShadowMapSpec.js',
-        //'test/unit/renderer/*ShadowMap_*Spec.js',
+        'test/unit/renderer/*ShadowMap_*Spec.js',
         'test/unit/**/instance_shadow*',
-        //'test/unit/**/instance_shadow_*',
+        'test/unit/**/instance_shadow_*',
         //'test/unit/**/instance/*',
         //'test/unit/**/instance_render*',
         //'test/unit/**/instance_space*',

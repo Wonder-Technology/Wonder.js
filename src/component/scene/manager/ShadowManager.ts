@@ -136,9 +136,7 @@ module wd{
 
             this._shadowMapManager.twoDShadowMapDataMap.forEach((twoDShadowMapDataList:wdCb.Collection<TwoDShadowMapData>, layer:string) => {
                 twoDShadowMapDataList.forEach(({shadowMap, light}) => {
-                    var renderer:TwoDShadowMapRenderTargetRenderer = TwoDShadowMapRenderTargetRenderer.create(shadowMap, light);
-
-                    renderer.layer = layer;
+                    var renderer:TwoDShadowMapRenderTargetRenderer = TwoDShadowMapRenderTargetRenderer.create(shadowMap, light, layer);
 
                     scene.addRenderTargetRenderer(renderer);
                 });

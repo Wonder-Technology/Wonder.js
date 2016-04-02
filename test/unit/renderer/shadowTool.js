@@ -71,8 +71,32 @@ var shadowTool = {
     getDefaultMapManager: function (obj){
         return obj.getComponent(wd.Geometry).material.getShader(wd.EShaderMapKey.DEFAULT).mapManager;
     },
-    getBuildShadowMapMapManager:function (obj){
-        return obj.getComponent(wd.Geometry).material.getShader(wd.EShaderMapKey.BUILD_SHADOWMAP).mapManager;
+    getBuildShadowMapRenderer: function(){
+        if(arguments.length === 0){
+            return wd.Director.getInstance().scene.gameObjectScene._renderTargetRendererList.getChild(0);
+        }
+        else if(arguments.length === 1){
+            var layer = arguments[0];
+
+            return wd.Director.getInstance().scene.gameObjectScene._renderTargetRendererList
+                .filter(function(rttRenderer){
+                    return rttRenderer._layer === layer;
+                })
+                .getChild(0);
+        }
+        else if(arguments.length === 2){
+            var layer = arguments[0],
+                light = arguments[1].getComponent(wd.Light);
+
+            return wd.Director.getInstance().scene.gameObjectScene._renderTargetRendererList
+                .filter(function(rttRenderer){
+                    return rttRenderer._layer === layer && wd.JudgeUtils.isEqual(rttRenderer._light, light);
+                })
+                .getChild(0);
+        }
+    },
+    getBuildShadowMapMapManager:function (){
+        return this.getBuildShadowMapRenderer.apply(this, arguments)._mapManager;
     },
     setDrawShadowMapShaderAndProgramHelper:function (sandbox, obj, isNotStub){
         var shader = obj.getComponent(wd.Geometry).material.shader;

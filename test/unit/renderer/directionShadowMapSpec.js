@@ -139,43 +139,57 @@ describe("direction shadow map", function() {
                     expect(program.sendUniformData.withArgs("u_pMatrix")).toCalledBefore(program.sendUniformData.withArgs("u_vpMatrixFromLight"));
                     expect(program.sendAttributeData.withArgs("a_position")).toCalledBefore(program.sendUniformData.withArgs("u_vpMatrixFromLight"));
                 });
-                it("only bind and send shadow map, not bind or send other map", function () {
+                it("only bind shadow map, not send shadow map unit(because glsl only bind one texture, and its unit is 0 defaultly)", function () {
                     director._init();
 
                     var material = sphere.getComponent(wd.Geometry).material;
-                    var diffuseMap = material.diffuseMap;
-                    var shadowMap = shadowTool.getBuildShadowMapMapManager(sphere).getTwoDShadowMapList().getChild(0);
+                    var shadowMap = shadowTool.getBuildShadowMapMapManager().getTwoDShadowMapList().getChild(0);
 
                     sandbox.stub(shadowMap, "bindToUnit");
-                    sandbox.stub(diffuseMap, "bindToUnit");
 
                     sandbox.stub(shadowMap, "sendData");
-                    sandbox.stub(diffuseMap, "sendData");
 
 
                     director.scene.gameObjectScene.render(renderer);
 
 
                     expect(shadowMap.bindToUnit).toCalledOnce();
-                    expect(diffuseMap.bindToUnit).not.toCalled();
-                    expect(shadowMap.sendData).toCalledOnce();
-                    expect(diffuseMap.sendData).not.toCalled();
+                    expect(shadowMap.sendData).not.toCalled();
                 });
 
-                it("test send shadowMap data", function () {
-                    setBuildShadowMapShaderAndProgram(sphere, function (program) {
-                        sandbox.stub(program, "sendAttributeData");
-                        sandbox.stub(program, "sendUniformData");
-                    });
-
-
+                it("not bind or send other map", function () {
                     director._init();
+
+                    var material = sphere.getComponent(wd.Geometry).material;
+                    var diffuseMap = material.diffuseMap;
+
+                    sandbox.stub(diffuseMap, "bindToUnit");
+
+                    sandbox.stub(diffuseMap, "sendData");
+
 
                     director.scene.gameObjectScene.render(renderer);
 
 
-                    expect(program.sendUniformData.withArgs("u_twoDShadowMapSampler[0]")).toCalledOnce();
+                    expect(diffuseMap.bindToUnit).not.toCalled();
+                    expect(diffuseMap.sendData).not.toCalled();
                 });
+                //
+                //
+                //it("test send shadowMap data", function () {
+                //    setBuildShadowMapShaderAndProgram(sphere, function (program) {
+                //        sandbox.stub(program, "sendAttributeData");
+                //        sandbox.stub(program, "sendUniformData");
+                //    });
+                //
+                //
+                //    director._init();
+                //
+                //    director.scene.gameObjectScene.render(renderer);
+                //
+                //
+                //    expect(program.sendUniformData.withArgs("u_twoDShadowMapSampler[0]")).toCalledOnce();
+                //});
             });
 
             it("if not cast shadow, not render to build shadow map", function () {
@@ -442,7 +456,7 @@ describe("direction shadow map", function() {
         it("the binded shadowMap when build shadow map and the binded shadowMap when draw based on shadow map are the same one", function () {
             director._init();
 
-            var shadowMap = shadowTool.getBuildShadowMapMapManager(sphere).getTwoDShadowMapList().getChild(0);
+            var shadowMap = shadowTool.getBuildShadowMapMapManager().getTwoDShadowMapList().getChild(0);
 
             sandbox.stub(shadowMap, "bindToUnit");
 
@@ -461,17 +475,22 @@ describe("direction shadow map", function() {
         describe("test shadow layer", function(){
             var shadow1,shadow2,shadow3;
             var sphere2,sphere3;
+            var layer1,layer2,layer3;
 
             beforeEach(function(){
                 testTool.openContractCheck(sandbox);
 
+                layer1 = "layer1";
+                layer2 = "layer2";
+                layer3 = layer2;
+
                 shadow1 = sphere.getComponent(wd.Shadow);
-                shadow1.layer = "layer1";
+                shadow1.layer = layer1;
 
                 sphere2 = shadowTool.createSphere();
                 sphere2.name = "sphere2";
                 shadow2 = sphere2.getComponent(wd.Shadow);
-                shadow2.layer = "layer2";
+                shadow2.layer = layer2;
 
                 director.scene.addChild(sphere2);
 
@@ -479,7 +498,7 @@ describe("direction shadow map", function() {
                 sphere3 = shadowTool.createSphere();
                 sphere3.name = "sphere3";
                 shadow3 = sphere3.getComponent(wd.Shadow);
-                shadow3.layer = "layer2";
+                shadow3.layer = layer3;
 
 
                 director.scene.addChild(sphere3);
@@ -502,9 +521,9 @@ describe("direction shadow map", function() {
             it("each shadow layer has one shadow map", function () {
                 director._init();
 
-                var shadowMap1 = shadowTool.getBuildShadowMapMapManager(sphere).getTwoDShadowMapList().getChild(0);
-                var shadowMap2 = shadowTool.getBuildShadowMapMapManager(sphere2).getTwoDShadowMapList().getChild(0);
-                var shadowMap3 = shadowTool.getBuildShadowMapMapManager(sphere3).getTwoDShadowMapList().getChild(0);
+                var shadowMap1 = shadowTool.getBuildShadowMapMapManager(layer1).getTwoDShadowMapList().getChild(0);
+                var shadowMap2 = shadowTool.getBuildShadowMapMapManager(layer2).getTwoDShadowMapList().getChild(0);
+                var shadowMap3 = shadowTool.getBuildShadowMapMapManager(layer3).getTwoDShadowMapList().getChild(0);
 
                 expect(shadowMap1 !== shadowMap2).toBeTruthy();
                 expect(shadowMap2 === shadowMap3).toBeTruthy();
@@ -518,9 +537,8 @@ describe("direction shadow map", function() {
                 it("bind the shadow map of self layer when build shadow map", function () {
                     director._init();
 
-                    var shadowMap1 = shadowTool.getBuildShadowMapMapManager(sphere).getTwoDShadowMapList().getChild(0);
-                    var shadowMap2 = shadowTool.getBuildShadowMapMapManager(sphere2).getTwoDShadowMapList().getChild(0);
-                    var shadowMap3 = shadowTool.getBuildShadowMapMapManager(sphere3).getTwoDShadowMapList().getChild(0);
+                    var shadowMap1 = shadowTool.getBuildShadowMapMapManager(layer1).getTwoDShadowMapList().getChild(0);
+                    var shadowMap2 = shadowTool.getBuildShadowMapMapManager(layer2).getTwoDShadowMapList().getChild(0);
 
                     sandbox.stub(shadowMap1, "bindToUnit");
                     sandbox.stub(shadowMap2, "bindToUnit");
@@ -530,7 +548,7 @@ describe("direction shadow map", function() {
 
 
                     expect(shadowMap1.bindToUnit).toCalledOnce();
-                    expect(shadowMap2.bindToUnit).toCalledTwice();
+                    expect(shadowMap2.bindToUnit).toCalledOnce();
                 });
             });
 
@@ -560,7 +578,7 @@ describe("direction shadow map", function() {
                     renderer.render();
 
                     expect(shadowMap1.bindToUnit.callCount).toEqual(1 + 3);
-                    expect(shadowMap2.bindToUnit.callCount).toEqual(2 + 3);
+                    expect(shadowMap2.bindToUnit.callCount).toEqual(1 + 3);
                 });
                 it("should send shadow map data", function () {
                     director._init();
@@ -596,7 +614,6 @@ describe("direction shadow map", function() {
                 it("fs glsl should define TWOD_SHADOWMAP_COUNT", function () {
                     director._init();
 
-                    //setDrawShadowMapShaderAndProgram();
                     var data1 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
                     var shader1 = data1.shader;
 
@@ -626,6 +643,47 @@ describe("direction shadow map", function() {
                     director.scene.addChild(light2);
                 });
 
+                it("each light and each shadow layer has one shadow map", function(){
+                    director._init();
+
+                    var shadowMap11 = shadowTool.getBuildShadowMapMapManager(layer1, light).getTwoDShadowMapList().getChild(0);
+                    var shadowMap12 = shadowTool.getBuildShadowMapMapManager(layer1,light2).getTwoDShadowMapList().getChild(0);
+
+                    var shadowMap21 = shadowTool.getBuildShadowMapMapManager(layer2, light).getTwoDShadowMapList().getChild(0);
+                    var shadowMap22 = shadowTool.getBuildShadowMapMapManager(layer2, light2).getTwoDShadowMapList().getChild(0);
+
+                    var shadowMap31 = shadowTool.getBuildShadowMapMapManager(layer3, light).getTwoDShadowMapList().getChild(0);
+                    var shadowMap32 = shadowTool.getBuildShadowMapMapManager(layer3, light2).getTwoDShadowMapList().getChild(0);
+
+                    expect(shadowMap11 !== shadowMap21).toBeTruthy();
+                    expect(shadowMap12 !== shadowMap22).toBeTruthy();
+
+                    expect(shadowMap21 === shadowMap31).toBeTruthy();
+                    expect(shadowMap22 === shadowMap32).toBeTruthy();
+
+                    [shadowMap11, shadowMap12, shadowMap21, shadowMap22].forEach(function(shadowMap){
+                        sandbox.stub(shadowMap, "bindToUnit");
+                    });
+
+
+                    director.scene.gameObjectScene.render(renderer);
+
+
+                    expect(shadowMap11.bindToUnit).toCalledOnce();
+                    expect(shadowMap12.bindToUnit).toCalledOnce();
+
+                    expect(shadowMap21.bindToUnit).toCalledOnce();
+                    expect(shadowMap22.bindToUnit).toCalledOnce();
+
+                    renderer.render();
+
+
+                    expect(shadowMap11.bindToUnit.callCount).toEqual(1 + 3);
+                    expect(shadowMap12.bindToUnit.callCount).toEqual(1 + 3);
+
+                    expect(shadowMap21.bindToUnit.callCount).toEqual(1 + 3);
+                    expect(shadowMap22.bindToUnit.callCount).toEqual(1 + 3);
+                });
                 it("fs glsl should define TWOD_SHADOWMAP_COUNT", function () {
                     director._init();
 
@@ -654,7 +712,7 @@ describe("direction shadow map", function() {
 
             function judgeShadowMapCount(object, count){
                 expect(shadowTool.getDefaultMapManager(object).getTwoDShadowMapList().getCount()).toEqual(count);
-                expect(shadowTool.getBuildShadowMapMapManager(object).getTwoDShadowMapList().getCount()).toEqual(count);
+                expect(shadowTool.getBuildShadowMapMapManager(wd.EShadowLayer.DEFAULT).getTwoDShadowMapList().getCount()).toEqual(count);
             }
 
             beforeEach(function () {
@@ -710,18 +768,18 @@ describe("direction shadow map", function() {
 
             it("all objects should share the one shadowMap", function () {
                 director._init();
-                var shadowMap = shadowTool.getBuildShadowMapMapManager(sphere).getTwoDShadowMapList().getChild(0);
+                var shadowMap = shadowTool.getBuildShadowMapMapManager().getTwoDShadowMapList().getChild(0);
                 sandbox.stub(shadowMap, "bindToUnit");
 
 
                 director.scene.gameObjectScene.render(renderer);
 
-                expect(shadowMap.bindToUnit.callCount).toEqual(3);
+                expect(shadowMap.bindToUnit.callCount).toEqual(1);
 
 
                 renderer.render();
 
-                expect(shadowMap.bindToUnit.callCount).toEqual(6);
+                expect(shadowMap.bindToUnit.callCount).toEqual(1 + 3);
             });
 
             it("all objects should be drawed only twice(one for build shadow map, one for draw based on shadow map)", function(){

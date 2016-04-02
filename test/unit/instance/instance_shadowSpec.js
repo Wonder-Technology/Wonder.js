@@ -246,7 +246,7 @@ describe("instance with shadow", function () {
 
                 instanceArr.forEach(function (instance) {
                     expect(shadowTool.getDefaultMapManager(instance).getTwoDShadowMapList().getCount()).toEqual(1);
-                    expect(shadowTool.getBuildShadowMapMapManager(instance).getTwoDShadowMapList().getCount()).toEqual(1);
+                    expect(shadowTool.getBuildShadowMapMapManager().getTwoDShadowMapList().getCount()).toEqual(1);
                 });
             });
 
@@ -335,10 +335,9 @@ describe("instance with shadow", function () {
 
                     director._init();
 
-                    var shadowMap1 = shadowTool.getBuildShadowMapMapManager(sphere1).getTwoDShadowMapList().getChild(0);
-                    var shadowMap2 = shadowTool.getBuildShadowMapMapManager(sphere1Instance1).getTwoDShadowMapList().getChild(0);
+                    var shadowMap1 = shadowTool.getBuildShadowMapMapManager("layer1").getTwoDShadowMapList().getChild(0);
 
-                    expect(shadowMap1 === shadowMap2).toBeTruthy();
+                    expect(shadowTool.getBuildShadowMapRenderer("layer2")).toBeUndefined();
 
                     sandbox.stub(shadowMap1, "bindToUnit");
 
@@ -346,11 +345,11 @@ describe("instance with shadow", function () {
                     director.scene.gameObjectScene.render(renderer);
 
 
-                    expect(shadowMap1.bindToUnit).toCalledTwice();
+                    expect(shadowMap1.bindToUnit).toCalledOnce();
 
                     renderer.render();
 
-                    expect(shadowMap1.bindToUnit.callCount).toEqual(2 + 3);
+                    expect(shadowMap1.bindToUnit.callCount).toEqual(1 + 3);
                 });
 
                 //describe("test draw based on shadow map", function(){

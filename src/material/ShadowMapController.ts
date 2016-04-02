@@ -1,7 +1,7 @@
 module wd{
     export class ShadowMapController extends MapController{
-        public static create(material:Material) {
-            var obj = new this(material);
+        public static create() {
+            var obj = new this(null);
 
             return obj;
         }

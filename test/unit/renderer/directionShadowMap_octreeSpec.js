@@ -268,10 +268,10 @@ describe("direction shadow map with octree", function() {
                 expect(twoDShadowMapList2.getCount()).toEqual(1);
 
 
-                var shadowMap1 = shadowTool.getBuildShadowMapMapManager(sphere).getTwoDShadowMapList().getChild(0);
-                var shadowMap2 = shadowTool.getBuildShadowMapMapManager(sphere2).getTwoDShadowMapList().getChild(0);
+                var shadowMap1 = shadowTool.getBuildShadowMapMapManager().getTwoDShadowMapList().getChild(0);
+                //var shadowMap2 = shadowTool.getBuildShadowMapMapManager().getTwoDShadowMapList().getChild(0);
 
-                expect(shadowMap1 === shadowMap2).toBeTruthy();
+                expect(shadowTool.getBuildShadowMapMapManager().getTwoDShadowMapList().getCount()).toEqual(1);
 
                 sandbox.stub(shadowMap1, "bindToUnit");
 
@@ -279,7 +279,7 @@ describe("direction shadow map with octree", function() {
                 director.scene.gameObjectScene.render(renderer);
 
 
-                expect(shadowMap1.bindToUnit).toCalledTwice();
+                expect(shadowMap1.bindToUnit).toCalledOnce();
 
 
 
@@ -287,7 +287,7 @@ describe("direction shadow map with octree", function() {
 
 
 
-                expect(shadowMap1.bindToUnit.callCount).toEqual(2 + 2);
+                expect(shadowMap1.bindToUnit.callCount).toEqual(1 + 2);
             });
         });
     });
