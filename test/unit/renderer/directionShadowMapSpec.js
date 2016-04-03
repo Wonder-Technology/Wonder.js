@@ -2,6 +2,8 @@ describe("direction shadow map", function() {
     var sandbox = null;
     var shadow = null;
 
+    var deviceManager;
+
     var director;
     var sphere;
     var light;
@@ -15,8 +17,9 @@ describe("direction shadow map", function() {
         testTool.clearInstance();
         director = wd.Director.getInstance();
 
+        deviceManager = wd.DeviceManager.getInstance();
 
-        sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+        sandbox.stub(deviceManager, "gl", testTool.buildFakeGl(sandbox));
 
         renderer = wd.WebGLRenderer.create();
     });
@@ -273,6 +276,64 @@ describe("direction shadow map", function() {
                 //
                 //    expect(program.sendUniformData.withArgs("u_twoDShadowMapSampler[0]")).toCalledOnce();
                 //});
+
+
+
+                describe("set webgl effect", function(){
+                    var gl;
+
+                    beforeEach(function(){
+                        gl = deviceManager.gl;
+                    });
+
+                    it("set side by each object's material", function () {
+                        gl.CULL_FACE = "CULL_FACE";
+                        gl.FRONT_AND_BACK = "FRONT_AND_BACK";
+
+                        director._init();
+
+                        var material = sphere.getComponent(wd.Geometry).material;
+                        material.side = wd.ESide.NONE;
+
+
+
+                        director.scene.gameObjectScene.render(renderer);
+
+
+                        expect(gl.enable).toCalledWith("CULL_FACE");
+                        expect(gl.cullFace).toCalledWith("FRONT_AND_BACK");
+                    });
+                    it("set blend to be false", function () {
+                        gl.BLEND = "BLEND";
+
+                        director._init();
+
+                        var material = sphere.getComponent(wd.Geometry).material;
+
+                        material.blend = true;
+
+                        deviceManager.blend = true;
+
+
+                        director.scene.gameObjectScene.render(renderer);
+
+
+                        expect(gl.disable.withArgs("BLEND")).toCalledTwice();
+                        expect(gl.enable.withArgs("BLEND")).not.toCalledTwice();
+                    });
+                    it("not set other webgl effect", function () {
+                        director._init();
+
+                        var material = sphere.getComponent(wd.Geometry).material;
+
+                        material.redWrite = false;
+
+
+                        director.scene.gameObjectScene.render(renderer);
+
+                        expect(gl.colorMask.withArgs(false, true, true, true)).not.toCalled();
+                    });
+                });
             });
 
             it("if not cast shadow, not render to build shadow map", function () {
@@ -787,6 +848,15 @@ describe("direction shadow map", function() {
                     expect(glslTool.contain(shader2.fsSource, "TWOD_SHADOWMAP_COUNT 4")).toBeTruthy();
                     expect(glslTool.contain(shader3.fsSource, "TWOD_SHADOWMAP_COUNT 4")).toBeTruthy();
                 });
+            });
+        });
+
+        describe("test with model", function(){
+            beforeEach(function(){
+
+            });
+
+            describe("test build shadow map", function(){
             });
         });
 

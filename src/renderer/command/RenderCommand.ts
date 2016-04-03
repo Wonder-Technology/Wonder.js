@@ -1,5 +1,6 @@
 module wd {
     export abstract class RenderCommand {
+        public effect:Effect = null;
         public drawMode:EDrawMode = EDrawMode.TRIANGLES;
         public blend:boolean = false;
 

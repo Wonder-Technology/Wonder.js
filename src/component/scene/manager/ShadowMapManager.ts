@@ -58,7 +58,6 @@ module wd {
 
         @require(function(){
             assert(!this._layerList.hasRepeatItems(), Log.info.FUNC_SHOULD_NOT("has repeat shadow layer"));
-            assert(this._layerList.getCount() > 0, Log.info.FUNC_SHOULD("layerList.getCount()", "> 0"))
         })
         private _addTwoDShadowMapDataiWithLayer(light:DirectionLight){
             this._layerList.forEach((layer:string) => {

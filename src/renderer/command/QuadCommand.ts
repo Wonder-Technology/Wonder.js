@@ -34,37 +34,5 @@ module wd {
         }
 
         protected abstract draw(material:Material):void;
-
-        @require(function(material:Material){
-            if(material.blendFuncSeparate && material.blendEquationSeparate){
-            }
-            else{
-                assert(!!material.blendSrc && !!material.blendDst && !!material.blendEquation, wdCb.Log.info.FUNC_MUST("material.blendSrc && material.blendDst && material.blendEquation", "be set"));
-            }
-        })
-        protected setEffects(material:Material){
-            var deviceManager = DeviceManager.getInstance();
-
-            deviceManager.setColorWrite(material.redWrite, material.greenWrite, material.blueWrite, material.alphaWrite);
-            deviceManager.polygonOffsetMode = material.polygonOffsetMode;
-
-            deviceManager.side = this._getSide();
-
-            deviceManager.blend = material.blend;
-            if(material.blendFuncSeparate && material.blendEquationSeparate){
-                deviceManager.setBlendFuncSeparate(material.blendFuncSeparate);
-                deviceManager.setBlendEquationSeparate(material.blendEquationSeparate);
-            }
-            else{
-                deviceManager.setBlendFunc(material.blendSrc, material.blendDst);
-                deviceManager.setBlendEquation(material.blendEquation);
-            }
-        }
-
-        private _getSide(){
-            var scene:SceneDispatcher = Director.getInstance().scene;
-
-            return scene.side ? scene.side : this.material.side;
-        }
     }
 }

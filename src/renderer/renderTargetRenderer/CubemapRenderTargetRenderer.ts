@@ -70,6 +70,7 @@ module wd {
                 });
 
                 renderer.clear();
+                renderer.effect = BasicEffect.create();
                 renderer.render();
             }
 

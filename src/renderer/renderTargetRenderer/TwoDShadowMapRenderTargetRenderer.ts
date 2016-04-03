@@ -117,6 +117,7 @@ module wd {
         }
 
         protected renderRenderer(renderer){
+            renderer.effect = BuildShadowMapEffect.create();
             renderer.render();
         }
 

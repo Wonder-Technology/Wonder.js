@@ -19,6 +19,7 @@ module wd {
         }
 
         protected renderRenderer(renderer){
+            renderer.effect = BasicEffect.create();
             renderer.render();
         }
 

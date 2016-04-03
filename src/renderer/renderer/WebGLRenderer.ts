@@ -7,16 +7,17 @@ module wd{
         }
 
         private _commandQueue:wdCb.Collection<RenderCommand> = wdCb.Collection.create<RenderCommand>();
+
         private _clearOptions:any = {
             color:Color.create("#000000")
         };
 
+        @ensure(function(){
+            assert(!this._commandQueue.hasRepeatItems(), Log.info.FUNC_SHOULD_NOT("has duplicate render command"));
+        })
         public addCommand(command:RenderCommand){
-            if(this._commandQueue.hasChild(command)){
-                return;
-            }
-
             this._commandQueue.addChild(command);
+
             command.init();
         }
 
@@ -28,22 +29,28 @@ module wd{
             DeviceManager.getInstance().clear(this._clearOptions);
         }
 
+        @require(function(){
+            assert(!!this.effect, Log.info.FUNC_MUST_DEFINE("effect"));
+        })
         public render(){
-            var deviceManager = DeviceManager.getInstance(),
-                transparentCommands = [];
+            var deviceManager:DeviceManager = DeviceManager.getInstance(),
+                effect:Effect = this.effect,
+                transparentCommands:Array<RenderCommand> = [];
 
             this._commandQueue.forEach((command:RenderCommand) => {
+                command.effect = effect;
+
                 if(command.blend){
                     transparentCommands.push(command);
                 }
                 else{
                     command.execute();
                 }
-            });
+            }, this);
 
             if(transparentCommands.length > 0){
                 deviceManager.depthWrite = false;
-                this._renderSortedTransparentCommands(transparentCommands);
+                this._renderSortedTransparentCommands(<Array<QuadCommand>>transparentCommands);
                 deviceManager.depthWrite = true;
             }
 
@@ -54,6 +61,7 @@ module wd{
             }
 
             this._clearCommand();
+            this.effect = null;
         }
 
         public init(){

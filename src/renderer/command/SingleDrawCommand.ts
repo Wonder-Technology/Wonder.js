@@ -32,7 +32,7 @@ module wd {
             var vertexBuffer:ArrayBuffer = null,
                 indexBuffer:ElementBuffer = this.buffers.getChild(EBufferDataType.INDICE);
 
-            this.setEffects(material);
+            this.effect.setEffect(material);
 
             if(indexBuffer){
                 this.drawElements(indexBuffer);
