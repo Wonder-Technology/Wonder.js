@@ -31,7 +31,7 @@ module wd{
 
                     return self._createLoadAllAssetsStream(url, json);
                 })
-                .takeLast()
+                .lastOrDefault()
                 .map(() => {
                     return GLTFAssembler.create().build(GLTFParser.create().parse(jsonData, self._arrayBufferMap, self._imageMap));
                 });

@@ -25,9 +25,9 @@ module wd {
                 .flatMap((json:WDFileJsonData) => {
                     self._parseData = WDParser.create().parse(json);
 
-                    return this._createLoadMapStream(url, self._parseData)
+                    return self._createLoadMapStream(url, self._parseData);
                 })
-                .takeLast()
+                .lastOrDefault()
                 .map(() => {
                     return WDBuilder.create().build(self._parseData);
                 });

@@ -8,8 +8,8 @@ describe("loader", function () {
         sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
     });
     afterEach(function () {
-        testTool.clearInstance();
         manager.dispose();
+        testTool.clearInstance();
         sandbox.restore();
     });
 
@@ -374,7 +374,7 @@ describe("loader", function () {
                 done();
             });
         });
-        it("currentLoadedCount should equal wd files' count, not contain the material images' count", function (done) {
+        it("currentLoadedCount should equal wd files' count, not contain the material textures' count", function (done) {
             var current =[],
                 total = [];
 
@@ -393,7 +393,7 @@ describe("loader", function () {
                 done();
             });
         });
-        it("save material image asset in TextureLoader and LoaderManager", function (done) {
+        it("save material texture asset in TextureLoader and LoaderManager", function (done) {
             wd.LoaderManager.getInstance().load([
                 {url: testTool.resPath + "test/res/wd/test.wd", id: "sceneModel"}
             ]).subscribe(function (data) {
@@ -427,6 +427,21 @@ describe("loader", function () {
                 var sceneModel2 = wd.LoaderManager.getInstance().get("sceneModel2");
 
                 expect(sceneModel2.getChild("models").getChild(0).name).toEqual("b");
+
+                done();
+            });
+        });
+        it("support load the wd file which has no texture", function (done) {
+            wd.LoaderManager.getInstance().load([
+                {url: testTool.resPath + "test/res/wd/test3.wd", id: "sceneModel"}
+            ]).subscribe(function (data) {
+            }, function (err) {
+                expect().toFail(err.message);
+                done();
+            }, function () {
+                var sceneModel = wd.LoaderManager.getInstance().get("sceneModel");
+
+                expect(sceneModel.getChild("models").getChild(0).name).toEqual("c");
 
                 done();
             });
