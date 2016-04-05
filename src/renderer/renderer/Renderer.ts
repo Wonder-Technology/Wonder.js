@@ -1,11 +1,11 @@
 module wd{
     export abstract class Renderer{
-        private _effect:Effect = null;
-        get effect(){
-            return this._effect ? this._effect : BasicEffect.create();
+        private _webglState:WebGLState = null;
+        get webglState(){
+            return this._webglState ? this._webglState : BasicState.create();
         }
-        set effect(effect:Effect){
-            this._effect = effect;
+        set webglState(webglState:WebGLState){
+            this._webglState = webglState;
         }
 
         public skyboxCommand:QuadCommand = null;

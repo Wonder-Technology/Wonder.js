@@ -330,9 +330,9 @@
 /// <reference path="renderer/renderer/Renderer"/>
 /// <reference path="renderer/renderer/WebGLRenderer"/>
 
-/// <reference path="renderer/effect/Effect"/>
-/// <reference path="renderer/effect/BasicEffect"/>
-/// <reference path="renderer/effect/BuildShadowMapEffect"/>
+/// <reference path="renderer/state/WebGLState"/>
+/// <reference path="renderer/state/BasicState"/>
+/// <reference path="renderer/state/BuildShadowMapState"/>
 
 /// <reference path="renderer/EDrawMode"/>
 /// <reference path="renderer/buffer/EBufferType"/>

@@ -212,7 +212,7 @@ module wd{
             this.renderer.clear();
 
             if(this.renderer.hasCommand()){
-                this.renderer.effect = BasicEffect.create();
+                this.renderer.webglState = BasicState.create();
                 this.renderer.render();
             }
 

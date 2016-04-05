@@ -68,7 +68,7 @@ module wd {
             renderer.addCommand(this._createRenderCommand());
 
             renderer.clear();
-            renderer.effect = BasicEffect.create();
+            renderer.webglState = BasicState.create();
             renderer.render();
 
             this.frameBufferOperator.unBind();

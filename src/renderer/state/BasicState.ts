@@ -1,5 +1,5 @@
 module wd{
-    export class BasicEffect extends Effect{
+    export class BasicState extends WebGLState{
         public static create() {
         	var obj = new this();
 

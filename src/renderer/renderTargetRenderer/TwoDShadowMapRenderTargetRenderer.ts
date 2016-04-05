@@ -117,7 +117,7 @@ module wd {
         }
 
         protected renderRenderer(renderer){
-            renderer.effect = BuildShadowMapEffect.create();
+            renderer.webglState = BuildShadowMapState.create();
             renderer.render();
         }
 

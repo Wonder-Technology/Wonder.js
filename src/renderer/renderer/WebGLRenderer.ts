@@ -30,15 +30,15 @@ module wd{
         }
 
         @require(function(){
-            assert(!!this.effect, Log.info.FUNC_MUST_DEFINE("effect"));
+            assert(!!this.webglState, Log.info.FUNC_MUST_DEFINE("webglState"));
         })
         public render(){
             var deviceManager:DeviceManager = DeviceManager.getInstance(),
-                effect:Effect = this.effect,
+                webglState:WebGLState = this.webglState,
                 transparentCommands:Array<RenderCommand> = [];
 
             this._commandQueue.forEach((command:RenderCommand) => {
-                command.effect = effect;
+                command.webglState = webglState;
 
                 if(command.blend){
                     transparentCommands.push(command);
@@ -61,7 +61,7 @@ module wd{
             }
 
             this._clearCommand();
-            this.effect = null;
+            this.webglState = null;
         }
 
         public init(){

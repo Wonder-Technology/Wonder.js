@@ -70,7 +70,7 @@ module wd {
                 });
 
                 renderer.clear();
-                renderer.effect = BasicEffect.create();
+                renderer.webglState = BasicState.create();
                 renderer.render();
             }
 

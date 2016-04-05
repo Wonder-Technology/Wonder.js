@@ -21,7 +21,7 @@ module wd {
         }
         protected renderRenderer(renderer){
             this._setSceneSide(ESide.FRONT);
-            renderer.effect = BasicEffect.create();
+            renderer.webglState = BasicState.create();
             renderer.render();
             this._setSceneSide(null);
         }

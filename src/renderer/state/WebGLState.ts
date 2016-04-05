@@ -1,5 +1,5 @@
 module wd{
-    export abstract class Effect{
+    export abstract class WebGLState{
         public abstract setEffect(material:Material):void;
 
         protected getSide(material:Material){

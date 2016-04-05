@@ -1,5 +1,5 @@
 module wd{
-    export class BuildShadowMapEffect extends Effect{
+    export class BuildShadowMapState extends WebGLState{
         public static create() {
         	var obj = new this();
 

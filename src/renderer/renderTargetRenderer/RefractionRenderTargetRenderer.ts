@@ -19,7 +19,7 @@ module wd {
         }
 
         protected renderRenderer(renderer){
-            renderer.effect = BasicEffect.create();
+            renderer.webglState = BasicState.create();
             renderer.render();
         }
 
