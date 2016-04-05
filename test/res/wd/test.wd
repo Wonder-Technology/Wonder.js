@@ -2,7 +2,7 @@
                 "metadata" : {
                     formatVersion:"0.1.0",
                     description:"aaa",
-                    sourceFile:"b.wd",
+                    sourceFile:"test.wd",
                     generatedBy:"WDConverter"
                 },
 

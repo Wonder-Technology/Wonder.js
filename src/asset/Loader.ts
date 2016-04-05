@@ -1,5 +1,7 @@
 module wd{
     export abstract class Loader{
+        protected data:any = null;
+
         private _container:wdCb.Hash<string> = wdCb.Hash.create<string>();
 
         public load(url:string):wdFrp.Stream;
@@ -34,11 +36,28 @@ module wd{
             }
             else{
                 stream = this.loadAsset(url, id)
-                    .do((data) => {
-                        self._container.addChild(id, data);
-                    }, (err) => {
-                        self._errorHandle(url, err);
-                    }, null);
+                    .do(
+                    //    (data) => {
+                    //    //var a = 1;
+                    //    if(data === null){
+                    //        return;
+                    //    }
+                    //    //
+                        //    //self._container.addChild(id, data);
+                        //}
+                        null
+                        , (err) => {
+                            self._errorHandle(url, err);
+                        }, () => {
+                            if(self.data){
+                                self._container.addChild(id, self.data);
+                            }
+                        })
+                //.concat(
+                    //    wdFrp.callFunc((data)=> {
+                    //        self._container.addChild(id, self.data);
+                    //    })
+                    //)
             }
 
             return stream;

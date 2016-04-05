@@ -1,0 +1,38 @@
+            {
+                "metadata" : {
+                    formatVersion:"0.1.0",
+                    description:"aaa",
+                    sourceFile:"test2.wd",
+                    generatedBy:"WDConverter"
+                },
+
+                "scene":{
+                    ambientColor: [1.0, 0, 0.5]
+                },
+
+                "materials": {
+                    bb:{
+                        type: "LightMaterial",
+                        diffuseColor: [1.0, 0.1, 0],
+                        specularColor: [0.0, 0.1, 0],
+                        diffuseMapUrl: "1.jpg",
+                        specularMapUrl: "1.jpg",
+                        normalMapUrl: "1.jpg",
+                        shininess: 32,
+                        opacity: 1.0
+                    }
+                },
+
+                "objects":[
+                    {
+                        name:"b",
+                        material:"bb",
+                        vertices:[-1, 2, 1, 2, -3, 4, 2, 3, 4],
+                        morphTargets: [],
+                        colors: [0.1, 0.2, 0, 0.1, 0.2, 1, 0.1, 0.2, 1],
+                        uvs:[0.1,0.2,0.1,0.2, 0.1,0.2],
+                        verticeIndices:[0,1,2]
+            }
+            ]
+        }
+
