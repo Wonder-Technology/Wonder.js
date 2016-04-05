@@ -30,7 +30,7 @@ module wd{
             else{
                 let assetArr = args[0];
 
-                return wdFrp.fromArray(assetArr).flatMap((asset) => {
+                return wdFrp.fromArray(assetArr).concatMap((asset) => {
                     return self._createLoadMultiAssetStream(asset.type || EAssetType.UNKNOW, asset.url, asset.id);
                 });
             }
@@ -55,6 +55,10 @@ module wd{
             return loader ? loader.get(id) : null;
         }
 
+        public add(id:string, loader:Loader){
+            this._assetTable.addChild(id, loader);
+        }
+
         private _createLoadMultiAssetStream(type:EAssetType, url:string, id:string);
         private _createLoadMultiAssetStream(type:EAssetType, url:Array<string>, id:string);
 
@@ -70,21 +74,21 @@ module wd{
                 self.assetCount ++;
             }
 
-            return this._addToAssetTable(loader.load(url, id)
-                .map((data) => {
+            return loader.load(url, id)
+                .map(() => {
                     self.currentLoadedCount++;
 
                     return {
                         currentLoadedCount: self.currentLoadedCount,
                         assetCount:self.assetCount
                     }
-                }), id, loader);
+                });
         }
 
         private _createLoadSingleAssetStream(url, id){
             var loader = this._getLoader(EAssetType.UNKNOW, url);
 
-            return this._addToAssetTable(loader.load(url, id), id, loader);
+            return loader.load(url, id);
         }
 
         private _getLoader(type:EAssetType, url:string);
@@ -102,14 +106,6 @@ module wd{
             }
 
             return LoaderFactory.create(type, extname.toLowerCase());
-        }
-
-        private _addToAssetTable(loadStream:wdFrp.Stream, id:string, loader:Loader):wdFrp.Stream{
-            var self = this;
-
-            return loadStream.do(null, null, () => {
-                self._assetTable.addChild(id, loader);
-            });
         }
     }
 

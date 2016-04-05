@@ -14,140 +14,140 @@ describe("loader", function () {
     });
 
 
-    //describe("get asset", function(){
-    //    it("use LoaderManager.getInstance().get(id) to get loaded asset", function(done){
-    //        wd.LoaderManager.getInstance().load([
-    //            {url: testTool.resPath + "test/res/fragment.glsl", id: "a1"}
-    //        ]).subscribe(function(data){
-    //        }, function(err){
-    //        }, function(){
-    //            expect(manager.get("a1")).toEqual("test");
-    //
-    //            done();
-    //        });
-    //    });
-    //    it("use XXXLoader.getInstance().get(id) to get loaded asset", function(done){
-    //        wd.LoaderManager.getInstance().load([
-    //            {url: testTool.resPath + "test/res/fragment.glsl", id: "a1"}
-    //        ]).subscribe(function(data){
-    //        }, function(err){
-    //        }, function(){
-    //            expect(wd.GLSLLoader.getInstance().get("a1")).toEqual("test");
-    //
-    //            done();
-    //        });
-    //    });
-    //});
-    //
-    //it("load glsl", function(done){
-    //    var current = [],
-    //        total = [];
-    //
-    //    wd.LoaderManager.getInstance().load([
-    //        {url: testTool.resPath + "test/res/fragment.glsl", id: "a1"},
-    //        {url: testTool.resPath + "test/res/fragment.glsl", id: "a2"}
-    //    ]).subscribe(function(data){
-    //        current.push(data.currentLoadedCount);
-    //        total.push(data.assetCount);
-    //    }, function(err){
-    //    }, function(){
-    //        expect(current).toEqual([1, 2]);
-    //        expect(total).toEqual([2, 2]);
-    //
-    //        expect(wd.LoaderManager.getInstance().get("a1")).toEqual("test");
-    //        expect(wd.LoaderManager.getInstance().get("a2")).toEqual("test");
-    //
-    //        done();
-    //    });
-    //});
-    //
-    ////todo load pvr
-    //describe("load texture", function() {
-    //    it("load common texture", function (done) {
-    //        var current = [],
-    //            total = [];
-    //
-    //        wd.LoaderManager.getInstance().load([
-    //            {url: testTool.resPath + "test/res/1.jpg", id: "jpg"},
-    //            {url: testTool.resPath + "test/res/2.png", id: "png"}
-    //        ]).subscribe(function (data) {
-    //            current.push(data.currentLoadedCount);
-    //            total.push(data.assetCount);
-    //        }, function (err) {
-    //            console.log(err);
-    //            done();
-    //        }, function () {
-    //            expect(current).toEqual([1, 2]);
-    //            expect(total).toEqual([2, 2]);
-    //
-    //            var jpg = wd.LoaderManager.getInstance().get("jpg");
-    //            var png = wd.LoaderManager.getInstance().get("png");
-    //
-    //            expect(jpg).toBeInstanceOf(wd.ImageTextureAsset);
-    //            expect(jpg.format).toEqual(wd.ETextureFormat.RGB);
-    //            expect(png).toBeInstanceOf(wd.ImageTextureAsset);
-    //            expect(png.format).toEqual(wd.ETextureFormat.RGBA);
-    //
-    //            done();
-    //        });
-    //    });
-    //    it("load compressed texture", function (done) {
-    //        sandbox.stub(wd.GPUDetector.getInstance(), "extensionCompressedTextureS3TC", {
-    //            COMPRESSED_RGB_S3TC_DXT1_EXT: "COMPRESSED_RGB_S3TC_DXT1_EXT"
-    //        });
-    //
-    //        wd.LoaderManager.getInstance().load([
-    //            {url: testTool.resPath + "test/res/disturb_dxt1_mip.dds", id: "dds"}
-    //        ]).subscribe(function (data) {
-    //        }, function (err) {
-    //            console.log(err);
-    //            done();
-    //        }, function () {
-    //            var dds = wd.LoaderManager.getInstance().get("dds");
-    //
-    //            expect(dds).toBeInstanceOf(wd.CompressedTextureAsset);
-    //            expect(dds.format).toEqual("COMPRESSED_RGB_S3TC_DXT1_EXT");
-    //            expect(dds.mipmaps.getCount()).toEqual(10);
-    //            expect(dds.minFilter).toEqual(wd.ETextureFilterMode.LINEAR_MIPMAP_LINEAR);
-    //
-    //            done();
-    //        });
-    //    });
-    //});
-    //
-    //describe("load video", function(){
-    //    //todo load video in chrome sometime fail!!!?
-    //    //so now not test it
-    //
-    //    //it("test load success", function(done){
-    //    //    var current = [],
-    //    //        total = [];
-    //    //
-    //    //    wd.LoaderManager.getInstance().load([
-    //    //        {url: [testTool.resPath + "test/res/sintel.mp4",testTool.resPath + "test/res/sintel.ogv"], id: "video1"},
-    //    //        //{url: testTool.resPath + "test/res/kinect.webm", id: "video2"}
-    //    //        {url: testTool.resPath + "test/res/sintel.ogv", id: "video2"}
-    //    //    ]).subscribe(function(data){
-    //    //        current.push(data.currentLoadedCount);
-    //    //        total.push(data.assetCount);
-    //    //    }, function(err){
-    //    //        console.log(err);
-    //    //    }, function(){
-    //    //        expect(current).toEqual([1, 2]);
-    //    //        expect(total).toEqual([2, 2]);
-    //    //
-    //    //        expect(wd.LoaderManager.getInstance().get("video1")).toBeInstanceOf(wd.VideoTextureAsset);
-    //    //        expect(wd.LoaderManager.getInstance().get("video1").video).toBeInstanceOf(wd.Video);
-    //    //        expect(wd.LoaderManager.getInstance().get("video1").video.url).toEqual(testTool.resPath + "test/res/sintel.mp4");
-    //    //        expect(wd.LoaderManager.getInstance().get("video2")).toBeInstanceOf(wd.VideoTextureAsset);
-    //    //
-    //    //        done();
-    //    //    });
-    //    //});
-    //    //it("test load error", function(done){
-    //    //
-    //    //});
-    //});
+    describe("get asset", function(){
+        it("use LoaderManager.getInstance().get(id) to get loaded asset", function(done){
+            wd.LoaderManager.getInstance().load([
+                {url: testTool.resPath + "test/res/fragment.glsl", id: "a1"}
+            ]).subscribe(function(data){
+            }, function(err){
+            }, function(){
+                expect(manager.get("a1")).toEqual("test");
+
+                done();
+            });
+        });
+        it("use XXXLoader.getInstance().get(id) to get loaded asset", function(done){
+            wd.LoaderManager.getInstance().load([
+                {url: testTool.resPath + "test/res/fragment.glsl", id: "a1"}
+            ]).subscribe(function(data){
+            }, function(err){
+            }, function(){
+                expect(wd.GLSLLoader.getInstance().get("a1")).toEqual("test");
+
+                done();
+            });
+        });
+    });
+
+    it("load glsl", function(done){
+        var current = [],
+            total = [];
+
+        wd.LoaderManager.getInstance().load([
+            {url: testTool.resPath + "test/res/fragment.glsl", id: "a1"},
+            {url: testTool.resPath + "test/res/fragment.glsl", id: "a2"}
+        ]).subscribe(function(data){
+            current.push(data.currentLoadedCount);
+            total.push(data.assetCount);
+        }, function(err){
+        }, function(){
+            expect(current).toEqual([1, 2]);
+            expect(total).toEqual([2, 2]);
+
+            expect(wd.LoaderManager.getInstance().get("a1")).toEqual("test");
+            expect(wd.LoaderManager.getInstance().get("a2")).toEqual("test");
+
+            done();
+        });
+    });
+
+    //todo load pvr
+    describe("load texture", function() {
+        it("load common texture", function (done) {
+            var current = [],
+                total = [];
+
+            wd.LoaderManager.getInstance().load([
+                {url: testTool.resPath + "test/res/1.jpg", id: "jpg"},
+                {url: testTool.resPath + "test/res/2.png", id: "png"}
+            ]).subscribe(function (data) {
+                current.push(data.currentLoadedCount);
+                total.push(data.assetCount);
+            }, function (err) {
+                console.log(err);
+                done();
+            }, function () {
+                expect(current).toEqual([1, 2]);
+                expect(total).toEqual([2, 2]);
+
+                var jpg = wd.LoaderManager.getInstance().get("jpg");
+                var png = wd.LoaderManager.getInstance().get("png");
+
+                expect(jpg).toBeInstanceOf(wd.ImageTextureAsset);
+                expect(jpg.format).toEqual(wd.ETextureFormat.RGB);
+                expect(png).toBeInstanceOf(wd.ImageTextureAsset);
+                expect(png.format).toEqual(wd.ETextureFormat.RGBA);
+
+                done();
+            });
+        });
+        it("load compressed texture", function (done) {
+            sandbox.stub(wd.GPUDetector.getInstance(), "extensionCompressedTextureS3TC", {
+                COMPRESSED_RGB_S3TC_DXT1_EXT: "COMPRESSED_RGB_S3TC_DXT1_EXT"
+            });
+
+            wd.LoaderManager.getInstance().load([
+                {url: testTool.resPath + "test/res/disturb_dxt1_mip.dds", id: "dds"}
+            ]).subscribe(function (data) {
+            }, function (err) {
+                console.log(err);
+                done();
+            }, function () {
+                var dds = wd.LoaderManager.getInstance().get("dds");
+
+                expect(dds).toBeInstanceOf(wd.CompressedTextureAsset);
+                expect(dds.format).toEqual("COMPRESSED_RGB_S3TC_DXT1_EXT");
+                expect(dds.mipmaps.getCount()).toEqual(10);
+                expect(dds.minFilter).toEqual(wd.ETextureFilterMode.LINEAR_MIPMAP_LINEAR);
+
+                done();
+            });
+        });
+    });
+
+    describe("load video", function(){
+        //todo load video in chrome sometime fail!!!?
+        //so now not test it
+
+        //it("test load success", function(done){
+        //    var current = [],
+        //        total = [];
+        //
+        //    wd.LoaderManager.getInstance().load([
+        //        {url: [testTool.resPath + "test/res/sintel.mp4",testTool.resPath + "test/res/sintel.ogv"], id: "video1"},
+        //        //{url: testTool.resPath + "test/res/kinect.webm", id: "video2"}
+        //        {url: testTool.resPath + "test/res/sintel.ogv", id: "video2"}
+        //    ]).subscribe(function(data){
+        //        current.push(data.currentLoadedCount);
+        //        total.push(data.assetCount);
+        //    }, function(err){
+        //        console.log(err);
+        //    }, function(){
+        //        expect(current).toEqual([1, 2]);
+        //        expect(total).toEqual([2, 2]);
+        //
+        //        expect(wd.LoaderManager.getInstance().get("video1")).toBeInstanceOf(wd.VideoTextureAsset);
+        //        expect(wd.LoaderManager.getInstance().get("video1").video).toBeInstanceOf(wd.Video);
+        //        expect(wd.LoaderManager.getInstance().get("video1").video.url).toEqual(testTool.resPath + "test/res/sintel.mp4");
+        //        expect(wd.LoaderManager.getInstance().get("video2")).toBeInstanceOf(wd.VideoTextureAsset);
+        //
+        //        done();
+        //    });
+        //});
+        //it("test load error", function(done){
+        //
+        //});
+    });
 
     describe("load wd file", function(){
         var json;
@@ -357,22 +357,13 @@ describe("loader", function () {
         });
 
         it("load one obj file", function (done) {
-            var current =[],
-                total = [];
-
             wd.LoaderManager.getInstance().load([
                 {url: testTool.resPath + "test/res/wd/test.wd", id: "sceneModel"}
             ]).subscribe(function (data) {
-                current.push(data.currentLoadedCount);
-                total.push(data.assetCount);
             }, function (err) {
                 expect().toFail(err.message);
                 done();
             }, function () {
-                /*! 1(wd file) + 3(aa material->3 image) + 1(bb material->1 image) */
-                //expect(current).toEqual([1, 2, 3, 4, 5]);
-                //expect(total).toEqual([5, 5, 5, 5, 5]);
-
                 var sceneModel = wd.LoaderManager.getInstance().get("sceneModel");
 
                 assertMetadata(sceneModel);
@@ -402,7 +393,7 @@ describe("loader", function () {
                 done();
             });
         });
-        it("save material image asset in TextureLoader", function (done) {
+        it("save material image asset in TextureLoader and LoaderManager", function (done) {
             wd.LoaderManager.getInstance().load([
                 {url: testTool.resPath + "test/res/wd/test.wd", id: "sceneModel"}
             ]).subscribe(function (data) {
@@ -413,6 +404,7 @@ describe("loader", function () {
                 var loader = wd.TextureLoader.getInstance();
 
                 expect(loader.get("base/test/res/wd/1.jpg")).toEqual(jasmine.any(wd.ImageTextureAsset));
+                expect(wd.LoaderManager.getInstance().get("base/test/res/wd/1.jpg")).toEqual(jasmine.any(wd.ImageTextureAsset));
 
                 done();
             });
