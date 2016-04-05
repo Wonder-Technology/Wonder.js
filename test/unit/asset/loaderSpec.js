@@ -433,149 +433,169 @@ describe("loader", function () {
         });
     });
 
-    //describe("load gltf file", function(){
-    //    var json;
-    //
-    //    function assertMetadata(data){
-    //        expect(data.getChild("metadata").getChildren()).toEqual(json.metadata);
-    //    }
-    //
-    //    function assertObj(data){
-    //        var result = data;
-    //
-    //
-    //        var boxGeo = result.getChild("models").getChild(0).getChild(0).getComponent(wd.Geometry);
-    //
-    //        expect(boxGeo.vertices.length).toEqual(72);
-    //
-    //
-    //        var boxMat = boxGeo.material;
-    //
-    //        expect(boxMat.diffuseMap).toBeInstanceOf(wd.ImageTexture);
-    //        expect(boxMat.specularColor.r).toEqual(0.2)
-    //    }
-    //
-    //    beforeEach(function(){
-    //        json =
-    //        {
-    //            "metadata" : {
-    //                "generator": "collada2gltf@ceec062e3d5793f2f249f53cbd843aee382ad40b",
-    //                "premultipliedAlpha": true,
-    //                "profile": {
-    //                    "api": "WebGL",
-    //                    "version": "1.0.2"
-    //                },
-    //                "version": 1
-    //            }
-    //        }
-    //
-    //        sandbox.stub(wd.Log, "error");
-    //    });
-    //
-    //    it("test load metadata and buffer/image assets", function (done) {
-    //        wd.LoaderManager.getInstance().load([
-    //            {url: testTool.resPath + "test/res/gltf/boxTextured/glTF-MaterialsCommon/CesiumTexturedBoxTest.gltf", id: "sceneModel"}
-    //        ]).subscribe(function (data) {
-    //        }, function (err) {
-    //            expect().toFail(err.message);
-    //            done();
-    //        }, function () {
-    //            var sceneModel = wd.LoaderManager.getInstance().get("sceneModel");
-    //
-    //            assertMetadata(sceneModel);
-    //
-    //            assertObj(sceneModel);
-    //
-    //            done();
-    //        });
-    //    });
-    //});
-    //
-    //describe("load font asset", function(){
-    //    describe("plain font", function(){
-    //        beforeEach(function(){
-    //
-    //        });
-    //        afterEach(function(){
-    //            $("style").remove();
-    //        });
-    //
-    //        it("if browser support document.fonts api, it can ensure that the font is loaded", function(done) {
-    //            if(!document.fonts){
-    //                done();
-    //
-    //                return;
-    //            }
-    //
-    //            sandbox.spy(document.fonts, "load");
-    //
-    //            wd.LoaderManager.getInstance().load([
-    //                {type: wd.EAssetType.FONT, url: testTool.resPath + "test/res/font/Urdeutsch.ttf", id: "Urdeutsch"}
-    //            ]).subscribe(function (data) {
-    //            }, null, function () {
-    //                expect(document.fonts.load).toCalledOnce();
-    //
-    //                done();
-    //            });
-    //        });
-    //
-    //        describe("load .ttf", function(){
-    //            it("add style element with @font-face into body to load ttf font", function(done){
-    //                wd.LoaderManager.getInstance().load([
-    //                    {type: wd.EAssetType.FONT, url: testTool.resPath + "test/res/font/Urdeutsch.ttf", id: "Urdeutsch"}
-    //                ]).subscribe(function(data){
-    //                }, null, function(){
-    //                    expect($("style").length).toEqual(1);
-    //
-    //
-    //                    done();
-    //                });
-    //            });
-    //            it("dipose method should remove the added style element", function(done){
-    //                wd.LoaderManager.getInstance().load([
-    //                    {type: wd.EAssetType.FONT, url: testTool.resPath + "test/res/font/Urdeutsch.ttf", id: "Urdeutsch"}
-    //                ]).subscribe(function(data){
-    //                }, null, function(){
-    //                    expect($("style").length).toEqual(1);
-    //
-    //                    wd.LoaderManager.getInstance().dispose();
-    //
-    //                    expect($("style").length).toEqual(0);
-    //
-    //                    done();
-    //                });
-    //            });
-    //        });
-    //    });
-    //
-    //    describe("bitmap font", function(){
-    //        it("load and parse fnt file", function(done){
-    //            wd.LoaderManager.getInstance().load([
-    //                {url: testTool.resPath + "test/res/font/myFont.fnt", id: "myFont_fnt"}
-    //            ]).subscribe(function(data){
-    //            }, null, function(){
-    //                var fnt = wd.LoaderManager.getInstance().get("myFont_fnt");
-    //
-    //                expect(fnt.commonHeight).toEqual(90);
-    //                expect(fnt.atlasName).toEqual(testTool.resPath + "test/res/font/myFont.png");
-    //                expect(fnt.fontDefDictionary).toBeDefined();
-    //
-    //                done();
-    //            });
-    //        });
-    //        it("load bitmap file", function(done){
-    //            wd.LoaderManager.getInstance().load([
-    //                {url: testTool.resPath + "test/res/font/myFont.png", id: "myFont_image"}
-    //            ]).subscribe(function(data){
-    //            }, null, function(){
-    //                var bitmap = wd.LoaderManager.getInstance().get("myFont_image");
-    //
-    //                expect(bitmap).toBeInstanceOf(wd.ImageTextureAsset);
-    //                expect(bitmap.format).toEqual(wd.ETextureFormat.RGBA);
-    //
-    //                done();
-    //            });
-    //        });
-    //    });
-    //});
+    describe("load gltf file", function(){
+        var json;
+
+        function assertMetadata(data){
+            expect(data.getChild("metadata").getChildren()).toEqual(json.metadata);
+        }
+
+        function assertObj(data){
+            var result = data;
+
+
+            var boxGeo = result.getChild("models").getChild(0).getChild(0).getComponent(wd.Geometry);
+
+            expect(boxGeo.vertices.length).toEqual(72);
+
+
+            var boxMat = boxGeo.material;
+
+            expect(boxMat.diffuseMap).toBeInstanceOf(wd.ImageTexture);
+            expect(boxMat.specularColor.r).toEqual(0.2)
+        }
+
+        beforeEach(function(){
+            json =
+            {
+                "metadata" : {
+                    "generator": "collada2gltf@ceec062e3d5793f2f249f53cbd843aee382ad40b",
+                    "premultipliedAlpha": true,
+                    "profile": {
+                        "api": "WebGL",
+                        "version": "1.0.2"
+                    },
+                    "version": 1
+                }
+            }
+
+            sandbox.stub(wd.Log, "error");
+        });
+
+        it("test load metadata and buffer/image assets", function (done) {
+            wd.LoaderManager.getInstance().load([
+                {url: testTool.resPath + "test/res/gltf/boxTextured/glTF-MaterialsCommon/CesiumTexturedBoxTest.gltf", id: "sceneModel"}
+            ]).subscribe(function (data) {
+            }, function (err) {
+                expect().toFail(err.message);
+                done();
+            }, function () {
+                var sceneModel = wd.LoaderManager.getInstance().get("sceneModel");
+
+                assertMetadata(sceneModel);
+
+                assertObj(sceneModel);
+
+                done();
+            });
+        });
+        it("when load multi gltf files, each one should be independent", function (done) {
+            wd.LoaderManager.getInstance().load([
+                {url: testTool.resPath + "test/res/gltf/boxTextured/glTF-MaterialsCommon/CesiumTexturedBoxTest.gltf", id: "sceneModel1"},
+                {url: testTool.resPath + "test/res/gltf/box/glTF-MaterialsCommon/box.gltf", id: "sceneModel2"}
+            ]).subscribe(function (data) {
+            }, function (err) {
+                expect().toFail(err.message);
+                done();
+            }, function () {
+                var sceneModel1 = wd.LoaderManager.getInstance().get("sceneModel1");
+
+                expect(sceneModel1.getChild("models").getChild(0).name).toEqual("CesiumTexturedBox");
+
+                var sceneModel2 = wd.LoaderManager.getInstance().get("sceneModel2");
+
+                expect(sceneModel2.getChild("models").getChild(0).name).toEqual("box");
+
+                done();
+            });
+        });
+    });
+
+    describe("load font asset", function(){
+        describe("plain font", function(){
+            beforeEach(function(){
+
+            });
+            afterEach(function(){
+                $("style").remove();
+            });
+
+            it("if browser support document.fonts api, it can ensure that the font is loaded", function(done) {
+                if(!document.fonts){
+                    done();
+
+                    return;
+                }
+
+                sandbox.spy(document.fonts, "load");
+
+                wd.LoaderManager.getInstance().load([
+                    {type: wd.EAssetType.FONT, url: testTool.resPath + "test/res/font/Urdeutsch.ttf", id: "Urdeutsch"}
+                ]).subscribe(function (data) {
+                }, null, function () {
+                    expect(document.fonts.load).toCalledOnce();
+
+                    done();
+                });
+            });
+
+            describe("load .ttf", function(){
+                it("add style element with @font-face into body to load ttf font", function(done){
+                    wd.LoaderManager.getInstance().load([
+                        {type: wd.EAssetType.FONT, url: testTool.resPath + "test/res/font/Urdeutsch.ttf", id: "Urdeutsch"}
+                    ]).subscribe(function(data){
+                    }, null, function(){
+                        expect($("style").length).toEqual(1);
+
+
+                        done();
+                    });
+                });
+                it("dipose method should remove the added style element", function(done){
+                    wd.LoaderManager.getInstance().load([
+                        {type: wd.EAssetType.FONT, url: testTool.resPath + "test/res/font/Urdeutsch.ttf", id: "Urdeutsch"}
+                    ]).subscribe(function(data){
+                    }, null, function(){
+                        expect($("style").length).toEqual(1);
+
+                        wd.LoaderManager.getInstance().dispose();
+
+                        expect($("style").length).toEqual(0);
+
+                        done();
+                    });
+                });
+            });
+        });
+
+        describe("bitmap font", function(){
+            it("load and parse fnt file", function(done){
+                wd.LoaderManager.getInstance().load([
+                    {url: testTool.resPath + "test/res/font/myFont.fnt", id: "myFont_fnt"}
+                ]).subscribe(function(data){
+                }, null, function(){
+                    var fnt = wd.LoaderManager.getInstance().get("myFont_fnt");
+
+                    expect(fnt.commonHeight).toEqual(90);
+                    expect(fnt.atlasName).toEqual(testTool.resPath + "test/res/font/myFont.png");
+                    expect(fnt.fontDefDictionary).toBeDefined();
+
+                    done();
+                });
+            });
+            it("load bitmap file", function(done){
+                wd.LoaderManager.getInstance().load([
+                    {url: testTool.resPath + "test/res/font/myFont.png", id: "myFont_image"}
+                ]).subscribe(function(data){
+                }, null, function(){
+                    var bitmap = wd.LoaderManager.getInstance().get("myFont_image");
+
+                    expect(bitmap).toBeInstanceOf(wd.ImageTextureAsset);
+                    expect(bitmap.format).toEqual(wd.ETextureFormat.RGBA);
+
+                    done();
+                });
+            });
+        });
+    });
 });

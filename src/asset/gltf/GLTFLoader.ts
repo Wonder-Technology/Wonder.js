@@ -11,8 +11,6 @@ module wd{
             return this._instance;
         }
 
-        private _gltfAssembler:GLTFAssembler = GLTFAssembler.create();
-        private _gltfParser:GLTFParser = GLTFParser.create();
         private _arrayBufferMap:wdCb.Hash<any> = wdCb.Hash.create<any>();
         private _imageMap:wdCb.Hash<HTMLImageElement> = wdCb.Hash.create<HTMLImageElement>();
 
@@ -33,11 +31,10 @@ module wd{
 
                     return self._createLoadAllAssetsStream(url, json);
                 })
-                .concat(
-                    wdFrp.callFunc(()=> {
-                        return self._gltfAssembler.build(self._gltfParser.parse(jsonData, self._arrayBufferMap, self._imageMap));
-                    })
-                )
+                .takeLast()
+                .map(() => {
+                    return GLTFAssembler.create().build(GLTFParser.create().parse(jsonData, self._arrayBufferMap, self._imageMap));
+                });
         }
 
         private _createLoadAllAssetsStream(url:string, json:IGLTFJsonData):wdFrp.Stream{

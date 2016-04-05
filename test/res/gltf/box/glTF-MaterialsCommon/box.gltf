@@ -51,7 +51,7 @@
             "componentType": 5126,
             "count": 24,
             "max": [
-                6,
+                1,
                 1
             ],
             "min": [
@@ -73,36 +73,30 @@
     },
     "bufferViews": {
         "bufferView_29": {
-            "buffer": "CesiumTexturedBoxTest",
+            "buffer": "box",
             "byteLength": 72,
             "byteOffset": 0,
             "target": 34963
         },
         "bufferView_30": {
-            "buffer": "CesiumTexturedBoxTest",
+            "buffer": "box",
             "byteLength": 768,
             "byteOffset": 72,
             "target": 34962
         }
     },
     "buffers": {
-        "CesiumTexturedBoxTest": {
+        "box": {
             "byteLength": 840,
             "type": "arraybuffer",
-            "uri": "CesiumTexturedBoxTest.bin"
+            "uri": "box.bin"
         }
     },
     "extensionsUsed": [
         "KHR_materials_common"
     ],
-    "images": {
-        "Image0001": {
-            "name": "Image0001",
-            "uri": "Cesium_Logo_Flat.png"
-        }
-    },
     "materials": {
-        "Effect-Texture": {
+        "Effect-Red": {
             "extensions": {
                 "KHR_materials_common": {
                     "doubleSided": false,
@@ -111,8 +105,13 @@
                     "transparent": false,
                     "values": {
                         "diffuse": {
-                            "type": 35678,
-                            "value": "texture_Image0001"
+                            "type": 35666,
+                            "value": [
+                                0.8,
+                                0,
+                                0,
+                                1
+                            ]
                         },
                         "shininess": {
                             "type": 5126,
@@ -130,7 +129,7 @@
                     }
                 }
             },
-            "name": "Texture"
+            "name": "Red"
         }
     },
     "meshes": {
@@ -144,7 +143,7 @@
                         "TEXCOORD_0": "accessor_27"
                     },
                     "indices": "accessor_21",
-                    "material": "Effect-Texture",
+                    "material": "Effect-Red",
                     "mode": 4
                 }
             ]
@@ -176,34 +175,9 @@
             ],
             "name": "Mesh"
         },
-        "groupLocator030Node": {
+        "node_1": {
             "children": [
-                "txtrLocator026Node"
-            ],
-            "matrix": [
-                1,
-                0,
-                0,
-                0,
-                0,
-                1,
-                0,
-                0,
-                0,
-                0,
-                1,
-                0,
-                0,
-                0,
-                0,
-                1
-            ],
-            "name": "Texture_Group"
-        },
-        "node_3": {
-            "children": [
-                "Geometry-mesh002Node",
-                "groupLocator030Node"
+                "Geometry-mesh002Node"
             ],
             "matrix": [
                 1,
@@ -223,56 +197,16 @@
                 0,
                 1
             ],
-            "name": "CesiumTexturedBox"
-        },
-        "txtrLocator026Node": {
-            "children": [],
-            "matrix": [
-                1,
-                0,
-                0,
-                0,
-                0,
-                1,
-                0,
-                0,
-                0,
-                0,
-                1,
-                0,
-                0,
-                0,
-                0,
-                1
-            ],
-            "name": "Cesium_Logo_Flat__Image___Texture_"
-        }
-    },
-    "samplers": {
-        "sampler_0": {
-            "magFilter": 9729,
-            "minFilter": 9987,
-            "wrapS": 10497,
-            "wrapT": 10497
+            "name": "box"
         }
     },
     "scene": "defaultScene",
     "scenes": {
         "defaultScene": {
             "nodes": [
-                "node_3"
+                "node_1"
             ]
         }
     },
-    "skins": {},
-    "textures": {
-        "texture_Image0001": {
-            "format": 6408,
-            "internalFormat": 6408,
-            "sampler": "sampler_0",
-            "source": "Image0001",
-            "target": 3553,
-            "type": 5121
-        }
-    }
+    "skins": {}
 }
