@@ -119,6 +119,8 @@ module wd{
                     sourceInstanceList = entityObject.getComponent<SourceInstance>(SourceInstance).instanceList;
                 //}
 
+                instance.name = name;
+
                 this._addComponentsFromSourceToObject(entityObject, instance);
 
                 objectInstanceComponent.sourceObject = entityObject;
@@ -135,8 +137,6 @@ module wd{
                 entityObject.getTagList().forEach((tag:string) => {
                     instance.addTag(tag);
                 });
-
-                instance.name = name;
 
                 sourceInstanceList.addChild(instance);
 

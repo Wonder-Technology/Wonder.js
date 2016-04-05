@@ -1,6 +1,5 @@
 module wd{
     export enum EEngineEvent{
-        /*! global event should add "wd_" prefix */
         STARTLOOP = <any>"wd_startLoop",
         ENDLOOP = <any>"wd_endLoop",
         BEFORE_GAMEOBJECT_INIT = <any>"wd_beforeGameObjectInit",

@@ -96,6 +96,13 @@
             boxChild21.addComponent(action);
 
 
+            var action2 = wd.RepeatForever.create(wd.CallFunc.create(function (box) {
+                box.transform.rotate(1, 0, 0);
+            }));
+
+            gameObject.addComponent(action2);
+
+
 
 
             var sourceInstanceComponent = wd.SourceInstance.create();
