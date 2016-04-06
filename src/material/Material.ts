@@ -186,17 +186,12 @@ module wd {
             var scene:SceneDispatcher = Director.getInstance().scene,
                 shader:Shader = null;
 
-            //todo test
             if(scene.isUseShader){
                 shader = this._shaderMap.getChild(<any>scene.currentShaderKey);
             }
             else{
                 shader = this._currentShader;
             }
-
-
-            //todo move to shader->update?
-            shader.mapManager.bindAndUpdate();
 
             shader.update(quadCmd, this);
         }

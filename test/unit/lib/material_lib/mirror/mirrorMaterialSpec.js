@@ -34,6 +34,10 @@ describe("mirror material", function () {
             quadCmd = rendererTool.createSingleDrawCommand(sandbox);
 
             quadCmd.material = material;
+
+            material.geometry = {
+                entityObject:wd.GameObject.create()
+            }
         });
 
         describe("test map", function () {
@@ -55,16 +59,12 @@ describe("mirror material", function () {
                 material.init();
 
 
-                material.bindAndUpdateTexture();
+                material.updateShader(quadCmd);
 
 
                 expect(reflectionMap.bindToUnit).toCalledWith(0);
 
                 expect(reflectionMap.update).not.toCalled();
-
-
-
-                material.updateShader(quadCmd);
 
 
                 expect(material.program.sendUniformData).toCalledWith("u_reflectionMapSampler", wd.EVariableType.SAMPLER_2D, 0);

@@ -60,9 +60,9 @@ module wd{
 
 
         public updateShader(quadCmd:QuadCommand){
-            super.updateShader(quadCmd);
-
             this._computeTime();
+
+            super.updateShader(quadCmd);
         }
 
         protected addExtendShaderLib(){

@@ -9,6 +9,9 @@ describe("water refractionMap", function () {
         sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
 
         material = wd.WaterMaterial.create();
+        material.geometry = {
+            entityObject:wd.GameObject.create()
+        }
     });
     afterEach(function () {
         sandbox.restore();

@@ -11,6 +11,7 @@ describe("Material", function() {
         };
 
         material = new wd.Material();
+        material.initWhenCreate();
     });
     afterEach(function () {
         testTool.clearInstance();
@@ -26,21 +27,21 @@ describe("Material", function() {
 
         beforeEach(function(){
             scene = wd.Director.getInstance().scene;
-            sandbox.stub(material.shader, "update");
-
-            material.shader = wd.CommonShader.create();
         });
 
-        it("if SceneDispatcher use program, update SceneDispatcher's shader", function(){
-            scene.useProgram(wd.CommonShader.create());
-            sandbox.stub(scene.shader, "update");
+        it("if specify scene shader, update the specified shader", function(){
+            scene.useShader(wd.EShaderMapKey.BUILD_SHADOWMAP);
+            var shader = wd.CommonShader.create();
+            sandbox.stub(shader, "update");
+
+            material.addShader(wd.EShaderMapKey.BUILD_SHADOWMAP, shader);
             var quadCmd = {};
 
             material.updateShader(quadCmd);
 
-            expect(scene.shader.update).toCalledWith(quadCmd, material);
+            expect(shader.update).toCalledWith(quadCmd, material);
         });
-        it("else, update material's shader", function () {
+        it("else, update current shader", function () {
             var quadCmd = {};
             sandbox.stub(material.shader, "update");
 

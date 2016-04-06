@@ -7,6 +7,7 @@ describe("EngineMaterial", function() {
         sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
 
         material = new wd.EngineMaterial();
+        material.initWhenCreate();
     });
     afterEach(function () {
         testTool.clearInstance();

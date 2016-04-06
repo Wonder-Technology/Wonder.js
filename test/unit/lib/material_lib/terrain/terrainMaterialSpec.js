@@ -10,6 +10,9 @@ describe("terrain material", function() {
         sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
 
         material = wd.TerrainMaterial.create();
+        material.geometry = {
+            entityObject:wd.GameObject.create()
+        }
     });
     afterEach(function () {
         sandbox.restore();
@@ -130,7 +133,15 @@ describe("terrain material", function() {
 
 
 
-                material.bindAndUpdateTexture();
+
+                sandbox.stub(map1, "getSamplerName").returns("u_sampler1");
+                sandbox.stub(map2, "getSamplerName").returns("u_sampler2");
+                sandbox.stub(map3, "getSamplerName").returns("u_sampler3");
+
+
+
+                material.updateShader(quadCmd);
+
 
 
                 expect(map3.bindToUnit).toCalledWith(0);
@@ -148,12 +159,6 @@ describe("terrain material", function() {
 
 
 
-
-                sandbox.stub(map1, "getSamplerName").returns("u_sampler1");
-                sandbox.stub(map2, "getSamplerName").returns("u_sampler2");
-                sandbox.stub(map3, "getSamplerName").returns("u_sampler3");
-
-                material.updateShader(quadCmd);
 
 
                 expect(material.program.sendUniformData).toCalledWith("u_sampler3", wd.EVariableType.SAMPLER_2D, 0);

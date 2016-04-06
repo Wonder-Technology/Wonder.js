@@ -10,6 +10,9 @@ describe("water material", function () {
         sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
 
         material = wd.WaterMaterial.create();
+        material.geometry = {
+            entityObject:wd.GameObject.create()
+        }
     });
     afterEach(function () {
         sandbox.restore();
@@ -87,7 +90,7 @@ describe("water material", function () {
                 material.init();
 
 
-                material.bindAndUpdateTexture();
+                material.updateShader(quadCmd);
 
 
                 expect(refractionMap.bindToUnit).toCalledWith(0);
@@ -99,8 +102,6 @@ describe("water material", function () {
                 expect(reflectionMap.update).not.toCalled();
 
 
-
-                material.updateShader(quadCmd);
 
 
                 expect(material.program.sendUniformData).toCalledWith("u_refractionMapSampler", wd.EVariableType.SAMPLER_2D, 0);
