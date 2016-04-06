@@ -42,17 +42,12 @@ module wd{
         private _exitSubscription:wdFrp.IDisposable = null;
 
         @ensure(function(){
-            var checkChildren = (child:GameObject) => {
-                assert(InstanceUtils.isSourceInstance(child), Log.info.FUNC_SHOULD("children", "contain SourceInstance component"));
-
-                child.forEach((c:GameObject) => {
-                    checkChildren(c);
-                });
-            };
-
             this.entityObject.forEach((child:GameObject) => {
-                checkChildren(child);
+                IterateUtils.forEachAll(child, (child:GameObject) => {
+                    assert(InstanceUtils.isSourceInstance(child), Log.info.FUNC_SHOULD("children", "contain SourceInstance component"));
+                });
             });
+
         })
         public init(){
             var self = this;
@@ -80,7 +75,6 @@ module wd{
         }
 
         @require(function(){
-            /*! so here not dispose instance in instanceList */
             this._checkInstanceIsNotOnlyInInstanceListButAlsoInLoop();
         })
         public dispose(){
@@ -103,21 +97,13 @@ module wd{
             assert(InstanceUtils.isObjectInstance(instance));
         })
         public cloneInstance(name:string):GameObject{
+            var self = this;
             var clone = (name:string, entityObject:GameObject) => {
                 var instance:GameObject = GameObject.create(),
                     objectInstanceComponent = ObjectInstance.create(),
                     sourceInstanceList = null;
 
-
-                //if(!InstanceUtils.isSourceInstance(entityObject)){
-                //    let sourceInstanceComponent = SourceInstance.create();
-                //    sourceInstanceList = sourceInstanceComponent.instanceList;
-                //
-                //    entityObject.addComponent(sourceInstanceComponent);
-                //}
-                //else{
-                    sourceInstanceList = entityObject.getComponent<SourceInstance>(SourceInstance).instanceList;
-                //}
+                sourceInstanceList = entityObject.getComponent<SourceInstance>(SourceInstance).instanceList;
 
                 instance.name = name;
 
@@ -141,7 +127,7 @@ module wd{
                 sourceInstanceList.addChild(instance);
 
                 entityObject.forEach((child:GameObject) => {
-                    instance.addChild(clone(`${name}_${child.name}`, child));
+                    instance.addChild(clone(self._buildInstanceChildName(name, child.name), child));
                 });
 
                 return instance;
@@ -171,24 +157,16 @@ module wd{
             instance.removeComponent(Transform);
 
             source.forEachComponent((component:Component) => {
-                if(component instanceof SourceInstance){
-                    return;
-                }
-
-                if(isHardwareSupport){
-                    if(component instanceof LOD){
-                        return;
-                    }
-                }
-                else if(component instanceof LOD){
-                    instance.addComponent(component.clone(true));
+                if(component instanceof SourceInstance
+                || (isHardwareSupport && component instanceof LOD)){
                     return;
                 }
 
                 //todo any more component should be share, not clone(to save the memory)?
-                //if(component instanceof Geometry || component instanceof LOD){
-                    //if(component instanceof LOD){
-                if(component instanceof Geometry){
+                if(component instanceof LOD){
+                    instance.addComponent(component.clone(true));
+                }
+                else if(component instanceof Geometry){
                     instance.addComponent(component, true);
                 }
                 else{
@@ -216,31 +194,22 @@ module wd{
         }
 
         private _checkInstanceIsNotOnlyInInstanceListButAlsoInLoop(){
-            var scene:SceneDispatcher = Director.getInstance().scene,
+            var scene:SceneDispatcher = null,
+                children:wdCb.Collection<GameObject> = null,
                 isInLoop:boolean = true;
-            //var isContainInstance = (instance, gameObject) => {
-            //    gameObject.forEach((child:GameObject) => {
-            //        if(JudgeUtils.isEqual(child, instance)){
-            //            isInLoop = true;
-            //            return wdCb.$BREAK;
-            //        }
-            //
-            //        isContainInstance(instance, child);
-            //    })
-            //};
 
             if(this.instanceList.getCount() === 0){
                 return;
             }
 
-            let children = wdCb.Collection.create<GameObject>();
+            scene = Director.getInstance().scene;
+            children = wdCb.Collection.create<GameObject>();
 
             IterateUtils.forEachAll(scene.gameObjectScene, (gameObject:GameObject) => {
                 children.addChild(gameObject);
             });
 
             this.instanceList.forEach((instance:GameObject) => {
-                //isContainInstance(instance, scene);
                 if(!children.hasChild(instance)){
                     isInLoop = false;
                     return wdCb.$BREAK;
@@ -279,6 +248,10 @@ module wd{
                 instance.parent.removeChild(instance);
                 instance.removeTag(tag);
             });
+        }
+
+        private _buildInstanceChildName(parentName:string, childName:string){
+            return `${parentName}_${childName}`;
         }
     }
 }
