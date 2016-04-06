@@ -251,8 +251,6 @@ module wd {
         }
 
         public removeChild(child:EntityObject):EntityObject {
-            //todo remove child->instances
-
             child.onExit();
 
             this.children.removeChild(child);
@@ -492,24 +490,9 @@ module wd {
         }
 
         protected initComponent(){
-            //todo refactor:initOrder
-            //if(this.hasComponent(CameraController)){
-            //    this.getComponent<CameraController>(CameraController).init();
-            //}
-            //if(this.hasComponent(ShadowManager)){
-            //    this.getComponent<ShadowManager>(ShadowManager).init();
-            //}
-            if(this.hasComponent(Shadow)){
-                this.getComponent<Shadow>(Shadow).init();
-            }
-            if(this.hasComponent(Geometry)){
-                this.getComponent<Geometry>(Geometry).init();
-            }
-
-            this.components.filter((component:Component) => {
-                    return !(component instanceof Geometry) && !(component instanceof Shadow);
-                        //&& !(component instanceof CameraController) && !(component instanceof ShadowManager);
-                })
+            this.components.insertSort((a:Component, b:Component) => {
+                    return ComponentInitOrderTable.getOrder(a) < ComponentInitOrderTable.getOrder(b);
+                }, false)
                 .forEach((component:Component) => {
                     component.init();
                 });

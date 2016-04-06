@@ -98,6 +98,10 @@
 
 
 
+
+/// <reference path="component/data/ComponentInitOrderTable"/>
+
+
 /// <reference path="component/lod/LOD"/>
 /// <reference path="component/lod/ELODGeometryState"/>
 

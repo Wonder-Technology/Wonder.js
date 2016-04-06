@@ -62,7 +62,6 @@ describe("direction shadow map", function() {
                     var octreeObject = octreeTool.createOctree();
 
                     var child = createSphere();
-                    child.addComponent(wd.Shadow.create());
 
                     octreeObject.addChild(child);
 
