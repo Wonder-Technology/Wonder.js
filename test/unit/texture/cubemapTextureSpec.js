@@ -52,6 +52,9 @@ describe("cubemap texture", function() {
         };
         testTool.extend(gl, testTool.buildFakeGl(sandbox));
         sandbox.stub(wd.DeviceManager.getInstance(), "gl", gl);
+
+
+        testTool.closeContractCheck(sandbox);
     });
     afterEach(function () {
         testTool.clearInstance();
@@ -505,8 +508,8 @@ describe("cubemap texture", function() {
                         expect(gl.texImage2D.callCount).toEqual(6);
                         expect(gl.texImage2D.firstCall).toCalledWith(gl.TEXTURE_CUBE_MAP_POSITIVE_X, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, canvas);
                         expect(gl.texImage2D.secondCall).toCalledWith(gl.TEXTURE_CUBE_MAP_NEGATIVE_X, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, canvas);
-                        expect(gl.texParameteri.firstCall).toCalledWith(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, wd.ETextureWrapMode.REPEAT);
-                        expect(gl.texParameteri.secondCall).toCalledWith(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, wd.ETextureWrapMode.REPEAT);
+                        expect(gl.texParameteri.firstCall).toCalledWith(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S, wd.ETextureWrapMode.REPEAT);
+                        expect(gl.texParameteri.secondCall).toCalledWith(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_T, wd.ETextureWrapMode.REPEAT);
 
                         //texture.sendData(program, 0);
                         //
@@ -644,7 +647,7 @@ describe("cubemap texture", function() {
             load2DTexture(function(texture){
                 texture.update(0);
 
-                expect(gl.texParameteri.withArgs(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl[wd.ETextureFilterMode.LINEAR])).toCalledOnce()
+                expect(gl.texParameteri.withArgs(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl[wd.ETextureFilterMode.LINEAR])).toCalledOnce()
                 expect(gl.generateMipmap).not.toCalled();
 
                 done();

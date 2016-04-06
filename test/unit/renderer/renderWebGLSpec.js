@@ -12,6 +12,8 @@ describe("renderWebGL", function() {
         renderer = wd.WebGLRenderer.create();
         deviceManager = wd.DeviceManager.getInstance();
         sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+
+        testTool.closeContractCheck(sandbox);
     });
     afterEach(function () {
         testTool.clearInstance();

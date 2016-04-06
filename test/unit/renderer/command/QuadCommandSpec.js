@@ -66,7 +66,7 @@ describe("QuadCommand", function() {
             cmd.blend = material.blend;
 
 
-            sandbox.stub(material, "bindAndUpdateTexture");
+            //sandbox.stub(material, "bindAndUpdateTexture");
             sandbox.stub(material, "updateShader");
 
             return {
@@ -98,13 +98,13 @@ describe("QuadCommand", function() {
             gl = wd.DeviceManager.getInstance().gl;
         });
 
-        it("bind and update texture", function(){
-            var result = addCommand();
-
-            result.cmd.execute();
-
-            expect(result.material.bindAndUpdateTexture).toCalledOnce();
-        });
+        //it("bind and update texture", function(){
+        //    var result = addCommand();
+        //
+        //    result.cmd.execute();
+        //
+        //    expect(result.material.bindAndUpdateTexture).toCalledOnce();
+        //});
         it("update shader", function(){
             var result = addCommand();
 
@@ -130,7 +130,7 @@ describe("QuadCommand", function() {
             });
 
             it("set colorWrite,polygonOffsetMode", function(){
-                result.cmd.setEffects(material);
+                result.cmd.webglState.setState(material);
 
                 expect(deviceManager.setColorWrite).toCalledWith(material.redWrite, material.greenWrite, material.blueWrite, material.alphaWrite);
                 expect(deviceManager.polygonOffsetMode).toEqual(material.polygonOffsetMode);
@@ -138,14 +138,14 @@ describe("QuadCommand", function() {
             it("set side:if set SceneDispatcher->side, use it", function(){
                 wd.Director.getInstance().scene.side = wd.ESide.BACK;
 
-                result.cmd.setEffects(material);
+                result.cmd.webglState.setState(material);
 
                 expect(deviceManager.side).toEqual(wd.ESide.BACK);
             });
             it("else, use material->side", function () {
                 material.side = wd.ESide.BOTH;
 
-                result.cmd.setEffects(material);
+                result.cmd.webglState.setState(material);
 
                 expect(deviceManager.side).toEqual(wd.ESide.BOTH);
             });
@@ -156,7 +156,7 @@ describe("QuadCommand", function() {
                 material.blendSrc = wd.EBlendFunc.SRC_ALPHA;
                 material.blendDst = wd.EBlendFunc.ONE;
 
-                result.cmd.setEffects(material);
+                result.cmd.webglState.setState(material);
 
                 expect(deviceManager.blend).toBeTruthy();
                 expect(deviceManager.setBlendFunc).toCalledWith(material.blendSrc, material.blendDst);
@@ -168,7 +168,7 @@ describe("QuadCommand", function() {
                 material.blendFuncSeparate = [wd.EBlendFunc.SRC_ALPHA, wd.EBlendFunc.ONE_MINUS_SRC_ALPHA, wd.EBlendFunc.ONE, wd.EBlendFunc.ONE_MINUS_SRC_ALPHA];
                 material.blendEquationSeparate = [wd.EBlendEquation.ADD, wd.EBlendEquation.ADD];
 
-                result.cmd.setEffects(material);
+                result.cmd.webglState.setState(material);
 
                 expect(deviceManager.blend).toBeTruthy();
                 expect(deviceManager.setBlendFuncSeparate).toCalledWith(material.blendFuncSeparate);
@@ -177,7 +177,7 @@ describe("QuadCommand", function() {
             it("else use material->default blendSrc/Dst,blendEquation", function(){
                 material.blend = true;
 
-                result.cmd.setEffects(material);
+                result.cmd.webglState.setState(material);
 
                 expect(deviceManager.blend).toBeTruthy();
                 expect(deviceManager.setBlendFunc).toCalledWith(material.blendSrc, material.blendDst);

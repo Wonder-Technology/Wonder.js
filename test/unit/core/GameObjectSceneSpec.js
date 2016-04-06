@@ -201,12 +201,11 @@ describe("GameObjectScene", function() {
             });
             it("invoke components' init", function () {
                 var geometry = new wd.BoxGeometry();
-                var material = new wd.BasicMaterial();
+                var material = wd.BasicMaterial.create();
                 geometry.material = material;
 
                 sandbox.spy(geometry, "init");
                 sandbox.spy(material, "init");
-                sandbox.spy(material.mapManager, "init");
                 sandbox.stub(material.shader, "init");
                 scene.addComponent(geometry);
 
@@ -214,7 +213,6 @@ describe("GameObjectScene", function() {
 
                 expect(geometry.init).toCalledOnce();
                 expect(material.init).toCalledOnce();
-                expect(material.mapManager.init).toCalledOnce();
                 expect(material.shader.init).toCalledOnce();
             });
         });

@@ -60,7 +60,7 @@ describe("InstanceCommand", function() {
             cmd.blend = material.blend;
 
 
-            sandbox.stub(material, "bindAndUpdateTexture");
+            //sandbox.stub(material, "bindAndUpdateTexture");
             sandbox.stub(material, "updateShader");
 
             return {
@@ -97,11 +97,13 @@ describe("InstanceCommand", function() {
             it("if not has instance to draw, return", function () {
                 result = addCommand();
                 result.cmd.instanceList = wdCb.Collection.create();
-                sandbox.stub(result.cmd, "setEffects");
+
+                result.cmd.webglState = wd.BasicState.create();
+                sandbox.stub(result.cmd.webglState, "setState");
 
                 result.cmd.execute();
 
-                expect(result.cmd.setEffects).not.toCalled();
+                expect(result.cmd.webglState.setState).not.toCalled();
             });
 
             describe("if has instance to draw", function(){

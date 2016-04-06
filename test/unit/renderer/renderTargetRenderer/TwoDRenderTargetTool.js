@@ -185,11 +185,11 @@ renderCamera = {};
                     return [renderObj1, renderObj2, renderer, camera];
                 });
 
-                it("bind texture", function(){
-                    self.renderTargetRenderer.render(renderer, camera);
-
-                    expect(texture.bindToUnit).toCalledWith(0);
-                });
+                //it("bind texture", function(){
+                //    self.renderTargetRenderer.render(renderer, camera);
+                //
+                //    expect(texture.bindToUnit).toCalledWith(0);
+                //});
 
                 describe("if need create camera", function(){
                     beforeEach(function(){

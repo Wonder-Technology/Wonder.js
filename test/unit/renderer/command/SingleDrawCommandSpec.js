@@ -193,7 +193,7 @@ describe("SingleDrawCommand", function() {
             cmd.blend = material.blend;
 
 
-            sandbox.stub(material, "bindAndUpdateTexture");
+            //sandbox.stub(material, "bindAndUpdateTexture");
             sandbox.stub(material, "updateShader");
 
             return {

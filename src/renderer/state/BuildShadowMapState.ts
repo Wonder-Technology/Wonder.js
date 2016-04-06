@@ -6,7 +6,7 @@ module wd{
         	return obj;
         }
 
-        public setEffect(material:Material):void{
+        public setState(material:Material):void{
             var deviceManager = DeviceManager.getInstance();
 
             deviceManager.side = this.getSide(material);

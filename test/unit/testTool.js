@@ -223,6 +223,8 @@ var testTool = (function () {
                     }
                 }
             }
+
+            //this.closeContractCheck();
         },
 
         multiIt: function (its, getArgs) {

@@ -1,6 +1,13 @@
 module wd {
     export abstract class RenderCommand {
-        public webglState:WebGLState = null;
+        private _webglState:WebGLState = null;
+        get webglState(){
+            return this._webglState ? this._webglState : BasicState.create();
+        }
+        set webglState(webglState:WebGLState){
+            this._webglState = webglState;
+        }
+
         public drawMode:EDrawMode = EDrawMode.TRIANGLES;
         public blend:boolean = false;
 

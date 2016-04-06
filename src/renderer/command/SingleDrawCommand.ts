@@ -32,7 +32,7 @@ module wd {
             var vertexBuffer:ArrayBuffer = null,
                 indexBuffer:ElementBuffer = this.buffers.getChild(EBufferDataType.INDICE);
 
-            this.webglState.setEffect(material);
+            this.webglState.setState(material);
 
             if(indexBuffer){
                 this.drawElements(indexBuffer);

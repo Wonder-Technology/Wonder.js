@@ -15,6 +15,7 @@ describe("shaderLibSpec", function () {
     it("send a_texCoord only one time even has multi maps", function () {
 
         var material = wd.LightMaterial.create();
+        rendererTool.prepareForAddShaderLib(material)
 
 
         sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));

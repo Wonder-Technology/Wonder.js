@@ -17,7 +17,7 @@ module wd{
                 return;
             }
 
-            this.webglState.setEffect(material);
+            this.webglState.setState(material);
 
             this._instanceDrawerProxy.glslData = this.glslData;
 

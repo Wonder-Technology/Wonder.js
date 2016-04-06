@@ -27,7 +27,7 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        //'test/unit/**',
+        'test/unit/**',
 
         //'test/unit/**/action/*',
 
@@ -98,8 +98,7 @@
         //'test/unit/**/GeometryData*',
         //'test/unit/**/BufferContainer*',
 
-        //'test/unit/**/Shader*',
-        //'test/unit/**/*Shader*',
+        //'test/unit/**/customShader*',
 
         //'test/unit/**/*animation*',
         //'test/unit/component/**/*Animation*.js',
@@ -112,7 +111,7 @@
 
         //'test/unit/**/EntityObjectSpec*',
 
-        'test/unit/component/physics/**/eventSpec*',
+        //'test/unit/component/physics/**/eventSpec*',
 
         //'test/unit/**/OctreeSpec*',
         //'test/unit/**/CollisionDetectorSpec*',
@@ -135,7 +134,7 @@
 
         //'test/unit/**/MainSpec*',
 
-        'test/unit/component/event/eventSpec*',
+        //'test/unit/component/event/eventSpec*',
 
         //'test/unit/**/ui/**',
         //'test/unit/**/UIObjectSpec*',
@@ -197,7 +196,7 @@
         //'test/unit/**/*Shape*.js',
         //'test/unit/**/Arcball*',
         //'test/unit/**/FlyCameraController*',
-      //  'test/unit/**/scriptSpec.js',
+        //'test/unit/**/scriptSpec.js',
       //
       //  'test/unit/**/*ControllerSpec.js',
       //'test/unit/core/Tran*.js',

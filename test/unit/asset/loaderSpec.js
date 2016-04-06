@@ -409,8 +409,6 @@ describe("loader", function () {
                 done();
             });
         });
-        //todo modify gltf loader!
-
         it("when load multi wd files, each one should be independent", function (done) {
             wd.LoaderManager.getInstance().load([
                 {url: testTool.resPath + "test/res/wd/test.wd", id: "sceneModel1"},

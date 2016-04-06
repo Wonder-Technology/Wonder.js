@@ -242,14 +242,14 @@ describe("SceneDispatcher", function() {
 
             expect(scene.findComponentByUid(component.uid)).toBeNull();
         });
-        it("set component's gameObject to be null", function(){
-            var component = new wd.Action();
-            scene.addComponent(component);
-
-            scene.removeComponent(component);
-
-            expect(component.entityObject).toBeNull();
-        });
+        //it("set component's gameObject to be null", function(){
+        //    var component = new wd.Action();
+        //    scene.addComponent(component);
+        //
+        //    scene.removeComponent(component);
+        //
+        //    expect(component.entityObject).toBeNull();
+        //});
 
         describe("if component is Action", function(){
             it("remove it from actionManager", function(){

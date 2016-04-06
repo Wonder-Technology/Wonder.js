@@ -13,7 +13,7 @@ module wd{
                 assert(!!material.blendSrc && !!material.blendDst && !!material.blendEquation, wdCb.Log.info.FUNC_MUST("material.blendSrc && material.blendDst && material.blendEquation", "be set"));
             }
         })
-        public setEffect(material:Material):void{
+        public setState(material:Material):void{
             var deviceManager = DeviceManager.getInstance();
 
             deviceManager.setColorWrite(material.redWrite, material.greenWrite, material.blueWrite, material.alphaWrite);

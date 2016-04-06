@@ -42,6 +42,10 @@ describe("script", function () {
 
         var count = 0;
 
+
+        director.scene.addChild(gameObject);
+
+
         gameObject.execScript = function(scriptHandlerName){
             if(scriptHandlerName !== "onEnter" && scriptHandlerName !== "init"){
                 execScript.apply(gameObject, arguments);
@@ -55,7 +59,10 @@ describe("script", function () {
             //script->onEnter
             if(count === 1){
                 test = gameObject.scriptList.getChild("test");
+
+                //if(test){
                     judgeTest1OnEnter(test, gameObject);
+                //}
 
                     execScript.apply(gameObject, arguments);
             }
@@ -81,7 +88,6 @@ describe("script", function () {
             }
         }
 
-        director.scene.addChild(gameObject);
 
         var loopBody = director._loopBody;
         director._loopBody = function(){

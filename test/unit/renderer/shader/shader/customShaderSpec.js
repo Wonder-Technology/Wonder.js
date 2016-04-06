@@ -7,6 +7,10 @@ describe("custom shader", function () {
         sandbox = sinon.sandbox.create();
         sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
         sandbox.stub(wd.GPUDetector.getInstance(), "precision", wd.EGPUPrecision.HIGHP);
+
+        testTool.closeContractCheck(sandbox);
+
+
         gl = wd.DeviceManager.getInstance().gl;
 
         material = wd.ShaderMaterial.create();
