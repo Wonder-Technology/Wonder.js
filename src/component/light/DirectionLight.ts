@@ -6,12 +6,9 @@ module wd{
         public static create() {
             var obj = new this();
 
-            obj.initWhenCreate();
-
             return obj;
         }
 
-        //todo extract Shadow class?
         public shadowCameraLeft:number = -1000;
         public shadowCameraRight:number = 1000;
         public shadowCameraTop:number = 1000;
