@@ -279,7 +279,7 @@ describe("direction shadow map", function() {
 
 
 
-                describe("set webgl effect", function(){
+                describe("set webgl state", function(){
                     var gl;
 
                     beforeEach(function(){
@@ -320,17 +320,6 @@ describe("direction shadow map", function() {
 
                         expect(gl.disable.withArgs("BLEND")).toCalledTwice();
                         expect(gl.enable.withArgs("BLEND")).not.toCalledTwice();
-                    });
-                    it("set depth write to be false for optimize", function () {
-                        director._init();
-
-                        deviceManager.depthWrite = true;
-
-
-                        director.scene.gameObjectScene.render(renderer);
-
-
-                        expect(gl.depthMask.withArgs(false)).toCalledOnce();
                     });
                     it("not set other webgl effect", function () {
                         director._init();

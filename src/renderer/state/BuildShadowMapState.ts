@@ -11,7 +11,6 @@ module wd{
 
             deviceManager.side = this.getSide(material);
             deviceManager.blend = false;
-            deviceManager.depthWrite = false;
         }
     }
 }
