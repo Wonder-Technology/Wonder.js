@@ -3,17 +3,12 @@ describe("Matrix4", function(){
     var matrix = wd.matrix;
     var Vector4 = wd.Vector4;
 
-    function getValues(values){
+    function getValues(values, digit){
         if(values){
-            if(mathTestUtils.isFloat32Array(values)){
-                return mathTestUtils.getValues(values);
-            }
-            else{
-                return mathTestUtils.getValues(values.values);
-            }
+            return testTool.getValues(values, digit);
         }
 
-        return mathTestUtils.getValues(matrix.values);
+        return mathTestUtils.getValues(matrix.values, digit);
     }
 
     beforeEach(function(){

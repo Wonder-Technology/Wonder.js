@@ -187,7 +187,6 @@ module wd {
             return Matrix3.create().set(this);
         }
 
-        //todo test
         public cloneToArray(array: Float32Array, offset: number = 0): Matrix3 {
             var values = this.values;
 

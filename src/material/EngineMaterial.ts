@@ -5,9 +5,6 @@ module wd {
         public mapCombineMode:ETextureCombineMode = ETextureCombineMode.MIX;
         public mapMixRatio:number = 0.5;
 
-        @require(function(){
-            assert(!(this.mirrorMap && this.envMap), Log.info.FUNC_SHOULD_NOT("mirrorMap and envMap", "be set both"));
-        })
         public init(){
             this._addTopShaderLib();
             this.addShaderLib();
