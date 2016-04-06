@@ -1,13 +1,8 @@
 module wd{
     export class RenderUtils{
-        //todo correspond refactor related class
-        public static isInstanceAndHardwareSupport(gameObject:GameObject){
-            return GPUDetector.getInstance().extensionInstancedArrays !== null && gameObject.hasComponent(Instance);
-        }
-
         public static getGameObjectRenderList(sourceList:wdCb.Collection<GameObject>){
             return sourceList.filter((child:GameObject, index:number) => {
-                return child.isVisible && (GPUDetector.getInstance().extensionInstancedArrays === null || !child.hasComponent(ObjectInstance));
+                return child.isVisible && (!InstanceUtils.isHardwareSupport() || !InstanceUtils.isObjectInstance(child));
             });
         }
 
@@ -18,7 +13,7 @@ module wd{
         }
 
         public static getGameObjectRenderListFromSpacePartition(renderList:wdCb.Collection<GameObject>){
-            if(GPUDetector.getInstance().extensionInstancedArrays === null){
+            if(!InstanceUtils.isHardwareSupport()){
                 return renderList;
             }
 
@@ -29,7 +24,7 @@ module wd{
             var map = wdCb.Hash.create<GameObject>();
 
             renderList.forEach((child:GameObject) => {
-                if(child.hasComponent(ObjectInstance)){
+                if(InstanceUtils.isObjectInstance(child)){
                     let sourceObject:GameObject = (child.getComponent<ObjectInstance>(ObjectInstance)).sourceObject;
 
                     map.addChild(String(sourceObject.uid), sourceObject);

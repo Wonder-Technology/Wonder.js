@@ -1,7 +1,7 @@
 module wd {
     export abstract class InstanceDrawer implements IInstanceDrawer{
         @require(function(){
-            assert(GPUDetector.getInstance().extensionInstancedArrays !== null, Log.info.FUNC_SHOULD("hardware", "support instance"));
+            assert(InstanceUtils.isHardwareSupport(), Log.info.FUNC_SHOULD("hardware", "support instance"));
         })
         public draw(instanceList:wdCb.Collection<GameObject>, instanceBuffer:InstanceBuffer, program:Program, buffers:BufferContainer, drawMode:EDrawMode):void{
             var indexBuffer:ElementBuffer = null,

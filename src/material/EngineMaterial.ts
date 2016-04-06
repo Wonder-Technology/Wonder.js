@@ -43,7 +43,7 @@ module wd {
 
         private _addTopShaderLib(){
             this.shader.addLib(CommonShaderLib.create());
-            if(GPUDetector.getInstance().extensionInstancedArrays !== null && this.geometry.entityObject.hasComponent(SourceInstance)){
+            if(InstanceUtils.isHardwareSupport() && InstanceUtils.isSourceInstance(this.geometry.entityObject)){
                 this.shader.addLib(ModelMatrixInstanceShaderLib.create());
             }
             else{

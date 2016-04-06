@@ -48,7 +48,7 @@ module wd{
 
             envMap = this.envMap;
             if(envMap){
-                if(GPUDetector.getInstance().extensionInstancedArrays !== null && this.geometry.entityObject.hasComponent(SourceInstance)){
+                if(InstanceUtils.isHardwareSupport() && InstanceUtils.isSourceInstance(this.geometry.entityObject)){
                     this.shader.addLib(NormalMatrixInstanceShaderLib.create());
                 }
                 else{

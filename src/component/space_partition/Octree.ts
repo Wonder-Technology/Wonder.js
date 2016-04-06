@@ -27,7 +27,7 @@ module wd {
         }
 
         public update(elapsedTime:number):void {
-            if(GPUDetector.getInstance().extensionInstancedArrays !== null){
+            if(InstanceUtils.isHardwareSupport()){
                 //todo optimize:cache renderListByFrustumCull
                 this._setToRenderInstanceListWhenGetGameObjectRenderListFromSpacePartition(this.getRenderListByFrustumCull());
             }
@@ -190,11 +190,11 @@ module wd {
                 instanceSourceMap = wdCb.Hash.create<GameObject>();
 
             renderList.forEach((child:GameObject) => {
-                if(!child.hasComponent(Instance)){
+                if(!InstanceUtils.isInstance(child)){
                     return;
                 }
 
-                if(child.hasComponent(SourceInstance)){
+                if(InstanceUtils.isSourceInstance(child)){
                     let instanceComponent:SourceInstance = child.getComponent<SourceInstance>(SourceInstance);
 
                     self._addSelfToToRenderInstanceList(child, instanceComponent);

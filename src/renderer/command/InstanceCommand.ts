@@ -28,7 +28,7 @@ module wd{
             assert(JudgeUtils.isBoolean(hasInstance), Log.info.FUNC_SHOULD("return boolean value"));
 
             if(hasInstance){
-                assert(GPUDetector.getInstance().extensionInstancedArrays !== null, Log.info.FUNC_SHOULD("hardware", "support instance"));
+                assert(InstanceUtils.isHardwareSupport(), Log.info.FUNC_SHOULD("hardware", "support instance"));
 
                 assert(!!this.instanceBuffer, Log.info.FUNC_MUST_DEFINE("instanceBuffer"));
             }

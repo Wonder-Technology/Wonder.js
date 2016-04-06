@@ -37,7 +37,7 @@ module wd{
         }
 
         //@require(function(){
-        //    assert(GPUDetector.getInstance().extensionInstancedArrays !== null, Log.info.FUNC_SHOULD("hardware", "support instance"));
+        //    assert(InstanceUtils.isHardwareSupport(), Log.info.FUNC_SHOULD("hardware", "support instance"));
         //})
         public resetData(data: Float32Array, offsetLocations: number[]): void {
             var gl = DeviceManager.getInstance().gl;

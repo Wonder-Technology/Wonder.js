@@ -50,19 +50,19 @@ module wd {
         }
 
         @require(function(target:GameObject){
-            if(target.hasComponent(Instance) && GPUDetector.getInstance().extensionInstancedArrays !== null){
-                assert(target.hasComponent(SourceInstance) && !target.hasComponent(ObjectInstance), Log.info.FUNC_SHOULD("if use instance to batch draw, target", "be SourceInstance"));
+            if(InstanceUtils.isInstance(target) && InstanceUtils.isHardwareSupport()){
+                assert(InstanceUtils.isSourceInstance(target) && !InstanceUtils.isObjectInstance(target), Log.info.FUNC_SHOULD("if use instance to batch draw, target", "be SourceInstance"));
             }
         })
         @ensure(function(cmd, target:GameObject){
             if(cmd instanceof InstanceCommand){
-                assert(GPUDetector.getInstance().extensionInstancedArrays !== null, Log.info.FUNC_SHOULD("hardware", "support instance"));
+                assert(InstanceUtils.isHardwareSupport(), Log.info.FUNC_SHOULD("hardware", "support instance"));
             }
         })
         private _createCommand(target:GameObject, material:Material){
             var cmd:any = null;
 
-            if(target.hasComponent(Instance) && GPUDetector.getInstance().extensionInstancedArrays !== null){
+            if(InstanceUtils.isInstance(target) && InstanceUtils.isHardwareSupport()){
                 let instanceComponent:Instance = target.getComponent<Instance>(Instance);
 
                 cmd = InstanceCommand.create();

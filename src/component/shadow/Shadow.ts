@@ -31,7 +31,7 @@ module wd{
         private _layer:string = <any>EShadowLayer.DEFAULT;
         @cloneAttributeAsBasicType()
         get layer(){
-            if(this.entityObject.hasComponent(ObjectInstance) && GPUDetector.getInstance().extensionInstancedArrays === null){
+            if(InstanceUtils.isObjectInstance(this.entityObject) && !InstanceUtils.isHardwareSupport()){
                 this._layer = this.entityObject.getComponent<ObjectInstance>(ObjectInstance).sourceObject.getComponent<Shadow>(Shadow).layer;
             }
 
@@ -69,7 +69,7 @@ module wd{
                 twoDShadowMapDataMap:wdCb.Hash<wdCb.Collection<TwoDShadowMapData>> = Director.getInstance().scene.gameObjectScene.getComponent(ShadowManager).twoDShadowMapDataMap;
 
 
-            if(this.entityObject.hasComponent(ObjectInstance)
+            if(InstanceUtils.isObjectInstance(this.entityObject)
             || !this._isFirstLevelObjectOfSceneOrSpacePartition()){
                 return;
             }
@@ -157,7 +157,7 @@ module wd{
             shader.addLib(CommonShaderLib.create());
             shader.addLib(VerticeCommonShaderLib.create());
 
-            if (RenderUtils.isInstanceAndHardwareSupport(object)) {
+            if (InstanceUtils.isHardwareSupport() && InstanceUtils.isInstance(object)) {
                 shader.addLib(ModelMatrixInstanceShaderLib.create());
             }
             else {

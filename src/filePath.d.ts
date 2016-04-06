@@ -309,6 +309,7 @@
 /// <reference path="utils/MathUtils"/>
 /// <reference path="utils/CoordinateUtils"/>
 /// <reference path="utils/RenderUtils"/>
+/// <reference path="utils/InstanceUtils"/>
 /// <reference path="utils/IterateUtils"/>
 /// <reference path="utils/Log"/>
 /// <reference path="utils/time/TimeController"/>

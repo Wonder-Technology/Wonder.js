@@ -64,8 +64,8 @@ module wd{
         }
 
         @require(function(){
-            if(GPUDetector.getInstance().extensionInstancedArrays !== null){
-                assert(!this.entityObject.hasComponent(ObjectInstance), Log.info.FUNC_SHOULD("if hardware support instance, instance object don't add lod component"));
+            if(InstanceUtils.isHardwareSupport()){
+                assert(!InstanceUtils.isObjectInstance(this.entityObject), Log.info.FUNC_SHOULD_NOT("if hardware support instance, object instance", "add lod component"));
             }
         })
         public update(elapsedTime:number):void {

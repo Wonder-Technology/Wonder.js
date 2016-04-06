@@ -142,7 +142,7 @@ module wd{
         protected addShaderLib(){
             var envMap = null;
 
-            if(GPUDetector.getInstance().extensionInstancedArrays !== null && this.geometry.entityObject.hasComponent(SourceInstance)){
+            if(InstanceUtils.isHardwareSupport() && InstanceUtils.isSourceInstance(this.geometry.entityObject)){
                 this.shader.addLib(NormalMatrixInstanceShaderLib.create());
             }
             else{

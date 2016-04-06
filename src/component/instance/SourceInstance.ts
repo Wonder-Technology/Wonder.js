@@ -43,7 +43,7 @@ module wd{
 
         @ensure(function(){
             var checkChildren = (child:GameObject) => {
-                assert(child.hasComponent(SourceInstance), Log.info.FUNC_SHOULD("children", "contain SourceInstance component"));
+                assert(InstanceUtils.isSourceInstance(child), Log.info.FUNC_SHOULD("children", "contain SourceInstance component"));
 
                 child.forEach((c:GameObject) => {
                     checkChildren(c);
@@ -100,7 +100,7 @@ module wd{
             //todo more?
         })
         @ensure(function(instance:GameObject){
-            assert(instance.hasComponent(ObjectInstance));
+            assert(InstanceUtils.isObjectInstance(instance));
         })
         public cloneInstance(name:string):GameObject{
             var clone = (name:string, entityObject:GameObject) => {
@@ -109,7 +109,7 @@ module wd{
                     sourceInstanceList = null;
 
 
-                //if(!entityObject.hasComponent(SourceInstance)){
+                //if(!InstanceUtils.isSourceInstance(entityObject)){
                 //    let sourceInstanceComponent = SourceInstance.create();
                 //    sourceInstanceList = sourceInstanceComponent.instanceList;
                 //
@@ -166,6 +166,8 @@ module wd{
         }
 
         private _addComponentsFromSourceToObject(source:GameObject, instance:GameObject){
+            var isHardwareSupport:boolean = InstanceUtils.isHardwareSupport();
+
             instance.removeComponent(Transform);
 
             source.forEachComponent((component:Component) => {
@@ -173,7 +175,7 @@ module wd{
                     return;
                 }
 
-                if(GPUDetector.getInstance().extensionInstancedArrays !== null){
+                if(isHardwareSupport){
                     if(component instanceof LOD){
                         return;
                     }
@@ -197,7 +199,7 @@ module wd{
 
         private _addSourceInstanceToChildren(){
             var add = (child:GameObject) => {
-                if(!child.hasComponent(SourceInstance)){
+                if(!InstanceUtils.isSourceInstance(child)){
                     let sourceInstanceComponent = SourceInstance.create();
 
                     child.addComponent(sourceInstanceComponent);
