@@ -315,7 +315,6 @@ module wd {
                 this._collider = component;
             }
             else if(component instanceof Transform){
-                //todo test
                 if(this.transform){
                     this.removeComponent(this.transform);
                 }

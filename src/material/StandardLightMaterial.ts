@@ -98,17 +98,14 @@ module wd{
 
         public lightModel:ELightModel = ELightModel.PHONG;
 
-        //public twoDShadowMapDatas:wdCb.Collection<TwoDShadowMapData> = wdCb.Collection.create<TwoDShadowMapData>();
         public cubemapShadowMapDatas:wdCb.Collection<CubemapShadowMapData> = wdCb.Collection.create<CubemapShadowMapData>();
 
-        //public buildTwoDShadowMapData:BuildTwoDShadowMapData = null;
         public buildCubemapShadowMapData:BuildCubemapShadowMapData = null;
 
         public specularColor:Color = Color.create("#ffffff");
         public emissionColor:Color = Color.create("rgba(0,0,0,0)");
         public lightMapIntensity:number = 1;
 
-        //private _twoDShadowMapSamplerIndex:number = 0;
         private _cubemapShadowMapSamplerIndex:number = 0;
 
 
@@ -119,17 +116,9 @@ module wd{
             this._cubemapShadowMapSamplerIndex++;
         }
 
-        //public addTwoDShadowMapData(shadowMapData:TwoDShadowMapData){
-        //    this.twoDShadowMapDatas.addChild(shadowMapData);
-        //}
-
         public addCubemapShadowMapData(shadowMapData:CubemapShadowMapData){
             this.cubemapShadowMapDatas.addChild(shadowMapData);
         }
-
-        //public clearTwoDShadowMapData(){
-        //    this.twoDShadowMapDatas.removeAllChildren();
-        //}
 
         public clearCubemapShadowMapData(){
             this.cubemapShadowMapDatas.removeAllChildren();
@@ -251,18 +240,6 @@ module wd{
             //});
         }
     }
-
-    //export type BuildTwoDShadowMapData = {
-    //    vpMatrixFromLight:Matrix4
-    //}
-    //
-    //export type TwoDShadowMapData = {
-    //    shadowBias:number,
-    //    shadowDarkness:number,
-    //    shadowSize:Array<number>,
-    //    lightPos:Vector3,
-    //    vpMatrixFromLight:Matrix4
-    //}
 
     //todo remove
     export type CubemapShadowMapData = {

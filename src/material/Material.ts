@@ -169,14 +169,12 @@ module wd {
         public init(){
             var self = this;
 
-            //todo test
             this._shaderMap.forEach((shader:Shader) => {
                 shader.init(self);
             });
         }
 
         public dispose(){
-            //todo test
             this._shaderMap.forEach((shader:Shader) => {
                 shader.dispose();
             });

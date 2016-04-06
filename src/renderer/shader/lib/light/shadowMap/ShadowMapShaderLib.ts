@@ -30,8 +30,6 @@ module wd{
                     return light.getComponent<PointLight>(PointLight).castShadow;
                 }).getCount() : 0;
 
-
-
             if(scene.shadowMap.softType === EShadowMapSoftType.PCF){
                 this.fsSourceDefineList.addChildren([{
                     name: "SHADOWMAP_TYPE_PCF"

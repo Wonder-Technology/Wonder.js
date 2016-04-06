@@ -91,7 +91,6 @@ module wd{
             this.mapManager.init();
         }
 
-        //todo exec only once?
         public dispose(){
             this.program.dispose();
             this.attributes.removeAllChildren();
@@ -193,7 +192,6 @@ module wd{
         protected abstract buildDefinitionData(cmd:RenderCommand, material:Material):void;
 
 
-        //todo test
         protected judgeRefreshShader(cmd:RenderCommand, material:Material){
             if(this.libDirty){
                 this.buildDefinitionData(cmd, material);
