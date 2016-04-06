@@ -415,16 +415,6 @@ describe("MapManager", function() {
             sandbox.stub(program, "getUniformLocation").returns(1);
         });
 
-        it("bind texture only one time in one frame", function () {
-            manager.bindAndUpdate();
-            manager.sendData(program);
-
-            expect(twoDTexture.bindToUnit).toCalledOnce();
-            expect(twoDShadowMap.bindToUnit).toCalledOnce();
-            expect(cubemapShadowMap.bindToUnit).toCalledOnce();
-            expect(cubemapTexture.bindToUnit).toCalledOnce();
-            expect(proceduralTexture.bindToUnit).toCalledOnce();
-        });
         it("bind texture every frame", function () {
             manager.bindAndUpdate();
             manager.sendData(program);
@@ -438,6 +428,16 @@ describe("MapManager", function() {
             expect(cubemapShadowMap.bindToUnit).toCalledTwice();
             expect(cubemapTexture.bindToUnit).toCalledTwice();
             expect(proceduralTexture.bindToUnit).toCalledTwice();
+        });
+        it("bind texture only one time in one frame", function () {
+            manager.bindAndUpdate();
+            manager.sendData(program);
+
+            expect(twoDTexture.bindToUnit).toCalledOnce();
+            expect(twoDShadowMap.bindToUnit).toCalledOnce();
+            expect(cubemapShadowMap.bindToUnit).toCalledOnce();
+            expect(cubemapTexture.bindToUnit).toCalledOnce();
+            expect(proceduralTexture.bindToUnit).toCalledOnce();
         });
         it("bind texture, then update texture, then bind and update the next one", function () {
             stubAllTypeMaps(function(texture){

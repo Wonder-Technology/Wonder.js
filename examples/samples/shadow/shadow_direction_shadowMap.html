@@ -35,7 +35,7 @@
             director.scene.addChild(box);
             director.scene.addChild(ground);
             director.scene.addChild(createAmbientLight());
-            director.scene.addChild(createDirectionLight([sphere, box, ground]));
+            director.scene.addChild(createDirectionLight());
             director.scene.addChild(createCamera());
 
             director.start();
@@ -59,6 +59,14 @@
 
             gameObject.addComponent(wd.MeshRenderer.create());
             gameObject.addComponent(geometry);
+
+
+
+            var shadow = wd.Shadow.create();
+            shadow.cast = true;
+            shadow.receive = true;
+
+            gameObject.addComponent(shadow);
 
 
             gameObject.transform.translate(wd.Vector3.create(-30, 20, 0));
@@ -95,6 +103,13 @@
 
             gameObject.addComponent(action);
 
+
+            var shadow = wd.Shadow.create();
+            shadow.cast = true;
+            shadow.receive = true;
+
+            gameObject.addComponent(shadow);
+
             return gameObject;
         }
 
@@ -121,6 +136,14 @@
             gameObject.addComponent(wd.MeshRenderer.create());
             gameObject.addComponent(plane);
 
+
+            var shadow = wd.Shadow.create();
+            shadow.cast = true;
+            shadow.receive = true;
+
+            gameObject.addComponent(shadow);
+
+
             return gameObject;
         }
 
@@ -134,7 +157,7 @@
             return ambientLight;
         }
 
-        function createDirectionLight(shadowList) {
+        function createDirectionLight() {
             var SHADOW_MAP_WIDTH = 1024,
                     SHADOW_MAP_HEIGHT = 1024;
 
@@ -153,7 +176,6 @@
             directionLightComponent.shadowMapWidth = SHADOW_MAP_WIDTH;
             directionLightComponent.shadowMapHeight = SHADOW_MAP_HEIGHT;
 
-            directionLightComponent.shadowRenderList = shadowList;
 
             var directionLight = wd.GameObject.create();
             directionLight.addComponent(directionLightComponent);
