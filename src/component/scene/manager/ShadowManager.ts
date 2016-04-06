@@ -25,48 +25,54 @@ module wd{
         }
 
         @require(function(){
-            this.entityObject.getChildren()
-                .filter((firstLevelChild:GameObject) => {
-                    return !JudgeUtils.isSpacePartitionObject(firstLevelChild);
-                })
-                .forEach((firstLevelChild:GameObject) => {
-                    let checkChild = (child:GameObject) => {
-                        assert(!child.hasComponent(Shadow), Log.info.FUNC_CAN_NOT("if the first level object of gameObjectScene don't contain Shadow component, its children", "contain Shadow component"));
+            var self = this;
+            var checkFirstLevelOfGameObjectScene = () => {
+                    self.entityObject.getChildren()
+                        .filter((firstLevelChild:GameObject) => {
+                            return !JudgeUtils.isSpacePartitionObject(firstLevelChild);
+                        })
+                        .forEach((firstLevelChild:GameObject) => {
+                            let checkChild = (child:GameObject) => {
+                                assert(!child.hasComponent(Shadow), Log.info.FUNC_CAN_NOT("if the first level object of gameObjectScene don't contain Shadow component, its children", "contain Shadow component"));
 
-                        child.forEach((c:GameObject) => {
-                            checkChild(c);
+                                child.forEach((c:GameObject) => {
+                                    checkChild(c);
+                                });
+                            };
+
+                            if(!firstLevelChild.hasComponent(Shadow)){
+                                firstLevelChild.forEach((child:GameObject) => {
+                                    checkChild(child);
+                                });
+                            }
                         });
-                    };
+                },
+                checkFirstLevelOfSpacePartitionObject = () => {
+                    self.entityObject.getChildren()
+                        .filter((firstLevelChild:GameObject) => {
+                            return JudgeUtils.isSpacePartitionObject(firstLevelChild);
+                        })
+                        .forEach((spacePartitionObject:GameObject) => {
+                            spacePartitionObject.forEach((firstLevelChildOfSpacePartitionObject:GameObject) => {
+                                let checkChild = (child:GameObject) => {
+                                    assert(!child.hasComponent(Shadow), Log.info.FUNC_CAN_NOT("if the first level object of space partition objject don't contain Shadow component, its children", "contain Shadow component"));
 
-                    if(!firstLevelChild.hasComponent(Shadow)){
-                        firstLevelChild.forEach((child:GameObject) => {
-                            checkChild(child);
+                                    child.forEach((c:GameObject) => {
+                                        checkChild(c);
+                                    });
+                                };
+
+                                if(!firstLevelChildOfSpacePartitionObject.hasComponent(Shadow)){
+                                    firstLevelChildOfSpacePartitionObject.forEach((child:GameObject) => {
+                                        checkChild(child);
+                                    });
+                                }
+                            });
                         });
-                    }
-                });
+                };
 
-
-            this.entityObject.getChildren()
-                .filter((firstLevelChild:GameObject) => {
-                    return JudgeUtils.isSpacePartitionObject(firstLevelChild);
-                })
-                .forEach((spacePartitionObject:GameObject) => {
-                    spacePartitionObject.forEach((firstLevelChildOfSpacePartitionObject:GameObject) => {
-                        let checkChild = (child:GameObject) => {
-                            assert(!child.hasComponent(Shadow), Log.info.FUNC_CAN_NOT("if the first level object of space partition objject don't contain Shadow component, its children", "contain Shadow component"));
-
-                            child.forEach((c:GameObject) => {
-                                checkChild(c);
-                            });
-                        };
-
-                        if(!firstLevelChildOfSpacePartitionObject.hasComponent(Shadow)){
-                            firstLevelChildOfSpacePartitionObject.forEach((child:GameObject) => {
-                                checkChild(child);
-                            });
-                        }
-                    });
-                });
+            checkFirstLevelOfGameObjectScene();
+            checkFirstLevelOfSpacePartitionObject();
         })
         //todo optimize:cache?
         public setShadowRenderListInEachLoop(){
@@ -110,13 +116,11 @@ module wd{
             RenderUtils.getGameObjectRenderList(this.entityObject.getChildren())
                 .forEach((child:GameObject) => {
                     if(JudgeUtils.isSpacePartitionObject(child)){
-                        //list.addChildren(
                         child.forEach((c:GameObject) => {
                             if(self._isCastShadow(c)){
                                 list.addChild(c.getComponent<Shadow>(Shadow).layer);
                             }
                         })
-                        //);
 
                         return;
                     }

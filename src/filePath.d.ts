@@ -143,6 +143,7 @@
 /// <reference path="component/shadow/Shadow"/>
 /// <reference path="component/shadow/ShadowUtils"/>
 /// <reference path="component/shadow/EShadowLayer"/>
+/// <reference path="component/shadow/EShadowMapSoftType"/>
 
 
 /// <reference path="component/animation/Animation"/>

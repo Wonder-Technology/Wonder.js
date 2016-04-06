@@ -136,8 +136,6 @@ module wd {
             super.render(renderer, this.currentCamera);
         }
 
-        //public shadowRenderListForBuildShadowMap:wdCb.Collection<GameObject> = null;
-
         protected getRenderList(){
             return RenderUtils.getGameObjectRenderList(this.children);
         }
@@ -217,17 +215,6 @@ module wd {
         public enable:boolean = false;
         public engine:EPhysicsEngineType = EPhysicsEngineType.CANNON;
         public iterations:number = 10;
-    }
-
-
-    export type ShadowMapConfig = {
-        enable:boolean;
-        softType:EShadowMapSoftType
-    }
-
-    export enum EShadowMapSoftType{
-        NONE,
-        PCF
     }
 
     export class ShadowMapModel{

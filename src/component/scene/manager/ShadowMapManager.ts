@@ -3,8 +3,6 @@ module wd {
         public static create(shadowManager:ShadowManager) {
             var obj = new this(shadowManager);
 
-            obj.initWhenCreate();
-
             return obj;
         }
 
@@ -22,27 +20,15 @@ module wd {
         private _layerList:wdCb.Collection<string> = wdCb.Collection.create<string>();
         private _shadowMapLayerChangeSubscription:wdFrp.IDisposable = null;
 
-
-        public initWhenCreate(){
-            //var self = this;
-            //
-            //this._shadowMapLayerChangeSubscription = EventManager.fromEvent(<any>EEngineEvent.SHADOWMAP_LAYER_CHANGE)
-            //.subscribe((e:CustomEvent) => {
-            //    self._registerLayer(e.userData.layer);
-            //});
-        }
-
         public initShadowMapData(){
+            let scene:GameObjectScene = null;
+
             if(!this._hasShadow()) {
                 return;
             }
 
-            let scene:GameObjectScene = this._shadowManager.entityObject;
+            scene = this._shadowManager.entityObject;
 
-            //this._layerList = this._layerList.removeRepeatItems();
-            //if(this._layerList.getCount() === 0){
-            //    this._layerList.addChild(<any>EShadowLayer.DEFAULT);
-            //}
             this._layerList = this._shadowManager.getShadowLayerList();
 
             if(scene.directionLights){
@@ -72,10 +58,6 @@ module wd {
         public dispose(){
             this._shadowMapLayerChangeSubscription.dispose();
         }
-
-        //private _registerLayer(layer:string){
-        //    this._layerList.addChild(layer);
-        //}
 
         private _hasShadow(){
             var scene = this._shadowManager.entityObject;
