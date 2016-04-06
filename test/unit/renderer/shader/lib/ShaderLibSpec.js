@@ -41,12 +41,14 @@ describe("shaderLibSpec", function () {
 
 
                 scene.shadowMap.softType = wd.EShadowMapSoftType.PCF;
-                shader = new wd.CommonShader();
+                shader = wd.CommonShader.create();
                 shader.program = program;
                 Lib = wd.TwoDShadowMapShaderLib;
                 lib = Lib.create();
                 shader.addLib(lib);
                 shader.init();
+
+                scene.glslData.addChild(wd.EShaderGLSLData.TWOD_SHADOWMAP, wdCb.Collection.create());
             });
 
             it("if SceneDispatcher.shadowMap.softType === PCF, glsl add 'define SHADOWMAP_TYPE_PCF'", function () {
@@ -54,7 +56,7 @@ describe("shaderLibSpec", function () {
 
                 expect(shader.fsSource).toContain("define SHADOWMAP_TYPE_PCF");
             });
-            it("pcf can be opened or closed in runtime", function () {
+            it("pcf can be opened or closed at runtime", function () {
                 shader.update(quadCmd, material);
 
                 scene.shadowMap.softType = wd.EShadowMapSoftType.NONE;

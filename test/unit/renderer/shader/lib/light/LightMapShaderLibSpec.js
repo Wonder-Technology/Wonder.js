@@ -9,7 +9,7 @@ describe("LightMapShaderLib", function () {
         Lib = wd.LightMapShaderLib;
         lib = new Lib();
 
-        material = new wd.LightMaterial();
+        material = wd.LightMaterial.create();
         quadCmd = new wd.QuadCommand();
         program = new wd.Program();
 

@@ -8,6 +8,7 @@ describe("Shader", function() {
         wd.Shader.prototype.createShaderSourceBuilder = sandbox.stub().returns(new wd.ShaderSourceBuilder());
 
         shader = new wd.Shader();
+        shader.initWhenCreate();
 
         testTool.openContractCheck(sandbox);
     });

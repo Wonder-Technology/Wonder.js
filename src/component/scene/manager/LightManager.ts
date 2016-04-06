@@ -11,11 +11,11 @@ module wd {
         }
 
         get directionLights(): wdCb.Collection<GameObject>{
-            return this._lights.getChild(DirectionLight.type);
+            return this._getLights(DirectionLight.type);
         }
 
         get pointLights(): wdCb.Collection<GameObject>{
-            return this._lights.getChild(PointLight.type);
+            return this._getLights(PointLight.type);
         }
 
         private _lights:wdCb.Hash<any> = wdCb.Hash.create<any>();
@@ -41,6 +41,14 @@ module wd {
             lightList.forEach((light:GameObject) => {
                 self.addChild(light);
             })
+        }
+
+        private _getLights(type:string){
+            if(this._lights.hasChild(type)){
+                return this._lights.getChild(type);
+            }
+
+            return wdCb.Collection.create<GameObject>();
         }
     }
 }

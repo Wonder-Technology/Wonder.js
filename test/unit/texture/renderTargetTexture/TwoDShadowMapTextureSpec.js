@@ -34,17 +34,17 @@ describe("TwoDShadowMapTexture", function() {
             var material = wd.LightMaterial.create();
             material.diffuseMap = map;
 
-            material.addTwoDShadowMap(texture);
+            material.mapManager.addTwoDShadowMap(texture);
 
             var texture2 = new Texture();
-            material.addTwoDShadowMap(texture2);
+            material.mapManager.addTwoDShadowMap(texture2);
 
 
 
             material.mapManager.sendData(program);
 
-            expect(program.sendUniformData).toCalledWith("u_twoDShadowMapSampler[0]", wd.EVariableType.SAMPLER_2D, 1);
-            expect(program.sendUniformData).toCalledWith("u_twoDShadowMapSampler[1]", wd.EVariableType.SAMPLER_2D, 2);
+            expect(program.sendUniformData).toCalledWith("u_twoDShadowMapSampler[0]", wd.EVariableType.SAMPLER_2D, 0);
+            expect(program.sendUniformData).toCalledWith("u_twoDShadowMapSampler[1]", wd.EVariableType.SAMPLER_2D, 1);
         });
     });
 });

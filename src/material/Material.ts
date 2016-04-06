@@ -162,7 +162,7 @@ module wd {
         //public abstract copy():Material;
 
         public initWhenCreate(){
-            this._currentShader = CommonShader.create(this);
+            this._currentShader = this.createShader();
             this.addShader(<any>EShaderMapKey.DEFAULT, this._currentShader);
         }
 

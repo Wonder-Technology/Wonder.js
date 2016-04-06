@@ -9,7 +9,7 @@ describe("custom shader", function () {
         sandbox.stub(wd.GPUDetector.getInstance(), "precision", wd.EGPUPrecision.HIGHP);
         gl = wd.DeviceManager.getInstance().gl;
 
-        material = new wd.ShaderMaterial();
+        material = wd.ShaderMaterial.create();
     });
     afterEach(function () {
         testTool.clearInstance();

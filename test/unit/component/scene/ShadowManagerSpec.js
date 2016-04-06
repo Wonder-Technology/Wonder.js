@@ -16,6 +16,7 @@ describe("ShadowManager", function() {
 
         it("unbind endLoop event", function(){
             wd.EventManager.off();
+            sandbox.stub(manager._shadowMapManager, "initShadowMapData");
             manager.init();
 
             sandbox.stub(manager, "_removeShadowMapGLSLData");

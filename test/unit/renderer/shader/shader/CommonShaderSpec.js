@@ -50,11 +50,11 @@ describe("CommonShader", function() {
             expect(lib.sendShaderVariables).toCalledOnce();
         });
         it("send map data", function () {
-            sandbox.stub(material.mapManager, "sendData");
+            sandbox.stub(shader.mapManager, "sendData");
 
             shader.update(quadCmd, material);
 
-            expect(material.mapManager.sendData).toCalledOnce();
+            expect(shader.mapManager.sendData).toCalledOnce();
         });
     });
 });

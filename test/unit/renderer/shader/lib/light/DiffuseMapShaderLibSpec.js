@@ -9,7 +9,7 @@ describe("DiffuseMapShaderLib", function () {
         Lib = wd.DiffuseMapShaderLib;
         lib = new Lib();
 
-        material = new wd.LightMaterial();
+        material = wd.LightMaterial.create();
         quadCmd = new wd.QuadCommand();
         program = new wd.Program();
 
