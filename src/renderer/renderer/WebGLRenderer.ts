@@ -56,6 +56,7 @@ module wd{
 
             if(this.skyboxCommand){
                 deviceManager.depthFunc = EDepthFunction.LEQUAL;
+                this.skyboxCommand.webglState = webglState;
                 this.skyboxCommand.execute();
                 deviceManager.depthFunc = EDepthFunction.LESS;
             }

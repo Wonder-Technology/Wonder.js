@@ -145,7 +145,7 @@ describe("renderWebGL", function() {
         });
 
         describe("if skyboxCommand exist, execute skyboxCommand", function(){
-            it("set depthFunc to be LEQUAL, then execute skyboxCommand, then restore depthFunc to be LESS", function(){
+            it("set depthFunc to be LEQUAL, then set skyboxCommand's state, then execute skyboxCommand, then restore depthFunc to be LESS", function(){
                 var depthFuncValArr = [];
                 var stub = sandbox.stub();
 
@@ -163,6 +163,7 @@ describe("renderWebGL", function() {
                 expect(depthFuncValArr).toEqual([
                     "LEQUAL", "LESS"
                 ]);
+                expect(cmd.webglState).toEqual(renderer.webglState);
                 expect(cmd.execute).toCalledOnce();
             });
         });
