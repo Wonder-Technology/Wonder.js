@@ -10,15 +10,9 @@ var sample;
     var Sphere1 = (function () {
         function Sphere1(gameObject) {
             this._gameObject = null;
-            this._collidingMaterial = null;
-            this._originMaterial = null;
             this._gameObject = gameObject;
         }
         Sphere1.prototype.init = function () {
-            this._collidingMaterial = wd.LightMaterial.create();
-            this._collidingMaterial.color = wd.Color.create("rgb(255,0,0)");
-            this._collidingMaterial.init();
-            this._originMaterial = this._gameObject.getComponent(wd.Geometry).material;
         };
         Sphere1.prototype.onContact = function (collisionObjects) {
             console.log("contact", collisionObjects);
@@ -33,6 +27,6 @@ var sample;
             wd.script("sphere1")
         ], Sphere1);
         return Sphere1;
-    })();
+    }());
     sample.Sphere1 = Sphere1;
 })(sample || (sample = {}));

@@ -31,6 +31,12 @@ module wd{
 
         public url:string = null;
 
+        private _subscription:wdFrp.IDisposable = null;
+
+        public dispose(){
+            this._subscription.dispose();
+        }
+
         public createLoadJsStream(){
             Log.error(!this.url, Log.info.FUNC_MUST_DEFINE("url"));
 
@@ -45,7 +51,7 @@ module wd{
 
             super.addToObject(entityObject, isShareComponent);
 
-            this.createLoadJsStream()
+            this._subscription = this.createLoadJsStream()
                 .subscribe((data:ScriptFileData) => {
                     self._handlerAfterLoadedScript(data, entityObject);
                 });

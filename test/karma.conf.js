@@ -64,8 +64,8 @@
         //
         //'test/unit/texture/**',
 
-        'test/unit/**/material/**',
-        'test/unit/**/material*/**',
+        //'test/unit/**/material/**',
+        //'test/unit/**/material*/**',
         //
         //'test/unit/**/MapManager*',
 
@@ -112,7 +112,7 @@
 
         //'test/unit/**/EntityObjectSpec*',
 
-        //'test/unit/component/physics/**/eventSpec*',
+        'test/unit/component/physics/**/eventSpec*',
 
         //'test/unit/**/OctreeSpec*',
         //'test/unit/**/CollisionDetectorSpec*',
@@ -135,7 +135,7 @@
 
         //'test/unit/**/MainSpec*',
 
-        //'test/unit/component/event/eventSpec*',
+        'test/unit/component/event/eventSpec*',
 
         //'test/unit/**/ui/**',
         //'test/unit/**/UIObjectSpec*',

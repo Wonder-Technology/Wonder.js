@@ -9,10 +9,21 @@ var scriptTool = (function () {
 
 
 
+            if(isNotAdd === true){
+            }
+            else{
+                if(!wd.JudgeUtils.isEqual(entityObject, director.scene)){
+                    director.scene.addChild(entityObject);
+                }
+            }
+
+
             entityObject.execScript = function(scriptHandlerName){
                 if(scriptHandlerName === "onEnter"){
                     test = entityObject.scriptList.getChild(scriptName);
-                    judgeOnEnter(test, entityObject);
+                    //if(test){
+                        judgeOnEnter(test, entityObject);
+                    //}
 
                     execScript.apply(entityObject, arguments);
 
@@ -32,13 +43,6 @@ var scriptTool = (function () {
             }
 
 
-            if(isNotAdd === true){
-            }
-            else{
-                if(!wd.JudgeUtils.isEqual(entityObject, director.scene)){
-                    director.scene.addChild(entityObject);
-                }
-            }
 
 
             var loopBody = director._loopBody;
@@ -55,6 +59,8 @@ var scriptTool = (function () {
 
                 done();
             };
+
+
 
             director._init();
         }

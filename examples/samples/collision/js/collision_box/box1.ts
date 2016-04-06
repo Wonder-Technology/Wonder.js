@@ -11,15 +11,16 @@ module sample{
         private _originMaterial:wd.Material = null;
 
         public init(){
-            var gameObject = this._gameObject;
+            var gameObject = this._gameObject,
+                geometry =  this._gameObject.getComponent<wd.Geometry>(wd.Geometry)
 
             this._collidingMaterial = wd.LightMaterial.create();
             this._collidingMaterial.color = wd.Color.create("rgb(255,0,0)");
 
+            this._collidingMaterial.geometry = geometry;
             this._collidingMaterial.init();
 
-            this._originMaterial = this._gameObject.getComponent<wd.Geometry>(wd.Geometry).material;
-
+            this._originMaterial = geometry.material;
 
 
             wd.EventManager.fromEvent(wd.EEventName.KEYDOWN)

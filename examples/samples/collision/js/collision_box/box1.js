@@ -15,11 +15,12 @@ var sample;
             this._gameObject = gameObject;
         }
         Box1.prototype.init = function () {
-            var gameObject = this._gameObject;
+            var gameObject = this._gameObject, geometry = this._gameObject.getComponent(wd.Geometry);
             this._collidingMaterial = wd.LightMaterial.create();
             this._collidingMaterial.color = wd.Color.create("rgb(255,0,0)");
+            this._collidingMaterial.geometry = geometry;
             this._collidingMaterial.init();
-            this._originMaterial = this._gameObject.getComponent(wd.Geometry).material;
+            this._originMaterial = geometry.material;
             wd.EventManager.fromEvent(wd.EEventName.KEYDOWN)
                 .subscribe(function (e) {
                 var keyState = e.keyState, x = 0, z = 0, moveSpeedX = 0.5, moveSpeedZ = 0.5;
@@ -55,6 +56,6 @@ var sample;
             wd.script("box1")
         ], Box1);
         return Box1;
-    })();
+    }());
     sample.Box1 = Box1;
 })(sample || (sample = {}));
