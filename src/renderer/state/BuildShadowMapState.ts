@@ -10,8 +10,8 @@ module wd{
             var deviceManager = DeviceManager.getInstance();
 
             deviceManager.side = this.getSide(material);
-
             deviceManager.blend = false;
+            deviceManager.depthWrite = false;
         }
     }
 }
