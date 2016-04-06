@@ -59,9 +59,9 @@ module wd{
             this._instanceBuffer = InstanceBuffer.create();
 
             this._endLoopSubscription = EventManager.fromEvent(<any>EEngineEvent.ENDLOOP)
-            .subscribe(() => {
-                self._toRenderInstanceList.removeAllChildren();
-            });
+                .subscribe(() => {
+                    self._toRenderInstanceList.removeAllChildren();
+                });
 
             this._enterSubscription = EventManager.fromEvent(this.entityObject, <any>EEngineEvent.ENTER)
                 .subscribe(() => {
@@ -75,7 +75,34 @@ module wd{
         }
 
         @require(function(){
-            this._checkInstanceIsNotOnlyInInstanceListButAlsoInLoop();
+            var self = this;
+            var checkInstanceIsNotOnlyInInstanceListButAlsoInLoop = () => {
+                var scene:SceneDispatcher = null,
+                    children:wdCb.Collection<GameObject> = null,
+                    isInLoop:boolean = true;
+
+                if(self.instanceList.getCount() === 0){
+                    return;
+                }
+
+                scene = Director.getInstance().scene;
+                children = wdCb.Collection.create<GameObject>();
+
+                IterateUtils.forEachAll(scene.gameObjectScene, (gameObject:GameObject) => {
+                    children.addChild(gameObject);
+                });
+
+                self.instanceList.forEach((instance:GameObject) => {
+                    if(!children.hasChild(instance)){
+                        isInLoop = false;
+                        return wdCb.$BREAK;
+                    }
+                });
+
+                assert(isInLoop, Log.info.FUNC_SHOULD("instance", "not only in instanceList, but also in the main loop"));
+            };
+
+            checkInstanceIsNotOnlyInInstanceListButAlsoInLoop();
         })
         public dispose(){
             this._endLoopSubscription.dispose();
@@ -158,7 +185,7 @@ module wd{
 
             source.forEachComponent((component:Component) => {
                 if(component instanceof SourceInstance
-                || (isHardwareSupport && component instanceof LOD)){
+                    || (isHardwareSupport && component instanceof LOD)){
                     return;
                 }
 
@@ -191,32 +218,6 @@ module wd{
             this.entityObject.forEach((child:GameObject) => {
                 add(child);
             });
-        }
-
-        private _checkInstanceIsNotOnlyInInstanceListButAlsoInLoop(){
-            var scene:SceneDispatcher = null,
-                children:wdCb.Collection<GameObject> = null,
-                isInLoop:boolean = true;
-
-            if(this.instanceList.getCount() === 0){
-                return;
-            }
-
-            scene = Director.getInstance().scene;
-            children = wdCb.Collection.create<GameObject>();
-
-            IterateUtils.forEachAll(scene.gameObjectScene, (gameObject:GameObject) => {
-                children.addChild(gameObject);
-            });
-
-            this.instanceList.forEach((instance:GameObject) => {
-                if(!children.hasChild(instance)){
-                    isInLoop = false;
-                    return wdCb.$BREAK;
-                }
-            });
-
-            assert(isInLoop, Log.info.FUNC_SHOULD("instance", "not only in instanceList, but also in the main loop"));
         }
 
         @ensure(function(){

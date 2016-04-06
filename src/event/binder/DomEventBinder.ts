@@ -20,6 +20,10 @@ module wd {
         public on(dom:HTMLElement, eventName:EEventName|string, handler:Function, priority:number):void;
 
         @require(function(...args){
+            var checkEventSeparator = (eventName:string) => {
+                assert(eventName.indexOf(DomEventListenerMap.eventSeparator) === -1, Log.info.FUNC_SHOULD_NOT("eventName", `contain ${DomEventListenerMap.eventSeparator}`));
+            };
+
             if(args.length === 1){
             }
             else if(args.length === 2){
@@ -27,17 +31,17 @@ module wd {
             else if(args.length === 3 && JudgeUtils.isString(args[0])){
                 let eventName = args[0];
 
-                this._checkEventSeparator(eventName);
+                checkEventSeparator(eventName);
             }
             else if(args.length === 3 && JudgeUtils.isDom(args[0])){
                 let eventName = args[1];
 
-                this._checkEventSeparator(eventName);
+                checkEventSeparator(eventName);
             }
             else if(args.length === 4) {
                 let eventName = args[1];
 
-                this._checkEventSeparator(eventName);
+                checkEventSeparator(eventName);
             }
         })
         public on(...args) {
@@ -159,10 +163,6 @@ module wd {
                 EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName))
                     .off(dom, eventName, handler);
             }
-        }
-
-        private _checkEventSeparator(eventName:string){
-            assert(eventName.indexOf(DomEventListenerMap.eventSeparator) === -1, Log.info.FUNC_SHOULD_NOT("eventName", `contain ${DomEventListenerMap.eventSeparator}`));
         }
     }
 }
