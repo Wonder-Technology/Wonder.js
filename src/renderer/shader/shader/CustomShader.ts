@@ -1,9 +1,7 @@
 module wd{
     export class CustomShader extends Shader{
-        public static create(material:Material) {
-        	var obj = new this(material);
-
-            obj.initWhenCreate();
+        public static create() {
+        	var obj = new this();
 
         	return obj;
         }
@@ -22,9 +20,6 @@ module wd{
             this.libs.forEach((lib:CustomShaderLib) => {
                 lib.sendShaderVariables(program, quadCmd, material);
             });
-
-            this.mapManager.bindAndUpdate();
-            this.mapManager.sendData(program);
         }
 
         public read(definitionData:ShaderDefinitionData){

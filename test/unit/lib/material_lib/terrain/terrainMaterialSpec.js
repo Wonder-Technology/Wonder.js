@@ -140,7 +140,7 @@ describe("terrain material", function() {
 
 
 
-                material.updateShader(quadCmd);
+                material.bindAndUpdateTexture();
 
 
 
@@ -158,6 +158,7 @@ describe("terrain material", function() {
 
 
 
+                material.sendTextureData();
 
 
 

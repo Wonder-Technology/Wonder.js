@@ -40,10 +40,11 @@
 
         //'test/unit/**/Shadow*Spec.js',
         //
-        'test/unit/renderer/*ShadowMapSpec.js',
-        'test/unit/renderer/*ShadowMap_*Spec.js',
+        //'test/unit/renderer/shadowMapSpec.js',
+        //'test/unit/renderer/*ShadowMapSpec.js',
+        //'test/unit/renderer/*ShadowMap_*Spec.js',
 
-        'test/unit/**/instance/*',
+        //'test/unit/**/instance/*',
 
         //'test/unit/**/instance_shadow*',
         //'test/unit/**/instance_shadow_*',
@@ -52,7 +53,7 @@
 
         //qtest/unit/**/water*',
 
-        //'test/unit/lib/**',
+        'test/unit/lib/**',
 
         //'test/unit/**/terrain*',
 
@@ -64,8 +65,8 @@
         //
         //'test/unit/texture/**',
 
-        //'test/unit/**/material/**',
-        //'test/unit/**/material*/**',
+        'test/unit/**/material/**',
+        'test/unit/**/material*/**',
         //
         //'test/unit/**/MapManager*',
 
@@ -206,7 +207,7 @@
       //  'test/unit/asset/loaderSpec.js',
         //'test/unit/asset/wd/WDParserSpec.js',
         //'test/unit/asset/wd/WDBuilderSpec.js',
-        'test/unit/math/*.js',
+        //'test/unit/math/*.js',
         //'test/unit/component/**/GeometrySpec.js',
         //'test/unit/component/**/TerrainGeometrySpec.js',
         //'test/unit/component/**/ModelGeometrySpec.js',

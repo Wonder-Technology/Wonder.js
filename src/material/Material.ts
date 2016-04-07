@@ -4,10 +4,6 @@ module wd {
             return this.shader.program;
         }
 
-        get mapManager(){
-            return this.shader.mapManager;
-        }
-
         private _blendType:EBlendType = null;
         get blendType(){
             if(this._blendType){
@@ -154,7 +150,7 @@ module wd {
         public blendEquationSeparate:Array<EBlendEquation> = [EBlendEquation.ADD, EBlendEquation.ADD];
         public shading = EShading.FLAT;
         public geometry:Geometry = null;
-        //public glslData:wdCb.Hash<any> = wdCb.Hash.create<any>();
+        public mapManager:MapManager = MapManager.create(this);
 
         private _shaderMap:wdCb.Hash<Shader> = wdCb.Hash.create<Shader>();
         private _currentShader:Shader = null;
@@ -172,12 +168,16 @@ module wd {
             this._shaderMap.forEach((shader:Shader) => {
                 shader.init(self);
             });
+
+            this.mapManager.init();
         }
 
         public dispose(){
             this._shaderMap.forEach((shader:Shader) => {
                 shader.dispose();
             });
+
+            this.mapManager.dispose();
         }
 
         public updateShader(quadCmd:QuadCommand){
@@ -192,6 +192,14 @@ module wd {
             }
 
             shader.update(quadCmd, this);
+        }
+
+        public bindAndUpdateTexture(){
+            this.mapManager.bindAndUpdate();
+        }
+
+        public sendTextureData(){
+            this.mapManager.sendData(this.program);
         }
 
         @ensureGetter(function(shader:Shader){

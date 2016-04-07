@@ -59,12 +59,15 @@ describe("mirror material", function () {
                 material.init();
 
 
-                material.updateShader(quadCmd);
+                material.bindAndUpdateTexture();
 
 
                 expect(reflectionMap.bindToUnit).toCalledWith(0);
 
                 expect(reflectionMap.update).not.toCalled();
+
+
+                material.sendTextureData();
 
 
                 expect(material.program.sendUniformData).toCalledWith("u_reflectionMapSampler", wd.EVariableType.SAMPLER_2D, 0);

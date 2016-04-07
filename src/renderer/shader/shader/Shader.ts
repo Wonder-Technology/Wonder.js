@@ -1,9 +1,5 @@
 module wd{
     export abstract class Shader{
-        constructor(material:Material){
-            this._material = material;
-        }
-
         private _attributes:wdCb.Hash<ShaderData> = wdCb.Hash.create<ShaderData>();
         get attributes(){
             return this._attributes;
@@ -54,19 +50,13 @@ module wd{
 
         public program:Program = Program.create();
         public libDirty:boolean = false;
-        public mapManager:MapManager = null;
 
         protected libs:wdCb.Collection<ShaderLib> = wdCb.Collection.create<ShaderLib>();
         protected sourceBuilder:ShaderSourceBuilder = this.createShaderSourceBuilder();
 
         private _definitionDataDirty:boolean = false;
-        private _material:Material = null;
 
         public abstract update(cmd:RenderCommand, material:Material);
-
-        public initWhenCreate(){
-            this.mapManager = MapManager.create(this._material);
-        }
 
         public createVsShader(){
             var gl = DeviceManager.getInstance().gl;
@@ -87,8 +77,6 @@ module wd{
             });
 
             this.judgeRefreshShader(null, material);
-
-            this.mapManager.init();
         }
 
         public dispose(){
@@ -99,8 +87,6 @@ module wd{
             this.libs.forEach((lib:ShaderLib) => {
                 lib.dispose();
             });
-
-            this.mapManager.dispose();
         }
 
         public hasLib(lib:ShaderLib);

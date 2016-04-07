@@ -30,7 +30,7 @@ module wd{
         }
 
         protected createShader(){
-            return CustomShader.create(this);
+            return CustomShader.create();
         }
     }
 }

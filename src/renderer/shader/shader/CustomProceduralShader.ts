@@ -3,13 +3,11 @@ module wd{
         public static create(texture:CustomProceduralTexture){
             var obj = new this(texture);
 
-            obj.initWhenCreate();
-
             return obj;
         }
 
         constructor(texture:CustomProceduralTexture){
-            super(null);
+            super();
 
             this._texture = texture;
         }

@@ -20,20 +20,20 @@ module wd {
         private _light:PointLight = null;
         private _layer:string = null;
         //private _mapManager:MapManager = MapManager.create(null);
-        private _buildShadowMapShader:CommonShader = CommonShader.create(null);
+        //private _buildShadowMapShader:CommonShader = CommonShader.create(null);
         private _shadowMapRendererUtils:CubemapShadowMapRenderTargetRendererUtils = null;
 
 
         public initWhenCreate(){
-            var mapManager:MapManager = this._buildShadowMapShader.mapManager;
+            //var mapManager:MapManager = this._buildShadowMapShader.mapManager;
 
             this._shadowMapRendererUtils = CubemapShadowMapRenderTargetRendererUtils.create(this._light, this.texture);
 
-            if (!mapManager.hasCubemapShadowMap(this.texture)) {
-                mapManager.addCubemapShadowMap(this.texture);
-            }
+            //if (!mapManager.hasCubemapShadowMap(this.texture)) {
+            //    mapManager.addCubemapShadowMap(this.texture);
+            //}
 
-            this._buildShadowMapShader.addLib(BuildCubemapShadowMapShaderLib.create());
+            //this._buildShadowMapShader.addLib(BuildCubemapShadowMapShaderLib.create());
 
             super.initWhenCreate();
         }
@@ -83,7 +83,7 @@ module wd {
             // //this._mapManager.sendData();
             // */
 
-            this._buildShadowMapShader.update(null, null);
+            //this._buildShadowMapShader.update(null, null);
         }
 
         protected afterRender(){
