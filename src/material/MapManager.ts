@@ -100,6 +100,23 @@ module wd{
             return this._shadowMapController.hasTwoDShadowMap(shadowMap);
         }
 
+        @require(function(shadowMap:IShadowMapTexture){
+            assert(!this._shadowMapController.hasCubemapShadowMap(shadowMap), Log.info.FUNC_SHOULD_NOT("add the shadowMap which is already exist"));
+        })
+        public addCubemapShadowMap(shadowMap:CubemapShadowMapTexture){
+            this._shadowMapController.addCubemapShadowMap(shadowMap);
+
+            this._textureDirty = true;
+        }
+
+        public getCubemapShadowMapList(){
+            return this._shadowMapController.getCubemapShadowMapList();
+        }
+
+        public hasCubemapShadowMap(shadowMap:CubemapShadowMapTexture){
+            return this._shadowMapController.hasCubemapShadowMap(shadowMap);
+        }
+
         @ensure(function(mapList:wdCb.Collection<BasicTexture|ProceduralTexture>){
             mapList.forEach((map:BasicTexture|ProceduralTexture) => {
                 assert(map instanceof BasicTexture || map instanceof ProceduralTexture, Log.info.FUNC_SHOULD("mapList", "only contain BasicTexture or ProceduralTexture"));

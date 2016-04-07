@@ -11,6 +11,16 @@ module wd {
         protected abstract setCamera(cubeCameraComponent:PerspectiveCamera);
         protected abstract getPosition():Vector3;
 
+        @virtual
+        protected renderRenderer(renderer:Renderer){
+            renderer.webglState = BasicState.create();
+            renderer.render();
+        }
+
+        @virtual
+        protected beforeRenderFrameBufferTexture(renderCamera:GameObject){
+        }
+
         //todo can one frameBuffer bind six faces of cubemap?
         protected initFrameBuffer(){
             var frameBufferOperator = this.frameBufferOperator,
@@ -40,27 +50,31 @@ module wd {
                 renderList = null;
 
             renderList = this.getRenderList();
-            //todo remove
-            this.texture.bindToUnit(0);
 
-            if(this._needCreateCamera(position)){
+            //todo remove
+            //this.texture.bindToUnit(0);
+
+            if(this._isNeedCreateCamera(position)){
                 newCameraList = wdCb.Collection.create<GameObject>();
             }
 
             for(let i = 0; i < 6; i++){
                 faceRenderList = renderList.getChild(this._convertIndexToFaceKey(i));
+                //faceRenderList = renderList;
                 //faceRenderList can be array or collection
                 if(this._isEmpty(faceRenderList)) {
                     continue;
                 }
 
-                if(this._needCreateCamera(position)) {
+                if(this._isNeedCreateCamera(position)) {
                     renderCamera = this.createCamera(i);
                     newCameraList.addChild(renderCamera);
                 }
                 else{
                     renderCamera = this._lastCameraList.getChild(i);
                 }
+
+                this.beforeRenderFrameBufferTexture(renderCamera);
 
                 this.frameBufferOperator.bindFrameBuffer(this._frameBufferList.getChild(i));
                 this.frameBufferOperator.setViewport();
@@ -70,11 +84,10 @@ module wd {
                 });
 
                 renderer.clear();
-                renderer.webglState = BasicState.create();
-                renderer.render();
+                this.renderRenderer(renderer);
             }
 
-            if(this._needCreateCamera(position)){
+            if(this._isNeedCreateCamera(position)){
                 if(this._lastCameraList){
                     this._lastCameraList.forEach((camera:GameObject) => {
                         camera.dispose();
@@ -173,7 +186,7 @@ module wd {
             }
         }
 
-        private _needCreateCamera(position:Vector3){
+        private _isNeedCreateCamera(position:Vector3){
             if(this._lastPosition === null || this._lastCameraList === null){
                 return true;
             }

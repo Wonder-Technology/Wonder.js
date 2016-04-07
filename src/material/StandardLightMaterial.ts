@@ -98,9 +98,9 @@ module wd{
 
         public lightModel:ELightModel = ELightModel.PHONG;
 
-        public cubemapShadowMapDatas:wdCb.Collection<CubemapShadowMapData> = wdCb.Collection.create<CubemapShadowMapData>();
-
-        public buildCubemapShadowMapData:BuildCubemapShadowMapData = null;
+        //public cubemapShadowMapDatas:wdCb.Collection<CubemapShadowMapData> = wdCb.Collection.create<CubemapShadowMapData>();
+        //
+        //public buildCubemapShadowMapData:BuildCubemapShadowMapData = null;
 
         public specularColor:Color = Color.create("#ffffff");
         public emissionColor:Color = Color.create("rgba(0,0,0,0)");
@@ -109,20 +109,20 @@ module wd{
         private _cubemapShadowMapSamplerIndex:number = 0;
 
 
-        public addCubemapShadowMap(shadowMap:CubemapShadowMapTexture){
-            this.mapManager.addMap(shadowMap, {
-                samplerData: this._cubemapShadowMapSamplerIndex
-            });
-            this._cubemapShadowMapSamplerIndex++;
-        }
-
-        public addCubemapShadowMapData(shadowMapData:CubemapShadowMapData){
-            this.cubemapShadowMapDatas.addChild(shadowMapData);
-        }
-
-        public clearCubemapShadowMapData(){
-            this.cubemapShadowMapDatas.removeAllChildren();
-        }
+        //public addCubemapShadowMap(shadowMap:CubemapShadowMapTexture){
+        //    this.mapManager.addMap(shadowMap, {
+        //        samplerData: this._cubemapShadowMapSamplerIndex
+        //    });
+        //    this._cubemapShadowMapSamplerIndex++;
+        //}
+        //
+        //public addCubemapShadowMapData(shadowMapData:CubemapShadowMapData){
+        //    this.cubemapShadowMapDatas.addChild(shadowMapData);
+        //}
+        //
+        //public clearCubemapShadowMapData(){
+        //    this.cubemapShadowMapDatas.removeAllChildren();
+        //}
 
         @virtual
         protected addExtendShaderLib(){
@@ -238,20 +238,21 @@ module wd{
             //return this.mapManager.hasMap((map:Texture) => {
             //    return map instanceof CubemapShadowMapTexture;
             //});
+            return ShadowUtils.isReceive(this.geometry.entityObject) && this.mapManager.getCubemapShadowMapList().getCount() > 0;
         }
     }
 
-    //todo remove
-    export type CubemapShadowMapData = {
-        shadowBias:number,
-        shadowDarkness:number,
-        lightPos:Vector3,
-        farPlane:number
-    }
-
-    export type BuildCubemapShadowMapData = {
-        lightPos:Vector3,
-        farPlane: number
-    }
+    ////todo remove
+    //export type CubemapShadowMapData = {
+    //    shadowBias:number,
+    //    shadowDarkness:number,
+    //    lightPos:Vector3,
+    //    farPlane:number
+    //}
+    //
+    //export type BuildCubemapShadowMapData = {
+    //    lightPos:Vector3,
+    //    farPlane: number
+    //}
 }
 

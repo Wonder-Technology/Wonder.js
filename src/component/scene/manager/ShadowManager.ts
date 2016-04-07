@@ -14,6 +14,14 @@ module wd{
             return this._shadowMapManager.twoDShadowMapCount;
         }
 
+        get cubemapShadowMapDataMap(){
+            return this._shadowMapManager.cubemapShadowMapDataMap;
+        }
+
+        get cubemapShadowMapCount(){
+            return this._shadowMapManager.cubemapShadowMapCount;
+        }
+
         public entityObject:GameObjectScene;
 
         private _shadowRenderList:wdCb.Collection<GameObject> = wdCb.Collection.create<GameObject>();
@@ -120,7 +128,7 @@ module wd{
                             if(self._isCastShadow(c)){
                                 list.addChild(c.getComponent<Shadow>(Shadow).layer);
                             }
-                        })
+                        });
 
                         return;
                     }
@@ -146,6 +154,14 @@ module wd{
                 });
             });
 
+            this._shadowMapManager.cubemapShadowMapDataMap.forEach((cubemapShadowMapDataList:wdCb.Collection<CubemapShadowMapData>, layer:string) => {
+                cubemapShadowMapDataList.forEach(({shadowMap, light}) => {
+                    var renderer:CubemapShadowMapRenderTargetRenderer = CubemapShadowMapRenderTargetRenderer.create(shadowMap, light, layer);
+
+                    scene.addRenderTargetRenderer(renderer);
+                });
+            });
+
             this._initShadowList()
         }
 
@@ -166,6 +182,8 @@ module wd{
 
         private _removeShadowMapGLSLData(){
             Director.getInstance().scene.glslData.removeChild(<any>EShaderGLSLData.TWOD_SHADOWMAP);
+            Director.getInstance().scene.glslData.removeChild(<any>EShaderGLSLData.BUILD_CUBEMAP_SHADOWMAP);
+            Director.getInstance().scene.glslData.removeChild(<any>EShaderGLSLData.CUBEMAP_SHADOWMAP);
         }
     }
 }

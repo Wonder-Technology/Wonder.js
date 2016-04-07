@@ -13,34 +13,34 @@ module wd {
 
         protected light:DirectionLight;
 
-        @require(function(target:GameObject){
-            var material:LightMaterial = <LightMaterial>target.getComponent<Geometry>(Geometry).material;
+        //@require(function(target:GameObject){
+        //    var material:LightMaterial = <LightMaterial>target.getComponent<Geometry>(Geometry).material;
+        //
+        //    assert(material instanceof LightMaterial, Log.info.FUNC_MUST_BE("material", "LightMaterial when render shadowMap"));
+        //})
+        //public clearTwoDShadowMapData(target:GameObject){
+        //    //var material:LightMaterial = <LightMaterial>target.getComponent<Geometry>(Geometry).material;
+        //    //
+        //    //material.glslData.removeChild(<any>EShaderGLSLData.TWOD_SHADOWMAP);
+        //    //material.glslData.removeChild(<any>EShaderGLSLData.BUILD_TWOD_SHADOWMAP);
+        //}
 
-            assert(material instanceof LightMaterial, Log.info.FUNC_MUST_BE("material", "LightMaterial when render shadowMap"));
-        })
-        public clearTwoDShadowMapData(target:GameObject){
-            //var material:LightMaterial = <LightMaterial>target.getComponent<Geometry>(Geometry).material;
-            //
-            //material.glslData.removeChild(<any>EShaderGLSLData.TWOD_SHADOWMAP);
-            //material.glslData.removeChild(<any>EShaderGLSLData.BUILD_TWOD_SHADOWMAP);
-        }
-
-        protected setMaterialShadowMapData(material:LightMaterial, target:GameObject, shadowMapCamera:GameObject){
-            //var cameraComponent:CameraController = shadowMapCamera.getComponent<CameraController>(CameraController);
-            //
-            //material.glslData.addChild(<any>EShaderGLSLData.BUILD_TWOD_SHADOWMAP, {
-            //    vpMatrixFromLight: cameraComponent.worldToCameraMatrix.applyMatrix(cameraComponent.pMatrix, true)
-            //});
-            //
-            //material.glslData.appendChild(<any>EShaderGLSLData.TWOD_SHADOWMAP, {
-            //    shadowBias: this.light.shadowBias,
-            //    shadowDarkness: this.light.shadowDarkness,
-            //    shadowSize: [this.light.shadowMapWidth, this.light.shadowMapHeight],
-            //    lightPos: this.light.position,
-            //    //todo optimize: compute vpMatrix once here or when render shadowRenderList
-            //    vpMatrixFromLight: cameraComponent.worldToCameraMatrix.applyMatrix(cameraComponent.pMatrix, true)
-            //});
-        }
+        //protected setMaterialShadowMapData(material:LightMaterial, target:GameObject, shadowMapCamera:GameObject){
+        //    //var cameraComponent:CameraController = shadowMapCamera.getComponent<CameraController>(CameraController);
+        //    //
+        //    //material.glslData.addChild(<any>EShaderGLSLData.BUILD_TWOD_SHADOWMAP, {
+        //    //    vpMatrixFromLight: cameraComponent.worldToCameraMatrix.applyMatrix(cameraComponent.pMatrix, true)
+        //    //});
+        //    //
+        //    //material.glslData.appendChild(<any>EShaderGLSLData.TWOD_SHADOWMAP, {
+        //    //    shadowBias: this.light.shadowBias,
+        //    //    shadowDarkness: this.light.shadowDarkness,
+        //    //    shadowSize: [this.light.shadowMapWidth, this.light.shadowMapHeight],
+        //    //    lightPos: this.light.position,
+        //    //    //todo optimize: compute vpMatrix once here or when render shadowRenderList
+        //    //    vpMatrixFromLight: cameraComponent.worldToCameraMatrix.applyMatrix(cameraComponent.pMatrix, true)
+        //    //});
+        //}
 
 
 
@@ -71,10 +71,10 @@ module wd {
         //}
 
 
-        //todo remove
-        protected addShadowMap(material:LightMaterial, shadowMap:TwoDShadowMapTexture){
-            //material.twoDShadowMap = shadowMap;
-        }
+        ////todo remove
+        //protected addShadowMap(material:LightMaterial, shadowMap:TwoDShadowMapTexture){
+        //    //material.twoDShadowMap = shadowMap;
+        //}
     }
 }
 

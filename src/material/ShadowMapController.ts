@@ -7,6 +7,7 @@ module wd{
         }
 
         private _twoDShadowMapList:wdCb.Collection<TwoDShadowMapTexture> = wdCb.Collection.create<TwoDShadowMapTexture>();
+        private _cubemapShadowMapList:wdCb.Collection<CubemapShadowMapTexture> = wdCb.Collection.create<CubemapShadowMapTexture>();
 
         public addTwoDShadowMap(shadowMap:TwoDShadowMapTexture){
             this.setMapOption(shadowMap, {
@@ -16,20 +17,37 @@ module wd{
             this._twoDShadowMapList.addChild(shadowMap);
         }
 
-        public getTwoDShadowMapList(){
-            return this._twoDShadowMapList;
+        public addCubemapShadowMap(shadowMap:CubemapShadowMapTexture){
+            this.setMapOption(shadowMap, {
+                samplerData: this._cubemapShadowMapList.getCount()
+            });
+
+            this._cubemapShadowMapList.addChild(shadowMap);
         }
 
         public hasTwoDShadowMap(shadowMap:TwoDShadowMapTexture){
             return this.hasMapHelper(this._twoDShadowMapList, shadowMap);
         }
 
+        public hasCubemapShadowMap(shadowMap:CubemapShadowMapTexture){
+            return this.hasMapHelper(this._cubemapShadowMapList, shadowMap);
+        }
+
+        public getTwoDShadowMapList(){
+            return this._twoDShadowMapList;
+        }
+
+        public getCubemapShadowMapList(){
+            return this._cubemapShadowMapList;
+        }
+
         public getAllMapArr(){
-            return this._twoDShadowMapList.toArray();
+            return this._twoDShadowMapList.clone(false).addChildren(this._cubemapShadowMapList).toArray();
         }
 
         public removeAllChildren(){
             this._twoDShadowMapList.removeAllChildren();
+            this._cubemapShadowMapList.removeAllChildren();
         }
     }
 }

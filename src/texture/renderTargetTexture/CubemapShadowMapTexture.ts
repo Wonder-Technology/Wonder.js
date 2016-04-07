@@ -8,9 +8,10 @@ module wd {
             return obj;
         }
 
+        @require(function(unit:number){
+            assert(JudgeUtils.isNumber(this.variableData.samplerData), Log.info.FUNC_MUST_BE("shadowMapTexture->variableData.samplerData", "samplerIndex"));
+        })
         public getSamplerName(unit:number){
-            Log.error(!JudgeUtils.isNumber(this.variableData.samplerData), Log.info.FUNC_MUST_BE("shadowMapTexture->variableData.samplerData", "samplerIndex"));
-
             return `u_cubemapShadowMapSampler[${this.variableData.samplerData}]`;
         }
 
@@ -24,7 +25,6 @@ module wd {
          //    ShadowMapTextureUtils.setTextureParameters(textureType);
          //}
         */
-
     }
 }
 

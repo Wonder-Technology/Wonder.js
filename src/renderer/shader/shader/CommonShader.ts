@@ -13,7 +13,7 @@ module wd{
 
             this.judgeRefreshShader(quadCmd, material);
 
-            this.program.use();
+            program.use();
 
             this.libs.forEach((lib:EngineShaderLib) => {
                 lib.sendShaderVariables(program, quadCmd, material);

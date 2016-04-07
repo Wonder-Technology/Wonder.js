@@ -10,7 +10,7 @@ module wd{
         public type:string = "twoDShadowMap";
 
         public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
-           Director.getInstance().scene.glslData.getChild(<any>EShaderGLSLData.TWOD_SHADOWMAP).forEach((data:BuildTwoDShadowMapData, index:number) => {
+           Director.getInstance().scene.glslData.getChild(<any>EShaderGLSLData.TWOD_SHADOWMAP).forEach((data:TwoDShadowMapShaderLibData, index:number) => {
                var camera:CameraController = data.camera,
                    light:Light = data.light;
 
@@ -24,7 +24,7 @@ module wd{
         }
     }
 
-    export type BuildTwoDShadowMapData = {
+    export type TwoDShadowMapShaderLibData = {
         camera:CameraController,
         light:Light
     }

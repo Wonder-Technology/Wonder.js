@@ -25,10 +25,11 @@ module wd{
             var scene:SceneDispatcher = Director.getInstance().scene,
                 shadowManager:ShadowManager = scene.gameObjectScene.getComponent<ShadowManager>(ShadowManager),
                 twoDShadowMapCount = shadowManager.twoDShadowMapCount,
-                //todo fix
-                cubemapShadowMapCount = scene.pointLights ? scene.pointLights.filter((light:GameObject) => {
-                    return light.getComponent<PointLight>(PointLight).castShadow;
-                }).getCount() : 0;
+            //todo fix
+            //cubemapShadowMapCount = scene.pointLights ? scene.pointLights.filter((light:GameObject) => {
+            //    return light.getComponent<PointLight>(PointLight).castShadow;
+            //}).getCount() : 0;
+                cubemapShadowMapCount = shadowManager.cubemapShadowMapCount;
 
             if(scene.shadowMap.softType === EShadowMapSoftType.PCF){
                 this.fsSourceDefineList.addChildren([{

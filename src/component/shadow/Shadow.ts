@@ -85,11 +85,19 @@ module wd{
             }
         }
 
-        private _addAllShadowMaps(twoDShadowMapDataMap:wdCb.Hash<wdCb.Collection<TwoDShadowMapData>>, drawShadowMapShader:Shader){
+        private _addAllShadowMaps(twoDShadowMapDataMap:wdCb.Hash<wdCb.Collection<TwoDShadowMapData>>, cubemapShadowMapDataMap:wdCb.Hash<wdCb.Collection<CubemapShadowMapData>>, drawShadowMapShader:Shader){
             twoDShadowMapDataMap.forEach((twoDShadowMapDataList:wdCb.Collection<TwoDShadowMapData>) => {
                 twoDShadowMapDataList.forEach(({shadowMap}) => {
                     if (!drawShadowMapShader.mapManager.hasTwoDShadowMap(shadowMap)) {
                         drawShadowMapShader.mapManager.addTwoDShadowMap(shadowMap);
+                    }
+                });
+            });
+
+            cubemapShadowMapDataMap.forEach((cubemapShadowMapDataList:wdCb.Collection<CubemapShadowMapData>) => {
+                cubemapShadowMapDataList.forEach(({shadowMap}) => {
+                    if (!drawShadowMapShader.mapManager.hasCubemapShadowMap(shadowMap)) {
+                        drawShadowMapShader.mapManager.addCubemapShadowMap(shadowMap);
                     }
                 });
             });
@@ -129,7 +137,8 @@ module wd{
         private _handleCastAndReceive(material:Material){
             var self = this,
                 buildShadowMapShader:CommonShader = this._createBuildShadowMapShader(this.entityObject),
-                twoDShadowMapDataMap:wdCb.Hash<wdCb.Collection<TwoDShadowMapData>> = Director.getInstance().scene.gameObjectScene.getComponent(ShadowManager).twoDShadowMapDataMap;
+                twoDShadowMapDataMap:wdCb.Hash<wdCb.Collection<TwoDShadowMapData>> = Director.getInstance().scene.gameObjectScene.getComponent(ShadowManager).twoDShadowMapDataMap,
+                cubemapShadowMapDataMap:wdCb.Hash<wdCb.Collection<CubemapShadowMapData>> = Director.getInstance().scene.gameObjectScene.getComponent(ShadowManager).cubemapShadowMapDataMap;
             var setChildren = (child:GameObject) => {
                 if (!child.hasComponent(Geometry)) {
                     return;
@@ -139,7 +148,7 @@ module wd{
 
                 self._addBuildShadowMapShader(material, buildShadowMapShader);
 
-                self._addAllShadowMaps(twoDShadowMapDataMap, material.getShader(<any>EShaderMapKey.DEFAULT));
+                self._addAllShadowMaps(twoDShadowMapDataMap, cubemapShadowMapDataMap, material.getShader(<any>EShaderMapKey.DEFAULT));
 
                 child.forEach((c:GameObject) => {
                     setChildren(c);
@@ -149,7 +158,7 @@ module wd{
             if (material) {
                 this._addBuildShadowMapShader(material, buildShadowMapShader);
 
-                this._addAllShadowMaps(twoDShadowMapDataMap, material.getShader(<any>EShaderMapKey.DEFAULT));
+                this._addAllShadowMaps(twoDShadowMapDataMap, cubemapShadowMapDataMap, material.getShader(<any>EShaderMapKey.DEFAULT));
             }
 
             this.entityObject.forEach((child:GameObject) => {
@@ -185,7 +194,8 @@ module wd{
 
         private _handleReceive(material:Material){
             var self = this,
-                twoDShadowMapDataMap:wdCb.Hash<wdCb.Collection<TwoDShadowMapData>> = Director.getInstance().scene.gameObjectScene.getComponent(ShadowManager).twoDShadowMapDataMap;
+                twoDShadowMapDataMap:wdCb.Hash<wdCb.Collection<TwoDShadowMapData>> = Director.getInstance().scene.gameObjectScene.getComponent(ShadowManager).twoDShadowMapDataMap,
+                cubemapShadowMapDataMap:wdCb.Hash<wdCb.Collection<CubemapShadowMapData>> = Director.getInstance().scene.gameObjectScene.getComponent(ShadowManager).cubemapShadowMapDataMap;
             var setChildren = (child:GameObject) => {
                 if (!child.hasComponent(Geometry)) {
                     return;
@@ -193,7 +203,7 @@ module wd{
 
                 let material:Material = child.getComponent<Geometry>(Geometry).material;
 
-                self._addAllShadowMaps(twoDShadowMapDataMap, material.getShader(<any>EShaderMapKey.DEFAULT));
+                self._addAllShadowMaps(twoDShadowMapDataMap, cubemapShadowMapDataMap, material.getShader(<any>EShaderMapKey.DEFAULT));
 
                 child.forEach((c:GameObject) => {
                     setChildren(c);
@@ -201,7 +211,7 @@ module wd{
             };
 
             if (material) {
-                this._addAllShadowMaps(twoDShadowMapDataMap, material.getShader(<any>EShaderMapKey.DEFAULT));
+                this._addAllShadowMaps(twoDShadowMapDataMap, cubemapShadowMapDataMap, material.getShader(<any>EShaderMapKey.DEFAULT));
             }
 
             this.entityObject.forEach((child:GameObject) => {

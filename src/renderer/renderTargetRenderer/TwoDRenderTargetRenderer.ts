@@ -34,10 +34,9 @@ module wd {
         }
 
         protected renderFrameBufferTexture(renderer:Renderer, camera:GameObject){
-            var isNeedCreateCamera:boolean = this.isNeedCreateCamera(),
-                renderCamera:GameObject = null;
+            var renderCamera:GameObject = null;
 
-            if(isNeedCreateCamera){
+            if(this.isNeedCreateCamera()){
                 renderCamera = this.createCamera(camera);
 
                 if(this._lastCamera){
