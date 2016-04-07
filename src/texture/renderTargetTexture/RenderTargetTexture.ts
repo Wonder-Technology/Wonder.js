@@ -4,15 +4,16 @@ module wd {
 
         public initWhenCreate(){
             this.needUpdate = false;
+
+            this.minFilter = ETextureFilterMode.LINEAR;
+            this.magFilter = ETextureFilterMode.LINEAR;
+            this.wrapS = ETextureWrapMode.CLAMP_TO_EDGE;
+            this.wrapT = ETextureWrapMode.CLAMP_TO_EDGE;
         }
 
         public init(){
             //todo support mipmap?
             //this.generateMipmaps = false;
-            this.minFilter = ETextureFilterMode.LINEAR;
-            this.magFilter = ETextureFilterMode.LINEAR;
-            this.wrapS = ETextureWrapMode.CLAMP_TO_EDGE;
-            this.wrapT = ETextureWrapMode.CLAMP_TO_EDGE;
 
             return this;
         }
