@@ -162,7 +162,74 @@ module wd{
                 });
             });
 
+            this._addShadowShader();
+
             this._initShadowList()
+        }
+
+        private _addShadowShader(){
+            var scene = Director.getInstance().scene;
+
+            if(this._shadowMapManager.twoDShadowMapDataMap.getCount() > 0){
+                scene.addShader(EShaderMapKeyOfScene.BUILD_TWOD_SHADOWMAP_INSTANCE, this._createBuildTwoDShadowMapInstanceShader());
+                scene.addShader(EShaderMapKeyOfScene.BUILD_TWOD_SHADOWMAP_NO_INSTANCE, this._createBuildTwoDShadowMapNoInstanceShader());
+            }
+            if(this._shadowMapManager.cubemapShadowMapDataMap.getCount() > 0){
+                scene.addShader(EShaderMapKeyOfScene.BUILD_CUBEMAP_SHADOWMAP_INSTANCE, this._createBuildCubemapShadowMapInstanceShader());
+                scene.addShader(EShaderMapKeyOfScene.BUILD_CUBEMAP_SHADOWMAP_NO_INSTANCE, this._createBuildCubemapShadowMapNoInstanceShader());
+            }
+        }
+
+        private _createBuildTwoDShadowMapInstanceShader() {
+            var shader:CommonShader = CommonShader.create();
+
+            shader.addLib(CommonShaderLib.create());
+            shader.addLib(VerticeCommonShaderLib.create());
+
+            shader.addLib(ModelMatrixInstanceShaderLib.create());
+
+            shader.addLib(BuildTwoDShadowMapShaderLib.create());
+
+            return shader;
+        }
+
+        private _createBuildCubemapShadowMapInstanceShader() {
+            var shader:CommonShader = CommonShader.create();
+
+            shader.addLib(CommonShaderLib.create());
+            shader.addLib(VerticeCommonShaderLib.create());
+
+            shader.addLib(ModelMatrixInstanceShaderLib.create());
+
+            shader.addLib(BuildCubemapShadowMapShaderLib.create());
+
+            return shader;
+        }
+
+        private _createBuildTwoDShadowMapNoInstanceShader() {
+            var shader:CommonShader = CommonShader.create();
+
+            shader.addLib(CommonShaderLib.create());
+            shader.addLib(VerticeCommonShaderLib.create());
+
+            shader.addLib(ModelMatrixNoInstanceShaderLib.create());
+
+            shader.addLib(BuildTwoDShadowMapShaderLib.create());
+
+            return shader;
+        }
+
+        private _createBuildCubemapShadowMapNoInstanceShader() {
+            var shader:CommonShader = CommonShader.create();
+
+            shader.addLib(CommonShaderLib.create());
+            shader.addLib(VerticeCommonShaderLib.create());
+
+            shader.addLib(ModelMatrixNoInstanceShaderLib.create());
+
+            shader.addLib(BuildCubemapShadowMapShaderLib.create());
+
+            return shader;
         }
 
         private _initShadowList(){

@@ -29,8 +29,6 @@ module wd {
             var material = this.material;
 
             material.updateShader(this);
-            material.bindAndUpdateTexture();
-            material.sendTextureData();
 
             this.draw(material);
         }

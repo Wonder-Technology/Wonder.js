@@ -16,6 +16,9 @@ module wd{
             this.libs.forEach((lib:EngineShaderLib) => {
                 lib.sendShaderVariables(program, quadCmd, material);
             });
+
+            this.mapManager.bindAndUpdate();
+            this.mapManager.sendData(program);
         }
     }
 }

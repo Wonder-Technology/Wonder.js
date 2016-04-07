@@ -140,7 +140,7 @@ describe("terrain material", function() {
 
 
 
-                material.bindAndUpdateTexture();
+                material.updateShader(quadCmd);
 
 
 
@@ -156,9 +156,6 @@ describe("terrain material", function() {
                 expect(map1.update).toCalledBefore(map2.update);
 
 
-
-
-                material.sendTextureData();
 
 
 

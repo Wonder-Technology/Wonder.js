@@ -1,6 +1,6 @@
 module wd{
     export class MapManager{
-        public static create(material:Material) {
+        public static create(material:Material = null) {
             var obj = new this(material);
 
             obj.initWhenCreate();
@@ -9,10 +9,11 @@ module wd{
         }
 
         constructor(material:Material){
-            this._material = material;
+            this.material = material;
         }
 
-        private _material:Material = null;
+        public material:Material = null;
+
         private _textureDirty:boolean = false;
         private _allMapsCache:Array<Texture> = null;
         private _allSingleMapsCache:Array<Texture> = null;
@@ -26,8 +27,8 @@ module wd{
             this._shadowMapController = ShadowMapController.create();
             this._arrayMapController = ArrayMapController.create();
 
-            this._envMapController = EnvMapController.create(this._material);
-            this._commonMapController = CommonMapController.create(this._material);
+            this._envMapController = EnvMapController.create(this.material);
+            this._commonMapController = CommonMapController.create(this.material);
         }
 
         public init(){

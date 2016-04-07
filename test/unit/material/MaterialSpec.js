@@ -22,34 +22,34 @@ describe("Material", function() {
         expect(material.color).toEqual(wd.Color.create("#ffffff"));
     });
 
-    describe("updateShader", function(){
-        var scene;
-
-        beforeEach(function(){
-            scene = wd.Director.getInstance().scene;
-        });
-
-        it("if specify scene shader, update the specified shader", function(){
-            scene.useShader(wd.EShaderMapKey.BUILD_SHADOWMAP);
-            var shader = wd.CommonShader.create();
-            sandbox.stub(shader, "update");
-
-            material.addShader(wd.EShaderMapKey.BUILD_SHADOWMAP, shader);
-            var quadCmd = {};
-
-            material.updateShader(quadCmd);
-
-            expect(shader.update).toCalledWith(quadCmd, material);
-        });
-        it("else, update current shader", function () {
-            var quadCmd = {};
-            sandbox.stub(material.shader, "update");
-
-            material.updateShader(quadCmd);
-
-            expect(material.shader.update).toCalledWith(quadCmd, material);
-        });
-    });
+    //describe("updateShader", function(){
+    //    var scene;
+    //
+    //    beforeEach(function(){
+    //        scene = wd.Director.getInstance().scene;
+    //    });
+    //
+    //    it("if specify scene shader, update the specified shader", function(){
+    //        scene.useShaderType(wd.EShaderMapKey.BUILD_SHADOWMAP);
+    //        var shader = wd.CommonShader.create();
+    //        sandbox.stub(shader, "update");
+    //
+    //        material.addShader(wd.EShaderMapKey.BUILD_SHADOWMAP, shader);
+    //        var quadCmd = {};
+    //
+    //        material.updateShader(quadCmd);
+    //
+    //        expect(shader.update).toCalledWith(quadCmd, material);
+    //    });
+    //    it("else, update current shader", function () {
+    //        var quadCmd = {};
+    //        sandbox.stub(material.shader, "update");
+    //
+    //        material.updateShader(quadCmd);
+    //
+    //        expect(material.shader.update).toCalledWith(quadCmd, material);
+    //    });
+    //});
     
     //describe("fix bug: if create material and init material in script, Material->init->'after init logic' should be executed", function(){
     //    var newMaterial;

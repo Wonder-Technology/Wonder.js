@@ -33,9 +33,17 @@ module wd {
             super.initWhenCreate();
         }
 
+        public init(){
+            this._mapManager.init();
+
+            super.init();
+        }
+
         public dispose(){
             super.dispose();
 
+            //todo test
+            this._mapManager.dispose();
             this._shadowMapRendererUtils.unBindEndLoop();
         }
 
@@ -56,18 +64,24 @@ module wd {
         }
 
         protected beforeRender(){
-            this._shadowMapRendererUtils.beforeRender();
+            //this._shadowMapRendererUtils.beforeRender();
+            var scene:SceneDispatcher = Director.getInstance().scene;
 
-            this._mapManager.bindAndUpdate();
+            scene.useShaderType(EShaderTypeOfScene.BUILD_TWOD_SHADOWMAP);
+
             /*! no need to send texture unit data
-            because glsl only bind one texture, and its unit is 0 defaultly
-
-             //this._mapManager.sendData();
+             because glsl only bind one texture, and its unit is 0 defaultly
              */
+            this._mapManager.bindAndUpdate();
+
+            //this._setTwoDShadowMapOfSceneBuildShadowMapShader();
         }
 
         protected afterRender(){
-            this._shadowMapRendererUtils.afterRender();
+            //this._shadowMapRendererUtils.afterRender();
+            var scene:SceneDispatcher = Director.getInstance().scene;
+
+            scene.unUseShader();
         }
 
         //todo optimize: if light not translate, not create camera
@@ -93,6 +107,13 @@ module wd {
 
             return camera;
         }
+        //
+        //private _setTwoDShadowMapOfSceneBuildShadowMapShader(){
+        //    var scene = Director.getInstance().scene;
+        //
+        //    scene.getShader(EShaderMapKeyOfScene.BUILD_TWOD_SHADOWMAP_INSTANCE).mapManager = this._mapManager;
+        //    scene.getShader(EShaderMapKeyOfScene.BUILD_TWOD_SHADOWMAP_NO_INSTANCE).mapManager = this._mapManager;
+        //}
     }
 }
 

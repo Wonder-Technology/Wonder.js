@@ -92,17 +92,7 @@ describe("water material", function () {
 
 
 
-                material.sendTextureData();
-
-
-                expect(material.program.sendUniformData).toCalledWith("u_refractionMapSampler", wd.EVariableType.SAMPLER_2D, 0);
-                expect(material.program.sendUniformData).toCalledWith("u_bumpMapSampler", wd.EVariableType.SAMPLER_2D, 1);
-                expect(material.program.sendUniformData).toCalledWith("u_reflectionMapSampler", wd.EVariableType.SAMPLER_2D, 2);
-
-
-
-
-                material.bindAndUpdateTexture();
+                material.updateShader(quadCmd);
 
 
                 expect(refractionMap.bindToUnit).toCalledWith(0);
@@ -112,6 +102,16 @@ describe("water material", function () {
                 expect(bumpMap.update).toCalledOnce();
                 expect(refractionMap.update).not.toCalled();
                 expect(reflectionMap.update).not.toCalled();
+
+
+
+
+
+
+
+                expect(material.program.sendUniformData).toCalledWith("u_refractionMapSampler", wd.EVariableType.SAMPLER_2D, 0);
+                expect(material.program.sendUniformData).toCalledWith("u_bumpMapSampler", wd.EVariableType.SAMPLER_2D, 1);
+                expect(material.program.sendUniformData).toCalledWith("u_reflectionMapSampler", wd.EVariableType.SAMPLER_2D, 2);
             });
         });
 

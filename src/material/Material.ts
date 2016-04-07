@@ -139,6 +139,10 @@ module wd {
             }
         }
 
+        get mapManager(){
+            return this._currentShader.mapManager;
+        }
+
         public redWrite:boolean = true;
         public greenWrite:boolean = true;
         public blueWrite:boolean = true;
@@ -150,15 +154,18 @@ module wd {
         public blendEquationSeparate:Array<EBlendEquation> = [EBlendEquation.ADD, EBlendEquation.ADD];
         public shading = EShading.FLAT;
         public geometry:Geometry = null;
-        public mapManager:MapManager = MapManager.create(this);
 
         private _shaderMap:wdCb.Hash<Shader> = wdCb.Hash.create<Shader>();
         private _currentShader:Shader = null;
+        private _sceneShader:Shader = null;
+        private _unUseSceneShaderSubscription:wdFrp.IDisposable = null;
 
         //public abstract copy():Material;
 
         public initWhenCreate(){
             this._currentShader = this.createShader();
+            this._currentShader.mapManager.material = this;
+
             this.addShader(<any>EShaderMapKey.DEFAULT, this._currentShader);
         }
 
@@ -169,7 +176,10 @@ module wd {
                 shader.init(self);
             });
 
-            this.mapManager.init();
+            this._unUseSceneShaderSubscription = EventManager.fromEvent(<any>EEngineEvent.UNUSE_SCENE_SHADER)
+                .subscribe(() => {
+                    self._sceneShader = null;
+                });
         }
 
         public dispose(){
@@ -177,38 +187,33 @@ module wd {
                 shader.dispose();
             });
 
-            this.mapManager.dispose();
+            //todo test
+            this._unUseSceneShaderSubscription.dispose();
         }
 
         public updateShader(quadCmd:QuadCommand){
-            var scene:SceneDispatcher = Director.getInstance().scene,
-                shader:Shader = null;
-
-            if(scene.isUseShader){
-                shader = this._shaderMap.getChild(<any>scene.currentShaderKey);
-            }
-            else{
-                shader = this._currentShader;
-            }
-
-            shader.update(quadCmd, this);
+            this.shader.update(quadCmd, this);
         }
 
-        public bindAndUpdateTexture(){
-            this.mapManager.bindAndUpdate();
-        }
+        //public bindAndUpdateTexture(){
+        //    this._updateCurrentShader();
+        //
+        //    this.mapManager.bindAndUpdate();
+        //}
+        //
+        //public sendTextureData(){
+        //    this.mapManager.sendData(this.program);
+        //}
 
-        public sendTextureData(){
-            this.mapManager.sendData(this.program);
-        }
+
 
         @ensureGetter(function(shader:Shader){
-            assert(!!shader, Log.info.FUNC_NOT_EXIST("current shader"));
+            assert(!!shader, Log.info.FUNC_NOT_EXIST("shader"));
         })
         get shader(){
             var scene:SceneDispatcher = Director.getInstance().scene;
 
-            return scene.isUseShader ? this._shaderMap.getChild(<any>scene.currentShaderKey) : this._currentShader;
+            return scene.isUseShader ? this._getSceneShader() : this._currentShader;
         }
 
         public addShader(shaderKey:string, shader:Shader){
@@ -245,5 +250,47 @@ module wd {
         private _isColorEqual(color1:Color, color2:Color){
             return color1.r === color2.r && color1.g === color2.g && color1.b === color2.b && color1.a === color2.a;
         }
+
+        private _getSceneShader(){
+            var scene:SceneDispatcher = null,
+                shader:Shader = null,
+                gameObject:GameObject = null;
+
+            if(this._sceneShader){
+                return this._sceneShader;
+            }
+
+            scene = Director.getInstance().scene;
+            gameObject = this.geometry.entityObject;
+
+            switch (scene.currentShaderType){
+                case EShaderTypeOfScene.BUILD_TWOD_SHADOWMAP:
+                    if (InstanceUtils.isHardwareSupport() && InstanceUtils.isInstance(gameObject)) {
+                        shader = scene.getShader(EShaderMapKeyOfScene.BUILD_TWOD_SHADOWMAP_INSTANCE);
+                    }
+                    else{
+                        shader = scene.getShader(EShaderMapKeyOfScene.BUILD_TWOD_SHADOWMAP_NO_INSTANCE);
+                    }
+
+                    break;
+                case EShaderTypeOfScene.BUILD_CUBEMAP_SHADOWMAP:
+                    if (InstanceUtils.isHardwareSupport() && InstanceUtils.isInstance(gameObject)) {
+                        shader = scene.getShader(EShaderMapKeyOfScene.BUILD_CUBEMAP_SHADOWMAP_INSTANCE);
+                    }
+                    else{
+                        shader = scene.getShader(EShaderMapKeyOfScene.BUILD_CUBEMAP_SHADOWMAP_NO_INSTANCE);
+                    }
+
+                    break;
+                default:
+                    Log.error(true, Log.info.FUNC_UNKNOW(`scene.currentShaderKey: ${scene.currentShaderType}`));
+                    break;
+            }
+
+            this._sceneShader = shader;
+
+            return this._sceneShader;
+        }
     }
 }
+

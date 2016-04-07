@@ -27,7 +27,7 @@ var shadowTool = {
 
         return directionLight;
     },
-    createPointLight: function (listArr) {
+    createPointLight: function () {
         var SHADOW_MAP_WIDTH = 1024,
             SHADOW_MAP_HEIGHT = 1024;
 
@@ -43,14 +43,14 @@ var shadowTool = {
         pointLightComponent.shadowMapWidth = SHADOW_MAP_WIDTH;
         pointLightComponent.shadowMapHeight = SHADOW_MAP_HEIGHT;
 
-        pointLightComponent.shadowRenderList = {
-            px: listArr,
-            nx: listArr,
-            py: listArr,
-            ny: listArr,
-            pz: listArr,
-            nz: listArr
-        };
+        //pointLightComponent.shadowRenderList = {
+        //    px: listArr,
+        //    nx: listArr,
+        //    py: listArr,
+        //    ny: listArr,
+        //    pz: listArr,
+        //    nz: listArr
+        //};
 
         var pointMaterial = wd.BasicMaterial.create();
         pointMaterial.color = wd.Color.create("#ffffff");
@@ -63,8 +63,8 @@ var shadowTool = {
 
         var pointLight = wd.GameObject.create();
         pointLight.addComponent(pointLightComponent);
-        pointLight.addComponent(geometry);
-        pointLight.addComponent(wd.MeshRenderer.create());
+        //pointLight.addComponent(geometry);
+        //pointLight.addComponent(wd.MeshRenderer.create());
 
         return pointLight;
     },
@@ -97,6 +97,33 @@ var shadowTool = {
     },
     getBuildShadowMapMapManager:function (){
         return this.getBuildShadowMapRenderer.apply(this, arguments)._mapManager;
+    },
+    setBuildShadowMapShaderAndProgramHelper: function (sandbox, obj, handleProgramFunc, setFunc, isInstance) {
+        var isInstance = isInstance === undefined ? false : isInstance;
+        var director = wd.Director.getInstance(),
+            useShaderType = director.scene.useShaderType;
+
+        sandbox.stub(director.scene, "useShaderType", function (type) {
+            useShaderType.call(director.scene, type);
+
+            var shader;
+
+            if(isInstance){
+                shader = director.scene.getShader(wd.EShaderMapKeyOfScene.BUILD_TWOD_SHADOWMAP_INSTANCE);
+            }
+            else{
+                shader = director.scene.getShader(wd.EShaderMapKeyOfScene.BUILD_TWOD_SHADOWMAP_NO_INSTANCE);
+            }
+
+            var program = shader.program;
+
+
+            setFunc(shader, program);
+
+            if (handleProgramFunc) {
+                handleProgramFunc(program);
+            }
+        });
     },
     setDrawShadowMapShaderAndProgramHelper:function (sandbox, obj, isNotStub){
         var shader = obj.getComponent(wd.Geometry).material.shader;

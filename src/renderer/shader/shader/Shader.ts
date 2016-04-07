@@ -50,6 +50,7 @@ module wd{
 
         public program:Program = Program.create();
         public libDirty:boolean = false;
+        public mapManager:MapManager = MapManager.create(null);
 
         protected libs:wdCb.Collection<ShaderLib> = wdCb.Collection.create<ShaderLib>();
         protected sourceBuilder:ShaderSourceBuilder = this.createShaderSourceBuilder();
@@ -77,6 +78,8 @@ module wd{
             });
 
             this.judgeRefreshShader(null, material);
+
+            this.mapManager.init();
         }
 
         public dispose(){
@@ -87,6 +90,8 @@ module wd{
             this.libs.forEach((lib:ShaderLib) => {
                 lib.dispose();
             });
+
+            this.mapManager.dispose();
         }
 
         public hasLib(lib:ShaderLib);

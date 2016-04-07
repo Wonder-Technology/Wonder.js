@@ -15,11 +15,14 @@ module wd{
 
             this.judgeRefreshShader(quadCmd, material);
 
-            this.program.use();
+            program.use();
 
             this.libs.forEach((lib:CustomShaderLib) => {
                 lib.sendShaderVariables(program, quadCmd, material);
             });
+
+            this.mapManager.bindAndUpdate();
+            this.mapManager.sendData(program);
         }
 
         public read(definitionData:ShaderDefinitionData){

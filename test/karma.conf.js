@@ -46,14 +46,14 @@
 
         //'test/unit/**/instance/*',
 
-        //'test/unit/**/instance_shadow*',
+        'test/unit/**/instance_shadow*',
         //'test/unit/**/instance_shadow_*',
         //'test/unit/**/instance_render*',
         //'test/unit/**/instance_space*',
 
         //qtest/unit/**/water*',
 
-        'test/unit/lib/**',
+        //'test/unit/lib/**',
 
         //'test/unit/**/terrain*',
 
@@ -65,8 +65,8 @@
         //
         //'test/unit/texture/**',
 
-        'test/unit/**/material/**',
-        'test/unit/**/material*/**',
+        //'test/unit/**/material/**',
+        //'test/unit/**/material*/**',
         //
         //'test/unit/**/MapManager*',
 

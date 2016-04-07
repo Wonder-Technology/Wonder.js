@@ -44,10 +44,16 @@ module wd {
             }
         }
 
+        get isUseShader(){
+            return this.currentShaderType !== null;
+        }
+
         public side:ESide = null;
         public shadowMap = ShadowMapModel.create(this);
         public physics = PhysicsConfig.create();
         public physicsEngineAdapter:IPhysicsEngineAdapter = null;
+        public glslData:wdCb.Hash<any> = wdCb.Hash.create<any>();
+        public currentShaderType:EShaderTypeOfScene = null;
 
         private _shadowManager:ShadowManager = null;
         private _lightManager:LightManager = null;
@@ -55,6 +61,7 @@ module wd {
         private _proceduralRendererList:wdCb.Collection<ProceduralRenderTargetRenderer> = wdCb.Collection.create<ProceduralRenderTargetRenderer>();
         private _collisionDetector:CollisionDetector = CollisionDetector.create();
         private _cameraList:wdCb.Collection<GameObject> = wdCb.Collection.create<GameObject>();
+        private _shaderMap:wdCb.Hash<Shader> = wdCb.Hash.create<Shader>();
 
         public initWhenCreate(){
             super.initWhenCreate();
@@ -78,6 +85,17 @@ module wd {
             this._proceduralRendererList.forEach((renderTargetRenderer:ProceduralRenderTargetRenderer) => renderTargetRenderer.init());
 
             return this;
+        }
+
+        public dispose(){
+            super.dispose();
+
+            //todo test
+            //this.glslData.removeAllChildren();
+
+            this._shaderMap.forEach((shader:Shader) => {
+                shader.dispose();
+            });
         }
 
         public addChild(child:GameObject):GameObject{
@@ -134,6 +152,35 @@ module wd {
             this._renderProceduralRenderer(renderer);
 
             super.render(renderer, this.currentCamera);
+        }
+
+        public useShaderType(type:EShaderTypeOfScene){
+            this.currentShaderType = type;
+        }
+
+        public unUseShader(){
+            this.currentShaderType = null;
+
+            EventManager.trigger(CustomEvent.create(<any>EEngineEvent.UNUSE_SCENE_SHADER));
+        }
+
+        public addShader(key:EShaderMapKeyOfScene, shader:Shader){
+            this._shaderMap.addChild(<any>key, shader);
+        }
+
+        public hasShader(key:EShaderMapKeyOfScene){
+            return this._shaderMap.hasChild(<any>key);
+        }
+
+        public getShader(key:EShaderMapKeyOfScene){
+            var shader = this._shaderMap.getChild(<any>key)
+
+            /*! defer init
+             init when get shader(it will be judged in "init" method that not init if already inited)
+             */
+            shader.init(null);
+
+            return shader;
         }
 
         protected getRenderList(){

@@ -69,17 +69,17 @@ module wd {
             this._endLoopSubscription && this._endLoopSubscription.dispose();
         }
 
-        public beforeRender(){
-            var scene:SceneDispatcher = Director.getInstance().scene;
-
-            scene.useShader(EShaderMapKey.BUILD_SHADOWMAP);
-        }
-
-        public afterRender(){
-            var scene:SceneDispatcher = Director.getInstance().scene;
-
-            scene.unUseShader();
-        }
+        //public beforeRender(){
+        //    var scene:SceneDispatcher = Director.getInstance().scene;
+        //
+        //    scene.useShader(EShaderMapKey.BUILD_SHADOWMAP);
+        //}
+        //
+        //public afterRender(){
+        //    var scene:SceneDispatcher = Director.getInstance().scene;
+        //
+        //    scene.unUseShader();
+        //}
 
         //public createShaderWithShaderLib(lib:BuildShadowMapShaderLib){
         //    ////todo refactor

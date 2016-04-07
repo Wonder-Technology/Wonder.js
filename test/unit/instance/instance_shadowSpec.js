@@ -94,22 +94,28 @@ describe("instance with shadow", function () {
             });
 
             describe("test instances", function () {
+                //function setBuildShadowMapShaderAndProgram(handleProgramFunc) {
+                //    var useShaderType = director.scene.useShaderType;
+                //
+                //    sandbox.stub(director.scene, "useShaderType", function (shaderKey) {
+                //        useShaderType.call(director.scene, shaderKey);
+                //
+                //        var source = instanceArr[0];
+                //        var material = source.getComponent(wd.Geometry).material;
+                //
+                //        shader = material.shader;
+                //        program = shader.program;
+                //
+                //        if (handleProgramFunc) {
+                //            handleProgramFunc(program);
+                //        }
+                //    });
+                //}
                 function setBuildShadowMapShaderAndProgram(handleProgramFunc) {
-                    var useShader = director.scene.useShader;
-
-                    sandbox.stub(director.scene, "useShader", function (shaderKey) {
-                        useShader.call(director.scene, shaderKey);
-
-                        var source = instanceArr[0];
-                        var material = source.getComponent(wd.Geometry).material;
-
-                        shader = material.shader;
-                        program = shader.program;
-
-                        if (handleProgramFunc) {
-                            handleProgramFunc(program);
-                        }
-                    });
+                    shadowTool.setBuildShadowMapShaderAndProgramHelper(sandbox,  null, handleProgramFunc, function(s, p){
+                        shader = s;
+                        program = p;
+                    }, true)
                 }
 
                 beforeEach(function () {
@@ -179,20 +185,10 @@ describe("instance with shadow", function () {
 
             describe("test other objects", function () {
                 function setBuildShadowMapShaderAndProgram(obj, handleProgramFunc) {
-                    var useShader = director.scene.useShader;
-
-                    sandbox.stub(director.scene, "useShader", function (shaderKey) {
-                        useShader.call(director.scene, shaderKey);
-
-                        var material = obj.getComponent(wd.Geometry).material;
-
-                        shader = material.shader;
-                        program = shader.program;
-
-                        if (handleProgramFunc) {
-                            handleProgramFunc(program);
-                        }
-                    });
+                    shadowTool.setBuildShadowMapShaderAndProgramHelper(sandbox, obj, handleProgramFunc, function(s, p){
+                        shader = s;
+                        program = p;
+                    })
                 }
 
                 it("should send u_mMatrix data", function () {

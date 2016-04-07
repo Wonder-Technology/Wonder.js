@@ -69,13 +69,22 @@ module wd {
             this.gameObjectScene.physicsEngineAdapter = physicsEngineAdapter;
         }
 
+        get glslData(){
+            return this.gameObjectScene.glslData;
+        }
+        set glslData(glslData:wdCb.Hash<any>){
+            this.gameObjectScene.glslData = glslData;
+        }
+
         get isUseShader(){
-            return this.currentShaderKey !== null;
+            return this.gameObjectScene.isUseShader;
+        }
+
+        get currentShaderType(){
+            return this.gameObjectScene.currentShaderType;
         }
 
         public name:string = `scene${String(this.uid)}`;
-        public currentShaderKey:EShaderMapKey = null;
-        public glslData:wdCb.Hash<any> = wdCb.Hash.create<any>();
 
         public uiObjectScene:UIObjectScene = UIObjectScene.create();
         public gameObjectScene:GameObjectScene = GameObjectScene.create();
@@ -87,12 +96,24 @@ module wd {
             this.addComponent(SceneEventTriggerDetector.create());
         }
 
-        public useShader(shaderKey:EShaderMapKey){
-            this.currentShaderKey = shaderKey;
+        public useShaderType(type:EShaderTypeOfScene){
+            this.gameObjectScene.useShaderType(type);
         }
 
         public unUseShader(){
-            this.currentShaderKey = null;
+            this.gameObjectScene.unUseShader();
+        }
+
+        public addShader(key:EShaderMapKeyOfScene, shader:Shader){
+            this.gameObjectScene.addShader(key, shader);
+        }
+
+        public hasShader(key:EShaderMapKeyOfScene){
+            return this.gameObjectScene.hasShader(key);
+        }
+
+        public getShader(key:EShaderMapKeyOfScene){
+            return this.gameObjectScene.getShader(key);
         }
 
         public addChild(child:EntityObject):EntityObject{

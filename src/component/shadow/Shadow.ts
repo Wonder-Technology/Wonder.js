@@ -66,17 +66,17 @@ module wd{
                 material = this.entityObject.getComponent<Geometry>(Geometry).material;
             }
 
-            if(this.cast && this.receive){
-                this._handleCastAndReceive(material);
-
-                return;
-            }
-
-            if (this.cast) {
-                this._handleCast(material);
-
-                return;
-            }
+            //if(this.cast && this.receive){
+            //    this._handleCastAndReceive(material);
+            //
+            //    return;
+            //}
+            //
+            //if (this.cast) {
+            //    this._handleCast(material);
+            //
+            //    return;
+            //}
 
             if (this.receive) {
                 this._handleReceive(material);
@@ -105,30 +105,30 @@ module wd{
             });
         }
 
-        private _createBuildShadowMapShader(object:GameObject) {
-            var shader:CommonShader = CommonShader.create();
+        //private _createBuildShadowMapShader(object:GameObject) {
+        //    var shader:CommonShader = CommonShader.create();
+        //
+        //    shader.addLib(CommonShaderLib.create());
+        //    shader.addLib(VerticeCommonShaderLib.create());
+        //
+        //    if (InstanceUtils.isHardwareSupport() && InstanceUtils.isInstance(object)) {
+        //        shader.addLib(ModelMatrixInstanceShaderLib.create());
+        //    }
+        //    else {
+        //        shader.addLib(ModelMatrixNoInstanceShaderLib.create());
+        //    }
+        //
+        //    shader.addLib(BuildTwoDShadowMapShaderLib.create());
+        //
+        //    return shader;
+        //}
 
-            shader.addLib(CommonShaderLib.create());
-            shader.addLib(VerticeCommonShaderLib.create());
-
-            if (InstanceUtils.isHardwareSupport() && InstanceUtils.isInstance(object)) {
-                shader.addLib(ModelMatrixInstanceShaderLib.create());
-            }
-            else {
-                shader.addLib(ModelMatrixNoInstanceShaderLib.create());
-            }
-
-            shader.addLib(BuildTwoDShadowMapShaderLib.create());
-
-            return shader;
-        }
-
-        @require(function (material:Material, shader:CommonShader) {
-            assert(!material.hasShader(<any>EShaderMapKey.BUILD_SHADOWMAP), Log.info.FUNC_SHOULD_NOT("material", "exist build shadow map shader"));
-        })
-        private _addBuildShadowMapShader(material:Material, shader:CommonShader) {
-            material.addShader(<any>EShaderMapKey.BUILD_SHADOWMAP, shader);
-        }
+        //@require(function (material:Material, shader:CommonShader) {
+        //    assert(!material.hasShader(<any>EShaderMapKey.BUILD_SHADOWMAP), Log.info.FUNC_SHOULD_NOT("material", "exist build shadow map shader"));
+        //})
+        //private _addBuildShadowMapShader(material:Material, shader:CommonShader) {
+        //    material.addShader(<any>EShaderMapKey.BUILD_SHADOWMAP, shader);
+        //}
 
         private _isFirstLevelObjectOfSceneOrSpacePartition(){
             var parent:GameObject = this.entityObject.parent;
@@ -136,63 +136,63 @@ module wd{
             return JudgeUtils.isEqual(parent, Director.getInstance().scene) || JudgeUtils.isSpacePartitionObject(parent);
         }
 
-        private _handleCastAndReceive(material:Material){
-            var self = this,
-                buildShadowMapShader:CommonShader = this._createBuildShadowMapShader(this.entityObject),
-                twoDShadowMapDataMap:wdCb.Hash<wdCb.Collection<TwoDShadowMapData>> = Director.getInstance().scene.gameObjectScene.getComponent(ShadowManager).twoDShadowMapDataMap,
-                cubemapShadowMapDataMap:wdCb.Hash<wdCb.Collection<CubemapShadowMapData>> = Director.getInstance().scene.gameObjectScene.getComponent(ShadowManager).cubemapShadowMapDataMap;
-            var setChildren = (child:GameObject) => {
-                if (!child.hasComponent(Geometry)) {
-                    return;
-                }
-
-                let material:Material = child.getComponent<Geometry>(Geometry).material;
-
-                self._addBuildShadowMapShader(material, buildShadowMapShader);
-
-                self._addAllShadowMaps(twoDShadowMapDataMap, cubemapShadowMapDataMap, material);
-
-                child.forEach((c:GameObject) => {
-                    setChildren(c);
-                })
-            };
-
-            if (material) {
-                this._addBuildShadowMapShader(material, buildShadowMapShader);
-
-                this._addAllShadowMaps(twoDShadowMapDataMap, cubemapShadowMapDataMap, material);
-            }
-
-            this.entityObject.forEach((child:GameObject) => {
-                setChildren(child);
-            });
-        }
-
-        private _handleCast(material:Material){
-            var self = this,
-                shader = this._createBuildShadowMapShader(this.entityObject);
-            var setChildren = (child:GameObject) => {
-                if (!child.hasComponent(Geometry)) {
-                    return;
-                }
-
-                let material:Material = child.getComponent<Geometry>(Geometry).material;
-
-                self._addBuildShadowMapShader(material, shader);
-
-                child.forEach((c:GameObject) => {
-                    setChildren(c);
-                })
-            };
-
-            if (material) {
-                this._addBuildShadowMapShader(material, shader);
-            }
-
-            this.entityObject.forEach((child:GameObject) => {
-                setChildren(child);
-            });
-        }
+        //private _handleCastAndReceive(material:Material){
+        //    var self = this,
+        //        buildShadowMapShader:CommonShader = this._createBuildShadowMapShader(this.entityObject),
+        //        twoDShadowMapDataMap:wdCb.Hash<wdCb.Collection<TwoDShadowMapData>> = Director.getInstance().scene.gameObjectScene.getComponent(ShadowManager).twoDShadowMapDataMap,
+        //        cubemapShadowMapDataMap:wdCb.Hash<wdCb.Collection<CubemapShadowMapData>> = Director.getInstance().scene.gameObjectScene.getComponent(ShadowManager).cubemapShadowMapDataMap;
+        //    var setChildren = (child:GameObject) => {
+        //        if (!child.hasComponent(Geometry)) {
+        //            return;
+        //        }
+        //
+        //        let material:Material = child.getComponent<Geometry>(Geometry).material;
+        //
+        //        self._addBuildShadowMapShader(material, buildShadowMapShader);
+        //
+        //        self._addAllShadowMaps(twoDShadowMapDataMap, cubemapShadowMapDataMap, material);
+        //
+        //        child.forEach((c:GameObject) => {
+        //            setChildren(c);
+        //        })
+        //    };
+        //
+        //    if (material) {
+        //        this._addBuildShadowMapShader(material, buildShadowMapShader);
+        //
+        //        this._addAllShadowMaps(twoDShadowMapDataMap, cubemapShadowMapDataMap, material);
+        //    }
+        //
+        //    this.entityObject.forEach((child:GameObject) => {
+        //        setChildren(child);
+        //    });
+        //}
+        //
+        //private _handleCast(material:Material){
+        //    var self = this,
+        //        shader = this._createBuildShadowMapShader(this.entityObject);
+        //    var setChildren = (child:GameObject) => {
+        //        if (!child.hasComponent(Geometry)) {
+        //            return;
+        //        }
+        //
+        //        let material:Material = child.getComponent<Geometry>(Geometry).material;
+        //
+        //        self._addBuildShadowMapShader(material, shader);
+        //
+        //        child.forEach((c:GameObject) => {
+        //            setChildren(c);
+        //        })
+        //    };
+        //
+        //    if (material) {
+        //        this._addBuildShadowMapShader(material, shader);
+        //    }
+        //
+        //    this.entityObject.forEach((child:GameObject) => {
+        //        setChildren(child);
+        //    });
+        //}
 
         private _handleReceive(material:Material){
             var self = this,
