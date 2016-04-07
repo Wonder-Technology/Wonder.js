@@ -77,20 +77,10 @@ describe("direction shadow map with octree", function() {
             var shader, program;
 
             function setBuildShadowMapShaderAndProgram(obj, handleProgramFunc) {
-                var useShader = director.scene.useShader;
-
-                sandbox.stub(director.scene, "useShader", function (shaderKey) {
-                    useShader.call(director.scene, shaderKey);
-
-                    var material = obj.getComponent(wd.Geometry).material;
-
-                    shader = material.shader;
-                    program = shader.program;
-
-                    if (handleProgramFunc) {
-                        handleProgramFunc(program);
-                    }
-                });
+                shadowTool.setTwoDBuildShadowMapShaderAndProgramHelper(sandbox, obj, handleProgramFunc, function(s, p){
+                    shader = s;
+                    program = p;
+                })
             }
 
 

@@ -42,11 +42,11 @@
 
         'test/unit/renderer/pointShadowMapSpec.js',
         //
-        //'test/unit/renderer/shadowMapSpec.js',
-        //'test/unit/renderer/*ShadowMapSpec.js',
+        'test/unit/renderer/shadowMapSpec.js',
+        'test/unit/renderer/*ShadowMapSpec.js',
         //'test/unit/renderer/*ShadowMap_*Spec.js',
 
-        //'test/unit/**/instance/*',
+        'test/unit/**/instance/*',
 
         //'test/unit/**/instance_shadow*',
         //'test/unit/**/instance_shadow_*',
