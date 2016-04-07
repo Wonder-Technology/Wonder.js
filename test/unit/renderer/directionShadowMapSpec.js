@@ -62,7 +62,7 @@ describe("direction shadow map", function() {
             var shader, program;
 
             function setBuildShadowMapShaderAndProgram(obj, handleProgramFunc) {
-                shadowTool.setBuildShadowMapShaderAndProgramHelper(sandbox, obj, handleProgramFunc, function(s, p){
+                shadowTool.setTwoDBuildShadowMapShaderAndProgramHelper(sandbox, obj, handleProgramFunc, function(s, p){
                     shader = s;
                     program = p;
                 })
@@ -489,7 +489,6 @@ describe("direction shadow map", function() {
             expect(shadowMap.bindToUnit).toCalledTwice();
         });
 
-
         describe("test shadow layer", function(){
             var shadow1,shadow2,shadow3;
             var sphere2,sphere3;
@@ -722,15 +721,6 @@ describe("direction shadow map", function() {
                     expect(glslTool.contain(shader2.fsSource, "TWOD_SHADOWMAP_COUNT 4")).toBeTruthy();
                     expect(glslTool.contain(shader3.fsSource, "TWOD_SHADOWMAP_COUNT 4")).toBeTruthy();
                 });
-            });
-        });
-
-        describe("test with model", function(){
-            beforeEach(function(){
-
-            });
-
-            describe("test build shadow map", function(){
             });
         });
 

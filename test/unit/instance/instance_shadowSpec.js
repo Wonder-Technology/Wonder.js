@@ -112,7 +112,7 @@ describe("instance with shadow", function () {
                 //    });
                 //}
                 function setBuildShadowMapShaderAndProgram(handleProgramFunc) {
-                    shadowTool.setBuildShadowMapShaderAndProgramHelper(sandbox,  null, handleProgramFunc, function(s, p){
+                    shadowTool.setTwoDBuildShadowMapShaderAndProgramHelper(sandbox,  null, handleProgramFunc, function(s, p){
                         shader = s;
                         program = p;
                     }, true)

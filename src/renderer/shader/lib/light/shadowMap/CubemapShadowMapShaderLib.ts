@@ -10,7 +10,6 @@ module wd{
         public type:string = "cubemapShadowMap";
 
         public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
-            //material.cubemapShadowMapDatas.forEach((data:CubemapShadowMapData, index:number) => {
             Director.getInstance().scene.glslData.getChild(<any>EShaderGLSLData.CUBEMAP_SHADOWMAP).forEach((data:CubemapShadowMapShaderLibData, index:number) => {
                 var light = data.light;
 

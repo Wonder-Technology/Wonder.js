@@ -48,14 +48,6 @@ module wd {
         }
 
         protected beforeRenderFrameBufferTexture(renderCamera:GameObject){
-            Director.getInstance().scene.glslData.addChild(<any>EShaderGLSLData.BUILD_CUBEMAP_SHADOWMAP, {
-                //camera: renderCamera.getComponent(CameraController),
-                light: this._light
-            });
-            Director.getInstance().scene.glslData.appendChild(<any>EShaderGLSLData.CUBEMAP_SHADOWMAP, {
-                //camera: renderCamera.getComponent(CameraController),
-                light: this._light
-            });
         }
 
         protected  getRenderList():wdCb.Hash<wdCb.Collection<GameObject>>{
@@ -90,6 +82,16 @@ module wd {
              this._mapManager.sendData();
              */
             //this._setCubemapShadowMapOfSceneBuildShadowMapShader();
+
+
+            Director.getInstance().scene.glslData.appendChild(<any>EShaderGLSLData.BUILD_CUBEMAP_SHADOWMAP, {
+                //camera: renderCamera.getComponent(CameraController),
+                light: this._light
+            });
+            Director.getInstance().scene.glslData.appendChild(<any>EShaderGLSLData.CUBEMAP_SHADOWMAP, {
+                //camera: renderCamera.getComponent(CameraController),
+                light: this._light
+            });
         }
 
         protected afterRender(){

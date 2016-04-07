@@ -9,13 +9,12 @@ module wd{
         public type:string = "buildCubemapShadowMap";
 
         public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
-            //this.sendUniformData(program, "u_lightPos", material.buildCubemapShadowMapData.lightPos);
-            //this.sendUniformData(program, "u_farPlane", material.buildCubemapShadowMapData.farPlane);
+            Director.getInstance().scene.glslData.getChild(<any>EShaderGLSLData.BUILD_CUBEMAP_SHADOWMAP).forEach((data:CubemapShadowMapShaderLibData, index:number) => {
+                var light = data.light;
 
-            var {light} = <BuildCubemapShadowMapShaderLibData>(Director.getInstance().scene.glslData.getChild(<any>EShaderGLSLData.BUILD_CUBEMAP_SHADOWMAP));
-
-            this.sendUniformData(program, "u_lightPos", light.position);
-            this.sendUniformData(program, "u_farPlane", light.shadowCameraFar);
+                this.sendUniformData(program, "u_lightPos", light.position);
+                this.sendUniformData(program, "u_farPlane", light.shadowCameraFar);
+            });
         }
 
         public setShaderDefinition(quadCmd:QuadCommand, material:EngineMaterial){

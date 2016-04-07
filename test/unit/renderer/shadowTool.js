@@ -98,7 +98,7 @@ var shadowTool = {
     getBuildShadowMapMapManager:function (){
         return this.getBuildShadowMapRenderer.apply(this, arguments)._mapManager;
     },
-    setBuildShadowMapShaderAndProgramHelper: function (sandbox, obj, handleProgramFunc, setFunc, isInstance) {
+    setTwoDBuildShadowMapShaderAndProgramHelper: function (sandbox, obj, handleProgramFunc, setFunc, isInstance) {
         var isInstance = isInstance === undefined ? false : isInstance;
         var director = wd.Director.getInstance(),
             useShaderType = director.scene.useShaderType;
@@ -113,6 +113,33 @@ var shadowTool = {
             }
             else{
                 shader = director.scene.getShader(wd.EShaderMapKeyOfScene.BUILD_TWOD_SHADOWMAP_NO_INSTANCE);
+            }
+
+            var program = shader.program;
+
+
+            setFunc(shader, program);
+
+            if (handleProgramFunc) {
+                handleProgramFunc(program);
+            }
+        });
+    },
+    setCubemapBuildShadowMapShaderAndProgramHelper: function (sandbox, obj, handleProgramFunc, setFunc, isInstance) {
+        var isInstance = isInstance === undefined ? false : isInstance;
+        var director = wd.Director.getInstance(),
+            useShaderType = director.scene.useShaderType;
+
+        sandbox.stub(director.scene, "useShaderType", function (type) {
+            useShaderType.call(director.scene, type);
+
+            var shader;
+
+            if(isInstance){
+                shader = director.scene.getShader(wd.EShaderMapKeyOfScene.BUILD_CUBEMAP_SHADOWMAP_INSTANCE);
+            }
+            else{
+                shader = director.scene.getShader(wd.EShaderMapKeyOfScene.BUILD_CUBEMAP_SHADOWMAP_NO_INSTANCE);
             }
 
             var program = shader.program;

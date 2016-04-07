@@ -39,6 +39,8 @@
         //'test/unit/**/scene/**',
 
         //'test/unit/**/Shadow*Spec.js',
+
+        'test/unit/renderer/pointShadowMapSpec.js',
         //
         //'test/unit/renderer/shadowMapSpec.js',
         //'test/unit/renderer/*ShadowMapSpec.js',
@@ -46,7 +48,7 @@
 
         //'test/unit/**/instance/*',
 
-        'test/unit/**/instance_shadow*',
+        //'test/unit/**/instance_shadow*',
         //'test/unit/**/instance_shadow_*',
         //'test/unit/**/instance_render*',
         //'test/unit/**/instance_space*',
