@@ -6,7 +6,6 @@ module wd {
         private _lastCamera:GameObject = null;
 
         protected abstract beforeRenderFrameBufferTexture(renderCamera:GameObject);
-        protected abstract getRenderList():wdCb.Collection<GameObject>;
         protected abstract renderRenderer(renderer:Renderer);
 
         @virtual
@@ -17,6 +16,10 @@ module wd {
         @virtual
         protected createCamera(...args):GameObject{
             return null;
+        }
+
+        protected isRenderListEmpty(renderList:wdCb.Collection<GameObject>){
+            return renderList.getCount() ===  0;
         }
 
         protected initFrameBuffer(){
@@ -33,7 +36,7 @@ module wd {
             frameBuffer.unBind();
         }
 
-        protected renderFrameBufferTexture(renderer:Renderer, camera:GameObject){
+        protected renderFrameBufferTexture(renderList:wdCb.Collection<GameObject>, renderer:Renderer, camera:GameObject){
             var renderCamera:GameObject = null;
 
             if(this.isNeedCreateCamera()){
@@ -57,7 +60,7 @@ module wd {
 
             //todo if renderList is null, draw all
             //todo optimize:if renderObject is behind plane, not render it!
-            this.getRenderList().forEach((child:GameObject) => {
+            renderList.forEach((child:GameObject) => {
                 child.render(renderer, renderCamera);
             });
 

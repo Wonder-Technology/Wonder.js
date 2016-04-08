@@ -7,7 +7,7 @@ module wd {
         private _lastCameraList: wdCb.Collection<GameObject> = null;
         private _lastPosition:Vector3 = null;
 
-        protected abstract getRenderList():wdCb.Hash<any>;
+        //protected abstract getRenderList():wdCb.Hash<any>;
         protected abstract setCamera(cubeCameraComponent:PerspectiveCamera);
         protected abstract getPosition():Vector3;
 
@@ -42,31 +42,29 @@ module wd {
             frameBufferOperator.unBind();
         }
 
-        protected renderFrameBufferTexture(renderer:Renderer, camera:GameObject){
+        protected renderFrameBufferTexture(renderList:wdCb.Hash<any>, renderer:Renderer, camera:GameObject){
             var renderCamera = null,
                 faceRenderList = null,
                 newCameraList = null,
-                position = this.getPosition(),
-                renderList = null;
+                position = null,
+                isNeedCreateCamera = null;
 
-            renderList = this.getRenderList();
+            position = this.getPosition();
+            isNeedCreateCamera = this._isNeedCreateCamera(position);
 
-            //todo remove
-            //this.texture.bindToUnit(0);
-
-            if(this._isNeedCreateCamera(position)){
+            if(isNeedCreateCamera){
                 newCameraList = wdCb.Collection.create<GameObject>();
             }
 
             for(let i = 0; i < 6; i++){
                 faceRenderList = renderList.getChild(this._convertIndexToFaceKey(i));
-                //faceRenderList = renderList;
                 //faceRenderList can be array or collection
                 if(this._isEmpty(faceRenderList)) {
                     continue;
                 }
 
-                if(this._isNeedCreateCamera(position)) {
+                //if(this._isNeedCreateCamera(position)) {
+                if(isNeedCreateCamera){
                     renderCamera = this.createCamera(i);
                     newCameraList.addChild(renderCamera);
                 }
@@ -87,7 +85,8 @@ module wd {
                 this.renderRenderer(renderer);
             }
 
-            if(this._isNeedCreateCamera(position)){
+            //if(this._isNeedCreateCamera(position)){
+            if(isNeedCreateCamera){
                 if(this._lastCameraList){
                     this._lastCameraList.forEach((camera:GameObject) => {
                         camera.dispose();
@@ -126,6 +125,19 @@ module wd {
             camera.init();
 
             return camera;
+        }
+
+        protected isRenderListEmpty(renderList:wdCb.Hash<any>){
+            var isEmpty = true;
+
+            renderList.forEach((faceRenderList) => {
+                if(!this._isEmpty(faceRenderList)){
+                    isEmpty = false;
+                    return wdCb.$BREAK;
+                }
+            }, this);
+
+            return isEmpty;
         }
 
         private _isEmpty(faceRenderList){
@@ -187,7 +199,7 @@ module wd {
         }
 
         private _isNeedCreateCamera(position:Vector3){
-            if(this._lastPosition === null || this._lastCameraList === null){
+            if(this._lastPosition === null || this._lastCameraList === null || this._lastCameraList.getCount() === 0){
                 return true;
             }
 

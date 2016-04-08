@@ -60,7 +60,7 @@ module wd {
             frameBuffer.unBind();
         }
 
-        protected renderFrameBufferTexture(renderer:Renderer){
+        protected renderFrameBufferTexture(renderList:any, renderer:Renderer){
             this.frameBufferOperator.bindFrameBuffer(this.frameBuffer);
             this.texture.bindToUnit(0);
             this.frameBufferOperator.setViewport();
@@ -79,6 +79,14 @@ module wd {
             var gl = DeviceManager.getInstance().gl;
 
             gl.deleteFramebuffer(this.frameBuffer);
+        }
+
+        protected getRenderList(){
+            return null;
+        }
+
+        protected isRenderListEmpty(){
+            return false;
         }
 
         private _createRenderCommand(){
