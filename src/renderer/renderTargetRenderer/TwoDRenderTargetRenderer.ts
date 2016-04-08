@@ -36,6 +36,9 @@ module wd {
             frameBuffer.unBind();
         }
 
+        @require(function(renderList:wdCb.Collection<GameObject>, renderer:Renderer, camera:GameObject){
+            assert(!!camera, Log.info.FUNC_SHOULD("pass param->camera"));
+        })
         protected renderFrameBufferTexture(renderList:wdCb.Collection<GameObject>, renderer:Renderer, camera:GameObject){
             var renderCamera:GameObject = null;
 
@@ -53,6 +56,10 @@ module wd {
             }
 
             this.beforeRenderFrameBufferTexture(renderCamera);
+
+            if(this.isRenderListEmptyWhenRender()){
+                return;
+            }
 
             this.frameBufferOperator.bindFrameBuffer(this.frameBuffer);
             this.frameBufferOperator.setViewport();

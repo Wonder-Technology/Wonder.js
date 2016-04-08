@@ -7,6 +7,8 @@ module wd {
         protected texture:RenderTargetTexture = null;
         protected frameBufferOperator:FrameBuffer = null;
 
+        private _isRenderListEmpty:boolean = false;
+
         public initWhenCreate(){
             this.frameBufferOperator = FrameBuffer.create(this.texture.width, this.texture.height);
         }
@@ -23,9 +25,7 @@ module wd {
             var renderer:Renderer = args[0],
                 renderList = this.getRenderList();
 
-            if(this.isRenderListEmpty(renderList)){
-                return;
-            }
+            this._isRenderListEmpty = this.isRenderListEmpty(renderList);
 
             this.beforeRender();
 
@@ -60,6 +60,15 @@ module wd {
 
         @virtual
         protected afterRender(){
+        }
+
+        @ensure(function(isRenderListEmpty:boolean){
+            if(isRenderListEmpty){
+                assert(this.isRenderListEmpty(this.getRenderList()), Log.info.FUNC_SHOULD("renderList", "be empty"));
+            }
+        })
+        protected isRenderListEmptyWhenRender(){
+            return this._isRenderListEmpty;
         }
     }
 }

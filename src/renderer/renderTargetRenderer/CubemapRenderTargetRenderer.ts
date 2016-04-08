@@ -42,6 +42,9 @@ module wd {
             frameBufferOperator.unBind();
         }
 
+        @require(function(renderList:wdCb.Hash<any>, renderer:Renderer, camera:GameObject){
+            assert(!!camera, Log.info.FUNC_SHOULD("pass param->camera"));
+        })
         protected renderFrameBufferTexture(renderList:wdCb.Hash<any>, renderer:Renderer, camera:GameObject){
             var renderCamera = null,
                 faceRenderList = null,
@@ -95,6 +98,10 @@ module wd {
 
                 this._lastCameraList = newCameraList;
                 this._lastPosition = position;
+            }
+
+            if(this.isRenderListEmptyWhenRender()){
+                return;
             }
 
             this.frameBufferOperator.unBind();

@@ -47,9 +47,6 @@ module wd {
             this._shadowMapRendererUtils.unBindEndLoop();
         }
 
-        protected beforeRenderFrameBufferTexture(renderCamera:GameObject){
-        }
-
         protected  getRenderList():wdCb.Hash<wdCb.Collection<GameObject>>{
             var renderList = Director.getInstance().scene.gameObjectScene.getComponent(ShadowManager).getShadowRenderListByLayer(this._layer);
 
@@ -69,36 +66,36 @@ module wd {
         }
 
         protected beforeRender(){
-            //this._shadowMapRendererUtils.beforeRender();
+            var scene:SceneDispatcher = null;
 
-            var scene:SceneDispatcher = Director.getInstance().scene;
+            Director.getInstance().scene.glslData.appendChild(<any>EShaderGLSLData.CUBEMAP_SHADOWMAP, {
+                light: this._light
+            });
+
+            if(this.isRenderListEmptyWhenRender()){
+                return;
+            }
+
+            scene = Director.getInstance().scene;
 
             scene.useShaderType(EShaderTypeOfScene.BUILD_CUBEMAP_SHADOWMAP);
 
-            this._mapManager.bindAndUpdate();
             /*! no need to send texture unit data
              because glsl only bind one texture, and its unit is 0 defaultly
-
-             this._mapManager.sendData();
              */
-            //this._setCubemapShadowMapOfSceneBuildShadowMapShader();
+            this._mapManager.bindAndUpdate();
 
-
-            Director.getInstance().scene.glslData.appendChild(<any>EShaderGLSLData.BUILD_CUBEMAP_SHADOWMAP, {
-                //camera: renderCamera.getComponent(CameraController),
-                light: this._light
-            });
-            Director.getInstance().scene.glslData.appendChild(<any>EShaderGLSLData.CUBEMAP_SHADOWMAP, {
-                //camera: renderCamera.getComponent(CameraController),
+            scene.glslData.appendChild(<any>EShaderGLSLData.BUILD_CUBEMAP_SHADOWMAP, {
                 light: this._light
             });
         }
 
         protected afterRender(){
-            //this._shadowMapRendererUtils.afterRender();
-            var scene:SceneDispatcher = Director.getInstance().scene;
+            if(this.isRenderListEmptyWhenRender()){
+                return;
+            }
 
-            scene.unUseShader();
+            Director.getInstance().scene.unUseShader();
         }
 
         protected setCamera(camera:PerspectiveCamera){

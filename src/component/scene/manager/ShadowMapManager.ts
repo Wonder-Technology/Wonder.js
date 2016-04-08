@@ -10,12 +10,25 @@ module wd {
             this._shadowManager = shadowManager;
         }
 
-        get twoDShadowMapCount(){
-            return this.twoDShadowMapDataMap.getCount() * this._shadowManager.entityObject.directionLights.getCount();
+        get twoDShadowMapCountForGLSL(){
+            var count = 0;
+
+            this.twoDShadowMapDataMap
+                .forEach((dataList:wdCb.Collection<TwoDShadowMapData>) => {
+                    count += dataList.getCount();
+                });
+
+            return count;
         }
 
-        get cubemapShadowMapCount(){
-            return this.cubemapShadowMapDataMap.getCount() * this._shadowManager.entityObject.pointLights.getCount();
+        get cubemapShadowMapCountForGLSL(){
+            var count = 0;
+
+            this.cubemapShadowMapDataMap.forEach((dataList:wdCb.Collection<CubemapShadowMapData>) => {
+                count += dataList.getCount();
+            });
+
+            return count;
         }
 
         public twoDShadowMapDataMap:wdCb.Hash<wdCb.Collection<TwoDShadowMapData>> = wdCb.Hash.create<wdCb.Collection<TwoDShadowMapData>>();
@@ -104,3 +117,4 @@ module wd {
         light:DirectionLight;
     }
 }
+

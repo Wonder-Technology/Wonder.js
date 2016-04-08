@@ -24,12 +24,8 @@ module wd{
         private _setShadowMapSource(){
             var scene:SceneDispatcher = Director.getInstance().scene,
                 shadowManager:ShadowManager = scene.gameObjectScene.getComponent<ShadowManager>(ShadowManager),
-                twoDShadowMapCount = shadowManager.twoDShadowMapCount,
-            //todo fix
-            //cubemapShadowMapCount = scene.pointLights ? scene.pointLights.filter((light:GameObject) => {
-            //    return light.getComponent<PointLight>(PointLight).castShadow;
-            //}).getCount() : 0;
-                cubemapShadowMapCount = shadowManager.cubemapShadowMapCount;
+                twoDShadowMapCountForGLSL = shadowManager.twoDShadowMapCountForGLSL,
+                cubemapShadowMapCountForGLSL = shadowManager.cubemapShadowMapCountForGLSL;
 
             if(scene.shadowMap.softType === EShadowMapSoftType.PCF){
                 this.fsSourceDefineList.addChildren([{
@@ -40,17 +36,17 @@ module wd{
             this.vsSourceDefineList.addChild(
                 {
                     name: "TWOD_SHADOWMAP_COUNT",
-                    value: twoDShadowMapCount
+                    value: twoDShadowMapCountForGLSL
                 });
 
             this.fsSourceDefineList.addChildren([
                 {
                     name: "TWOD_SHADOWMAP_COUNT",
-                    value: twoDShadowMapCount
+                    value: twoDShadowMapCountForGLSL
                 },
                 {
                     name: "CUBEMAP_SHADOWMAP_COUNT",
-                    value: cubemapShadowMapCount
+                    value: cubemapShadowMapCountForGLSL
                 },
             ]);
         }

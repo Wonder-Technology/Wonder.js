@@ -10,16 +10,16 @@ module wd{
             return this._shadowMapManager.twoDShadowMapDataMap;
         }
 
-        get twoDShadowMapCount(){
-            return this._shadowMapManager.twoDShadowMapCount;
+        get twoDShadowMapCountForGLSL(){
+            return this._shadowMapManager.twoDShadowMapCountForGLSL;
         }
 
         get cubemapShadowMapDataMap(){
             return this._shadowMapManager.cubemapShadowMapDataMap;
         }
 
-        get cubemapShadowMapCount(){
-            return this._shadowMapManager.cubemapShadowMapCount;
+        get cubemapShadowMapCountForGLSL(){
+            return this._shadowMapManager.cubemapShadowMapCountForGLSL;
         }
 
         public entityObject:GameObjectScene;
@@ -249,8 +249,9 @@ module wd{
 
         private _removeShadowMapGLSLData(){
             Director.getInstance().scene.glslData.removeChild(<any>EShaderGLSLData.TWOD_SHADOWMAP);
-            Director.getInstance().scene.glslData.removeChild(<any>EShaderGLSLData.BUILD_CUBEMAP_SHADOWMAP);
             Director.getInstance().scene.glslData.removeChild(<any>EShaderGLSLData.CUBEMAP_SHADOWMAP);
+            Director.getInstance().scene.glslData.removeChild(<any>EShaderGLSLData.BUILD_CUBEMAP_SHADOWMAP);
         }
     }
 }
+

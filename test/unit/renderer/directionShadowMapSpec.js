@@ -814,19 +814,80 @@ describe("direction shadow map", function() {
         //        expect(part2.render).toCalledTwice();
         //    });
         //});
-        
+
         describe("fix bug", function(){
+            var shader;
+            var program;
+
+            function setDrawShadowMapShaderAndProgram(obj){
+                var data = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, obj);
+
+                shader = data.shader;
+                program = data.program;
+
+                sandbox.stub(program, "sendStructureData");
+            }
+
             beforeEach(function(){
-                
+
             });
-            
-            it("if the object is not in renderList but it is in the scene, it shouldn't send the glsl data when draw shadow map", function(){
+
+            it("test if the renderList is empty, then in the next loop it is not empty", function(){
+                sandbox.spy(sphere, "render");
+
                 director._init();
 
-                sandbox.stub(director.scene.gameObjectScene.getComponent(wd.ShadowManager), "getShadowRenderListByLayer").returns(wdCb.Collection.create());
+                director.scene.removeChild(sphere);
 
-                var program = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere).program;
-                sandbox.stub(program, "sendStructureData");
+
+                director.scene.gameObjectScene.render(renderer);
+                expect(sphere.render.callCount).toEqual(0);
+
+                director.scene.addChild(sphere);
+
+                director.scene.gameObjectScene.render(renderer);
+
+                expect(sphere.render.callCount).toEqual(2);
+            });
+
+            describe("if the object which cast shadow is not in renderList but it is in the scene", function(){
+                beforeEach(function(){
+                    director._init();
+                    sandbox.stub(director.scene.gameObjectScene.getComponent(wd.ShadowManager), "getShadowRenderListByLayer").returns(wdCb.Collection.create());
+                });
+
+                describe("test draw shadow map", function(){
+                    beforeEach(function(){
+                        setDrawShadowMapShaderAndProgram(sphere);
+
+                        director.scene.gameObjectScene.render(renderer);
+                        renderer.render();
+                    });
+
+                    it("send glsl data", function(){
+                        expect(program.sendStructureData.withArgs("u_vpMatrixFromLight[0]")).toCalledOnce();
+                    });
+                    it("bind shadow map", function(){
+                        expect(program.sendUniformData.withArgs("u_twoDShadowMapSampler[0]", sinon.match.any, sinon.match.number)).toCalledOnce();
+                    });
+                });
+            });
+
+            it("if only has the object which receive shadow, it shouldn't send glsl data when draw shadow map", function () {
+                director.scene.removeChild(sphere);
+
+                var sphereOnlyReceive = shadowTool.createSphere();
+                sphereOnlyReceive.name = "sphereOnlyReceive";
+                var shadow = sphereOnlyReceive.getComponent(wd.Shadow);
+                shadow.cast = false;
+                shadow.receive = true;
+
+
+                director.scene.addChild(sphereOnlyReceive);
+
+                director._init();
+                setDrawShadowMapShaderAndProgram(sphereOnlyReceive);
+
 
 
 
@@ -834,9 +895,11 @@ describe("direction shadow map", function() {
                 renderer.render();
 
 
+
                 expect(program.sendStructureData.withArgs("u_vpMatrixFromLight[0]")).not.toCalled();
             });
         });
+
 
         describe("optimize", function(){
             beforeEach(function(){

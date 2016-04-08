@@ -857,6 +857,18 @@ describe("point shadow map", function() {
         //});
 
         describe("fix bug", function(){
+            var shader;
+            var program;
+
+            function setDrawShadowMapShaderAndProgram(obj){
+                var data = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, obj);
+
+                shader = data.shader;
+                program = data.program;
+
+                sandbox.stub(program, "sendStructureData");
+            }
+
             beforeEach(function(){
 
             });
@@ -879,13 +891,53 @@ describe("point shadow map", function() {
                 expect(sphere.render.callCount).toEqual(7);
             });
 
-            it("if the object is not in renderList but it is in the scene, it shouldn't send the glsl data when draw shadow map", function(){
+            describe("if the object which cast shadow is not in renderList but it is in the scene", function(){
+                beforeEach(function(){
+                    director._init();
+                    sandbox.stub(director.scene.gameObjectScene.getComponent(wd.ShadowManager), "getShadowRenderListByLayer").returns(wdCb.Collection.create());
+                });
+
+                describe("test draw shadow map", function(){
+                    beforeEach(function(){
+                        setDrawShadowMapShaderAndProgram(sphere);
+
+                        director.scene.gameObjectScene.render(renderer);
+                        renderer.render();
+                    });
+
+                    it("send glsl data", function(){
+                        expect(program.sendStructureData.withArgs("u_cubemapLightPos[0]")).toCalledOnce();
+                    });
+                    it("bind shadow map", function(){
+                        expect(program.sendUniformData.withArgs("u_cubemapShadowMapSampler[0]", sinon.match.any, sinon.match.number)).toCalledOnce();
+                    });
+                    //it("fs glsl should define CUBEMAP_SHADOWMAP_COUNT", function () {
+                    //    director._init();
+                    //
+                    //
+                    //    director.scene.gameObjectScene.render(renderer);
+                    //    renderer.render();
+                    //
+                    //    expect(glslTool.contain(shader.fsSource, "CUBEMAP_SHADOWMAP_COUNT 1")).toBeTruthy();
+                    //});
+                });
+            });
+
+            it("if only has the object which receive shadow, it shouldn't send glsl data when draw shadow map", function () {
+                director.scene.removeChild(sphere);
+
+                var sphereOnlyReceive = shadowTool.createSphere();
+                sphereOnlyReceive.name = "sphereOnlyReceive";
+                var shadow = sphereOnlyReceive.getComponent(wd.Shadow);
+                shadow.cast = false;
+                shadow.receive = true;
+
+
+                director.scene.addChild(sphereOnlyReceive);
+
                 director._init();
+                setDrawShadowMapShaderAndProgram(sphereOnlyReceive);
 
-                sandbox.stub(director.scene.gameObjectScene.getComponent(wd.ShadowManager), "getShadowRenderListByLayer").returns(wdCb.Collection.create());
-
-                var program = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere).program;
-                sandbox.stub(program, "sendStructureData");
 
 
 
@@ -893,13 +945,9 @@ describe("point shadow map", function() {
                 renderer.render();
 
 
+
                 expect(program.sendStructureData.withArgs("u_cubemapLightPos[0]")).not.toCalled();
             });
-
-
-            //todo Texture 1 is ?
-
-            //todo darker
         });
 
         describe("optimize", function(){

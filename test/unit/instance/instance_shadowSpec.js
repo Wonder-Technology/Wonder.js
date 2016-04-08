@@ -185,7 +185,7 @@ describe("instance with shadow", function () {
 
             describe("test other objects", function () {
                 function setBuildShadowMapShaderAndProgram(obj, handleProgramFunc) {
-                    shadowTool.setBuildShadowMapShaderAndProgramHelper(sandbox, obj, handleProgramFunc, function(s, p){
+                    shadowTool.setTwoDBuildShadowMapShaderAndProgramHelper(sandbox, obj, handleProgramFunc, function(s, p){
                         shader = s;
                         program = p;
                     })
