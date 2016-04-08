@@ -879,6 +879,23 @@ describe("point shadow map", function() {
                 expect(sphere.render.callCount).toEqual(7);
             });
 
+            it("if the object is not in renderList but it is in the scene, it shouldn't send the glsl data when draw shadow map", function(){
+                director._init();
+
+                sandbox.stub(director.scene.gameObjectScene.getComponent(wd.ShadowManager), "getShadowRenderListByLayer").returns(wdCb.Collection.create());
+
+                var program = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere).program;
+                sandbox.stub(program, "sendStructureData");
+
+
+
+                director.scene.gameObjectScene.render(renderer);
+                renderer.render();
+
+
+                expect(program.sendStructureData.withArgs("u_cubemapLightPos[0]")).not.toCalled();
+            });
+
 
             //todo Texture 1 is ?
 

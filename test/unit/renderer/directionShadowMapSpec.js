@@ -814,6 +814,29 @@ describe("direction shadow map", function() {
         //        expect(part2.render).toCalledTwice();
         //    });
         //});
+        
+        describe("fix bug", function(){
+            beforeEach(function(){
+                
+            });
+            
+            it("if the object is not in renderList but it is in the scene, it shouldn't send the glsl data when draw shadow map", function(){
+                director._init();
+
+                sandbox.stub(director.scene.gameObjectScene.getComponent(wd.ShadowManager), "getShadowRenderListByLayer").returns(wdCb.Collection.create());
+
+                var program = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere).program;
+                sandbox.stub(program, "sendStructureData");
+
+
+
+                director.scene.gameObjectScene.render(renderer);
+                renderer.render();
+
+
+                expect(program.sendStructureData.withArgs("u_vpMatrixFromLight[0]")).not.toCalled();
+            });
+        });
 
         describe("optimize", function(){
             beforeEach(function(){

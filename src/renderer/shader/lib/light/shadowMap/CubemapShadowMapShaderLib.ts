@@ -10,7 +10,13 @@ module wd{
         public type:string = "cubemapShadowMap";
 
         public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
-            Director.getInstance().scene.glslData.getChild(<any>EShaderGLSLData.CUBEMAP_SHADOWMAP).forEach((data:CubemapShadowMapShaderLibData, index:number) => {
+            var glslData = Director.getInstance().scene.glslData.getChild(<any>EShaderGLSLData.CUBEMAP_SHADOWMAP);
+
+            if(!glslData){
+                return;
+            }
+
+            glslData.forEach((data:CubemapShadowMapShaderLibData, index:number) => {
                 var light = data.light;
 
                 program.sendStructureData(`u_cubemapLightPos[${index}]`, EVariableType.FLOAT_3, light.position);
