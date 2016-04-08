@@ -168,7 +168,18 @@ describe("shadow map", function() {
             });
         });
 
-        //todo test direction lights and point lights together
+        describe("fix bug", function(){
+            it("if scene.shadowMap.enable === true but no shadow, the object should add NoShadowMapShaderLib", function(){
+                director.scene.shadowMap.enable = true;
+
+                sphere.removeComponent(wd.Shadow);
+
+                director._init();
+
+                var shader = sphere.getComponent(wd.Geometry).material.shader;
+                expect(shader.hasLib(wd.NoShadowMapShaderLib)).toBeTruthy();
+            });
+        });
     });
 });
 

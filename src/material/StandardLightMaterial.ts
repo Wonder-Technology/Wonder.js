@@ -194,15 +194,28 @@ module wd{
                 this.shader.addLib(NoNormalMapShaderLib.create());
             }
 
-            if(scene.shadowMap.enable && (this._hasTwoDShadowMap() || this._hasCubemapShadowMap())){
+            //if(scene.shadowMap.enable && (this._hasTwoDShadowMap() || this._hasCubemapShadowMap())){
+            if(scene.shadowMap.enable){
+                let hasTwoD = false,
+                    hasCubemap = false;
+
                 if(this._hasTwoDShadowMap()){
+                    hasTwoD = true;
+
                     this.shader.addLib(TwoDShadowMapShaderLib.create());
                 }
                 if(this._hasCubemapShadowMap()){
+                    hasCubemap = true;
+
                     this.shader.addLib(CubemapShadowMapShaderLib.create());
                 }
 
-                this.shader.addLib(TotalShadowMapShaderLib.create());
+                if(hasTwoD || hasCubemap){
+                    this.shader.addLib(TotalShadowMapShaderLib.create());
+                }
+                else{
+                    this.shader.addLib(NoShadowMapShaderLib.create());
+                }
             }
             else{
                 this.shader.addLib(NoShadowMapShaderLib.create());
