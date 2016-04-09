@@ -376,6 +376,13 @@
 /// <reference path="renderer/shader/shader/EShaderGLSLData"/>
 /// <reference path="renderer/shader/shader/EShaderTypeOfScene"/>
 /// <reference path="renderer/shader/shader/EShaderMapKeyOfScene"/>
+/// <reference path="renderer/shader/shader/EShaderMapKey"/>
+/// <reference path="renderer/shader/shader/mapManager/MapManager"/>
+/// <reference path="renderer/shader/shader/mapManager/MapController"/>
+/// <reference path="renderer/shader/shader/mapManager/ShadowMapController"/>
+/// <reference path="renderer/shader/shader/mapManager/EnvMapController"/>
+/// <reference path="renderer/shader/shader/mapManager/ArrayMapController"/>
+/// <reference path="renderer/shader/shader/mapManager/CommonMapController"/>
 
 /// <reference path="renderer/shader/sourceBuilder/ShaderSourceBuilder"/>
 /// <reference path="renderer/shader/sourceBuilder/CustomShaderSourceBuilder"/>
@@ -468,13 +475,6 @@
 /// <reference path="material/LightMaterial"/>
 /// <reference path="material/ShaderMaterial"/>
 /// <reference path="material/EShading"/>
-/// <reference path="material/MapManager"/>
-/// <reference path="material/MapController"/>
-/// <reference path="material/ShadowMapController"/>
-/// <reference path="material/EnvMapController"/>
-/// <reference path="material/ArrayMapController"/>
-/// <reference path="material/CommonMapController"/>
-/// <reference path="material/EShaderMapKey"/>
 
 
 
