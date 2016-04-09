@@ -19,7 +19,7 @@ module wd {
 
         private _light:DirectionLight = null;
         private _layer:string = null;
-        private _mapManager:MapManager = MapManager.create(null);
+        private _mapManager:MapManager = MapManager.create();
 
         private _shadowMapRendererUtils:TwoDShadowMapRenderTargetRendererUtils = null;
 

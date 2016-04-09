@@ -188,7 +188,7 @@ module wd {
             });
 
             //todo test
-            this._unUseSceneShaderSubscription.dispose();
+            this._unUseSceneShaderSubscription && this._unUseSceneShaderSubscription.dispose();
         }
 
         public updateShader(quadCmd:QuadCommand){

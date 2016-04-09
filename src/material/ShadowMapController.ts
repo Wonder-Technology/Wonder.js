@@ -1,7 +1,7 @@
 module wd{
     export class ShadowMapController extends MapController{
         public static create() {
-            var obj = new this(null);
+            var obj = new this();
 
             return obj;
         }

@@ -1,10 +1,12 @@
 module wd{
     export class EnvMapController extends MapController{
-        public static create(material:Material) {
-            var obj = new this(material);
+        public static create() {
+            var obj = new this();
 
             return obj;
         }
+
+        public material:Material = null;
 
         private _map:CubemapTexture = null;
 
@@ -14,7 +16,7 @@ module wd{
                 return;
             }
 
-            this.setMapMaterial(envMap);
+            envMap.material = this.material;
 
             this._map = envMap;
         }

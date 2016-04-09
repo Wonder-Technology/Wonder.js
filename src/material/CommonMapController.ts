@@ -1,10 +1,12 @@
 module wd{
     export class CommonMapController extends MapController{
-        public static create(material:Material) {
-            var obj = new this(material);
+        public static create() {
+            var obj = new this();
 
             return obj;
         }
+
+        public material:Material = null;
 
         private _list:wdCb.Collection<Texture> = wdCb.Collection.create<Texture>();
 
@@ -20,7 +22,7 @@ module wd{
                 this.setMapOption(map, option);
             }
 
-            this.setMapMaterial(map);
+            map.material = this.material;
 
             this._list.addChild(map);
         }

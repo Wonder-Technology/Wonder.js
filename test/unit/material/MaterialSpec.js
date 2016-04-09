@@ -90,6 +90,22 @@ describe("Material", function() {
     //    });
     //});
 
+    describe("initWhenCreate", function(){
+        beforeEach(function(){
+        });
+
+        it("set shader->mapManager's material and set its controller's material", function(){
+            material = new wd.Material();
+
+            material.initWhenCreate();
+
+            var mapManager = material.shader.mapManager;
+            expect(mapManager.material).toEqual(material);
+            expect(mapManager._envMapController.material).toEqual(material);
+            expect(mapManager._commonMapController.material).toEqual(material);
+        });
+    });
+
     describe("dispose", function(){
         beforeEach(function(){
             
@@ -102,29 +118,18 @@ describe("Material", function() {
 
             expect(material.shader.dispose).toCalledOnce();
         });
-        it("dispose mapManager", function(){
-            sandbox.stub(material.mapManager, "dispose");
+        it("dispose 'un use scene shader event' subscription", function(){
+            var sceneShader = {};
+            material._sceneShader = sceneShader;
+
+            material.init();
+
 
             material.dispose();
 
-            expect(material.mapManager.dispose).toCalledOnce();
+            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.UNUSE_SCENE_SHADER));
+
+            expect(material._sceneShader).toEqual(sceneShader);
         });
-        //it("dispose 'after init event' subscription", function(){
-        //    sandbox.stub(material, "addShaderLib");
-        //
-        //    material.init();
-        //
-        //
-        //    wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.AFTER_GAMEOBJECT_INIT));
-        //
-        //
-        //    expect(material.addShaderLib).toCalledOnce();
-        //
-        //    material.dispose();
-        //
-        //    wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.AFTER_GAMEOBJECT_INIT));
-        //
-        //    expect(material.addShaderLib).not.toCalledTwice();
-        //});
     });
 });

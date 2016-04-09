@@ -50,7 +50,7 @@ module wd{
 
         public program:Program = Program.create();
         public libDirty:boolean = false;
-        public mapManager:MapManager = MapManager.create(null);
+        public mapManager:MapManager = MapManager.create();
 
         protected libs:wdCb.Collection<ShaderLib> = wdCb.Collection.create<ShaderLib>();
         protected sourceBuilder:ShaderSourceBuilder = this.createShaderSourceBuilder();

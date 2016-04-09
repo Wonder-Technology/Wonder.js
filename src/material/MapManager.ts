@@ -1,35 +1,30 @@
 module wd{
     export class MapManager{
-        public static create(material:Material = null) {
-            var obj = new this(material);
-
-            obj.initWhenCreate();
+        public static create() {
+            var obj = new this();
 
             return obj;
         }
 
-        constructor(material:Material){
-            this.material = material;
+        private _material:Material = null;
+        get material(){
+            return this._material;
         }
+        set material(material:Material){
+            this._material = material;
 
-        public material:Material = null;
+            this._envMapController.material = material;
+            this._commonMapController.material = material;
+        }
 
         private _textureDirty:boolean = false;
         private _allMapsCache:Array<Texture> = null;
         private _allSingleMapsCache:Array<Texture> = null;
 
-        private _shadowMapController:ShadowMapController = null;
-        private _envMapController:EnvMapController = null;
-        private _arrayMapController:ArrayMapController = null;
-        private _commonMapController:CommonMapController = null;
-
-        public initWhenCreate(){
-            this._shadowMapController = ShadowMapController.create();
-            this._arrayMapController = ArrayMapController.create();
-
-            this._envMapController = EnvMapController.create(this.material);
-            this._commonMapController = CommonMapController.create(this.material);
-        }
+        private _shadowMapController:ShadowMapController = ShadowMapController.create();
+        private _arrayMapController:ArrayMapController = ArrayMapController.create();
+        private _envMapController:EnvMapController = EnvMapController.create();
+        private _commonMapController:CommonMapController = CommonMapController.create();
 
         public init(){
             var mapArr = this._getAllMaps();

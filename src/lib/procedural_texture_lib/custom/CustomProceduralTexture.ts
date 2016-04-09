@@ -8,7 +8,7 @@ module wd {
         	return obj;
         }
 
-        public mapManager:MapManager = MapManager.create(null);
+        public mapManager:MapManager = MapManager.create();
         public uniformMap:wdCb.Hash<ShaderData> = wdCb.Hash.create<ShaderData>();
         public fsSource:string = null;
 
