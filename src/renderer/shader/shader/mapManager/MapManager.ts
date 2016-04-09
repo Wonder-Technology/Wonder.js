@@ -22,7 +22,7 @@ module wd{
         private _allSingleMapsCache:Array<Texture> = null;
 
         private _shadowMapController:ShadowMapController = ShadowMapController.create();
-        private _arrayMapController:ArrayMapController = ArrayMapController.create();
+        private _arrayMapController:MapArrayController = MapArrayController.create();
         private _envMapController:EnvMapController = EnvMapController.create();
         private _commonMapController:CommonMapController = CommonMapController.create();
 
@@ -73,8 +73,8 @@ module wd{
                 assert(map instanceof Texture, Log.info.FUNC_SHOULD(Log.info.FUNC_SHOULD("second param", "be Array<Texture>")));
             }
         })
-        public addArrayMap(samplerName:string, mapArray:Array<Texture>){
-            this._arrayMapController.addArrayMap(samplerName, mapArray);
+        public addMapArray(samplerName:string, mapArray:Array<Texture>){
+            this._arrayMapController.addMapArray(samplerName, mapArray);
 
             this._textureDirty = true;
         }

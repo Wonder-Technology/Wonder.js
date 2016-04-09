@@ -44,7 +44,7 @@ describe("MapManager", function() {
 
         arrayMapSamplerName = "u_layerSampler2Ds";
 
-        manager.addArrayMap(arrayMapSamplerName, [arrayMap11, arrayMap12]);
+        manager.addMapArray(arrayMapSamplerName, [arrayMap11, arrayMap12]);
     }
 
     function stubAllTypeMaps(stubFunc){
@@ -212,12 +212,12 @@ describe("MapManager", function() {
 
                         expect(expectFunc()).toCalledTwice();
                     });
-                    it("addArrayMap make texture dirty", function(){
+                    it("addMapArray make texture dirty", function(){
                         var texture1 = wd.ImageTexture.create({a:1});
                         var texture2 = wd.ImageTexture.create({});
                         var list1 = manager[testMethodName]();
 
-                        manager.addArrayMap("u_layerSampler2Ds", [texture1,texture2]);
+                        manager.addMapArray("u_layerSampler2Ds", [texture1,texture2]);
 
                         var list2 = manager[testMethodName]();
 

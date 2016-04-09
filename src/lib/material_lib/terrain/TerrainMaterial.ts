@@ -11,7 +11,7 @@ module wd{
         public layer:TerrainLayerMapModel = TerrainLayerMapModel.create();
 
         public init(){
-            this.mapManager.addArrayMap("u_layerSampler2Ds", this.layer.mapArray);
+            this.mapManager.addMapArray("u_layerSampler2Ds", this.layer.mapArray);
 
             super.init();
         }

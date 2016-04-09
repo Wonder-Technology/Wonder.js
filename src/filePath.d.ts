@@ -381,7 +381,7 @@
 /// <reference path="renderer/shader/shader/mapManager/MapController"/>
 /// <reference path="renderer/shader/shader/mapManager/ShadowMapController"/>
 /// <reference path="renderer/shader/shader/mapManager/EnvMapController"/>
-/// <reference path="renderer/shader/shader/mapManager/ArrayMapController"/>
+/// <reference path="renderer/shader/shader/mapManager/MapArrayController"/>
 /// <reference path="renderer/shader/shader/mapManager/CommonMapController"/>
 
 /// <reference path="renderer/shader/sourceBuilder/ShaderSourceBuilder"/>

@@ -1,15 +1,15 @@
 module wd{
-    export class ArrayMapController extends MapController{
+    export class MapArrayController extends MapController{
         public static create() {
             var obj = new this();
 
             return obj;
         }
 
-        private _arrayMapList:wdCb.Collection<ArrayMapData> = wdCb.Collection.create<ArrayMapData>();
+        private _mapArrayList:wdCb.Collection<ArrayMapData> = wdCb.Collection.create<ArrayMapData>();
 
-        public addArrayMap(samplerName:string, mapArray:Array<Texture>){
-            this._arrayMapList.addChild({
+        public addMapArray(samplerName:string, mapArray:Array<Texture>){
+            this._mapArrayList.addChild({
                 samplerName:samplerName,
                 mapArray:mapArray
             });
@@ -18,7 +18,7 @@ module wd{
         public sendMapData(program:Program, maxUnitOfBindedSingleMap:number){
             var self = this;
 
-            this._arrayMapList.forEach((mapData:ArrayMapData) => {
+            this._mapArrayList.forEach((mapData:ArrayMapData) => {
                 let arrayMapCount = mapData.mapArray.length;
 
                 program.sendUniformData(`${mapData.samplerName}[0]`, EVariableType.SAMPLER_ARRAY, self._generateArrayMapUnitArray(maxUnitOfBindedSingleMap, maxUnitOfBindedSingleMap + arrayMapCount));
@@ -35,7 +35,7 @@ module wd{
         public getAllMapArr(){
             var arrayMap = [];
 
-            this._arrayMapList.forEach((mapData:ArrayMapData) => {
+            this._mapArrayList.forEach((mapData:ArrayMapData) => {
                 arrayMap = arrayMap.concat(mapData.mapArray);
             });
 
@@ -43,7 +43,7 @@ module wd{
         }
 
         public removeAllChildren(){
-            this._arrayMapList.removeAllChildren();
+            this._mapArrayList.removeAllChildren();
         }
 
         @ensure(function(arr:Array<number>, startUnit:number, endUnit:number){
