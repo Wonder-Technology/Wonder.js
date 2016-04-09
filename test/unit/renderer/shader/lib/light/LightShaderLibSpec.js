@@ -14,7 +14,7 @@ describe("LightShaderLib", function () {
         program = new wd.Program();
     });
     afterEach(function () {
-        testTool.clearInstance();
+        testTool.clearInstance(sandbox);
         sandbox.restore();
     });
 

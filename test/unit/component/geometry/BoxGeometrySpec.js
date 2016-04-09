@@ -9,7 +9,7 @@ describe("BoxGeometry", function() {
         sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
     });
     afterEach(function () {
-        testTool.clearInstance();
+        testTool.clearInstance(sandbox);
         sandbox.restore();
     });
 

@@ -44,7 +44,7 @@ describe("UIRenderer", function () {
         sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
     });
     afterEach(function () {
-        testTool.clearInstance();
+        testTool.clearInstance(sandbox);
         uiObject.dispose();
         sandbox.restore();
     });

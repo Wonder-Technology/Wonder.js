@@ -9,7 +9,7 @@ describe("loader", function () {
     });
     afterEach(function () {
         manager.dispose();
-        testTool.clearInstance();
+        testTool.clearInstance(sandbox);
         sandbox.restore();
     });
 

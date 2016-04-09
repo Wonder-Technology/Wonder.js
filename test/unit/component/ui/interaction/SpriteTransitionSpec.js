@@ -13,7 +13,7 @@ describe("SpriteTransition", function() {
         transition = new SpriteTransition();
     });
     afterEach(function () {
-        testTool.clearInstance();
+        testTool.clearInstance(sandbox);
         sandbox.restore();
     });
 

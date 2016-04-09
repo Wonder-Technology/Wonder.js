@@ -57,7 +57,7 @@ describe("cubemap texture", function() {
         testTool.closeContractCheck(sandbox);
     });
     afterEach(function () {
-        testTool.clearInstance();
+        testTool.clearInstance(sandbox);
         sandbox.restore();
     });
 

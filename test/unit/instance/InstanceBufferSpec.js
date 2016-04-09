@@ -12,7 +12,7 @@ describe("InstanceBuffer", function () {
         buffer = wd.InstanceBuffer.create();
     });
     afterEach(function () {
-        testTool.clearInstance();
+        testTool.clearInstance(sandbox);
         sandbox.restore();
     });
 

@@ -13,7 +13,7 @@ describe("direction shadow map with octree", function() {
 
         testTool.openContractCheck(sandbox);
 
-        testTool.clearInstance();
+        testTool.clearInstance(sandbox);
         director = wd.Director.getInstance();
 
 
@@ -23,7 +23,7 @@ describe("direction shadow map with octree", function() {
     });
     afterEach(function () {
         sandbox.restore();
-        testTool.clearInstance();
+        testTool.clearInstance(sandbox);
     });
 
     describe("integrate test", function(){

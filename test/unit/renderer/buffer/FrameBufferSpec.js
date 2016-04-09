@@ -12,7 +12,7 @@ describe("FrameBuffer", function() {
     });
     afterEach(function () {
         sandbox.restore();
-        testTool.clearInstance();
+        testTool.clearInstance(sandbox);
     });
 
     describe("setViewport", function(){

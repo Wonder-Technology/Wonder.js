@@ -14,7 +14,7 @@ describe("shadow map", function() {
         sandbox = sinon.sandbox.create();
 
 
-        testTool.clearInstance();
+        testTool.clearInstance(sandbox);
         director = wd.Director.getInstance();
 
         deviceManager = wd.DeviceManager.getInstance();
@@ -25,7 +25,7 @@ describe("shadow map", function() {
     });
     afterEach(function () {
         sandbox.restore();
-        testTool.clearInstance();
+        testTool.clearInstance(sandbox);
     });
 
     describe("integrate test", function() {

@@ -51,7 +51,7 @@ describe("ArcballCameraController", function () {
     afterEach(function () {
         wd.EventManager.off();
 
-        testTool.clearInstance();
+        testTool.clearInstance(sandbox);
 
         removeDom();
 

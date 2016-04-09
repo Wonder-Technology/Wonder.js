@@ -7,7 +7,7 @@ describe("PlaneGeometry", function() {
         geo = new wd.PlaneGeometry();
     });
     afterEach(function () {
-        testTool.clearInstance();
+        testTool.clearInstance(sandbox);
         sandbox.restore();
     });
 

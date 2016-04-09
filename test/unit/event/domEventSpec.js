@@ -27,7 +27,7 @@ describe("dom event", function () {
     afterEach(function () {
         removeDom();
         manager.off();
-        testTool.clearInstance();
+        testTool.clearInstance(sandbox);
         sandbox.restore();
     });
 

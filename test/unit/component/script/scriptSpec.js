@@ -130,7 +130,7 @@ describe("script", function () {
     });
     afterEach(function () {
         $("script").remove();
-        testTool.clearInstance();
+        testTool.clearInstance(sandbox);
         sandbox.restore();
     });
 

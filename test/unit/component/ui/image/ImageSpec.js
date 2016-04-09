@@ -62,7 +62,7 @@ describe("Image", function () {
         uiObject.transform.position = position;
     });
     afterEach(function () {
-        testTool.clearInstance();
+        testTool.clearInstance(sandbox);
         uiObject.dispose();
         sandbox.restore();
     });

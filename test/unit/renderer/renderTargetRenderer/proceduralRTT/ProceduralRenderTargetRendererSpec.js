@@ -45,7 +45,7 @@ describe("ProceduralRenderTargetRenderer", function () {
     });
     afterEach(function () {
         //wd.EventManager.off();
-        testTool.clearInstance();
+        testTool.clearInstance(sandbox);
         sandbox.restore();
     });
 

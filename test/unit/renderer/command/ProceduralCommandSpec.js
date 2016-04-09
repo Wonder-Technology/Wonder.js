@@ -11,7 +11,7 @@ describe("ProceduralCommand", function() {
         cmd = wd.ProceduralCommand.create();
     });
     afterEach(function () {
-        testTool.clearInstance();
+        testTool.clearInstance(sandbox);
         sandbox.restore();
     });
 

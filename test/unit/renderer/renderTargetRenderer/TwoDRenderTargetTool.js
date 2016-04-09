@@ -29,7 +29,7 @@ var TwoDRenderTargetTool = YYC.Class({
             });
             afterEach(function () {
                 wd.EventManager.off();
-                testTool.clearInstance();
+                testTool.clearInstance(self.sandbox);
                 self.sandbox.restore();
             });
 

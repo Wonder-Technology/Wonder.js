@@ -42,7 +42,7 @@ describe("envMap for light", function () {
     afterEach(function () {
         sandbox.restore();
 
-        testTool.clearInstance();
+        testTool.clearInstance(sandbox);
     });
 
     it("fix envMap shader lib bug: vertex glsl should only set gl_Position once", function () {

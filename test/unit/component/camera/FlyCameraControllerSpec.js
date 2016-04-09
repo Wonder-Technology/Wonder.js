@@ -22,7 +22,7 @@ describe("FlyCameraController", function () {
         sandbox = sinon.sandbox.create();
     });
     afterEach(function () {
-        testTool.clearInstance();
+        testTool.clearInstance(sandbox);
         sandbox.restore();
     });
 

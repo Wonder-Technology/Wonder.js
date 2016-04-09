@@ -11,7 +11,7 @@ describe("SingleDrawCommand", function() {
         cmd = wd.SingleDrawCommand.create();
     });
     afterEach(function () {
-        testTool.clearInstance();
+        testTool.clearInstance(sandbox);
         sandbox.restore();
     });
 

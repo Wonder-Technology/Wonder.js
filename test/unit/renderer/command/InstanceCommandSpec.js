@@ -11,7 +11,7 @@ describe("InstanceCommand", function() {
         cmd = wd.InstanceCommand.create();
     });
     afterEach(function () {
-        testTool.clearInstance();
+        testTool.clearInstance(sandbox);
         sandbox.restore();
     });
 

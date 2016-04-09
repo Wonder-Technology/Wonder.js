@@ -66,7 +66,7 @@ describe("MapManager", function() {
         gl = wd.DeviceManager.getInstance().gl;
     });
     afterEach(function () {
-        testTool.clearInstance();
+        testTool.clearInstance(sandbox);
         sandbox.restore();
     });
 

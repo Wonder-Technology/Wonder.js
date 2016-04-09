@@ -16,7 +16,7 @@ describe("custom shader", function () {
         material = wd.ShaderMaterial.create();
     });
     afterEach(function () {
-        testTool.clearInstance();
+        testTool.clearInstance(sandbox);
         sandbox.restore();
     });
 

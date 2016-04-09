@@ -10,7 +10,7 @@ describe("deviceManager", function() {
         gl = device.gl;
     });
     afterEach(function () {
-        testTool.clearInstance();
+        testTool.clearInstance(sandbox);
         sandbox.restore();
     });
     

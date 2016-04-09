@@ -7,7 +7,7 @@ describe("SourceLight", function() {
         light = new wd.SourceLight();
     });
     afterEach(function () {
-        testTool.clearInstance();
+        testTool.clearInstance(sandbox);
         sandbox.restore();
     });
 

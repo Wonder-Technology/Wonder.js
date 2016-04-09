@@ -12,7 +12,7 @@ describe("Transition", function() {
         transition = new Transition();
     });
     afterEach(function () {
-        testTool.clearInstance();
+        testTool.clearInstance(sandbox);
         sandbox.restore();
     });
 

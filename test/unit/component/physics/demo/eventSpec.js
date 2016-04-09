@@ -109,7 +109,7 @@ describe("physics event demo", function () {
         };
     });
     afterEach(function () {
-        testTool.clearInstance();
+        testTool.clearInstance(sandbox);
         sandbox.restore();
     });
 

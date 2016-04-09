@@ -18,7 +18,7 @@ describe("QuadCommand", function() {
         cmd = createQuadCommand();
     });
     afterEach(function () {
-        testTool.clearInstance();
+        testTool.clearInstance(sandbox);
         sandbox.restore();
     });
 

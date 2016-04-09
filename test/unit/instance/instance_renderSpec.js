@@ -83,7 +83,7 @@ describe("use instance to batch draw calls", function(){
     afterEach(function () {
         sandbox.restore();
 
-        testTool.clearInstance();
+        testTool.clearInstance(sandbox);
     });
 
     describe("test render count", function(){

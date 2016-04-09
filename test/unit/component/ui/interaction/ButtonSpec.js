@@ -97,7 +97,7 @@ describe("Button", function() {
         uiObject = createButton();
     });
     afterEach(function () {
-        testTool.clearInstance();
+        testTool.clearInstance(sandbox);
         sandbox.restore();
     });
 

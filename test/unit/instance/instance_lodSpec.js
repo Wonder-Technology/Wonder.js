@@ -52,7 +52,7 @@ describe("instance with lod", function () {
     afterEach(function () {
         sandbox.restore();
 
-        testTool.clearInstance();
+        testTool.clearInstance(sandbox);
     });
 
     it("instance should show the same geometry with the source", function () {

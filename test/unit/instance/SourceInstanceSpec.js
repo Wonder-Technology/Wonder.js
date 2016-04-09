@@ -14,7 +14,7 @@ describe("SourceInstance", function(){
         box1 = instanceTool.createBox();
     });
     afterEach(function () {
-        testTool.clearInstance();
+        testTool.clearInstance(sandbox);
 
         sandbox.restore();
     });

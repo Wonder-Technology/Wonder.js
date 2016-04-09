@@ -25,7 +25,7 @@ describe("GameObjectScene", function() {
         scene = GameObjectScene.create();
     });
     afterEach(function () {
-        testTool.clearInstance();
+        testTool.clearInstance(sandbox);
         sandbox.restore();
     });
 

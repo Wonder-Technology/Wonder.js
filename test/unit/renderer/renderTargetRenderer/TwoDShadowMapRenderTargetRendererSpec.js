@@ -10,7 +10,7 @@ describe("TwoDShadowMapRenderTargetRenderer", function() {
     });
     afterEach(function () {
         sandbox.restore();
-        testTool.clearInstance();
+        testTool.clearInstance(sandbox);
     });
 
     describe("create camera", function(){

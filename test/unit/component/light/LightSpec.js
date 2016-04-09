@@ -7,7 +7,7 @@ describe("Light", function() {
         light = new wd.Light();
     });
     afterEach(function () {
-        testTool.clearInstance();
+        testTool.clearInstance(sandbox);
         sandbox.restore();
     });
 

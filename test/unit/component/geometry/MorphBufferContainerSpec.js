@@ -68,7 +68,7 @@ describe("MorphBufferContainer", function() {
             geo.morphTargets = geometryData.morphTargets;
         });
         afterEach(function(){
-            testTool.clearInstance();
+            testTool.clearInstance(sandbox);
         });
 
         describe("get vertice buffer", function(){

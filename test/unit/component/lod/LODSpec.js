@@ -15,7 +15,7 @@ describe("LOD", function() {
         testTool.openContractCheck(sandbox);
     });
     afterEach(function () {
-        testTool.clearInstance();
+        testTool.clearInstance(sandbox);
         sandbox.restore();
     });
 

@@ -17,7 +17,7 @@ describe("TransitionManager", function() {
         manager = TransitionManager.create(ui);
     });
     afterEach(function () {
-        testTool.clearInstance();
+        testTool.clearInstance(sandbox);
         sandbox.restore();
     });
 

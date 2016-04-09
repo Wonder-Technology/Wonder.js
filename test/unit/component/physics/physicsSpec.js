@@ -25,7 +25,7 @@ describe("physics", function () {
         director.scene.addChild(testTool.createCamera());
     });
     afterEach(function () {
-        testTool.clearInstance();
+        testTool.clearInstance(sandbox);
         sandbox.restore();
     });
 

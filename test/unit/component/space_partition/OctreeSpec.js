@@ -522,7 +522,7 @@ describe("Octree", function () {
                     manager = wd.EventManager;
                 });
                 afterEach(function () {
-                    testTool.clearInstance();
+                    testTool.clearInstance(sandbox);
 
                     $("canvas").remove();
 

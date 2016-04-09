@@ -14,7 +14,7 @@ describe("RenderUtils", function() {
     });
     afterEach(function () {
         sandbox.restore();
-        testTool.clearInstance();
+        testTool.clearInstance(sandbox);
     });
 
     describe("getGameObjectRenderListFromSpacePartition", function(){

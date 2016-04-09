@@ -12,7 +12,7 @@ describe("InteractionUI", function() {
         ui = new InteractionUI();
     });
     afterEach(function () {
-        testTool.clearInstance();
+        testTool.clearInstance(sandbox);
         sandbox.restore();
     });
 

@@ -8,7 +8,7 @@ describe("RigidBody", function() {
         body = new wd.RigidBody();
     });
     afterEach(function () {
-        testTool.clearInstance();
+        testTool.clearInstance(sandbox);
         sandbox.restore();
     });
 

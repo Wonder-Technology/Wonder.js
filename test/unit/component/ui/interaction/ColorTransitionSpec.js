@@ -13,7 +13,7 @@ describe("ColorTransition", function() {
         transition = new ColorTransition();
     });
     afterEach(function () {
-        testTool.clearInstance();
+        testTool.clearInstance(sandbox);
         sandbox.restore();
     });
 

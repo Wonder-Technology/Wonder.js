@@ -10,7 +10,7 @@ describe("EngineMaterial", function() {
         material.initWhenCreate();
     });
     afterEach(function () {
-        testTool.clearInstance();
+        testTool.clearInstance(sandbox);
         sandbox.restore();
     });
 

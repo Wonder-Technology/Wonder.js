@@ -9,7 +9,7 @@ describe("DebugStatistics", function () {
         director = wd.Director.getInstance();
     });
     afterEach(function () {
-        testTool.clearInstance();
+        testTool.clearInstance(sandbox);
         sandbox.restore();
     });
 

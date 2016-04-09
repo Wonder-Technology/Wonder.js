@@ -23,7 +23,7 @@ describe("UIStateMachine", function() {
         machine = Machine.create(ui);
     });
     afterEach(function () {
-        testTool.clearInstance();
+        testTool.clearInstance(sandbox);
         sandbox.restore();
     });
 

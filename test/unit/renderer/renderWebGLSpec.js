@@ -16,7 +16,7 @@ describe("renderWebGL", function() {
         testTool.closeContractCheck(sandbox);
     });
     afterEach(function () {
-        testTool.clearInstance();
+        testTool.clearInstance(sandbox);
         sandbox.restore();
     });
 

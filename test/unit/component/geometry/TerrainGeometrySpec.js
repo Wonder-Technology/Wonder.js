@@ -7,7 +7,7 @@ describe("TerrainGeometry", function() {
         geo = new wd.TerrainGeometry();
     });
     afterEach(function () {
-        testTool.clearInstance();
+        testTool.clearInstance(sandbox);
         sandbox.restore();
     });
 

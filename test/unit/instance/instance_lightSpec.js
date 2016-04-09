@@ -60,7 +60,7 @@ describe("instance with light", function () {
     afterEach(function () {
         sandbox.restore();
 
-        testTool.clearInstance();
+        testTool.clearInstance(sandbox);
     });
 
     describe("can vary instance's normalMatrix and modelMatrix(position,rotation,scale)", function(){

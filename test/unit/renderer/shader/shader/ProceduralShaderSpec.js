@@ -10,7 +10,7 @@ describe("ProceduralShader", function() {
     });
     afterEach(function () {
         sandbox.restore();
-        testTool.clearInstance();
+        testTool.clearInstance(sandbox);
     });
 
     describe("init", function(){

@@ -213,7 +213,7 @@ var testTool = (function () {
                 set: setterFunc
             });
         },
-        clearInstance: function () {
+        clearInstance: function (sandbox) {
             wd.EventManager.off();
 
             for (var i in wd) {
@@ -224,7 +224,7 @@ var testTool = (function () {
                 }
             }
 
-            //this.closeContractCheck();
+            this.closeContractCheck(sandbox);
         },
 
         multiIt: function (its, getArgs) {
