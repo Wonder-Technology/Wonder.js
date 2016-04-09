@@ -33,7 +33,7 @@
             director.scene.addChildren(boxArr);
             director.scene.addChildren(groundArr);
             director.scene.addChild(createAmbientLight());
-            director.scene.addChild(createPointLight(boxArr, groundArr));
+            director.scene.addChild(createPointLight());
             director.scene.addChild(createCamera());
 
             director.start();
@@ -67,6 +67,15 @@
             var gameObject = wd.GameObject.create();
             gameObject.addComponent(wd.MeshRenderer.create());
             gameObject.addComponent(geometry);
+
+
+            var shadow = wd.Shadow.create();
+            shadow.cast = true;
+            shadow.receive = true;
+
+            gameObject.addComponent(shadow);
+
+
 
             gameObject.transform.translate(position);
 
@@ -124,6 +133,19 @@
             ground.addComponent(wd.MeshRenderer.create());
             ground.addComponent(plane);
 
+
+
+
+            var shadow = wd.Shadow.create();
+            shadow.cast = false;
+            shadow.receive = true;
+
+            ground.addComponent(shadow);
+
+
+
+
+
             ground.transform.eulerAngles = eulerAngles;
             ground.transform.translate(position);
 
@@ -140,10 +162,9 @@
             return ambientLight;
         }
 
-        function createPointLight(boxArr, groundArr) {
+        function createPointLight() {
             var SHADOW_MAP_WIDTH = 1024,
                     SHADOW_MAP_HEIGHT = 1024;
-            var listArr = boxArr.concat(groundArr);
 
             var pointLightComponent = wd.PointLight.create();
             pointLightComponent.color = wd.Color.create("#ffffff");
@@ -156,15 +177,6 @@
             pointLightComponent.shadowDarkness = 0.2;
             pointLightComponent.shadowMapWidth = SHADOW_MAP_WIDTH;
             pointLightComponent.shadowMapHeight = SHADOW_MAP_HEIGHT;
-
-            pointLightComponent.shadowRenderList = {
-                px:listArr,
-                nx:listArr,
-                py:listArr,
-                ny:listArr,
-                pz:listArr,
-                nz:listArr
-            };
 
             var pointSphereMaterial = wd.BasicMaterial.create();
             pointSphereMaterial.color = wd.Color.create("#ffffff");
