@@ -1,26 +1,16 @@
 module wd {
     export abstract class ShadowMapRenderTargetRendererUtils{
-        constructor(_light:Light, texture:Texture){
+        constructor(_light:Light, _texture:Texture){
             this._light = _light;
-            this.texture = texture;
+            this._texture = _texture;
         }
 
-        protected texture:Texture = null;
-        protected mapManager:MapManager = MapManager.create();
-
+        private _texture:Texture = null;
         private _light:Light = null;
 
         public initWhenCreate(){
-            this.texture.width = this._light.shadowMapWidth;
-            this.texture.height = this._light.shadowMapHeight;
-        }
-
-        public init(){
-            this.mapManager.init();
-        }
-
-        public dispose(){
-            this.mapManager.dispose();
+            this._texture.width = this._light.shadowMapWidth;
+            this._texture.height = this._light.shadowMapHeight;
         }
 
         public beforeRender(shaderType:EShaderTypeOfScene){

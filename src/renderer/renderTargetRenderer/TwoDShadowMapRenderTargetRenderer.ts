@@ -28,19 +28,6 @@ module wd {
             super.initWhenCreate();
         }
 
-        public init(){
-            this._shadowMapRendererUtils.init();
-
-            super.init();
-        }
-
-        public dispose(){
-            super.dispose();
-
-            //todo test
-            this._shadowMapRendererUtils.dispose();
-        }
-
         protected beforeRenderFrameBufferTexture(renderCamera:GameObject){
             Director.getInstance().scene.glslData.appendChild(<any>EShaderGLSLData.TWOD_SHADOWMAP, {
                 camera: renderCamera.getComponent(CameraController),

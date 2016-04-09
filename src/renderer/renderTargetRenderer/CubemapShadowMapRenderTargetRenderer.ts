@@ -28,18 +28,6 @@ module wd {
             super.initWhenCreate();
         }
 
-        public init(){
-            this._shadowMapRendererUtils.init();
-
-            super.init();
-        }
-
-        public dispose(){
-            super.dispose();
-
-            this._shadowMapRendererUtils.dispose();
-        }
-
         protected  getRenderList():wdCb.Hash<wdCb.Collection<GameObject>>{
             var renderList = Director.getInstance().scene.gameObjectScene.getComponent(ShadowManager).getShadowRenderListByLayer(this._layer);
 

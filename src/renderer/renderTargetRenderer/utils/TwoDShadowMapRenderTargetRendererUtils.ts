@@ -7,16 +7,6 @@ module wd {
 
             return obj;
         }
-
-        protected texture:TwoDShadowMapTexture;
-
-        public initWhenCreate(){
-            super.initWhenCreate();
-
-            if (!this.mapManager.hasTwoDShadowMap(this.texture)) {
-                this.mapManager.addTwoDShadowMap(this.texture);
-            }
-        }
     }
 }
 

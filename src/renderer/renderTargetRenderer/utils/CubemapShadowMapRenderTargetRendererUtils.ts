@@ -7,15 +7,5 @@ module wd {
 
             return obj;
         }
-
-        protected texture:CubemapShadowMapTexture;
-
-        public initWhenCreate(){
-            super.initWhenCreate();
-
-            if (!this.mapManager.hasCubemapShadowMap(this.texture)) {
-                this.mapManager.addCubemapShadowMap(this.texture);
-            }
-        }
     }
 }

@@ -106,7 +106,7 @@ describe("point shadow map", function() {
                     director._init();
 
                     var material = sphere.getComponent(wd.Geometry).material;
-                    var shadowMap = shadowTool.getBuildShadowMapMapManager().getCubemapShadowMapList().getChild(0);
+                    var shadowMap = shadowTool.getBuildShadowMap();
 
                     sandbox.stub(shadowMap, "bindToUnit");
 
@@ -515,7 +515,7 @@ describe("point shadow map", function() {
         it("the binded shadowMap when build shadow map and the binded shadowMap when draw based on shadow map are the same one", function () {
             director._init();
 
-            var shadowMap = shadowTool.getBuildShadowMapMapManager().getCubemapShadowMapList().getChild(0);
+            var shadowMap = shadowTool.getBuildShadowMap();
 
             sandbox.stub(shadowMap, "bindToUnit");
 
@@ -579,9 +579,9 @@ describe("point shadow map", function() {
             it("each shadow layer has one shadow map", function () {
                 director._init();
 
-                var shadowMap1 = shadowTool.getBuildShadowMapMapManager(layer1).getCubemapShadowMapList().getChild(0);
-                var shadowMap2 = shadowTool.getBuildShadowMapMapManager(layer2).getCubemapShadowMapList().getChild(0);
-                var shadowMap3 = shadowTool.getBuildShadowMapMapManager(layer3).getCubemapShadowMapList().getChild(0);
+                var shadowMap1 = shadowTool.getBuildShadowMap(layer1);
+                var shadowMap2 = shadowTool.getBuildShadowMap(layer2);
+                var shadowMap3 = shadowTool.getBuildShadowMap(layer3);
 
                 expect(shadowMap1 !== shadowMap2).toBeTruthy();
                 expect(shadowMap2 === shadowMap3).toBeTruthy();
@@ -595,8 +595,8 @@ describe("point shadow map", function() {
                 it("bind the shadow map of self layer when build shadow map", function () {
                     director._init();
 
-                    var shadowMap1 = shadowTool.getBuildShadowMapMapManager(layer1).getCubemapShadowMapList().getChild(0);
-                    var shadowMap2 = shadowTool.getBuildShadowMapMapManager(layer2).getCubemapShadowMapList().getChild(0);
+                    var shadowMap1 = shadowTool.getBuildShadowMap(layer1);
+                    var shadowMap2 = shadowTool.getBuildShadowMap(layer2);
 
                     sandbox.stub(shadowMap1, "bindToUnit");
                     sandbox.stub(shadowMap2, "bindToUnit");
@@ -704,14 +704,14 @@ describe("point shadow map", function() {
                 it("each light and each shadow layer has one shadow map", function(){
                     director._init();
 
-                    var shadowMap11 = shadowTool.getBuildShadowMapMapManager(layer1, light).getCubemapShadowMapList().getChild(0);
-                    var shadowMap12 = shadowTool.getBuildShadowMapMapManager(layer1,light2).getCubemapShadowMapList().getChild(0);
+                    var shadowMap11 = shadowTool.getBuildShadowMap(layer1, light);
+                    var shadowMap12 = shadowTool.getBuildShadowMap(layer1,light2);
 
-                    var shadowMap21 = shadowTool.getBuildShadowMapMapManager(layer2, light).getCubemapShadowMapList().getChild(0);
-                    var shadowMap22 = shadowTool.getBuildShadowMapMapManager(layer2, light2).getCubemapShadowMapList().getChild(0);
+                    var shadowMap21 = shadowTool.getBuildShadowMap(layer2, light);
+                    var shadowMap22 = shadowTool.getBuildShadowMap(layer2, light2);
 
-                    var shadowMap31 = shadowTool.getBuildShadowMapMapManager(layer3, light).getCubemapShadowMapList().getChild(0);
-                    var shadowMap32 = shadowTool.getBuildShadowMapMapManager(layer3, light2).getCubemapShadowMapList().getChild(0);
+                    var shadowMap31 = shadowTool.getBuildShadowMap(layer3, light);
+                    var shadowMap32 = shadowTool.getBuildShadowMap(layer3, light2);
 
                     expect(shadowMap11 !== shadowMap21).toBeTruthy();
                     expect(shadowMap12 !== shadowMap22).toBeTruthy();
@@ -770,7 +770,7 @@ describe("point shadow map", function() {
 
             function judgeShadowMapCount(object, count){
                 expect(shadowTool.getDefaultMapManager(object).getCubemapShadowMapList().getCount()).toEqual(count);
-                expect(shadowTool.getBuildShadowMapMapManager(wd.EShadowLayer.DEFAULT).getCubemapShadowMapList().getCount()).toEqual(count);
+                //expect(shadowTool.getBuildShadowMap(wd.EShadowLayer.DEFAULT)).toEqual(count);
             }
 
             beforeEach(function () {
@@ -826,7 +826,7 @@ describe("point shadow map", function() {
 
             it("all objects should share the one shadowMap", function () {
                 director._init();
-                var shadowMap = shadowTool.getBuildShadowMapMapManager().getCubemapShadowMapList().getChild(0);
+                var shadowMap = shadowTool.getBuildShadowMap();
                 sandbox.stub(shadowMap, "bindToUnit");
 
 
@@ -961,7 +961,7 @@ describe("point shadow map", function() {
 
                 var bindCountWhenInit = deviceManager.gl.bindFramebuffer.callCount;
 
-                var shadowMap = shadowTool.getBuildShadowMapMapManager().getCubemapShadowMapList().getChild(0);
+                var shadowMap = shadowTool.getBuildShadowMap();
 
                 sandbox.stub(shadowMap, "bindToUnit");
 

@@ -14,8 +14,6 @@ module wd {
         public init(){
             //todo support mipmap?
             //this.generateMipmaps = false;
-
-            return this;
         }
 
         public update(){

@@ -242,7 +242,7 @@ describe("instance with shadow", function () {
 
                 instanceArr.forEach(function (instance) {
                     expect(shadowTool.getDefaultMapManager(instance).getTwoDShadowMapList().getCount()).toEqual(1);
-                    expect(shadowTool.getBuildShadowMapMapManager().getTwoDShadowMapList().getCount()).toEqual(1);
+                    //expect(shadowTool.getBuildShadowMap()).toEqual(1);
                 });
             });
 
@@ -331,7 +331,7 @@ describe("instance with shadow", function () {
 
                     director._init();
 
-                    var shadowMap1 = shadowTool.getBuildShadowMapMapManager("layer1").getTwoDShadowMapList().getChild(0);
+                    var shadowMap1 = shadowTool.getBuildShadowMap("layer1");
 
                     expect(shadowTool.getBuildShadowMapRenderer("layer2")).toBeUndefined();
 

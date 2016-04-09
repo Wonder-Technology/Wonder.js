@@ -258,10 +258,10 @@ describe("direction shadow map with octree", function() {
                 expect(twoDShadowMapList2.getCount()).toEqual(1);
 
 
-                var shadowMap1 = shadowTool.getBuildShadowMapMapManager().getTwoDShadowMapList().getChild(0);
+                var shadowMap1 = shadowTool.getBuildShadowMap();
                 //var shadowMap2 = shadowTool.getBuildShadowMapMapManager().getTwoDShadowMapList().getChild(0);
 
-                expect(shadowTool.getBuildShadowMapMapManager().getTwoDShadowMapList().getCount()).toEqual(1);
+                //expect(shadowTool.getBuildShadowMapMapManager().getTwoDShadowMapList().getCount()).toEqual(1);
 
                 sandbox.stub(shadowMap1, "bindToUnit");
 
