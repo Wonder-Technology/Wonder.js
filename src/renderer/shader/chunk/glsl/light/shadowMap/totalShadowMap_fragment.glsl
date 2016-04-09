@@ -22,7 +22,7 @@ float getShadowBias(vec3 lightDir, float shadowBias){
 }
 
 float unpackDepth(vec4 rgbaDepth) {
-    /*! make sure that the visibility from the shadow map which is not builded should always be 1.0 */
+    /*! make sure that the visibility from the shadow map which is not builded is always be 1.0 */
     if(rgbaDepth == vec4(0.0)){
         return 100000.0;
     }

@@ -37,7 +37,6 @@ module wd {
         public dispose(){
             super.dispose();
 
-            //todo test
             this._shadowMapRendererUtils.dispose();
         }
 
@@ -71,14 +70,11 @@ module wd {
 
             scene = Director.getInstance().scene;
 
-            scene.useShaderType(EShaderTypeOfScene.BUILD_CUBEMAP_SHADOWMAP);
-
-
             scene.glslData.appendChild(<any>EShaderGLSLData.BUILD_CUBEMAP_SHADOWMAP, {
                 light: this._light
             });
 
-            this._shadowMapRendererUtils.beforeRender();
+            this._shadowMapRendererUtils.beforeRender(EShaderTypeOfScene.BUILD_CUBEMAP_SHADOWMAP);
         }
 
         protected afterRender(){

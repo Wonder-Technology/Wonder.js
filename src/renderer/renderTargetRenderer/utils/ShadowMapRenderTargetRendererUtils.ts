@@ -23,11 +23,9 @@ module wd {
             this.mapManager.dispose();
         }
 
-        public beforeRender(){
-            /*! no need to send texture unit data
-             because glsl only bind one texture, and its unit is 0 defaultly
-             */
-            this.mapManager.bindAndUpdate();
+        public beforeRender(shaderType:EShaderTypeOfScene){
+            Director.getInstance().scene.useShaderType(shaderType);
+
         }
 
         public afterRender(){

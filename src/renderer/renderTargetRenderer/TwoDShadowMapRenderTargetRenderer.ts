@@ -61,9 +61,7 @@ module wd {
                 return;
             }
 
-            Director.getInstance().scene.useShaderType(EShaderTypeOfScene.BUILD_TWOD_SHADOWMAP);
-
-            this._shadowMapRendererUtils.beforeRender();
+            this._shadowMapRendererUtils.beforeRender(EShaderTypeOfScene.BUILD_TWOD_SHADOWMAP);
         }
 
         protected afterRender(){

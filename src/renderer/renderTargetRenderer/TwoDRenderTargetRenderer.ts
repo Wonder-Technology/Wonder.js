@@ -42,6 +42,12 @@ module wd {
         protected renderFrameBufferTexture(renderList:wdCb.Collection<GameObject>, renderer:Renderer, camera:GameObject){
             var renderCamera:GameObject = null;
 
+            if(this.isRenderListEmptyWhenRender()){
+                return;
+            }
+
+            this.texture.bindToUnit(0);
+
             if(this.isNeedCreateCamera()){
                 renderCamera = this.createCamera(camera);
 
@@ -56,10 +62,6 @@ module wd {
             }
 
             this.beforeRenderFrameBufferTexture(renderCamera);
-
-            if(this.isRenderListEmptyWhenRender()){
-                return;
-            }
 
             this.frameBufferOperator.bindFrameBuffer(this.frameBuffer);
             this.frameBufferOperator.setViewport();

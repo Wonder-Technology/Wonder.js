@@ -52,6 +52,12 @@ module wd {
                 position = null,
                 isNeedCreateCamera = null;
 
+            if(this.isRenderListEmptyWhenRender()){
+                return;
+            }
+
+            this.texture.bindToUnit(0);
+
             position = this.getPosition();
             isNeedCreateCamera = this._isNeedCreateCamera(position);
 
@@ -98,10 +104,6 @@ module wd {
 
                 this._lastCameraList = newCameraList;
                 this._lastPosition = position;
-            }
-
-            if(this.isRenderListEmptyWhenRender()){
-                return;
             }
 
             this.frameBufferOperator.unBind();
