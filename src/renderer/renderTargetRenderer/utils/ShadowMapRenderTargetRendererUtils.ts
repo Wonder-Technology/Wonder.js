@@ -1,136 +1,43 @@
 module wd {
     export abstract class ShadowMapRenderTargetRendererUtils{
-        //todo refactor
-        constructor(light:Light, texture:Texture){
-            this.light = light;
+        constructor(_light:Light, texture:Texture){
+            this._light = _light;
             this.texture = texture;
         }
 
-        public texture:Texture = null;
+        protected texture:Texture = null;
+        protected mapManager:MapManager = MapManager.create();
 
-        protected light:Light = null;
-
-        private _endLoopSubscription:wdFrp.IDisposable = null;
-        //private _shader:CommonShader = null;
+        private _light:Light = null;
 
         public initWhenCreate(){
-            this.texture.width = this.light.shadowMapWidth;
-            this.texture.height = this.light.shadowMapHeight;
-
-            //todo fix
-            //this.texture.width = 1024;
-            //this.texture.height = 1024;
+            this.texture.width = this._light.shadowMapWidth;
+            this.texture.height = this._light.shadowMapHeight;
         }
 
-        //public init(){
-        //    //this.texture.init();
-        //}
-
-
-        //todo remove
-        //public setShadowMapData(target:GameObject);
-        //public setShadowMapData(target:GameObject, shadowMapCamera:GameObject);
-        //public setShadowMapData(target:GameObject, shadowMapCamera:GameObject, light);
-
-        //@require(function(...args){
-        //    var target:GameObject = args[0],
-        //        material:LightMaterial = <LightMaterial>target.getComponent<Geometry>(Geometry).material;
-        //
-        //    assert(material instanceof StandardLightMaterial, Log.info.FUNC_MUST_BE("material", "LightMaterial when render shadowMap"));
-        //})
-        //public setShadowMapData(...args){
-        //    var target:GameObject = args[0],
-        //        material:LightMaterial = <LightMaterial>target.getComponent<Geometry>(Geometry).material,
-        //  shadowMapCamera = null;
-        //
-        //    if(args.length === 2){
-        //        shadowMapCamera = args[1];
-        //    }
-        //
-        //    this.setMaterialShadowMapData(material, target, shadowMapCamera);
-        //}
-
-
-
-
-
-
-
-
-
-        public bindEndLoop(func:Function){
-            this._endLoopSubscription = EventManager.fromEvent(<any>EEngineEvent.ENDLOOP)
-                .subscribe(() => {
-                    func();
-                })
+        public init(){
+            this.mapManager.init();
         }
 
-        public unBindEndLoop(){
-            this._endLoopSubscription && this._endLoopSubscription.dispose();
+        public dispose(){
+            this.mapManager.dispose();
         }
 
-        //public beforeRender(){
-        //    var scene:SceneDispatcher = Director.getInstance().scene;
-        //
-        //    scene.useShader(EShaderMapKey.BUILD_SHADOWMAP);
-        //}
-        //
-        //public afterRender(){
-        //    var scene:SceneDispatcher = Director.getInstance().scene;
-        //
-        //    scene.unUseShader();
-        //}
+        public beforeRender(){
+            /*! no need to send texture unit data
+             because glsl only bind one texture, and its unit is 0 defaultly
+             */
+            this.mapManager.bindAndUpdate();
+        }
 
-        //public createShaderWithShaderLib(lib:BuildShadowMapShaderLib){
-        //    ////todo refactor
-        //    //this._shader = CommonShader.create(null);
-        //    //this._shader.addLib(CommonShaderLib.create());
-        //    //this._shader.addLib(VerticeCommonShaderLib.create());
-        //    //this._shader.addLib(ModelMatrixForBuildShadowMapShaderLib.create());
-        //    //this._shader.addLib(lib);
-        //}
+        public afterRender(){
+            Director.getInstance().scene.unUseShader();
+        }
 
-        //todo remove
-        //public isContainer(entityObject:GameObject){
-        //    return !entityObject.hasComponent(Geometry);
-        //}
-
-        //todo remove
-        //public addAllChildren(entityObject:GameObject){
-        //    var children = [],
-        //        add = (entityObject:GameObject) => {
-        //            entityObject.forEach((child:GameObject) => {
-        //                children.push(child);
-        //
-        //                add(child);
-        //            });
-        //        };
-        //
-        //    add(entityObject);
-        //
-        //    return children;
-        //}
-
-        //public setShadowMap(target:GameObject, shadowMap:IShadowMapTexture){
-        //    var material:LightMaterial = null;
-        //
-        //    //todo remove?
-        //    //change
-        //    //if(!target.hasComponent(Geometry)){
-        //    //    return;
-        //    //}
-        //
-        //    material = <LightMaterial>target.getComponent<Geometry>(Geometry).material;
-        //
-        //    if(material.hasMap(<Texture>shadowMap)){
-        //        return;
-        //    }
-        //
-        //    this.addShadowMap(material, shadowMap);
-        //}
-
-        //protected abstract setMaterialShadowMapData(material:LightMaterial, target:GameObject, shadowMapCamera:GameObject);
-        //protected abstract addShadowMap(material:LightMaterial, shadowMap:IShadowMapTexture);
+        public renderRenderer(renderer:Renderer){
+            renderer.webglState = BuildShadowMapState.create();
+            renderer.render();
+        }
     }
 }
 

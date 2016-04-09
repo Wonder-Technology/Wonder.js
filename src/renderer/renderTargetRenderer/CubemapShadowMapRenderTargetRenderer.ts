@@ -19,22 +19,17 @@ module wd {
 
         private _light:PointLight = null;
         private _layer:string = null;
-        private _mapManager:MapManager = MapManager.create();
         private _shadowMapRendererUtils:CubemapShadowMapRenderTargetRendererUtils = null;
 
 
         public initWhenCreate(){
             this._shadowMapRendererUtils = CubemapShadowMapRenderTargetRendererUtils.create(this._light, this.texture);
 
-            if (!this._mapManager.hasCubemapShadowMap(this.texture)) {
-                this._mapManager.addCubemapShadowMap(this.texture);
-            }
-
             super.initWhenCreate();
         }
 
         public init(){
-            this._mapManager.init();
+            this._shadowMapRendererUtils.init();
 
             super.init();
         }
@@ -43,8 +38,7 @@ module wd {
             super.dispose();
 
             //todo test
-            this._mapManager.dispose();
-            this._shadowMapRendererUtils.unBindEndLoop();
+            this._shadowMapRendererUtils.dispose();
         }
 
         protected  getRenderList():wdCb.Hash<wdCb.Collection<GameObject>>{
@@ -61,8 +55,7 @@ module wd {
         }
 
         protected renderRenderer(renderer){
-            renderer.webglState = BuildShadowMapState.create();
-            renderer.render();
+            this._shadowMapRendererUtils.renderRenderer(renderer);
         }
 
         protected beforeRender(){
@@ -80,14 +73,12 @@ module wd {
 
             scene.useShaderType(EShaderTypeOfScene.BUILD_CUBEMAP_SHADOWMAP);
 
-            /*! no need to send texture unit data
-             because glsl only bind one texture, and its unit is 0 defaultly
-             */
-            this._mapManager.bindAndUpdate();
 
             scene.glslData.appendChild(<any>EShaderGLSLData.BUILD_CUBEMAP_SHADOWMAP, {
                 light: this._light
             });
+
+            this._shadowMapRendererUtils.beforeRender();
         }
 
         protected afterRender(){
@@ -95,7 +86,7 @@ module wd {
                 return;
             }
 
-            Director.getInstance().scene.unUseShader();
+            this._shadowMapRendererUtils.afterRender();
         }
 
         protected setCamera(camera:PerspectiveCamera){
@@ -109,54 +100,6 @@ module wd {
         protected getPosition(){
             return this._light.position;
         }
-
-        //private _convertRenderListToCollection(renderList:wdCb.Hash<wdCb.Collection<GameObject>>):wdCb.Collection<GameObject>{
-        //    var resultList = wdCb.Collection.create<GameObject>();
-        //
-        //    renderList.forEach((list) => {
-        //        //if(list instanceof wdCb.Collection || JudgeUtils.isArrayExactly(list)){
-        //        resultList.addChildren(list);
-        //        //}
-        //        //else{
-        //        //    Log.error(true, Log.info.FUNC_MUST_BE("array or collection"));
-        //        //}
-        //    });
-        //
-        //    return resultList;
-        //}
-
-        //private _handleShadowRendererList(){
-        //    var self = this,
-        //        childrenMap = wdCb.Hash.create<Array<GameObject>>();
-        //
-        //    this._light.shadowRenderList.forEach((childList:wdCb.Collection<GameObject>, direction:string) => {
-        //        var children = [];
-        //
-        //        childList.forEach((renderTarget:GameObject) => {
-        //            children = children.concat(self._shadowMapRendererUtils.addAllChildren(renderTarget));
-        //        });
-        //
-        //
-        //        childrenMap.addChild(direction, children);
-        //    },this);
-        //
-        //    this._light.shadowRenderList.forEach((childList:wdCb.Collection<GameObject>, direction:string) => {
-        //        childList.addChildren(childrenMap.getChild(direction));
-        //    });
-        //
-        //    this._light.shadowRenderList.forEach((childList:wdCb.Collection<GameObject>) => {
-        //        childList.removeChild((renderTarget:GameObject) => {
-        //            return self._shadowMapRendererUtils.isContainer(renderTarget);
-        //        });
-        //    });
-        //}
-
-        //private _setCubemapShadowMapOfSceneBuildShadowMapShader(){
-        //    var scene = Director.getInstance().scene;
-        //
-        //    scene.getShader(EShaderMapKeyOfScene.BUILD_CUBEMAP_SHADOWMAP_INSTANCE).mapManager = this._mapManager;
-        //    scene.getShader(EShaderMapKeyOfScene.BUILD_CUBEMAP_SHADOWMAP_NO_INSTANCE).mapManager = this._mapManager;
-        //}
     }
 }
 

@@ -19,22 +19,17 @@ module wd {
 
         private _light:DirectionLight = null;
         private _layer:string = null;
-        private _mapManager:MapManager = MapManager.create();
 
         private _shadowMapRendererUtils:TwoDShadowMapRenderTargetRendererUtils = null;
 
         public initWhenCreate(){
             this._shadowMapRendererUtils = TwoDShadowMapRenderTargetRendererUtils.create(this._light, this.texture);
 
-            if (!this._mapManager.hasTwoDShadowMap(this.texture)) {
-                this._mapManager.addTwoDShadowMap(this.texture);
-            }
-
             super.initWhenCreate();
         }
 
         public init(){
-            this._mapManager.init();
+            this._shadowMapRendererUtils.init();
 
             super.init();
         }
@@ -43,8 +38,7 @@ module wd {
             super.dispose();
 
             //todo test
-            this._mapManager.dispose();
-            this._shadowMapRendererUtils.unBindEndLoop();
+            this._shadowMapRendererUtils.dispose();
         }
 
         protected beforeRenderFrameBufferTexture(renderCamera:GameObject){
@@ -58,9 +52,8 @@ module wd {
             return Director.getInstance().scene.gameObjectScene.getComponent(ShadowManager).getShadowRenderListByLayer(this._layer);
         }
 
-        protected renderRenderer(renderer){
-            renderer.webglState = BuildShadowMapState.create();
-            renderer.render();
+        protected renderRenderer(renderer:Renderer){
+            this._shadowMapRendererUtils.renderRenderer(renderer);
         }
 
         protected beforeRender(){
@@ -70,10 +63,7 @@ module wd {
 
             Director.getInstance().scene.useShaderType(EShaderTypeOfScene.BUILD_TWOD_SHADOWMAP);
 
-            /*! no need to send texture unit data
-             because glsl only bind one texture, and its unit is 0 defaultly
-             */
-            this._mapManager.bindAndUpdate();
+            this._shadowMapRendererUtils.beforeRender();
         }
 
         protected afterRender(){
@@ -81,7 +71,7 @@ module wd {
                 return;
             }
 
-            Director.getInstance().scene.unUseShader();
+            this._shadowMapRendererUtils.afterRender();
         }
 
         //todo optimize: if light not translate, not create camera
