@@ -5,12 +5,12 @@ describe("ProceduralShader", function() {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
         shader = new wd.ProceduralShader();
-        shader.initWhenCreate();
 
         testTool.openContractCheck(sandbox);
     });
     afterEach(function () {
         sandbox.restore();
+        testTool.clearInstance();
     });
 
     describe("init", function(){

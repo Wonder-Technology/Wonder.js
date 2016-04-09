@@ -8,7 +8,6 @@ describe("Shader", function() {
         wd.Shader.prototype.createShaderSourceBuilder = sandbox.stub().returns(new wd.ShaderSourceBuilder());
 
         shader = new wd.Shader();
-        shader.initWhenCreate();
 
         testTool.openContractCheck(sandbox);
     });
@@ -129,6 +128,12 @@ describe("Shader", function() {
             expect(shader.attributes.removeAllChildren).toCalledOnce();
             expect(shader.uniforms.removeAllChildren).toCalledOnce();
         });
+        it("dispose mapManager", function(){
+            sandbox.stub(shader.mapManager, "dispose");
 
+            shader.dispose();
+
+            expect(shader.mapManager.dispose).toCalledOnce();
+        });
     });
 });

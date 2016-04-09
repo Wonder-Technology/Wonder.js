@@ -17,13 +17,13 @@ describe("CubemapShadowRenderTargetRenderer", function() {
         beforeEach(function(){
         });
 
-        it("dispose mapManager", function(){
+        it("dispose texture", function(){
             renderer = wd.CubemapShadowMapRenderTargetRenderer.create(wd.PointLight.create(), wd.CubemapShadowMapTexture.create());
-            sandbox.stub(renderer._shadowMapRendererUtils.mapManager, "dispose");
+            sandbox.stub(renderer.texture, "dispose");
 
             renderer.dispose();
 
-            expect(renderer._shadowMapRendererUtils.mapManager.dispose).toCalledOnce();
+            expect(renderer.texture.dispose).toCalledOnce();
         });
     });
 });

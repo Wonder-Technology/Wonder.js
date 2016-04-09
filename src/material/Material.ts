@@ -140,7 +140,17 @@ module wd {
         }
 
         get mapManager(){
-            return this._currentShader.mapManager;
+            return this._shader.mapManager;
+        }
+
+        private _shader:Shader = null;
+        @ensureGetter(function(shader:Shader){
+            assert(!!shader, Log.info.FUNC_NOT_EXIST("shader"));
+        })
+        get shader(){
+            var scene:SceneDispatcher = Director.getInstance().scene;
+
+            return scene.isUseShader ? this._getSceneShader() : this._shader;
         }
 
         public redWrite:boolean = true;
@@ -155,26 +165,20 @@ module wd {
         public shading = EShading.FLAT;
         public geometry:Geometry = null;
 
-        private _shaderMap:wdCb.Hash<Shader> = wdCb.Hash.create<Shader>();
-        private _currentShader:Shader = null;
         private _sceneShader:Shader = null;
         private _unUseSceneShaderSubscription:wdFrp.IDisposable = null;
 
         //public abstract copy():Material;
 
         public initWhenCreate(){
-            this._currentShader = this.createShader();
-            this._currentShader.mapManager.material = this;
-
-            this.addShader(<any>EShaderMapKey.DEFAULT, this._currentShader);
+            this._shader = this.createShader();
+            this._shader.mapManager.material = this;
         }
 
         public init(){
             var self = this;
 
-            this._shaderMap.forEach((shader:Shader) => {
-                shader.init(self);
-            });
+            this._shader.init(this);
 
             this._unUseSceneShaderSubscription = EventManager.fromEvent(<any>EEngineEvent.UNUSE_SCENE_SHADER)
                 .subscribe(() => {
@@ -183,9 +187,7 @@ module wd {
         }
 
         public dispose(){
-            this._shaderMap.forEach((shader:Shader) => {
-                shader.dispose();
-            });
+            this._shader.dispose();
 
             //todo test
             this._unUseSceneShaderSubscription && this._unUseSceneShaderSubscription.dispose();
@@ -195,55 +197,9 @@ module wd {
             this.shader.update(quadCmd, this);
         }
 
-        //public bindAndUpdateTexture(){
-        //    this._updateCurrentShader();
-        //
-        //    this.mapManager.bindAndUpdate();
-        //}
-        //
-        //public sendTextureData(){
-        //    this.mapManager.sendData(this.program);
-        //}
-
-
-
-        @ensureGetter(function(shader:Shader){
-            assert(!!shader, Log.info.FUNC_NOT_EXIST("shader"));
-        })
-        get shader(){
-            var scene:SceneDispatcher = Director.getInstance().scene;
-
-            return scene.isUseShader ? this._getSceneShader() : this._currentShader;
-        }
-
-        public addShader(shaderKey:string, shader:Shader){
-            this._shaderMap.addChild(shaderKey, shader);
-        }
-
-        public removeShader(shaderKey:string){
-            this._shaderMap.removeChild(shaderKey);
-        }
-
-        public getShader(shaderKey:string){
-            return this._shaderMap.getChild(shaderKey);
-        }
-
-        public hasShader(shaderKey:string){
-            return this._shaderMap.hasChild(shaderKey);
-        }
-
-        public forEachShader(func:(shader:Shader) => void){
-            this._shaderMap.forEach(func);
-        }
-
         public hasMap(map:Texture){
             return this.mapManager.hasMap(<Texture>map);
         }
-
-
-
-
-
 
         protected abstract createShader():Shader;
 

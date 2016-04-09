@@ -741,14 +741,14 @@ describe("direction shadow map", function() {
                 sphere.addChild(part1);
             });
 
-            it("optimize:children should share the build-shadow-map shader of its parent which contain Shadow component", function () {
-                director._init();
-
-                var sphereBuildShadowMapShader = sphere.getComponent(wd.Geometry).material.getShader(wd.EShaderMapKey.BUILD_SHADOWMAP);
-
-                expect(part1.getComponent(wd.Geometry).material.getShader(wd.EShaderMapKey.BUILD_SHADOWMAP) === sphereBuildShadowMapShader).toBeTruthy();
-                expect(part2.getComponent(wd.Geometry).material.getShader(wd.EShaderMapKey.BUILD_SHADOWMAP) === sphereBuildShadowMapShader).toBeTruthy();
-            });
+            //it("optimize:children should share the build-shadow-map shader of its parent which contain Shadow component", function () {
+            //    director._init();
+            //
+            //    var sphereBuildShadowMapShader = sphere.getComponent(wd.Geometry).material.getShader(wd.EShaderMapKey.BUILD_SHADOWMAP);
+            //
+            //    expect(part1.getComponent(wd.Geometry).material.getShader(wd.EShaderMapKey.BUILD_SHADOWMAP) === sphereBuildShadowMapShader).toBeTruthy();
+            //    expect(part2.getComponent(wd.Geometry).material.getShader(wd.EShaderMapKey.BUILD_SHADOWMAP) === sphereBuildShadowMapShader).toBeTruthy();
+            //});
 
             it("all objects should contain only one twoD shadow map", function () {
                 director._init();
