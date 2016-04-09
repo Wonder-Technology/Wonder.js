@@ -422,4 +422,25 @@ describe("GameObjectScene", function() {
             expect(gameObject1.render).toCalledAfter(renderTargetRenderer.render);
         });
     });
+
+    describe("dispose", function(){
+        beforeEach(function(){
+
+        });
+
+        it("dispose all shaders", function(){
+            var shader1 = {dispose:sandbox.stub()};
+            var shader2 = {
+                a:1,
+                dispose:sandbox.stub()
+            };
+            scene.addShader("1", shader1);
+            scene.addShader("2", shader2);
+
+            scene.dispose();
+
+            expect(shader1.dispose).toCalledOnce();
+            expect(shader2.dispose).toCalledOnce();
+        });
+    });
 });

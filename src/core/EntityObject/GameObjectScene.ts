@@ -90,9 +90,6 @@ module wd {
         public dispose(){
             super.dispose();
 
-            //todo test
-            //this.glslData.removeAllChildren();
-
             this._shaderMap.forEach((shader:Shader) => {
                 shader.dispose();
             });

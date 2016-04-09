@@ -385,7 +385,6 @@ describe("MapManager", function() {
             manager.sendData(program);
 
             expect(twoDShadowMap.sendData).toCalledWith(program, samplerName, 0);
-            //todo fix
             expect(cubemapShadowMap.sendData).toCalledWith(program, samplerName, 5);
 
             expect(cubemapTexture.sendData).toCalledWith(program, samplerName, 1);

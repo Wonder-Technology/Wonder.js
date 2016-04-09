@@ -38,7 +38,6 @@ module wd{
             return this;
         }
 
-        //todo move to MapManager
         public sendData(program:Program, name:string, unit:number){
             program.sendUniformData(name, this.getSamplerType(), unit);
         }

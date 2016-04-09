@@ -410,7 +410,6 @@ describe("point shadow map", function() {
                 });
             });
 
-            //todo test buidl shadow map
             describe("test multi direction lights", function(){
                 var light2;
 
