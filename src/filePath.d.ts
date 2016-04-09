@@ -475,6 +475,7 @@
 /// <reference path="material/LightMaterial"/>
 /// <reference path="material/ShaderMaterial"/>
 /// <reference path="material/EShading"/>
+/// <reference path="material/ShaderManager"/>
 
 
 
