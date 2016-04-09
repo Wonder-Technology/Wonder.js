@@ -224,7 +224,7 @@ var testTool = (function () {
                 }
             }
 
-            this.closeContractCheck(sandbox);
+            this.closeContractCheck();
         },
 
         multiIt: function (its, getArgs) {
@@ -255,11 +255,11 @@ var testTool = (function () {
          can only affect In,Out check
          Invariant check will be invoked when load the file
          */
-        openContractCheck: function (sandbox) {
-            sandbox.stub(wd.Main, "isTest", true);
+        openContractCheck: function () {
+            wd.Main.isTest = true;
         },
-        closeContractCheck: function (sandbox) {
-            sandbox.stub(wd.Main, "isTest", false);
+        closeContractCheck: function () {
+            wd.Main.isTest = false;
         },
 
 

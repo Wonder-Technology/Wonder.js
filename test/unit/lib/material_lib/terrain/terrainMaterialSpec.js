@@ -16,6 +16,7 @@ describe("terrain material", function() {
     });
     afterEach(function () {
         sandbox.restore();
+        testTool.clearInstance(sandbox);
     });
 
     it("test default values", function () {

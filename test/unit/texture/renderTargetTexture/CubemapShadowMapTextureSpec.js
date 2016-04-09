@@ -34,15 +34,15 @@ describe("CubemapShadowMapTexture", function() {
             var material = wd.LightMaterial.create();
             material.diffuseMap = map;
 
-            material.addCubemapShadowMap(texture);
+            material.mapManager.addCubemapShadowMap(texture);
 
             var texture2 = new Texture();
-            material.addCubemapShadowMap(texture2);
+            material.mapManager.addCubemapShadowMap(texture2);
 
             material.mapManager.sendData(program);
 
-            expect(program.sendUniformData).toCalledWith("u_cubemapShadowMapSampler[0]", wd.EVariableType.SAMPLER_CUBE, 1);
-            expect(program.sendUniformData).toCalledWith("u_cubemapShadowMapSampler[1]", wd.EVariableType.SAMPLER_CUBE, 2);
+            expect(program.sendUniformData).toCalledWith("u_cubemapShadowMapSampler[0]", wd.EVariableType.SAMPLER_CUBE, 0);
+            expect(program.sendUniformData).toCalledWith("u_cubemapShadowMapSampler[1]", wd.EVariableType.SAMPLER_CUBE, 1);
         });
     });
 });

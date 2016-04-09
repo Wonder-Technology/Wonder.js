@@ -32,6 +32,7 @@ describe("Octree", function () {
     });
     afterEach(function () {
         sandbox.restore();
+        testTool.clearInstance(sandbox);
     });
 
     describe("addToObject", function(){

@@ -15,6 +15,7 @@ describe("water reflectionMap", function () {
     });
     afterEach(function () {
         sandbox.restore();
+        testTool.clearInstance(sandbox);
     });
 
     describe("integration test", function () {

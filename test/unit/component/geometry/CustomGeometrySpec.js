@@ -4,13 +4,14 @@ describe("CustomGeometry", function() {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
+
         geo = new wd.CustomGeometry();
 
         sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
     });
     afterEach(function () {
-        testTool.clearInstance(sandbox);
         sandbox.restore();
+        testTool.clearInstance(sandbox);
     });
 
     describe("set custom geometry data", function(){
