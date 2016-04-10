@@ -19,7 +19,7 @@ varying vec3 v_directionLightDir[DIRECTION_LIGHTS_COUNT];
 
 
 @funcDefine
-        mat3 computeTBN(){
+        mat3 computeTBN(mat3 normalMatrix){
             vec3 T = normalize(normalMatrix * a_tangent);
             vec3 N = normalize(normalMatrix * a_normal);
             // re-orthogonalize T with respect to N
@@ -34,7 +34,7 @@ varying vec3 v_directionLightDir[DIRECTION_LIGHTS_COUNT];
 
 
 @body
-    mat3 TBN = computeTBN();
+    mat3 TBN = computeTBN(normalMatrix);
 
     //v_tangentLightPos = TBN * light.position;
     //v_tangentCameraPos  = TBN * u_cameraPos;
