@@ -37,7 +37,7 @@
             director.scene.addChildren(topBoxArr);
             director.scene.addChild(ground);
             director.scene.addChild(tool.createAmbientLight());
-            director.scene.addChild(tool.createDirectionLight([ground].concat(standBoxArr, topBoxArr)));
+            director.scene.addChild(tool.createDirectionLight());
             director.scene.addChild(tool.createCamera(80, wd.Vector3.create(0, 10, 0)));
 
 

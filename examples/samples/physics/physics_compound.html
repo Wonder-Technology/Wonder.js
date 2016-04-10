@@ -37,7 +37,7 @@
             director.scene.addChild(container);
             director.scene.addChild(ground);
             director.scene.addChild(tool.createAmbientLight());
-            director.scene.addChild(tool.createDirectionLight([container, ground]));
+            director.scene.addChild(tool.createDirectionLight());
             director.scene.addChild(tool.createCamera(80, wd.Vector3.create(0, 10, 0)));
 
 
@@ -56,6 +56,13 @@
 
             gameObject.addChild(sphere1);
             gameObject.addChild(box1);
+
+
+            var shadow = wd.Shadow.create();
+            shadow.cast = true;
+            shadow.receive = true;
+
+            gameObject.addComponent(shadow);
 
 
             gameObject.transform.translate(0, 10, 0);
