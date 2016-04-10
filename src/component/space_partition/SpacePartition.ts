@@ -1,5 +1,7 @@
 module wd {
     export abstract class SpacePartition extends Component{
+        public isCollideEnable:boolean = true;
+
         public abstract build():void;
         public abstract getRenderListByFrustumCull():wdCb.Collection<GameObject>;
         public abstract getIntersectListWithRay(e:MouseEvent):wdCb.Collection<GameObject>;

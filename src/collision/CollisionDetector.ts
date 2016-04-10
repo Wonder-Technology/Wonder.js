@@ -12,9 +12,14 @@ module wd{
         public detect(scene:GameObjectScene){
             //todo optimize:use worker
             var checkTargetList = scene.filter((entityObject:GameObject) => {
-                    return entityObject.hasComponent(Collider) || JudgeUtils.isSpacePartitionObject(entityObject);
+                    return entityObject.hasComponent(Collider)
+                        || (JudgeUtils.isSpacePartitionObject(entityObject) && entityObject.getSpacePartition().isCollideEnable)
                 }),
                 self = this;
+
+            if(checkTargetList.getCount() === 0){
+                return;
+            }
 
             this._clearCollisionTable();
 
