@@ -48,6 +48,7 @@ describe("physics event demo", function () {
 
 
         box1 = physicsTool.createBox(wd.BoxCollider, rigidBody1);
+        box1.name = "box1";
 
 
         box1.transform.translate(0, 0, -10);
@@ -59,6 +60,7 @@ describe("physics event demo", function () {
 
 
         sphere2 = physicsTool.createSphere(wd.SphereCollider, rigidBody2);
+        sphere2.name = "sphere2";
 
 
         sphere2.transform.translate(0, 0, 10);

@@ -42,11 +42,11 @@
 
         //'test/unit/renderer/pointShadowMapSpec.js',
         //
-        'test/unit/renderer/shadowMapSpec.js',
-        'test/unit/renderer/*ShadowMapSpec.js',
+        //'test/unit/renderer/shadowMapSpec.js',
+        //'test/unit/renderer/*ShadowMapSpec.js',
         //'test/unit/renderer/*ShadowMap_*Spec.js',
 
-        'test/unit/**/instance/*',
+        //'test/unit/**/instance/*',
 
         //'test/unit/**/instance_shadow*',
         //'test/unit/**/instance_shadow_*',
@@ -117,7 +117,7 @@
         //'test/unit/component/physics/**/eventSpec*',
 
         //'test/unit/**/OctreeSpec*',
-        //'test/unit/**/CollisionDetectorSpec*',
+        'test/unit/**/CollisionDetectorSpec*',
         //'test/unit/**/BoundingRegionUtilsSpec*',
 
         //'test/unit/**/SourceLightSpec*',
@@ -167,7 +167,7 @@
         //'test/unit/**/LightShaderLibSpec*',
         //
         //'test/unit/**/SceneDispatcherSpec*',
-        'test/unit/**/GameObjectSceneSpec*',
+        //'test/unit/**/GameObjectSceneSpec*',
         //
         //'test/unit/**/MathUtils*',
         //'test/unit/**/rayPicking*',
@@ -186,7 +186,7 @@
         //'test/unit/**/physics/**',
         //'test/unit/**/physics/physicsSpec*',
         //'test/unit/**/physics/dispose*',
-        //'test/unit/**/physics/**/event*',
+        'test/unit/**/physics/**/event*',
         //'test/unit/**/physics/optimize*',
         //'test/unit/**/physics/**/impulseSpec*',
         //'test/unit/**/physics/**/damping*',

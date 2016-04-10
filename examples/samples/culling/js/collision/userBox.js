@@ -15,11 +15,12 @@ var sample;
             this._gameObject = gameObject;
         }
         UserBox.prototype.init = function () {
-            var gameObject = this._gameObject;
+            var gameObject = this._gameObject, geometry = this._gameObject.getComponent(wd.Geometry);
             this._collidingMaterial = wd.BasicMaterial.create();
             this._collidingMaterial.color = wd.Color.create("rgb(255,0,0)");
+            this._collidingMaterial.geometry = geometry;
             this._collidingMaterial.init();
-            this._originMaterial = this._gameObject.getComponent(wd.Geometry).material;
+            this._originMaterial = geometry.material;
             var self = this;
             wd.EventManager.fromEvent(wd.EEventName.KEYDOWN)
                 .subscribe(function (e) {
@@ -56,6 +57,6 @@ var sample;
             wd.script("userBox")
         ], UserBox);
         return UserBox;
-    })();
+    }());
     sample.UserBox = UserBox;
 })(sample || (sample = {}));

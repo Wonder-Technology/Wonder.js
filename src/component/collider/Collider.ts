@@ -43,12 +43,12 @@ module wd {
             }
         }
 
+        @require(function(targetObject:GameObject){
+            assert(!this._isSelf(targetObject), Log.info.FUNC_SHOULD_NOT("targetObject", "be self"));
+            assert(targetObject.hasComponent(Collider), Log.info.FUNC_SHOULD("targetObject", "contain Collider component"));
+        })
         public isCollide(targetObject:GameObject):boolean{
             var collider:Collider = null;
-
-            if(this._isSelf(targetObject) || !targetObject.hasComponent(Collider)){
-                return false;
-            }
 
             collider = targetObject.getComponent<Collider>(Collider);
 
