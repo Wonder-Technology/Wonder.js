@@ -8,6 +8,7 @@ module wd {
 
         public type:string = ABSTRACT_ATTRIBUTE;
 
+        public enable:boolean = true;
         public boundingRegion:BoundingRegion = null;
 
         public abstract createBoundingRegion();

@@ -54,10 +54,16 @@ module wd{
                         self._handleCollisionBetweenSpacePartitionAndSpacePartition(targetObject.getSpacePartition(), sourceSpacePartition);
                     }
                     else{
-                        self._handleCollisionBetweenGameObjectAndSpacePartition(targetObject, sourceSpacePartition);
+                        self._handleCollisionBetweenGameObjectAndSpacePartition(targetObject.getComponent<Collider>(Collider), sourceSpacePartition);
                     }
                 });
 
+                return;
+            }
+
+            let sourceObjectCollider = sourceObject.getComponent<Collider>(Collider);
+
+            if(!sourceObjectCollider.enable){
                 return;
             }
 
@@ -67,10 +73,10 @@ module wd{
                 }
 
                 if(JudgeUtils.isSpacePartitionObject(targetObject)){
-                    self._handleCollisionBetweenGameObjectAndSpacePartition(sourceObject, targetObject.getSpacePartition());
+                    self._handleCollisionBetweenGameObjectAndSpacePartition(sourceObjectCollider, targetObject.getSpacePartition());
                 }
                 else{
-                    self._handleCollisionBetweenGameObjectAndGameObject(sourceObject, targetObject);
+                    self._handleCollisionBetweenGameObjectAndGameObject(sourceObjectCollider, targetObject);
                 }
             });
         }
@@ -119,37 +125,51 @@ module wd{
             table.getChild(sourceKey).targetObjectMap.addChild(targetKey, targetObject);
         }
 
-        private _handleCollisionBetweenGameObjectAndSpacePartition(gameObject:GameObject, spacePartition:SpacePartition) {
-            var gameObjectCollider = gameObject.getComponent<Collider>(Collider),
+        private _handleCollisionBetweenGameObjectAndSpacePartition(targetObjectCollider:Collider, spacePartition:SpacePartition) {
+            var targetObject = targetObjectCollider.entityObject,
                 self = this;
 
-            spacePartition.getCollideObjects(gameObjectCollider.shape).forEach((entityObject:GameObject) => {
-                if(self._isCollidedInTable(entityObject, gameObject)){
+            if(!targetObjectCollider.enable){
+                return;
+            }
+
+            spacePartition.getCollideObjects(targetObjectCollider.shape).forEach((sourceObject:GameObject) => {
+                var sourceCollider = sourceObject.getComponent<Collider>(Collider);
+
+                if(!sourceCollider.enable || self._isCollidedInTable(sourceObject, targetObject)){
                     return;
                 }
 
-                if(self._isGameObjectCollideWithGameObject(entityObject, entityObject.getComponent<Collider>(Collider), gameObject)){
-                    self._recordToTable(entityObject, gameObject);
-                    self._recordToTable(gameObject, entityObject);
+                if(self._isGameObjectCollideWithGameObject(sourceObject, sourceCollider, targetObject)){
+                    self._recordToTable(sourceObject, targetObject);
+                    self._recordToTable(targetObject, sourceObject);
                 }
             });
         }
 
-        private _handleCollisionBetweenSpacePartitionAndSpacePartition(spacePartitionA:SpacePartition, spacePartitionB:SpacePartition){
-            spacePartitionA.getChildren()
+        private _handleCollisionBetweenSpacePartitionAndSpacePartition(sourceSpacePartition:SpacePartition, targetSpacePartition:SpacePartition){
+            sourceSpacePartition.getChildren()
                 .forEach((sourceObject:GameObject) => {
-                    this._handleCollisionBetweenGameObjectAndSpacePartition(sourceObject, spacePartitionB);
+                    var sourceCollider = sourceObject.getComponent<Collider>(Collider);
+
+                    if(!sourceCollider.enable){
+                        return;
+                    }
+
+                    this._handleCollisionBetweenGameObjectAndSpacePartition(sourceCollider, targetSpacePartition);
                 }, this);
         }
 
-        private _handleCollisionBetweenGameObjectAndGameObject(gameObjectA:GameObject, gameObjectB:GameObject) {
-            if(this._isCollidedInTable(gameObjectA, gameObjectB)){
+        private _handleCollisionBetweenGameObjectAndGameObject(sourceObjectCollider:Collider, targetObject:GameObject) {
+            var sourceObject = sourceObjectCollider.entityObject;
+
+            if(!targetObject.getComponent<Collider>(Collider).enable || this._isCollidedInTable(sourceObject, targetObject)){
                 return;
             }
 
-            if(this._isGameObjectCollideWithGameObject(gameObjectA, gameObjectA.getComponent<Collider>(Collider), gameObjectB)){
-                this._recordToTable(gameObjectA, gameObjectB);
-                this._recordToTable(gameObjectB, gameObjectA);
+            if(this._isGameObjectCollideWithGameObject(sourceObject, sourceObjectCollider, targetObject)){
+                this._recordToTable(sourceObject, targetObject);
+                this._recordToTable(targetObject, sourceObject);
             }
         }
 

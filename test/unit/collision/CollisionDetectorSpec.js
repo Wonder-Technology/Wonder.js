@@ -112,6 +112,44 @@ describe("CollisionDetector", function () {
 
                     test(updateAll);
                 });
+
+                describe("optimize", function(){
+                    beforeEach(function(){
+                    });
+
+                    it("if gameObject->Collider->enable === false, not check if it collide with others", function(){
+                        gameObjectScene.addChild(box1);
+
+                        box1.getComponent(wd.Collider).enable = false;
+
+                        gameObjectScene.init();
+
+
+                        updateAll();
+
+
+                        detector.detect(gameObjectScene);
+
+
+                        expect(box1.execScript.withArgs("onCollisionStart")).not.toCalled();
+                        expect(box3.execScript.withArgs("onCollisionStart")).not.toCalled();
+
+
+
+
+
+
+                        box1.getComponent(wd.Collider).enable = true;
+
+                        updateAll();
+
+                        detector.detect(gameObjectScene);
+
+
+                        judge(box1, [box3]);
+                        judge(box3, [box1]);
+                    });
+                });
             });
 
             describe("test octree", function(){
@@ -338,44 +376,83 @@ describe("CollisionDetector", function () {
                     expect(box1.execScript.withArgs("onCollisionEnd")).toCalledOnce();
                     expect(box3.execScript.withArgs("onCollisionEnd")).toCalledOnce();
                 });
-            });
 
-            describe("optimize", function(){
-                beforeEach(function(){
-                });
-
-                it("if octree->isCollideEnable === false, it not collide", function () {
+                describe("optimize", function(){
                     function updateAll(){
                         box1.update(1);
                         octreeContainer.update(1);
                     }
 
-                    var octreeContainer;
+                    beforeEach(function(){
+                        octreeContainer.addChildren([box2, box3, box4]);
+                    });
+
+                    it("if octree->isCollideEnable === false, it not collide", function () {
+                        var octree = octreeContainer.getComponent(wd.SpacePartition);
+                        octree.isCollideEnable = false;
+
+                        gameObjectScene.addChildren([box1, octreeContainer]);
+
+                        gameObjectScene.init();
 
 
-                    octreeContainer = wd.GameObject.create();
-
-                    var octree = wd.Octree.create();
-                    octree.isCollideEnable = false;
+                        updateAll();
 
 
-                    octreeContainer.addComponent(octree);
-
-                    octreeContainer.addChildren([box2, box3, box4]);
-
-                    gameObjectScene.addChildren([box1, octreeContainer]);
-
-                    gameObjectScene.init();
+                        detector.detect(gameObjectScene);
 
 
-                    updateAll();
+                        expect(box1.execScript.withArgs("onCollisionStart")).not.toCalled();
+                        expect(box3.execScript.withArgs("onCollisionStart")).not.toCalled();
+                    });
+
+                    describe("if gameObject->Collider->enable === false, not check if it collide with others", function(){
+                        it("test gameObject collide with octree", function () {
+                            gameObjectScene.addChildren([octreeContainer, box1]);
 
 
-                    detector.detect(gameObjectScene);
+                            box3.getComponent(wd.Collider).enable = false;
 
 
-                    expect(box1.execScript.withArgs("onCollisionStart")).not.toCalled();
-                    expect(box3.execScript.withArgs("onCollisionStart")).not.toCalled();
+
+                            gameObjectScene.init();
+
+
+                            updateAll();
+
+
+                            detector.detect(gameObjectScene);
+
+
+                            expect(box1.execScript.withArgs("onCollisionStart")).not.toCalled();
+                            expect(box3.execScript.withArgs("onCollisionStart")).not.toCalled();
+                        });
+                        it("test octree collide with octree", function () {
+                            var octreeContainer2 = wd.GameObject.create();
+                            octreeContainer2.addComponent(wd.Octree.create());
+                            octreeContainer2.addChild(box1);
+
+
+                            gameObjectScene.addChildren([octreeContainer, octreeContainer2]);
+
+
+                            box3.getComponent(wd.Collider).enable = false;
+
+
+
+                            gameObjectScene.init();
+
+
+                            updateAll();
+
+
+                            detector.detect(gameObjectScene);
+
+
+                            expect(box1.execScript.withArgs("onCollisionStart")).not.toCalled();
+                            expect(box3.execScript.withArgs("onCollisionStart")).not.toCalled();
+                        });
+                    });
                 });
             });
         });
