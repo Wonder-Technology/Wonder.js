@@ -166,7 +166,7 @@ module wd{
         }
 
         public bindAndUpdate(){
-            var mapArr = this._getAllActiveMaps();
+            var mapArr = this._getAllMaps();
 
             for(let i = 0, len = mapArr.length; i < len; i++){
                 let texture = mapArr[i];
@@ -181,7 +181,7 @@ module wd{
 
         @require(function(program:Program){
             var mapMap = {},
-                maps = this._getAllActiveMaps();
+                maps = this._getAllMaps();
 
             for(let i = 0, len = maps.length; i < len; i++){
                 let map = maps[i],
@@ -194,11 +194,11 @@ module wd{
         })
         public sendData(program:Program){
             this._sendSingleMapData(program);
-            this._arrayMapController.sendMapData(program, this._getMaxUnitOfBindedActiveSingleMap());
+            this._arrayMapController.sendMapData(program, this._getMaxUnitOfBindedSingleMap());
         }
 
         private _sendSingleMapData(program:Program){
-            var mapArr = this._getAllActiveSingleMaps(),
+            var mapArr = this._getAllSingleMaps(),
                 len = mapArr.length;
 
             for(let i = 0; i < len; i++){
@@ -225,15 +225,8 @@ module wd{
             return [].concat(this._getAllSingleMaps(), this._arrayMapController.getAllMapArr());
         }
 
-        //todo add cache
-        private _getAllActiveMaps(){
-            return this._getAllMaps().filter((map:Texture) => {
-                return map.active;
-            });
-        }
-
-        private _getMaxUnitOfBindedActiveSingleMap(){
-            return this._getAllActiveSingleMaps().length;
+        private _getMaxUnitOfBindedSingleMap(){
+            return this._getAllSingleMaps().length;
         }
 
         @cache(function(){
@@ -252,13 +245,6 @@ module wd{
             }
 
             return arr;
-        }
-
-        //todo add cache
-        private _getAllActiveSingleMaps(){
-            return this._getAllSingleMaps().filter((map:Texture) => {
-                return map.active;
-            });
         }
 
         private _getAllSingleMapControllerArr(){

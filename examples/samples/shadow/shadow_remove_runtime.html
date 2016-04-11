@@ -35,6 +35,7 @@
             var ground = createGround();
 
             director.scene.addChild(sphere);
+//            director.scene.addChild(sphere2);
             director.scene.addChild(ground);
 
 
@@ -46,6 +47,7 @@
 
             director.scene.addChild(createAmbientLight());
             director.scene.addChild(createDirectionLight());
+            director.scene.addChild(createPointLight(wd.Vector3.create(100, 100, 100)));
             director.scene.addChild(createCamera());
 
             director.start();
@@ -216,6 +218,42 @@
 
             return directionLight;
         }
+
+        function createPointLight(pos) {
+            var SHADOW_MAP_WIDTH = 1024,
+                    SHADOW_MAP_HEIGHT = 1024;
+
+            var pointLightComponent = wd.PointLight.create();
+            pointLightComponent.color = wd.Color.create("#ffffff");
+            pointLightComponent.intensity = 2;
+            pointLightComponent.rangeLevel = 11;
+            pointLightComponent.castShadow = true;
+            pointLightComponent.shadowCameraNear = 0.1;
+            pointLightComponent.shadowCameraFar = 1000;
+            pointLightComponent.shadowBias = 0.01;
+            pointLightComponent.shadowDarkness = 0.2;
+            pointLightComponent.shadowMapWidth = SHADOW_MAP_WIDTH;
+            pointLightComponent.shadowMapHeight = SHADOW_MAP_HEIGHT;
+
+            var pointSphereMaterial = wd.BasicMaterial.create();
+            pointSphereMaterial.color = wd.Color.create("#ffffff");
+
+            var geometry = wd.SphereGeometry.create();
+            geometry.material = pointSphereMaterial;
+            geometry.radius = 1;
+            geometry.segment = 20;
+
+
+            var pointLight = wd.GameObject.create();
+            pointLight.addComponent(pointLightComponent);
+            pointLight.addComponent(geometry);
+            pointLight.addComponent(wd.MeshRenderer.create());
+
+            pointLight.transform.position = pos;
+
+            return pointLight;
+        }
+
 
         function createCamera() {
             var camera = wd.GameObject.create(),

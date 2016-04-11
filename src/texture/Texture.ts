@@ -16,8 +16,6 @@ module wd{
         public minFilter:ETextureFilterMode = null;
         public glTexture:WebGLTexture = null;
         public needUpdate:boolean = null;
-        //todo modify asset
-        public active:boolean = true;
 
         protected target:ETextureTarget = ETextureTarget.TEXTURE_2D;
 

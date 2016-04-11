@@ -15,22 +15,16 @@ module wd{
             });
         }
 
-        //todo test
         public sendMapData(program:Program, maxUnitOfBindedSingleMap:number){
             var self = this;
 
-            this._mapArrayList
-                .forEach((mapData:ArrayMapData) => {
-                    let arrayMapCount = mapData.mapArray
-                        .filter((map:Texture) => {
-                            return map.active;
-                        })
-                        .length;
+            this._mapArrayList.forEach((mapData:ArrayMapData) => {
+                let arrayMapCount = mapData.mapArray.length;
 
-                    program.sendUniformData(`${mapData.samplerName}[0]`, EVariableType.SAMPLER_ARRAY, self._generateArrayMapUnitArray(maxUnitOfBindedSingleMap, maxUnitOfBindedSingleMap + arrayMapCount));
+                program.sendUniformData(`${mapData.samplerName}[0]`, EVariableType.SAMPLER_ARRAY, self._generateArrayMapUnitArray(maxUnitOfBindedSingleMap, maxUnitOfBindedSingleMap + arrayMapCount));
 
-                    maxUnitOfBindedSingleMap += arrayMapCount;
-                });
+                maxUnitOfBindedSingleMap += arrayMapCount;
+            });
         }
 
         @ensure(function(mapArr:Array<Texture>){

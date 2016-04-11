@@ -880,7 +880,8 @@ describe("point shadow map", function() {
                     beforeEach(function(){
                     });
 
-                    it("if scene only has one object with the same layer which receive shadow, not bind and send shadow map", function () {
+                    it("if scene only has one object with the same layer which receive shadow, still bind and send shadow map" +
+                        "(otherwise it will cause the 'instance_octree_shadow_layer sample->if not show sphere2(whose shadow layer is diferent from the instance), it's dark' bug)", function () {
                         var sphere2;
                         var shadowMap1;
                         var program1;
@@ -916,8 +917,8 @@ describe("point shadow map", function() {
                         director.scene.gameObjectScene.render(renderer);
                         renderer.render();
 
-                        expect(shadowMap1.bindToUnit.callCount).toEqual(0);
-                        expect(program1.sendUniformData.withArgs("u_cubemapShadowMapSampler[0]", sinon.match.any, 0)).not.toCalled();
+                        expect(shadowMap1.bindToUnit.callCount).toEqual(1);
+                        expect(program1.sendUniformData.withArgs("u_cubemapShadowMapSampler[0]", sinon.match.any, 0)).toCalledOnce();
                     });
                 });
             });
