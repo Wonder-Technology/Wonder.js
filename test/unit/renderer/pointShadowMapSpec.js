@@ -271,7 +271,7 @@ describe("point shadow map", function() {
             });
         });
 
-        describe("draw based on shadow map", function(){
+        describe("draw shadow map", function(){
             var shader, program;
 
             function setDrawShadowMapShaderAndProgram(){
@@ -511,7 +511,7 @@ describe("point shadow map", function() {
             });
         });
 
-        it("the binded shadowMap when build shadow map and the binded shadowMap when draw based on shadow map are the same one", function () {
+        it("the binded shadowMap when build shadow map and the binded shadowMap when draw shadow map are the same one", function () {
             director._init();
 
             var shadowMap = shadowTool.getBuildShadowMap();
@@ -609,7 +609,7 @@ describe("point shadow map", function() {
                 });
             });
 
-            describe("test draw based on shadow map", function(){
+            describe("test draw shadow map", function(){
                 beforeEach(function(){
 
                 });
@@ -839,7 +839,7 @@ describe("point shadow map", function() {
                 expect(shadowMap.bindToUnit.callCount).toEqual(1 + 3);
             });
 
-            it("all objects should be drawed only 7 times(six times for build shadow map, one for draw based on shadow map)", function(){
+            it("all objects should be drawed only 7 times(six times for build shadow map, one for draw shadow map)", function(){
                 sandbox.spy(sphere, "render");
                 sandbox.spy(part1, "render");
                 sandbox.spy(part2, "render");
@@ -854,6 +854,75 @@ describe("point shadow map", function() {
                 expect(part2.render.callCount).toEqual(7);
             });
         });
+
+
+
+        describe("add/remove shadow gameObject at runtime", function(){
+            //var shader, program;
+
+            //function setBuildShadowMapShaderAndProgram(obj, handleProgramFunc) {
+            //    shadowTool.setTwoDBuildShadowMapShaderAndProgramHelper(sandbox, obj, handleProgramFunc, function(s, p){
+            //        shader = s;
+            //        program = p;
+            //    })
+            //}
+
+            beforeEach(function(){
+                director._init();
+
+
+                director.scene.gameObjectScene.render(renderer);
+                renderer.render();
+            });
+
+            describe("remove shadow gameObject at runtime", function () {
+                describe("test draw shadow map", function(){
+                    beforeEach(function(){
+                    });
+
+                    it("if scene only has one object with the same layer which receive shadow, not bind and send shadow map", function () {
+                        var sphere2;
+                        var shadowMap1;
+                        var program1;
+
+                        sphere2 = createSphere();
+                        var shadow2 = sphere2.getComponent(wd.Shadow);
+                        shadow2.cast = false;
+                        shadow2.receive = true;
+
+                        director.scene.addChild(sphere2);
+                        sphere2.init();
+
+
+
+                        director.scene.removeChild(sphere);
+
+                        var shadowMapList = shadowTool.getDefaultMapManager(sphere).getCubemapShadowMapList();
+
+                        shadowMap1 = shadowMapList.getChild(0);
+                        sandbox.stub(shadowMap1, "bindToUnit");
+
+                        var data1 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere2);
+                        program1 = data1.program;
+
+
+
+
+
+
+
+
+
+                        director.scene.gameObjectScene.render(renderer);
+                        renderer.render();
+
+                        expect(shadowMap1.bindToUnit.callCount).toEqual(0);
+                        expect(program1.sendUniformData.withArgs("u_cubemapShadowMapSampler[0]", sinon.match.any, 0)).not.toCalled();
+                    });
+                });
+            });
+        });
+
 
         describe("fix bug", function(){
             var shader;

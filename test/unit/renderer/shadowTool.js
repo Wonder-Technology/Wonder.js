@@ -75,6 +75,11 @@ var shadowTool = {
         if(arguments.length === 0){
             return wd.Director.getInstance().scene.gameObjectScene._renderTargetRendererList.getChild(0);
         }
+        else if(arguments.length === 1 && wd.JudgeUtils.isNumber(arguments[0])){
+            var rendererIndex = arguments[0];
+
+            return wd.Director.getInstance().scene.gameObjectScene._renderTargetRendererList.getChild(rendererIndex);
+        }
         else if(arguments.length === 1){
             var layer = arguments[0];
 
@@ -98,7 +103,7 @@ var shadowTool = {
     //getBuildShadowMapMapManager:function (){
     //    return this.getBuildShadowMapRenderer.apply(this, arguments)._shadowMapRendererUtils.mapManager;
     //},
-    getBuildShadowMap:function(){
+    getBuildShadowMap:function(rendererIndex){
         return this.getBuildShadowMapRenderer.apply(this, arguments).texture;
     },
     setTwoDBuildShadowMapShaderAndProgramHelper: function (sandbox, obj, handleProgramFunc, setFunc, isInstance) {

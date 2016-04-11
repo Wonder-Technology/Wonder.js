@@ -53,8 +53,12 @@ module wd {
                 isNeedCreateCamera = null;
 
             if(this.isRenderListEmptyWhenRender()){
+                this.texture.active = false;
+
                 return;
             }
+
+            this.texture.active = true;
 
             this.texture.bindToUnit(0);
 

@@ -224,7 +224,7 @@ describe("direction shadow map", function() {
             });
         });
 
-        describe("draw based on shadow map", function(){
+        describe("draw shadow map", function(){
             var shader, program;
 
             function setDrawShadowMapShaderAndProgram(){
@@ -471,7 +471,7 @@ describe("direction shadow map", function() {
             });
         });
 
-        it("the binded shadowMap when build shadow map and the binded shadowMap when draw based on shadow map are the same one", function () {
+        it("the binded shadowMap when build shadow map and the binded shadowMap when draw shadow map are the same one", function () {
             director._init();
 
             var shadowMap = shadowTool.getBuildShadowMap();
@@ -569,7 +569,7 @@ describe("direction shadow map", function() {
                 });
             });
 
-            describe("test draw based on shadow map", function(){
+            describe("test draw shadow map", function(){
                 beforeEach(function(){
 
                 });
@@ -799,7 +799,7 @@ describe("direction shadow map", function() {
                 expect(shadowMap.bindToUnit.callCount).toEqual(1 + 3);
             });
 
-            it("all objects should be drawed only twice(one for build shadow map, one for draw based on shadow map)", function(){
+            it("all objects should be drawed only twice(one for build shadow map, one for draw shadow map)", function(){
                 sandbox.spy(sphere, "render");
                 sandbox.spy(part1, "render");
                 sandbox.spy(part2, "render");
@@ -814,6 +814,255 @@ describe("direction shadow map", function() {
                 expect(part2.render).toCalledTwice();
             });
         });
+
+
+
+        describe("add/remove shadow gameObject at runtime", function(){
+            var shader, program;
+
+            function setBuildShadowMapShaderAndProgram(obj, handleProgramFunc) {
+                shadowTool.setTwoDBuildShadowMapShaderAndProgramHelper(sandbox, obj, handleProgramFunc, function(s, p){
+                    shader = s;
+                    program = p;
+                })
+            }
+
+            beforeEach(function(){
+                director._init();
+
+
+                director.scene.gameObjectScene.render(renderer);
+                renderer.render();
+            });
+
+            describe("add shadow gameObject at runtime", function () {
+                var sphere2;
+
+                beforeEach(function(){
+                    sphere2 = createSphere();
+                    sphere2.name = "sphere22";
+
+                    director.scene.addChild(sphere2);
+                    sphere2.init();
+                });
+
+                describe("test build shadow map", function () {
+                    it("send u_vpMatrixFromLight,u_mMatrix,u_vMatrix,u_pMatrix,a_position", function () {
+
+                        setBuildShadowMapShaderAndProgram(sphere2, function (program) {
+                            sandbox.stub(program, "sendAttributeData");
+                            sandbox.stub(program, "sendUniformData");
+                        });
+
+
+
+
+
+                        director.scene.gameObjectScene.render(renderer);
+
+
+
+                        expect(program.sendUniformData.withArgs("u_vpMatrixFromLight")).toCalledTwice();
+                        //expect(program.sendUniformData.withArgs("u_mMatrix")).toCalledBefore(program.sendUniformData.withArgs("u_vpMatrixFromLight"));
+                        //expect(program.sendUniformData.withArgs("u_vMatrix")).toCalledBefore(program.sendUniformData.withArgs("u_vpMatrixFromLight"));
+                        //expect(program.sendUniformData.withArgs("u_pMatrix")).toCalledBefore(program.sendUniformData.withArgs("u_vpMatrixFromLight"));
+                        //expect(program.sendAttributeData.withArgs("a_position")).toCalledBefore(program.sendUniformData.withArgs("u_vpMatrixFromLight"));
+                    });
+                    it("bind shadow map", function () {
+                        var shadowMap = shadowTool.getBuildShadowMap(0);
+
+                        sandbox.stub(shadowMap, "bindToUnit");
+
+                        sandbox.stub(shadowMap, "sendData");
+
+
+                        director.scene.gameObjectScene.render(renderer);
+
+
+                        expect(shadowMap.bindToUnit).toCalledOnce();
+                        expect(shadowMap.sendData).not.toCalled();
+                    });
+                });
+
+                describe("test draw shadow map", function(){
+                    beforeEach(function(){
+                    });
+
+                    it("bind the shadow maps", function () {
+                        var twoDShadowMapList = shadowTool.getDefaultMapManager(sphere2).getTwoDShadowMapList();
+
+                        expect(twoDShadowMapList.getCount()).toEqual(1);
+
+                        var shadowMap1 = twoDShadowMapList.getChild(0);
+                        sandbox.stub(shadowMap1, "bindToUnit");
+
+
+                        director.scene.gameObjectScene.render(renderer);
+                        renderer.render();
+
+                        expect(shadowMap1.bindToUnit.callCount).toEqual(1 + 2);
+                    });
+                });
+
+                describe("test change added object->cast/receive", function(){
+                    beforeEach(function(){
+
+                    });
+
+                    it("test change cast", function(){
+
+                    });
+                });
+
+                describe("test change added object->layer", function(){
+                    beforeEach(function(){
+
+                    });
+
+                    it("", function(){
+
+                    });
+                });
+            });
+
+            describe("remove shadow gameObject at runtime", function () {
+                describe("test build shadow map", function () {
+                    //it("not send u_vpMatrixFromLight,u_mMatrix,u_vMatrix,u_pMatrix,a_position", function () {
+                    //
+                    //    setBuildShadowMapShaderAndProgram(sphere, function (program) {
+                    //        sandbox.stub(program, "sendAttributeData");
+                    //        sandbox.stub(program, "sendUniformData");
+                    //    });
+                    //
+                    //    director.scene.removeChild(sphere);
+                    //
+                    //
+                    //
+                    //
+                    //    director.scene.gameObjectScene.render(renderer);
+                    //
+                    //
+                    //
+                    //    expect(program.sendUniformData.withArgs("u_vpMatrixFromLight")).not.toCalled();
+                    //});
+                    it("not bind shadow map", function () {
+                        var shadowMap = shadowTool.getBuildShadowMap(0);
+
+                        sandbox.stub(shadowMap, "bindToUnit");
+
+                        sandbox.stub(shadowMap, "sendData");
+
+                        director.scene.removeChild(sphere);
+
+
+                        director.scene.gameObjectScene.render(renderer);
+
+
+                        expect(shadowMap.bindToUnit).not.toCalled();
+                    });
+                });
+
+                describe("test draw shadow map", function(){
+                    beforeEach(function(){
+                    });
+
+                    it("if scene has no objects with the same layer, not bind and send shadow map", function () {
+                        var twoDShadowMapList = shadowTool.getDefaultMapManager(sphere).getTwoDShadowMapList();
+
+                        var shadowMap1 = twoDShadowMapList.getChild(0);
+                        sandbox.stub(shadowMap1, "bindToUnit");
+
+                        var data1 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
+                        var program1 = data1.program;
+
+
+                        director.scene.removeChild(sphere);
+
+
+                        director.scene.gameObjectScene.render(renderer);
+                        renderer.render();
+
+                        expect(shadowMap1.bindToUnit.callCount).toEqual(0);
+                        //expect(program1.sendUniformData.withArgs("u_twoDShadowMapSampler[0]", sinon.match.any, 0)).toCalledOnce();
+                        expect(program1.sendUniformData).not.toCalled();
+                    });
+
+                    it("if scene only has one object with the same layer which receive shadow, not bind and send shadow map", function () {
+                        var sphere2;
+                        var shadowMap1;
+                        var program1;
+
+                        sphere2 = createSphere();
+                        var shadow2 = sphere2.getComponent(wd.Shadow);
+                        shadow2.cast = false;
+                        shadow2.receive = true;
+
+                        director.scene.addChild(sphere2);
+                        sphere2.init();
+
+
+
+                        director.scene.removeChild(sphere);
+
+
+                        var twoDShadowMapList = shadowTool.getDefaultMapManager(sphere).getTwoDShadowMapList();
+
+                        shadowMap1 = twoDShadowMapList.getChild(0);
+                        sandbox.stub(shadowMap1, "bindToUnit");
+
+                        var data1 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere2);
+                        program1 = data1.program;
+
+
+
+
+                        director.scene.gameObjectScene.render(renderer);
+                        renderer.render();
+
+
+
+
+                        expect(shadowMap1.bindToUnit.callCount).toEqual(0);
+                        expect(program1.sendUniformData.withArgs("u_twoDShadowMapSampler[0]", sinon.match.any, 0)).not.toCalled();
+                    });
+                    //it("if scene has other objects with the same layer which cast shadow, bind and send shadow map", function () {
+                    //
+                    //});
+                });
+
+                describe("test change added object->cast/receive", function(){
+                    beforeEach(function(){
+
+                    });
+
+                    it("", function(){
+
+                    });
+                });
+
+                describe("test change added object->layer", function(){
+                    beforeEach(function(){
+
+                    });
+
+                    it("", function(){
+
+                    });
+                });
+            });
+
+            describe("remove and add shadow gameObject", function(){
+                beforeEach(function(){
+
+                });
+
+                it("", function(){
+
+                });
+            });
+        });
+
+
 
         describe("fix bug", function(){
             var shader;
