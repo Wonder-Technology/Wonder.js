@@ -168,6 +168,622 @@ describe("shadow map", function() {
             });
         });
 
+        describe("test shadow layer", function(){
+            var shadow1,shadow2,shadow3;
+            var sphere2,sphere3;
+            var layer1,layer2,layer3;
+
+            beforeEach(function(){
+                testTool.openContractCheck(sandbox);
+
+                layer1 = "layer1";
+                layer2 = "layer2";
+                layer3 = layer2;
+
+                shadow1 = sphere.getComponent(wd.Shadow);
+                shadow1.layer = layer1;
+
+                sphere2 = shadowTool.createSphere();
+                sphere2.name = "sphere2";
+                shadow2 = sphere2.getComponent(wd.Shadow);
+                shadow2.layer = layer2;
+
+                director.scene.addChild(sphere2);
+
+
+                sphere3 = shadowTool.createSphere();
+                sphere3.name = "sphere3";
+                shadow3 = sphere3.getComponent(wd.Shadow);
+                shadow3.layer = layer3;
+
+
+                director.scene.addChild(sphere3);
+            });
+
+            describe("test build shadowLayerList", function () {
+                it("user can specify shadowLayerList", function () {
+
+                    director.scene.shadowLayerList.removeAllChildren();
+                    director.scene.shadowLayerList.addChild("a");
+
+
+                    director._init();
+
+                    expect(director.scene.shadowLayerList.getChildren()).toEqual(["a"]);
+                });
+
+                it("else, auto build it when init", function () {
+                    director._init();
+
+                    expect(director.scene.shadowLayerList.getChildren()).toEqual([layer1, layer2]);
+                });
+            });
+
+            it("if gameObject not cast shadow, its shadow layer not work(shader not contain the shadow map of the layer)", function () {
+                shadow1.cast = false;
+
+                director._init();
+
+                var twoDShadowMapList1 = shadowTool.getDefaultMapManager(sphere).getTwoDShadowMapList();
+                var twoDShadowMapList2 = shadowTool.getDefaultMapManager(sphere2).getTwoDShadowMapList();
+                var twoDShadowMapList3 = shadowTool.getDefaultMapManager(sphere3).getTwoDShadowMapList();
+
+                expect(twoDShadowMapList1.getCount()).toEqual(1);
+                expect(twoDShadowMapList2.getCount()).toEqual(1);
+                expect(twoDShadowMapList3.getCount()).toEqual(1);
+            });
+
+            it("each shadow layer has one shadow map", function () {
+                director._init();
+
+                var shadowMap1 = shadowTool.getBuildShadowMap(layer1);
+                var shadowMap2 = shadowTool.getBuildShadowMap(layer2);
+                var shadowMap3 = shadowTool.getBuildShadowMap(layer3);
+
+                expect(shadowMap1 !== shadowMap2).toBeTruthy();
+                expect(shadowMap2 === shadowMap3).toBeTruthy();
+            });
+
+            describe("test build shadow map", function(){
+                beforeEach(function(){
+
+                });
+
+                it("bind the shadow map of self layer when build shadow map", function () {
+                    director._init();
+
+                    var shadowMap1 = shadowTool.getBuildShadowMap(layer1);
+                    var shadowMap2 = shadowTool.getBuildShadowMap(layer2);
+
+                    sandbox.stub(shadowMap1, "bindToUnit");
+                    sandbox.stub(shadowMap2, "bindToUnit");
+
+
+                    director.scene.gameObjectScene.render(renderer);
+
+
+                    expect(shadowMap1.bindToUnit).toCalledOnce();
+                    expect(shadowMap2.bindToUnit).toCalledOnce();
+                });
+            });
+
+            describe("test draw shadow map", function(){
+                beforeEach(function(){
+
+                });
+
+                it("bind the shadow maps of all layers when draw shadow map", function () {
+                    director._init();
+
+                    var twoDShadowMapList1 = shadowTool.getDefaultMapManager(sphere).getTwoDShadowMapList();
+                    var twoDShadowMapList2 = shadowTool.getDefaultMapManager(sphere2).getTwoDShadowMapList();
+                    var twoDShadowMapList3 = shadowTool.getDefaultMapManager(sphere3).getTwoDShadowMapList();
+
+                    expect(twoDShadowMapList1.getCount()).toEqual(2);
+                    expect(twoDShadowMapList2.getCount()).toEqual(2);
+                    expect(twoDShadowMapList3.getCount()).toEqual(2);
+
+                    var shadowMap1 = twoDShadowMapList1.getChild(0);
+                    var shadowMap2 = twoDShadowMapList1.getChild(1);
+                    sandbox.stub(shadowMap1, "bindToUnit");
+                    sandbox.stub(shadowMap2, "bindToUnit");
+
+
+                    director.scene.gameObjectScene.render(renderer);
+                    renderer.render();
+
+                    expect(shadowMap1.bindToUnit.callCount).toEqual(1 + 3);
+                    expect(shadowMap2.bindToUnit.callCount).toEqual(1 + 3);
+                });
+                it("should send shadow map data", function () {
+                    director._init();
+
+                    var data1 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
+                    var program1 = data1.program;
+
+                    var data2 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere2);
+                    var program2 = data2.program;
+
+                    var data3 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere3);
+                    var program3 = data3.program;
+
+
+                    director.scene.gameObjectScene.render(renderer);
+                    renderer.render();
+
+                    expect(program1.sendUniformData.withArgs("u_twoDShadowMapSampler[0]", sinon.match.any, 0)).toCalledOnce();
+                    expect(program1.sendUniformData.withArgs("u_twoDShadowMapSampler[1]", sinon.match.any, 1)).toCalledOnce();
+                    expect(program1.sendUniformData.withArgs("u_diffuseMapSampler", sinon.match.any, 2)).toCalledOnce();
+
+
+                    expect(program2.sendUniformData.withArgs("u_twoDShadowMapSampler[0]", sinon.match.any, 0)).toCalledOnce();
+                    expect(program2.sendUniformData.withArgs("u_twoDShadowMapSampler[1]", sinon.match.any, 1)).toCalledOnce();
+                    expect(program2.sendUniformData.withArgs("u_diffuseMapSampler", sinon.match.any, 2)).toCalledOnce();
+
+
+
+                    expect(program3.sendUniformData.withArgs("u_twoDShadowMapSampler[0]", sinon.match.any, 0)).toCalledOnce();
+                    expect(program3.sendUniformData.withArgs("u_twoDShadowMapSampler[1]", sinon.match.any, 1)).toCalledOnce();
+                    expect(program3.sendUniformData.withArgs("u_diffuseMapSampler", sinon.match.any, 2)).toCalledOnce();
+                });
+                it("fs glsl should define TWOD_SHADOWMAP_COUNT", function () {
+                    director._init();
+
+                    var data1 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
+                    var shader1 = data1.shader;
+
+                    var data2 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere2);
+                    var shader2 = data2.shader;
+
+                    var data3 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere3);
+                    var shader3 = data3.shader;
+
+
+                    director.scene.gameObjectScene.render(renderer);
+                    renderer.render();
+
+                    expect(glslTool.contain(shader1.fsSource, "TWOD_SHADOWMAP_COUNT 2")).toBeTruthy();
+                    expect(glslTool.contain(shader2.fsSource, "TWOD_SHADOWMAP_COUNT 2")).toBeTruthy();
+                    expect(glslTool.contain(shader3.fsSource, "TWOD_SHADOWMAP_COUNT 2")).toBeTruthy();
+                });
+            });
+
+            describe("test multi lights", function(){
+                var light2;
+
+                beforeEach(function(){
+                    light2 = shadowTool.createDirectionLight();
+
+                    director.scene.addChild(light2);
+                });
+
+                it("each light and each shadow layer has one shadow map", function(){
+                    director._init();
+
+                    var shadowMap11 = shadowTool.getBuildShadowMap(layer1, light);
+                    var shadowMap12 = shadowTool.getBuildShadowMap(layer1,light2);
+
+                    var shadowMap21 = shadowTool.getBuildShadowMap(layer2, light);
+                    var shadowMap22 = shadowTool.getBuildShadowMap(layer2, light2);
+
+                    var shadowMap31 = shadowTool.getBuildShadowMap(layer3, light);
+                    var shadowMap32 = shadowTool.getBuildShadowMap(layer3, light2);
+
+                    expect(shadowMap11 !== shadowMap21).toBeTruthy();
+                    expect(shadowMap12 !== shadowMap22).toBeTruthy();
+
+                    expect(shadowMap21 === shadowMap31).toBeTruthy();
+                    expect(shadowMap22 === shadowMap32).toBeTruthy();
+
+                    [shadowMap11, shadowMap12, shadowMap21, shadowMap22].forEach(function(shadowMap){
+                        sandbox.stub(shadowMap, "bindToUnit");
+                    });
+
+
+                    director.scene.gameObjectScene.render(renderer);
+
+
+                    expect(shadowMap11.bindToUnit).toCalledOnce();
+                    expect(shadowMap12.bindToUnit).toCalledOnce();
+
+                    expect(shadowMap21.bindToUnit).toCalledOnce();
+                    expect(shadowMap22.bindToUnit).toCalledOnce();
+
+                    renderer.render();
+
+
+                    expect(shadowMap11.bindToUnit.callCount).toEqual(1 + 3);
+                    expect(shadowMap12.bindToUnit.callCount).toEqual(1 + 3);
+
+                    expect(shadowMap21.bindToUnit.callCount).toEqual(1 + 3);
+                    expect(shadowMap22.bindToUnit.callCount).toEqual(1 + 3);
+                });
+                it("fs glsl should define TWOD_SHADOWMAP_COUNT", function () {
+                    director._init();
+
+                    var data1 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
+                    var shader1 = data1.shader;
+
+                    var data2 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere2);
+                    var shader2 = data2.shader;
+
+                    var data3 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere3);
+                    var shader3 = data3.shader;
+
+
+                    director.scene.gameObjectScene.render(renderer);
+                    renderer.render();
+
+                    expect(glslTool.contain(shader1.fsSource, "TWOD_SHADOWMAP_COUNT 4")).toBeTruthy();
+                    expect(glslTool.contain(shader2.fsSource, "TWOD_SHADOWMAP_COUNT 4")).toBeTruthy();
+                    expect(glslTool.contain(shader3.fsSource, "TWOD_SHADOWMAP_COUNT 4")).toBeTruthy();
+                });
+            });
+
+
+            describe("test change layer at runtime", function(){
+                beforeEach(function(){
+                });
+
+                describe("test add layer", function(){
+                    var sphere4;
+                    var layer4;
+
+                    beforeEach(function(){
+                        director._init();
+
+                        director._loopBody(1);
+
+                        director.scene.shadowLayerList.removeChild(layer2);
+                        director.scene.removeChild(sphere2);
+                        director.scene.removeChild(sphere3);
+
+
+                        layer4 = "layer4";
+
+                        sphere4 = shadowTool.createSphere();
+                        sphere4.name = "sphere4";
+                        var shadow4 = sphere4.getComponent(wd.Shadow);
+                        shadow4.layer = layer4;
+
+                        director.scene.addChild(sphere4);
+
+                        sphere4.init();
+
+
+                        director.scene.shadowLayerList.addChild(layer4);
+                    });
+
+                    it("add the shadow map of the layer", function () {
+                        director._loopBody(2);
+
+
+                        var twoDShadowMapList1 = shadowTool.getDefaultMapManager(sphere).getTwoDShadowMapList();
+                        var twoDShadowMapList4 = shadowTool.getDefaultMapManager(sphere4).getTwoDShadowMapList();
+
+                        expect(twoDShadowMapList1.getCount()).toEqual(2);
+                        expect(twoDShadowMapList4.getCount()).toEqual(2);
+                    });
+
+                    it("add and init the renderTargetRenderer of the layer", function () {
+                        var renderTargetRenderer4 = wd.TwoDShadowMapRenderTargetRenderer.create(wd.TwoDShadowMapTexture.create(), light.getComponent(wd.DirectionLight), layer4);
+                        sandbox.spy(renderTargetRenderer4, "init");
+
+                        sandbox.stub(wd.TwoDShadowMapRenderTargetRenderer, "create").returns(renderTargetRenderer4);
+
+                        director._loopBody(2);
+
+                        expect(renderTargetRenderer4.init).toCalledOnce();
+
+                        expect(shadowTool.getBuildShadowMapRenderer(layer4)).toBeExist();
+                    });
+
+                    describe("test build shadow map", function(){
+                        beforeEach(function(){
+                        });
+
+                        it("gameObjects should render to the shadow map of the added layer", function () {
+                            sandbox.spy(sphere, "render");
+                            sandbox.spy(sphere4, "render");
+
+                            director.scene.gameObjectScene.update(1);
+
+                            director.scene.gameObjectScene.render(renderer);
+
+
+                            expect(sphere.render).toCalledTwice();
+                            expect(sphere4.render).toCalledTwice();
+                        });
+                        it("bind the added shadow map", function () {
+                            director.scene.gameObjectScene.update(1);
+
+                            var shadowMap1 = shadowTool.getBuildShadowMap(layer1);
+                            var shadowMap4 = shadowTool.getBuildShadowMap(layer4);
+
+                            sandbox.stub(shadowMap1, "bindToUnit");
+                            sandbox.stub(shadowMap4, "bindToUnit");
+
+
+
+
+                            director.scene.gameObjectScene.render(renderer);
+
+
+                            expect(shadowMap1.bindToUnit).toCalledOnce();
+                            expect(shadowMap4.bindToUnit).toCalledOnce();
+                        });
+                    });
+
+                    describe("test draw shadow map", function(){
+                        beforeEach(function(){
+                        });
+
+                        it("bind the added shadow maps", function () {
+                            director.scene.gameObjectScene.update(1);
+
+
+                            var twoDShadowMapList1 = shadowTool.getDefaultMapManager(sphere).getTwoDShadowMapList();
+
+                            var shadowMap1 = twoDShadowMapList1.getChild(0);
+                            var shadowMap2 = twoDShadowMapList1.getChild(1);
+                            sandbox.stub(shadowMap1, "bindToUnit");
+                            sandbox.stub(shadowMap2, "bindToUnit");
+
+
+                            director.scene.gameObjectScene.render(renderer);
+                            renderer.render();
+
+                            expect(shadowMap1.bindToUnit.callCount).toEqual(1 + 2);
+                            expect(shadowMap2.bindToUnit.callCount).toEqual(1 + 2);
+                        });
+                        it("should send the added shadow map data", function () {
+                            director.scene.gameObjectScene.update(1);
+
+                            var data1 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
+                            var program1 = data1.program;
+
+
+                            var data4 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere4);
+                            var program4 = data4.program;
+
+
+                            director.scene.gameObjectScene.render(renderer);
+                            renderer.render();
+
+                            expect(program1.sendUniformData.withArgs("u_twoDShadowMapSampler[0]", sinon.match.any, 0)).toCalledOnce();
+                            expect(program1.sendUniformData.withArgs("u_twoDShadowMapSampler[1]", sinon.match.any, 1)).toCalledOnce();
+
+
+                            expect(program4.sendUniformData.withArgs("u_twoDShadowMapSampler[0]", sinon.match.any, 0)).toCalledOnce();
+                            expect(program4.sendUniformData.withArgs("u_twoDShadowMapSampler[1]", sinon.match.any, 1)).toCalledOnce();
+                        });
+                        it("fs glsl->TWOD_SHADOWMAP_COUNT should be refreshed", function () {
+
+                            director.scene.addChild(sphere2);
+
+                            //sphere4.init();
+
+
+                            director.scene.shadowLayerList.addChild(layer2);
+
+
+
+
+                            director.scene.gameObjectScene.update(1);
+
+
+
+
+                            var data1 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
+                            var shader1 = data1.shader;
+
+                            var data2 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere2);
+                            var shader2 = data2.shader;
+
+                            var data4 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere4);
+                            var shader4 = data4.shader;
+
+
+                            director.scene.gameObjectScene.render(renderer);
+                            renderer.render();
+
+                            expect(glslTool.contain(shader1.fsSource, "TWOD_SHADOWMAP_COUNT 3")).toBeTruthy();
+                            expect(glslTool.contain(shader2.fsSource, "TWOD_SHADOWMAP_COUNT 3")).toBeTruthy();
+                            expect(glslTool.contain(shader4.fsSource, "TWOD_SHADOWMAP_COUNT 3")).toBeTruthy();
+                        });
+                    });
+                });
+
+                describe("test remove layer", function(){
+                    var oldGLProgram;
+
+                    beforeEach(function(){
+                        director._init();
+
+                        director._loopBody(1);
+
+
+                        oldGLProgram = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere, true).program._program;
+
+                        director.scene.shadowLayerList.removeChild(layer2);
+                    });
+
+                    it("if scene has the shadow objects with the layer, contract error", function(){
+                        testTool.openContractCheck(sandbox);
+
+                        expect(function(){
+                            director._loopBody(2);
+                        }).toThrow();
+                    });
+
+                    describe("else", function(){
+                        beforeEach(function(){
+                            director.scene.removeChild(sphere2);
+                            director.scene.removeChild(sphere3);
+                        });
+
+                        it("remove the shadow map of the layer", function () {
+                            director._loopBody(2);
+
+
+                            var twoDShadowMapList1 = shadowTool.getDefaultMapManager(sphere).getTwoDShadowMapList();
+
+                            expect(twoDShadowMapList1.getCount()).toEqual(1);
+                        });
+                        it("remove and dispose the renderTargetRenderer of the layer", function () {
+                            var renderTargetRenderer2 = shadowTool.getBuildShadowMapRenderer(layer2);
+                            sandbox.stub(renderTargetRenderer2, "dispose");
+
+                            director._loopBody(2);
+
+                            expect(renderTargetRenderer2.dispose).toCalledOnce();
+
+                            expect(shadowTool.getBuildShadowMapRenderer(layer2)).not.toBeExist();
+                        });
+
+                        describe("test build shadow map", function(){
+                            beforeEach(function(){
+                            });
+
+                            it("gameObjects should not render to the shadow map of the removed layer", function () {
+                                sandbox.spy(sphere, "render");
+                                sandbox.spy(sphere2, "render");
+                                sandbox.spy(sphere3, "render");
+
+                                director.scene.gameObjectScene.update(1);
+
+                                director.scene.gameObjectScene.render(renderer);
+
+
+                                expect(sphere.render).toCalledTwice();
+                                expect(sphere2.render).not.toCalled();
+                                expect(sphere3.render).not.toCalled();
+                            });
+                            it("not bind the removed shadow map", function () {
+                                var shadowMap1 = shadowTool.getBuildShadowMap(layer1);
+                                var shadowMap2 = shadowTool.getBuildShadowMap(layer2);
+
+                                sandbox.stub(shadowMap1, "bindToUnit");
+                                sandbox.stub(shadowMap2, "bindToUnit");
+
+
+                                director.scene.gameObjectScene.update(1);
+
+                                director.scene.gameObjectScene.render(renderer);
+
+
+                                expect(shadowMap1.bindToUnit).toCalledOnce();
+                                expect(shadowMap2.bindToUnit).not.toCalled();
+                            });
+                        });
+
+                        describe("test draw shadow map", function(){
+                            beforeEach(function(){
+                            });
+
+                            it("not bind the removed shadow maps", function () {
+                                var twoDShadowMapList1 = shadowTool.getDefaultMapManager(sphere).getTwoDShadowMapList();
+
+                                var shadowMap1 = twoDShadowMapList1.getChild(0);
+                                shadowMap1.name = "shadowMap1";
+                                var shadowMap2 = twoDShadowMapList1.getChild(1);
+                                sandbox.stub(shadowMap1, "bindToUnit");
+                                sandbox.stub(shadowMap2, "bindToUnit");
+
+
+                                director.scene.gameObjectScene.update(1);
+
+                                director.scene.gameObjectScene.render(renderer);
+                                renderer.render();
+
+                                expect(shadowMap1.bindToUnit.callCount).toEqual(1 + 1);
+                                expect(shadowMap2.bindToUnit.callCount).toEqual(0);
+                            });
+                            it("should not send the removed shadow map data", function () {
+                                var data1 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
+                                var program1 = data1.program;
+
+                                var data2 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere2);
+                                var program2 = data2.program;
+
+                                var data3 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere3);
+                                var program3 = data3.program;
+
+
+                                director.scene.gameObjectScene.update(1);
+
+                                director.scene.gameObjectScene.render(renderer);
+                                renderer.render();
+
+                                expect(program1.sendUniformData.withArgs("u_twoDShadowMapSampler[0]", sinon.match.any, 0)).toCalledOnce();
+                                expect(program1.sendUniformData.withArgs("u_twoDShadowMapSampler[1]", sinon.match.any, 1)).not.toCalled();
+
+
+                                expect(program2.sendUniformData.withArgs("u_twoDShadowMapSampler[0]", sinon.match.any, 0)).not.toCalled();
+
+
+                                expect(program3.sendUniformData.withArgs("u_twoDShadowMapSampler[0]", sinon.match.any, 0)).not.toCalled();
+                            });
+                            //it("fs glsl->TWOD_SHADOWMAP_COUNT should be refreshed", function () {
+                            describe("shader should be refreshed", function () {
+                                it("should create new gl program and use it", function () {
+                                    director.scene.gameObjectScene.update(1);
+
+
+                                    var newGLProgram = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere, true).program._program;
+
+
+
+
+                                    director.scene.gameObjectScene.render(renderer);
+                                    renderer.render();
+
+                                    var gl = deviceManager.gl;
+
+                                    expect(gl.useProgram.withArgs(oldGLProgram)).toCalled();
+
+
+                                    expect(gl.useProgram.withArgs(newGLProgram)).toCalled();
+
+                                    expect(gl.getUniformLocation.withArgs(newGLProgram)).toCalled();
+
+                                });
+                                it("should dispose old gl program", function () {
+                                    director.scene.gameObjectScene.update(1);
+
+
+                                    var newGLProgram = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere, true).program._program;
+
+
+
+
+                                    director.scene.gameObjectScene.render(renderer);
+                                    renderer.render();
+
+                                    var gl = deviceManager.gl;
+
+                                    expect(gl.deleteProgram.withArgs(oldGLProgram)).toCalledOnce();
+                                });
+                                it("fs glsl->TWOD_SHADOWMAP_COUNT should be refreshed", function () {
+                                    director.scene.gameObjectScene.update(1);
+
+                                    var data1 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
+                                    var shader1 = data1.shader;
+
+
+
+                                    director.scene.gameObjectScene.render(renderer);
+                                    renderer.render();
+
+                                    expect(glslTool.contain(shader1.fsSource, "TWOD_SHADOWMAP_COUNT 1")).toBeTruthy();
+                                });
+                            });
+                        });
+                    });
+                });
+            });
+        });
+
         describe("fix bug", function(){
             it("if scene.shadowMap.enable === true but no shadow, the object should add NoShadowMapShaderLib", function(){
                 director.scene.shadowMap.enable = true;

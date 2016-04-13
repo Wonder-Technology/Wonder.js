@@ -1,6 +1,6 @@
 module wd {
     export abstract class CubemapRenderTargetRenderer extends RenderTargetRenderer{
-        protected texture:CubemapRenderTargetTexture;
+        public texture:CubemapRenderTargetTexture;
 
         private _frameBufferList:wdCb.Collection<WebGLFramebuffer> = wdCb.Collection.create<WebGLFramebuffer>();
         private _renderBufferList:wdCb.Collection<WebGLRenderbuffer> = wdCb.Collection.create<WebGLRenderbuffer>();

@@ -8,7 +8,7 @@ module wd {
             return obj;
         }
 
-        protected texture:CloudProceduralTexture;
+        public texture:CloudProceduralTexture;
 
         protected createShader(){
             var shader = CommonProceduralShader.create();

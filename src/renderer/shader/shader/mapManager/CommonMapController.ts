@@ -41,6 +41,10 @@ module wd{
             return this.hasMapHelper(this._list, map);
         }
 
+        public removeChild(map:Texture){
+            this._list.removeChild(map);
+        }
+
         public removeAllChildren(){
             this._list.removeAllChildren();
         }

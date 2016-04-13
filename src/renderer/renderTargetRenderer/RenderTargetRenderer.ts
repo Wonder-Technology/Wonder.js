@@ -4,7 +4,8 @@ module wd {
             this.texture = renderTargetTexture;
         }
 
-        protected texture:RenderTargetTexture = null;
+        public texture:RenderTargetTexture = null;
+
         protected frameBufferOperator:FrameBuffer = null;
 
         private _isRenderListEmpty:boolean = false;

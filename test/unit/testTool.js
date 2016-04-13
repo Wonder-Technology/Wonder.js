@@ -38,6 +38,7 @@ var testTool = (function () {
                 getParameter: sandbox.stub(),
                 getExtension: sandbox.stub(),
                 viewport: sandbox.stub(),
+
                 checkFramebufferStatus: sandbox.stub(),
                 framebufferRenderbuffer: sandbox.stub(),
                 renderbufferStorage: sandbox.stub(),
@@ -72,8 +73,13 @@ var testTool = (function () {
                 texImage2D: sandbox.stub(),
                 activeTexture: sandbox.stub(),
                 bindTexture: sandbox.stub(),
+
                 deleteShader: sandbox.stub(),
                 deleteProgram: sandbox.stub(),
+                deleteFramebuffer: sandbox.stub(),
+                deleteRenderbuffer: sandbox.stub(),
+                deleteTexture: sandbox.stub(),
+                deleteBuffer: sandbox.stub(),
 
                 bindAttribLocation: sandbox.stub(),
                 linkProgram: sandbox.stub(),
@@ -88,7 +94,6 @@ var testTool = (function () {
                 bufferData: sandbox.stub(),
                 bufferSubData: sandbox.stub(),
                 createBuffer: sandbox.stub().returns({}),
-                deleteBuffer: sandbox.stub(),
                 enable: sandbox.stub(),
                 disable: sandbox.stub(),
                 polygonOffset: sandbox.stub(),
@@ -99,7 +104,7 @@ var testTool = (function () {
                 blendEquation: sandbox.stub(),
                 blendFuncSeparate: sandbox.stub(),
                 blendEquationSeparate: sandbox.stub(),
-                createProgram: sandbox.stub(),
+                createProgram: sandbox.stub().returns({}),
                 clearColor: sandbox.stub(),
                 clear: sandbox.stub()
             };
@@ -223,6 +228,8 @@ var testTool = (function () {
                     }
                 }
             }
+
+            wd.Entity.uid = 0;
 
             this.closeContractCheck();
         },

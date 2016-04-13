@@ -1,6 +1,6 @@
 module wd {
     export abstract class ProceduralRenderTargetRenderer extends RenderTargetRenderer{
-        protected texture:ProceduralTexture;
+        public texture:ProceduralTexture;
 
         protected frameBuffer:WebGLFramebuffer = null;
 

@@ -8,7 +8,7 @@ module wd {
             return obj;
         }
 
-        protected texture:RoadProceduralTexture;
+        public texture:RoadProceduralTexture;
 
         protected createShader(){
             var shader = CommonProceduralShader.create();

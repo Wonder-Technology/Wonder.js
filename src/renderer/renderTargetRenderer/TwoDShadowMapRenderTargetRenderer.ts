@@ -15,7 +15,7 @@ module wd {
             this._layer = layer;
         }
 
-        protected texture:TwoDShadowMapTexture;
+        public texture:TwoDShadowMapTexture;
 
         private _light:DirectionLight = null;
         private _layer:string = null;

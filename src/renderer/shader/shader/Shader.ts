@@ -6,7 +6,7 @@ module wd{
         }
         set attributes(attributes:wdCb.Hash<ShaderData>){
             if(this._isNotEqual(attributes, this._attributes)){
-                this._definitionDataDirty = true;
+                this.definitionDataDirty = true;
             }
             this._attributes = attributes;
         }
@@ -17,7 +17,7 @@ module wd{
         }
         set uniforms(uniforms:wdCb.Hash<ShaderData>){
             if(this._isNotEqual(uniforms, this._uniforms)){
-                this._definitionDataDirty = true;
+                this.definitionDataDirty = true;
             }
             this._uniforms = uniforms;
         }
@@ -28,7 +28,7 @@ module wd{
         }
         set vsSource(vsSource:string){
             if(vsSource !== this._vsSource){
-                this._definitionDataDirty = true;
+                this.definitionDataDirty = true;
             }
             this._vsSource = vsSource;
         }
@@ -39,23 +39,22 @@ module wd{
         }
         set fsSource(fsSource:string){
             if(fsSource !== this._fsSource){
-                this._definitionDataDirty = true;
+                this.definitionDataDirty = true;
             }
             this._fsSource = fsSource;
         }
 
         get dirty(){
-            return this.libDirty || this._definitionDataDirty;
+            return this.libDirty || this.definitionDataDirty;
         }
 
         public program:Program = Program.create();
         public libDirty:boolean = false;
+        public definitionDataDirty:boolean = false;
         public mapManager:MapManager = MapManager.create();
 
         protected libs:wdCb.Collection<ShaderLib> = wdCb.Collection.create<ShaderLib>();
         protected sourceBuilder:ShaderSourceBuilder = this.createShaderSourceBuilder();
-
-        private _definitionDataDirty:boolean = false;
 
         public abstract update(cmd:RenderCommand, material:Material);
 
@@ -188,14 +187,14 @@ module wd{
                 this.buildDefinitionData(cmd, material);
             }
 
-            if(this._definitionDataDirty){
+            if(this.definitionDataDirty){
                 //todo optimize: batch init program(if it's the same as the last program, not initWithShader)
                 this.program.initWithShader(this);
             }
 
 
             this.libDirty = false;
-            this._definitionDataDirty = false;
+            this.definitionDataDirty = false;
         }
 
         private _initShader(shader, source){

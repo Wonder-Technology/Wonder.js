@@ -84,6 +84,13 @@ module wd {
             return this.gameObjectScene.currentShaderType;
         }
 
+        get shadowLayerList(){
+            return this.gameObjectScene.shadowLayerList;
+        }
+        set shadowLayerList(shadowLayerList:ShadowLayerList){
+            this.gameObjectScene.shadowLayerList = shadowLayerList;
+        }
+
         public name:string = `scene${String(this.uid)}`;
 
         public uiObjectScene:UIObjectScene = UIObjectScene.create();

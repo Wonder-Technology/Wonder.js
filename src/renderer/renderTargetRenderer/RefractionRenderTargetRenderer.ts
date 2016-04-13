@@ -8,7 +8,7 @@ module wd {
             return obj;
         }
 
-        protected texture:RefractionTexture;
+        public texture:RefractionTexture;
 
 
         protected beforeRenderFrameBufferTexture(renderCamera:GameObject){

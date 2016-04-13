@@ -8,7 +8,7 @@ module wd {
             return obj;
         }
 
-        protected texture:DynamicCubemapTexture;
+        public texture:DynamicCubemapTexture;
 
         protected  getRenderList():wdCb.Hash<GameObject>{
          return this.texture.renderList;

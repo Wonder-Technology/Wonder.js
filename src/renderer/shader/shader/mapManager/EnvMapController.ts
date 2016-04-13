@@ -29,6 +29,12 @@ module wd{
             return this._map !== null ? [this._map] : [];
         }
 
+        public removeChild(map:Texture){
+            if(JudgeUtils.isEqual(this._map, map)){
+                this._map = null;
+            }
+        }
+
         public removeAllChildren(){
             this._map = null;
         }

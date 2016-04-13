@@ -8,7 +8,7 @@ module wd {
             return obj;
         }
 
-        protected texture:BrickProceduralTexture;
+        public texture:BrickProceduralTexture;
 
         protected createShader(){
             var shader = CommonProceduralShader.create();

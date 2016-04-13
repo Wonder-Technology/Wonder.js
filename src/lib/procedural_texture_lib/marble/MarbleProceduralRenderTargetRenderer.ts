@@ -8,7 +8,7 @@ module wd {
             return obj;
         }
 
-        protected texture:MarbleProceduralTexture;
+        public texture:MarbleProceduralTexture;
 
         protected createShader(){
             var shader = CommonProceduralShader.create();

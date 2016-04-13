@@ -96,7 +96,14 @@ beforeEach(function () {
             return {
                 compare: function (actual, expected) {
                     return {
-                        pass: actual !== undefined && actual !== null
+                        pass: actual !== undefined && actual !== null,
+                        message: "Expected to exist, but actual is undefined or null"
+                    }
+                },
+                negativeCompare: function(actual, expected) {
+                    return {
+                        pass: !(actual !== undefined && actual !== null),
+                        message: "Expected not to exist, but actual is exist"
                     }
                 }
             };

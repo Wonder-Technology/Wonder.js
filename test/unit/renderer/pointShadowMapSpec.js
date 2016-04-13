@@ -559,9 +559,11 @@ describe("point shadow map", function() {
 
 
                 director.scene.addChild(sphere3);
+
+                //director.scene.shadowLayerList.addChildren([layer1, layer2]);
             });
 
-            it("if gameObject not cast shadow, its shadow layer not work", function () {
+            it("if gameObject not cast shadow, its shadow layer not work(shader not contain the shadow map of the layer)", function () {
                 shadow1.cast = false;
 
                 director._init();

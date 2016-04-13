@@ -51,9 +51,8 @@ vec3 getShadowVisibility() {
 
 
 	#if CUBEMAP_SHADOWMAP_COUNT > 0
-	for( int i = 0; i < CUBEMAP_SHADOWMAP_COUNT; i ++ ) {
-        cubemapLightDir = getPointLightDirByLightPos(u_cubemapLightPos[i]);
 
+	for( int i = 0; i < CUBEMAP_SHADOWMAP_COUNT; i ++ ) {
 	////if is opposite to direction of light rays, no shadow
 
         shadowColor *= getCubemapShadowVisibility(cubemapLightDir, u_cubemapShadowMapSampler[i], u_cubemapLightPos[i], u_farPlane[i], u_cubemapShadowBias[i], u_cubemapShadowDarkness[i]);

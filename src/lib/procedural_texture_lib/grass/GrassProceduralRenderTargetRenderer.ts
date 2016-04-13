@@ -8,7 +8,7 @@ module wd {
             return obj;
         }
 
-        protected texture:GrassProceduralTexture;
+        public texture:GrassProceduralTexture;
 
         protected createShader(){
             var shader = CommonProceduralShader.create();

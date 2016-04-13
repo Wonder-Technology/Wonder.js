@@ -35,26 +35,19 @@ module wd {
         public cubemapShadowMapDataMap:wdCb.Hash<wdCb.Collection<CubemapShadowMapData>> = wdCb.Hash.create<wdCb.Collection<CubemapShadowMapData>>();
 
         private _shadowManager:ShadowManager = null;
-        private _layerList:wdCb.Collection<string> = wdCb.Collection.create<string>();
         private _shadowMapLayerChangeSubscription:wdFrp.IDisposable = null;
+        private _lastTwoDShadowMapDataMap:wdCb.Hash<wdCb.Collection<TwoDShadowMapData>> = null;
+        private _lastCubemapShadowMapDataMap:wdCb.Hash<wdCb.Collection<CubemapShadowMapData>> = null;
 
-        public initShadowMapData(){
-            let scene:GameObjectScene = null;
-
-            if(!this._hasShadow()) {
-                return;
-            }
-
-            scene = this._shadowManager.entityObject;
-
-            this._layerList = this._shadowManager.getShadowLayerList();
+        public initShadowMapData(shadowLayerList:ShadowLayerList){
+            var scene:GameObjectScene = this._shadowManager.entityObject;
 
             if(scene.directionLights){
                 scene.directionLights.forEach((lightObject:GameObject) => {
                     var light:DirectionLight = lightObject.getComponent<DirectionLight>(DirectionLight);
 
                     if(light.castShadow){
-                        this._addTwoDShadowMapDataiWithLayer(light);
+                        this._addTwoDShadowMapDataWithLayer(shadowLayerList, light);
                     }
                 }, this);
             }
@@ -64,46 +57,123 @@ module wd {
                     var light:PointLight = lightObject.getComponent<PointLight>(PointLight);
 
                     if(light.castShadow){
-                        this._addCubemapShadowMapDataiWithLayer(light);
+                        this._addCubemapShadowMapDataWithLayer(shadowLayerList, light);
                     }
                 }, this);
             }
         }
 
-        @require(function(){
-            assert(!this._layerList.hasRepeatItems(), Log.info.FUNC_SHOULD_NOT("has repeat shadow layer"));
-        })
-        private _addTwoDShadowMapDataiWithLayer(light:DirectionLight){
-            this._layerList.forEach((layer:string) => {
+        public updateWhenShadowLayerChange({addLayerList,removeLayerList}){
+            var scene:GameObjectScene = null;
 
-                this.twoDShadowMapDataMap.appendChild(layer, {
+            scene = this._shadowManager.entityObject;
+
+            if(scene.directionLights){
+                let twoDShadowMapDataMap = this.twoDShadowMapDataMap;
+
+                this._lastTwoDShadowMapDataMap = twoDShadowMapDataMap.clone();
+
+                removeLayerList.forEach((layer:string) => {
+                    twoDShadowMapDataMap.removeChild(layer);
+                });
+
+                scene.directionLights.forEach((lightObject:GameObject) => {
+                    var light:DirectionLight = lightObject.getComponent<DirectionLight>(DirectionLight);
+
+                    if(light.castShadow){
+                        this._addTwoDShadowMapDataWithLayer(addLayerList, light);
+                    }
+                }, this);
+            }
+
+            if(scene.pointLights){
+                let cubemapShadowMapDataMap = this.cubemapShadowMapDataMap;
+
+                this._lastCubemapShadowMapDataMap = cubemapShadowMapDataMap.clone();
+
+                removeLayerList.forEach((layer:string) => {
+                    cubemapShadowMapDataMap.removeChild(layer);
+                });
+
+                scene.pointLights.forEach((lightObject:GameObject) => {
+                    var light:PointLight = lightObject.getComponent<PointLight>(PointLight);
+
+                    if(light.castShadow){
+                        this._addCubemapShadowMapDataWithLayer(addLayerList, light);
+                    }
+                }, this);
+            }
+
+            return this._getAllDiffShadowMapDataWhenShadowLayerChange();
+        }
+
+        private _getAllDiffShadowMapDataWhenShadowLayerChange(){
+            var twoDDiff = this._getDiffShadowMapDataWhenShadowLayerChange(this._lastTwoDShadowMapDataMap, this.twoDShadowMapDataMap),
+                cubemapDiff = this._getDiffShadowMapDataWhenShadowLayerChange(this._lastCubemapShadowMapDataMap, this.cubemapShadowMapDataMap);
+
+
+            return {
+                addTwoDShadowMapData: twoDDiff.addShadowMapData,
+                removeTwoDShadowMapData: twoDDiff.removeShadowMapData,
+                addCubemapShadowMapData: cubemapDiff.addShadowMapData,
+                removeCubemapShadowMapData: cubemapDiff.removeShadowMapData
+            }
+        }
+
+        private _getDiffShadowMapDataWhenShadowLayerChange(lastShadowMapDataMap:wdCb.Hash<wdCb.Collection<TwoDShadowMapData|CubemapShadowMapData>>, currentShadowMapDataMap:wdCb.Hash<wdCb.Collection<TwoDShadowMapData|CubemapShadowMapData>>){
+            var addShadowMapData = wdCb.Hash.create<wdCb.Collection<TwoDShadowMapData|CubemapShadowMapData>>(),
+                removeShadowMapData = wdCb.Collection.create<TwoDShadowMapData|CubemapShadowMapData>();
+
+            removeShadowMapData = lastShadowMapDataMap
+                .filter((shadowMapDataList:wdCb.Collection<TwoDShadowMapData|CubemapShadowMapData>, layer:string) => {
+                    return !currentShadowMapDataMap.hasChild(layer);
+                })
+                .toCollection();
+
+
+            addShadowMapData = currentShadowMapDataMap
+                .filter((shadowMapDataList:wdCb.Collection<TwoDShadowMapData|CubemapShadowMapData>, layer:string) => {
+                    return !lastShadowMapDataMap.hasChild(layer);
+                });
+
+            return {
+                addShadowMapData: addShadowMapData,
+                removeShadowMapData: removeShadowMapData
+            }
+        }
+
+        @require(function(layerList:wdCb.Collection<string>|ShadowLayerList, light:DirectionLight){
+            assert(!layerList.hasRepeatItems(), Log.info.FUNC_SHOULD_NOT("has repeat shadow layer"));
+        })
+        private _addTwoDShadowMapDataWithLayer(layerList:wdCb.Collection<string>|ShadowLayerList, light:DirectionLight){
+            var twoDShadowMapDataMap = this.twoDShadowMapDataMap;
+
+            layerList.forEach((layer:string) => {
+
+                twoDShadowMapDataMap.appendChild(layer, {
                     shadowMap: TwoDShadowMapTexture.create(),
                     light: light
                 });
-            }, this);
+            });
         }
 
-        @require(function(){
-            assert(!this._layerList.hasRepeatItems(), Log.info.FUNC_SHOULD_NOT("has repeat shadow layer"));
+        @require(function(layerList:wdCb.Collection<string>, light:PointLight){
+            assert(!layerList.hasRepeatItems(), Log.info.FUNC_SHOULD_NOT("has repeat shadow layer"));
         })
-        private _addCubemapShadowMapDataiWithLayer(light:PointLight){
-            this._layerList.forEach((layer:string) => {
+        private _addCubemapShadowMapDataWithLayer(layerList:wdCb.Collection<string>|ShadowLayerList, light:PointLight){
+            var cubemapShadowMapDataMap = this.cubemapShadowMapDataMap;
 
-                this.cubemapShadowMapDataMap.appendChild(layer, {
+            layerList.forEach((layer:string) => {
+
+                cubemapShadowMapDataMap.appendChild(layer, {
                     shadowMap: CubemapShadowMapTexture.create(),
                     light: light
                 });
-            }, this);
+            });
         }
 
         public dispose(){
             this._shadowMapLayerChangeSubscription.dispose();
-        }
-
-        private _hasShadow(){
-            var scene = this._shadowManager.entityObject;
-
-            return !!scene.directionLights || !!scene.pointLights;
         }
     }
 

@@ -1,5 +1,6 @@
 module wd{
     export abstract class MapController{
+        public abstract removeChild(map:Texture):void;
         public abstract removeAllChildren():void;
         public abstract getAllMapArr():Array<Texture>;
 

@@ -43,6 +43,8 @@ module wd{
             }
         }
 
+        private _shadowMapLayerChangeSubscription:wdFrp.IDisposable = null;
+
         @require(function (entityObject:EntityObject, isShareComponent:boolean = false) {
             assert(entityObject instanceof GameObject, Log.info.FUNC_SHOULD("add to GameObject"));
         })
@@ -55,38 +57,52 @@ module wd{
         }
 
         public init() {
-            var material:Material = null;
+            var self = this;
 
             if(InstanceUtils.isObjectInstance(this.entityObject)
-            || !this._isFirstLevelObjectOfSceneOrSpacePartition()){
+                || !this._isFirstLevelObjectOfSceneOrSpacePartition()){
                 return;
             }
 
-            if (this.entityObject.hasComponent(Geometry)) {
-                material = this.entityObject.getComponent<Geometry>(Geometry).material;
+            if (this.receive) {
+                this._handleReceive();
             }
 
-            if (this.receive) {
-                this._handleReceive(material);
-            }
+            this._shadowMapLayerChangeSubscription = EventManager.fromEvent(<any>EEngineEvent.SHADOWMAP_LAYER_CHANGE)
+                .subscribe(() => {
+                    if (self.receive) {
+                        self._handleReceive();
+                    }
+                });
         }
 
-        private _addAllShadowMaps(twoDShadowMapDataMap:wdCb.Hash<wdCb.Collection<TwoDShadowMapData>>, cubemapShadowMapDataMap:wdCb.Hash<wdCb.Collection<CubemapShadowMapData>>, material:Material){
-            var mapManager:MapManager = material.mapManager;
+        public dispose(){
+            //todo test
+            this._shadowMapLayerChangeSubscription && this._shadowMapLayerChangeSubscription.dispose();
+        }
 
+        //public update(elapsedTime:number){
+        //    if(Director.getInstance().scene.shadowLayerList.dirty){
+        //        this._updateWhenShadowLayerChange();
+        //
+        //        this.entityObject.shadowLayerList.dirty = false;
+        //    }
+        //}
+
+        private _addAllShadowMaps(twoDShadowMapDataMap:wdCb.Hash<wdCb.Collection<TwoDShadowMapData>>, cubemapShadowMapDataMap:wdCb.Hash<wdCb.Collection<CubemapShadowMapData>>, mapManager:MapManager){
             twoDShadowMapDataMap.forEach((twoDShadowMapDataList:wdCb.Collection<TwoDShadowMapData>) => {
                 twoDShadowMapDataList.forEach(({shadowMap}) => {
-                    if (!mapManager.hasTwoDShadowMap(shadowMap)) {
+                    //if (!mapManager.hasTwoDShadowMap(shadowMap)) {
                         mapManager.addTwoDShadowMap(shadowMap);
-                    }
+                    //}
                 });
             });
 
             cubemapShadowMapDataMap.forEach((cubemapShadowMapDataList:wdCb.Collection<CubemapShadowMapData>) => {
                 cubemapShadowMapDataList.forEach(({shadowMap}) => {
-                    if (!mapManager.hasCubemapShadowMap(shadowMap)) {
+                    //if (!mapManager.hasCubemapShadowMap(shadowMap)) {
                         mapManager.addCubemapShadowMap(shadowMap);
-                    }
+                    //}
                 });
             });
         }
@@ -97,31 +113,32 @@ module wd{
             return JudgeUtils.isEqual(parent, Director.getInstance().scene) || JudgeUtils.isSpacePartitionObject(parent);
         }
 
-        private _handleReceive(material:Material){
+        private _handleReceive(){
             var self = this,
                 twoDShadowMapDataMap:wdCb.Hash<wdCb.Collection<TwoDShadowMapData>> = Director.getInstance().scene.gameObjectScene.getComponent(ShadowManager).twoDShadowMapDataMap,
                 cubemapShadowMapDataMap:wdCb.Hash<wdCb.Collection<CubemapShadowMapData>> = Director.getInstance().scene.gameObjectScene.getComponent(ShadowManager).cubemapShadowMapDataMap;
-            var setChildren = (child:GameObject) => {
-                if (!child.hasComponent(Geometry)) {
+            var handle = (gameObject:GameObject) => {
+                if (!gameObject.hasComponent(Geometry)) {
                     return;
                 }
 
-                let material:Material = child.getComponent<Geometry>(Geometry).material;
+                let material:Material = gameObject.getComponent<Geometry>(Geometry).material,
+                    mapManager:MapManager = material.mapManager;
 
-                self._addAllShadowMaps(twoDShadowMapDataMap, cubemapShadowMapDataMap, material);
+                //material.shader.definitionDataDirty = true;
 
-                child.forEach((c:GameObject) => {
-                    setChildren(c);
+                material.shader.libDirty = true;
+
+                mapManager.removeAllShdaowMaps();
+
+                self._addAllShadowMaps(twoDShadowMapDataMap, cubemapShadowMapDataMap, mapManager);
+
+                gameObject.forEach((child:GameObject) => {
+                    handle(child);
                 });
             };
 
-            if (material) {
-                this._addAllShadowMaps(twoDShadowMapDataMap, cubemapShadowMapDataMap, material);
-            }
-
-            this.entityObject.forEach((child:GameObject) => {
-                setChildren(child);
-            });
+            handle(this.entityObject);
         }
     }
 }

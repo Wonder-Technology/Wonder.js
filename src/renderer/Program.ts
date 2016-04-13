@@ -24,6 +24,7 @@ module wd{
             var pos = null,
                 gl = DeviceManager.getInstance().gl;
 
+
             if(!this._shader.dirty){
                 pos = this._getUniformLocationCache.getChild(name);
 
@@ -83,7 +84,6 @@ module wd{
             else{
                 pos = args[0];
             }
-
 
             if (this.isUniformDataNotExistByLocation(pos) || data === null) {
                 return;
@@ -169,6 +169,10 @@ module wd{
                 vs = null,
                 fs = null;
 
+            if(this._program){
+                this.dispose();
+            }
+
             this._program = DeviceManager.getInstance().gl.createProgram();
 
             vs = shader.createVsShader();
@@ -231,7 +235,7 @@ module wd{
             var gl = DeviceManager.getInstance().gl;
 
             gl.deleteProgram(this._program);
-            this._program = undefined;
+            this._program = null;
 
             this._vertexAttribHistory.forEach((value:boolean, pos:string) => {
                 var position = Number(pos);
@@ -242,10 +246,17 @@ module wd{
 
                 gl.disableVertexAttribArray(position);
             });
+
+            this._clearCache();
         }
 
         public isUniformDataNotExistByLocation(pos:any){
             return pos === null;
+        }
+
+        private _clearCache(){
+            this._getAttribLocationCache.removeAllChildren();
+            this._getUniformLocationCache.removeAllChildren();
         }
 
         private _convertToArray2(data:Array<number>);

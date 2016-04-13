@@ -145,12 +145,24 @@ module wd{
             this._textureDirty = true;
         }
 
+        public removeChild(map:Texture){
+            for(let controller of this._getAllControllerArr()){
+                controller.removeChild(map);
+            }
+
+            this._textureDirty = true;
+        }
+
         public removeAllChildren(){
             for(let controller of this._getAllControllerArr()){
                 controller.removeAllChildren();
             }
 
             this._textureDirty = true;
+        }
+
+        public removeAllShdaowMaps(){
+            this._shadowMapController.removeAllChildren();
         }
 
         public dispose(){

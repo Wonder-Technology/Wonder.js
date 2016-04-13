@@ -10,7 +10,7 @@ module wd {
             return obj;
         }
 
-        protected texture:MirrorTexture;
+        public texture:MirrorTexture;
 
 
         protected beforeRenderFrameBufferTexture(renderCamera:GameObject){

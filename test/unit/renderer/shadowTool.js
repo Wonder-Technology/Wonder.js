@@ -103,7 +103,7 @@ var shadowTool = {
     //getBuildShadowMapMapManager:function (){
     //    return this.getBuildShadowMapRenderer.apply(this, arguments)._shadowMapRendererUtils.mapManager;
     //},
-    getBuildShadowMap:function(rendererIndex){
+    getBuildShadowMap:function(){
         return this.getBuildShadowMapRenderer.apply(this, arguments).texture;
     },
     setTwoDBuildShadowMapShaderAndProgramHelper: function (sandbox, obj, handleProgramFunc, setFunc, isInstance) {

@@ -54,6 +54,7 @@ module wd {
         public physicsEngineAdapter:IPhysicsEngineAdapter = null;
         public glslData:wdCb.Hash<any> = wdCb.Hash.create<any>();
         public currentShaderType:EShaderTypeOfScene = null;
+        public shadowLayerList:ShadowLayerList = ShadowLayerList.create();
 
         private _shadowManager:ShadowManager = null;
         private _lightManager:LightManager = null;
@@ -109,8 +110,17 @@ module wd {
             return <GameObject>super.addChild(child);
         }
 
+        //todo move to Manager
         public addRenderTargetRenderer(renderTargetRenderer:RenderTargetRenderer){
             this._renderTargetRendererList.addChild(renderTargetRenderer);
+        }
+
+        public getRenderTargetRendererList(){
+            return this._renderTargetRendererList;
+        }
+
+        public removeAllRenderTargetRenderer(){
+            this._renderTargetRendererList.removeAllChildren();
         }
 
         public addProceduralRenderTargetRenderer(renderTargetRenderer:ProceduralRenderTargetRenderer){
@@ -122,14 +132,19 @@ module wd {
         }
 
         public update(elapsedTime:number){
-            var currentCameraComponent = this._getCurrentCameraComponent();
+            var currentCamera= this._getCurrentCameraComponent(),
+                shadowManager:ShadowManager = this.getComponent<ShadowManager>(ShadowManager)
 
             if(this.physics.enable){
                 this.physicsEngineAdapter.update(elapsedTime);
             }
 
-            if(currentCameraComponent){
-                currentCameraComponent.update(elapsedTime);
+            if(currentCamera){
+                currentCamera.update(elapsedTime);
+            }
+
+            if(shadowManager){
+                shadowManager.update(elapsedTime);
             }
 
             super.update(elapsedTime);

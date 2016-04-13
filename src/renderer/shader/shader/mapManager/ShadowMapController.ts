@@ -45,6 +45,11 @@ module wd{
             return this._twoDShadowMapList.clone(false).addChildren(this._cubemapShadowMapList).toArray();
         }
 
+        public removeChild(map:Texture){
+            this._twoDShadowMapList.removeChild(map);
+            this._cubemapShadowMapList.removeChild(map);
+        }
+
         public removeAllChildren(){
             this._twoDShadowMapList.removeAllChildren();
             this._cubemapShadowMapList.removeAllChildren();

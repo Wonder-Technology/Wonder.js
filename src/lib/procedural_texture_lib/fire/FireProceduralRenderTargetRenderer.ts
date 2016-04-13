@@ -8,7 +8,7 @@ module wd {
             return obj;
         }
 
-        protected texture:FireProceduralTexture;
+        public texture:FireProceduralTexture;
 
         public needRender():boolean{
             return true;

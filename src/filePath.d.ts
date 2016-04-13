@@ -142,6 +142,8 @@
 /// <reference path="component/scene/manager/ShadowMapManager"/>
 /// <reference path="component/scene/manager/LightManager"/>
 
+/// <reference path="component/scene/manager/structure/ShadowLayerList"/>
+
 
 
 /// <reference path="component/shadow/Shadow"/>

@@ -15,7 +15,7 @@ module wd {
             this._layer = layer;
         }
 
-        protected texture:CubemapShadowMapTexture;
+        public texture:CubemapShadowMapTexture;
 
         private _light:PointLight = null;
         private _layer:string = null;

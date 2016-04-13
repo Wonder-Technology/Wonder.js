@@ -34,6 +34,7 @@ module wd {
         public update(elapsedTime:number):void {
             var lod = this.getComponent<LOD>(LOD),
                 octree = this.getComponent<Octree>(Octree);
+                //geometry = this.getComponent<Geometry>(Geometry);
 
             if(lod){
                 lod.update(elapsedTime);
@@ -42,6 +43,10 @@ module wd {
             if(octree){
                 octree.update(elapsedTime);
             }
+            //
+            //if(geometry){
+            //    geometry.update(elapsedTime);
+            //}
 
             super.update(elapsedTime);
         }

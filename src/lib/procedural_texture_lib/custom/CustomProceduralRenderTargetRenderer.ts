@@ -8,7 +8,7 @@ module wd {
             return obj;
         }
 
-        protected texture:CustomProceduralTexture;
+        public texture:CustomProceduralTexture;
 
         public needRender():boolean{
             if(this.texture.isAnimate){

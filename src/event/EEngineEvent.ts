@@ -27,6 +27,8 @@ module wd{
 
         SHADOWMAP_SOFTTYPE_CHANGE = <any>"wd_shadowMap_softType_change",
 
+        SHADOWMAP_LAYER_CHANGE = <any>"wd_shadowMap_layer_change",
+
         COMPONENT_CHANGE = <any>"wd_component_change",
 
         UNUSE_SCENE_SHADER = <any>"wd_unUse_scene_shader",

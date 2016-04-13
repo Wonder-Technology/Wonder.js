@@ -42,6 +42,10 @@ module wd{
             return arrayMap;
         }
 
+        public removeChild(map:Texture){
+            this._mapArrayList.removeChild(map);
+        }
+
         public removeAllChildren(){
             this._mapArrayList.removeAllChildren();
         }
