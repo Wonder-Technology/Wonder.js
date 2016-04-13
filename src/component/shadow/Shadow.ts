@@ -118,20 +118,17 @@ module wd{
                 twoDShadowMapDataMap:wdCb.Hash<wdCb.Collection<TwoDShadowMapData>> = Director.getInstance().scene.gameObjectScene.getComponent(ShadowManager).twoDShadowMapDataMap,
                 cubemapShadowMapDataMap:wdCb.Hash<wdCb.Collection<CubemapShadowMapData>> = Director.getInstance().scene.gameObjectScene.getComponent(ShadowManager).cubemapShadowMapDataMap;
             var handle = (gameObject:GameObject) => {
-                if (!gameObject.hasComponent(Geometry)) {
-                    return;
+                if (gameObject.hasComponent(Geometry)) {
+                    let material:Material = gameObject.getComponent<Geometry>(Geometry).material,
+                        mapManager:MapManager = material.mapManager;
+
+                    material.shader.libDirty = true;
+
+                    mapManager.removeAllShdaowMaps();
+
+                    self._addAllShadowMaps(twoDShadowMapDataMap, cubemapShadowMapDataMap, mapManager);
+
                 }
-
-                let material:Material = gameObject.getComponent<Geometry>(Geometry).material,
-                    mapManager:MapManager = material.mapManager;
-
-                //material.shader.definitionDataDirty = true;
-
-                material.shader.libDirty = true;
-
-                mapManager.removeAllShdaowMaps();
-
-                self._addAllShadowMaps(twoDShadowMapDataMap, cubemapShadowMapDataMap, mapManager);
 
                 gameObject.forEach((child:GameObject) => {
                     handle(child);
