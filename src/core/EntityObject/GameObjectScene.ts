@@ -55,11 +55,10 @@ module wd {
         public glslData:wdCb.Hash<any> = wdCb.Hash.create<any>();
         public currentShaderType:EShaderTypeOfScene = null;
         public shadowLayerList:ShadowLayerList = ShadowLayerList.create();
+        public renderTargetRendererManager:RenderTargetRendererManager = null;
 
         private _shadowManager:ShadowManager = null;
         private _lightManager:LightManager = null;
-        private _renderTargetRendererList:wdCb.Collection<RenderTargetRenderer> = wdCb.Collection.create<RenderTargetRenderer>();
-        private _proceduralRendererList:wdCb.Collection<ProceduralRenderTargetRenderer> = wdCb.Collection.create<ProceduralRenderTargetRenderer>();
         private _collisionDetector:CollisionDetector = CollisionDetector.create();
         private _cameraList:wdCb.Collection<GameObject> = wdCb.Collection.create<GameObject>();
         private _shaderMap:wdCb.Hash<Shader> = wdCb.Hash.create<Shader>();
@@ -72,6 +71,9 @@ module wd {
 
             this._lightManager = LightManager.create();
             this.addComponent(this._lightManager);
+
+            this.renderTargetRendererManager = RenderTargetRendererManager.create();
+            this.addComponent(this.renderTargetRendererManager);
         }
 
         public init(){
@@ -81,9 +83,6 @@ module wd {
             }
 
             super.init();
-
-            this._renderTargetRendererList.forEach((renderTargetRenderer:RenderTargetRenderer) => renderTargetRenderer.init());
-            this._proceduralRendererList.forEach((renderTargetRenderer:ProceduralRenderTargetRenderer) => renderTargetRenderer.init());
 
             return this;
         }
@@ -110,30 +109,9 @@ module wd {
             return <GameObject>super.addChild(child);
         }
 
-        //todo move to Manager
-        public addRenderTargetRenderer(renderTargetRenderer:RenderTargetRenderer){
-            this._renderTargetRendererList.addChild(renderTargetRenderer);
-        }
-
-        public getRenderTargetRendererList(){
-            return this._renderTargetRendererList;
-        }
-
-        public removeAllRenderTargetRenderer(){
-            this._renderTargetRendererList.removeAllChildren();
-        }
-
-        public addProceduralRenderTargetRenderer(renderTargetRenderer:ProceduralRenderTargetRenderer){
-            this._proceduralRendererList.addChild(renderTargetRenderer);
-        }
-
-        public removeRenderTargetRenderer(renderTargetRenderer:RenderTargetRenderer){
-            this._renderTargetRendererList.removeChild(renderTargetRenderer);
-        }
-
         public update(elapsedTime:number){
             var currentCamera= this._getCurrentCameraComponent(),
-                shadowManager:ShadowManager = this.getComponent<ShadowManager>(ShadowManager)
+                shadowManager:ShadowManager = this.getComponent<ShadowManager>(ShadowManager);
 
             if(this.physics.enable){
                 this.physicsEngineAdapter.update(elapsedTime);
@@ -153,15 +131,9 @@ module wd {
         }
 
         public render(renderer:Renderer) {
-            var self = this;
-
             this._shadowManager.setShadowRenderListInEachLoop();
 
-            this._renderTargetRendererList.forEach((target:RenderTargetRenderer) =>{
-                target.render(renderer, self.currentCamera);
-            });
-
-            this._renderProceduralRenderer(renderer);
+            this.renderTargetRendererManager.renderCommonRenderTargetRenderer(renderer, this.currentCamera);
 
             super.render(renderer, this.currentCamera);
         }
@@ -201,15 +173,6 @@ module wd {
 
         protected createTransform(){
             return null;
-        }
-
-        private _renderProceduralRenderer(renderer){
-            this._proceduralRendererList.filter((target:ProceduralRenderTargetRenderer) =>{
-                    return target.needRender();
-                })
-                .forEach((target:ProceduralRenderTargetRenderer) =>{
-                    target.render(renderer);
-                });
         }
 
         private _getCameras(gameObject:GameObject){

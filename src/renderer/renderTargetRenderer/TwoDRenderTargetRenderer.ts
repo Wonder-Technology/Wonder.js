@@ -1,5 +1,5 @@
 module wd {
-    export abstract class TwoDRenderTargetRenderer extends RenderTargetRenderer{
+    export abstract class TwoDRenderTargetRenderer extends CommonRenderTargetRenderer{
         protected frameBuffer:WebGLFramebuffer = null;
         protected renderBuffer:WebGLRenderbuffer= null;
 

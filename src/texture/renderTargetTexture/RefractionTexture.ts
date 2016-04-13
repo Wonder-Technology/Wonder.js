@@ -11,7 +11,7 @@ module wd {
         public init(){
             super.init();
 
-            Director.getInstance().scene.addRenderTargetRenderer(RefractionRenderTargetRenderer.create(this));
+            Director.getInstance().scene.addCommonRenderTargetRenderer(RefractionRenderTargetRenderer.create(this));
 
             return this;
         }

@@ -141,6 +141,7 @@
 /// <reference path="component/scene/manager/ShadowManager"/>
 /// <reference path="component/scene/manager/ShadowMapManager"/>
 /// <reference path="component/scene/manager/LightManager"/>
+/// <reference path="component/scene/manager/RenderTargetRendererManager"/>
 
 /// <reference path="component/scene/manager/structure/ShadowLayerList"/>
 
@@ -324,6 +325,7 @@
 /// <reference path="utils/time/CommonTimeController"/>
 
 /// <reference path="renderer/renderTargetRenderer/RenderTargetRenderer"/>
+/// <reference path="renderer/renderTargetRenderer/CommonRenderTargetRenderer"/>
 /// <reference path="renderer/renderTargetRenderer/TwoDRenderTargetRenderer"/>
 /// <reference path="renderer/renderTargetRenderer/MirrorRenderTargetRenderer"/>
 /// <reference path="renderer/renderTargetRenderer/RefractionRenderTargetRenderer"/>

@@ -11,7 +11,7 @@ module wd {
         public init(){
             super.init();
 
-            Director.getInstance().scene.addRenderTargetRenderer(MirrorRenderTargetRenderer.create(this));
+            Director.getInstance().scene.addCommonRenderTargetRenderer(MirrorRenderTargetRenderer.create(this));
 
             return this;
         }

@@ -103,14 +103,11 @@ module wd {
                     }
                 }, this);
             }
-
-            return this._getAllDiffShadowMapDataWhenShadowLayerChange();
         }
 
-        private _getAllDiffShadowMapDataWhenShadowLayerChange(){
+        public getAllDiffShadowMapDataWhenShadowLayerChange():any{
             var twoDDiff = this._getDiffShadowMapDataWhenShadowLayerChange(this._lastTwoDShadowMapDataMap, this.twoDShadowMapDataMap),
                 cubemapDiff = this._getDiffShadowMapDataWhenShadowLayerChange(this._lastCubemapShadowMapDataMap, this.cubemapShadowMapDataMap);
-
 
             return {
                 addTwoDShadowMapData: twoDDiff.addShadowMapData,

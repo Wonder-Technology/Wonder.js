@@ -36,7 +36,7 @@ module wd {
             this.width = this.size;
             this.height = this.size;
 
-            Director.getInstance().scene.addRenderTargetRenderer(DynamicCubemapRenderTargetRenderer.create(this));
+            Director.getInstance().scene.addCommonRenderTargetRenderer(DynamicCubemapRenderTargetRenderer.create(this));
 
             return this;
         }

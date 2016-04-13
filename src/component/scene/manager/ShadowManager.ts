@@ -179,7 +179,7 @@ module wd{
                 twoDShadowMapDataList.forEach(({shadowMap, light}) => {
                     var renderer:TwoDShadowMapRenderTargetRenderer = TwoDShadowMapRenderTargetRenderer.create(shadowMap, light, layer);
 
-                    scene.addRenderTargetRenderer(renderer);
+                    scene.renderTargetRendererManager.addCommonRenderTargetRenderer(renderer);
                 });
             });
 
@@ -187,7 +187,7 @@ module wd{
                 cubemapShadowMapDataList.forEach(({shadowMap, light}) => {
                     var renderer:CubemapShadowMapRenderTargetRenderer = CubemapShadowMapRenderTargetRenderer.create(shadowMap, light, layer);
 
-                    scene.addRenderTargetRenderer(renderer);
+                    scene.renderTargetRendererManager.addCommonRenderTargetRenderer(renderer);
                 });
             });
 
@@ -218,35 +218,36 @@ module wd{
                 return;
             }
 
+            this._shadowMapManager.updateWhenShadowLayerChange(scene.shadowLayerList.getDiffData());
+
             let {
                 addTwoDShadowMapData,
                 removeTwoDShadowMapData,
                 addCubemapShadowMapData,
                 removeCubemapShadowMapData
-                } = this._shadowMapManager.updateWhenShadowLayerChange(scene.shadowLayerList.getDiffData());
+                } = this._shadowMapManager.getAllDiffShadowMapDataWhenShadowLayerChange();
 
+            this._refreshRenderTargerRendererList(addTwoDShadowMapData, removeTwoDShadowMapData, addCubemapShadowMapData, removeCubemapShadowMapData);
+        }
 
-            //todo only handle shadow renderer
-            let renderTargetRendererList = scene.getRenderTargetRendererList(),
-                newRenderTargetRendererList = wdCb.Collection.create<RenderTargetRenderer>();
+        @ensure(function(){
+            assert(!this.entityObject.renderTargetRendererManager.getCommonRenderTargetRendererList().hasRepeatItems(), Log.info.FUNC_SHOULD_NOT("scene->commonRenderTargetRendererList", "has repeat items"));
+        })
+        private _refreshRenderTargerRendererList(addTwoDShadowMapData:wdCb.Hash<wdCb.Collection<TwoDShadowMapData>>, removeTwoDShadowMapData:wdCb.Collection<TwoDShadowMapData>, addCubemapShadowMapData:wdCb.Hash<wdCb.Collection<CubemapShadowMapData>>, removeCubemapShadowMapData:wdCb.Collection<CubemapShadowMapData>){
+            var scene:GameObjectScene = this.entityObject;
 
-            renderTargetRendererList.forEach((renderTargetRenderer:RenderTargetRenderer) => {
+            scene.renderTargetRendererManager.removeCommonRenderTargetRenderer((renderTargetRenderer:CommonRenderTargetRenderer) => {
                 var texture = renderTargetRenderer.texture;
 
-                if(
-                    removeTwoDShadowMapData.hasChildWithFunc((data: TwoDShadowMapData) => {
-                        return JudgeUtils.isEqual(data.shadowMap, texture);
-                    })
-                    ||  removeCubemapShadowMapData.hasChildWithFunc((data: TwoDShadowMapData) => {
-                        return JudgeUtils.isEqual(data.shadowMap, texture);
-                    })
-                ){
-                    renderTargetRenderer.dispose();
-
-                    return;
-                }
-
-                newRenderTargetRendererList.addChild(renderTargetRenderer);
+                return removeTwoDShadowMapData.hasChildWithFunc((data: TwoDShadowMapData) => {
+                    return JudgeUtils.isEqual(data.shadowMap, texture);
+                })
+                ||  removeCubemapShadowMapData.hasChildWithFunc((data: TwoDShadowMapData) => {
+                    return JudgeUtils.isEqual(data.shadowMap, texture);
+                });
+            })
+            .forEach((renderTargetRenderer:CommonRenderTargetRenderer) => {
+                renderTargetRenderer.dispose();
             });
 
             addTwoDShadowMapData.forEach((twoDShadowMapDataList:wdCb.Collection<TwoDShadowMapData>, layer:string) => {
@@ -255,7 +256,7 @@ module wd{
 
                     renderer.init();
 
-                    newRenderTargetRendererList.addChild(renderer);
+                    scene.renderTargetRendererManager.addCommonRenderTargetRenderer(renderer);
                 });
             });
 
@@ -265,14 +266,8 @@ module wd{
 
                     renderer.init();
 
-                    newRenderTargetRendererList.addChild(renderer);
+                    scene.renderTargetRendererManager.addCommonRenderTargetRenderer(renderer);
                 });
-            });
-
-            scene.removeAllRenderTargetRenderer();
-
-            newRenderTargetRendererList.forEach((renderTargetRenderer:RenderTargetRenderer) => {
-                scene.addRenderTargetRenderer(renderTargetRenderer);
             });
         }
 

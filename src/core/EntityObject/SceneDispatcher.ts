@@ -136,16 +136,12 @@ module wd {
             return this;
         }
 
-        public addRenderTargetRenderer(renderTargetRenderer:RenderTargetRenderer){
-            return this.gameObjectScene.addRenderTargetRenderer(renderTargetRenderer);
+        public addCommonRenderTargetRenderer(renderTargetRenderer:RenderTargetRenderer){
+            return this.gameObjectScene.renderTargetRendererManager.addCommonRenderTargetRenderer(renderTargetRenderer);
         }
 
         public addProceduralRenderTargetRenderer(renderTargetRenderer:ProceduralRenderTargetRenderer){
-            return this.gameObjectScene.addProceduralRenderTargetRenderer(renderTargetRenderer);
-        }
-
-        public removeRenderTargetRenderer(renderTargetRenderer:RenderTargetRenderer){
-            this.gameObjectScene.removeRenderTargetRenderer(renderTargetRenderer);
+            return this.gameObjectScene.renderTargetRendererManager.addProceduralRenderTargetRenderer(renderTargetRenderer);
         }
 
         public dispose(){

@@ -73,17 +73,17 @@ var shadowTool = {
     },
     getBuildShadowMapRenderer: function(){
         if(arguments.length === 0){
-            return wd.Director.getInstance().scene.gameObjectScene._renderTargetRendererList.getChild(0);
+            return wd.Director.getInstance().scene.gameObjectScene.renderTargetRendererManager.getCommonRenderTargetRendererList().getChild(0);
         }
         else if(arguments.length === 1 && wd.JudgeUtils.isNumber(arguments[0])){
             var rendererIndex = arguments[0];
 
-            return wd.Director.getInstance().scene.gameObjectScene._renderTargetRendererList.getChild(rendererIndex);
+            return wd.Director.getInstance().scene.gameObjectScene.renderTargetRendererManager.getCommonRenderTargetRendererList().getChild(rendererIndex);
         }
         else if(arguments.length === 1){
             var layer = arguments[0];
 
-            return wd.Director.getInstance().scene.gameObjectScene._renderTargetRendererList
+            return wd.Director.getInstance().scene.gameObjectScene.renderTargetRendererManager.getCommonRenderTargetRendererList()
                 .filter(function(rttRenderer){
                     return rttRenderer._layer === layer;
                 })
@@ -93,7 +93,7 @@ var shadowTool = {
             var layer = arguments[0],
                 light = arguments[1].getComponent(wd.Light);
 
-            return wd.Director.getInstance().scene.gameObjectScene._renderTargetRendererList
+            return wd.Director.getInstance().scene.gameObjectScene.renderTargetRendererManager.getCommonRenderTargetRendererList()
                 .filter(function(rttRenderer){
                     return rttRenderer._layer === layer && wd.JudgeUtils.isEqual(rttRenderer._light, light);
                 })
