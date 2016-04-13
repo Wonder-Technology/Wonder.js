@@ -326,7 +326,7 @@ describe("shadow map", function() {
                     expect(program3.sendUniformData.withArgs("u_twoDShadowMapSampler[1]", sinon.match.any, 1)).toCalledOnce();
                     expect(program3.sendUniformData.withArgs("u_diffuseMapSampler", sinon.match.any, 2)).toCalledOnce();
                 });
-                it("fs glsl should define TWOD_SHADOWMAP_COUNT", function () {
+                it("fs glsl should refresh TWOD_SHADOWMAP_COUNT", function () {
                     director._init();
 
                     var data1 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
@@ -778,6 +778,183 @@ describe("shadow map", function() {
                                     expect(glslTool.contain(shader1.fsSource, "TWOD_SHADOWMAP_COUNT 1")).toBeTruthy();
                                 });
                             });
+                        });
+                    });
+                });
+            });
+        });
+
+        describe("test change shadow->cast at runtime", function(){
+            //todo test
+        });
+
+        describe("test change shadow->receive at runtime", function(){
+            describe("test change not receive to receive", function () {
+                beforeEach(function(){
+                    sphere.getComponent(wd.Shadow).receive = false;
+
+                    director._init();
+
+                    director._loopBody(1);
+                });
+
+                describe("test draw shadow map", function(){
+                    beforeEach(function(){
+                        sphere.getComponent(wd.Shadow).receive = true;
+                    });
+
+                    it("draw the shadow map", function () {
+                        var twoDShadowMapList1 = shadowTool.getDefaultMapManager(sphere).getTwoDShadowMapList();
+
+                        var shadowMap1 = twoDShadowMapList1.getChild(0);
+
+                        sandbox.stub(shadowMap1, "bindToUnit");
+
+
+                        director.scene.gameObjectScene.render(renderer);
+                        renderer.render();
+
+                        expect(shadowMap1.bindToUnit.callCount).toEqual(1 + 1);
+                    });
+                    it("should send glsl data", function () {
+                        var data1 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
+                        var program1 = data1.program;
+
+
+                        director.scene.gameObjectScene.render(renderer);
+                        renderer.render();
+
+                        expect(program1.sendUniformData.withArgs("u_twoDShadowSize[0]")).toCalledOnce();
+                    });
+                });
+            });
+
+            describe("test change receive to not receive", function () {
+                beforeEach(function(){
+                    sphere.getComponent(wd.Shadow).receive = true;
+
+                    director._init();
+
+                    director._loopBody(1);
+                });
+
+                describe("test draw shadow map", function(){
+                    it("not draw the shadow map", function () {
+                        var twoDShadowMapList1 = shadowTool.getDefaultMapManager(sphere).getTwoDShadowMapList();
+
+                        var shadowMap1 = twoDShadowMapList1.getChild(0);
+
+                        sandbox.stub(shadowMap1, "bindToUnit");
+
+
+                        sphere.getComponent(wd.Shadow).receive = false;
+
+
+
+
+                        director.scene.gameObjectScene.render(renderer);
+                        renderer.render();
+
+                        expect(shadowMap1.bindToUnit.callCount).toEqual(1 + 0);
+                    });
+                    it("should not send glsl data", function () {
+                        sphere.getComponent(wd.Shadow).receive = false;
+
+                        var data1 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
+                        var program1 = data1.program;
+
+
+
+                        director.scene.gameObjectScene.render(renderer);
+                        renderer.render();
+
+
+                        expect(program1.sendUniformData.withArgs("u_twoDShadowSize[0]")).not.toCalled();
+                    });
+                });
+            });
+
+            describe("test direction light + point light", function(){
+                var light2;
+
+                beforeEach(function(){
+                    light2 = shadowTool.createPointLight();
+
+                    director.scene.addChild(light2);
+                });
+
+                describe("test change not receive to receive", function () {
+                    function judgeGLSLContainShadowMap(shader){
+                        expect(shader.hasLib(wd.NoShadowMapShaderLib)).toBeFalsy();
+
+                        expect(shader.hasLib(wd.TotalShadowMapShaderLib)).toBeTruthy();
+                        expect(shader.hasLib(wd.TwoDShadowMapShaderLib)).toBeTruthy();
+                        expect(shader.hasLib(wd.CubemapShadowMapShaderLib)).toBeTruthy();
+                    }
+
+                    beforeEach(function () {
+                        sphere.getComponent(wd.Shadow).receive = false;
+
+                        director._init();
+
+                        director._loopBody(1);
+                    });
+
+                    describe("test draw shadow map", function () {
+                        it("fs glsl should refresh and contain shadow map glsl", function () {
+                            sphere.getComponent(wd.Shadow).receive = true;
+
+                            var data1 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
+                            var shader1 = data1.shader;
+                            var program1 = data1.program;
+                            sandbox.stub(program1, "initWithShader");
+
+
+                            director.scene.gameObjectScene.render(renderer);
+                            renderer.render();
+
+
+                            judgeGLSLContainShadowMap(shader1);
+
+                            expect(program1.initWithShader).toCalledOnce();
+                        });
+                    });
+                });
+
+                describe("test change receive to not receive", function () {
+                    function judgeGLSLNotContainShadowMap(shader){
+                                                expect(shader.hasLib(wd.NoShadowMapShaderLib)).toBeTruthy();
+
+                        expect(shader.hasLib(wd.TotalShadowMapShaderLib)).toBeFalsy();
+                        expect(shader.hasLib(wd.TwoDShadowMapShaderLib)).toBeFalsy();
+                        expect(shader.hasLib(wd.CubemapShadowMapShaderLib)).toBeFalsy();
+                    }
+
+                    beforeEach(function () {
+                        sphere.getComponent(wd.Shadow).receive = true;
+
+                        director._init();
+
+                        director._loopBody(1);
+                    });
+
+                    describe("test draw shadow map", function () {
+                        it("fs glsl should refresh and not contain shadow map glsl", function () {
+                            sphere.getComponent(wd.Shadow).receive = false;
+
+                            var data1 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
+                            var shader1 = data1.shader;
+                            var program1 = data1.program;
+                            sandbox.stub(program1, "initWithShader");
+
+
+                            director.scene.gameObjectScene.render(renderer);
+                            renderer.render();
+
+
+                            judgeGLSLNotContainShadowMap(shader1);
+
+                            expect(program1.initWithShader).toCalledOnce();
                         });
                     });
                 });

@@ -163,6 +163,8 @@ module wd{
 
         public removeAllShdaowMaps(){
             this._shadowMapController.removeAllChildren();
+
+            this._textureDirty = true;
         }
 
         public dispose(){
