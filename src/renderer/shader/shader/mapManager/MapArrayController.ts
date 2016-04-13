@@ -6,7 +6,7 @@ module wd{
             return obj;
         }
 
-        private _mapArrayList:wdCb.Collection<ArrayMapData> = wdCb.Collection.create<ArrayMapData>();
+        private _mapArrayList:wdCb.Collection<MapArrayData> = wdCb.Collection.create<MapArrayData>();
 
         public addMapArray(samplerName:string, mapArray:Array<Texture>){
             this._mapArrayList.addChild({
@@ -18,10 +18,10 @@ module wd{
         public sendMapData(program:Program, maxUnitOfBindedSingleMap:number){
             var self = this;
 
-            this._mapArrayList.forEach((mapData:ArrayMapData) => {
+            this._mapArrayList.forEach((mapData:MapArrayData) => {
                 let arrayMapCount = mapData.mapArray.length;
 
-                program.sendUniformData(`${mapData.samplerName}[0]`, EVariableType.SAMPLER_ARRAY, self._generateArrayMapUnitArray(maxUnitOfBindedSingleMap, maxUnitOfBindedSingleMap + arrayMapCount));
+                program.sendUniformData(`${mapData.samplerName}[0]`, EVariableType.SAMPLER_ARRAY, self._generateMapArrayUnitArray(maxUnitOfBindedSingleMap, maxUnitOfBindedSingleMap + arrayMapCount));
 
                 maxUnitOfBindedSingleMap += arrayMapCount;
             });
@@ -35,7 +35,7 @@ module wd{
         public getAllMapArr(){
             var arrayMap = [];
 
-            this._mapArrayList.forEach((mapData:ArrayMapData) => {
+            this._mapArrayList.forEach((mapData:MapArrayData) => {
                 arrayMap = arrayMap.concat(mapData.mapArray);
             });
 
@@ -58,7 +58,7 @@ module wd{
                 assert(arr[arr.length - 1] === endUnit - 1, Log.info.FUNC_SHOULD("last element", `be ${endUnit - 1}, but actual is ${arr[arr.length - 1]}`));
             }
         })
-        private _generateArrayMapUnitArray(startUnit:number, endUnit:number){
+        private _generateMapArrayUnitArray(startUnit:number, endUnit:number){
             var arr = [];
 
             while(endUnit > startUnit){
@@ -71,7 +71,7 @@ module wd{
         }
     }
 
-    export type ArrayMapData = {
+    export type MapArrayData = {
         samplerName:string;
         mapArray:Array<Texture>;
     }

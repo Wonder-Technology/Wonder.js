@@ -77,38 +77,29 @@ module wd{
         }
 
         public dispose(){
-            //todo test
             this._shadowMapLayerChangeSubscription && this._shadowMapLayerChangeSubscription.dispose();
         }
-
-        //public update(elapsedTime:number){
-        //    if(Director.getInstance().scene.shadowLayerList.dirty){
-        //        this._updateWhenShadowLayerChange();
-        //
-        //        this.entityObject.shadowLayerList.dirty = false;
-        //    }
-        //}
 
         private _addAllShadowMaps(twoDShadowMapDataMap:wdCb.Hash<wdCb.Collection<TwoDShadowMapData>>, cubemapShadowMapDataMap:wdCb.Hash<wdCb.Collection<CubemapShadowMapData>>, mapManager:MapManager){
             twoDShadowMapDataMap.forEach((twoDShadowMapDataList:wdCb.Collection<TwoDShadowMapData>) => {
                 twoDShadowMapDataList.forEach(({shadowMap}) => {
-                    //if (!mapManager.hasTwoDShadowMap(shadowMap)) {
-                        mapManager.addTwoDShadowMap(shadowMap);
-                    //}
+                    mapManager.addTwoDShadowMap(shadowMap);
                 });
             });
 
             cubemapShadowMapDataMap.forEach((cubemapShadowMapDataList:wdCb.Collection<CubemapShadowMapData>) => {
                 cubemapShadowMapDataList.forEach(({shadowMap}) => {
-                    //if (!mapManager.hasCubemapShadowMap(shadowMap)) {
-                        mapManager.addCubemapShadowMap(shadowMap);
-                    //}
+                    mapManager.addCubemapShadowMap(shadowMap);
                 });
             });
         }
 
         private _isFirstLevelObjectOfSceneOrSpacePartition(){
             var parent:GameObject = this.entityObject.parent;
+
+            if(!parent){
+                return false;
+            }
 
             return JudgeUtils.isEqual(parent, Director.getInstance().scene) || JudgeUtils.isSpacePartitionObject(parent);
         }

@@ -323,7 +323,7 @@ describe("GameObjectScene", function() {
                 init: sandbox.stub(),
                 render: sandbox.stub()
             };
-            scene.addRenderTargetRenderer(renderTargetRenderer);
+            scene.renderTargetRendererManager.addCommonRenderTargetRenderer(renderTargetRenderer);
 
             scene.render(renderer);
 
@@ -336,7 +336,7 @@ describe("GameObjectScene", function() {
                 sandbox.stub(proceduralRenderTargetRenderer, "render");
 
 
-                scene.addProceduralRenderTargetRenderer(proceduralRenderTargetRenderer);
+                scene.renderTargetRendererManager.addProceduralRenderTargetRenderer(proceduralRenderTargetRenderer);
 
                 scene.render(renderer);
                 scene.render(renderer);
@@ -350,7 +350,7 @@ describe("GameObjectScene", function() {
                 sandbox.stub(proceduralRenderTargetRenderer, "render");
 
 
-                scene.addProceduralRenderTargetRenderer(proceduralRenderTargetRenderer);
+                scene.renderTargetRendererManager.addProceduralRenderTargetRenderer(proceduralRenderTargetRenderer);
 
                 scene.render(renderer);
                 scene.render(renderer);
@@ -369,7 +369,7 @@ describe("GameObjectScene", function() {
                     proceduralRenderTargetRenderer = wd.CustomProceduralRenderTargetRenderer.create(texture);
                     sandbox.stub(proceduralRenderTargetRenderer, "render");
 
-                    scene.addProceduralRenderTargetRenderer(proceduralRenderTargetRenderer);
+                    scene.renderTargetRendererManager.addProceduralRenderTargetRenderer(proceduralRenderTargetRenderer);
 
 
 
@@ -409,7 +409,7 @@ describe("GameObjectScene", function() {
                 init: sandbox.stub(),
                 render: sandbox.stub()
             };
-            scene.addRenderTargetRenderer(renderTargetRenderer);
+            scene.renderTargetRendererManager.addCommonRenderTargetRenderer(renderTargetRenderer);
 
             var gameObject1 = wd.GameObject.create();
             sandbox.stub(gameObject1, "render");

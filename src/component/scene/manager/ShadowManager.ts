@@ -31,16 +31,10 @@ module wd{
 
         public update(elapsedTime:number){
             this.entityObject.shadowLayerList.update();
-            //if(this.entityObject.shadowLayerList.dirty){
-            //    this._updateWhenShadowLayerChange();
-            //
-            //    this.entityObject.shadowLayerList.dirty = false;
-            //}
         }
 
         public dispose(){
             this._endLoopSubscription && this._endLoopSubscription.dispose();
-            //todo test
             this._shadowMapLayerChangeSubscription && this._shadowMapLayerChangeSubscription.dispose();
         }
 

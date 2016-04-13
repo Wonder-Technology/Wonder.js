@@ -31,17 +31,17 @@ describe("Shader", function() {
     describe("dirty(getter)", function(){
         it("if libDirty or definitionDataDirty, shader dirty", function(){
             shader.libDirty = true;
-            shader._definitionDataDirty = false;
+            shader.definitionDataDirty = false;
 
             expect(shader.dirty).toBeTruthy();
 
             shader.libDirty = false;
-            shader._definitionDataDirty = true;
+            shader.definitionDataDirty = true;
 
             expect(shader.dirty).toBeTruthy();
 
             shader.libDirty = false;
-            shader._definitionDataDirty = false;
+            shader.definitionDataDirty = false;
 
             expect(shader.dirty).toBeFalsy();
         });
@@ -82,21 +82,21 @@ describe("Shader", function() {
             expect(shader.buildDefinitionData).toCalledOnce();
         });
         it("if definitionData dirty , program init with shader", function(){
-            shader._definitionDataDirty = false;
+            shader.definitionDataDirty = false;
             shader.fsSource = "aaa";
 
             shader.judgeRefreshShader();
 
             expect(shader.program.initWithShader).toCalledWith(shader);
         });
-        it("set libDirty, _definitionDataDirty = false", function () {
+        it("set libDirty, definitionDataDirty = false", function () {
             shader.libDirty = true;
             shader.fsSource = "aaa";
 
             shader.judgeRefreshShader();
 
             expect(shader.libDirty).toBeFalsy();
-            expect(shader._definitionDataDirty).toBeFalsy();
+            expect(shader.definitionDataDirty).toBeFalsy();
         });
     });
     

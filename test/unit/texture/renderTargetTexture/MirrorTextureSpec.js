@@ -23,11 +23,11 @@ describe("MirrorTexture", function () {
 
     describe("init", function(){
         it("add MirrorRenderTargetRenderer", function(){
-            sandbox.stub(wd.Director.getInstance().scene, "addRenderTargetRenderer");
+            sandbox.stub(wd.Director.getInstance().scene, "addCommonRenderTargetRenderer");
 
             texture.init();
 
-            expect(wd.Director.getInstance().scene.addRenderTargetRenderer.args[0][0]).toEqual(jasmine.any(wd.MirrorRenderTargetRenderer));
+            expect(wd.Director.getInstance().scene.addCommonRenderTargetRenderer.args[0][0]).toEqual(jasmine.any(wd.MirrorRenderTargetRenderer));
         });
     });
 

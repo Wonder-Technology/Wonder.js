@@ -27,7 +27,7 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        //'test/unit/**',
+        'test/unit/**',
 
         //'test/unit/**/action/*',
 
@@ -39,13 +39,13 @@
         //'test/unit/**/scene/**',
 
         //'test/unit/**/Shadow*Spec.js',
-
+        //
         //'test/unit/renderer/pointShadowMapSpec.js',
         //
-        'test/unit/renderer/shadowMapSpec.js',
+        //'test/unit/renderer/shadowMapSpec.js',
         //'test/unit/renderer/*ShadowMapSpec.js',
         //'test/unit/renderer/*ShadowMap_*Spec.js',
-
+        //
         //'test/unit/**/instance/*',
 
         //'test/unit/**/instance_shadow*',

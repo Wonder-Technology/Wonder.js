@@ -263,27 +263,27 @@ describe("SceneDispatcher", function() {
         });
     });
 
-    describe("addRenderTargetRenderer", function(){
-        it("add renderTargetRenderer", function(){
-            var renderer = {
-            };
-
-            scene.addRenderTargetRenderer(renderer);
-
-            expect(scene.gameObjectScene._renderTargetRendererList.hasChild(renderer)).toBeTruthy();
-        });
-    });
-
-    describe("addProceduralRenderTargetRenderer", function(){
-        it("add proceduralRenderTargetRenderer", function(){
-            var renderer = {
-            };
-
-            scene.addProceduralRenderTargetRenderer(renderer);
-
-            expect(scene.gameObjectScene._proceduralRendererList.hasChild(renderer)).toBeTruthy();
-        });
-    });
+    //describe("addCommonRenderTargetRenderer", function(){
+    //    it("add renderTargetRenderer", function(){
+    //        var renderer = {
+    //        };
+    //
+    //        scene.addCommonRenderTargetRenderer(renderer);
+    //
+    //        expect(scene.gameObjectScene._renderTargetRendererList.hasChild(renderer)).toBeTruthy();
+    //    });
+    //});
+    //
+    //describe("addProceduralRenderTargetRenderer", function(){
+    //    it("add proceduralRenderTargetRenderer", function(){
+    //        var renderer = {
+    //        };
+    //
+    //        scene.addProceduralRenderTargetRenderer(renderer);
+    //
+    //        expect(scene.gameObjectScene._proceduralRendererList.hasChild(renderer)).toBeTruthy();
+    //    });
+    //});
 
     describe("test dispatch to GameObjectScene/UIObjectScene", function(){
         var uiObject1;

@@ -15,11 +15,11 @@ describe("RefractionTexture", function () {
 
     describe("init", function(){
         it("add RefractionRenderTargetRenderer", function(){
-            sandbox.stub(wd.Director.getInstance().scene, "addRenderTargetRenderer");
+            sandbox.stub(wd.Director.getInstance().scene, "addCommonRenderTargetRenderer");
 
             texture.init();
 
-            expect(wd.Director.getInstance().scene.addRenderTargetRenderer.args[0][0]).toEqual(jasmine.any(wd.RefractionRenderTargetRenderer));
+            expect(wd.Director.getInstance().scene.addCommonRenderTargetRenderer.args[0][0]).toEqual(jasmine.any(wd.RefractionRenderTargetRenderer));
         });
     });
 
