@@ -59,7 +59,7 @@ module wd {
 
         private _shadowManager:ShadowManager = null;
         private _lightManager:LightManager = null;
-        private _collisionDetector:CollisionDetector = CollisionDetector.create();
+        private _collisionDetector:CollisionDetector = null;
         private _cameraList:wdCb.Collection<GameObject> = wdCb.Collection.create<GameObject>();
         private _shaderMap:wdCb.Hash<Shader> = wdCb.Hash.create<Shader>();
 
@@ -74,6 +74,9 @@ module wd {
 
             this.renderTargetRendererManager = RenderTargetRendererManager.create();
             this.addComponent(this.renderTargetRendererManager);
+
+            this._collisionDetector = CollisionDetector.create();
+            this.addComponent(this._collisionDetector);
         }
 
         public init(){
@@ -111,7 +114,8 @@ module wd {
 
         public update(elapsedTime:number){
             var currentCamera= this._getCurrentCameraComponent(),
-                shadowManager:ShadowManager = this.getComponent<ShadowManager>(ShadowManager);
+                shadowManager:ShadowManager = this.getComponent<ShadowManager>(ShadowManager),
+                collisionDetector:CollisionDetector = this.getComponent<CollisionDetector>(CollisionDetector);
 
             if(this.physics.enable){
                 this.physicsEngineAdapter.update(elapsedTime);
@@ -121,13 +125,11 @@ module wd {
                 currentCamera.update(elapsedTime);
             }
 
-            if(shadowManager){
-                shadowManager.update(elapsedTime);
-            }
+            shadowManager.update(elapsedTime);
 
             super.update(elapsedTime);
 
-            this._collisionDetector.detect(this);
+            collisionDetector.update(elapsedTime);
         }
 
         public render(renderer:Renderer) {

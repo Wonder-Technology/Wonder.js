@@ -50,8 +50,6 @@
 /// <reference path="core/entityObject/UIObjectScene"/>
 
 
-/// <reference path="collision/CollisionDetector"/>
-
 
 
 /// <reference path="event/structure/EventListenerMap"/>
@@ -142,6 +140,8 @@
 /// <reference path="component/scene/manager/ShadowMapManager"/>
 /// <reference path="component/scene/manager/LightManager"/>
 /// <reference path="component/scene/manager/RenderTargetRendererManager"/>
+
+/// <reference path="component/scene/CollisionDetector"/>
 
 /// <reference path="component/scene/manager/structure/ShadowLayerList"/>
 
