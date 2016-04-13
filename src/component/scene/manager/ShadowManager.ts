@@ -30,12 +30,101 @@ module wd{
         private _shadowMapLayerChangeSubscription:wdFrp.IDisposable = null;
 
         public update(elapsedTime:number){
+            if(!this._isShadowMapEnable()){
+                return;
+            }
+
             this.entityObject.shadowLayerList.update();
         }
 
         public dispose(){
             this._endLoopSubscription && this._endLoopSubscription.dispose();
             this._shadowMapLayerChangeSubscription && this._shadowMapLayerChangeSubscription.dispose();
+        }
+
+        public setShadowRenderListInEachLoop(){
+            if(!this._isShadowMapEnable()){
+                return;
+            }
+
+            this._shadowRenderList = this._getShadowRenderList();
+        }
+
+        //todo optimize: cache?
+        public getShadowRenderListByLayer(layer:string){
+            return this._shadowRenderList.filter((gameObject:GameObject) => {
+                return gameObject.getComponent<Shadow>(Shadow).layer === layer;
+            });
+        }
+
+        //todo optimize?
+        public getShadowLayerList():ShadowLayerList{
+            var shadowLayerList:ShadowLayerList = null,
+                self = this;
+
+            if(this.entityObject.shadowLayerList.dirty){
+                return <any>this.entityObject.shadowLayerList.removeRepeatItems();
+            }
+
+            shadowLayerList = ShadowLayerList.create();
+
+            RenderUtils.getGameObjectRenderList(this.entityObject.getChildren())
+                .forEach((child:GameObject) => {
+                    if(JudgeUtils.isSpacePartitionObject(child)){
+                        child.forEach((c:GameObject) => {
+                            if(self._isCastShadow(c)){
+                                shadowLayerList.addChild(c.getComponent<Shadow>(Shadow).layer);
+                            }
+                        });
+
+                        return;
+                    }
+
+                    if(self._isCastShadow(child)){
+                        shadowLayerList.addChild(child.getComponent<Shadow>(Shadow).layer);
+                    }
+                });
+
+            shadowLayerList.dirty = false;
+
+            return <any>shadowLayerList.removeRepeatItems();
+        }
+
+        public init(){
+            var self = this,
+                scene:GameObjectScene = this.entityObject;
+
+            if(!this._isShadowMapEnable() || !this._hasShadow()) {
+                return;
+            }
+
+            this.entityObject.shadowLayerList = this.getShadowLayerList();
+            this._shadowMapManager.initShadowMapData(this.entityObject.shadowLayerList);
+
+            this._shadowMapManager.twoDShadowMapDataMap.forEach((twoDShadowMapDataList:wdCb.Collection<TwoDShadowMapData>, layer:string) => {
+                twoDShadowMapDataList.forEach(({shadowMap, light}) => {
+                    var renderer:TwoDShadowMapRenderTargetRenderer = TwoDShadowMapRenderTargetRenderer.create(shadowMap, light, layer);
+
+                    scene.renderTargetRendererManager.addCommonRenderTargetRenderer(renderer);
+                });
+            });
+
+            this._shadowMapManager.cubemapShadowMapDataMap.forEach((cubemapShadowMapDataList:wdCb.Collection<CubemapShadowMapData>, layer:string) => {
+                cubemapShadowMapDataList.forEach(({shadowMap, light}) => {
+                    var renderer:CubemapShadowMapRenderTargetRenderer = CubemapShadowMapRenderTargetRenderer.create(shadowMap, light, layer);
+
+                    scene.renderTargetRendererManager.addCommonRenderTargetRenderer(renderer);
+                });
+            });
+
+            this._addShadowShader();
+
+            this._initShadowList();
+
+            this._shadowMapLayerChangeSubscription = EventManager.fromEvent(<any>EEngineEvent.SHADOWMAP_LAYER_CHANGE)
+            .subscribe(() => {
+                self._updateWhenShadowLayerChange();
+            });
         }
 
         @require(function(){
@@ -88,7 +177,7 @@ module wd{
             checkFirstLevelOfGameObjectScene();
             checkFirstLevelOfSpacePartitionObject();
         })
-        public getShadowRenderList(){
+        private _getShadowRenderList(){
             var list = wdCb.Collection.create<GameObject>(),
                 self = this;
 
@@ -114,93 +203,12 @@ module wd{
             return list;
         }
 
-        public setShadowRenderListInEachLoop(){
-            this._shadowRenderList = this.getShadowRenderList();
-        }
-
-        //todo optimize: cache?
-        public getShadowRenderListByLayer(layer:string){
-            return this._shadowRenderList.filter((gameObject:GameObject) => {
-                return gameObject.getComponent<Shadow>(Shadow).layer === layer;
-            });
-        }
-
-        //todo optimize?
-        public getShadowLayerList():ShadowLayerList{
-            var shadowLayerList:ShadowLayerList = null,
-                self = this;
-
-            if(this.entityObject.shadowLayerList.dirty){
-                return <any>this.entityObject.shadowLayerList.removeRepeatItems();
-            }
-
-            shadowLayerList = ShadowLayerList.create();
-
-            RenderUtils.getGameObjectRenderList(this.entityObject.getChildren())
-                .forEach((child:GameObject) => {
-                    if(JudgeUtils.isSpacePartitionObject(child)){
-                        child.forEach((c:GameObject) => {
-                            if(self._isCastShadow(c)){
-                                shadowLayerList.addChild(c.getComponent<Shadow>(Shadow).layer);
-                            }
-                        });
-
-                        return;
-                    }
-
-                    if(self._isCastShadow(child)){
-                        shadowLayerList.addChild(child.getComponent<Shadow>(Shadow).layer);
-                    }
-                });
-
-            shadowLayerList.dirty = false;
-
-            return <any>shadowLayerList.removeRepeatItems();
-        }
-
-        public init(){
-            var self = this,
-                scene:GameObjectScene = this.entityObject;
-
-            if(!this._hasShadow()) {
-                return;
-            }
-
-            this.entityObject.shadowLayerList = this.getShadowLayerList();
-            this._shadowMapManager.initShadowMapData(this.entityObject.shadowLayerList);
-
-            this._shadowMapManager.twoDShadowMapDataMap.forEach((twoDShadowMapDataList:wdCb.Collection<TwoDShadowMapData>, layer:string) => {
-                twoDShadowMapDataList.forEach(({shadowMap, light}) => {
-                    var renderer:TwoDShadowMapRenderTargetRenderer = TwoDShadowMapRenderTargetRenderer.create(shadowMap, light, layer);
-
-                    scene.renderTargetRendererManager.addCommonRenderTargetRenderer(renderer);
-                });
-            });
-
-            this._shadowMapManager.cubemapShadowMapDataMap.forEach((cubemapShadowMapDataList:wdCb.Collection<CubemapShadowMapData>, layer:string) => {
-                cubemapShadowMapDataList.forEach(({shadowMap, light}) => {
-                    var renderer:CubemapShadowMapRenderTargetRenderer = CubemapShadowMapRenderTargetRenderer.create(shadowMap, light, layer);
-
-                    scene.renderTargetRendererManager.addCommonRenderTargetRenderer(renderer);
-                });
-            });
-
-            this._addShadowShader();
-
-            this._initShadowList();
-
-            this._shadowMapLayerChangeSubscription = EventManager.fromEvent(<any>EEngineEvent.SHADOWMAP_LAYER_CHANGE)
-            .subscribe(() => {
-                self._updateWhenShadowLayerChange();
-            });
-        }
-
         @require(function(){
             var shadowLayerList = this.entityObject.shadowLayerList;
 
             assert(shadowLayerList.dirty, Log.info.FUNC_SHOULD("shadowLayerList", "dirty"));
 
-            this.getShadowRenderList()
+            this._getShadowRenderList()
                 .forEach((gameObject:GameObject) => {
                     assert(shadowLayerList.hasChild(gameObject.getComponent<Shadow>(Shadow).layer), Log.info.FUNC_SHOULD("the shadow layer of shadow gameObject", "exist in scene->shadowLayerList"));
                 });
@@ -355,6 +363,10 @@ module wd{
             var scene = this.entityObject;
 
             return !!scene.directionLights || !!scene.pointLights;
+        }
+
+        private _isShadowMapEnable(){
+            return this.entityObject.shadowMap.enable;
         }
     }
 }

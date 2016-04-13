@@ -961,6 +961,69 @@ describe("shadow map", function() {
             });
         });
 
+        describe("test enable/disable shadow globally before init", function(){
+            beforeEach(function(){
+
+            });
+
+            it("test enable shadow globally before init", function(){
+                beforeEach(function(){
+                    director.scene.shadowMap.enable = true;
+                });
+
+                it("shader should only has NoShadowMapShaderLib", function(){
+                    director._init();
+
+                    expect(sphere.getComponent(wd.Geometry).material.shader.hasLib(wd.NoShadowMapShaderLib)).toBeTruthy();
+
+                    expect(sphere.getComponent(wd.Geometry).material.shader.hasLib(wd.TotalShadowMapShaderLib)).toBeFalsy();
+                });
+
+                describe("has no shadow map", function(){
+                    beforeEach(function(){
+
+                    });
+
+                    it("not exist build shadow map renderTargetRenderer", function () {
+                        director._init();
+
+                        expect(shadowTool.getBuildShadowMapRenderer()).not.toBeExist();
+                    });
+                    it("not draw shadow map", function () {
+                        director.scene.gameObjectScene.update(1);
+
+
+                        var twoDShadowMapList = shadowTool.getDefaultMapManager(sphere).getTwoDShadowMapList();
+
+                        expect(twoDShadowMapList.getCount()).toEqual(0);
+//
+//                        var shadowMap1 = twoDShadowMapList1.getChild(0);
+//                        var shadowMap2 = twoDShadowMapList1.getChild(1);
+//                        sandbox.stub(shadowMap1, "bindToUnit");
+//                        sandbox.stub(shadowMap2, "bindToUnit");
+//
+//
+//                        director.scene.gameObjectScene.render(renderer);
+//                        renderer.render();
+//
+//                        expect(shadowMap1.bindToUnit.callCount).toEqual(1 + 2);
+//                        expect(shadowMap2.bindToUnit.callCount).toEqual(1 + 2);
+//});
+                    });
+                });
+            });
+
+            //describe("test disable shadow globally", function(){
+            //    beforeEach(function(){
+            //
+            //    });
+            //
+            //    it("", function(){
+            //
+            //    });
+            //});
+        });
+
         describe("fix bug", function(){
             it("if scene.shadowMap.enable === true but no shadow, the object should add NoShadowMapShaderLib", function(){
                 director.scene.shadowMap.enable = true;
