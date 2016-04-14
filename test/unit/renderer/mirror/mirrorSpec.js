@@ -135,9 +135,9 @@ describe("mirror", function() {
             });
 
             it("if renderList is empty, send u_isRenderListEmpty:1", function(){
-                mirror.getComponent(wd.Geometry).material.reflectionMap.renderList = [];
-
                 director._init();
+
+                mirror.getComponent(wd.Geometry).material.reflectionMap.renderList = [];
 
                 var data = renderTargetRendererTool.getDrawShadowMapShaderAndProgramHelper(sandbox, mirror);
                 var program = data.program;
@@ -149,7 +149,7 @@ describe("mirror", function() {
 
                 expect(program.sendUniformData.withArgs("u_isRenderListEmpty", sinon.match.any, 1)).toCalledOnce();
             });
-            it("else, not send", function(){
+            it("else, , send u_isRenderListEmpty:0", function(){
                 mirror.getComponent(wd.Geometry).material.reflectionMap.renderList = [sphere];
 
                 director._init();
@@ -162,7 +162,7 @@ describe("mirror", function() {
                 renderer.render();
 
 
-                expect(program.sendUniformData.withArgs("u_isRenderListEmpty")).not.toCalled();
+                expect(program.sendUniformData.withArgs("u_isRenderListEmpty", sinon.match.any, 0)).toCalledOnce();
             });
         });
     });

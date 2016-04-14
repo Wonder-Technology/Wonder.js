@@ -27,6 +27,9 @@ module wd{
                     return
                 }
 
+
+                program.sendStructureData(`u_isTwoDRenderListEmpty[${index}]`, EVariableType.NUMBER_1, 0);
+
                 //todo cache vpMatrix
                 program.sendStructureData(`u_vpMatrixFromLight[${index}]`, EVariableType.FLOAT_MAT4, camera.worldToCameraMatrix.applyMatrix(camera.pMatrix, true));
                 program.sendStructureData(`u_twoDShadowSize[${index}]`, EVariableType.FLOAT_2, [light.shadowMapWidth, light.shadowMapHeight]);

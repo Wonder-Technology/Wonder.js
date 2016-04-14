@@ -9,17 +9,7 @@ module wd{
         public type:string = "mirror";
 
         public sendShaderVariables(program: Program, cmd:QuadCommand, material:Material){
-            var glslData = null;
-
-            glslData = Director.getInstance().scene.glslData.getChild(<any>EShaderGLSLData.MIRROR);
-
-            if(!glslData){
-                return;
-            }
-
-            if(glslData.isRenderListEmpty){
-                program.sendUniformData("u_isRenderListEmpty", EVariableType.NUMBER_1, 1);
-            }
+            RenderTargerRendererShaderLibUtils.judgeAndSendIsRenderListEmptyVariable(program, EShaderGLSLData.MIRROR);
         }
 
         public setShaderDefinition(quadCmd:QuadCommand, material:MirrorMaterial){

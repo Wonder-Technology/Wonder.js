@@ -8,7 +8,7 @@ module wd {
             if (JudgeUtils.isArrayExactly(renderList)) {
                 this._renderList = wdCb.Collection.create<GameObject>(renderList);
             }
-            else if (renderList instanceof wdCb.Collection) {
+            else if (JudgeUtils.isCollection(renderList)) {
                 this._renderList = renderList;
             }
             else {

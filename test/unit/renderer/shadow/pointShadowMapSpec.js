@@ -517,7 +517,7 @@ describe("point shadow map", function() {
                     director._init();
                 });
 
-                it("if renderList is empty, send u_isTwoDRenderListEmpty:1", function(){
+                it("if renderList is empty, send u_isCubemapRenderListEmpty:1", function(){
                     sphere.getComponent(wd.Shadow).cast = false;
 
                     setDrawShadowMapShaderAndProgram();
@@ -527,13 +527,13 @@ describe("point shadow map", function() {
 
                     expect(program.sendUniformData.withArgs("u_isCubemapRenderListEmpty[0]", sinon.match.any, 1)).toCalledOnce();
                 });
-                it("else, not send", function(){
+                it("else, , send u_isCubemapRenderListEmpty:0", function(){
                     setDrawShadowMapShaderAndProgram();
 
                     director._loopBody();
 
 
-                    expect(program.sendUniformData.withArgs("u_isCubemapRenderListEmpty[0]")).not.toCalled();
+                    expect(program.sendUniformData.withArgs("u_isCubemapRenderListEmpty[0]", sinon.match.any, 0)).toCalledOnce();
                 });
             });
         });

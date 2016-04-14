@@ -487,13 +487,13 @@ describe("direction shadow map", function() {
 
                     expect(program.sendUniformData.withArgs("u_isTwoDRenderListEmpty[0]", sinon.match.any, 1)).toCalledOnce();
                 });
-                it("else, not send", function(){
+                it("else, send u_isTwoDRenderListEmpty:0", function(){
                     setDrawShadowMapShaderAndProgram();
 
                     director._loopBody();
 
 
-                    expect(program.sendUniformData.withArgs("u_isTwoDRenderListEmpty[0]")).not.toCalled();
+                    expect(program.sendUniformData.withArgs("u_isTwoDRenderListEmpty[0]", sinon.match.any, 0)).toCalledOnce();
                 });
             });
         });

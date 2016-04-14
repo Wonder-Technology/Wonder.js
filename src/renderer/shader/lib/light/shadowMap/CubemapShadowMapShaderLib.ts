@@ -22,6 +22,9 @@ module wd{
                 if(data.isRenderListEmpty){
                     program.sendStructureData(`u_isCubemapRenderListEmpty[${index}]`, EVariableType.NUMBER_1, 1);
                 }
+                else{
+                    program.sendStructureData(`u_isCubemapRenderListEmpty[${index}]`, EVariableType.NUMBER_1, 0);
+                }
 
                 program.sendStructureData(`u_cubemapLightPos[${index}]`, EVariableType.FLOAT_3, light.position);
                 program.sendStructureData(`u_farPlane[${index}]`, EVariableType.FLOAT_1, light.shadowCameraFar);
