@@ -104,6 +104,7 @@ var tool = {
 
         var material = wd.LightMaterial.create();
         material.color = wd.Color.create("rgb(255, 0, 255)");
+        material.diffuseMap = wd.LoaderManager.getInstance().get("diffuseMap").toTexture();
 
 
         var geometry = wd.BoxGeometry.create();
