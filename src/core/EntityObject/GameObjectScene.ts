@@ -87,6 +87,8 @@ module wd {
 
             super.init();
 
+            this.renderTargetRendererManager.afterInit();
+
             return this;
         }
 

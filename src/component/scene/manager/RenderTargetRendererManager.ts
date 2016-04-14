@@ -9,7 +9,7 @@ module wd{
         private _commonRenderTargetRendererList:wdCb.Collection<CommonRenderTargetRenderer> = wdCb.Collection.create<CommonRenderTargetRenderer>();
         private _proceduralRendererList:wdCb.Collection<ProceduralRenderTargetRenderer> = wdCb.Collection.create<ProceduralRenderTargetRenderer>();
 
-        public init(){
+        public afterInit(){
             this._commonRenderTargetRendererList.forEach((renderTargetRenderer:RenderTargetRenderer) => renderTargetRenderer.init());
             this._proceduralRendererList.forEach((renderTargetRenderer:ProceduralRenderTargetRenderer) => renderTargetRenderer.init());
         }

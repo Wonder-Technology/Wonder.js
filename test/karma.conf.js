@@ -27,7 +27,7 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        'test/unit/**',
+        //'test/unit/**',
 
         //'test/unit/**/action/*',
 
@@ -36,13 +36,18 @@
         //'test/unit/**/command/*',
 
 
+
+        'test/unit/renderer/mirror/**',
+        'test/unit/renderer/dynamicCubemap/**',
+
+
         //'test/unit/**/scene/**',
 
         //'test/unit/**/Shadow*Spec.js',
         //
         //'test/unit/renderer/pointShadowMapSpec.js',
         //
-        //'test/unit/renderer/shadowMapSpec.js',
+        //'test/unit/renderer/shadow/**',
         //'test/unit/renderer/*ShadowMapSpec.js',
         //'test/unit/renderer/*ShadowMap_*Spec.js',
         //
@@ -124,7 +129,7 @@
 
         //'test/unit/**/RigidBodySpec*',
 
-        //'test/unit/**/MirrorRender*',
+        //'test/unit/**/Mirror*',
 
 
         //'test/unit/**/ColorSpec*',
