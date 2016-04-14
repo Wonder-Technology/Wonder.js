@@ -115,7 +115,7 @@ describe("direction shadow map with octree", function() {
             var shader, program;
 
             function setDrawShadowMapShaderAndProgram() {
-                var data = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
+                var data = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
 
                 shader = data.shader;
                 program = data.program;
@@ -158,8 +158,8 @@ describe("direction shadow map with octree", function() {
                     var shader1, shader2;
 
                     function setChildrenDrawShadowMapShaderAndProgram() {
-                        var data1 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, part1);
-                        var data2 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, part2);
+                        var data1 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, part1);
+                        var data2 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, part2);
 
                         shader1 = data1.shader;
                         shader2 = data2.shader;

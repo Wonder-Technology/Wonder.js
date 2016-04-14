@@ -96,7 +96,7 @@ describe("mirror", function() {
             expect(gl.texParameteri.withArgs(sinon.match.any, gl.TEXTURE_MIN_FILTER, gl.LINEAR)).toCalledOnce();
         });
 
-        describe("build mirror map", function() {
+        describe("build map", function() {
             function getBuildMap(){
                 return getBuildMapRenderer.apply(this, arguments).texture;
             }
@@ -127,6 +127,42 @@ describe("mirror", function() {
 
                 expect(mirrorMap.bindToUnit).toCalledOnce();
                 expect(mirrorMap.sendData).not.toCalled();
+            });
+        });
+
+        describe("test draw map", function(){
+            beforeEach(function(){
+            });
+
+            it("if renderList is empty, send u_isRenderListEmpty:1", function(){
+                mirror.getComponent(wd.Geometry).material.reflectionMap.renderList = [];
+
+                director._init();
+
+                var data = renderTargetRendererTool.getDrawShadowMapShaderAndProgramHelper(sandbox, mirror);
+                var program = data.program;
+
+
+                director.scene.gameObjectScene.render(renderer);
+                renderer.render();
+
+
+                expect(program.sendUniformData.withArgs("u_isRenderListEmpty", sinon.match.any, 1)).toCalledOnce();
+            });
+            it("else, not send", function(){
+                mirror.getComponent(wd.Geometry).material.reflectionMap.renderList = [sphere];
+
+                director._init();
+
+                var data = renderTargetRendererTool.getDrawShadowMapShaderAndProgramHelper(sandbox, mirror);
+                var program = data.program;
+
+
+                director.scene.gameObjectScene.render(renderer);
+                renderer.render();
+
+
+                expect(program.sendUniformData.withArgs("u_isRenderListEmpty")).not.toCalled();
             });
         });
     });

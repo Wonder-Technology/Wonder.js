@@ -127,8 +127,8 @@ describe("shadow map", function() {
 
                     director._init();
 
-                    var shader1 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere).shader;
-                    var shader2 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, child).shader;
+                    var shader1 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere).shader;
+                    var shader2 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, child).shader;
 
                     expect(glslTool.contain(shader1.fsSource, "u_twoDShadowMapSampler")).toBeFalsy();
                     expect(glslTool.contain(shader2.fsSource, "u_twoDShadowMapSampler")).toBeFalsy();
@@ -298,13 +298,13 @@ describe("shadow map", function() {
                 it("should send shadow map data", function () {
                     director._init();
 
-                    var data1 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
+                    var data1 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
                     var program1 = data1.program;
 
-                    var data2 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere2);
+                    var data2 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere2);
                     var program2 = data2.program;
 
-                    var data3 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere3);
+                    var data3 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere3);
                     var program3 = data3.program;
 
 
@@ -329,13 +329,13 @@ describe("shadow map", function() {
                 it("fs glsl should refresh TWOD_SHADOWMAP_COUNT", function () {
                     director._init();
 
-                    var data1 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
+                    var data1 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
                     var shader1 = data1.shader;
 
-                    var data2 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere2);
+                    var data2 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere2);
                     var shader2 = data2.shader;
 
-                    var data3 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere3);
+                    var data3 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere3);
                     var shader3 = data3.shader;
 
 
@@ -401,13 +401,13 @@ describe("shadow map", function() {
                 it("fs glsl should define TWOD_SHADOWMAP_COUNT", function () {
                     director._init();
 
-                    var data1 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
+                    var data1 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
                     var shader1 = data1.shader;
 
-                    var data2 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere2);
+                    var data2 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere2);
                     var shader2 = data2.shader;
 
-                    var data3 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere3);
+                    var data3 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere3);
                     var shader3 = data3.shader;
 
 
@@ -539,11 +539,11 @@ describe("shadow map", function() {
                         it("should send the added shadow map data", function () {
                             director.scene.gameObjectScene.update(1);
 
-                            var data1 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
+                            var data1 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
                             var program1 = data1.program;
 
 
-                            var data4 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere4);
+                            var data4 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere4);
                             var program4 = data4.program;
 
 
@@ -574,13 +574,13 @@ describe("shadow map", function() {
 
 
 
-                            var data1 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
+                            var data1 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
                             var shader1 = data1.shader;
 
-                            var data2 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere2);
+                            var data2 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere2);
                             var shader2 = data2.shader;
 
-                            var data4 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere4);
+                            var data4 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere4);
                             var shader4 = data4.shader;
 
 
@@ -603,7 +603,7 @@ describe("shadow map", function() {
                         director._loopBody(1);
 
 
-                        oldGLProgram = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere, true).program._program;
+                        oldGLProgram = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere, true).program._program;
 
                         director.scene.shadowLayerList.removeChild(layer2);
                     });
@@ -700,13 +700,13 @@ describe("shadow map", function() {
                                 expect(shadowMap2.bindToUnit.callCount).toEqual(0);
                             });
                             it("should not send the removed shadow map data", function () {
-                                var data1 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
+                                var data1 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
                                 var program1 = data1.program;
 
-                                var data2 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere2);
+                                var data2 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere2);
                                 var program2 = data2.program;
 
-                                var data3 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere3);
+                                var data3 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere3);
                                 var program3 = data3.program;
 
 
@@ -730,7 +730,7 @@ describe("shadow map", function() {
                                     director.scene.gameObjectScene.update(1);
 
 
-                                    var newGLProgram = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere, true).program._program;
+                                    var newGLProgram = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere, true).program._program;
 
 
 
@@ -752,7 +752,7 @@ describe("shadow map", function() {
                                     director.scene.gameObjectScene.update(1);
 
 
-                                    var newGLProgram = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere, true).program._program;
+                                    var newGLProgram = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere, true).program._program;
 
 
 
@@ -767,7 +767,7 @@ describe("shadow map", function() {
                                 it("fs glsl->TWOD_SHADOWMAP_COUNT should be refreshed", function () {
                                     director.scene.gameObjectScene.update(1);
 
-                                    var data1 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
+                                    var data1 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
                                     var shader1 = data1.shader;
 
 
@@ -817,7 +817,7 @@ describe("shadow map", function() {
                         expect(shadowMap1.bindToUnit.callCount).toEqual(1 + 1);
                     });
                     it("should send glsl data", function () {
-                        var data1 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
+                        var data1 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
                         var program1 = data1.program;
 
 
@@ -860,7 +860,7 @@ describe("shadow map", function() {
                     it("should not send glsl data", function () {
                         sphere.getComponent(wd.Shadow).receive = false;
 
-                        var data1 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
+                        var data1 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
                         var program1 = data1.program;
 
 
@@ -904,7 +904,7 @@ describe("shadow map", function() {
                         it("fs glsl should refresh and contain shadow map glsl", function () {
                             sphere.getComponent(wd.Shadow).receive = true;
 
-                            var data1 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
+                            var data1 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
                             var shader1 = data1.shader;
                             var program1 = data1.program;
                             sandbox.stub(program1, "initWithShader");
@@ -942,7 +942,7 @@ describe("shadow map", function() {
                         it("fs glsl should refresh and not contain shadow map glsl", function () {
                             sphere.getComponent(wd.Shadow).receive = false;
 
-                            var data1 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
+                            var data1 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
                             var shader1 = data1.shader;
                             var program1 = data1.program;
                             sandbox.stub(program1, "initWithShader");

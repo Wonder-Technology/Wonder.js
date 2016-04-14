@@ -17,6 +17,8 @@
 @end
 
 @body
-totalColor *= getReflectionMapColor(totalColor);
+if(!isRenderListEmpty(u_isRenderListEmpty)){
+    totalColor *= getReflectionMapColor(totalColor);
+}
 @end
 

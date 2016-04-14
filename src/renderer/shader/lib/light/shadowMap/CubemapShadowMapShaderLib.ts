@@ -19,6 +19,10 @@ module wd{
             glslData.forEach((data:CubemapShadowMapShaderLibData, index:number) => {
                 var light = data.light;
 
+                if(data.isRenderListEmpty){
+                    program.sendStructureData(`u_isCubemapRenderListEmpty[${index}]`, EVariableType.NUMBER_1, 1);
+                }
+
                 program.sendStructureData(`u_cubemapLightPos[${index}]`, EVariableType.FLOAT_3, light.position);
                 program.sendStructureData(`u_farPlane[${index}]`, EVariableType.FLOAT_1, light.shadowCameraFar);
                 program.sendStructureData(`u_cubemapShadowBias[${index}]`, EVariableType.FLOAT_1, light.shadowBias);
@@ -28,7 +32,8 @@ module wd{
     }
 
     export type CubemapShadowMapShaderLibData = {
-        light:Light
+        light:Light,
+        isRenderListEmpty:boolean
     }
 }
 

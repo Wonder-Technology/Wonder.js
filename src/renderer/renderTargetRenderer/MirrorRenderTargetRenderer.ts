@@ -19,11 +19,25 @@ module wd {
         protected getRenderList():wdCb.Collection<GameObject>{
             return this.texture.renderList;
         }
+
         protected renderRenderer(renderer){
             this._setSceneSide(ESide.FRONT);
             renderer.webglState = BasicState.create();
             renderer.render();
             this._setSceneSide(null);
+        }
+
+        protected beforeRender(){
+            if(this.isRenderListEmptyWhenRender()){
+                Director.getInstance().scene.glslData.addChild(<any>EShaderGLSLData.MIRROR, {
+                    isRenderListEmpty:true
+                });
+            }
+            else{
+                Director.getInstance().scene.glslData.addChild(<any>EShaderGLSLData.MIRROR, {
+                    isRenderListEmpty:false
+                });
+            }
         }
 
         protected createCamera(camera:GameObject):GameObject{

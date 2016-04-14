@@ -412,6 +412,11 @@ module wd{
             type:EVariableType.FLOAT_3,
             value:EVariableCategory.ENGINE
         };
+
+        public static u_isRenderListEmpty :ShaderVariable = {
+            type:EVariableType.NUMBER_1,
+            value:EVariableCategory.ENGINE
+        };
     }
 
     export type ShaderVariable = {

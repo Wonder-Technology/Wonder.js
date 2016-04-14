@@ -228,7 +228,7 @@ describe("direction shadow map", function() {
             var shader, program;
 
             function setDrawShadowMapShaderAndProgram(){
-                var data = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
+                var data = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
 
                 shader = data.shader;
                 program = data.program;
@@ -289,8 +289,8 @@ describe("direction shadow map", function() {
                     var shader1, shader2;
 
                     function setChildrenDrawShadowMapShaderAndProgram(){
-                        var data1 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, part1);
-                        var data2 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, part2);
+                        var data1 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, part1);
+                        var data2 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, part2);
 
                         shader1 = data1.shader;
                         shader2 = data2.shader;
@@ -467,6 +467,33 @@ describe("direction shadow map", function() {
 
                     expect(program.sendUniformData.withArgs("u_twoDShadowBias[0]").secondCall.args[2]).toEqual(1.1);
                     expect(program.sendUniformData.withArgs("u_twoDShadowBias[1]").secondCall.args[2]).toEqual(1.2);
+                });
+            });
+
+            describe("if renderList is empty, not draw shadow map", function(){
+                beforeEach(function(){
+                    sphere.getComponent(wd.Shadow).cast = true;
+
+                    director._init();
+                });
+
+                it("if renderList is empty, send u_isTwoDRenderListEmpty:1", function(){
+                    sphere.getComponent(wd.Shadow).cast = false;
+
+                    setDrawShadowMapShaderAndProgram();
+
+                    director._loopBody();
+
+
+                    expect(program.sendUniformData.withArgs("u_isTwoDRenderListEmpty[0]", sinon.match.any, 1)).toCalledOnce();
+                });
+                it("else, not send", function(){
+                    setDrawShadowMapShaderAndProgram();
+
+                    director._loopBody();
+
+
+                    expect(program.sendUniformData.withArgs("u_isTwoDRenderListEmpty[0]")).not.toCalled();
                 });
             });
         });
@@ -668,26 +695,6 @@ describe("direction shadow map", function() {
                         expect(shadowMap1.bindToUnit.callCount).toEqual(1 + 2);
                     });
                 });
-
-                describe("test change added object->cast/receive", function(){
-                    beforeEach(function(){
-
-                    });
-
-                    it("test change cast", function(){
-
-                    });
-                });
-
-                describe("test change added object->layer", function(){
-                    beforeEach(function(){
-
-                    });
-
-                    it("", function(){
-
-                    });
-                });
             });
 
             describe("remove shadow gameObject at runtime", function () {
@@ -737,7 +744,7 @@ describe("direction shadow map", function() {
                         var shadowMap1 = twoDShadowMapList.getChild(0);
                         sandbox.stub(shadowMap1, "bindToUnit");
 
-                        var data1 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
+                        var data1 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
                         var program1 = data1.program;
 
 
@@ -776,7 +783,7 @@ describe("direction shadow map", function() {
                         shadowMap1 = twoDShadowMapList.getChild(0);
                         sandbox.stub(shadowMap1, "bindToUnit");
 
-                        var data1 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere2);
+                        var data1 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere2);
                         program1 = data1.program;
 
 
@@ -794,26 +801,6 @@ describe("direction shadow map", function() {
                     //it("if scene has other objects with the same layer which cast shadow, bind and send shadow map", function () {
                     //
                     //});
-                });
-
-                describe("test change added object->cast/receive", function(){
-                    beforeEach(function(){
-
-                    });
-
-                    it("", function(){
-
-                    });
-                });
-
-                describe("test change added object->layer", function(){
-                    beforeEach(function(){
-
-                    });
-
-                    it("", function(){
-
-                    });
                 });
             });
 
@@ -835,7 +822,7 @@ describe("direction shadow map", function() {
             var program;
 
             function setDrawShadowMapShaderAndProgram(obj){
-                var data = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, obj);
+                var data = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, obj);
 
                 shader = data.shader;
                 program = data.program;

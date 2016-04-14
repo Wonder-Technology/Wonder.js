@@ -11,4 +11,8 @@ mat3 transpose(mat3 m) {
                 m[0][2], m[1][2], m[2][2]   // new col 1
              );
   }
+
+bool isRenderListEmpty(int isRenderListEmpty){
+  return isRenderListEmpty == 1;
+}
 @end

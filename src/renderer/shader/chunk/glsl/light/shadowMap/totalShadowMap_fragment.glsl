@@ -37,10 +37,15 @@ vec3 getShadowVisibility() {
     vec3 cubemapLightDir = vec3(0.0);
 
 
+
     //to normalMap, the lightDir use the origin one instead of normalMap's lightDir here(the lightDir is used for computing shadowBias, the origin one is enough for it)
 
     #if TWOD_SHADOWMAP_COUNT > 0
 	for( int i = 0; i < TWOD_SHADOWMAP_COUNT; i ++ ) {
+        if(isRenderListEmpty(u_isTwoDRenderListEmpty[i])){
+            break;
+        }
+
         twoDLightDir = getDirectionLightDirByLightPos(u_twoDLightPos[i]);
 
 	////if is opposite to direction of light rays, no shadow
@@ -53,6 +58,10 @@ vec3 getShadowVisibility() {
 	#if CUBEMAP_SHADOWMAP_COUNT > 0
 
 	for( int i = 0; i < CUBEMAP_SHADOWMAP_COUNT; i ++ ) {
+        if(isRenderListEmpty(u_isCubemapRenderListEmpty[i])){
+            break;
+        }
+
 	////if is opposite to direction of light rays, no shadow
 
         shadowColor *= getCubemapShadowVisibility(cubemapLightDir, u_cubemapShadowMapSampler[i], u_cubemapLightPos[i], u_farPlane[i], u_cubemapShadowBias[i], u_cubemapShadowDarkness[i]);

@@ -1,5 +1,8 @@
 @varDeclare
 	uniform samplerCube u_cubemapShadowMapSampler[ CUBEMAP_SHADOWMAP_COUNT ];
+
+
+    uniform int u_isCubemapRenderListEmpty[ CUBEMAP_SHADOWMAP_COUNT ];
 	uniform float u_cubemapShadowDarkness[ CUBEMAP_SHADOWMAP_COUNT ];
 	uniform float u_cubemapShadowBias[ CUBEMAP_SHADOWMAP_COUNT ];
 	uniform float u_farPlane[ CUBEMAP_SHADOWMAP_COUNT ];

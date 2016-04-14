@@ -1,6 +1,7 @@
 @varDeclare
 varying vec4 v_positionFromLight[ TWOD_SHADOWMAP_COUNT ];
 
+    uniform int u_isTwoDRenderListEmpty[ TWOD_SHADOWMAP_COUNT ];
 	uniform sampler2D u_twoDShadowMapSampler[ TWOD_SHADOWMAP_COUNT ];
 	uniform float u_twoDShadowDarkness[ TWOD_SHADOWMAP_COUNT ];
 	uniform float u_twoDShadowBias[ TWOD_SHADOWMAP_COUNT ];

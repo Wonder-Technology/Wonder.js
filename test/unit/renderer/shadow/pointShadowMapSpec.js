@@ -275,7 +275,7 @@ describe("point shadow map", function() {
             var shader, program;
 
             function setDrawShadowMapShaderAndProgram(){
-                var data = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
+                var data = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
 
                 shader = data.shader;
                 program = data.program;
@@ -336,8 +336,8 @@ describe("point shadow map", function() {
                     var shader1, shader2;
 
                     function setChildrenDrawShadowMapShaderAndProgram(){
-                        var data1 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, part1);
-                        var data2 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, part2);
+                        var data1 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, part1);
+                        var data2 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, part2);
 
                         shader1 = data1.shader;
                         shader2 = data2.shader;
@@ -509,6 +509,33 @@ describe("point shadow map", function() {
                     expect(program.sendUniformData.withArgs("u_cubemapShadowBias[1]").secondCall.args[2]).toEqual(1.2);
                 });
             });
+
+            describe("if renderList is empty, not draw shadow map", function(){
+                beforeEach(function(){
+                    sphere.getComponent(wd.Shadow).cast = true;
+
+                    director._init();
+                });
+
+                it("if renderList is empty, send u_isTwoDRenderListEmpty:1", function(){
+                    sphere.getComponent(wd.Shadow).cast = false;
+
+                    setDrawShadowMapShaderAndProgram();
+
+                    director._loopBody();
+
+
+                    expect(program.sendUniformData.withArgs("u_isCubemapRenderListEmpty[0]", sinon.match.any, 1)).toCalledOnce();
+                });
+                it("else, not send", function(){
+                    setDrawShadowMapShaderAndProgram();
+
+                    director._loopBody();
+
+
+                    expect(program.sendUniformData.withArgs("u_isCubemapRenderListEmpty[0]")).not.toCalled();
+                });
+            });
         });
 
         it("the binded shadowMap when build shadow map and the binded shadowMap when draw shadow map are the same one", function () {
@@ -642,13 +669,13 @@ describe("point shadow map", function() {
                 it("should send shadow map data", function () {
                     director._init();
 
-                    var data1 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
+                    var data1 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
                     var program1 = data1.program;
 
-                    var data2 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere2);
+                    var data2 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere2);
                     var program2 = data2.program;
 
-                    var data3 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere3);
+                    var data3 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere3);
                     var program3 = data3.program;
 
 
@@ -673,13 +700,13 @@ describe("point shadow map", function() {
                 it("fs glsl should define CUBEMAP_SHADOWMAP_COUNT", function () {
                     director._init();
 
-                    var data1 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
+                    var data1 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
                     var shader1 = data1.shader;
 
-                    var data2 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere2);
+                    var data2 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere2);
                     var shader2 = data2.shader;
 
-                    var data3 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere3);
+                    var data3 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere3);
                     var shader3 = data3.shader;
 
 
@@ -746,13 +773,13 @@ describe("point shadow map", function() {
                 it("fs glsl should define CUBEMAP_SHADOWMAP_COUNT", function () {
                     director._init();
 
-                    var data1 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
+                    var data1 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
                     var shader1 = data1.shader;
 
-                    var data2 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere2);
+                    var data2 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere2);
                     var shader2 = data2.shader;
 
-                    var data3 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere3);
+                    var data3 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere3);
                     var shader3 = data3.shader;
 
 
@@ -905,7 +932,7 @@ describe("point shadow map", function() {
                         shadowMap1 = shadowMapList.getChild(0);
                         sandbox.stub(shadowMap1, "bindToUnit");
 
-                        var data1 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere2);
+                        var data1 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere2);
                         program1 = data1.program;
 
 
@@ -932,7 +959,7 @@ describe("point shadow map", function() {
             var program;
 
             function setDrawShadowMapShaderAndProgram(obj){
-                var data = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, obj);
+                var data = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, obj);
 
                 shader = data.shader;
                 program = data.program;

@@ -31,7 +31,8 @@ module wd {
         protected beforeRenderFrameBufferTexture(renderCamera:GameObject){
             Director.getInstance().scene.glslData.appendChild(<any>EShaderGLSLData.TWOD_SHADOWMAP, {
                 camera: renderCamera.getComponent(CameraController),
-                light: this._light
+                light: this._light,
+                isRenderListEmpty:false
             });
         }
 
@@ -45,6 +46,10 @@ module wd {
 
         protected beforeRender(){
             if(this.isRenderListEmptyWhenRender()){
+                Director.getInstance().scene.glslData.appendChild(<any>EShaderGLSLData.TWOD_SHADOWMAP, {
+                    isRenderListEmpty:true
+                });
+
                 return;
             }
 

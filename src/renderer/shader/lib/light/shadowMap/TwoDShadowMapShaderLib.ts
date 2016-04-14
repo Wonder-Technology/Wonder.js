@@ -10,7 +10,9 @@ module wd{
         public type:string = "twoDShadowMap";
 
         public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
-            var glslData = Director.getInstance().scene.glslData.getChild(<any>EShaderGLSLData.TWOD_SHADOWMAP);
+            var glslData = null;
+
+            glslData = Director.getInstance().scene.glslData.getChild(<any>EShaderGLSLData.TWOD_SHADOWMAP);
 
             if(!glslData){
                 return;
@@ -19,6 +21,11 @@ module wd{
             glslData.forEach((data:TwoDShadowMapShaderLibData, index:number) => {
                 var camera:CameraController = data.camera,
                     light:Light = data.light;
+
+                if(data.isRenderListEmpty){
+                    program.sendStructureData(`u_isTwoDRenderListEmpty[${index}]`, EVariableType.NUMBER_1, 1);
+                    return
+                }
 
                 //todo cache vpMatrix
                 program.sendStructureData(`u_vpMatrixFromLight[${index}]`, EVariableType.FLOAT_MAT4, camera.worldToCameraMatrix.applyMatrix(camera.pMatrix, true));
@@ -32,7 +39,8 @@ module wd{
 
     export type TwoDShadowMapShaderLibData = {
         camera:CameraController,
-        light:Light
+        light:Light,
+        isRenderListEmpty:boolean
     }
 }
 

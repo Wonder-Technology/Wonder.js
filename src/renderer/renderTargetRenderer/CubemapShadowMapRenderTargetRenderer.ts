@@ -48,13 +48,19 @@ module wd {
         protected beforeRender(){
             var scene:SceneDispatcher = null;
 
-            Director.getInstance().scene.glslData.appendChild(<any>EShaderGLSLData.CUBEMAP_SHADOWMAP, {
-                light: this._light
-            });
-
             if(this.isRenderListEmptyWhenRender()){
+                Director.getInstance().scene.glslData.appendChild(<any>EShaderGLSLData.CUBEMAP_SHADOWMAP, {
+                    light: this._light,
+                    isRenderListEmpty:true
+                });
+
                 return;
             }
+
+            Director.getInstance().scene.glslData.appendChild(<any>EShaderGLSLData.CUBEMAP_SHADOWMAP, {
+                light: this._light,
+                isRenderListEmpty:false
+            });
 
             scene = Director.getInstance().scene;
 
