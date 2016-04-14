@@ -36,16 +36,16 @@ module wd{
         }
 
         public renderCommonRenderTargetRenderer(renderer:Renderer, camera:GameObject) {
-            this._commonRenderTargetRendererList.forEach((target:RenderTargetRenderer) =>{
-                target.render(renderer, camera);
-            });
-
             this._proceduralRendererList.filter((target:ProceduralRenderTargetRenderer) =>{
                     return target.needRender();
                 })
                 .forEach((target:ProceduralRenderTargetRenderer) =>{
                     target.render(renderer);
                 });
+
+            this._commonRenderTargetRendererList.forEach((target:RenderTargetRenderer) =>{
+                target.render(renderer, camera);
+            });
         }
     }
 }

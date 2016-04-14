@@ -312,25 +312,29 @@ describe("GameObjectScene", function() {
         var renderer,camera;
 
         beforeEach(function(){
-
             renderer = {};
             camera = wd.GameObject.create();
             scene.currentCamera = camera;
         });
 
-        it("render renderTargetRenderers", function(){
-            var renderTargetRenderer = {
-                init: sandbox.stub(),
-                render: sandbox.stub()
-            };
-            scene.renderTargetRendererManager.addCommonRenderTargetRenderer(renderTargetRenderer);
-
-            scene.render(renderer);
-
-            expect(renderTargetRenderer.render).toCalledWith(renderer, camera);
-        });
-
         describe("render proceduralRenderTargetRenderers", function(){
+            it("render proceduralRenderTargetRenderer before render common renderTargetRenderer", function () {
+                var proceduralRenderTargetRenderer = new wd.FireProceduralRenderTargetRenderer();
+                sandbox.stub(proceduralRenderTargetRenderer, "render");
+
+                var commonRenderTargetRenderer = new wd.CommonRenderTargetRenderer();
+                sandbox.stub(commonRenderTargetRenderer, "render");
+
+
+                scene.renderTargetRendererManager.addProceduralRenderTargetRenderer(proceduralRenderTargetRenderer);
+                scene.renderTargetRendererManager.addCommonRenderTargetRenderer(commonRenderTargetRenderer);
+
+                scene.render(renderer);
+
+
+                expect(proceduralRenderTargetRenderer.render).toCalledBefore(commonRenderTargetRenderer.render);
+            });
+
             it("render FireProceduralRenderTargetRenderer every frame", function () {
                 var proceduralRenderTargetRenderer = new wd.FireProceduralRenderTargetRenderer();
                 sandbox.stub(proceduralRenderTargetRenderer, "render");
@@ -391,6 +395,18 @@ describe("GameObjectScene", function() {
                     expect(proceduralRenderTargetRenderer.render).toCalledOnce();
                 });
             });
+        });
+
+        it("render renderTargetRenderers", function(){
+            var renderTargetRenderer = {
+                init: sandbox.stub(),
+                render: sandbox.stub()
+            };
+            scene.renderTargetRendererManager.addCommonRenderTargetRenderer(renderTargetRenderer);
+
+            scene.render(renderer);
+
+            expect(renderTargetRenderer.render).toCalledWith(renderer, camera);
         });
 
         it("render rendererComponent", function(){
