@@ -37,18 +37,22 @@
 
 
 
-        'test/unit/renderer/mirror/**',
-        'test/unit/renderer/dynamicCubemap/**',
+        //'test/unit/renderer/mirror/**',
+        //'test/unit/renderer/dynamicCubemap/**',
+
+        'test/unit/**/waterReflection*',
+        'test/unit/**/waterRefraction*',
+        'test/unit/**/waterFresnel*',
 
 
         //'test/unit/**/scene/**',
 
         //'test/unit/**/Shadow*Spec.js',
 
-        'test/unit/renderer/shadow/pointShadowMapSpec.js',
+        //'test/unit/renderer/shadow/pointShadowMapSpec.js',
         //
         //'test/unit/renderer/shadow/**',
-        'test/unit/renderer/shadow/directionShadowMapSpec.js',
+        //'test/unit/renderer/shadow/directionShadowMapSpec.js',
         //'test/unit/renderer/*ShadowMap_*Spec.js',
         //
         //'test/unit/**/instance/*',

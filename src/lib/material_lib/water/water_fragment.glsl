@@ -29,7 +29,7 @@ varying vec4 v_reflectionAndRefractionMapCoord;
 
 //totalColor += vec4(reflectionColor * fresnelTerm * u_levelData.reflectionLevel + (1.0 - fresnelTerm) * refractionColor * u_levelData.refractionLevel, 1.0);
 
-totalColor += getLightEffectColor(projectedTexCoords);
+totalColor += vec4(getLightEffectColor(projectedTexCoords), 1.0);
 
 
 //totalColor *= vec4(mix(reflectionColor, refractionColor, 0.5), 1.0);

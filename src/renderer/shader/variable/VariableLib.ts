@@ -417,6 +417,16 @@ module wd{
             type:EVariableType.NUMBER_1,
             value:EVariableCategory.ENGINE
         };
+
+        public static u_isReflectionRenderListEmpty :ShaderVariable = {
+            type:EVariableType.NUMBER_1,
+            value:EVariableCategory.ENGINE
+        };
+
+        public static u_isRefractionRenderListEmpty :ShaderVariable = {
+            type:EVariableType.NUMBER_1,
+            value:EVariableCategory.ENGINE
+        };
     }
 
     export type ShaderVariable = {

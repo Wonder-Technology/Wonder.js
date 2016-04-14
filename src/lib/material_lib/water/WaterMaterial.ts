@@ -75,7 +75,7 @@ module wd{
 
             this.shader.addLib(WaterShaderLib.create());
 
-            if(this.reflectionMap && this.reflectionMap){
+            if(this.reflectionMap && this.refractionMap){
                 this.shader.addLib(WaterFresnelShaderLib.create());
             }
             else if(this.reflectionMap){

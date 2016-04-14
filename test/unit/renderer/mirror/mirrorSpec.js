@@ -149,7 +149,7 @@ describe("mirror", function() {
 
                 expect(program.sendUniformData.withArgs("u_isRenderListEmpty", sinon.match.any, 1)).toCalledOnce();
             });
-            it("else, , send u_isRenderListEmpty:0", function(){
+            it("else, send u_isRenderListEmpty:0", function(){
                 mirror.getComponent(wd.Geometry).material.reflectionMap.renderList = [sphere];
 
                 director._init();

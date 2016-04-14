@@ -1,7 +1,13 @@
 module wd{
     export class RenderTargerRendererShaderLibUtils{
-        public static judgeAndSendIsRenderListEmptyVariable(program:Program, glslDataKey:EShaderGLSLData){
-            var glslData = null;
+        public static judgeAndSendIsRenderListEmptyVariable(program:Program, glslDataKey:EShaderGLSLData);
+        public static judgeAndSendIsRenderListEmptyVariable(program:Program, glslDataKey:EShaderGLSLData, variableName:string);
+
+        public static judgeAndSendIsRenderListEmptyVariable(...args){
+            var glslData = null,
+                program = args[0],
+                glslDataKey = args[1],
+                variableName:string = null;
 
             glslData = Director.getInstance().scene.glslData.getChild(<any>glslDataKey);
 
@@ -9,11 +15,18 @@ module wd{
                 return;
             }
 
-            if(glslData.isRenderListEmpty){
-                program.sendUniformData("u_isRenderListEmpty", EVariableType.NUMBER_1, 1);
+            if(args.length === 3){
+                variableName = args[2];
             }
             else{
-                program.sendUniformData("u_isRenderListEmpty", EVariableType.NUMBER_1, 0);
+                variableName = "u_isRenderListEmpty";
+            }
+
+            if(glslData.isRenderListEmpty){
+                program.sendUniformData(variableName, EVariableType.NUMBER_1, 1);
+            }
+            else{
+                program.sendUniformData(variableName, EVariableType.NUMBER_1, 0);
             }
         }
     }

@@ -9,6 +9,8 @@ module wd{
         public type:string = "water_reflection";
 
         public sendShaderVariables(program: Program, cmd:QuadCommand, material:WaterMaterial){
+            RenderTargerRendererShaderLibUtils.judgeAndSendIsRenderListEmptyVariable(program, EShaderGLSLData.MIRROR, "u_isReflectionRenderListEmpty");
+
             program.sendStructureData("u_levelData.reflectionLevel", EVariableType.FLOAT_1, material.reflectionLevel);
         }
 
@@ -16,8 +18,9 @@ module wd{
             super.setShaderDefinition(quadCmd, material);
 
             this.addUniformVariable([
-                VariableNameTable.getVariableName("reflectionMap"),
-                "u_levelData"
+                "u_levelData",
+                "u_isReflectionRenderListEmpty",
+                VariableNameTable.getVariableName("reflectionMap")
             ]);
         }
     }

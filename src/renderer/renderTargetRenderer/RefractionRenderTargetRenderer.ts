@@ -23,6 +23,19 @@ module wd {
             renderer.render();
         }
 
+        protected beforeRender(){
+            if(this.isRenderListEmptyWhenRender()){
+                Director.getInstance().scene.glslData.addChild(<any>EShaderGLSLData.REFRACTION, {
+                    isRenderListEmpty:true
+                });
+            }
+            else{
+                Director.getInstance().scene.glslData.addChild(<any>EShaderGLSLData.REFRACTION, {
+                    isRenderListEmpty:false
+                });
+            }
+        }
+
         protected isNeedCreateCamera(){
             return false;
         }
