@@ -1,16 +1,5 @@
 module wd{
-    export abstract class ForLightEnvMapShaderLib extends EngineShaderLib{
-        public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:EngineMaterial) {
-        }
-
-        public setShaderDefinition(quadCmd:QuadCommand, material:EngineMaterial){
-            super.setShaderDefinition(quadCmd, material);
-
-            this.addUniformVariable(["u_samplerCube0"]);
-
-            this.vsSourceBody = this.getVsChunk().body;
-        }
-
+    export abstract class ForLightEnvMapShaderLib extends EnvMapShaderLib{
         protected setEnvMapSource(){
             var vs = this.getVsChunk("forLight_envMap"),
                 fs = this.getFsChunk("forLight_envMap");

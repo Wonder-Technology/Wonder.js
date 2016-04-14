@@ -109,6 +109,66 @@ describe("dynamicCubemap", function() {
             expect(gl.texParameteri.withArgs(sinon.match.any, gl.TEXTURE_MAG_FILTER, gl.LINEAR)).toCalledOnce();
             expect(gl.texParameteri.withArgs(sinon.match.any, gl.TEXTURE_MIN_FILTER, gl.LINEAR)).toCalledOnce();
         });
+
+        describe("test draw map", function(){
+            function judge(){
+                it("if all renderList of six directions are empty, send u_isRenderListEmpty:1", function(){
+                    director._init();
+
+                    dynamicObj.getComponent(wd.Geometry).material.envMap.renderList = {
+                        px: [],
+                        nx: [],
+                        py: [],
+                        ny: [],
+                        pz: [],
+                        nz: []
+                    };
+
+                    var data = renderTargetRendererTool.getDrawShadowMapShaderAndProgramHelper(sandbox, dynamicObj);
+                    var program = data.program;
+
+
+                    director.scene.gameObjectScene.render(renderer);
+                    renderer.render();
+
+
+                    expect(program.sendUniformData.withArgs("u_isRenderListEmpty", sinon.match.any, 1)).toCalledOnce();
+                });
+                it("else, send u_isRenderListEmpty:0", function(){
+                    director._init();
+
+                    var data = renderTargetRendererTool.getDrawShadowMapShaderAndProgramHelper(sandbox, dynamicObj);
+                    var program = data.program;
+
+
+                    director.scene.gameObjectScene.render(renderer);
+                    renderer.render();
+
+
+                    expect(program.sendUniformData.withArgs("u_isRenderListEmpty", sinon.match.any, 0)).toCalledOnce();
+                });
+            }
+
+            beforeEach(function(){
+            });
+
+            describe("test LightMaterial", function(){
+                judge();
+            });
+
+            describe("test BasicMaterial", function(){
+                beforeEach(function(){
+                    var texture = dynamicObj.getComponent(wd.Geometry).material.envMap;
+
+                    var basicMaterial = wd.BasicMaterial.create();
+                    basicMaterial.envMap = texture;
+
+                    dynamicObj.getComponent(wd.Geometry).material = basicMaterial;
+                });
+
+                judge();
+            });
+        });
     });
 });
 

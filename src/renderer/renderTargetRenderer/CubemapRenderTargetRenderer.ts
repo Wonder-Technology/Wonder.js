@@ -7,7 +7,6 @@ module wd {
         private _lastCameraList: wdCb.Collection<GameObject> = null;
         private _lastPosition:Vector3 = null;
 
-        //protected abstract getRenderList():wdCb.Hash<any>;
         protected abstract setCamera(cubeCameraComponent:PerspectiveCamera);
         protected abstract getPosition():Vector3;
 
@@ -67,7 +66,6 @@ module wd {
 
             for(let i = 0; i < 6; i++){
                 faceRenderList = renderList.getChild(this._convertIndexToFaceKey(i));
-                //faceRenderList can be array or collection
                 if(this._isEmpty(faceRenderList)) {
                     continue;
                 }
@@ -94,7 +92,6 @@ module wd {
                 this.renderRenderer(renderer);
             }
 
-            //if(this._isNeedCreateCamera(position)){
             if(isNeedCreateCamera){
                 if(this._lastCameraList){
                     this._lastCameraList.forEach((camera:GameObject) => {
@@ -150,7 +147,11 @@ module wd {
         }
 
         private _isEmpty(faceRenderList){
-            return !faceRenderList || (faceRenderList.length && faceRenderList.length === 0) || (faceRenderList.getCount && faceRenderList.getCount() === 0);
+            if(faceRenderList === void 0 || null){
+                return true;
+            }
+
+            return faceRenderList.getCount() === 0;
         }
 
         private _convertIndexToFaceKey(index:number){

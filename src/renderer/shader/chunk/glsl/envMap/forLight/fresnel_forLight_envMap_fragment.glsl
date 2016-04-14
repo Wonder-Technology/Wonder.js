@@ -29,5 +29,7 @@ vec4 getEnvMapTotalColor(vec3 inDir, vec3 normal){
 @end
 
 @body
+if(!isRenderListEmpty(u_isRenderListEmpty)){
 	totalColor *= getEnvMapTotalColor(inDir, normalize(getNormal()));
+}
 @end

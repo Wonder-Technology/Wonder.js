@@ -411,6 +411,8 @@
 /// <reference path="renderer/shader/lib/animation/morph/VerticeMorphShaderLib"/>
 /// <reference path="renderer/shader/lib/animation/morph/NormalMorphShaderLib"/>
 /// <reference path="renderer/shader/lib/skybox/SkyboxShaderLib"/>
+
+/// <reference path="renderer/shader/lib/envMap/EnvMapShaderLib"/>
 /// <reference path="renderer/shader/lib/envMap/forBasic/ForBasicEnvMapShaderLib"/>
 /// <reference path="renderer/shader/lib/envMap/forBasic/BasicForBasicEnvMapShaderLib"/>
 /// <reference path="renderer/shader/lib/envMap/forBasic/ReflectionForBasicEnvMapShaderLib"/>
@@ -455,6 +457,7 @@
 /// <reference path="renderer/shader/lib/light/shadowMap/NoShadowMapShaderLib"/>
 
 /// <reference path="renderer/shader/lib/utils/CustomShaderLibUtils"/>
+/// <reference path="renderer/shader/lib/utils/RenderTargerRendererShaderLibUtils"/>
 
 
 /// <reference path="renderer/shader/lib/instance/InstanceShaderLib"/>

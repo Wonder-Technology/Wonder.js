@@ -8,21 +8,36 @@ module wd {
             return obj;
         }
 
-        private _renderList:wdCb.Hash<[string, Array<GameObject>]> = null;
+        private _renderList:wdCb.Hash<[string, wdCb.Collection<GameObject>]> = null;
         get renderList() {
             return this._renderList;
         }
 
         set renderList(renderList:any) {
-            if (JudgeUtils.isDirectObject(renderList)) {
-                this._renderList = wdCb.Hash.create<[string, Array<GameObject>]>(renderList);
+            var convertedRenderList = wdCb.Hash.create<[string, wdCb.Collection<GameObject>]>();
+
+            if (renderList instanceof wdCb.Hash) {
             }
-            else if (renderList instanceof wdCb.Hash) {
-                this._renderList = renderList;
+            else if (JudgeUtils.isDirectObject(renderList)) {
+                renderList = wdCb.Hash.create<[string, Array<GameObject>]>(renderList);
             }
             else {
                 Log.error(true, Log.info.FUNC_MUST_BE("renderList", "array or wdCb.Collection"));
             }
+
+            renderList.forEach((faceRenderList, face:string) => {
+                if (JudgeUtils.isArrayExactly(faceRenderList)) {
+                    convertedRenderList.addChild(face, wdCb.Collection.create<GameObject>(faceRenderList));
+                }
+                else if (JudgeUtils.isCollection(faceRenderList)) {
+                    convertedRenderList.addChild(face, faceRenderList);
+                }
+                else {
+                    Log.error(true, Log.info.FUNC_MUST_BE("faceRenderList", "array or wdCb.Collection"));
+                }
+            });
+
+            this._renderList = convertedRenderList;
         }
 
         public size:number = 256;

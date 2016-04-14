@@ -44,11 +44,11 @@
         //'test/unit/**/scene/**',
 
         //'test/unit/**/Shadow*Spec.js',
-        //
-        //'test/unit/renderer/pointShadowMapSpec.js',
+
+        'test/unit/renderer/shadow/pointShadowMapSpec.js',
         //
         //'test/unit/renderer/shadow/**',
-        //'test/unit/renderer/*ShadowMapSpec.js',
+        'test/unit/renderer/shadow/directionShadowMapSpec.js',
         //'test/unit/renderer/*ShadowMap_*Spec.js',
         //
         //'test/unit/**/instance/*',

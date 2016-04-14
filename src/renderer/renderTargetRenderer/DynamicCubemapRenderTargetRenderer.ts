@@ -23,6 +23,19 @@ module wd {
         protected getPosition(){
             return this.texture.getPosition();
         }
+
+        protected beforeRender(){
+            if(this.isRenderListEmptyWhenRender()){
+                Director.getInstance().scene.glslData.addChild(<any>EShaderGLSLData.DYNAMIC_CUBEMAP, {
+                    isRenderListEmpty:true
+                });
+            }
+            else{
+                Director.getInstance().scene.glslData.addChild(<any>EShaderGLSLData.DYNAMIC_CUBEMAP, {
+                    isRenderListEmpty:false
+                });
+            }
+        }
     }
 }
 
