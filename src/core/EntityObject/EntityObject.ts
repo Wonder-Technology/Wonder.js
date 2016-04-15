@@ -238,6 +238,10 @@ module wd {
             });
         }
 
+        public getAllComponent(){
+            return this.components;
+        }
+
         public findComponentByUid(uid:number){
             return this.components.findOne((component:Component) => {
                 return component.uid === uid;

@@ -202,16 +202,30 @@ module wd{
             });
         }
 
+        @ensure(function(){
+            IterateUtils.forEachAll(this.entityObject, (gameObject:GameObject) => {
+                assert(
+                    gameObject.getAllComponent()
+                        .filter((component:Component) =>{
+                            return component instanceof SourceInstance;
+                        })
+                        .getCount() === 1,
+                    Log.info.FUNC_SHOULD("children", "contain only one SourceInstance component")
+                )
+            });
+        })
         private _addSourceInstanceToChildren(){
             var add = (child:GameObject) => {
                 if(!InstanceUtils.isSourceInstance(child)){
                     let sourceInstanceComponent = SourceInstance.create();
 
-                    child.addComponent(sourceInstanceComponent);
+                    if(!child.hasComponent(SourceInstance)){
+                        child.addComponent(sourceInstanceComponent);
+                    }
 
                     child.forEach((c:GameObject) => {
                         add(c);
-                    })
+                    });
                 }
             };
 

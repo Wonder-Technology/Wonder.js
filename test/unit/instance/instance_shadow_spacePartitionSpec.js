@@ -110,12 +110,12 @@ describe("instance with shadow and octree", function () {
                     it("fs glsl should contain shadow map glsl", function () {
                         director._init();
 
-                        var shader1 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere1, true).shader;
-                        var shader11 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, child1, true).shader;
+                        var shader1 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere1, true).shader;
+                        var shader11 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, child1, true).shader;
 
 
-                        var shader2 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere1Instance1, true).shader;
-                        var shader21 = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, child1Instance1, true).shader;
+                        var shader2 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere1Instance1, true).shader;
+                        var shader21 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, child1Instance1, true).shader;
 
                         expect(glslTool.contain(shader1.fsSource, "u_twoDShadowMapSampler")).toBeTruthy();
                         expect(glslTool.contain(shader11.fsSource, "u_twoDShadowMapSampler")).toBeTruthy();

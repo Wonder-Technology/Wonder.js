@@ -654,7 +654,7 @@ describe("direction shadow map", function() {
 
 
 
-                        expect(program.sendUniformData.withArgs("u_vpMatrixFromLight")).toCalledTwice();
+                        expect(program.sendUniformData.withArgs("u_vpMatrixFromLight")).toCalledOnce();
                         //expect(program.sendUniformData.withArgs("u_mMatrix")).toCalledBefore(program.sendUniformData.withArgs("u_vpMatrixFromLight"));
                         //expect(program.sendUniformData.withArgs("u_vMatrix")).toCalledBefore(program.sendUniformData.withArgs("u_vpMatrixFromLight"));
                         //expect(program.sendUniformData.withArgs("u_pMatrix")).toCalledBefore(program.sendUniformData.withArgs("u_vpMatrixFromLight"));

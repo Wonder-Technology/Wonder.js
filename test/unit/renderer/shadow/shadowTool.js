@@ -116,12 +116,17 @@ var shadowTool = {
 
             var shader;
 
-            if(isInstance){
-                shader = director.scene.getShader(wd.EShaderMapKeyOfScene.BUILD_TWOD_SHADOWMAP_INSTANCE);
-            }
-            else{
-                shader = director.scene.getShader(wd.EShaderMapKeyOfScene.BUILD_TWOD_SHADOWMAP_NO_INSTANCE);
-            }
+
+            //if(isInstance){
+            //    shader = director.scene.getShader(wd.EShaderMapKeyOfScene.BUILD_TWOD_SHADOWMAP_INSTANCE);
+            //
+            //}
+            //else{
+            //    shader = director.scene.getShader(wd.EShaderMapKeyOfScene.BUILD_TWOD_SHADOWMAP_NO_INSTANCE);
+            //}
+
+            shader = obj.getComponent(wd.Geometry).material.getShader(wd.EShaderTypeOfScene.BUILD_TWOD_SHADOWMAP);
+
 
             var program = shader.program;
 
@@ -143,12 +148,14 @@ var shadowTool = {
 
             var shader;
 
-            if(isInstance){
-                shader = director.scene.getShader(wd.EShaderMapKeyOfScene.BUILD_CUBEMAP_SHADOWMAP_INSTANCE);
-            }
-            else{
-                shader = director.scene.getShader(wd.EShaderMapKeyOfScene.BUILD_CUBEMAP_SHADOWMAP_NO_INSTANCE);
-            }
+            //if(isInstance){
+            //    shader = director.scene.getShader(wd.EShaderMapKeyOfScene.BUILD_CUBEMAP_SHADOWMAP_INSTANCE);
+            //}
+            //else{
+            //    shader = director.scene.getShader(wd.EShaderMapKeyOfScene.BUILD_CUBEMAP_SHADOWMAP_NO_INSTANCE);
+            //}
+
+            shader = obj.getComponent(wd.Geometry).material.getShader(wd.EShaderTypeOfScene.BUILD_CUBEMAP_SHADOWMAP);
 
             var program = shader.program;
 

@@ -179,6 +179,18 @@ module wd {
             this._shaderManager.update(quadCmd);
         }
 
+        public addShader(shaderKey:EShaderTypeOfScene, shader:Shader){
+            this._shaderManager.addShader(shaderKey, shader);
+        }
+
+        public hasShader(shaderKey:EShaderTypeOfScene){
+            return this._shaderManager.hasShader(shaderKey);
+        }
+
+        public getShader(shaderKey:EShaderTypeOfScene){
+            return this._shaderManager.getShader(shaderKey);
+        }
+
         public hasMap(map:Texture){
             return this.mapManager.hasMap(map);
         }

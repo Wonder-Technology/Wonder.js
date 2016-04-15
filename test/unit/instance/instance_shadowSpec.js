@@ -39,9 +39,6 @@ describe("instance with shadow", function () {
 
 
         director.scene.addChildren(instanceArr);
-
-
-        director.scene.addChild(camera);
     }
 
 
@@ -75,7 +72,7 @@ describe("instance with shadow", function () {
         var program;
 
         beforeEach(function () {
-            prepareWithoutChild();
+            director.scene.addChild(camera);
             prepareTool.prepareForMap(sandbox);
 
 
@@ -91,6 +88,7 @@ describe("instance with shadow", function () {
 
         describe("test build shadow map", function () {
             beforeEach(function () {
+                prepareWithoutChild();
             });
 
             describe("test instances", function () {
@@ -112,7 +110,7 @@ describe("instance with shadow", function () {
                 //    });
                 //}
                 function setBuildShadowMapShaderAndProgram(handleProgramFunc) {
-                    shadowTool.setTwoDBuildShadowMapShaderAndProgramHelper(sandbox,  null, handleProgramFunc, function(s, p){
+                    shadowTool.setTwoDBuildShadowMapShaderAndProgramHelper(sandbox,  instanceArr[0], handleProgramFunc, function(s, p){
                         shader = s;
                         program = p;
                     }, true)
@@ -228,9 +226,47 @@ describe("instance with shadow", function () {
             });
         });
 
+        it("fix bug:if object with SourceInstance component not cloneInstance, its children shouldn't send u_mMatrix", function () {
+            sphere1 = createSphere();
+            sphere1.name = "sphere1";
+
+            var sourceInstance = wd.SourceInstance.create();
+            sphere1.addComponent(sourceInstance);
+
+            var child;
+            child = createSphere();
+            child.name = "sphere1_child";
+
+
+            sphere1.addChild(child);
+
+            director.scene.addChild(sphere1);
+
+
+            director._init();
+
+            shadowTool.setTwoDBuildShadowMapShaderAndProgramHelper(sandbox,  child, function(program){
+                sandbox.stub(program, "sendAttributeData");
+                sandbox.stub(program, "sendUniformData");
+                sandbox.stub(program, "getAttribLocation");
+            }, function(s, p){
+                shader = s;
+                program = p;
+            }, true);
+
+
+            director.scene.gameObjectScene.render(renderer);
+
+
+
+            expect(program.sendUniformData).toCalled();
+            expect(program.sendUniformData.withArgs("u_mMatrix")).not.toCalled();
+        });
 
         describe("if hardware not support", function () {
             beforeEach(function () {
+                prepareWithoutChild();
+
                 wd.GPUDetector.getInstance().extensionInstancedArrays = null;
             });
 
@@ -288,8 +324,8 @@ describe("instance with shadow", function () {
 
                         director._init();
 
-                        var sphere1Program = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere1, true).program;
-                        var sphere1Instance1Program = shadowTool.setDrawShadowMapShaderAndProgramHelper(sandbox, sphere1Instance1).program;
+                        var sphere1Program = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere1, true).program;
+                        var sphere1Instance1Program = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere1Instance1).program;
 
                         director._loopBody(1);
 
