@@ -23,6 +23,11 @@ module wd{
         public dispose(){
         }
 
+        //todo fix
+        public clone(){
+            return ArticulatedAnimation.create();
+        }
+
         public play(animName:string);
         public play(animIndex:number);
 
