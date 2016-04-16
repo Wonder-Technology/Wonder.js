@@ -30,6 +30,11 @@ module wd{
         public dispose(){
         }
 
+        //todo fix
+        public clone(){
+            return MorphAnimation.create();
+        }
+
         @require(function(animName:string, fps:number){
             var geometry = this.entityObject.getComponent(ModelGeometry);
 

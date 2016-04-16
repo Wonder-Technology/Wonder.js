@@ -54,12 +54,13 @@
 
         //'test/unit/renderer/shadow/pointShadowMapSpec.js',
         //
-        'test/unit/renderer/shadow/**',
+        //'test/unit/renderer/shadow/**',
         //'test/unit/renderer/shadow/directionShadowMapSpec.js',
         //'test/unit/renderer/*ShadowMap_*Spec.js',
         //
-        'test/unit/**/instance/*',
+        //'test/unit/**/instance/*',
 
+        'test/unit/**/instance_shadow_morph*',
         //'test/unit/**/instance_shadow*',
         //'test/unit/**/instance_shadow_*',
         //'test/unit/**/instance_render*',

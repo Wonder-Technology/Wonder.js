@@ -92,14 +92,6 @@ module wd {
             return this;
         }
 
-        //public dispose(){
-        //    super.dispose();
-        //
-        //    this._shaderMap.forEach((shader:Shader) => {
-        //        shader.dispose();
-        //    });
-        //}
-
         public addChild(child:GameObject):GameObject{
             var cameraList = this._getCameras(child),
                 lightList = this._getLights(child);

@@ -320,6 +320,7 @@
 /// <reference path="utils/InstanceUtils"/>
 /// <reference path="utils/IterateUtils"/>
 /// <reference path="utils/Log"/>
+/// <reference path="utils/GlobalGeometryUtils"/>
 /// <reference path="utils/time/TimeController"/>
 /// <reference path="utils/time/DirectorTimeController"/>
 /// <reference path="utils/time/CommonTimeController"/>

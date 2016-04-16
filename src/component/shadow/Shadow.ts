@@ -142,11 +142,12 @@ module wd{
                 cubemapShadowMapDataMap:wdCb.Hash<wdCb.Collection<CubemapShadowMapData>> = Director.getInstance().scene.gameObjectScene.getComponent(ShadowManager).cubemapShadowMapDataMap;
             var handle = (gameObject:GameObject) => {
                 if (gameObject.hasComponent(Geometry)) {
-                    let material:Material = gameObject.getComponent<Geometry>(Geometry).material,
+                    let geometry:Geometry = gameObject.getComponent<Geometry>(Geometry),
+                        material:Material = geometry.material,
                         mapManager:MapManager = material.mapManager;
 
-                    self._addBuildTwoDShadowMapShader(material, this._createBuildTwoDShadowMapShader(gameObject));
-                    self._addBuildCubemapShadowMapShader(material, this._createBuildCubemapShadowMapShader(gameObject));
+                    self._addBuildTwoDShadowMapShader(material, this._createBuildTwoDShadowMapShader(gameObject, geometry));
+                    self._addBuildCubemapShadowMapShader(material, this._createBuildCubemapShadowMapShader(gameObject, geometry));
 
                     material.shader.libDirty = true;
 
@@ -167,11 +168,11 @@ module wd{
             var self = this;
             var handle = (gameObject:GameObject) => {
                 if (gameObject.hasComponent(Geometry)) {
-                    let material:Material = gameObject.getComponent<Geometry>(Geometry).material,
-                        mapManager:MapManager = material.mapManager;
+                    let geometry:Geometry = gameObject.getComponent<Geometry>(Geometry),
+                        material:Material = geometry.material;
 
-                    self._addBuildTwoDShadowMapShader(material, this._createBuildTwoDShadowMapShader(gameObject));
-                    self._addBuildCubemapShadowMapShader(material, this._createBuildCubemapShadowMapShader(gameObject));
+                    self._addBuildTwoDShadowMapShader(material, this._createBuildTwoDShadowMapShader(gameObject, geometry));
+                    self._addBuildCubemapShadowMapShader(material, this._createBuildCubemapShadowMapShader(gameObject, geometry));
                 }
 
                 gameObject.forEach((child:GameObject) => {
@@ -196,27 +197,34 @@ module wd{
             material.addShader(<any>EShaderTypeOfScene.BUILD_CUBEMAP_SHADOWMAP, shader);
         }
 
-        private _createBuildTwoDShadowMapShader(gameObject:GameObject) {
-            var shader:CommonShader = this._createBuildShadowMapShader(gameObject);
+        private _createBuildTwoDShadowMapShader(gameObject:GameObject, geometry:Geometry) {
+            var shader:CommonShader = this._createBuildShadowMapShader(gameObject, geometry);
 
             shader.addLib(BuildTwoDShadowMapShaderLib.create());
 
             return shader;
         }
 
-        private _createBuildCubemapShadowMapShader(gameObject:GameObject) {
-            var shader:CommonShader = this._createBuildShadowMapShader(gameObject);
+        private _createBuildCubemapShadowMapShader(gameObject:GameObject, geometry:Geometry) {
+            var shader:CommonShader = this._createBuildShadowMapShader(gameObject, geometry);
 
             shader.addLib(BuildCubemapShadowMapShaderLib.create());
 
             return shader;
         }
 
-        private _createBuildShadowMapShader(gameObject:GameObject) {
+        private _createBuildShadowMapShader(gameObject:GameObject, geometry:Geometry) {
             var shader:CommonShader = CommonShader.create();
 
             shader.addLib(CommonShaderLib.create());
-            shader.addLib(VerticeCommonShaderLib.create());
+
+            if(GlobalGeometryUtils.hasAnimation(geometry)){
+                shader.addLib(CommonMorphShaderLib.create());
+                shader.addLib(VerticeMorphShaderLib.create());
+            }
+            else{
+                shader.addLib(VerticeCommonShaderLib.create());
+            }
 
             if (InstanceUtils.isHardwareSupport() && InstanceUtils.isInstance(gameObject)) {
                 shader.addLib(ModelMatrixInstanceShaderLib.create());

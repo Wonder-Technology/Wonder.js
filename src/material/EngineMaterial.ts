@@ -17,7 +17,7 @@ module wd {
         }
 
         protected addNormalShaderLib(){
-            if(this._hasAnimation() && !this.shader.hasLib(NormalMorphShaderLib)){
+            if(GlobalGeometryUtils.hasAnimation(this.geometry) && !this.shader.hasLib(NormalMorphShaderLib)){
                 this._addShaderLibToTop(NormalMorphShaderLib.create());
             }
             else if(!this.shader.hasLib(NormalCommonShaderLib)){
@@ -47,7 +47,7 @@ module wd {
                 this.shader.addLib(ModelMatrixNoInstanceShaderLib.create());
             }
 
-            if(this._hasAnimation()){
+            if(GlobalGeometryUtils.hasAnimation(this.geometry)){
                 this.shader.addLib(CommonMorphShaderLib.create());
                 this.shader.addLib(VerticeMorphShaderLib.create());
             }
@@ -58,16 +58,6 @@ module wd {
 
         private _addShaderLibToTop(lib:ShaderLib){
             this.shader.addShaderLibToTop(lib);
-        }
-
-        private _hasAnimation(){
-            if(this.geometry instanceof ModelGeometry){
-                let geo = <any>(this.geometry);
-
-                return geo.hasAnimation();
-            }
-
-            return false;
         }
     }
 }
