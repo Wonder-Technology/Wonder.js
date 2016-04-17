@@ -60,7 +60,10 @@
         //
         //'test/unit/**/instance/*',
 
-        'test/unit/**/instance_shadow_morph*',
+
+        'test/unit/**/instance_animation*',
+
+        //'test/unit/**/instance_shadow_morph*',
         //'test/unit/**/instance_shadow*',
         //'test/unit/**/instance_shadow_*',
         //'test/unit/**/instance_render*',

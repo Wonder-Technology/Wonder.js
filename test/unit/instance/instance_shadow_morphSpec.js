@@ -1,4 +1,4 @@
-describe("instance with morph", function () {
+describe("instance+shadow+morph", function () {
     var gl = null;
     var device;
     var sandbox;
