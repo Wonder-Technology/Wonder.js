@@ -6,6 +6,7 @@ module wd{
             return obj;
         }
 
+        @cloneAttributeAsCloneable()
         public data:ArticulatedAnimationData = null;
 
         private _currentFrame:number = null;
@@ -23,9 +24,8 @@ module wd{
         public dispose(){
         }
 
-        //todo fix
         public clone(){
-            return ArticulatedAnimation.create();
+            return CloneHelper.clone(this);
         }
 
         public play(animName:string);
