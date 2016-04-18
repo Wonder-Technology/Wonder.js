@@ -208,5 +208,59 @@ describe("ArcballCameraController", function () {
     //        });
     //    });
     //});
+
+    describe("clone", function(){
+        beforeEach(function(){
+            prepare();
+        });
+
+        it("clone camera", function(){
+            var cloneCamera = {};
+            sandbox.stub(controller.camera, "clone").returns(cloneCamera);
+
+            var result = controller.clone();
+
+            expect(result === controller).toBeFalsy();
+            expect(result.camera).toEqual(cloneCamera);
+        });
+        it("shallow clone config data", function () {
+            var moveSpeedX= 2;
+            var moveSpeedY= 3;
+            var rotateSpeed= 4;
+            var wheelSpeed= 5;
+            var distance= 11;
+            var phi= Math.PI / 3;
+            var theta= Math.PI / 3;
+            var target= wd.Vector3.create(2, 0, 0);
+            var thetaMargin = 0.06;
+            var minDistance= 0.06;
+
+            cloneTool.extend(controller, {
+                moveSpeedX: moveSpeedX,
+                moveSpeedY: moveSpeedY,
+                rotateSpeed: rotateSpeed,
+                wheelSpeed: wheelSpeed,
+                distance: distance,
+                phi: phi,
+                theta: theta,
+                target: target,
+                thetaMargin: thetaMargin,
+                minDistance: minDistance
+            });
+
+            var result = controller.clone();
+
+            expect(result.moveSpeedX).toEqual(controller.moveSpeedX);
+            expect(result.moveSpeedY).toEqual(controller.moveSpeedY);
+            expect(result.rotateSpeed).toEqual(controller.rotateSpeed);
+            expect(result.wheelSpeed).toEqual(controller.wheelSpeed);
+            expect(result.distance).toEqual(controller.distance);
+            expect(result.phi).toEqual(controller.phi);
+            expect(result.theta).toEqual(controller.theta);
+            expect(result.target).toEqual(controller.target);
+            expect(result.thetaMargin).toEqual(controller.thetaMargin);
+            expect(result.minDistance).toEqual(controller.minDistance);
+        });
+    });
 });
 

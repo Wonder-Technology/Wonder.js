@@ -7,6 +7,7 @@ module wd{
         }
 
         private _left:number = null;
+        @cloneAttributeAsBasicType()
         get left(){
             return this._left;
         }
@@ -16,6 +17,7 @@ module wd{
         }
 
         private _right:number = null;
+        @cloneAttributeAsBasicType()
         get right(){
             return this._right;
         }
@@ -25,6 +27,7 @@ module wd{
         }
 
         private _bottom:number = null;
+        @cloneAttributeAsBasicType()
         get bottom(){
             return this._bottom;
         }
@@ -34,6 +37,7 @@ module wd{
         }
 
         private _top:number = null;
+        @cloneAttributeAsBasicType()
         get top(){
             return this._top;
         }
@@ -41,7 +45,6 @@ module wd{
             this._top = top;
             this.dirty = true;
         }
-
 
         public convertScreenToWorld(screenX:number, screenY:number, distanceFromCamera:number):Vector3{
             var device:DeviceManager = DeviceManager.getInstance(),

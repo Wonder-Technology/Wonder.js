@@ -9,6 +9,7 @@ module wd{
         }
 
         private _fovy:number= null;
+        @cloneAttributeAsBasicType()
         get fovy(){
             return this._fovy;
         }
@@ -18,6 +19,7 @@ module wd{
         }
 
         private _aspect:number = null;
+        @cloneAttributeAsBasicType()
         get aspect(){
             return this._aspect;
         }

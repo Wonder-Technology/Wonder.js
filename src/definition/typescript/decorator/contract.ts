@@ -3,13 +3,13 @@ module wd{
         Log.error(!cond, message);
     }
 
-    export function require(InFunc) {
+    export function require(inFunc) {
         return function (target, name, descriptor) {
             var value = descriptor.value;
 
             descriptor.value = function(...args){
                 if(Main.isTest){
-                    InFunc.apply(this, args);
+                    inFunc.apply(this, args);
                 }
 
                 return value.apply(this, args);
@@ -19,7 +19,7 @@ module wd{
         }
     }
 
-    export function ensure(OutFunc) {
+    export function ensure(outFunc) {
         return function (target, name, descriptor) {
             var value = descriptor.value;
 
@@ -28,7 +28,7 @@ module wd{
 
                 if(Main.isTest) {
                     let params = [result].concat(args);
-                    OutFunc.apply(this, params);
+                    outFunc.apply(this, params);
                 }
 
                 return result;
@@ -38,29 +38,22 @@ module wd{
         }
     }
 
-    export function requireGetter(InFunc) {
+    export function requireGetterAndSetter(inGetterFunc, inSetterFunc) {
         return function (target, name, descriptor) {
-            var getter = descriptor.get;
+            var getter = descriptor.get,
+                setter = descriptor.set;
 
             descriptor.get = function() {
                 if(Main.isTest){
-                    InFunc.call(this);
+                    inGetterFunc.call(this);
                 }
 
                 return getter.call(this);
             };
 
-            return descriptor;
-        }
-    }
-
-    export function requireSetter(InFunc) {
-        return function (target, name, descriptor) {
-            var setter = descriptor.set;
-
             descriptor.set = function(val) {
                 if(Main.isTest){
-                    InFunc.call(this, val);
+                    inSetterFunc.call(this, val);
                 }
 
                 setter.call(this, val);
@@ -70,7 +63,67 @@ module wd{
         }
     }
 
-    export function ensureGetter(OutFunc) {
+    export function requireGetter(inFunc) {
+        return function (target, name, descriptor) {
+            var getter = descriptor.get;
+
+            descriptor.get = function() {
+                if(Main.isTest){
+                    inFunc.call(this);
+                }
+
+                return getter.call(this);
+            };
+
+            return descriptor;
+        }
+    }
+
+    export function requireSetter(inFunc) {
+        return function (target, name, descriptor) {
+            var setter = descriptor.set;
+
+            descriptor.set = function(val) {
+                if(Main.isTest){
+                    inFunc.call(this, val);
+                }
+
+                setter.call(this, val);
+            };
+
+            return descriptor;
+        }
+    }
+
+    export function ensureGetterAndSetter(outGetterFunc, outSetterFunc) {
+        return function (target, name, descriptor) {
+            var getter = descriptor.get,
+                setter = descriptor.set;
+
+            descriptor.get = function() {
+                var result = getter.call(this);
+
+                if(Main.isTest){
+                    outGetterFunc.call(this, result);
+                }
+
+                return result;
+            };
+
+            descriptor.set = function(val) {
+                var result = setter.call(this, val);
+
+                if(Main.isTest){
+                    let params = [result, val];
+                    outSetterFunc.apply(this, params);
+                }
+            };
+
+            return descriptor;
+        }
+    }
+
+    export function ensureGetter(outFunc) {
         return function (target, name, descriptor) {
             var getter = descriptor.get;
 
@@ -78,7 +131,7 @@ module wd{
                 var result = getter.call(this);
 
                 if(Main.isTest){
-                    OutFunc.call(this, result);
+                    outFunc.call(this, result);
                 }
 
                 return result;
@@ -88,7 +141,7 @@ module wd{
         }
     }
 
-    export function ensureSetter(OutFunc) {
+    export function ensureSetter(outFunc) {
         return function (target, name, descriptor) {
             var setter = descriptor.set;
 
@@ -97,7 +150,7 @@ module wd{
 
                 if(Main.isTest){
                     let params = [result, val];
-                    OutFunc.apply(this, params);
+                    outFunc.apply(this, params);
                 }
             };
 

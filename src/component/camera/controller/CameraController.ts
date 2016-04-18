@@ -33,6 +33,7 @@ module wd {
 
 
         public entityObject:GameObject;
+        @cloneAttributeAsCloneable()
         public camera:Camera = null;
 
         private _worldToCameraMatrixCache:Matrix4 = null;
@@ -64,6 +65,10 @@ module wd {
             this.camera.dispose();
 
             this._clearCacheSubscription && this._clearCacheSubscription.dispose();
+        }
+
+        public clone(){
+            return CloneHelper.clone(this);
         }
 
         public isIntersectWithRay(entityObject:GameObject, screenX:number, screenY:number):boolean{

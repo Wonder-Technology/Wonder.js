@@ -9,15 +9,25 @@ module wd {
             return obj;
         }
 
+        @cloneAttributeAsBasicType()
         public moveSpeedX:number = 1;
+        @cloneAttributeAsBasicType()
         public moveSpeedY:number = 1;
+        @cloneAttributeAsBasicType()
         public rotateSpeed:number = 1;
+        @cloneAttributeAsBasicType()
         public wheelSpeed:number = 1;
+        @cloneAttributeAsBasicType()
         public distance:number = 10;
+        @cloneAttributeAsBasicType()
         public phi:number = Math.PI / 2;
+        @cloneAttributeAsBasicType()
         public theta:number = Math.PI / 2;
+        @cloneAttributeAsCloneable()
         public target:Vector3 = Vector3.create(0, 0, 0);
+        @cloneAttributeAsBasicType()
         public thetaMargin = 0.05;
+        @cloneAttributeAsBasicType()
         public minDistance:number = 0.05;
 
         private _isChange:boolean = true;

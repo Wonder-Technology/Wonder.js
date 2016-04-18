@@ -22,6 +22,7 @@ module wd{
         }
 
         private _near:number = null;
+        @cloneAttributeAsBasicType()
         get near(){
             return this._near;
         }
@@ -31,6 +32,7 @@ module wd{
         }
 
         private _far:number = null;
+        @cloneAttributeAsBasicType()
         get far(){
             return this._far;
         }
@@ -40,6 +42,7 @@ module wd{
         }
 
 
+        @cloneAttributeAsCloneable()
         public pMatrix:Matrix4 = Matrix4.create();
         public entityObject:GameObject = null;
 
@@ -66,6 +69,10 @@ module wd{
 
         @virtual
         public dispose(){
+        }
+
+        public clone(){
+            return CloneHelper.clone(this);
         }
 
         public update(elapsedTime:number){

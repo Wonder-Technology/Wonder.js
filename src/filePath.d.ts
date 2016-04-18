@@ -14,15 +14,33 @@
 
 
 
+
 /// <reference path="definition/typescript/decorator/contract"/>
 /// <reference path="definition/typescript/decorator/cache"/>
 /// <reference path="definition/typescript/decorator/virtual"/>
 /// <reference path="definition/typescript/decorator/rigidBody"/>
 /// <reference path="definition/typescript/decorator/script"/>
 /// <reference path="definition/typescript/decorator/control"/>
-/// <reference path="definition/typescript/decorator/clone"/>
 
 /// <reference path="definition/Global"/>
+
+
+/// <reference path="utils/JudgeUtils"/>
+/// <reference path="utils/MathUtils"/>
+/// <reference path="utils/CoordinateUtils"/>
+/// <reference path="utils/RenderUtils"/>
+/// <reference path="utils/InstanceUtils"/>
+/// <reference path="utils/IterateUtils"/>
+/// <reference path="utils/Log"/>
+/// <reference path="utils/GlobalGeometryUtils"/>
+/// <reference path="utils/GlobalScriptUtils"/>
+/// <reference path="utils/time/TimeController"/>
+/// <reference path="utils/time/DirectorTimeController"/>
+/// <reference path="utils/time/CommonTimeController"/>
+
+
+/// <reference path="definition/typescript/decorator/clone"/>
+
 
 
 /// <reference path="math/Global"/>
@@ -312,19 +330,6 @@
 /// <reference path="component/ui/utils/RoundedRectUtils"/>
 
 
-
-/// <reference path="utils/JudgeUtils"/>
-/// <reference path="utils/MathUtils"/>
-/// <reference path="utils/CoordinateUtils"/>
-/// <reference path="utils/RenderUtils"/>
-/// <reference path="utils/InstanceUtils"/>
-/// <reference path="utils/IterateUtils"/>
-/// <reference path="utils/Log"/>
-/// <reference path="utils/GlobalGeometryUtils"/>
-/// <reference path="utils/GlobalScriptUtils"/>
-/// <reference path="utils/time/TimeController"/>
-/// <reference path="utils/time/DirectorTimeController"/>
-/// <reference path="utils/time/CommonTimeController"/>
 
 /// <reference path="renderer/renderTargetRenderer/RenderTargetRenderer"/>
 /// <reference path="renderer/renderTargetRenderer/CommonRenderTargetRenderer"/>

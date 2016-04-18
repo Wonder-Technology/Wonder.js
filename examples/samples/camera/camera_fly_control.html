@@ -91,6 +91,8 @@
 
             var controller = wd.FlyCameraController.create(cameraComponent);
 
+            controller.zoomSpeed = 1;
+
             camera.addComponent(controller);
 
             camera.transform.translate(0, 0, 200);

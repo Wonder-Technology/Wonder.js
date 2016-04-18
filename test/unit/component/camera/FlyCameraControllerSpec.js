@@ -77,5 +77,100 @@ describe("FlyCameraController", function () {
     //        });
     //    });
     //});
+
+    it("if camera is ortho, get/set zoomSpeed attr should contract error", function () {
+        testTool.openContractCheck();
+
+        prepareOrthoCamera(sandbox);
+
+        expect(function(){
+            var a = controller.zoomSpeed;
+        }).toThrow();
+        expect(function(){
+            controller.zoomSpeed = 1;
+        }).toThrow();
+    });
+
+    describe("clone", function(){
+        function preparePerspectiveCamera(sandbox){
+            camera = wd.GameObject.create();
+
+            cameraComponent = wd.PerspectiveCamera.create();
+            cameraComponent.fovy = 45;
+            cameraComponent.aspect = 1;
+            cameraComponent.near = 0.1;
+            cameraComponent.far = 1000;
+
+            controller = wd.FlyCameraController.create(cameraComponent);
+            camera.addComponent(controller);
+        }
+
+        beforeEach(function(){
+        });
+
+        describe("test ortho camera", function(){
+            beforeEach(function(){
+                prepareOrthoCamera(sandbox);
+            });
+
+
+            it("clone camera", function(){
+                var cloneCamera = {};
+                sandbox.stub(controller.camera, "clone").returns(cloneCamera);
+
+                var result = controller.clone();
+
+                expect(result === controller).toBeFalsy();
+                expect(result.camera).toEqual(cloneCamera);
+            });
+            it("shallow clone config data", function () {
+                var moveSpeed= 2;
+                var rotateSpeed= 4;
+
+                cloneTool.extend(controller, {
+                    moveSpeed: moveSpeed,
+                    rotateSpeed: rotateSpeed
+                });
+
+                var result = controller.clone();
+
+                expect(result.moveSpeed).toEqual(controller.moveSpeed);
+                expect(result.rotateSpeed).toEqual(controller.rotateSpeed);
+            });
+        });
+
+        describe("test perspective camera", function(){
+            beforeEach(function(){
+                preparePerspectiveCamera(sandbox);
+            });
+
+            it("clone camera", function(){
+                var cloneCamera = {};
+                sandbox.stub(controller.camera, "clone").returns(cloneCamera);
+
+                var result = controller.clone();
+
+                expect(result === controller).toBeFalsy();
+                expect(result.camera).toEqual(cloneCamera);
+            });
+            it("shallow clone config data", function () {
+                var moveSpeed= 2;
+                var rotateSpeed= 4;
+                var zoomSpeed = 5;
+
+                cloneTool.extend(controller, {
+                    moveSpeed: moveSpeed,
+                    rotateSpeed: rotateSpeed,
+                    zoomSpeed: zoomSpeed
+                });
+
+                var result = controller.clone();
+
+                expect(result.moveSpeed).toEqual(controller.moveSpeed);
+                expect(result.rotateSpeed).toEqual(controller.rotateSpeed);
+                expect(result.zoomSpeed).toEqual(controller.zoomSpeed);
+            });
+        });
+    });
 });
 

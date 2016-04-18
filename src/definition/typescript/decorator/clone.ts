@@ -1,22 +1,22 @@
 module wd {
+    var getCloneAttributeMembers = (obj:any) => {
+        return obj[`___decorator_cloneAttributeMembers`];
+    };
+
+    var initCloneAttributeMembers = (obj:any) => {
+        obj[`___decorator_cloneAttributeMembers`] = wdCb.Hash.create<any>();
+    };
+
     var generateCloneableMember = (cloneType:CloneType, ...cloneDataArr) => {
         return (target:any, memberName:string | symbol) => {
-            if (!target.__decorator_cloneAttributeMembers) {
-                target.__decorator_cloneAttributeMembers = wdCb.Hash.create<any>();
+            if (!getCloneAttributeMembers(target)) {
+                initCloneAttributeMembers(target);
             }
 
-            target.__decorator_cloneAttributeMembers.addChild(memberName, {
+            getCloneAttributeMembers(target).addChild(memberName, {
                 cloneType: cloneType,
                 cloneDataArr: cloneDataArr
             });
-            //if(cloneFunc){
-            //    target.__decorator_cloneAttributeMembers.addChild(memberName, {
-            //        cloneFunc: cloneFunc
-            //    });
-            //}
-            //else{
-            //    target.__decorator_cloneAttributeMembers.addChild(memberName, {});
-            //}
         }
     };
 
@@ -41,7 +41,7 @@ module wd {
             }
         })
         public static clone<T>(source:T, cloneData:any = null, createDataArr:Array<any> = null):T{
-            var cloneAttributeMembers = (<any>source).__decorator_cloneAttributeMembers,
+            var cloneAttributeMembers = getCloneAttributeMembers(source),
                 className = (<any>source.constructor).name,
                 target = null;
 
@@ -57,6 +57,16 @@ module wd {
             }
 
             cloneAttributeMembers.forEach(({cloneType, cloneDataArr}, memberName:string) => {
+                /*!
+             the "cloneAttributeMembers" is existed in the parent of the class and its children classes share the "cloneAttributeMembers"!(the "cloneAttributeMembers" isn't existed in the instance because it is add to the data at build time.)
+             so here need judge to exclude the member of sibling classes
+             (but here still may be wrong in the case: the sibling classes has the same attri that need be cloned.
+             in this case, it should mannually define the "clone" method)
+                 */
+                if(target[memberName] === void 0 && source[memberName] === void 0){
+                    return;
+                }
+
                 switch (cloneType){
                     case CloneType.CLONEABLE:
                         target[memberName] = source[memberName].clone();
