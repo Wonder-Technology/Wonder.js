@@ -54,7 +54,7 @@ describe("Texture", function() {
             generateMipmap:sandbox.stub()
 
         };
-        testTool.extend(gl, testTool.buildFakeGl(sandbox));
+        cloneTool.extend(gl, testTool.buildFakeGl(sandbox));
         sandbox.stub(wd.DeviceManager.getInstance(), "gl", gl);
     });
     afterEach(function () {

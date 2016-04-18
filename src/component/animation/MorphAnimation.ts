@@ -16,10 +16,15 @@ module wd{
             return nextFrame;
         }
 
+        @cloneAttributeAsBasicType()
         public interpolation:number = 0;
+        @cloneAttributeAsBasicType()
         public currentFrame:number = 0;
+        @cloneAttributeAsBasicType()
         public duration:number = null;
+        @cloneAttributeAsBasicType()
         public fps:number = null;
+        @cloneAttributeAsBasicType()
         public currentAnimName:string = null;
 
         private _prevFrameEndTime:number = null;
@@ -28,11 +33,6 @@ module wd{
         }
 
         public dispose(){
-        }
-
-        //todo fix
-        public clone(){
-            return MorphAnimation.create();
         }
 
         @require(function(animName:string, fps:number){

@@ -7,7 +7,7 @@ describe("GLTFParser", function () {
     var imageMap;
 
     function setJson(data) {
-        testTool.extend(json, data);
+        cloneTool.extend(json, data);
     }
 
     function createColor(valueArr){

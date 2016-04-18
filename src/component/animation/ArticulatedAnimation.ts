@@ -24,10 +24,6 @@ module wd{
         public dispose(){
         }
 
-        public clone(){
-            return CloneHelper.clone(this);
-        }
-
         public play(animName:string);
         public play(animIndex:number);
 

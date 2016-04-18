@@ -24,7 +24,7 @@ var CubemapRenderTargetTool = YYC.Class({
                 self.renderTargetRenderer = new self.RenderTargetRenderer({
                 });
                 self.sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(self.sandbox));
-                testTool.extend(wd.DeviceManager.getInstance().gl, {
+                cloneTool.extend(wd.DeviceManager.getInstance().gl, {
                     TEXTURE_CUBE_MAP_POSITIVE_X:0,
                     TEXTURE_CUBE_MAP_NEGATIVE_X:1,
                     TEXTURE_CUBE_MAP_POSITIVE_Y:2,

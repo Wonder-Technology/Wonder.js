@@ -5,9 +5,9 @@ describe("WDBuilder", function () {
     var Color,Collection,Hash;
 
     function setJson(data) {
-        testTool.extend(json, data);
+        cloneTool.extend(json, data);
 
-        return testTool.extend(json);
+        return cloneTool.extend(json);
     }
 
     beforeEach(function () {

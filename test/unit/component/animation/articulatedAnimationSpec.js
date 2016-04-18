@@ -8,6 +8,45 @@ describe("articulated animation", function () {
     });
     afterEach(function () {
         sandbox.restore();
+
+        testTool.clearInstance(sandbox);
+    });
+
+    describe("unit test", function(){
+        var anim;
+
+        beforeEach(function(){
+            anim = wd.ArticulatedAnimation.create();
+        });
+
+        describe("clone", function(){
+            it("shallow clone data", function () {
+                var data = wdCb.Hash.create({
+                    "play": wdCb.Collection.create([
+                        {
+                            time:10,
+
+                            targets: wdCb.Collection.create(
+                                [
+                                    {interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,target:wd.EArticulatedAnimationTarget.TRANSLATION, data: wd.Vector3.create(3,1,0)}
+                                ]
+                            )
+                        }
+                    ])
+                });
+
+                anim.data = data;
+
+                var result = anim.clone();
+
+                expect(result).toBeInstanceOf(wd.ArticulatedAnimation);
+                expect(result === anim).toBeFalsy();
+
+                data.getChild("play").addChild({});
+
+                expect(result.data.getChild("play").getCount()).toEqual(2);
+            });
+        });
     });
 
     describe("integration test", function(){

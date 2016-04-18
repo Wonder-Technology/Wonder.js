@@ -4,7 +4,7 @@ describe("WDParser", function () {
     var json = null;
 
     function setJson(data) {
-        testTool.extend(json, data);
+        cloneTool.extend(json, data);
     }
 
     function setObject(data) {

@@ -12,6 +12,43 @@ describe("morph animation", function () {
         sandbox.restore();
     });
 
+    describe("unit test", function(){
+        var anim;
+
+        beforeEach(function(){
+            anim = wd.MorphAnimation.create();
+        });
+
+        describe("clone", function(){
+            it("shallow clone data", function () {
+                var interpolation = 0.1;
+                var currentFrame = 1;
+                var duration = 2;
+                var fps = 10;
+                var currentAnimName = "play";
+
+                cloneTool.extend(anim, {
+                    interpolation:interpolation,
+                    currentFrame:currentFrame,
+                    duration:duration,
+                    fps:fps,
+                    currentAnimName:currentAnimName
+                });
+
+                var result = anim.clone();
+
+                expect(result).toBeInstanceOf(wd.MorphAnimation);
+                expect(result === anim).toBeFalsy();
+
+                expect(result.interpolation).toEqual(interpolation);
+                expect(result.currentFrame).toEqual(currentFrame);
+                expect(result.duration).toEqual(duration);
+                expect(result.fps).toEqual(fps);
+                expect(result.currentAnimName).toEqual(currentAnimName);
+            });
+        });
+    });
+
     describe("integration test", function(){
         var model,geo,material,anim,fps,
             director,program;

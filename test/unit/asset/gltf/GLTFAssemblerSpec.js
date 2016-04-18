@@ -7,9 +7,9 @@ describe("GLTFAssembler", function () {
     var Vector3 = wd.Vector3;
 
     function setData(data) {
-        testTool.extend(parseData, data);
+        cloneTool.extend(parseData, data);
 
-        return testTool.extend(parseData);
+        return cloneTool.extend(parseData);
     }
 
     beforeEach(function () {

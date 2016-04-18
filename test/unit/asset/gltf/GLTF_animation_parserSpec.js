@@ -6,7 +6,7 @@ describe("GLTF animation parser", function () {
     var arrayBufferMap;
 
     function setJson(data) {
-        testTool.extend(json, data);
+        cloneTool.extend(json, data);
     }
 
     beforeEach(function () {

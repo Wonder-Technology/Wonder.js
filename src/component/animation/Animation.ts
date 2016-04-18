@@ -23,6 +23,10 @@ module wd{
 
         public abstract play(animName:string, fps:number):void;
 
+        public clone(){
+            return CloneHelper.clone(this);
+        }
+
         public pause(){
             this.state = EAnimationState.PAUSE;
 

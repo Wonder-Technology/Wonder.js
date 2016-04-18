@@ -70,7 +70,7 @@ var geometryTool = (function(){
         },
         createModelGeometry: function(geometryData){
             var geo = wd.ModelGeometry.create();
-            var data = testTool.extend({
+            var data = cloneTool.extend({
                 vertices:[1,-1,0, 0,1,0,0,0,1],
                 morphTargets: wdCb.Hash.create({
                     "play": wdCb.Collection.create(

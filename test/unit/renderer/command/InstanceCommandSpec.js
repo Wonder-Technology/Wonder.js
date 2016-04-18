@@ -87,7 +87,7 @@ describe("InstanceCommand", function() {
                 drawArrays:sandbox.stub(),
                 createBuffer:sandbox.stub().returns({})
             };
-            testTool.extend(wd.DeviceManager.getInstance().gl, gl);
+            cloneTool.extend(wd.DeviceManager.getInstance().gl, gl);
             gl = wd.DeviceManager.getInstance().gl;
         });
 
