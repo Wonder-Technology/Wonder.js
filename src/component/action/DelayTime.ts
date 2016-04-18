@@ -6,6 +6,9 @@ module wd {
             return action;
         }
 
+        @cloneAttributeAsBasicType()
+        protected duration:number;
+
         constructor(delayTime:number) {
             super();
 
@@ -14,10 +17,6 @@ module wd {
 
         public reverse() {
             return this;
-        }
-
-        public clone() {
-            return DelayTime.create(this.duration);
         }
     }
 }

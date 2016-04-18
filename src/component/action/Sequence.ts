@@ -17,6 +17,15 @@ module wd {
             this._actions.addChildren(actionArr);
         }
 
+        @cloneAttributeAsCustomType((source:any, target:any, memberName:string, cloneData:any) => {
+            var actions = wdCb.Collection.create<Action>();
+
+            source[memberName].forEach(function (action:Action) {
+                actions.addChild(action.clone());
+            });
+
+            target[memberName] = actions;
+        })
         private _actions:wdCb.Collection<Action> = wdCb.Collection.create<Action>();
         private _currentAction:Action = null;
         private _actionIndex:number = 0;
@@ -46,16 +55,6 @@ module wd {
             }
 
             return null;
-        }
-
-        public clone() {
-            var actionArr = [];
-
-            this._actions.forEach(function (action) {
-                actionArr.push(action.clone());
-            });
-
-            return Sequence.create.apply(Sequence, actionArr);
         }
 
         public reset() {

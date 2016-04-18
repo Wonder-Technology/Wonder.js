@@ -29,6 +29,10 @@ module wd{
         public abstract resume();
         public abstract reverse();
 
+        public clone():Action{
+            return CloneHelper.clone(this);
+        }
+
         public reset() {
             this.isFinish = false;
         }

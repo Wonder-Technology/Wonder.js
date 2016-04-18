@@ -15,8 +15,10 @@ module wd {
             this._times = times;
         }
 
+        @cloneAttributeAsCloneable()
         private _innerAction:Action = null;
         private _originTimes:number = null;
+        @cloneAttributeAsBasicType()
         private _times:number = null;
 
         public initWhenCreate() {
@@ -42,10 +44,6 @@ module wd {
                 }
                 this.finish();
             }
-        }
-
-        public clone() {
-            return Repeat.create(this._innerAction.clone(), this._times);
         }
 
         public reset() {

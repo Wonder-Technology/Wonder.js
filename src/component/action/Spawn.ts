@@ -16,6 +16,15 @@ module wd {
             this._actions.addChildren(actionArr);
         }
 
+        @cloneAttributeAsCustomType((source:any, target:any, memberName:string, cloneData:any) => {
+            var actions = wdCb.Collection.create<Action>();
+
+            source[memberName].forEach(function (action:Action) {
+                actions.addChild(action.clone());
+            });
+
+            target[memberName] = actions;
+        })
         private _actions:wdCb.Collection<Action> = wdCb.Collection.create<Action>();
 
         public update(elapsedTime) {
@@ -61,15 +70,6 @@ module wd {
             this.iterate("resume");
 
             return this;
-        }
-
-        public clone() {
-            var actions = [];
-
-            this._actions.forEach(function (action) {
-                actions.push(action.clone());
-            });
-            return Spawn.create.apply(Spawn, actions);
         }
 
         public reset() {

@@ -384,15 +384,27 @@ module wd {
             return obj;
         }
 
+        @cloneAttributeAsBasicType()
+        protected duration:number;
+
         private _object:wdCb.Hash<any> = null;
+        @cloneAttributeAsCloneable()
         private _valuesStart:wdCb.Hash<any> = wdCb.Hash.create<any>();
+        @cloneAttributeAsCloneable()
         private _valuesEnd:wdCb.Hash<any> = wdCb.Hash.create<any>();
+        @cloneAttributeAsBasicType()
         private _easingFunction = Tween.Easing.Linear.None;
+        @cloneAttributeAsBasicType()
         private _interpolationFunction = Tween.Interpolation.Linear;
+        @cloneAttributeAsBasicType()
         private _onStartCallback = null;
+        @cloneAttributeAsBasicType()
         private _onStartCallbackFired = false;
+        @cloneAttributeAsBasicType()
         private _onUpdateCallback = null;
+        @cloneAttributeAsBasicType()
         private _onFinishCallback = null;
+        @cloneAttributeAsBasicType()
         private _onStopCallback = null;
 
         protected updateBody(time:number) {
@@ -502,17 +514,6 @@ module wd {
             }
 
             return this;
-        }
-
-        public clone() {
-            return Tween.create().from(this._valuesStart.getChildren())
-            .to(this._valuesEnd.getChildren(), this.duration)
-                .easing(this._easingFunction)
-                .interpolation(this._interpolationFunction)
-                .onStart(this._onStartCallback)
-                .onStop(this._onStopCallback)
-                .onFinish(this._onFinishCallback)
-                .onUpdate(this._onUpdateCallback);
         }
 
         public reverse() {

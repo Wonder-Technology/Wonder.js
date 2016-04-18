@@ -12,6 +12,7 @@ module wd {
             this._innerAction = action;
         }
 
+        @cloneAttributeAsCloneable()
         private _innerAction:Action = null;
 
         public update(elapsedTime) {
@@ -21,10 +22,6 @@ module wd {
                 this._innerAction.reset();
                 this._innerAction.start();
             }
-        }
-
-        public clone() {
-            return RepeatForever.create(this._innerAction.clone());
         }
 
         public start() {
