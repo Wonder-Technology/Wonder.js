@@ -29,12 +29,17 @@ module wd{
             this.url = url;
         }
 
+        @cloneAttributeAsBasicType()
         public url:string = null;
 
         private _subscription:wdFrp.IDisposable = null;
 
         public dispose(){
             this._subscription.dispose();
+        }
+
+        public clone(){
+            return CloneHelper.clone(this);
         }
 
         public createLoadJsStream(){
@@ -53,25 +58,9 @@ module wd{
 
             this._subscription = this.createLoadJsStream()
                 .subscribe((data:ScriptFileData) => {
-                    self._handlerAfterLoadedScript(data, entityObject);
+                    GlobalScriptUtils.addScriptToEntityObject(entityObject, data);
+                    GlobalScriptUtils.handlerAfterLoadedScript(entityObject);
                 });
-        }
-
-        private _handlerAfterLoadedScript(data:ScriptFileData, entityObject:EntityObject){
-            this._addScriptToEntityObject(entityObject, data);
-            entityObject.execScript("onEnter", null, true);
-
-            EventManager.trigger(CustomEvent.create(<any>EEngineEvent.BEFORE_GAMEOBJECT_INIT));
-
-            entityObject.execScript("init", null, true);
-
-            EventManager.trigger(CustomEvent.create(<any>EEngineEvent.AFTER_GAMEOBJECT_INIT));
-
-            EventManager.trigger(CustomEvent.create(<any>EEngineEvent.AFTER_GAMEOBJECT_INIT_RIGIDBODY_ADD_CONSTRAINT));
-        }
-
-        private _addScriptToEntityObject(entityObject:EntityObject, data:ScriptFileData){
-            entityObject.scriptList.addChild(data.name, new data.class(entityObject));
         }
     }
 

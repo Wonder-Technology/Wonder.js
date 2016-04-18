@@ -193,7 +193,8 @@ module wd{
                 if(component instanceof LOD){
                     instance.addComponent(component.clone(true));
                 }
-                else if(component instanceof Geometry){
+                else if(component instanceof Geometry
+                || component instanceof Script){
                     instance.addComponent(component, true);
                 }
                 else{

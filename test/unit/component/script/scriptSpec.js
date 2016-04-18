@@ -5,6 +5,45 @@ describe("script", function () {
     var url1 = null;
     var url2 = null;
 
+
+    var Test = (function () {
+        function Test(gameObject) {
+            this.a = null;
+            this.b = null;
+            this.time = null;
+            this.isInit = null;
+            this.gameObject = null;
+            this.a = 0;
+            this.b = 0;
+            this.time = null;
+            this.isInit = false;
+            gameObject.a = 100;
+            this.gameObject = gameObject;
+        }
+        Test.prototype.init = function () {
+            this.isInit = true;
+        };
+        Test.prototype.update = function (time) {
+            this.time = time;
+            this.gameObject.a++;
+        };
+        Test.prototype.onEnter = function () {
+            this.a++;
+        };
+        Test.prototype.onStartLoop = function () {
+            this.b++;
+        };
+        Test.prototype.onEndLoop = function () {
+            this.b -= 2;
+        };
+        Test.prototype.onExit = function () {
+            this.a--;
+        };
+        Test.prototype.onDispose = function () {
+        };
+        return Test;
+    })();
+
     function createCamera(){
         return testTool.createCamera();
     }
@@ -12,12 +51,13 @@ describe("script", function () {
     function testScript(judgeOnEnter, judgeBeforeLoopBody, judgeAfterLoopBody, done){
         var gameObject = wd.GameObject.create();
 
-        script.url = url1;
-
-        gameObject.addComponent(script);
-
-
-        scriptTool.testScript(gameObject, "test", judgeOnEnter, judgeBeforeLoopBody, judgeAfterLoopBody, done);
+        scriptTool.testScriptNotLoadScript(gameObject, {
+            scriptName: "test",
+            class: Test,
+            judgeOnEnter: judgeOnEnter,
+            judgeBeforeLoopBody: judgeBeforeLoopBody,
+            judgeAfterLoopBody: judgeAfterLoopBody
+        }, done);
     }
 
     function testTwoScript(judgeTest1OnEnter, judgeTest2OnEnter, judgeBeforeLoopBody, judgeAfterLoopBody, done){
@@ -29,6 +69,8 @@ describe("script", function () {
 
         gameObject.addComponent(script);
         gameObject.addComponent(script2);
+
+
 
         var test = null;
         var test2 = null;
@@ -285,7 +327,8 @@ describe("script", function () {
             sandbox.stub(wd.CustomEvent, "create");
             sandbox.stub(entityObject, "execScript");
 
-            script._handlerAfterLoadedScript(data, entityObject);
+            wd.GlobalScriptUtils.addScriptToEntityObject(entityObject, data);
+            wd.GlobalScriptUtils.handlerAfterLoadedScript(entityObject);
 
             expect(wd.EventManager.trigger.callCount).toEqual(3);
         });

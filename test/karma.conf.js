@@ -60,8 +60,9 @@
         //
         //'test/unit/**/instance/*',
 
+        'test/unit/**/instance_script*',
 
-        'test/unit/**/instance_animation*',
+        //'test/unit/**/instance_animation*',
 
         //'test/unit/**/instance_shadow_morph*',
         //'test/unit/**/instance_shadow*',
@@ -215,7 +216,7 @@
         //'test/unit/**/*Shape*.js',
         //'test/unit/**/Arcball*',
         //'test/unit/**/FlyCameraController*',
-        //'test/unit/**/scriptSpec.js',
+        'test/unit/**/scriptSpec.js',
       //
       //  'test/unit/**/*ControllerSpec.js',
       //'test/unit/core/Tran*.js',
