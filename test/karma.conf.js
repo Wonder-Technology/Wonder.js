@@ -27,7 +27,7 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        //'test/unit/**',
+        'test/unit/**',
 
         //'test/unit/**/action/*',
 
@@ -60,7 +60,7 @@
         //
         //'test/unit/**/instance/*',
 
-        'test/unit/**/instance_script*',
+        //'test/unit/**/instance_script*',
 
         //'test/unit/**/instance_animation*',
 
@@ -216,7 +216,7 @@
         //'test/unit/**/*Shape*.js',
         //'test/unit/**/Arcball*',
         //'test/unit/**/FlyCameraController*',
-        'test/unit/**/scriptSpec.js',
+        //'test/unit/**/scriptSpec.js',
       //
       //  'test/unit/**/*ControllerSpec.js',
       //'test/unit/core/Tran*.js',

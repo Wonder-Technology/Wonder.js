@@ -20,13 +20,13 @@ describe("Shadow", function() {
             shadow.entityObject = wd.GameObject.create();
             shadow.receive = true;
             shadow.init();
-            sandbox.stub(shadow, "_addAllShadowMapsToObjectAndChildren");
+            sandbox.stub(shadow, "_addShadowMapsToObjectAndChildren");
 
             shadow.dispose();
 
             wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.SHADOWMAP_LAYER_CHANGE));
 
-            expect(shadow._addAllShadowMapsToObjectAndChildren).not.toCalled();
+            expect(shadow._addShadowMapsToObjectAndChildren).not.toCalled();
         });
     });
 });

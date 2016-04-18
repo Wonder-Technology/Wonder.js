@@ -99,6 +99,7 @@ var CubemapRenderTargetTool = YYC.Class({
                         createEmptyTexture: self.sandbox.stub(),
                         glTexture:glTexture
                     };
+
                     self.renderTargetRenderer.texture = texture;
 
                     self.init_beforeEach(self);
@@ -213,10 +214,14 @@ var CubemapRenderTargetTool = YYC.Class({
                         restoreViewport: self.sandbox.stub()
                     };
 
-                    texture = {
-                        bindToUnit: self.sandbox.stub(),
-                        getPosition:self.sandbox.stub()
-                    };
+                    //texture = {
+                    //    bindToUnit: self.sandbox.stub(),
+                    //    getPosition:self.sandbox.stub()
+                    //};
+
+                    texture = wd.DynamicCubemapTexture.create();
+                    self.sandbox.stub(texture, "bindToUnit");
+                    self.sandbox.stub(texture, "getPosition");
 
                     self.renderTargetRenderer.frameBufferOperator = frameBufferOperator;
                     self.renderTargetRenderer.texture = texture;
