@@ -3,6 +3,10 @@ module wd{
         //public triggerMode:EventTriggerMode = EventTriggerMode.TOP;
 
         public abstract isTrigger(e:MouseEvent):boolean;
+
+        public clone(){
+            return CloneHelper.clone(this);
+        }
     }
 }
 
