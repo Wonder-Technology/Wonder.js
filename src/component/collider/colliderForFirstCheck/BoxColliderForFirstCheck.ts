@@ -11,6 +11,7 @@ module wd {
             return this._collider.shape;
         }
 
+        @cloneAttributeAsCloneable()
         private _collider:BoxCollider = BoxCollider.create();
 
         public init(){

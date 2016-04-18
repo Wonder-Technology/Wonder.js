@@ -97,4 +97,26 @@ describe("AABBShape", function () {
             expect(shape.isIntersectWithRay(wd.Ray.create(rayOrigin, rayDir))).toBeTruthy();
         });
     });
+    
+    describe("clone", function(){
+        beforeEach(function(){
+        });
+        
+        it("clone data", function(){
+            var center = wd.Vector3.create(1,2,3);
+            var halfExtents = wd.Vector3.create(10,10,10);
+
+            cloneTool.extend(shape, {
+                center:center,
+                halfExtents:halfExtents
+            });
+
+            var result = shape.clone();
+
+
+            expect(result === shape).toBeFalsy();
+            expect(result.center).toEqual(center);
+            expect(result.halfExtents).toEqual(halfExtents);
+        });
+    });
 });

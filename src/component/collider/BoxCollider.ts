@@ -8,9 +8,12 @@ module wd {
 
         public boundingRegion:BoxBoundingRegion;
 
+        @cloneAttributeAsCloneable()
         public center:Vector3 = Vector3.create(0, 0, 0);
+        @cloneAttributeAsCloneable()
         public halfExtents:Vector3 = null;
-        public type:string = <any>EColliderType.BOX;
+
+        protected type:string = <any>EColliderType.BOX;
 
         public createBoundingRegion(){
             return BoxBoundingRegion.create(this.entityObject);

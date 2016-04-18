@@ -14,6 +14,7 @@ module wd {
             return Vector3.create().sub2(max, min).scale(0.5);
         }
 
+        @cloneAttributeAsCloneable()
         public halfExtents:Vector3 = Vector3.create(0.5, 0.5, 0.5);
 
         public setMinMax(min:Vector3, max:Vector3) {
@@ -207,15 +208,6 @@ module wd {
             }
 
             return true;
-        }
-
-        public clone() {
-            var shape = AABBShape.create();
-
-            shape.center = this.center.clone();
-            shape.halfExtents = this.halfExtents.clone();
-
-            return shape;
         }
 
         private _getEmptyMin() {

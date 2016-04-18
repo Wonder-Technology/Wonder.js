@@ -4,6 +4,10 @@ module wd {
 
         public abstract init();
         public abstract update(elapsedTime:number);
+
+        public clone(){
+            return CloneHelper.clone(this);
+        }
     }
 }
 

@@ -350,4 +350,33 @@ describe("SphereCollider", function () {
             });
         });
     });
+
+    describe("clone", function(){
+        it("clone data", function(){
+            sandbox.stub(collider, "buildBoundingRegion");
+            collider.init();
+
+            var center = wd.Vector3.create(1,2,3);
+            var radius = 10;
+            var enable = false;
+
+            var resultBoundingRegion = {};
+            sandbox.stub(collider.boundingRegion, "clone").returns(resultBoundingRegion);
+
+            cloneTool.extend(collider, {
+                center:center,
+                radius:radius,
+                enable:enable
+            });
+
+            var result = collider.clone();
+
+
+            expect(result === collider).toBeFalsy();
+            expect(result.center).toEqual(center);
+            expect(result.radius).toEqual(radius);
+            expect(result.enable).toBeFalsy();
+            expect(result.boundingRegion).toEqual(resultBoundingRegion);
+        });
+    });
 });

@@ -6,10 +6,12 @@ module wd {
 
         public entityObject:GameObject;
 
-        public type:string = ABSTRACT_ATTRIBUTE;
-
+        @cloneAttributeAsBasicType()
         public enable:boolean = true;
+        @cloneAttributeAsCloneable()
         public boundingRegion:BoundingRegion = null;
+
+        protected type:string = ABSTRACT_ATTRIBUTE;
 
         public abstract createBoundingRegion();
         public abstract buildBoundingRegion();
@@ -19,6 +21,10 @@ module wd {
             this.boundingRegion.init();
 
             this.buildBoundingRegion();
+        }
+
+        public clone(){
+            return CloneHelper.clone(this);
         }
 
         public update(elapsedTime:number){

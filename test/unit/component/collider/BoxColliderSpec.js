@@ -470,4 +470,33 @@ describe("BoxCollider", function () {
             //collider.isIntersectWith()
         });
     });
+
+    describe("clone", function(){
+        it("clone data", function(){
+            sandbox.stub(collider, "buildBoundingRegion");
+            collider.init();
+
+            var center = wd.Vector3.create(1,2,3);
+            var halfExtents = wd.Vector3.create(10,10,10);
+            var enable = false;
+
+            var resultBoundingRegion = {};
+            sandbox.stub(collider.boundingRegion, "clone").returns(resultBoundingRegion);
+
+            cloneTool.extend(collider, {
+                center:center,
+                halfExtents:halfExtents,
+                enable:enable
+            });
+
+            var result = collider.clone();
+
+
+            expect(result === collider).toBeFalsy();
+            expect(result.center).toEqual(center);
+            expect(result.halfExtents).toEqual(halfExtents);
+            expect(result.enable).toBeFalsy();
+            expect(result.boundingRegion).toEqual(resultBoundingRegion);
+        });
+    });
 });

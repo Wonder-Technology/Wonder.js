@@ -45,4 +45,26 @@ describe("SphereShape", function () {
             expect(shape.isIntersectWithRay(wd.Ray.create(rayOrigin, rayDir))).toBeTruthy();
         });
     });
+
+    describe("clone", function(){
+        beforeEach(function(){
+        });
+
+        it("clone data", function(){
+            var center = wd.Vector3.create(1,2,3);
+            var radius = 10;
+
+            cloneTool.extend(shape, {
+                center:center,
+                radius:radius
+            });
+
+            var result = shape.clone();
+
+
+            expect(result === shape).toBeFalsy();
+            expect(result.center).toEqual(center);
+            expect(result.radius).toEqual(radius);
+        });
+    });
 });

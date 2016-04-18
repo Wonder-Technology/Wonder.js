@@ -4,6 +4,7 @@ module wd {
             this.entityObject = entityObject;
         }
 
+        @cloneAttributeAsCloneable()
         public shape:Shape = null;
 
         protected entityObject:GameObject = null;
@@ -16,6 +17,10 @@ module wd {
 
         public init(){
             this.shape = this.createShape();
+        }
+
+        public clone() {
+            return CloneHelper.clone(this);
         }
 
         @ensure(function(returnValue, center, ...args){

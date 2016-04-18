@@ -8,9 +8,12 @@ module wd {
 
         public boundingRegion:SphereBoundingRegion;
 
+        @cloneAttributeAsCloneable()
         public center:Vector3 = Vector3.create(0, 0, 0);
+        @cloneAttributeAsBasicType()
         public radius:number = null;
-        public type:string = <any>EColliderType.SPHERE;
+
+        protected type:string = <any>EColliderType.SPHERE;
 
         public createBoundingRegion(){
             return SphereBoundingRegion.create(this.entityObject);

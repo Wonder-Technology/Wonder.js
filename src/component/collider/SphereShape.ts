@@ -6,6 +6,7 @@ module wd {
             return obj;
         }
 
+        @cloneAttributeAsBasicType()
         public radius:number = 1;
 
         public setFromShapeParam(center:Vector3, radius:number){
@@ -61,15 +62,6 @@ module wd {
 
         public containPoint(point:Vector3) {
             return point.distanceToSquared(this.center) <= (this.radius**2);
-        }
-
-        public clone() {
-            var shape = SphereShape.create();
-
-            shape.center = this.center.clone();
-            shape.radius = this.radius;
-
-            return shape;
         }
 
         private _findMaxDistanceOfPointsToCenter(points:Array<number>){

@@ -113,7 +113,7 @@
         //'test/unit/**/lod/*',
 
         //'test/unit/**/CameraController*',
-        'test/unit/**/camera/**',
+        //'test/unit/**/camera/**',
 
 
         //'test/unit/**/GeometryData*',
@@ -191,6 +191,7 @@
         //'test/unit/**/rayPicking*',
         //'test/unit/**/AABBShapeSpec*',
         //'test/unit/**/SphereShapeSpec*',
+        'test/unit/**/collider/**',
         //'test/unit/**/ActionManagerSpec*',
         //'test/unit/**/TwoDShadow*Spec.js',
         //'test/unit/**/ProgramSpec.js',
