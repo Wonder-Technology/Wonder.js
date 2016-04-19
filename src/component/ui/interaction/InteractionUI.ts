@@ -1,6 +1,7 @@
 module wd{
     export abstract class InteractionUI extends UI{
         protected p_transitionMode:ETransitionMode = null;
+        @cloneAttributeAsBasicType()
         get transitionMode(){
             return this.p_transitionMode;
         }

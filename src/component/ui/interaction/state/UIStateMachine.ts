@@ -19,7 +19,12 @@ module wd{
         }
 
         private _ui:InteractionUI = null;
+        @cloneAttributeAsCloneable()
         private _stateHistory:wdCb.Stack<EUIState> = wdCb.Stack.create<EUIState>();
+
+        public clone(ui:InteractionUI){
+            return CloneHelper.clone(this, null, [ui]);
+        }
 
         public changeState(state:EUIState){
             this._stateHistory.push(state);

@@ -25,7 +25,6 @@ module wd {
 
     var getAllCloneAttributeMembers = (obj:any) => {
         const IS_GATHERED_ATTRIBUTE_NAME = `__decorator_clone_isGathered_${obj.constructor.name}_cloneAttributeMembers`;
-        //var result = wdCb.Hash.create<any>();
         var result = wdCb.Collection.create<CloneMemberData>();
         var gather = (obj:any) => {
                 if(!obj){
@@ -89,8 +88,8 @@ module wd {
         return generateCloneableMember(CloneType.BASIC);
     }
 
-    export function cloneAttributeAsCloneable() {
-        return generateCloneableMember(CloneType.CLONEABLE);
+    export function cloneAttributeAsCloneable(isInjectTarget:boolean = false) {
+        return generateCloneableMember(CloneType.CLONEABLE, isInjectTarget);
     }
 
     export function cloneAttributeAsCustomType(cloneFunc:(source:any, target:any, memberName:string, cloneData:any) => void) {
@@ -125,7 +124,12 @@ module wd {
                 switch (cloneType){
                     case CloneType.CLONEABLE:
                         if(source[memberName] !== null && source[memberName] !== void 0){
-                            target[memberName] = source[memberName].clone();
+                            if(cloneDataArr && cloneDataArr[0] === true){
+                                target[memberName] = source[memberName].clone(target);
+                            }
+                            else{
+                                target[memberName] = source[memberName].clone();
+                            }
                         }
                         break;
                     case CloneType.BASIC:

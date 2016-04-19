@@ -755,4 +755,51 @@ describe("Button", function() {
             expect(button.transitionManager.changeState).toCalledWith(wd.EUIState.DISABLED);
         });
     });
+
+    describe("clone", function(){
+        beforeEach(function(){
+        });
+
+        it("clone InteractionUI data", function(){
+            var transitionMode = wd.ETransitionMode.COLOR;
+
+            cloneTool.extend(button, {
+                transitionMode: transitionMode
+            });
+
+            var result = button.clone();
+
+            expect(result.transitionMode).toEqual(transitionMode);
+        });
+
+        describe("clone Button data", function () {
+            it("clone text", function () {
+                var text = "button";
+
+
+                cloneTool.extend(button, {
+                    text:text
+                });
+
+
+                var result = button.clone();
+
+                expect(result.text).toEqual(text);
+            });
+            it("clone state", function () {
+                button.disable();
+
+                var result = button.clone();
+
+                expect(result.isDisabled).toBeTruthy();
+
+                result.dirty = false;
+
+                result.enable();
+
+                expect(result.isDisabled).toBeFalsy();
+                expect(result.dirty).toBeTruthy();
+            });
+        });
+    });
 });
