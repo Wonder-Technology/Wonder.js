@@ -38,10 +38,6 @@ module wd{
             this._subscription.dispose();
         }
 
-        public clone(){
-            return CloneHelper.clone(this);
-        }
-
         public createLoadJsStream(){
             Log.error(!this.url, Log.info.FUNC_MUST_DEFINE("url"));
 
