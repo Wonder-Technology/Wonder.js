@@ -37,7 +37,7 @@
 
         //'test/unit/**/light/**',
 
-        'test/unit/**/*RigidBodySpec*',
+        //'test/unit/**/*RigidBodySpec*',
 
         //'test/unit/renderer/mirror/**',
         //'test/unit/renderer/dynamicCubemap/**',
@@ -168,7 +168,7 @@
         //
         //'test/unit/**/FontSpec*',
         //'test/unit/**/PlainFontSpec*',
-        //'test/unit/**/UIRendererSpec*',
+        'test/unit/**/UIRendererSpec*',
         //'test/unit/**/BitmapFontSpec*',
         //
         //'test/unit/**/DirectorSpec*',

@@ -9,6 +9,7 @@ module wd {
         }
 
         private _zIndex:number = 1;
+        @cloneAttributeAsBasicType()
         get zIndex(){
             return this._zIndex;
         }
@@ -22,8 +23,8 @@ module wd {
             }
         }
 
-        public dirtyDuringCurrentLoop:boolean = false;
         private _dirty:boolean = true;
+        @cloneAttributeAsBasicType()
         get dirty(){
             return this._dirty;
         }
@@ -33,11 +34,18 @@ module wd {
 
                 this.dirtyDuringCurrentLoop = true;
             }
+            else{
+                this.resetDirty();
+            }
         }
 
-        public context:any = null;
+        @cloneAttributeAsBasicType()
+        public dirtyDuringCurrentLoop:boolean = false;
+        @cloneAttributeAsBasicType()
         public isClearCanvas:boolean = false;
+        @cloneAttributeAsBasicType()
         public state:EUIRendererState = EUIRendererState.NORMAL;
+        public context:any = null;
         public canvas:HTMLCanvasElement = null;
 
         private _referenceList:wdCb.Collection<UIObject> = wdCb.Collection.create<UIObject>();
@@ -89,8 +97,6 @@ module wd {
 
             this.isClearCanvas = true;
         }
-
-        //todo add clone
 
         private _createOverlayCanvas(){
             var canvas = null,

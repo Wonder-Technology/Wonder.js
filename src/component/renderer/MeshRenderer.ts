@@ -12,10 +12,6 @@ module wd {
             renderer.addCommand(this.createDrawCommand(geometry, camera));
         }
 
-        public clone(){
-            return MeshRenderer.create();
-        }
-
         @require(function(geometry:Geometry, camera:GameObject){
             var controller = camera.getComponent<CameraController>(CameraController);
 
