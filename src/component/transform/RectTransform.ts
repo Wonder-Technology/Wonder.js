@@ -33,6 +33,7 @@ module wd{
         //todo optimize:position, rotation, ... add cache
 
         private _position:Vector2 = Vector2.create();
+        @cloneAttributeAsCloneable()
         get position(){
             this._position = this.localPositionAndScaleMatrix.getTranslation();
 
@@ -50,6 +51,7 @@ module wd{
         }
 
         private _rotation:number = 0;
+        @cloneAttributeAsBasicType()
         get rotation(){
             this._rotation = this.rotationMatrix.getRotation();
 
@@ -64,6 +66,7 @@ module wd{
         }
 
         private _scale:Vector2 = Vector2.create(1, 1);
+        @cloneAttributeAsCloneable()
         get scale(){
             this._scale = this.localPositionAndScaleMatrix.getScale();
 
@@ -84,6 +87,7 @@ module wd{
 
 
         private _localPosition:Vector2 = Vector2.create(0, 0);
+        @cloneAttributeAsCloneable()
         get localPosition(){
             return this._localPosition;
         }
@@ -94,6 +98,7 @@ module wd{
         }
 
         private _localScale:Vector2 = Vector2.create(1, 1);
+        @cloneAttributeAsCloneable()
         get localScale(){
             return this._localScale;
         }
@@ -106,16 +111,21 @@ module wd{
         //todo extract RootRectTransform?
 
         private _anchorX:Vector2 = Vector2.create(0.5, 0.5);
-        get anchorX(){
-            return this._anchorX;
-        }
         @requireSetter(function(anchorX:Vector2){
             assert(anchorX.x <= anchorX.y, Log.info.FUNC_SHOULD("minX", "<= maxY"));
             assert(anchorX.x >= 0 && anchorX.x <= 1, Log.info.FUNC_SHOULD("minX", ">= 0 && <= 1"));
             assert(anchorX.y >= 0 && anchorX.y <= 1, Log.info.FUNC_SHOULD("maxX", ">= 0 && <= 1"));
         })
+        @cloneAttributeAsCloneable()
+        get anchorX(){
+            return this._anchorX;
+        }
         set anchorX(anchorX:Vector2){
             var parentWidth = null;
+
+            if(this._anchorX.isEqual(anchorX)){
+                return;
+            }
 
             this._anchorX = anchorX;
 
@@ -135,16 +145,21 @@ module wd{
         }
 
         private _anchorY:Vector2 = Vector2.create(0.5, 0.5);
-        get anchorY(){
-            return this._anchorY;
-        }
         @requireSetter(function(anchorY:Vector2){
             assert(anchorY.x <= anchorY.y, Log.info.FUNC_SHOULD("minY", "<= maxY"));
             assert(anchorY.x >= 0 && anchorY.x <= 1, Log.info.FUNC_SHOULD("minY", ">= 0 && <= 1"));
             assert(anchorY.y >= 0 && anchorY.y <= 1, Log.info.FUNC_SHOULD("maxY", ">= 0 && <= 1"));
         })
+        @cloneAttributeAsCloneable()
+        get anchorY(){
+            return this._anchorY;
+        }
         set anchorY(anchorY:Vector2){
             var parentHeight = null;
+
+            if(this._anchorY.isEqual(anchorY)){
+                return;
+            }
 
             this._anchorY = anchorY;
 
@@ -164,37 +179,45 @@ module wd{
         }
 
         private _width:number = null;
+        @cloneAttributeAsBasicType()
         get width(){
             return this._width * this.scale.x;
         }
         set width(width:number){
-            if(width !== this._width){
-                this._width = width;
+            if(this._width === width){
+                return;
+            }
 
-                if(this.entityObject){
-                    EventManager.trigger(this.entityObject, CustomEvent.create(<any>EEngineEvent.UI_WIDTH_CHANGE));
-                }
+            this._width = width;
+
+            if(this.entityObject){
+                EventManager.trigger(this.entityObject, CustomEvent.create(<any>EEngineEvent.UI_WIDTH_CHANGE));
             }
         }
 
         private _height:number = null;
+        @cloneAttributeAsBasicType()
         get height(){
             return this._height * this.scale.y;
         }
         set height(height:number){
-            if(height !== this._height){
-                this._height = height;
+            if(this._height === height) {
+                return;
+            }
 
-                if(this.entityObject){
-                    EventManager.trigger(this.entityObject, CustomEvent.create(<any>EEngineEvent.UI_HEIGHT_CHANGE));
-                }
+            this._height = height;
+
+            if(this.entityObject){
+                EventManager.trigger(this.entityObject, CustomEvent.create(<any>EEngineEvent.UI_HEIGHT_CHANGE));
             }
         }
 
 
         public dirtyRotation:boolean = true;
         public dirtyPositionAndScale:boolean = true;
+        @cloneAttributeAsCloneable()
         public pivot:Vector2 = Vector2.create(0, 0);
+        @cloneAttributeAsBasicType()
         public zIndex:number = 1;
 
         protected p_parent:RectTransform;

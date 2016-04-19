@@ -62,6 +62,10 @@ module wd{
             return this;
         }
 
+        public isEqual(v:Vector2){
+            return this.x === v.x && this.y === v.y;
+        }
+
         public clone(){
             return Vector2.create(this.x, this.y);
         }

@@ -773,7 +773,7 @@ describe("ThreeDTransform", function(){
 
                 judge();
             });
-            it("test3", function () {
+            it("test4", function () {
                 tra1.position = wd.Vector3.create(1,2,3);
                 tra1.localRotation = wd.Quaternion.create(1,20,30,1);
                 tra1.localScale = wd.Vector3.create(2,2,3);
@@ -783,6 +783,7 @@ describe("ThreeDTransform", function(){
                 judge();
             });
         });
+
         it("set parent", function () {
             var parent = Transform.create();
             tra1.parent = parent;

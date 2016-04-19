@@ -138,7 +138,7 @@
 
         //'test/unit/component/physics/**/eventSpec*',
 
-        'test/unit/**/OctreeSpec*',
+        //'test/unit/**/OctreeSpec*',
         //'test/unit/**/CollisionDetectorSpec*',
         //'test/unit/**/BoundingRegionUtilsSpec*',
 
@@ -179,8 +179,8 @@
         //
         //'test/unit/**/ImageSpec*',
         //
-        //'test/unit/**/ThreeDTransformSpec.js',
-        //'test/unit/**/RectTransformSpec*',
+        'test/unit/**/ThreeDTransformSpec.js',
+        'test/unit/**/RectTransformSpec*',
         //'test/unit/**/TransformSpec*',
         //'test/unit/**/component/**',
         //'test/unit/**/PanelSpec*',

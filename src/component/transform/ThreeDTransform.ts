@@ -395,10 +395,6 @@ module wd{
             return this;
         }
 
-        public clone(){
-            return CloneHelper.clone(this);
-        }
-
         protected clearCache(){
             this._localToWorldMatrixCache = null;
             this._positionCache = null;

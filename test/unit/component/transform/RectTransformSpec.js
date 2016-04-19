@@ -1,8 +1,8 @@
-describe("RectTransform", function(){
+describe("RectRectTransform", function(){
     var sandbox = null;
     var tra1 = null;
     var Vector2 = wd.Vector2;
-    var Transform = wd.RectTransform;
+    var RectTransform = wd.RectTransform;
 
     function getValues(values, digit){
         var digit = digit === undefined ? 0 : digit;
@@ -12,7 +12,7 @@ describe("RectTransform", function(){
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        tra1 = Transform.create();
+        tra1 = RectTransform.create();
     });
     afterEach(function () {
         sandbox.restore();
@@ -73,7 +73,7 @@ describe("RectTransform", function(){
         var tra2;
 
         beforeEach(function(){
-            tra2 = Transform.create();
+            tra2 = RectTransform.create();
             tra1.parent = tra2;
         });
 
@@ -103,8 +103,8 @@ describe("RectTransform", function(){
             tra3 = null;
 
         beforeEach(function(){
-            tra2 = Transform.create();
-            tra3 = Transform.create();
+            tra2 = RectTransform.create();
+            tra3 = RectTransform.create();
 
             tra2.position = Vector2.create(0, 0);
             tra3.position = Vector2.create(0, 0);
@@ -138,7 +138,7 @@ describe("RectTransform", function(){
         var tra2;
 
         beforeEach(function(){
-            tra2 = Transform.create();
+            tra2 = RectTransform.create();
             tra1.parent = tra2;
         });
 
@@ -158,7 +158,7 @@ describe("RectTransform", function(){
         var tra2 = null;
 
         beforeEach(function(){
-            tra2 = Transform.create();
+            tra2 = RectTransform.create();
             tra1.parent = tra2;
         });
 
@@ -202,7 +202,7 @@ describe("RectTransform", function(){
             var tra2 = null;
 
             beforeEach(function(){
-                tra2 = Transform.create();
+                tra2 = RectTransform.create();
 
                 tra1.parent = tra2;
             });
@@ -234,7 +234,7 @@ describe("RectTransform", function(){
             var tra2 = null;
 
             beforeEach(function () {
-                tra2 = Transform.create();
+                tra2 = RectTransform.create();
                 tra1.parent = tra2;
             });
 
@@ -290,7 +290,7 @@ describe("RectTransform", function(){
             });
 
             it("rotate will only affect rotationMatrix, not affect position,scale", function () {
-                tra2 = Transform.create();
+                tra2 = RectTransform.create();
                 tra2.position = Vector2.create(2, 2);
                 tra1.position = Vector2.create(1, 1);
                 tra1.parent = tra2;
@@ -316,7 +316,7 @@ describe("RectTransform", function(){
 
             describe("rotateAround", function () {
                 it("rotateAround will only affect rotationMatrix, not affect position,scale", function () {
-                    var tra2 = Transform.create();
+                    var tra2 = RectTransform.create();
                     tra2.position = Vector2.create(2, 2);
                     tra1.position = Vector2.create(1, 1);
                     tra1.parent = tra2;
@@ -335,11 +335,11 @@ describe("RectTransform", function(){
     });
 
     it("test >= 2 parent", function(){
-        var tra2 = Transform.create();
+        var tra2 = RectTransform.create();
         tra1.parent = tra2;
 
 
-        var tra3 = Transform.create();
+        var tra3 = RectTransform.create();
         tra2.parent = tra3;
 
         tra3.rotate(10);
@@ -356,7 +356,7 @@ describe("RectTransform", function(){
         var tra2;
 
         beforeEach(function(){
-            tra2 = Transform.create();
+            tra2 = RectTransform.create();
             tra1.parent = tra2;
 
             tra2.width = 1000;
@@ -381,7 +381,7 @@ describe("RectTransform", function(){
         var tra2;
 
         beforeEach(function(){
-            tra2 = Transform.create();
+            tra2 = RectTransform.create();
             tra1.parent = tra2;
 
             tra2.width = 1000;
@@ -428,7 +428,7 @@ describe("RectTransform", function(){
                     expect(tra1.height).toEqual(200);
                 });
                 it("test parent anchor", function(){
-                    var tra3 = Transform.create();
+                    var tra3 = RectTransform.create();
                     tra2.parent = tra3;
 
                     tra3.width = 2000;
@@ -532,7 +532,7 @@ describe("RectTransform", function(){
                     expect(getValues(tra1.height)).toEqual(700);
                 });
                 it("test parent anchor", function(){
-                    var tra3 = Transform.create();
+                    var tra3 = RectTransform.create();
                     tra2.parent = tra3;
 
                     tra3.width = 2000;
@@ -651,7 +651,7 @@ describe("RectTransform", function(){
                     expect(tra1._localPositionAndScaleMatrixCache).toBeNull();
                 });
                 it("change children state", function () {
-                    var tra2 = Transform.create();
+                    var tra2 = RectTransform.create();
                     tra1.parent = tra2;
 
                     tra2.translate(0, 1);
@@ -680,7 +680,7 @@ describe("RectTransform", function(){
 
                 });
                 it("change children state", function () {
-                    var tra2 = Transform.create();
+                    var tra2 = RectTransform.create();
                     tra1.parent = tra2;
 
                     tra2.rotate(45);
@@ -709,7 +709,7 @@ describe("RectTransform", function(){
 
                 });
                 it("change children state", function () {
-                    var tra2 = Transform.create();
+                    var tra2 = RectTransform.create();
                     tra1.parent = tra2;
 
                     tra2.scale = wd.Vector2.create(1,1);
@@ -717,6 +717,87 @@ describe("RectTransform", function(){
                     expect(tra2.isScale).toBeTruthy();
                     expect(tra1.isScale).toBeTruthy();
                 });
+            });
+        });
+    });
+
+    describe("clone", function(){
+        it("set parent", function () {
+            var parent = RectTransform.create();
+            tra1.parent = parent;
+
+            var result = tra1.clone();
+
+            expect(result.parent === tra1.parent).toBeTruthy();
+        });
+
+        describe("clone data", function(){
+            beforeEach(function(){
+                sandbox.stub(wd.DeviceManager.getInstance(), "view", {
+                    x: 0,
+                    y: 0,
+                    width: 1000,
+                    height: 500
+                });
+            });
+
+            describe("clone position,rotate,scale, localPosition, localScale", function(){
+                var result;
+
+                function judge(){
+                    expect(result !== tra1).toBeTruthy();
+                    expect(result.position).toEqual(tra1.position);
+                    expect(result.scale).toEqual(tra1.scale);
+                    expect(testTool.getValues(result.rotation)).toEqual(testTool.getValues(tra1.rotation));
+
+                    expect(result.localPosition).toEqual(tra1.localPosition);
+                    expect(result.localScale).toEqual(tra1.localScale);
+                }
+
+                it("test change position,rotate,scale", function () {
+                    tra1.position = wd.Vector2.create(1,2);
+                    tra1.scale = wd.Vector2.create(2,2);
+                    tra1.rotate(10);
+
+                    result = tra1.clone();
+
+                    judge();
+                });
+                it("test change localPosition, localScale", function () {
+                    tra1.position = wd.Vector2.create(1,2);
+                    tra1.localScale = wd.Vector2.create(2,2);
+
+                    result = tra1.clone();
+
+                    judge();
+                });
+            });
+
+            it("clone anchor, size, pivot, zIndex", function(){
+                var anchorX = Vector2.create(0.1, 0.2),
+                    anchorY = Vector2.create(0.5, 0.6),
+                    width = 100,
+                    height = 50,
+                    pivot = Vector2.create(1,2),
+                    zIndex = 10;
+
+                cloneTool.extend(tra1, {
+                        anchorX: anchorX,
+                        anchorY: anchorY,
+                    width: width,
+                    height: height,
+                    pivot: pivot,
+                    zIndex: zIndex
+                })
+
+                var result = tra1.clone();
+
+                expect(result.anchorX).toEqual(anchorX);
+               expect(result.anchorY).toEqual(anchorY);
+                expect(result.width).toEqual(width);
+                expect(result.height).toEqual(height);
+                expect(result.pivot).toEqual(pivot);
+                expect(result.zIndex).toEqual(zIndex);
             });
         });
     });
