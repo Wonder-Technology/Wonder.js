@@ -13,11 +13,12 @@ module wd {
         }
 
         private _text:string = "";
+        @cloneAttributeAsBasicType()
         get text(){
             return this._text;
         }
         set text(text:string){
-            if(text !== this._text){
+            if(this._text !== text){
                 this._text = text;
 
                 this.dirty = true;
@@ -26,11 +27,12 @@ module wd {
         }
 
         private _fontSize:number = 10;
+        @cloneAttributeAsBasicType()
         get fontSize(){
             return this._fontSize;
         }
         set fontSize(fontSize:number){
-            if(fontSize !== this._fontSize){
+            if(this._fontSize !== fontSize){
                 this._fontSize = fontSize;
 
                 this.dirty = true;
@@ -39,11 +41,12 @@ module wd {
         }
 
         private _fontFamily:string = "sans-serif";
+        @cloneAttributeAsBasicType()
         get fontFamily(){
             return this._fontFamily;
         }
         set fontFamily(fontFamily:string){
-            if(fontFamily !== this._fontFamily){
+            if(this._fontFamily !== fontFamily){
                 this._fontFamily = fontFamily;
 
                 this.dirty = true;
@@ -52,11 +55,12 @@ module wd {
         }
 
         private _xAlignment:EFontXAlignment = EFontXAlignment.LEFT;
+        @cloneAttributeAsBasicType()
         get xAlignment(){
             return this._xAlignment;
         }
         set xAlignment(xAlignment:EFontXAlignment){
-            if(xAlignment !== this._xAlignment){
+            if(this._xAlignment !== xAlignment){
                 this._xAlignment = xAlignment;
 
                 this.dirty = true;
@@ -65,11 +69,12 @@ module wd {
         }
 
         private _yAlignment:EFontYAlignment = EFontYAlignment.TOP;
+        @cloneAttributeAsBasicType()
         get yAlignment(){
             return this._yAlignment;
         }
         set yAlignment(yAlignment:EFontYAlignment){
-            if(yAlignment !== this._yAlignment){
+            if(this._yAlignment !== yAlignment){
                 this._yAlignment = yAlignment;
 
                 this.dirty = true;

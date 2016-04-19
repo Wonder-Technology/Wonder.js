@@ -9,11 +9,12 @@ module wd {
         }
 
         private _text:string = "";
+        @cloneAttributeAsBasicType()
         get text(){
             return this._text;
         }
         set text(text:string){
-            if(text !== this._text){
+            if(this._text !== text){
                 this._text = text;
 
                 this.dirty = true;
@@ -22,11 +23,12 @@ module wd {
         }
 
         private _xAlignment:EFontXAlignment = EFontXAlignment.LEFT;
+        @cloneAttributeAsBasicType()
         get xAlignment(){
             return this._xAlignment;
         }
         set xAlignment(xAlignment:EFontXAlignment){
-            if(xAlignment !== this._xAlignment){
+            if(this._xAlignment !== xAlignment){
                 this._xAlignment = xAlignment;
 
                 this.dirty = true;
@@ -34,7 +36,9 @@ module wd {
             }
         }
 
+        @cloneAttributeAsBasicType()
         public fntId:string = null;
+        @cloneAttributeAsBasicType()
         public bitmapId:string = null;
 
         private _charFontList:wdCb.Collection<UIObject> = wdCb.Collection.create<UIObject>();

@@ -623,4 +623,34 @@ describe("PlainFont", function () {
             });
         });
     });
+
+    describe("clone", function(){
+        beforeEach(function(){
+
+        });
+
+        it("clone data", function(){
+            var text = "A",
+                fontSize = 10,
+                fontFamily = "b",
+                xAlignment = wd.EFontXAlignment.CENTER,
+                yAlignment = wd.EFontYAlignment.MIDDLE;
+
+            cloneTool.extend(font, {
+                    text: text,
+                    fontSize: fontSize,
+                fontFamily: fontFamily,
+                xAlignment: xAlignment,
+                yAlignment: yAlignment
+            });
+
+            var result = font.clone();
+
+            expect(result.text).toEqual(text);
+            expect(result.fontSize).toEqual(fontSize);
+            expect(result.fontFamily).toEqual(fontFamily);
+            expect(result.xAlignment).toEqual(xAlignment);
+            expect(result.yAlignment).toEqual(yAlignment);
+        });
+    });
 });

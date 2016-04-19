@@ -161,7 +161,7 @@
 
         //'test/unit/component/event/eventSpec*',
 
-        //'test/unit/**/ui/**',
+        'test/unit/**/ui/**',
         //'test/unit/**/UIObjectSpec*',
         //
         //
@@ -180,7 +180,7 @@
         //'test/unit/**/ImageSpec*',
         //
         'test/unit/**/ThreeDTransformSpec.js',
-        'test/unit/**/RectTransformSpec*',
+        //'test/unit/**/RectTransformSpec*',
         //'test/unit/**/TransformSpec*',
         //'test/unit/**/component/**',
         //'test/unit/**/PanelSpec*',

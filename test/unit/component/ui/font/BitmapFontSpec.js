@@ -1,6 +1,6 @@
 describe("BitmapFont", function () {
     var sandbox = null;
-    var Font = null;
+    var BitmapFont = null;
     var font;
     var uiObject;
     var director;
@@ -14,7 +14,7 @@ describe("BitmapFont", function () {
         uiObject.transform.height = height;
     }
 
-    function createFont() {
+    function createBitmapFont() {
         font = wd.BitmapFont.create();
 
 
@@ -41,7 +41,7 @@ describe("BitmapFont", function () {
 
         testTool.openContractCheck(sandbox);
 
-        Font = wd.BitmapFont;
+        BitmapFont = wd.BitmapFont;
 
         director = wd.Director.getInstance();
 
@@ -53,7 +53,7 @@ describe("BitmapFont", function () {
         });
 
 
-        uiObject = createFont();
+        uiObject = createBitmapFont();
 
         setHeight(400);
         setPosition(0, 0);
@@ -846,6 +846,34 @@ describe("BitmapFont", function () {
 
                 expect(uiObject.getChildren().getCount()).toEqual(0);
             });
+        });
+    });
+
+    describe("clone", function(){
+        beforeEach(function(){
+
+        });
+
+        it("clone data", function(){
+                var text = "A",
+                    xAlignment = wd.EFontXAlignment.CENTER,
+                    fntId = "b",
+                    bitmapId = "c";
+
+                cloneTool.extend(font, {
+
+                        text: text,
+                        xAlignment: xAlignment,
+                    fntId: fntId,
+                    bitmapId: bitmapId
+                });
+
+                var result = font.clone();
+
+                expect(result.text).toEqual(text);
+               expect(result.xAlignment).toEqual(xAlignment);
+                expect(result.fntId).toEqual(fntId);
+                expect(result.bitmapId).toEqual(bitmapId);
         });
     });
 });

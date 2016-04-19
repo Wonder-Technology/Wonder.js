@@ -41,6 +41,12 @@ module wd {
 
         private _subscription:wdFrp.IDisposable = null;
 
+        public clone(){
+            Log.error(true, Log.info.FUNC_NOT_SUPPORT("clone"));
+
+            return null;
+        }
+
         @execOnlyOnce("_isInit")
         public init(){
             var self = this;
