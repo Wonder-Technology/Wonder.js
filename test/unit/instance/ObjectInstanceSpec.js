@@ -48,4 +48,16 @@ describe("ObjectInstance", function() {
             expect(objectInstance._removeFromSourceAndItsChildren).toCalledOnce();
         });
     });
+
+    describe("clone", function(){
+        it("share sourceObject", function(){
+            var gameObject1 = {};
+            objectInstance.sourceObject = gameObject1;
+
+            var result = objectInstance.clone();
+
+            expect(result === objectInstance).toBeFalsy();
+            expect(result.sourceObject === gameObject1).toBeTruthy();
+        });
+    });
 });

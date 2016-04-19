@@ -11,6 +11,10 @@ module wd{
         public addToObject(entityObject:GameObject, isShareComponent:boolean = false){
             super.addToObject(entityObject, isShareComponent);
         }
+
+        public clone(){
+            return CloneHelper.clone(this);
+        }
     }
 }
 

@@ -4,6 +4,8 @@ describe("SourceInstance", function(){
     var box1,box1Instance1;
     var box1Child1;
 
+    var sourceInstance;
+
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
@@ -12,6 +14,7 @@ describe("SourceInstance", function(){
         sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
 
         box1 = instanceTool.createBox();
+        sourceInstance = box1.getComponent(wd.SourceInstance);
     });
     afterEach(function () {
         testTool.clearInstance(sandbox);
@@ -259,10 +262,7 @@ describe("SourceInstance", function(){
     });
 
     describe("dispose", function(){
-        var sourceInstance;
-
         beforeEach(function(){
-            sourceInstance = box1.getComponent(wd.SourceInstance);
             sourceInstance.init();
         });
 
@@ -292,6 +292,20 @@ describe("SourceInstance", function(){
             wd.EventManager.trigger(box1Instance1, wd.CustomEvent.create(wd.EEngineEvent.EXIT));
 
             expect(sourceInstance._removeAllInstances).not.toCalled();
+        });
+    });
+
+    describe("clone", function(){
+        it("shallow clone instanceList", function(){
+            var resultGameObject = {};
+            var gameObject1 = {clone:sandbox.stub().returns(resultGameObject)};
+            sourceInstance.instanceList.addChildren([gameObject1]);
+
+            var result = sourceInstance.clone();
+
+            expect(result === sourceInstance).toBeFalsy();
+            expect(result.instanceList.getCount()).toEqual(1);
+            expect(result.instanceList.getChild(0)).toEqual(gameObject1);
         });
     });
 });

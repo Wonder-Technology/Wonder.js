@@ -1,5 +1,6 @@
 module wd{
     export abstract class Component extends Entity{
+        @cloneAttributeAsBasicType()
         public entityObject:EntityObject = null;
 
         @virtual

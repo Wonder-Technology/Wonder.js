@@ -6,6 +6,7 @@ module wd{
             return obj;
         }
 
+        @cloneAttributeAsBasicType()
         public sourceObject:GameObject = null;
 
         private _enterSubscription:wdFrp.IDisposable = null;

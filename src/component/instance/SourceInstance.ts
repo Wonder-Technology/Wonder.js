@@ -6,8 +6,6 @@ module wd{
             return obj;
         }
 
-        private _toRenderInstanceList:wdCb.Collection<any> = wdCb.Collection.create<GameObject>();
-
         @ensureGetter(function(toRenderInstanceListForDraw:wdCb.Collection<GameObject>){
             var self = this;
 
@@ -34,8 +32,10 @@ module wd{
 
         public entityObject:GameObject;
 
+        @cloneAttributeAsCloneable()
         public instanceList:wdCb.Collection<any> = wdCb.Collection.create<GameObject>();
 
+        private _toRenderInstanceList:wdCb.Collection<any> = wdCb.Collection.create<GameObject>();
         private _endLoopSubscription:wdFrp.IDisposable = null;
         private _isAddSourceInstanceToChildren:boolean = false;
         private _enterSubscription:wdFrp.IDisposable = null;
