@@ -29,5 +29,32 @@ describe("Shadow", function() {
             expect(shadow._addShadowMapsToObjectAndChildren).not.toCalled();
         });
     });
+
+    describe("clone", function(){
+        beforeEach(function(){
+
+        });
+
+        it("clone data", function(){
+            var receive = false,
+                cast = false,
+                layer = "aaa";
+
+
+
+            cloneTool.extend(body, {
+                receive: receive,
+                cast: cast,
+                layer: layer
+            });
+
+                var result = shadow.clone();
+
+                expect(result === shadow).toBeFalsy();
+                expect(result.receive).toEqual(receive);
+                expect(result.cast).toEqual(cast);
+                expect(result.layer).toEqual(layer);
+        });
+    });
 });
 

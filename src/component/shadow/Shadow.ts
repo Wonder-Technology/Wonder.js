@@ -73,10 +73,6 @@ module wd{
             super.addToObject(entityObject, isShareComponent);
         }
 
-        public clone() {
-            return CloneHelper.clone(this);
-        }
-
         public init() {
             var self = this;
 

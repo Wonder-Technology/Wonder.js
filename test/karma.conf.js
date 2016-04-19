@@ -39,7 +39,7 @@
 
         //'test/unit/**/*RigidBodySpec*',
 
-        'test/unit/**/ScriptComponentSpec.js',
+        //'test/unit/**/ScriptComponentSpec.js',
 
         //'test/unit/renderer/mirror/**',
         //'test/unit/renderer/dynamicCubemap/**',
@@ -58,7 +58,7 @@
 
         //'test/unit/renderer/shadow/pointShadowMapSpec.js',
         //
-        //'test/unit/renderer/shadow/**',
+        'test/unit/renderer/shadow/**',
         //'test/unit/renderer/shadow/directionShadowMapSpec.js',
         //'test/unit/renderer/*ShadowMap_*Spec.js',
         //
