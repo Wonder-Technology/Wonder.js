@@ -17,13 +17,7 @@ module wd {
         }
 
         @cloneAttributeAsCustomType((source:any, target:any, memberName:string, cloneData:any) => {
-            var actions = wdCb.Collection.create<Action>();
-
-            source[memberName].forEach(function (action:Action) {
-                actions.addChild(action.clone());
-            });
-
-            target[memberName] = actions;
+            target[memberName] = source[memberName].clone(true);
         })
         private _actions:wdCb.Collection<Action> = wdCb.Collection.create<Action>();
 
