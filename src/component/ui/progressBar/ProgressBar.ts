@@ -7,6 +7,7 @@ module wd {
         }
 
         private _percent:number = 0;
+        @cloneAttributeAsBasicType()
         get percent(){
             return this._percent;
         }
@@ -18,8 +19,11 @@ module wd {
             }
         }
 
+        @cloneAttributeAsBasicType()
         public borderStyle:string = "rgba(0, 0, 0, 1)";
+        @cloneAttributeAsBasicType()
         public fillStyle:string = "rgba(255, 0, 0, 1)";
+        @cloneAttributeAsBasicType()
         public radius:number = 5;
 
         private _offScreenCanvas:HTMLCanvasElement = null;

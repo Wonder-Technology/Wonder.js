@@ -285,5 +285,34 @@ describe("ProgressBar", function () {
             expect(renderer.context.drawImage).toCalledTwice();
         });
     });
+
+    describe("clone", function(){
+        beforeEach(function(){
+
+        });
+
+        it("clone data", function () {
+            var percent = 0.2,
+                borderStyle = "rgba(0, 0, 0.2, 1)",
+                fillStyle = "rgba(0, 0, 0.2, 1)",
+                radius = 10;
+
+
+            cloneTool.extend(bar, {
+                    percent: percent,
+                    borderStyle: borderStyle,
+                fillStyle: fillStyle,
+                radius: radius
+            });
+
+
+            var result = bar.clone();
+
+            expect(result.percent).toEqual(percent);
+            expect(result.borderStyle).toEqual(borderStyle);
+            expect(result.fillStyle).toEqual(fillStyle);
+            expect(result.radius).toEqual(radius);
+        });
+    });
 });
 
