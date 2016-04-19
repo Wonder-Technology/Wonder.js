@@ -58,14 +58,14 @@
         //'test/unit/renderer/shadow/directionShadowMapSpec.js',
         //'test/unit/renderer/*ShadowMap_*Spec.js',
         //
-        //'test/unit/**/instance/*',
+        'test/unit/**/instance/*',
 
         //'test/unit/**/instance_script*',
 
         //'test/unit/**/instance_animation*',
 
         //'test/unit/**/instance_shadow_morph*',
-        //'test/unit/**/instance_shadow*',
+        //'test/unit/**/instance_shadowSpec*',
         //'test/unit/**/instance_shadow_*',
         //'test/unit/**/instance_render*',
         //'test/unit/**/instance_space*',
@@ -191,7 +191,7 @@
         //'test/unit/**/rayPicking*',
         //'test/unit/**/AABBShapeSpec*',
         //'test/unit/**/SphereShapeSpec*',
-        'test/unit/**/collider/**',
+        //'test/unit/**/collider/**',
         //'test/unit/**/ActionManagerSpec*',
         //'test/unit/**/TwoDShadow*Spec.js',
         //'test/unit/**/ProgramSpec.js',

@@ -1,10 +1,74 @@
 module wd {
     var getCloneAttributeMembers = (obj:any) => {
-        return obj[`___decorator_cloneAttributeMembers`];
+        return obj[buildMemberContainerAttributeName(obj)];
+    };
+
+    var setCloneAttributeMembers = (obj:any, members:wdCb.Collection<CloneMemberData>) => {
+        obj[buildMemberContainerAttributeName(obj)] = members;
+    };
+
+    var searchCloneAttributeMembers = (obj:any) => {
+        const CLONE_MEMBER_PREFIX = "__decorator_clone";
+        var result = null;
+
+        for(let memberName in obj){
+            if(obj.hasOwnProperty(memberName)){
+                if(memberName.indexOf(CLONE_MEMBER_PREFIX) > -1){
+                    result = obj[memberName];
+                    break;
+                }
+            }
+        }
+
+        return result;
+    };
+
+    var getAllCloneAttributeMembers = (obj:any) => {
+        const IS_GATHERED_ATTRIBUTE_NAME = `__decorator_clone_isGathered_${obj.constructor.name}_cloneAttributeMembers`;
+        //var result = wdCb.Hash.create<any>();
+        var result = wdCb.Collection.create<CloneMemberData>();
+        var gather = (obj:any) => {
+                if(!obj){
+                    return;
+                }
+
+                if(obj[IS_GATHERED_ATTRIBUTE_NAME]){
+                    let members = getCloneAttributeMembers(obj);
+
+                    assert(members, Log.info.FUNC_NOT_EXIST(`${buildMemberContainerAttributeName(obj)}`));
+
+                    result.addChildren(members);
+                    return;
+                }
+
+                gather(obj.__proto__);
+
+                /*! it should ensure the order is: parent members->child members
+                so here go to the top parent, then add the members to result down side
+                  */
+
+                let members = searchCloneAttributeMembers(obj);
+                if(members){
+                    result.addChildren(members);
+                }
+            },
+            setGatheredResult = () => {
+                setCloneAttributeMembers(obj.__proto__, result);
+                obj.__proto__[IS_GATHERED_ATTRIBUTE_NAME] = true;
+            };
+
+        gather(obj.__proto__);
+        setGatheredResult();
+
+        return getCloneAttributeMembers(obj);
     };
 
     var initCloneAttributeMembers = (obj:any) => {
-        obj[`___decorator_cloneAttributeMembers`] = wdCb.Hash.create<any>();
+        setCloneAttributeMembers(obj, wdCb.Collection.create<CloneMemberData>());
+    };
+
+    var buildMemberContainerAttributeName = (obj:any) => {
+        return `__decorator_clone_${obj.constructor.name}_cloneAttributeMembers`;
     };
 
     var generateCloneableMember = (cloneType:CloneType, ...cloneDataArr) => {
@@ -13,7 +77,8 @@ module wd {
                 initCloneAttributeMembers(target);
             }
 
-            getCloneAttributeMembers(target).addChild(memberName, {
+            getCloneAttributeMembers(target).addChild( {
+                memberName:memberName,
                 cloneType: cloneType,
                 cloneDataArr: cloneDataArr
             });
@@ -41,7 +106,7 @@ module wd {
             }
         })
         public static clone<T>(source:T, cloneData:any = null, createDataArr:Array<any> = null):T{
-            var cloneAttributeMembers = getCloneAttributeMembers(source),
+            var cloneAttributeMembers:wdCb.Collection<CloneMemberData> = getAllCloneAttributeMembers(source),
                 className = (<any>source.constructor).name,
                 target = null;
 
@@ -56,17 +121,7 @@ module wd {
                 return target;
             }
 
-            cloneAttributeMembers.forEach(({cloneType, cloneDataArr}, memberName:string) => {
-                /*!
-             the "cloneAttributeMembers" is existed in the parent of the class and its children classes share the "cloneAttributeMembers"!(the "cloneAttributeMembers" isn't existed in the instance because it is add to the data at build time.)
-             so here need judge to exclude the member of sibling classes
-             (but here still may be wrong in the case: the sibling classes has the same attri that need be cloned.
-             in this case, it should mannually define the "clone" method)
-                 */
-                if(target[memberName] === void 0 && source[memberName] === void 0){
-                    return;
-                }
-
+            cloneAttributeMembers.forEach(({memberName, cloneType, cloneDataArr}) => {
                 switch (cloneType){
                     case CloneType.CLONEABLE:
                         target[memberName] = source[memberName].clone();
@@ -110,6 +165,12 @@ module wd {
         //
         //    return target;
         //}
+    }
+
+    type CloneMemberData = {
+        memberName:string,
+        cloneType: CloneType,
+        cloneDataArr: Array<any>
     }
 
     export enum CloneType{
