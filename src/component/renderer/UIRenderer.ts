@@ -24,7 +24,6 @@ module wd {
         }
 
         private _dirty:boolean = true;
-        @cloneAttributeAsBasicType()
         get dirty(){
             return this._dirty;
         }
@@ -39,11 +38,8 @@ module wd {
             }
         }
 
-        @cloneAttributeAsBasicType()
         public dirtyDuringCurrentLoop:boolean = false;
-        @cloneAttributeAsBasicType()
         public isClearCanvas:boolean = false;
-        @cloneAttributeAsBasicType()
         public state:EUIRendererState = EUIRendererState.NORMAL;
         public context:any = null;
         public canvas:HTMLCanvasElement = null;

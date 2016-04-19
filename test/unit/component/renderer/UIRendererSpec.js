@@ -195,31 +195,19 @@ describe("UIRenderer", function () {
         beforeEach(function(){
         });
 
-        it("clone data except canvas,context", function(){
-            var zIndex = 10,
-                dirty = false,
-                dirtyDuringCurrentLoop = true,
-                isClearCanvas = true,
-                state = wd.EUIRendererState.DIRTY;
+        it("clone data", function(){
+            var zIndex = 10;
 
 
 
             cloneTool.extend(renderer, {
-                zIndex: zIndex,
-                dirty: dirty,
-                dirtyDuringCurrentLoop:dirtyDuringCurrentLoop,
-                isClearCanvas: isClearCanvas,
-                state: state
+                zIndex: zIndex
             });
 
             var result = renderer.clone();
 
             expect(result === renderer).toBeFalsy();
             expect(result.zIndex).toEqual(zIndex);
-            expect(result.dirty).toEqual(dirty);
-            expect(result.dirtyDuringCurrentLoop).toEqual(dirtyDuringCurrentLoop);
-            expect(result.isClearCanvas).toEqual(isClearCanvas);
-            expect(result.state).toEqual(state);
         });
     });
 });
