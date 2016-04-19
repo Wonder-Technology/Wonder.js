@@ -1,5 +1,6 @@
 module wd {
     export abstract class SpacePartition extends Component{
+        @cloneAttributeAsBasicType()
         public isCollideEnable:boolean = true;
 
         public abstract build():void;

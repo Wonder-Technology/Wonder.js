@@ -58,7 +58,7 @@
 
         //'test/unit/renderer/shadow/pointShadowMapSpec.js',
         //
-        'test/unit/renderer/shadow/**',
+        //'test/unit/renderer/shadow/**',
         //'test/unit/renderer/shadow/directionShadowMapSpec.js',
         //'test/unit/renderer/*ShadowMap_*Spec.js',
         //
@@ -138,7 +138,7 @@
 
         //'test/unit/component/physics/**/eventSpec*',
 
-        //'test/unit/**/OctreeSpec*',
+        'test/unit/**/OctreeSpec*',
         //'test/unit/**/CollisionDetectorSpec*',
         //'test/unit/**/BoundingRegionUtilsSpec*',
 

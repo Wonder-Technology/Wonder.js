@@ -6,7 +6,9 @@ module wd {
         	return obj;
         }
 
+        @cloneAttributeAsBasicType()
         public maxDepth:number = 2;
+        @cloneAttributeAsBasicType()
         public maxNodeCapacity:number = 64;
 
         private _root:OctreeNode = null;

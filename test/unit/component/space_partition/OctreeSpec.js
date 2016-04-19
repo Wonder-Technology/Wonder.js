@@ -639,5 +639,43 @@ describe("Octree", function () {
             expect(result.getChildren()).toEqual([obj1])
         });
     });
+
+    describe("clone", function(){
+        beforeEach(function(){
+        });
+
+        it("clone SpacePartition data", function(){
+            var isCollideEnable = false;
+
+
+
+            cloneTool.extend(tree, {
+                isCollideEnable: isCollideEnable
+            });
+
+            var result = tree.clone();
+
+            expect(result === tree).toBeFalsy();
+            expect(result.isCollideEnable).toEqual(isCollideEnable);
+        });
+
+        it("clone Octree data", function () {
+            var maxDepth = 10,
+                maxNodeCapacity = 20;
+
+
+
+            cloneTool.extend(tree, {
+                maxDepth: maxDepth,
+                maxNodeCapacity: maxNodeCapacity
+            });
+
+            var result = tree.clone();
+
+            expect(result === tree).toBeFalsy();
+            expect(result.maxDepth).toEqual(maxDepth);
+            expect(result.maxNodeCapacity).toEqual(maxNodeCapacity);
+        });
+    });
 });
 
