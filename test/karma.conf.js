@@ -37,7 +37,7 @@
 
         //'test/unit/**/light/**',
 
-        //'test/unit/**/*RigidBodySpec*',
+        'test/unit/**/*RigidBodySpec*',
 
         //'test/unit/**/ScriptComponentSpec.js',
 
@@ -179,7 +179,7 @@
         //
         //'test/unit/**/ImageSpec*',
         //
-        'test/unit/**/ThreeDTransformSpec.js',
+        //'test/unit/**/ThreeDTransformSpec.js',
         //'test/unit/**/RectTransformSpec*',
         //'test/unit/**/TransformSpec*',
         //'test/unit/**/component/**',

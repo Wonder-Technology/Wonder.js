@@ -4,9 +4,14 @@ module wd{
             this.rigidBody = rigidBody;
         }
 
+        @cloneAttributeAsBasicType()
         public maxForce:number = null;
 
         protected rigidBody:RigidBody = null;
+
+        public clone(rigidBody:RigidBody){
+            return CloneHelper.clone(this, null, [rigidBody]);
+        }
     }
 
     export class LockConstraint extends PhysicsConstraint{
@@ -17,6 +22,7 @@ module wd{
         }
 
         private _connectedBody:RigidBody = null;
+        @cloneAttributeAsBasicType()
         get connectedBody(){
             return this._connectedBody;
         }
@@ -45,6 +51,7 @@ module wd{
         }
 
         private _connectedBody:RigidBody = null;
+        @cloneAttributeAsBasicType()
         get connectedBody(){
             return this._connectedBody;
         }
@@ -65,6 +72,7 @@ module wd{
         }
 
         //todo support change distance
+        @cloneAttributeAsBasicType()
         public distance:number = null;
     }
 
@@ -76,6 +84,7 @@ module wd{
         }
 
         private _connectedBody:RigidBody = null;
+        @cloneAttributeAsBasicType()
         get connectedBody(){
             return this._connectedBody;
         }
@@ -96,10 +105,14 @@ module wd{
         }
 
         //todo support change pivot
+        @cloneAttributeAsCloneable()
         public pivotA:Vector3 = null;
+        @cloneAttributeAsCloneable()
         public pivotB:Vector3 = null;
         //todo support change axis
+        @cloneAttributeAsCloneable()
         public axisA:Vector3 = null;
+        @cloneAttributeAsCloneable()
         public axisB:Vector3 = null;
     }
 
@@ -110,10 +123,13 @@ module wd{
             return obj;
         }
 
+        @cloneAttributeAsBasicType()
         public connectedBody:RigidBody = null;
 
         //todo support change pivot
+        @cloneAttributeAsCloneable()
         public pivotA:Vector3 = null;
+        @cloneAttributeAsCloneable()
         public pivotB:Vector3 = null;
     }
 
@@ -129,7 +145,14 @@ module wd{
         }
 
         private _rigidBody:RigidBody = null;
+        @cloneAttributeAsCustomType(function(source:PointToPointConstraintList, target:PointToPointConstraintList, memberName:string){
+            target[memberName] = source[memberName].clone(true);
+        })
         private _list:wdCb.Collection<PointToPointConstraint> = wdCb.Collection.create<PointToPointConstraint>();
+
+        public clone(rigidBody:RigidBody){
+            return CloneHelper.clone(this, null, [rigidBody]);
+        }
 
         public forEach(func:(PointToPointConstraint) => void, context = root){
             this._list.forEach(func, context);
