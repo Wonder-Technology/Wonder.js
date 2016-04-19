@@ -9,9 +9,13 @@ module wd{
             return obj;
         }
 
+        @cloneAttributeAsBasicType()
         public shadowCameraLeft:number = -1000;
+        @cloneAttributeAsBasicType()
         public shadowCameraRight:number = 1000;
+        @cloneAttributeAsBasicType()
         public shadowCameraTop:number = 1000;
+        @cloneAttributeAsBasicType()
         public shadowCameraBottom:number = -1000;
     }
 }

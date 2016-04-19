@@ -9,6 +9,7 @@ module wd{
         }
 
         private _rangeLevel:number = null;
+        @cloneAttributeAsBasicType()
         get rangeLevel(){
             return this._rangeLevel;
         }
@@ -17,6 +18,7 @@ module wd{
             this._attenuation.rangeLevel = this._rangeLevel;
         }
 
+        @cloneAttributeAsBasicType()
         get range(){
             return this._attenuation.range;
         }
@@ -24,6 +26,7 @@ module wd{
             this._attenuation.range = range;
         }
 
+        @cloneAttributeAsBasicType()
         get constant(){
             return this._attenuation.constant;
         }
@@ -31,6 +34,7 @@ module wd{
             this._attenuation.constant = constant;
         }
 
+        @cloneAttributeAsBasicType()
         get linear(){
             return this._attenuation.linear;
         }
@@ -38,6 +42,7 @@ module wd{
             this._attenuation.linear = linear;
         }
 
+        @cloneAttributeAsBasicType()
         get quadratic(){
             return this._attenuation.quadratic;
         }
@@ -45,52 +50,6 @@ module wd{
             this._attenuation.quadratic = quadratic;
         }
 
-        //private _shadowRenderList:wdCb.Hash<wdCb.Collection<GameObject>> = wdCb.Hash.create<wdCb.Collection<GameObject>>();
-        //get shadowRenderList(){
-        //    return this._shadowRenderList;
-        //}
-        //@requireSetter(function(shadowRenderList:any){
-        //    assert(JudgeUtils.isDirectObject(shadowRenderList), Log.info.FUNC_MUST_BE("shadowRenderList", "object"));
-        //
-        //    for(let direction in shadowRenderList){
-        //        if(shadowRenderList.hasOwnProperty(direction)){
-        //            let list = shadowRenderList[direction];
-        //
-        //            assert(JudgeUtils.isArrayExactly(list) || shadowRenderList instanceof wdCb.Hash, Log.info.FUNC_MUST_BE("renderList in each direction of shadowRenderList", "array"));
-        //        }
-        //    }
-        //
-        //})
-        //set shadowRenderList(shadowRenderList:any) {
-        //    shadowRenderList = <{
-        //        px:Array<GameObject>,
-        //        nx:Array<GameObject>,
-        //        py:Array<GameObject>,
-        //        ny:Array<GameObject>,
-        //        pz:Array<GameObject>,
-        //        nz:Array<GameObject>
-        //    }> shadowRenderList;
-        //
-        //    for(let direction in shadowRenderList){
-        //        if(shadowRenderList.hasOwnProperty(direction)){
-        //            let list = shadowRenderList[direction];
-        //
-        //            this._shadowRenderList.addChild(direction, wdCb.Collection.create<GameObject>(list));
-        //        }
-        //    }
-        //}
-
-        public shadowMap:CubemapShadowMapTexture;
-        //public shadowMapRenderer:CubemapShadowMapRenderTargetRenderer;
-
         private _attenuation:Attenuation = Attenuation.create();
-
-        //protected createShadowMap(){
-        //    return CubemapShadowMapTexture.create();
-        //}
-        //
-        //protected createShadowMapRenderer(){
-        //    return CubemapShadowMapRenderTargetRenderer.create(this);
-        //}
     }
 }

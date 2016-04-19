@@ -5,6 +5,7 @@ module wd {
         }
 
         private _shadowMapWidth:number = null;
+        @cloneAttributeAsBasicType()
         get shadowMapWidth(){
             var maxCubemapTextureSize = GPUDetector.getInstance().maxCubemapTextureSize;
 
@@ -19,6 +20,7 @@ module wd {
         }
 
         private _shadowMapHeight:number = null;
+        @cloneAttributeAsBasicType()
         get shadowMapHeight(){
             var maxCubemapTextureSize = GPUDetector.getInstance().maxCubemapTextureSize;
 
@@ -34,14 +36,18 @@ module wd {
 
         public entityObject:GameObject;
 
+        @cloneAttributeAsCloneable()
         public color:Color = Color.create("#ffffff");
+        @cloneAttributeAsBasicType()
         public castShadow:boolean = false;
+        @cloneAttributeAsBasicType()
         public shadowCameraNear:number = 0.1;
+        @cloneAttributeAsBasicType()
         public shadowCameraFar:number = 5000;
+        @cloneAttributeAsBasicType()
         public shadowBias:number = ShaderChunk.NULL;
+        @cloneAttributeAsBasicType()
         public shadowDarkness:number = 0;
-        //todo remove
-        public shadowMap:IShadowMapTexture = null;
     }
 }
 

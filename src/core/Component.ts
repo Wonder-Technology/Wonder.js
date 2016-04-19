@@ -15,9 +15,11 @@ module wd{
         //public abstract clone():Component;
         @virtual
         public clone(...datas):any{
-            Log.error(true, Log.info.FUNC_SHOULD("implement clone method"));
+            //Log.error(true, Log.info.FUNC_SHOULD("implement clone method"));
+            //
+            //return null;
 
-            return null;
+            return CloneHelper.clone(this);
         }
 
         public get transform():Transform {

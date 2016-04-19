@@ -43,9 +43,11 @@ module wd {
             return this._rangeLevel;
         }
         set rangeLevel(rangeLevel:number){
-            this._rangeLevel = rangeLevel;
+            if(rangeLevel){
+                this._rangeLevel = rangeLevel;
 
-            this.setByRangeLevel();
+                this.setByRangeLevel();
+            }
         }
 
         public setByRangeLevel() {

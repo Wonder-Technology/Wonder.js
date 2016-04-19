@@ -35,6 +35,7 @@
 
         //'test/unit/**/command/*',
 
+        'test/unit/**/light/**',
 
 
         //'test/unit/renderer/mirror/**',
@@ -58,7 +59,7 @@
         //'test/unit/renderer/shadow/directionShadowMapSpec.js',
         //'test/unit/renderer/*ShadowMap_*Spec.js',
         //
-        'test/unit/**/instance/*',
+        //'test/unit/**/instance/*',
 
         //'test/unit/**/instance_script*',
 
