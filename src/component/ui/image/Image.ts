@@ -48,6 +48,11 @@ module wd {
         }
 
         private _source:ImageTextureAsset = null;
+        @cloneAttributeAsCustomType(function(source:Image, target:Image, memberName:string){
+            if(source[memberName]) {
+                target[memberName] = ImageTextureAsset.create(source[memberName].source);
+            }
+        })
         get source(){
             return this._source;
         }
@@ -59,8 +64,15 @@ module wd {
             }
         }
 
+        @cloneAttributeAsCloneable()
         public color:Color = null;
+        @cloneAttributeAsCustomType(function(source:Image, target:Image, memberName:string){
+            if(source[memberName]){
+                target[memberName] = ImageTextureAsset.create(source[memberName].source);
+            }
+        })
         public targetSource:ImageTextureAsset = null;
+        @cloneAttributeAsCloneable()
         public targetColor:Color = null;
 
         //implement it in STATIC_CONSTRUCTOR

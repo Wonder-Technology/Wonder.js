@@ -267,5 +267,52 @@ describe("Image", function () {
             });
         });
     });
+
+    describe("clone", function(){
+        beforeEach(function(){
+
+        });
+
+        it("clone source, targetSource", function(){
+            var imageSource = wd.Image.create();
+            var targetImageSource = wd.Image.create();
+
+            var imageTextureAsset = wd.ImageTextureAsset.create(imageSource);
+            var targetImageTextureAsset = wd.ImageTextureAsset.create(targetImageSource);
+
+            cloneTool.extend(image, {
+                source: imageTextureAsset,
+                targetSource:targetImageTextureAsset
+            });
+
+            var result = image.clone();
+
+            expect(result.source).toBeInstanceOf(wd.ImageTextureAsset);
+            expect(result.source === imageTextureAsset).toBeFalsy();
+
+            expect(result.source.source === imageSource).toBeTruthy();
+
+
+            expect(result.targetSource).toBeInstanceOf(wd.ImageTextureAsset);
+            expect(result.targetSource === targetImageTextureAsset).toBeFalsy();
+
+            expect(result.targetSource.source === targetImageSource).toBeTruthy();
+        });
+
+        it("clone color,targetColor", function(){
+            var color = wd.Color.create("#123334"),
+            targetColor = wd.Color.create("#123456");
+
+            cloneTool.extend(image, {
+                color: color,
+                targetColor: targetColor
+            });
+
+            var result = image.clone();
+
+            expect(result.color).toEqual(color);
+            expect(result.targetColor).toEqual(targetColor);
+        });
+    });
 });
 
