@@ -35,8 +35,9 @@
 
         //'test/unit/**/command/*',
 
-        'test/unit/**/light/**',
+        //'test/unit/**/light/**',
 
+        'test/unit/**/*RigidBodySpec*',
 
         //'test/unit/renderer/mirror/**',
         //'test/unit/renderer/dynamicCubemap/**',

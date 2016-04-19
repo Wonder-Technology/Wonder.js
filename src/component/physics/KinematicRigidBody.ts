@@ -8,6 +8,7 @@ module wd {
 
         private _velocity:Vector3 = Vector3.create(0, 0, 0);
         @operateBodyDataGetterAndSetter("Velocity")
+        @cloneAttributeAsCloneable()
         get velocity() {
             return this._velocity;
         }
@@ -18,6 +19,7 @@ module wd {
 
         private _angularVelocity:Vector3 = Vector3.create(0, 0, 0);
         @operateBodyDataGetterAndSetter("AngularVelocity")
+        @cloneAttributeAsCloneable()
         get angularVelocity(){
             return this._angularVelocity;
         }
@@ -27,6 +29,7 @@ module wd {
 
         private _mass:number = 1;
         @operateBodyDataGetterAndSetter("Mass")
+        @cloneAttributeAsBasicType()
         get mass(){
             return this._mass;
         }

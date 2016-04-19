@@ -104,8 +104,8 @@ module wd{
     }
 
     export class PointToPointConstraint extends PhysicsConstraint{
-        public static create(rigidBody:RigidBody) {
-            var obj = new this(rigidBody);
+        public static create() {
+            var obj = new this(null);
 
             return obj;
         }
@@ -137,6 +137,14 @@ module wd{
 
         public getCount(){
             return this._list.getCount();
+        }
+
+        public getChildren(){
+            return this._list;
+        }
+
+        public getChild(index:number){
+            return this._list.getChild(index);
         }
 
         public addChild(constraint:PointToPointConstraint){

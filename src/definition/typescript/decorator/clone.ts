@@ -124,7 +124,9 @@ module wd {
             cloneAttributeMembers.forEach(({memberName, cloneType, cloneDataArr}) => {
                 switch (cloneType){
                     case CloneType.CLONEABLE:
-                        target[memberName] = source[memberName].clone();
+                        if(source[memberName] !== null && source[memberName] !== void 0){
+                            target[memberName] = source[memberName].clone();
+                        }
                         break;
                     case CloneType.BASIC:
                         target[memberName] = source[memberName];

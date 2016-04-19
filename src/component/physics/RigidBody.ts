@@ -2,6 +2,7 @@ module wd {
     export abstract class RigidBody extends Component {
         private _friction:number = 0;
         @operateBodyDataGetterAndSetter("Friction")
+        @cloneAttributeAsBasicType()
         get friction(){
             return this._friction;
         }
@@ -11,6 +12,7 @@ module wd {
 
         private _restitution:number = 0;
         @operateBodyDataGetterAndSetter("Restitution")
+        @cloneAttributeAsBasicType()
         get restitution(){
             return this._restitution;
         }
@@ -19,6 +21,7 @@ module wd {
         }
 
         private _children:wdCb.Collection<GameObject> = wdCb.Collection.create<GameObject>();
+        @cloneAttributeAsCloneable()
         get children(){
             return  this._children;
         }
@@ -41,9 +44,58 @@ module wd {
 
         public entityObject:GameObject;
 
+        @cloneAttributeAsCustomType(function(source:LockConstraint, target:LockConstraint, memberName:string){
+            target[memberName].maxForce = source[memberName].maxForce;
+            target[memberName].connectedBody = source[memberName].connectedBody;
+        })
         public lockConstraint:LockConstraint = LockConstraint.create(this);
+        @cloneAttributeAsCustomType(function(source:RigidBody, target:RigidBody, memberName:string){
+            target[memberName].maxForce = source[memberName].maxForce;
+            target[memberName].connectedBody = source[memberName].connectedBody;
+            target[memberName].distance = source[memberName].distance;
+        })
         public distanceConstraint:DistanceConstraint = DistanceConstraint.create(this);
+        @cloneAttributeAsCustomType(function(source:RigidBody, target:RigidBody, memberName:string){
+            target[memberName].maxForce = source[memberName].maxForce;
+            target[memberName].connectedBody = source[memberName].connectedBody;
+
+            if(source[memberName].pivotA){
+                target[memberName].pivotA = source[memberName].pivotA.clone();
+            }
+
+            if(source[memberName].pivotB){
+                target[memberName].pivotB = source[memberName].pivotB.clone();
+            }
+
+            if(source[memberName].axisA){
+                target[memberName].axisA = source[memberName].axisA.clone();
+            }
+
+            if(source[memberName].axisB){
+                target[memberName].axisB = source[memberName].axisB.clone();
+            }
+        })
         public hingeConstraint:HingeConstraint = HingeConstraint.create(this);
+        @cloneAttributeAsCustomType(function(source:RigidBody, target:RigidBody, memberName:string){
+            let list:PointToPointConstraintList = target[memberName];
+
+            source[memberName].forEach((constraint:PointToPointConstraint) => {
+                var targetConstraint = PointToPointConstraint.create();
+
+                targetConstraint.maxForce = constraint.maxForce;
+                targetConstraint.connectedBody = constraint.connectedBody;
+
+                if(constraint.pivotA){
+                    targetConstraint.pivotA = constraint.pivotA.clone();
+                }
+
+                if(constraint.pivotB){
+                    targetConstraint.pivotB = constraint.pivotB.clone();
+                }
+
+                list.addChild(targetConstraint);
+            });
+        })
         public pointToPointConstraintList:PointToPointConstraintList = PointToPointConstraintList.create(this);
 
         private _afterInitSubscription:wdFrp.IDisposable = null;
