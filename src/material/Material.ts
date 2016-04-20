@@ -61,6 +61,7 @@ module wd {
             this._blendType = blendType;
         }
 
+        @cloneAttributeAsCloneable()
         get envMap(){
             return this.mapManager.getEnvMap();
         }
@@ -135,11 +136,17 @@ module wd {
             return this._shaderManager.shader;
         }
 
+        @cloneAttributeAsBasicType()
         public redWrite:boolean = true;
+        @cloneAttributeAsBasicType()
         public greenWrite:boolean = true;
+        @cloneAttributeAsBasicType()
         public blueWrite:boolean = true;
+        @cloneAttributeAsBasicType()
         public alphaWrite:boolean = true;
+        @cloneAttributeAsBasicType()
         public polygonOffsetMode:EPolygonOffsetMode = EPolygonOffsetMode.NONE;
+        @cloneAttributeAsBasicType()
         public side:ESide = ESide.FRONT;
         @cloneAttributeAsBasicType()
         public blend:boolean = false;
@@ -149,13 +156,19 @@ module wd {
         public blendFuncSeparate:Array<EBlendFunc> = null;
         @cloneAttributeAsBasicType()
         public blendEquationSeparate:Array<EBlendEquation> = [EBlendEquation.ADD, EBlendEquation.ADD];
+        @cloneAttributeAsBasicType()
         public shading = EShading.FLAT;
+        @cloneAttributeAsBasicType()
         public geometry:Geometry = null;
 
         private _shaderManager:ShaderManager = ShaderManager.create(this);
 
         public clone(){
-            return CloneHelper.clone(this);
+            var result = CloneHelper.clone(this);
+
+            //result._shaderManager.shader.mapManager = this.mapManager.clone(result);
+
+            return result;
         }
 
         public initWhenCreate(){

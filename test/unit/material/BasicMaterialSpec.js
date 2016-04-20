@@ -262,100 +262,187 @@ describe("BasicMaterial", function () {
     
     describe("clone", function(){
         beforeEach(function(){
-            
+            material = wd.BasicMaterial.create();
         });
-        
-        describe("clone blend data", function(){
-            it("if set blendType, related blend data should be affected by it", function () {
-            var blendType = wd.EBlendType.ADDITIVEALPHA,
-                blendSrc = wd.EBlendFunc.DST_COLOR,
-                blendDst = wd.EBlendFunc.ONE_MINUS_DST_ALPH,
-                blend = false,
-                blendEquation = wd.EBlendEquation.SUBTRACT;
+
+        describe("clone Material data", function(){
+            describe("clone blend data", function(){
+                it("if set blendType, related blend data should be affected by it", function () {
+                    var blendType = wd.EBlendType.ADDITIVEALPHA,
+                        blendSrc = wd.EBlendFunc.DST_COLOR,
+                        blendDst = wd.EBlendFunc.ONE_MINUS_DST_ALPH,
+                        blend = false,
+                        blendEquation = wd.EBlendEquation.SUBTRACT;
 
 
-                material.blendType = blendType;
+                    material.blendType = blendType;
 
-            cloneTool.extend(material, {
-                    blendSrc: blendSrc,
-                blendDst: blendDst,
-                blend: blend,
-                blendEquation: blendEquation
+                    cloneTool.extend(material, {
+                        blendSrc: blendSrc,
+                        blendDst: blendDst,
+                        blend: blend,
+                        blendEquation: blendEquation
+                    });
+
+
+                    var result = material.clone();
+
+                    expect(result.blendType).toEqual(blendType);
+                    expect(result.blendSrc).toEqual(wd.EBlendFunc.SRC_ALPHA);
+                    expect(result.blendDst).toEqual(wd.EBlendFunc.ONE);
+                    expect(result.blendEquation).toEqual(wd.EBlendEquation.ADD);
+                });
+                it("if set blendSrc/blendDst/blendEquation, the blendFuncSeparate should be affected", function () {
+                    var blendFuncSeparate = [wd.EBlendFunc.DST_ALPHA, wd.EBlendFunc.DST_ALPHA],
+                        blendSrc = wd.EBlendFunc.DST_COLOR,
+                        blendDst = wd.EBlendFunc.DST_COLOR,
+                        blendEquation = wd.EBlendEquation.REVERSE_SUBTRAC;
+
+
+
+                    cloneTool.extend(material, {
+                        blendFuncSeparate: blendFuncSeparate
+                    });
+
+
+                    var result = material.clone();
+
+                    expect(result.blendFuncSeparate).toEqual(blendFuncSeparate);
+
+
+
+
+
+
+
+
+                    material.blendSrc = blendSrc;
+
+                    cloneTool.extend(material, {
+                        blendFuncSeparate: blendFuncSeparate
+                    });
+
+
+                    var result = material.clone();
+
+                    expect(result.blendFuncSeparate).toBeNull();
+
+
+
+
+
+
+                    material.blendDst = blendDst;
+
+                    cloneTool.extend(material, {
+                        blendFuncSeparate: blendFuncSeparate
+                    });
+
+
+                    var result = material.clone();
+
+                    expect(result.blendFuncSeparate).toBeNull();
+
+
+
+
+
+                    material.blendEquation = blendEquation;
+
+                    cloneTool.extend(material, {
+                        blendFuncSeparate: blendFuncSeparate
+                    });
+
+
+                    var result = material.clone();
+
+                    expect(result.blendFuncSeparate).toBeNull();
+                });
+            });
+
+            describe("clone map", function(){
+                beforeEach(function(){
+                });
+
+                it("clone envMap", function(){
+                    var resultEnvMap = {};
+                    var envMap = {clone:sandbox.stub().returns(resultEnvMap)};
+
+                    cloneTool.extend(material, {
+envMap:envMap
+                    });
+
+
+                    var result = material.clone();
+
+                    expect(result.envMap).toEqual(resultEnvMap);
+                    expect(result.envMap.material).toEqual(result);
+                });
+            });
+
+            it("share geometry", function () {
+                var geometry = {};
+
+                cloneTool.extend(material, {
+                    geometry: geometry
+                });
+
+                var result = material.clone();
+
+                expect(result.geometry).toEqual(material.geometry);
             });
 
 
-            var result = material.clone();
+            it("clone data", function () {
+                    var color = wd.Color.create("#123456"),
+                        redWrite = false,
+                        greenWrite = false,
+                        blueWrite = false,
+                        alphaWrite = false,
+                        polygonOffsetMode = wd.EPolygonOffsetMode.IN,
+                        side = wd.ESide.BOTH,
+                        shading = wd.EShading.SMOOTH;
 
-            expect(result.blendType).toEqual(blendType);
-            expect(result.blendSrc).toEqual(wd.EBlendFunc.SRC_ALPHA);
-            expect(result.blendDst).toEqual(wd.EBlendFunc.ONE);
-            expect(result.blendEquation).toEqual(wd.EBlendEquation.ADD);
+                    cloneTool.extend(material, {
+                            color: color,
+                            redWrite: redWrite,
+                        greenWrite: greenWrite,
+                        blueWrite: blueWrite,
+                        alphaWrite: alphaWrite,
+                        polygonOffsetMode: polygonOffsetMode,
+                        side: side,
+                        shading: shading
+                    });
+
+
+                    var result = material.clone();
+
+                    expect(result.color).toEqual(color);
+                    expect(result.redWrite).toEqual(redWrite);
+                expect(result.greenWrite).toEqual(greenWrite);
+                expect(result.blueWrite).toEqual(blueWrite);
+                expect(result.alphaWrite).toEqual(alphaWrite);
+                expect(result.polygonOffsetMode).toEqual(polygonOffsetMode);
+                expect(result.side).toEqual(side);
+                expect(result.shading).toEqual(shading);
             });
-            it("if set blendSrc/blendDst/blendEquation, the blendFuncSeparate should be affected", function () {
-                var blendFuncSeparate = [wd.EBlendFunc.DST_ALPHA, wd.EBlendFunc.DST_ALPHA],
-                    blendSrc = wd.EBlendFunc.DST_COLOR,
-                    blendDst = wd.EBlendFunc.DST_COLOR,
-                    blendEquation = wd.EBlendEquation.REVERSE_SUBTRAC;
+        });
 
+        describe("clone StandardBasicMaterial data", function(){
+            beforeEach(function(){
+            });
 
+            it("", function(){
 
-                cloneTool.extend(material, {
-                    blendFuncSeparate: blendFuncSeparate
-                });
+            });
+        });
 
+        describe("clone BasicMaterial data", function(){
+            beforeEach(function(){
+            });
 
-                var result = material.clone();
+            it("", function(){
 
-                expect(result.blendFuncSeparate).toEqual(blendFuncSeparate);
-
-
-
-
-
-
-
-
-                material.blendSrc = blendSrc;
-
-                cloneTool.extend(material, {
-                    blendFuncSeparate: blendFuncSeparate
-                });
-
-
-                var result = material.clone();
-
-                expect(result.blendFuncSeparate).toBeNull();
-
-
-
-
-
-
-                material.blendDst = blendDst;
-
-                cloneTool.extend(material, {
-                    blendFuncSeparate: blendFuncSeparate
-                });
-
-
-                var result = material.clone();
-
-                expect(result.blendFuncSeparate).toBeNull();
-
-
-
-
-
-                material.blendEquation = blendEquation;
-
-                cloneTool.extend(material, {
-                    blendFuncSeparate: blendFuncSeparate
-                });
-
-
-                var result = material.clone();
-
-                expect(result.blendFuncSeparate).toBeNull();
             });
         });
     });

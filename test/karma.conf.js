@@ -29,7 +29,9 @@
 
         //'test/unit/**',
 
-        'test/unit/**/cubemapTexture*',
+        //'test/unit/**/cubemapTexture*',
+
+        'test/unit/**/BasicMaterial*',
 
         //'test/unit/**/**GeometrySpec*',
 
@@ -92,8 +94,6 @@
         //
         //'test/unit/texture/**',
 
-        //'test/unit/**/material/**',
-        //'test/unit/**/material*/**',
         //
         //'test/unit/**/MapManager*',
 
