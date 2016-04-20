@@ -55,7 +55,9 @@ module wd {
         private _mouseupSubscription:wdFrp.IDisposable = null;
         private _mouseoverSubscription:wdFrp.IDisposable = null;
         private _mouseoutSubscription:wdFrp.IDisposable = null;
-        @cloneAttributeAsCloneable(true)
+        @cloneAttributeAsCloneable({
+            isInjectTarget:true
+        })
         private _stateMachine:UIStateMachine = UIStateMachine.create(this);
 
         public initWhenCreate() {

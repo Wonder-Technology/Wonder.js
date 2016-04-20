@@ -6,45 +6,16 @@ module wd {
 
         private _blendType:EBlendType = null;
         get blendType(){
-            if(this._blendType){
-                return this._blendType;
+            return this._blendType;
+        }
+        @cloneAttributeAsBasicType({
+            order:1
+        })
+        set blendType(blendType:EBlendType){
+            if(blendType === null){
+                return;
             }
 
-            if ( (this.blendSrc === EBlendFunc.ONE)
-                && (this.blendDst === EBlendFunc.ZERO)
-                && (this.blendEquation === EBlendEquation.ADD)) {
-                return EBlendType.NONE;
-            }
-            else if ((this.blendSrc === EBlendFunc.SRC_ALPHA)
-                && (this.blendDst === EBlendFunc.ONE_MINUS_SRC_ALPHA)
-                && (this.blendEquation === EBlendEquation.ADD)) {
-                return EBlendType.NORMAL;
-            }
-            else if ((this.blendSrc === EBlendFunc.ONE)
-                && (this.blendDst === EBlendFunc.ONE)
-                && (this.blendEquation === EBlendEquation.ADD)) {
-                return EBlendType.ADDITIVE;
-            }
-            else if ((this.blendSrc === EBlendFunc.SRC_ALPHA)
-                && (this.blendDst === EBlendFunc.ONE)
-                && (this.blendEquation === EBlendEquation.ADD)) {
-                return EBlendType.ADDITIVEALPHA;
-            }
-            else if ((this.blendSrc === EBlendFunc.DST_COLOR)
-                && (this.blendDst === EBlendFunc.ZERO)
-                && (this.blendEquation === EBlendEquation.ADD)) {
-                return EBlendType.MULTIPLICATIVE;
-            }
-            else if ((this.blendSrc === EBlendFunc.ONE)
-                && (this.blendDst === EBlendFunc.ONE_MINUS_SRC_ALPHA)
-                && (this.blendEquation === EBlendEquation.ADD)) {
-                return EBlendType.PREMULTIPLIED;
-            }
-            else {
-                return EBlendType.NORMAL;
-            }
-        }
-        set blendType(blendType:EBlendType){
             switch (blendType) {
                 case EBlendType.NONE:
                     this.blend = false;
@@ -98,28 +69,43 @@ module wd {
         }
 
         private _blendSrc:EBlendFunc= EBlendFunc.ONE;
+        @cloneAttributeAsBasicType()
         get blendSrc(){
             return this._blendSrc;
         }
         set blendSrc(blendSrc:EBlendFunc){
+            if(this._blendSrc === blendSrc){
+                return;
+            }
+
             this._blendSrc = blendSrc;
             this.blendFuncSeparate = null;
         }
 
         private _blendDst:EBlendFunc= EBlendFunc.ZERO;
+        @cloneAttributeAsBasicType()
         get blendDst(){
             return this._blendDst;
         }
         set blendDst(blendDst:EBlendFunc){
+            if(this._blendDst === blendDst){
+                return;
+            }
+
             this._blendDst = blendDst;
             this.blendFuncSeparate = null;
         }
 
         private _blendEquation:EBlendEquation = EBlendEquation.ADD;
+        @cloneAttributeAsBasicType()
         get blendEquation(){
             return this._blendEquation;
         }
         set blendEquation(blendEquation:EBlendEquation){
+            if(this._blendEquation === blendEquation){
+                return;
+            }
+
             this._blendEquation = blendEquation;
             this.blendEquationSeparate = null;
         }
@@ -130,13 +116,15 @@ module wd {
             return this._color;
         }
         set color(color:Color){
-            if(!this._isColorEqual(color, this._color)){
-                if(this.geometry && this.geometry.entityObject){
-                    EventManager.trigger(this.geometry.entityObject, <any>EEngineEvent.MATERIAL_COLOR_CHANGE);
-                }
-
-                this._color = color;
+            if(this._color.isEqual(color)){
+                return;
             }
+
+            if(this.geometry && this.geometry.entityObject){
+                EventManager.trigger(this.geometry.entityObject, <any>EEngineEvent.MATERIAL_COLOR_CHANGE);
+            }
+
+            this._color = color;
         }
 
         get mapManager(){
@@ -153,15 +141,22 @@ module wd {
         public alphaWrite:boolean = true;
         public polygonOffsetMode:EPolygonOffsetMode = EPolygonOffsetMode.NONE;
         public side:ESide = ESide.FRONT;
+        @cloneAttributeAsBasicType()
         public blend:boolean = false;
+        @cloneAttributeAsBasicType({
+            order:-1
+        })
         public blendFuncSeparate:Array<EBlendFunc> = null;
+        @cloneAttributeAsBasicType()
         public blendEquationSeparate:Array<EBlendEquation> = [EBlendEquation.ADD, EBlendEquation.ADD];
         public shading = EShading.FLAT;
         public geometry:Geometry = null;
 
         private _shaderManager:ShaderManager = ShaderManager.create(this);
 
-        //public abstract copy():Material;
+        public clone(){
+            return CloneHelper.clone(this);
+        }
 
         public initWhenCreate(){
             this._shaderManager.setShader(this.createShader());
@@ -196,10 +191,6 @@ module wd {
         }
 
         protected abstract createShader():Shader;
-
-        private _isColorEqual(color1:Color, color2:Color){
-            return color1.r === color2.r && color1.g === color2.g && color1.b === color2.b && color1.a === color2.a;
-        }
     }
 }
 

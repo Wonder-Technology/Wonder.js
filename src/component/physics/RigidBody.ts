@@ -44,13 +44,21 @@ module wd {
 
         public entityObject:GameObject;
 
-        @cloneAttributeAsCloneable(true)
+        @cloneAttributeAsCloneable({
+            isInjectTarget:true
+        })
         public lockConstraint:LockConstraint = LockConstraint.create(this);
-        @cloneAttributeAsCloneable(true)
+        @cloneAttributeAsCloneable({
+            isInjectTarget:true
+        })
         public distanceConstraint:DistanceConstraint = DistanceConstraint.create(this);
-        @cloneAttributeAsCloneable(true)
+        @cloneAttributeAsCloneable({
+            isInjectTarget:true
+        })
         public hingeConstraint:HingeConstraint = HingeConstraint.create(this);
-        @cloneAttributeAsCloneable(true)
+        @cloneAttributeAsCloneable({
+            isInjectTarget:true
+        })
         public pointToPointConstraintList:PointToPointConstraintList = PointToPointConstraintList.create(this);
 
         private _afterInitSubscription:wdFrp.IDisposable = null;

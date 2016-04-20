@@ -7,10 +7,6 @@ module wd{
 
             return obj;
         }
-
-        public clone(){
-            return CloneHelper.clone(this);
-        }
     }
 }
 

@@ -29,6 +29,9 @@
 
         //'test/unit/**',
 
+
+        //'test/unit/**/**GeometrySpec*',
+
         //'test/unit/**/action/*',
 
         //'test/unit/**/RenderUtils*',
@@ -37,7 +40,7 @@
 
         //'test/unit/**/light/**',
 
-        'test/unit/**/*RigidBodySpec*',
+        //'test/unit/**/*RigidBodySpec*',
 
         //'test/unit/**/ScriptComponentSpec.js',
 
@@ -88,7 +91,7 @@
         //
         //'test/unit/texture/**',
 
-        //'test/unit/**/material/**',
+        'test/unit/**/material/**',
         //'test/unit/**/material*/**',
         //
         //'test/unit/**/MapManager*',

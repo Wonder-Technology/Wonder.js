@@ -259,4 +259,104 @@ describe("BasicMaterial", function () {
             });
         })
     });
+    
+    describe("clone", function(){
+        beforeEach(function(){
+            
+        });
+        
+        describe("clone blend data", function(){
+            it("if set blendType, related blend data should be affected by it", function () {
+            var blendType = wd.EBlendType.ADDITIVEALPHA,
+                blendSrc = wd.EBlendFunc.DST_COLOR,
+                blendDst = wd.EBlendFunc.ONE_MINUS_DST_ALPH,
+                blend = false,
+                blendEquation = wd.EBlendEquation.SUBTRACT;
+
+
+                material.blendType = blendType;
+
+            cloneTool.extend(material, {
+                    blendSrc: blendSrc,
+                blendDst: blendDst,
+                blend: blend,
+                blendEquation: blendEquation
+            });
+
+
+            var result = material.clone();
+
+            expect(result.blendType).toEqual(blendType);
+            expect(result.blendSrc).toEqual(wd.EBlendFunc.SRC_ALPHA);
+            expect(result.blendDst).toEqual(wd.EBlendFunc.ONE);
+            expect(result.blendEquation).toEqual(wd.EBlendEquation.ADD);
+            });
+            it("if set blendSrc/blendDst/blendEquation, the blendFuncSeparate should be affected", function () {
+                var blendFuncSeparate = [wd.EBlendFunc.DST_ALPHA, wd.EBlendFunc.DST_ALPHA],
+                    blendSrc = wd.EBlendFunc.DST_COLOR,
+                    blendDst = wd.EBlendFunc.DST_COLOR,
+                    blendEquation = wd.EBlendEquation.REVERSE_SUBTRAC;
+
+
+
+                cloneTool.extend(material, {
+                    blendFuncSeparate: blendFuncSeparate
+                });
+
+
+                var result = material.clone();
+
+                expect(result.blendFuncSeparate).toEqual(blendFuncSeparate);
+
+
+
+
+
+
+
+
+                material.blendSrc = blendSrc;
+
+                cloneTool.extend(material, {
+                    blendFuncSeparate: blendFuncSeparate
+                });
+
+
+                var result = material.clone();
+
+                expect(result.blendFuncSeparate).toBeNull();
+
+
+
+
+
+
+                material.blendDst = blendDst;
+
+                cloneTool.extend(material, {
+                    blendFuncSeparate: blendFuncSeparate
+                });
+
+
+                var result = material.clone();
+
+                expect(result.blendFuncSeparate).toBeNull();
+
+
+
+
+
+                material.blendEquation = blendEquation;
+
+                cloneTool.extend(material, {
+                    blendFuncSeparate: blendFuncSeparate
+                });
+
+
+                var result = material.clone();
+
+                expect(result.blendFuncSeparate).toBeNull();
+            });
+        });
+    });
 });

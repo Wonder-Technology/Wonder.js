@@ -119,6 +119,10 @@ module wd{
             return Color.create(this._colorString);
         }
 
+        public isEqual(color:Color){
+            return this.r === color.r && this.g === color.g && this.b === color.b && this.a === color.a;
+        }
+
         private _setColor(colorVal:string) {
             const REGEX_RGBA = /^rgba\((\d+),\s*(\d+),\s*(\d+),\s*([^\)]+)\)$/i,
                 REGEX_RGBA_2 = /^rgba\((\d+\.\d+),\s*(\d+\.\d+),\s*(\d+\.\d+),\s*([^\)]+)\)$/i,
