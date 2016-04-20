@@ -29,6 +29,7 @@
 
         //'test/unit/**',
 
+        'test/unit/**/cubemapTexture*',
 
         //'test/unit/**/**GeometrySpec*',
 
@@ -91,7 +92,7 @@
         //
         //'test/unit/texture/**',
 
-        'test/unit/**/material/**',
+        //'test/unit/**/material/**',
         //'test/unit/**/material*/**',
         //
         //'test/unit/**/MapManager*',
@@ -164,7 +165,7 @@
 
         //'test/unit/component/event/eventSpec*',
 
-        'test/unit/**/ui/**',
+        //'test/unit/**/ui/**',
         //'test/unit/**/UIObjectSpec*',
         //
         //

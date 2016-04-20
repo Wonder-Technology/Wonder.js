@@ -15,7 +15,6 @@ module wd{
             return ETextureSourceRegionMethod.DRAW_IN_CANVAS;
         }
         set sourceRegionMethod(sourceRegionMethod:ETextureSourceRegionMethod){
-            var a = sourceRegionMethod;
         }
 
         public sourceRegion:RectRegion = null;

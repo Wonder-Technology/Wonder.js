@@ -1,14 +1,12 @@
 describe("cubemap texture", function() {
     var sandbox = null;
-    var Texture = null;
     var texture = null;
     var director = null;
     var gl = null;
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        Texture = wd.CubemapTexture;
-        texture = new Texture();
+        texture = new wd.CubemapTexture();
         director = wd.Director.getInstance();
         gl = {
             TEXTURE_CUBE_MAP_POSITIVE_X:0,
@@ -320,6 +318,196 @@ describe("cubemap texture", function() {
                         face.sourceRegionMethod = wd.ETextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL
                     }).toThrow();
                 });
+            });
+        });
+    });
+
+    describe("clone", function(){
+        var asset;
+
+        beforeEach(function(){
+            asset = wd.ImageTextureAsset.create({});
+
+            texture.assets = [
+                {asset:asset},
+                {asset:asset},
+                {asset:asset},
+                {asset:asset},
+                {asset:asset},
+                {asset:asset}
+            ];
+        })
+
+        describe("clone Texture data", function(){
+            it("share material,variableData", function () {
+                var material = {};
+                var variableData = {
+                    samplerVariableName:"a"
+                };
+
+                cloneTool.extend(texture, {
+                    material:material,
+                    variableData:variableData
+                });
+
+                var result = texture.clone();
+
+                expect(result.material === texture.material).toBeTruthy();
+                expect(result.variableData === texture.variableData).toBeTruthy();
+            });
+            it("not clone glTexture", function () {
+                var glTexture1 = {},
+                    glTexture2 = {a:1};
+                gl.createTexture.onCall(0).returns(glTexture2);
+
+                texture.glTexture = glTexture1;
+
+                cloneTool.extend(texture, {
+                });
+
+                var result = texture.clone();
+
+                expect(texture.glTexture === glTexture1).toBeTruthy();
+                expect(result.glTexture === glTexture2).toBeTruthy();
+            });
+            it("clone data", function () {
+                var name = "a",
+                    width = 10,
+                    height = 20,
+                    wrapS = wd.ETextureWrapMode.CLAMP_TO_EDGE,
+                    wrapT = wd.ETextureWrapMode.MIRRORED_REPEAT,
+                    minFilter = wd.ETextureFilterMode.LINEAR,
+                    magFilter = wd.ETextureFilterMode.LINEAR,
+                    needUpdate = false;
+
+                cloneTool.extend(texture, {
+                        name: name,
+                        width: width,
+                    height: height,
+                    wrapS: wrapS,
+                    wrapT: wrapT,
+                        minFilter: minFilter,
+                    magFilter: magFilter,
+                    needUpdate: needUpdate
+                });
+
+                var result = texture.clone();
+
+                expect(result.name).toEqual(name);
+                expect(result.width).toEqual(width);
+                expect(result.height).toEqual(height);
+                expect(result.wrapS).toEqual(wrapS);
+                expect(result.wrapT).toEqual(wrapT);
+                expect(result.minFilter).toEqual(minFilter);
+                expect(result.magFilter).toEqual(magFilter);
+                expect(result.needUpdate).toEqual(needUpdate);
+            });
+        });
+
+        describe("clone BasicTexture data", function(){
+            it("share source", function () {
+                var source = {};
+
+                cloneTool.extend(texture, {
+source:source
+                });
+
+                var result = texture.clone();
+
+                expect(result.source === texture.source).toBeTruthy();
+            });
+            it("shallow mipmaps", function () {
+                var mipmap = {};
+                var mipmaps = wdCb.Collection.create();
+                mipmaps.addChild(mipmap);
+
+                cloneTool.extend(texture, {
+                    mipmaps:mipmaps
+                });
+
+                var result = texture.clone();
+
+                expect(result.mipmaps === texture.mipmaps).toBeFalsy();
+                expect(result.mipmaps.getChild(0) === mipmap).toBeTruthy();
+            });
+            it("clone repeatRegion,sourceRegion", function () {
+                    var repeatRegion = wd.RectRegion.create(1,2,3,4),
+                    sourceRegion = wd.RectRegion.create(1,2,3,4);
+
+                cloneTool.extend(texture, {
+
+                    repeatRegion: repeatRegion,
+                    sourceRegion: sourceRegion
+                });
+
+                var result = texture.clone();
+
+                expect(result.repeatRegion).toEqual(repeatRegion);
+                expect(result.repeatRegion !== texture.repeatRegion).toBeTruthy();
+                expect(result.sourceRegion).toEqual(sourceRegion);
+                expect(result.sourceRegion !== texture.sourceRegion).toBeTruthy();
+            });
+            it("clone data", function () {
+                var sourceRegionMethod = wd.ETextureSourceRegionMethod.DRAW_IN_CANVAS,
+                    generateMipmaps = false,
+                    format = wd.ETextureFormat.LUMINANCE,
+                    sourceRegionMapping = wd.ETextureSourceRegionMapping.UV,
+                    flipY = true,
+                    premultiplyAlpha = true,
+                    unpackAlignment = 2,
+                    type = wd.ETextureType.UNSIGNED_SHORT_4_4_4_4,
+                    anisotropy = 2;
+
+                cloneTool.extend(texture, {
+
+                        sourceRegionMethod: sourceRegionMethod,
+                        generateMipmaps: generateMipmaps,
+                    format: format,
+                    sourceRegionMapping: sourceRegionMapping,
+                    flipY: flipY,
+                    premultiplyAlpha: premultiplyAlpha,
+                    unpackAlignment: unpackAlignment,
+                    type: type,
+                    anisotropy: anisotropy
+                });
+
+                var result = texture.clone();
+
+                expect(result.sourceRegionMethod).toEqual(sourceRegionMethod);
+                expect(result.generateMipmaps).toEqual(generateMipmaps);
+                expect(result.format).toEqual(format);
+                expect(result.sourceRegionMapping).toEqual(sourceRegionMapping);
+                expect(result.flipY).toEqual(flipY);
+                expect(result.premultiplyAlpha).toEqual(premultiplyAlpha);
+                expect(result.unpackAlignment).toEqual(unpackAlignment);
+                expect(result.type).toEqual(type);
+                expect(result.anisotropy).toEqual(anisotropy);
+            });
+        });
+
+        describe("clone CubemapTexture data", function(){
+            beforeEach(function(){
+            });
+
+            it("shallow clone assets", function(){
+                var result = texture.clone();
+
+                expect(result.assets === texture.assets).toBeFalsy();
+                for(var i = 0; i < 6; i++){
+                    expect(result.assets[i] === texture.assets[i]).toBeTruthy();
+                }
+            });
+            it("clone data", function () {
+                var mode = wd.EEnvMapMode.REFLECTION;
+
+                cloneTool.extend(texture, {
+
+                    mode: mode
+                });
+
+                var result = texture.clone();
+
+                expect(result.mode).toEqual(mode);
             });
         });
     });

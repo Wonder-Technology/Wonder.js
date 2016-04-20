@@ -3,6 +3,7 @@ module wd{
 
     export abstract class BasicTexture extends Texture implements ITextureAsset{
         protected p_sourceRegionMethod:ETextureSourceRegionMethod = null;
+        @cloneAttributeAsBasicType()
         get sourceRegionMethod(){
             return this.p_sourceRegionMethod;
         }
@@ -18,17 +19,29 @@ module wd{
             return RectRegion.create(0, 0, 1, 1);
         }
 
+        @cloneAttributeAsBasicType()
         public generateMipmaps:boolean = null;
+        @cloneAttributeAsBasicType()
         public format:ETextureFormat = null;
+        @cloneAttributeAsBasicType()
         public source:any = null;
+        @cloneAttributeAsCloneable()
         public repeatRegion:RectRegion = null;
+        @cloneAttributeAsCloneable()
         public sourceRegion:RectRegion = null;
+        @cloneAttributeAsBasicType()
         public sourceRegionMapping:ETextureSourceRegionMapping = null;
+        @cloneAttributeAsBasicType()
         public flipY:boolean = null;
+        @cloneAttributeAsBasicType()
         public premultiplyAlpha:boolean = null;
+        @cloneAttributeAsBasicType()
         public unpackAlignment:number = null;
+        @cloneAttributeAsBasicType()
         public type:ETextureType = null;
+        @cloneAttributeAsCloneable()
         public mipmaps:wdCb.Collection<any> = null;
+        @cloneAttributeAsBasicType()
         public anisotropy:number = null;
 
         public initWhenCreate(...args){

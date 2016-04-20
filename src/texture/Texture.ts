@@ -5,16 +5,26 @@ module wd{
         }
 
         //todo add to asset->toTexture copy attri
+        @cloneAttributeAsBasicType()
         public name:string = "";
+        @cloneAttributeAsBasicType()
         public material:Material = null;
+        @cloneAttributeAsBasicType()
         public width:number = null;
+        @cloneAttributeAsBasicType()
         public height:number = null;
+        @cloneAttributeAsBasicType()
         public variableData:MapVariableData = null;
+        @cloneAttributeAsBasicType()
         public wrapS:ETextureWrapMode = null;
+        @cloneAttributeAsBasicType()
         public wrapT:ETextureWrapMode = null;
+        @cloneAttributeAsBasicType()
         public magFilter:ETextureFilterMode = null;
+        @cloneAttributeAsBasicType()
         public minFilter:ETextureFilterMode = null;
         public glTexture:WebGLTexture = null;
+        @cloneAttributeAsBasicType()
         public needUpdate:boolean = null;
 
         protected target:ETextureTarget = ETextureTarget.TEXTURE_2D;
@@ -23,6 +33,10 @@ module wd{
         public abstract init():void;
         public abstract getSamplerName(unit:number):string;
         public abstract update():void;
+
+        public clone(){
+            return CloneHelper.clone(this);
+        }
 
         public bindToUnit (unit:number) {
             var gl = DeviceManager.getInstance().gl,

@@ -16,11 +16,25 @@ module wd{
 
         public assets:Array<CubemapData> = null;
         public textures:wdCb.Collection<CubemapFaceTexture> = wdCb.Collection.create<CubemapFaceTexture>();
+        @cloneAttributeAsBasicType()
         public mode:EEnvMapMode = null;
 
         protected target:ETextureTarget = ETextureTarget.TEXTURE_CUBE_MAP;
 
         private _areAllCompressedAsset:boolean = false;
+
+        public clone(){
+            var resultAssets = null;
+
+            if(this.assets !== null){
+                resultAssets = [].concat(this.assets);
+            }
+            else{
+                resultAssets = null;
+            }
+
+            return CloneHelper.clone(this, null, [resultAssets]);
+        }
 
         @require(function(assets:Array<CubemapData>){
             assert(assets.length === 6, Log.info.FUNC_MUST("cubemap", "has 6 assets"));
