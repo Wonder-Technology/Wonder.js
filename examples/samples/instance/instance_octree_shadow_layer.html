@@ -31,9 +31,10 @@
 
 
             var octreeContainer = createOctree();
-//            octreeContainer.addChildren(createModels());
+            octreeContainer.addChildren(createModels());
 
             var sphere2 = createSphere();
+            sphere2.name = "sphere2";
 //            sphere2.getComponent(wd.Shadow).layer = "layer_sphere2";
             sphere2.transform.translate(30,30,30);
 
@@ -76,7 +77,7 @@
             var arr = [],
                     model = createSphere(),
                     range = 700,
-                    count = 0;
+                    count = 10;
 
             model.transform.position = wd.Vector3.create(60, 20, 0);
 
