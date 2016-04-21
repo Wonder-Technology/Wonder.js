@@ -164,7 +164,7 @@ module wd {
                     case CloneType.CUSTOM:
                         let cloneFunc = memberData.cloneFunc;
 
-                        cloneFunc(source, target, memberName, cloneData);
+                        cloneFunc.call(target, source, target, memberName, cloneData);
                         break;
                 }
             });

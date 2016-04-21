@@ -198,5 +198,70 @@ describe("ModelGeometry", function() {
             });
         });
     });
+
+    describe("clone", function(){
+        function judgeCloneMorphData(morphDataName){
+            var morphData = wdCb.Hash.create({
+                "a": wdCb.Collection.create([[1,2,3]])
+            });
+
+            geo[morphDataName] = morphData;
+
+            var result = geo.clone();
+
+            result[morphDataName].getChild("a").getChild(0)[0] = 10;
+            expect(geo[morphDataName].getChild("a").getChild(0)[0]).toEqual(1);
+        }
+
+        beforeEach(function(){
+            geo = wd.ModelGeometry.create();
+        });
+
+        it("deep clone faces", function(){
+            var face = wd.Face3.create();
+            var resultFace = wd.Face3.create();
+            sandbox.stub(face, "clone").returns(resultFace);
+            var faces = [face];
+
+            cloneTool.extend(geo, {
+                faces:faces
+            })
+
+            var result = geo.clone();
+
+            expect(result.faces[0] === resultFace).toBeTruthy();
+        });
+        it("deep clone morphFaceNormals", function(){
+            judgeCloneMorphData("morphFaceNormals");
+        });
+        it("deep clone morphVertexNormals", function(){
+            judgeCloneMorphData("morphVertexNormals");
+        });
+        it("deep clone morphTargets", function(){
+            judgeCloneMorphData("morphTargets");
+        });
+        it("clone other geometry data", function () {
+            var vertices = [1,2,3],
+                colors = [0.1,0.2,0.3],
+                texCoords = [0.3,0.1];
+
+            cloneTool.extend(geo, {
+                    vertices: vertices,
+                    colors: colors,
+                texCoords: texCoords
+            })
+
+            var result = geo.clone();
+
+            expect(result.vertices).toEqual(vertices);
+            expect(result.vertices === vertices).toBeFalsy();
+
+            expect(result.colors).toEqual(colors);
+            expect(result.colors === colors).toBeFalsy();
+
+            expect(result.texCoords).toEqual(texCoords);
+            expect(result.texCoords === texCoords).toBeFalsy();
+        });
+    });
 });
 

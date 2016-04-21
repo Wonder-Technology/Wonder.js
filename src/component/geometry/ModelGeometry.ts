@@ -6,12 +6,41 @@ module wd{
             return geom;
         }
 
+        @cloneAttributeAsCustomType(function(source:ModelGeometry, target:ModelGeometry, memberName:string){
+            target[memberName] = CloneHelper.cloneArray(source[memberName]);
+        })
         public vertices:Array<number> = null;
+        @cloneAttributeAsCustomType(function(source:ModelGeometry, target:ModelGeometry, memberName:string){
+            target[memberName] = CloneHelper.cloneArray(source[memberName]);
+        })
         public colors:Array<number> = null;
+        @cloneAttributeAsCustomType(function(source:ModelGeometry, target:ModelGeometry, memberName:string){
+            target[memberName] = CloneHelper.cloneArray(source[memberName]);
+        })
         public texCoords:Array<number> = null;
+        @cloneAttributeAsCustomType(function(source:ModelGeometry, target:ModelGeometry, memberName:string){
+            var result = [];
+
+            if(source[memberName]){
+                for(let face of source[memberName]){
+                    result.push(face.clone());
+                }
+            }
+
+            target[memberName] = result;
+        })
         public faces:Array<Face3> = null;
+        @cloneAttributeAsCustomType(function(source:ModelGeometry, target:ModelGeometry, memberName:string){
+            target[memberName] = this._getDeepCloneMorphData(source[memberName]);
+        })
         public morphTargets:wdCb.Hash<MorphTargetsData> = null;
+        @cloneAttributeAsCustomType(function(source:ModelGeometry, target:ModelGeometry, memberName:string){
+            target[memberName] = this._getDeepCloneMorphData(source[memberName]);
+        })
         public morphFaceNormals:wdCb.Hash<wdCb.Collection<Array<number>>> = wdCb.Hash.create<wdCb.Collection<Array<number>>>();
+        @cloneAttributeAsCustomType(function(source:ModelGeometry, target:ModelGeometry, memberName:string){
+            target[memberName] = this._getDeepCloneMorphData(source[memberName]);
+        })
         public morphVertexNormals:wdCb.Hash<wdCb.Collection<Array<number>>> = wdCb.Hash.create<wdCb.Collection<Array<number>>>();
 
         public buffers:MorphBufferContainer;
@@ -99,6 +128,18 @@ module wd{
 
         private _hasMorphTargets(){
             return this.morphTargets && this.morphTargets.getCount() > 0;
+        }
+
+        private _getDeepCloneMorphData(source:wdCb.Hash<wdCb.Collection<Array<number>>>){
+            var result = wdCb.Hash.create<wdCb.Collection<Array<number>>>();
+
+            if(source){
+                source.forEach((data:wdCb.Collection<Array<number>>, key:string) => {
+                    result.addChild(key, data.clone(true));
+                });
+            }
+
+            return result;
         }
     }
 }
