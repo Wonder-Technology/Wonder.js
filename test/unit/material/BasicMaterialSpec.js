@@ -259,7 +259,7 @@ describe("BasicMaterial", function () {
             });
         })
     });
-    
+
     describe("clone", function(){
         beforeEach(function(){
             material = wd.BasicMaterial.create();
@@ -369,7 +369,7 @@ describe("BasicMaterial", function () {
                     var envMap = {clone:sandbox.stub().returns(resultEnvMap)};
 
                     cloneTool.extend(material, {
-envMap:envMap
+                        envMap:envMap
                     });
 
 
@@ -394,37 +394,63 @@ envMap:envMap
 
 
             it("clone data", function () {
-                    var color = wd.Color.create("#123456"),
-                        redWrite = false,
-                        greenWrite = false,
-                        blueWrite = false,
-                        alphaWrite = false,
-                        polygonOffsetMode = wd.EPolygonOffsetMode.IN,
-                        side = wd.ESide.BOTH,
-                        shading = wd.EShading.SMOOTH;
+                var color = wd.Color.create("#123456"),
+                    redWrite = false,
+                    greenWrite = false,
+                    blueWrite = false,
+                    alphaWrite = false,
+                    polygonOffsetMode = wd.EPolygonOffsetMode.IN,
+                    side = wd.ESide.BOTH,
+                    shading = wd.EShading.SMOOTH;
 
-                    cloneTool.extend(material, {
-                            color: color,
-                            redWrite: redWrite,
-                        greenWrite: greenWrite,
-                        blueWrite: blueWrite,
-                        alphaWrite: alphaWrite,
-                        polygonOffsetMode: polygonOffsetMode,
-                        side: side,
-                        shading: shading
-                    });
+                cloneTool.extend(material, {
+                    color: color,
+                    redWrite: redWrite,
+                    greenWrite: greenWrite,
+                    blueWrite: blueWrite,
+                    alphaWrite: alphaWrite,
+                    polygonOffsetMode: polygonOffsetMode,
+                    side: side,
+                    shading: shading
+                });
 
 
-                    var result = material.clone();
+                var result = material.clone();
 
-                    expect(result.color).toEqual(color);
-                    expect(result.redWrite).toEqual(redWrite);
+                expect(result.color).toEqual(color);
+                expect(result.redWrite).toEqual(redWrite);
                 expect(result.greenWrite).toEqual(greenWrite);
                 expect(result.blueWrite).toEqual(blueWrite);
                 expect(result.alphaWrite).toEqual(alphaWrite);
                 expect(result.polygonOffsetMode).toEqual(polygonOffsetMode);
                 expect(result.side).toEqual(side);
                 expect(result.shading).toEqual(shading);
+            });
+        });
+
+        describe("clone EngineMaterial data", function(){
+            it("clone data", function () {
+                var refractionRatio = 0.2,
+                    reflectivity = 0.4,
+                    mapCombineMode = wd.ETextureCombineMode.MULTIPLY,
+                    mapMixRatio = 0.2;
+
+                cloneTool.extend(material, {
+
+                    refractionRatio: refractionRatio,
+                    reflectivity: reflectivity,
+                    mapCombineMode: mapCombineMode,
+                    mapMixRatio: mapMixRatio
+
+                });
+
+
+                var result = material.clone();
+
+                expect(result.refractionRatio).toEqual(refractionRatio);
+                expect(result.reflectivity).toEqual(reflectivity);
+                expect(result.mapCombineMode).toEqual(mapCombineMode);
+                expect(result.mapMixRatio).toEqual(mapMixRatio);
             });
         });
 
@@ -471,12 +497,6 @@ envMap:envMap
         });
 
         describe("clone BasicMaterial data", function(){
-            beforeEach(function(){
-            });
-
-            it("", function(){
-
-            });
         });
     });
 });

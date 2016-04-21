@@ -1,8 +1,12 @@
 module wd {
     export abstract class EngineMaterial extends Material{
+        @cloneAttributeAsBasicType()
         public refractionRatio:number = 0;
+        @cloneAttributeAsBasicType()
         public reflectivity:number = null;
+        @cloneAttributeAsBasicType()
         public mapCombineMode:ETextureCombineMode = ETextureCombineMode.MIX;
+        @cloneAttributeAsBasicType()
         public mapMixRatio:number = 0.5;
 
         public init(){
