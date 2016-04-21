@@ -67,6 +67,33 @@ describe("terrain material", function() {
         });
     });
 
+    describe("clone", function(){
+        describe("clone layer", function() {
+            it("shallow clone mapDatList", function () {
+                var layer = wd.TerrainLayerMapModel.create();
+
+                layer.mapDataList = wdCb.Collection.create([
+                    {
+                        minHeight:20,
+                        maxHeight:50,
+                        diffuseMap:wd.FireProceduralTexture.create()
+                    }
+                ]);
+
+
+                cloneTool.extend(material, {
+                    layer:layer
+                });
+
+
+                var result = material.clone();
+
+                expect(result.layer.mapDataList === material.layer.mapDataList).toBeFalsy();
+                expect(result.layer.mapDataList).toEqual(material.layer.mapDataList);
+            });
+        });
+    });
+
     describe("integration test", function(){
         var quadCmd;
         var map1,map2,map3;

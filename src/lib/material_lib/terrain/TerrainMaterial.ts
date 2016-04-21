@@ -8,6 +8,7 @@ module wd{
             return obj;
         }
 
+        @cloneAttributeAsCloneable()
         public layer:TerrainLayerMapModel = TerrainLayerMapModel.create();
 
         public init(){
@@ -46,6 +47,7 @@ module wd{
                 });
             });
         })
+        @cloneAttributeAsCloneable()
         get mapDataList(){
             return this._mapDataList;
         }
@@ -70,6 +72,10 @@ module wd{
 
         //todo support blend
         //public blendMethod:ETerrainLayerBlendMethod = ETerrainLayerBlendMethod.CUT;
+
+        public clone(){
+            return CloneHelper.clone(this);
+        }
     }
 
     export type TerrainLayerMapData = {

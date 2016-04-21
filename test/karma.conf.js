@@ -32,7 +32,9 @@
         //'test/unit/**/cubemapTexture*',
 
         //'test/unit/**/BasicMaterial*',
-        'test/unit/**/LightMaterial*',
+        //'test/unit/**/LightMaterial*',
+
+        'test/unit/**/material_lib/**',
 
         //'test/unit/**/**GeometrySpec*',
 

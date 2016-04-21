@@ -10,12 +10,13 @@ module wd{
 
 
         private _bumpMap:Texture = null;
-        get bumpMap(){
-            return this._bumpMap;
-        }
         @requireSetter(function(bumpMap:Texture){
             assert(bumpMap instanceof ImageTexture);
         })
+        @cloneAttributeAsCloneable()
+        get bumpMap(){
+            return this._bumpMap;
+        }
         set bumpMap(bumpMap:Texture){
             bumpMap.wrapS = wd.ETextureWrapMode.REPEAT;
             bumpMap.wrapT = wd.ETextureWrapMode.REPEAT;
@@ -28,6 +29,7 @@ module wd{
         }
 
         private _reflectionMap:Texture = null;
+        @cloneAttributeAsCloneable()
         get reflectionMap(){
             return this._reflectionMap;
         }
@@ -40,6 +42,7 @@ module wd{
         }
 
         private _refractionMap:Texture = null;
+        @cloneAttributeAsCloneable()
         get refractionMap(){
             return this._refractionMap;
         }
@@ -52,10 +55,15 @@ module wd{
         }
 
 
+        @cloneAttributeAsCloneable()
         public wind:WaterWindModel = WaterWindModel.create();
+        @cloneAttributeAsCloneable()
         public wave:WaterWaveModel = WaterWaveModel.create();
+        @cloneAttributeAsBasicType()
         public fresnelLevel:number = 1.0;
+        @cloneAttributeAsBasicType()
         public reflectionLevel:number = 0.6;
+        @cloneAttributeAsBasicType()
         public refractionLevel:number = 0.8;
 
 
@@ -106,9 +114,14 @@ module wd{
             return Matrix4.create().translate(this.direction.x * this.time, this.direction.y * this.time, 0);
         }
 
-
+        @cloneAttributeAsBasicType()
         public time:number = 0;
+        @cloneAttributeAsBasicType()
         public direction:Vector2 = Vector2.create(0, 1);
+
+        public clone(){
+            return CloneHelper.clone(this);
+        }
     }
 
     export class WaterWaveModel{
@@ -118,8 +131,14 @@ module wd{
             return obj;
         }
 
+        @cloneAttributeAsBasicType()
         public height:number = 0.15;
+        @cloneAttributeAsBasicType()
         public length:number = 0.1;
+
+        public clone(){
+            return CloneHelper.clone(this);
+        }
     }
 }
 

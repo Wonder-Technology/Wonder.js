@@ -44,6 +44,79 @@ describe("water material", function () {
         });
     });
 
+    describe("clone", function(){
+        it("clone map", function() {
+            var bumpMap = wd.ImageTexture.create({});
+            var resultBumpMap = wd.ImageTexture.create({a: 1});
+            sandbox.stub(bumpMap, "clone").returns(resultBumpMap);
+
+            var refractionMap = wd.ImageTexture.create({});
+            var resultRefractionMap = wd.ImageTexture.create({a: 1});
+            sandbox.stub(refractionMap, "clone").returns(resultRefractionMap);
+
+            var reflectionMap = wd.ImageTexture.create({});
+            var resultReflectionMap = wd.ImageTexture.create({a: 1});
+            sandbox.stub(reflectionMap, "clone").returns(resultReflectionMap);
+
+
+            cloneTool.extend(material, {
+                bumpMap:bumpMap,
+                refractionMap: refractionMap,
+                reflectionMap: reflectionMap
+            });
+
+
+            var result = material.clone();
+
+            expect(result.mapManager === material.mapManager).toBeFalsy();
+            expect(result.bumpMap).toEqual(resultBumpMap);
+            expect(result.refractionMap).toEqual(resultRefractionMap);
+            expect(result.reflectionMap).toEqual(resultReflectionMap);
+            expect(result.reflectionMap).toEqual(resultReflectionMap);
+        });
+        it("clone wind,wave", function () {
+            var wind = wd.WaterWindModel.create();
+            wind.time = 10;
+            wind.direction = wd.Vector2.create(1,1);
+
+
+            var wave = wd.WaterWaveModel.create();
+            wave.height = 0.23;
+            wave.length = 0.2;
+
+
+            cloneTool.extend(material, {
+                wind:wind,
+                wave:wave
+            });
+
+            var result = material.clone();
+
+            expect(result.wind === material.wind).toBeFalsy();
+            expect(result.wind).toEqual(material.wind);
+
+            expect(result.wave === material.wave).toBeFalsy();
+            expect(result.wave).toEqual(material.wave);
+        });
+        it("clone data", function () {
+            var fresnelLevel = 0.3,
+                reflectionLevel = 0.2,
+                refractionLevel = 0.1;
+
+            cloneTool.extend(material, {
+                    fresnelLevel: fresnelLevel,
+                    reflectionLevel: reflectionLevel,
+                refractionLevel: refractionLevel
+            });
+
+            var result = material.clone();
+
+            expect(result.fresnelLevel).toEqual(fresnelLevel)
+            expect(result.reflectionLevel).toEqual(reflectionLevel)
+            expect(result.refractionLevel).toEqual(refractionLevel)
+        });
+    });
+
     describe("integration test", function () {
         var quadCmd;
         var bumpMap, reflectionMap, refractionMap;

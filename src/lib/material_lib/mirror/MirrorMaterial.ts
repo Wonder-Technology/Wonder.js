@@ -9,6 +9,7 @@ module wd{
         }
 
         private _reflectionMap:Texture = null;
+        @cloneAttributeAsCloneable()
         get reflectionMap(){
             return this._reflectionMap;
         }

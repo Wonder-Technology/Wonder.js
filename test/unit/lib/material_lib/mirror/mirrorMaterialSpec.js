@@ -18,6 +18,29 @@ describe("mirror material", function () {
     it("test default values", function () {
     });
 
+    describe("clone", function(){
+        beforeEach(function(){
+
+        });
+
+        it("clone map", function() {
+            var reflectionMap = wd.ImageTexture.create({});
+            var resultReflectionMap = wd.ImageTexture.create({a: 1});
+            sandbox.stub(reflectionMap, "clone").returns(resultReflectionMap);
+
+
+            cloneTool.extend(material, {
+                reflectionMap: reflectionMap
+            });
+
+
+            var result = material.clone();
+
+            expect(result.mapManager === material.mapManager).toBeFalsy();
+            expect(result.reflectionMap).toEqual(resultReflectionMap);
+        });
+    });
+
     describe("integration test", function () {
         var quadCmd;
         var reflectionMap;
