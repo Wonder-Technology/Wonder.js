@@ -14,8 +14,8 @@ module wd {
             this.vertexNormals = vertexNormals;
         }
 
-        private _faceNormal:Vector3 = null;
         @cloneAttributeAsCloneable()
+        private _faceNormal:Vector3 = null;
         get faceNormal(){
             return this._faceNormal !== null ? this._faceNormal : Vector3.create(0, 0, 0);
         }
