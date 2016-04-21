@@ -20,7 +20,7 @@ module wd {
         }
 
         public clone() {
-            return CloneHelper.clone(this);
+            return CloneUtils.clone(this);
         }
 
         @ensure(function(returnValue, center, ...args){

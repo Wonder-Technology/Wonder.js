@@ -72,7 +72,7 @@ module wd{
         }
 
         public clone(){
-            return CloneHelper.clone(this);
+            return CloneUtils.clone(this);
         }
 
         public update(elapsedTime:number){

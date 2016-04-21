@@ -5,7 +5,7 @@ module wd{
         public abstract isTrigger(e:MouseEvent):boolean;
 
         public clone(){
-            return CloneHelper.clone(this);
+            return CloneUtils.clone(this);
         }
     }
 }

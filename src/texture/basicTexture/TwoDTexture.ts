@@ -9,7 +9,7 @@ module wd{
         protected asset:TextureAsset = null;
 
         public clone(){
-            return CloneHelper.clone(this, null, [this.asset]);
+            return CloneUtils.clone(this, null, [this.asset]);
         }
 
         public initWhenCreate(){

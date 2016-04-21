@@ -74,7 +74,7 @@ module wd{
         //public blendMethod:ETerrainLayerBlendMethod = ETerrainLayerBlendMethod.CUT;
 
         public clone(){
-            return CloneHelper.clone(this);
+            return CloneUtils.clone(this);
         }
     }
 

@@ -35,7 +35,7 @@ module wd {
         public vertexNormals:wdCb.Collection<Vector3> = null;
 
         public clone(){
-            return CloneHelper.clone(this);
+            return CloneUtils.clone(this);
         }
 
         public hasFaceNormal(){

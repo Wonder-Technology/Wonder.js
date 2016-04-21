@@ -174,17 +174,17 @@
         //'test/unit/component/event/eventSpec*',
 
         //'test/unit/**/ui/**',
-        'test/unit/**/UIObjectSpec*',
+        //'test/unit/**/UIObjectSpec*',
         //
         //
-        'test/unit/**/ButtonSpec*',
+        //'test/unit/**/ButtonSpec*',
         //'test/unit/**/UIStateMachineSpec*',
 
 
-        'test/unit/**/*Asset*',
+        //'test/unit/**/*Asset*',
         //
         //'test/unit/**/FontSpec*',
-        //'test/unit/**/PlainFontSpec*',
+        'test/unit/**/PlainFontSpec*',
         //'test/unit/**/UIRendererSpec*',
         //'test/unit/**/BitmapFontSpec*',
         //

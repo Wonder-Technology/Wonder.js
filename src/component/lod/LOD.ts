@@ -103,7 +103,7 @@ module wd{
         }
 
         public clone(isShareGeometry:boolean = false){
-            return CloneHelper.clone(this, isShareGeometry);
+            return CloneUtils.clone(this, isShareGeometry);
         }
     }
 

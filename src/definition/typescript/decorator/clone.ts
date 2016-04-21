@@ -1,4 +1,6 @@
 module wd {
+    const NOT_CLONE_TAG = "not_clone";
+
     var getCloneAttributeMembers = (obj:any) => {
         return obj[buildMemberContainerAttributeName(obj)];
     };
@@ -114,10 +116,7 @@ module wd {
         }, configData));
     }
 
-    //todo move outside
-    const NOT_CLONE_TAG = "not_clone";
-
-    export class CloneHelper{
+    export class CloneUtils{
         @require(function(source:any, cloneData:any = null, createDataArr:Array<any> = null){
             assert(!!source.constructor.name, Log.info.FUNC_CAN_NOT("get class name from source.constructor.name"));
 

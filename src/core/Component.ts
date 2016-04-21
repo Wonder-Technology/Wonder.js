@@ -12,7 +12,7 @@ module wd{
 
         @virtual
         public clone(...datas):any{
-            return CloneHelper.clone(this);
+            return CloneUtils.clone(this);
         }
 
         public get transform():Transform {

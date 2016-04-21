@@ -35,7 +35,7 @@ module wd{
         public abstract update():void;
 
         public clone(){
-            return CloneHelper.clone(this);
+            return CloneUtils.clone(this);
         }
 
         public bindToUnit (unit:number) {

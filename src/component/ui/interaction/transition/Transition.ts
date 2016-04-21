@@ -15,7 +15,7 @@ module wd{
         public abstract changeState(state:EUIState);
 
         public clone(){
-            return CloneHelper.clone(this);
+            return CloneUtils.clone(this);
         }
     }
 }

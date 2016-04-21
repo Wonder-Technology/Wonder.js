@@ -33,7 +33,7 @@ module wd{
                 resultAssets = null;
             }
 
-            return CloneHelper.clone(this, null, [resultAssets]);
+            return CloneUtils.clone(this, null, [resultAssets]);
         }
 
         @require(function(assets:Array<CubemapData>){

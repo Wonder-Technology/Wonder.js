@@ -164,7 +164,7 @@ module wd {
         private _shaderManager:ShaderManager = ShaderManager.create(this);
 
         public clone(){
-            var result = CloneHelper.clone(this);
+            var result = CloneUtils.clone(this);
 
             //result._shaderManager.shader.mapManager = this.mapManager.clone(result);
 

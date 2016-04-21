@@ -7,15 +7,15 @@ module wd{
         }
 
         @cloneAttributeAsCustomType(function(source:ModelGeometry, target:ModelGeometry, memberName:string){
-            target[memberName] = CloneHelper.cloneArray(source[memberName]);
+            target[memberName] = CloneUtils.cloneArray(source[memberName]);
         })
         public vertices:Array<number> = null;
         @cloneAttributeAsCustomType(function(source:ModelGeometry, target:ModelGeometry, memberName:string){
-            target[memberName] = CloneHelper.cloneArray(source[memberName]);
+            target[memberName] = CloneUtils.cloneArray(source[memberName]);
         })
         public colors:Array<number> = null;
         @cloneAttributeAsCustomType(function(source:ModelGeometry, target:ModelGeometry, memberName:string){
-            target[memberName] = CloneHelper.cloneArray(source[memberName]);
+            target[memberName] = CloneUtils.cloneArray(source[memberName]);
         })
         public texCoords:Array<number> = null;
         @cloneAttributeAsCustomType(function(source:ModelGeometry, target:ModelGeometry, memberName:string){

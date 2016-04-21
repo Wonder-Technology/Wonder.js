@@ -10,7 +10,7 @@ module wd{
         protected rigidBody:RigidBody = null;
 
         public clone(rigidBody:RigidBody){
-            return CloneHelper.clone(this, null, [rigidBody]);
+            return CloneUtils.clone(this, null, [rigidBody]);
         }
     }
 
@@ -151,7 +151,7 @@ module wd{
         private _list:wdCb.Collection<PointToPointConstraint> = wdCb.Collection.create<PointToPointConstraint>();
 
         public clone(rigidBody:RigidBody){
-            return CloneHelper.clone(this, null, [rigidBody]);
+            return CloneUtils.clone(this, null, [rigidBody]);
         }
 
         public forEach(func:(PointToPointConstraint) => void, context = root){

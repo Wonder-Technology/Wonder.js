@@ -21,7 +21,7 @@ module wd {
         private _colorTransitionMap:wdCb.Hash<Transition> = wdCb.Hash.create<Transition>();
 
         public clone(interactionUI:InteractionUI){
-            return CloneHelper.clone(this, null, [interactionUI]);
+            return CloneUtils.clone(this, null, [interactionUI]);
         }
 
         public getObjectTransition(objectName:EButtonObjectName) {

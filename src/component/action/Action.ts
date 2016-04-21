@@ -30,7 +30,7 @@ module wd{
         public abstract reverse();
 
         public clone():Action{
-            return CloneHelper.clone(this);
+            return CloneUtils.clone(this);
         }
 
         public reset() {

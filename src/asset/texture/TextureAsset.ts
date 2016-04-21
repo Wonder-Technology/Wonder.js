@@ -51,7 +51,7 @@ module wd{
         public abstract cloneToCubemapFaceTexture(cubemapFaceTexture:any);
 
         public clone(){
-            return CloneHelper.clone(this);
+            return CloneUtils.clone(this);
         }
 
         public cloneToCubemapTexture(cubemapFaceTexture:ICubemapTextureAsset){

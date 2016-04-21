@@ -13,7 +13,7 @@ module wd {
         public abstract isIntersectWithRay(ray:Ray);
 
         public clone() {
-            return CloneHelper.clone(this);
+            return CloneUtils.clone(this);
         }
 
         protected isBoxAndSphereIntersected(box:AABBShape, sphere:SphereShape) {

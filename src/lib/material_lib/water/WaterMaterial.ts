@@ -120,7 +120,7 @@ module wd{
         public direction:Vector2 = Vector2.create(0, 1);
 
         public clone(){
-            return CloneHelper.clone(this);
+            return CloneUtils.clone(this);
         }
     }
 
@@ -137,7 +137,7 @@ module wd{
         public length:number = 0.1;
 
         public clone(){
-            return CloneHelper.clone(this);
+            return CloneUtils.clone(this);
         }
     }
 }

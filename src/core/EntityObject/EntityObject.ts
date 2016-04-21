@@ -52,11 +52,11 @@ module wd {
         public clone(){
             var result = null;
 
-            if(CloneHelper.isNotClone((this))){
+            if(CloneUtils.isNotClone((this))){
                 return null;
             }
 
-            result = CloneHelper.clone<EntityObject>(this);
+            result = CloneUtils.clone<EntityObject>(this);
 
             this.forEachComponent((component:Component) => {
                 result.addComponent(component.clone());

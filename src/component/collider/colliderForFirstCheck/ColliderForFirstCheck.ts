@@ -6,7 +6,7 @@ module wd {
         public abstract update(elapsedTime:number);
 
         public clone(){
-            return CloneHelper.clone(this);
+            return CloneUtils.clone(this);
         }
     }
 }

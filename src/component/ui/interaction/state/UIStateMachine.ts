@@ -23,7 +23,7 @@ module wd{
         private _stateHistory:wdCb.Stack<EUIState> = wdCb.Stack.create<EUIState>();
 
         public clone(ui:InteractionUI){
-            return CloneHelper.clone(this, null, [ui]);
+            return CloneUtils.clone(this, null, [ui]);
         }
 
         public changeState(state:EUIState){

@@ -9,7 +9,7 @@ module wd{
 
         private _vertices:Array<number> = [];
         @cloneAttributeAsCustomType(function(source:ModelGeometry, target:ModelGeometry, memberName:string){
-            target[memberName] = CloneHelper.cloneArray(source[memberName]);
+            target[memberName] = CloneUtils.cloneArray(source[memberName]);
         })
         get vertices(){
             return this._vertices;
@@ -25,7 +25,7 @@ module wd{
 
         private _texCoords:Array<number> = [];
         @cloneAttributeAsCustomType(function(source:ModelGeometry, target:ModelGeometry, memberName:string){
-            target[memberName] = CloneHelper.cloneArray(source[memberName]);
+            target[memberName] = CloneUtils.cloneArray(source[memberName]);
         })
         get texCoords(){
             return this._texCoords;
@@ -41,7 +41,7 @@ module wd{
 
         private _colors:Array<number> = [];
         @cloneAttributeAsCustomType(function(source:ModelGeometry, target:ModelGeometry, memberName:string){
-            target[memberName] = CloneHelper.cloneArray(source[memberName]);
+            target[memberName] = CloneUtils.cloneArray(source[memberName]);
         })
         get colors(){
             return this._colors;
@@ -56,7 +56,7 @@ module wd{
 
         private _indices:Array<number> = [];
         @cloneAttributeAsCustomType(function(source:ModelGeometry, target:ModelGeometry, memberName:string){
-            target[memberName] = CloneHelper.cloneArray(source[memberName]);
+            target[memberName] = CloneUtils.cloneArray(source[memberName]);
         })
         get indices(){
             return this._indices;
@@ -71,7 +71,7 @@ module wd{
 
         private _normals:Array<number> = [];
         @cloneAttributeAsCustomType(function(source:ModelGeometry, target:ModelGeometry, memberName:string){
-            target[memberName] = CloneHelper.cloneArray(source[memberName]);
+            target[memberName] = CloneUtils.cloneArray(source[memberName]);
         })
         get normals(){
             return this._normals;

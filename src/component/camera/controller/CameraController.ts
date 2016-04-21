@@ -68,7 +68,7 @@ module wd {
         }
 
         public clone(){
-            return CloneHelper.clone(this);
+            return CloneUtils.clone(this);
         }
 
         public isIntersectWithRay(entityObject:GameObject, screenX:number, screenY:number):boolean{

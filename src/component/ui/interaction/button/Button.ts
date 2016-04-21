@@ -156,7 +156,7 @@ module wd {
 
             object.name = <any>EButtonObjectName.BACKGROUND;
 
-            CloneHelper.markNotClone(object);
+            CloneUtils.markNotClone(object);
 
             return object;
         }
@@ -182,7 +182,7 @@ module wd {
 
             fontObject.name = <any>EButtonObjectName.TEXT;
 
-            CloneHelper.markNotClone(fontObject);
+            CloneUtils.markNotClone(fontObject);
 
             return fontObject;
         }
