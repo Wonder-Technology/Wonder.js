@@ -91,6 +91,27 @@
 
 
 
+
+            var barUIObject1 = createProgressBar(renderer);
+            barUIObject1.name = "barUIObject1";
+
+            barUIObject1.transform.width = 200;
+            barUIObject1.transform.height = 50;
+
+            barUIObject1.transform.translate(wd.Vector2.create(800, 250));
+
+
+
+            var barUIObject2 = barUIObject1.clone();
+            barUIObject2.name = "barUIObject2";
+
+            barUIObject2.transform.translate(wd.Vector2.create(0, 100));
+
+//            barUIObject2.getComponent(wd.ProgressBar).percent = 0.5;
+
+
+
+
             director.scene.addChildren([buttonObject1, buttonObject2]);
 
             director.scene.addChildren([image1, image2]);
@@ -98,7 +119,8 @@
             director.scene.addChildren([ttfFont1, ttfFont2]);
 
             director.scene.addChildren([bitmapFont1, bitmapFont2]);
-//            director.scene.addChildren([bitmapFont2]);
+
+            director.scene.addChildren([barUIObject1, barUIObject2]);
 
 
             director.start();
@@ -237,6 +259,25 @@
             gameObject.addComponent(action);
 
             action.init();
+        }
+
+
+        function createProgressBar(renderer){
+            var bar = wd.ProgressBar.create();
+
+            bar.borderStyle = "#ffffff";
+            bar.radius = 5;
+            bar.percent = 0.2;
+
+
+            var barUIObject = wd.UIObject.create();
+
+            barUIObject.addComponent(bar);
+
+
+            barUIObject.addComponent(renderer);
+
+            return barUIObject;
         }
 
         function createUIRenderer(){
