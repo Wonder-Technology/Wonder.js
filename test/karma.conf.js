@@ -33,11 +33,12 @@
 
         //'test/unit/**/BasicMaterial*',
         //'test/unit/**/LightMaterial*',
+        //'test/unit/**/Material*',
 
         //'test/unit/**/material_lib/**',
 
         //'test/unit/**/SphereGeometrySpec*',
-        'test/unit/**/*GeometrySpec*',
+        //'test/unit/**/*GeometrySpec*',
 
         //'test/unit/**/action/*',
 
@@ -173,11 +174,14 @@
         //'test/unit/component/event/eventSpec*',
 
         //'test/unit/**/ui/**',
-        //'test/unit/**/UIObjectSpec*',
+        'test/unit/**/UIObjectSpec*',
         //
         //
-        //'test/unit/**/ButtonSpec*',
+        'test/unit/**/ButtonSpec*',
         //'test/unit/**/UIStateMachineSpec*',
+
+
+        'test/unit/**/*Asset*',
         //
         //'test/unit/**/FontSpec*',
         //'test/unit/**/PlainFontSpec*',

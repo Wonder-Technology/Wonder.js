@@ -114,6 +114,9 @@ module wd {
         }, configData));
     }
 
+    //todo move outside
+    const NOT_CLONE_TAG = "not_clone";
+
     export class CloneHelper{
         @require(function(source:any, cloneData:any = null, createDataArr:Array<any> = null){
             assert(!!source.constructor.name, Log.info.FUNC_CAN_NOT("get class name from source.constructor.name"));
@@ -175,6 +178,16 @@ module wd {
         public static cloneArray(arr:Array<any>){
             return [].concat(arr);
         }
+
+        public static markNotClone(entityObject:EntityObject){
+            if(!entityObject.hasTag(NOT_CLONE_TAG)){
+                entityObject.addTag(NOT_CLONE_TAG);
+            }
+        }
+
+        public static isNotClone(entityObject:EntityObject){
+            return entityObject.hasTag(NOT_CLONE_TAG);
+        }
     }
 
     type CloneMemberData = {
@@ -183,16 +196,16 @@ module wd {
         cloneDataArr: Array<any>
     }
 
-    type CloneAttributeAsBasicTypeConfigData = {
+    export type CloneAttributeAsBasicTypeConfigData = {
         order?:number;
     }
 
-    type CloneAttributeAsCloneableConfigData = {
+    export type CloneAttributeAsCloneableConfigData = {
         order?:number;
-        isInjectTarget:boolean;
+        isInjectTarget?:boolean;
     }
 
-    type CloneAttributeAsCustomTypeConfigData = {
+    export type CloneAttributeAsCustomTypeConfigData = {
         order?:number;
     }
 

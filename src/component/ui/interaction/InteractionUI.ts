@@ -9,6 +9,9 @@ module wd{
             this.p_transitionMode = transitionMode;
         }
 
+        @cloneAttributeAsCloneable({
+            isInjectTarget:true
+        })
         public transitionManager:TransitionManager = TransitionManager.create(this);
     }
 }

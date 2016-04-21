@@ -6,9 +6,13 @@ module wd{
         	return obj;
         }
 
+        @cloneAttributeAsCloneable()
         public normalColor:Color = null;
+        @cloneAttributeAsCloneable()
         public highlightColor:Color = null;
+        @cloneAttributeAsCloneable()
         public pressedColor:Color = null;
+        @cloneAttributeAsCloneable()
         public disabledColor:Color = null;
 
         public changeState(state:EUIState){

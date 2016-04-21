@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>image ui</title>
+
+    <script src="../../../dist/wd.innerLib.js" type="text/javascript"></script>
+    <script src="../../../dist/wd.debug.js" type="text/javascript"></script>
+</head>
+<body>
+<script>
+    window.onload = function () {
+        wd.Main.setConfig({
+            //open contract check
+            isTest: true,
+            screenSize: wd.EScreenSize.FULL
+        }).init();
+
+
+        wd.LoaderManager.getInstance().load([
+            {url: "../../asset/texture/1.jpg", id: "texture"},
+            {url: "../../asset/texture/2.jpg", id: "highlight"},
+            {url: "../../asset/texture/3.jpg", id: "pressed"},
+            {url: "../../asset/texture/4.jpg", id: "disabled"}
+        ]).subscribe(null, null, function(){
+            var director = wd.Director.getInstance();
+
+            var renderer = createUIRenderer();
+
+
+
+            var buttonObject1 = createButtonUIWithSprite(renderer);
+            buttonObject1.name = "button1";
+            buttonObject1.transform.width = 200;
+            buttonObject1.transform.height = 100;
+
+            buttonObject1.transform.translate(200, 100);
+
+
+            var buttonObject2 = buttonObject1.clone();
+            buttonObject2.name = "button2";
+
+            buttonObject2.transform.translate(250, 0);
+
+
+
+            var image1 = createImageUIWithSourceAndColor(renderer);
+            image1.transform.translate(wd.Vector2.create(200, 250));
+
+            var image2 = image1.clone();
+            image2.transform.translate(wd.Vector2.create(250, 0));
+
+
+
+
+
+            director.scene.addChildren([buttonObject1, buttonObject2]);
+
+            director.scene.addChildren([image1, image2]);
+
+
+
+            director.start();
+        });
+
+        function createButtonUIWithSprite(renderer){
+            var button = wd.Button.create();
+
+            button.text = "I'm a button";
+
+
+            button.transitionMode = wd.ETransitionMode.SPRITE;
+
+            var backgroundTransition = button.getObjectTransition(wd.EButtonObjectName.BACKGROUND);
+
+            backgroundTransition.highlightSprite = wd.LoaderManager.getInstance().get("highlight");
+            backgroundTransition.pressedSprite = wd.LoaderManager.getInstance().get("pressed");
+            backgroundTransition.disabledSprite = wd.LoaderManager.getInstance().get("disabled");
+
+
+
+            var buttonUIObject = wd.UIObject.create();
+
+            buttonUIObject.addComponent(button);
+
+
+
+            buttonUIObject.addComponent(wd.Script.create("./js/spriteButton.js"));
+
+
+
+            var eventTriggerDetector = wd.UIEventTriggerDetector.create();
+
+
+            buttonUIObject.addComponent(eventTriggerDetector);
+
+
+
+
+            buttonUIObject.addComponent(renderer);
+
+
+            return buttonUIObject;
+        }
+
+        function createImageUIWithSourceAndColor(renderer){
+            var image = wd.Image.create();
+            image.source = wd.LoaderManager.getInstance().get("texture");
+            image.color = wd.Color.create("rgba(255, 0, 0, 0.5)");
+
+
+            var imageUIObject = wd.UIObject.create();
+
+            imageUIObject.addComponent(image);
+
+            imageUIObject.transform.width = 100;
+            imageUIObject.transform.height = 100;
+
+
+            imageUIObject.addComponent(renderer);
+
+
+            return imageUIObject;
+        }
+
+        function createUIRenderer(){
+            var renderer = wd.UIRenderer.create();
+
+            return renderer;
+        }
+    };
+</script>
+</body>
+</html>

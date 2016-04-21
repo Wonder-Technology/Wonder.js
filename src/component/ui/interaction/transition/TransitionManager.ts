@@ -11,8 +11,18 @@ module wd {
         }
 
         private _ui:InteractionUI = null;
+        @cloneAttributeAsCustomType(function(source:TransitionManager, target:TransitionManager, memberName:string){
+            target[memberName] = source[memberName].clone(true);
+        })
         private _spriteTransitionMap:wdCb.Hash<Transition> = wdCb.Hash.create<Transition>();
+        @cloneAttributeAsCustomType(function(source:TransitionManager, target:TransitionManager, memberName:string){
+            target[memberName] = source[memberName].clone(true);
+        })
         private _colorTransitionMap:wdCb.Hash<Transition> = wdCb.Hash.create<Transition>();
+
+        public clone(interactionUI:InteractionUI){
+            return CloneHelper.clone(this, null, [interactionUI]);
+        }
 
         public getObjectTransition(objectName:EButtonObjectName) {
             var result = this._getTransitionMap().getChild(<any>objectName);

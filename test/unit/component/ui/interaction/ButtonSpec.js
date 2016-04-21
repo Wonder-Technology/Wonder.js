@@ -440,11 +440,11 @@ describe("Button", function() {
         function trigger(engineEvent){
             EventManager.trigger(uiObject, wd.CustomEvent.create(engineEvent));
         }
-        
+
         beforeEach(function(){
             button.init();
         });
-        
+
         describe("off event", function(){
             beforeEach(function(){
                 sandbox.stub(button._stateMachine, "changeState");
@@ -452,7 +452,7 @@ describe("Button", function() {
 
                 button.dispose();
             });
-            
+
             it("off mousedown event", function(){
                 trigger(EEngineEvent.MOUSE_DOWN);
 
@@ -574,7 +574,7 @@ describe("Button", function() {
             });
 
             it("test if disable, draw disable sprite", function(){
-               var backgroundTransition = button.getObjectTransition(ObjectName.BACKGROUND);
+                var backgroundTransition = button.getObjectTransition(ObjectName.BACKGROUND);
                 backgroundTransition.normalSprite = null;
                 backgroundTransition.disabledSprite = target;
 
@@ -760,21 +760,96 @@ describe("Button", function() {
         beforeEach(function(){
         });
 
-        it("clone InteractionUI data", function(){
-            var transitionMode = wd.ETransitionMode.COLOR;
+        describe("clone InteractionUI data", function(){
+            describe("clone transition", function(){
+                beforeEach(function(){
 
-            cloneTool.extend(button, {
-                transitionMode: transitionMode
+                });
+
+                it("clone sprite transition, share its source", function(){
+                    var highlightSprite = wd.ImageTextureAsset.create({});
+                    var pressedSprite = wd.ImageTextureAsset.create({a:1});
+                    var disabledSprite = wd.ImageTextureAsset.create({b:1});
+                    var normalSprite = wd.ImageTextureAsset.create({c:1});
+
+
+                    button.transitionMode = wd.ETransitionMode.SPRITE;
+
+                    var backgroundTransition = button.getObjectTransition(wd.EButtonObjectName.BACKGROUND);
+
+                    backgroundTransition.normalSprite = normalSprite;
+                    backgroundTransition.highlightSprite = highlightSprite;
+                    backgroundTransition.pressedSprite = pressedSprite;
+                    backgroundTransition.disabledSprite = disabledSprite;
+
+
+
+                    var result = button.clone();
+                    var resultBackgroundTransition = result.getObjectTransition(wd.EButtonObjectName.BACKGROUND);
+
+                    expect(resultBackgroundTransition.normalSprite === normalSprite).toBeFalsy();
+                    expect(resultBackgroundTransition.normalSprite.source === normalSprite.source).toBeTruthy();
+
+                    expect(resultBackgroundTransition.pressedSprite === pressedSprite).toBeFalsy();
+                    expect(resultBackgroundTransition.pressedSprite.source === pressedSprite.source).toBeTruthy();
+
+                    expect(resultBackgroundTransition.highlightSprite === highlightSprite).toBeFalsy();
+                    expect(resultBackgroundTransition.highlightSprite.source === highlightSprite.source).toBeTruthy();
+
+                    expect(resultBackgroundTransition.disabledSprite === disabledSprite).toBeFalsy();
+                    expect(resultBackgroundTransition.disabledSprite.source === disabledSprite.source).toBeTruthy();
+
+                });
+                it("clone color transition", function () {
+                    var highlightColor = wd.Color.create("#111111");
+                    var pressedColor = wd.Color.create("#111112");
+                    var disabledColor = wd.Color.create("#111113");
+                    var normalColor = wd.Color.create("#222222");
+
+
+                    button.transitionMode = wd.ETransitionMode.COLOR;
+
+                    var backgroundTransition = button.getObjectTransition(wd.EButtonObjectName.BACKGROUND);
+
+                    backgroundTransition.normalColor = normalColor;
+                    backgroundTransition.pressedColor = pressedColor;
+                    backgroundTransition.highlightColor = highlightColor;
+                    backgroundTransition.disabledColor = disabledColor;
+
+
+                    var result = button.clone();
+                    var resultBackgroundTransition = result.getObjectTransition(wd.EButtonObjectName.BACKGROUND);
+
+                    expect(resultBackgroundTransition.normalColor === normalColor).toBeFalsy();
+                    expect(resultBackgroundTransition.normalColor).toEqual(normalColor);
+
+                    expect(resultBackgroundTransition.pressedColor === pressedColor).toBeFalsy();
+                    expect(resultBackgroundTransition.pressedColor).toEqual(pressedColor);
+
+                    expect(resultBackgroundTransition.highlightColor === highlightColor).toBeFalsy();
+                    expect(resultBackgroundTransition.highlightColor).toEqual(highlightColor);
+
+                    expect(resultBackgroundTransition.disabledColor === disabledColor).toBeFalsy();
+                    expect(resultBackgroundTransition.disabledColor).toEqual(disabledColor);
+                });
             });
 
-            var result = button.clone();
+            it("clone data", function () {
+                var transitionMode = wd.ETransitionMode.COLOR;
 
-            expect(result.transitionMode).toEqual(transitionMode);
+                cloneTool.extend(button, {
+                    transitionMode: transitionMode
+                });
+
+                var result = button.clone();
+
+                expect(result.transitionMode).toEqual(transitionMode);
+            });
         });
 
         describe("clone Button data", function () {
             it("clone text", function () {
-                var text = "button";
+                var text = "aaa";
 
 
                 cloneTool.extend(button, {
@@ -782,23 +857,59 @@ describe("Button", function() {
                 });
 
 
-                var result = button.clone();
+                var result = uiObject.clone();
+                var resultButton = result.getComponent(wd.Button);
 
-                expect(result.text).toEqual(text);
+
+                result.init();
+
+
+
+                expect(resultButton.text).toEqual(text);
+            });
+            it("cloned result should has its own text object", function () {
+                var text = "aaa";
+
+
+                cloneTool.extend(button, {
+                    text:text
+                });
+
+
+                var result = uiObject.clone();
+                var resultButton = result.getComponent(wd.Button);
+
+                result.init();
+
+
+
+
+                judgeTool.isObjectNotEqual(resultButton.getObject(wd.EButtonObjectName.TEXT), button.getObject(wd.EButtonObjectName.TEXT));
+            });
+            it("cloned result should has its own background object", function () {
+                var result = uiObject.clone();
+                var resultButton = result.getComponent(wd.Button);
+
+                uiObject.init();
+                result.init();
+
+
+                judgeTool.isObjectNotEqual(resultButton.getObject(wd.EButtonObjectName.BACKGROUND), button.getObject(wd.EButtonObjectName.BACKGROUND));
             });
             it("clone state", function () {
                 button.disable();
 
-                var result = button.clone();
+                var result = uiObject.clone();
+                var resultButton = result.getComponent(wd.Button);
 
-                expect(result.isDisabled).toBeTruthy();
+                expect(resultButton.isDisabled).toBeTruthy();
 
-                result.dirty = false;
+                resultButton.dirty = false;
 
-                result.enable();
+                resultButton.enable();
 
-                expect(result.isDisabled).toBeFalsy();
-                expect(result.dirty).toBeTruthy();
+                expect(resultButton.isDisabled).toBeFalsy();
+                expect(resultButton.dirty).toBeTruthy();
             });
         });
     });

@@ -1,6 +1,5 @@
 module wd{
     export abstract class Component extends Entity{
-        @cloneAttributeAsBasicType()
         public entityObject:EntityObject = null;
 
         @virtual
@@ -11,14 +10,8 @@ module wd{
         public dispose(){
         }
 
-        //todo to be abstract method
-        //public abstract clone():Component;
         @virtual
         public clone(...datas):any{
-            //Log.error(true, Log.info.FUNC_SHOULD("implement clone method"));
-            //
-            //return null;
-
             return CloneHelper.clone(this);
         }
 

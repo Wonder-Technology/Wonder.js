@@ -3,6 +3,9 @@ var judgeTool = (function(){
         isObjectEqual: function(a, b){
             expect(a.uid).toEqual(b.uid);
         },
+        isObjectNotEqual: function(a, b){
+            expect(a.uid).not.toEqual(b.uid);
+        },
         isObjectListEqual: function(l1, l2){
             expect(
                 l1.map(function(obj){

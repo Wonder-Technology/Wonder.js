@@ -8,6 +8,7 @@ module wd {
             return obj;
         }
 
+        @cloneAttributeAsBasicType()
         private _text:string = null;
         get text(){
             var fontObject = null;
@@ -155,6 +156,8 @@ module wd {
 
             object.name = <any>EButtonObjectName.BACKGROUND;
 
+            CloneHelper.markNotClone(object);
+
             return object;
         }
 
@@ -178,6 +181,8 @@ module wd {
             fontObject.transform.zIndex = 2;
 
             fontObject.name = <any>EButtonObjectName.TEXT;
+
+            CloneHelper.markNotClone(fontObject);
 
             return fontObject;
         }

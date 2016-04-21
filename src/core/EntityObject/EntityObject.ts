@@ -50,7 +50,13 @@ module wd {
         }
 
         public clone(){
-            var result = CloneHelper.clone<EntityObject>(this);
+            var result = null;
+
+            if(CloneHelper.isNotClone((this))){
+                return null;
+            }
+
+            result = CloneHelper.clone<EntityObject>(this);
 
             this.forEachComponent((component:Component) => {
                 result.addComponent(component.clone());
@@ -63,7 +69,11 @@ module wd {
 
         private _cloneChildren(result:EntityObject){
             this.forEach((child:EntityObject) => {
-                result.addChild(child.clone());
+                var resultChild = child.clone();
+
+                if(resultChild !== null){
+                    result.addChild(child.clone());
+                }
             });
         }
 

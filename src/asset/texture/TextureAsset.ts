@@ -21,6 +21,7 @@ module wd{
         public generateMipmaps:boolean = true;
         public sourceRegionMethod:ETextureSourceRegionMethod = ETextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL;
         public format:ETextureFormat = ETextureFormat.RGBA;
+        @cloneAttributeAsBasicType()
         public source:any = TextureAsset.defaultTexture;
         public repeatRegion:RectRegion = RectRegion.create(0, 0, 1, 1);
         public sourceRegion:RectRegion = null;
@@ -48,6 +49,10 @@ module wd{
         public abstract toCubemapFaceTexture():CubemapFaceTexture;
 
         public abstract cloneToCubemapFaceTexture(cubemapFaceTexture:any);
+
+        public clone(){
+            return CloneHelper.clone(this);
+        }
 
         public cloneToCubemapTexture(cubemapFaceTexture:ICubemapTextureAsset){
             cubemapFaceTexture.generateMipmaps = this.generateMipmaps;

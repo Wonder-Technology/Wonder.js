@@ -6,9 +6,13 @@ module wd{
         	return obj;
         }
 
+        @cloneAttributeAsCloneable()
         public normalSprite:ImageTextureAsset = null;
+        @cloneAttributeAsCloneable()
         public highlightSprite:ImageTextureAsset = null;
+        @cloneAttributeAsCloneable()
         public pressedSprite:ImageTextureAsset = null;
+        @cloneAttributeAsCloneable()
         public disabledSprite:ImageTextureAsset = null;
 
         public changeState(state:EUIState){
