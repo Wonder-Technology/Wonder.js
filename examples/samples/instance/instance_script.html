@@ -38,7 +38,7 @@
             var sourceInstanceComponent = wd.SourceInstance.create();
             model.addComponent(sourceInstanceComponent);
 
-            model.addComponent(wd.Script.create("./script/sphere.js"));
+            model.addComponent(wd.Script.create("./js/sphere.js"));
 
             arr.push(model);
 
@@ -48,7 +48,7 @@
                 instance.transform.position = wd.Vector3.create(range / 2 - Math.random() * range, range / 2 - Math.random() * range, range / 2 - Math.random() * range);
 
 
-//                instance.addComponent(wd.Script.create("./script/instance.js"));
+//                instance.addComponent(wd.Script.create("./js/instance.js"));
 
                 arr.push(instance);
             }
@@ -56,7 +56,7 @@
 
 
 
-//            model.addComponent(wd.Script.create("./script/sphere.js"));
+//            model.addComponent(wd.Script.create("./js/sphere.js"));
 
             return arr;
         }
