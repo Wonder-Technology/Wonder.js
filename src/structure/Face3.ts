@@ -15,6 +15,7 @@ module wd {
         }
 
         private _faceNormal:Vector3 = null;
+        @cloneAttributeAsCloneable()
         get faceNormal(){
             return this._faceNormal !== null ? this._faceNormal : Vector3.create(0, 0, 0);
         }
@@ -22,10 +23,20 @@ module wd {
             this._faceNormal = faceNormal;
         }
 
+        @cloneAttributeAsBasicType()
         public aIndex:number = null;
+        @cloneAttributeAsBasicType()
         public bIndex:number = null;
+        @cloneAttributeAsBasicType()
         public cIndex:number = null;
+        @cloneAttributeAsCustomType(function(source:Face3, target:Face3, memberName:string){
+            target[memberName] = source[memberName].clone(true);
+        })
         public vertexNormals:wdCb.Collection<Vector3> = null;
+
+        public clone(){
+            return CloneHelper.clone(this);
+        }
 
         public hasFaceNormal(){
             return this._faceNormal !== null;
@@ -33,21 +44,6 @@ module wd {
 
         public hasVertexNormal(){
             return this.vertexNormals.getCount() > 0;
-        }
-
-        public clone(){
-            var copyFaceNormal = this._faceNormal ? this._faceNormal.clone() : null,
-                copyVertexNormals = null;
-
-            if(this.vertexNormals){
-                copyVertexNormals = wdCb.Collection.create();
-
-                this.vertexNormals.forEach((vertexNormal:Vector3) => {
-                    copyVertexNormals.addChild(vertexNormal.clone());
-                });
-            }
-
-            return Face3.create(this.aIndex, this.bIndex, this.cIndex, copyFaceNormal, copyVertexNormals);
         }
     }
 }

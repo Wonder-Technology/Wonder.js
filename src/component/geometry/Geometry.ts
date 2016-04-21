@@ -1,6 +1,7 @@
 module wd{
     export abstract class Geometry extends Component{
         private _material:Material = null;
+        @cloneAttributeAsCloneable()
         get material(){
             return this._material;
         }
@@ -21,6 +22,7 @@ module wd{
 
         public entityObject:GameObject;
         public buffers:BufferContainer = null;
+        @cloneAttributeAsBasicType()
         public drawMode:EDrawMode = EDrawMode.TRIANGLES;
 
         @ensure(function(){

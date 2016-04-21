@@ -15,26 +15,6 @@ module wd{
         @cloneAttributeAsBasicType()
         public segments:number = 20;
 
-        public clone(){
-            var result = CloneHelper.clone(this);
-
-
-            //var result = SphereGeometry.create();
-
-            //result.radius = this.radius;
-            //result.sphereDrawMode = this.sphereDrawMode;
-            //result.segments = this.segments;
-
-            //var material = BasicMaterial.create();
-            //material.color = Color.create("rgb(0, 255, 255)");
-
-            //result.material = material;
-            //todo fix
-            result.material = (<BasicMaterial>this.material).clone();
-
-            return result;
-        }
-
         protected computeData(){
             var radius = this.radius,
                 sphereDrawMode = this.sphereDrawMode,

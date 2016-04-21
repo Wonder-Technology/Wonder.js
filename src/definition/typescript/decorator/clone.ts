@@ -171,6 +171,10 @@ module wd {
 
             return target;
         }
+
+        public static cloneArray(arr:Array<any>){
+            return [].concat(arr);
+        }
     }
 
     type CloneMemberData = {
