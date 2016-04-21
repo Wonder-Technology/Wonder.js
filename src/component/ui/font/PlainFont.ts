@@ -82,12 +82,18 @@ module wd {
             }
         }
 
+        @cloneAttributeAsBasicType()
         private _fillEnabled:boolean = true;
+        @cloneAttributeAsBasicType()
         private _fillStyle:string = "rgba(0, 0, 0, 1)";
+        @cloneAttributeAsBasicType()
         private _strokeEnabled:boolean = false;
+        @cloneAttributeAsBasicType()
         private _strokeStyle:string = null;
+        @cloneAttributeAsBasicType()
         private _strokeSize:number = null;
         private _fontClientHeightCache:wdCb.Hash<number> = wdCb.Hash.create<number>();
+        @cloneAttributeAsBasicType()
         private _lineHeight:number = null;
         private _strArr:Array<string> = [];
 
@@ -95,7 +101,10 @@ module wd {
             super.init();
 
             this._formatText();
-            this._lineHeight = this._getDefaultLineHeight();
+
+            if(!this._lineHeight){
+                this._lineHeight = this._getDefaultLineHeight();
+            }
         }
 
         public setFillStyle(fillStyle:string) {

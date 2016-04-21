@@ -21,7 +21,8 @@
             {url: "../../asset/texture/1.jpg", id: "texture"},
             {url: "../../asset/texture/2.jpg", id: "highlight"},
             {url: "../../asset/texture/3.jpg", id: "pressed"},
-            {url: "../../asset/texture/4.jpg", id: "disabled"}
+            {url: "../../asset/texture/4.jpg", id: "disabled"},
+            {type: wd.EAssetType.FONT, url: "../../asset/font/Urdeutsch.ttf", id: "Urdeutsch"}
         ]).subscribe(null, null, function(){
             var director = wd.Director.getInstance();
 
@@ -51,6 +52,19 @@
             image2.transform.translate(wd.Vector2.create(250, 0));
 
 
+            var ttfFont1 = createTTFFont();
+            ttfFont1.name = "ttfFont1";
+
+            ttfFont1.transform.translate(wd.Vector2.create(200, 400));
+            ttfFont1.transform.rotate(10);
+
+
+            var ttfFont2 = ttfFont1.clone();
+            ttfFont2.name = "ttfFont2";
+
+            ttfFont2.transform.translate(wd.Vector2.create(500, -100));
+
+
 
 
 
@@ -58,6 +72,7 @@
 
             director.scene.addChildren([image1, image2]);
 
+            director.scene.addChildren([ttfFont1, ttfFont2]);
 
 
             director.start();
@@ -121,6 +136,37 @@
 
 
             return imageUIObject;
+        }
+
+        function createTTFFont() {
+            var font = wd.PlainFont.create();
+
+            font.text = "This is single line.\n" +
+                    "Test multi line! Test multi line! Test multi line! Test multi line! Test multi line! ";
+            //should be the font asset id
+            font.fontFamily = "Urdeutsch";
+            font.fontSize = 20;
+            font.enableStroke("red");
+            font.xAlignment = wd.EFontXAlignment.CENTER;
+            font.yAlignment = wd.EFontYAlignment.MIDDLE;
+
+
+            var uiObject = wd.UIObject.create();
+
+            uiObject.addComponent(font);
+
+            uiObject.transform.width = 400;
+            uiObject.transform.height = 200;
+
+
+
+            var renderer = wd.UIRenderer.create();
+
+
+            uiObject.addComponent(renderer);
+
+
+            return uiObject;
         }
 
         function createUIRenderer(){

@@ -626,7 +626,6 @@ describe("PlainFont", function () {
 
     describe("clone", function(){
         beforeEach(function(){
-
         });
 
         it("clone data", function(){
@@ -634,14 +633,27 @@ describe("PlainFont", function () {
                 fontSize = 10,
                 fontFamily = "b",
                 xAlignment = wd.EFontXAlignment.CENTER,
-                yAlignment = wd.EFontYAlignment.MIDDLE;
+                yAlignment = wd.EFontYAlignment.MIDDLE,
+                fillEnabled = false,
+                fillStyle = "rgba(0.1, 0, 0, 1)",
+                strokeEnabled = true,
+                strokeStyle = "rgba(0.2,0,0,1)",
+                strokeSize = 10,
+                lineHeight = 50;
+
 
             cloneTool.extend(font, {
-                    text: text,
-                    fontSize: fontSize,
+                text: text,
+                fontSize: fontSize,
                 fontFamily: fontFamily,
                 xAlignment: xAlignment,
-                yAlignment: yAlignment
+                yAlignment: yAlignment,
+                _fillEnabled: fillEnabled,
+                _fillStyle: fillStyle,
+                _strokeEnabled: strokeEnabled,
+                _strokeStyle: strokeStyle,
+                _strokeSize: strokeSize,
+                _lineHeight: lineHeight
             });
 
             var result = font.clone();
@@ -651,6 +663,12 @@ describe("PlainFont", function () {
             expect(result.fontFamily).toEqual(fontFamily);
             expect(result.xAlignment).toEqual(xAlignment);
             expect(result.yAlignment).toEqual(yAlignment);
+            expect(result._fillEnabled).toEqual(fillEnabled);
+            expect(result._fillStyle).toEqual(fillStyle);
+            expect(result._strokeEnabled).toEqual(strokeEnabled);
+            expect(result._strokeStyle).toEqual(strokeStyle);
+            expect(result._strokeSize).toEqual(strokeSize);
+            expect(result._lineHeight).toEqual(lineHeight);
         });
     });
 });
