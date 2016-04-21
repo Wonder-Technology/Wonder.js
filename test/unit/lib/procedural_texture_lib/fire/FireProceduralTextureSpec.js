@@ -124,5 +124,54 @@ describe("FireProceduralTexture", function () {
             expect(texture.time).toEqual(0.1);
         });
     });
+
+    describe("clone", function(){
+        beforeEach(function(){
+
+        });
+
+        it("clone fireColorMap", function () {
+            var Color = wd.Color;
+            var fireColorMap = wdCb.Hash.create({
+                        "c1": Color.create("rgb(0.5, 0.2, 0.1)"),
+                        "c2": Color.create("rgb(0.9, 0.0, 0.0)"),
+                        "c3": Color.create("rgb(0.2, 0.0, 0.0)"),
+                        "c4": Color.create("rgb(1.0, 0.9, 0.0)"),
+                        "c5": Color.create("rgb(0.1, 0.1, 0.1)"),
+                        "c6": Color.create("rgb(0.9, 0.9, 0.9)")
+                    });
+
+            texture.fireColorMap = fireColorMap;
+
+            var result = texture.clone();
+
+            expect(result.fireColorMap).toEqual(fireColorMap);
+        });
+
+        it("clone data", function () {
+            var fireColorType = wd.EFireProceduralTextureColorType.CUSTOM,
+                speed = wd.Vector2.create(1,1),
+                alphaThreshold = 10,
+                shift = 10,
+                time = 10;
+
+            cloneTool.extend(texture, {
+                    fireColorType: fireColorType,
+                    speed: speed,
+                alphaThreshold: alphaThreshold,
+                shift: shift,
+                time: time
+            });
+
+            var result = texture.clone();
+
+            expect(result.fireColorType).toEqual(fireColorType);
+            expect(result.speed).toEqual(speed);
+            expect(result.speed === texture.speed).toBeFalsy();
+            expect(result.alphaThreshold).toEqual(alphaThreshold);
+            expect(result.shift).toEqual(shift);
+            expect(result.time).toEqual(time);
+        });
+    });
 });
 

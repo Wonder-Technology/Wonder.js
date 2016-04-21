@@ -8,6 +8,7 @@ module wd {
             return obj;
         }
 
+        @cloneAttributeAsBasicType()
         private _fireColorMap:wdCb.Hash<Color> = null;
         @requireSetter(function(fireColorMap:wdCb.Hash<Color>){
             assert(fireColorMap.getCount() === 6, Log.info.FUNC_SHOULD("contain 6 colors"));
@@ -16,6 +17,10 @@ module wd {
             assert(value.getCount() === 6, Log.info.FUNC_SHOULD("contain 6 colors"));
         })
         get fireColorMap(){
+            if(this._fireColorMap !== null){
+                return this._fireColorMap;
+            }
+
             switch (this.fireColorType){
                 case EFireProceduralTextureColorType.CUSTOM:
                     return this._fireColorMap;
@@ -64,11 +69,16 @@ module wd {
             this._fireColorMap = fireColorMap;
         }
 
+        @cloneAttributeAsBasicType()
         public fireColorType:EFireProceduralTextureColorType = EFireProceduralTextureColorType.RED;
 
+        @cloneAttributeAsCloneable()
         public speed:Vector2 = Vector2.create(0.5, 0.3);
+        @cloneAttributeAsBasicType()
         public alphaThreshold:number = 0.5;
+        @cloneAttributeAsBasicType()
         public shift:number = 1;
+        @cloneAttributeAsBasicType()
         public time:number = 0;
 
         public init(){

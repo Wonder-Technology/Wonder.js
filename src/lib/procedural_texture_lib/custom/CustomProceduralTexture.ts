@@ -8,10 +8,17 @@ module wd {
         	return obj;
         }
 
+        @cloneAttributeAsCustomType(function(source:CustomProceduralTexture, target:CustomProceduralTexture, memberName:string){
+            source[memberName].getMapList().forEach((map:BasicTexture|ProceduralTexture) => {
+                target[memberName].addMap(map.clone());
+            });
+        })
         public mapManager:MapManager = MapManager.create();
+        @cloneAttributeAsCloneable()
         public uniformMap:wdCb.Hash<ShaderData> = wdCb.Hash.create<ShaderData>();
+        @cloneAttributeAsBasicType()
         public fsSource:string = null;
-
+        @cloneAttributeAsBasicType()
         public isAnimate:boolean = false;
 
         public init(){

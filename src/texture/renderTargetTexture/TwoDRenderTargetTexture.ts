@@ -1,6 +1,10 @@
 module wd {
     export abstract class TwoDRenderTargetTexture extends RenderTargetTexture {
         private _renderList:wdCb.Collection<GameObject> = null;
+        @requireSetter(function(renderList:any){
+            assert(JudgeUtils.isArrayExactly(renderList) || JudgeUtils.isCollection(renderList), Log.info.FUNC_MUST_BE("renderList", "array or collection"))
+        })
+        @cloneAttributeAsCloneable()
         get renderList(){
             return this._renderList;
         }
@@ -8,17 +12,17 @@ module wd {
             if (JudgeUtils.isArrayExactly(renderList)) {
                 this._renderList = wdCb.Collection.create<GameObject>(renderList);
             }
-            else if (JudgeUtils.isCollection(renderList)) {
+            else{
                 this._renderList = renderList;
-            }
-            else {
-                Log.error(true, Log.info.FUNC_MUST_BE("renderList", "array or wdCb.Collection"));
             }
         }
 
-        public width:number = 256;
-        public height:number = 256;
+        public initWhenCreate(){
+            super.initWhenCreate();
 
+            this.width = 256;
+            this.height = 256;
+        }
 
         public createEmptyTexture(){
             var gl = DeviceManager.getInstance().gl,

@@ -37,5 +37,22 @@ describe("VideoTexture", function() {
             expect(texture.needUpdate).toBeFalsy();
         });
     });
+
+    describe("clone", function(){
+        var asset;
+
+        beforeEach(function(){
+            asset = wd.VideoTextureAsset.create({
+                isStop:false
+            });
+            texture = Texture.create(asset);
+        });
+
+        it("share asset", function(){
+            var result = texture.clone();
+
+            expect(result.asset).toEqual(texture.asset);
+        });
+    });
 });
 

@@ -8,7 +8,9 @@ module wd {
         	return obj;
         }
 
+        @cloneAttributeAsBasicType()
         public ampScale:number = 100.0;
+        @cloneAttributeAsCloneable()
         public woodColor:Color = Color.create("rgb(0.32, 0.17, 0.09)");
 
         public init(){

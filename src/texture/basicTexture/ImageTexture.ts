@@ -3,28 +3,27 @@ module wd{
         public static create(asset:ImageTextureAsset);
         public static create(canvas:HTMLCanvasElement);
 
-        public static create(arg) {
-            var obj = new this();
+        public static create(arg:any) {
+            var obj = new this(arg);
 
-            obj.initWhenCreate(arg);
+            obj.initWhenCreate();
 
             return obj;
         }
 
+        constructor(asset:ImageTextureAsset);
+        constructor(canvas:HTMLCanvasElement);
 
-        public initWhenCreate(asset:ImageTextureAsset);
-        public initWhenCreate(canvas:HTMLCanvasElement);
+        constructor(arg:any){
+            if(arg instanceof ImageTextureAsset){
+                let asset:ImageTextureAsset = arg;
 
-        public initWhenCreate(arg){
-            if(arguments[0] instanceof ImageTextureAsset){
-                let asset:ImageTextureAsset = arguments[0];
-
-                super.initWhenCreate(asset);
+                super(asset);
             }
             else{
-                let canvas:HTMLCanvasElement = arguments[0];
+                let canvas:HTMLCanvasElement = arg;
 
-                super.initWhenCreate(ImageTextureAsset.create(canvas));
+                super(ImageTextureAsset.create(canvas));
             }
         }
     }

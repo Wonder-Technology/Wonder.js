@@ -1,20 +1,22 @@
 module wd{
     export class VideoTexture extends CommonTexture{
         public static create(asset:VideoTextureAsset) {
-            var obj = new this();
+            var obj = new this(asset);
 
-            obj.initWhenCreate(asset);
+            obj.initWhenCreate();
 
             return obj;
         }
 
+        protected asset:VideoTextureAsset;
+
         private _video:Video = null;
         private _startLoopSubscription:wdFrp.IDisposable = null;
 
-        public initWhenCreate(asset:VideoTextureAsset){
-            super.initWhenCreate(asset);
+        public initWhenCreate(){
+            super.initWhenCreate();
 
-            this._video = asset.video;
+            this._video = this.asset.video;
         }
 
         public init(){

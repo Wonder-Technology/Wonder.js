@@ -8,7 +8,9 @@ module wd {
         	return obj;
         }
 
+        @cloneAttributeAsCloneable()
         public skyColor:Color = Color.create("rgb(0.15, 0.68, 1.0)");
+        @cloneAttributeAsCloneable()
         public cloudColor:Color = Color.create("rgb(1.0, 1.0, 1.0)");
 
         public init(){

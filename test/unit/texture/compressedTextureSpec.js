@@ -7,7 +7,7 @@ describe("compressed texture", function() {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        Texture = wd.Texture;
+        Texture = wd.CompressedTexture;
         texture = new Texture();
         director = wd.Director.getInstance();
         gl = {
@@ -50,6 +50,21 @@ describe("compressed texture", function() {
     afterEach(function () {
         wd.Director._instance = null;
         sandbox.restore();
+    });
+
+    describe("clone", function(){
+        var asset;
+
+        beforeEach(function(){
+            asset = wd.CompressedTextureAsset.create({});
+            texture = Texture.create(asset);
+        });
+
+        it("share asset", function(){
+            var result = texture.clone();
+
+            expect(result.asset).toEqual(texture.asset);
+        });
     });
 
     describe("integration test", function(){

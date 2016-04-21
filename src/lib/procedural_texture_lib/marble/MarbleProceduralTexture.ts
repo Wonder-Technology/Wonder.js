@@ -9,9 +9,13 @@ module wd {
         	return obj;
         }
 
+        @cloneAttributeAsBasicType()
         public tilesHeightNumber:number = 3;
+        @cloneAttributeAsBasicType()
         public tilesWidthNumber:number = 3;
+        @cloneAttributeAsBasicType()
         public amplitude:number = 9;
+        @cloneAttributeAsCloneable()
         public jointColor:Color = Color.create("rgb(0.72, 0.72, 0.72)");
 
         public init(){

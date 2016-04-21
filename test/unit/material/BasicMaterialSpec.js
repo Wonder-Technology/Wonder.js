@@ -432,8 +432,41 @@ envMap:envMap
             beforeEach(function(){
             });
 
-            it("", function(){
+            it("clone map", function(){
+                var imageTexture = wd.ImageTexture.create({});
+                var resultImageTexture = wd.ImageTexture.create({a:1});
 
+                sandbox.stub(imageTexture, "clone").returns(resultImageTexture);
+
+                var proceduralTexture = wd.MarbleProceduralTexture.create();
+                var resultProceduralTexture = wd.MarbleProceduralTexture.create();
+                sandbox.stub(proceduralTexture, "clone").returns(resultProceduralTexture);
+
+                var map = [imageTexture, proceduralTexture];
+
+
+                cloneTool.extend(material, {
+                    map: map
+                });
+
+
+                var result = material.clone();
+
+                expect(result.mapManager === material.mapManager).toBeFalsy();
+                expect(result.mapList.getChildren()).toEqual([resultImageTexture, resultProceduralTexture]);
+            });
+            it("clone opacity after blend", function () {
+                var opacity = 0.5,
+                    blend = false;
+
+                material.opacity = opacity;
+                material.blend = blend;
+
+
+                var result = material.clone();
+
+                expect(result.opacity).toEqual(opacity);
+                expect(result.blend).toBeTruthy();
             });
         });
 

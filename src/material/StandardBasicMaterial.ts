@@ -3,6 +3,11 @@ module wd{
         @ensureGetter(function(mapList:wdCb.Collection<Texture>){
             assert(mapList.getCount() <= 2, wdCb.Log.info.FUNC_SUPPORT("only", "map.count <= 2"));
         })
+        @cloneAttributeAsCustomType(function(source:StandardBasicMaterial, target:StandardBasicMaterial, memberName:string){
+            source[memberName].forEach((map:BasicTexture|ProceduralTexture) => {
+                target.mapManager.addMap(map.clone());
+            });
+        })
         get mapList(){
             return this.mapManager.getMapList();
         }
@@ -11,9 +16,11 @@ module wd{
             if(map instanceof Texture || map instanceof TextureAsset){
             }
             else{
-                let mapArr:Array<any> = arguments[0];
+                let mapArr:Array<any> = map;
 
-                wdCb.Log.error(mapArr.length > 2, wdCb.Log.info.FUNC_SUPPORT("only", "map.count <= 2"));
+                assert(JudgeUtils.isArrayExactly(mapArr), Log.info.FUNC_MUST_BE("array"));
+
+                assert(mapArr.length <= 2, Log.info.FUNC_SUPPORT("only", "map.count <= 2"));
             }
         })
         set map(map:any){
@@ -30,6 +37,7 @@ module wd{
         }
 
         private _opacity:number = 1.0;
+        @cloneAttributeAsBasicType()
         get opacity(){
             return this._opacity;
         }

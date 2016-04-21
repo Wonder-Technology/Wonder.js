@@ -1,9 +1,21 @@
 module wd{
     export abstract class TwoDTexture extends BasicTexture{
-        public initWhenCreate(asset:TextureAsset){
+        constructor(asset:TextureAsset){
+            super();
+
+            this.asset = asset;
+        }
+
+        protected asset:TextureAsset = null;
+
+        public clone(){
+            return CloneHelper.clone(this, null, [this.asset]);
+        }
+
+        public initWhenCreate(){
             super.initWhenCreate();
 
-            asset.cloneTo(this);
+            this.asset.cloneTo(this);
         }
     }
 }

@@ -92,5 +92,65 @@ describe("CustomProceduralTexture", function () {
             });
         });
     });
+
+    describe("clone", function(){
+        beforeEach(function(){
+            sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+        });
+
+        it("shallow clone uniformMap", function () {
+            var shaderData ={
+                type:wd.EVariableType.FLOAT_1,
+                value:0.2,
+                textureId:"textureId"
+            };
+            var uniformMap = wdCb.Hash.create({
+                "u_a": shaderData
+            });
+
+            cloneTool.extend(texture, {
+uniformMap:uniformMap
+            });
+
+            var result = texture.clone();
+
+            expect(result.uniformMap === texture.uniformMap).toBeFalsy();
+            expect(result.uniformMap.getChild("u_a")).toEqual(shaderData);
+        });
+        it("clone maps", function () {
+            var map1 = wd.ImageTexture.create({});
+            var resultMap1 = wd.ImageTexture.create({b:1});
+            sandbox.stub(map1, "clone").returns(resultMap1);
+
+
+            var map2 = wd.ImageTexture.create({a:1});
+            var resultMap2 = wd.ImageTexture.create({b:2});
+            sandbox.stub(map2, "clone").returns(resultMap2);
+
+
+            texture.mapManager.addMap(map1);
+            texture.mapManager.addMap(map2);
+
+
+            var result = texture.clone();
+
+            expect(result.mapManager === texture.mapManager).toBeFalsy();
+            expect(result.mapManager.getMapList().getChildren()).toEqual([resultMap1, resultMap2]);
+        });
+        it("clone data", function () {
+            var fsSource = "aaa",
+                isAnimate = true;
+
+            cloneTool.extend(texture, {
+                fsSource: fsSource,
+                isAnimate: isAnimate
+            });
+
+            var result = texture.clone();
+
+            expect(result.fsSource).toEqual(fsSource);
+            expect(result.isAnimate).toEqual(isAnimate);
+        });
+    })
 });
 

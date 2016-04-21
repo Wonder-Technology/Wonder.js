@@ -8,9 +8,13 @@ module wd {
         	return obj;
         }
 
+        @cloneAttributeAsBasicType()
         public tilesHeightNumber:number = 15;
+        @cloneAttributeAsBasicType()
         public tilesWidthNumber:number = 5;
+        @cloneAttributeAsCloneable()
         public brickColor:Color = Color.create("rgb(0.77, 0.47, 0.40)");
+        @cloneAttributeAsCloneable()
         public jointColor:Color = Color.create("rgb(0.72, 0.72, 0.72)");
 
         public init(){

@@ -1,9 +1,9 @@
 module wd{
     export class CompressedTexture extends TwoDTexture {
         public static create(asset:CompressedTextureAsset) {
-            var obj = new this();
+            var obj = new this(asset);
 
-            obj.initWhenCreate(asset);
+            obj.initWhenCreate();
 
             return obj;
         }

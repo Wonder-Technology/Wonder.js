@@ -8,6 +8,7 @@ module wd {
         	return obj;
         }
 
+        @cloneAttributeAsCloneable()
         public roadColor:Color = Color.create("rgb(0.53, 0.53, 0.53)");
 
         public init(){
