@@ -262,4 +262,101 @@ describe("LightMaterial", function() {
             });
         })
     });
+
+    describe("clone", function(){
+        beforeEach(function(){
+
+        });
+
+        describe("clone StandardLightMaterial data", function(){
+            beforeEach(function(){
+            });
+
+            it("clone map", function(){
+                var lightMap = wd.ImageTexture.create({});
+                var resultLightMap = wd.ImageTexture.create({a:1});
+                sandbox.stub(lightMap, "clone").returns(resultLightMap);
+
+                var diffuseMap = wd.MarbleProceduralTexture.create();
+                var resultDiffuseMap = wd.MarbleProceduralTexture.create();
+                sandbox.stub(diffuseMap, "clone").returns(resultDiffuseMap);
+
+
+                var specularMap = wd.MarbleProceduralTexture.create();
+                var resultSpecularMap = wd.MarbleProceduralTexture.create();
+                sandbox.stub(specularMap, "clone").returns(resultSpecularMap);
+
+
+                var emissionMap = wd.ImageTexture.create({});
+                var resultEmissionMap = wd.ImageTexture.create({a:1});
+                sandbox.stub(emissionMap, "clone").returns(resultEmissionMap);
+
+
+                var normalMap = wd.ImageTexture.create({});
+                var resultNormalMap = wd.ImageTexture.create({a:1});
+                sandbox.stub(normalMap, "clone").returns(resultNormalMap);
+
+
+                cloneTool.extend(material, {
+                    lightMap:lightMap,
+                    diffuseMap:diffuseMap,
+                    specularMap:specularMap,
+                    emissionMap:emissionMap,
+                    normalMap:normalMap
+                });
+
+
+                var result = material.clone();
+
+                expect(result.mapManager === material.mapManager).toBeFalsy();
+                expect(result.lightMap).toEqual(resultLightMap);
+                expect(result.diffuseMap).toEqual(resultDiffuseMap);
+                expect(result.specularMap).toEqual(resultSpecularMap);
+                expect(result.emissionMap).toEqual(resultEmissionMap);
+                expect(result.normalMap).toEqual(resultNormalMap);
+            });
+            it("clone opacity after blend", function () {
+                var opacity = 0.5,
+                    blend = false;
+
+                material.opacity = opacity;
+                material.blend = blend;
+
+
+                var result = material.clone();
+
+                expect(result.opacity).toEqual(opacity);
+                expect(result.blend).toBeTruthy();
+            });
+            it("clone data", function () {
+                var shininess = 10,
+                    lightModel = wd.ELightModel.LAMBERT,
+                    specularColor = wd.Color.create("#111111"),
+                    emissionColor = wd.Color.create("#222222"),
+                    lightMapIntensity = 0.1;
+
+
+                cloneTool.extend(material, {
+
+                    shininess: shininess,
+                    lightModel: lightModel,
+                    specularColor: specularColor,
+                    emissionColor: emissionColor,
+                    lightMapIntensity: lightMapIntensity
+                });
+
+
+                var result = material.clone();
+
+
+                expect(result.shininess).toEqual(shininess);
+                expect(result.lightModel).toEqual(lightModel);
+                expect(result.specularColor).toEqual(specularColor);
+                expect(result.specularColor === material.specularColor).toBeFalsy();
+                expect(result.emissionColor).toEqual(emissionColor);
+                expect(result.emissionColor === material.emissionColor).toBeFalsy();
+                expect(result.lightMapIntensity).toEqual(lightMapIntensity);
+            });
+        });
+    });
 });

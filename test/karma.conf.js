@@ -31,7 +31,8 @@
 
         //'test/unit/**/cubemapTexture*',
 
-        'test/unit/**/BasicMaterial*',
+        //'test/unit/**/BasicMaterial*',
+        'test/unit/**/LightMaterial*',
 
         //'test/unit/**/**GeometrySpec*',
 
@@ -93,6 +94,7 @@
         //'test/unit/**/envMap*',
         //
         //'test/unit/texture/**',
+        //'test/unit/**/*ProceduralTexture*',
 
         //
         //'test/unit/**/MapManager*',

@@ -1,12 +1,13 @@
 module wd{
     export abstract class StandardLightMaterial extends EngineMaterial{
         private _lightMap:Texture = null;
-        get lightMap(){
-            return this._lightMap;
-        }
         @requireSetter(function(lightMap:Texture){
             assert(lightMap instanceof ImageTexture || lightMap instanceof ProceduralTexture, Log.info.FUNC_SHOULD("lightMap", "be ImageTexture or ProceduralTexture"));
         })
+        @cloneAttributeAsCloneable()
+        get lightMap(){
+            return this._lightMap;
+        }
         set lightMap(lightMap:Texture){
             this.mapManager.addMap(lightMap, {
                 samplerVariableName: VariableNameTable.getVariableName("lightMap")
@@ -16,12 +17,13 @@ module wd{
         }
 
         private _diffuseMap:Texture = null;
-        get diffuseMap(){
-            return this._diffuseMap;
-        }
         @requireSetter(function(diffuseMap:ImageTexture){
             assert(diffuseMap instanceof ImageTexture || diffuseMap instanceof ProceduralTexture, Log.info.FUNC_SHOULD("diffuseMap", "be ImageTexture or ProceduralTexture"));
         })
+        @cloneAttributeAsCloneable()
+        get diffuseMap(){
+            return this._diffuseMap;
+        }
         set diffuseMap(diffuseMap:Texture){
             this.mapManager.addMap(diffuseMap, {
                 samplerVariableName: VariableNameTable.getVariableName("diffuseMap")
@@ -31,12 +33,13 @@ module wd{
         }
 
         private _specularMap:Texture = null;
-        get specularMap(){
-            return this._specularMap;
-        }
         @requireSetter(function(specularMap:Texture){
             assert(specularMap instanceof ImageTexture || specularMap instanceof ProceduralTexture, Log.info.FUNC_SHOULD("specularMap", "be ImageTexture or ProceduralTexture"));
         })
+        @cloneAttributeAsCloneable()
+        get specularMap(){
+            return this._specularMap;
+        }
         set specularMap(specularMap:Texture){
             this.mapManager.addMap(specularMap, {
                 samplerVariableName: VariableNameTable.getVariableName("specularMap")
@@ -46,12 +49,13 @@ module wd{
         }
 
         private _emissionMap:Texture = null;
-        get emissionMap(){
-            return this._emissionMap;
-        }
         @requireSetter(function(emissionMap:Texture){
             assert(emissionMap instanceof ImageTexture || emissionMap instanceof ProceduralTexture, Log.info.FUNC_SHOULD("emissionMap", "be ImageTexture or ProceduralTexture"));
         })
+        @cloneAttributeAsCloneable()
+        get emissionMap(){
+            return this._emissionMap;
+        }
         set emissionMap(emissionMap:Texture){
             this.mapManager.addMap(emissionMap, {
                 samplerVariableName: VariableNameTable.getVariableName("emissionMap")
@@ -61,12 +65,13 @@ module wd{
         }
 
         private _normalMap:ImageTexture = null;
-        get normalMap(){
-            return this._normalMap;
-        }
         @requireSetter(function(normalMap:ImageTexture){
             assert(normalMap instanceof ImageTexture, Log.info.FUNC_SHOULD("normalMap", "be ImageTexture"));
         })
+        @cloneAttributeAsCloneable()
+        get normalMap(){
+            return this._normalMap;
+        }
         set normalMap(normalMap:ImageTexture){
             this.mapManager.addMap(normalMap, {
                 samplerVariableName: VariableNameTable.getVariableName("normalMap")
@@ -76,6 +81,7 @@ module wd{
         }
 
         private _shininess:number = 32;
+        @cloneAttributeAsBasicType()
         get shininess(){
             if(Number(this._shininess) <= 0){
                 return 32;
@@ -87,6 +93,9 @@ module wd{
         }
 
         private _opacity:number = 1.0;
+        @cloneAttributeAsBasicType({
+            order:1
+        })
         get opacity(){
             return this._opacity;
         }
@@ -96,9 +105,13 @@ module wd{
             this._opacity = opacity;
         }
 
+        @cloneAttributeAsBasicType()
         public lightModel:ELightModel = ELightModel.PHONG;
+        @cloneAttributeAsCloneable()
         public specularColor:Color = Color.create("#ffffff");
+        @cloneAttributeAsCloneable()
         public emissionColor:Color = Color.create("rgba(0,0,0,0)");
+        @cloneAttributeAsBasicType()
         public lightMapIntensity:number = 1;
 
         @virtual
