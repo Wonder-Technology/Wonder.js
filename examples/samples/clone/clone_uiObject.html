@@ -22,7 +22,9 @@
             {url: "../../asset/texture/2.jpg", id: "highlight"},
             {url: "../../asset/texture/3.jpg", id: "pressed"},
             {url: "../../asset/texture/4.jpg", id: "disabled"},
-            {type: wd.EAssetType.FONT, url: "../../asset/font/Urdeutsch.ttf", id: "Urdeutsch"}
+            {type: wd.EAssetType.FONT, url: "../../asset/font/Urdeutsch.ttf", id: "Urdeutsch"},
+            {url: "../../asset/font/myFont.fnt", id: "myFont_fnt"},
+            {url: "../../asset/font/myFont.png", id: "myFont_image"}
         ]).subscribe(null, null, function(){
             var director = wd.Director.getInstance();
 
@@ -68,11 +70,35 @@
 
 
 
+            var bitmapFont1 = createBitmapFont(renderer);
+            bitmapFont1.name = "bitmapFont1";
+
+            bitmapFont1.transform.translate(wd.Vector2.create(800, 100));
+
+
+
+            var bitmapFont2 = bitmapFont1.clone();
+            bitmapFont2.name = "bitmapFont2";
+
+            bitmapFont2.transform.translate(wd.Vector2.create(0, 80));
+
+            wd.Director.getInstance().scheduler.scheduleTime(function(){
+                createAndAddBitmapCharAction(bitmapFont1);
+                createAndAddBitmapCharAction(bitmapFont2);
+            }, 200);
+
+
+
+
+
             director.scene.addChildren([buttonObject1, buttonObject2]);
 
             director.scene.addChildren([image1, image2]);
 
             director.scene.addChildren([ttfFont1, ttfFont2]);
+
+            director.scene.addChildren([bitmapFont1, bitmapFont2]);
+//            director.scene.addChildren([bitmapFont2]);
 
 
             director.start();
@@ -167,6 +193,50 @@
 
 
             return uiObject;
+        }
+
+        function createBitmapFont(renderer) {
+            var font = wd.BitmapFont.create();
+
+            font.text = "bitmap";
+            font.fntId = "myFont_fnt";
+            font.bitmapId = "myFont_image";
+            font.xAlignment = wd.EFontXAlignment.CENTER;
+
+
+            var gameObject = wd.UIObject.create();
+
+            gameObject.addComponent(font);
+
+
+            gameObject.transform.width = 750;
+            gameObject.transform.height = 100;
+
+
+
+            gameObject.addComponent(renderer);
+
+
+            return gameObject;
+        }
+
+        function createAndAddBitmapCharAction(gameObject){
+            var tween = wd.Tween.create(),
+                    charFontUIObject = gameObject.findChildByTag("5");
+
+            tween.from({angle: 0})
+                    .to({angle: 360}, 3000)
+                    .easing(wd.Tween.Easing.Cubic.InOut)
+                    .onUpdate(function () {
+                        charFontUIObject.transform.rotation = this.angle;
+                    });
+
+
+            var action = wd.RepeatForever.create(tween);
+
+            gameObject.addComponent(action);
+
+            action.init();
         }
 
         function createUIRenderer(){
