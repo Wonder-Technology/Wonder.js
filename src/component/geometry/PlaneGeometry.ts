@@ -6,9 +6,13 @@ module wd{
             return geom;
         }
 
+        @cloneAttributeAsBasicType()
         public width:number = null;
+        @cloneAttributeAsBasicType()
         public height:number = null;
+        @cloneAttributeAsBasicType()
         public widthSegments:number = 1;
+        @cloneAttributeAsBasicType()
         public heightSegments:number = 1;
 
         protected computeData(){

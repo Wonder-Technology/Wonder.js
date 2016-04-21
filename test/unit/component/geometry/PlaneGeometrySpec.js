@@ -75,5 +75,31 @@ describe("PlaneGeometry", function() {
                 ])
         });
     });
+
+    describe("clone", function(){
+        beforeEach(function(){
+        });
+
+        it("clone data", function(){
+            var width = 10,
+                height = 11,
+                widthSegments = 2,
+                heightSegments = 3;
+
+            cloneTool.extend(geo, {
+                width: width,
+                height: height,
+                widthSegments: widthSegments,
+                heightSegments: heightSegments
+            })
+
+            var result = geo.clone();
+
+            expect(result.width).toEqual(width);
+            expect(result.height).toEqual(height);
+            expect(result.widthSegments).toEqual(widthSegments);
+            expect(result.heightSegments).toEqual(heightSegments);
+        });
+    });
 });
 

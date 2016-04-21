@@ -34,9 +34,10 @@
         //'test/unit/**/BasicMaterial*',
         //'test/unit/**/LightMaterial*',
 
-        'test/unit/**/material_lib/**',
+        //'test/unit/**/material_lib/**',
 
-        //'test/unit/**/**GeometrySpec*',
+        //'test/unit/**/SphereGeometrySpec*',
+        'test/unit/**/*GeometrySpec*',
 
         //'test/unit/**/action/*',
 
@@ -128,8 +129,10 @@
         //'test/unit/**/camera/**',
 
 
-        //'test/unit/**/GeometryData*',
-        //'test/unit/**/BufferContainer*',
+        //'test/unit/**/*GeometryData*',
+        //'test/unit/**/**BufferContainer*',
+        //
+        //'test/unit/**/Face3*',
 
         //'test/unit/**/customShader*',
 

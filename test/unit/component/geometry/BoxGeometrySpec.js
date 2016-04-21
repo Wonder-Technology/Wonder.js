@@ -84,5 +84,37 @@ describe("BoxGeometry", function() {
             judgeOneSegemets();
         });
     });
+    
+    describe("clone", function(){
+        beforeEach(function(){
+        });
+
+        it("clone data", function(){
+            var width = 10,
+                height = 11,
+                depth = 12,
+                widthSegments = 2,
+                heightSegments = 3,
+                depthSegments = 4;
+
+            cloneTool.extend(geo, {
+                    width: width,
+                    height: height,
+                depth: depth,
+                widthSegments: widthSegments,
+                heightSegments: heightSegments,
+                depthSegments: depthSegments
+            })
+
+            var result = geo.clone();
+
+            expect(result.width).toEqual(width);
+            expect(result.height).toEqual(height);
+            expect(result.depth).toEqual(depth);
+            expect(result.widthSegments).toEqual(widthSegments);
+            expect(result.heightSegments).toEqual(heightSegments);
+            expect(result.depthSegments).toEqual(depthSegments);
+        });
+    });
 });
 

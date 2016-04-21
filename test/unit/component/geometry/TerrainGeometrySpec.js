@@ -63,5 +63,55 @@ describe("TerrainGeometry", function() {
             });
         });
     });
+
+    describe("clone", function(){
+        beforeEach(function(){
+        });
+
+        it("share heightMapAsset->source", function () {
+            var source = {};
+            var heightMapAsset = wd.ImageTextureAsset.create(source);
+
+
+            cloneTool.extend(geo, {
+                heightMapAsset:heightMapAsset
+            })
+
+            var result = geo.clone();
+
+            expect(result.heightMapAsset === heightMapAsset).toBeFalsy();
+            expect(result.heightMapAsset.source === source).toBeTruthy();
+        });
+        it("clone range", function () {
+            var range = {width: 20, height: 50};
+
+
+            cloneTool.extend(geo, {
+                range: range
+            })
+
+            var result = geo.clone();
+
+            expect(result.range === geo.range).toBeFalsy();
+            expect(result.range).toEqual(range);
+        });
+        it("clone data", function(){
+            var subdivisions = 10,
+                minHeight = 11,
+                maxHeight = 50;
+
+            cloneTool.extend(geo, {
+                    subdivisions: subdivisions,
+                    minHeight: minHeight,
+                maxHeight: maxHeight
+            })
+
+            var result = geo.clone();
+
+            expect(result.subdivisions).toEqual(subdivisions);
+            expect(result.minHeight).toEqual(minHeight);
+            expect(result.maxHeight).toEqual(maxHeight);
+        });
+    });
 });
 

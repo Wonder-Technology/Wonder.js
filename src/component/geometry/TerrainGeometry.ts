@@ -6,13 +6,25 @@ module wd{
             return obj;
         }
 
+        @cloneAttributeAsBasicType()
         public subdivisions:number = 1;
+        @cloneAttributeAsCustomType(function(source:Geometry, target:Geometry, memberName:string){
+            target[memberName].width = source[memberName].width;
+            target[memberName].height = source[memberName].height;
+        })
         public range:Range = {
             width: 10,
             height: 10
         };
+        @cloneAttributeAsBasicType()
         public minHeight:number = 0;
+        @cloneAttributeAsBasicType()
         public maxHeight:number = 10;
+        @cloneAttributeAsCustomType(function(source:Geometry, target:Geometry, memberName:string){
+            if(source[memberName]){
+                target[memberName] = ImageTextureAsset.create(source[memberName].source);
+            }
+        })
         public heightMapAsset:ImageTextureAsset = null;
 
         protected computeData(): GeometryDataType{

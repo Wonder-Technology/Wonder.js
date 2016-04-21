@@ -6,31 +6,18 @@ module wd{
             return geom;
         }
 
+        @cloneAttributeAsBasicType()
         public width:number = null;
+        @cloneAttributeAsBasicType()
         public height:number = null;
+        @cloneAttributeAsBasicType()
         public depth:number = null;
+        @cloneAttributeAsBasicType()
         public widthSegments:number = 1;
+        @cloneAttributeAsBasicType()
         public heightSegments:number = 1;
+        @cloneAttributeAsBasicType()
         public depthSegments:number = 1;
-
-        public clone(){
-            var result = BoxGeometry.create();
-
-            result.width = this.width;
-            result.height = this.height;
-            result.depth = this.depth;
-            result.widthSegments = this.widthSegments;
-            result.heightSegments = this.heightSegments;
-            result.depthSegments = this.depthSegments;
-
-            //todo fix
-            var material = BasicMaterial.create();
-            material.color = Color.create("rgb(0, 255, 255)");
-
-            result.material = material;
-
-            return result;
-        }
 
         protected computeData(){
             var width = this.width,
