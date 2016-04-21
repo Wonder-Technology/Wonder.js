@@ -132,4 +132,22 @@ describe("Material", function() {
             expect(material._sceneShader).toEqual(sceneShader);
         });
     });
+
+    describe("fix bug", function(){
+        it("test trigger event when change color", function () {
+            var isTrigger = false;
+            var geometry = {
+                entityObject:wd.GameObject.create()
+            };
+            wd.EventManager.fromEvent(geometry.entityObject, wd.EEngineEvent.MATERIAL_COLOR_CHANGE)
+                .subscribe(function(){
+                    isTrigger = true;
+                });
+            material.geometry = geometry;
+
+            material.color = wd.Color.create("#a12345");
+
+            expect(isTrigger).toBeTruthy();
+        });
+    });
 });
