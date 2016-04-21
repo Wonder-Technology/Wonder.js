@@ -95,5 +95,49 @@ describe("DynamicCubemapTexture", function() {
             expect(program.sendUniformData).toCalledWith("u_samplerCube0", wd.EVariableType.SAMPLER_CUBE, 0);
         });
     });
+
+    describe("clone", function(){
+        beforeEach(function(){
+        });
+
+        it("shallow clone renderList(shallow clone Hash and its collection list)", function(){
+            var gameObject1 = wd.GameObject.create();
+            var renderList = wdCb.Hash.create({
+                "px": wdCb.Collection.create([gameObject1])
+            }) ;
+
+            cloneTool.extend(texture, {
+                renderList:renderList
+            })
+
+            var result = texture.clone();
+
+            expect(result.renderList === renderList).toBeFalsy();
+
+            expect(result.renderList.getChild("px") === texture.renderList.getChild("px")).toBeFalsy();
+            judgeTool.isObjectEqual(result.renderList.getChild("px").getChild(0), gameObject1);
+        });
+        it("clone data", function () {
+            var size = 10,
+                near = 10,
+                far = 20,
+                mode = wd.EEnvMapMode.FRESNEL;
+
+            cloneTool.extend(texture, {
+                    size: size,
+                    near: near,
+                far: far,
+                mode: mode
+            })
+
+            var result = texture.clone();
+
+            expect(result.size).toEqual(size);
+            expect(result.near).toEqual(near);
+            expect(result.far).toEqual(far);
+            expect(result.mode).toEqual(mode);
+        });
+
+    });
 });
 

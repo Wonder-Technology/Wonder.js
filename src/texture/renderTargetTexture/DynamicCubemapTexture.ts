@@ -8,13 +8,28 @@ module wd {
             return obj;
         }
 
-        private _renderList:wdCb.Hash<[string, wdCb.Collection<GameObject>]> = null;
+        private _renderList:wdCb.Hash<wdCb.Collection<GameObject>> = null;
+        @cloneAttributeAsCustomType(function(source:DynamicCubemapTexture, target:DynamicCubemapTexture, memberName:string){
+            var result = null;
+
+            if(source[memberName] === null){
+                return;
+            }
+
+            result = wdCb.Hash.create<wdCb.Collection<GameObject>>();
+
+            source[memberName].forEach((list:wdCb.Collection<GameObject>, key:string) => {
+                result.addChild(key, list.clone());
+            });
+
+            target[memberName] = result;
+        })
         get renderList() {
             return this._renderList;
         }
 
         set renderList(renderList:any) {
-            var convertedRenderList = wdCb.Hash.create<[string, wdCb.Collection<GameObject>]>();
+            var convertedRenderList = wdCb.Hash.create<wdCb.Collection<GameObject>>();
 
             if (renderList instanceof wdCb.Hash) {
             }
@@ -40,9 +55,13 @@ module wd {
             this._renderList = convertedRenderList;
         }
 
+        @cloneAttributeAsBasicType()
         public size:number = 256;
+        @cloneAttributeAsBasicType()
         public near:number = 0.1;
+        @cloneAttributeAsBasicType()
         public far:number = 100;
+        @cloneAttributeAsBasicType()
         public mode:EEnvMapMode = null;
 
         public init() {
