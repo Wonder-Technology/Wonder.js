@@ -149,4 +149,93 @@ describe("GameObject", function() {
     });
 
     //todo move related SceneSpec here
+
+    describe("clone", function(){
+        beforeEach(function(){
+        });
+
+        describe("clone EntityObject data", function(){
+            beforeEach(function(){
+            });
+
+            it("share bubbleParent,parent", function(){
+                var bubbleParent = {},
+                    parent = {a:1};
+
+
+                cloneTool.extend(gameObject, {
+                    bubbleParent:bubbleParent,
+                    parent:parent
+                })
+
+                var result = gameObject.clone();
+
+                expect(result.bubbleParent === gameObject.bubbleParent).toBeTruthy();
+                expect(result.parent === gameObject.parent).toBeTruthy();
+            });
+            it("clone components", function () {
+                var geo = wd.SphereGeometry.create();
+                var resultGeo = wd.SphereGeometry.create();
+                sandbox.stub(geo, "clone").returns(resultGeo);
+
+                    var shadow = wd.Shadow.create();
+                var resultShadow = wd.Shadow.create();
+                sandbox.stub(shadow, "clone").returns(resultShadow);
+
+                gameObject.addComponent(geo);
+                gameObject.addComponent(shadow);
+
+
+                var result = gameObject.clone();
+
+                judgeTool.isObjectEqual(result.getComponent(wd.Shadow), (resultShadow));
+                judgeTool.isObjectEqual(result.getComponent(wd.Geometry), (resultGeo));
+            });
+            it("clone children", function () {
+                var child1 = wd.GameObject.create();
+                var resultChild1 = wd.GameObject.create();
+                sandbox.stub(child1, "clone").returns(resultChild1);
+
+                var child2 = wd.GameObject.create();
+                var resultChild2 = wd.GameObject.create();
+                sandbox.spy(child2, "clone");
+
+                var child21 = wd.GameObject.create();
+                var resultChild21 = wd.GameObject.create();
+                sandbox.stub(child21, "clone").returns(resultChild21);
+
+                child2.addChild(child21);
+
+
+                gameObject.addChildren([child1, child2]);
+
+
+
+
+                var result = gameObject.clone();
+
+
+
+                judgeTool.isObjectEqual(result.getChild(0), resultChild1);
+
+                expect(child2.clone).toCalledOnce();
+                expect(result.getChild(1)).not.toEqual(child2);
+                judgeTool.isObjectEqual(result.getChild(1).getChild(0), resultChild21);
+            });
+            it("clone data", function () {
+                var name = "a",
+                    isVisible = false;
+
+                cloneTool.extend(gameObject, {
+                    name:name,
+                    isVisible:isVisible
+                })
+
+                var result = gameObject.clone();
+
+                expect(result.name).toEqual(name);
+                expect(result.isVisible).toEqual(isVisible);
+            });
+        });
+    });
 });

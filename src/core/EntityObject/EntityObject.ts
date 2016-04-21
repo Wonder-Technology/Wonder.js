@@ -1,5 +1,4 @@
 module wd {
-    //todo add clone method
     export abstract class EntityObject extends Entity{
         protected p_scriptList:wdCb.Hash<IScriptBehavior> = wdCb.Hash.create<IScriptBehavior>();
         get scriptList(){
@@ -7,6 +6,7 @@ module wd {
         }
 
         private _bubbleParent:EntityObject = null;
+        @cloneAttributeAsBasicType()
         get bubbleParent(){
             return this._bubbleParent ? this._bubbleParent : this.parent;
         }
@@ -20,8 +20,11 @@ module wd {
             }
         }
 
+        @cloneAttributeAsBasicType()
         public name:string = null;
+        @cloneAttributeAsBasicType()
         public parent:EntityObject = null;
+        @cloneAttributeAsBasicType()
         public isVisible:boolean = true;
 
         public transform:Transform = null;
@@ -44,6 +47,24 @@ module wd {
         @virtual
         public initWhenCreate(){
             this.addComponent(this.createTransform());
+        }
+
+        public clone(){
+            var result = CloneHelper.clone<EntityObject>(this);
+
+            this.forEachComponent((component:Component) => {
+                result.addComponent(component.clone());
+            });
+
+            this._cloneChildren(result);
+
+            return result;
+        }
+
+        private _cloneChildren(result:EntityObject){
+            this.forEach((child:EntityObject) => {
+                result.addChild(child.clone());
+            });
         }
 
         public init() {
