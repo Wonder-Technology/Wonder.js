@@ -41,6 +41,11 @@
 
 
 
+            var custom = createCustomGeometry();
+            custom.transform.translate(wd.Vector3.create(0, -30, 50));
+
+            var custom2 = custom.clone();
+            custom2.transform.translate(wd.Vector3.create(100, 0, 0));
 
             var ground = createGround();
             ground.transform.translate(wd.Vector3.create(0, -50, 0));
@@ -51,8 +56,10 @@
 
 
             director.scene.addChildren([sphere, sphere2]);
-
+//
             director.scene.addChildren([box, box2]);
+
+            director.scene.addChildren([custom, custom2]);
 
             director.scene.addChild(ground);
 
@@ -154,6 +161,78 @@
 
             var material = wd.LightMaterial.create();
             material.diffuseMap = wd.FireProceduralTexture.create();
+
+
+            var geometry = wd.RectGeometry.create();
+            geometry.material = material;
+            geometry.width = 10;
+            geometry.height = 10;
+
+
+
+
+
+            child.addComponent(geometry);
+
+
+            var shadow = wd.Shadow.create();
+
+            child.addComponent(shadow);
+
+
+
+            child.transform.translate(wd.Vector3.create(-30, 0, 0));
+
+
+            gameObject.addChild(child);
+
+
+
+            return gameObject;
+        }
+
+        function createCustomGeometry() {
+            var material = wd.LightMaterial.create();
+            material.diffuseMap = wd.BrickProceduralTexture.create();
+//            material.color = wd.Color.create("rgb(1.0,0.0,1.0)");
+//            material.specularColor = wd.Color.create("#ffffff");
+
+
+            var geometry = wd.CustomGeometry.create();
+            geometry.material = material;
+
+            geometry.vertices = [
+                0.0, 10, -10,
+                -10, -10, -10,
+                10, -10, -10
+            ];
+            geometry.indices = [
+                0, 1, 2
+            ];
+
+
+            var gameObject = wd.GameObject.create();
+
+            gameObject.addComponent(wd.MeshRenderer.create());
+            gameObject.addComponent(geometry);
+
+
+            var shadow = wd.Shadow.create();
+
+            gameObject.addComponent(shadow);
+
+
+
+            var child = wd.GameObject.create();
+
+            child.addComponent(wd.MeshRenderer.create());
+
+
+
+
+
+            var material = wd.LightMaterial.create();
+            material.color = wd.Color.create("rgb(0, 255, 0)");
 
 
             var geometry = wd.RectGeometry.create();

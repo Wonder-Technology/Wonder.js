@@ -158,5 +158,44 @@ describe("CustomGeometry", function() {
             });
         });
     });
+
+    describe("clone", function(){
+        beforeEach(function(){
+            //geo = wd.ModelGeometry.create();
+        });
+
+        it("clone geometry data", function () {
+            var vertices = [1,2,3],
+                indices = [1,2,3],
+                normals = [0.1,2,-1],
+                colors = [0.1,0.2,0.3],
+                texCoords = [0.3,0.1];
+
+            cloneTool.extend(geo, {
+                vertices: vertices,
+                indices:indices,
+                normals:normals,
+                colors: colors,
+                texCoords: texCoords
+            })
+
+            var result = geo.clone();
+
+            expect(result.vertices).toEqual(vertices);
+            expect(result.vertices === vertices).toBeFalsy();
+
+            expect(result.indices).toEqual(indices);
+            expect(result.indices === indices).toBeFalsy();
+
+            expect(result.normals).toEqual(normals);
+            expect(result.normals === normals).toBeFalsy();
+
+            expect(result.colors).toEqual(colors);
+            expect(result.colors === colors).toBeFalsy();
+
+            expect(result.texCoords).toEqual(texCoords);
+            expect(result.texCoords === texCoords).toBeFalsy();
+        });
+    });
 });
 
