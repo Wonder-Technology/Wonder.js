@@ -512,6 +512,9 @@ describe("UIObject", function () {
             }).toThrow();
         });
     });
+
+    describe("clone", function(){
+    });
 });
 
 
