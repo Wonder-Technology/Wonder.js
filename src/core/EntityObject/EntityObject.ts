@@ -72,7 +72,7 @@ module wd {
                 var resultChild = child.clone();
 
                 if(resultChild !== null){
-                    result.addChild(child.clone());
+                    result.addChild(resultChild);
                 }
             });
         }

@@ -42,18 +42,23 @@ describe("Shadow", function() {
 
 
 
-            cloneTool.extend(body, {
+            cloneTool.extend(shadow, {
                 receive: receive,
                 cast: cast,
                 layer: layer
             });
 
-                var result = shadow.clone();
+            var gameObject = wd.GameObject.create();
+            gameObject.addComponent(shadow);
 
-                expect(result === shadow).toBeFalsy();
-                expect(result.receive).toEqual(receive);
-                expect(result.cast).toEqual(cast);
-                expect(result.layer).toEqual(layer);
+            var result = gameObject.clone();
+            var resultShadow = result.getComponent(wd.Shadow);
+
+
+            expect(resultShadow === shadow).toBeFalsy();
+            expect(resultShadow.receive).toEqual(receive);
+            expect(resultShadow.cast).toEqual(cast);
+            expect(resultShadow.layer).toEqual(layer);
         });
     });
 });

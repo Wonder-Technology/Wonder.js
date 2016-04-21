@@ -197,7 +197,6 @@ describe("GameObject", function() {
                 sandbox.stub(child1, "clone").returns(resultChild1);
 
                 var child2 = wd.GameObject.create();
-                var resultChild2 = wd.GameObject.create();
                 sandbox.spy(child2, "clone");
 
                 var child21 = wd.GameObject.create();
