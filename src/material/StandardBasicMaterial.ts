@@ -37,7 +37,9 @@ module wd{
         }
 
         private _opacity:number = 1.0;
-        @cloneAttributeAsBasicType()
+        @cloneAttributeAsBasicType({
+            order:1
+        })
         get opacity(){
             return this._opacity;
         }
