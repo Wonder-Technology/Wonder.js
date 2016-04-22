@@ -9,7 +9,7 @@ float computeFresnelRatio(vec3 inDir, vec3 normal, float refractionRatio){
 }
 vec4 getEnvMapTotalColor(vec3 inDir, vec3 normal){
     vec3 reflectDir = reflect(inDir, normal);
-    vec3 refractDir = refract(inDir, normal, u_refractionRatio);
+    vec3 refractDir = refract(inDir, flipNormal(normal), u_refractionRatio);
 
     vec4 reflectColor = textureCube(u_samplerCube0, reflectDir);
     vec4 refractColor = textureCube(u_samplerCube0, refractDir);

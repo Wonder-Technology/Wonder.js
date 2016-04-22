@@ -426,6 +426,8 @@
 /// <reference path="renderer/shader/lib/skybox/SkyboxShaderLib"/>
 
 /// <reference path="renderer/shader/lib/envMap/EnvMapShaderLib"/>
+/// <reference path="renderer/shader/lib/envMap/CommonEnvMapShaderLib"/>
+
 /// <reference path="renderer/shader/lib/envMap/forBasic/ForBasicEnvMapShaderLib"/>
 /// <reference path="renderer/shader/lib/envMap/forBasic/BasicForBasicEnvMapShaderLib"/>
 /// <reference path="renderer/shader/lib/envMap/forBasic/ReflectionForBasicEnvMapShaderLib"/>

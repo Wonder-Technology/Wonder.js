@@ -212,6 +212,8 @@ module wd{
         }
 
         private _setEnvMapShaderLib(envMap:CubemapTexture){
+            this.shader.addLib(CommonEnvMapShaderLib.create());
+
             switch (envMap.mode){
                 case EEnvMapMode.BASIC:
                     this.shader.addLib(BasicForLightEnvMapShaderLib.create());
