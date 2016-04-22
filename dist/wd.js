@@ -2203,12 +2203,36 @@ var wdCb;
                 args.unshift("unexpect");
                 return this.assertion.apply(this, args);
             },
+            FUNC_EXIST: function () {
+                var args = [];
+                for (var _i = 0; _i < arguments.length; _i++) {
+                    args[_i - 0] = arguments[_i];
+                }
+                args.unshift("exist");
+                return this.assertion.apply(this, args);
+            },
             FUNC_NOT_EXIST: function () {
                 var args = [];
                 for (var _i = 0; _i < arguments.length; _i++) {
                     args[_i - 0] = arguments[_i];
                 }
                 args.unshift("not exist");
+                return this.assertion.apply(this, args);
+            },
+            FUNC_ONLY: function () {
+                var args = [];
+                for (var _i = 0; _i < arguments.length; _i++) {
+                    args[_i - 0] = arguments[_i];
+                }
+                args.unshift("only");
+                return this.assertion.apply(this, args);
+            },
+            FUNC_CAN_NOT: function () {
+                var args = [];
+                for (var _i = 0; _i < arguments.length; _i++) {
+                    args[_i - 0] = arguments[_i];
+                }
+                args.unshift("can't");
                 return this.assertion.apply(this, args);
             }
         };
@@ -2355,10 +2379,12 @@ var wdCb;
             var obj = new this(children);
             return obj;
         };
-        Collection.prototype.copy = function (isDeep) {
+        Collection.prototype.clone = function (isDeep) {
             if (isDeep === void 0) { isDeep = false; }
-            return isDeep ? Collection.create(wdCb.ExtendUtils.extendDeep(this.children))
-                : Collection.create(wdCb.ExtendUtils.extend([], this.children));
+            if (isDeep) {
+                return Collection.create(wdCb.ExtendUtils.extendDeep(this.children));
+            }
+            return Collection.create().addChildren(this.children);
         };
         Collection.prototype.filter = function (func) {
             var children = this.children, result = [], value = null;
@@ -2395,6 +2421,27 @@ var wdCb;
             }
             return Collection.create(this.copyChildren().sort(func));
         };
+        Collection.prototype.insertSort = function (compareFunc, isSortSelf) {
+            if (isSortSelf === void 0) { isSortSelf = false; }
+            var children = null;
+            if (isSortSelf) {
+                children = this.children;
+            }
+            else {
+                children = wdCb.ExtendUtils.extend([], this.children);
+            }
+            for (var i = 1, len = this.getCount(); i < len; i++) {
+                for (var j = i; j > 0 && compareFunc(children[j], children[j - 1]); j--) {
+                    this._swap(children, j - 1, j);
+                }
+            }
+            if (isSortSelf) {
+                return this;
+            }
+            else {
+                return Collection.create(children);
+            }
+        };
         Collection.prototype.map = function (func) {
             var resultArr = [];
             this.forEach(function (e, index) {
@@ -2406,14 +2453,31 @@ var wdCb;
             return Collection.create(resultArr);
         };
         Collection.prototype.removeRepeatItems = function () {
-            var resultList = Collection.create();
+            var noRepeatList = Collection.create();
             this.forEach(function (item) {
-                if (resultList.hasChild(item)) {
+                if (noRepeatList.hasChild(item)) {
                     return;
                 }
-                resultList.addChild(item);
+                noRepeatList.addChild(item);
             });
-            return resultList;
+            return noRepeatList;
+        };
+        Collection.prototype.hasRepeatItems = function () {
+            var noRepeatList = Collection.create(), hasRepeat = false;
+            this.forEach(function (item) {
+                if (noRepeatList.hasChild(item)) {
+                    hasRepeat = true;
+                    return wdCb.$BREAK;
+                }
+                noRepeatList.addChild(item);
+            });
+            return hasRepeat;
+        };
+        Collection.prototype._swap = function (children, i, j) {
+            var t = null;
+            t = children[i];
+            children[i] = children[j];
+            children[j] = t;
         };
         return Collection;
     })(wdCb.List);
@@ -2487,6 +2551,7 @@ var wdCb;
                     this.addChild(i, children[i]);
                 }
             }
+            return this;
         };
         Hash.prototype.appendChild = function (key, value) {
             if (this._children[key] instanceof wdCb.Collection) {
@@ -2603,6 +2668,13 @@ var wdCb;
             });
             return result;
         };
+        Hash.prototype.clone = function (isDeep) {
+            if (isDeep === void 0) { isDeep = false; }
+            if (isDeep) {
+                return Hash.create(wdCb.ExtendUtils.extendDeep(this._children));
+            }
+            return Hash.create().addChildren(this._children);
+        };
         return Hash;
     })();
     wdCb.Hash = Hash;
@@ -2689,6 +2761,13 @@ var wdCb;
         };
         Stack.prototype.clear = function () {
             this.removeAllChildren();
+        };
+        Stack.prototype.clone = function (isDeep) {
+            if (isDeep === void 0) { isDeep = false; }
+            if (isDeep) {
+                return Stack.create(wdCb.ExtendUtils.extendDeep(this.children));
+            }
+            return Stack.create([].concat(this.children));
         };
         return Stack;
     })(wdCb.List);
@@ -2907,32 +2986,42 @@ var wdCb;
             if (toStr.call(parent) === sArr) {
                 _child = child || [];
                 for (i = 0, len = parent.length; i < len; i++) {
-                    if (!filter(parent[i], i)) {
+                    var member = parent[i];
+                    if (!filter(member, i)) {
                         continue;
                     }
-                    type = toStr.call(parent[i]);
+                    if (member.clone) {
+                        _child[i] = member.clone();
+                        continue;
+                    }
+                    type = toStr.call(member);
                     if (type === sArr || type === sOb) {
                         _child[i] = type === sArr ? [] : {};
-                        arguments.callee(parent[i], _child[i]);
+                        arguments.callee(member, _child[i]);
                     }
                     else {
-                        _child[i] = parent[i];
+                        _child[i] = member;
                     }
                 }
             }
             else if (toStr.call(parent) === sOb) {
                 _child = child || {};
                 for (i in parent) {
-                    if (!filter(parent[i], i)) {
+                    var member = parent[i];
+                    if (!filter(member, i)) {
                         continue;
                     }
-                    type = toStr.call(parent[i]);
+                    if (member.clone) {
+                        _child[i] = member.clone();
+                        continue;
+                    }
+                    type = toStr.call(member);
                     if (type === sArr || type === sOb) {
                         _child[i] = type === sArr ? [] : {};
-                        arguments.callee(parent[i], _child[i]);
+                        arguments.callee(member, _child[i]);
                     }
                     else {
-                        _child[i] = parent[i];
+                        _child[i] = member;
                     }
                 }
             }
@@ -3385,10 +3474,17 @@ var wdFrp;
 
 
 
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 var wdFrp;
 (function (wdFrp) {
-    var SingleDisposable = (function () {
+    var SingleDisposable = (function (_super) {
+        __extends(SingleDisposable, _super);
         function SingleDisposable(disposeHandler) {
+            _super.call(this, "SingleDisposable");
             this._disposeHandler = null;
             this._disposeHandler = disposeHandler;
         }
@@ -3404,14 +3500,21 @@ var wdFrp;
             this._disposeHandler();
         };
         return SingleDisposable;
-    })();
+    })(wdFrp.Entity);
     wdFrp.SingleDisposable = SingleDisposable;
 })(wdFrp || (wdFrp = {}));
 
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 var wdFrp;
 (function (wdFrp) {
-    var GroupDisposable = (function () {
+    var GroupDisposable = (function (_super) {
+        __extends(GroupDisposable, _super);
         function GroupDisposable(disposable) {
+            _super.call(this, "GroupDisposable");
             this._group = wdCb.Collection.create();
             if (disposable) {
                 this._group.addChild(disposable);
@@ -3425,13 +3528,17 @@ var wdFrp;
             this._group.addChild(disposable);
             return this;
         };
+        GroupDisposable.prototype.remove = function (disposable) {
+            this._group.removeChild(disposable);
+            return this;
+        };
         GroupDisposable.prototype.dispose = function () {
             this._group.forEach(function (disposable) {
                 disposable.dispose();
             });
         };
         return GroupDisposable;
-    })();
+    })(wdFrp.Entity);
     wdFrp.GroupDisposable = GroupDisposable;
 })(wdFrp || (wdFrp = {}));
 
@@ -3509,6 +3616,64 @@ var wdFrp;
     }
 })(wdFrp || (wdFrp = {}));
 
+var wdFrp;
+(function (wdFrp) {
+    wdFrp.root.requestNextAnimationFrame = (function () {
+        var originalRequestAnimationFrame = undefined, wrapper = undefined, callback = undefined, geckoVersion = null, userAgent = wdFrp.root.navigator && wdFrp.root.navigator.userAgent, index = 0, self = this;
+        wrapper = function (time) {
+            time = wdFrp.root.performance.now();
+            self.callback(time);
+        };
+        if (wdFrp.root.requestAnimationFrame) {
+            return requestAnimationFrame;
+        }
+        if (wdFrp.root.webkitRequestAnimationFrame) {
+            originalRequestAnimationFrame = wdFrp.root.webkitRequestAnimationFrame;
+            wdFrp.root.webkitRequestAnimationFrame = function (callback, element) {
+                self.callback = callback;
+                return originalRequestAnimationFrame(wrapper, element);
+            };
+        }
+        if (wdFrp.root.msRequestAnimationFrame) {
+            originalRequestAnimationFrame = wdFrp.root.msRequestAnimationFrame;
+            wdFrp.root.msRequestAnimationFrame = function (callback) {
+                self.callback = callback;
+                return originalRequestAnimationFrame(wrapper);
+            };
+        }
+        if (wdFrp.root.mozRequestAnimationFrame) {
+            index = userAgent.indexOf('rv:');
+            if (userAgent.indexOf('Gecko') != -1) {
+                geckoVersion = userAgent.substr(index + 3, 3);
+                if (geckoVersion === '2.0') {
+                    wdFrp.root.mozRequestAnimationFrame = undefined;
+                }
+            }
+        }
+        return wdFrp.root.webkitRequestAnimationFrame ||
+            wdFrp.root.mozRequestAnimationFrame ||
+            wdFrp.root.oRequestAnimationFrame ||
+            wdFrp.root.msRequestAnimationFrame ||
+            function (callback, element) {
+                var start, finish;
+                wdFrp.root.setTimeout(function () {
+                    start = wdFrp.root.performance.now();
+                    callback(start);
+                    finish = wdFrp.root.performance.now();
+                    self.timeout = 1000 / 60 - (finish - start);
+                }, self.timeout);
+            };
+    }());
+    wdFrp.root.cancelNextRequestAnimationFrame = wdFrp.root.cancelRequestAnimationFrame
+        || wdFrp.root.webkitCancelAnimationFrame
+        || wdFrp.root.webkitCancelRequestAnimationFrame
+        || wdFrp.root.mozCancelRequestAnimationFrame
+        || wdFrp.root.oCancelRequestAnimationFrame
+        || wdFrp.root.msCancelRequestAnimationFrame
+        || clearTimeout;
+})(wdFrp || (wdFrp = {}));
+;
+
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -3543,8 +3708,14 @@ var wdFrp;
         Stream.prototype.flatMap = function (selector) {
             return this.map(selector).mergeAll();
         };
+        Stream.prototype.concatMap = function (selector) {
+            return this.map(selector).concatAll();
+        };
         Stream.prototype.mergeAll = function () {
             return wdFrp.MergeAllStream.create(this);
+        };
+        Stream.prototype.concatAll = function () {
+            return this.merge(1);
         };
         Stream.prototype.takeUntil = function (otherStream) {
             return wdFrp.TakeUntilStream.create(this, otherStream);
@@ -3623,6 +3794,31 @@ var wdFrp;
                 });
             });
         };
+        Stream.prototype.lastOrDefault = function (defaultValue) {
+            if (defaultValue === void 0) { defaultValue = null; }
+            var self = this;
+            return wdFrp.createStream(function (observer) {
+                var queue = [];
+                self.subscribe(function (value) {
+                    queue.push(value);
+                    if (queue.length > 1) {
+                        queue.shift();
+                    }
+                }, function (e) {
+                    observer.error(e);
+                }, function () {
+                    if (queue.length === 0) {
+                        observer.next(defaultValue);
+                    }
+                    else {
+                        while (queue.length > 0) {
+                            observer.next(queue.shift());
+                        }
+                    }
+                    observer.completed();
+                });
+            });
+        };
         Stream.prototype.filter = function (predicate, thisArg) {
             if (thisArg === void 0) { thisArg = this; }
             if (this instanceof wdFrp.FilterStream) {
@@ -3651,13 +3847,20 @@ var wdFrp;
             return wdFrp.ConcatStream.create(args);
         };
         Stream.prototype.merge = function () {
-            var args = null, stream = null;
-            if (wdFrp.JudgeUtils.isArray(arguments[0])) {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
+            }
+            if (wdFrp.JudgeUtils.isNumber(args[0])) {
+                var maxConcurrent = args[0];
+                return wdFrp.MergeStream.create(this, maxConcurrent);
+            }
+            if (wdFrp.JudgeUtils.isArray(args[0])) {
                 args = arguments[0];
             }
             else {
-                args = Array.prototype.slice.call(arguments, 0);
             }
+            var stream = null;
             args.unshift(this);
             stream = wdFrp.fromArray(args).mergeAll();
             return stream;
@@ -3701,59 +3904,6 @@ var wdFrp;
 
 var wdFrp;
 (function (wdFrp) {
-    wdFrp.root.requestNextAnimationFrame = (function () {
-        var originalRequestAnimationFrame = undefined, wrapper = undefined, callback = undefined, geckoVersion = null, userAgent = wdFrp.root.navigator && wdFrp.root.navigator.userAgent, index = 0, self = this;
-        wrapper = function (time) {
-            time = wdFrp.root.performance.now();
-            self.callback(time);
-        };
-        if (wdFrp.root.requestAnimationFrame) {
-            return requestAnimationFrame;
-        }
-        if (wdFrp.root.webkitRequestAnimationFrame) {
-            originalRequestAnimationFrame = wdFrp.root.webkitRequestAnimationFrame;
-            wdFrp.root.webkitRequestAnimationFrame = function (callback, element) {
-                self.callback = callback;
-                return originalRequestAnimationFrame(wrapper, element);
-            };
-        }
-        if (wdFrp.root.msRequestAnimationFrame) {
-            originalRequestAnimationFrame = wdFrp.root.msRequestAnimationFrame;
-            wdFrp.root.msRequestAnimationFrame = function (callback) {
-                self.callback = callback;
-                return originalRequestAnimationFrame(wrapper);
-            };
-        }
-        if (wdFrp.root.mozRequestAnimationFrame) {
-            index = userAgent.indexOf('rv:');
-            if (userAgent.indexOf('Gecko') != -1) {
-                geckoVersion = userAgent.substr(index + 3, 3);
-                if (geckoVersion === '2.0') {
-                    wdFrp.root.mozRequestAnimationFrame = undefined;
-                }
-            }
-        }
-        return wdFrp.root.webkitRequestAnimationFrame ||
-            wdFrp.root.mozRequestAnimationFrame ||
-            wdFrp.root.oRequestAnimationFrame ||
-            wdFrp.root.msRequestAnimationFrame ||
-            function (callback, element) {
-                var start, finish;
-                wdFrp.root.setTimeout(function () {
-                    start = wdFrp.root.performance.now();
-                    callback(start);
-                    finish = wdFrp.root.performance.now();
-                    self.timeout = 1000 / 60 - (finish - start);
-                }, self.timeout);
-            };
-    }());
-    wdFrp.root.cancelNextRequestAnimationFrame = wdFrp.root.cancelRequestAnimationFrame
-        || wdFrp.root.webkitCancelAnimationFrame
-        || wdFrp.root.webkitCancelRequestAnimationFrame
-        || wdFrp.root.mozCancelRequestAnimationFrame
-        || wdFrp.root.oCancelRequestAnimationFrame
-        || wdFrp.root.msCancelRequestAnimationFrame
-        || clearTimeout;
     var Scheduler = (function () {
         function Scheduler() {
             this._requestLoopId = null;
@@ -3793,6 +3943,12 @@ var wdFrp;
                 self._requestLoopId = wdFrp.root.requestNextAnimationFrame(loop);
             };
             this._requestLoopId = wdFrp.root.requestNextAnimationFrame(loop);
+        };
+        Scheduler.prototype.publishTimeout = function (observer, time, action) {
+            return wdFrp.root.setTimeout(function () {
+                action(time);
+                observer.completed();
+            }, time);
         };
         return Scheduler;
     })();
@@ -4245,45 +4401,31 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
 var wdFrp;
 (function (wdFrp) {
+    var Log = wdCb.Log;
     var MergeAllObserver = (function (_super) {
         __extends(MergeAllObserver, _super);
         function MergeAllObserver(currentObserver, streamGroup, groupDisposable) {
             _super.call(this, null, null, null);
-            this._currentObserver = null;
-            this._done = false;
+            this.done = false;
+            this.currentObserver = null;
             this._streamGroup = null;
             this._groupDisposable = null;
-            this._currentObserver = currentObserver;
+            this.currentObserver = currentObserver;
             this._streamGroup = streamGroup;
             this._groupDisposable = groupDisposable;
         }
         MergeAllObserver.create = function (currentObserver, streamGroup, groupDisposable) {
             return new this(currentObserver, streamGroup, groupDisposable);
         };
-        Object.defineProperty(MergeAllObserver.prototype, "currentObserver", {
-            get: function () {
-                return this._currentObserver;
-            },
-            set: function (currentObserver) {
-                this._currentObserver = currentObserver;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(MergeAllObserver.prototype, "done", {
-            get: function () {
-                return this._done;
-            },
-            set: function (done) {
-                this._done = done;
-            },
-            enumerable: true,
-            configurable: true
-        });
         MergeAllObserver.prototype.onNext = function (innerSource) {
-            wdCb.Log.error(!(innerSource instanceof wdFrp.Stream || wdFrp.JudgeUtils.isPromise(innerSource)), wdCb.Log.info.FUNC_MUST_BE("innerSource", "Stream or Promise"));
             if (wdFrp.JudgeUtils.isPromise(innerSource)) {
                 innerSource = wdFrp.fromPromise(innerSource);
             }
@@ -4291,14 +4433,19 @@ var wdFrp;
             this._groupDisposable.add(innerSource.buildStream(InnerObserver.create(this, this._streamGroup, innerSource)));
         };
         MergeAllObserver.prototype.onError = function (error) {
-            this._currentObserver.error(error);
+            this.currentObserver.error(error);
         };
         MergeAllObserver.prototype.onCompleted = function () {
             this.done = true;
             if (this._streamGroup.getCount() === 0) {
-                this._currentObserver.completed();
+                this.currentObserver.completed();
             }
         };
+        __decorate([
+            wdFrp.require(function (innerSource) {
+                wdFrp.assert(innerSource instanceof wdFrp.Stream || wdFrp.JudgeUtils.isPromise(innerSource), Log.info.FUNC_MUST_BE("innerSource", "Stream or Promise"));
+            })
+        ], MergeAllObserver.prototype, "onNext", null);
         return MergeAllObserver;
     })(wdFrp.Observer);
     wdFrp.MergeAllObserver = MergeAllObserver;
@@ -4330,6 +4477,115 @@ var wdFrp;
             });
             if (this._isAsync() && this._streamGroup.getCount() === 0) {
                 parent.currentObserver.completed();
+            }
+        };
+        InnerObserver.prototype._isAsync = function () {
+            return this._parent.done;
+        };
+        return InnerObserver;
+    })(wdFrp.Observer);
+})(wdFrp || (wdFrp = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var wdFrp;
+(function (wdFrp) {
+    var Log = wdCb.Log;
+    var MergeObserver = (function (_super) {
+        __extends(MergeObserver, _super);
+        function MergeObserver(currentObserver, maxConcurrent, streamGroup, groupDisposable) {
+            _super.call(this, null, null, null);
+            this.done = false;
+            this.currentObserver = null;
+            this.activeCount = 0;
+            this.q = [];
+            this._maxConcurrent = null;
+            this._groupDisposable = null;
+            this._streamGroup = null;
+            this.currentObserver = currentObserver;
+            this._maxConcurrent = maxConcurrent;
+            this._streamGroup = streamGroup;
+            this._groupDisposable = groupDisposable;
+        }
+        MergeObserver.create = function (currentObserver, maxConcurrent, streamGroup, groupDisposable) {
+            return new this(currentObserver, maxConcurrent, streamGroup, groupDisposable);
+        };
+        MergeObserver.prototype.handleSubscribe = function (innerSource) {
+            if (wdFrp.JudgeUtils.isPromise(innerSource)) {
+                innerSource = wdFrp.fromPromise(innerSource);
+            }
+            this._streamGroup.addChild(innerSource);
+            this._groupDisposable.add(innerSource.buildStream(InnerObserver.create(this, this._streamGroup, innerSource)));
+        };
+        MergeObserver.prototype.onNext = function (innerSource) {
+            if (this._isReachMaxConcurrent()) {
+                this.activeCount++;
+                this.handleSubscribe(innerSource);
+                return;
+            }
+            this.q.push(innerSource);
+        };
+        MergeObserver.prototype.onError = function (error) {
+            this.currentObserver.error(error);
+        };
+        MergeObserver.prototype.onCompleted = function () {
+            this.done = true;
+            if (this._streamGroup.getCount() === 0) {
+                this.currentObserver.completed();
+            }
+        };
+        MergeObserver.prototype._isReachMaxConcurrent = function () {
+            return this.activeCount < this._maxConcurrent;
+        };
+        __decorate([
+            wdFrp.require(function (innerSource) {
+                wdFrp.assert(innerSource instanceof wdFrp.Stream || wdFrp.JudgeUtils.isPromise(innerSource), Log.info.FUNC_MUST_BE("innerSource", "Stream or Promise"));
+            })
+        ], MergeObserver.prototype, "onNext", null);
+        return MergeObserver;
+    })(wdFrp.Observer);
+    wdFrp.MergeObserver = MergeObserver;
+    var InnerObserver = (function (_super) {
+        __extends(InnerObserver, _super);
+        function InnerObserver(parent, streamGroup, currentStream) {
+            _super.call(this, null, null, null);
+            this._parent = null;
+            this._streamGroup = null;
+            this._currentStream = null;
+            this._parent = parent;
+            this._streamGroup = streamGroup;
+            this._currentStream = currentStream;
+        }
+        InnerObserver.create = function (parent, streamGroup, currentStream) {
+            var obj = new this(parent, streamGroup, currentStream);
+            return obj;
+        };
+        InnerObserver.prototype.onNext = function (value) {
+            this._parent.currentObserver.next(value);
+        };
+        InnerObserver.prototype.onError = function (error) {
+            this._parent.currentObserver.error(error);
+        };
+        InnerObserver.prototype.onCompleted = function () {
+            var parent = this._parent;
+            this._streamGroup.removeChild(this._currentStream);
+            if (parent.q.length > 0) {
+                parent.activeCount = 0;
+                parent.handleSubscribe(parent.q.shift());
+            }
+            else {
+                if (this._isAsync() && this._streamGroup.getCount() === 0) {
+                    parent.currentObserver.completed();
+                }
             }
         };
         InnerObserver.prototype._isAsync = function () {
@@ -4899,6 +5155,51 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var wdFrp;
+(function (wdFrp) {
+    var Log = wdCb.Log;
+    var TimeoutStream = (function (_super) {
+        __extends(TimeoutStream, _super);
+        function TimeoutStream(time, scheduler) {
+            _super.call(this, null);
+            this._time = null;
+            this._time = time;
+            this.scheduler = scheduler;
+        }
+        TimeoutStream.create = function (time, scheduler) {
+            var obj = new this(time, scheduler);
+            return obj;
+        };
+        TimeoutStream.prototype.subscribeCore = function (observer) {
+            var id = null;
+            id = this.scheduler.publishTimeout(observer, this._time, function (time) {
+                observer.next(time);
+            });
+            return wdFrp.SingleDisposable.create(function () {
+                wdFrp.root.clearTimeout(id);
+            });
+        };
+        __decorate([
+            wdFrp.require(function (time, scheduler) {
+                wdFrp.assert(time > 0, Log.info.FUNC_SHOULD("time", "> 0"));
+            })
+        ], TimeoutStream, "create", null);
+        return TimeoutStream;
+    })(wdFrp.BaseStream);
+    wdFrp.TimeoutStream = TimeoutStream;
+})(wdFrp || (wdFrp = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 var wdFrp;
 (function (wdFrp) {
     var MergeAllStream = (function (_super) {
@@ -4922,6 +5223,37 @@ var wdFrp;
         return MergeAllStream;
     })(wdFrp.BaseStream);
     wdFrp.MergeAllStream = MergeAllStream;
+})(wdFrp || (wdFrp = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wdFrp;
+(function (wdFrp) {
+    var MergeStream = (function (_super) {
+        __extends(MergeStream, _super);
+        function MergeStream(source, maxConcurrent) {
+            _super.call(this, null);
+            this._source = null;
+            this._maxConcurrent = null;
+            this._source = source;
+            this._maxConcurrent = maxConcurrent;
+            this.scheduler = this._source.scheduler;
+        }
+        MergeStream.create = function (source, maxConcurrent) {
+            var obj = new this(source, maxConcurrent);
+            return obj;
+        };
+        MergeStream.prototype.subscribeCore = function (observer) {
+            var streamGroup = wdCb.Collection.create(), groupDisposable = wdFrp.GroupDisposable.create();
+            this._source.buildStream(wdFrp.MergeObserver.create(observer, this._maxConcurrent, streamGroup, groupDisposable));
+            return groupDisposable;
+        };
+        return MergeStream;
+    })(wdFrp.BaseStream);
+    wdFrp.MergeStream = MergeStream;
 })(wdFrp || (wdFrp = {}));
 
 var __extends = (this && this.__extends) || function (d, b) {
@@ -5193,6 +5525,10 @@ var wdFrp;
         if (scheduler === void 0) { scheduler = wdFrp.Scheduler.create(); }
         return wdFrp.IntervalRequestStream.create(scheduler);
     };
+    wdFrp.timeout = function (time, scheduler) {
+        if (scheduler === void 0) { scheduler = wdFrp.Scheduler.create(); }
+        return wdFrp.TimeoutStream.create(time, scheduler);
+    };
     wdFrp.empty = function () {
         return wdFrp.createStream(function (observer) {
             observer.completed();
@@ -5352,7 +5688,7 @@ var wdFrp;
             _super.prototype.dispose.call(this);
             this._scheduler.remove(this);
         };
-        MockObserver.prototype.copy = function () {
+        MockObserver.prototype.clone = function () {
             var result = MockObserver.create(this._scheduler);
             result.messages = this._messages;
             return result;
@@ -5515,6 +5851,14 @@ var wdFrp;
             this.setStreamMap(observer, messages);
             return NaN;
         };
+        TestScheduler.prototype.publishTimeout = function (observer, time, action) {
+            var messages = [];
+            this._setClock();
+            this._tick(time);
+            messages.push(TestScheduler.next(this._clock, time), TestScheduler.completed(this._clock + 1));
+            this.setStreamMap(observer, messages);
+            return NaN;
+        };
         TestScheduler.prototype._setClock = function () {
             if (this._isReset) {
                 this._clock = this._subscribedTime;
@@ -5650,7 +5994,6 @@ var wd;
         showDebugPanel: false
     };
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var DebugStatistics = (function () {
@@ -5699,7 +6042,6 @@ var wd;
     }());
     wd.DebugStatistics = DebugStatistics;
 })(wd || (wd = {}));
-
 var wdFrp;
 (function (wdFrp) {
     wdFrp.fromCollection = function (collection, scheduler) {
@@ -5708,7 +6050,6 @@ var wdFrp;
         return arr.length === 0 ? wdFrp.empty() : wdFrp.fromArray(arr, scheduler);
     };
 })(wdFrp || (wdFrp = {}));
-
 var wd;
 (function (wd) {
     function assert(cond, message) {
@@ -5716,7 +6057,7 @@ var wd;
         wd.Log.error(!cond, message);
     }
     wd.assert = assert;
-    function require(InFunc) {
+    function require(inFunc) {
         return function (target, name, descriptor) {
             var value = descriptor.value;
             descriptor.value = function () {
@@ -5725,7 +6066,7 @@ var wd;
                     args[_i - 0] = arguments[_i];
                 }
                 if (wd.Main.isTest) {
-                    InFunc.apply(this, args);
+                    inFunc.apply(this, args);
                 }
                 return value.apply(this, args);
             };
@@ -5733,7 +6074,7 @@ var wd;
         };
     }
     wd.require = require;
-    function ensure(OutFunc) {
+    function ensure(outFunc) {
         return function (target, name, descriptor) {
             var value = descriptor.value;
             descriptor.value = function () {
@@ -5744,7 +6085,7 @@ var wd;
                 var result = value.apply(this, args);
                 if (wd.Main.isTest) {
                     var params = [result].concat(args);
-                    OutFunc.apply(this, params);
+                    outFunc.apply(this, params);
                 }
                 return result;
             };
@@ -5752,12 +6093,31 @@ var wd;
         };
     }
     wd.ensure = ensure;
-    function requireGetter(InFunc) {
+    function requireGetterAndSetter(inGetterFunc, inSetterFunc) {
+        return function (target, name, descriptor) {
+            var getter = descriptor.get, setter = descriptor.set;
+            descriptor.get = function () {
+                if (wd.Main.isTest) {
+                    inGetterFunc.call(this);
+                }
+                return getter.call(this);
+            };
+            descriptor.set = function (val) {
+                if (wd.Main.isTest) {
+                    inSetterFunc.call(this, val);
+                }
+                setter.call(this, val);
+            };
+            return descriptor;
+        };
+    }
+    wd.requireGetterAndSetter = requireGetterAndSetter;
+    function requireGetter(inFunc) {
         return function (target, name, descriptor) {
             var getter = descriptor.get;
             descriptor.get = function () {
                 if (wd.Main.isTest) {
-                    InFunc.call(this);
+                    inFunc.call(this);
                 }
                 return getter.call(this);
             };
@@ -5765,12 +6125,12 @@ var wd;
         };
     }
     wd.requireGetter = requireGetter;
-    function requireSetter(InFunc) {
+    function requireSetter(inFunc) {
         return function (target, name, descriptor) {
             var setter = descriptor.set;
             descriptor.set = function (val) {
                 if (wd.Main.isTest) {
-                    InFunc.call(this, val);
+                    inFunc.call(this, val);
                 }
                 setter.call(this, val);
             };
@@ -5778,13 +6138,34 @@ var wd;
         };
     }
     wd.requireSetter = requireSetter;
-    function ensureGetter(OutFunc) {
+    function ensureGetterAndSetter(outGetterFunc, outSetterFunc) {
+        return function (target, name, descriptor) {
+            var getter = descriptor.get, setter = descriptor.set;
+            descriptor.get = function () {
+                var result = getter.call(this);
+                if (wd.Main.isTest) {
+                    outGetterFunc.call(this, result);
+                }
+                return result;
+            };
+            descriptor.set = function (val) {
+                var result = setter.call(this, val);
+                if (wd.Main.isTest) {
+                    var params = [result, val];
+                    outSetterFunc.apply(this, params);
+                }
+            };
+            return descriptor;
+        };
+    }
+    wd.ensureGetterAndSetter = ensureGetterAndSetter;
+    function ensureGetter(outFunc) {
         return function (target, name, descriptor) {
             var getter = descriptor.get;
             descriptor.get = function () {
                 var result = getter.call(this);
                 if (wd.Main.isTest) {
-                    OutFunc.call(this, result);
+                    outFunc.call(this, result);
                 }
                 return result;
             };
@@ -5792,14 +6173,14 @@ var wd;
         };
     }
     wd.ensureGetter = ensureGetter;
-    function ensureSetter(OutFunc) {
+    function ensureSetter(outFunc) {
         return function (target, name, descriptor) {
             var setter = descriptor.set;
             descriptor.set = function (val) {
                 var result = setter.call(this, val);
                 if (wd.Main.isTest) {
                     var params = [result, val];
-                    OutFunc.apply(this, params);
+                    outFunc.apply(this, params);
                 }
             };
             return descriptor;
@@ -5815,7 +6196,6 @@ var wd;
     }
     wd.invariant = invariant;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     function cacheGetter(judgeFunc, returnCacheValueFunc, setCacheFunc) {
@@ -5855,7 +6235,6 @@ var wd;
     }
     wd.cache = cache;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     function virtual(target, name, descriptor) {
@@ -5863,7 +6242,6 @@ var wd;
     }
     wd.virtual = virtual;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     function operateBodyDataGetterAndSetter(dataName) {
@@ -5916,7 +6294,6 @@ var wd;
         return "" + firstChar.toLowerCase() + str.slice(1);
     }
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     function script(scriptName) {
@@ -5926,7 +6303,6 @@ var wd;
     }
     wd.script = script;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     function execOnlyOnce(flagName) {
@@ -5949,18 +6325,588 @@ var wd;
     }
     wd.execOnlyOnce = execOnlyOnce;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     wd.ABSTRACT_ATTRIBUTE = null;
 })(wd || (wd = {}));
-
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var JudgeUtils = (function (_super) {
+        __extends(JudgeUtils, _super);
+        function JudgeUtils() {
+            _super.apply(this, arguments);
+        }
+        JudgeUtils.isView = function (obj) {
+            return !!obj && obj.offset && obj.width && obj.height && this.isFunction(obj.getContext);
+        };
+        JudgeUtils.isEqual = function (target1, target2) {
+            if ((!target1 && target2) || (target1 && !target2)) {
+                return false;
+            }
+            if (target1.uid && target2.uid) {
+                return target1.uid === target2.uid;
+            }
+            return target1 === target2;
+        };
+        JudgeUtils.isPowerOfTwo = function (value) {
+            return (value & (value - 1)) === 0 && value !== 0;
+        };
+        JudgeUtils.isFloatArray = function (data) {
+            return wd.EntityObject.prototype.toString.call(data) === "[object Float32Array]" || wd.EntityObject.prototype.toString.call(data) === "[object Float16Array]";
+        };
+        JudgeUtils.isInterface = function (target, memberOfInterface) {
+            return !!target[memberOfInterface];
+        };
+        JudgeUtils.isSpacePartitionObject = function (entityObject) {
+            return entityObject.hasComponent(wd.SpacePartition);
+        };
+        JudgeUtils.isSelf = function (self, entityObject) {
+            return self.uid === entityObject.uid;
+        };
+        JudgeUtils.isComponenet = function (component) {
+            return component.entityObject !== void 0;
+        };
+        JudgeUtils.isDom = function (obj) {
+            return Object.prototype.toString.call(obj).match(/\[object HTML\w+/) !== null;
+        };
+        JudgeUtils.isCollection = function (list) {
+            return list instanceof wdCb.Collection;
+        };
+        return JudgeUtils;
+    }(wdCb.JudgeUtils));
+    wd.JudgeUtils = JudgeUtils;
+})(wd || (wd = {}));
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var wd;
+(function (wd) {
+    var MathUtils = (function () {
+        function MathUtils() {
+        }
+        MathUtils.clamp = function (num, below, up) {
+            if (num < below) {
+                return below;
+            }
+            else if (num > up) {
+                return up;
+            }
+            return num;
+        };
+        MathUtils.bigThan = function (num, below) {
+            return num < below ? below : num;
+        };
+        MathUtils.generateZeroToOne = function () {
+            return Math.random();
+        };
+        MathUtils.generateInteger = function (min, max) {
+            var max = max + 1;
+            return Math.floor(Math.random() * (max - min) + min);
+        };
+        MathUtils.mod = function (a, b) {
+            var n = Math.floor(a / b);
+            a -= n * b;
+            if (a < 0) {
+                a += b;
+            }
+            return a;
+        };
+        MathUtils.maxFloorIntegralMultiple = function (a, b) {
+            if (b == 0) {
+                return a;
+            }
+            if (a < b) {
+                return 0;
+            }
+            return Math.floor(a / b) * b;
+        };
+        __decorate([
+            wd.require(function (min, max) {
+                wd.assert(min < max, wd.Log.info.FUNC_SHOULD("min", "< max"));
+            })
+        ], MathUtils, "generateInteger", null);
+        __decorate([
+            wd.ensure(function (val) {
+                wd.assert(val >= 0);
+            })
+        ], MathUtils, "mod", null);
+        __decorate([
+            wd.require(function (a, b) {
+                wd.assert(a >= 0 && b >= 0, wd.Log.info.FUNC_SHOULD("param", ">= 0"));
+            }),
+            wd.ensure(function (val) {
+                wd.assert(val >= 0);
+            })
+        ], MathUtils, "maxFloorIntegralMultiple", null);
+        return MathUtils;
+    }());
+    wd.MathUtils = MathUtils;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var CoordinateUtils = (function () {
+        function CoordinateUtils() {
+        }
+        CoordinateUtils.convertWebGLPositionToCanvasPosition = function (position) {
+            var view = wd.DeviceManager.getInstance().view;
+            return wd.Vector2.create(view.width / 2 + position.x, view.height / 2 - position.y);
+        };
+        CoordinateUtils.convertCanvasPositionToWebGLPosition = function (position) {
+            var view = wd.DeviceManager.getInstance().view;
+            return wd.Vector3.create(position.x - view.width / 2, view.height / 2 - position.y, 0);
+        };
+        CoordinateUtils.convertLeftCornerPositionToCenterPosition = function (position, width, height) {
+            return wd.Vector2.create(this.convertLeftCornerPositionXToCenterPositionX(position.x, width), this.convertLeftCornerPositionYToCenterPositionY(position.y, height));
+        };
+        CoordinateUtils.convertLeftCornerPositionXToCenterPositionX = function (positionX, width) {
+            return positionX + width / 2;
+        };
+        CoordinateUtils.convertLeftCornerPositionYToCenterPositionY = function (positionY, height) {
+            return positionY + height / 2;
+        };
+        CoordinateUtils.convertCenterPositionToLeftCornerPosition = function (position, width, height) {
+            return wd.Vector2.create(this.convertCenterPositionXToLeftCornerPositionX(position.x, width), this.convertCenterPositionYToLeftCornerPositionY(position.y, height));
+        };
+        CoordinateUtils.convertCenterPositionXToLeftCornerPositionX = function (positionX, width) {
+            return positionX - width / 2;
+        };
+        CoordinateUtils.convertCenterPositionYToLeftCornerPositionY = function (positionY, height) {
+            return positionY - height / 2;
+        };
+        __decorate([
+            wd.require(function () {
+                wd.assert(!!wd.DeviceManager.getInstance().view, wd.Log.info.FUNC_SHOULD("set view"));
+            })
+        ], CoordinateUtils, "convertWebGLPositionToCanvasPosition", null);
+        __decorate([
+            wd.require(function () {
+                wd.assert(!!wd.DeviceManager.getInstance().view, wd.Log.info.FUNC_SHOULD("set view"));
+            })
+        ], CoordinateUtils, "convertCanvasPositionToWebGLPosition", null);
+        return CoordinateUtils;
+    }());
+    wd.CoordinateUtils = CoordinateUtils;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var RenderUtils = (function () {
+        function RenderUtils() {
+        }
+        RenderUtils.getGameObjectRenderList = function (sourceList) {
+            return sourceList.filter(function (child, index) {
+                return child.isVisible && (!wd.InstanceUtils.isHardwareSupport() || !wd.InstanceUtils.isObjectInstance(child));
+            });
+        };
+        RenderUtils.getGameObjectRenderListForOctree = function (sourceList) {
+            return sourceList.filter(function (child) {
+                return child.isVisible;
+            });
+        };
+        RenderUtils.getGameObjectRenderListFromSpacePartition = function (renderList) {
+            if (!wd.InstanceUtils.isHardwareSupport()) {
+                return renderList;
+            }
+            return this._replaceObjectInstanceObjectWithItsSourceObject(renderList);
+        };
+        RenderUtils._replaceObjectInstanceObjectWithItsSourceObject = function (renderList) {
+            var map = wdCb.Hash.create();
+            renderList.forEach(function (child) {
+                if (wd.InstanceUtils.isObjectInstance(child)) {
+                    var sourceObject = (child.getComponent(wd.ObjectInstance)).sourceObject;
+                    map.addChild(String(sourceObject.uid), sourceObject);
+                    return;
+                }
+                map.addChild(String(child.uid), child);
+            });
+            return map.toCollection();
+        };
+        return RenderUtils;
+    }());
+    wd.RenderUtils = RenderUtils;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var InstanceUtils = (function () {
+        function InstanceUtils() {
+        }
+        InstanceUtils.isHardwareSupport = function () {
+            return wd.GPUDetector.getInstance().extensionInstancedArrays !== null;
+        };
+        InstanceUtils.isInstance = function (gameObject) {
+            return gameObject.hasComponent(wd.Instance);
+        };
+        InstanceUtils.isSourceInstance = function (gameObject) {
+            return gameObject.hasComponent(wd.SourceInstance);
+        };
+        InstanceUtils.isObjectInstance = function (gameObject) {
+            return gameObject.hasComponent(wd.ObjectInstance);
+        };
+        return InstanceUtils;
+    }());
+    wd.InstanceUtils = InstanceUtils;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var IterateUtils = (function () {
+        function IterateUtils() {
+        }
+        IterateUtils.forEachAll = function (entityObject, handler) {
+            var func = function (entityObject) {
+                handler(entityObject);
+                entityObject.forEach(function (child) {
+                    func(child);
+                });
+            };
+            func(entityObject);
+        };
+        return IterateUtils;
+    }());
+    wd.IterateUtils = IterateUtils;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var Log = (function (_super) {
+        __extends(Log, _super);
+        function Log() {
+            _super.apply(this, arguments);
+        }
+        return Log;
+    }(wdCb.Log));
+    wd.Log = Log;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var GlobalGeometryUtils = (function () {
+        function GlobalGeometryUtils() {
+        }
+        GlobalGeometryUtils.hasAnimation = function (geometry) {
+            if (geometry instanceof wd.ModelGeometry) {
+                return geometry.hasAnimation();
+            }
+            return false;
+        };
+        return GlobalGeometryUtils;
+    }());
+    wd.GlobalGeometryUtils = GlobalGeometryUtils;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var GlobalScriptUtils = (function () {
+        function GlobalScriptUtils() {
+        }
+        GlobalScriptUtils.handlerAfterLoadedScript = function (entityObject) {
+            entityObject.execScript("onEnter", null, true);
+            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.BEFORE_GAMEOBJECT_INIT));
+            entityObject.execScript("init", null, true);
+            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.AFTER_GAMEOBJECT_INIT));
+            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.AFTER_GAMEOBJECT_INIT_RIGIDBODY_ADD_CONSTRAINT));
+        };
+        GlobalScriptUtils.addScriptToEntityObject = function (entityObject, data) {
+            entityObject.scriptList.addChild(data.name, new data.class(entityObject));
+        };
+        return GlobalScriptUtils;
+    }());
+    wd.GlobalScriptUtils = GlobalScriptUtils;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var TimeController = (function () {
+        function TimeController() {
+            this.elapsed = null;
+            this.pauseElapsed = 0;
+            this.pauseTime = null;
+            this.startTime = null;
+        }
+        TimeController.prototype.start = function () {
+            this.startTime = this.getNow();
+            this.pauseElapsed = null;
+        };
+        TimeController.prototype.stop = function () {
+            this.startTime = null;
+        };
+        TimeController.prototype.pause = function () {
+            this.pauseTime = this.getNow();
+        };
+        TimeController.prototype.resume = function () {
+            this.pauseElapsed += this.getNow() - this.pauseTime;
+            this.pauseTime = null;
+        };
+        TimeController.prototype.computeElapseTime = function (time) {
+            if (this.pauseElapsed) {
+                this.elapsed = time - this.pauseElapsed - this.startTime;
+            }
+            else {
+                this.elapsed = time - this.startTime;
+            }
+            if (this.elapsed < 0) {
+                this.elapsed = 0;
+            }
+            return this.elapsed;
+        };
+        __decorate([
+            wd.ensure(function () {
+                wd.assert(this.elapsed >= 0, wd.Log.info.FUNC_SHOULD("elapsed:" + this.elapsed, ">= 0"));
+            })
+        ], TimeController.prototype, "computeElapseTime", null);
+        return TimeController;
+    }());
+    wd.TimeController = TimeController;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var STARTING_FPS = 60, GAMETIME_SCALE = 1000;
+    var DirectorTimeController = (function (_super) {
+        __extends(DirectorTimeController, _super);
+        function DirectorTimeController() {
+            _super.apply(this, arguments);
+            this.gameTime = null;
+            this.fps = null;
+            this.isTimeChange = false;
+            this.deltaTime = null;
+            this._lastTime = null;
+        }
+        DirectorTimeController.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        DirectorTimeController.prototype.tick = function (time) {
+            this.deltaTime = this._lastTime !== null ? time - this._lastTime : time;
+            this._updateFps(this.deltaTime);
+            this.gameTime = time / GAMETIME_SCALE;
+            this._lastTime = time;
+        };
+        DirectorTimeController.prototype.start = function () {
+            _super.prototype.start.call(this);
+            this.isTimeChange = true;
+            this.elapsed = 0;
+        };
+        DirectorTimeController.prototype.resume = function () {
+            _super.prototype.resume.call(this);
+            this.isTimeChange = true;
+        };
+        DirectorTimeController.prototype.getNow = function () {
+            return wd.root.performance.now();
+        };
+        DirectorTimeController.prototype._updateFps = function (deltaTime) {
+            if (this._lastTime === null) {
+                this.fps = STARTING_FPS;
+            }
+            else {
+                this.fps = 1000 / deltaTime;
+            }
+        };
+        return DirectorTimeController;
+    }(wd.TimeController));
+    wd.DirectorTimeController = DirectorTimeController;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var CommonTimeController = (function (_super) {
+        __extends(CommonTimeController, _super);
+        function CommonTimeController() {
+            _super.apply(this, arguments);
+        }
+        CommonTimeController.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        CommonTimeController.prototype.getNow = function () {
+            if (wd.Director.getInstance().isTimeChange) {
+                return wd.Director.getInstance().elapsed;
+            }
+            return wd.root.performance.now();
+        };
+        return CommonTimeController;
+    }(wd.TimeController));
+    wd.CommonTimeController = CommonTimeController;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var NOT_CLONE_TAG = "not_clone";
+    var getCloneAttributeMembers = function (obj) {
+        return obj[buildMemberContainerAttributeName(obj)];
+    };
+    var setCloneAttributeMembers = function (obj, members) {
+        obj[buildMemberContainerAttributeName(obj)] = members;
+    };
+    var searchCloneAttributeMembers = function (obj) {
+        var CLONE_MEMBER_PREFIX = "__decorator_clone";
+        var result = null;
+        for (var memberName in obj) {
+            if (obj.hasOwnProperty(memberName)) {
+                if (memberName.indexOf(CLONE_MEMBER_PREFIX) > -1) {
+                    result = obj[memberName];
+                    break;
+                }
+            }
+        }
+        return result;
+    };
+    var getAllCloneAttributeMembers = function (obj) {
+        var IS_GATHERED_ATTRIBUTE_NAME = "__decorator_clone_isGathered_" + obj.constructor.name + "_cloneAttributeMembers";
+        var result = wdCb.Collection.create();
+        var gather = function (obj) {
+            if (!obj) {
+                return;
+            }
+            if (obj[IS_GATHERED_ATTRIBUTE_NAME]) {
+                var members_1 = getCloneAttributeMembers(obj);
+                wd.assert(members_1, wd.Log.info.FUNC_NOT_EXIST("" + buildMemberContainerAttributeName(obj)));
+                result.addChildren(members_1);
+                return;
+            }
+            gather(obj.__proto__);
+            var members = searchCloneAttributeMembers(obj);
+            if (members) {
+                result.addChildren(members);
+            }
+        }, setGatheredResult = function () {
+            setCloneAttributeMembers(obj.__proto__, result);
+            obj.__proto__[IS_GATHERED_ATTRIBUTE_NAME] = true;
+        };
+        gather(obj.__proto__);
+        setGatheredResult();
+        return getCloneAttributeMembers(obj);
+    };
+    var initCloneAttributeMembers = function (obj) {
+        setCloneAttributeMembers(obj, wdCb.Collection.create());
+    };
+    var buildMemberContainerAttributeName = function (obj) {
+        return "__decorator_clone_" + obj.constructor.name + "_cloneAttributeMembers";
+    };
+    var generateCloneableMember = function (cloneType) {
+        var cloneDataArr = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            cloneDataArr[_i - 1] = arguments[_i];
+        }
+        return function (target, memberName) {
+            if (!getCloneAttributeMembers(target)) {
+                initCloneAttributeMembers(target);
+            }
+            if (cloneDataArr.length === 1) {
+                getCloneAttributeMembers(target).addChild({
+                    memberName: memberName,
+                    cloneType: cloneType,
+                    configData: cloneDataArr[0]
+                });
+            }
+            else if (cloneDataArr.length === 2) {
+                getCloneAttributeMembers(target).addChild({
+                    memberName: memberName,
+                    cloneType: cloneType,
+                    cloneFunc: cloneDataArr[0],
+                    configData: cloneDataArr[1]
+                });
+            }
+        };
+    };
+    function cloneAttributeAsBasicType(configData) {
+        return generateCloneableMember(CloneType.BASIC, wdCb.ExtendUtils.extend({
+            order: 0
+        }, configData));
+    }
+    wd.cloneAttributeAsBasicType = cloneAttributeAsBasicType;
+    function cloneAttributeAsCloneable(configData) {
+        return generateCloneableMember(CloneType.CLONEABLE, wdCb.ExtendUtils.extend({
+            order: 0,
+            isInjectTarget: false
+        }, configData));
+    }
+    wd.cloneAttributeAsCloneable = cloneAttributeAsCloneable;
+    function cloneAttributeAsCustomType(cloneFunc, configData) {
+        return generateCloneableMember(CloneType.CUSTOM, cloneFunc, wdCb.ExtendUtils.extend({
+            order: 0
+        }, configData));
+    }
+    wd.cloneAttributeAsCustomType = cloneAttributeAsCustomType;
+    var CloneUtils = (function () {
+        function CloneUtils() {
+        }
+        CloneUtils.clone = function (source, cloneData, createDataArr) {
+            if (cloneData === void 0) { cloneData = null; }
+            if (createDataArr === void 0) { createDataArr = null; }
+            var cloneAttributeMembers = getAllCloneAttributeMembers(source)
+                .sort(function (memberDataA, memberDataB) {
+                return memberDataA.configData.order - memberDataB.configData.order;
+            }), className = source.constructor.name, target = null;
+            if (createDataArr) {
+                target = wd[className].create.apply(wd[className], createDataArr);
+            }
+            else {
+                target = wd[className].create();
+            }
+            if (!cloneAttributeMembers) {
+                return target;
+            }
+            cloneAttributeMembers.forEach(function (memberData) {
+                var cloneType = memberData.cloneType, memberName = memberData.memberName;
+                switch (cloneType) {
+                    case CloneType.CLONEABLE:
+                        var configData = memberData.configData;
+                        if (source[memberName] !== null && source[memberName] !== void 0) {
+                            if (configData.isInjectTarget === true) {
+                                target[memberName] = source[memberName].clone(target);
+                            }
+                            else {
+                                target[memberName] = source[memberName].clone();
+                            }
+                        }
+                        break;
+                    case CloneType.BASIC:
+                        target[memberName] = source[memberName];
+                        break;
+                    case CloneType.CUSTOM:
+                        var cloneFunc = memberData.cloneFunc;
+                        cloneFunc.call(target, source, target, memberName, cloneData);
+                        break;
+                }
+            });
+            return target;
+        };
+        CloneUtils.cloneArray = function (arr) {
+            return [].concat(arr);
+        };
+        CloneUtils.markNotClone = function (entityObject) {
+            if (!entityObject.hasTag(NOT_CLONE_TAG)) {
+                entityObject.addTag(NOT_CLONE_TAG);
+            }
+        };
+        CloneUtils.isNotClone = function (entityObject) {
+            return entityObject.hasTag(NOT_CLONE_TAG);
+        };
+        __decorate([
+            wd.require(function (source, cloneData, createDataArr) {
+                if (cloneData === void 0) { cloneData = null; }
+                if (createDataArr === void 0) { createDataArr = null; }
+                wd.assert(!!source.constructor.name, wd.Log.info.FUNC_CAN_NOT("get class name from source.constructor.name"));
+                if (createDataArr) {
+                    wd.assert(wd.JudgeUtils.isArrayExactly(createDataArr), wd.Log.info.FUNC_MUST_BE("param:createDataArr", "be arr"));
+                }
+            })
+        ], CloneUtils, "clone", null);
+        return CloneUtils;
+    }());
+    wd.CloneUtils = CloneUtils;
+    (function (CloneType) {
+        CloneType[CloneType["CLONEABLE"] = 0] = "CLONEABLE";
+        CloneType[CloneType["BASIC"] = 1] = "BASIC";
+        CloneType[CloneType["CUSTOM"] = 2] = "CUSTOM";
+    })(wd.CloneType || (wd.CloneType = {}));
+    var CloneType = wd.CloneType;
+})(wd || (wd = {}));
 var wd;
 (function (wd) {
     wd.DEG_TO_RAD = Math.PI / 180;
     wd.RAD_TO_DEG = 180 / Math.PI;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var Vector2 = (function () {
@@ -6023,14 +6969,16 @@ var wd;
             this.values[1] = this.values[1] * v.values[1];
             return this;
         };
-        Vector2.prototype.copy = function () {
+        Vector2.prototype.isEqual = function (v) {
+            return this.x === v.x && this.y === v.y;
+        };
+        Vector2.prototype.clone = function () {
             return Vector2.create(this.x, this.y);
         };
         return Vector2;
     }());
     wd.Vector2 = Vector2;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var Vector3 = (function () {
@@ -6197,7 +7145,7 @@ var wd;
             this.values[2] = -this.values[2];
             return this;
         };
-        Vector3.prototype.copy = function () {
+        Vector3.prototype.clone = function () {
             var result = Vector3.create(), i = 0, len = this.values.length;
             for (i = 0; i < len; i++) {
                 result.values[i] = this.values[i];
@@ -6289,7 +7237,6 @@ var wd;
     }());
     wd.Vector3 = Vector3;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var Vector4 = (function () {
@@ -6372,7 +7319,7 @@ var wd;
             v[3] = v[3] / d;
             return this;
         };
-        Vector4.prototype.copy = function () {
+        Vector4.prototype.clone = function () {
             return this.copyHelper(Vector4.create());
         };
         Vector4.prototype.toVector3 = function () {
@@ -6405,13 +7352,6 @@ var wd;
     }());
     wd.Vector4 = Vector4;
 })(wd || (wd = {}));
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var Matrix4 = (function () {
@@ -6791,8 +7731,8 @@ var wd;
                 up = wd.Vector3.create(args[6], args[7], args[8]);
             }
             x = wd.Vector3.create();
-            z = eye.copy().sub(center).normalize();
-            y = up.copy().normalize();
+            z = eye.clone().sub(center).normalize();
+            y = up.clone().normalize();
             x.cross(y, z).normalize();
             y.cross(z, x);
             var r = this.values;
@@ -6881,7 +7821,7 @@ var wd;
         };
         Matrix4.prototype.applyMatrix = function (other, notChangeSelf) {
             if (notChangeSelf === void 0) { notChangeSelf = false; }
-            var a = this, b = other.copy();
+            var a = this, b = other.clone();
             if (notChangeSelf) {
                 return b.multiply(a);
             }
@@ -6947,12 +7887,20 @@ var wd;
             result[2] = vec3[0] * mat1[2] + vec3[1] * mat1[6] + vec3[2] * mat1[10] + mat1[14];
             return wd.Vector3.create(result[0], result[1], result[2]);
         };
-        Matrix4.prototype.copy = function () {
+        Matrix4.prototype.clone = function () {
             var result = Matrix4.create(), i = 0, len = this.values.length;
             for (i = 0; i < len; i++) {
                 result.values[i] = this.values[i];
             }
             return result;
+        };
+        Matrix4.prototype.cloneToArray = function (array, offset) {
+            if (offset === void 0) { offset = 0; }
+            var values = this.values;
+            for (var index = 0; index < 16; index++) {
+                array[offset + index] = values[index];
+            }
+            return this;
         };
         Matrix4.prototype.getX = function () {
             return wd.Vector3.create(this.values[0], this.values[1], this.values[2]);
@@ -7056,7 +8004,6 @@ var wd;
     }());
     wd.Matrix4 = Matrix4;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var Matrix3 = (function () {
@@ -7229,8 +8176,16 @@ var wd;
             m[7] = tmp;
             return this;
         };
-        Matrix3.prototype.copy = function () {
+        Matrix3.prototype.clone = function () {
             return Matrix3.create().set(this);
+        };
+        Matrix3.prototype.cloneToArray = function (array, offset) {
+            if (offset === void 0) { offset = 0; }
+            var values = this.values;
+            for (var index = 0; index < 9; index++) {
+                array[offset + index] = values[index];
+            }
+            return this;
         };
         Matrix3.prototype.set = function (matrix) {
             var te = this.values, values = matrix.values;
@@ -7325,7 +8280,6 @@ var wd;
     }());
     wd.Matrix3 = Matrix3;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var Quaternion = (function () {
@@ -7492,9 +8446,6 @@ var wd;
         Quaternion.prototype.clone = function () {
             return Quaternion.create(this.x, this.y, this.z, this.w);
         };
-        Quaternion.prototype.copy = function () {
-            return Quaternion.create(this.x, this.y, this.z, this.w);
-        };
         Quaternion.prototype.normalize = function () {
             var len = this.length();
             if (len === 0) {
@@ -7540,7 +8491,7 @@ var wd;
             this.w = w;
         };
         Quaternion.prototype.sub = function (quat) {
-            var result = quat.copy().invert().multiply(this);
+            var result = quat.clone().invert().multiply(this);
             this.set(result.x, result.y, result.z, result.w);
             return this;
         };
@@ -7594,7 +8545,6 @@ var wd;
     }());
     wd.Quaternion = Quaternion;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var Plane = (function () {
@@ -7647,7 +8597,7 @@ var wd;
             this.d *= magnitude;
             return this;
         };
-        Plane.prototype.copy = function () {
+        Plane.prototype.clone = function () {
             return Plane.create(this.normal.x, this.normal.y, this.normal.z, this.d);
         };
         Plane.prototype.dotCoordinate = function (point) {
@@ -7657,7 +8607,6 @@ var wd;
     }());
     wd.Plane = Plane;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var Ray = (function () {
@@ -7735,7 +8684,6 @@ var wd;
     }());
     wd.Ray = Ray;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var Entity = (function () {
@@ -7767,18 +8715,6 @@ var wd;
     }());
     wd.Entity = Entity;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var Component = (function (_super) {
@@ -7791,6 +8727,13 @@ var wd;
         };
         Component.prototype.dispose = function () {
         };
+        Component.prototype.clone = function () {
+            var datas = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                datas[_i - 0] = arguments[_i];
+            }
+            return wd.CloneUtils.clone(this);
+        };
         Object.defineProperty(Component.prototype, "transform", {
             get: function () {
                 if (!this.entityObject) {
@@ -7801,14 +8744,17 @@ var wd;
             enumerable: true,
             configurable: true
         });
-        Component.prototype.addToObject = function (entityObject) {
+        Component.prototype.addToObject = function (entityObject, isShareComponent) {
+            if (isShareComponent === void 0) { isShareComponent = false; }
+            if (isShareComponent) {
+                return;
+            }
             if (this.entityObject) {
                 this.entityObject.removeComponent(this);
             }
             this.entityObject = entityObject;
         };
         Component.prototype.removeFromObject = function (entityObject) {
-            this.entityObject = null;
         };
         __decorate([
             wd.virtual
@@ -7816,16 +8762,19 @@ var wd;
         __decorate([
             wd.virtual
         ], Component.prototype, "dispose", null);
+        __decorate([
+            wd.virtual
+        ], Component.prototype, "clone", null);
+        __decorate([
+            wd.virtual
+        ], Component.prototype, "addToObject", null);
+        __decorate([
+            wd.virtual
+        ], Component.prototype, "removeFromObject", null);
         return Component;
     }(wd.Entity));
     wd.Component = Component;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var Scheduler = (function () {
@@ -8061,13 +9010,6 @@ var wd;
         return FrameScheduleItem;
     }(ScheduleItem));
 })(wd || (wd = {}));
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var EGameState;
@@ -8251,6 +9193,7 @@ var wd;
             gameObjectScene.render(this.renderer);
             this.renderer.clear();
             if (this.renderer.hasCommand()) {
+                this.renderer.webglState = wd.BasicState.create();
                 this.renderer.render();
             }
             wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.ENDLOOP));
@@ -8269,7 +9212,6 @@ var wd;
     }());
     wd.Director = Director;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var Main = (function () {
@@ -8306,7 +9248,6 @@ var wd;
     }());
     wd.Main = Main;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var DomEventManager = (function () {
@@ -8351,7 +9292,7 @@ var wd;
                 .subscribe(function (_a) {
                 var triggerList = _a[0], e = _a[1];
                 triggerList.forEach(function (entityObject) {
-                    self._trigger(e.copy(), entityObject);
+                    self._trigger(e.clone(), entityObject);
                 });
             });
         };
@@ -8390,7 +9331,7 @@ var wd;
                 var _a = self._getMouseOverAndMouseOutObject(triggerList, self._lastTriggerList), mouseoverObjects = _a.mouseoverObjects, mouseoutObjects = _a.mouseoutObjects;
                 self._setMouseOverTag(mouseoverObjects);
                 self._setMouseOutTag(mouseoutObjects);
-                self._lastTriggerList = triggerList.copy();
+                self._lastTriggerList = triggerList.clone();
                 triggerList = mouseoutObjects.addChildren(triggerList);
                 return self._getMouseEventTriggerListData(e, triggerList);
             });
@@ -8465,7 +9406,7 @@ var wd;
             event.getDataFromCustomEvent(customEvent);
             entityObject.execEventScript(handlerName, event);
             if (!event.isStopPropagation && entityObject.bubbleParent) {
-                this._trigger(event.copy(), entityObject.bubbleParent, true);
+                this._trigger(event.clone(), entityObject.bubbleParent, true);
             }
         };
         DomEventManager.prototype._getMouseEventTriggerList = function (e) {
@@ -8498,7 +9439,7 @@ var wd;
                 .getChild(0);
         };
         DomEventManager.prototype._getDistanceToCamera = function (obj) {
-            return obj.transform.position.copy().sub(wd.Director.getInstance().scene.currentCamera.transform.position).length();
+            return obj.transform.position.clone().sub(wd.Director.getInstance().scene.currentCamera.transform.position).length();
         };
         DomEventManager.prototype._findTopUIObject = function (e, uiObjectScene) {
             return this._findTriggerUIObjectList(e, uiObjectScene).sort(function (a, b) {
@@ -8564,46 +9505,29 @@ var wd;
         EEventTag[EEventTag["MOUSE_OUT"] = "MOUSE_OUT"] = "MOUSE_OUT";
     })(EEventTag || (EEventTag = {}));
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var EntityObject = (function (_super) {
         __extends(EntityObject, _super);
         function EntityObject() {
             _super.apply(this, arguments);
-            this._scriptList = wdCb.Hash.create();
             this._bubbleParent = null;
-            this._transform = null;
             this.name = null;
             this.parent = null;
             this.isVisible = true;
             this.actionManager = wd.ActionManager.create();
-            this.children = wdCb.Collection.create();
             this.startLoopHandler = null;
             this.endLoopHandler = null;
-            this.components = wdCb.Collection.create();
-            this._scriptExecuteHistory = wdCb.Hash.create();
             this._hasComponentCache = wdCb.Hash.create();
             this._getComponentCache = wdCb.Hash.create();
-            this._rendererComponent = null;
-            this._animation = null;
-            this._collider = null;
             this._componentChangeSubscription = null;
+            this._componentManager = wd.ComponentManager.create(this);
+            this._entityObjectManager = wd.EntityObjectManager.create(this);
+            this._scriptManager = wd.ScriptManager.create(this);
         }
         Object.defineProperty(EntityObject.prototype, "scriptList", {
             get: function () {
-                return this._scriptList;
+                return this._scriptManager.scriptList;
             },
             enumerable: true,
             configurable: true
@@ -8618,23 +9542,6 @@ var wd;
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(EntityObject.prototype, "transform", {
-            get: function () {
-                return this._transform;
-            },
-            set: function (transform) {
-                if (!transform) {
-                    return;
-                }
-                if (this._transform) {
-                    this.removeComponent(this._transform);
-                }
-                this.addComponent(transform);
-                this._transform = transform;
-            },
-            enumerable: true,
-            configurable: true
-        });
         Object.defineProperty(EntityObject.prototype, "componentDirty", {
             set: function (componentDirty) {
                 if (componentDirty === true) {
@@ -8644,8 +9551,27 @@ var wd;
             enumerable: true,
             configurable: true
         });
+        Object.defineProperty(EntityObject.prototype, "transform", {
+            get: function () {
+                return this._componentManager.transform;
+            },
+            enumerable: true,
+            configurable: true
+        });
         EntityObject.prototype.initWhenCreate = function () {
-            this.transform = this.createTransform();
+            this.addComponent(this.createTransform());
+        };
+        EntityObject.prototype.clone = function () {
+            var result = null;
+            if (wd.CloneUtils.isNotClone((this))) {
+                return null;
+            }
+            result = wd.CloneUtils.clone(this);
+            this.forEachComponent(function (component) {
+                result.addComponent(component.clone());
+            });
+            this._cloneChildren(result);
+            return result;
         };
         EntityObject.prototype.init = function () {
             var _this = this;
@@ -8662,10 +9588,8 @@ var wd;
                 .subscribe(function () {
                 self._onComponentChange();
             });
-            this.initComponent();
-            this.forEach(function (child) {
-                child.init();
-            });
+            this._componentManager.init();
+            this._entityObjectManager.init();
             this.afterInitChildren();
             return this;
         };
@@ -8676,15 +9600,17 @@ var wd;
             this.execScript("onEndLoop");
         };
         EntityObject.prototype.onEnter = function () {
+            this.execScript("onEnter");
+            wd.EventManager.trigger(this, wd.CustomEvent.create(wd.EEngineEvent.ENTER));
         };
         EntityObject.prototype.onExit = function () {
             this.execScript("onExit");
+            wd.EventManager.trigger(this, wd.CustomEvent.create(wd.EEngineEvent.EXIT));
         };
         EntityObject.prototype.onDispose = function () {
             this.execScript("onDispose");
         };
         EntityObject.prototype.dispose = function () {
-            var components = null;
             this.onDispose();
             if (this.parent) {
                 this.parent.removeChild(this);
@@ -8694,25 +9620,15 @@ var wd;
             wd.EventManager.off(wd.EEngineEvent.STARTLOOP, this.startLoopHandler);
             wd.EventManager.off(wd.EEngineEvent.ENDLOOP, this.endLoopHandler);
             this._componentChangeSubscription && this._componentChangeSubscription.dispose();
-            components = this.removeAllComponent();
-            components.forEach(function (component) {
-                component.dispose();
-            });
-            this.forEach(function (child) {
-                child.dispose();
-            });
+            this._componentManager.dispose();
+            this._entityObjectManager.dispose();
         };
         EntityObject.prototype.hasChild = function (child) {
-            return this.children.hasChild(child);
+            return this._entityObjectManager.hasChild(child);
         };
         EntityObject.prototype.addChild = function (child) {
-            if (child.parent) {
-                child.parent.removeChild(child);
-            }
-            child.parent = this;
+            this._entityObjectManager.addChild(child);
             child.transform.parent = this.transform;
-            this.children.addChild(child);
-            child.onEnter();
             return this;
         };
         EntityObject.prototype.addChildren = function () {
@@ -8720,67 +9636,53 @@ var wd;
             for (var _i = 0; _i < arguments.length; _i++) {
                 args[_i - 0] = arguments[_i];
             }
-            this.children.addChildren(args[0]);
+            this._entityObjectManager.addChildren(args[0]);
             return this;
         };
         EntityObject.prototype.forEach = function (func) {
-            this.children.forEach(func);
+            this._entityObjectManager.forEach(func);
             return this;
         };
         EntityObject.prototype.filter = function (func) {
-            return this.children.filter(func);
+            return this._entityObjectManager.filter(func);
         };
         EntityObject.prototype.sort = function (func, isSortSelf) {
             if (isSortSelf === void 0) { isSortSelf = false; }
-            return this.children.sort(func, isSortSelf);
+            return this._entityObjectManager.sort(func, isSortSelf);
         };
         EntityObject.prototype.getChildren = function () {
-            return this.children;
+            return this._entityObjectManager.getChildren();
         };
         EntityObject.prototype.getChild = function (index) {
-            return this.children.getChild(index);
+            return this._entityObjectManager.getChild(index);
         };
         EntityObject.prototype.findChildByUid = function (uid) {
-            return this.children.findOne(function (child) {
-                return child.uid === uid;
-            });
+            return this._entityObjectManager.findChildByUid(uid);
         };
         EntityObject.prototype.findChildByTag = function (tag) {
-            return this.children.findOne(function (child) {
-                return child.hasTag(tag);
-            });
+            return this._entityObjectManager.findChildByTag(tag);
         };
         EntityObject.prototype.findChildByName = function (name) {
-            return this.children.findOne(function (child) {
-                return child.name.search(name) > -1;
-            });
+            return this._entityObjectManager.findChildByName(name);
         };
         EntityObject.prototype.findChildrenByName = function (name) {
-            return this.children.filter(function (child) {
-                return child.name.search(name) > -1;
-            });
-        };
-        EntityObject.prototype.getComponent = function (_class) {
-            return this.components.findOne(function (component) {
-                return component instanceof _class;
-            });
-        };
-        EntityObject.prototype.findComponentByUid = function (uid) {
-            return this.components.findOne(function (component) {
-                return component.uid === uid;
-            });
-        };
-        EntityObject.prototype.getFirstComponent = function () {
-            return this.components.getChild(0);
-        };
-        EntityObject.prototype.forEachComponent = function (func) {
-            this.components.forEach(func);
-            return this;
+            return this._entityObjectManager.findChildrenByName(name);
         };
         EntityObject.prototype.removeChild = function (child) {
-            child.onExit();
-            this.children.removeChild(child);
-            child.parent = null;
+            this._entityObjectManager.removeChild(child);
+            return this;
+        };
+        EntityObject.prototype.getComponent = function (_class) {
+            return this._componentManager.getComponent(_class);
+        };
+        EntityObject.prototype.getAllComponent = function () {
+            return this._componentManager.getAllComponent();
+        };
+        EntityObject.prototype.findComponentByUid = function (uid) {
+            return this._componentManager.findComponentByUid(uid);
+        };
+        EntityObject.prototype.forEachComponent = function (func) {
+            this._componentManager.forEachComponent(func);
             return this;
         };
         EntityObject.prototype.hasComponent = function () {
@@ -8792,35 +9694,13 @@ var wd;
             if (result !== void 0) {
                 return result;
             }
-            if (wd.JudgeUtils.isComponenet(args[0])) {
-                var component = args[0];
-                result = this.components.hasChild(component);
-            }
-            else {
-                var _class_1 = args[0];
-                result = this.components.hasChildWithFunc(function (component) {
-                    return component instanceof _class_1;
-                });
-            }
+            result = this._componentManager.hasComponent(args[0]);
             this._hasComponentCache.addChild(key, result);
             return result;
         };
-        EntityObject.prototype.addComponent = function (component) {
-            if (this.hasComponent(component)) {
-                wd.Log.assert(false, "the component already exist");
-                return this;
-            }
-            if (component instanceof wd.RendererComponent) {
-                this._rendererComponent = component;
-            }
-            else if (component instanceof wd.Animation) {
-                this._animation = component;
-            }
-            else if (component instanceof wd.Collider) {
-                this._collider = component;
-            }
-            this.components.addChild(component);
-            component.addToObject(this);
+        EntityObject.prototype.addComponent = function (component, isShareComponent) {
+            if (isShareComponent === void 0) { isShareComponent = false; }
+            this._componentManager.addComponent(component, isShareComponent);
             this.componentDirty = true;
             return this;
         };
@@ -8829,46 +9709,30 @@ var wd;
             for (var _i = 0; _i < arguments.length; _i++) {
                 args[_i - 0] = arguments[_i];
             }
-            var component = null;
-            if (args[0] instanceof wd.Component) {
-                component = args[0];
-            }
-            else {
-                component = this.getComponent(args[0]);
-            }
-            this.components.removeChild(component);
-            this._removeComponentHandler(component);
+            this._componentManager.removeComponent(args[0]);
             this.componentDirty = true;
             return this;
         };
         EntityObject.prototype.removeAllComponent = function () {
-            var _this = this;
-            var result = wdCb.Collection.create();
-            this.components.forEach(function (component) {
-                _this._removeComponentHandler(component);
-                result.addChild(component);
-            }, this);
-            this.components.removeAllChildren();
             this.componentDirty = true;
-            return result;
+            return this._componentManager.removeAllComponent();
         };
         EntityObject.prototype.render = function (renderer, camera) {
             var geometry = null, rendererComponent = null;
             if (!this.isVisible) {
                 return;
             }
-            geometry = this._getGeometry();
-            rendererComponent = this._getRendererComponent();
+            geometry = this.getGeometry();
+            rendererComponent = this._componentManager.getRendererComponent();
             if (rendererComponent && geometry) {
                 rendererComponent.render(renderer, geometry, camera);
-                wd.DebugStatistics.count.renderGameObjects++;
             }
             this.getRenderList().forEach(function (child) {
                 child.render(renderer, camera);
             });
         };
         EntityObject.prototype.update = function (elapsedTime) {
-            var animation = this._getAnimation(), collider = this._getCollider();
+            var animation = this._componentManager.getAnimation(), collider = this._componentManager.getCollider();
             if (animation) {
                 animation.update(elapsedTime);
             }
@@ -8887,40 +9751,14 @@ var wd;
             for (var _i = 0; _i < arguments.length; _i++) {
                 args[_i - 0] = arguments[_i];
             }
-            var method = args[0], self = this;
-            if (args.length === 1) {
-                this._scriptList.forEach(function (script, scriptName) {
-                    script[method] && script[method]();
-                    self._addToScriptExecuteHistory(scriptName, method);
-                });
-            }
-            else if (args.length === 2) {
-                var arg_1 = args[1];
-                this._scriptList.forEach(function (script, scriptName) {
-                    script[method] && script[method](arg_1);
-                    self._addToScriptExecuteHistory(scriptName, method);
-                });
-            }
-            else if (args.length === 3) {
-                var arg_2 = args[1], isExecOnlyOnce_1 = args[2];
-                this._scriptList.forEach(function (script, scriptName) {
-                    if (isExecOnlyOnce_1 && self._isScriptExecuted(scriptName, method)) {
-                        return;
-                    }
-                    script[method] && script[method](arg_2);
-                    self._addToScriptExecuteHistory(scriptName, method);
-                });
-            }
+            this._scriptManager.execScript.apply(this._scriptManager, args);
         };
         EntityObject.prototype.execEventScript = function (method, arg) {
-            this._scriptList.forEach(function (script) {
-                script[method] && (arg ? script[method](arg) : script[method]());
-            });
+            if (arg === void 0) { arg = null; }
+            this._scriptManager.execEventScript(method, arg);
         };
         EntityObject.prototype.getComponentCount = function (_class) {
-            return this.components.filter(function (component) {
-                return component instanceof _class;
-            }).getCount();
+            return this._componentManager.getComponentCount(_class);
         };
         EntityObject.prototype.beforeUpdateChildren = function (elapsedTime) {
         };
@@ -8936,57 +9774,17 @@ var wd;
             if (!this.isVisible) {
                 return null;
             }
-            return this.children;
+            return this._entityObjectManager.getChildren();
         };
-        EntityObject.prototype.initComponent = function () {
-            if (this.hasComponent(wd.Geometry)) {
-                this.getComponent(wd.Geometry).init();
-            }
-            this.components.filter(function (component) {
-                return !(component instanceof wd.Geometry);
-            })
-                .forEach(function (component) {
-                component.init();
-            });
+        EntityObject.prototype.getGeometry = function () {
+            return this._componentManager.getGeometry();
         };
         EntityObject.prototype.getAllChildren = function () {
-            var result = wdCb.Collection.create();
-            var getChildren = function (entityObject) {
-                result.addChildren(entityObject.getChildren());
-                entityObject.forEach(function (child) {
-                    getChildren(child);
-                });
-            };
-            getChildren(this);
-            return result;
+            return this._entityObjectManager.getAllChildren();
         };
         EntityObject.prototype.clearCache = function () {
             this._hasComponentCache.removeAllChildren();
             this._getComponentCache.removeAllChildren();
-        };
-        EntityObject.prototype._getGeometry = function () {
-            return this.getComponent(wd.Geometry);
-        };
-        EntityObject.prototype._getAnimation = function () {
-            return this._animation;
-        };
-        EntityObject.prototype._getRendererComponent = function () {
-            return this._rendererComponent;
-        };
-        EntityObject.prototype._getCollider = function () {
-            return this._collider;
-        };
-        EntityObject.prototype._removeComponentHandler = function (component) {
-            component.removeFromObject(this);
-        };
-        EntityObject.prototype._addToScriptExecuteHistory = function (scriptName, method) {
-            this._scriptExecuteHistory.addChild(this._buildScriptHistoryKey(scriptName, method), true);
-        };
-        EntityObject.prototype._isScriptExecuted = function (scriptName, method) {
-            return this._scriptExecuteHistory.getChild(this._buildScriptHistoryKey(scriptName, method));
-        };
-        EntityObject.prototype._buildScriptHistoryKey = function (scriptName, method) {
-            return scriptName + "_" + method;
         };
         EntityObject.prototype._getHasComponentCacheKey = function () {
             var args = [];
@@ -9005,6 +9803,26 @@ var wd;
         EntityObject.prototype._onComponentChange = function () {
             this.clearCache();
         };
+        EntityObject.prototype._cloneChildren = function (result) {
+            this.forEach(function (child) {
+                var resultChild = child.clone();
+                if (resultChild !== null) {
+                    result.addChild(resultChild);
+                }
+            });
+        };
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], EntityObject.prototype, "bubbleParent", null);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], EntityObject.prototype, "name", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], EntityObject.prototype, "parent", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], EntityObject.prototype, "isVisible", void 0);
         __decorate([
             wd.virtual
         ], EntityObject.prototype, "initWhenCreate", null);
@@ -9033,25 +9851,8 @@ var wd;
             wd.virtual
         ], EntityObject.prototype, "getRenderList", null);
         __decorate([
-            wd.require(function () {
-                wd.assert(this.getComponentCount(wd.Geometry) <= 1, wd.Log.info.FUNC_SHOULD_NOT("entityObject", "contain more than 1 geometry component"));
-            })
-        ], EntityObject.prototype, "_getGeometry", null);
-        __decorate([
-            wd.require(function () {
-                wd.assert(this.getComponentCount(wd.Animation) <= 1, wd.Log.info.FUNC_SHOULD_NOT("entityObject", "contain more than 1 animation component"));
-            })
-        ], EntityObject.prototype, "_getAnimation", null);
-        __decorate([
-            wd.require(function () {
-                wd.assert(this.getComponentCount(wd.RendererComponent) <= 1, wd.Log.info.FUNC_SHOULD_NOT("entityObject", "contain more than 1 rendererComponent"));
-            })
-        ], EntityObject.prototype, "_getRendererComponent", null);
-        __decorate([
-            wd.require(function () {
-                wd.assert(this.getComponentCount(wd.Collider) <= 1, wd.Log.info.FUNC_SHOULD_NOT("entityObject", "contain more than 1 collider component"));
-            })
-        ], EntityObject.prototype, "_getCollider", null);
+            wd.virtual
+        ], EntityObject.prototype, "getGeometry", null);
         __decorate([
             wd.ensure(function (key) {
                 wd.assert(wd.JudgeUtils.isString(key), wd.Log.info.FUNC_SHOULD("key:" + key, "be string"));
@@ -9061,25 +9862,415 @@ var wd;
     }(wd.Entity));
     wd.EntityObject = EntityObject;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
+var wd;
+(function (wd) {
+    var ComponentManager = (function () {
+        function ComponentManager(entityObject) {
+            this.transform = null;
+            this._entityObject = null;
+            this._components = wdCb.Collection.create();
+            this._rendererComponent = null;
+            this._animation = null;
+            this._collider = null;
+            this._geometry = null;
+            this._entityObject = entityObject;
+        }
+        ComponentManager.create = function (entityObject) {
+            var obj = new this(entityObject);
+            return obj;
+        };
+        ComponentManager.prototype.init = function () {
+            this._components.insertSort(function (a, b) {
+                return wd.ComponentInitOrderTable.getOrder(a) < wd.ComponentInitOrderTable.getOrder(b);
+            }, false)
+                .forEach(function (component) {
+                component.init();
+            });
+        };
+        ComponentManager.prototype.dispose = function () {
+            var components = this.removeAllComponent();
+            components.forEach(function (component) {
+                component.dispose();
+            });
+            this._components.removeAllChildren();
+        };
+        ComponentManager.prototype.removeAllComponent = function () {
+            var _this = this;
+            var result = wdCb.Collection.create();
+            this._components.forEach(function (component) {
+                _this._removeComponentHandler(component);
+                result.addChild(component);
+            }, this);
+            return result;
+        };
+        ComponentManager.prototype.getComponent = function (_class) {
+            return this._components.findOne(function (component) {
+                return component instanceof _class;
+            });
+        };
+        ComponentManager.prototype.getAllComponent = function () {
+            return this._components;
+        };
+        ComponentManager.prototype.findComponentByUid = function (uid) {
+            return this._components.findOne(function (component) {
+                return component.uid === uid;
+            });
+        };
+        ComponentManager.prototype.forEachComponent = function (func) {
+            this._components.forEach(func);
+            return this;
+        };
+        ComponentManager.prototype.hasComponent = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
+            }
+            var result = null;
+            if (wd.JudgeUtils.isComponenet(args[0])) {
+                var component = args[0];
+                result = this._components.hasChild(component);
+            }
+            else {
+                var _class_1 = args[0];
+                result = this._components.hasChildWithFunc(function (component) {
+                    return component instanceof _class_1;
+                });
+            }
+            return result;
+        };
+        ComponentManager.prototype.addComponent = function (component, isShareComponent) {
+            if (isShareComponent === void 0) { isShareComponent = false; }
+            if (!component) {
+                return;
+            }
+            if (component instanceof wd.RendererComponent) {
+                this._rendererComponent = component;
+            }
+            else if (component instanceof wd.Animation) {
+                this._animation = component;
+            }
+            else if (component instanceof wd.Collider) {
+                this._collider = component;
+            }
+            else if (component instanceof wd.Geometry) {
+                this._geometry = component;
+            }
+            else if (component instanceof wd.Transform) {
+                if (this.transform) {
+                    this.removeComponent(this.transform);
+                }
+                this.transform = component;
+            }
+            component.addToObject(this._entityObject, isShareComponent);
+            this._components.addChild(component);
+            return this;
+        };
+        ComponentManager.prototype.removeComponent = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
+            }
+            var component = null;
+            if (args[0] instanceof wd.Component) {
+                component = args[0];
+            }
+            else {
+                component = this.getComponent(args[0]);
+            }
+            this._components.removeChild(component);
+            this._removeComponentHandler(component);
+            return this;
+        };
+        ComponentManager.prototype.getComponentCount = function (_class) {
+            return this._components.filter(function (component) {
+                return component instanceof _class;
+            }).getCount();
+        };
+        ComponentManager.prototype.getGeometry = function () {
+            return this._geometry;
+        };
+        ComponentManager.prototype.getAnimation = function () {
+            return this._animation;
+        };
+        ComponentManager.prototype.getRendererComponent = function () {
+            return this._rendererComponent;
+        };
+        ComponentManager.prototype.getCollider = function () {
+            return this._collider;
+        };
+        ComponentManager.prototype._removeComponentHandler = function (component) {
+            component.removeFromObject(this._entityObject);
+        };
+        __decorate([
+            wd.require(function (component, isShareComponent) {
+                if (isShareComponent === void 0) { isShareComponent = false; }
+                if (!component) {
+                    return;
+                }
+                wd.assert(!this.hasComponent(component), wd.Log.info.FUNC_EXIST("the component", ", please judge whether it hasComponent(component) before addComponent(component)"));
+            })
+        ], ComponentManager.prototype, "addComponent", null);
+        __decorate([
+            wd.require(function () {
+                wd.assert(this.getComponentCount(wd.Geometry) <= 1, wd.Log.info.FUNC_SHOULD_NOT("entityObject", "contain more than 1 geometry component"));
+            })
+        ], ComponentManager.prototype, "getGeometry", null);
+        __decorate([
+            wd.require(function () {
+                wd.assert(this.getComponentCount(wd.Animation) <= 1, wd.Log.info.FUNC_SHOULD_NOT("entityObject", "contain more than 1 animation component"));
+            })
+        ], ComponentManager.prototype, "getAnimation", null);
+        __decorate([
+            wd.require(function () {
+                wd.assert(this.getComponentCount(wd.RendererComponent) <= 1, wd.Log.info.FUNC_SHOULD_NOT("entityObject", "contain more than 1 rendererComponent"));
+            })
+        ], ComponentManager.prototype, "getRendererComponent", null);
+        __decorate([
+            wd.require(function () {
+                wd.assert(this.getComponentCount(wd.Collider) <= 1, wd.Log.info.FUNC_SHOULD_NOT("entityObject", "contain more than 1 collider component"));
+            })
+        ], ComponentManager.prototype, "getCollider", null);
+        return ComponentManager;
+    }());
+    wd.ComponentManager = ComponentManager;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var EntityObjectManager = (function () {
+        function EntityObjectManager(entityObject) {
+            this._entityObject = null;
+            this._children = wdCb.Collection.create();
+            this._entityObject = entityObject;
+        }
+        EntityObjectManager.create = function (entityObject) {
+            var obj = new this(entityObject);
+            return obj;
+        };
+        EntityObjectManager.prototype.init = function () {
+            this.forEach(function (child) {
+                child.init();
+            });
+        };
+        EntityObjectManager.prototype.dispose = function () {
+            this.forEach(function (child) {
+                child.dispose();
+            });
+        };
+        EntityObjectManager.prototype.hasChild = function (child) {
+            return this._children.hasChild(child);
+        };
+        EntityObjectManager.prototype.addChild = function (child) {
+            if (child.parent) {
+                child.parent.removeChild(child);
+            }
+            child.parent = this._entityObject;
+            this._children.addChild(child);
+            child.onEnter();
+            return this;
+        };
+        EntityObjectManager.prototype.addChildren = function () {
+            var _this = this;
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
+            }
+            if (wd.JudgeUtils.isArray(args[0])) {
+                var children = args[0];
+                for (var _a = 0, children_1 = children; _a < children_1.length; _a++) {
+                    var child = children_1[_a];
+                    this.addChild(child);
+                }
+            }
+            else if (wd.JudgeUtils.isCollection(args[0])) {
+                var children = args[0];
+                children.forEach(function (child) {
+                    _this.addChild(child);
+                });
+            }
+            else {
+                this.addChild(args[0]);
+            }
+            return this;
+        };
+        EntityObjectManager.prototype.forEach = function (func) {
+            this._children.forEach(func);
+            return this;
+        };
+        EntityObjectManager.prototype.filter = function (func) {
+            return this._children.filter(func);
+        };
+        EntityObjectManager.prototype.sort = function (func, isSortSelf) {
+            if (isSortSelf === void 0) { isSortSelf = false; }
+            return this._children.sort(func, isSortSelf);
+        };
+        EntityObjectManager.prototype.getChildren = function () {
+            return this._children;
+        };
+        EntityObjectManager.prototype.getAllChildren = function () {
+            var result = wdCb.Collection.create();
+            var getChildren = function (entityObject) {
+                result.addChildren(entityObject.getChildren());
+                entityObject.forEach(function (child) {
+                    getChildren(child);
+                });
+            };
+            getChildren(this._entityObject);
+            return result;
+        };
+        EntityObjectManager.prototype.getChild = function (index) {
+            return this._children.getChild(index);
+        };
+        EntityObjectManager.prototype.findChildByUid = function (uid) {
+            return this._children.findOne(function (child) {
+                return child.uid === uid;
+            });
+        };
+        EntityObjectManager.prototype.findChildByTag = function (tag) {
+            return this._children.findOne(function (child) {
+                return child.hasTag(tag);
+            });
+        };
+        EntityObjectManager.prototype.findChildByName = function (name) {
+            return this._children.findOne(function (child) {
+                return child.name.search(name) > -1;
+            });
+        };
+        EntityObjectManager.prototype.findChildrenByName = function (name) {
+            return this._children.filter(function (child) {
+                return child.name.search(name) > -1;
+            });
+        };
+        EntityObjectManager.prototype.removeChild = function (child) {
+            child.onExit();
+            this._children.removeChild(child);
+            child.parent = null;
+            return this;
+        };
+        return EntityObjectManager;
+    }());
+    wd.EntityObjectManager = EntityObjectManager;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var ScriptManager = (function () {
+        function ScriptManager(entityObject) {
+            this.scriptList = wdCb.Hash.create();
+            this._entityObject = null;
+            this._scriptExecuteHistory = wdCb.Hash.create();
+            this._entityObject = entityObject;
+        }
+        ScriptManager.create = function (entityObject) {
+            var obj = new this(entityObject);
+            return obj;
+        };
+        ScriptManager.prototype.execScript = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
+            }
+            var method = args[0], self = this;
+            if (args.length === 1) {
+                this.scriptList.forEach(function (script, scriptName) {
+                    script[method] && script[method]();
+                    self._addToScriptExecuteHistory(scriptName, method);
+                });
+            }
+            else if (args.length === 2) {
+                var arg_1 = args[1];
+                this.scriptList.forEach(function (script, scriptName) {
+                    script[method] && script[method](arg_1);
+                    self._addToScriptExecuteHistory(scriptName, method);
+                });
+            }
+            else if (args.length === 3) {
+                var arg_2 = args[1], isExecOnlyOnce_1 = args[2];
+                this.scriptList.forEach(function (script, scriptName) {
+                    if (isExecOnlyOnce_1 && self._isScriptExecuted(scriptName, method)) {
+                        return;
+                    }
+                    script[method] && script[method](arg_2);
+                    self._addToScriptExecuteHistory(scriptName, method);
+                });
+            }
+        };
+        ScriptManager.prototype.execEventScript = function (method, arg) {
+            this.scriptList.forEach(function (script) {
+                script[method] && (arg !== null ? script[method](arg) : script[method]());
+            });
+        };
+        ScriptManager.prototype._addToScriptExecuteHistory = function (scriptName, method) {
+            this._scriptExecuteHistory.addChild(this._buildScriptHistoryKey(scriptName, method), true);
+        };
+        ScriptManager.prototype._isScriptExecuted = function (scriptName, method) {
+            return this._scriptExecuteHistory.getChild(this._buildScriptHistoryKey(scriptName, method));
+        };
+        ScriptManager.prototype._buildScriptHistoryKey = function (scriptName, method) {
+            return scriptName + "_" + method;
+        };
+        return ScriptManager;
+    }());
+    wd.ScriptManager = ScriptManager;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var ComponentContainer = (function () {
+        function ComponentContainer() {
+            this.list = wdCb.Collection.create();
+        }
+        ComponentContainer.prototype.addChild = function (component) {
+            if (this.hasChild(component)) {
+                return;
+            }
+            this.list.addChild(component);
+        };
+        ComponentContainer.prototype.removeChild = function (component) {
+            this.list.removeChild(component);
+        };
+        ComponentContainer.prototype.hasChild = function (component) {
+            return this.list.hasChild(component);
+        };
+        return ComponentContainer;
+    }());
+    wd.ComponentContainer = ComponentContainer;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var ActionManager = (function (_super) {
+        __extends(ActionManager, _super);
+        function ActionManager() {
+            _super.apply(this, arguments);
+        }
+        ActionManager.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        ActionManager.prototype.update = function (elapsedTime) {
+            var removeQueue = [];
+            this.list.forEach(function (child) {
+                if (child.isFinish) {
+                    removeQueue.push(child);
+                    return;
+                }
+                if (child.isStop || child.isPause) {
+                    return;
+                }
+                child.update(elapsedTime);
+            });
+            for (var _i = 0, removeQueue_1 = removeQueue; _i < removeQueue_1.length; _i++) {
+                var child = removeQueue_1[_i];
+                child.entityObject.removeComponent(child);
+            }
+        };
+        return ActionManager;
+    }(wd.ComponentContainer));
+    wd.ActionManager = ActionManager;
+})(wd || (wd = {}));
 var wd;
 (function (wd) {
     var UIObject = (function (_super) {
         __extends(UIObject, _super);
         function UIObject() {
             _super.apply(this, arguments);
-            this.name = "uiObject" + String(this.uid);
             this.uiManager = wd.UIManager.create(this);
         }
         UIObject.create = function () {
@@ -9092,6 +10283,10 @@ var wd;
         };
         UIObject.prototype.createTransform = function () {
             return wd.RectTransform.create();
+        };
+        UIObject.prototype.initWhenCreate = function () {
+            _super.prototype.initWhenCreate.call(this);
+            this.name = "uiObject" + String(this.uid);
         };
         UIObject.prototype.addComponent = function (component) {
             _super.prototype.addComponent.call(this, component);
@@ -9117,12 +10312,40 @@ var wd;
     }(wd.EntityObject));
     wd.UIObject = UIObject;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
+var wd;
+(function (wd) {
+    var UIManager = (function (_super) {
+        __extends(UIManager, _super);
+        function UIManager(uiObject) {
+            _super.call(this);
+            this._uiObject = uiObject;
+        }
+        UIManager.create = function (uiObject) {
+            var obj = new this(uiObject);
+            return obj;
+        };
+        UIManager.prototype.update = function (elapsedTime) {
+            if (this.list.getCount() === 0) {
+                return;
+            }
+            if (this._isDirty()) {
+                this.list.forEach(function (ui) {
+                    ui.update(elapsedTime);
+                });
+            }
+        };
+        UIManager.prototype._isDirty = function () {
+            return this._uiObject.getComponent(wd.UIRenderer).state === wd.EUIRendererState.DIRTY;
+        };
+        __decorate([
+            wd.require(function (elapsedTime) {
+                wd.assert(this.list.getCount() <= 1, wd.Log.info.FUNC_SHOULD("only contain one ui component"));
+            })
+        ], UIManager.prototype, "update", null);
+        return UIManager;
+    }(wd.ComponentContainer));
+    wd.UIManager = UIManager;
+})(wd || (wd = {}));
 var wd;
 (function (wd) {
     var GameObject = (function (_super) {
@@ -9139,49 +10362,41 @@ var wd;
         GameObject.prototype.getSpacePartition = function () {
             return this.getComponent(wd.SpacePartition);
         };
-        GameObject.prototype.getComponent = function (_class) {
-            if (this._isGeometry(_class)) {
-                var lod = this.getComponent(wd.LODController);
-                if (lod && lod.activeGeometry) {
-                    return lod.activeGeometry;
-                }
-            }
-            return _super.prototype.getComponent.call(this, _class);
-        };
         GameObject.prototype.update = function (elapsedTime) {
-            var lod = this.getComponent(wd.LODController);
+            var lod = this.getComponent(wd.LOD), octree = this.getComponent(wd.Octree);
             if (lod) {
                 lod.update(elapsedTime);
             }
+            if (octree) {
+                octree.update(elapsedTime);
+            }
             _super.prototype.update.call(this, elapsedTime);
+        };
+        GameObject.prototype.getGeometry = function () {
+            var lod = this.getComponent(wd.LOD);
+            if (lod && lod.activeGeometry) {
+                return lod.activeGeometry;
+            }
+            return _super.prototype.getGeometry.call(this);
         };
         GameObject.prototype.createTransform = function () {
             return wd.ThreeDTransform.create();
         };
         GameObject.prototype.getRenderList = function () {
             if (this.hasComponent(wd.Octree)) {
-                return this.getSpacePartition().getRenderListByFrustumCull();
+                return wd.RenderUtils.getGameObjectRenderListFromSpacePartition(this.getSpacePartition().getRenderListByFrustumCull());
             }
-            return this.children;
+            return wd.RenderUtils.getGameObjectRenderList(this.getChildren());
         };
         GameObject.prototype.afterInitChildren = function () {
             if (this.hasComponent(wd.Octree)) {
                 return this.getSpacePartition().build();
             }
         };
-        GameObject.prototype._isGeometry = function (_class) {
-            return _class.name === "Geometry";
-        };
         return GameObject;
     }(wd.EntityObject));
     wd.GameObject = GameObject;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var SceneDispatcher = (function (_super) {
@@ -9252,32 +10467,12 @@ var wd;
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(SceneDispatcher.prototype, "shader", {
-            get: function () {
-                return this.gameObjectScene.shader;
-            },
-            set: function (shader) {
-                this.gameObjectScene.shader = shader;
-            },
-            enumerable: true,
-            configurable: true
-        });
         Object.defineProperty(SceneDispatcher.prototype, "currentCamera", {
             get: function () {
                 return this.gameObjectScene.currentCamera;
             },
             set: function (arg) {
                 this.gameObjectScene.currentCamera = arg;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(SceneDispatcher.prototype, "isUseProgram", {
-            get: function () {
-                return this.gameObjectScene.isUseProgram;
-            },
-            set: function (isUseProgram) {
-                this.gameObjectScene.isUseProgram = isUseProgram;
             },
             enumerable: true,
             configurable: true
@@ -9302,15 +10497,49 @@ var wd;
             enumerable: true,
             configurable: true
         });
+        Object.defineProperty(SceneDispatcher.prototype, "glslData", {
+            get: function () {
+                return this.gameObjectScene.glslData;
+            },
+            set: function (glslData) {
+                this.gameObjectScene.glslData = glslData;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(SceneDispatcher.prototype, "isUseShader", {
+            get: function () {
+                return this.gameObjectScene.isUseShader;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(SceneDispatcher.prototype, "currentShaderType", {
+            get: function () {
+                return this.gameObjectScene.currentShaderType;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(SceneDispatcher.prototype, "shadowLayerList", {
+            get: function () {
+                return this.gameObjectScene.shadowLayerList;
+            },
+            set: function (shadowLayerList) {
+                this.gameObjectScene.shadowLayerList = shadowLayerList;
+            },
+            enumerable: true,
+            configurable: true
+        });
         SceneDispatcher.prototype.initWhenCreate = function () {
             _super.prototype.initWhenCreate.call(this);
             this.addComponent(wd.SceneEventTriggerDetector.create());
         };
-        SceneDispatcher.prototype.useProgram = function (shader) {
-            this.gameObjectScene.useProgram(shader);
+        SceneDispatcher.prototype.useShaderType = function (type) {
+            this.gameObjectScene.useShaderType(type);
         };
-        SceneDispatcher.prototype.unUseProgram = function () {
-            this.gameObjectScene.unUseProgram();
+        SceneDispatcher.prototype.unUseShader = function () {
+            this.gameObjectScene.unUseShader();
         };
         SceneDispatcher.prototype.addChild = function (child) {
             if (child instanceof wd.GameObject) {
@@ -9322,14 +10551,11 @@ var wd;
             child.parent = this;
             return this;
         };
-        SceneDispatcher.prototype.addRenderTargetRenderer = function (renderTargetRenderer) {
-            return this.gameObjectScene.addRenderTargetRenderer(renderTargetRenderer);
+        SceneDispatcher.prototype.addCommonRenderTargetRenderer = function (renderTargetRenderer) {
+            return this.gameObjectScene.renderTargetRendererManager.addCommonRenderTargetRenderer(renderTargetRenderer);
         };
         SceneDispatcher.prototype.addProceduralRenderTargetRenderer = function (renderTargetRenderer) {
-            return this.gameObjectScene.addProceduralRenderTargetRenderer(renderTargetRenderer);
-        };
-        SceneDispatcher.prototype.removeRenderTargetRenderer = function (renderTargetRenderer) {
-            this.gameObjectScene.removeRenderTargetRenderer(renderTargetRenderer);
+            return this.gameObjectScene.renderTargetRendererManager.addProceduralRenderTargetRenderer(renderTargetRenderer);
         };
         SceneDispatcher.prototype.dispose = function () {
             this.gameObjectScene.dispose();
@@ -9353,15 +10579,15 @@ var wd;
                 this.addChild(child);
             }
             if (args[0] instanceof wdCb.Collection) {
-                var children = args[0], self_1 = this;
+                var children = args[0], self_5 = this;
                 children.forEach(function (child) {
-                    self_1.addChild(child);
+                    self_5.addChild(child);
                 });
             }
             else if (wd.JudgeUtils.isArrayExactly(args[0])) {
                 var children = args[0];
-                for (var _a = 0, children_1 = children; _a < children_1.length; _a++) {
-                    var child = children_1[_a];
+                for (var _a = 0, children_2 = children; _a < children_2.length; _a++) {
+                    var child = children_2[_a];
                     this.addChild(child);
                 }
             }
@@ -9435,12 +10661,6 @@ var wd;
     }(wd.EntityObject));
     wd.SceneDispatcher = SceneDispatcher;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var Scene = (function (_super) {
@@ -9452,270 +10672,6 @@ var wd;
     }(wd.EntityObject));
     wd.Scene = Scene;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var wd;
-(function (wd) {
-    var GameObjectScene = (function (_super) {
-        __extends(GameObjectScene, _super);
-        function GameObjectScene() {
-            _super.apply(this, arguments);
-            this._currentCamera = null;
-            this.side = null;
-            this.shadowMap = ShadowMapModel.create(this);
-            this.shader = null;
-            this.isUseProgram = false;
-            this.physics = PhysicsConfig.create();
-            this.physicsEngineAdapter = null;
-            this._lightManager = wd.LightManager.create();
-            this._renderTargetRendererList = wdCb.Collection.create();
-            this._proceduralRendererList = wdCb.Collection.create();
-            this._collisionDetector = wd.CollisionDetector.create();
-            this._cameraList = wdCb.Collection.create();
-        }
-        GameObjectScene.create = function () {
-            var obj = new this();
-            obj.initWhenCreate();
-            return obj;
-        };
-        Object.defineProperty(GameObjectScene.prototype, "ambientLight", {
-            get: function () {
-                return this._lightManager.ambientLight;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(GameObjectScene.prototype, "directionLights", {
-            get: function () {
-                return this._lightManager.directionLights;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(GameObjectScene.prototype, "pointLights", {
-            get: function () {
-                return this._lightManager.pointLights;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(GameObjectScene.prototype, "currentCamera", {
-            get: function () {
-                return this._currentCamera || this._cameraList.getChild(0);
-            },
-            set: function (arg) {
-                if (wd.JudgeUtils.isNumber(arg)) {
-                    var index = arg;
-                    this._currentCamera = this._cameraList.getChild(index);
-                }
-                else if (arg instanceof wd.GameObject) {
-                    var currentCamera = arg;
-                    this._currentCamera = currentCamera;
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        GameObjectScene.prototype.init = function () {
-            if (this.physics.enable) {
-                this.physicsEngineAdapter = wd.PhysicsEngineFactory.create(this.physics.engine);
-                this.physicsEngineAdapter.init();
-            }
-            _super.prototype.init.call(this);
-            this._renderTargetRendererList.forEach(function (renderTargetRenderer) { return renderTargetRenderer.init(); });
-            this._proceduralRendererList.forEach(function (renderTargetRenderer) { return renderTargetRenderer.init(); });
-            return this;
-        };
-        GameObjectScene.prototype.useProgram = function (shader) {
-            this.isUseProgram = true;
-            this.shader = shader;
-        };
-        GameObjectScene.prototype.unUseProgram = function () {
-            this.isUseProgram = false;
-        };
-        GameObjectScene.prototype.addChild = function (child) {
-            var cameraList = this._getCameras(child), lightList = this._getLights(child);
-            if (cameraList.getCount() > 0) {
-                this._cameraList.addChildren(cameraList);
-            }
-            if (lightList.getCount() > 0) {
-                this._lightManager.addChildren(lightList);
-            }
-            return _super.prototype.addChild.call(this, child);
-        };
-        GameObjectScene.prototype.addRenderTargetRenderer = function (renderTargetRenderer) {
-            this._renderTargetRendererList.addChild(renderTargetRenderer);
-        };
-        GameObjectScene.prototype.addProceduralRenderTargetRenderer = function (renderTargetRenderer) {
-            this._proceduralRendererList.addChild(renderTargetRenderer);
-        };
-        GameObjectScene.prototype.removeRenderTargetRenderer = function (renderTargetRenderer) {
-            this._renderTargetRendererList.removeChild(renderTargetRenderer);
-        };
-        GameObjectScene.prototype.update = function (elapsedTime) {
-            var currentCameraComponent = this._getCurrentCameraComponent();
-            if (this.physics.enable) {
-                this.physicsEngineAdapter.update(elapsedTime);
-            }
-            if (currentCameraComponent) {
-                currentCameraComponent.update(elapsedTime);
-            }
-            _super.prototype.update.call(this, elapsedTime);
-            this._collisionDetector.detect(this);
-        };
-        GameObjectScene.prototype.render = function (renderer) {
-            var self = this;
-            this._renderTargetRendererList.forEach(function (target) {
-                target.render(renderer, self.currentCamera);
-            });
-            this._renderProceduralRenderer(renderer);
-            _super.prototype.render.call(this, renderer, this.currentCamera);
-        };
-        GameObjectScene.prototype.createTransform = function () {
-            return null;
-        };
-        GameObjectScene.prototype._renderProceduralRenderer = function (renderer) {
-            this._proceduralRendererList.filter(function (target) {
-                return target.needRender();
-            })
-                .forEach(function (target) {
-                target.render(renderer);
-            });
-        };
-        GameObjectScene.prototype._getCameras = function (gameObject) {
-            return this._find(gameObject, this._isCamera);
-        };
-        GameObjectScene.prototype._getLights = function (gameObject) {
-            return this._find(gameObject, this._isLight);
-        };
-        GameObjectScene.prototype._find = function (gameObject, judgeFunc) {
-            var self = this, resultArr = wdCb.Collection.create();
-            var find = function (gameObject) {
-                if (judgeFunc.call(self, gameObject)) {
-                    resultArr.addChild(gameObject);
-                }
-                gameObject.forEach(function (child) {
-                    find(child);
-                });
-            };
-            find(gameObject);
-            return resultArr;
-        };
-        GameObjectScene.prototype._isCamera = function (child) {
-            return child.hasComponent(wd.CameraController);
-        };
-        GameObjectScene.prototype._isLight = function (child) {
-            return child.hasComponent(wd.Light);
-        };
-        GameObjectScene.prototype._getCurrentCameraComponent = function () {
-            if (!this.currentCamera) {
-                return null;
-            }
-            return this.currentCamera.getComponent(wd.CameraController);
-        };
-        __decorate([
-            wd.requireSetter(function (arg) {
-                if (wd.JudgeUtils.isNumber(arg)) {
-                    var index = arg;
-                    wd.assert(!!this._cameraList.getChild(index), wd.Log.info.FUNC_NOT_EXIST("current camera in cameraList"));
-                }
-            })
-        ], GameObjectScene.prototype, "currentCamera", null);
-        return GameObjectScene;
-    }(wd.Scene));
-    wd.GameObjectScene = GameObjectScene;
-    var PhysicsConfig = (function () {
-        function PhysicsConfig() {
-            this._gravity = wd.Vector3.create(0, -9.8, 0);
-            this.enable = false;
-            this.engine = wd.EPhysicsEngineType.CANNON;
-            this.iterations = 10;
-        }
-        PhysicsConfig.create = function () {
-            var obj = new this();
-            return obj;
-        };
-        Object.defineProperty(PhysicsConfig.prototype, "gravity", {
-            get: function () {
-                return this._gravity;
-            },
-            set: function (gravity) {
-                this._gravity = gravity;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        __decorate([
-            wd.operateWorldDataGetterAndSetter("Gravity")
-        ], PhysicsConfig.prototype, "gravity", null);
-        return PhysicsConfig;
-    }());
-    wd.PhysicsConfig = PhysicsConfig;
-    (function (EShadowMapSoftType) {
-        EShadowMapSoftType[EShadowMapSoftType["NONE"] = 0] = "NONE";
-        EShadowMapSoftType[EShadowMapSoftType["PCF"] = 1] = "PCF";
-    })(wd.EShadowMapSoftType || (wd.EShadowMapSoftType = {}));
-    var EShadowMapSoftType = wd.EShadowMapSoftType;
-    var ShadowMapModel = (function () {
-        function ShadowMapModel(scene) {
-            this._scene = null;
-            this._enable = true;
-            this._softType = EShadowMapSoftType.NONE;
-            this._scene = scene;
-        }
-        ShadowMapModel.create = function (scene) {
-            var obj = new this(scene);
-            return obj;
-        };
-        Object.defineProperty(ShadowMapModel.prototype, "enable", {
-            get: function () {
-                return this._enable;
-            },
-            set: function (enable) {
-                this._enable = enable;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(ShadowMapModel.prototype, "softType", {
-            get: function () {
-                return this._softType;
-            },
-            set: function (softType) {
-                if (softType !== this._softType) {
-                    wd.EventManager.broadcast(this._scene, wd.CustomEvent.create(wd.EEngineEvent.SHADOWMAP_SOFTTYPE_CHANGE));
-                    this._softType = softType;
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        return ShadowMapModel;
-    }());
-    wd.ShadowMapModel = ShadowMapModel;
-})(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var UIObjectScene = (function (_super) {
@@ -9852,175 +10808,370 @@ var wd;
     }(wd.Scene));
     wd.UIObjectScene = UIObjectScene;
 })(wd || (wd = {}));
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
-    var CollisionDetector = (function () {
-        function CollisionDetector() {
-            this._lastCollideObjects = null;
-            this._collisionTable = wdCb.Hash.create();
+    var GameObjectScene = (function (_super) {
+        __extends(GameObjectScene, _super);
+        function GameObjectScene() {
+            _super.apply(this, arguments);
+            this._currentCamera = null;
+            this.side = null;
+            this.shadowMap = ShadowMapModel.create(this);
+            this.physics = PhysicsConfig.create();
+            this.physicsEngineAdapter = null;
+            this.glslData = wdCb.Hash.create();
+            this.currentShaderType = null;
+            this.shadowLayerList = wd.ShadowLayerList.create();
+            this.renderTargetRendererManager = wd.RenderTargetRendererManager.create();
+            this.shadowManager = wd.ShadowManager.create(this);
+            this._lightManager = wd.LightManager.create();
+            this._collisionDetector = wd.CollisionDetector.create(this);
+            this._cameraList = wdCb.Collection.create();
         }
-        CollisionDetector.create = function () {
+        GameObjectScene.create = function () {
+            var obj = new this();
+            obj.initWhenCreate();
+            return obj;
+        };
+        Object.defineProperty(GameObjectScene.prototype, "ambientLight", {
+            get: function () {
+                return this._lightManager.ambientLight;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(GameObjectScene.prototype, "directionLights", {
+            get: function () {
+                return this._lightManager.directionLights;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(GameObjectScene.prototype, "pointLights", {
+            get: function () {
+                return this._lightManager.pointLights;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(GameObjectScene.prototype, "currentCamera", {
+            get: function () {
+                return this._currentCamera || this._cameraList.getChild(0);
+            },
+            set: function (arg) {
+                if (wd.JudgeUtils.isNumber(arg)) {
+                    var index = arg;
+                    this._currentCamera = this._cameraList.getChild(index);
+                }
+                else if (arg instanceof wd.GameObject) {
+                    var currentCamera = arg;
+                    this._currentCamera = currentCamera;
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(GameObjectScene.prototype, "isUseShader", {
+            get: function () {
+                return this.currentShaderType !== null;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        GameObjectScene.prototype.init = function () {
+            if (this.physics.enable) {
+                this.physicsEngineAdapter = wd.PhysicsEngineFactory.create(this.physics.engine);
+                this.physicsEngineAdapter.init();
+            }
+            this.shadowManager.init();
+            _super.prototype.init.call(this);
+            this.renderTargetRendererManager.init();
+            return this;
+        };
+        GameObjectScene.prototype.dispose = function () {
+            _super.prototype.dispose.call(this);
+            this.shadowManager.dispose();
+            this.renderTargetRendererManager.dispose();
+        };
+        GameObjectScene.prototype.addChild = function (child) {
+            var cameraList = this._getCameras(child), lightList = this._getLights(child);
+            if (cameraList.getCount() > 0) {
+                this._cameraList.addChildren(cameraList);
+            }
+            if (lightList.getCount() > 0) {
+                this._lightManager.addChildren(lightList);
+            }
+            return _super.prototype.addChild.call(this, child);
+        };
+        GameObjectScene.prototype.update = function (elapsedTime) {
+            var currentCamera = this._getCurrentCameraComponent(), shadowManager = this.shadowManager, collisionDetector = this._collisionDetector;
+            if (this.physics.enable) {
+                this.physicsEngineAdapter.update(elapsedTime);
+            }
+            if (currentCamera) {
+                currentCamera.update(elapsedTime);
+            }
+            shadowManager.update(elapsedTime);
+            _super.prototype.update.call(this, elapsedTime);
+            collisionDetector.update(elapsedTime);
+        };
+        GameObjectScene.prototype.render = function (renderer) {
+            this.shadowManager.setShadowRenderListInEachLoop();
+            this.renderTargetRendererManager.renderCommonRenderTargetRenderer(renderer, this.currentCamera);
+            _super.prototype.render.call(this, renderer, this.currentCamera);
+        };
+        GameObjectScene.prototype.useShaderType = function (type) {
+            this.currentShaderType = type;
+        };
+        GameObjectScene.prototype.unUseShader = function () {
+            this.currentShaderType = null;
+        };
+        GameObjectScene.prototype.getRenderList = function () {
+            return wd.RenderUtils.getGameObjectRenderList(this.getChildren());
+        };
+        GameObjectScene.prototype.createTransform = function () {
+            return null;
+        };
+        GameObjectScene.prototype._getCameras = function (gameObject) {
+            return this._find(gameObject, this._isCamera);
+        };
+        GameObjectScene.prototype._getLights = function (gameObject) {
+            return this._find(gameObject, this._isLight);
+        };
+        GameObjectScene.prototype._find = function (gameObject, judgeFunc) {
+            var self = this, resultArr = wdCb.Collection.create();
+            var find = function (gameObject) {
+                if (judgeFunc.call(self, gameObject)) {
+                    resultArr.addChild(gameObject);
+                }
+                gameObject.forEach(function (child) {
+                    find(child);
+                });
+            };
+            find(gameObject);
+            return resultArr;
+        };
+        GameObjectScene.prototype._isCamera = function (child) {
+            return child.hasComponent(wd.CameraController);
+        };
+        GameObjectScene.prototype._isLight = function (child) {
+            return child.hasComponent(wd.Light);
+        };
+        GameObjectScene.prototype._getCurrentCameraComponent = function () {
+            if (!this.currentCamera) {
+                return null;
+            }
+            return this.currentCamera.getComponent(wd.CameraController);
+        };
+        __decorate([
+            wd.requireSetter(function (arg) {
+                if (wd.JudgeUtils.isNumber(arg)) {
+                    var index = arg;
+                    wd.assert(!!this._cameraList.getChild(index), wd.Log.info.FUNC_NOT_EXIST("current camera in cameraList"));
+                }
+            })
+        ], GameObjectScene.prototype, "currentCamera", null);
+        return GameObjectScene;
+    }(wd.Scene));
+    wd.GameObjectScene = GameObjectScene;
+    var PhysicsConfig = (function () {
+        function PhysicsConfig() {
+            this._gravity = wd.Vector3.create(0, -9.8, 0);
+            this.enable = false;
+            this.engine = wd.EPhysicsEngineType.CANNON;
+            this.iterations = 10;
+        }
+        PhysicsConfig.create = function () {
             var obj = new this();
             return obj;
         };
-        CollisionDetector.prototype.detect = function (scene) {
-            var checkTargetList = scene.filter(function (entityObject) {
-                return entityObject.hasComponent(wd.Collider) || wd.JudgeUtils.isSpacePartitionObject(entityObject);
+        Object.defineProperty(PhysicsConfig.prototype, "gravity", {
+            get: function () {
+                return this._gravity;
+            },
+            set: function (gravity) {
+                this._gravity = gravity;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        __decorate([
+            wd.operateWorldDataGetterAndSetter("Gravity")
+        ], PhysicsConfig.prototype, "gravity", null);
+        return PhysicsConfig;
+    }());
+    wd.PhysicsConfig = PhysicsConfig;
+    var ShadowMapModel = (function () {
+        function ShadowMapModel(scene) {
+            this._scene = null;
+            this._enable = true;
+            this._softType = wd.EShadowMapSoftType.NONE;
+            this._scene = scene;
+        }
+        ShadowMapModel.create = function (scene) {
+            var obj = new this(scene);
+            return obj;
+        };
+        Object.defineProperty(ShadowMapModel.prototype, "enable", {
+            get: function () {
+                return this._enable;
+            },
+            set: function (enable) {
+                this._enable = enable;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(ShadowMapModel.prototype, "softType", {
+            get: function () {
+                return this._softType;
+            },
+            set: function (softType) {
+                if (softType !== this._softType) {
+                    wd.EventManager.broadcast(this._scene, wd.CustomEvent.create(wd.EEngineEvent.SHADOWMAP_SOFTTYPE_CHANGE));
+                    this._softType = softType;
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        return ShadowMapModel;
+    }());
+    wd.ShadowMapModel = ShadowMapModel;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var CollisionDetector = (function () {
+        function CollisionDetector(gameObjectScene) {
+            this.gameObjectScene = null;
+            this._collisionTable = wdCb.Hash.create();
+            this._lastCollisionTable = wdCb.Hash.create();
+            this.gameObjectScene = gameObjectScene;
+        }
+        CollisionDetector.create = function (gameObjectScene) {
+            var obj = new this(gameObjectScene);
+            return obj;
+        };
+        CollisionDetector.prototype.update = function (elapsedTime) {
+            var scene = this.gameObjectScene, checkTargetList = scene.filter(function (gameObjectScene) {
+                return gameObjectScene.hasComponent(wd.Collider)
+                    || (wd.JudgeUtils.isSpacePartitionObject(gameObjectScene) && gameObjectScene.getSpacePartition().isCollideEnable);
             }), self = this;
+            if (checkTargetList.getCount() === 0) {
+                return;
+            }
             this._clearCollisionTable();
-            checkTargetList.forEach(function (entityObject) {
-                if (entityObject.hasComponent(wd.RigidBody)) {
+            checkTargetList.forEach(function (gameObjectScene) {
+                if (gameObjectScene.hasComponent(wd.RigidBody)) {
                     return;
                 }
-                var _a = self._getCollideObjects(entityObject, checkTargetList), targetCollideObjects = _a.targetCollideObjects, sourceCollideObjects = _a.sourceCollideObjects;
-                sourceCollideObjects.forEach(function (sourceObject) {
-                    if (targetCollideObjects.getCount() > 0) {
-                        if (self._isCollisionStart(sourceObject)) {
-                            sourceObject.execScript("onCollisionStart", targetCollideObjects);
-                            sourceObject.execScript("onContact", targetCollideObjects);
-                            self._triggerCollisionEventOfCollideObjectWhichHasRigidBody(targetCollideObjects, sourceObject, ["onCollisionStart", "onContact"]);
-                        }
-                        else {
-                            sourceObject.execScript("onContact", targetCollideObjects);
-                            self._triggerCollisionEventOfCollideObjectWhichHasRigidBody(targetCollideObjects, sourceObject, ["onContact"]);
-                        }
-                        sourceObject.addTag(ECollisionTag.COLLIDED);
-                        self._lastCollideObjects = targetCollideObjects;
-                    }
-                    else {
-                        if (self._isCollisionEnd(sourceObject)) {
-                            sourceObject.execScript("onCollisionEnd");
-                            self._triggerCollisionEventOfCollideObjectWhichHasRigidBody(self._lastCollideObjects, sourceObject, ["onCollisionEnd"]);
-                        }
-                        sourceObject.removeTag(ECollisionTag.COLLIDED);
-                    }
-                });
+                self._recordCollideObjects(gameObjectScene, checkTargetList);
             });
+            this._triggerCollisionEvent();
         };
-        CollisionDetector.prototype._getCollideObjects = function (sourceObject, checkTargetList) {
-            var targetCollideObjects = wdCb.Collection.create(), sourceCollideObjects = wdCb.Collection.create(), self = this, sourceCollider = null;
+        CollisionDetector.prototype._recordCollideObjects = function (sourceObject, checkTargetList) {
+            var self = this;
             if (wd.JudgeUtils.isSpacePartitionObject(sourceObject)) {
+                var sourceSpacePartition_1 = sourceObject.getSpacePartition();
                 checkTargetList.forEach(function (targetObject) {
                     if (wd.JudgeUtils.isSelf(sourceObject, targetObject)) {
                         return;
                     }
                     if (wd.JudgeUtils.isSpacePartitionObject(targetObject)) {
-                        self._getCollideObjectsWithSpacePartition(targetObject.getSpacePartition(), sourceObject.getSpacePartition(), targetCollideObjects, sourceCollideObjects);
+                        self._handleCollisionBetweenSpacePartitionAndSpacePartition(targetObject.getSpacePartition(), sourceSpacePartition_1);
                     }
                     else {
-                        self._getCollideObjectsWithSpacePartition(targetObject, sourceObject.getSpacePartition(), targetCollideObjects, sourceCollideObjects);
+                        self._handleCollisionBetweenGameObjectAndSpacePartition(targetObject.getComponent(wd.Collider), sourceSpacePartition_1);
                     }
                 });
-                this._recordCollisionTargets(targetCollideObjects, sourceCollideObjects);
-                return {
-                    targetCollideObjects: targetCollideObjects.removeRepeatItems(),
-                    sourceCollideObjects: sourceCollideObjects.removeRepeatItems()
-                };
+                return;
             }
-            sourceCollider = sourceObject.getComponent(wd.Collider);
+            var sourceObjectCollider = sourceObject.getComponent(wd.Collider);
+            if (!sourceObjectCollider.enable) {
+                return;
+            }
             checkTargetList.forEach(function (targetObject) {
                 if (wd.JudgeUtils.isSelf(sourceObject, targetObject)) {
                     return;
                 }
                 if (wd.JudgeUtils.isSpacePartitionObject(targetObject)) {
-                    self._getCollideObjectsWithSpacePartition(targetObject.getSpacePartition(), sourceCollider, sourceObject, targetCollideObjects, sourceCollideObjects);
+                    self._handleCollisionBetweenGameObjectAndSpacePartition(sourceObjectCollider, targetObject.getSpacePartition());
                 }
                 else {
-                    self._getCollideObjectsByGameObjectToGameObject(sourceObject, sourceCollider, targetObject, targetCollideObjects);
+                    self._handleCollisionBetweenGameObjectAndGameObject(sourceObjectCollider, targetObject);
                 }
             });
-            sourceCollideObjects.addChild(sourceObject);
-            if (targetCollideObjects.getCount() > 0) {
-                this._recordCollisionTargets(targetCollideObjects, sourceCollideObjects);
-            }
-            return {
-                targetCollideObjects: targetCollideObjects.removeRepeatItems(),
-                sourceCollideObjects: sourceCollideObjects.removeRepeatItems()
-            };
         };
-        CollisionDetector.prototype._getCollideObjectsByGameObjectToGameObject = function (sourceObject, sourceCollider, targetObject, targetCollideObjects) {
-            if (this._isTargetCollidedWithSourceInCurrentFrame(sourceObject, targetObject)) {
-                targetCollideObjects.addChild(targetObject);
-            }
-            else if (!(this._isNotTransform(sourceObject) && this._isNotTransform(targetObject) && !sourceObject.hasTag(ECollisionTag.COLLIDED))
-                && sourceCollider.isCollide(targetObject)) {
-                targetCollideObjects.addChild(targetObject);
-            }
+        CollisionDetector.prototype._isGameObjectCollideWithGameObject = function (sourceObject, sourceCollider, targetObject) {
+            return !(this._isNotTransform(sourceObject) && this._isNotTransform(targetObject) && !sourceObject.hasTag(ECollisionTag.COLLIDED))
+                && sourceCollider.isCollide(targetObject);
         };
         CollisionDetector.prototype._clearCollisionTable = function () {
             this._collisionTable.removeAllChildren();
         };
-        CollisionDetector.prototype._isTargetCollidedWithSourceInCurrentFrame = function (sourceObject, targetObject) {
-            var targetCollideObjects = this._collisionTable.getChild(String(targetObject.uid));
-            if (!targetCollideObjects) {
-                return false;
-            }
-            return targetCollideObjects.hasChildWithFunc(function (targetCollideObject) {
-                return wd.JudgeUtils.isEqual(targetCollideObject, sourceObject);
-            });
+        CollisionDetector.prototype._isCollidedInTable = function (sourceObject, targetObject) {
+            var table = this._collisionTable, sourceKey = String(sourceObject.uid), targetKey = String(targetObject.uid);
+            return table.hasChild(sourceKey) && table.getChild(sourceKey).targetObjectMap.hasChild(targetKey);
         };
-        CollisionDetector.prototype._recordCollisionTargets = function (targetCollideObjects, sourceCollideObjects) {
-            var table = this._collisionTable;
-            sourceCollideObjects.forEach(function (sourceObject) {
-                targetCollideObjects.forEach(function (targetObject) {
-                    table.appendChild(String(sourceObject.uid), targetObject);
+        CollisionDetector.prototype._recordToTable = function (sourceObject, targetObject) {
+            var table = this._collisionTable, sourceKey = String(sourceObject.uid), targetKey = String(targetObject.uid);
+            if (!table.hasChild(sourceKey)) {
+                var targetObjectMap = wdCb.Hash.create();
+                targetObjectMap.addChild(targetKey, targetObject);
+                table.addChild(sourceKey, {
+                    sourceObject: sourceObject,
+                    targetObjectMap: targetObjectMap
                 });
-            });
-        };
-        CollisionDetector.prototype._getCollideObjectsWithSpacePartition = function () {
-            var args = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                args[_i - 0] = arguments[_i];
-            }
-            if (args.length === 4) {
-                if (args[0] instanceof wd.GameObject && args[1] instanceof wd.SpacePartition) {
-                    var targetObject_1 = args[0], sourceSpacePartition = args[1], targetCollideObjects = args[2], sourceCollideObjects_1 = args[3], targetCollider_1 = targetObject_1.getComponent(wd.Collider), self_1 = this;
-                    sourceSpacePartition.getCollideObjects(targetCollider_1.shape).forEach(function (sourceObject) {
-                        self_1._getCollideObjectsByGameObjectToGameObject(targetObject_1, targetCollider_1, sourceObject, sourceCollideObjects_1);
-                    });
-                    if (sourceCollideObjects_1.getCount() > 0) {
-                        targetCollideObjects.addChild(targetObject_1);
-                    }
-                    sourceCollideObjects_1.removeAllChildren();
-                    sourceCollideObjects_1.addChildren(sourceSpacePartition.getChildren());
-                }
-                else if (args[0] instanceof wd.SpacePartition && args[1] instanceof wd.SpacePartition) {
-                    var targetSpacePartition_1 = args[0], sourceSpacePartition = args[1], targetCollideObjects_1 = args[2], sourceCollideObjects_2 = args[3], self_2 = this;
-                    sourceSpacePartition.getChildren()
-                        .forEach(function (sourceObject) {
-                        var sourceCollider = sourceObject.getComponent(wd.Collider);
-                        self_2._getCollideObjectsWithSpacePartition(targetSpacePartition_1, sourceCollider, sourceObject, targetCollideObjects_1, sourceCollideObjects_2);
-                    });
-                }
-            }
-            else if (args.length === 5) {
-                var targetSpacePartition = args[0], sourceCollider_1 = args[1], sourceObject_1 = args[2], targetCollideObjects_2 = args[3], sourceCollideObjects = args[4], self_3 = this;
-                if (!sourceCollider_1) {
-                    return;
-                }
-                targetSpacePartition.getCollideObjects(sourceCollider_1.shape).forEach(function (targetObject) {
-                    self_3._getCollideObjectsByGameObjectToGameObject(sourceObject_1, sourceCollider_1, targetObject, targetCollideObjects_2);
-                });
-                sourceCollideObjects.addChild(sourceObject_1);
                 return;
             }
+            table.getChild(sourceKey).targetObjectMap.addChild(targetKey, targetObject);
         };
-        CollisionDetector.prototype._isCollisionStart = function (entityObject) {
-            return !entityObject.hasTag(ECollisionTag.COLLIDED);
+        CollisionDetector.prototype._handleCollisionBetweenGameObjectAndSpacePartition = function (targetObjectCollider, spacePartition) {
+            var targetObject = targetObjectCollider.entityObject, self = this;
+            if (!targetObjectCollider.enable) {
+                return;
+            }
+            spacePartition.getCollideObjects(targetObjectCollider.shape).forEach(function (sourceObject) {
+                var sourceCollider = sourceObject.getComponent(wd.Collider);
+                if (!sourceCollider.enable || self._isCollidedInTable(sourceObject, targetObject)) {
+                    return;
+                }
+                if (self._isGameObjectCollideWithGameObject(sourceObject, sourceCollider, targetObject)) {
+                    self._recordToTable(sourceObject, targetObject);
+                    self._recordToTable(targetObject, sourceObject);
+                }
+            });
         };
-        CollisionDetector.prototype._isCollisionEnd = function (entityObject) {
-            return entityObject.hasTag(ECollisionTag.COLLIDED);
+        CollisionDetector.prototype._handleCollisionBetweenSpacePartitionAndSpacePartition = function (sourceSpacePartition, targetSpacePartition) {
+            var _this = this;
+            sourceSpacePartition.getChildren()
+                .forEach(function (sourceObject) {
+                var sourceCollider = sourceObject.getComponent(wd.Collider);
+                if (!sourceCollider.enable) {
+                    return;
+                }
+                _this._handleCollisionBetweenGameObjectAndSpacePartition(sourceCollider, targetSpacePartition);
+            }, this);
+        };
+        CollisionDetector.prototype._handleCollisionBetweenGameObjectAndGameObject = function (sourceObjectCollider, targetObject) {
+            var sourceObject = sourceObjectCollider.entityObject;
+            if (!targetObject.getComponent(wd.Collider).enable || this._isCollidedInTable(sourceObject, targetObject)) {
+                return;
+            }
+            if (this._isGameObjectCollideWithGameObject(sourceObject, sourceObjectCollider, targetObject)) {
+                this._recordToTable(sourceObject, targetObject);
+                this._recordToTable(targetObject, sourceObject);
+            }
+        };
+        CollisionDetector.prototype._isCollisionStart = function (gameObjectScene) {
+            return !gameObjectScene.hasTag(ECollisionTag.COLLIDED);
         };
         CollisionDetector.prototype._triggerCollisionEventOfCollideObjectWhichHasRigidBody = function (collideObjects, currentGameObject, eventList) {
-            collideObjects.filter(function (entityObject) {
-                return entityObject.hasComponent(wd.RigidBody);
+            if (!currentGameObject.hasComponent(wd.RigidBody)) {
+                return;
+            }
+            collideObjects.filter(function (gameObjectScene) {
+                return gameObjectScene.hasComponent(wd.RigidBody);
             })
                 .forEach(function (collideObject) {
                 for (var _i = 0, eventList_1 = eventList; _i < eventList_1.length; _i++) {
@@ -10029,8 +11180,41 @@ var wd;
                 }
             });
         };
-        CollisionDetector.prototype._isNotTransform = function (entityObject) {
-            return !entityObject.transform.isTransform;
+        CollisionDetector.prototype._triggerCollisionEvent = function () {
+            var _this = this;
+            this._collisionTable.forEach(function (_a) {
+                var sourceObject = _a.sourceObject, targetObjectMap = _a.targetObjectMap;
+                var targetObjects = targetObjectMap.toCollection();
+                if (_this._isCollisionStart(sourceObject)) {
+                    sourceObject.execScript("onCollisionStart", targetObjects);
+                    sourceObject.execScript("onContact", targetObjects);
+                    _this._triggerCollisionEventOfCollideObjectWhichHasRigidBody(targetObjects, sourceObject, ["onCollisionStart", "onContact"]);
+                }
+                else {
+                    sourceObject.execScript("onContact", targetObjects);
+                    _this._triggerCollisionEventOfCollideObjectWhichHasRigidBody(targetObjects, sourceObject, ["onContact"]);
+                }
+                if (!sourceObject.hasTag(ECollisionTag.COLLIDED)) {
+                    sourceObject.addTag(ECollisionTag.COLLIDED);
+                }
+            }, this);
+            this._triggerCollisionEndEvent();
+            this._lastCollisionTable = this._collisionTable.clone();
+        };
+        CollisionDetector.prototype._triggerCollisionEndEvent = function () {
+            var _this = this;
+            var table = this._collisionTable;
+            this._lastCollisionTable.forEach(function (_a) {
+                var sourceObject = _a.sourceObject, targetObjectMap = _a.targetObjectMap;
+                if (!table.hasChild(String(sourceObject.uid))) {
+                    sourceObject.execScript("onCollisionEnd");
+                    _this._triggerCollisionEventOfCollideObjectWhichHasRigidBody(targetObjectMap.toCollection(), sourceObject, ["onCollisionEnd"]);
+                    sourceObject.removeTag(ECollisionTag.COLLIDED);
+                }
+            });
+        };
+        CollisionDetector.prototype._isNotTransform = function (gameObjectScene) {
+            return !gameObjectScene.transform.isTransform;
         };
         __decorate([
             wd.require(function (sourceObject, checkTargetList) {
@@ -10038,12 +11222,12 @@ var wd;
                     wd.assert(targetObject instanceof wd.GameObject, wd.Log.info.FUNC_SHOULD("targetObject", "be GameObject"));
                 });
             })
-        ], CollisionDetector.prototype, "_getCollideObjects", null);
+        ], CollisionDetector.prototype, "_recordCollideObjects", null);
         __decorate([
-            wd.require(function (sourceObject, sourceCollider, targetObject, targetCollideObjects) {
+            wd.require(function (sourceObject, sourceCollider, targetObject) {
                 wd.assert(sourceObject instanceof wd.GameObject && targetObject instanceof wd.GameObject, wd.Log.info.FUNC_SHOULD("sourceObject and targetObject", "be GameObject"));
             })
-        ], CollisionDetector.prototype, "_getCollideObjectsByGameObjectToGameObject", null);
+        ], CollisionDetector.prototype, "_isGameObjectCollideWithGameObject", null);
         return CollisionDetector;
     }());
     wd.CollisionDetector = CollisionDetector;
@@ -10052,7 +11236,617 @@ var wd;
         ECollisionTag[ECollisionTag["COLLIDED"] = "COLLIDED"] = "COLLIDED";
     })(ECollisionTag || (ECollisionTag = {}));
 })(wd || (wd = {}));
-
+var wd;
+(function (wd) {
+    var ShadowManager = (function () {
+        function ShadowManager(gameObjectScene) {
+            this.gameObjectScene = null;
+            this._shadowRenderList = null;
+            this._endLoopSubscription = null;
+            this._shadowMapManager = wd.ShadowMapManager.create(this);
+            this._shadowMapLayerChangeSubscription = null;
+            this.gameObjectScene = gameObjectScene;
+        }
+        ShadowManager.create = function (gameObjectScene) {
+            var obj = new this(gameObjectScene);
+            return obj;
+        };
+        Object.defineProperty(ShadowManager.prototype, "twoDShadowMapDataMap", {
+            get: function () {
+                return this._shadowMapManager.twoDShadowMapDataMap;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(ShadowManager.prototype, "twoDShadowMapCountForGLSL", {
+            get: function () {
+                return this._shadowMapManager.twoDShadowMapCountForGLSL;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(ShadowManager.prototype, "cubemapShadowMapDataMap", {
+            get: function () {
+                return this._shadowMapManager.cubemapShadowMapDataMap;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(ShadowManager.prototype, "cubemapShadowMapCountForGLSL", {
+            get: function () {
+                return this._shadowMapManager.cubemapShadowMapCountForGLSL;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        ShadowManager.prototype.update = function (elapsedTime) {
+            if (!this._isShadowMapEnable()) {
+                return;
+            }
+            this.gameObjectScene.shadowLayerList.update();
+        };
+        ShadowManager.prototype.dispose = function () {
+            this._endLoopSubscription && this._endLoopSubscription.dispose();
+            this._shadowMapLayerChangeSubscription && this._shadowMapLayerChangeSubscription.dispose();
+            this._shadowMapManager.dispose();
+        };
+        ShadowManager.prototype.setShadowRenderListInEachLoop = function () {
+            if (!this._isShadowMapEnable()) {
+                return;
+            }
+            this._shadowRenderList = this._getShadowRenderList();
+        };
+        ShadowManager.prototype.getShadowRenderListByLayer = function (layer) {
+            return this._shadowRenderList.filter(function (gameObject) {
+                return gameObject.getComponent(wd.Shadow).layer === layer;
+            });
+        };
+        ShadowManager.prototype.getShadowLayerList = function () {
+            var shadowLayerList = null, self = this;
+            if (this.gameObjectScene.shadowLayerList.dirty) {
+                return this.gameObjectScene.shadowLayerList.removeRepeatItems();
+            }
+            shadowLayerList = wd.ShadowLayerList.create();
+            wd.RenderUtils.getGameObjectRenderList(this.gameObjectScene.getChildren())
+                .forEach(function (child) {
+                if (wd.JudgeUtils.isSpacePartitionObject(child)) {
+                    child.forEach(function (c) {
+                        if (self._isCastShadow(c)) {
+                            shadowLayerList.addChild(c.getComponent(wd.Shadow).layer);
+                        }
+                    });
+                    return;
+                }
+                if (self._isCastShadow(child)) {
+                    shadowLayerList.addChild(child.getComponent(wd.Shadow).layer);
+                }
+            });
+            shadowLayerList.dirty = false;
+            return shadowLayerList.removeRepeatItems();
+        };
+        ShadowManager.prototype.init = function () {
+            var self = this, scene = this.gameObjectScene;
+            if (!this._isShadowMapEnable() || !this._hasShadow()) {
+                return;
+            }
+            this.gameObjectScene.shadowLayerList = this.getShadowLayerList();
+            this._shadowMapManager.initShadowMapData(this.gameObjectScene.shadowLayerList);
+            this._shadowMapManager.twoDShadowMapDataMap.forEach(function (twoDShadowMapDataList, layer) {
+                twoDShadowMapDataList.forEach(function (_a) {
+                    var shadowMap = _a.shadowMap, light = _a.light;
+                    var renderer = wd.TwoDShadowMapRenderTargetRenderer.create(shadowMap, light, layer);
+                    scene.renderTargetRendererManager.addCommonRenderTargetRenderer(renderer);
+                });
+            });
+            this._shadowMapManager.cubemapShadowMapDataMap.forEach(function (cubemapShadowMapDataList, layer) {
+                cubemapShadowMapDataList.forEach(function (_a) {
+                    var shadowMap = _a.shadowMap, light = _a.light;
+                    var renderer = wd.CubemapShadowMapRenderTargetRenderer.create(shadowMap, light, layer);
+                    scene.renderTargetRendererManager.addCommonRenderTargetRenderer(renderer);
+                });
+            });
+            this._initShadowList();
+            this._shadowMapLayerChangeSubscription = wd.EventManager.fromEvent(wd.EEngineEvent.SHADOWMAP_LAYER_CHANGE)
+                .subscribe(function () {
+                self._updateWhenShadowLayerChange();
+            });
+        };
+        ShadowManager.prototype._getShadowRenderList = function () {
+            var list = wdCb.Collection.create(), self = this;
+            wd.RenderUtils.getGameObjectRenderList(this.gameObjectScene.getChildren())
+                .forEach(function (child) {
+                if (wd.JudgeUtils.isSpacePartitionObject(child)) {
+                    list.addChildren(wd.RenderUtils.getGameObjectRenderListFromSpacePartition(child.getSpacePartition().getRenderListByFrustumCull())
+                        .filter(function (c) {
+                        return self._isCastShadow(c);
+                    }));
+                    return;
+                }
+                if (self._isCastShadow(child)) {
+                    list.addChild(child);
+                }
+            });
+            return list;
+        };
+        ShadowManager.prototype._updateWhenShadowLayerChange = function () {
+            var scene = this.gameObjectScene;
+            if (!this._hasShadow()) {
+                return;
+            }
+            this._shadowMapManager.updateWhenShadowLayerChange(scene.shadowLayerList.getDiffData());
+            var _a = this._shadowMapManager.getAllDiffShadowMapDataWhenShadowLayerChange(), addTwoDShadowMapData = _a.addTwoDShadowMapData, removeTwoDShadowMapData = _a.removeTwoDShadowMapData, addCubemapShadowMapData = _a.addCubemapShadowMapData, removeCubemapShadowMapData = _a.removeCubemapShadowMapData;
+            this._refreshRenderTargerRendererList(addTwoDShadowMapData, removeTwoDShadowMapData, addCubemapShadowMapData, removeCubemapShadowMapData);
+        };
+        ShadowManager.prototype._refreshRenderTargerRendererList = function (addTwoDShadowMapData, removeTwoDShadowMapData, addCubemapShadowMapData, removeCubemapShadowMapData) {
+            var scene = this.gameObjectScene;
+            scene.renderTargetRendererManager.removeCommonRenderTargetRenderer(function (renderTargetRenderer) {
+                var texture = renderTargetRenderer.texture;
+                return removeTwoDShadowMapData.hasChildWithFunc(function (data) {
+                    return wd.JudgeUtils.isEqual(data.shadowMap, texture);
+                })
+                    || removeCubemapShadowMapData.hasChildWithFunc(function (data) {
+                        return wd.JudgeUtils.isEqual(data.shadowMap, texture);
+                    });
+            })
+                .forEach(function (renderTargetRenderer) {
+                renderTargetRenderer.dispose();
+            });
+            addTwoDShadowMapData.forEach(function (twoDShadowMapDataList, layer) {
+                twoDShadowMapDataList.forEach(function (_a) {
+                    var shadowMap = _a.shadowMap, light = _a.light;
+                    var renderer = wd.TwoDShadowMapRenderTargetRenderer.create(shadowMap, light, layer);
+                    renderer.init();
+                    scene.renderTargetRendererManager.addCommonRenderTargetRenderer(renderer);
+                });
+            });
+            addCubemapShadowMapData.forEach(function (cubemapShadowMapDataList, layer) {
+                cubemapShadowMapDataList.forEach(function (_a) {
+                    var shadowMap = _a.shadowMap, light = _a.light;
+                    var renderer = wd.CubemapShadowMapRenderTargetRenderer.create(shadowMap, light, layer);
+                    renderer.init();
+                    scene.renderTargetRendererManager.addCommonRenderTargetRenderer(renderer);
+                });
+            });
+        };
+        ShadowManager.prototype._initShadowList = function () {
+            var self = this;
+            this._endLoopSubscription = wd.EventManager.fromEvent(wd.EEngineEvent.ENDLOOP)
+                .subscribe(function () {
+                self._removeShadowMapGLSLData();
+            });
+        };
+        ShadowManager.prototype._isCastShadow = function (gameObject) {
+            var shadow = gameObject.getComponent(wd.Shadow);
+            return !!shadow && shadow.cast;
+        };
+        ShadowManager.prototype._removeShadowMapGLSLData = function () {
+            wd.Director.getInstance().scene.glslData.removeChild(wd.EShaderGLSLData.TWOD_SHADOWMAP);
+            wd.Director.getInstance().scene.glslData.removeChild(wd.EShaderGLSLData.CUBEMAP_SHADOWMAP);
+            wd.Director.getInstance().scene.glslData.removeChild(wd.EShaderGLSLData.BUILD_CUBEMAP_SHADOWMAP);
+        };
+        ShadowManager.prototype._hasShadow = function () {
+            var scene = this.gameObjectScene;
+            return !!scene.directionLights || !!scene.pointLights;
+        };
+        ShadowManager.prototype._isShadowMapEnable = function () {
+            return this.gameObjectScene.shadowMap.enable;
+        };
+        __decorate([
+            wd.require(function () {
+                var self = this;
+                var checkFirstLevelOfGameObjectScene = function () {
+                    self.gameObjectScene.getChildren()
+                        .filter(function (firstLevelChild) {
+                        return !wd.JudgeUtils.isSpacePartitionObject(firstLevelChild);
+                    })
+                        .forEach(function (firstLevelChild) {
+                        var checkChild = function (child) {
+                            wd.assert(!child.hasComponent(wd.Shadow), wd.Log.info.FUNC_CAN_NOT("if the first level object of gameObjectScene don't contain Shadow component, its children", "contain Shadow component"));
+                            child.forEach(function (c) {
+                                checkChild(c);
+                            });
+                        };
+                        if (!firstLevelChild.hasComponent(wd.Shadow)) {
+                            firstLevelChild.forEach(function (child) {
+                                checkChild(child);
+                            });
+                        }
+                    });
+                }, checkFirstLevelOfSpacePartitionObject = function () {
+                    self.gameObjectScene.getChildren()
+                        .filter(function (firstLevelChild) {
+                        return wd.JudgeUtils.isSpacePartitionObject(firstLevelChild);
+                    })
+                        .forEach(function (spacePartitionObject) {
+                        spacePartitionObject.forEach(function (firstLevelChildOfSpacePartitionObject) {
+                            var checkChild = function (child) {
+                                wd.assert(!child.hasComponent(wd.Shadow), wd.Log.info.FUNC_CAN_NOT("if the first level object of space partition objject don't contain Shadow component, its children", "contain Shadow component"));
+                                child.forEach(function (c) {
+                                    checkChild(c);
+                                });
+                            };
+                            if (!firstLevelChildOfSpacePartitionObject.hasComponent(wd.Shadow)) {
+                                firstLevelChildOfSpacePartitionObject.forEach(function (child) {
+                                    checkChild(child);
+                                });
+                            }
+                        });
+                    });
+                };
+                checkFirstLevelOfGameObjectScene();
+                checkFirstLevelOfSpacePartitionObject();
+            })
+        ], ShadowManager.prototype, "_getShadowRenderList", null);
+        __decorate([
+            wd.require(function () {
+                var shadowLayerList = this.gameObjectScene.shadowLayerList;
+                wd.assert(shadowLayerList.dirty, wd.Log.info.FUNC_SHOULD("shadowLayerList", "dirty"));
+                this._getShadowRenderList()
+                    .forEach(function (gameObject) {
+                    wd.assert(shadowLayerList.hasChild(gameObject.getComponent(wd.Shadow).layer), wd.Log.info.FUNC_SHOULD("the shadow layer of shadow gameObject", "exist in scene->shadowLayerList"));
+                });
+            })
+        ], ShadowManager.prototype, "_updateWhenShadowLayerChange", null);
+        __decorate([
+            wd.ensure(function () {
+                wd.assert(!this.gameObjectScene.renderTargetRendererManager.getCommonRenderTargetRendererList().hasRepeatItems(), wd.Log.info.FUNC_SHOULD_NOT("scene->commonRenderTargetRendererList", "has repeat items"));
+            })
+        ], ShadowManager.prototype, "_refreshRenderTargerRendererList", null);
+        return ShadowManager;
+    }());
+    wd.ShadowManager = ShadowManager;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var ShadowMapManager = (function () {
+        function ShadowMapManager(shadowManager) {
+            this.twoDShadowMapDataMap = wdCb.Hash.create();
+            this.cubemapShadowMapDataMap = wdCb.Hash.create();
+            this._shadowManager = null;
+            this._lastTwoDShadowMapDataMap = null;
+            this._lastCubemapShadowMapDataMap = null;
+            this._shadowManager = shadowManager;
+        }
+        ShadowMapManager.create = function (shadowManager) {
+            var obj = new this(shadowManager);
+            return obj;
+        };
+        Object.defineProperty(ShadowMapManager.prototype, "twoDShadowMapCountForGLSL", {
+            get: function () {
+                var count = 0;
+                this.twoDShadowMapDataMap
+                    .forEach(function (dataList) {
+                    count += dataList.getCount();
+                });
+                return count;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(ShadowMapManager.prototype, "cubemapShadowMapCountForGLSL", {
+            get: function () {
+                var count = 0;
+                this.cubemapShadowMapDataMap.forEach(function (dataList) {
+                    count += dataList.getCount();
+                });
+                return count;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        ShadowMapManager.prototype.initShadowMapData = function (shadowLayerList) {
+            var _this = this;
+            var scene = this._shadowManager.gameObjectScene;
+            if (scene.directionLights) {
+                scene.directionLights.forEach(function (lightObject) {
+                    var light = lightObject.getComponent(wd.DirectionLight);
+                    if (light.castShadow) {
+                        _this._addTwoDShadowMapDataWithLayer(shadowLayerList, light);
+                    }
+                }, this);
+            }
+            if (scene.pointLights) {
+                scene.pointLights.forEach(function (lightObject) {
+                    var light = lightObject.getComponent(wd.PointLight);
+                    if (light.castShadow) {
+                        _this._addCubemapShadowMapDataWithLayer(shadowLayerList, light);
+                    }
+                }, this);
+            }
+        };
+        ShadowMapManager.prototype.updateWhenShadowLayerChange = function (_a) {
+            var _this = this;
+            var addLayerList = _a.addLayerList, removeLayerList = _a.removeLayerList;
+            var scene = null;
+            scene = this._shadowManager.gameObjectScene;
+            if (scene.directionLights) {
+                var twoDShadowMapDataMap_1 = this.twoDShadowMapDataMap;
+                this._lastTwoDShadowMapDataMap = twoDShadowMapDataMap_1.clone();
+                removeLayerList.forEach(function (layer) {
+                    twoDShadowMapDataMap_1.removeChild(layer);
+                });
+                scene.directionLights.forEach(function (lightObject) {
+                    var light = lightObject.getComponent(wd.DirectionLight);
+                    if (light.castShadow) {
+                        _this._addTwoDShadowMapDataWithLayer(addLayerList, light);
+                    }
+                }, this);
+            }
+            if (scene.pointLights) {
+                var cubemapShadowMapDataMap_1 = this.cubemapShadowMapDataMap;
+                this._lastCubemapShadowMapDataMap = cubemapShadowMapDataMap_1.clone();
+                removeLayerList.forEach(function (layer) {
+                    cubemapShadowMapDataMap_1.removeChild(layer);
+                });
+                scene.pointLights.forEach(function (lightObject) {
+                    var light = lightObject.getComponent(wd.PointLight);
+                    if (light.castShadow) {
+                        _this._addCubemapShadowMapDataWithLayer(addLayerList, light);
+                    }
+                }, this);
+            }
+        };
+        ShadowMapManager.prototype.getAllDiffShadowMapDataWhenShadowLayerChange = function () {
+            var twoDDiff = this._getDiffShadowMapDataWhenShadowLayerChange(this._lastTwoDShadowMapDataMap, this.twoDShadowMapDataMap), cubemapDiff = this._getDiffShadowMapDataWhenShadowLayerChange(this._lastCubemapShadowMapDataMap, this.cubemapShadowMapDataMap);
+            return {
+                addTwoDShadowMapData: twoDDiff.addShadowMapData,
+                removeTwoDShadowMapData: twoDDiff.removeShadowMapData,
+                addCubemapShadowMapData: cubemapDiff.addShadowMapData,
+                removeCubemapShadowMapData: cubemapDiff.removeShadowMapData
+            };
+        };
+        ShadowMapManager.prototype._getDiffShadowMapDataWhenShadowLayerChange = function (lastShadowMapDataMap, currentShadowMapDataMap) {
+            var addShadowMapData = wdCb.Hash.create(), removeShadowMapData = wdCb.Collection.create();
+            removeShadowMapData = lastShadowMapDataMap
+                .filter(function (shadowMapDataList, layer) {
+                return !currentShadowMapDataMap.hasChild(layer);
+            })
+                .toCollection();
+            addShadowMapData = currentShadowMapDataMap
+                .filter(function (shadowMapDataList, layer) {
+                return !lastShadowMapDataMap.hasChild(layer);
+            });
+            return {
+                addShadowMapData: addShadowMapData,
+                removeShadowMapData: removeShadowMapData
+            };
+        };
+        ShadowMapManager.prototype._addTwoDShadowMapDataWithLayer = function (layerList, light) {
+            var twoDShadowMapDataMap = this.twoDShadowMapDataMap;
+            layerList.forEach(function (layer) {
+                twoDShadowMapDataMap.appendChild(layer, {
+                    shadowMap: wd.TwoDShadowMapTexture.create(),
+                    light: light
+                });
+            });
+        };
+        ShadowMapManager.prototype._addCubemapShadowMapDataWithLayer = function (layerList, light) {
+            var cubemapShadowMapDataMap = this.cubemapShadowMapDataMap;
+            layerList.forEach(function (layer) {
+                cubemapShadowMapDataMap.appendChild(layer, {
+                    shadowMap: wd.CubemapShadowMapTexture.create(),
+                    light: light
+                });
+            });
+        };
+        ShadowMapManager.prototype.dispose = function () {
+        };
+        __decorate([
+            wd.require(function (layerList, light) {
+                wd.assert(!layerList.hasRepeatItems(), wd.Log.info.FUNC_SHOULD_NOT("has repeat shadow layer"));
+            })
+        ], ShadowMapManager.prototype, "_addTwoDShadowMapDataWithLayer", null);
+        __decorate([
+            wd.require(function (layerList, light) {
+                wd.assert(!layerList.hasRepeatItems(), wd.Log.info.FUNC_SHOULD_NOT("has repeat shadow layer"));
+            })
+        ], ShadowMapManager.prototype, "_addCubemapShadowMapDataWithLayer", null);
+        return ShadowMapManager;
+    }());
+    wd.ShadowMapManager = ShadowMapManager;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var LightManager = (function () {
+        function LightManager() {
+            this._lights = wdCb.Hash.create();
+        }
+        LightManager.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        Object.defineProperty(LightManager.prototype, "ambientLight", {
+            get: function () {
+                return this._lights.getChild(wd.AmbientLight.type);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(LightManager.prototype, "directionLights", {
+            get: function () {
+                return this._getLights(wd.DirectionLight.type);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(LightManager.prototype, "pointLights", {
+            get: function () {
+                return this._getLights(wd.PointLight.type);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        LightManager.prototype.addChild = function (light) {
+            if (light.hasComponent(wd.AmbientLight)) {
+                this._lights.addChild(wd.AmbientLight.type, light);
+            }
+            else if (light.hasComponent(wd.DirectionLight)) {
+                this._lights.appendChild(wd.DirectionLight.type, light);
+            }
+            else if (light.hasComponent(wd.PointLight)) {
+                this._lights.appendChild(wd.PointLight.type, light);
+            }
+            else {
+                wd.Log.error(true, wd.Log.info.FUNC_INVALID("light"));
+            }
+        };
+        LightManager.prototype.addChildren = function (lightList) {
+            var self = this;
+            lightList.forEach(function (light) {
+                self.addChild(light);
+            });
+        };
+        LightManager.prototype._getLights = function (type) {
+            if (this._lights.hasChild(type)) {
+                return this._lights.getChild(type);
+            }
+            return wdCb.Collection.create();
+        };
+        return LightManager;
+    }());
+    wd.LightManager = LightManager;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var RenderTargetRendererManager = (function () {
+        function RenderTargetRendererManager() {
+            this._commonRenderTargetRendererList = wdCb.Collection.create();
+            this._proceduralRendererList = wdCb.Collection.create();
+        }
+        RenderTargetRendererManager.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        RenderTargetRendererManager.prototype.init = function () {
+            this._commonRenderTargetRendererList.forEach(function (renderTargetRenderer) { return renderTargetRenderer.init(); });
+            this._proceduralRendererList.forEach(function (renderTargetRenderer) { return renderTargetRenderer.init(); });
+        };
+        RenderTargetRendererManager.prototype.dispose = function () {
+            this._commonRenderTargetRendererList.forEach(function (renderTargetRenderer) { return renderTargetRenderer.dispose(); });
+            this._proceduralRendererList.forEach(function (renderTargetRenderer) { return renderTargetRenderer.dispose(); });
+        };
+        RenderTargetRendererManager.prototype.addCommonRenderTargetRenderer = function (renderTargetRenderer) {
+            this._commonRenderTargetRendererList.addChild(renderTargetRenderer);
+        };
+        RenderTargetRendererManager.prototype.getCommonRenderTargetRendererList = function () {
+            return this._commonRenderTargetRendererList;
+        };
+        RenderTargetRendererManager.prototype.removeCommonRenderTargetRenderer = function (func) {
+            return this._commonRenderTargetRendererList.removeChild(func);
+        };
+        RenderTargetRendererManager.prototype.addProceduralRenderTargetRenderer = function (renderTargetRenderer) {
+            this._proceduralRendererList.addChild(renderTargetRenderer);
+        };
+        RenderTargetRendererManager.prototype.renderCommonRenderTargetRenderer = function (renderer, camera) {
+            this._proceduralRendererList.filter(function (target) {
+                return target.needRender();
+            })
+                .forEach(function (target) {
+                target.render(renderer);
+            });
+            this._commonRenderTargetRendererList.forEach(function (target) {
+                target.render(renderer, camera);
+            });
+        };
+        return RenderTargetRendererManager;
+    }());
+    wd.RenderTargetRendererManager = RenderTargetRendererManager;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var ShadowLayerList = (function () {
+        function ShadowLayerList() {
+            this.dirty = false;
+            this._list = wdCb.Collection.create();
+            this._lastList = null;
+        }
+        ShadowLayerList.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        ShadowLayerList.prototype.update = function () {
+            if (this.dirty) {
+                wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.SHADOWMAP_LAYER_CHANGE));
+                this.dirty = false;
+            }
+            this._lastList = this._list.clone();
+        };
+        ShadowLayerList.prototype.getDiffData = function () {
+            var lastList = this._lastList, currentList = this._list, addLayerList = null, removeLayerList = null;
+            if (lastList === null) {
+                return {
+                    addLayerList: this._list.clone(),
+                    removeLayerList: wdCb.Collection.create()
+                };
+            }
+            addLayerList = wdCb.Collection.create();
+            removeLayerList = wdCb.Collection.create();
+            removeLayerList = lastList
+                .filter(function (layer) {
+                return !currentList.hasChild(layer);
+            });
+            addLayerList = currentList
+                .filter(function (layer) {
+                return !lastList.hasChild(layer);
+            });
+            return {
+                addLayerList: addLayerList,
+                removeLayerList: removeLayerList
+            };
+        };
+        ShadowLayerList.prototype.getCount = function () {
+            return this._list.getCount();
+        };
+        ShadowLayerList.prototype.addChild = function (layer) {
+            this._list.addChild(layer);
+            this.dirty = true;
+        };
+        ShadowLayerList.prototype.addChildren = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
+            }
+            this._list.addChildren.apply(this._list, args);
+            this.dirty = true;
+        };
+        ShadowLayerList.prototype.removeChild = function (layer) {
+            this.dirty = true;
+            return this._convertCollectionToThis(this._list.removeChild(layer));
+        };
+        ShadowLayerList.prototype.removeAllChildren = function () {
+            this.dirty = true;
+            this._list.removeAllChildren();
+        };
+        ShadowLayerList.prototype.removeRepeatItems = function () {
+            var result = this._convertCollectionToThis(this._list.removeRepeatItems());
+            result.dirty = this.dirty;
+            return result;
+        };
+        ShadowLayerList.prototype.hasRepeatItems = function () {
+            return this._list.hasRepeatItems();
+        };
+        ShadowLayerList.prototype.forEach = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
+            }
+            this._list.forEach.apply(this._list, args);
+        };
+        ShadowLayerList.prototype.getChildren = function () {
+            return this._list.getChildren();
+        };
+        ShadowLayerList.prototype.hasChild = function (layer) {
+            return this._list.hasChild(layer);
+        };
+        ShadowLayerList.prototype._convertCollectionToThis = function (list) {
+            var result = ShadowLayerList.create();
+            result.addChildren(list.getChildren());
+            return result;
+        };
+        return ShadowLayerList;
+    }());
+    wd.ShadowLayerList = ShadowLayerList;
+})(wd || (wd = {}));
 var wd;
 (function (wd) {
     var EventListenerMap = (function () {
@@ -10091,12 +11885,6 @@ var wd;
     }());
     wd.EventListenerMap = EventListenerMap;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var CustomEventListenerMap = (function (_super) {
@@ -10218,12 +12006,6 @@ var wd;
     }(wd.EventListenerMap));
     wd.CustomEventListenerMap = CustomEventListenerMap;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var DomEventListenerMap = (function (_super) {
@@ -10256,17 +12038,17 @@ var wd;
             }
             var self = this, result = null;
             if (args.length === 1 && wd.JudgeUtils.isString(args[0])) {
-                var eventName_1 = args[0];
-                result = this._getEventDataOffDataList(eventName_1, this.listenerMap.removeChild(function (list, key) {
-                    return self.isEventName(key, eventName_1);
+                var eventName_2 = args[0];
+                result = this._getEventDataOffDataList(eventName_2, this.listenerMap.removeChild(function (list, key) {
+                    return self.isEventName(key, eventName_2);
                 }));
             }
             else if (args.length === 2 && wd.JudgeUtils.isString(args[0])) {
-                var eventName_2 = args[0], handler_1 = args[1], resultList_1 = wdCb.Collection.create();
+                var eventName_3 = args[0], handler_3 = args[1], resultList_1 = wdCb.Collection.create();
                 this.listenerMap.forEach(function (list, key) {
-                    if (self.isEventName(key, eventName_2)) {
+                    if (self.isEventName(key, eventName_3)) {
                         var result_1 = list.removeChild(function (val) {
-                            return val.originHandler === handler_1;
+                            return val.originHandler === handler_3;
                         });
                         if (result_1.getCount() > 0) {
                             resultList_1.addChild(result_1);
@@ -10276,17 +12058,17 @@ var wd;
                         }
                     }
                 });
-                result = this._getEventDataOffDataList(eventName_2, resultList_1);
+                result = this._getEventDataOffDataList(eventName_3, resultList_1);
             }
             else if (args.length === 2 && wd.JudgeUtils.isDom(args[0])) {
                 var dom = args[0], eventName = args[1];
                 result = this._getEventDataOffDataList(eventName, this.listenerMap.removeChild(this.buildKey(dom, eventName)));
             }
             else if (args.length === 3 && wd.JudgeUtils.isDom(args[0])) {
-                var eventName = args[1], resultList_2 = wdCb.Collection.create(), handler_2 = args[2];
+                var eventName = args[1], resultList_2 = wdCb.Collection.create(), handler_4 = args[2];
                 this.listenerMap.forEach(function (list, key) {
                     var result = list.removeChild(function (val) {
-                        return val.originHandler === handler_2;
+                        return val.originHandler === handler_4;
                     });
                     if (result.getCount() > 0) {
                         resultList_2.addChild(result);
@@ -10327,7 +12109,6 @@ var wd;
     }(wd.EventListenerMap));
     wd.DomEventListenerMap = DomEventListenerMap;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     (function (EEventType) {
@@ -10337,7 +12118,6 @@ var wd;
     })(wd.EEventType || (wd.EEventType = {}));
     var EEventType = wd.EEventType;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var EBrowserIdentifier;
@@ -10410,7 +12190,6 @@ var wd;
     }());
     wd.EventNameHandler = EventNameHandler;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     (function (EEventPhase) {
@@ -10419,7 +12198,6 @@ var wd;
     })(wd.EEventPhase || (wd.EEventPhase = {}));
     var EEventPhase = wd.EEventPhase;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var _table = wdCb.Hash.create();
@@ -10448,7 +12226,6 @@ var wd;
     }());
     wd.EventTable = EventTable;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var Event = (function () {
@@ -10481,12 +12258,6 @@ var wd;
     }());
     wd.Event = Event;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var DomEvent = (function (_super) {
@@ -10524,12 +12295,6 @@ var wd;
     }(wd.Event));
     wd.DomEvent = DomEvent;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd_1) {
     var MouseEvent = (function (_super) {
@@ -10672,7 +12437,7 @@ var wd;
             enumerable: true,
             configurable: true
         });
-        MouseEvent.prototype.copy = function () {
+        MouseEvent.prototype.clone = function () {
             var eventObj = MouseEvent.create(this.event, this.name);
             return this.copyMember(eventObj, this, ["target", "currentTarget", "isStopPropagation", "phase", "lastX", "lastY"]);
         };
@@ -10683,12 +12448,6 @@ var wd;
     }(wd_1.DomEvent));
     wd_1.MouseEvent = MouseEvent;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var SPECIAL_KEY_MAP = {
@@ -10864,7 +12623,7 @@ var wd;
             enumerable: true,
             configurable: true
         });
-        KeyboardEvent.prototype.copy = function () {
+        KeyboardEvent.prototype.clone = function () {
             var eventObj = KeyboardEvent.create(this.event, this.name);
             return this.copyMember(eventObj, this, ["target", "currentTarget", "isStopPropagation", "phase", "altKey", "shiftKey", "ctrlKey", "metaKey", "keyCode", "key"]);
         };
@@ -10872,12 +12631,6 @@ var wd;
     }(wd.DomEvent));
     wd.KeyboardEvent = KeyboardEvent;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var CustomEvent = (function (_super) {
@@ -10899,7 +12652,7 @@ var wd;
             });
             return destination;
         };
-        CustomEvent.prototype.copy = function () {
+        CustomEvent.prototype.clone = function () {
             var eventObj = CustomEvent.create(this.name);
             return this.copyMember(eventObj, this, ["target", "currentTarget", "isStopPropagation", "phase"]);
         };
@@ -10912,7 +12665,6 @@ var wd;
     }(wd.Event));
     wd.CustomEvent = CustomEvent;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     (function (EMouseButton) {
@@ -10922,7 +12674,6 @@ var wd;
     })(wd.EMouseButton || (wd.EMouseButton = {}));
     var EMouseButton = wd.EMouseButton;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var EventListener = (function () {
@@ -10961,7 +12712,6 @@ var wd;
     }());
     wd.EventListener = EventListener;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var EventHandler = (function () {
@@ -10971,18 +12721,6 @@ var wd;
     }());
     wd.EventHandler = EventHandler;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var DomEventHandler = (function (_super) {
@@ -11025,7 +12763,7 @@ var wd;
                 return;
             }
             registerDataList.forEach(function (registerData) {
-                var eventCopy = event.copy();
+                var eventCopy = event.clone();
                 registerData.handler(eventCopy, registerData.eventData);
             });
         };
@@ -11064,18 +12802,6 @@ var wd;
     }(wd.EventHandler));
     wd.DomEventHandler = DomEventHandler;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var MouseEventHandler = (function (_super) {
@@ -11173,12 +12899,6 @@ var wd;
     }(wd.DomEventHandler));
     wd.MouseEventHandler = MouseEventHandler;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var KeyboardEventHandler = (function (_super) {
@@ -11276,12 +12996,6 @@ var wd;
     }(wd.DomEventHandler));
     wd.KeyboardEventHandler = KeyboardEventHandler;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var CustomEventHandler = (function (_super) {
@@ -11393,7 +13107,6 @@ var wd;
     }(wd.EventHandler));
     wd.CustomEventHandler = CustomEventHandler;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var EventDispatcher = (function () {
@@ -11403,12 +13116,6 @@ var wd;
     }());
     wd.EventDispatcher = EventDispatcher;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var CustomEventDispatcher = (function (_super) {
@@ -11493,12 +13200,6 @@ var wd;
     }(wd.EventDispatcher));
     wd.CustomEventDispatcher = CustomEventDispatcher;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var DomEventDispatcher = (function (_super) {
@@ -11518,14 +13219,14 @@ var wd;
                 args[_i - 0] = arguments[_i];
             }
             if (args.length === 1) {
-                var event_1 = args[0], eventType = event_1.type;
+                var event_5 = args[0], eventType = event_5.type;
                 wd.EventHandlerFactory.createEventHandler(eventType)
-                    .trigger(event_1);
+                    .trigger(event_5);
             }
             else if (args.length === 2) {
-                var dom = args[0], event_2 = args[1], eventType = event_2.type;
+                var dom = args[0], event_6 = args[1], eventType = event_6.type;
                 wd.EventHandlerFactory.createEventHandler(eventType)
-                    .trigger(dom, event_2);
+                    .trigger(dom, event_6);
             }
         };
         DomEventDispatcher._instance = null;
@@ -11533,7 +13234,6 @@ var wd;
     }(wd.EventDispatcher));
     wd.DomEventDispatcher = DomEventDispatcher;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var EventRegister = (function () {
@@ -11573,12 +13273,6 @@ var wd;
     }());
     wd.EventRegister = EventRegister;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var CustomEventRegister = (function (_super) {
@@ -11654,12 +13348,6 @@ var wd;
     }(wd.EventRegister));
     wd.CustomEventRegister = CustomEventRegister;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var DomEventRegister = (function (_super) {
@@ -11721,7 +13409,6 @@ var wd;
     }(wd.EventRegister));
     wd.DomEventRegister = DomEventRegister;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var EventBinder = (function () {
@@ -11731,18 +13418,6 @@ var wd;
     }());
     wd.EventBinder = EventBinder;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var CustomEventBinder = (function (_super) {
@@ -11801,22 +13476,22 @@ var wd;
                 });
             }
             else if (args.length === 1 && wd.JudgeUtils.isString(args[0])) {
-                var eventName_1 = args[0];
+                var eventName_4 = args[0];
                 eventRegister.forEach(function (list, key) {
                     var registeredEventName = eventRegister.getEventNameFromKey(key);
-                    if (registeredEventName === eventName_1) {
-                        wd.EventHandlerFactory.createEventHandler(wd.EventTable.getEventType(eventName_1))
-                            .off(eventName_1);
+                    if (registeredEventName === eventName_4) {
+                        wd.EventHandlerFactory.createEventHandler(wd.EventTable.getEventType(eventName_4))
+                            .off(eventName_4);
                     }
                 });
             }
             else if (args.length === 1 && args[0] instanceof wd.EntityObject) {
-                var target_1 = args[0];
+                var target_3 = args[0];
                 eventRegister.forEach(function (list, key) {
                     var eventName = eventRegister.getEventNameFromKey(key);
-                    if (eventRegister.isTarget(key, target_1, list)) {
+                    if (eventRegister.isTarget(key, target_3, list)) {
                         wd.EventHandlerFactory.createEventHandler(wd.EventTable.getEventType(eventName))
-                            .off(target_1, eventName);
+                            .off(target_3, eventName);
                     }
                 });
             }
@@ -11836,9 +13511,6 @@ var wd;
                     .off(target, eventName, handler);
             }
         };
-        CustomEventBinder.prototype._checkEventSeparator = function (eventName) {
-            wd.assert(eventName.indexOf(wd.CustomEventListenerMap.eventSeparator) === -1, wd.Log.info.FUNC_SHOULD_NOT("eventName", "contain " + wd.CustomEventListenerMap.eventSeparator));
-        };
         CustomEventBinder._instance = null;
         __decorate([
             wd.require(function () {
@@ -11846,23 +13518,26 @@ var wd;
                 for (var _i = 0; _i < arguments.length; _i++) {
                     args[_i - 0] = arguments[_i];
                 }
+                var checkEventSeparator = function (eventName) {
+                    wd.assert(eventName.indexOf(wd.CustomEventListenerMap.eventSeparator) === -1, wd.Log.info.FUNC_SHOULD_NOT("eventName", "contain " + wd.CustomEventListenerMap.eventSeparator));
+                };
                 if (args.length === 1) {
                 }
                 else if (args.length === 2) {
                     var eventName = args[0];
-                    this._checkEventSeparator(eventName);
+                    checkEventSeparator(eventName);
                 }
                 else if (args.length === 3 && wd.JudgeUtils.isString(args[0])) {
                     var eventName = args[0];
-                    this._checkEventSeparator(eventName);
+                    checkEventSeparator(eventName);
                 }
                 else if (args.length === 3 && args[0] instanceof wd.EntityObject) {
                     var eventName = args[1];
-                    this._checkEventSeparator(eventName);
+                    checkEventSeparator(eventName);
                 }
                 else if (args.length === 4) {
                     var eventName = args[1];
-                    this._checkEventSeparator(eventName);
+                    checkEventSeparator(eventName);
                 }
             })
         ], CustomEventBinder.prototype, "on", null);
@@ -11870,18 +13545,6 @@ var wd;
     }(wd.EventBinder));
     wd.CustomEventBinder = CustomEventBinder;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var DomEventBinder = (function (_super) {
@@ -11949,12 +13612,12 @@ var wd;
                 });
             }
             else if (args.length === 1 && wd.JudgeUtils.isString(args[0])) {
-                var eventName_1 = args[0];
+                var eventName_5 = args[0];
                 eventRegister.forEach(function (list, key) {
                     var registeredEventName = eventRegister.getEventNameFromKey(key);
-                    if (registeredEventName === eventName_1) {
-                        wd.EventHandlerFactory.createEventHandler(wd.EventTable.getEventType(eventName_1))
-                            .off(eventName_1);
+                    if (registeredEventName === eventName_5) {
+                        wd.EventHandlerFactory.createEventHandler(wd.EventTable.getEventType(eventName_5))
+                            .off(eventName_5);
                     }
                 });
             }
@@ -11984,9 +13647,6 @@ var wd;
                     .off(dom, eventName, handler);
             }
         };
-        DomEventBinder.prototype._checkEventSeparator = function (eventName) {
-            wd.assert(eventName.indexOf(wd.DomEventListenerMap.eventSeparator) === -1, wd.Log.info.FUNC_SHOULD_NOT("eventName", "contain " + wd.DomEventListenerMap.eventSeparator));
-        };
         DomEventBinder._instance = null;
         __decorate([
             wd.require(function () {
@@ -11994,21 +13654,24 @@ var wd;
                 for (var _i = 0; _i < arguments.length; _i++) {
                     args[_i - 0] = arguments[_i];
                 }
+                var checkEventSeparator = function (eventName) {
+                    wd.assert(eventName.indexOf(wd.DomEventListenerMap.eventSeparator) === -1, wd.Log.info.FUNC_SHOULD_NOT("eventName", "contain " + wd.DomEventListenerMap.eventSeparator));
+                };
                 if (args.length === 1) {
                 }
                 else if (args.length === 2) {
                 }
                 else if (args.length === 3 && wd.JudgeUtils.isString(args[0])) {
                     var eventName = args[0];
-                    this._checkEventSeparator(eventName);
+                    checkEventSeparator(eventName);
                 }
                 else if (args.length === 3 && wd.JudgeUtils.isDom(args[0])) {
                     var eventName = args[1];
-                    this._checkEventSeparator(eventName);
+                    checkEventSeparator(eventName);
                 }
                 else if (args.length === 4) {
                     var eventName = args[1];
-                    this._checkEventSeparator(eventName);
+                    checkEventSeparator(eventName);
                 }
             })
         ], DomEventBinder.prototype, "on", null);
@@ -12016,7 +13679,6 @@ var wd;
     }(wd.EventBinder));
     wd.DomEventBinder = DomEventBinder;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var EventHandlerFactory = (function () {
@@ -12044,7 +13706,6 @@ var wd;
     }());
     wd.EventHandlerFactory = EventHandlerFactory;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var EventBinderFactory = (function () {
@@ -12070,7 +13731,6 @@ var wd;
     }());
     wd.EventBinderFactory = EventBinderFactory;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var EventDispatcherFactory = (function () {
@@ -12096,7 +13756,6 @@ var wd;
     }());
     wd.EventDispatcherFactory = EventDispatcherFactory;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var EventUtils = (function () {
@@ -12112,13 +13771,6 @@ var wd;
     }());
     wd.EventUtils = EventUtils;
 })(wd || (wd = {}));
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var EventManager = (function () {
@@ -12212,40 +13864,40 @@ var wd;
             }
             var length = args.length;
             if (length === 1) {
-                var event_1 = args[0], eventDispatcher = wd.EventDispatcherFactory.createEventDispatcher(event_1);
-                eventDispatcher.trigger(event_1);
+                var event_7 = args[0], eventDispatcher = wd.EventDispatcherFactory.createEventDispatcher(event_7);
+                eventDispatcher.trigger(event_7);
             }
             else if (length === 2 && wd.EventUtils.isEvent(args[0])) {
-                var event_2 = args[0], userData = args[1], eventDispatcher = wd.CustomEventDispatcher.getInstance();
-                eventDispatcher.trigger(event_2, userData);
+                var event_8 = args[0], userData = args[1], eventDispatcher = wd.CustomEventDispatcher.getInstance();
+                eventDispatcher.trigger(event_8, userData);
             }
             else if (length === 2 && wd.EventUtils.isEntityObject(args[0])) {
-                var target = args[0], event_3 = args[1], eventDispatcher = wd.CustomEventDispatcher.getInstance();
+                var target = args[0], event_9 = args[1], eventDispatcher = wd.CustomEventDispatcher.getInstance();
                 if (!target) {
                     return;
                 }
-                eventDispatcher.trigger(target, event_3);
+                eventDispatcher.trigger(target, event_9);
             }
             else if (length === 2) {
-                var dom = args[0], event_4 = args[1], eventDispatcher = wd.DomEventDispatcher.getInstance();
+                var dom = args[0], event_10 = args[1], eventDispatcher = wd.DomEventDispatcher.getInstance();
                 if (!dom) {
                     return;
                 }
-                eventDispatcher.trigger(dom, event_4);
+                eventDispatcher.trigger(dom, event_10);
             }
             else if (length === 3) {
-                var target = args[0], event_5 = args[1], userData = args[2], eventDispatcher = wd.CustomEventDispatcher.getInstance();
+                var target = args[0], event_11 = args[1], userData = args[2], eventDispatcher = wd.CustomEventDispatcher.getInstance();
                 if (!target) {
                     return;
                 }
-                eventDispatcher.trigger(target, event_5, userData);
+                eventDispatcher.trigger(target, event_11, userData);
             }
             else if (length === 4) {
-                var target = args[0], event_6 = args[1], userData = args[2], notSetTarget = args[3], eventDispatcher = wd.CustomEventDispatcher.getInstance();
+                var target = args[0], event_12 = args[1], userData = args[2], notSetTarget = args[3], eventDispatcher = wd.CustomEventDispatcher.getInstance();
                 if (!target) {
                     return;
                 }
-                eventDispatcher.trigger(target, event_6, userData, notSetTarget);
+                eventDispatcher.trigger(target, event_12, userData, notSetTarget);
             }
         };
         EventManager.broadcast = function () {
@@ -12271,39 +13923,39 @@ var wd;
             }
             var addHandler = null, removeHandler = null;
             if (args.length === 1) {
-                var eventName_1 = args[0];
+                var eventName_6 = args[0];
                 addHandler = function (handler) {
-                    EventManager.on(eventName_1, handler);
+                    EventManager.on(eventName_6, handler);
                 };
                 removeHandler = function (handler) {
-                    EventManager.off(eventName_1, handler);
+                    EventManager.off(eventName_6, handler);
                 };
             }
             else if (args.length === 2 && wd.JudgeUtils.isNumber(args[1])) {
-                var eventName_2 = args[0], priority_1 = args[1];
+                var eventName_7 = args[0], priority_1 = args[1];
                 addHandler = function (handler) {
-                    EventManager.on(eventName_2, handler, priority_1);
+                    EventManager.on(eventName_7, handler, priority_1);
                 };
                 removeHandler = function (handler) {
-                    EventManager.off(eventName_2, handler);
+                    EventManager.off(eventName_7, handler);
                 };
             }
             else if (args.length === 2) {
-                var eventName_3 = args[1];
+                var eventName_8 = args[1];
                 addHandler = function (handler) {
-                    EventManager.on(args[0], eventName_3, handler);
+                    EventManager.on(args[0], eventName_8, handler);
                 };
                 removeHandler = function (handler) {
-                    EventManager.off(args[0], eventName_3, handler);
+                    EventManager.off(args[0], eventName_8, handler);
                 };
             }
             else if (args.length === 3) {
-                var eventName_4 = args[1], priority_2 = args[2];
+                var eventName_9 = args[1], priority_2 = args[2];
                 addHandler = function (handler) {
-                    EventManager.on(args[0], eventName_4, handler, priority_2);
+                    EventManager.on(args[0], eventName_9, handler, priority_2);
                 };
                 removeHandler = function (handler) {
-                    EventManager.off(args[0], eventName_4, handler);
+                    EventManager.off(args[0], eventName_9, handler);
                 };
             }
             return wdFrp.fromEventPattern(addHandler, removeHandler);
@@ -12350,8 +14002,8 @@ var wd;
                     args[_i - 0] = arguments[_i];
                 }
                 if (args.length === 2 && args[0] instanceof wd.Event) {
-                    var event_7 = args[0];
-                    wd.assert(event_7 instanceof wd.CustomEvent, wd.Log.info.FUNC_MUST_BE("event type", "CUSTOM"));
+                    var event_13 = args[0];
+                    wd.assert(event_13 instanceof wd.CustomEvent, wd.Log.info.FUNC_MUST_BE("event type", "CUSTOM"));
                 }
                 else if (args.length === 2 && args[0] instanceof wd.EntityObject) {
                 }
@@ -12361,8 +14013,8 @@ var wd;
                     }
                 }
                 else if (args[0] instanceof wd.EntityObject) {
-                    var event_8 = args[1];
-                    wd.assert(event_8 instanceof wd.CustomEvent, wd.Log.info.FUNC_MUST_BE("event type", "CUSTOM"));
+                    var event_14 = args[1];
+                    wd.assert(event_14 instanceof wd.CustomEvent, wd.Log.info.FUNC_MUST_BE("event type", "CUSTOM"));
                 }
             })
         ], EventManager, "trigger", null);
@@ -12385,7 +14037,6 @@ var wd;
     }());
     wd.EventManager = EventManager;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     (function (EEngineEvent) {
@@ -12410,35 +14061,54 @@ var wd;
         EEngineEvent[EEngineEvent["TRANSFORM_ROTATE"] = "wd_transform_rotate"] = "TRANSFORM_ROTATE";
         EEngineEvent[EEngineEvent["TRANSFORM_SCALE"] = "wd_transform_scale"] = "TRANSFORM_SCALE";
         EEngineEvent[EEngineEvent["SHADOWMAP_SOFTTYPE_CHANGE"] = "wd_shadowMap_softType_change"] = "SHADOWMAP_SOFTTYPE_CHANGE";
+        EEngineEvent[EEngineEvent["SHADOWMAP_LAYER_CHANGE"] = "wd_shadowMap_layer_change"] = "SHADOWMAP_LAYER_CHANGE";
         EEngineEvent[EEngineEvent["COMPONENT_CHANGE"] = "wd_component_change"] = "COMPONENT_CHANGE";
+        EEngineEvent[EEngineEvent["UNUSE_SCENE_SHADER"] = "wd_unUse_scene_shader"] = "UNUSE_SCENE_SHADER";
+        EEngineEvent[EEngineEvent["EXIT"] = "wd_exit"] = "EXIT";
+        EEngineEvent[EEngineEvent["ENTER"] = "wd_enter"] = "ENTER";
     })(wd.EEngineEvent || (wd.EEngineEvent = {}));
     var EEngineEvent = wd.EEngineEvent;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
-    var LODController = (function (_super) {
-        __extends(LODController, _super);
-        function LODController() {
+    var ComponentInitOrderTable = (function () {
+        function ComponentInitOrderTable() {
+        }
+        ComponentInitOrderTable.getOrder = function (component) {
+            if (component instanceof wd.SourceInstance) {
+                return 1;
+            }
+            if (component instanceof wd.Shadow) {
+                return 2;
+            }
+            if (component instanceof wd.Geometry) {
+                return 3;
+            }
+            return 4;
+        };
+        return ComponentInitOrderTable;
+    }());
+    wd.ComponentInitOrderTable = ComponentInitOrderTable;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var LOD = (function (_super) {
+        __extends(LOD, _super);
+        function LOD() {
             _super.apply(this, arguments);
             this.activeGeometry = null;
-            this._levelList = wdCb.Collection.create();
+            this.levelList = wdCb.Collection.create();
             this._originGeometry = null;
         }
-        LODController.create = function () {
+        LOD.create = function () {
             var obj = new this();
             return obj;
         };
-        LODController.prototype.init = function () {
+        LOD.prototype.init = function () {
             var entityObject = this.entityObject;
             this.activeGeometry = entityObject.getComponent(wd.Geometry);
             this._originGeometry = this.activeGeometry;
-            this._levelList
+            this.levelList
                 .filter(function (_a) {
                 var geometry = _a.geometry, distanceBetweenCameraAndObject = _a.distanceBetweenCameraAndObject;
                 return !!geometry;
@@ -12451,18 +14121,18 @@ var wd;
             });
             _super.prototype.init.call(this);
         };
-        LODController.prototype.addGeometryLevel = function (distanceBetweenCameraAndObject, levelGeometry) {
-            this._levelList.addChild({
+        LOD.prototype.addGeometryLevel = function (distanceBetweenCameraAndObject, levelGeometry) {
+            this.levelList.addChild({
                 distanceBetweenCameraAndObject: distanceBetweenCameraAndObject,
                 geometry: levelGeometry
             });
-            this._levelList.sort(function (levelData1, levelData2) {
+            this.levelList.sort(function (levelData1, levelData2) {
                 return levelData2.distanceBetweenCameraAndObject - levelData1.distanceBetweenCameraAndObject;
             }, true);
         };
-        LODController.prototype.update = function (elapsedTime) {
+        LOD.prototype.update = function (elapsedTime) {
             var currentDistanceBetweenCameraAndObject = wd.Vector3.create().sub2(wd.Director.getInstance().scene.currentCamera.transform.position, this.entityObject.transform.position).length(), useOriginGeometry = true, activeGeometry = null;
-            this._levelList.forEach(function (_a) {
+            this.levelList.forEach(function (_a) {
                 var geometry = _a.geometry, distanceBetweenCameraAndObject = _a.distanceBetweenCameraAndObject;
                 if (currentDistanceBetweenCameraAndObject >= distanceBetweenCameraAndObject) {
                     activeGeometry = geometry;
@@ -12484,11 +14154,38 @@ var wd;
                 this.activeGeometry = this._originGeometry;
             }
         };
-        return LODController;
+        LOD.prototype.clone = function (isShareGeometry) {
+            if (isShareGeometry === void 0) { isShareGeometry = false; }
+            return wd.CloneUtils.clone(this, isShareGeometry);
+        };
+        __decorate([
+            wd.cloneAttributeAsCustomType(function (source, target, memberName, isShareGeometry) {
+                source.levelList.forEach(function (levelData) {
+                    var levelDataGeometry = null;
+                    if (levelData.geometry === wd.ELODGeometryState.INVISIBLE) {
+                        levelDataGeometry = wd.ELODGeometryState.INVISIBLE;
+                    }
+                    else if (isShareGeometry) {
+                        levelDataGeometry = levelData.geometry;
+                    }
+                    else {
+                        levelDataGeometry = levelData.geometry.clone();
+                    }
+                    target.addGeometryLevel(levelData.distanceBetweenCameraAndObject, levelDataGeometry);
+                });
+            })
+        ], LOD.prototype, "levelList", void 0);
+        __decorate([
+            wd.require(function () {
+                if (wd.InstanceUtils.isHardwareSupport()) {
+                    wd.assert(!wd.InstanceUtils.isObjectInstance(this.entityObject), wd.Log.info.FUNC_SHOULD_NOT("if hardware support instance, object instance", "add lod component"));
+                }
+            })
+        ], LOD.prototype, "update", null);
+        return LOD;
     }(wd.Component));
-    wd.LODController = LODController;
+    wd.LOD = LOD;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     (function (ELODGeometryState) {
@@ -12496,12 +14193,336 @@ var wd;
     })(wd.ELODGeometryState || (wd.ELODGeometryState = {}));
     var ELODGeometryState = wd.ELODGeometryState;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
+var wd;
+(function (wd) {
+    var Instance = (function (_super) {
+        __extends(Instance, _super);
+        function Instance() {
+            _super.apply(this, arguments);
+            this.toRenderInstanceListForDraw = wd.ABSTRACT_ATTRIBUTE;
+            this.instanceBuffer = wd.ABSTRACT_ATTRIBUTE;
+        }
+        Instance.prototype.addToObject = function (entityObject, isShareComponent) {
+            if (isShareComponent === void 0) { isShareComponent = false; }
+            _super.prototype.addToObject.call(this, entityObject, isShareComponent);
+        };
+        Instance.prototype.clone = function () {
+            return wd.CloneUtils.clone(this);
+        };
+        __decorate([
+            wd.require(function (entityObject) {
+                wd.assert(entityObject instanceof wd.GameObject, wd.Log.info.FUNC_SHOULD("Instance component", "add to GameObject"));
+            })
+        ], Instance.prototype, "addToObject", null);
+        return Instance;
+    }(wd.Component));
+    wd.Instance = Instance;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var SourceInstance = (function (_super) {
+        __extends(SourceInstance, _super);
+        function SourceInstance() {
+            _super.apply(this, arguments);
+            this._instanceBuffer = null;
+            this.instanceList = wdCb.Collection.create();
+            this._toRenderInstanceList = wdCb.Collection.create();
+            this._endLoopSubscription = null;
+            this._isAddSourceInstanceToChildren = false;
+            this._enterSubscription = null;
+            this._exitSubscription = null;
+        }
+        SourceInstance.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        Object.defineProperty(SourceInstance.prototype, "toRenderInstanceListForDraw", {
+            get: function () {
+                if (!this.hasToRenderInstance()) {
+                    return this._toRenderInstanceList.clone().addChild(this.entityObject).addChildren(this.instanceList);
+                }
+                return this._toRenderInstanceList;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(SourceInstance.prototype, "instanceBuffer", {
+            get: function () {
+                return this._instanceBuffer;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        SourceInstance.prototype.init = function () {
+            var self = this;
+            if (!this._isAddSourceInstanceToChildren) {
+                this._addSourceInstanceToChildren();
+            }
+            this._instanceBuffer = wd.InstanceBuffer.create();
+            this._endLoopSubscription = wd.EventManager.fromEvent(wd.EEngineEvent.ENDLOOP)
+                .subscribe(function () {
+                self._toRenderInstanceList.removeAllChildren();
+            });
+            this._enterSubscription = wd.EventManager.fromEvent(this.entityObject, wd.EEngineEvent.ENTER)
+                .subscribe(function () {
+                self._addAllInstances();
+            });
+            this._exitSubscription = wd.EventManager.fromEvent(this.entityObject, wd.EEngineEvent.EXIT)
+                .subscribe(function () {
+                self._removeAllInstances();
+            });
+        };
+        SourceInstance.prototype.dispose = function () {
+            this._endLoopSubscription.dispose();
+            this._enterSubscription.dispose();
+            this._exitSubscription.dispose();
+            this.instanceList.forEach(function (instance) {
+                instance.dispose();
+            });
+        };
+        SourceInstance.prototype.cloneInstance = function (name) {
+            var _this = this;
+            var self = this;
+            var clone = function (name, entityObject) {
+                var instance = wd.GameObject.create(), objectInstanceComponent = wd.ObjectInstance.create(), sourceInstanceList = null;
+                sourceInstanceList = entityObject.getComponent(SourceInstance).instanceList;
+                instance.name = name;
+                _this._addComponentsFromSourceToObject(entityObject, instance);
+                objectInstanceComponent.sourceObject = entityObject;
+                instance.addComponent(objectInstanceComponent);
+                instance.bubbleParent = entityObject.bubbleParent;
+                instance.parent = entityObject.parent;
+                instance.isVisible = entityObject.isVisible;
+                entityObject.getTagList().forEach(function (tag) {
+                    instance.addTag(tag);
+                });
+                sourceInstanceList.addChild(instance);
+                entityObject.forEach(function (child) {
+                    instance.addChild(clone(self._buildInstanceChildName(name, child.name), child));
+                });
+                return instance;
+            };
+            this._addSourceInstanceToChildren();
+            this._isAddSourceInstanceToChildren = true;
+            return clone(name, this.entityObject);
+        };
+        SourceInstance.prototype.hasToRenderInstance = function () {
+            return this._toRenderInstanceList && this._toRenderInstanceList.getCount() > 0;
+        };
+        SourceInstance.prototype.addToRenderIntance = function (instanceObj) {
+            this._toRenderInstanceList.addChild(instanceObj);
+        };
+        SourceInstance.prototype.forEachToRenderInstanceList = function (func) {
+            this._toRenderInstanceList.forEach(func);
+        };
+        SourceInstance.prototype._addComponentsFromSourceToObject = function (source, instance) {
+            var isHardwareSupport = wd.InstanceUtils.isHardwareSupport();
+            instance.removeComponent(wd.Transform);
+            source.forEachComponent(function (component) {
+                if (component instanceof SourceInstance
+                    || (isHardwareSupport && component instanceof wd.LOD)) {
+                    return;
+                }
+                if (component instanceof wd.LOD) {
+                    instance.addComponent(component.clone(true));
+                }
+                else if (component instanceof wd.Geometry
+                    || component instanceof wd.Script) {
+                    instance.addComponent(component, true);
+                }
+                else {
+                    instance.addComponent(component.clone());
+                }
+            });
+        };
+        SourceInstance.prototype._addSourceInstanceToChildren = function () {
+            var add = function (child) {
+                if (!wd.InstanceUtils.isSourceInstance(child)) {
+                    var sourceInstanceComponent = SourceInstance.create();
+                    if (!child.hasComponent(SourceInstance)) {
+                        child.addComponent(sourceInstanceComponent);
+                    }
+                    child.forEach(function (c) {
+                        add(c);
+                    });
+                }
+            };
+            this.entityObject.forEach(function (child) {
+                add(child);
+            });
+        };
+        SourceInstance.prototype._addAllInstances = function () {
+            var parent = this.entityObject.parent, tag = (wd.EInstanceTag.isAddSourceInstance);
+            this.instanceList.forEach(function (instance) {
+                instance.addTag(tag);
+                parent.addChild(instance);
+                instance.removeTag(tag);
+            });
+        };
+        SourceInstance.prototype._removeAllInstances = function () {
+            var tag = (wd.EInstanceTag.isRemoveSourceInstance);
+            this.instanceList.forEach(function (instance) {
+                instance.addTag(tag);
+                instance.parent.removeChild(instance);
+                instance.removeTag(tag);
+            });
+        };
+        SourceInstance.prototype._buildInstanceChildName = function (parentName, childName) {
+            return parentName + "_" + childName;
+        };
+        __decorate([
+            wd.ensureGetter(function (toRenderInstanceListForDraw) {
+                var self = this;
+                wd.assert(toRenderInstanceListForDraw.getCount() > 0, wd.Log.info.FUNC_SHOULD("contain one at least"));
+                toRenderInstanceListForDraw.forEach(function (instance) {
+                    wd.assert(wd.JudgeUtils.isEqual(instance, self.entityObject) || self.instanceList.hasChild(instance), wd.Log.info.FUNC_SHOULD("render self entityObject or the entityObject in instanceList"));
+                });
+                wd.assert(!toRenderInstanceListForDraw.hasRepeatItems(), wd.Log.info.FUNC_SHOULD_NOT("has repeat instance which is to render"));
+            })
+        ], SourceInstance.prototype, "toRenderInstanceListForDraw", null);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], SourceInstance.prototype, "instanceList", void 0);
+        __decorate([
+            wd.ensure(function () {
+                this.entityObject.forEach(function (child) {
+                    wd.IterateUtils.forEachAll(child, function (child) {
+                        wd.assert(wd.InstanceUtils.isSourceInstance(child), wd.Log.info.FUNC_SHOULD("children", "contain SourceInstance component"));
+                    });
+                });
+            })
+        ], SourceInstance.prototype, "init", null);
+        __decorate([
+            wd.require(function () {
+                var self = this;
+                var checkInstanceIsNotOnlyInInstanceListButAlsoInLoop = function () {
+                    var scene = null, children = null, isInLoop = true;
+                    if (self.instanceList.getCount() === 0) {
+                        return;
+                    }
+                    scene = wd.Director.getInstance().scene;
+                    children = wdCb.Collection.create();
+                    wd.IterateUtils.forEachAll(scene.gameObjectScene, function (gameObject) {
+                        children.addChild(gameObject);
+                    });
+                    self.instanceList.forEach(function (instance) {
+                        if (!children.hasChild(instance)) {
+                            isInLoop = false;
+                            return wdCb.$BREAK;
+                        }
+                    });
+                    wd.assert(isInLoop, wd.Log.info.FUNC_SHOULD("instance", "not only in instanceList, but also in the main loop"));
+                };
+                checkInstanceIsNotOnlyInInstanceListButAlsoInLoop();
+            })
+        ], SourceInstance.prototype, "dispose", null);
+        __decorate([
+            wd.require(function () {
+                var entityObject = this.entityObject;
+                wd.assert(!entityObject.getSpacePartition(), wd.Log.info.FUNC_NOT_SUPPORT("space partition", "instance"));
+            }),
+            wd.ensure(function (instance) {
+                wd.assert(wd.InstanceUtils.isObjectInstance(instance));
+            })
+        ], SourceInstance.prototype, "cloneInstance", null);
+        __decorate([
+            wd.ensure(function () {
+                wd.IterateUtils.forEachAll(this.entityObject, function (gameObject) {
+                    wd.assert(gameObject.getAllComponent()
+                        .filter(function (component) {
+                        return component instanceof SourceInstance;
+                    })
+                        .getCount() === 1, wd.Log.info.FUNC_SHOULD("children", "contain only one SourceInstance component"));
+                });
+            })
+        ], SourceInstance.prototype, "_addSourceInstanceToChildren", null);
+        __decorate([
+            wd.ensure(function () {
+                this.instanceList.forEach(function (instance) {
+                    wd.assert(!instance.hasTag(wd.EInstanceTag.isAddSourceInstance), wd.Log.info.FUNC_SHOULD_NOT("instance", "add EInstanceTag.isAddSourceInstance tag here"));
+                });
+            })
+        ], SourceInstance.prototype, "_addAllInstances", null);
+        __decorate([
+            wd.ensure(function () {
+                this.instanceList.forEach(function (instance) {
+                    wd.assert(!instance.hasTag(wd.EInstanceTag.isRemoveSourceInstance), wd.Log.info.FUNC_SHOULD_NOT("instance", "add EInstanceTag.isRemoveSourceInstance tag here"));
+                });
+            })
+        ], SourceInstance.prototype, "_removeAllInstances", null);
+        return SourceInstance;
+    }(wd.Instance));
+    wd.SourceInstance = SourceInstance;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var ObjectInstance = (function (_super) {
+        __extends(ObjectInstance, _super);
+        function ObjectInstance() {
+            _super.apply(this, arguments);
+            this.sourceObject = null;
+            this._enterSubscription = null;
+            this._exitSubscription = null;
+        }
+        ObjectInstance.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        ObjectInstance.prototype.init = function () {
+            var self = this, entityObject = this.entityObject;
+            this._enterSubscription = wd.EventManager.fromEvent(entityObject, wd.EEngineEvent.ENTER)
+                .subscribe(function () {
+                if (entityObject.hasTag(wd.EInstanceTag.isAddSourceInstance)) {
+                    return;
+                }
+                self._addToSourceAndItsChildren();
+            });
+            this._exitSubscription = wd.EventManager.fromEvent(entityObject, wd.EEngineEvent.EXIT)
+                .subscribe(function () {
+                if (entityObject.hasTag(wd.EInstanceTag.isRemoveSourceInstance)) {
+                    return;
+                }
+                self._removeFromSourceAndItsChildren();
+            });
+        };
+        ObjectInstance.prototype.dispose = function () {
+            this._enterSubscription.dispose();
+            this._exitSubscription.dispose();
+            this._removeFromSourceAndItsChildren();
+        };
+        ObjectInstance.prototype._addToSourceAndItsChildren = function () {
+            var add = function (sourceInstanceObject, objectInstanceObject) {
+                sourceInstanceObject.getComponent(wd.SourceInstance).instanceList.addChild(objectInstanceObject);
+                objectInstanceObject.forEach(function (child, index) {
+                    add(sourceInstanceObject.getChild(index), child);
+                });
+            };
+            add(this.sourceObject, this.entityObject);
+        };
+        ObjectInstance.prototype._removeFromSourceAndItsChildren = function () {
+            var remove = function (sourceInstanceObject, objectInstanceObject) {
+                sourceInstanceObject.getComponent(wd.SourceInstance).instanceList.removeChild(objectInstanceObject);
+                objectInstanceObject.forEach(function (child, index) {
+                    remove(sourceInstanceObject.getChild(index), child);
+                });
+            };
+            remove(this.sourceObject, this.entityObject);
+        };
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], ObjectInstance.prototype, "sourceObject", void 0);
+        return ObjectInstance;
+    }(wd.Instance));
+    wd.ObjectInstance = ObjectInstance;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    (function (EInstanceTag) {
+        EInstanceTag[EInstanceTag["isRemoveSourceInstance"] = "isRemoveSourceInstance"] = "isRemoveSourceInstance";
+        EInstanceTag[EInstanceTag["isAddSourceInstance"] = "isAddSourceInstance"] = "isAddSourceInstance";
+    })(wd.EInstanceTag || (wd.EInstanceTag = {}));
+    var EInstanceTag = wd.EInstanceTag;
+})(wd || (wd = {}));
 var wd;
 (function (wd) {
     var EventTriggerDetector = (function (_super) {
@@ -12509,16 +14530,13 @@ var wd;
         function EventTriggerDetector() {
             _super.apply(this, arguments);
         }
+        EventTriggerDetector.prototype.clone = function () {
+            return wd.CloneUtils.clone(this);
+        };
         return EventTriggerDetector;
     }(wd.Component));
     wd.EventTriggerDetector = EventTriggerDetector;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var UIEventTriggerDetector = (function (_super) {
@@ -12539,12 +14557,6 @@ var wd;
     }(wd.EventTriggerDetector));
     wd.UIEventTriggerDetector = UIEventTriggerDetector;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var RayCasterEventTriggerDetector = (function (_super) {
@@ -12564,12 +14576,6 @@ var wd;
     }(wd.EventTriggerDetector));
     wd.RayCasterEventTriggerDetector = RayCasterEventTriggerDetector;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var SceneEventTriggerDetector = (function (_super) {
@@ -12589,7 +14595,6 @@ var wd;
     }(wd.EventTriggerDetector));
     wd.SceneEventTriggerDetector = SceneEventTriggerDetector;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var EventTriggerDetectorUtils = (function () {
@@ -12602,7 +14607,6 @@ var wd;
     }());
     wd.EventTriggerDetectorUtils = EventTriggerDetectorUtils;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var _scriptHandlerNameTable = wdCb.Hash.create(), _scriptEngineEventTable = wdCb.Hash.create();
@@ -12637,16 +14641,6 @@ var wd;
     }());
     wd.EventTriggerTable = EventTriggerTable;
 })(wd || (wd = {}));
-
-
-
-
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var Script = (function (_super) {
@@ -12655,6 +14649,7 @@ var wd;
             if (url === void 0) { url = null; }
             _super.call(this);
             this.url = null;
+            this._subscription = null;
             this.url = url;
         }
         Script.create = function () {
@@ -12676,6 +14671,9 @@ var wd;
                 class: _class
             });
         };
+        Script.prototype.dispose = function () {
+            this._subscription.dispose();
+        };
         Script.prototype.createLoadJsStream = function () {
             wd.Log.error(!this.url, wd.Log.info.FUNC_MUST_DEFINE("url"));
             return wd.LoaderManager.getInstance().load(this.url)
@@ -12683,42 +14681,23 @@ var wd;
                 return Script.scriptList.pop();
             });
         };
-        Script.prototype.addToObject = function (entityObject) {
-            var self = this;
-            _super.prototype.addToObject.call(this, entityObject);
-            this.createLoadJsStream()
+        Script.prototype.addToObject = function (entityObject, isShareComponent) {
+            if (isShareComponent === void 0) { isShareComponent = false; }
+            _super.prototype.addToObject.call(this, entityObject, isShareComponent);
+            this._subscription = this.createLoadJsStream()
                 .subscribe(function (data) {
-                self._handlerAfterLoadedScript(data, entityObject);
+                wd.GlobalScriptUtils.addScriptToEntityObject(entityObject, data);
+                wd.GlobalScriptUtils.handlerAfterLoadedScript(entityObject);
             });
         };
-        Script.prototype._handlerAfterLoadedScript = function (data, entityObject) {
-            this._addScriptToEntityObject(entityObject, data);
-            entityObject.execScript("onEnter", null, true);
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.BEFORE_GAMEOBJECT_INIT));
-            entityObject.execScript("init", null, true);
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.AFTER_GAMEOBJECT_INIT));
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.AFTER_GAMEOBJECT_INIT_RIGIDBODY_ADD_CONSTRAINT));
-        };
-        Script.prototype._addScriptToEntityObject = function (entityObject, data) {
-            entityObject.scriptList.addChild(data.name, new data.class(entityObject));
-        };
         Script.scriptList = wdCb.Stack.create();
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Script.prototype, "url", void 0);
         return Script;
     }(wd.Component));
     wd.Script = Script;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var Transform = (function (_super) {
@@ -12859,24 +14838,15 @@ var wd;
             }
         };
         __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Transform.prototype, "parent", null);
+        __decorate([
             wd.virtual
         ], Transform.prototype, "handleWhenSetTransformState", null);
         return Transform;
     }(wd.Component));
     wd.Transform = Transform;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var ThreeDTransform = (function (_super) {
@@ -12920,10 +14890,10 @@ var wd;
             },
             set: function (position) {
                 if (this.p_parent === null) {
-                    this._localPosition = position.copy();
+                    this._localPosition = position;
                 }
                 else {
-                    this._localPosition = this.p_parent.localToWorldMatrix.copy().invert().multiplyPoint(position);
+                    this._localPosition = this.p_parent.localToWorldMatrix.clone().invert().multiplyPoint(position);
                 }
                 this.isTranslate = true;
             },
@@ -12937,10 +14907,10 @@ var wd;
             },
             set: function (rotation) {
                 if (this.p_parent === null) {
-                    this._localRotation = rotation.copy();
+                    this._localRotation = rotation;
                 }
                 else {
-                    this._localRotation = this.p_parent.rotation.copy().invert().multiply(rotation);
+                    this._localRotation = this.p_parent.rotation.clone().invert().multiply(rotation);
                 }
                 this.isRotate = true;
             },
@@ -12954,10 +14924,10 @@ var wd;
             },
             set: function (scale) {
                 if (this.p_parent === null) {
-                    this._localScale = scale.copy();
+                    this._localScale = scale;
                 }
                 else {
-                    this._localScale = this.p_parent.localToWorldMatrix.copy().invert().multiplyVector3(scale);
+                    this._localScale = this.p_parent.localToWorldMatrix.clone().invert().multiplyVector3(scale);
                 }
                 this.isScale = true;
             },
@@ -12972,7 +14942,7 @@ var wd;
             set: function (eulerAngles) {
                 this._localRotation.setFromEulerAngles(eulerAngles);
                 if (this.p_parent !== null) {
-                    this._localRotation = this.p_parent.rotation.copy().invert().multiply(this._localRotation);
+                    this._localRotation = this.p_parent.rotation.clone().invert().multiply(this._localRotation);
                 }
                 this.isRotate = true;
             },
@@ -12984,7 +14954,7 @@ var wd;
                 return this._localPosition;
             },
             set: function (position) {
-                this._localPosition = position.copy();
+                this._localPosition = position;
                 this.isLocalTranslate = true;
             },
             enumerable: true,
@@ -12995,7 +14965,7 @@ var wd;
                 return this._localRotation;
             },
             set: function (rotation) {
-                this._localRotation = rotation.copy();
+                this._localRotation = rotation;
                 this.isLocalRotate = true;
             },
             enumerable: true,
@@ -13018,7 +14988,7 @@ var wd;
                 return this._localScale;
             },
             set: function (scale) {
-                this._localScale = scale.copy();
+                this._localScale = scale;
                 this.isLocalScale = true;
             },
             enumerable: true,
@@ -13064,10 +15034,10 @@ var wd;
             }
             if (this.dirtyWorld) {
                 if (this.p_parent === null) {
-                    this._localToWorldMatrix = this._localToParentMatrix.copy();
+                    this._localToWorldMatrix = this._localToParentMatrix.clone();
                 }
                 else {
-                    this._localToWorldMatrix = this.p_parent.localToWorldMatrix.copy().multiply(this._localToParentMatrix);
+                    this._localToWorldMatrix = this.p_parent.localToWorldMatrix.clone().multiply(this._localToParentMatrix);
                 }
                 this.dirtyWorld = false;
                 this.children.forEach(function (child) {
@@ -13123,7 +15093,7 @@ var wd;
                 this._localRotation = quaternion.multiply(this._localRotation);
             }
             else {
-                quaternion = this.p_parent.rotation.copy().invert().multiply(quaternion);
+                quaternion = this.p_parent.rotation.clone().invert().multiply(quaternion);
                 this._localRotation = quaternion.multiply(this.rotation);
             }
             this.isRotate = true;
@@ -13163,7 +15133,7 @@ var wd;
                 axis = wd.Vector3.create(args[4], args[5], args[6]);
             }
             rot = wd.Quaternion.create().setFromAxisAngle(angle, axis);
-            dir = this.position.copy().sub(center);
+            dir = this.position.clone().sub(center);
             dir = rot.multiplyVector3(dir);
             this.position = center.add(dir);
             this.rotation = rot.multiply(this.rotation);
@@ -13235,6 +15205,7 @@ var wd;
             })
         ], ThreeDTransform.prototype, "localToWorldMatrix", null);
         __decorate([
+            wd.cloneAttributeAsCloneable(),
             wd.cacheGetter(function () {
                 return this._positionCache !== null;
             }, function () {
@@ -13244,6 +15215,7 @@ var wd;
             })
         ], ThreeDTransform.prototype, "position", null);
         __decorate([
+            wd.cloneAttributeAsCloneable(),
             wd.cacheGetter(function () {
                 return this._rotationCache !== null;
             }, function () {
@@ -13253,6 +15225,7 @@ var wd;
             })
         ], ThreeDTransform.prototype, "rotation", null);
         __decorate([
+            wd.cloneAttributeAsCloneable(),
             wd.cacheGetter(function () {
                 return this._scaleCache !== null;
             }, function () {
@@ -13271,6 +15244,12 @@ var wd;
             })
         ], ThreeDTransform.prototype, "eulerAngles", null);
         __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], ThreeDTransform.prototype, "localPosition", null);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], ThreeDTransform.prototype, "localRotation", null);
+        __decorate([
             wd.cacheGetter(function () {
                 return this._localEulerAnglesCache !== null;
             }, function () {
@@ -13279,22 +15258,13 @@ var wd;
                 this._localEulerAnglesCache = result;
             })
         ], ThreeDTransform.prototype, "localEulerAngles", null);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], ThreeDTransform.prototype, "localScale", null);
         return ThreeDTransform;
     }(wd.Transform));
     wd.ThreeDTransform = ThreeDTransform;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var RectTransform = (function (_super) {
@@ -13346,10 +15316,10 @@ var wd;
             },
             set: function (position) {
                 if (this.p_parent === null) {
-                    this._localPosition = position.copy();
+                    this._localPosition = position;
                 }
                 else {
-                    this._localPosition = this.p_parent.localPositionAndScaleMatrix.copy().invert().multiplyPoint(position);
+                    this._localPosition = this.p_parent.localPositionAndScaleMatrix.clone().invert().multiplyPoint(position);
                 }
                 this.isTranslate = true;
             },
@@ -13377,10 +15347,10 @@ var wd;
             },
             set: function (scale) {
                 if (this.p_parent === null) {
-                    this._localScale = scale.copy();
+                    this._localScale = scale;
                 }
                 else {
-                    this._localScale = this.p_parent.localPositionAndScaleMatrix.copy().invert().multiplyVector2(scale);
+                    this._localScale = this.p_parent.localPositionAndScaleMatrix.clone().invert().multiplyVector2(scale);
                 }
                 this.isScale = true;
             },
@@ -13392,7 +15362,7 @@ var wd;
                 return this._localPosition;
             },
             set: function (position) {
-                this._localPosition = position.copy();
+                this._localPosition = position;
                 this.isLocalTranslate = true;
             },
             enumerable: true,
@@ -13403,7 +15373,7 @@ var wd;
                 return this._localScale;
             },
             set: function (scale) {
-                this._localScale = scale.copy();
+                this._localScale = scale;
                 this.isLocalScale = true;
             },
             enumerable: true,
@@ -13415,6 +15385,9 @@ var wd;
             },
             set: function (anchorX) {
                 var parentWidth = null;
+                if (this._anchorX.isEqual(anchorX)) {
+                    return;
+                }
                 this._anchorX = anchorX;
                 if (anchorX.x === anchorX.y) {
                     var widthFromAnchorToPosition = (anchorX.x - 0.5) * this._getParentWidth();
@@ -13434,6 +15407,9 @@ var wd;
             },
             set: function (anchorY) {
                 var parentHeight = null;
+                if (this._anchorY.isEqual(anchorY)) {
+                    return;
+                }
                 this._anchorY = anchorY;
                 if (anchorY.x === anchorY.y) {
                     var heightFromAnchorToPosition = (anchorY.x - 0.5) * this._getParentHeight();
@@ -13452,11 +15428,12 @@ var wd;
                 return this._width * this.scale.x;
             },
             set: function (width) {
-                if (width !== this._width) {
-                    this._width = width;
-                    if (this.entityObject) {
-                        wd.EventManager.trigger(this.entityObject, wd.CustomEvent.create(wd.EEngineEvent.UI_WIDTH_CHANGE));
-                    }
+                if (this._width === width) {
+                    return;
+                }
+                this._width = width;
+                if (this.entityObject) {
+                    wd.EventManager.trigger(this.entityObject, wd.CustomEvent.create(wd.EEngineEvent.UI_WIDTH_CHANGE));
                 }
             },
             enumerable: true,
@@ -13467,11 +15444,12 @@ var wd;
                 return this._height * this.scale.y;
             },
             set: function (height) {
-                if (height !== this._height) {
-                    this._height = height;
-                    if (this.entityObject) {
-                        wd.EventManager.trigger(this.entityObject, wd.CustomEvent.create(wd.EEngineEvent.UI_HEIGHT_CHANGE));
-                    }
+                if (this._height === height) {
+                    return;
+                }
+                this._height = height;
+                if (this.entityObject) {
+                    wd.EventManager.trigger(this.entityObject, wd.CustomEvent.create(wd.EEngineEvent.UI_HEIGHT_CHANGE));
                 }
             },
             enumerable: true,
@@ -13484,10 +15462,10 @@ var wd;
         RectTransform.prototype.syncRotation = function () {
             if (this.dirtyRotation) {
                 if (this.p_parent === null) {
-                    this._rotationMatrix = this._localRotationMatrix.copy();
+                    this._rotationMatrix = this._localRotationMatrix.clone();
                 }
                 else {
-                    this._rotationMatrix = this.p_parent.rotationMatrix.copy().multiply(this._localRotationMatrix);
+                    this._rotationMatrix = this.p_parent.rotationMatrix.clone().multiply(this._localRotationMatrix);
                 }
                 this.children.forEach(function (child) {
                     child.dirtyRotation = true;
@@ -13502,10 +15480,10 @@ var wd;
             }
             if (this.dirtyPositionAndScale) {
                 if (this.p_parent === null) {
-                    this._localPositionAndScaleMatrix = this._localToParentMatrix.copy();
+                    this._localPositionAndScaleMatrix = this._localToParentMatrix.clone();
                 }
                 else {
-                    this._localPositionAndScaleMatrix = this.p_parent.localPositionAndScaleMatrix.copy().multiply(this._localToParentMatrix);
+                    this._localPositionAndScaleMatrix = this.p_parent.localPositionAndScaleMatrix.clone().multiply(this._localToParentMatrix);
                 }
                 this.dirtyLocal = false;
                 this.children.forEach(function (child) {
@@ -13640,24 +15618,52 @@ var wd;
             })
         ], RectTransform.prototype, "localPositionAndScaleMatrix", null);
         __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], RectTransform.prototype, "position", null);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], RectTransform.prototype, "rotation", null);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], RectTransform.prototype, "scale", null);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], RectTransform.prototype, "localPosition", null);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], RectTransform.prototype, "localScale", null);
+        __decorate([
             wd.requireSetter(function (anchorX) {
                 wd.assert(anchorX.x <= anchorX.y, wd.Log.info.FUNC_SHOULD("minX", "<= maxY"));
                 wd.assert(anchorX.x >= 0 && anchorX.x <= 1, wd.Log.info.FUNC_SHOULD("minX", ">= 0 && <= 1"));
                 wd.assert(anchorX.y >= 0 && anchorX.y <= 1, wd.Log.info.FUNC_SHOULD("maxX", ">= 0 && <= 1"));
-            })
+            }),
+            wd.cloneAttributeAsCloneable()
         ], RectTransform.prototype, "anchorX", null);
         __decorate([
             wd.requireSetter(function (anchorY) {
                 wd.assert(anchorY.x <= anchorY.y, wd.Log.info.FUNC_SHOULD("minY", "<= maxY"));
                 wd.assert(anchorY.x >= 0 && anchorY.x <= 1, wd.Log.info.FUNC_SHOULD("minY", ">= 0 && <= 1"));
                 wd.assert(anchorY.y >= 0 && anchorY.y <= 1, wd.Log.info.FUNC_SHOULD("maxY", ">= 0 && <= 1"));
-            })
+            }),
+            wd.cloneAttributeAsCloneable()
         ], RectTransform.prototype, "anchorY", null);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], RectTransform.prototype, "width", null);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], RectTransform.prototype, "height", null);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], RectTransform.prototype, "pivot", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], RectTransform.prototype, "zIndex", void 0);
         return RectTransform;
     }(wd.Transform));
     wd.RectTransform = RectTransform;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     (function (ETransformState) {
@@ -13670,176 +15676,331 @@ var wd;
     })(wd.ETransformState || (wd.ETransformState = {}));
     var ETransformState = wd.ETransformState;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
-    var ComponentContainer = (function () {
-        function ComponentContainer() {
-            this.list = wdCb.Collection.create();
-        }
-        ComponentContainer.prototype.addChild = function (component) {
-            if (this.hasChild(component)) {
-                return;
-            }
-            this.list.addChild(component);
-        };
-        ComponentContainer.prototype.removeChild = function (component) {
-            this.list.removeChild(component);
-        };
-        ComponentContainer.prototype.hasChild = function (component) {
-            return this.list.hasChild(component);
-        };
-        return ComponentContainer;
-    }());
-    wd.ComponentContainer = ComponentContainer;
-})(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var wd;
-(function (wd) {
-    var ActionManager = (function (_super) {
-        __extends(ActionManager, _super);
-        function ActionManager() {
+    var Shadow = (function (_super) {
+        __extends(Shadow, _super);
+        function Shadow() {
             _super.apply(this, arguments);
+            this._receive = true;
+            this._cast = true;
+            this._layer = wd.EShadowLayer.DEFAULT;
+            this._shadowMapLayerChangeSubscription = null;
+            this._isInit = false;
         }
-        ActionManager.create = function () {
+        Shadow.create = function () {
             var obj = new this();
             return obj;
         };
-        ActionManager.prototype.update = function (elapsedTime) {
-            var removeQueue = [];
-            this.list.forEach(function (child) {
-                if (child.isFinish) {
-                    removeQueue.push(child);
-                    return;
+        Object.defineProperty(Shadow.prototype, "receive", {
+            get: function () {
+                return this._receive;
+            },
+            set: function (receive) {
+                if (this._isInit && this._receive !== receive) {
+                    if (wd.InstanceUtils.isObjectInstance(this.entityObject)) {
+                        this._receive = receive;
+                        return;
+                    }
+                    if (receive) {
+                        this._addShadowMapsToObjectAndChildren();
+                        this._switchToShadowMapShaderLib(this.entityObject);
+                    }
+                    else {
+                        this._removeShadowMapsOfObjectAndChildren();
+                        this._switchToNoShadowMapShaderLib(this.entityObject);
+                    }
                 }
-                if (child.isStop || child.isPause) {
-                    return;
+                this._receive = receive;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Shadow.prototype, "cast", {
+            get: function () {
+                return this._cast;
+            },
+            set: function (cast) {
+                this._cast = cast;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Shadow.prototype, "layer", {
+            get: function () {
+                if (wd.InstanceUtils.isObjectInstance(this.entityObject) && !wd.InstanceUtils.isHardwareSupport()) {
+                    this._layer = this.entityObject.getComponent(wd.ObjectInstance).sourceObject.getComponent(Shadow).layer;
                 }
-                child.update(elapsedTime);
-            });
-            for (var _i = 0, removeQueue_1 = removeQueue; _i < removeQueue_1.length; _i++) {
-                var child = removeQueue_1[_i];
-                child.entityObject.removeComponent(child);
-            }
+                return this._layer;
+            },
+            set: function (layer) {
+                if (layer && this._layer !== layer) {
+                    this._layer = layer;
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Shadow.prototype.addToObject = function (entityObject, isShareComponent) {
+            if (isShareComponent === void 0) { isShareComponent = false; }
+            _super.prototype.addToObject.call(this, entityObject, isShareComponent);
         };
-        return ActionManager;
-    }(wd.ComponentContainer));
-    wd.ActionManager = ActionManager;
-})(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var wd;
-(function (wd) {
-    var UIManager = (function (_super) {
-        __extends(UIManager, _super);
-        function UIManager(uiObject) {
-            _super.call(this);
-            this._uiObject = null;
-            this._uiObject = uiObject;
-        }
-        UIManager.create = function (uiObject) {
-            var obj = new this(uiObject);
-            return obj;
-        };
-        UIManager.prototype.update = function (elapsedTime) {
-            if (this.list.getCount() === 0) {
+        Shadow.prototype.init = function () {
+            var self = this;
+            this._isInit = true;
+            if (wd.InstanceUtils.isObjectInstance(this.entityObject)
+                || !this._isFirstLevelObjectOfSceneOrSpacePartition()) {
                 return;
             }
-            if (this._isDirty()) {
-                this.list.forEach(function (ui) {
-                    ui.update(elapsedTime);
+            this._shadowMapLayerChangeSubscription = wd.EventManager.fromEvent(wd.EEngineEvent.SHADOWMAP_LAYER_CHANGE)
+                .subscribe(function () {
+                if (self.receive) {
+                    self._addShadowMapsToObjectAndChildren();
+                }
+            });
+            if (this.cast && this.receive) {
+                this._addBuildShadowMapShaderAndShadowMapsToObjectAndChildren();
+            }
+            else if (this.cast) {
+                this._addBuildShadowMapShaderToObjectAndChildren();
+                return;
+            }
+            else if (this.receive) {
+                this._addShadowMapsToObjectAndChildren();
+            }
+        };
+        Shadow.prototype.dispose = function () {
+            this._shadowMapLayerChangeSubscription && this._shadowMapLayerChangeSubscription.dispose();
+        };
+        Shadow.prototype._addAllShadowMaps = function (twoDShadowMapDataMap, cubemapShadowMapDataMap, mapManager) {
+            twoDShadowMapDataMap.forEach(function (twoDShadowMapDataList) {
+                twoDShadowMapDataList.forEach(function (_a) {
+                    var shadowMap = _a.shadowMap;
+                    mapManager.addTwoDShadowMap(shadowMap);
                 });
-            }
+            });
+            cubemapShadowMapDataMap.forEach(function (cubemapShadowMapDataList) {
+                cubemapShadowMapDataList.forEach(function (_a) {
+                    var shadowMap = _a.shadowMap;
+                    mapManager.addCubemapShadowMap(shadowMap);
+                });
+            });
         };
-        UIManager.prototype._isDirty = function () {
-            return this._uiObject.getComponent(wd.UIRenderer).state === wd.EUIRendererState.DIRTY;
-        };
-        __decorate([
-            wd.require(function (elapsedTime) {
-                wd.assert(this.list.getCount() <= 1, wd.Log.info.FUNC_SHOULD("only contain one ui component"));
-            })
-        ], UIManager.prototype, "update", null);
-        return UIManager;
-    }(wd.ComponentContainer));
-    wd.UIManager = UIManager;
-})(wd || (wd = {}));
-
-var wd;
-(function (wd) {
-    var LightManager = (function () {
-        function LightManager() {
-            this._lights = wdCb.Hash.create();
-        }
-        LightManager.create = function () {
-            var obj = new this();
-            return obj;
-        };
-        Object.defineProperty(LightManager.prototype, "ambientLight", {
-            get: function () {
-                return this._lights.getChild(wd.AmbientLight.type);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(LightManager.prototype, "directionLights", {
-            get: function () {
-                return this._lights.getChild(wd.DirectionLight.type);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(LightManager.prototype, "pointLights", {
-            get: function () {
-                return this._lights.getChild(wd.PointLight.type);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        LightManager.prototype.addChild = function (light) {
-            if (light.hasComponent(wd.AmbientLight)) {
-                this._lights.addChild(wd.AmbientLight.type, light);
+        Shadow.prototype._isFirstLevelObjectOfSceneOrSpacePartition = function () {
+            var parent = this.entityObject.parent;
+            if (!parent) {
+                return false;
             }
-            else if (light.hasComponent(wd.DirectionLight)) {
-                this._lights.appendChild(wd.DirectionLight.type, light);
-            }
-            else if (light.hasComponent(wd.PointLight)) {
-                this._lights.appendChild(wd.PointLight.type, light);
+            return wd.JudgeUtils.isEqual(parent, wd.Director.getInstance().scene) || wd.JudgeUtils.isSpacePartitionObject(parent);
+        };
+        Shadow.prototype._addBuildShadowMapShaderAndShadowMapsToObjectAndChildren = function () {
+            var _this = this;
+            var self = this, twoDShadowMapDataMap = wd.Director.getInstance().scene.gameObjectScene.shadowManager.twoDShadowMapDataMap, cubemapShadowMapDataMap = wd.Director.getInstance().scene.gameObjectScene.shadowManager.cubemapShadowMapDataMap;
+            var handle = function (gameObject) {
+                if (gameObject.hasComponent(wd.Geometry)) {
+                    var geometry = gameObject.getComponent(wd.Geometry), material = geometry.material, mapManager = material.mapManager;
+                    self._addBuildTwoDShadowMapShader(material, _this._createBuildTwoDShadowMapShader(gameObject, geometry));
+                    self._addBuildCubemapShadowMapShader(material, _this._createBuildCubemapShadowMapShader(gameObject, geometry));
+                    material.shader.libDirty = true;
+                    mapManager.removeAllShdaowMaps();
+                    self._addAllShadowMaps(twoDShadowMapDataMap, cubemapShadowMapDataMap, mapManager);
+                }
+                gameObject.forEach(function (child) {
+                    handle(child);
+                });
+            };
+            handle(this.entityObject);
+        };
+        Shadow.prototype._addBuildShadowMapShaderToObjectAndChildren = function () {
+            var _this = this;
+            var self = this;
+            var handle = function (gameObject) {
+                if (gameObject.hasComponent(wd.Geometry)) {
+                    var geometry = gameObject.getComponent(wd.Geometry), material = geometry.material;
+                    self._addBuildTwoDShadowMapShader(material, _this._createBuildTwoDShadowMapShader(gameObject, geometry));
+                    self._addBuildCubemapShadowMapShader(material, _this._createBuildCubemapShadowMapShader(gameObject, geometry));
+                }
+                gameObject.forEach(function (child) {
+                    handle(child);
+                });
+            };
+            handle(this.entityObject);
+        };
+        Shadow.prototype._addBuildTwoDShadowMapShader = function (material, shader) {
+            material.addShader(wd.EShaderTypeOfScene.BUILD_TWOD_SHADOWMAP, shader);
+        };
+        Shadow.prototype._addBuildCubemapShadowMapShader = function (material, shader) {
+            material.addShader(wd.EShaderTypeOfScene.BUILD_CUBEMAP_SHADOWMAP, shader);
+        };
+        Shadow.prototype._createBuildTwoDShadowMapShader = function (gameObject, geometry) {
+            var shader = this._createBuildShadowMapShader(gameObject, geometry);
+            shader.addLib(wd.BuildTwoDShadowMapShaderLib.create());
+            return shader;
+        };
+        Shadow.prototype._createBuildCubemapShadowMapShader = function (gameObject, geometry) {
+            var shader = this._createBuildShadowMapShader(gameObject, geometry);
+            shader.addLib(wd.BuildCubemapShadowMapShaderLib.create());
+            return shader;
+        };
+        Shadow.prototype._createBuildShadowMapShader = function (gameObject, geometry) {
+            var shader = wd.CommonShader.create();
+            shader.addLib(wd.CommonShaderLib.create());
+            if (wd.GlobalGeometryUtils.hasAnimation(geometry)) {
+                shader.addLib(wd.CommonMorphShaderLib.create());
+                shader.addLib(wd.VerticeMorphShaderLib.create());
             }
             else {
-                wd.Log.error(true, wd.Log.info.FUNC_INVALID("light"));
+                shader.addLib(wd.VerticeCommonShaderLib.create());
             }
+            if (wd.InstanceUtils.isHardwareSupport() && wd.InstanceUtils.isInstance(gameObject)) {
+                shader.addLib(wd.ModelMatrixInstanceShaderLib.create());
+            }
+            else {
+                shader.addLib(wd.ModelMatrixNoInstanceShaderLib.create());
+            }
+            return shader;
         };
-        LightManager.prototype.addChildren = function (lightList) {
-            var self = this;
-            lightList.forEach(function (light) {
-                self.addChild(light);
+        Shadow.prototype._addShadowMapsToObjectAndChildren = function () {
+            var self = this, twoDShadowMapDataMap = wd.Director.getInstance().scene.gameObjectScene.shadowManager.twoDShadowMapDataMap, cubemapShadowMapDataMap = wd.Director.getInstance().scene.gameObjectScene.shadowManager.cubemapShadowMapDataMap;
+            var handle = function (gameObject) {
+                if (gameObject.hasComponent(wd.Geometry)) {
+                    var material = gameObject.getComponent(wd.Geometry).material, mapManager = material.mapManager;
+                    material.shader.libDirty = true;
+                    mapManager.removeAllShdaowMaps();
+                    self._addAllShadowMaps(twoDShadowMapDataMap, cubemapShadowMapDataMap, mapManager);
+                }
+                gameObject.forEach(function (child) {
+                    handle(child);
+                });
+            };
+            handle(this.entityObject);
+        };
+        Shadow.prototype._removeShadowMapsOfObjectAndChildren = function () {
+            var handle = function (gameObject) {
+                if (gameObject.hasComponent(wd.Geometry)) {
+                    var material = gameObject.getComponent(wd.Geometry).material, mapManager = material.mapManager;
+                    material.shader.libDirty = true;
+                    mapManager.removeAllShdaowMaps();
+                }
+                gameObject.forEach(function (child) {
+                    handle(child);
+                });
+            };
+            handle(this.entityObject);
+        };
+        Shadow.prototype._switchToShadowMapShaderLib = function (gameObject) {
+            var material = gameObject.getComponent(wd.Geometry).material, shader = material.shader, mapManager = material.mapManager;
+            shader.removeLib(function (lib) {
+                return lib instanceof wd.NoShadowMapShaderLib;
             });
+            if (this._isTwoDShadowMap(mapManager)) {
+                shader.addLib(wd.TwoDShadowMapShaderLib.create());
+            }
+            if (this._isCubemapShadowMap(mapManager)) {
+                shader.addLib(wd.CubemapShadowMapShaderLib.create());
+            }
+            shader.addLib(wd.TotalShadowMapShaderLib.create());
         };
-        return LightManager;
-    }());
-    wd.LightManager = LightManager;
+        Shadow.prototype._switchToNoShadowMapShaderLib = function (gameObject) {
+            var material = gameObject.getComponent(wd.Geometry).material, shader = material.shader;
+            shader.removeLib(function (lib) {
+                return lib instanceof wd.TwoDShadowMapShaderLib || lib instanceof wd.CubemapShadowMapShaderLib || lib instanceof wd.TotalShadowMapShaderLib;
+            });
+            shader.addLib(wd.NoShadowMapShaderLib.create());
+        };
+        Shadow.prototype._isTwoDShadowMap = function (mapManager) {
+            return mapManager.getTwoDShadowMapList().getCount() > 0;
+        };
+        Shadow.prototype._isCubemapShadowMap = function (mapManager) {
+            return mapManager.getCubemapShadowMapList().getCount() > 0;
+        };
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Shadow.prototype, "receive", null);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Shadow.prototype, "cast", null);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Shadow.prototype, "layer", null);
+        __decorate([
+            wd.require(function (entityObject, isShareComponent) {
+                if (isShareComponent === void 0) { isShareComponent = false; }
+                wd.assert(entityObject instanceof wd.GameObject, wd.Log.info.FUNC_SHOULD("add to GameObject"));
+            })
+        ], Shadow.prototype, "addToObject", null);
+        __decorate([
+            wd.require(function (material, shader) {
+                wd.assert(!material.hasShader(wd.EShaderTypeOfScene.BUILD_TWOD_SHADOWMAP), wd.Log.info.FUNC_SHOULD_NOT("material", "exist build twoD shadow map shader"));
+            })
+        ], Shadow.prototype, "_addBuildTwoDShadowMapShader", null);
+        __decorate([
+            wd.require(function (material, shader) {
+                wd.assert(!material.hasShader(wd.EShaderTypeOfScene.BUILD_CUBEMAP_SHADOWMAP), wd.Log.info.FUNC_SHOULD_NOT("material", "exist build cubemap shadow map shader"));
+            })
+        ], Shadow.prototype, "_addBuildCubemapShadowMapShader", null);
+        __decorate([
+            wd.ensure(function (returnVal, gameObject) {
+                var material = gameObject.getComponent(wd.Geometry).material, shader = material.shader;
+                wd.assert(!shader.hasLib(wd.NoShadowMapShaderLib), wd.Log.info.FUNC_SHOULD_NOT("contain NoShadowMapShaderLib"));
+                wd.assert(shader.getLibs().filter(function (lib) {
+                    return lib instanceof wd.TwoDShadowMapShaderLib;
+                }).getCount() <= 1, wd.Log.info.FUNC_SHOULD_NOT("has duplicate TwoDShadowMapShaderLib"));
+                wd.assert(shader.getLibs().filter(function (lib) {
+                    return lib instanceof wd.CubemapShadowMapShaderLib;
+                }).getCount() <= 1, wd.Log.info.FUNC_SHOULD_NOT("has duplicate CubemapShadowMapShaderLib"));
+            })
+        ], Shadow.prototype, "_switchToShadowMapShaderLib", null);
+        __decorate([
+            wd.ensure(function (returnVal, gameObject) {
+                var material = gameObject.getComponent(wd.Geometry).material, shader = material.shader;
+                wd.assert(!shader.hasLib(wd.TwoDShadowMapShaderLib), wd.Log.info.FUNC_SHOULD_NOT("contain TwoDShadowMapShaderLib"));
+                wd.assert(!shader.hasLib(wd.CubemapShadowMapShaderLib), wd.Log.info.FUNC_SHOULD_NOT("contain CubemapShadowMapShaderLib"));
+                wd.assert(shader.getLibs().filter(function (lib) {
+                    return lib instanceof wd.NoShadowMapShaderLib;
+                }).getCount() <= 1, wd.Log.info.FUNC_SHOULD_NOT("has duplicate NoShadowMapShaderLib"));
+            })
+        ], Shadow.prototype, "_switchToNoShadowMapShaderLib", null);
+        return Shadow;
+    }(wd.Component));
+    wd.Shadow = Shadow;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
+var wd;
+(function (wd) {
+    var ShadowUtils = (function () {
+        function ShadowUtils() {
+        }
+        ShadowUtils.isReceive = function (gameObject) {
+            var shadow = null, parent = gameObject, result = false;
+            do {
+                shadow = parent.getComponent(wd.Shadow);
+                if (!!shadow && shadow.receive) {
+                    result = true;
+                    break;
+                }
+                parent = parent.parent;
+            } while (parent);
+            return result;
+        };
+        return ShadowUtils;
+    }());
+    wd.ShadowUtils = ShadowUtils;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    (function (EShadowLayer) {
+        EShadowLayer[EShadowLayer["DEFAULT"] = "default"] = "DEFAULT";
+    })(wd.EShadowLayer || (wd.EShadowLayer = {}));
+    var EShadowLayer = wd.EShadowLayer;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    (function (EShadowMapSoftType) {
+        EShadowMapSoftType[EShadowMapSoftType["NONE"] = 0] = "NONE";
+        EShadowMapSoftType[EShadowMapSoftType["PCF"] = 1] = "PCF";
+    })(wd.EShadowMapSoftType || (wd.EShadowMapSoftType = {}));
+    var EShadowMapSoftType = wd.EShadowMapSoftType;
+})(wd || (wd = {}));
 var wd;
 (function (wd) {
     var Animation = (function (_super) {
@@ -13875,6 +16036,9 @@ var wd;
             enumerable: true,
             configurable: true
         });
+        Animation.prototype.clone = function () {
+            return wd.CloneUtils.clone(this);
+        };
         Animation.prototype.pause = function () {
             this.state = EAnimationState.PAUSE;
             this.pauseTime = this.getPauseTime();
@@ -13931,18 +16095,6 @@ var wd;
     })(wd.EAnimationState || (wd.EAnimationState = {}));
     var EAnimationState = wd.EAnimationState;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var MorphAnimation = (function (_super) {
@@ -14017,6 +16169,21 @@ var wd;
             return this.currentFrame >= this.frameCount;
         };
         __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], MorphAnimation.prototype, "interpolation", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], MorphAnimation.prototype, "currentFrame", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], MorphAnimation.prototype, "duration", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], MorphAnimation.prototype, "fps", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], MorphAnimation.prototype, "currentAnimName", void 0);
+        __decorate([
             wd.require(function (animName, fps) {
                 var geometry = this.entityObject.getComponent(wd.ModelGeometry);
                 wd.assert(geometry, wd.Log.info.FUNC_SHOULD("this entityObject", "add ModelGeometry component"));
@@ -14041,18 +16208,6 @@ var wd;
     }(wd.Animation));
     wd.MorphAnimation = MorphAnimation;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var ArticulatedAnimation = (function (_super) {
@@ -14083,11 +16238,11 @@ var wd;
                 args[_i - 0] = arguments[_i];
             }
             if (wd.JudgeUtils.isNumber(args[0])) {
-                var animIndex_1 = args[0], i_1 = 0, self_1 = this;
+                var animIndex_1 = args[0], i_1 = 0, self_6 = this;
                 this.data.forEach(function (data, animName) {
                     if (animIndex_1 === i_1) {
-                        self_1._currentAnimName = animName;
-                        self_1._currentAnimData = data;
+                        self_6._currentAnimName = animName;
+                        self_6._currentAnimData = data;
                         return wdCb.$BREAK;
                     }
                     i_1++;
@@ -14219,6 +16374,9 @@ var wd;
             return data.time !== void 0 && data.targets !== void 0;
         };
         __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], ArticulatedAnimation.prototype, "data", void 0);
+        __decorate([
             wd.require(function () {
                 var args = [];
                 for (var _i = 0; _i < arguments.length; _i++) {
@@ -14293,7 +16451,6 @@ var wd;
     }(wd.Animation));
     wd.ArticulatedAnimation = ArticulatedAnimation;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     (function (EKeyFrameInterpolation) {
@@ -14301,7 +16458,6 @@ var wd;
     })(wd.EKeyFrameInterpolation || (wd.EKeyFrameInterpolation = {}));
     var EKeyFrameInterpolation = wd.EKeyFrameInterpolation;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     (function (EArticulatedAnimationTarget) {
@@ -14311,18 +16467,6 @@ var wd;
     })(wd.EArticulatedAnimationTarget || (wd.EArticulatedAnimationTarget = {}));
     var EArticulatedAnimationTarget = wd.EArticulatedAnimationTarget;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var Geometry = (function (_super) {
@@ -14414,11 +16558,18 @@ var wd;
             return geometryData;
         };
         __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], Geometry.prototype, "material", null);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Geometry.prototype, "drawMode", void 0);
+        __decorate([
             wd.ensure(function () {
                 var geometryData = this.buffers.geometryData;
                 wd.assert(geometryData.vertices.length > 0, wd.Log.info.FUNC_MUST("vertices.count", "> 0"));
                 wd.assert(geometryData.faces.length * 3 === geometryData.indices.length, wd.Log.info.FUNC_SHOULD("faces.count", "be " + geometryData.indices.length / 3 + ", but actual is " + geometryData.faces.length));
-            })
+            }),
+            wd.execOnlyOnce("_isInit")
         ], Geometry.prototype, "init", null);
         __decorate([
             wd.require(function () {
@@ -14453,13 +16604,6 @@ var wd;
     }(wd.Component));
     wd.Geometry = Geometry;
 })(wd || (wd = {}));
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var GeometryUtils = (function () {
@@ -14475,7 +16619,7 @@ var wd;
                         this.getThreeComponent(normals, b),
                         this.getThreeComponent(normals, c)
                     ]);
-                    face.faceNormal = face.vertexNormals.getChild(0).copy();
+                    face.faceNormal = face.vertexNormals.getChild(0).clone();
                 }
                 faces.push(face);
             }
@@ -14521,12 +16665,6 @@ var wd;
     }());
     wd.GeometryUtils = GeometryUtils;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var CustomGeometry = (function (_super) {
@@ -14621,22 +16759,35 @@ var wd;
                 colors: this.colors
             };
         };
+        __decorate([
+            wd.cloneAttributeAsCustomType(function (source, target, memberName) {
+                target[memberName] = wd.CloneUtils.cloneArray(source[memberName]);
+            })
+        ], CustomGeometry.prototype, "vertices", null);
+        __decorate([
+            wd.cloneAttributeAsCustomType(function (source, target, memberName) {
+                target[memberName] = wd.CloneUtils.cloneArray(source[memberName]);
+            })
+        ], CustomGeometry.prototype, "texCoords", null);
+        __decorate([
+            wd.cloneAttributeAsCustomType(function (source, target, memberName) {
+                target[memberName] = wd.CloneUtils.cloneArray(source[memberName]);
+            })
+        ], CustomGeometry.prototype, "colors", null);
+        __decorate([
+            wd.cloneAttributeAsCustomType(function (source, target, memberName) {
+                target[memberName] = wd.CloneUtils.cloneArray(source[memberName]);
+            })
+        ], CustomGeometry.prototype, "indices", null);
+        __decorate([
+            wd.cloneAttributeAsCustomType(function (source, target, memberName) {
+                target[memberName] = wd.CloneUtils.cloneArray(source[memberName]);
+            })
+        ], CustomGeometry.prototype, "normals", null);
         return CustomGeometry;
     }(wd.Geometry));
     wd.CustomGeometry = CustomGeometry;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var ModelGeometry = (function (_super) {
@@ -14712,6 +16863,57 @@ var wd;
         ModelGeometry.prototype._hasMorphTargets = function () {
             return this.morphTargets && this.morphTargets.getCount() > 0;
         };
+        ModelGeometry.prototype._getDeepCloneMorphData = function (source) {
+            var result = wdCb.Hash.create();
+            if (source) {
+                source.forEach(function (data, key) {
+                    result.addChild(key, data.clone(true));
+                });
+            }
+            return result;
+        };
+        __decorate([
+            wd.cloneAttributeAsCustomType(function (source, target, memberName) {
+                target[memberName] = wd.CloneUtils.cloneArray(source[memberName]);
+            })
+        ], ModelGeometry.prototype, "vertices", void 0);
+        __decorate([
+            wd.cloneAttributeAsCustomType(function (source, target, memberName) {
+                target[memberName] = wd.CloneUtils.cloneArray(source[memberName]);
+            })
+        ], ModelGeometry.prototype, "colors", void 0);
+        __decorate([
+            wd.cloneAttributeAsCustomType(function (source, target, memberName) {
+                target[memberName] = wd.CloneUtils.cloneArray(source[memberName]);
+            })
+        ], ModelGeometry.prototype, "texCoords", void 0);
+        __decorate([
+            wd.cloneAttributeAsCustomType(function (source, target, memberName) {
+                var result = [];
+                if (source[memberName]) {
+                    for (var _i = 0, _a = source[memberName]; _i < _a.length; _i++) {
+                        var face = _a[_i];
+                        result.push(face.clone());
+                    }
+                }
+                target[memberName] = result;
+            })
+        ], ModelGeometry.prototype, "faces", void 0);
+        __decorate([
+            wd.cloneAttributeAsCustomType(function (source, target, memberName) {
+                target[memberName] = this._getDeepCloneMorphData(source[memberName]);
+            })
+        ], ModelGeometry.prototype, "morphTargets", void 0);
+        __decorate([
+            wd.cloneAttributeAsCustomType(function (source, target, memberName) {
+                target[memberName] = this._getDeepCloneMorphData(source[memberName]);
+            })
+        ], ModelGeometry.prototype, "morphFaceNormals", void 0);
+        __decorate([
+            wd.cloneAttributeAsCustomType(function (source, target, memberName) {
+                target[memberName] = this._getDeepCloneMorphData(source[memberName]);
+            })
+        ], ModelGeometry.prototype, "morphVertexNormals", void 0);
         __decorate([
             wd.require(function () {
                 wd.assert(this.buffers && this.buffers.geometryData, wd.Log.info.FUNC_MUST_DEFINE("buffers->geometryData"));
@@ -14738,12 +16940,6 @@ var wd;
     }(wd.Geometry));
     wd.ModelGeometry = ModelGeometry;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var BoxGeometry = (function (_super) {
@@ -14838,16 +17034,28 @@ var wd;
                 texCoords: texCoords
             };
         };
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], BoxGeometry.prototype, "width", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], BoxGeometry.prototype, "height", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], BoxGeometry.prototype, "depth", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], BoxGeometry.prototype, "widthSegments", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], BoxGeometry.prototype, "heightSegments", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], BoxGeometry.prototype, "depthSegments", void 0);
         return BoxGeometry;
     }(wd.Geometry));
     wd.BoxGeometry = BoxGeometry;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var RectGeometry = (function (_super) {
@@ -14890,16 +17098,16 @@ var wd;
                 texCoords: texCoords
             };
         };
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], RectGeometry.prototype, "width", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], RectGeometry.prototype, "height", void 0);
         return RectGeometry;
     }(wd.Geometry));
     wd.RectGeometry = RectGeometry;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var PlaneGeometry = (function (_super) {
@@ -14939,11 +17147,22 @@ var wd;
                 texCoords: texCoords
             };
         };
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], PlaneGeometry.prototype, "width", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], PlaneGeometry.prototype, "height", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], PlaneGeometry.prototype, "widthSegments", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], PlaneGeometry.prototype, "heightSegments", void 0);
         return PlaneGeometry;
     }(wd.Geometry));
     wd.PlaneGeometry = PlaneGeometry;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     (function (ESphereDrawMode) {
@@ -14951,12 +17170,6 @@ var wd;
     })(wd.ESphereDrawMode || (wd.ESphereDrawMode = {}));
     var ESphereDrawMode = wd.ESphereDrawMode;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var SphereGeometry = (function (_super) {
@@ -14983,6 +17196,15 @@ var wd;
             }
             return data;
         };
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], SphereGeometry.prototype, "radius", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], SphereGeometry.prototype, "sphereDrawMode", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], SphereGeometry.prototype, "segments", void 0);
         return SphereGeometry;
     }(wd.Geometry));
     wd.SphereGeometry = SphereGeometry;
@@ -15049,12 +17271,6 @@ var wd;
         return GetDataByLatitudeLongtitude;
     }());
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var TriangleGeometry = (function (_super) {
@@ -15094,16 +17310,16 @@ var wd;
                 texCoords: texCoords
             };
         };
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], TriangleGeometry.prototype, "width", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], TriangleGeometry.prototype, "height", void 0);
         return TriangleGeometry;
     }(wd.Geometry));
     wd.TriangleGeometry = TriangleGeometry;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var TerrainGeometry = (function (_super) {
@@ -15167,17 +17383,32 @@ var wd;
             }
             return indices;
         };
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], TerrainGeometry.prototype, "subdivisions", void 0);
+        __decorate([
+            wd.cloneAttributeAsCustomType(function (source, target, memberName) {
+                target[memberName].width = source[memberName].width;
+                target[memberName].height = source[memberName].height;
+            })
+        ], TerrainGeometry.prototype, "range", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], TerrainGeometry.prototype, "minHeight", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], TerrainGeometry.prototype, "maxHeight", void 0);
+        __decorate([
+            wd.cloneAttributeAsCustomType(function (source, target, memberName) {
+                if (source[memberName]) {
+                    target[memberName] = wd.ImageTextureAsset.create(source[memberName].source);
+                }
+            })
+        ], TerrainGeometry.prototype, "heightMapAsset", void 0);
         return TerrainGeometry;
     }(wd.Geometry));
     wd.TerrainGeometry = TerrainGeometry;
 })(wd || (wd = {}));
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var GeometryData = (function () {
@@ -15477,7 +17708,7 @@ var wd;
                 t1.set(tan1[i * 3], tan1[i * 3 + 1], tan1[i * 3 + 2]);
                 t2.set(tan2[i * 3], tan2[i * 3 + 1], tan2[i * 3 + 2]);
                 ndott = n.dot(t1);
-                temp = n.copy().scale(ndott);
+                temp = n.clone().scale(ndott);
                 temp.sub2(t1, temp).normalize();
                 tangents[i * 4] = temp.x;
                 tangents[i * 4 + 1] = temp.y;
@@ -15589,12 +17820,6 @@ var wd;
     }());
     wd.GeometryData = GeometryData;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var CommonGeometryData = (function (_super) {
@@ -15610,18 +17835,6 @@ var wd;
     }(wd.GeometryData));
     wd.CommonGeometryData = CommonGeometryData;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var MorphGeometryData = (function (_super) {
@@ -15697,7 +17910,7 @@ var wd;
             var copyFaces = [];
             for (var _i = 0, faces_1 = faces; _i < faces_1.length; _i++) {
                 var face = faces_1[_i];
-                copyFaces.push(face.copy());
+                copyFaces.push(face.clone());
             }
             return copyFaces;
         };
@@ -15717,13 +17930,6 @@ var wd;
     }(wd.GeometryData));
     wd.MorphGeometryData = MorphGeometryData;
 })(wd || (wd = {}));
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var BufferContainer = (function () {
@@ -15884,18 +18090,6 @@ var wd;
     }());
     wd.BufferContainer = BufferContainer;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var CommonBufferContainer = (function (_super) {
@@ -15949,18 +18143,6 @@ var wd;
     }(wd.BufferContainer));
     wd.CommonBufferContainer = CommonBufferContainer;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var MorphBufferContainer = (function (_super) {
@@ -16104,13 +18286,6 @@ var wd;
     }(wd.BufferContainer));
     wd.MorphBufferContainer = MorphBufferContainer;
 })(wd || (wd = {}));
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var Camera = (function () {
@@ -16134,7 +18309,7 @@ var wd;
                 if (this._worldToCameraMatrix) {
                     return this._worldToCameraMatrix;
                 }
-                return this.cameraToWorldMatrix.copy().invert();
+                return this.cameraToWorldMatrix.clone().invert();
             },
             set: function (matrix) {
                 this._worldToCameraMatrix = matrix;
@@ -16172,6 +18347,9 @@ var wd;
         };
         Camera.prototype.dispose = function () {
         };
+        Camera.prototype.clone = function () {
+            return wd.CloneUtils.clone(this);
+        };
         Camera.prototype.update = function (elapsedTime) {
             if (this.dirty) {
                 this.updateProjectionMatrix();
@@ -16179,13 +18357,22 @@ var wd;
             }
         };
         Camera.prototype.getInvViewProjMat = function () {
-            return this.pMatrix.copy().multiply(this.worldToCameraMatrix).invert();
+            return this.pMatrix.clone().multiply(this.worldToCameraMatrix).invert();
         };
         __decorate([
             wd.requireGetter(function () {
                 wd.assert(this.entityObject, wd.Log.info.FUNC_MUST_DEFINE("entityObject"));
             })
         ], Camera.prototype, "cameraToWorldMatrix", null);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Camera.prototype, "near", null);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Camera.prototype, "far", null);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], Camera.prototype, "pMatrix", void 0);
         __decorate([
             wd.virtual
         ], Camera.prototype, "init", null);
@@ -16196,12 +18383,6 @@ var wd;
     }());
     wd.Camera = Camera;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var OrthographicCamera = (function (_super) {
@@ -16268,16 +18449,22 @@ var wd;
         OrthographicCamera.prototype.updateProjectionMatrix = function () {
             this.pMatrix.setOrtho(this._left, this._right, this._bottom, this._top, this.near, this.far);
         };
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], OrthographicCamera.prototype, "left", null);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], OrthographicCamera.prototype, "right", null);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], OrthographicCamera.prototype, "bottom", null);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], OrthographicCamera.prototype, "top", null);
         return OrthographicCamera;
     }(wd.Camera));
     wd.OrthographicCamera = OrthographicCamera;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var PerspectiveCamera = (function (_super) {
@@ -16334,22 +18521,16 @@ var wd;
         PerspectiveCamera.prototype.updateProjectionMatrix = function () {
             this.pMatrix.setPerspective(this._fovy, this._aspect, this.near, this.far);
         };
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], PerspectiveCamera.prototype, "fovy", null);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], PerspectiveCamera.prototype, "aspect", null);
         return PerspectiveCamera;
     }(wd.Camera));
     wd.PerspectiveCamera = PerspectiveCamera;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var CameraController = (function (_super) {
@@ -16409,6 +18590,9 @@ var wd;
         CameraController.prototype.dispose = function () {
             this.camera.dispose();
             this._clearCacheSubscription && this._clearCacheSubscription.dispose();
+        };
+        CameraController.prototype.clone = function () {
+            return wd.CloneUtils.clone(this);
         };
         CameraController.prototype.isIntersectWithRay = function (entityObject, screenX, screenY) {
             var shape = null;
@@ -16480,16 +18664,13 @@ var wd;
                 this._worldToCameraMatrixCache = result;
             })
         ], CameraController.prototype, "worldToCameraMatrix", null);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], CameraController.prototype, "camera", void 0);
         return CameraController;
     }(wd.Component));
     wd.CameraController = CameraController;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var BasicCameraController = (function (_super) {
@@ -16505,12 +18686,6 @@ var wd;
     }(wd.CameraController));
     wd.BasicCameraController = BasicCameraController;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var FlyCameraController = (function (_super) {
@@ -16529,6 +18704,36 @@ var wd;
             var obj = new this(cameraComponent);
             return obj;
         };
+        Object.defineProperty(FlyCameraController.prototype, "moveSpeed", {
+            get: function () {
+                return this._control.moveSpeed;
+            },
+            set: function (speed) {
+                this._control.moveSpeed = speed;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(FlyCameraController.prototype, "rotateSpeed", {
+            get: function () {
+                return this._control.rotateSpeed;
+            },
+            set: function (speed) {
+                this._control.rotateSpeed = speed;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(FlyCameraController.prototype, "zoomSpeed", {
+            get: function () {
+                return this._control.zoomSpeed;
+            },
+            set: function (speed) {
+                this._control.zoomSpeed = speed;
+            },
+            enumerable: true,
+            configurable: true
+        });
         FlyCameraController.prototype.init = function () {
             _super.prototype.init.call(this);
             this._control.init(this.entityObject);
@@ -16541,11 +18746,24 @@ var wd;
             _super.prototype.dispose.call(this);
             this._control.dispose();
         };
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], FlyCameraController.prototype, "moveSpeed", null);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], FlyCameraController.prototype, "rotateSpeed", null);
+        __decorate([
+            wd.requireGetterAndSetter(function () {
+                wd.assert(this._control instanceof wd.FlyPerspectiveCameraControl, wd.Log.info.FUNC_MUST_BE("FlyPerspectiveCameraControl"));
+            }, function () {
+                wd.assert(this._control instanceof wd.FlyPerspectiveCameraControl, wd.Log.info.FUNC_MUST_BE("FlyPerspectiveCameraControl"));
+            }),
+            wd.cloneAttributeAsBasicType()
+        ], FlyCameraController.prototype, "zoomSpeed", null);
         return FlyCameraController;
     }(wd.CameraController));
     wd.FlyCameraController = FlyCameraController;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var FlyCameraControl = (function () {
@@ -16623,12 +18841,6 @@ var wd;
     }());
     wd.FlyCameraControl = FlyCameraControl;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var FlyPerspectiveCameraControl = (function (_super) {
@@ -16654,12 +18866,6 @@ var wd;
     }(wd.FlyCameraControl));
     wd.FlyPerspectiveCameraControl = FlyPerspectiveCameraControl;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var FlyOrthographicCameraControl = (function (_super) {
@@ -16677,12 +18883,6 @@ var wd;
     }(wd.FlyCameraControl));
     wd.FlyOrthographicCameraControl = FlyOrthographicCameraControl;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var ArcballCameraController = (function (_super) {
@@ -16784,16 +18984,40 @@ var wd;
             this._mouseWheelSubscription.dispose();
             this._keydownSubscription.dispose();
         };
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], ArcballCameraController.prototype, "moveSpeedX", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], ArcballCameraController.prototype, "moveSpeedY", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], ArcballCameraController.prototype, "rotateSpeed", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], ArcballCameraController.prototype, "wheelSpeed", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], ArcballCameraController.prototype, "distance", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], ArcballCameraController.prototype, "phi", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], ArcballCameraController.prototype, "theta", void 0);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], ArcballCameraController.prototype, "target", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], ArcballCameraController.prototype, "thetaMargin", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], ArcballCameraController.prototype, "minDistance", void 0);
         return ArcballCameraController;
     }(wd.CameraController));
     wd.ArcballCameraController = ArcballCameraController;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var Action = (function (_super) {
@@ -16834,11 +19058,15 @@ var wd;
             enumerable: true,
             configurable: true
         });
+        Action.prototype.clone = function () {
+            return wd.CloneUtils.clone(this);
+        };
         Action.prototype.reset = function () {
             this.isFinish = false;
         };
-        Action.prototype.addToObject = function (entityObject) {
-            _super.prototype.addToObject.call(this, entityObject);
+        Action.prototype.addToObject = function (entityObject, isShareComponent) {
+            if (isShareComponent === void 0) { isShareComponent = false; }
+            _super.prototype.addToObject.call(this, entityObject, isShareComponent);
             this.target = entityObject;
             entityObject.actionManager.addChild(this);
         };
@@ -16857,12 +19085,6 @@ var wd;
     }(wd.Component));
     wd.Action = Action;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var ActionInstant = (function (_super) {
@@ -16896,12 +19118,6 @@ var wd;
     }(wd.Action));
     wd.ActionInstant = ActionInstant;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var CallFunc = (function (_super) {
@@ -16932,25 +19148,21 @@ var wd;
             }
             this.finish();
         };
-        CallFunc.prototype.copy = function () {
-            return new CallFunc(this._context, this._callFunc, this._dataArr.copy(true).getChildren());
-        };
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], CallFunc.prototype, "_context", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], CallFunc.prototype, "_callFunc", void 0);
+        __decorate([
+            wd.cloneAttributeAsCustomType(function (source, target, memberName, cloneData) {
+                target[memberName] = source[memberName].clone(true);
+            })
+        ], CallFunc.prototype, "_dataArr", void 0);
         return CallFunc;
     }(wd.ActionInstant));
     wd.CallFunc = CallFunc;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var ActionInterval = (function (_super) {
@@ -17020,12 +19232,6 @@ var wd;
     }(wd.Action));
     wd.ActionInterval = ActionInterval;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var Control = (function (_super) {
@@ -17065,12 +19271,6 @@ var wd;
     }(wd.ActionInterval));
     wd.Control = Control;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var Sequence = (function (_super) {
@@ -17087,9 +19287,7 @@ var wd;
             for (var _i = 0; _i < arguments.length; _i++) {
                 args[_i - 0] = arguments[_i];
             }
-            var sequence = null;
-            wd.Log.assert(args.length >= 2, "Sequence should has two actions at least");
-            sequence = new this(args);
+            var sequence = new this(args);
             sequence.initWhenCreate();
             return sequence;
         };
@@ -17111,13 +19309,6 @@ var wd;
                 this._startNextActionAndJudgeFinish();
             }
             return null;
-        };
-        Sequence.prototype.copy = function () {
-            var actionArr = [];
-            this._actions.forEach(function (action) {
-                actionArr.push(action.copy());
-            });
-            return Sequence.create.apply(Sequence, actionArr);
         };
         Sequence.prototype.reset = function () {
             _super.prototype.reset.call(this);
@@ -17161,16 +19352,24 @@ var wd;
             }
             this._actions.getChild(this._actionIndex).start();
         };
+        __decorate([
+            wd.cloneAttributeAsCustomType(function (source, target, memberName, cloneData) {
+                target[memberName] = source[memberName].clone(true);
+            })
+        ], Sequence.prototype, "_actions", void 0);
+        __decorate([
+            wd.require(function () {
+                var args = [];
+                for (var _i = 0; _i < arguments.length; _i++) {
+                    args[_i - 0] = arguments[_i];
+                }
+                wd.Log.assert(args.length >= 2, "Sequence should has two actions at least");
+            })
+        ], Sequence, "create", null);
         return Sequence;
     }(wd.Control));
     wd.Sequence = Sequence;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var Spawn = (function (_super) {
@@ -17220,13 +19419,6 @@ var wd;
             this.iterate("resume");
             return this;
         };
-        Spawn.prototype.copy = function () {
-            var actions = [];
-            this._actions.forEach(function (action) {
-                actions.push(action.copy());
-            });
-            return Spawn.create.apply(Spawn, actions);
-        };
         Spawn.prototype.reset = function () {
             _super.prototype.reset.call(this);
             this.iterate("reset");
@@ -17255,16 +19447,15 @@ var wd;
             });
             return isFinish;
         };
+        __decorate([
+            wd.cloneAttributeAsCustomType(function (source, target, memberName, cloneData) {
+                target[memberName] = source[memberName].clone(true);
+            })
+        ], Spawn.prototype, "_actions", void 0);
         return Spawn;
     }(wd.Control));
     wd.Spawn = Spawn;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var DelayTime = (function (_super) {
@@ -17280,19 +19471,13 @@ var wd;
         DelayTime.prototype.reverse = function () {
             return this;
         };
-        DelayTime.prototype.copy = function () {
-            return DelayTime.create(this.duration);
-        };
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], DelayTime.prototype, "duration", void 0);
         return DelayTime;
     }(wd.ActionInterval));
     wd.DelayTime = DelayTime;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var Repeat = (function (_super) {
@@ -17329,9 +19514,6 @@ var wd;
                 this.finish();
             }
         };
-        Repeat.prototype.copy = function () {
-            return Repeat.create(this._innerAction.copy(), this._times);
-        };
         Repeat.prototype.reset = function () {
             _super.prototype.reset.call(this);
             this._times = this._originTimes;
@@ -17356,16 +19538,16 @@ var wd;
         Repeat.prototype.getInnerActions = function () {
             return wdCb.Collection.create([this._innerAction]);
         };
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], Repeat.prototype, "_innerAction", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Repeat.prototype, "_times", void 0);
         return Repeat;
     }(wd.Control));
     wd.Repeat = Repeat;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var RepeatForever = (function (_super) {
@@ -17386,9 +19568,6 @@ var wd;
                 this._innerAction.start();
             }
         };
-        RepeatForever.prototype.copy = function () {
-            return RepeatForever.create(this._innerAction.copy());
-        };
         RepeatForever.prototype.start = function () {
             _super.prototype.start.call(this);
             this._innerAction.start();
@@ -17408,16 +19587,13 @@ var wd;
         RepeatForever.prototype.getInnerActions = function () {
             return wdCb.Collection.create([this._innerAction]);
         };
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], RepeatForever.prototype, "_innerAction", void 0);
         return RepeatForever;
     }(wd.Control));
     wd.RepeatForever = RepeatForever;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var Tween = (function (_super) {
@@ -17508,16 +19684,6 @@ var wd;
                 this._onStopCallback.call(this._object.getChildren());
             }
             return this;
-        };
-        Tween.prototype.copy = function () {
-            return Tween.create().from(this._valuesStart.getChildren())
-                .to(this._valuesEnd.getChildren(), this.duration)
-                .easing(this._easingFunction)
-                .interpolation(this._interpolationFunction)
-                .onStart(this._onStartCallback)
-                .onStop(this._onStopCallback)
-                .onFinish(this._onFinishCallback)
-                .onUpdate(this._onUpdateCallback);
         };
         Tween.prototype.reverse = function () {
             var tmp = this._valuesStart;
@@ -17796,16 +19962,40 @@ var wd;
                 }
             }
         };
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Tween.prototype, "duration", void 0);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], Tween.prototype, "_valuesStart", void 0);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], Tween.prototype, "_valuesEnd", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Tween.prototype, "_easingFunction", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Tween.prototype, "_interpolationFunction", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Tween.prototype, "_onStartCallback", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Tween.prototype, "_onStartCallbackFired", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Tween.prototype, "_onUpdateCallback", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Tween.prototype, "_onFinishCallback", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Tween.prototype, "_onStopCallback", void 0);
         return Tween;
     }(wd.ActionInterval));
     wd.Tween = Tween;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var RendererComponent = (function (_super) {
@@ -17817,18 +20007,6 @@ var wd;
     }(wd.Component));
     wd.RendererComponent = RendererComponent;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var MeshRenderer = (function (_super) {
@@ -17844,17 +20022,34 @@ var wd;
             renderer.addCommand(this.createDrawCommand(geometry, camera));
         };
         MeshRenderer.prototype.createDrawCommand = function (geometry, camera) {
-            var quadCmd = wd.QuadCommand.create(), cameraComponent = camera.getComponent(wd.CameraController), material = geometry.material, position = this.entityObject.transform.position;
-            quadCmd.buffers = geometry.buffers;
-            quadCmd.animation = geometry.entityObject.getComponent(wd.Animation);
-            quadCmd.drawMode = geometry.drawMode;
-            quadCmd.mMatrix = this.entityObject.transform.localToWorldMatrix;
-            quadCmd.vMatrix = cameraComponent.worldToCameraMatrix;
-            quadCmd.pMatrix = cameraComponent.pMatrix;
-            quadCmd.material = material;
-            quadCmd.z = position.z;
-            quadCmd.blend = material.blend;
-            return quadCmd;
+            var cmd = null, cameraComponent = camera.getComponent(wd.CameraController), material = geometry.material, position = this.entityObject.transform.position, target = geometry.entityObject;
+            cmd = this._createCommand(target, material);
+            cmd.target = target;
+            cmd.buffers = geometry.buffers;
+            cmd.drawMode = geometry.drawMode;
+            cmd.vMatrix = cameraComponent.worldToCameraMatrix;
+            cmd.pMatrix = cameraComponent.pMatrix;
+            cmd.material = material;
+            cmd.z = position.z;
+            cmd.blend = material.blend;
+            return cmd;
+        };
+        MeshRenderer.prototype._createCommand = function (target, material) {
+            var cmd = null;
+            if (wd.InstanceUtils.isInstance(target) && wd.InstanceUtils.isHardwareSupport()) {
+                var instanceComponent = target.getComponent(wd.Instance);
+                cmd = wd.InstanceCommand.create();
+                cmd.instanceList = instanceComponent.toRenderInstanceListForDraw;
+                cmd.instanceBuffer = instanceComponent.instanceBuffer;
+                if (material.shader.hasLib(wd.NormalMatrixInstanceShaderLib)) {
+                    cmd.glslData = wd.EInstanceGLSLData.NORMALMATRIX_MODELMATRIX;
+                }
+            }
+            else {
+                cmd = wd.SingleDrawCommand.create();
+                cmd.mMatrix = this.entityObject.transform.localToWorldMatrix;
+            }
+            return cmd;
         };
         __decorate([
             wd.require(function (geometry, camera) {
@@ -17863,16 +20058,22 @@ var wd;
                 wd.assert(!!geometry, wd.Log.info.FUNC_MUST("Mesh", "add geometry component"));
             })
         ], MeshRenderer.prototype, "createDrawCommand", null);
+        __decorate([
+            wd.require(function (target) {
+                if (wd.InstanceUtils.isInstance(target) && wd.InstanceUtils.isHardwareSupport()) {
+                    wd.assert(wd.InstanceUtils.isSourceInstance(target) && !wd.InstanceUtils.isObjectInstance(target), wd.Log.info.FUNC_SHOULD("if use instance to batch draw, target", "be SourceInstance"));
+                }
+            }),
+            wd.ensure(function (cmd, target) {
+                if (cmd instanceof wd.InstanceCommand) {
+                    wd.assert(wd.InstanceUtils.isHardwareSupport(), wd.Log.info.FUNC_SHOULD("hardware", "support instance"));
+                }
+            })
+        ], MeshRenderer.prototype, "_createCommand", null);
         return MeshRenderer;
     }(wd.RendererComponent));
     wd.MeshRenderer = MeshRenderer;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var SkyboxRenderer = (function (_super) {
@@ -17891,18 +20092,6 @@ var wd;
     }(wd.MeshRenderer));
     wd.SkyboxRenderer = SkyboxRenderer;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var UIRenderer = (function (_super) {
@@ -17910,11 +20099,11 @@ var wd;
         function UIRenderer() {
             _super.apply(this, arguments);
             this._zIndex = 1;
-            this.dirtyDuringCurrentLoop = false;
             this._dirty = true;
-            this.context = null;
+            this.dirtyDuringCurrentLoop = false;
             this.isClearCanvas = false;
             this.state = wd.EUIRendererState.NORMAL;
+            this.context = null;
             this.canvas = null;
             this._referenceList = wdCb.Collection.create();
         }
@@ -17946,6 +20135,9 @@ var wd;
                 if (dirty) {
                     this._dirty = true;
                     this.dirtyDuringCurrentLoop = true;
+                }
+                else {
+                    this.resetDirty();
                 }
             },
             enumerable: true,
@@ -17999,13 +20191,15 @@ var wd;
             this.context = this.canvas.getContext("2d");
         };
         __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], UIRenderer.prototype, "zIndex", null);
+        __decorate([
             wd.execOnlyOnce("_isInit")
         ], UIRenderer.prototype, "init", null);
         return UIRenderer;
     }(wd.RendererComponent));
     wd.UIRenderer = UIRenderer;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     (function (EUIRendererState) {
@@ -18015,35 +20209,21 @@ var wd;
     })(wd.EUIRendererState || (wd.EUIRendererState = {}));
     var EUIRendererState = wd.EUIRendererState;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var SpacePartition = (function (_super) {
         __extends(SpacePartition, _super);
         function SpacePartition() {
             _super.apply(this, arguments);
+            this.isCollideEnable = true;
         }
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], SpacePartition.prototype, "isCollideEnable", void 0);
         return SpacePartition;
     }(wd.Component));
     wd.SpacePartition = SpacePartition;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var Octree = (function (_super) {
@@ -18059,30 +20239,39 @@ var wd;
             var obj = new this();
             return obj;
         };
-        Octree.prototype.addToObject = function (entityObject) {
-            _super.prototype.addToObject.call(this, entityObject);
+        Octree.prototype.addToObject = function (entityObject, isShareComponent) {
+            if (isShareComponent === void 0) { isShareComponent = false; }
+            _super.prototype.addToObject.call(this, entityObject, isShareComponent);
+        };
+        Octree.prototype.init = function () {
+            _super.prototype.init.call(this);
+        };
+        Octree.prototype.update = function (elapsedTime) {
+            if (wd.InstanceUtils.isHardwareSupport()) {
+                this._setToRenderInstanceListWhenGetGameObjectRenderListFromSpacePartition(this.getRenderListByFrustumCull());
+            }
         };
         Octree.prototype.build = function () {
-            var entityObjectList = this.getChildren(), currentDepth = 0, maxNodeCapacity = this.maxNodeCapacity, maxDepth = this.maxDepth;
-            var buildTree = function (worldMin, worldMax, currentDepth, entityObjectList, parentNode) {
+            var gameObjectList = this.getChildren(), currentDepth = 0, maxNodeCapacity = this.maxNodeCapacity, maxDepth = this.maxDepth;
+            var buildTree = function (worldMin, worldMax, currentDepth, gameObjectList, parentNode) {
                 var halfExtends = new wd.Vector3((worldMax.x - worldMin.x) / 2, (worldMax.y - worldMin.y) / 2, (worldMax.z - worldMin.z) / 2);
                 for (var x = 0; x < 2; x++) {
                     for (var y = 0; y < 2; y++) {
                         for (var z = 0; z < 2; z++) {
-                            var localMin = worldMin.copy().add(halfExtends.copy().scale(x, y, z)), localMax = worldMin.copy().add(halfExtends.copy().scale(x + 1, y + 1, z + 1)), node = wd.OctreeNode.create(localMin, localMax, maxNodeCapacity, currentDepth + 1, maxDepth);
-                            node.addEntityObjects(entityObjectList);
-                            if (node.entityObjectCount > maxNodeCapacity && currentDepth < maxDepth) {
-                                buildTree(localMin, localMax, currentDepth + 1, entityObjectList, node);
+                            var localMin = worldMin.clone().add(halfExtends.clone().scale(x, y, z)), localMax = worldMin.clone().add(halfExtends.clone().scale(x + 1, y + 1, z + 1)), node = wd.OctreeNode.create(localMin, localMax, maxNodeCapacity, currentDepth + 1, maxDepth);
+                            node.addGameObjects(gameObjectList);
+                            if (node.gameObjectCount > maxNodeCapacity && currentDepth < maxDepth) {
+                                buildTree(localMin, localMax, currentDepth + 1, gameObjectList, node);
                             }
                             parentNode.addNode(node);
                         }
                     }
                 }
             };
-            this._updateColliderForFirstCheck(entityObjectList);
-            var _a = this._getWorldExtends(entityObjectList), worldMin = _a.worldMin, worldMax = _a.worldMax;
+            this._updateColliderForFirstCheck(gameObjectList);
+            var _a = this._getWorldExtends(gameObjectList), worldMin = _a.worldMin, worldMax = _a.worldMax;
             this._root = wd.OctreeNode.create(worldMin, worldMax, maxNodeCapacity, currentDepth + 1, maxDepth);
-            buildTree(worldMin, worldMax, currentDepth, entityObjectList, this._root);
+            buildTree(worldMin, worldMax, currentDepth, gameObjectList, this._root);
         };
         Octree.prototype.getRenderListByFrustumCull = function () {
             var frustumPlanes = wd.Director.getInstance().scene.currentCamera.getComponent(wd.CameraController).getPlanes();
@@ -18106,25 +20295,25 @@ var wd;
             this._selectionList = this._selectionList.removeRepeatItems();
             return this._selectionList;
         };
-        Octree.prototype._updateColliderForFirstCheck = function (entityObjectList) {
+        Octree.prototype._updateColliderForFirstCheck = function (gameObjectList) {
             var collider = null, self = this;
-            entityObjectList.forEach(function (entityObject) {
-                if (!entityObject.hasComponent(wd.ColliderForFirstCheck)) {
+            gameObjectList.forEach(function (gameObject) {
+                if (!gameObject.hasComponent(wd.ColliderForFirstCheck)) {
                     collider = self._createCollider();
-                    entityObject.addComponent(collider);
+                    gameObject.addComponent(collider);
                     collider.init();
                 }
                 else {
-                    collider = entityObject.getComponent(wd.BoxColliderForFirstCheck);
+                    collider = gameObject.getComponent(wd.BoxColliderForFirstCheck);
                 }
                 collider.update(null);
             });
         };
-        Octree.prototype._getWorldExtends = function (entityObjectList) {
+        Octree.prototype._getWorldExtends = function (gameObjectList) {
             var worldMin = wd.Vector3.create(Number.MAX_VALUE, Number.MAX_VALUE, Number.MAX_VALUE), worldMax = wd.Vector3.create(-Number.MAX_VALUE, -Number.MAX_VALUE, -Number.MAX_VALUE), self = this;
-            entityObjectList.forEach(function (entityObject) {
+            gameObjectList.forEach(function (gameObject) {
                 var min = null, max = null, collider = null, shape = null;
-                collider = entityObject.getComponent(wd.BoxColliderForFirstCheck);
+                collider = gameObject.getComponent(wd.BoxColliderForFirstCheck);
                 shape = collider.shape;
                 min = shape.getMin();
                 max = shape.getMax();
@@ -18159,11 +20348,57 @@ var wd;
                 max.z = v.z;
             }
         };
+        Octree.prototype._setToRenderInstanceListWhenGetGameObjectRenderListFromSpacePartition = function (renderList) {
+            var self = this, instanceSourceMap = wdCb.Hash.create();
+            renderList.forEach(function (child) {
+                if (!wd.InstanceUtils.isInstance(child)) {
+                    return;
+                }
+                if (wd.InstanceUtils.isSourceInstance(child)) {
+                    var instanceComponent = child.getComponent(wd.SourceInstance);
+                    self._addSelfToToRenderInstanceList(child, instanceComponent);
+                    return;
+                }
+                var sourceObject = (child.getComponent(wd.ObjectInstance)).sourceObject, sourceInstanceComponent = sourceObject.getComponent(wd.SourceInstance);
+                self._addSelfToToRenderInstanceList(child, sourceInstanceComponent);
+                instanceSourceMap.addChild(String(sourceObject.uid), sourceObject);
+            });
+            instanceSourceMap.forEach(function (sourceObject, uid) {
+                var sourceInstanceComponent = sourceObject.getComponent(wd.SourceInstance);
+                self._setToRenderInstanceListOfChildren(sourceObject, sourceInstanceComponent);
+            });
+        };
+        Octree.prototype._setToRenderInstanceListOfChildren = function (sourceObject, sourceInstanceComponent) {
+            var set = function (sourceObject, sourceInstanceComponent) {
+                sourceObject.forEach(function (childSource, index) {
+                    var childSourceInstance = childSource.getComponent(wd.SourceInstance);
+                    sourceInstanceComponent.forEachToRenderInstanceList(function (toRenderInstance) {
+                        childSourceInstance.addToRenderIntance(toRenderInstance.getChild(index));
+                    });
+                    set(childSource, childSourceInstance);
+                });
+            };
+            set(sourceObject, sourceInstanceComponent);
+        };
+        Octree.prototype._addSelfToToRenderInstanceList = function (self, instanceComponent) {
+            instanceComponent.addToRenderIntance(self);
+        };
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Octree.prototype, "maxDepth", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Octree.prototype, "maxNodeCapacity", void 0);
         __decorate([
             wd.require(function (entityObject) {
                 wd.assert(entityObject instanceof wd.GameObject, wd.Log.info.FUNC_SHOULD("Octree component", "add to GameObject"));
             })
         ], Octree.prototype, "addToObject", null);
+        __decorate([
+            wd.require(function () {
+                wd.assert(wd.JudgeUtils.isEqual(this.entityObject.parent, wd.Director.getInstance().scene) && wd.Director.getInstance().scene.gameObjectScene.hasChild(this.entityObject), wd.Log.info.FUNC_SHOULD("be added to the one which is the firstLevel child of gameObjectScene"));
+            })
+        ], Octree.prototype, "init", null);
         __decorate([
             wd.require(function () {
                 wd.assert(!!wd.Director.getInstance().scene.currentCamera.getComponent(wd.CameraController), wd.Log.info.FUNC_SHOULD("contain CameraController component"));
@@ -18174,22 +20409,28 @@ var wd;
                 wd.assert(!!wd.Director.getInstance().scene.currentCamera.getComponent(wd.CameraController), wd.Log.info.FUNC_SHOULD("contain CameraController component"));
             })
         ], Octree.prototype, "getIntersectListWithRay", null);
+        __decorate([
+            wd.require(function (sourceObject, sourceInstanceComponent) {
+                wd.assert(sourceInstanceComponent.hasToRenderInstance(), wd.Log.info.FUNC_SHOULD("top SourceInstance", "has to render instance"));
+            })
+        ], Octree.prototype, "_setToRenderInstanceListOfChildren", null);
+        __decorate([
+            wd.require(function (self, instanceComponent) {
+                wd.assert(instanceComponent instanceof wd.SourceInstance, wd.Log.info.FUNC_ONLY("SourceInstance has toRenderList"));
+                instanceComponent.forEachToRenderInstanceList(function (instance) {
+                    wd.assert(!wd.JudgeUtils.isEqual(instance, self), wd.Log.info.FUNC_SHOULD_NOT("toRenderInstanceList", "contain self"));
+                });
+            })
+        ], Octree.prototype, "_addSelfToToRenderInstanceList", null);
         return Octree;
     }(wd.SpacePartition));
     wd.Octree = Octree;
 })(wd || (wd = {}));
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var OctreeNode = (function () {
         function OctreeNode(minPoint, maxPoint, capacity, depth, maxDepth) {
-            this.entityObjectList = wdCb.Collection.create();
+            this.gameObjectList = wdCb.Collection.create();
             this.nodeList = wdCb.Collection.create();
             this._depth = null;
             this._maxDepth = null;
@@ -18208,9 +20449,9 @@ var wd;
             obj.initWhenCreate();
             return obj;
         };
-        Object.defineProperty(OctreeNode.prototype, "entityObjectCount", {
+        Object.defineProperty(OctreeNode.prototype, "gameObjectCount", {
             get: function () {
-                return this.entityObjectList.getCount();
+                return this.gameObjectList.getCount();
             },
             enumerable: true,
             configurable: true
@@ -18218,11 +20459,11 @@ var wd;
         OctreeNode.prototype.initWhenCreate = function () {
             this._boundingVectors = wd.BoundingRegionUtils.buildBoundingVectors(this._minPoint, this._maxPoint);
         };
-        OctreeNode.prototype.addEntityObjects = function (entityObjectList) {
+        OctreeNode.prototype.addGameObjects = function (gameObjectList) {
             var self = this, localMin = this._minPoint, localMax = this._maxPoint;
-            entityObjectList.forEach(function (entityObject) {
-                if (entityObject.getComponent(wd.BoxColliderForFirstCheck).shape.isIntersectWithBox(localMin, localMax)) {
-                    self.entityObjectList.addChild(entityObject);
+            gameObjectList.forEach(function (gameObject) {
+                if (gameObject.getComponent(wd.BoxColliderForFirstCheck).shape.isIntersectWithBox(localMin, localMax)) {
+                    self.gameObjectList.addChild(gameObject);
                 }
             });
         };
@@ -18237,9 +20478,7 @@ var wd;
                     });
                     return;
                 }
-                selectionList.addChildren(this.entityObjectList.filter(function (entityObject) {
-                    return entityObject.isVisible;
-                }));
+                selectionList.addChildren(wd.RenderUtils.getGameObjectRenderListForOctree(this.gameObjectList));
             }
         };
         OctreeNode.prototype.findAndAddToIntersectList = function (ray, selectionList) {
@@ -18250,7 +20489,7 @@ var wd;
                     });
                     return;
                 }
-                selectionList.addChildren(this.entityObjectList);
+                selectionList.addChildren(this.gameObjectList);
             }
         };
         OctreeNode.prototype.findAndAddToCollideList = function (shape, selectionList) {
@@ -18261,29 +20500,23 @@ var wd;
                     });
                     return;
                 }
-                selectionList.addChildren(this.entityObjectList);
+                selectionList.addChildren(this.gameObjectList);
             }
         };
         OctreeNode.prototype._hasNode = function () {
             return this.nodeList.getCount() > 0;
         };
         __decorate([
-            wd.require(function (entityObjectList) {
-                entityObjectList.forEach(function (entityObject) {
-                    wd.assert(entityObject instanceof wd.GameObject, wd.Log.info.FUNC_SHOULD("add gameObjects"));
+            wd.require(function (gameObjectList) {
+                gameObjectList.forEach(function (gameObject) {
+                    wd.assert(gameObject instanceof wd.GameObject, wd.Log.info.FUNC_SHOULD("add gameObjects"));
                 });
             })
-        ], OctreeNode.prototype, "addEntityObjects", null);
+        ], OctreeNode.prototype, "addGameObjects", null);
         return OctreeNode;
     }());
     wd.OctreeNode = OctreeNode;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var ColliderForFirstCheck = (function (_super) {
@@ -18291,16 +20524,13 @@ var wd;
         function ColliderForFirstCheck() {
             _super.apply(this, arguments);
         }
+        ColliderForFirstCheck.prototype.clone = function () {
+            return wd.CloneUtils.clone(this);
+        };
         return ColliderForFirstCheck;
     }(wd.Component));
     wd.ColliderForFirstCheck = ColliderForFirstCheck;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var BoxColliderForFirstCheck = (function (_super) {
@@ -18327,30 +20557,22 @@ var wd;
         BoxColliderForFirstCheck.prototype.update = function (elapsedTime) {
             this._collider.update(elapsedTime);
         };
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], BoxColliderForFirstCheck.prototype, "_collider", void 0);
         return BoxColliderForFirstCheck;
     }(wd.ColliderForFirstCheck));
     wd.BoxColliderForFirstCheck = BoxColliderForFirstCheck;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var Collider = (function (_super) {
         __extends(Collider, _super);
         function Collider() {
             _super.apply(this, arguments);
-            this.type = wd.ABSTRACT_ATTRIBUTE;
+            this.enable = true;
             this.boundingRegion = null;
+            this.type = wd.ABSTRACT_ATTRIBUTE;
         }
         Object.defineProperty(Collider.prototype, "shape", {
             get: function () {
@@ -18363,6 +20585,9 @@ var wd;
             this.boundingRegion = this.createBoundingRegion();
             this.boundingRegion.init();
             this.buildBoundingRegion();
+        };
+        Collider.prototype.clone = function () {
+            return wd.CloneUtils.clone(this);
         };
         Collider.prototype.update = function (elapsedTime) {
             this.boundingRegion.update();
@@ -18383,9 +20608,6 @@ var wd;
         };
         Collider.prototype.isCollide = function (targetObject) {
             var collider = null;
-            if (this._isSelf(targetObject) || !targetObject.hasComponent(Collider)) {
-                return false;
-            }
             collider = targetObject.getComponent(Collider);
             if (targetObject.hasComponent(wd.RigidBody)) {
                 collider.updateShape();
@@ -18396,20 +20618,26 @@ var wd;
             return wd.JudgeUtils.isSelf(this.entityObject, entityObject);
         };
         __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Collider.prototype, "enable", void 0);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], Collider.prototype, "boundingRegion", void 0);
+        __decorate([
             wd.require(function (collider) {
                 wd.assert(collider instanceof Collider, wd.Log.info.FUNC_SHOULD("target", "be collider"));
             })
         ], Collider.prototype, "isIntersectWith", null);
+        __decorate([
+            wd.require(function (targetObject) {
+                wd.assert(!this._isSelf(targetObject), wd.Log.info.FUNC_SHOULD_NOT("targetObject", "be self"));
+                wd.assert(targetObject.hasComponent(Collider), wd.Log.info.FUNC_SHOULD("targetObject", "contain Collider component"));
+            })
+        ], Collider.prototype, "isCollide", null);
         return Collider;
     }(wd.Component));
     wd.Collider = Collider;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var BoxCollider = (function (_super) {
@@ -18430,16 +20658,16 @@ var wd;
         BoxCollider.prototype.buildBoundingRegion = function () {
             this.boundingRegion.build(this.center, this.halfExtents);
         };
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], BoxCollider.prototype, "center", void 0);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], BoxCollider.prototype, "halfExtents", void 0);
         return BoxCollider;
     }(wd.Collider));
     wd.BoxCollider = BoxCollider;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var SphereCollider = (function (_super) {
@@ -18460,17 +20688,16 @@ var wd;
         SphereCollider.prototype.buildBoundingRegion = function () {
             this.boundingRegion.build(this.center, this.radius);
         };
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], SphereCollider.prototype, "center", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], SphereCollider.prototype, "radius", void 0);
         return SphereCollider;
     }(wd.Collider));
     wd.SphereCollider = SphereCollider;
 })(wd || (wd = {}));
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var BoundingRegion = (function () {
@@ -18485,6 +20712,9 @@ var wd;
         BoundingRegion.prototype.init = function () {
             this.shape = this.createShape();
         };
+        BoundingRegion.prototype.clone = function () {
+            return wd.CloneUtils.clone(this);
+        };
         BoundingRegion.prototype.build = function (center) {
             var args = [];
             for (var _i = 1; _i < arguments.length; _i++) {
@@ -18498,7 +20728,7 @@ var wd;
             else {
                 this.shape.setFromPoints(wd.ColliderUtils.getVertices(this.entityObject));
             }
-            this.originShape = this.shape.copy();
+            this.originShape = this.shape.clone();
             if (wd.DebugConfig.debugCollision) {
                 this.debugObject = this.buildDebugObjectFromShape(this.shape);
                 wd.Director.getInstance().scene.addChild(this.debugObject);
@@ -18540,6 +20770,9 @@ var wd;
             return entityObject;
         };
         __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], BoundingRegion.prototype, "shape", void 0);
+        __decorate([
             wd.ensure(function (returnValue, center) {
                 var args = [];
                 for (var _i = 2; _i < arguments.length; _i++) {
@@ -18554,18 +20787,6 @@ var wd;
     }());
     wd.BoundingRegion = BoundingRegion;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var BoxBoundingRegion = (function (_super) {
@@ -18632,18 +20853,6 @@ var wd;
     }(wd.BoundingRegion));
     wd.BoxBoundingRegion = BoxBoundingRegion;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var SphereBoundingRegion = (function (_super) {
@@ -18718,7 +20927,6 @@ var wd;
     }(wd.BoundingRegion));
     wd.SphereBoundingRegion = SphereBoundingRegion;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var BoundingRegionUtils = (function () {
@@ -18781,19 +20989,19 @@ var wd;
         };
         BoundingRegionUtils.buildBoundingVectors = function (minPoint, maxPoint) {
             var boundingVectors = [];
-            boundingVectors.push(minPoint.copy());
-            boundingVectors.push(maxPoint.copy());
-            boundingVectors.push(minPoint.copy());
+            boundingVectors.push(minPoint.clone());
+            boundingVectors.push(maxPoint.clone());
+            boundingVectors.push(minPoint.clone());
             boundingVectors[2].x = maxPoint.x;
-            boundingVectors.push(minPoint.copy());
+            boundingVectors.push(minPoint.clone());
             boundingVectors[3].y = maxPoint.y;
-            boundingVectors.push(minPoint.copy());
+            boundingVectors.push(minPoint.clone());
             boundingVectors[4].z = maxPoint.z;
-            boundingVectors.push(maxPoint.copy());
+            boundingVectors.push(maxPoint.clone());
             boundingVectors[5].z = minPoint.z;
-            boundingVectors.push(maxPoint.copy());
+            boundingVectors.push(maxPoint.clone());
             boundingVectors[6].x = minPoint.x;
-            boundingVectors.push(maxPoint.copy());
+            boundingVectors.push(maxPoint.clone());
             boundingVectors[7].y = minPoint.y;
             return boundingVectors;
         };
@@ -18801,33 +21009,26 @@ var wd;
     }());
     wd.BoundingRegionUtils = BoundingRegionUtils;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var Shape = (function () {
         function Shape() {
             this.center = wd.Vector3.create(0, 0, 0);
         }
+        Shape.prototype.clone = function () {
+            return wd.CloneUtils.clone(this);
+        };
         Shape.prototype.isBoxAndSphereIntersected = function (box, sphere) {
             var sphereCenter = sphere.center, sphereRadius = sphere.radius;
             return sphereCenter.distanceToSquared(box.closestPointTo(sphereCenter)) < Math.pow(sphereRadius, 2);
         };
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], Shape.prototype, "center", void 0);
         return Shape;
     }());
     wd.Shape = Shape;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var AABBShape = (function (_super) {
@@ -18851,10 +21052,10 @@ var wd;
             this.halfExtents = AABBShape.getHalfExtents(min, max);
         };
         AABBShape.prototype.getMin = function () {
-            return this.center.copy().sub(this.halfExtents);
+            return this.center.clone().sub(this.halfExtents);
         };
         AABBShape.prototype.getMax = function () {
-            return this.center.copy().add(this.halfExtents);
+            return this.center.clone().add(this.halfExtents);
         };
         AABBShape.prototype.setFromShapeParam = function (center, halfExtents) {
             this.center = center;
@@ -18875,8 +21076,8 @@ var wd;
         };
         AABBShape.prototype.setFromTranslationAndScale = function (aabb, matrix) {
             var translation = matrix.getTranslation(), scale = matrix.getScale();
-            this.center = aabb.center.copy().add(translation);
-            this.halfExtents = aabb.halfExtents.copy().mul(scale);
+            this.center = aabb.center.clone().add(translation);
+            this.halfExtents = aabb.halfExtents.clone().mul(scale);
         };
         AABBShape.prototype.setFromObject = function (entityObject) {
             var modelMatrix = entityObject.transform.localToWorldMatrix, vertices = wd.ColliderUtils.getVertices(entityObject), self = this, min = this._getEmptyMin(), max = this._getEmptyMax();
@@ -18951,12 +21152,6 @@ var wd;
             }
             return true;
         };
-        AABBShape.prototype.copy = function () {
-            var shape = AABBShape.create();
-            shape.center = this.center.copy();
-            shape.halfExtents = this.halfExtents.copy();
-            return shape;
-        };
         AABBShape.prototype._getEmptyMin = function () {
             return wd.Vector3.create(Infinity, Infinity, Infinity);
         };
@@ -18968,6 +21163,9 @@ var wd;
             max.max(point);
         };
         __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], AABBShape.prototype, "halfExtents", void 0);
+        __decorate([
             wd.require(function (entityObject) {
                 var vertices = wd.ColliderUtils.getVertices(entityObject);
                 wd.assert(vertices && vertices.length > 0, wd.Log.info.FUNC_MUST_DEFINE("vertices"));
@@ -18977,12 +21175,6 @@ var wd;
     }(wd.Shape));
     wd.AABBShape = AABBShape;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var SphereShape = (function (_super) {
@@ -19006,7 +21198,7 @@ var wd;
         };
         SphereShape.prototype.setFromTranslationAndScale = function (sphere, matrix) {
             var translation = matrix.getTranslation(), scale = matrix.getScale();
-            this.center = sphere.center.copy().add(translation);
+            this.center = sphere.center.clone().add(translation);
             this.radius = sphere.radius * Math.max(scale.x, scale.y, scale.z);
         };
         SphereShape.prototype.isIntersectWithSphere = function (shape) {
@@ -19035,12 +21227,6 @@ var wd;
         SphereShape.prototype.containPoint = function (point) {
             return point.distanceToSquared(this.center) <= (Math.pow(this.radius, 2));
         };
-        SphereShape.prototype.copy = function () {
-            var shape = SphereShape.create();
-            shape.center = this.center.copy();
-            shape.radius = this.radius;
-            return shape;
-        };
         SphereShape.prototype._findMaxDistanceOfPointsToCenter = function (points) {
             var maxRadiusSq = 0, center = this.center;
             wd.GeometryUtils.iterateThreeComponent(points, function (point) {
@@ -19048,11 +21234,13 @@ var wd;
             });
             return Math.sqrt(maxRadiusSq);
         };
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], SphereShape.prototype, "radius", void 0);
         return SphereShape;
     }(wd.Shape));
     wd.SphereShape = SphereShape;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     (function (EColliderType) {
@@ -19061,13 +21249,6 @@ var wd;
     })(wd.EColliderType || (wd.EColliderType = {}));
     var EColliderType = wd.EColliderType;
 })(wd || (wd = {}));
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var ColliderUtils = (function () {
@@ -19096,18 +21277,6 @@ var wd;
     }());
     wd.ColliderUtils = ColliderUtils;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var RigidBody = (function (_super) {
@@ -19249,11 +21418,36 @@ var wd;
             this.addConstraint();
         };
         __decorate([
-            wd.operateBodyDataGetterAndSetter("Friction")
+            wd.operateBodyDataGetterAndSetter("Friction"),
+            wd.cloneAttributeAsBasicType()
         ], RigidBody.prototype, "friction", null);
         __decorate([
-            wd.operateBodyDataGetterAndSetter("Restitution")
+            wd.operateBodyDataGetterAndSetter("Restitution"),
+            wd.cloneAttributeAsBasicType()
         ], RigidBody.prototype, "restitution", null);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], RigidBody.prototype, "children", null);
+        __decorate([
+            wd.cloneAttributeAsCloneable({
+                isInjectTarget: true
+            })
+        ], RigidBody.prototype, "lockConstraint", void 0);
+        __decorate([
+            wd.cloneAttributeAsCloneable({
+                isInjectTarget: true
+            })
+        ], RigidBody.prototype, "distanceConstraint", void 0);
+        __decorate([
+            wd.cloneAttributeAsCloneable({
+                isInjectTarget: true
+            })
+        ], RigidBody.prototype, "hingeConstraint", void 0);
+        __decorate([
+            wd.cloneAttributeAsCloneable({
+                isInjectTarget: true
+            })
+        ], RigidBody.prototype, "pointToPointConstraintList", void 0);
         __decorate([
             wd.require(function () {
                 if (this._isContainer(this.entityObject)) {
@@ -19275,18 +21469,6 @@ var wd;
     }(wd.Component));
     wd.RigidBody = RigidBody;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var DynamicRigidBody = (function (_super) {
@@ -19369,36 +21551,38 @@ var wd;
             });
         };
         __decorate([
-            wd.operateBodyDataGetterAndSetter("LinearDamping")
+            wd.operateBodyDataGetterAndSetter("LinearDamping"),
+            wd.cloneAttributeAsBasicType()
         ], DynamicRigidBody.prototype, "linearDamping", null);
         __decorate([
-            wd.operateBodyDataGetterAndSetter("AngularDamping")
+            wd.operateBodyDataGetterAndSetter("AngularDamping"),
+            wd.cloneAttributeAsBasicType()
         ], DynamicRigidBody.prototype, "angularDamping", null);
         __decorate([
-            wd.operateBodyDataGetterAndSetter("Velocity")
+            wd.operateBodyDataGetterAndSetter("Velocity"),
+            wd.cloneAttributeAsCloneable()
         ], DynamicRigidBody.prototype, "velocity", null);
         __decorate([
-            wd.operateBodyDataGetterAndSetter("AngularVelocity")
+            wd.operateBodyDataGetterAndSetter("AngularVelocity"),
+            wd.cloneAttributeAsCloneable()
         ], DynamicRigidBody.prototype, "angularVelocity", null);
         __decorate([
-            wd.operateBodyDataGetterAndSetter("Mass")
+            wd.operateBodyDataGetterAndSetter("Mass"),
+            wd.cloneAttributeAsBasicType()
         ], DynamicRigidBody.prototype, "mass", null);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], DynamicRigidBody.prototype, "impulse", void 0);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], DynamicRigidBody.prototype, "force", void 0);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], DynamicRigidBody.prototype, "hitPoint", void 0);
         return DynamicRigidBody;
     }(wd.RigidBody));
     wd.DynamicRigidBody = DynamicRigidBody;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var KinematicRigidBody = (function (_super) {
@@ -19451,24 +21635,21 @@ var wd;
             });
         };
         __decorate([
-            wd.operateBodyDataGetterAndSetter("Velocity")
+            wd.operateBodyDataGetterAndSetter("Velocity"),
+            wd.cloneAttributeAsCloneable()
         ], KinematicRigidBody.prototype, "velocity", null);
         __decorate([
-            wd.operateBodyDataGetterAndSetter("AngularVelocity")
+            wd.operateBodyDataGetterAndSetter("AngularVelocity"),
+            wd.cloneAttributeAsCloneable()
         ], KinematicRigidBody.prototype, "angularVelocity", null);
         __decorate([
-            wd.operateBodyDataGetterAndSetter("Mass")
+            wd.operateBodyDataGetterAndSetter("Mass"),
+            wd.cloneAttributeAsBasicType()
         ], KinematicRigidBody.prototype, "mass", null);
         return KinematicRigidBody;
     }(wd.RigidBody));
     wd.KinematicRigidBody = KinematicRigidBody;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var StaticRigidBody = (function (_super) {
@@ -19487,12 +21668,6 @@ var wd;
     }(wd.RigidBody));
     wd.StaticRigidBody = StaticRigidBody;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var PhysicsConstraint = (function () {
@@ -19501,6 +21676,12 @@ var wd;
             this.rigidBody = null;
             this.rigidBody = rigidBody;
         }
+        PhysicsConstraint.prototype.clone = function (rigidBody) {
+            return wd.CloneUtils.clone(this, null, [rigidBody]);
+        };
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], PhysicsConstraint.prototype, "maxForce", void 0);
         return PhysicsConstraint;
     }());
     wd.PhysicsConstraint = PhysicsConstraint;
@@ -19531,6 +21712,9 @@ var wd;
             enumerable: true,
             configurable: true
         });
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], LockConstraint.prototype, "connectedBody", null);
         return LockConstraint;
     }(PhysicsConstraint));
     wd.LockConstraint = LockConstraint;
@@ -19562,6 +21746,12 @@ var wd;
             enumerable: true,
             configurable: true
         });
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], DistanceConstraint.prototype, "connectedBody", null);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], DistanceConstraint.prototype, "distance", void 0);
         return DistanceConstraint;
     }(PhysicsConstraint));
     wd.DistanceConstraint = DistanceConstraint;
@@ -19596,6 +21786,21 @@ var wd;
             enumerable: true,
             configurable: true
         });
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], HingeConstraint.prototype, "connectedBody", null);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], HingeConstraint.prototype, "pivotA", void 0);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], HingeConstraint.prototype, "pivotB", void 0);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], HingeConstraint.prototype, "axisA", void 0);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], HingeConstraint.prototype, "axisB", void 0);
         return HingeConstraint;
     }(PhysicsConstraint));
     wd.HingeConstraint = HingeConstraint;
@@ -19607,10 +21812,19 @@ var wd;
             this.pivotA = null;
             this.pivotB = null;
         }
-        PointToPointConstraint.create = function (rigidBody) {
-            var obj = new this(rigidBody);
+        PointToPointConstraint.create = function () {
+            var obj = new this(null);
             return obj;
         };
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], PointToPointConstraint.prototype, "connectedBody", void 0);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], PointToPointConstraint.prototype, "pivotA", void 0);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], PointToPointConstraint.prototype, "pivotB", void 0);
         return PointToPointConstraint;
     }(PhysicsConstraint));
     wd.PointToPointConstraint = PointToPointConstraint;
@@ -19624,12 +21838,21 @@ var wd;
             var obj = new this(rigidBody);
             return obj;
         };
+        PointToPointConstraintList.prototype.clone = function (rigidBody) {
+            return wd.CloneUtils.clone(this, null, [rigidBody]);
+        };
         PointToPointConstraintList.prototype.forEach = function (func, context) {
             if (context === void 0) { context = wd.root; }
             this._list.forEach(func, context);
         };
         PointToPointConstraintList.prototype.getCount = function () {
             return this._list.getCount();
+        };
+        PointToPointConstraintList.prototype.getChildren = function () {
+            return this._list;
+        };
+        PointToPointConstraintList.prototype.getChild = function (index) {
+            return this._list.getChild(index);
         };
         PointToPointConstraintList.prototype.addChild = function (constraint) {
             var engineAdapter = null;
@@ -19664,11 +21887,15 @@ var wd;
             engineAdapter = this._rigidBody.getPhysicsEngineAdapter();
             engineAdapter.removePointToPointConstraint(constraint);
         };
+        __decorate([
+            wd.cloneAttributeAsCustomType(function (source, target, memberName) {
+                target[memberName] = source[memberName].clone(true);
+            })
+        ], PointToPointConstraintList.prototype, "_list", void 0);
         return PointToPointConstraintList;
     }());
     wd.PointToPointConstraintList = PointToPointConstraintList;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var PhysicsEngineFactory = (function () {
@@ -19690,9 +21917,6 @@ var wd;
     }());
     wd.PhysicsEngineFactory = PhysicsEngineFactory;
 })(wd || (wd = {}));
-
-
-
 var wd;
 (function (wd) {
     (function (EPhysicsEngineType) {
@@ -19700,7 +21924,6 @@ var wd;
     })(wd.EPhysicsEngineType || (wd.EPhysicsEngineType = {}));
     var EPhysicsEngineType = wd.EPhysicsEngineType;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var CannonDataList = (function () {
@@ -19720,12 +21943,6 @@ var wd;
     }());
     wd.CannonDataList = CannonDataList;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var CannonGameObjectDataList = (function (_super) {
@@ -19784,12 +22001,6 @@ var wd;
     }(wd.CannonDataList));
     wd.CannonGameObjectDataList = CannonGameObjectDataList;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var CannonMaterialList = (function (_super) {
@@ -19865,12 +22076,6 @@ var wd;
     }(wd.CannonDataList));
     wd.CannonMaterialList = CannonMaterialList;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var CannonConstraintDataList = (function (_super) {
@@ -19882,12 +22087,6 @@ var wd;
     }(wd.CannonDataList));
     wd.CannonConstraintDataList = CannonConstraintDataList;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var CannonSingleConstraintDataList = (function (_super) {
@@ -19915,12 +22114,6 @@ var wd;
     }(wd.CannonConstraintDataList));
     wd.CannonSingleConstraintDataList = CannonSingleConstraintDataList;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var CannonLockConstraintDataList = (function (_super) {
@@ -19936,12 +22129,6 @@ var wd;
     }(wd.CannonSingleConstraintDataList));
     wd.CannonLockConstraintDataList = CannonLockConstraintDataList;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var CannonPointToPointConstraintDataList = (function (_super) {
@@ -19983,12 +22170,6 @@ var wd;
     }(wd.CannonConstraintDataList));
     wd.CannonPointToPointConstraintDataList = CannonPointToPointConstraintDataList;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var CannonDistanceConstraintDataList = (function (_super) {
@@ -20004,12 +22185,6 @@ var wd;
     }(wd.CannonSingleConstraintDataList));
     wd.CannonDistanceConstraintDataList = CannonDistanceConstraintDataList;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var CannonHingeConstraintDataList = (function (_super) {
@@ -20025,7 +22200,6 @@ var wd;
     }(wd.CannonSingleConstraintDataList));
     wd.CannonHingeConstraintDataList = CannonHingeConstraintDataList;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var CannonUtils = (function () {
@@ -20047,13 +22221,6 @@ var wd;
     }());
     wd.CannonUtils = CannonUtils;
 })(wd || (wd = {}));
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var CannonAdapter = (function () {
@@ -20264,13 +22431,6 @@ var wd;
     }());
     wd.CannonAdapter = CannonAdapter;
 })(wd || (wd = {}));
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var CannonBody = (function () {
@@ -20345,7 +22505,7 @@ var wd;
             var _this = this;
             var position = entityObject.transform.position, rotation = entityObject.transform.rotation;
             children.forEach(function (child) {
-                body.addShape(_this._createShape(child.getComponent(wd.Collider).shape), wd.CannonUtils.convertToCannonVector3(child.transform.position.copy().sub(position)), wd.CannonUtils.convertToCannonQuaternion(child.transform.rotation.copy().sub(rotation)));
+                body.addShape(_this._createShape(child.getComponent(wd.Collider).shape), wd.CannonUtils.convertToCannonVector3(child.transform.position.clone().sub(position)), wd.CannonUtils.convertToCannonQuaternion(child.transform.rotation.clone().sub(rotation)));
             }, this);
         };
         __decorate([
@@ -20363,12 +22523,6 @@ var wd;
     }());
     wd.CannonBody = CannonBody;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var CannonDynamicBody = (function (_super) {
@@ -20403,12 +22557,6 @@ var wd;
     }(wd.CannonBody));
     wd.CannonDynamicBody = CannonDynamicBody;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var CannonKinematicBody = (function (_super) {
@@ -20433,12 +22581,6 @@ var wd;
     }(wd.CannonBody));
     wd.CannonKinematicBody = CannonKinematicBody;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var CannonStaticBody = (function (_super) {
@@ -20459,13 +22601,6 @@ var wd;
     }(wd.CannonBody));
     wd.CannonStaticBody = CannonStaticBody;
 })(wd || (wd = {}));
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var CannonConstraint = (function () {
@@ -20496,12 +22631,6 @@ var wd;
     }());
     wd.CannonConstraint = CannonConstraint;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var CannonSingleConstraint = (function (_super) {
@@ -20523,12 +22652,6 @@ var wd;
     }(wd.CannonConstraint));
     wd.CannonSingleConstraint = CannonSingleConstraint;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var CannonLockConstraint = (function (_super) {
@@ -20554,12 +22677,6 @@ var wd;
     }(wd.CannonSingleConstraint));
     wd.CannonLockConstraint = CannonLockConstraint;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var CannonPointToPointConstraint = (function (_super) {
@@ -20595,12 +22712,6 @@ var wd;
     }(wd.CannonConstraint));
     wd.CannonPointToPointConstraint = CannonPointToPointConstraint;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var CannonDistanceConstraint = (function (_super) {
@@ -20621,12 +22732,6 @@ var wd;
     }(wd.CannonSingleConstraint));
     wd.CannonDistanceConstraint = CannonDistanceConstraint;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var CannonHingeConstraint = (function (_super) {
@@ -20662,12 +22767,6 @@ var wd;
     }(wd.CannonSingleConstraint));
     wd.CannonHingeConstraint = CannonHingeConstraint;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var Light = (function (_super) {
@@ -20682,8 +22781,6 @@ var wd;
             this.shadowCameraFar = 5000;
             this.shadowBias = wd.ShaderChunk.NULL;
             this.shadowDarkness = 0;
-            this.shadowMap = null;
-            this.shadowMapRenderer = null;
         }
         Object.defineProperty(Light.prototype, "position", {
             get: function () {
@@ -20720,16 +22817,34 @@ var wd;
             enumerable: true,
             configurable: true
         });
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Light.prototype, "shadowMapWidth", null);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Light.prototype, "shadowMapHeight", null);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], Light.prototype, "color", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Light.prototype, "castShadow", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Light.prototype, "shadowCameraNear", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Light.prototype, "shadowCameraFar", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Light.prototype, "shadowBias", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Light.prototype, "shadowDarkness", void 0);
         return Light;
     }(wd.Component));
     wd.Light = Light;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var AmbientLight = (function (_super) {
@@ -20746,18 +22861,6 @@ var wd;
     }(wd.Light));
     wd.AmbientLight = AmbientLight;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var SourceLight = (function (_super) {
@@ -20765,53 +22868,20 @@ var wd;
         function SourceLight() {
             _super.apply(this, arguments);
             this.intensity = 1;
-            this._beforeInitSubscription = null;
         }
-        SourceLight.prototype.initWhenCreate = function () {
-            var self = this;
-            this._beforeInitSubscription = wd.EventManager.fromEvent(wd.EEngineEvent.BEFORE_GAMEOBJECT_INIT)
-                .subscribe(function () {
-                self.beforeInitHandler();
-            });
-        };
-        SourceLight.prototype.dispose = function () {
-            this.shadowMap && this.shadowMap.dispose();
-            wd.Director.getInstance().scene.removeRenderTargetRenderer(this.shadowMapRenderer);
-            this._beforeInitSubscription && this._beforeInitSubscription.dispose();
-        };
-        SourceLight.prototype.beforeInitHandler = function () {
-            if (this.castShadow) {
-                this.shadowMap = this.createShadowMap();
-                this.shadowMapRenderer = this.createShadowMapRenderer();
-                wd.Director.getInstance().scene.addRenderTargetRenderer(this.shadowMapRenderer);
-            }
-        };
         __decorate([
-            wd.execOnlyOnce("_isBeforeInit")
-        ], SourceLight.prototype, "beforeInitHandler", null);
+            wd.cloneAttributeAsBasicType()
+        ], SourceLight.prototype, "intensity", void 0);
         return SourceLight;
     }(wd.Light));
     wd.SourceLight = SourceLight;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var DirectionLight = (function (_super) {
         __extends(DirectionLight, _super);
         function DirectionLight() {
             _super.apply(this, arguments);
-            this._shadowRenderList = null;
             this.shadowCameraLeft = -1000;
             this.shadowCameraRight = 1000;
             this.shadowCameraTop = 1000;
@@ -20819,48 +22889,26 @@ var wd;
         }
         DirectionLight.create = function () {
             var obj = new this();
-            obj.initWhenCreate();
             return obj;
-        };
-        Object.defineProperty(DirectionLight.prototype, "shadowRenderList", {
-            get: function () {
-                return this._shadowRenderList;
-            },
-            set: function (shadowRenderList) {
-                this._shadowRenderList = wdCb.Collection.create(shadowRenderList);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        DirectionLight.prototype.createShadowMap = function () {
-            return wd.TwoDShadowMapTexture.create();
-        };
-        DirectionLight.prototype.createShadowMapRenderer = function () {
-            return wd.TwoDShadowMapRenderTargetRenderer.create(this);
         };
         DirectionLight.type = "directionLight";
         DirectionLight.defaultPosition = wd.Vector3.create(0, 0, 1);
         __decorate([
-            wd.requireSetter(function (shadowRenderList) {
-                wd.assert(wd.JudgeUtils.isArrayExactly(shadowRenderList), wd.Log.info.FUNC_MUST_BE("shadowRenderList", "array"));
-            })
-        ], DirectionLight.prototype, "shadowRenderList", null);
+            wd.cloneAttributeAsBasicType()
+        ], DirectionLight.prototype, "shadowCameraLeft", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], DirectionLight.prototype, "shadowCameraRight", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], DirectionLight.prototype, "shadowCameraTop", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], DirectionLight.prototype, "shadowCameraBottom", void 0);
         return DirectionLight;
     }(wd.SourceLight));
     wd.DirectionLight = DirectionLight;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var PointLight = (function (_super) {
@@ -20868,12 +22916,10 @@ var wd;
         function PointLight() {
             _super.apply(this, arguments);
             this._rangeLevel = null;
-            this._shadowRenderList = wdCb.Hash.create();
             this._attenuation = wd.Attenuation.create();
         }
         PointLight.create = function () {
             var obj = new this();
-            obj.initWhenCreate();
             return obj;
         };
         Object.defineProperty(PointLight.prototype, "rangeLevel", {
@@ -20927,45 +22973,26 @@ var wd;
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(PointLight.prototype, "shadowRenderList", {
-            get: function () {
-                return this._shadowRenderList;
-            },
-            set: function (shadowRenderList) {
-                shadowRenderList = shadowRenderList;
-                for (var direction in shadowRenderList) {
-                    if (shadowRenderList.hasOwnProperty(direction)) {
-                        var list = shadowRenderList[direction];
-                        this._shadowRenderList.addChild(direction, wdCb.Collection.create(list));
-                    }
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        PointLight.prototype.createShadowMap = function () {
-            return wd.CubemapShadowMapTexture.create();
-        };
-        PointLight.prototype.createShadowMapRenderer = function () {
-            return wd.CubemapShadowMapRenderTargetRenderer.create(this);
-        };
         PointLight.type = "pointLight";
         __decorate([
-            wd.requireSetter(function (shadowRenderList) {
-                wd.assert(wd.JudgeUtils.isDirectObject(shadowRenderList), wd.Log.info.FUNC_MUST_BE("shadowRenderList", "object"));
-                for (var direction in shadowRenderList) {
-                    if (shadowRenderList.hasOwnProperty(direction)) {
-                        var list = shadowRenderList[direction];
-                        wd.assert(wd.JudgeUtils.isArrayExactly(list) || shadowRenderList instanceof wdCb.Hash, wd.Log.info.FUNC_MUST_BE("renderList in each direction of shadowRenderList", "array"));
-                    }
-                }
-            })
-        ], PointLight.prototype, "shadowRenderList", null);
+            wd.cloneAttributeAsBasicType()
+        ], PointLight.prototype, "rangeLevel", null);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], PointLight.prototype, "range", null);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], PointLight.prototype, "constant", null);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], PointLight.prototype, "linear", null);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], PointLight.prototype, "quadratic", null);
         return PointLight;
     }(wd.SourceLight));
     wd.PointLight = PointLight;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var Attenuation = (function () {
@@ -21025,8 +23052,10 @@ var wd;
                 return this._rangeLevel;
             },
             set: function (rangeLevel) {
-                this._rangeLevel = rangeLevel;
-                this.setByRangeLevel();
+                if (rangeLevel) {
+                    this._rangeLevel = rangeLevel;
+                    this.setByRangeLevel();
+                }
             },
             enumerable: true,
             configurable: true
@@ -21102,7 +23131,6 @@ var wd;
     }());
     wd.Attenuation = Attenuation;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     (function (ELightModel) {
@@ -21113,18 +23141,6 @@ var wd;
     })(wd.ELightModel || (wd.ELightModel = {}));
     var ELightModel = wd.ELightModel;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var UI = (function (_super) {
@@ -21170,8 +23186,9 @@ var wd;
         UI.prototype.init = function () {
             this.context = this.getContext();
         };
-        UI.prototype.addToObject = function (entityObject) {
-            _super.prototype.addToObject.call(this, entityObject);
+        UI.prototype.addToObject = function (entityObject, isShareComponent) {
+            if (isShareComponent === void 0) { isShareComponent = false; }
+            _super.prototype.addToObject.call(this, entityObject, isShareComponent);
             entityObject.uiManager.addChild(this);
         };
         UI.prototype.removeFromObject = function (entityObject) {
@@ -21228,6 +23245,11 @@ var wd;
             wd.virtual
         ], UI.prototype, "dirty", null);
         __decorate([
+            wd.require(function (entityObject) {
+                wd.assert(entityObject instanceof wd.UIObject, wd.Log.info.FUNC_SHOULD("Octree component", "add to GameObject"));
+            })
+        ], UI.prototype, "addToObject", null);
+        __decorate([
             wd.require(function (elapsedTime) {
                 wd.assert(this.context !== null, wd.Log.info.FUNC_SHOULD("set context"));
             })
@@ -21242,7 +23264,6 @@ var wd;
     }(wd.Component));
     wd.UI = UI;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     (function (EFontXAlignment) {
@@ -21252,7 +23273,6 @@ var wd;
     })(wd.EFontXAlignment || (wd.EFontXAlignment = {}));
     var EFontXAlignment = wd.EFontXAlignment;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     (function (EFontYAlignment) {
@@ -21262,7 +23282,6 @@ var wd;
     })(wd.EFontYAlignment || (wd.EFontYAlignment = {}));
     var EFontYAlignment = wd.EFontYAlignment;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     (function (EFontDimension) {
@@ -21270,18 +23289,6 @@ var wd;
     })(wd.EFontDimension || (wd.EFontDimension = {}));
     var EFontDimension = wd.EFontDimension;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var Font = (function (_super) {
@@ -21332,12 +23339,6 @@ var wd;
     }(wd.UI));
     wd.Font = Font;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var WORD_REX = /([a-zA-Z0-9]+|\S)/, FIRST_ENGLISH_OR_NUM = /^[a-zA-Z0-9]/, LAST_ENGLISH_OR_NUM = /[a-zA-Z0-9]+$/, LAST_INVALID_CHAR = /\s+$/;
@@ -21368,7 +23369,7 @@ var wd;
                 return this._text;
             },
             set: function (text) {
-                if (text !== this._text) {
+                if (this._text !== text) {
                     this._text = text;
                     this.dirty = true;
                     this.needFormat = true;
@@ -21382,7 +23383,7 @@ var wd;
                 return this._fontSize;
             },
             set: function (fontSize) {
-                if (fontSize !== this._fontSize) {
+                if (this._fontSize !== fontSize) {
                     this._fontSize = fontSize;
                     this.dirty = true;
                     this.needFormat = true;
@@ -21396,7 +23397,7 @@ var wd;
                 return this._fontFamily;
             },
             set: function (fontFamily) {
-                if (fontFamily !== this._fontFamily) {
+                if (this._fontFamily !== fontFamily) {
                     this._fontFamily = fontFamily;
                     this.dirty = true;
                     this.needFormat = true;
@@ -21410,7 +23411,7 @@ var wd;
                 return this._xAlignment;
             },
             set: function (xAlignment) {
-                if (xAlignment !== this._xAlignment) {
+                if (this._xAlignment !== xAlignment) {
                     this._xAlignment = xAlignment;
                     this.dirty = true;
                     this.needFormat = true;
@@ -21424,7 +23425,7 @@ var wd;
                 return this._yAlignment;
             },
             set: function (yAlignment) {
-                if (yAlignment !== this._yAlignment) {
+                if (this._yAlignment !== yAlignment) {
                     this._yAlignment = yAlignment;
                     this.dirty = true;
                     this.needFormat = true;
@@ -21436,7 +23437,9 @@ var wd;
         PlainFont.prototype.init = function () {
             _super.prototype.init.call(this);
             this._formatText();
-            this._lineHeight = this._getDefaultLineHeight();
+            if (!this._lineHeight) {
+                this._lineHeight = this._getDefaultLineHeight();
+            }
         };
         PlainFont.prototype.setFillStyle = function (fillStyle) {
             this._fillStyle = fillStyle;
@@ -21617,22 +23620,43 @@ var wd;
                 context.strokeText(str, x, y);
             }
         };
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], PlainFont.prototype, "text", null);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], PlainFont.prototype, "fontSize", null);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], PlainFont.prototype, "fontFamily", null);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], PlainFont.prototype, "xAlignment", null);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], PlainFont.prototype, "yAlignment", null);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], PlainFont.prototype, "_fillEnabled", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], PlainFont.prototype, "_fillStyle", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], PlainFont.prototype, "_strokeEnabled", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], PlainFont.prototype, "_strokeStyle", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], PlainFont.prototype, "_strokeSize", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], PlainFont.prototype, "_lineHeight", void 0);
         return PlainFont;
     }(wd.Font));
     wd.PlainFont = PlainFont;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var BitmapFont = (function (_super) {
@@ -21654,7 +23678,7 @@ var wd;
                 return this._text;
             },
             set: function (text) {
-                if (text !== this._text) {
+                if (this._text !== text) {
                     this._text = text;
                     this.dirty = true;
                     this.needFormat = true;
@@ -21668,7 +23692,7 @@ var wd;
                 return this._xAlignment;
             },
             set: function (xAlignment) {
-                if (xAlignment !== this._xAlignment) {
+                if (this._xAlignment !== xAlignment) {
                     this._xAlignment = xAlignment;
                     this.dirty = true;
                     this.needFormat = true;
@@ -21921,6 +23945,18 @@ var wd;
             this._charFontList.removeAllChildren();
         };
         __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], BitmapFont.prototype, "text", null);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], BitmapFont.prototype, "xAlignment", null);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], BitmapFont.prototype, "fntId", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], BitmapFont.prototype, "bitmapId", void 0);
+        __decorate([
             wd.require(function (fntObj) {
                 if (this.width > 0) {
                     for (var i = 1, stringLen = this.text.length; i < stringLen; i++) {
@@ -21935,18 +23971,6 @@ var wd;
     }(wd.Font));
     wd.BitmapFont = BitmapFont;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var CharFont = (function (_super) {
@@ -21998,6 +24022,10 @@ var wd;
             enumerable: true,
             configurable: true
         });
+        CharFont.prototype.clone = function () {
+            wd.Log.error(true, wd.Log.info.FUNC_NOT_SUPPORT("clone"));
+            return null;
+        };
         CharFont.prototype.init = function () {
             var self = this;
             _super.prototype.init.call(this);
@@ -22029,18 +24057,6 @@ var wd;
     }(wd.Font));
     wd.CharFont = CharFont;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var ProgressBar = (function (_super) {
@@ -22103,6 +24119,18 @@ var wd;
             wd.RoundedRectUtils.drawRoundedRect(this._offScreenContext, this.borderStyle, this.fillStyle, 0, 0, this.width, this.height, this.radius);
         };
         __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], ProgressBar.prototype, "percent", null);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], ProgressBar.prototype, "borderStyle", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], ProgressBar.prototype, "fillStyle", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], ProgressBar.prototype, "radius", void 0);
+        __decorate([
             wd.require(function (elapsedTime) {
                 wd.assert(this.percent >= 0 && this.percent <= 1, wd.Log.info.FUNC_SHOULD("percent", " >= 0 and <= 1"));
             })
@@ -22111,18 +24139,6 @@ var wd;
     }(wd.UI));
     wd.ProgressBar = ProgressBar;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     function _canUseNewCanvasBlendModes() {
@@ -22208,7 +24224,7 @@ var wd;
         };
         Image.prototype._blendByPerPixel = function () {
             var context = this.context, canvas = this.getCanvas(), r = this.color.r, g = this.color.g, b = this.color.b, pixelData = null, pixels = null;
-            context.globalCompositeOperation = "copy";
+            context.globalCompositeOperation = "clone";
             this.drawInCenterPoint(this.context, this._getDrawSource().source, this.entityObject.transform.position, this.width, this.height);
             pixelData = context.getImageData(0, 0, canvas.width, canvas.height);
             pixels = pixelData.data;
@@ -22232,6 +24248,22 @@ var wd;
         };
         Image.constructorInitForBlend = Image.constructorForBlend(Image.prototype);
         __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], Image.prototype, "source", null);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], Image.prototype, "color", void 0);
+        __decorate([
+            wd.cloneAttributeAsCustomType(function (source, target, memberName) {
+                if (source[memberName]) {
+                    target[memberName] = wd.ImageTextureAsset.create(source[memberName].source);
+                }
+            })
+        ], Image.prototype, "targetSource", void 0);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], Image.prototype, "targetColor", void 0);
+        __decorate([
             wd.require(function () {
                 wd.assert(!!this._getDrawSource(), wd.Log.info.FUNC_SHOULD("source", "exist"));
             })
@@ -22245,12 +24277,6 @@ var wd;
     }(wd.UI));
     wd.Image = Image;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var InteractionUI = (function (_super) {
@@ -22270,22 +24296,18 @@ var wd;
             enumerable: true,
             configurable: true
         });
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], InteractionUI.prototype, "transitionMode", null);
+        __decorate([
+            wd.cloneAttributeAsCloneable({
+                isInjectTarget: true
+            })
+        ], InteractionUI.prototype, "transitionManager", void 0);
         return InteractionUI;
     }(wd.UI));
     wd.InteractionUI = InteractionUI;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var Button = (function (_super) {
@@ -22415,6 +24437,7 @@ var wd;
             object.transform.height = transform.height;
             object.transform.zIndex = 1;
             object.name = wd.EButtonObjectName.BACKGROUND;
+            wd.CloneUtils.markNotClone(object);
             return object;
         };
         Button.prototype._createFontObject = function () {
@@ -22429,6 +24452,7 @@ var wd;
             fontObject.transform.height = transform.height;
             fontObject.transform.zIndex = 2;
             fontObject.name = wd.EButtonObjectName.TEXT;
+            wd.CloneUtils.markNotClone(fontObject);
             return fontObject;
         };
         Button.prototype._hasFontObject = function () {
@@ -22466,6 +24490,14 @@ var wd;
             });
         };
         __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Button.prototype, "_text", void 0);
+        __decorate([
+            wd.cloneAttributeAsCloneable({
+                isInjectTarget: true
+            })
+        ], Button.prototype, "_stateMachine", void 0);
+        __decorate([
             wd.require(function (elapsedTime) {
                 wd.assert(this.getObject(wd.EButtonObjectName.BACKGROUND).hasComponent(wd.Image), wd.Log.info.FUNC_SHOULD("Button UIObject", "contain Image component"));
             })
@@ -22474,7 +24506,6 @@ var wd;
     }(wd.InteractionUI));
     wd.Button = Button;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     (function (EButtonObjectName) {
@@ -22483,7 +24514,6 @@ var wd;
     })(wd.EButtonObjectName || (wd.EButtonObjectName = {}));
     var EButtonObjectName = wd.EButtonObjectName;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     (function (EUIState) {
@@ -22494,7 +24524,6 @@ var wd;
     })(wd.EUIState || (wd.EUIState = {}));
     var EUIState = wd.EUIState;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var UIStateMachine = (function () {
@@ -22521,6 +24550,9 @@ var wd;
             enumerable: true,
             configurable: true
         });
+        UIStateMachine.prototype.clone = function (ui) {
+            return wd.CloneUtils.clone(this, null, [ui]);
+        };
         UIStateMachine.prototype.changeState = function (state) {
             this._stateHistory.push(state);
             this.transitionManager.changeState(state);
@@ -22536,11 +24568,13 @@ var wd;
             this.transitionManager.changeState(lastState);
             this._ui.dirty = true;
         };
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], UIStateMachine.prototype, "_stateHistory", void 0);
         return UIStateMachine;
     }());
     wd.UIStateMachine = UIStateMachine;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var Transition = (function () {
@@ -22560,16 +24594,13 @@ var wd;
             enumerable: true,
             configurable: true
         });
+        Transition.prototype.clone = function () {
+            return wd.CloneUtils.clone(this);
+        };
         return Transition;
     }());
     wd.Transition = Transition;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var SpriteTransition = (function (_super) {
@@ -22604,16 +24635,22 @@ var wd;
                     break;
             }
         };
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], SpriteTransition.prototype, "normalSprite", void 0);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], SpriteTransition.prototype, "highlightSprite", void 0);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], SpriteTransition.prototype, "pressedSprite", void 0);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], SpriteTransition.prototype, "disabledSprite", void 0);
         return SpriteTransition;
     }(wd.Transition));
     wd.SpriteTransition = SpriteTransition;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var ColorTransition = (function (_super) {
@@ -22648,11 +24685,22 @@ var wd;
                     break;
             }
         };
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], ColorTransition.prototype, "normalColor", void 0);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], ColorTransition.prototype, "highlightColor", void 0);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], ColorTransition.prototype, "pressedColor", void 0);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], ColorTransition.prototype, "disabledColor", void 0);
         return ColorTransition;
     }(wd.Transition));
     wd.ColorTransition = ColorTransition;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     (function (ETransitionMode) {
@@ -22661,7 +24709,6 @@ var wd;
     })(wd.ETransitionMode || (wd.ETransitionMode = {}));
     var ETransitionMode = wd.ETransitionMode;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var TransitionManager = (function () {
@@ -22674,6 +24721,9 @@ var wd;
         TransitionManager.create = function (ui) {
             var obj = new this(ui);
             return obj;
+        };
+        TransitionManager.prototype.clone = function (interactionUI) {
+            return wd.CloneUtils.clone(this, null, [interactionUI]);
         };
         TransitionManager.prototype.getObjectTransition = function (objectName) {
             var result = this._getTransitionMap().getChild(objectName);
@@ -22727,11 +24777,20 @@ var wd;
             }
             return transition;
         };
+        __decorate([
+            wd.cloneAttributeAsCustomType(function (source, target, memberName) {
+                target[memberName] = source[memberName].clone(true);
+            })
+        ], TransitionManager.prototype, "_spriteTransitionMap", void 0);
+        __decorate([
+            wd.cloneAttributeAsCustomType(function (source, target, memberName) {
+                target[memberName] = source[memberName].clone(true);
+            })
+        ], TransitionManager.prototype, "_colorTransitionMap", void 0);
         return TransitionManager;
     }());
     wd.TransitionManager = TransitionManager;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var RoundedRectUtils = (function () {
@@ -22770,339 +24829,13 @@ var wd;
     }());
     wd.RoundedRectUtils = RoundedRectUtils;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var wd;
-(function (wd) {
-    var JudgeUtils = (function (_super) {
-        __extends(JudgeUtils, _super);
-        function JudgeUtils() {
-            _super.apply(this, arguments);
-        }
-        JudgeUtils.isView = function (obj) {
-            return !!obj && obj.offset && obj.width && obj.height && this.isFunction(obj.getContext);
-        };
-        JudgeUtils.isEqual = function (target1, target2) {
-            if ((!target1 && target2) || (target1 && !target2)) {
-                return false;
-            }
-            if (target1.uid && target2.uid) {
-                return target1.uid === target2.uid;
-            }
-            return target1 === target2;
-        };
-        JudgeUtils.isPowerOfTwo = function (value) {
-            return (value & (value - 1)) === 0 && value !== 0;
-        };
-        JudgeUtils.isFloatArray = function (data) {
-            return wd.EntityObject.prototype.toString.call(data) === "[object Float32Array]" || wd.EntityObject.prototype.toString.call(data) === "[object Float16Array]";
-        };
-        JudgeUtils.isInterface = function (target, memberOfInterface) {
-            return !!target[memberOfInterface];
-        };
-        JudgeUtils.isSpacePartitionObject = function (entityObject) {
-            return entityObject.hasComponent(wd.SpacePartition);
-        };
-        JudgeUtils.isSelf = function (self, entityObject) {
-            return self.uid === entityObject.uid;
-        };
-        JudgeUtils.isComponenet = function (component) {
-            return component.entityObject !== void 0;
-        };
-        JudgeUtils.isDom = function (obj) {
-            return Object.prototype.toString.call(obj).match(/\[object HTML\w+/) !== null;
-        };
-        return JudgeUtils;
-    }(wdCb.JudgeUtils));
-    wd.JudgeUtils = JudgeUtils;
-})(wd || (wd = {}));
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var wd;
-(function (wd) {
-    var MathUtils = (function () {
-        function MathUtils() {
-        }
-        MathUtils.clamp = function (num, below, up) {
-            if (num < below) {
-                return below;
-            }
-            else if (num > up) {
-                return up;
-            }
-            return num;
-        };
-        MathUtils.bigThan = function (num, below) {
-            return num < below ? below : num;
-        };
-        MathUtils.generateZeroToOne = function () {
-            return Math.random();
-        };
-        MathUtils.generateInteger = function (min, max) {
-            var max = max + 1;
-            return Math.floor(Math.random() * (max - min) + min);
-        };
-        MathUtils.mod = function (a, b) {
-            var n = Math.floor(a / b);
-            a -= n * b;
-            if (a < 0) {
-                a += b;
-            }
-            return a;
-        };
-        MathUtils.maxFloorIntegralMultiple = function (a, b) {
-            if (b == 0) {
-                return a;
-            }
-            if (a < b) {
-                return 0;
-            }
-            return Math.floor(a / b) * b;
-        };
-        __decorate([
-            wd.require(function (min, max) {
-                wd.assert(min < max, wd.Log.info.FUNC_SHOULD("min", "< max"));
-            })
-        ], MathUtils, "generateInteger", null);
-        __decorate([
-            wd.ensure(function (val) {
-                wd.assert(val >= 0);
-            })
-        ], MathUtils, "mod", null);
-        __decorate([
-            wd.require(function (a, b) {
-                wd.assert(a >= 0 && b >= 0, wd.Log.info.FUNC_SHOULD("param", ">= 0"));
-            }),
-            wd.ensure(function (val) {
-                wd.assert(val >= 0);
-            })
-        ], MathUtils, "maxFloorIntegralMultiple", null);
-        return MathUtils;
-    }());
-    wd.MathUtils = MathUtils;
-})(wd || (wd = {}));
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var wd;
-(function (wd) {
-    var CoordinateUtils = (function () {
-        function CoordinateUtils() {
-        }
-        CoordinateUtils.convertWebGLPositionToCanvasPosition = function (position) {
-            var view = wd.DeviceManager.getInstance().view;
-            return wd.Vector2.create(view.width / 2 + position.x, view.height / 2 - position.y);
-        };
-        CoordinateUtils.convertCanvasPositionToWebGLPosition = function (position) {
-            var view = wd.DeviceManager.getInstance().view;
-            return wd.Vector3.create(position.x - view.width / 2, view.height / 2 - position.y, 0);
-        };
-        CoordinateUtils.convertLeftCornerPositionToCenterPosition = function (position, width, height) {
-            return wd.Vector2.create(this.convertLeftCornerPositionXToCenterPositionX(position.x, width), this.convertLeftCornerPositionYToCenterPositionY(position.y, height));
-        };
-        CoordinateUtils.convertLeftCornerPositionXToCenterPositionX = function (positionX, width) {
-            return positionX + width / 2;
-        };
-        CoordinateUtils.convertLeftCornerPositionYToCenterPositionY = function (positionY, height) {
-            return positionY + height / 2;
-        };
-        CoordinateUtils.convertCenterPositionToLeftCornerPosition = function (position, width, height) {
-            return wd.Vector2.create(this.convertCenterPositionXToLeftCornerPositionX(position.x, width), this.convertCenterPositionYToLeftCornerPositionY(position.y, height));
-        };
-        CoordinateUtils.convertCenterPositionXToLeftCornerPositionX = function (positionX, width) {
-            return positionX - width / 2;
-        };
-        CoordinateUtils.convertCenterPositionYToLeftCornerPositionY = function (positionY, height) {
-            return positionY - height / 2;
-        };
-        __decorate([
-            wd.require(function () {
-                wd.assert(!!wd.DeviceManager.getInstance().view, wd.Log.info.FUNC_SHOULD("set view"));
-            })
-        ], CoordinateUtils, "convertWebGLPositionToCanvasPosition", null);
-        __decorate([
-            wd.require(function () {
-                wd.assert(!!wd.DeviceManager.getInstance().view, wd.Log.info.FUNC_SHOULD("set view"));
-            })
-        ], CoordinateUtils, "convertCanvasPositionToWebGLPosition", null);
-        return CoordinateUtils;
-    }());
-    wd.CoordinateUtils = CoordinateUtils;
-})(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var wd;
-(function (wd) {
-    var Log = (function (_super) {
-        __extends(Log, _super);
-        function Log() {
-            _super.apply(this, arguments);
-        }
-        return Log;
-    }(wdCb.Log));
-    wd.Log = Log;
-})(wd || (wd = {}));
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var wd;
-(function (wd) {
-    var TimeController = (function () {
-        function TimeController() {
-            this.elapsed = null;
-            this.pauseElapsed = 0;
-            this.pauseTime = null;
-            this.startTime = null;
-        }
-        TimeController.prototype.start = function () {
-            this.startTime = this.getNow();
-            this.pauseElapsed = null;
-        };
-        TimeController.prototype.stop = function () {
-            this.startTime = null;
-        };
-        TimeController.prototype.pause = function () {
-            this.pauseTime = this.getNow();
-        };
-        TimeController.prototype.resume = function () {
-            this.pauseElapsed += this.getNow() - this.pauseTime;
-            this.pauseTime = null;
-        };
-        TimeController.prototype.computeElapseTime = function (time) {
-            if (this.pauseElapsed) {
-                this.elapsed = time - this.pauseElapsed - this.startTime;
-            }
-            else {
-                this.elapsed = time - this.startTime;
-            }
-            if (this.elapsed < 0) {
-                this.elapsed = 0;
-            }
-            return this.elapsed;
-        };
-        __decorate([
-            wd.ensure(function () {
-                wd.assert(this.elapsed >= 0, wd.Log.info.FUNC_SHOULD("elapsed:" + this.elapsed, ">= 0"));
-            })
-        ], TimeController.prototype, "computeElapseTime", null);
-        return TimeController;
-    }());
-    wd.TimeController = TimeController;
-})(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var wd;
-(function (wd) {
-    var STARTING_FPS = 60, GAMETIME_SCALE = 1000;
-    var DirectorTimeController = (function (_super) {
-        __extends(DirectorTimeController, _super);
-        function DirectorTimeController() {
-            _super.apply(this, arguments);
-            this.gameTime = null;
-            this.fps = null;
-            this.isTimeChange = false;
-            this.deltaTime = null;
-            this._lastTime = null;
-        }
-        DirectorTimeController.create = function () {
-            var obj = new this();
-            return obj;
-        };
-        DirectorTimeController.prototype.tick = function (time) {
-            this.deltaTime = this._lastTime !== null ? time - this._lastTime : time;
-            this._updateFps(this.deltaTime);
-            this.gameTime = time / GAMETIME_SCALE;
-            this._lastTime = time;
-        };
-        DirectorTimeController.prototype.start = function () {
-            _super.prototype.start.call(this);
-            this.isTimeChange = true;
-            this.elapsed = 0;
-        };
-        DirectorTimeController.prototype.resume = function () {
-            _super.prototype.resume.call(this);
-            this.isTimeChange = true;
-        };
-        DirectorTimeController.prototype.getNow = function () {
-            return wd.root.performance.now();
-        };
-        DirectorTimeController.prototype._updateFps = function (deltaTime) {
-            if (this._lastTime === null) {
-                this.fps = STARTING_FPS;
-            }
-            else {
-                this.fps = 1000 / deltaTime;
-            }
-        };
-        return DirectorTimeController;
-    }(wd.TimeController));
-    wd.DirectorTimeController = DirectorTimeController;
-})(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var wd;
-(function (wd) {
-    var CommonTimeController = (function (_super) {
-        __extends(CommonTimeController, _super);
-        function CommonTimeController() {
-            _super.apply(this, arguments);
-        }
-        CommonTimeController.create = function () {
-            var obj = new this();
-            return obj;
-        };
-        CommonTimeController.prototype.getNow = function () {
-            if (wd.Director.getInstance().isTimeChange) {
-                return wd.Director.getInstance().elapsed;
-            }
-            return wd.root.performance.now();
-        };
-        return CommonTimeController;
-    }(wd.TimeController));
-    wd.CommonTimeController = CommonTimeController;
-})(wd || (wd = {}));
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var RenderTargetRenderer = (function () {
         function RenderTargetRenderer(renderTargetTexture) {
             this.texture = null;
             this.frameBufferOperator = null;
+            this._isRenderListEmpty = false;
             this.texture = renderTargetTexture;
         }
         RenderTargetRenderer.prototype.initWhenCreate = function () {
@@ -23117,14 +24850,15 @@ var wd;
             for (var _i = 0; _i < arguments.length; _i++) {
                 args[_i - 0] = arguments[_i];
             }
-            var renderer = args[0];
+            var renderer = args[0], renderList = this.getRenderList();
+            this._isRenderListEmpty = this.isRenderListEmpty(renderList);
             this.beforeRender();
             if (args.length === 1) {
-                this.renderFrameBufferTexture(renderer);
+                this.renderFrameBufferTexture(renderList, renderer);
             }
             else {
                 var camera = args[1];
-                this.renderFrameBufferTexture(renderer, camera);
+                this.renderFrameBufferTexture(renderList, renderer, camera);
             }
             this.afterRender();
         };
@@ -23137,28 +24871,37 @@ var wd;
         };
         RenderTargetRenderer.prototype.afterRender = function () {
         };
+        RenderTargetRenderer.prototype.isRenderListEmptyWhenRender = function () {
+            return this._isRenderListEmpty;
+        };
         __decorate([
             wd.virtual
         ], RenderTargetRenderer.prototype, "beforeRender", null);
         __decorate([
             wd.virtual
         ], RenderTargetRenderer.prototype, "afterRender", null);
+        __decorate([
+            wd.ensure(function (isRenderListEmpty) {
+                if (isRenderListEmpty) {
+                    wd.assert(this.isRenderListEmpty(this.getRenderList()), wd.Log.info.FUNC_SHOULD("renderList", "be empty"));
+                }
+            })
+        ], RenderTargetRenderer.prototype, "isRenderListEmptyWhenRender", null);
         return RenderTargetRenderer;
     }());
     wd.RenderTargetRenderer = RenderTargetRenderer;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
+var wd;
+(function (wd) {
+    var CommonRenderTargetRenderer = (function (_super) {
+        __extends(CommonRenderTargetRenderer, _super);
+        function CommonRenderTargetRenderer() {
+            _super.apply(this, arguments);
+        }
+        return CommonRenderTargetRenderer;
+    }(wd.RenderTargetRenderer));
+    wd.CommonRenderTargetRenderer = CommonRenderTargetRenderer;
+})(wd || (wd = {}));
 var wd;
 (function (wd) {
     var TwoDRenderTargetRenderer = (function (_super) {
@@ -23179,6 +24922,9 @@ var wd;
             }
             return null;
         };
+        TwoDRenderTargetRenderer.prototype.isRenderListEmpty = function (renderList) {
+            return renderList.getCount() === 0;
+        };
         TwoDRenderTargetRenderer.prototype.initFrameBuffer = function () {
             var frameBuffer = this.frameBufferOperator, gl = wd.DeviceManager.getInstance().gl;
             this.frameBuffer = frameBuffer.createFrameBuffer();
@@ -23189,9 +24935,13 @@ var wd;
             frameBuffer.check();
             frameBuffer.unBind();
         };
-        TwoDRenderTargetRenderer.prototype.renderFrameBufferTexture = function (renderer, camera) {
-            var isNeedCreateCamera = this.isNeedCreateCamera(), renderCamera = null;
-            if (isNeedCreateCamera) {
+        TwoDRenderTargetRenderer.prototype.renderFrameBufferTexture = function (renderList, renderer, camera) {
+            var renderCamera = null;
+            if (this.isRenderListEmptyWhenRender()) {
+                return;
+            }
+            this.texture.bindToUnit(0);
+            if (this.isNeedCreateCamera()) {
                 renderCamera = this.createCamera(camera);
                 if (this._lastCamera) {
                     this._lastCamera.dispose();
@@ -23203,9 +24953,8 @@ var wd;
             }
             this.beforeRenderFrameBufferTexture(renderCamera);
             this.frameBufferOperator.bindFrameBuffer(this.frameBuffer);
-            this.texture.bindToUnit(0);
             this.frameBufferOperator.setViewport();
-            this.getRenderList().forEach(function (child) {
+            renderList.forEach(function (child) {
                 child.render(renderer, renderCamera);
             });
             renderer.clear();
@@ -23224,16 +24973,15 @@ var wd;
         __decorate([
             wd.virtual
         ], TwoDRenderTargetRenderer.prototype, "createCamera", null);
+        __decorate([
+            wd.require(function (renderList, renderer, camera) {
+                wd.assert(!!camera, wd.Log.info.FUNC_SHOULD("pass param->camera"));
+            })
+        ], TwoDRenderTargetRenderer.prototype, "renderFrameBufferTexture", null);
         return TwoDRenderTargetRenderer;
-    }(wd.RenderTargetRenderer));
+    }(wd.CommonRenderTargetRenderer));
     wd.TwoDRenderTargetRenderer = TwoDRenderTargetRenderer;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var MirrorRenderTargetRenderer = (function (_super) {
@@ -23253,8 +25001,21 @@ var wd;
         };
         MirrorRenderTargetRenderer.prototype.renderRenderer = function (renderer) {
             this._setSceneSide(wd.ESide.FRONT);
+            renderer.webglState = wd.BasicState.create();
             renderer.render();
             this._setSceneSide(null);
+        };
+        MirrorRenderTargetRenderer.prototype.beforeRender = function () {
+            if (this.isRenderListEmptyWhenRender()) {
+                wd.Director.getInstance().scene.glslData.addChild(wd.EShaderGLSLData.MIRROR, {
+                    isRenderListEmpty: true
+                });
+            }
+            else {
+                wd.Director.getInstance().scene.glslData.addChild(wd.EShaderGLSLData.MIRROR, {
+                    isRenderListEmpty: false
+                });
+            }
         };
         MirrorRenderTargetRenderer.prototype.createCamera = function (camera) {
             var mirrorCameraComponent = null, plane = null, cameraComponent = camera.getComponent(wd.CameraController), mirrorCameraViewMatrix = null, projectionMatrix = null;
@@ -23263,7 +25024,7 @@ var wd;
                 plane.getReflectionMatrix().applyMatrix(cameraComponent.worldToCameraMatrix);
             projectionMatrix = this._setClipPlane(mirrorCameraViewMatrix, cameraComponent.pMatrix, plane);
             mirrorCameraComponent = wd.PerspectiveCamera.create();
-            mirrorCameraComponent.worldToCameraMatrix = mirrorCameraViewMatrix.copy();
+            mirrorCameraComponent.worldToCameraMatrix = mirrorCameraViewMatrix.clone();
             mirrorCameraComponent.pMatrix = projectionMatrix;
             return wd.GameObject.create().addComponent(wd.BasicCameraController.create(mirrorCameraComponent)).init();
         };
@@ -23272,7 +25033,7 @@ var wd;
             scene.side = side;
         };
         MirrorRenderTargetRenderer.prototype._setClipPlane = function (vMatrix, pMatrix, plane) {
-            var projectionMatrix = pMatrix.copy(), q = wd.Vector4.create(), clipPlane = this._getClipPlaneInCameraSpace(vMatrix, plane), c = wd.Vector4.create();
+            var projectionMatrix = pMatrix.clone(), q = wd.Vector4.create(), clipPlane = this._getClipPlaneInCameraSpace(vMatrix, plane), c = wd.Vector4.create();
             q.x = (Math.sign(clipPlane.x) + projectionMatrix.values[8]) / projectionMatrix.values[0];
             q.y = (Math.sign(clipPlane.y) + projectionMatrix.values[9]) / projectionMatrix.values[5];
             q.z = -1.0;
@@ -23285,7 +25046,7 @@ var wd;
             return projectionMatrix;
         };
         MirrorRenderTargetRenderer.prototype._getClipPlaneInCameraSpace = function (vMatrix, plane) {
-            var clipPlane = wd.Vector4.create(), p = vMatrix.multiplyPoint(this.texture.getPosition()), n = vMatrix.copy().invert().transpose().multiplyPoint(plane.normal).normalize();
+            var clipPlane = wd.Vector4.create(), p = vMatrix.multiplyPoint(this.texture.getPosition()), n = vMatrix.clone().invert().transpose().multiplyPoint(plane.normal).normalize();
             clipPlane.set(n.x, n.y, n.z, -p.dot(n));
             return clipPlane;
         };
@@ -23293,12 +25054,6 @@ var wd;
     }(wd.TwoDRenderTargetRenderer));
     wd.MirrorRenderTargetRenderer = MirrorRenderTargetRenderer;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var RefractionRenderTargetRenderer = (function (_super) {
@@ -23317,7 +25072,20 @@ var wd;
             return this.texture.renderList;
         };
         RefractionRenderTargetRenderer.prototype.renderRenderer = function (renderer) {
+            renderer.webglState = wd.BasicState.create();
             renderer.render();
+        };
+        RefractionRenderTargetRenderer.prototype.beforeRender = function () {
+            if (this.isRenderListEmptyWhenRender()) {
+                wd.Director.getInstance().scene.glslData.addChild(wd.EShaderGLSLData.REFRACTION, {
+                    isRenderListEmpty: true
+                });
+            }
+            else {
+                wd.Director.getInstance().scene.glslData.addChild(wd.EShaderGLSLData.REFRACTION, {
+                    isRenderListEmpty: false
+                });
+            }
         };
         RefractionRenderTargetRenderer.prototype.isNeedCreateCamera = function () {
             return false;
@@ -23326,24 +25094,20 @@ var wd;
     }(wd.TwoDRenderTargetRenderer));
     wd.RefractionRenderTargetRenderer = RefractionRenderTargetRenderer;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var TwoDShadowMapRenderTargetRenderer = (function (_super) {
         __extends(TwoDShadowMapRenderTargetRenderer, _super);
-        function TwoDShadowMapRenderTargetRenderer(light) {
-            _super.call(this, light.shadowMap);
+        function TwoDShadowMapRenderTargetRenderer(shadowMap, light, layer) {
+            _super.call(this, shadowMap);
             this._light = null;
+            this._layer = null;
             this._shadowMapRendererUtils = null;
             this._light = light;
+            this._layer = layer;
         }
-        TwoDShadowMapRenderTargetRenderer.create = function (light) {
-            var obj = new this(light);
+        TwoDShadowMapRenderTargetRenderer.create = function (shadowMap, light, layer) {
+            var obj = new this(shadowMap, light, layer);
             obj.initWhenCreate();
             return obj;
         };
@@ -23351,37 +25115,32 @@ var wd;
             this._shadowMapRendererUtils = wd.TwoDShadowMapRenderTargetRendererUtils.create(this._light, this.texture);
             _super.prototype.initWhenCreate.call(this);
         };
-        TwoDShadowMapRenderTargetRenderer.prototype.init = function () {
-            var self = this;
-            this._handleShadowRendererList();
-            this._shadowMapRendererUtils.bindEndLoop(function () {
-                self._light.shadowRenderList.forEach(function (child) {
-                    self._shadowMapRendererUtils.clearTwoDShadowMapData(child);
-                });
-            });
-            this._shadowMapRendererUtils.createShaderWithShaderLib(wd.BuildTwoDShadowMapShaderLib.create());
-            _super.prototype.init.call(this);
-        };
-        TwoDShadowMapRenderTargetRenderer.prototype.dispose = function () {
-            _super.prototype.dispose.call(this);
-            this._shadowMapRendererUtils.unBindEndLoop();
-        };
         TwoDShadowMapRenderTargetRenderer.prototype.beforeRenderFrameBufferTexture = function (renderCamera) {
-            var self = this;
-            this._light.shadowRenderList.removeRepeatItems().forEach(function (child) {
-                self._shadowMapRendererUtils.setShadowMapData(child, renderCamera);
+            wd.Director.getInstance().scene.glslData.appendChild(wd.EShaderGLSLData.TWOD_SHADOWMAP, {
+                camera: renderCamera.getComponent(wd.CameraController),
+                light: this._light,
+                isRenderListEmpty: false
             });
         };
         TwoDShadowMapRenderTargetRenderer.prototype.getRenderList = function () {
-            return this._light.shadowRenderList;
+            return wd.Director.getInstance().scene.gameObjectScene.shadowManager.getShadowRenderListByLayer(this._layer);
         };
         TwoDShadowMapRenderTargetRenderer.prototype.renderRenderer = function (renderer) {
-            renderer.render();
+            this._shadowMapRendererUtils.renderRenderer(renderer);
         };
         TwoDShadowMapRenderTargetRenderer.prototype.beforeRender = function () {
-            this._shadowMapRendererUtils.beforeRender();
+            if (this.isRenderListEmptyWhenRender()) {
+                wd.Director.getInstance().scene.glslData.appendChild(wd.EShaderGLSLData.TWOD_SHADOWMAP, {
+                    isRenderListEmpty: true
+                });
+                return;
+            }
+            this._shadowMapRendererUtils.beforeRender(wd.EShaderTypeOfScene.BUILD_TWOD_SHADOWMAP);
         };
         TwoDShadowMapRenderTargetRenderer.prototype.afterRender = function () {
+            if (this.isRenderListEmptyWhenRender()) {
+                return;
+            }
             this._shadowMapRendererUtils.afterRender();
         };
         TwoDShadowMapRenderTargetRenderer.prototype.createCamera = function () {
@@ -23398,27 +25157,10 @@ var wd;
             camera.init();
             return camera;
         };
-        TwoDShadowMapRenderTargetRenderer.prototype._handleShadowRendererList = function () {
-            var _this = this;
-            var self = this, children = [];
-            this._light.shadowRenderList.forEach(function (renderTarget) {
-                children = children.concat(_this._shadowMapRendererUtils.addAllChildren(renderTarget));
-            }, this);
-            this._light.shadowRenderList.addChildren(children);
-            this._light.shadowRenderList.removeChild(function (renderTarget) {
-                return self._shadowMapRendererUtils.isContainer(renderTarget);
-            });
-        };
         return TwoDShadowMapRenderTargetRenderer;
     }(wd.TwoDRenderTargetRenderer));
     wd.TwoDShadowMapRenderTargetRenderer = TwoDShadowMapRenderTargetRenderer;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var CubemapRenderTargetRenderer = (function (_super) {
@@ -23430,6 +25172,12 @@ var wd;
             this._lastCameraList = null;
             this._lastPosition = null;
         }
+        CubemapRenderTargetRenderer.prototype.renderRenderer = function (renderer) {
+            renderer.webglState = wd.BasicState.create();
+            renderer.render();
+        };
+        CubemapRenderTargetRenderer.prototype.beforeRenderFrameBufferTexture = function (renderCamera) {
+        };
         CubemapRenderTargetRenderer.prototype.initFrameBuffer = function () {
             var frameBufferOperator = this.frameBufferOperator, gl = wd.DeviceManager.getInstance().gl;
             for (var i = 0; i < 6; i++) {
@@ -23443,11 +25191,15 @@ var wd;
             }
             frameBufferOperator.unBind();
         };
-        CubemapRenderTargetRenderer.prototype.renderFrameBufferTexture = function (renderer, camera) {
-            var renderCamera = null, faceRenderList = null, newCameraList = null, position = this.getPosition(), renderList = null;
-            renderList = this.getRenderList();
+        CubemapRenderTargetRenderer.prototype.renderFrameBufferTexture = function (renderList, renderer, camera) {
+            var renderCamera = null, faceRenderList = null, newCameraList = null, position = null, isNeedCreateCamera = null;
+            if (this.isRenderListEmptyWhenRender()) {
+                return;
+            }
             this.texture.bindToUnit(0);
-            if (this._needCreateCamera(position)) {
+            position = this.getPosition();
+            isNeedCreateCamera = this._isNeedCreateCamera(position);
+            if (isNeedCreateCamera) {
                 newCameraList = wdCb.Collection.create();
             }
             for (var i = 0; i < 6; i++) {
@@ -23455,22 +25207,23 @@ var wd;
                 if (this._isEmpty(faceRenderList)) {
                     continue;
                 }
-                if (this._needCreateCamera(position)) {
+                if (isNeedCreateCamera) {
                     renderCamera = this.createCamera(i);
                     newCameraList.addChild(renderCamera);
                 }
                 else {
                     renderCamera = this._lastCameraList.getChild(i);
                 }
+                this.beforeRenderFrameBufferTexture(renderCamera);
                 this.frameBufferOperator.bindFrameBuffer(this._frameBufferList.getChild(i));
                 this.frameBufferOperator.setViewport();
                 faceRenderList.forEach(function (child) {
                     child.render(renderer, renderCamera);
                 });
                 renderer.clear();
-                renderer.render();
+                this.renderRenderer(renderer);
             }
-            if (this._needCreateCamera(position)) {
+            if (isNeedCreateCamera) {
                 if (this._lastCameraList) {
                     this._lastCameraList.forEach(function (camera) {
                         camera.dispose();
@@ -23497,8 +25250,22 @@ var wd;
             camera.init();
             return camera;
         };
+        CubemapRenderTargetRenderer.prototype.isRenderListEmpty = function (renderList) {
+            var _this = this;
+            var isEmpty = true;
+            renderList.forEach(function (faceRenderList) {
+                if (!_this._isEmpty(faceRenderList)) {
+                    isEmpty = false;
+                    return wdCb.$BREAK;
+                }
+            }, this);
+            return isEmpty;
+        };
         CubemapRenderTargetRenderer.prototype._isEmpty = function (faceRenderList) {
-            return !faceRenderList || (faceRenderList.length && faceRenderList.length === 0) || (faceRenderList.getCount && faceRenderList.getCount() === 0);
+            if (faceRenderList === void 0 || null) {
+                return true;
+            }
+            return faceRenderList.getCount() === 0;
         };
         CubemapRenderTargetRenderer.prototype._convertIndexToFaceKey = function (index) {
             var face = null;
@@ -23550,34 +25317,41 @@ var wd;
                     break;
             }
         };
-        CubemapRenderTargetRenderer.prototype._needCreateCamera = function (position) {
-            if (this._lastPosition === null || this._lastCameraList === null) {
+        CubemapRenderTargetRenderer.prototype._isNeedCreateCamera = function (position) {
+            if (this._lastPosition === null || this._lastCameraList === null || this._lastCameraList.getCount() === 0) {
                 return true;
             }
             return !position.isEqual(this._lastPosition);
         };
+        __decorate([
+            wd.virtual
+        ], CubemapRenderTargetRenderer.prototype, "renderRenderer", null);
+        __decorate([
+            wd.virtual
+        ], CubemapRenderTargetRenderer.prototype, "beforeRenderFrameBufferTexture", null);
+        __decorate([
+            wd.require(function (renderList, renderer, camera) {
+                wd.assert(!!camera, wd.Log.info.FUNC_SHOULD("pass param->camera"));
+            })
+        ], CubemapRenderTargetRenderer.prototype, "renderFrameBufferTexture", null);
         return CubemapRenderTargetRenderer;
-    }(wd.RenderTargetRenderer));
+    }(wd.CommonRenderTargetRenderer));
     wd.CubemapRenderTargetRenderer = CubemapRenderTargetRenderer;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var CubemapShadowMapRenderTargetRenderer = (function (_super) {
         __extends(CubemapShadowMapRenderTargetRenderer, _super);
-        function CubemapShadowMapRenderTargetRenderer(light) {
-            _super.call(this, light.shadowMap);
+        function CubemapShadowMapRenderTargetRenderer(shadowMap, light, layer) {
+            _super.call(this, shadowMap);
             this._light = null;
+            this._layer = null;
             this._shadowMapRendererUtils = null;
             this._light = light;
+            this._layer = layer;
         }
-        CubemapShadowMapRenderTargetRenderer.create = function (light) {
-            var obj = new this(light);
+        CubemapShadowMapRenderTargetRenderer.create = function (shadowMap, light, layer) {
+            var obj = new this(shadowMap, light, layer);
             obj.initWhenCreate();
             return obj;
         };
@@ -23585,34 +25359,43 @@ var wd;
             this._shadowMapRendererUtils = wd.CubemapShadowMapRenderTargetRendererUtils.create(this._light, this.texture);
             _super.prototype.initWhenCreate.call(this);
         };
-        CubemapShadowMapRenderTargetRenderer.prototype.init = function () {
-            var self = this;
-            this._handleShadowRendererList();
-            this._shadowMapRendererUtils.bindEndLoop(function () {
-                self._light.shadowRenderList.forEach(function (childList) {
-                    childList.forEach(function (child) {
-                        self._shadowMapRendererUtils.clearCubemapShadowMapData(child);
-                    });
-                });
-            });
-            this._shadowMapRendererUtils.createShaderWithShaderLib(wd.BuildCubemapShadowMapShaderLib.create());
-            _super.prototype.init.call(this);
-        };
-        CubemapShadowMapRenderTargetRenderer.prototype.dispose = function () {
-            _super.prototype.dispose.call(this);
-            this._shadowMapRendererUtils.unBindEndLoop();
-        };
         CubemapShadowMapRenderTargetRenderer.prototype.getRenderList = function () {
-            return this._light.shadowRenderList;
+            var renderList = wd.Director.getInstance().scene.gameObjectScene.shadowManager.getShadowRenderListByLayer(this._layer);
+            return wdCb.Hash.create({
+                px: renderList,
+                nx: renderList,
+                py: renderList,
+                ny: renderList,
+                pz: renderList,
+                nz: renderList,
+            });
+        };
+        CubemapShadowMapRenderTargetRenderer.prototype.renderRenderer = function (renderer) {
+            this._shadowMapRendererUtils.renderRenderer(renderer);
         };
         CubemapShadowMapRenderTargetRenderer.prototype.beforeRender = function () {
-            var utils = this._shadowMapRendererUtils;
-            this._convertRenderListToCollection(this.getRenderList()).removeRepeatItems().forEach(function (child) {
-                utils.setShadowMapData(child);
+            var scene = null;
+            if (this.isRenderListEmptyWhenRender()) {
+                wd.Director.getInstance().scene.glslData.appendChild(wd.EShaderGLSLData.CUBEMAP_SHADOWMAP, {
+                    light: this._light,
+                    isRenderListEmpty: true
+                });
+                return;
+            }
+            wd.Director.getInstance().scene.glslData.appendChild(wd.EShaderGLSLData.CUBEMAP_SHADOWMAP, {
+                light: this._light,
+                isRenderListEmpty: false
             });
-            this._shadowMapRendererUtils.beforeRender();
+            scene = wd.Director.getInstance().scene;
+            scene.glslData.appendChild(wd.EShaderGLSLData.BUILD_CUBEMAP_SHADOWMAP, {
+                light: this._light
+            });
+            this._shadowMapRendererUtils.beforeRender(wd.EShaderTypeOfScene.BUILD_CUBEMAP_SHADOWMAP);
         };
         CubemapShadowMapRenderTargetRenderer.prototype.afterRender = function () {
+            if (this.isRenderListEmptyWhenRender()) {
+                return;
+            }
             this._shadowMapRendererUtils.afterRender();
         };
         CubemapShadowMapRenderTargetRenderer.prototype.setCamera = function (camera) {
@@ -23624,41 +25407,10 @@ var wd;
         CubemapShadowMapRenderTargetRenderer.prototype.getPosition = function () {
             return this._light.position;
         };
-        CubemapShadowMapRenderTargetRenderer.prototype._convertRenderListToCollection = function (renderList) {
-            var resultList = wdCb.Collection.create();
-            renderList.forEach(function (list) {
-                resultList.addChildren(list);
-            });
-            return resultList;
-        };
-        CubemapShadowMapRenderTargetRenderer.prototype._handleShadowRendererList = function () {
-            var self = this, childrenMap = wdCb.Hash.create();
-            this._light.shadowRenderList.forEach(function (childList, direction) {
-                var children = [];
-                childList.forEach(function (renderTarget) {
-                    children = children.concat(self._shadowMapRendererUtils.addAllChildren(renderTarget));
-                });
-                childrenMap.addChild(direction, children);
-            }, this);
-            this._light.shadowRenderList.forEach(function (childList, direction) {
-                childList.addChildren(childrenMap.getChild(direction));
-            });
-            this._light.shadowRenderList.forEach(function (childList) {
-                childList.removeChild(function (renderTarget) {
-                    return self._shadowMapRendererUtils.isContainer(renderTarget);
-                });
-            });
-        };
         return CubemapShadowMapRenderTargetRenderer;
     }(wd.CubemapRenderTargetRenderer));
     wd.CubemapShadowMapRenderTargetRenderer = CubemapShadowMapRenderTargetRenderer;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var DynamicCubemapRenderTargetRenderer = (function (_super) {
@@ -23682,105 +25434,49 @@ var wd;
         DynamicCubemapRenderTargetRenderer.prototype.getPosition = function () {
             return this.texture.getPosition();
         };
+        DynamicCubemapRenderTargetRenderer.prototype.beforeRender = function () {
+            if (this.isRenderListEmptyWhenRender()) {
+                wd.Director.getInstance().scene.glslData.addChild(wd.EShaderGLSLData.DYNAMIC_CUBEMAP, {
+                    isRenderListEmpty: true
+                });
+            }
+            else {
+                wd.Director.getInstance().scene.glslData.addChild(wd.EShaderGLSLData.DYNAMIC_CUBEMAP, {
+                    isRenderListEmpty: false
+                });
+            }
+        };
         return DynamicCubemapRenderTargetRenderer;
     }(wd.CubemapRenderTargetRenderer));
     wd.DynamicCubemapRenderTargetRenderer = DynamicCubemapRenderTargetRenderer;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var ShadowMapRenderTargetRendererUtils = (function () {
-        function ShadowMapRenderTargetRendererUtils(light, texture) {
-            this.texture = null;
-            this.light = null;
-            this._endLoopSubscription = null;
-            this._shader = null;
-            this.light = light;
-            this.texture = texture;
+        function ShadowMapRenderTargetRendererUtils(_light, _texture) {
+            this._texture = null;
+            this._light = null;
+            this._light = _light;
+            this._texture = _texture;
         }
         ShadowMapRenderTargetRendererUtils.prototype.initWhenCreate = function () {
-            this.texture.width = this.light.shadowMapWidth;
-            this.texture.height = this.light.shadowMapHeight;
+            this._texture.width = this._light.shadowMapWidth;
+            this._texture.height = this._light.shadowMapHeight;
         };
-        ShadowMapRenderTargetRendererUtils.prototype.init = function () {
-            this.texture.init();
-        };
-        ShadowMapRenderTargetRendererUtils.prototype.setShadowMapData = function () {
-            var args = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                args[_i - 0] = arguments[_i];
-            }
-            var target = args[0], material = target.getComponent(wd.Geometry).material, shadowMapCamera = null;
-            if (args.length === 2) {
-                shadowMapCamera = args[1];
-            }
-            wd.Log.error(!(material instanceof wd.LightMaterial), wd.Log.info.FUNC_MUST_BE("material", "LightMaterial when set shadowMap"));
-            this.setMaterialShadowMapData(material, target, shadowMapCamera);
-        };
-        ShadowMapRenderTargetRendererUtils.prototype.bindEndLoop = function (func) {
-            this._endLoopSubscription = wd.EventManager.fromEvent(wd.EEngineEvent.ENDLOOP)
-                .subscribe(function () {
-                func();
-            });
-        };
-        ShadowMapRenderTargetRendererUtils.prototype.unBindEndLoop = function () {
-            this._endLoopSubscription && this._endLoopSubscription.dispose();
-        };
-        ShadowMapRenderTargetRendererUtils.prototype.beforeRender = function () {
-            var scene = wd.Director.getInstance().scene;
-            scene.useProgram(this._shader);
+        ShadowMapRenderTargetRendererUtils.prototype.beforeRender = function (shaderType) {
+            wd.Director.getInstance().scene.useShaderType(shaderType);
         };
         ShadowMapRenderTargetRendererUtils.prototype.afterRender = function () {
-            var scene = wd.Director.getInstance().scene;
-            scene.unUseProgram();
+            wd.Director.getInstance().scene.unUseShader();
         };
-        ShadowMapRenderTargetRendererUtils.prototype.createShaderWithShaderLib = function (lib) {
-            this._shader = wd.CommonShader.create();
-            this._shader.addLib(wd.CommonShaderLib.create());
-            this._shader.addLib(wd.CommonVerticeShaderLib.create());
-            this._shader.addLib(lib);
-        };
-        ShadowMapRenderTargetRendererUtils.prototype.isContainer = function (entityObject) {
-            return !entityObject.hasComponent(wd.Geometry);
-        };
-        ShadowMapRenderTargetRendererUtils.prototype.addAllChildren = function (entityObject) {
-            var children = [], add = function (entityObject) {
-                entityObject.forEach(function (child) {
-                    children.push(child);
-                    add(child);
-                });
-            };
-            add(entityObject);
-            return children;
-        };
-        ShadowMapRenderTargetRendererUtils.prototype.setShadowMap = function (target, shadowMap) {
-            var material = null;
-            if (!target.hasComponent(wd.Geometry)) {
-                return;
-            }
-            material = target.getComponent(wd.Geometry).material;
-            if (material.hasShadowMap(shadowMap)) {
-                return;
-            }
-            wd.Log.error(!(material instanceof wd.LightMaterial), wd.Log.info.FUNC_MUST_BE("material", "LightMaterial when set shadowMap"));
-            this.addShadowMap(material, shadowMap);
+        ShadowMapRenderTargetRendererUtils.prototype.renderRenderer = function (renderer) {
+            renderer.webglState = wd.BuildShadowMapState.create();
+            renderer.render();
         };
         return ShadowMapRenderTargetRendererUtils;
     }());
     wd.ShadowMapRenderTargetRendererUtils = ShadowMapRenderTargetRendererUtils;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var CubemapShadowMapRenderTargetRendererUtils = (function (_super) {
@@ -23793,56 +25489,10 @@ var wd;
             obj.initWhenCreate();
             return obj;
         };
-        CubemapShadowMapRenderTargetRendererUtils.prototype.initWhenCreate = function () {
-            var self = this;
-            _super.prototype.initWhenCreate.call(this);
-            this.light.shadowRenderList.forEach(function (childList) {
-                childList.forEach(function (child) {
-                    self.setShadowMap(child, self.texture);
-                });
-            });
-        };
-        CubemapShadowMapRenderTargetRendererUtils.prototype.clearCubemapShadowMapData = function (target) {
-            var material = target.getComponent(wd.Geometry).material;
-            material.clearCubemapShadowMapData();
-        };
-        CubemapShadowMapRenderTargetRendererUtils.prototype.setMaterialShadowMapData = function (material, target, shadowMapCamera) {
-            material.addCubemapShadowMapData({
-                shadowBias: this.light.shadowBias,
-                shadowDarkness: this.light.shadowDarkness,
-                lightPos: this.light.position,
-                farPlane: this.light.shadowCameraFar
-            });
-            material.buildCubemapShadowMapData = {
-                lightPos: this.light.position,
-                farPlane: this.light.shadowCameraFar
-            };
-        };
-        CubemapShadowMapRenderTargetRendererUtils.prototype.addShadowMap = function (material, shadowMap) {
-            material.addCubemapShadowMap(shadowMap);
-        };
-        __decorate([
-            wd.require(function (target) {
-                var material = target.getComponent(wd.Geometry).material;
-                wd.assert(material instanceof wd.LightMaterial, wd.Log.info.FUNC_MUST_BE("material", "LightMaterial when set shadowMap"));
-            })
-        ], CubemapShadowMapRenderTargetRendererUtils.prototype, "clearCubemapShadowMapData", null);
         return CubemapShadowMapRenderTargetRendererUtils;
     }(wd.ShadowMapRenderTargetRendererUtils));
     wd.CubemapShadowMapRenderTargetRendererUtils = CubemapShadowMapRenderTargetRendererUtils;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var TwoDShadowMapRenderTargetRendererUtils = (function (_super) {
@@ -23855,156 +25505,36 @@ var wd;
             obj.initWhenCreate();
             return obj;
         };
-        TwoDShadowMapRenderTargetRendererUtils.prototype.initWhenCreate = function () {
-            var self = this;
-            _super.prototype.initWhenCreate.call(this);
-            this.light.shadowRenderList.forEach(function (child) {
-                self.setShadowMap(child, self.texture);
-            });
-        };
-        TwoDShadowMapRenderTargetRendererUtils.prototype.clearTwoDShadowMapData = function (target) {
-            var material = target.getComponent(wd.Geometry).material;
-            material.clearTwoDShadowMapData();
-        };
-        TwoDShadowMapRenderTargetRendererUtils.prototype.setMaterialShadowMapData = function (material, target, shadowMapCamera) {
-            var cameraComponent = shadowMapCamera.getComponent(wd.CameraController);
-            material.addTwoDShadowMapData({
-                shadowBias: this.light.shadowBias,
-                shadowDarkness: this.light.shadowDarkness,
-                shadowSize: [this.light.shadowMapWidth, this.light.shadowMapHeight],
-                lightPos: this.light.position,
-                vpMatrixFromLight: cameraComponent.worldToCameraMatrix.applyMatrix(cameraComponent.pMatrix, true)
-            });
-            material.buildTwoDShadowMapData = {
-                vpMatrixFromLight: cameraComponent.worldToCameraMatrix.applyMatrix(cameraComponent.pMatrix, true)
-            };
-        };
-        TwoDShadowMapRenderTargetRendererUtils.prototype.addShadowMap = function (material, shadowMap) {
-            material.addTwoDShadowMap(shadowMap);
-        };
-        __decorate([
-            wd.require(function (target) {
-                var material = target.getComponent(wd.Geometry).material;
-                wd.assert(material instanceof wd.LightMaterial, wd.Log.info.FUNC_MUST_BE("material", "LightMaterial when set shadowMap"));
-            })
-        ], TwoDShadowMapRenderTargetRendererUtils.prototype, "clearTwoDShadowMapData", null);
         return TwoDShadowMapRenderTargetRendererUtils;
     }(wd.ShadowMapRenderTargetRendererUtils));
     wd.TwoDShadowMapRenderTargetRendererUtils = TwoDShadowMapRenderTargetRendererUtils;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var wd;
-(function (wd) {
-    var ProceduralRenderTargetRenderer = (function (_super) {
-        __extends(ProceduralRenderTargetRenderer, _super);
-        function ProceduralRenderTargetRenderer() {
-            _super.apply(this, arguments);
-            this.frameBuffer = null;
-            this._indexBuffer = null;
-            this._vertexBuffer = null;
-            this._shader = null;
-            this._isRendered = false;
-        }
-        ProceduralRenderTargetRenderer.prototype.needRender = function () {
-            if (this._isRendered) {
-                return false;
-            }
-            this._isRendered = true;
-            return true;
-        };
-        ProceduralRenderTargetRenderer.prototype.init = function () {
-            _super.prototype.init.call(this);
-            this._vertexBuffer = wd.ArrayBuffer.create(new Float32Array([
-                1, 1,
-                -1, 1,
-                -1, -1,
-                1, -1
-            ]), 2, wd.EBufferType.FLOAT);
-            this._indexBuffer = wd.ElementBuffer.create(new Uint16Array([
-                0, 1, 2,
-                0, 2, 3
-            ]), wd.EBufferType.UNSIGNED_SHORT);
-            this._shader = this.createShader();
-            this._shader.init();
-        };
-        ProceduralRenderTargetRenderer.prototype.dispose = function () {
-            _super.prototype.dispose.call(this);
-            this._indexBuffer.dispose();
-            this._vertexBuffer.dispose();
-            this._shader.dispose();
-        };
-        ProceduralRenderTargetRenderer.prototype.initFrameBuffer = function () {
-            var frameBuffer = this.frameBufferOperator, gl = wd.DeviceManager.getInstance().gl;
-            this.frameBuffer = frameBuffer.createFrameBuffer();
-            frameBuffer.bindFrameBuffer(this.frameBuffer);
-            frameBuffer.attachTexture(gl.TEXTURE_2D, this.texture.glTexture);
-            frameBuffer.check();
-            frameBuffer.unBind();
-        };
-        ProceduralRenderTargetRenderer.prototype.renderFrameBufferTexture = function (renderer) {
-            this.frameBufferOperator.bindFrameBuffer(this.frameBuffer);
-            this.texture.bindToUnit(0);
-            this.frameBufferOperator.setViewport();
-            renderer.addCommand(this._createRenderCommand());
-            renderer.clear();
-            renderer.render();
-            this.frameBufferOperator.unBind();
-            this.frameBufferOperator.restoreViewport();
-        };
-        ProceduralRenderTargetRenderer.prototype.disposeFrameBuffer = function () {
-            var gl = wd.DeviceManager.getInstance().gl;
-            gl.deleteFramebuffer(this.frameBuffer);
-        };
-        ProceduralRenderTargetRenderer.prototype._createRenderCommand = function () {
-            var command = wd.ProceduralCommand.create();
-            command.vertexBuffer = this._vertexBuffer;
-            command.indexBuffer = this._indexBuffer;
-            command.shader = this._shader;
-            return command;
-        };
-        __decorate([
-            wd.virtual
-        ], ProceduralRenderTargetRenderer.prototype, "needRender", null);
-        return ProceduralRenderTargetRenderer;
-    }(wd.RenderTargetRenderer));
-    wd.ProceduralRenderTargetRenderer = ProceduralRenderTargetRenderer;
-})(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var Renderer = (function () {
         function Renderer() {
+            this._webglState = null;
             this.skyboxCommand = null;
         }
+        Object.defineProperty(Renderer.prototype, "webglState", {
+            get: function () {
+                return this._webglState ? this._webglState : wd.BasicState.create();
+            },
+            set: function (webglState) {
+                this._webglState = webglState;
+            },
+            enumerable: true,
+            configurable: true
+        });
         Renderer.prototype.init = function () {
         };
+        __decorate([
+            wd.virtual
+        ], Renderer.prototype, "init", null);
         return Renderer;
     }());
     wd.Renderer = Renderer;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var WebGLRenderer = (function (_super) {
@@ -24021,9 +25551,6 @@ var wd;
             return obj;
         };
         WebGLRenderer.prototype.addCommand = function (command) {
-            if (this._commandQueue.hasChild(command)) {
-                return;
-            }
             this._commandQueue.addChild(command);
             command.init();
         };
@@ -24034,15 +25561,16 @@ var wd;
             wd.DeviceManager.getInstance().clear(this._clearOptions);
         };
         WebGLRenderer.prototype.render = function () {
-            var deviceManager = wd.DeviceManager.getInstance(), transparentCommands = [];
+            var deviceManager = wd.DeviceManager.getInstance(), webglState = this.webglState, transparentCommands = [];
             this._commandQueue.forEach(function (command) {
+                command.webglState = webglState;
                 if (command.blend) {
                     transparentCommands.push(command);
                 }
                 else {
                     command.execute();
                 }
-            });
+            }, this);
             if (transparentCommands.length > 0) {
                 deviceManager.depthWrite = false;
                 this._renderSortedTransparentCommands(transparentCommands);
@@ -24050,10 +25578,12 @@ var wd;
             }
             if (this.skyboxCommand) {
                 deviceManager.depthFunc = wd.EDepthFunction.LEQUAL;
+                this.skyboxCommand.webglState = webglState;
                 this.skyboxCommand.execute();
                 deviceManager.depthFunc = wd.EDepthFunction.LESS;
             }
             this._clearCommand();
+            this.webglState = null;
         };
         WebGLRenderer.prototype.init = function () {
             var deviceManager = wd.DeviceManager.getInstance();
@@ -24082,22 +25612,113 @@ var wd;
             return cameraPositionZ - cmd.z;
         };
         WebGLRenderer.prototype._clearCommand = function () {
+            this._commandQueue.forEach(function (command) {
+                command.dispose();
+            });
             this._commandQueue.removeAllChildren();
-            this.skyboxCommand = null;
+            if (this.skyboxCommand) {
+                this.skyboxCommand.dispose();
+                this.skyboxCommand = null;
+            }
         };
         WebGLRenderer.prototype._setClearOptions = function (clearOptions) {
             wdCb.ExtendUtils.extend(this._clearOptions, clearOptions);
         };
         __decorate([
+            wd.ensure(function () {
+                wd.assert(!this._commandQueue.hasRepeatItems(), wd.Log.info.FUNC_SHOULD_NOT("has duplicate render command"));
+            })
+        ], WebGLRenderer.prototype, "addCommand", null);
+        __decorate([
+            wd.require(function () {
+                wd.assert(!!this.webglState, wd.Log.info.FUNC_MUST_DEFINE("webglState"));
+            })
+        ], WebGLRenderer.prototype, "render", null);
+        __decorate([
             wd.require(function (transparentCommands) {
                 wd.assert(!!wd.Director.getInstance().scene.currentCamera, wd.Log.info.FUNC_NOT_EXIST("current camera"));
+                for (var _i = 0, transparentCommands_1 = transparentCommands; _i < transparentCommands_1.length; _i++) {
+                    var command = transparentCommands_1[_i];
+                    wd.assert(command instanceof wd.QuadCommand, wd.Log.info.FUNC_MUST_BE("transparent command", "QuadCommand"));
+                }
             })
         ], WebGLRenderer.prototype, "_renderSortedTransparentCommands", null);
         return WebGLRenderer;
     }(wd.Renderer));
     wd.WebGLRenderer = WebGLRenderer;
 })(wd || (wd = {}));
-
+var wd;
+(function (wd) {
+    var WebGLState = (function () {
+        function WebGLState() {
+        }
+        WebGLState.prototype.getSide = function (material) {
+            var scene = wd.Director.getInstance().scene;
+            return scene.side ? scene.side : material.side;
+        };
+        return WebGLState;
+    }());
+    wd.WebGLState = WebGLState;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var BasicState = (function (_super) {
+        __extends(BasicState, _super);
+        function BasicState() {
+            _super.apply(this, arguments);
+        }
+        BasicState.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        BasicState.prototype.setState = function (material) {
+            var deviceManager = wd.DeviceManager.getInstance();
+            deviceManager.setColorWrite(material.redWrite, material.greenWrite, material.blueWrite, material.alphaWrite);
+            deviceManager.polygonOffsetMode = material.polygonOffsetMode;
+            deviceManager.side = this.getSide(material);
+            deviceManager.blend = material.blend;
+            if (material.blendFuncSeparate && material.blendEquationSeparate) {
+                deviceManager.setBlendFuncSeparate(material.blendFuncSeparate);
+                deviceManager.setBlendEquationSeparate(material.blendEquationSeparate);
+            }
+            else {
+                deviceManager.setBlendFunc(material.blendSrc, material.blendDst);
+                deviceManager.setBlendEquation(material.blendEquation);
+            }
+        };
+        __decorate([
+            wd.require(function (material) {
+                if (material.blendFuncSeparate && material.blendEquationSeparate) {
+                }
+                else {
+                    wd.assert(!!material.blendSrc && !!material.blendDst && !!material.blendEquation, wdCb.Log.info.FUNC_MUST("material.blendSrc && material.blendDst && material.blendEquation", "be set"));
+                }
+            })
+        ], BasicState.prototype, "setState", null);
+        return BasicState;
+    }(wd.WebGLState));
+    wd.BasicState = BasicState;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var BuildShadowMapState = (function (_super) {
+        __extends(BuildShadowMapState, _super);
+        function BuildShadowMapState() {
+            _super.apply(this, arguments);
+        }
+        BuildShadowMapState.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        BuildShadowMapState.prototype.setState = function (material) {
+            var deviceManager = wd.DeviceManager.getInstance();
+            deviceManager.side = this.getSide(material);
+            deviceManager.blend = false;
+        };
+        return BuildShadowMapState;
+    }(wd.WebGLState));
+    wd.BuildShadowMapState = BuildShadowMapState;
+})(wd || (wd = {}));
 var wd;
 (function (wd) {
     (function (EDrawMode) {
@@ -24111,7 +25732,6 @@ var wd;
     })(wd.EDrawMode || (wd.EDrawMode = {}));
     var EDrawMode = wd.EDrawMode;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     (function (EBufferType) {
@@ -24125,7 +25745,6 @@ var wd;
     })(wd.EBufferType || (wd.EBufferType = {}));
     var EBufferType = wd.EBufferType;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     (function (EBufferDataType) {
@@ -24138,7 +25757,6 @@ var wd;
     })(wd.EBufferDataType || (wd.EBufferDataType = {}));
     var EBufferDataType = wd.EBufferDataType;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     (function (EBufferUsage) {
@@ -24148,7 +25766,6 @@ var wd;
     })(wd.EBufferUsage || (wd.EBufferUsage = {}));
     var EBufferUsage = wd.EBufferUsage;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var Buffer = (function () {
@@ -24165,18 +25782,6 @@ var wd;
     }());
     wd.Buffer = Buffer;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var ElementBuffer = (function (_super) {
@@ -24302,18 +25907,6 @@ var wd;
     }(wd.Buffer));
     wd.ElementBuffer = ElementBuffer;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var ArrayBuffer = (function (_super) {
@@ -24387,13 +25980,58 @@ var wd;
     }(wd.Buffer));
     wd.ArrayBuffer = ArrayBuffer;
 })(wd || (wd = {}));
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
+var wd;
+(function (wd) {
+    var InstanceBuffer = (function (_super) {
+        __extends(InstanceBuffer, _super);
+        function InstanceBuffer() {
+            _super.apply(this, arguments);
+            this._capacity = 32 * 16 * 4;
+        }
+        InstanceBuffer.create = function () {
+            var obj = new this();
+            obj.initWhenCreate();
+            return obj;
+        };
+        Object.defineProperty(InstanceBuffer.prototype, "float32InstanceArraySize", {
+            get: function () {
+                return this._capacity / 4;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        InstanceBuffer.prototype.initWhenCreate = function () {
+            this.buffer = this._createBuffer();
+        };
+        InstanceBuffer.prototype.setCapacity = function (bufferCapacity) {
+            var capacity = this._capacity;
+            while (capacity < bufferCapacity) {
+                capacity *= 2;
+            }
+            if (this._capacity < capacity) {
+                this._capacity = capacity;
+                if (this.buffer) {
+                    wd.DeviceManager.getInstance().gl.deleteBuffer(this.buffer);
+                }
+                this.buffer = this._createBuffer();
+            }
+        };
+        InstanceBuffer.prototype.resetData = function (data, offsetLocations) {
+            var gl = wd.DeviceManager.getInstance().gl;
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
+            gl.bufferSubData(gl.ARRAY_BUFFER, 0, data);
+        };
+        InstanceBuffer.prototype._createBuffer = function () {
+            var gl = wd.DeviceManager.getInstance().gl;
+            var buffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+            gl.bufferData(gl.ARRAY_BUFFER, this._capacity, gl.DYNAMIC_DRAW);
+            return buffer;
+        };
+        return InstanceBuffer;
+    }(wd.Buffer));
+    wd.InstanceBuffer = InstanceBuffer;
+})(wd || (wd = {}));
 var wd;
 (function (wd) {
     var _table = wdCb.Hash.create();
@@ -24419,13 +26057,6 @@ var wd;
     }());
     wd.BufferDataTable = BufferDataTable;
 })(wd || (wd = {}));
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var Program = (function () {
@@ -24434,6 +26065,7 @@ var wd;
             this._shader = null;
             this._getAttribLocationCache = wdCb.Hash.create();
             this._getUniformLocationCache = wdCb.Hash.create();
+            this._vertexAttribHistory = wdCb.Hash.create();
         }
         Program.create = function () {
             var obj = new this();
@@ -24443,15 +26075,27 @@ var wd;
             wd.DeviceManager.getInstance().gl.useProgram(this._program);
         };
         Program.prototype.getUniformLocation = function (name) {
-            var pos = null;
+            var pos = null, gl = wd.DeviceManager.getInstance().gl;
             if (!this._shader.dirty) {
                 pos = this._getUniformLocationCache.getChild(name);
                 if (pos !== void 0) {
                     return pos;
                 }
             }
-            pos = wd.DeviceManager.getInstance().gl.getUniformLocation(this._program, name);
+            pos = gl.getUniformLocation(this._program, name);
             this._getUniformLocationCache.addChild(name, pos);
+            return pos;
+        };
+        Program.prototype.getAttribLocation = function (name) {
+            var pos = null, gl = wd.DeviceManager.getInstance().gl;
+            if (!this._shader.dirty) {
+                pos = this._getAttribLocationCache.getChild(name);
+                if (pos !== void 0) {
+                    return pos;
+                }
+            }
+            pos = gl.getAttribLocation(this._program, name);
+            this._getAttribLocationCache.addChild(name, pos);
             return pos;
         };
         Program.prototype.sendUniformData = function () {
@@ -24463,8 +26107,8 @@ var wd;
             type = args[1];
             data = args[2];
             if (wd.JudgeUtils.isString(args[0])) {
-                var name_1 = args[0];
-                pos = this.getUniformLocation(name_1);
+                var name_2 = args[0];
+                pos = this.getUniformLocation(name_2);
             }
             else {
                 pos = args[0];
@@ -24509,13 +26153,14 @@ var wd;
         };
         Program.prototype.sendAttributeData = function (name, type, data) {
             var gl = wd.DeviceManager.getInstance().gl, pos = null, buffer = null;
-            pos = this._getAttribLocation(gl, name);
+            pos = this.getAttribLocation(name);
             if (pos === -1 || data === null) {
                 return;
             }
             buffer = data;
             switch (type) {
                 case wd.EVariableType.BUFFER:
+                    this._vertexAttribHistory.addChild(String(pos), true);
                     gl.bindBuffer(gl.ARRAY_BUFFER, buffer.buffer);
                     gl.vertexAttribPointer(pos, buffer.size, buffer.type, false, 0, 0);
                     gl.enableVertexAttribArray(pos);
@@ -24530,6 +26175,9 @@ var wd;
         };
         Program.prototype.initWithShader = function (shader) {
             var gl = wd.DeviceManager.getInstance().gl, vs = null, fs = null;
+            if (this._program) {
+                this.dispose();
+            }
             this._program = wd.DeviceManager.getInstance().gl.createProgram();
             vs = shader.createVsShader();
             fs = shader.createFsShader();
@@ -24546,10 +26194,22 @@ var wd;
         Program.prototype.dispose = function () {
             var gl = wd.DeviceManager.getInstance().gl;
             gl.deleteProgram(this._program);
-            this._program = undefined;
+            this._program = null;
+            this._vertexAttribHistory.forEach(function (value, pos) {
+                var position = Number(pos);
+                if (position > gl.VERTEX_ATTRIB_ARRAY_ENABLED) {
+                    return;
+                }
+                gl.disableVertexAttribArray(position);
+            });
+            this._clearCache();
         };
         Program.prototype.isUniformDataNotExistByLocation = function (pos) {
             return pos === null;
+        };
+        Program.prototype._clearCache = function () {
+            this._getAttribLocationCache.removeAllChildren();
+            this._getUniformLocationCache.removeAllChildren();
         };
         Program.prototype._convertToArray2 = function (data) {
             if (wd.JudgeUtils.isArray(data)) {
@@ -24568,18 +26228,6 @@ var wd;
                 return data;
             }
             return [data.x, data.y, data.z, data.w];
-        };
-        Program.prototype._getAttribLocation = function (gl, name) {
-            var pos = null;
-            if (!this._shader.dirty) {
-                pos = this._getAttribLocationCache.getChild(name);
-                if (pos !== void 0) {
-                    return pos;
-                }
-            }
-            pos = gl.getAttribLocation(this._program, name);
-            this._getAttribLocationCache.addChild(name, pos);
-            return pos;
         };
         Program.prototype._sendSampleArray = function (gl, pos, data) {
             gl.uniform1iv(pos, data);
@@ -24620,95 +26268,63 @@ var wd;
     }());
     wd.Program = Program;
 })(wd || (wd = {}));
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var RenderCommand = (function () {
         function RenderCommand() {
+            this._webglState = null;
             this.drawMode = wd.EDrawMode.TRIANGLES;
             this.blend = false;
-            this.z = null;
         }
+        Object.defineProperty(RenderCommand.prototype, "webglState", {
+            get: function () {
+                return this._webglState ? this._webglState : wd.BasicState.create();
+            },
+            set: function (webglState) {
+                this._webglState = webglState;
+            },
+            enumerable: true,
+            configurable: true
+        });
         RenderCommand.prototype.init = function () {
+        };
+        RenderCommand.prototype.dispose = function () {
         };
         RenderCommand.prototype.drawElements = function (indexBuffer) {
             var startOffset = 0, gl = wd.DeviceManager.getInstance().gl;
             gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer.buffer);
             wd.GlUtils.drawElements(gl[this.drawMode], indexBuffer.count, indexBuffer.type, indexBuffer.typeSize * startOffset);
         };
+        RenderCommand.prototype.drawArray = function (vertexBuffer) {
+            var startOffset = 0, gl = wd.DeviceManager.getInstance().gl;
+            wd.GlUtils.drawArrays(gl[this.drawMode], startOffset, vertexBuffer.count);
+        };
         __decorate([
             wd.virtual
         ], RenderCommand.prototype, "init", null);
+        __decorate([
+            wd.virtual
+        ], RenderCommand.prototype, "dispose", null);
         return RenderCommand;
     }());
     wd.RenderCommand = RenderCommand;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var QuadCommand = (function (_super) {
         __extends(QuadCommand, _super);
         function QuadCommand() {
             _super.apply(this, arguments);
-            this._mMatrix = null;
             this._vMatrix = null;
             this._pMatrix = null;
             this.buffers = null;
             this.material = null;
-            this.animation = null;
-            this._normalMatrixCache = null;
-            this._mvpMatrixCache = null;
+            this.z = null;
+            this.target = null;
         }
-        QuadCommand.create = function () {
-            var obj = new this();
-            return obj;
-        };
         Object.defineProperty(QuadCommand.prototype, "program", {
             get: function () {
                 return this.material.program;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(QuadCommand.prototype, "normalMatrix", {
-            get: function () {
-                return this.mMatrix.invertTo3x3().transpose();
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(QuadCommand.prototype, "mvpMatrix", {
-            get: function () {
-                return this.mMatrix.applyMatrix(this.vMatrix, true).applyMatrix(this.pMatrix, false);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(QuadCommand.prototype, "mMatrix", {
-            get: function () {
-                return this._mMatrix;
-            },
-            set: function (mMatrix) {
-                this._mMatrix = mMatrix;
-                this._normalMatrixCache = null;
-                this._mvpMatrixCache = null;
             },
             enumerable: true,
             configurable: true
@@ -24719,7 +26335,6 @@ var wd;
             },
             set: function (vMatrix) {
                 this._vMatrix = vMatrix;
-                this._mvpMatrixCache = null;
             },
             enumerable: true,
             configurable: true
@@ -24730,91 +26345,119 @@ var wd;
             },
             set: function (pMatrix) {
                 this._pMatrix = pMatrix;
-                this._mvpMatrixCache = null;
             },
             enumerable: true,
             configurable: true
         });
         QuadCommand.prototype.execute = function () {
             var material = this.material;
-            material.bindAndUpdateTexture();
             material.updateShader(this);
-            this._draw(material);
+            this.draw(material);
         };
-        QuadCommand.prototype._draw = function (material) {
-            var startOffset = 0, vertexBuffer = null, indexBuffer = null, gl = wd.DeviceManager.getInstance().gl;
-            this._setEffects(material);
-            indexBuffer = this.buffers.getChild(wd.EBufferDataType.INDICE);
+        return QuadCommand;
+    }(wd.RenderCommand));
+    wd.QuadCommand = QuadCommand;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var SingleDrawCommand = (function (_super) {
+        __extends(SingleDrawCommand, _super);
+        function SingleDrawCommand() {
+            _super.apply(this, arguments);
+            this._mMatrix = null;
+        }
+        SingleDrawCommand.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        Object.defineProperty(SingleDrawCommand.prototype, "normalMatrix", {
+            get: function () {
+                return this.mMatrix.invertTo3x3().transpose();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(SingleDrawCommand.prototype, "mvpMatrix", {
+            get: function () {
+                return this.mMatrix.applyMatrix(this.vMatrix, true).applyMatrix(this.pMatrix, false);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(SingleDrawCommand.prototype, "mMatrix", {
+            get: function () {
+                return this._mMatrix;
+            },
+            set: function (mMatrix) {
+                this._mMatrix = mMatrix;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        SingleDrawCommand.prototype.draw = function (material) {
+            var vertexBuffer = null, indexBuffer = this.buffers.getChild(wd.EBufferDataType.INDICE);
+            this.webglState.setState(material);
             if (indexBuffer) {
                 this.drawElements(indexBuffer);
             }
             else {
                 vertexBuffer = this.buffers.getChild(wd.EBufferDataType.VERTICE);
-                wd.GlUtils.drawArrays(gl[this.drawMode], startOffset, vertexBuffer.count);
+                this.drawArray(vertexBuffer);
             }
-        };
-        QuadCommand.prototype._setEffects = function (material) {
-            var deviceManager = wd.DeviceManager.getInstance();
-            deviceManager.setColorWrite(material.redWrite, material.greenWrite, material.blueWrite, material.alphaWrite);
-            deviceManager.polygonOffsetMode = material.polygonOffsetMode;
-            deviceManager.side = this._getSide();
-            deviceManager.blend = material.blend;
-            if (material.blendFuncSeparate && material.blendEquationSeparate) {
-                deviceManager.setBlendFuncSeparate(material.blendFuncSeparate);
-                deviceManager.setBlendEquationSeparate(material.blendEquationSeparate);
-            }
-            else {
-                deviceManager.setBlendFunc(material.blendSrc, material.blendDst);
-                deviceManager.setBlendEquation(material.blendEquation);
-            }
-        };
-        QuadCommand.prototype._getSide = function () {
-            var scene = wd.Director.getInstance().scene;
-            return scene.side ? scene.side : this.material.side;
         };
         __decorate([
             wd.requireGetter(function () {
                 wd.assert(!!this.mMatrix, wd.Log.info.FUNC_NOT_EXIST("mMatrix"));
-            }),
-            wd.cacheGetter(function () {
-                return this._normalMatrixCache !== null;
-            }, function () {
-                return this._normalMatrixCache;
-            }, function (result) {
-                this._normalMatrixCache = result;
             })
-        ], QuadCommand.prototype, "normalMatrix", null);
+        ], SingleDrawCommand.prototype, "normalMatrix", null);
         __decorate([
             wd.requireGetter(function () {
                 wd.assert(!!this.mMatrix && !!this.vMatrix && !!this.pMatrix, wd.Log.info.FUNC_NOT_EXIST("mMatrix or vMatrix or pMatrix"));
-            }),
-            wd.cacheGetter(function () {
-                return this._mvpMatrixCache !== null;
-            }, function () {
-                return this._mvpMatrixCache;
-            }, function (result) {
-                this._mvpMatrixCache = result;
             })
-        ], QuadCommand.prototype, "mvpMatrix", null);
-        __decorate([
-            wd.require(function (material) {
-                if (material.blendFuncSeparate && material.blendEquationSeparate) {
-                }
-                else {
-                    wdCb.Log.error(!material.blendSrc || !material.blendDst || !material.blendEquation, wdCb.Log.info.FUNC_MUST("material.blendSrc || material.blendDst || material.blendEquation", "be set"));
-                }
-            })
-        ], QuadCommand.prototype, "_setEffects", null);
-        return QuadCommand;
-    }(wd.RenderCommand));
-    wd.QuadCommand = QuadCommand;
+        ], SingleDrawCommand.prototype, "mvpMatrix", null);
+        return SingleDrawCommand;
+    }(wd.QuadCommand));
+    wd.SingleDrawCommand = SingleDrawCommand;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
+var wd;
+(function (wd) {
+    var InstanceCommand = (function (_super) {
+        __extends(InstanceCommand, _super);
+        function InstanceCommand() {
+            _super.apply(this, arguments);
+            this.instanceList = null;
+            this.instanceBuffer = null;
+            this.glslData = wd.EInstanceGLSLData.MODELMATRIX;
+            this._instanceDrawerProxy = wd.InstanceDrawerProxy.create();
+        }
+        InstanceCommand.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        InstanceCommand.prototype.draw = function (material) {
+            if (!this._hasInstance()) {
+                return;
+            }
+            this.webglState.setState(material);
+            this._instanceDrawerProxy.glslData = this.glslData;
+            this._instanceDrawerProxy.draw(this.instanceList, this.instanceBuffer, this.program, this.buffers, this.drawMode);
+        };
+        InstanceCommand.prototype._hasInstance = function () {
+            return !!this.instanceList && this.instanceList.getCount() > 0;
+        };
+        __decorate([
+            wd.ensure(function (hasInstance) {
+                wd.assert(wd.JudgeUtils.isBoolean(hasInstance), wd.Log.info.FUNC_SHOULD("return boolean value"));
+                if (hasInstance) {
+                    wd.assert(wd.InstanceUtils.isHardwareSupport(), wd.Log.info.FUNC_SHOULD("hardware", "support instance"));
+                    wd.assert(!!this.instanceBuffer, wd.Log.info.FUNC_MUST_DEFINE("instanceBuffer"));
+                }
+            })
+        ], InstanceCommand.prototype, "_hasInstance", null);
+        return InstanceCommand;
+    }(wd.QuadCommand));
+    wd.InstanceCommand = InstanceCommand;
+})(wd || (wd = {}));
 var wd;
 (function (wd) {
     var ProceduralCommand = (function (_super) {
@@ -24841,7 +26484,170 @@ var wd;
     }(wd.RenderCommand));
     wd.ProceduralCommand = ProceduralCommand;
 })(wd || (wd = {}));
-
+var wd;
+(function (wd) {
+    var InstanceDrawer = (function () {
+        function InstanceDrawer() {
+        }
+        InstanceDrawer.prototype.draw = function (instanceList, instanceBuffer, program, buffers, drawMode) {
+            var indexBuffer = null, offsetLocationArr = this.getOffsetLocationArray(program);
+            this.setCapacity(instanceList, instanceBuffer);
+            this.sendGLSLData(instanceList, instanceBuffer, offsetLocationArr);
+            indexBuffer = buffers.getChild(wd.EBufferDataType.INDICE);
+            if (indexBuffer) {
+                this._drawElementsInstancedANGLE(indexBuffer, instanceList.getCount(), drawMode);
+            }
+            else {
+                var vertexBuffer = buffers.getChild(wd.EBufferDataType.VERTICE);
+                this._drawArraysInstancedANGLE(vertexBuffer, instanceList.getCount(), drawMode);
+            }
+            this._unBind(instanceBuffer, offsetLocationArr);
+        };
+        InstanceDrawer.prototype._unBind = function (instanceBuffer, offsetLocationArr) {
+            var gl = wd.DeviceManager.getInstance().gl;
+            var extension = wd.GPUDetector.getInstance().extensionInstancedArrays;
+            gl.bindBuffer(gl.ARRAY_BUFFER, instanceBuffer.buffer);
+            for (var _i = 0, offsetLocationArr_1 = offsetLocationArr; _i < offsetLocationArr_1.length; _i++) {
+                var offsetLocation = offsetLocationArr_1[_i];
+                gl.disableVertexAttribArray(offsetLocation);
+                extension.vertexAttribDivisorANGLE(offsetLocation, 0);
+            }
+        };
+        InstanceDrawer.prototype._drawElementsInstancedANGLE = function (indexBuffer, instancesCount, drawMode) {
+            var startOffset = 0, gl = wd.DeviceManager.getInstance().gl;
+            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer.buffer);
+            wd.GlUtils.drawElementsInstancedANGLE(gl[drawMode], indexBuffer.count, indexBuffer.type, indexBuffer.typeSize * startOffset, instancesCount);
+        };
+        InstanceDrawer.prototype._drawArraysInstancedANGLE = function (vertexBuffer, instancesCount, drawMode) {
+            var startOffset = 0, gl = wd.DeviceManager.getInstance().gl;
+            wd.GlUtils.drawArraysInstancedANGLE(gl[drawMode], startOffset, vertexBuffer.count, instancesCount);
+        };
+        __decorate([
+            wd.require(function () {
+                wd.assert(wd.InstanceUtils.isHardwareSupport(), wd.Log.info.FUNC_SHOULD("hardware", "support instance"));
+            })
+        ], InstanceDrawer.prototype, "draw", null);
+        return InstanceDrawer;
+    }());
+    wd.InstanceDrawer = InstanceDrawer;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var InstanceDrawerProxy = (function () {
+        function InstanceDrawerProxy() {
+            this.glslData = null;
+        }
+        InstanceDrawerProxy.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        InstanceDrawerProxy.prototype.draw = function (instanceList, instanceBuffer, program, buffers, drawMode) {
+            var drawer = null;
+            switch (this.glslData) {
+                case wd.EInstanceGLSLData.MODELMATRIX:
+                    drawer = wd.ModelMatrixInstanceDrawer.create();
+                    break;
+                case wd.EInstanceGLSLData.NORMALMATRIX_MODELMATRIX:
+                    drawer = wd.NormalMatrixModelMatrixInstanceDrawer.create();
+                    break;
+            }
+            drawer.draw(instanceList, instanceBuffer, program, buffers, drawMode);
+        };
+        return InstanceDrawerProxy;
+    }());
+    wd.InstanceDrawerProxy = InstanceDrawerProxy;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var ModelMatrixInstanceDrawer = (function (_super) {
+        __extends(ModelMatrixInstanceDrawer, _super);
+        function ModelMatrixInstanceDrawer() {
+            _super.apply(this, arguments);
+        }
+        ModelMatrixInstanceDrawer.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        ModelMatrixInstanceDrawer.prototype.getOffsetLocationArray = function (program) {
+            return [program.getAttribLocation("a_mVec4_0"), program.getAttribLocation("a_mVec4_1"), program.getAttribLocation("a_mVec4_2"), program.getAttribLocation("a_mVec4_3")];
+        };
+        ModelMatrixInstanceDrawer.prototype.setCapacity = function (instanceList, instanceBuffer) {
+            instanceBuffer.setCapacity(instanceList.getCount() * 64);
+        };
+        ModelMatrixInstanceDrawer.prototype.sendGLSLData = function (instanceList, instanceBuffer, offsetLocationArr) {
+            var matricesArrayForInstance = new Float32Array(instanceBuffer.float32InstanceArraySize), offset = 0, gl = wd.DeviceManager.getInstance().gl, extension = wd.GPUDetector.getInstance().extensionInstancedArrays;
+            instanceList.forEach(function (instance) {
+                var mMatrix = instance.transform.localToWorldMatrix;
+                mMatrix.cloneToArray(matricesArrayForInstance, offset);
+                offset += 16;
+            });
+            instanceBuffer.resetData(matricesArrayForInstance, offsetLocationArr);
+            for (var index = 0; index < 4; index++) {
+                var offsetLocation = offsetLocationArr[index];
+                gl.enableVertexAttribArray(offsetLocation);
+                gl.vertexAttribPointer(offsetLocation, 4, gl.FLOAT, false, 4 * 4 * 4, index * 16);
+                extension.vertexAttribDivisorANGLE(offsetLocation, 1);
+            }
+        };
+        return ModelMatrixInstanceDrawer;
+    }(wd.InstanceDrawer));
+    wd.ModelMatrixInstanceDrawer = ModelMatrixInstanceDrawer;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var NormalMatrixModelMatrixInstanceDrawer = (function (_super) {
+        __extends(NormalMatrixModelMatrixInstanceDrawer, _super);
+        function NormalMatrixModelMatrixInstanceDrawer() {
+            _super.apply(this, arguments);
+        }
+        NormalMatrixModelMatrixInstanceDrawer.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        NormalMatrixModelMatrixInstanceDrawer.prototype.getOffsetLocationArray = function (program) {
+            return [
+                program.getAttribLocation("a_mVec4_0"), program.getAttribLocation("a_mVec4_1"), program.getAttribLocation("a_mVec4_2"), program.getAttribLocation("a_mVec4_3"),
+                program.getAttribLocation("a_normalVec4_0"), program.getAttribLocation("a_normalVec4_1"), program.getAttribLocation("a_normalVec4_2")
+            ];
+        };
+        NormalMatrixModelMatrixInstanceDrawer.prototype.setCapacity = function (instanceList, instanceBuffer) {
+            instanceBuffer.setCapacity(instanceList.getCount() * 112);
+        };
+        NormalMatrixModelMatrixInstanceDrawer.prototype.sendGLSLData = function (instanceList, instanceBuffer, offsetLocationArr) {
+            var matricesArrayForInstance = new Float32Array(instanceBuffer.float32InstanceArraySize), offset = 0, gl = wd.DeviceManager.getInstance().gl, extension = wd.GPUDetector.getInstance().extensionInstancedArrays;
+            instanceList.forEach(function (instance) {
+                var mMatrix = instance.transform.localToWorldMatrix, normalMatrix = mMatrix.invertTo3x3().transpose();
+                mMatrix.cloneToArray(matricesArrayForInstance, offset);
+                offset += 16;
+                normalMatrix.cloneToArray(matricesArrayForInstance, offset);
+                offset += 9;
+            });
+            instanceBuffer.resetData(matricesArrayForInstance, offsetLocationArr);
+            for (var index = 0; index < 4; index++) {
+                var offsetLocation = offsetLocationArr[index];
+                gl.enableVertexAttribArray(offsetLocation);
+                gl.vertexAttribPointer(offsetLocation, 4, gl.FLOAT, false, 100, index * 16);
+                extension.vertexAttribDivisorANGLE(offsetLocation, 1);
+            }
+            for (var index = 4; index < 7; index++) {
+                var offsetLocation = offsetLocationArr[index];
+                gl.enableVertexAttribArray(offsetLocation);
+                gl.vertexAttribPointer(offsetLocation, 3, gl.FLOAT, false, 100, (index - 4) * 12 + 64);
+                extension.vertexAttribDivisorANGLE(offsetLocation, 1);
+            }
+        };
+        return NormalMatrixModelMatrixInstanceDrawer;
+    }(wd.InstanceDrawer));
+    wd.NormalMatrixModelMatrixInstanceDrawer = NormalMatrixModelMatrixInstanceDrawer;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    (function (EInstanceGLSLData) {
+        EInstanceGLSLData[EInstanceGLSLData["MODELMATRIX"] = 0] = "MODELMATRIX";
+        EInstanceGLSLData[EInstanceGLSLData["NORMALMATRIX_MODELMATRIX"] = 1] = "NORMALMATRIX_MODELMATRIX";
+    })(wd.EInstanceGLSLData || (wd.EInstanceGLSLData = {}));
+    var EInstanceGLSLData = wd.EInstanceGLSLData;
+})(wd || (wd = {}));
 var wd;
 (function (wd) {
     var GlUtils = (function () {
@@ -24849,11 +26655,25 @@ var wd;
         }
         GlUtils.drawElements = function (mode, count, type, offset) {
             wd.DebugStatistics.count.drawCalls++;
+            wd.DebugStatistics.count.renderGameObjects++;
             this._getGl().drawElements(mode, count, type, offset);
         };
         GlUtils.drawArrays = function (mode, first, count) {
             wd.DebugStatistics.count.drawCalls++;
+            wd.DebugStatistics.count.renderGameObjects++;
             this._getGl().drawArrays(mode, first, count);
+        };
+        GlUtils.drawElementsInstancedANGLE = function (mode, count, type, offset, instancesCount) {
+            var extension = wd.GPUDetector.getInstance().extensionInstancedArrays;
+            wd.DebugStatistics.count.drawCalls++;
+            wd.DebugStatistics.count.renderGameObjects += instancesCount;
+            extension.drawElementsInstancedANGLE(mode, count, type, offset, instancesCount);
+        };
+        GlUtils.drawArraysInstancedANGLE = function (mode, startOffset, count, instancesCount) {
+            var extension = wd.GPUDetector.getInstance().extensionInstancedArrays;
+            wd.DebugStatistics.count.drawCalls++;
+            wd.DebugStatistics.count.renderGameObjects += instancesCount;
+            extension.drawArraysInstancedANGLE(mode, startOffset, count, instancesCount);
         };
         GlUtils._getGl = function () {
             return wd.DeviceManager.getInstance().gl;
@@ -24862,7 +26682,6 @@ var wd;
     }());
     wd.GlUtils = GlUtils;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var FrameBuffer = (function () {
@@ -24912,7 +26731,6 @@ var wd;
         };
         FrameBuffer.prototype.createRenderBuffer = function () {
             var gl = this.gl, renderBuffer = gl.createRenderbuffer();
-            wd.Log.error(!renderBuffer, "Failed to create renderbuffer object");
             return renderBuffer;
         };
         FrameBuffer.prototype.attachTexture = function (glTarget, texture) {
@@ -24931,17 +26749,15 @@ var wd;
                 wd.Log.error(true, "Frame buffer object is incomplete:" + e.toString());
             }
         };
+        __decorate([
+            wd.ensure(function (renderBuffer) {
+                wd.Log.assert(!!renderBuffer, wd.Log.info.FUNC_NOT_EXIST("renderbuffer object"));
+            })
+        ], FrameBuffer.prototype, "createRenderBuffer", null);
         return FrameBuffer;
     }());
     wd.FrameBuffer = FrameBuffer;
 })(wd || (wd = {}));
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var Shader = (function () {
@@ -24952,9 +26768,10 @@ var wd;
             this._fsSource = "";
             this.program = wd.Program.create();
             this.libDirty = false;
+            this.definitionDataDirty = false;
+            this.mapManager = wd.MapManager.create();
             this.libs = wdCb.Collection.create();
             this.sourceBuilder = this.createShaderSourceBuilder();
-            this._definitionDataDirty = false;
         }
         Object.defineProperty(Shader.prototype, "attributes", {
             get: function () {
@@ -24962,7 +26779,7 @@ var wd;
             },
             set: function (attributes) {
                 if (this._isNotEqual(attributes, this._attributes)) {
-                    this._definitionDataDirty = true;
+                    this.definitionDataDirty = true;
                 }
                 this._attributes = attributes;
             },
@@ -24975,7 +26792,7 @@ var wd;
             },
             set: function (uniforms) {
                 if (this._isNotEqual(uniforms, this._uniforms)) {
-                    this._definitionDataDirty = true;
+                    this.definitionDataDirty = true;
                 }
                 this._uniforms = uniforms;
             },
@@ -24988,7 +26805,7 @@ var wd;
             },
             set: function (vsSource) {
                 if (vsSource !== this._vsSource) {
-                    this._definitionDataDirty = true;
+                    this.definitionDataDirty = true;
                 }
                 this._vsSource = vsSource;
             },
@@ -25001,7 +26818,7 @@ var wd;
             },
             set: function (fsSource) {
                 if (fsSource !== this._fsSource) {
-                    this._definitionDataDirty = true;
+                    this.definitionDataDirty = true;
                 }
                 this._fsSource = fsSource;
             },
@@ -25010,7 +26827,7 @@ var wd;
         });
         Object.defineProperty(Shader.prototype, "dirty", {
             get: function () {
-                return this.libDirty || this._definitionDataDirty;
+                return this.libDirty || this.definitionDataDirty;
             },
             enumerable: true,
             configurable: true
@@ -25027,7 +26844,8 @@ var wd;
             this.libs.forEach(function (lib) {
                 lib.init();
             });
-            this.judgeRefreshShader(material);
+            this.judgeRefreshShader(null, material);
+            this.mapManager.init();
         };
         Shader.prototype.dispose = function () {
             this.program.dispose();
@@ -25036,6 +26854,7 @@ var wd;
             this.libs.forEach(function (lib) {
                 lib.dispose();
             });
+            this.mapManager.dispose();
         };
         Shader.prototype.hasLib = function () {
             var args = [];
@@ -25047,9 +26866,9 @@ var wd;
                 return this.libs.hasChild(lib);
             }
             else {
-                var _class_1 = args[0];
+                var _class_2 = args[0];
                 return this.libs.hasChildWithFunc(function (lib) {
-                    return lib instanceof _class_1;
+                    return lib instanceof _class_2;
                 });
             }
         };
@@ -25087,15 +26906,15 @@ var wd;
             this.libDirty = true;
             this.libs.sort(func, true);
         };
-        Shader.prototype.judgeRefreshShader = function (material) {
+        Shader.prototype.judgeRefreshShader = function (cmd, material) {
             if (this.libDirty) {
-                this.buildDefinitionData(null, material);
+                this.buildDefinitionData(cmd, material);
             }
-            if (this._definitionDataDirty) {
+            if (this.definitionDataDirty) {
                 this.program.initWithShader(this);
             }
             this.libDirty = false;
-            this._definitionDataDirty = false;
+            this.definitionDataDirty = false;
         };
         Shader.prototype._initShader = function (shader, source) {
             var gl = wd.DeviceManager.getInstance().gl;
@@ -25123,6 +26942,9 @@ var wd;
             return result;
         };
         __decorate([
+            wd.execOnlyOnce("_isInit")
+        ], Shader.prototype, "init", null);
+        __decorate([
             wd.ensure(function () {
                 var self = this;
                 this.libs.forEach(function (lib) {
@@ -25145,12 +26967,6 @@ var wd;
     }());
     wd.Shader = Shader;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var CustomShader = (function (_super) {
@@ -25164,12 +26980,13 @@ var wd;
         };
         CustomShader.prototype.update = function (quadCmd, material) {
             var program = this.program;
-            this.judgeRefreshShader(material);
-            this.program.use();
+            this.judgeRefreshShader(quadCmd, material);
+            program.use();
             this.libs.forEach(function (lib) {
                 lib.sendShaderVariables(program, quadCmd, material);
             });
-            material.sendTexture(program);
+            this.mapManager.bindAndUpdate();
+            this.mapManager.sendData(program);
         };
         CustomShader.prototype.read = function (definitionData) {
             this.sourceBuilder.clearShaderDefinition();
@@ -25195,12 +27012,6 @@ var wd;
     }(wd.Shader));
     wd.CustomShader = CustomShader;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var EngineShader = (function (_super) {
@@ -25226,12 +27037,6 @@ var wd;
     }(wd.Shader));
     wd.EngineShader = EngineShader;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var CommonShader = (function (_super) {
@@ -25245,23 +27050,18 @@ var wd;
         };
         CommonShader.prototype.update = function (quadCmd, material) {
             var program = this.program;
-            this.judgeRefreshShader(material);
-            this.program.use();
+            this.judgeRefreshShader(quadCmd, material);
+            program.use();
             this.libs.forEach(function (lib) {
                 lib.sendShaderVariables(program, quadCmd, material);
             });
-            material.sendTexture(program);
+            this.mapManager.bindAndUpdate();
+            this.mapManager.sendData(program);
         };
         return CommonShader;
     }(wd.EngineShader));
     wd.CommonShader = CommonShader;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var ProceduralShader = (function (_super) {
@@ -25275,7 +27075,7 @@ var wd;
         };
         ProceduralShader.prototype.update = function (cmd) {
             var program = this.program;
-            this.judgeRefreshShader(null);
+            this.judgeRefreshShader(cmd, null);
             this.program.use();
             this.libs.forEach(function (lib) {
                 lib.sendShaderVariables(program, cmd);
@@ -25285,12 +27085,6 @@ var wd;
     }(wd.EngineShader));
     wd.ProceduralShader = ProceduralShader;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var CommonProceduralShader = (function (_super) {
@@ -25306,12 +27100,6 @@ var wd;
     }(wd.ProceduralShader));
     wd.CommonProceduralShader = CommonProceduralShader;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var CustomProceduralShader = (function (_super) {
@@ -25334,13 +27122,511 @@ var wd;
     }(wd.ProceduralShader));
     wd.CustomProceduralShader = CustomProceduralShader;
 })(wd || (wd = {}));
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
+var wd;
+(function (wd) {
+    (function (EShaderGLSLData) {
+        EShaderGLSLData[EShaderGLSLData["MIRROR"] = "MIRROR"] = "MIRROR";
+        EShaderGLSLData[EShaderGLSLData["DYNAMIC_CUBEMAP"] = "DYNAMIC_CUBEMAP"] = "DYNAMIC_CUBEMAP";
+        EShaderGLSLData[EShaderGLSLData["REFRACTION"] = "REFRACTION"] = "REFRACTION";
+        EShaderGLSLData[EShaderGLSLData["TWOD_SHADOWMAP"] = "TWOD_SHADOWMAP"] = "TWOD_SHADOWMAP";
+        EShaderGLSLData[EShaderGLSLData["BUILD_CUBEMAP_SHADOWMAP"] = "BUILD_CUBEMAP_SHADOWMAP"] = "BUILD_CUBEMAP_SHADOWMAP";
+        EShaderGLSLData[EShaderGLSLData["CUBEMAP_SHADOWMAP"] = "CUBEMAP_SHADOWMAP"] = "CUBEMAP_SHADOWMAP";
+    })(wd.EShaderGLSLData || (wd.EShaderGLSLData = {}));
+    var EShaderGLSLData = wd.EShaderGLSLData;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    (function (EShaderTypeOfScene) {
+        EShaderTypeOfScene[EShaderTypeOfScene["BUILD_TWOD_SHADOWMAP"] = "BUILD_TWOD_SHADOWMAP"] = "BUILD_TWOD_SHADOWMAP";
+        EShaderTypeOfScene[EShaderTypeOfScene["BUILD_CUBEMAP_SHADOWMAP"] = "BUILD_CUBEMAP_SHADOWMAP"] = "BUILD_CUBEMAP_SHADOWMAP";
+    })(wd.EShaderTypeOfScene || (wd.EShaderTypeOfScene = {}));
+    var EShaderTypeOfScene = wd.EShaderTypeOfScene;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    (function (EShaderMapKeyOfScene) {
+        EShaderMapKeyOfScene[EShaderMapKeyOfScene["BUILD_TWOD_SHADOWMAP_INSTANCE"] = "BUILD_TWOD_SHADOWMAP_INSTANCE"] = "BUILD_TWOD_SHADOWMAP_INSTANCE";
+        EShaderMapKeyOfScene[EShaderMapKeyOfScene["BUILD_TWOD_SHADOWMAP_NO_INSTANCE"] = "BUILD_TWOD_SHADOWMAP_NO_INSTANCE"] = "BUILD_TWOD_SHADOWMAP_NO_INSTANCE";
+        EShaderMapKeyOfScene[EShaderMapKeyOfScene["BUILD_CUBEMAP_SHADOWMAP_INSTANCE"] = "BUILD_CUBEMAP_SHADOWMAP_INSTANCE"] = "BUILD_CUBEMAP_SHADOWMAP_INSTANCE";
+        EShaderMapKeyOfScene[EShaderMapKeyOfScene["BUILD_CUBEMAP_SHADOWMAP_NO_INSTANCE"] = "BUILD_CUBEMAP_SHADOWMAP_NO_INSTANCE"] = "BUILD_CUBEMAP_SHADOWMAP_NO_INSTANCE";
+    })(wd.EShaderMapKeyOfScene || (wd.EShaderMapKeyOfScene = {}));
+    var EShaderMapKeyOfScene = wd.EShaderMapKeyOfScene;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    (function (EShaderMapKey) {
+        EShaderMapKey[EShaderMapKey["DEFAULT"] = "DEFAULT"] = "DEFAULT";
+    })(wd.EShaderMapKey || (wd.EShaderMapKey = {}));
+    var EShaderMapKey = wd.EShaderMapKey;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var MapManager = (function () {
+        function MapManager() {
+            this._material = null;
+            this._textureDirty = false;
+            this._allMapsCache = null;
+            this._allSingleMapsCache = null;
+            this._shadowMapController = wd.ShadowMapController.create();
+            this._arrayMapController = wd.MapArrayController.create();
+            this._envMapController = wd.EnvMapController.create();
+            this._commonMapController = wd.CommonMapController.create();
+        }
+        MapManager.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        Object.defineProperty(MapManager.prototype, "material", {
+            get: function () {
+                return this._material;
+            },
+            set: function (material) {
+                this._material = material;
+                this._envMapController.material = material;
+                this._commonMapController.material = material;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        MapManager.prototype.init = function () {
+            var mapArr = this._getAllMaps();
+            for (var i = 0, len = mapArr.length; i < len; i++) {
+                var texture = mapArr[i];
+                texture.init();
+            }
+        };
+        MapManager.prototype.addMap = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
+            }
+            var map = null;
+            if (args[0] instanceof wd.TextureAsset) {
+                var asset = args[0];
+                map = asset.toTexture();
+            }
+            else if (args[0] instanceof wd.Texture) {
+                map = args[0];
+            }
+            if (args.length === 1) {
+                this._commonMapController.addMap(map);
+            }
+            else {
+                this._commonMapController.addMap(map, args[1]);
+            }
+            this._textureDirty = true;
+        };
+        MapManager.prototype.addMapArray = function (samplerName, mapArray) {
+            this._arrayMapController.addMapArray(samplerName, mapArray);
+            this._textureDirty = true;
+        };
+        MapManager.prototype.addTwoDShadowMap = function (shadowMap) {
+            this._shadowMapController.addTwoDShadowMap(shadowMap);
+            this._textureDirty = true;
+        };
+        MapManager.prototype.getTwoDShadowMapList = function () {
+            return this._shadowMapController.getTwoDShadowMapList();
+        };
+        MapManager.prototype.hasTwoDShadowMap = function (shadowMap) {
+            return this._shadowMapController.hasTwoDShadowMap(shadowMap);
+        };
+        MapManager.prototype.addCubemapShadowMap = function (shadowMap) {
+            this._shadowMapController.addCubemapShadowMap(shadowMap);
+            this._textureDirty = true;
+        };
+        MapManager.prototype.getCubemapShadowMapList = function () {
+            return this._shadowMapController.getCubemapShadowMapList();
+        };
+        MapManager.prototype.hasCubemapShadowMap = function (shadowMap) {
+            return this._shadowMapController.hasCubemapShadowMap(shadowMap);
+        };
+        MapManager.prototype.getMapList = function () {
+            return this._commonMapController.getMapList();
+        };
+        MapManager.prototype.hasMap = function (map) {
+            return this._commonMapController.hasMap(map);
+        };
+        MapManager.prototype.getMapCount = function () {
+            return this.getMapList().getCount();
+        };
+        MapManager.prototype.getEnvMap = function () {
+            return this._envMapController.getEnvMap();
+        };
+        MapManager.prototype.setEnvMap = function (envMap) {
+            if (!envMap) {
+                this._envMapController.setEnvMap(null);
+                this._textureDirty = true;
+                return;
+            }
+            this._envMapController.setEnvMap(envMap);
+            this._textureDirty = true;
+        };
+        MapManager.prototype.removeChild = function (map) {
+            for (var _i = 0, _a = this._getAllControllerArr(); _i < _a.length; _i++) {
+                var controller = _a[_i];
+                controller.removeChild(map);
+            }
+            this._textureDirty = true;
+        };
+        MapManager.prototype.removeAllChildren = function () {
+            for (var _i = 0, _a = this._getAllControllerArr(); _i < _a.length; _i++) {
+                var controller = _a[_i];
+                controller.removeAllChildren();
+            }
+            this._textureDirty = true;
+        };
+        MapManager.prototype.removeAllShdaowMaps = function () {
+            this._shadowMapController.removeAllChildren();
+            this._textureDirty = true;
+        };
+        MapManager.prototype.dispose = function () {
+            var mapArr = this._getAllMaps();
+            for (var i = 0, len = mapArr.length; i < len; i++) {
+                var texture = mapArr[i];
+                texture.dispose();
+            }
+            this.removeAllChildren();
+        };
+        MapManager.prototype.bindAndUpdate = function () {
+            var mapArr = this._getAllMaps();
+            for (var i = 0, len = mapArr.length; i < len; i++) {
+                var texture = mapArr[i];
+                texture.bindToUnit(i);
+                if (texture.needUpdate) {
+                    texture.update(i);
+                }
+            }
+        };
+        MapManager.prototype.sendData = function (program) {
+            this._sendSingleMapData(program);
+            this._arrayMapController.sendMapData(program, this._getMaxUnitOfBindedSingleMap());
+        };
+        MapManager.prototype._sendSingleMapData = function (program) {
+            var mapArr = this._getAllSingleMaps(), len = mapArr.length;
+            for (var i = 0; i < len; i++) {
+                var texture = mapArr[i];
+                texture.sendData(program, texture.getSamplerName(i), i);
+            }
+        };
+        MapManager.prototype._getAllMaps = function () {
+            return [].concat(this._getAllSingleMaps(), this._arrayMapController.getAllMapArr());
+        };
+        MapManager.prototype._getMaxUnitOfBindedSingleMap = function () {
+            return this._getAllSingleMaps().length;
+        };
+        MapManager.prototype._getAllSingleMaps = function () {
+            var arr = [];
+            for (var _i = 0, _a = this._getAllSingleMapControllerArr(); _i < _a.length; _i++) {
+                var controller = _a[_i];
+                arr = arr.concat(controller.getAllMapArr());
+            }
+            return arr;
+        };
+        MapManager.prototype._getAllSingleMapControllerArr = function () {
+            return [this._shadowMapController, this._envMapController, this._commonMapController];
+        };
+        MapManager.prototype._getAllControllerArr = function () {
+            return [this._shadowMapController, this._envMapController, this._arrayMapController, this._commonMapController];
+        };
+        __decorate([
+            wd.require(function () {
+                var args = [];
+                for (var _i = 0; _i < arguments.length; _i++) {
+                    args[_i - 0] = arguments[_i];
+                }
+                wd.assert(args[0] instanceof wd.TextureAsset || args[0] instanceof wd.Texture, wd.Log.info.FUNC_SHOULD("arguments[0]", "be TextureAsset || Texture"));
+            })
+        ], MapManager.prototype, "addMap", null);
+        __decorate([
+            wd.require(function (samplerName, mapArray) {
+                wd.assert(wd.JudgeUtils.isArrayExactly(mapArray), wd.Log.info.FUNC_SHOULD("second param", "be array"));
+                for (var _i = 0, mapArray_1 = mapArray; _i < mapArray_1.length; _i++) {
+                    var map = mapArray_1[_i];
+                    wd.assert(map instanceof wd.Texture, wd.Log.info.FUNC_SHOULD(wd.Log.info.FUNC_SHOULD("second param", "be Array<Texture>")));
+                }
+            })
+        ], MapManager.prototype, "addMapArray", null);
+        __decorate([
+            wd.require(function (shadowMap) {
+                wd.assert(!this._shadowMapController.hasTwoDShadowMap(shadowMap), wd.Log.info.FUNC_SHOULD_NOT("add the shadowMap which is already exist"));
+            })
+        ], MapManager.prototype, "addTwoDShadowMap", null);
+        __decorate([
+            wd.require(function (shadowMap) {
+                wd.assert(!this._shadowMapController.hasCubemapShadowMap(shadowMap), wd.Log.info.FUNC_SHOULD_NOT("add the shadowMap which is already exist"));
+            })
+        ], MapManager.prototype, "addCubemapShadowMap", null);
+        __decorate([
+            wd.ensure(function (mapList) {
+                mapList.forEach(function (map) {
+                    wd.assert(map instanceof wd.BasicTexture || map instanceof wd.ProceduralTexture, wd.Log.info.FUNC_SHOULD("mapList", "only contain BasicTexture or ProceduralTexture"));
+                });
+            })
+        ], MapManager.prototype, "getMapList", null);
+        __decorate([
+            wd.require(function (program) {
+                var mapMap = {}, maps = this._getAllMaps();
+                for (var i = 0, len = maps.length; i < len; i++) {
+                    var map = maps[i], samplerName = map.getSamplerName(i);
+                    wd.assert(mapMap[samplerName] !== 1, wd.Log.info.FUNC_SHOULD_NOT("has duplicate maps, but actual has the ones with the same samplerName:" + samplerName));
+                    mapMap[samplerName] = 1;
+                }
+            })
+        ], MapManager.prototype, "sendData", null);
+        __decorate([
+            wd.ensure(function (mapArr) {
+                for (var _i = 0, mapArr_1 = mapArr; _i < mapArr_1.length; _i++) {
+                    var map = mapArr_1[_i];
+                    wd.assert(map instanceof wd.Texture, wd.Log.info.FUNC_SHOULD("each element", "be Texture"));
+                }
+            }),
+            wd.cache(function () {
+                return !this._textureDirty && this._allMapsCache;
+            }, function () {
+                return this._allMapsCache;
+            }, function (mapList) {
+                this._allMapsCache = mapList;
+                this._textureDirty = false;
+            })
+        ], MapManager.prototype, "_getAllMaps", null);
+        __decorate([
+            wd.cache(function () {
+                return !this._textureDirty && this._allSingleMapsCache;
+            }, function () {
+                return this._allSingleMapsCache;
+            }, function (mapList) {
+                this._allSingleMapsCache = mapList;
+                this._textureDirty = false;
+            })
+        ], MapManager.prototype, "_getAllSingleMaps", null);
+        return MapManager;
+    }());
+    wd.MapManager = MapManager;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var MapController = (function () {
+        function MapController() {
+        }
+        MapController.prototype.hasMapHelper = function (source, target) {
+            if (!source) {
+                return false;
+            }
+            return source.hasChild(target);
+        };
+        MapController.prototype.setMapOption = function (map, option) {
+            map.variableData = option;
+        };
+        return MapController;
+    }());
+    wd.MapController = MapController;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var ShadowMapController = (function (_super) {
+        __extends(ShadowMapController, _super);
+        function ShadowMapController() {
+            _super.apply(this, arguments);
+            this._twoDShadowMapList = wdCb.Collection.create();
+            this._cubemapShadowMapList = wdCb.Collection.create();
+        }
+        ShadowMapController.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        ShadowMapController.prototype.addTwoDShadowMap = function (shadowMap) {
+            this.setMapOption(shadowMap, {
+                samplerData: this._twoDShadowMapList.getCount()
+            });
+            this._twoDShadowMapList.addChild(shadowMap);
+        };
+        ShadowMapController.prototype.addCubemapShadowMap = function (shadowMap) {
+            this.setMapOption(shadowMap, {
+                samplerData: this._cubemapShadowMapList.getCount()
+            });
+            this._cubemapShadowMapList.addChild(shadowMap);
+        };
+        ShadowMapController.prototype.hasTwoDShadowMap = function (shadowMap) {
+            return this.hasMapHelper(this._twoDShadowMapList, shadowMap);
+        };
+        ShadowMapController.prototype.hasCubemapShadowMap = function (shadowMap) {
+            return this.hasMapHelper(this._cubemapShadowMapList, shadowMap);
+        };
+        ShadowMapController.prototype.getTwoDShadowMapList = function () {
+            return this._twoDShadowMapList;
+        };
+        ShadowMapController.prototype.getCubemapShadowMapList = function () {
+            return this._cubemapShadowMapList;
+        };
+        ShadowMapController.prototype.getAllMapArr = function () {
+            return this._twoDShadowMapList.clone(false).addChildren(this._cubemapShadowMapList).toArray();
+        };
+        ShadowMapController.prototype.removeChild = function (map) {
+            this._twoDShadowMapList.removeChild(map);
+            this._cubemapShadowMapList.removeChild(map);
+        };
+        ShadowMapController.prototype.removeAllChildren = function () {
+            this._twoDShadowMapList.removeAllChildren();
+            this._cubemapShadowMapList.removeAllChildren();
+        };
+        return ShadowMapController;
+    }(wd.MapController));
+    wd.ShadowMapController = ShadowMapController;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var EnvMapController = (function (_super) {
+        __extends(EnvMapController, _super);
+        function EnvMapController() {
+            _super.apply(this, arguments);
+            this.material = null;
+            this._map = null;
+        }
+        EnvMapController.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        EnvMapController.prototype.setEnvMap = function (envMap) {
+            if (!envMap) {
+                this._map = null;
+                return;
+            }
+            envMap.material = this.material;
+            this._map = envMap;
+        };
+        EnvMapController.prototype.getEnvMap = function () {
+            return this._map;
+        };
+        EnvMapController.prototype.getAllMapArr = function () {
+            return this._map !== null ? [this._map] : [];
+        };
+        EnvMapController.prototype.removeChild = function (map) {
+            if (wd.JudgeUtils.isEqual(this._map, map)) {
+                this._map = null;
+            }
+        };
+        EnvMapController.prototype.removeAllChildren = function () {
+            this._map = null;
+        };
+        return EnvMapController;
+    }(wd.MapController));
+    wd.EnvMapController = EnvMapController;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var MapArrayController = (function (_super) {
+        __extends(MapArrayController, _super);
+        function MapArrayController() {
+            _super.apply(this, arguments);
+            this._mapArrayList = wdCb.Collection.create();
+        }
+        MapArrayController.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        MapArrayController.prototype.addMapArray = function (samplerName, mapArray) {
+            this._mapArrayList.addChild({
+                samplerName: samplerName,
+                mapArray: mapArray
+            });
+        };
+        MapArrayController.prototype.sendMapData = function (program, maxUnitOfBindedSingleMap) {
+            var self = this;
+            this._mapArrayList.forEach(function (mapData) {
+                var arrayMapCount = mapData.mapArray.length;
+                program.sendUniformData(mapData.samplerName + "[0]", wd.EVariableType.SAMPLER_ARRAY, self._generateMapArrayUnitArray(maxUnitOfBindedSingleMap, maxUnitOfBindedSingleMap + arrayMapCount));
+                maxUnitOfBindedSingleMap += arrayMapCount;
+            });
+        };
+        MapArrayController.prototype.getAllMapArr = function () {
+            var arrayMap = [];
+            this._mapArrayList.forEach(function (mapData) {
+                arrayMap = arrayMap.concat(mapData.mapArray);
+            });
+            return arrayMap;
+        };
+        MapArrayController.prototype.removeChild = function (map) {
+            this._mapArrayList.removeChild(map);
+        };
+        MapArrayController.prototype.removeAllChildren = function () {
+            this._mapArrayList.removeAllChildren();
+        };
+        MapArrayController.prototype._generateMapArrayUnitArray = function (startUnit, endUnit) {
+            var arr = [];
+            while (endUnit > startUnit) {
+                arr.push(startUnit);
+                startUnit++;
+            }
+            return arr;
+        };
+        __decorate([
+            wd.ensure(function (mapArr) {
+                for (var _i = 0, mapArr_2 = mapArr; _i < mapArr_2.length; _i++) {
+                    var map = mapArr_2[_i];
+                    wd.assert(map instanceof wd.Texture, wd.Log.info.FUNC_SHOULD("each element", "be Texture"));
+                }
+            })
+        ], MapArrayController.prototype, "getAllMapArr", null);
+        __decorate([
+            wd.ensure(function (arr, startUnit, endUnit) {
+                wd.assert(arr.length === endUnit - startUnit, wd.Log.info.FUNC_SHOULD("length", "be " + (endUnit - startUnit) + ", but actual is " + arr.length));
+                if (arr.length > 0) {
+                    wd.assert(arr[0] === startUnit, wd.Log.info.FUNC_SHOULD("first element", "be " + startUnit + ", but actual is " + arr[0]));
+                    wd.assert(arr[arr.length - 1] === endUnit - 1, wd.Log.info.FUNC_SHOULD("last element", "be " + (endUnit - 1) + ", but actual is " + arr[arr.length - 1]));
+                }
+            })
+        ], MapArrayController.prototype, "_generateMapArrayUnitArray", null);
+        return MapArrayController;
+    }(wd.MapController));
+    wd.MapArrayController = MapArrayController;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var CommonMapController = (function (_super) {
+        __extends(CommonMapController, _super);
+        function CommonMapController() {
+            _super.apply(this, arguments);
+            this.material = null;
+            this._list = wdCb.Collection.create();
+        }
+        CommonMapController.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        CommonMapController.prototype.addMap = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
+            }
+            var map = args[0];
+            if (args.length === 2) {
+                var option = args[1];
+                this.setMapOption(map, option);
+            }
+            map.material = this.material;
+            this._list.addChild(map);
+        };
+        CommonMapController.prototype.getAllMapArr = function () {
+            return this._list.toArray();
+        };
+        CommonMapController.prototype.getMapList = function () {
+            return this._list.filter(function (map) {
+                return map instanceof wd.BasicTexture || map instanceof wd.ProceduralTexture;
+            });
+        };
+        CommonMapController.prototype.hasMap = function (map) {
+            return this.hasMapHelper(this._list, map);
+        };
+        CommonMapController.prototype.removeChild = function (map) {
+            this._list.removeChild(map);
+        };
+        CommonMapController.prototype.removeAllChildren = function () {
+            this._list.removeAllChildren();
+        };
+        return CommonMapController;
+    }(wd.MapController));
+    wd.CommonMapController = CommonMapController;
+})(wd || (wd = {}));
 var wd;
 (function (wd) {
     var ShaderSourceBuilder = (function () {
@@ -25405,12 +27691,6 @@ var wd;
     }());
     wd.ShaderSourceBuilder = ShaderSourceBuilder;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var CustomShaderSourceBuilder = (function (_super) {
@@ -25445,18 +27725,6 @@ var wd;
     }(wd.ShaderSourceBuilder));
     wd.CustomShaderSourceBuilder = CustomShaderSourceBuilder;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var EngineShaderSourceBuilder = (function (_super) {
@@ -25680,7 +27948,6 @@ var wd;
     }(wd.ShaderSourceBuilder));
     wd.EngineShaderSourceBuilder = EngineShaderSourceBuilder;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     (function (EVariableType) {
@@ -25700,7 +27967,6 @@ var wd;
     })(wd.EVariableType || (wd.EVariableType = {}));
     var EVariableType = wd.EVariableType;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     (function (EVariableSemantic) {
@@ -25725,7 +27991,6 @@ var wd;
     })(wd.EVariableSemantic || (wd.EVariableSemantic = {}));
     var EVariableSemantic = wd.EVariableSemantic;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     (function (EVariableCategory) {
@@ -25734,7 +27999,6 @@ var wd;
     })(wd.EVariableCategory || (wd.EVariableCategory = {}));
     var EVariableCategory = wd.EVariableCategory;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var VariableLib = (function () {
@@ -26040,11 +28304,50 @@ var wd;
             type: wd.EVariableType.STRUCTURE,
             value: wd.EVariableCategory.ENGINE
         };
+        VariableLib.a_mVec4_0 = {
+            type: wd.EVariableType.FLOAT_4,
+            value: wd.EVariableCategory.ENGINE
+        };
+        VariableLib.a_mVec4_1 = {
+            type: wd.EVariableType.FLOAT_4,
+            value: wd.EVariableCategory.ENGINE
+        };
+        VariableLib.a_mVec4_2 = {
+            type: wd.EVariableType.FLOAT_4,
+            value: wd.EVariableCategory.ENGINE
+        };
+        VariableLib.a_mVec4_3 = {
+            type: wd.EVariableType.FLOAT_4,
+            value: wd.EVariableCategory.ENGINE
+        };
+        VariableLib.a_normalVec4_0 = {
+            type: wd.EVariableType.FLOAT_3,
+            value: wd.EVariableCategory.ENGINE
+        };
+        VariableLib.a_normalVec4_1 = {
+            type: wd.EVariableType.FLOAT_3,
+            value: wd.EVariableCategory.ENGINE
+        };
+        VariableLib.a_normalVec4_2 = {
+            type: wd.EVariableType.FLOAT_3,
+            value: wd.EVariableCategory.ENGINE
+        };
+        VariableLib.u_isRenderListEmpty = {
+            type: wd.EVariableType.NUMBER_1,
+            value: wd.EVariableCategory.ENGINE
+        };
+        VariableLib.u_isReflectionRenderListEmpty = {
+            type: wd.EVariableType.NUMBER_1,
+            value: wd.EVariableCategory.ENGINE
+        };
+        VariableLib.u_isRefractionRenderListEmpty = {
+            type: wd.EVariableType.NUMBER_1,
+            value: wd.EVariableCategory.ENGINE
+        };
         return VariableLib;
     }());
     wd.VariableLib = VariableLib;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var _table = wdCb.Hash.create();
@@ -26069,7 +28372,6 @@ var wd;
     }());
     wd.VariableTypeTable = VariableTypeTable;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var _table = wdCb.Hash.create();
@@ -26093,13 +28395,6 @@ var wd;
     }());
     wd.VariableNameTable = VariableNameTable;
 })(wd || (wd = {}));
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var ShaderLib = (function () {
@@ -26125,12 +28420,6 @@ var wd;
     }());
     wd.ShaderLib = ShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var CustomShaderLib = (function (_super) {
@@ -26157,18 +28446,6 @@ var wd;
     }(wd.ShaderLib));
     wd.CustomShaderLib = CustomShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var EngineShaderLib = (function (_super) {
@@ -26346,12 +28623,6 @@ var wd;
         EShaderLibType[EShaderLibType["fs"] = "fs"] = "fs";
     })(EShaderLibType || (EShaderLibType = {}));
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var CommonShaderLib = (function (_super) {
@@ -26365,13 +28636,12 @@ var wd;
             return obj;
         };
         CommonShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
-            this.sendUniformData(program, "u_mMatrix", quadCmd.mMatrix);
             this.sendUniformData(program, "u_vMatrix", quadCmd.vMatrix);
             this.sendUniformData(program, "u_pMatrix", quadCmd.pMatrix);
         };
         CommonShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
             _super.prototype.setShaderDefinition.call(this, quadCmd, material);
-            this.addUniformVariable(["u_mMatrix", "u_vMatrix", "u_pMatrix"]);
+            this.addUniformVariable(["u_vMatrix", "u_pMatrix"]);
             this.vsSourceDefine = wd.ShaderChunk.common_define.define + wd.ShaderChunk.common_vertex.define;
             this.vsSourceFuncDefine = wd.ShaderChunk.common_function.funcDefine + wd.ShaderChunk.common_vertex.funcDefine;
             this.fsSourceDefine = wd.ShaderChunk.common_define.define + wd.ShaderChunk.common_fragment.define;
@@ -26381,84 +28651,66 @@ var wd;
     }(wd.EngineShaderLib));
     wd.CommonShaderLib = CommonShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
-    var CommonVerticeShaderLib = (function (_super) {
-        __extends(CommonVerticeShaderLib, _super);
-        function CommonVerticeShaderLib() {
+    var VerticeCommonShaderLib = (function (_super) {
+        __extends(VerticeCommonShaderLib, _super);
+        function VerticeCommonShaderLib() {
             _super.apply(this, arguments);
-            this.type = "commonVertice";
+            this.type = "vertice_common";
         }
-        CommonVerticeShaderLib.create = function () {
+        VerticeCommonShaderLib.create = function () {
             var obj = new this();
             return obj;
         };
-        CommonVerticeShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
+        VerticeCommonShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
             this._sendAttributeVariables(program, quadCmd);
         };
-        CommonVerticeShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
+        VerticeCommonShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
             _super.prototype.setShaderDefinition.call(this, quadCmd, material);
             this.addAttributeVariable(["a_position"]);
         };
-        CommonVerticeShaderLib.prototype._sendAttributeVariables = function (program, quadCmd) {
+        VerticeCommonShaderLib.prototype._sendAttributeVariables = function (program, quadCmd) {
             var verticeBuffer = quadCmd.buffers.getChild(wd.EBufferDataType.VERTICE);
             if (!verticeBuffer) {
                 return;
             }
             this.sendAttributeData(program, "a_position", verticeBuffer);
         };
-        return CommonVerticeShaderLib;
+        return VerticeCommonShaderLib;
     }(wd.EngineShaderLib));
-    wd.CommonVerticeShaderLib = CommonVerticeShaderLib;
+    wd.VerticeCommonShaderLib = VerticeCommonShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
-    var CommonNormalShaderLib = (function (_super) {
-        __extends(CommonNormalShaderLib, _super);
-        function CommonNormalShaderLib() {
+    var NormalCommonShaderLib = (function (_super) {
+        __extends(NormalCommonShaderLib, _super);
+        function NormalCommonShaderLib() {
             _super.apply(this, arguments);
-            this.type = "commonNormal";
+            this.type = "normal_common";
         }
-        CommonNormalShaderLib.create = function () {
+        NormalCommonShaderLib.create = function () {
             var obj = new this();
             return obj;
         };
-        CommonNormalShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
+        NormalCommonShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
             this._sendAttributeVariables(program, quadCmd);
         };
-        CommonNormalShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
+        NormalCommonShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
             _super.prototype.setShaderDefinition.call(this, quadCmd, material);
             this.addAttributeVariable(["a_normal"]);
         };
-        CommonNormalShaderLib.prototype._sendAttributeVariables = function (program, quadCmd) {
+        NormalCommonShaderLib.prototype._sendAttributeVariables = function (program, quadCmd) {
             var normalBuffer = quadCmd.buffers.getChild(wd.EBufferDataType.NORMAL);
             if (!normalBuffer) {
                 return;
             }
             this.sendAttributeData(program, "a_normal", normalBuffer);
         };
-        return CommonNormalShaderLib;
+        return NormalCommonShaderLib;
     }(wd.EngineShaderLib));
-    wd.CommonNormalShaderLib = CommonNormalShaderLib;
+    wd.NormalCommonShaderLib = NormalCommonShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var BasicShaderLib = (function (_super) {
@@ -26489,96 +28741,66 @@ var wd;
     }(wd.EngineShaderLib));
     wd.BasicShaderLib = BasicShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
-    var BasicEndShaderLib = (function (_super) {
-        __extends(BasicEndShaderLib, _super);
-        function BasicEndShaderLib() {
+    var EndBasicShaderLib = (function (_super) {
+        __extends(EndBasicShaderLib, _super);
+        function EndBasicShaderLib() {
             _super.apply(this, arguments);
-            this.type = "basicEnd";
+            this.type = "end_basic";
         }
-        BasicEndShaderLib.create = function () {
+        EndBasicShaderLib.create = function () {
             var obj = new this();
             return obj;
         };
-        BasicEndShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
+        EndBasicShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
         };
-        return BasicEndShaderLib;
+        return EndBasicShaderLib;
     }(wd.EngineShaderLib));
-    wd.BasicEndShaderLib = BasicEndShaderLib;
+    wd.EndBasicShaderLib = EndBasicShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
-    var MorphCommonShaderLib = (function (_super) {
-        __extends(MorphCommonShaderLib, _super);
-        function MorphCommonShaderLib() {
+    var CommonMorphShaderLib = (function (_super) {
+        __extends(CommonMorphShaderLib, _super);
+        function CommonMorphShaderLib() {
             _super.apply(this, arguments);
-            this.type = "morphCommon";
+            this.type = "common_morph";
         }
-        MorphCommonShaderLib.create = function () {
+        CommonMorphShaderLib.create = function () {
             var obj = new this();
             return obj;
         };
-        MorphCommonShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
-            var anim = (quadCmd.animation);
+        CommonMorphShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
+            var anim = quadCmd.target.getComponent(wd.MorphAnimation);
             this.sendUniformData(program, "u_interpolation", anim.interpolation);
         };
-        MorphCommonShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
+        CommonMorphShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
             _super.prototype.setShaderDefinition.call(this, quadCmd, material);
             this.addUniformVariable(["u_interpolation"]);
         };
         __decorate([
             wd.require(function (program, quadCmd, material) {
-                wd.assert(!!quadCmd.animation, wd.Log.info.FUNC_SHOULD("entityObject", "add MorphAnimation component"));
+                wd.assert(quadCmd.target.hasComponent(wd.MorphAnimation), wd.Log.info.FUNC_SHOULD("entityObject", "has MorphAnimation component"));
             })
-        ], MorphCommonShaderLib.prototype, "sendShaderVariables", null);
-        return MorphCommonShaderLib;
+        ], CommonMorphShaderLib.prototype, "sendShaderVariables", null);
+        return CommonMorphShaderLib;
     }(wd.EngineShaderLib));
-    wd.MorphCommonShaderLib = MorphCommonShaderLib;
+    wd.CommonMorphShaderLib = CommonMorphShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
-    var MorphVerticeShaderLib = (function (_super) {
-        __extends(MorphVerticeShaderLib, _super);
-        function MorphVerticeShaderLib() {
+    var VerticeMorphShaderLib = (function (_super) {
+        __extends(VerticeMorphShaderLib, _super);
+        function VerticeMorphShaderLib() {
             _super.apply(this, arguments);
-            this.type = "morphVertice";
+            this.type = "vertice_morph";
         }
-        MorphVerticeShaderLib.create = function () {
+        VerticeMorphShaderLib.create = function () {
             var obj = new this();
             return obj;
         };
-        MorphVerticeShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
+        VerticeMorphShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
             var morphVerticeData = quadCmd.buffers.getChild(wd.EBufferDataType.VERTICE);
             if (!morphVerticeData) {
                 return;
@@ -26586,38 +28808,32 @@ var wd;
             this.sendAttributeData(program, "a_currentFramePosition", morphVerticeData[0]);
             this.sendAttributeData(program, "a_nextFramePosition", morphVerticeData[1]);
         };
-        MorphVerticeShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
+        VerticeMorphShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
             _super.prototype.setShaderDefinition.call(this, quadCmd, material);
             this.addAttributeVariable(["a_currentFramePosition", "a_nextFramePosition"]);
         };
         __decorate([
             wd.require(function (program, quadCmd, material) {
-                wd.assert(!!quadCmd.animation, wd.Log.info.FUNC_SHOULD("entityObject", "add MorphAnimation component"));
+                wd.assert(quadCmd.target.hasComponent(wd.MorphAnimation), wd.Log.info.FUNC_SHOULD("entityObject", "has MorphAnimation component"));
             })
-        ], MorphVerticeShaderLib.prototype, "sendShaderVariables", null);
-        return MorphVerticeShaderLib;
+        ], VerticeMorphShaderLib.prototype, "sendShaderVariables", null);
+        return VerticeMorphShaderLib;
     }(wd.EngineShaderLib));
-    wd.MorphVerticeShaderLib = MorphVerticeShaderLib;
+    wd.VerticeMorphShaderLib = VerticeMorphShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
-    var MorphNormalShaderLib = (function (_super) {
-        __extends(MorphNormalShaderLib, _super);
-        function MorphNormalShaderLib() {
+    var NormalMorphShaderLib = (function (_super) {
+        __extends(NormalMorphShaderLib, _super);
+        function NormalMorphShaderLib() {
             _super.apply(this, arguments);
-            this.type = "morphNormal";
+            this.type = "normal_morph";
         }
-        MorphNormalShaderLib.create = function () {
+        NormalMorphShaderLib.create = function () {
             var obj = new this();
             return obj;
         };
-        MorphNormalShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
+        NormalMorphShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
             var morphNormalData = quadCmd.buffers.getChild(wd.EBufferDataType.NORMAL);
             if (!morphNormalData) {
                 return;
@@ -26625,20 +28841,14 @@ var wd;
             this.sendAttributeData(program, "a_currentFrameNormal", morphNormalData[0]);
             this.sendAttributeData(program, "a_nextFrameNormal", morphNormalData[1]);
         };
-        MorphNormalShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
+        NormalMorphShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
             _super.prototype.setShaderDefinition.call(this, quadCmd, material);
             this.addAttributeVariable(["a_currentFrameNormal", "a_nextFrameNormal"]);
         };
-        return MorphNormalShaderLib;
+        return NormalMorphShaderLib;
     }(wd.EngineShaderLib));
-    wd.MorphNormalShaderLib = MorphNormalShaderLib;
+    wd.NormalMorphShaderLib = NormalMorphShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var SkyboxShaderLib = (function (_super) {
@@ -26661,30 +28871,66 @@ var wd;
     }(wd.EngineShaderLib));
     wd.SkyboxShaderLib = SkyboxShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
-    var EnvMapForBasicShaderLib = (function (_super) {
-        __extends(EnvMapForBasicShaderLib, _super);
-        function EnvMapForBasicShaderLib() {
+    var EnvMapShaderLib = (function (_super) {
+        __extends(EnvMapShaderLib, _super);
+        function EnvMapShaderLib() {
             _super.apply(this, arguments);
         }
-        EnvMapForBasicShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
-            this.sendUniformData(program, "u_normalMatrix", quadCmd.normalMatrix);
+        EnvMapShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
+            _super.prototype.setShaderDefinition.call(this, quadCmd, material);
+            this.addUniformVariable([
+                "u_samplerCube0"
+            ]);
+            this.vsSourceBody = this.getVsChunk().body;
+        };
+        return EnvMapShaderLib;
+    }(wd.EngineShaderLib));
+    wd.EnvMapShaderLib = EnvMapShaderLib;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var CommonEnvMapShaderLib = (function (_super) {
+        __extends(CommonEnvMapShaderLib, _super);
+        function CommonEnvMapShaderLib() {
+            _super.apply(this, arguments);
+            this.type = "common_envMap";
+        }
+        CommonEnvMapShaderLib.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        CommonEnvMapShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
+            wd.RenderTargerRendererShaderLibUtils.judgeAndSendIsRenderListEmptyVariable(program, wd.EShaderGLSLData.DYNAMIC_CUBEMAP);
+        };
+        CommonEnvMapShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
+            _super.prototype.setShaderDefinition.call(this, quadCmd, material);
+            this.addUniformVariable([
+                "u_isRenderListEmpty"
+            ]);
+        };
+        return CommonEnvMapShaderLib;
+    }(wd.EnvMapShaderLib));
+    wd.CommonEnvMapShaderLib = CommonEnvMapShaderLib;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var ForBasicEnvMapShaderLib = (function (_super) {
+        __extends(ForBasicEnvMapShaderLib, _super);
+        function ForBasicEnvMapShaderLib() {
+            _super.apply(this, arguments);
+        }
+        ForBasicEnvMapShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
+            _super.prototype.sendShaderVariables.call(this, program, quadCmd, material);
             this.sendUniformData(program, "u_cameraPos", wd.Director.getInstance().scene.currentCamera.transform.position);
         };
-        EnvMapForBasicShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
+        ForBasicEnvMapShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
             _super.prototype.setShaderDefinition.call(this, quadCmd, material);
-            this.addUniformVariable(["u_samplerCube0", "u_cameraPos", "u_normalMatrix"]);
-            this.vsSourceBody = wd.ShaderSnippet.setPos_mvp + this.getVsChunk().body;
+            this.addUniformVariable(["u_cameraPos"]);
         };
-        EnvMapForBasicShaderLib.prototype.setEnvMapSource = function () {
-            var vs = this.getVsChunk("envMap_forBasic"), fs = this.getFsChunk("envMap_forBasic");
+        ForBasicEnvMapShaderLib.prototype.setEnvMapSource = function () {
+            var vs = this.getVsChunk("forBasic_envMap"), fs = this.getFsChunk("forBasic_envMap");
             this.vsSourceTop = vs.top;
             this.vsSourceDefine = vs.define;
             this.vsSourceVarDeclare = vs.varDeclare;
@@ -26693,146 +28939,109 @@ var wd;
             this.vsSourceBody += vs.body;
             this.setFsSource(fs);
         };
-        return EnvMapForBasicShaderLib;
-    }(wd.EngineShaderLib));
-    wd.EnvMapForBasicShaderLib = EnvMapForBasicShaderLib;
+        return ForBasicEnvMapShaderLib;
+    }(wd.EnvMapShaderLib));
+    wd.ForBasicEnvMapShaderLib = ForBasicEnvMapShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
-    var EnvMapBasicForBasicShaderLib = (function (_super) {
-        __extends(EnvMapBasicForBasicShaderLib, _super);
-        function EnvMapBasicForBasicShaderLib() {
+    var BasicForBasicEnvMapShaderLib = (function (_super) {
+        __extends(BasicForBasicEnvMapShaderLib, _super);
+        function BasicForBasicEnvMapShaderLib() {
             _super.apply(this, arguments);
-            this.type = "envMap_basic_forBasic";
+            this.type = "basic_forBasic_envMap";
         }
-        EnvMapBasicForBasicShaderLib.create = function () {
+        BasicForBasicEnvMapShaderLib.create = function () {
             var obj = new this();
             return obj;
         };
-        return EnvMapBasicForBasicShaderLib;
-    }(wd.EnvMapForBasicShaderLib));
-    wd.EnvMapBasicForBasicShaderLib = EnvMapBasicForBasicShaderLib;
+        return BasicForBasicEnvMapShaderLib;
+    }(wd.ForBasicEnvMapShaderLib));
+    wd.BasicForBasicEnvMapShaderLib = BasicForBasicEnvMapShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
-    var EnvMapReflectionForBasicShaderLib = (function (_super) {
-        __extends(EnvMapReflectionForBasicShaderLib, _super);
-        function EnvMapReflectionForBasicShaderLib() {
+    var ReflectionForBasicEnvMapShaderLib = (function (_super) {
+        __extends(ReflectionForBasicEnvMapShaderLib, _super);
+        function ReflectionForBasicEnvMapShaderLib() {
             _super.apply(this, arguments);
-            this.type = "envMap_reflection_forBasic";
+            this.type = "reflection_forBasic_envMap";
         }
-        EnvMapReflectionForBasicShaderLib.create = function () {
+        ReflectionForBasicEnvMapShaderLib.create = function () {
             var obj = new this();
             return obj;
         };
-        EnvMapReflectionForBasicShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
+        ReflectionForBasicEnvMapShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
             _super.prototype.setShaderDefinition.call(this, quadCmd, material);
             this.setEnvMapSource();
             this.setFsSource(this.getFsChunk(), "+");
         };
-        return EnvMapReflectionForBasicShaderLib;
-    }(wd.EnvMapForBasicShaderLib));
-    wd.EnvMapReflectionForBasicShaderLib = EnvMapReflectionForBasicShaderLib;
+        return ReflectionForBasicEnvMapShaderLib;
+    }(wd.ForBasicEnvMapShaderLib));
+    wd.ReflectionForBasicEnvMapShaderLib = ReflectionForBasicEnvMapShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
-    var EnvMapRefractionForBasicShaderLib = (function (_super) {
-        __extends(EnvMapRefractionForBasicShaderLib, _super);
-        function EnvMapRefractionForBasicShaderLib() {
+    var RefractionForBasicEnvMapShaderLib = (function (_super) {
+        __extends(RefractionForBasicEnvMapShaderLib, _super);
+        function RefractionForBasicEnvMapShaderLib() {
             _super.apply(this, arguments);
-            this.type = "envMap_refraction_forBasic";
+            this.type = "refraction_forBasic_envMap";
         }
-        EnvMapRefractionForBasicShaderLib.create = function () {
+        RefractionForBasicEnvMapShaderLib.create = function () {
             var obj = new this();
             return obj;
         };
-        EnvMapRefractionForBasicShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
+        RefractionForBasicEnvMapShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
             _super.prototype.sendShaderVariables.call(this, program, quadCmd, material);
             this.sendUniformData(program, "u_refractionRatio", material.refractionRatio);
         };
-        EnvMapRefractionForBasicShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
+        RefractionForBasicEnvMapShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
             _super.prototype.setShaderDefinition.call(this, quadCmd, material);
             this.addUniformVariable(["u_refractionRatio"]);
             this.setEnvMapSource();
             this.setFsSource(this.getFsChunk(), "+");
         };
-        return EnvMapRefractionForBasicShaderLib;
-    }(wd.EnvMapForBasicShaderLib));
-    wd.EnvMapRefractionForBasicShaderLib = EnvMapRefractionForBasicShaderLib;
+        return RefractionForBasicEnvMapShaderLib;
+    }(wd.ForBasicEnvMapShaderLib));
+    wd.RefractionForBasicEnvMapShaderLib = RefractionForBasicEnvMapShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
-    var EnvMapFresnelForBasicShaderLib = (function (_super) {
-        __extends(EnvMapFresnelForBasicShaderLib, _super);
-        function EnvMapFresnelForBasicShaderLib() {
+    var FresnelForBasicEnvMapShaderLib = (function (_super) {
+        __extends(FresnelForBasicEnvMapShaderLib, _super);
+        function FresnelForBasicEnvMapShaderLib() {
             _super.apply(this, arguments);
-            this.type = "envMap_fresnel_forBasic";
+            this.type = "fresnel_forBasic_envMap";
         }
-        EnvMapFresnelForBasicShaderLib.create = function () {
+        FresnelForBasicEnvMapShaderLib.create = function () {
             var obj = new this();
             return obj;
         };
-        EnvMapFresnelForBasicShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
+        FresnelForBasicEnvMapShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
             _super.prototype.sendShaderVariables.call(this, program, quadCmd, material);
             this.sendUniformData(program, "u_refractionRatio", material.refractionRatio);
             this.sendUniformData(program, "u_reflectivity", material.reflectivity);
         };
-        EnvMapFresnelForBasicShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
+        FresnelForBasicEnvMapShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
             _super.prototype.setShaderDefinition.call(this, quadCmd, material);
             this.addUniformVariable(["u_refractionRatio", "u_reflectivity"]);
             this.setEnvMapSource();
             this.setFsSource(this.getFsChunk(), "+");
         };
-        return EnvMapFresnelForBasicShaderLib;
-    }(wd.EnvMapForBasicShaderLib));
-    wd.EnvMapFresnelForBasicShaderLib = EnvMapFresnelForBasicShaderLib;
+        return FresnelForBasicEnvMapShaderLib;
+    }(wd.ForBasicEnvMapShaderLib));
+    wd.FresnelForBasicEnvMapShaderLib = FresnelForBasicEnvMapShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
-    var EnvMapForLightShaderLib = (function (_super) {
-        __extends(EnvMapForLightShaderLib, _super);
-        function EnvMapForLightShaderLib() {
+    var ForLightEnvMapShaderLib = (function (_super) {
+        __extends(ForLightEnvMapShaderLib, _super);
+        function ForLightEnvMapShaderLib() {
             _super.apply(this, arguments);
         }
-        EnvMapForLightShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
-        };
-        EnvMapForLightShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
-            _super.prototype.setShaderDefinition.call(this, quadCmd, material);
-            this.addUniformVariable(["u_samplerCube0"]);
-            this.vsSourceBody = wd.ShaderSnippet.setPos_mvp + this.getVsChunk().body;
-        };
-        EnvMapForLightShaderLib.prototype.setEnvMapSource = function () {
-            var vs = this.getVsChunk("envMap_forLight"), fs = this.getFsChunk("envMap_forLight");
+        ForLightEnvMapShaderLib.prototype.setEnvMapSource = function () {
+            var vs = this.getVsChunk("forLight_envMap"), fs = this.getFsChunk("forLight_envMap");
             this.vsSourceTop = vs.top;
             this.vsSourceDefine = vs.define;
             this.vsSourceVarDeclare = vs.varDeclare;
@@ -26841,110 +29050,86 @@ var wd;
             this.vsSourceBody += vs.body;
             this.setFsSource(fs);
         };
-        return EnvMapForLightShaderLib;
-    }(wd.EngineShaderLib));
-    wd.EnvMapForLightShaderLib = EnvMapForLightShaderLib;
+        return ForLightEnvMapShaderLib;
+    }(wd.EnvMapShaderLib));
+    wd.ForLightEnvMapShaderLib = ForLightEnvMapShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
-    var EnvMapBasicForLightShaderLib = (function (_super) {
-        __extends(EnvMapBasicForLightShaderLib, _super);
-        function EnvMapBasicForLightShaderLib() {
+    var BasicForLightEnvMapShaderLib = (function (_super) {
+        __extends(BasicForLightEnvMapShaderLib, _super);
+        function BasicForLightEnvMapShaderLib() {
             _super.apply(this, arguments);
-            this.type = "envMap_basic_forLight";
+            this.type = "basic_forLight_envMap";
         }
-        EnvMapBasicForLightShaderLib.create = function () {
+        BasicForLightEnvMapShaderLib.create = function () {
             var obj = new this();
             return obj;
         };
-        return EnvMapBasicForLightShaderLib;
-    }(wd.EnvMapForLightShaderLib));
-    wd.EnvMapBasicForLightShaderLib = EnvMapBasicForLightShaderLib;
+        return BasicForLightEnvMapShaderLib;
+    }(wd.ForLightEnvMapShaderLib));
+    wd.BasicForLightEnvMapShaderLib = BasicForLightEnvMapShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
-    var EnvMapReflectionForLightShaderLib = (function (_super) {
-        __extends(EnvMapReflectionForLightShaderLib, _super);
-        function EnvMapReflectionForLightShaderLib() {
+    var ReflectionForLightEnvMapShaderLib = (function (_super) {
+        __extends(ReflectionForLightEnvMapShaderLib, _super);
+        function ReflectionForLightEnvMapShaderLib() {
             _super.apply(this, arguments);
-            this.type = "envMap_reflection_forLight";
+            this.type = "reflection_forLight_envMap";
         }
-        EnvMapReflectionForLightShaderLib.create = function () {
+        ReflectionForLightEnvMapShaderLib.create = function () {
             var obj = new this();
             return obj;
         };
-        EnvMapReflectionForLightShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
+        ReflectionForLightEnvMapShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
             _super.prototype.setShaderDefinition.call(this, quadCmd, material);
             this.setEnvMapSource();
             this.setFsSource(this.getFsChunk(), "+");
         };
-        return EnvMapReflectionForLightShaderLib;
-    }(wd.EnvMapForLightShaderLib));
-    wd.EnvMapReflectionForLightShaderLib = EnvMapReflectionForLightShaderLib;
+        return ReflectionForLightEnvMapShaderLib;
+    }(wd.ForLightEnvMapShaderLib));
+    wd.ReflectionForLightEnvMapShaderLib = ReflectionForLightEnvMapShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
-    var EnvMapRefractionForLightShaderLib = (function (_super) {
-        __extends(EnvMapRefractionForLightShaderLib, _super);
-        function EnvMapRefractionForLightShaderLib() {
+    var RefractionForLightEnvMapShaderLib = (function (_super) {
+        __extends(RefractionForLightEnvMapShaderLib, _super);
+        function RefractionForLightEnvMapShaderLib() {
             _super.apply(this, arguments);
-            this.type = "envMap_refraction_forLight";
+            this.type = "refraction_forLight_envMap";
         }
-        EnvMapRefractionForLightShaderLib.create = function () {
+        RefractionForLightEnvMapShaderLib.create = function () {
             var obj = new this();
             return obj;
         };
-        EnvMapRefractionForLightShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
+        RefractionForLightEnvMapShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
             _super.prototype.sendShaderVariables.call(this, program, quadCmd, material);
             this.sendUniformData(program, "u_refractionRatio", material.refractionRatio);
         };
-        EnvMapRefractionForLightShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
+        RefractionForLightEnvMapShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
             _super.prototype.setShaderDefinition.call(this, quadCmd, material);
             this.addUniformVariable(["u_refractionRatio"]);
             this.setEnvMapSource();
             this.setFsSource(this.getFsChunk(), "+");
         };
-        return EnvMapRefractionForLightShaderLib;
-    }(wd.EnvMapForLightShaderLib));
-    wd.EnvMapRefractionForLightShaderLib = EnvMapRefractionForLightShaderLib;
+        return RefractionForLightEnvMapShaderLib;
+    }(wd.ForLightEnvMapShaderLib));
+    wd.RefractionForLightEnvMapShaderLib = RefractionForLightEnvMapShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
-    var EnvMapFresnelForLightShaderLib = (function (_super) {
-        __extends(EnvMapFresnelForLightShaderLib, _super);
-        function EnvMapFresnelForLightShaderLib() {
+    var FresnelForLightEnvMapShaderLib = (function (_super) {
+        __extends(FresnelForLightEnvMapShaderLib, _super);
+        function FresnelForLightEnvMapShaderLib() {
             _super.apply(this, arguments);
-            this.type = "envMap_fresnel_forLight";
+            this.type = "fresnel_forLight_envMap";
         }
-        EnvMapFresnelForLightShaderLib.create = function () {
+        FresnelForLightEnvMapShaderLib.create = function () {
             var obj = new this();
             return obj;
         };
-        EnvMapFresnelForLightShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
+        FresnelForLightEnvMapShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
             _super.prototype.sendShaderVariables.call(this, program, quadCmd, material);
             if (material.reflectivity !== null) {
                 this.sendUniformData(program, "u_reflectivity", material.reflectivity);
@@ -26954,28 +29139,16 @@ var wd;
                 this.sendUniformData(program, "u_refractionRatio", material.refractionRatio);
             }
         };
-        EnvMapFresnelForLightShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
+        FresnelForLightEnvMapShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
             _super.prototype.setShaderDefinition.call(this, quadCmd, material);
             this.addUniformVariable(["u_refractionRatio", "u_reflectivity"]);
             this.setEnvMapSource();
             this.setFsSource(this.getFsChunk(), "+");
         };
-        return EnvMapFresnelForLightShaderLib;
-    }(wd.EnvMapForLightShaderLib));
-    wd.EnvMapFresnelForLightShaderLib = EnvMapFresnelForLightShaderLib;
+        return FresnelForLightEnvMapShaderLib;
+    }(wd.ForLightEnvMapShaderLib));
+    wd.FresnelForLightEnvMapShaderLib = FresnelForLightEnvMapShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var MapShaderLib = (function (_super) {
@@ -27020,12 +29193,6 @@ var wd;
     }(wd.EngineShaderLib));
     wd.MapShaderLib = MapShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var BasicMapShaderLib = (function (_super) {
@@ -27042,12 +29209,6 @@ var wd;
     }(wd.MapShaderLib));
     wd.BasicMapShaderLib = BasicMapShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var MultiMapShaderLib = (function (_super) {
@@ -27083,41 +29244,6 @@ var wd;
     }(wd.MapShaderLib));
     wd.MultiMapShaderLib = MultiMapShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var wd;
-(function (wd) {
-    var ProceduralShaderLib = (function (_super) {
-        __extends(ProceduralShaderLib, _super);
-        function ProceduralShaderLib() {
-            _super.apply(this, arguments);
-        }
-        ProceduralShaderLib.prototype.setShaderDefinition = function (cmd) {
-            _super.prototype.setShaderDefinition.call(this, cmd, null);
-        };
-        __decorate([
-            wd.virtual
-        ], ProceduralShaderLib.prototype, "setShaderDefinition", null);
-        return ProceduralShaderLib;
-    }(wd.EngineShaderLib));
-    wd.ProceduralShaderLib = ProceduralShaderLib;
-})(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var LightCommonShaderLib = (function (_super) {
@@ -27143,18 +29269,6 @@ var wd;
     }(wd.EngineShaderLib));
     wd.LightCommonShaderLib = LightCommonShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var LightShaderLib = (function (_super) {
@@ -27168,7 +29282,6 @@ var wd;
             return obj;
         };
         LightShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
-            this.sendUniformData(program, "u_normalMatrix", quadCmd.normalMatrix);
             this.sendUniformData(program, "u_cameraPos", wd.Director.getInstance().scene.currentCamera.transform.position);
             this.sendUniformData(program, "u_shininess", material.shininess);
             this.sendUniformData(program, "u_opacity", material.opacity);
@@ -27276,12 +29389,6 @@ var wd;
     }(wd.EngineShaderLib));
     wd.LightShaderLib = LightShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var LightEndShaderLib = (function (_super) {
@@ -27300,12 +29407,6 @@ var wd;
     }(wd.EngineShaderLib));
     wd.LightEndShaderLib = LightEndShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var BaseLightMapShaderLib = (function (_super) {
@@ -27319,12 +29420,6 @@ var wd;
     }(wd.EngineShaderLib));
     wd.BaseLightMapShaderLib = BaseLightMapShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var CommonLightMapShaderLib = (function (_super) {
@@ -27351,12 +29446,6 @@ var wd;
     }(wd.EngineShaderLib));
     wd.CommonLightMapShaderLib = CommonLightMapShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var LightMapShaderLib = (function (_super) {
@@ -27382,18 +29471,6 @@ var wd;
     }(wd.BaseLightMapShaderLib));
     wd.LightMapShaderLib = LightMapShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var DiffuseMapShaderLib = (function (_super) {
@@ -27430,12 +29507,6 @@ var wd;
     }(wd.BaseLightMapShaderLib));
     wd.DiffuseMapShaderLib = DiffuseMapShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var SpecularMapShaderLib = (function (_super) {
@@ -27458,12 +29529,6 @@ var wd;
     }(wd.BaseLightMapShaderLib));
     wd.SpecularMapShaderLib = SpecularMapShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var EmissionMapShaderLib = (function (_super) {
@@ -27486,12 +29551,6 @@ var wd;
     }(wd.BaseLightMapShaderLib));
     wd.EmissionMapShaderLib = EmissionMapShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var NormalMapShaderLib = (function (_super) {
@@ -27524,12 +29583,6 @@ var wd;
     }(wd.BaseLightMapShaderLib));
     wd.NormalMapShaderLib = NormalMapShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var NoLightMapShaderLib = (function (_super) {
@@ -27548,12 +29601,6 @@ var wd;
     }(wd.EngineShaderLib));
     wd.NoLightMapShaderLib = NoLightMapShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var NoDiffuseMapShaderLib = (function (_super) {
@@ -27577,12 +29624,6 @@ var wd;
     }(wd.EngineShaderLib));
     wd.NoDiffuseMapShaderLib = NoDiffuseMapShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var NoSpecularMapShaderLib = (function (_super) {
@@ -27606,12 +29647,6 @@ var wd;
     }(wd.EngineShaderLib));
     wd.NoSpecularMapShaderLib = NoSpecularMapShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var NoEmissionMapShaderLib = (function (_super) {
@@ -27635,12 +29670,6 @@ var wd;
     }(wd.EngineShaderLib));
     wd.NoEmissionMapShaderLib = NoEmissionMapShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var NoNormalMapShaderLib = (function (_super) {
@@ -27659,12 +29688,6 @@ var wd;
     }(wd.EngineShaderLib));
     wd.NoNormalMapShaderLib = NoNormalMapShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var BuildShadowMapShaderLib = (function (_super) {
@@ -27681,12 +29704,6 @@ var wd;
     }(wd.EngineShaderLib));
     wd.BuildShadowMapShaderLib = BuildShadowMapShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var BuildTwoDShadowMapShaderLib = (function (_super) {
@@ -27700,7 +29717,7 @@ var wd;
             return obj;
         };
         BuildTwoDShadowMapShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
-            this.sendUniformData(program, "u_vpMatrixFromLight", material.buildTwoDShadowMapData.vpMatrixFromLight);
+            this.sendUniformData(program, "u_vpMatrixFromLight", quadCmd.vMatrix.applyMatrix(quadCmd.pMatrix, true));
         };
         BuildTwoDShadowMapShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
             _super.prototype.setShaderDefinition.call(this, quadCmd, material);
@@ -27712,12 +29729,6 @@ var wd;
     }(wd.BuildShadowMapShaderLib));
     wd.BuildTwoDShadowMapShaderLib = BuildTwoDShadowMapShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var BuildCubemapShadowMapShaderLib = (function (_super) {
@@ -27731,8 +29742,12 @@ var wd;
             return obj;
         };
         BuildCubemapShadowMapShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
-            this.sendUniformData(program, "u_lightPos", material.buildCubemapShadowMapData.lightPos);
-            this.sendUniformData(program, "u_farPlane", material.buildCubemapShadowMapData.farPlane);
+            var _this = this;
+            wd.Director.getInstance().scene.glslData.getChild(wd.EShaderGLSLData.BUILD_CUBEMAP_SHADOWMAP).forEach(function (data, index) {
+                var light = data.light;
+                _this.sendUniformData(program, "u_lightPos", light.position);
+                _this.sendUniformData(program, "u_farPlane", light.shadowCameraFar);
+            });
         };
         BuildCubemapShadowMapShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
             _super.prototype.setShaderDefinition.call(this, quadCmd, material);
@@ -27744,12 +29759,6 @@ var wd;
     }(wd.BuildShadowMapShaderLib));
     wd.BuildCubemapShadowMapShaderLib = BuildCubemapShadowMapShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var TotalShadowMapShaderLib = (function (_super) {
@@ -27768,12 +29777,6 @@ var wd;
     }(wd.EngineShaderLib));
     wd.TotalShadowMapShaderLib = TotalShadowMapShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var ShadowMapShaderLib = (function (_super) {
@@ -27797,11 +29800,7 @@ var wd;
             this._setShadowMapSource();
         };
         ShadowMapShaderLib.prototype._setShadowMapSource = function () {
-            var scene = wd.Director.getInstance().scene, twoDShadowMapCount = scene.directionLights ? scene.directionLights.filter(function (light) {
-                return light.getComponent(wd.DirectionLight).castShadow;
-            }).getCount() : 0, cubemapShadowMapCount = scene.pointLights ? scene.pointLights.filter(function (light) {
-                return light.getComponent(wd.PointLight).castShadow;
-            }).getCount() : 0;
+            var scene = wd.Director.getInstance().scene, shadowManager = scene.gameObjectScene.shadowManager, twoDShadowMapCountForGLSL = shadowManager.twoDShadowMapCountForGLSL, cubemapShadowMapCountForGLSL = shadowManager.cubemapShadowMapCountForGLSL;
             if (scene.shadowMap.softType === wd.EShadowMapSoftType.PCF) {
                 this.fsSourceDefineList.addChildren([{
                         name: "SHADOWMAP_TYPE_PCF"
@@ -27809,16 +29808,16 @@ var wd;
             }
             this.vsSourceDefineList.addChild({
                 name: "TWOD_SHADOWMAP_COUNT",
-                value: twoDShadowMapCount
+                value: twoDShadowMapCountForGLSL
             });
             this.fsSourceDefineList.addChildren([
                 {
                     name: "TWOD_SHADOWMAP_COUNT",
-                    value: twoDShadowMapCount
+                    value: twoDShadowMapCountForGLSL
                 },
                 {
                     name: "CUBEMAP_SHADOWMAP_COUNT",
-                    value: cubemapShadowMapCount
+                    value: cubemapShadowMapCountForGLSL
                 },
             ]);
         };
@@ -27826,12 +29825,6 @@ var wd;
     }(wd.EngineShaderLib));
     wd.ShadowMapShaderLib = ShadowMapShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var TwoDShadowMapShaderLib = (function (_super) {
@@ -27845,24 +29838,29 @@ var wd;
             return obj;
         };
         TwoDShadowMapShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
-            material.twoDShadowMapDatas.forEach(function (data, index) {
-                program.sendStructureData("u_vpMatrixFromLight[" + index + "]", wd.EVariableType.FLOAT_MAT4, data.vpMatrixFromLight);
-                program.sendStructureData("u_twoDShadowSize[" + index + "]", wd.EVariableType.FLOAT_2, data.shadowSize);
-                program.sendStructureData("u_twoDShadowBias[" + index + "]", wd.EVariableType.FLOAT_1, data.shadowBias);
-                program.sendStructureData("u_twoDShadowDarkness[" + index + "]", wd.EVariableType.FLOAT_1, data.shadowDarkness);
-                program.sendStructureData("u_twoDLightPos[" + index + "]", wd.EVariableType.FLOAT_3, data.lightPos);
+            var glslData = null;
+            glslData = wd.Director.getInstance().scene.glslData.getChild(wd.EShaderGLSLData.TWOD_SHADOWMAP);
+            if (!glslData) {
+                return;
+            }
+            glslData.forEach(function (data, index) {
+                var camera = data.camera, light = data.light;
+                if (data.isRenderListEmpty) {
+                    program.sendStructureData("u_isTwoDRenderListEmpty[" + index + "]", wd.EVariableType.NUMBER_1, 1);
+                    return;
+                }
+                program.sendStructureData("u_isTwoDRenderListEmpty[" + index + "]", wd.EVariableType.NUMBER_1, 0);
+                program.sendStructureData("u_vpMatrixFromLight[" + index + "]", wd.EVariableType.FLOAT_MAT4, camera.worldToCameraMatrix.applyMatrix(camera.pMatrix, true));
+                program.sendStructureData("u_twoDShadowSize[" + index + "]", wd.EVariableType.FLOAT_2, [light.shadowMapWidth, light.shadowMapHeight]);
+                program.sendStructureData("u_twoDShadowBias[" + index + "]", wd.EVariableType.FLOAT_1, light.shadowBias);
+                program.sendStructureData("u_twoDShadowDarkness[" + index + "]", wd.EVariableType.FLOAT_1, light.shadowDarkness);
+                program.sendStructureData("u_twoDLightPos[" + index + "]", wd.EVariableType.FLOAT_3, light.position);
             });
         };
         return TwoDShadowMapShaderLib;
     }(wd.ShadowMapShaderLib));
     wd.TwoDShadowMapShaderLib = TwoDShadowMapShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var CubemapShadowMapShaderLib = (function (_super) {
@@ -27876,23 +29874,28 @@ var wd;
             return obj;
         };
         CubemapShadowMapShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
-            material.cubemapShadowMapDatas.forEach(function (data, index) {
-                program.sendStructureData("u_cubemapLightPos[" + index + "]", wd.EVariableType.FLOAT_3, data.lightPos);
-                program.sendStructureData("u_farPlane[" + index + "]", wd.EVariableType.FLOAT_1, data.farPlane);
-                program.sendStructureData("u_cubemapShadowBias[" + index + "]", wd.EVariableType.FLOAT_1, data.shadowBias);
-                program.sendStructureData("u_cubemapShadowDarkness[" + index + "]", wd.EVariableType.FLOAT_1, data.shadowDarkness);
+            var glslData = wd.Director.getInstance().scene.glslData.getChild(wd.EShaderGLSLData.CUBEMAP_SHADOWMAP);
+            if (!glslData) {
+                return;
+            }
+            glslData.forEach(function (data, index) {
+                var light = data.light;
+                if (data.isRenderListEmpty) {
+                    program.sendStructureData("u_isCubemapRenderListEmpty[" + index + "]", wd.EVariableType.NUMBER_1, 1);
+                }
+                else {
+                    program.sendStructureData("u_isCubemapRenderListEmpty[" + index + "]", wd.EVariableType.NUMBER_1, 0);
+                }
+                program.sendStructureData("u_cubemapLightPos[" + index + "]", wd.EVariableType.FLOAT_3, light.position);
+                program.sendStructureData("u_farPlane[" + index + "]", wd.EVariableType.FLOAT_1, light.shadowCameraFar);
+                program.sendStructureData("u_cubemapShadowBias[" + index + "]", wd.EVariableType.FLOAT_1, light.shadowBias);
+                program.sendStructureData("u_cubemapShadowDarkness[" + index + "]", wd.EVariableType.FLOAT_1, light.shadowDarkness);
             });
         };
         return CubemapShadowMapShaderLib;
     }(wd.ShadowMapShaderLib));
     wd.CubemapShadowMapShaderLib = CubemapShadowMapShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var NoShadowMapShaderLib = (function (_super) {
@@ -27911,13 +29914,6 @@ var wd;
     }(wd.EngineShaderLib));
     wd.NoShadowMapShaderLib = NoShadowMapShaderLib;
 })(wd || (wd = {}));
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var CustomShaderLibUtils = (function () {
@@ -27988,11 +29984,11 @@ var wd;
                 case wd.EVariableSemantic.MODEL_VIEW_PROJECTION:
                     return cmd.mvpMatrix;
                 case wd.EVariableSemantic.MODEL_INVERSE:
-                    return cmd.mMatrix.copy().invert();
+                    return cmd.mMatrix.clone().invert();
                 case wd.EVariableSemantic.VIEW_INVERSE:
-                    return cmd.vMatrix.copy().invert();
+                    return cmd.vMatrix.clone().invert();
                 case wd.EVariableSemantic.PROJECTION_INVERSE:
-                    return cmd.pMatrix.copy().invert();
+                    return cmd.pMatrix.clone().invert();
                 case wd.EVariableSemantic.MODEL_VIEW_INVERSE:
                     return cmd.mMatrix.applyMatrix(cmd.vMatrix, true).invert();
                 case wd.EVariableSemantic.MODEL_VIEW_PROJECTION_INVERSE:
@@ -28048,7 +30044,151 @@ var wd;
     }());
     wd.CustomShaderLibUtils = CustomShaderLibUtils;
 })(wd || (wd = {}));
-
+var wd;
+(function (wd) {
+    var RenderTargerRendererShaderLibUtils = (function () {
+        function RenderTargerRendererShaderLibUtils() {
+        }
+        RenderTargerRendererShaderLibUtils.judgeAndSendIsRenderListEmptyVariable = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
+            }
+            var glslData = null, program = args[0], glslDataKey = args[1], variableName = null;
+            glslData = wd.Director.getInstance().scene.glslData.getChild(glslDataKey);
+            if (!glslData) {
+                return;
+            }
+            if (args.length === 3) {
+                variableName = args[2];
+            }
+            else {
+                variableName = "u_isRenderListEmpty";
+            }
+            if (glslData.isRenderListEmpty) {
+                program.sendUniformData(variableName, wd.EVariableType.NUMBER_1, 1);
+            }
+            else {
+                program.sendUniformData(variableName, wd.EVariableType.NUMBER_1, 0);
+            }
+        };
+        return RenderTargerRendererShaderLibUtils;
+    }());
+    wd.RenderTargerRendererShaderLibUtils = RenderTargerRendererShaderLibUtils;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var InstanceShaderLib = (function (_super) {
+        __extends(InstanceShaderLib, _super);
+        function InstanceShaderLib() {
+            _super.apply(this, arguments);
+        }
+        return InstanceShaderLib;
+    }(wd.EngineShaderLib));
+    wd.InstanceShaderLib = InstanceShaderLib;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var NoInstanceShaderLib = (function (_super) {
+        __extends(NoInstanceShaderLib, _super);
+        function NoInstanceShaderLib() {
+            _super.apply(this, arguments);
+        }
+        return NoInstanceShaderLib;
+    }(wd.EngineShaderLib));
+    wd.NoInstanceShaderLib = NoInstanceShaderLib;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var ModelMatrixInstanceShaderLib = (function (_super) {
+        __extends(ModelMatrixInstanceShaderLib, _super);
+        function ModelMatrixInstanceShaderLib() {
+            _super.apply(this, arguments);
+            this.type = "modelMatrix_instance";
+        }
+        ModelMatrixInstanceShaderLib.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        ModelMatrixInstanceShaderLib.prototype.sendShaderVariables = function (program, cmd, material) {
+        };
+        ModelMatrixInstanceShaderLib.prototype.setShaderDefinition = function (cmd, material) {
+            _super.prototype.setShaderDefinition.call(this, cmd, material);
+            this.addAttributeVariable(["a_mVec4_0", "a_mVec4_1", "a_mVec4_2", "a_mVec4_3"
+            ]);
+        };
+        return ModelMatrixInstanceShaderLib;
+    }(wd.InstanceShaderLib));
+    wd.ModelMatrixInstanceShaderLib = ModelMatrixInstanceShaderLib;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var NormalMatrixInstanceShaderLib = (function (_super) {
+        __extends(NormalMatrixInstanceShaderLib, _super);
+        function NormalMatrixInstanceShaderLib() {
+            _super.apply(this, arguments);
+            this.type = "normalMatrix_instance";
+        }
+        NormalMatrixInstanceShaderLib.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        NormalMatrixInstanceShaderLib.prototype.sendShaderVariables = function (program, cmd, material) {
+        };
+        NormalMatrixInstanceShaderLib.prototype.setShaderDefinition = function (cmd, material) {
+            _super.prototype.setShaderDefinition.call(this, cmd, material);
+            this.addAttributeVariable(["a_normalVec4_0", "a_normalVec4_1", "a_normalVec4_2"]);
+        };
+        return NormalMatrixInstanceShaderLib;
+    }(wd.InstanceShaderLib));
+    wd.NormalMatrixInstanceShaderLib = NormalMatrixInstanceShaderLib;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var ModelMatrixNoInstanceShaderLib = (function (_super) {
+        __extends(ModelMatrixNoInstanceShaderLib, _super);
+        function ModelMatrixNoInstanceShaderLib() {
+            _super.apply(this, arguments);
+            this.type = "modelMatrix_noInstance";
+        }
+        ModelMatrixNoInstanceShaderLib.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        ModelMatrixNoInstanceShaderLib.prototype.sendShaderVariables = function (program, cmd, material) {
+            this.sendUniformData(program, "u_mMatrix", cmd.mMatrix);
+        };
+        ModelMatrixNoInstanceShaderLib.prototype.setShaderDefinition = function (cmd, material) {
+            _super.prototype.setShaderDefinition.call(this, cmd, material);
+            this.addUniformVariable(["u_mMatrix"]);
+        };
+        return ModelMatrixNoInstanceShaderLib;
+    }(wd.NoInstanceShaderLib));
+    wd.ModelMatrixNoInstanceShaderLib = ModelMatrixNoInstanceShaderLib;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var NormalMatrixNoInstanceShaderLib = (function (_super) {
+        __extends(NormalMatrixNoInstanceShaderLib, _super);
+        function NormalMatrixNoInstanceShaderLib() {
+            _super.apply(this, arguments);
+            this.type = "normalMatrix_noInstance";
+        }
+        NormalMatrixNoInstanceShaderLib.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        NormalMatrixNoInstanceShaderLib.prototype.sendShaderVariables = function (program, cmd, material) {
+            this.sendUniformData(program, "u_normalMatrix", cmd.normalMatrix);
+        };
+        NormalMatrixNoInstanceShaderLib.prototype.setShaderDefinition = function (cmd, material) {
+            _super.prototype.setShaderDefinition.call(this, cmd, material);
+            this.addUniformVariable(["u_normalMatrix"]);
+        };
+        return NormalMatrixNoInstanceShaderLib;
+    }(wd.NoInstanceShaderLib));
+    wd.NormalMatrixNoInstanceShaderLib = NormalMatrixNoInstanceShaderLib;
+})(wd || (wd = {}));
 var wd;
 (function (wd) {
     var ShaderSnippet = (function () {
@@ -28056,12 +30196,11 @@ var wd;
         }
         ShaderSnippet.main_begin = "void main(void){\n";
         ShaderSnippet.main_end = "}\n";
-        ShaderSnippet.setPos_mvp = "gl_Position = u_pMatrix * u_vMatrix * u_mMatrix * vec4(a_position, 1.0);\n";
+        ShaderSnippet.setPos_mvp = "gl_Position = u_pMatrix * u_vMatrix * mMatrix * vec4(a_position, 1.0);\n";
         return ShaderSnippet;
     }());
     wd.ShaderSnippet = ShaderSnippet;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var Material = (function () {
@@ -28071,7 +30210,6 @@ var wd;
             this._blendDst = wd.EBlendFunc.ZERO;
             this._blendEquation = wd.EBlendEquation.ADD;
             this._color = wd.Color.create("#ffffff");
-            this.shader = this.createShader();
             this.redWrite = true;
             this.greenWrite = true;
             this.blueWrite = true;
@@ -28082,8 +30220,8 @@ var wd;
             this.blendFuncSeparate = null;
             this.blendEquationSeparate = [wd.EBlendEquation.ADD, wd.EBlendEquation.ADD];
             this.shading = wd.EShading.FLAT;
-            this.mapManager = wd.MapManager.create(this);
             this.geometry = null;
+            this._shaderManager = wd.ShaderManager.create(this);
         }
         Object.defineProperty(Material.prototype, "program", {
             get: function () {
@@ -28094,44 +30232,12 @@ var wd;
         });
         Object.defineProperty(Material.prototype, "blendType", {
             get: function () {
-                if (this._blendType) {
-                    return this._blendType;
-                }
-                if ((this.blendSrc === wd.EBlendFunc.ONE)
-                    && (this.blendDst === wd.EBlendFunc.ZERO)
-                    && (this.blendEquation === wd.EBlendEquation.ADD)) {
-                    return wd.EBlendType.NONE;
-                }
-                else if ((this.blendSrc === wd.EBlendFunc.SRC_ALPHA)
-                    && (this.blendDst === wd.EBlendFunc.ONE_MINUS_SRC_ALPHA)
-                    && (this.blendEquation === wd.EBlendEquation.ADD)) {
-                    return wd.EBlendType.NORMAL;
-                }
-                else if ((this.blendSrc === wd.EBlendFunc.ONE)
-                    && (this.blendDst === wd.EBlendFunc.ONE)
-                    && (this.blendEquation === wd.EBlendEquation.ADD)) {
-                    return wd.EBlendType.ADDITIVE;
-                }
-                else if ((this.blendSrc === wd.EBlendFunc.SRC_ALPHA)
-                    && (this.blendDst === wd.EBlendFunc.ONE)
-                    && (this.blendEquation === wd.EBlendEquation.ADD)) {
-                    return wd.EBlendType.ADDITIVEALPHA;
-                }
-                else if ((this.blendSrc === wd.EBlendFunc.DST_COLOR)
-                    && (this.blendDst === wd.EBlendFunc.ZERO)
-                    && (this.blendEquation === wd.EBlendEquation.ADD)) {
-                    return wd.EBlendType.MULTIPLICATIVE;
-                }
-                else if ((this.blendSrc === wd.EBlendFunc.ONE)
-                    && (this.blendDst === wd.EBlendFunc.ONE_MINUS_SRC_ALPHA)
-                    && (this.blendEquation === wd.EBlendEquation.ADD)) {
-                    return wd.EBlendType.PREMULTIPLIED;
-                }
-                else {
-                    return wd.EBlendType.NORMAL;
-                }
+                return this._blendType;
             },
             set: function (blendType) {
+                if (blendType === null) {
+                    return;
+                }
                 switch (blendType) {
                     case wd.EBlendType.NONE:
                         this.blend = false;
@@ -28193,6 +30299,9 @@ var wd;
                 return this._blendSrc;
             },
             set: function (blendSrc) {
+                if (this._blendSrc === blendSrc) {
+                    return;
+                }
                 this._blendSrc = blendSrc;
                 this.blendFuncSeparate = null;
             },
@@ -28204,6 +30313,9 @@ var wd;
                 return this._blendDst;
             },
             set: function (blendDst) {
+                if (this._blendDst === blendDst) {
+                    return;
+                }
                 this._blendDst = blendDst;
                 this.blendFuncSeparate = null;
             },
@@ -28215,6 +30327,9 @@ var wd;
                 return this._blendEquation;
             },
             set: function (blendEquation) {
+                if (this._blendEquation === blendEquation) {
+                    return;
+                }
                 this._blendEquation = blendEquation;
                 this.blendEquationSeparate = null;
             },
@@ -28226,58 +30341,118 @@ var wd;
                 return this._color;
             },
             set: function (color) {
-                if (!this._isColorEqual(color, this._color)) {
-                    if (this.geometry && this.geometry.entityObject) {
-                        wd.EventManager.trigger(this.geometry.entityObject, wd.EEngineEvent.MATERIAL_COLOR_CHANGE);
-                    }
-                    this._color = color;
+                if (this._color.isEqual(color)) {
+                    return;
                 }
+                if (this.geometry && this.geometry.entityObject) {
+                    wd.EventManager.trigger(this.geometry.entityObject, wd.CustomEvent.create(wd.EEngineEvent.MATERIAL_COLOR_CHANGE));
+                }
+                this._color = color;
             },
             enumerable: true,
             configurable: true
         });
+        Object.defineProperty(Material.prototype, "mapManager", {
+            get: function () {
+                return this._shaderManager.mapManager;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Material.prototype, "shader", {
+            get: function () {
+                return this._shaderManager.shader;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Material.prototype.clone = function () {
+            var result = wd.CloneUtils.clone(this);
+            return result;
+        };
+        Material.prototype.initWhenCreate = function () {
+            this._shaderManager.setShader(this.createShader());
+        };
         Material.prototype.init = function () {
-            this.shader.init(this);
-            this.mapManager.init();
+            this._shaderManager.init();
         };
         Material.prototype.dispose = function () {
-            this.shader.dispose();
-            this.mapManager.dispose();
-        };
-        Material.prototype.bindAndUpdateTexture = function () {
-            this.mapManager.bindAndUpdate();
-        };
-        Material.prototype.sendTexture = function (program) {
-            this.mapManager.sendData(program);
+            this._shaderManager.dispose();
         };
         Material.prototype.updateShader = function (quadCmd) {
-            var scene = wd.Director.getInstance().scene;
-            if (scene.isUseProgram) {
-                scene.shader.update(quadCmd, this);
-            }
-            else {
-                this.shader.update(quadCmd, this);
-            }
+            this._shaderManager.update(quadCmd);
         };
-        Material.prototype._isColorEqual = function (color1, color2) {
-            return color1.r === color2.r && color1.g === color2.g && color1.b === color2.b && color1.a === color2.a;
+        Material.prototype.addShader = function (shaderKey, shader) {
+            this._shaderManager.addShader(shaderKey, shader);
         };
+        Material.prototype.hasShader = function (shaderKey) {
+            return this._shaderManager.hasShader(shaderKey);
+        };
+        Material.prototype.getShader = function (shaderKey) {
+            return this._shaderManager.getShader(shaderKey);
+        };
+        Material.prototype.hasMap = function (map) {
+            return this.mapManager.hasMap(map);
+        };
+        __decorate([
+            wd.cloneAttributeAsBasicType({
+                order: 1
+            })
+        ], Material.prototype, "blendType", null);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], Material.prototype, "envMap", null);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Material.prototype, "blendSrc", null);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Material.prototype, "blendDst", null);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Material.prototype, "blendEquation", null);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], Material.prototype, "color", null);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Material.prototype, "redWrite", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Material.prototype, "greenWrite", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Material.prototype, "blueWrite", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Material.prototype, "alphaWrite", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Material.prototype, "polygonOffsetMode", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Material.prototype, "side", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Material.prototype, "blend", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType({
+                order: -1
+            })
+        ], Material.prototype, "blendFuncSeparate", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Material.prototype, "blendEquationSeparate", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Material.prototype, "shading", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Material.prototype, "geometry", void 0);
         return Material;
     }());
     wd.Material = Material;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var EngineMaterial = (function (_super) {
@@ -28297,11 +30472,11 @@ var wd;
         EngineMaterial.prototype.addShaderLib = function () {
         };
         EngineMaterial.prototype.addNormalShaderLib = function () {
-            if (this._hasAnimation() && !this.shader.hasLib(wd.MorphNormalShaderLib)) {
-                this._addShaderLibToTop(wd.MorphNormalShaderLib.create());
+            if (wd.GlobalGeometryUtils.hasAnimation(this.geometry) && !this.shader.hasLib(wd.NormalMorphShaderLib)) {
+                this._addShaderLibToTop(wd.NormalMorphShaderLib.create());
             }
-            else if (!this.shader.hasLib(wd.CommonNormalShaderLib)) {
-                this._addShaderLibToTop(wd.CommonNormalShaderLib.create());
+            else if (!this.shader.hasLib(wd.NormalCommonShaderLib)) {
+                this._addShaderLibToTop(wd.NormalCommonShaderLib.create());
             }
         };
         EngineMaterial.prototype.setBlendByOpacity = function (opacity) {
@@ -28317,29 +30492,35 @@ var wd;
         };
         EngineMaterial.prototype._addTopShaderLib = function () {
             this.shader.addLib(wd.CommonShaderLib.create());
-            if (this._hasAnimation()) {
-                this.shader.addLib(wd.MorphCommonShaderLib.create());
-                this.shader.addLib(wd.MorphVerticeShaderLib.create());
+            if (wd.InstanceUtils.isHardwareSupport() && wd.InstanceUtils.isSourceInstance(this.geometry.entityObject)) {
+                this.shader.addLib(wd.ModelMatrixInstanceShaderLib.create());
             }
             else {
-                this.shader.addLib(wd.CommonVerticeShaderLib.create());
+                this.shader.addLib(wd.ModelMatrixNoInstanceShaderLib.create());
+            }
+            if (wd.GlobalGeometryUtils.hasAnimation(this.geometry)) {
+                this.shader.addLib(wd.CommonMorphShaderLib.create());
+                this.shader.addLib(wd.VerticeMorphShaderLib.create());
+            }
+            else {
+                this.shader.addLib(wd.VerticeCommonShaderLib.create());
             }
         };
         EngineMaterial.prototype._addShaderLibToTop = function (lib) {
             this.shader.addShaderLibToTop(lib);
         };
-        EngineMaterial.prototype._hasAnimation = function () {
-            if (this.geometry instanceof wd.ModelGeometry) {
-                var geo = (this.geometry);
-                return geo.hasAnimation();
-            }
-            return false;
-        };
         __decorate([
-            wd.require(function () {
-                wd.assert(!(this.mirrorMap && this.envMap), wd.Log.info.FUNC_SHOULD_NOT("mirrorMap and envMap", "be set both"));
-            })
-        ], EngineMaterial.prototype, "init", null);
+            wd.cloneAttributeAsBasicType()
+        ], EngineMaterial.prototype, "refractionRatio", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], EngineMaterial.prototype, "reflectivity", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], EngineMaterial.prototype, "mapCombineMode", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], EngineMaterial.prototype, "mapMixRatio", void 0);
         __decorate([
             wd.virtual
         ], EngineMaterial.prototype, "addShaderLib", null);
@@ -28347,18 +30528,6 @@ var wd;
     }(wd.Material));
     wd.EngineMaterial = EngineMaterial;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var StandardLightMaterial = (function (_super) {
@@ -28373,15 +30542,9 @@ var wd;
             this._shininess = 32;
             this._opacity = 1.0;
             this.lightModel = wd.ELightModel.PHONG;
-            this.twoDShadowMapDatas = wdCb.Collection.create();
-            this.cubemapShadowMapDatas = wdCb.Collection.create();
-            this.buildTwoDShadowMapData = null;
-            this.buildCubemapShadowMapData = null;
             this.specularColor = wd.Color.create("#ffffff");
             this.emissionColor = wd.Color.create("rgba(0,0,0,0)");
             this.lightMapIntensity = 1;
-            this._twoDShadowMapSamplerIndex = 0;
-            this._cubemapShadowMapSamplerIndex = 0;
         }
         Object.defineProperty(StandardLightMaterial.prototype, "lightMap", {
             get: function () {
@@ -28472,37 +30635,16 @@ var wd;
             enumerable: true,
             configurable: true
         });
-        StandardLightMaterial.prototype.addTwoDShadowMap = function (shadowMap) {
-            this.mapManager.addMap(shadowMap, {
-                samplerData: this._twoDShadowMapSamplerIndex
-            });
-            this._twoDShadowMapSamplerIndex++;
-        };
-        StandardLightMaterial.prototype.addCubemapShadowMap = function (shadowMap) {
-            this.mapManager.addMap(shadowMap, {
-                samplerData: this._cubemapShadowMapSamplerIndex
-            });
-            this._cubemapShadowMapSamplerIndex++;
-        };
-        StandardLightMaterial.prototype.hasShadowMap = function (map) {
-            return this.mapManager.hasMap(map);
-        };
-        StandardLightMaterial.prototype.addTwoDShadowMapData = function (shadowMapData) {
-            this.twoDShadowMapDatas.addChild(shadowMapData);
-        };
-        StandardLightMaterial.prototype.addCubemapShadowMapData = function (shadowMapData) {
-            this.cubemapShadowMapDatas.addChild(shadowMapData);
-        };
-        StandardLightMaterial.prototype.clearTwoDShadowMapData = function () {
-            this.twoDShadowMapDatas.removeAllChildren();
-        };
-        StandardLightMaterial.prototype.clearCubemapShadowMapData = function () {
-            this.cubemapShadowMapDatas.removeAllChildren();
-        };
         StandardLightMaterial.prototype.addExtendShaderLib = function () {
         };
         StandardLightMaterial.prototype.addShaderLib = function () {
             var envMap = null;
+            if (wd.InstanceUtils.isHardwareSupport() && wd.InstanceUtils.isSourceInstance(this.geometry.entityObject)) {
+                this.shader.addLib(wd.NormalMatrixInstanceShaderLib.create());
+            }
+            else {
+                this.shader.addLib(wd.NormalMatrixNoInstanceShaderLib.create());
+            }
             this.addNormalShaderLib();
             this.shader.addLib(wd.LightCommonShaderLib.create());
             this._setLightMapShaderLib();
@@ -28547,32 +30689,41 @@ var wd;
             else {
                 this.shader.addLib(wd.NoNormalMapShaderLib.create());
             }
-            if (scene.shadowMap.enable && (this._hasTwoDShadowMap() || this._hasCubemapShadowMap())) {
+            if (scene.shadowMap.enable) {
+                var hasTwoD = false, hasCubemap = false;
                 if (this._hasTwoDShadowMap()) {
+                    hasTwoD = true;
                     this.shader.addLib(wd.TwoDShadowMapShaderLib.create());
                 }
                 if (this._hasCubemapShadowMap()) {
+                    hasCubemap = true;
                     this.shader.addLib(wd.CubemapShadowMapShaderLib.create());
                 }
-                this.shader.addLib(wd.TotalShadowMapShaderLib.create());
+                if (hasTwoD || hasCubemap) {
+                    this.shader.addLib(wd.TotalShadowMapShaderLib.create());
+                }
+                else {
+                    this.shader.addLib(wd.NoShadowMapShaderLib.create());
+                }
             }
             else {
                 this.shader.addLib(wd.NoShadowMapShaderLib.create());
             }
         };
         StandardLightMaterial.prototype._setEnvMapShaderLib = function (envMap) {
+            this.shader.addLib(wd.CommonEnvMapShaderLib.create());
             switch (envMap.mode) {
                 case wd.EEnvMapMode.BASIC:
-                    this.shader.addLib(wd.EnvMapBasicForLightShaderLib.create());
+                    this.shader.addLib(wd.BasicForLightEnvMapShaderLib.create());
                     break;
                 case wd.EEnvMapMode.REFLECTION:
-                    this.shader.addLib(wd.EnvMapReflectionForLightShaderLib.create());
+                    this.shader.addLib(wd.ReflectionForLightEnvMapShaderLib.create());
                     break;
                 case wd.EEnvMapMode.REFRACTION:
-                    this.shader.addLib(wd.EnvMapRefractionForLightShaderLib.create());
+                    this.shader.addLib(wd.RefractionForLightEnvMapShaderLib.create());
                     break;
                 case wd.EEnvMapMode.FRESNEL:
-                    this.shader.addLib(wd.EnvMapFresnelForLightShaderLib.create());
+                    this.shader.addLib(wd.FresnelForLightEnvMapShaderLib.create());
                     break;
                 default:
                     wd.Log.error(true, wd.Log.info.FUNC_INVALID("EEnvMapMode"));
@@ -28580,40 +30731,61 @@ var wd;
             }
         };
         StandardLightMaterial.prototype._hasTwoDShadowMap = function () {
-            return this.mapManager.hasMap(function (map) {
-                return map instanceof wd.TwoDShadowMapTexture;
-            });
+            return wd.ShadowUtils.isReceive(this.geometry.entityObject) && this.mapManager.getTwoDShadowMapList().getCount() > 0;
         };
         StandardLightMaterial.prototype._hasCubemapShadowMap = function () {
-            return this.mapManager.hasMap(function (map) {
-                return map instanceof wd.CubemapShadowMapTexture;
-            });
+            return wd.ShadowUtils.isReceive(this.geometry.entityObject) && this.mapManager.getCubemapShadowMapList().getCount() > 0;
         };
         __decorate([
             wd.requireSetter(function (lightMap) {
                 wd.assert(lightMap instanceof wd.ImageTexture || lightMap instanceof wd.ProceduralTexture, wd.Log.info.FUNC_SHOULD("lightMap", "be ImageTexture or ProceduralTexture"));
-            })
+            }),
+            wd.cloneAttributeAsCloneable()
         ], StandardLightMaterial.prototype, "lightMap", null);
         __decorate([
             wd.requireSetter(function (diffuseMap) {
                 wd.assert(diffuseMap instanceof wd.ImageTexture || diffuseMap instanceof wd.ProceduralTexture, wd.Log.info.FUNC_SHOULD("diffuseMap", "be ImageTexture or ProceduralTexture"));
-            })
+            }),
+            wd.cloneAttributeAsCloneable()
         ], StandardLightMaterial.prototype, "diffuseMap", null);
         __decorate([
             wd.requireSetter(function (specularMap) {
                 wd.assert(specularMap instanceof wd.ImageTexture || specularMap instanceof wd.ProceduralTexture, wd.Log.info.FUNC_SHOULD("specularMap", "be ImageTexture or ProceduralTexture"));
-            })
+            }),
+            wd.cloneAttributeAsCloneable()
         ], StandardLightMaterial.prototype, "specularMap", null);
         __decorate([
             wd.requireSetter(function (emissionMap) {
                 wd.assert(emissionMap instanceof wd.ImageTexture || emissionMap instanceof wd.ProceduralTexture, wd.Log.info.FUNC_SHOULD("emissionMap", "be ImageTexture or ProceduralTexture"));
-            })
+            }),
+            wd.cloneAttributeAsCloneable()
         ], StandardLightMaterial.prototype, "emissionMap", null);
         __decorate([
             wd.requireSetter(function (normalMap) {
                 wd.assert(normalMap instanceof wd.ImageTexture, wd.Log.info.FUNC_SHOULD("normalMap", "be ImageTexture"));
-            })
+            }),
+            wd.cloneAttributeAsCloneable()
         ], StandardLightMaterial.prototype, "normalMap", null);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], StandardLightMaterial.prototype, "shininess", null);
+        __decorate([
+            wd.cloneAttributeAsBasicType({
+                order: 1
+            })
+        ], StandardLightMaterial.prototype, "opacity", null);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], StandardLightMaterial.prototype, "lightModel", void 0);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], StandardLightMaterial.prototype, "specularColor", void 0);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], StandardLightMaterial.prototype, "emissionColor", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], StandardLightMaterial.prototype, "lightMapIntensity", void 0);
         __decorate([
             wd.virtual
         ], StandardLightMaterial.prototype, "addExtendShaderLib", null);
@@ -28621,18 +30793,6 @@ var wd;
     }(wd.EngineMaterial));
     wd.StandardLightMaterial = StandardLightMaterial;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var StandardBasicMaterial = (function (_super) {
@@ -28655,8 +30815,8 @@ var wd;
                 }
                 else {
                     var mapArr = arguments[0];
-                    for (var _i = 0, mapArr_1 = mapArr; _i < mapArr_1.length; _i++) {
-                        var m = mapArr_1[_i];
+                    for (var _i = 0, mapArr_3 = mapArr; _i < mapArr_3.length; _i++) {
+                        var m = mapArr_3[_i];
                         this.mapManager.addMap(m);
                     }
                 }
@@ -28681,9 +30841,15 @@ var wd;
             this._setMapShaderLib();
             envMap = this.envMap;
             if (envMap) {
+                if (wd.InstanceUtils.isHardwareSupport() && wd.InstanceUtils.isSourceInstance(this.geometry.entityObject)) {
+                    this.shader.addLib(wd.NormalMatrixInstanceShaderLib.create());
+                }
+                else {
+                    this.shader.addLib(wd.NormalMatrixNoInstanceShaderLib.create());
+                }
                 this._setEnvMapShaderLib(envMap);
             }
-            this.shader.addLib(wd.BasicEndShaderLib.create());
+            this.shader.addLib(wd.EndBasicShaderLib.create());
         };
         StandardBasicMaterial.prototype._setMapShaderLib = function () {
             var mapManager = this.mapManager, mapCount = mapManager.getMapCount();
@@ -28698,18 +30864,19 @@ var wd;
         };
         StandardBasicMaterial.prototype._setEnvMapShaderLib = function (envMap) {
             this.addNormalShaderLib();
+            this.shader.addLib(wd.CommonEnvMapShaderLib.create());
             switch (envMap.mode) {
                 case wd.EEnvMapMode.BASIC:
-                    this.shader.addLib(wd.EnvMapBasicForBasicShaderLib.create());
+                    this.shader.addLib(wd.BasicForBasicEnvMapShaderLib.create());
                     break;
                 case wd.EEnvMapMode.REFLECTION:
-                    this.shader.addLib(wd.EnvMapReflectionForBasicShaderLib.create());
+                    this.shader.addLib(wd.ReflectionForBasicEnvMapShaderLib.create());
                     break;
                 case wd.EEnvMapMode.REFRACTION:
-                    this.shader.addLib(wd.EnvMapRefractionForBasicShaderLib.create());
+                    this.shader.addLib(wd.RefractionForBasicEnvMapShaderLib.create());
                     break;
                 case wd.EEnvMapMode.FRESNEL:
-                    this.shader.addLib(wd.EnvMapFresnelForBasicShaderLib.create());
+                    this.shader.addLib(wd.FresnelForBasicEnvMapShaderLib.create());
                     break;
                 default:
                     wd.Log.error(true, wd.Log.info.FUNC_INVALID("EEnvMapMode"));
@@ -28719,6 +30886,11 @@ var wd;
         __decorate([
             wd.ensureGetter(function (mapList) {
                 wd.assert(mapList.getCount() <= 2, wdCb.Log.info.FUNC_SUPPORT("only", "map.count <= 2"));
+            }),
+            wd.cloneAttributeAsCustomType(function (source, target, memberName) {
+                source[memberName].forEach(function (map) {
+                    target.mapManager.addMap(map.clone());
+                });
             })
         ], StandardBasicMaterial.prototype, "mapList", null);
         __decorate([
@@ -28726,21 +30898,21 @@ var wd;
                 if (map instanceof wd.Texture || map instanceof wd.TextureAsset) {
                 }
                 else {
-                    var mapArr = arguments[0];
-                    wdCb.Log.error(mapArr.length > 2, wdCb.Log.info.FUNC_SUPPORT("only", "map.count <= 2"));
+                    var mapArr = map;
+                    wd.assert(wd.JudgeUtils.isArrayExactly(mapArr), wd.Log.info.FUNC_MUST_BE("array"));
+                    wd.assert(mapArr.length <= 2, wd.Log.info.FUNC_SUPPORT("only", "map.count <= 2"));
                 }
             })
         ], StandardBasicMaterial.prototype, "map", null);
+        __decorate([
+            wd.cloneAttributeAsBasicType({
+                order: 1
+            })
+        ], StandardBasicMaterial.prototype, "opacity", null);
         return StandardBasicMaterial;
     }(wd.EngineMaterial));
     wd.StandardBasicMaterial = StandardBasicMaterial;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var BasicMaterial = (function (_super) {
@@ -28750,18 +30922,13 @@ var wd;
         }
         BasicMaterial.create = function () {
             var obj = new this();
+            obj.initWhenCreate();
             return obj;
         };
         return BasicMaterial;
     }(wd.StandardBasicMaterial));
     wd.BasicMaterial = BasicMaterial;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var SkyboxMaterial = (function (_super) {
@@ -28775,6 +30942,7 @@ var wd;
             return obj;
         };
         SkyboxMaterial.prototype.initWhenCreate = function () {
+            _super.prototype.initWhenCreate.call(this);
             this.side = wd.ESide.BACK;
         };
         SkyboxMaterial.prototype.addShaderLib = function () {
@@ -28784,12 +30952,6 @@ var wd;
     }(wd.EngineMaterial));
     wd.SkyboxMaterial = SkyboxMaterial;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var LightMaterial = (function (_super) {
@@ -28799,24 +30961,13 @@ var wd;
         }
         LightMaterial.create = function () {
             var obj = new this();
+            obj.initWhenCreate();
             return obj;
         };
         return LightMaterial;
     }(wd.StandardLightMaterial));
     wd.LightMaterial = LightMaterial;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var ShaderMaterial = (function (_super) {
@@ -28826,6 +30977,7 @@ var wd;
         }
         ShaderMaterial.create = function () {
             var obj = new this();
+            obj.initWhenCreate();
             return obj;
         };
         ShaderMaterial.prototype.init = function () {
@@ -28853,7 +31005,6 @@ var wd;
     }(wd.Material));
     wd.ShaderMaterial = ShaderMaterial;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     (function (EShading) {
@@ -28862,273 +31013,72 @@ var wd;
     })(wd.EShading || (wd.EShading = {}));
     var EShading = wd.EShading;
 })(wd || (wd = {}));
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
-    var MapManager = (function () {
-        function MapManager(material) {
+    var ShaderManager = (function () {
+        function ShaderManager(material) {
             this._material = null;
-            this._mapTable = wdCb.Hash.create();
-            this._arrayMapList = wdCb.Collection.create();
-            this._textureDirty = false;
-            this._allMapsCache = null;
-            this._allSingleMapsCache = null;
+            this._otherShaderMap = wdCb.Hash.create();
+            this._mainShader = null;
             this._material = material;
         }
-        MapManager.create = function (material) {
+        ShaderManager.create = function (material) {
             var obj = new this(material);
             return obj;
         };
-        MapManager.prototype.init = function () {
-            var mapArr = this._getAllMaps();
-            for (var i = 0, len = mapArr.length; i < len; i++) {
-                var texture = mapArr[i];
-                texture.init();
-            }
+        Object.defineProperty(ShaderManager.prototype, "shader", {
+            get: function () {
+                var scene = wd.Director.getInstance().scene;
+                return scene.isUseShader ? this._otherShaderMap.getChild(scene.currentShaderType) : this._mainShader;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(ShaderManager.prototype, "mapManager", {
+            get: function () {
+                return this.shader.mapManager;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        ShaderManager.prototype.setShader = function (shader) {
+            this._mainShader = shader;
+            this._mainShader.mapManager.material = this._material;
         };
-        MapManager.prototype.addMap = function () {
-            var args = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                args[_i - 0] = arguments[_i];
-            }
-            var map = null;
-            if (args[0] instanceof wd.TextureAsset) {
-                var asset = args[0];
-                map = asset.toTexture();
-            }
-            else if (args[0] instanceof wd.Texture) {
-                map = args[0];
-            }
-            if (args.length === 2) {
-                var option = args[1];
-                this._setMapOption(map, option);
-            }
-            map.material = this._material;
-            this._mapTable.appendChild("map", map);
-            this._textureDirty = true;
-        };
-        MapManager.prototype.addArrayMap = function (samplerName, mapArray) {
-            this._arrayMapList.addChild({
-                samplerName: samplerName,
-                mapArray: mapArray
+        ShaderManager.prototype.init = function () {
+            var material = this._material;
+            this._otherShaderMap.forEach(function (shader) {
+                shader.init(material);
             });
-            this._textureDirty = true;
+            this._mainShader.init(material);
         };
-        MapManager.prototype.getMapList = function () {
-            var map = this._mapTable.getChild("map");
-            return map ? this._mapTable.getChild("map")
-                .filter(function (map) {
-                return map instanceof wd.BasicTexture || map instanceof wd.ProceduralTexture;
-            }) : wdCb.Collection.create();
-        };
-        MapManager.prototype.hasMap = function () {
-            var args = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                args[_i - 0] = arguments[_i];
-            }
-            var mapList = null;
-            mapList = this._mapTable.getChild("map");
-            if (!mapList) {
-                return false;
-            }
-            if (wd.JudgeUtils.isFunction(args[0])) {
-                return mapList.hasChildWithFunc(args[0]);
-            }
-            else {
-                return mapList.hasChild(args[0]);
-            }
-        };
-        MapManager.prototype.getMapCount = function () {
-            return this.getMapList().getCount();
-        };
-        MapManager.prototype.getEnvMap = function () {
-            return this._getMapByType("envMap");
-        };
-        MapManager.prototype.setEnvMap = function (envMap) {
-            this._setMap("envMap", envMap);
-        };
-        MapManager.prototype.removeAllChildren = function () {
-            this._mapTable.removeAllChildren();
-            this._arrayMapList.removeAllChildren();
-            this._textureDirty = true;
-        };
-        MapManager.prototype.dispose = function () {
-            var mapArr = this._getAllMaps();
-            for (var i = 0, len = mapArr.length; i < len; i++) {
-                var texture = mapArr[i];
-                texture.dispose();
-            }
-            this.removeAllChildren();
-        };
-        MapManager.prototype.bindAndUpdate = function () {
-            var mapArr = this._getAllMaps();
-            for (var i = 0, len = mapArr.length; i < len; i++) {
-                var texture = mapArr[i];
-                texture.bindToUnit(i);
-                if (texture.needUpdate) {
-                    texture.update(i);
-                }
-            }
-        };
-        MapManager.prototype.sendData = function (program) {
-            this._sendSingleMapData(program);
-            this._sendArrayMapData(program);
-        };
-        MapManager.prototype._sendSingleMapData = function (program) {
-            var mapArr = this._getAllSingleMaps(), len = mapArr.length;
-            for (var i = 0; i < len; i++) {
-                var texture = mapArr[i];
-                texture.sendData(program, texture.getSamplerName(i), i);
-            }
-        };
-        MapManager.prototype._sendArrayMapData = function (program) {
-            var self = this, maxUnitOfBindedSingleMap = this._getMaxUnitOfBindedSingleMap();
-            this._arrayMapList.forEach(function (mapData) {
-                var arrayMapCount = mapData.mapArray.length;
-                program.sendUniformData(mapData.samplerName + "[0]", wd.EVariableType.SAMPLER_ARRAY, self._generateArrayMapUnitArray(maxUnitOfBindedSingleMap, maxUnitOfBindedSingleMap + arrayMapCount));
-                maxUnitOfBindedSingleMap += arrayMapCount;
+        ShaderManager.prototype.dispose = function () {
+            this._otherShaderMap.forEach(function (shader) {
+                shader.dispose();
             });
+            this._mainShader.dispose();
         };
-        MapManager.prototype._generateArrayMapUnitArray = function (startUnit, endUnit) {
-            var arr = [];
-            while (endUnit > startUnit) {
-                arr.push(startUnit);
-                startUnit++;
-            }
-            return arr;
+        ShaderManager.prototype.update = function (quadCmd) {
+            this.shader.update(quadCmd, this._material);
         };
-        MapManager.prototype._getAllMaps = function () {
-            return [].concat(this._getAllSingleMaps(), this._getAllArrayMaps());
+        ShaderManager.prototype.addShader = function (shaderKey, shader) {
+            this._otherShaderMap.addChild(shaderKey, shader);
         };
-        MapManager.prototype._getMaxUnitOfBindedSingleMap = function () {
-            return this._getAllSingleMaps().length;
+        ShaderManager.prototype.hasShader = function (shaderKey) {
+            return this._otherShaderMap.hasChild(shaderKey);
         };
-        MapManager.prototype._getAllSingleMaps = function () {
-            return this._mapTable.toArray();
-        };
-        MapManager.prototype._getAllArrayMaps = function () {
-            var arrayMap = [];
-            this._arrayMapList.forEach(function (mapData) {
-                arrayMap = arrayMap.concat(mapData.mapArray);
-            });
-            return arrayMap;
-        };
-        MapManager.prototype._getMapByType = function (key) {
-            return this._mapTable.getChild(key);
-        };
-        MapManager.prototype._setMap = function () {
-            var args = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                args[_i - 0] = arguments[_i];
-            }
-            var key = args[0], map = args[1];
-            if (!map) {
-                this._removeMap(key, map);
-                return;
-            }
-            if (arguments.length === 3) {
-                var option = args[1];
-                this._setMapOption(map, option);
-            }
-            map.material = this._material;
-            this._mapTable.addChild(key, map);
-        };
-        MapManager.prototype._removeMap = function (key, map) {
-            this._mapTable.removeChild(key);
-            this._textureDirty = true;
-        };
-        MapManager.prototype._setMapOption = function (map, option) {
-            map.variableData = option;
+        ShaderManager.prototype.getShader = function (shaderKey) {
+            return this._otherShaderMap.getChild(shaderKey);
         };
         __decorate([
-            wd.require(function () {
-                var args = [];
-                for (var _i = 0; _i < arguments.length; _i++) {
-                    args[_i - 0] = arguments[_i];
-                }
-                wd.assert(args[0] instanceof wd.TextureAsset || args[0] instanceof wd.Texture, wd.Log.info.FUNC_SHOULD("arguments[0]", "be TextureAsset || Texture"));
+            wd.ensureGetter(function (shader) {
+                wd.assert(!!shader, wd.Log.info.FUNC_NOT_EXIST("shader"));
             })
-        ], MapManager.prototype, "addMap", null);
-        __decorate([
-            wd.require(function (samplerName, mapArray) {
-                wd.assert(wd.JudgeUtils.isArrayExactly(mapArray), wd.Log.info.FUNC_SHOULD("second param", "be array"));
-                for (var _i = 0, mapArray_1 = mapArray; _i < mapArray_1.length; _i++) {
-                    var map = mapArray_1[_i];
-                    wd.assert(map instanceof wd.Texture, wd.Log.info.FUNC_SHOULD(wd.Log.info.FUNC_SHOULD("second param", "be Array<Texture>")));
-                }
-            })
-        ], MapManager.prototype, "addArrayMap", null);
-        __decorate([
-            wd.ensure(function (mapList) {
-                mapList.forEach(function (map) {
-                    wd.assert(map instanceof wd.BasicTexture || map instanceof wd.ProceduralTexture, wd.Log.info.FUNC_SHOULD("mapList", "only contain BasicTexture or ProceduralTexture"));
-                });
-            })
-        ], MapManager.prototype, "getMapList", null);
-        __decorate([
-            wd.require(function (program) {
-                var mapMap = {}, maps = this._getAllMaps();
-                for (var i = 0, len = maps.length; i < len; i++) {
-                    var map = maps[i], samplerName = map.getSamplerName(i);
-                    wd.assert(mapMap[samplerName] !== 1, wd.Log.info.FUNC_SHOULD_NOT("has duplicate maps, but actual has the ones with the same samplerName:" + samplerName));
-                    mapMap[samplerName] = 1;
-                }
-            })
-        ], MapManager.prototype, "sendData", null);
-        __decorate([
-            wd.ensure(function (arr, startUnit, endUnit) {
-                wd.assert(arr.length === endUnit - startUnit, wd.Log.info.FUNC_SHOULD("length", "be " + (endUnit - startUnit) + ", but actual is " + arr.length));
-                if (arr.length > 0) {
-                    wd.assert(arr[0] === startUnit, wd.Log.info.FUNC_SHOULD("first element", "be " + startUnit + ", but actual is " + arr[0]));
-                    wd.assert(arr[arr.length - 1] === endUnit - 1, wd.Log.info.FUNC_SHOULD("last element", "be " + (endUnit - 1) + ", but actual is " + arr[arr.length - 1]));
-                }
-            })
-        ], MapManager.prototype, "_generateArrayMapUnitArray", null);
-        __decorate([
-            wd.ensure(function (mapArr) {
-                for (var _i = 0, mapArr_1 = mapArr; _i < mapArr_1.length; _i++) {
-                    var map = mapArr_1[_i];
-                    wd.assert(map instanceof wd.Texture, wd.Log.info.FUNC_SHOULD("each element", "be Texture"));
-                }
-            }),
-            wd.cache(function () {
-                return !this._textureDirty && this._allMapsCache;
-            }, function () {
-                return this._allMapsCache;
-            }, function (mapList) {
-                this._allMapsCache = mapList;
-                this._textureDirty = false;
-            })
-        ], MapManager.prototype, "_getAllMaps", null);
-        __decorate([
-            wd.cache(function () {
-                return !this._textureDirty && this._allSingleMapsCache;
-            }, function () {
-                return this._allSingleMapsCache;
-            }, function (mapList) {
-                this._allSingleMapsCache = mapList;
-                this._textureDirty = false;
-            })
-        ], MapManager.prototype, "_getAllSingleMaps", null);
-        __decorate([
-            wd.ensure(function (mapArr) {
-                for (var _i = 0, mapArr_2 = mapArr; _i < mapArr_2.length; _i++) {
-                    var map = mapArr_2[_i];
-                    wd.assert(map instanceof wd.Texture, wd.Log.info.FUNC_SHOULD("each element", "be Texture"));
-                }
-            })
-        ], MapManager.prototype, "_getAllArrayMaps", null);
-        return MapManager;
+        ], ShaderManager.prototype, "shader", null);
+        return ShaderManager;
     }());
-    wd.MapManager = MapManager;
+    wd.ShaderManager = ShaderManager;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     (function (EAssetType) {
@@ -29137,7 +31087,6 @@ var wd;
     })(wd.EAssetType || (wd.EAssetType = {}));
     var EAssetType = wd.EAssetType;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var Loader = (function () {
@@ -29169,6 +31118,7 @@ var wd;
                 stream = this.loadAsset(url, id)
                     .do(function (data) {
                     self._container.addChild(id, data);
+                    wd.LoaderManager.getInstance().add(id, self);
                 }, function (err) {
                     self._errorHandle(url, err);
                 }, null);
@@ -29203,18 +31153,6 @@ var wd;
     }());
     wd.Loader = Loader;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var GLSLLoader = (function (_super) {
@@ -29250,18 +31188,6 @@ var wd;
     }(wd.Loader));
     wd.GLSLLoader = GLSLLoader;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var JsLoader = (function (_super) {
@@ -29327,18 +31253,6 @@ var wd;
     }(wd.Loader));
     wd.JsLoader = JsLoader;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var JSONLoader = (function (_super) {
@@ -29374,12 +31288,6 @@ var wd;
     }(wd.Loader));
     wd.JSONLoader = JSONLoader;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var VideoLoader = (function (_super) {
@@ -29422,18 +31330,6 @@ var wd;
     }(wd.Loader));
     wd.VideoLoader = VideoLoader;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var TextureLoader = (function (_super) {
@@ -29495,7 +31391,6 @@ var wd;
     }(wd.Loader));
     wd.TextureLoader = TextureLoader;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var ImageLoader = (function () {
@@ -29519,7 +31414,6 @@ var wd;
     }());
     wd.ImageLoader = ImageLoader;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var AjaxLoader = (function () {
@@ -29545,7 +31439,6 @@ var wd;
     }());
     wd.AjaxLoader = AjaxLoader;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var ModelLoaderUtils = (function () {
@@ -29558,9 +31451,6 @@ var wd;
     }());
     wd.ModelLoaderUtils = ModelLoaderUtils;
 })(wd || (wd = {}));
-
-
-
 var wd;
 (function (wd) {
     var CompressedTextureLoader = (function () {
@@ -29609,7 +31499,6 @@ var wd;
     }());
     wd.CompressedTextureLoader = CompressedTextureLoader;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var DDS_MAGIC = 0x20534444, DDSD_CAPS = 0x1, DDSD_HEIGHT = 0x2, DDSD_WIDTH = 0x4, DDSD_PITCH = 0x8, DDSD_PIXELFORMAT = 0x1000, DDSD_MIPMAPCOUNT = 0x20000, DDSD_LINEARSIZE = 0x80000, DDSD_DEPTH = 0x800000, DDSCAPS_COMPLEX = 0x8, DDSCAPS_MIPMAP = 0x400000, DDSCAPS_TEXTURE = 0x1000, DDSCAPS2_CUBEMAP = 0x200, DDSCAPS2_CUBEMAP_POSITIVEX = 0x400, DDSCAPS2_CUBEMAP_NEGATIVEX = 0x800, DDSCAPS2_CUBEMAP_POSITIVEY = 0x1000, DDSCAPS2_CUBEMAP_NEGATIVEY = 0x2000, DDSCAPS2_CUBEMAP_POSITIVEZ = 0x4000, DDSCAPS2_CUBEMAP_NEGATIVEZ = 0x8000, DDSCAPS2_VOLUME = 0x200000, DDPF_ALPHAPIXELS = 0x1, DDPF_ALPHA = 0x2, DDPF_FOURCC = 0x4, DDPF_RGB = 0x40, DDPF_YUV = 0x200, DDPF_LUMINANCE = 0x20000;
@@ -29740,7 +31629,6 @@ var wd;
     }());
     wd.DDSData = DDSData;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var TextureAsset = (function () {
@@ -29786,7 +31674,10 @@ var wd;
             enumerable: true,
             configurable: true
         });
-        TextureAsset.prototype.copyToCubemapTexture = function (cubemapFaceTexture) {
+        TextureAsset.prototype.clone = function () {
+            return wd.CloneUtils.clone(this);
+        };
+        TextureAsset.prototype.cloneToCubemapTexture = function (cubemapFaceTexture) {
             cubemapFaceTexture.generateMipmaps = this.generateMipmaps;
             cubemapFaceTexture.minFilter = this.minFilter;
             cubemapFaceTexture.magFilter = this.magFilter;
@@ -29800,12 +31691,12 @@ var wd;
             cubemapFaceTexture.needUpdate = this.needUpdate;
             cubemapFaceTexture.mode = wd.EEnvMapMode.BASIC;
         };
-        TextureAsset.prototype.copyTo = function (texture) {
+        TextureAsset.prototype.cloneTo = function (texture) {
             wd.Log.error(!texture, wd.Log.info.FUNC_MUST_DEFINE("texture"));
             texture.source = this.source;
             texture.width = this.width;
             texture.height = this.height;
-            texture.mipmaps = this.mipmaps.copy();
+            texture.mipmaps = this.mipmaps.clone();
             texture.wrapS = this.wrapS;
             texture.wrapT = this.wrapT;
             texture.magFilter = this.magFilter;
@@ -29813,8 +31704,8 @@ var wd;
             texture.anisotropy = this.anisotropy;
             texture.format = this.format;
             texture.type = this.type;
-            texture.repeatRegion = this.repeatRegion.copy();
-            texture.sourceRegion = this.sourceRegion && this.sourceRegion.copy();
+            texture.repeatRegion = this.repeatRegion.clone();
+            texture.sourceRegion = this.sourceRegion && this.sourceRegion.clone();
             texture.sourceRegionMapping = this.sourceRegionMapping;
             texture.sourceRegionMethod = this.sourceRegionMethod;
             texture.generateMipmaps = this.generateMipmaps;
@@ -29825,16 +31716,13 @@ var wd;
             return texture;
         };
         TextureAsset.defaultTexture = null;
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], TextureAsset.prototype, "source", void 0);
         return TextureAsset;
     }());
     wd.TextureAsset = TextureAsset;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var ImageTextureAsset = (function (_super) {
@@ -29853,7 +31741,7 @@ var wd;
         ImageTextureAsset.prototype.toCubemapFaceTexture = function () {
             return wd.CubemapFaceImageTexture.create(this);
         };
-        ImageTextureAsset.prototype.copyToCubemapFaceTexture = function (cubemapFaceTexture) {
+        ImageTextureAsset.prototype.cloneToCubemapFaceTexture = function (cubemapFaceTexture) {
             cubemapFaceTexture.source = this.source;
             cubemapFaceTexture.type = this.type;
             cubemapFaceTexture.format = this.format;
@@ -29866,12 +31754,6 @@ var wd;
     }(wd.TextureAsset));
     wd.ImageTextureAsset = ImageTextureAsset;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var VideoTextureAsset = (function (_super) {
@@ -29902,19 +31784,13 @@ var wd;
         VideoTextureAsset.prototype.toCubemapFaceTexture = function () {
             return wd.Log.error(true, wd.Log.info.FUNC_NOT_SUPPORT("video texture", "cubemap"));
         };
-        VideoTextureAsset.prototype.copyToCubemapFaceTexture = function (cubemapFaceTexture) {
+        VideoTextureAsset.prototype.cloneToCubemapFaceTexture = function (cubemapFaceTexture) {
             wd.Log.error(true, wd.Log.info.FUNC_NOT_SUPPORT("video texture", "cubemap"));
         };
         return VideoTextureAsset;
     }(wd.TextureAsset));
     wd.VideoTextureAsset = VideoTextureAsset;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var CompressedTextureAsset = (function (_super) {
@@ -29937,7 +31813,7 @@ var wd;
         CompressedTextureAsset.prototype.toCubemapFaceTexture = function () {
             return wd.CubemapFaceCompressedTexture.create(this);
         };
-        CompressedTextureAsset.prototype.copyToCubemapFaceTexture = function (cubemapFaceTexture) {
+        CompressedTextureAsset.prototype.cloneToCubemapFaceTexture = function (cubemapFaceTexture) {
             cubemapFaceTexture.type = this.type;
             cubemapFaceTexture.format = this.format;
             cubemapFaceTexture.width = this.width;
@@ -29949,7 +31825,6 @@ var wd;
     }(wd.TextureAsset));
     wd.CompressedTextureAsset = CompressedTextureAsset;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     (function (ETextureFilterMode) {
@@ -29962,7 +31837,6 @@ var wd;
     })(wd.ETextureFilterMode || (wd.ETextureFilterMode = {}));
     var ETextureFilterMode = wd.ETextureFilterMode;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     (function (ETextureWrapMode) {
@@ -29972,7 +31846,6 @@ var wd;
     })(wd.ETextureWrapMode || (wd.ETextureWrapMode = {}));
     var ETextureWrapMode = wd.ETextureWrapMode;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     (function (ETextureFormat) {
@@ -29988,7 +31861,6 @@ var wd;
     })(wd.ETextureFormat || (wd.ETextureFormat = {}));
     var ETextureFormat = wd.ETextureFormat;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     (function (ETextureType) {
@@ -29999,7 +31871,6 @@ var wd;
     })(wd.ETextureType || (wd.ETextureType = {}));
     var ETextureType = wd.ETextureType;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     (function (EEnvMapMode) {
@@ -30010,7 +31881,6 @@ var wd;
     })(wd.EEnvMapMode || (wd.EEnvMapMode = {}));
     var EEnvMapMode = wd.EEnvMapMode;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     (function (ETextureCombineMode) {
@@ -30020,7 +31890,6 @@ var wd;
     })(wd.ETextureCombineMode || (wd.ETextureCombineMode = {}));
     var ETextureCombineMode = wd.ETextureCombineMode;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     (function (ETextureSourceRegionMapping) {
@@ -30029,7 +31898,6 @@ var wd;
     })(wd.ETextureSourceRegionMapping || (wd.ETextureSourceRegionMapping = {}));
     var ETextureSourceRegionMapping = wd.ETextureSourceRegionMapping;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     (function (ETextureSourceRegionMethod) {
@@ -30038,7 +31906,6 @@ var wd;
     })(wd.ETextureSourceRegionMethod || (wd.ETextureSourceRegionMethod = {}));
     var ETextureSourceRegionMethod = wd.ETextureSourceRegionMethod;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     (function (ETextureTarget) {
@@ -30047,7 +31914,6 @@ var wd;
     })(wd.ETextureTarget || (wd.ETextureTarget = {}));
     var ETextureTarget = wd.ETextureTarget;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var LoaderManager = (function () {
@@ -30074,7 +31940,7 @@ var wd;
             }
             else {
                 var assetArr = args[0];
-                return wdFrp.fromArray(assetArr).flatMap(function (asset) {
+                return wdFrp.fromArray(assetArr).concatMap(function (asset) {
                     return self._createLoadMultiAssetStream(asset.type || wd.EAssetType.UNKNOW, asset.url, asset.id);
                 });
             }
@@ -30093,6 +31959,9 @@ var wd;
             var loader = this._assetTable.getChild(id);
             return loader ? loader.get(id) : null;
         };
+        LoaderManager.prototype.add = function (id, loader) {
+            this._assetTable.addChild(id, loader);
+        };
         LoaderManager.prototype._createLoadMultiAssetStream = function () {
             var args = [];
             for (var _i = 0; _i < arguments.length; _i++) {
@@ -30102,18 +31971,18 @@ var wd;
             if (!loader.has(id)) {
                 self.assetCount++;
             }
-            return this._addToAssetTable(loader.load(url, id)
-                .map(function (data) {
+            return loader.load(url, id)
+                .map(function () {
                 self.currentLoadedCount++;
                 return {
                     currentLoadedCount: self.currentLoadedCount,
                     assetCount: self.assetCount
                 };
-            }), id, loader);
+            });
         };
         LoaderManager.prototype._createLoadSingleAssetStream = function (url, id) {
             var loader = this._getLoader(wd.EAssetType.UNKNOW, url);
-            return this._addToAssetTable(loader.load(url, id), id, loader);
+            return loader.load(url, id);
         };
         LoaderManager.prototype._getLoader = function () {
             var args = [];
@@ -30129,18 +31998,11 @@ var wd;
             }
             return wd.LoaderFactory.create(type, extname.toLowerCase());
         };
-        LoaderManager.prototype._addToAssetTable = function (loadStream, id, loader) {
-            var self = this;
-            return loadStream.do(null, null, function () {
-                self._assetTable.addChild(id, loader);
-            });
-        };
         LoaderManager._instance = null;
         return LoaderManager;
     }());
     wd.LoaderManager = LoaderManager;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var LoaderFactory = (function () {
@@ -30214,28 +32076,12 @@ var wd;
     }());
     wd.LoaderFactory = LoaderFactory;
 })(wd || (wd = {}));
-
-
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var GLTFLoader = (function (_super) {
         __extends(GLTFLoader, _super);
         function GLTFLoader() {
             _super.apply(this, arguments);
-            this._gltfAssembler = wd.GLTFAssembler.create();
-            this._gltfParser = wd.GLTFParser.create();
             this._arrayBufferMap = wdCb.Hash.create();
             this._imageMap = wdCb.Hash.create();
         }
@@ -30256,9 +32102,10 @@ var wd;
                 jsonData = json;
                 return self._createLoadAllAssetsStream(url, json);
             })
-                .concat(wdFrp.callFunc(function () {
-                return self._gltfAssembler.build(self._gltfParser.parse(jsonData, self._arrayBufferMap, self._imageMap));
-            }));
+                .lastOrDefault()
+                .map(function () {
+                return wd.GLTFAssembler.create().build(wd.GLTFParser.create().parse(jsonData, self._arrayBufferMap, self._imageMap));
+            });
         };
         GLTFLoader.prototype._createLoadAllAssetsStream = function (url, json) {
             return wdFrp.fromArray([
@@ -30320,7 +32167,6 @@ var wd;
     }(wd.Loader));
     wd.GLTFLoader = GLTFLoader;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var GLTFAssembler = (function () {
@@ -30379,7 +32225,7 @@ var wd;
             var self = this;
             components.forEach(function (component) {
                 if (self._isTransform(component)) {
-                    model.transform = self._createTransform(component);
+                    model.addComponent(self._createTransform(component));
                 }
                 else if (self._isCamera(component)) {
                     model.addComponent(self._createCamera(component));
@@ -30521,13 +32367,6 @@ var wd;
     }());
     wd.GLTFAssembler = GLTFAssembler;
 })(wd || (wd = {}));
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var GLTFParser = (function () {
@@ -30712,13 +32551,6 @@ var wd;
     }());
     wd.GLTFParser = GLTFParser;
 })(wd || (wd = {}));
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var GLTFGeometryParser = (function () {
@@ -30883,13 +32715,6 @@ var wd;
     }());
     wd.GLTFGeometryParser = GLTFGeometryParser;
 })(wd || (wd = {}));
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var GLTFMaterialParser = (function () {
@@ -31143,13 +32968,6 @@ var wd;
     }());
     wd.GLTFMaterialParser = GLTFMaterialParser;
 })(wd || (wd = {}));
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var GLTFArticulatedAnimationParser = (function () {
@@ -31323,7 +33141,6 @@ var wd;
     }());
     wd.GLTFArticulatedAnimationParser = GLTFArticulatedAnimationParser;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var GLTFUtils = (function () {
@@ -31411,7 +33228,6 @@ var wd;
     }());
     wd.GLTFUtils = GLTFUtils;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     (function (EWDTag) {
@@ -31419,28 +33235,12 @@ var wd;
     })(wd.EWDTag || (wd.EWDTag = {}));
     var EWDTag = wd.EWDTag;
 })(wd || (wd = {}));
-
-
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var WDLoader = (function (_super) {
         __extends(WDLoader, _super);
         function WDLoader() {
             _super.apply(this, arguments);
-            this._wdParser = wd.WDParser.create();
-            this._wdBuilder = wd.WDBuilder.create();
             this._parseData = null;
         }
         WDLoader.getInstance = function () {
@@ -31450,7 +33250,6 @@ var wd;
             return this._instance;
         };
         WDLoader.prototype.loadAsset = function () {
-            var _this = this;
             var args = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 args[_i - 0] = arguments[_i];
@@ -31458,36 +33257,37 @@ var wd;
             var url = args[0], self = this;
             return wd.AjaxLoader.load(url, "json")
                 .flatMap(function (json) {
-                self._parseData = self._wdParser.parse(json);
-                return _this._createLoadMapStream(url);
+                self._parseData = wd.WDParser.create().parse(json);
+                return self._createLoadMapStream(url, self._parseData);
             })
-                .concat(wdFrp.callFunc(function () {
-                return self._wdBuilder.build(self._parseData);
-            }));
+                .lastOrDefault()
+                .map(function () {
+                return wd.WDBuilder.create().build(self._parseData);
+            });
         };
-        WDLoader.prototype._createLoadMapStream = function (filePath) {
-            var streamArr = [], parseData = this._parseData, i = null;
+        WDLoader.prototype._createLoadMapStream = function (filePath, parseData) {
+            var streamArr = [];
             parseData.materials.forEach(function (material) {
                 var mapUrlArr = [];
                 if (material.diffuseMapUrl) {
-                    mapUrlArr.push(["diffuseMap", material.diffuseMapUrl]);
+                    mapUrlArr.push(["diffuseMap", material.diffuseMapUrl, material]);
                 }
                 if (material.specularMapUrl) {
-                    mapUrlArr.push(["specularMap", material.specularMapUrl]);
+                    mapUrlArr.push(["specularMap", material.specularMapUrl, material]);
                 }
                 if (material.normalMapUrl) {
-                    mapUrlArr.push(["normalMap", material.normalMapUrl]);
+                    mapUrlArr.push(["normalMap", material.normalMapUrl, material]);
                 }
-                streamArr.push(wdFrp.fromArray(mapUrlArr)
-                    .flatMap(function (_a) {
-                    var type = _a[0], mapUrl = _a[1];
-                    return wd.TextureLoader.getInstance().load(wd.ModelLoaderUtils.getPath(filePath, mapUrl))
-                        .do(function (asset) {
-                        material[type] = asset.toTexture();
-                    }, null, null);
-                }));
+                streamArr = streamArr.concat(mapUrlArr);
             });
-            return wdFrp.fromArray(streamArr).mergeAll();
+            return wdFrp.fromArray(streamArr)
+                .flatMap(function (_a) {
+                var type = _a[0], mapUrl = _a[1], material = _a[2];
+                return wd.TextureLoader.getInstance().load(wd.ModelLoaderUtils.getPath(filePath, mapUrl))
+                    .do(function (asset) {
+                    material[type] = asset.toTexture();
+                });
+            });
         };
         WDLoader._instance = null;
         __decorate([
@@ -31503,7 +33303,6 @@ var wd;
     }(wd.Loader));
     wd.WDLoader = WDLoader;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var WDParser = (function () {
@@ -31553,13 +33352,6 @@ var wd;
     }());
     wd.WDParser = WDParser;
 })(wd || (wd = {}));
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var WDObjectParser = (function () {
@@ -31833,7 +33625,6 @@ var wd;
     }());
     wd.WDObjectParser = WDObjectParser;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var WDBuilder = (function () {
@@ -31944,18 +33735,6 @@ var wd;
     }());
     wd.WDBuilder = WDBuilder;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var TYPE = {
@@ -32034,7 +33813,6 @@ var wd;
     }(wd.Loader));
     wd.FontLoader = FontLoader;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var COMMON_EXP = /common [^\n]*(\n|$)/gi, PAGE_EXP = /page [^\n]*(\n|$)/gi, CHAR_EXP = /char [^\n]*(\n|$)/gi, ITEM_EXP = /\w+=[^ \r\n]+/gi, INT_EXP = /^[\-]?\d+$/;
@@ -32095,18 +33873,6 @@ var wd;
     }());
     wd.FntParser = FntParser;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var FntLoader = (function (_super) {
@@ -32146,13 +33912,6 @@ var wd;
     }(wd.Loader));
     wd.FntLoader = FntLoader;
 })(wd || (wd = {}));
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var DeviceManager = (function () {
@@ -32488,7 +34247,6 @@ var wd;
     })(wd.ECanvasType || (wd.ECanvasType = {}));
     var ECanvasType = wd.ECanvasType;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var GPUDetector = (function () {
@@ -32499,6 +34257,7 @@ var wd;
             this.maxAnisotropy = null;
             this.extensionCompressedTextureS3TC = null;
             this.extensionTextureFilterAnisotropic = null;
+            this.extensionInstancedArrays = null;
             this.precision = null;
             this._isDetected = false;
         }
@@ -32523,6 +34282,7 @@ var wd;
         GPUDetector.prototype._detectExtension = function () {
             this.extensionCompressedTextureS3TC = this._getExtension("WEBGL_compressed_texture_s3tc");
             this.extensionTextureFilterAnisotropic = this._getExtension("EXT_texture_filter_anisotropic");
+            this.extensionInstancedArrays = this._getExtension("ANGLE_instanced_arrays");
         };
         GPUDetector.prototype._detectCapabilty = function () {
             var gl = this.gl;
@@ -32543,6 +34303,9 @@ var wd;
                     break;
                 case "WEBGL_compressed_texture_pvrtc":
                     extension = gl.getExtension("WEBGL_compressed_texture_pvrtc") || gl.getExtension("WEBKIT_WEBGL_compressed_texture_pvrtc");
+                    break;
+                case "ANGLE_instanced_arrays":
+                    extension = gl.getExtension("ANGLE_instanced_arrays");
                     break;
                 default:
                     extension = gl.getExtension(name);
@@ -32580,7 +34343,6 @@ var wd;
     })(wd.EGPUPrecision || (wd.EGPUPrecision = {}));
     var EGPUPrecision = wd.EGPUPrecision;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     (function (EScreenSize) {
@@ -32588,7 +34350,6 @@ var wd;
     })(wd.EScreenSize || (wd.EScreenSize = {}));
     var EScreenSize = wd.EScreenSize;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var Point = (function () {
@@ -32610,7 +34371,6 @@ var wd;
     }());
     wd.Point = Point;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var Face3 = (function () {
@@ -32642,32 +34402,36 @@ var wd;
             enumerable: true,
             configurable: true
         });
+        Face3.prototype.clone = function () {
+            return wd.CloneUtils.clone(this);
+        };
         Face3.prototype.hasFaceNormal = function () {
             return this._faceNormal !== null;
         };
         Face3.prototype.hasVertexNormal = function () {
             return this.vertexNormals.getCount() > 0;
         };
-        Face3.prototype.copy = function () {
-            var copyFaceNormal = this._faceNormal ? this._faceNormal.copy() : null, copyVertexNormals = null;
-            if (this.vertexNormals) {
-                copyVertexNormals = wdCb.Collection.create();
-                this.vertexNormals.forEach(function (vertexNormal) {
-                    copyVertexNormals.addChild(vertexNormal.copy());
-                });
-            }
-            return Face3.create(this.aIndex, this.bIndex, this.cIndex, copyFaceNormal, copyVertexNormals);
-        };
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], Face3.prototype, "_faceNormal", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Face3.prototype, "aIndex", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Face3.prototype, "bIndex", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Face3.prototype, "cIndex", void 0);
+        __decorate([
+            wd.cloneAttributeAsCustomType(function (source, target, memberName) {
+                target[memberName] = source[memberName].clone(true);
+            })
+        ], Face3.prototype, "vertexNormals", void 0);
         return Face3;
     }());
     wd.Face3 = Face3;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var RectRegion = (function (_super) {
@@ -32695,7 +34459,7 @@ var wd;
             enumerable: true,
             configurable: true
         });
-        RectRegion.prototype.copy = function () {
+        RectRegion.prototype.clone = function () {
             return this.copyHelper(RectRegion.create());
         };
         RectRegion.prototype.isNotEmpty = function () {
@@ -32708,7 +34472,6 @@ var wd;
     }(wd.Vector4));
     wd.RectRegion = RectRegion;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var ViewWebGL = (function () {
@@ -32788,13 +34551,6 @@ var wd;
     }());
     wd.ViewWebGL = ViewWebGL;
 })(wd || (wd = {}));
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var Color = (function () {
@@ -32889,14 +34645,28 @@ var wd;
         Color.prototype.toString = function () {
             return this._colorString;
         };
+        Color.prototype.clone = function () {
+            return Color.create(this._colorString);
+        };
+        Color.prototype.isEqual = function (color) {
+            return this.r === color.r && this.g === color.g && this.b === color.b && this.a === color.a;
+        };
         Color.prototype._setColor = function (colorVal) {
-            var REGEX_RGBA = /^rgba\((\d+),\s*(\d+),\s*(\d+),\s*([^\)]+)\)$/i, REGEX_RGB = /^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/i, REGEX_RGB_2 = /^rgb\((\d+\.\d+),\s*(\d+\.\d+),\s*(\d+\.\d+)\)$/i, REGEX_NUM = /^\#([0-9a-f]{6})$/i;
+            var REGEX_RGBA = /^rgba\((\d+),\s*(\d+),\s*(\d+),\s*([^\)]+)\)$/i, REGEX_RGBA_2 = /^rgba\((\d+\.\d+),\s*(\d+\.\d+),\s*(\d+\.\d+),\s*([^\)]+)\)$/i, REGEX_RGB = /^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/i, REGEX_RGB_2 = /^rgb\((\d+\.\d+),\s*(\d+\.\d+),\s*(\d+\.\d+)\)$/i, REGEX_NUM = /^\#([0-9a-f]{6})$/i;
             var color = null;
             if (REGEX_RGBA.test(colorVal)) {
                 color = REGEX_RGBA.exec(colorVal);
                 this.r = this._getColorValue(color, 1);
                 this.g = this._getColorValue(color, 2);
                 this.b = this._getColorValue(color, 3);
+                this.a = Number(color[4]);
+                return this;
+            }
+            if (REGEX_RGBA_2.test(colorVal)) {
+                color = REGEX_RGBA_2.exec(colorVal);
+                this.r = parseFloat(color[1]);
+                this.g = parseFloat(color[2]);
+                this.b = parseFloat(color[3]);
                 this.a = Number(color[4]);
                 return this;
             }
@@ -32939,6 +34709,26 @@ var wd;
             this._colorVec4Cache = null;
         };
         __decorate([
+            wd.ensureGetter(function (r) {
+                wd.assert(r >= 0, wd.Log.info.FUNC_SHOULD("r", ">= 0, but actual is " + r));
+            })
+        ], Color.prototype, "r", null);
+        __decorate([
+            wd.ensureGetter(function (g) {
+                wd.assert(g >= 0, wd.Log.info.FUNC_SHOULD("g", ">= 0, but actual is " + g));
+            })
+        ], Color.prototype, "g", null);
+        __decorate([
+            wd.ensureGetter(function (b) {
+                wd.assert(b >= 0, wd.Log.info.FUNC_SHOULD("b", ">= 0, but actual is " + b));
+            })
+        ], Color.prototype, "b", null);
+        __decorate([
+            wd.ensureGetter(function (a) {
+                wd.assert(a >= 0, wd.Log.info.FUNC_SHOULD("a", ">= 0, but actual is " + a));
+            })
+        ], Color.prototype, "a", null);
+        __decorate([
             wd.cache(function () {
                 return this._colorVec3Cache !== null;
             }, function () {
@@ -32960,17 +34750,11 @@ var wd;
     }());
     wd.Color = Color;
 })(wd || (wd = {}));
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var Texture = (function () {
         function Texture() {
+            this.name = "";
             this.material = null;
             this.width = null;
             this.height = null;
@@ -32990,6 +34774,9 @@ var wd;
             enumerable: true,
             configurable: true
         });
+        Texture.prototype.clone = function () {
+            return wd.CloneUtils.clone(this);
+        };
         Texture.prototype.bindToUnit = function (unit) {
             var gl = wd.DeviceManager.getInstance().gl, maxUnit = wd.GPUDetector.getInstance().maxTextureUnit;
             if (unit >= maxUnit) {
@@ -33058,13 +34845,42 @@ var wd;
             }
         };
         __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Texture.prototype, "name", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Texture.prototype, "material", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Texture.prototype, "width", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Texture.prototype, "height", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Texture.prototype, "variableData", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Texture.prototype, "wrapS", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Texture.prototype, "wrapT", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Texture.prototype, "magFilter", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Texture.prototype, "minFilter", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Texture.prototype, "needUpdate", void 0);
+        __decorate([
             wd.virtual
         ], Texture.prototype, "isSourcePowerOfTwo", null);
         return Texture;
     }());
     wd.Texture = Texture;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var TextureUtils = (function () {
@@ -33077,21 +34893,15 @@ var wd;
     }());
     wd.TextureUtils = TextureUtils;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
-(function (wd_1) {
+(function (wd_2) {
     var BasicTextureUtils = (function (_super) {
         __extends(BasicTextureUtils, _super);
         function BasicTextureUtils() {
             _super.apply(this, arguments);
         }
         BasicTextureUtils.isDrawPartOfTexture = function (sourceRegion, sourceRegionMethod) {
-            return sourceRegion && sourceRegion.isNotEmpty() && sourceRegionMethod === wd_1.ETextureSourceRegionMethod.DRAW_IN_CANVAS;
+            return sourceRegion && sourceRegion.isNotEmpty() && sourceRegionMethod === wd_2.ETextureSourceRegionMethod.DRAW_IN_CANVAS;
         };
         BasicTextureUtils.drawPartOfTextureByCanvas = function (source, canvasWidth, canvasHeight, sx, sy, sWidth, sHeight, dx, wd, dWidth, dHeight) {
             var canvas = wdCb.DomQuery.create("<canvas></canvas>").get(0), ctx = null;
@@ -33116,19 +34926,13 @@ var wd;
             newWidth = Math.floor(source.width * maxSize / maxDimension);
             newHeight = Math.floor(source.height * maxSize / maxDimension);
             canvas = this.drawPartOfTextureByCanvas(source, newWidth, newHeight, 0, 0, source.width, source.height, 0, 0, newWidth, newHeight);
-            wd_1.Log.log("source is too big (width:" + source.width + ", height:" + source.height + "), resize it to be width:" + canvas.width + ", height:" + canvas.height + ".");
+            wd_2.Log.log("source is too big (width:" + source.width + ", height:" + source.height + "), resize it to be width:" + canvas.width + ", height:" + canvas.height + ".");
             return canvas;
         };
         return BasicTextureUtils;
-    }(wd_1.TextureUtils));
-    wd_1.BasicTextureUtils = BasicTextureUtils;
+    }(wd_2.TextureUtils));
+    wd_2.BasicTextureUtils = BasicTextureUtils;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var RenderTargetTexture = (function (_super) {
@@ -33138,13 +34942,12 @@ var wd;
         }
         RenderTargetTexture.prototype.initWhenCreate = function () {
             this.needUpdate = false;
-        };
-        RenderTargetTexture.prototype.init = function () {
             this.minFilter = wd.ETextureFilterMode.LINEAR;
             this.magFilter = wd.ETextureFilterMode.LINEAR;
             this.wrapS = wd.ETextureWrapMode.CLAMP_TO_EDGE;
             this.wrapT = wd.ETextureWrapMode.CLAMP_TO_EDGE;
-            return this;
+        };
+        RenderTargetTexture.prototype.init = function () {
         };
         RenderTargetTexture.prototype.update = function () {
         };
@@ -33153,20 +34956,18 @@ var wd;
         };
         RenderTargetTexture.prototype.setEmptyTexture = function (texture) {
             var gl = wd.DeviceManager.getInstance().gl;
-            wd.Log.error(!texture, "Failed to create texture object");
             gl.bindTexture(gl[this.target], texture);
             this.setTextureParameters(gl[this.target], this.isSourcePowerOfTwo());
         };
+        __decorate([
+            wd.require(function (texture) {
+                wd.Log.assert(!!texture, wd.Log.info.FUNC_NOT_EXIST("texture object"));
+            })
+        ], RenderTargetTexture.prototype, "setEmptyTexture", null);
         return RenderTargetTexture;
     }(wd.Texture));
     wd.RenderTargetTexture = RenderTargetTexture;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var TwoDRenderTargetTexture = (function (_super) {
@@ -33174,8 +34975,6 @@ var wd;
         function TwoDRenderTargetTexture() {
             _super.apply(this, arguments);
             this._renderList = null;
-            this.width = 256;
-            this.height = 256;
         }
         Object.defineProperty(TwoDRenderTargetTexture.prototype, "renderList", {
             get: function () {
@@ -33185,27 +34984,34 @@ var wd;
                 if (wd.JudgeUtils.isArrayExactly(renderList)) {
                     this._renderList = wdCb.Collection.create(renderList);
                 }
-                else if (renderList instanceof wdCb.Collection) {
-                    this._renderList = renderList;
-                }
                 else {
-                    wd.Log.error(true, wd.Log.info.FUNC_MUST_BE("renderList", "array or wdCb.Collection"));
+                    this._renderList = renderList;
                 }
             },
             enumerable: true,
             configurable: true
         });
+        TwoDRenderTargetTexture.prototype.initWhenCreate = function () {
+            _super.prototype.initWhenCreate.call(this);
+            this.width = 256;
+            this.height = 256;
+        };
         TwoDRenderTargetTexture.prototype.createEmptyTexture = function () {
             var gl = wd.DeviceManager.getInstance().gl, texture = gl.createTexture();
             this.setEmptyTexture(texture);
             gl.texImage2D(gl[this.target], 0, gl.RGBA, this.width, this.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
             this.glTexture = texture;
         };
+        __decorate([
+            wd.requireSetter(function (renderList) {
+                wd.assert(wd.JudgeUtils.isArrayExactly(renderList) || wd.JudgeUtils.isCollection(renderList), wd.Log.info.FUNC_MUST_BE("renderList", "array or collection"));
+            }),
+            wd.cloneAttributeAsCloneable()
+        ], TwoDRenderTargetTexture.prototype, "renderList", null);
         return TwoDRenderTargetTexture;
     }(wd.RenderTargetTexture));
     wd.TwoDRenderTargetTexture = TwoDRenderTargetTexture;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var ShadowMapTextureUtils = (function () {
@@ -33222,14 +35028,6 @@ var wd;
     }());
     wd.ShadowMapTextureUtils = ShadowMapTextureUtils;
 })(wd || (wd = {}));
-
-
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var LightEffectTexture = (function (_super) {
@@ -33257,12 +35055,6 @@ var wd;
     }(wd.TwoDRenderTargetTexture));
     wd.LightEffectTexture = LightEffectTexture;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var MirrorTexture = (function (_super) {
@@ -33277,19 +35069,13 @@ var wd;
         };
         MirrorTexture.prototype.init = function () {
             _super.prototype.init.call(this);
-            wd.Director.getInstance().scene.addRenderTargetRenderer(wd.MirrorRenderTargetRenderer.create(this));
+            wd.Director.getInstance().scene.addCommonRenderTargetRenderer(wd.MirrorRenderTargetRenderer.create(this));
             return this;
         };
         return MirrorTexture;
     }(wd.LightEffectTexture));
     wd.MirrorTexture = MirrorTexture;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var RefractionTexture = (function (_super) {
@@ -33304,19 +35090,13 @@ var wd;
         };
         RefractionTexture.prototype.init = function () {
             _super.prototype.init.call(this);
-            wd.Director.getInstance().scene.addRenderTargetRenderer(wd.RefractionRenderTargetRenderer.create(this));
+            wd.Director.getInstance().scene.addCommonRenderTargetRenderer(wd.RefractionRenderTargetRenderer.create(this));
             return this;
         };
         return RefractionTexture;
     }(wd.LightEffectTexture));
     wd.RefractionTexture = RefractionTexture;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var TwoDShadowMapTexture = (function (_super) {
@@ -33330,23 +35110,21 @@ var wd;
             return obj;
         };
         TwoDShadowMapTexture.prototype.getSamplerName = function (unit) {
-            wd.Log.error(!wd.JudgeUtils.isNumber(this.variableData.samplerData), wd.Log.info.FUNC_MUST_BE("shadowMapTexture->variableData.samplerData", "samplerIndex"));
             return "u_twoDShadowMapSampler[" + this.variableData.samplerData + "]";
         };
         TwoDShadowMapTexture.prototype.setTextureParameters = function (textureType, isSourcePowerOfTwo) {
             _super.prototype.setTextureParameters.call(this, textureType, isSourcePowerOfTwo);
             wd.ShadowMapTextureUtils.setTextureParameters(textureType);
         };
+        __decorate([
+            wd.require(function (unit) {
+                wd.assert(wd.JudgeUtils.isNumber(this.variableData.samplerData), wd.Log.info.FUNC_MUST_BE("shadowMapTexture->variableData.samplerData", "samplerIndex"));
+            })
+        ], TwoDShadowMapTexture.prototype, "getSamplerName", null);
         return TwoDShadowMapTexture;
     }(wd.TwoDRenderTargetTexture));
     wd.TwoDShadowMapTexture = TwoDShadowMapTexture;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var CubemapRenderTargetTexture = (function (_super) {
@@ -33367,12 +35145,6 @@ var wd;
     }(wd.RenderTargetTexture));
     wd.CubemapRenderTargetTexture = CubemapRenderTargetTexture;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var CubemapShadowMapTexture = (function (_super) {
@@ -33386,19 +35158,17 @@ var wd;
             return obj;
         };
         CubemapShadowMapTexture.prototype.getSamplerName = function (unit) {
-            wd.Log.error(!wd.JudgeUtils.isNumber(this.variableData.samplerData), wd.Log.info.FUNC_MUST_BE("shadowMapTexture->variableData.samplerData", "samplerIndex"));
             return "u_cubemapShadowMapSampler[" + this.variableData.samplerData + "]";
         };
+        __decorate([
+            wd.require(function (unit) {
+                wd.assert(wd.JudgeUtils.isNumber(this.variableData.samplerData), wd.Log.info.FUNC_MUST_BE("shadowMapTexture->variableData.samplerData", "samplerIndex"));
+            })
+        ], CubemapShadowMapTexture.prototype, "getSamplerName", null);
         return CubemapShadowMapTexture;
     }(wd.CubemapRenderTargetTexture));
     wd.CubemapShadowMapTexture = CubemapShadowMapTexture;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var DynamicCubemapTexture = (function (_super) {
@@ -33421,15 +35191,27 @@ var wd;
                 return this._renderList;
             },
             set: function (renderList) {
-                if (wd.JudgeUtils.isDirectObject(renderList)) {
-                    this._renderList = wdCb.Hash.create(renderList);
+                var convertedRenderList = wdCb.Hash.create();
+                if (renderList instanceof wdCb.Hash) {
                 }
-                else if (renderList instanceof wdCb.Hash) {
-                    this._renderList = renderList;
+                else if (wd.JudgeUtils.isDirectObject(renderList)) {
+                    renderList = wdCb.Hash.create(renderList);
                 }
                 else {
                     wd.Log.error(true, wd.Log.info.FUNC_MUST_BE("renderList", "array or wdCb.Collection"));
                 }
+                renderList.forEach(function (faceRenderList, face) {
+                    if (wd.JudgeUtils.isArrayExactly(faceRenderList)) {
+                        convertedRenderList.addChild(face, wdCb.Collection.create(faceRenderList));
+                    }
+                    else if (wd.JudgeUtils.isCollection(faceRenderList)) {
+                        convertedRenderList.addChild(face, faceRenderList);
+                    }
+                    else {
+                        wd.Log.error(true, wd.Log.info.FUNC_MUST_BE("faceRenderList", "array or wdCb.Collection"));
+                    }
+                });
+                this._renderList = convertedRenderList;
             },
             enumerable: true,
             configurable: true
@@ -33438,56 +35220,41 @@ var wd;
             _super.prototype.init.call(this);
             this.width = this.size;
             this.height = this.size;
-            wd.Director.getInstance().scene.addRenderTargetRenderer(wd.DynamicCubemapRenderTargetRenderer.create(this));
+            wd.Director.getInstance().scene.addCommonRenderTargetRenderer(wd.DynamicCubemapRenderTargetRenderer.create(this));
             return this;
         };
         DynamicCubemapTexture.prototype.getSamplerName = function (unit) {
             return this.getSamplerNameByVariableData(unit, wd.EVariableType.SAMPLER_CUBE);
         };
+        __decorate([
+            wd.cloneAttributeAsCustomType(function (source, target, memberName) {
+                var result = null;
+                if (source[memberName] === null) {
+                    return;
+                }
+                result = wdCb.Hash.create();
+                source[memberName].forEach(function (list, key) {
+                    result.addChild(key, list.clone());
+                });
+                target[memberName] = result;
+            })
+        ], DynamicCubemapTexture.prototype, "renderList", null);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], DynamicCubemapTexture.prototype, "size", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], DynamicCubemapTexture.prototype, "near", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], DynamicCubemapTexture.prototype, "far", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], DynamicCubemapTexture.prototype, "mode", void 0);
         return DynamicCubemapTexture;
     }(wd.CubemapRenderTargetTexture));
     wd.DynamicCubemapTexture = DynamicCubemapTexture;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var wd;
-(function (wd) {
-    var ProceduralTexture = (function (_super) {
-        __extends(ProceduralTexture, _super);
-        function ProceduralTexture() {
-            _super.apply(this, arguments);
-            this.repeatRegion = wd.RectRegion.create(0, 0, 1, 1);
-        }
-        Object.defineProperty(ProceduralTexture.prototype, "sourceRegionForGLSL", {
-            get: function () {
-                return wd.RectRegion.create(0, 0, 1, 1);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        ProceduralTexture.prototype.getSamplerName = function (unit) {
-            return this.getSamplerNameByVariableData(unit, wd.EVariableType.SAMPLER_2D);
-        };
-        return ProceduralTexture;
-    }(wd.TwoDRenderTargetTexture));
-    wd.ProceduralTexture = ProceduralTexture;
-})(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var BasicTexture = (function (_super) {
@@ -33602,39 +35369,71 @@ var wd;
             }
         };
         __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], BasicTexture.prototype, "sourceRegionMethod", null);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], BasicTexture.prototype, "generateMipmaps", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], BasicTexture.prototype, "format", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], BasicTexture.prototype, "source", void 0);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], BasicTexture.prototype, "repeatRegion", void 0);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], BasicTexture.prototype, "sourceRegion", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], BasicTexture.prototype, "sourceRegionMapping", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], BasicTexture.prototype, "flipY", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], BasicTexture.prototype, "premultiplyAlpha", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], BasicTexture.prototype, "unpackAlignment", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], BasicTexture.prototype, "type", void 0);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], BasicTexture.prototype, "mipmaps", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], BasicTexture.prototype, "anisotropy", void 0);
+        __decorate([
             wd.virtual
         ], BasicTexture.prototype, "needClampMaxSize", null);
         return BasicTexture;
     }(wd.Texture));
     wd.BasicTexture = BasicTexture;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var TwoDTexture = (function (_super) {
         __extends(TwoDTexture, _super);
-        function TwoDTexture() {
-            _super.apply(this, arguments);
+        function TwoDTexture(asset) {
+            _super.call(this);
+            this.asset = null;
+            this.asset = asset;
         }
-        TwoDTexture.prototype.initWhenCreate = function (asset) {
+        TwoDTexture.prototype.clone = function () {
+            return wd.CloneUtils.clone(this, null, [this.asset]);
+        };
+        TwoDTexture.prototype.initWhenCreate = function () {
             _super.prototype.initWhenCreate.call(this);
-            asset.copyTo(this);
+            this.asset.cloneTo(this);
         };
         return TwoDTexture;
     }(wd.BasicTexture));
     wd.TwoDTexture = TwoDTexture;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var CommonTexture = (function (_super) {
@@ -33670,44 +35469,29 @@ var wd;
     }(wd.TwoDTexture));
     wd.CommonTexture = CommonTexture;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var ImageTexture = (function (_super) {
         __extends(ImageTexture, _super);
-        function ImageTexture() {
-            _super.apply(this, arguments);
-        }
-        ImageTexture.create = function (arg) {
-            var obj = new this();
-            obj.initWhenCreate(arg);
-            return obj;
-        };
-        ImageTexture.prototype.initWhenCreate = function (arg) {
-            if (arguments[0] instanceof wd.ImageTextureAsset) {
-                var asset = arguments[0];
-                _super.prototype.initWhenCreate.call(this, asset);
+        function ImageTexture(arg) {
+            if (arg instanceof wd.ImageTextureAsset) {
+                var asset = arg;
+                _super.call(this, asset);
             }
             else {
-                var canvas = arguments[0];
-                _super.prototype.initWhenCreate.call(this, wd.ImageTextureAsset.create(canvas));
+                var canvas = arg;
+                _super.call(this, wd.ImageTextureAsset.create(canvas));
             }
+        }
+        ImageTexture.create = function (arg) {
+            var obj = new this(arg);
+            obj.initWhenCreate();
+            return obj;
         };
         return ImageTexture;
     }(wd.CommonTexture));
     wd.ImageTexture = ImageTexture;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var VideoTexture = (function (_super) {
@@ -33718,13 +35502,13 @@ var wd;
             this._startLoopSubscription = null;
         }
         VideoTexture.create = function (asset) {
-            var obj = new this();
-            obj.initWhenCreate(asset);
+            var obj = new this(asset);
+            obj.initWhenCreate();
             return obj;
         };
-        VideoTexture.prototype.initWhenCreate = function (asset) {
-            _super.prototype.initWhenCreate.call(this, asset);
-            this._video = asset.video;
+        VideoTexture.prototype.initWhenCreate = function () {
+            _super.prototype.initWhenCreate.call(this);
+            this._video = this.asset.video;
         };
         VideoTexture.prototype.init = function () {
             var self = this;
@@ -33750,18 +35534,6 @@ var wd;
     }(wd.CommonTexture));
     wd.VideoTexture = VideoTexture;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var CubemapTexture = (function (_super) {
@@ -33780,6 +35552,16 @@ var wd;
             obj.initWhenCreate(assets);
             return obj;
         };
+        CubemapTexture.prototype.clone = function () {
+            var resultAssets = null;
+            if (this.assets !== null) {
+                resultAssets = [].concat(this.assets);
+            }
+            else {
+                resultAssets = null;
+            }
+            return wd.CloneUtils.clone(this, null, [resultAssets]);
+        };
         CubemapTexture.prototype.initWhenCreate = function (assets) {
             _super.prototype.initWhenCreate.call(this);
             if (this._areAssetsAllCompressedAsset(assets)) {
@@ -33789,7 +35571,7 @@ var wd;
                 this._areAllCompressedAsset = false;
             }
             this._createTextures(assets);
-            this._getRepresentAsset(assets).copyToCubemapTexture(this);
+            this._getRepresentAsset(assets).cloneToCubemapTexture(this);
             if (this._areAllCompressedAsset) {
                 this.generateMipmaps = false;
                 if (this._hasNoMipmapCompressedAsset()) {
@@ -33917,14 +35699,17 @@ var wd;
         };
         CubemapTexture.prototype._areAllElementsEqual = function (arr) {
             var lastEle = arr[0];
-            for (var _i = 0, arr_1 = arr; _i < arr_1.length; _i++) {
-                var ele = arr_1[_i];
+            for (var _i = 0, arr_2 = arr; _i < arr_2.length; _i++) {
+                var ele = arr_2[_i];
                 if (ele !== lastEle) {
                     return false;
                 }
             }
             return true;
         };
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], CubemapTexture.prototype, "mode", void 0);
         __decorate([
             wd.require(function (assets) {
                 wd.assert(assets.length === 6, wd.Log.info.FUNC_MUST("cubemap", "has 6 assets"));
@@ -33939,7 +35724,6 @@ var wd;
     }(wd.BasicTexture));
     wd.CubemapTexture = CubemapTexture;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var CubemapFaceTexture = (function () {
@@ -33953,18 +35737,6 @@ var wd;
     }());
     wd.CubemapFaceTexture = CubemapFaceTexture;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var CubemapFaceImageTexture = (function (_super) {
@@ -33984,13 +35756,12 @@ var wd;
                 return wd.ETextureSourceRegionMethod.DRAW_IN_CANVAS;
             },
             set: function (sourceRegionMethod) {
-                var a = sourceRegionMethod;
             },
             enumerable: true,
             configurable: true
         });
         CubemapFaceImageTexture.prototype.initWhenCreate = function (asset) {
-            asset.copyToCubemapFaceTexture(this);
+            asset.cloneToCubemapFaceTexture(this);
         };
         CubemapFaceImageTexture.prototype.isSourcePowerOfTwo = function () {
             return wd.BasicTextureUtils.isSourcePowerOfTwo(this.sourceRegion, this.sourceRegionMethod, this.width, this.height);
@@ -34024,12 +35795,6 @@ var wd;
     }(wd.CubemapFaceTexture));
     wd.CubemapFaceImageTexture = CubemapFaceImageTexture;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var CubemapFaceCompressedTexture = (function (_super) {
@@ -34045,7 +35810,7 @@ var wd;
             return obj;
         };
         CubemapFaceCompressedTexture.prototype.initWhenCreate = function (asset) {
-            asset.copyToCubemapFaceTexture(this);
+            asset.cloneToCubemapFaceTexture(this);
         };
         CubemapFaceCompressedTexture.prototype.isSourcePowerOfTwo = function () {
             return wd.BasicTextureUtils.isSourcePowerOfTwo(null, null, this.width, this.height);
@@ -34068,12 +35833,6 @@ var wd;
     }(wd.CubemapFaceTexture));
     wd.CubemapFaceCompressedTexture = CubemapFaceCompressedTexture;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var CompressedTexture = (function (_super) {
@@ -34082,8 +35841,8 @@ var wd;
             _super.apply(this, arguments);
         }
         CompressedTexture.create = function (asset) {
-            var obj = new this();
-            obj.initWhenCreate(asset);
+            var obj = new this(asset);
+            obj.initWhenCreate();
             return obj;
         };
         Object.defineProperty(CompressedTexture.prototype, "sourceRegionMethod", {
@@ -34114,7 +35873,6 @@ var wd;
     }(wd.TwoDTexture));
     wd.CompressedTexture = CompressedTexture;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var DrawTextureCommand = (function () {
@@ -34140,12 +35898,6 @@ var wd;
     }());
     wd.DrawTextureCommand = DrawTextureCommand;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var DrawCompressedTextureCommand = (function (_super) {
@@ -34176,12 +35928,6 @@ var wd;
     }(wd.DrawTextureCommand));
     wd.DrawCompressedTextureCommand = DrawCompressedTextureCommand;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var DrawTwoDTextureCommand = (function (_super) {
@@ -34198,12 +35944,6 @@ var wd;
     }(wd.DrawTextureCommand));
     wd.DrawTwoDTextureCommand = DrawTwoDTextureCommand;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var DrawMipmapTwoDTextureCommand = (function (_super) {
@@ -34226,12 +35966,6 @@ var wd;
     }(wd.DrawTwoDTextureCommand));
     wd.DrawMipmapTwoDTextureCommand = DrawMipmapTwoDTextureCommand;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var DrawNoMipmapTwoDTextureCommand = (function (_super) {
@@ -34250,7 +35984,6 @@ var wd;
     }(wd.DrawTwoDTextureCommand));
     wd.DrawNoMipmapTwoDTextureCommand = DrawNoMipmapTwoDTextureCommand;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var Video = (function () {
@@ -34328,7 +36061,6 @@ var wd;
     }());
     wd.Video = Video;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var VideoManager = (function () {
@@ -34351,7 +36083,6 @@ var wd;
     }());
     wd.VideoManager = VideoManager;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     if (wd.JudgeUtils.isNodeJs()) {
@@ -34361,12 +36092,136 @@ var wd;
         wd.root = window;
     }
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
+var wd;
+(function (wd) {
+    var ProceduralShaderLib = (function (_super) {
+        __extends(ProceduralShaderLib, _super);
+        function ProceduralShaderLib() {
+            _super.apply(this, arguments);
+        }
+        ProceduralShaderLib.prototype.sendShaderVariables = function (program, cmd) {
+        };
+        ProceduralShaderLib.prototype.setShaderDefinition = function (cmd) {
+            _super.prototype.setShaderDefinition.call(this, cmd, null);
+        };
+        __decorate([
+            wd.virtual
+        ], ProceduralShaderLib.prototype, "sendShaderVariables", null);
+        __decorate([
+            wd.virtual
+        ], ProceduralShaderLib.prototype, "setShaderDefinition", null);
+        return ProceduralShaderLib;
+    }(wd.EngineShaderLib));
+    wd.ProceduralShaderLib = ProceduralShaderLib;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var ProceduralRenderTargetRenderer = (function (_super) {
+        __extends(ProceduralRenderTargetRenderer, _super);
+        function ProceduralRenderTargetRenderer() {
+            _super.apply(this, arguments);
+            this.frameBuffer = null;
+            this._indexBuffer = null;
+            this._vertexBuffer = null;
+            this._shader = null;
+            this._isRendered = false;
+        }
+        ProceduralRenderTargetRenderer.prototype.needRender = function () {
+            if (this._isRendered) {
+                return false;
+            }
+            this._isRendered = true;
+            return true;
+        };
+        ProceduralRenderTargetRenderer.prototype.init = function () {
+            _super.prototype.init.call(this);
+            this._vertexBuffer = wd.ArrayBuffer.create(new Float32Array([
+                1, 1,
+                -1, 1,
+                -1, -1,
+                1, -1
+            ]), 2, wd.EBufferType.FLOAT);
+            this._indexBuffer = wd.ElementBuffer.create(new Uint16Array([
+                0, 1, 2,
+                0, 2, 3
+            ]), wd.EBufferType.UNSIGNED_SHORT);
+            this._shader = this.createShader();
+            this._shader.init();
+        };
+        ProceduralRenderTargetRenderer.prototype.dispose = function () {
+            _super.prototype.dispose.call(this);
+            this._indexBuffer.dispose();
+            this._vertexBuffer.dispose();
+            this._shader.dispose();
+        };
+        ProceduralRenderTargetRenderer.prototype.initFrameBuffer = function () {
+            var frameBuffer = this.frameBufferOperator, gl = wd.DeviceManager.getInstance().gl;
+            this.frameBuffer = frameBuffer.createFrameBuffer();
+            frameBuffer.bindFrameBuffer(this.frameBuffer);
+            frameBuffer.attachTexture(gl.TEXTURE_2D, this.texture.glTexture);
+            frameBuffer.check();
+            frameBuffer.unBind();
+        };
+        ProceduralRenderTargetRenderer.prototype.renderFrameBufferTexture = function (renderList, renderer) {
+            this.frameBufferOperator.bindFrameBuffer(this.frameBuffer);
+            this.texture.bindToUnit(0);
+            this.frameBufferOperator.setViewport();
+            renderer.addCommand(this._createRenderCommand());
+            renderer.clear();
+            renderer.webglState = wd.BasicState.create();
+            renderer.render();
+            this.frameBufferOperator.unBind();
+            this.frameBufferOperator.restoreViewport();
+        };
+        ProceduralRenderTargetRenderer.prototype.disposeFrameBuffer = function () {
+            var gl = wd.DeviceManager.getInstance().gl;
+            gl.deleteFramebuffer(this.frameBuffer);
+        };
+        ProceduralRenderTargetRenderer.prototype.getRenderList = function () {
+            return null;
+        };
+        ProceduralRenderTargetRenderer.prototype.isRenderListEmpty = function () {
+            return false;
+        };
+        ProceduralRenderTargetRenderer.prototype._createRenderCommand = function () {
+            var command = wd.ProceduralCommand.create();
+            command.vertexBuffer = this._vertexBuffer;
+            command.indexBuffer = this._indexBuffer;
+            command.shader = this._shader;
+            return command;
+        };
+        __decorate([
+            wd.virtual
+        ], ProceduralRenderTargetRenderer.prototype, "needRender", null);
+        return ProceduralRenderTargetRenderer;
+    }(wd.RenderTargetRenderer));
+    wd.ProceduralRenderTargetRenderer = ProceduralRenderTargetRenderer;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var ProceduralTexture = (function (_super) {
+        __extends(ProceduralTexture, _super);
+        function ProceduralTexture() {
+            _super.apply(this, arguments);
+            this.repeatRegion = wd.RectRegion.create(0, 0, 1, 1);
+        }
+        Object.defineProperty(ProceduralTexture.prototype, "sourceRegionForGLSL", {
+            get: function () {
+                return wd.RectRegion.create(0, 0, 1, 1);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        ProceduralTexture.prototype.getSamplerName = function (unit) {
+            return this.getSamplerNameByVariableData(unit, wd.EVariableType.SAMPLER_2D);
+        };
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], ProceduralTexture.prototype, "repeatRegion", void 0);
+        return ProceduralTexture;
+    }(wd.TwoDRenderTargetTexture));
+    wd.ProceduralTexture = ProceduralTexture;
+})(wd || (wd = {}));
 var wd;
 (function (wd) {
     var CommonProceduralShaderLib = (function (_super) {
@@ -34390,12 +36245,6 @@ var wd;
     }(wd.ProceduralShaderLib));
     wd.CommonProceduralShaderLib = CommonProceduralShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var FireProceduralShaderLib = (function (_super) {
@@ -34431,12 +36280,6 @@ var wd;
     }(wd.ProceduralShaderLib));
     wd.FireProceduralShaderLib = FireProceduralShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var FireProceduralRenderTargetRenderer = (function (_super) {
@@ -34461,18 +36304,6 @@ var wd;
     }(wd.ProceduralRenderTargetRenderer));
     wd.FireProceduralRenderTargetRenderer = FireProceduralRenderTargetRenderer;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var FireProceduralTexture = (function (_super) {
@@ -34493,6 +36324,9 @@ var wd;
         };
         Object.defineProperty(FireProceduralTexture.prototype, "fireColorMap", {
             get: function () {
+                if (this._fireColorMap !== null) {
+                    return this._fireColorMap;
+                }
                 switch (this.fireColorType) {
                     case EFireProceduralTextureColorType.CUSTOM:
                         return this._fireColorMap;
@@ -34552,6 +36386,9 @@ var wd;
             this.time += 0.1;
         };
         __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], FireProceduralTexture.prototype, "_fireColorMap", void 0);
+        __decorate([
             wd.requireSetter(function (fireColorMap) {
                 wd.assert(fireColorMap.getCount() === 6, wd.Log.info.FUNC_SHOULD("contain 6 colors"));
             }),
@@ -34559,6 +36396,21 @@ var wd;
                 wd.assert(value.getCount() === 6, wd.Log.info.FUNC_SHOULD("contain 6 colors"));
             })
         ], FireProceduralTexture.prototype, "fireColorMap", null);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], FireProceduralTexture.prototype, "fireColorType", void 0);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], FireProceduralTexture.prototype, "speed", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], FireProceduralTexture.prototype, "alphaThreshold", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], FireProceduralTexture.prototype, "shift", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], FireProceduralTexture.prototype, "time", void 0);
         return FireProceduralTexture;
     }(wd.ProceduralTexture));
     wd.FireProceduralTexture = FireProceduralTexture;
@@ -34571,12 +36423,6 @@ var wd;
     })(wd.EFireProceduralTextureColorType || (wd.EFireProceduralTextureColorType = {}));
     var EFireProceduralTextureColorType = wd.EFireProceduralTextureColorType;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var MarbleProceduralRenderTargetRenderer = (function (_super) {
@@ -34598,12 +36444,6 @@ var wd;
     }(wd.ProceduralRenderTargetRenderer));
     wd.MarbleProceduralRenderTargetRenderer = MarbleProceduralRenderTargetRenderer;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var MarbleProceduralTexture = (function (_super) {
@@ -34625,16 +36465,22 @@ var wd;
             wd.Director.getInstance().scene.addProceduralRenderTargetRenderer(wd.MarbleProceduralRenderTargetRenderer.create(this));
             return this;
         };
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], MarbleProceduralTexture.prototype, "tilesHeightNumber", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], MarbleProceduralTexture.prototype, "tilesWidthNumber", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], MarbleProceduralTexture.prototype, "amplitude", void 0);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], MarbleProceduralTexture.prototype, "jointColor", void 0);
         return MarbleProceduralTexture;
     }(wd.ProceduralTexture));
     wd.MarbleProceduralTexture = MarbleProceduralTexture;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var MarbleProceduralShaderLib = (function (_super) {
@@ -34666,12 +36512,6 @@ var wd;
     }(wd.ProceduralShaderLib));
     wd.MarbleProceduralShaderLib = MarbleProceduralShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var GrassProceduralRenderTargetRenderer = (function (_super) {
@@ -34693,12 +36533,6 @@ var wd;
     }(wd.ProceduralRenderTargetRenderer));
     wd.GrassProceduralRenderTargetRenderer = GrassProceduralRenderTargetRenderer;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var GrassProceduralTexture = (function (_super) {
@@ -34720,16 +36554,22 @@ var wd;
             wd.Director.getInstance().scene.addProceduralRenderTargetRenderer(wd.GrassProceduralRenderTargetRenderer.create(this));
             return this;
         };
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], GrassProceduralTexture.prototype, "herb1Color", void 0);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], GrassProceduralTexture.prototype, "herb2Color", void 0);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], GrassProceduralTexture.prototype, "herb3Color", void 0);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], GrassProceduralTexture.prototype, "groundColor", void 0);
         return GrassProceduralTexture;
     }(wd.ProceduralTexture));
     wd.GrassProceduralTexture = GrassProceduralTexture;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var GrassProceduralShaderLib = (function (_super) {
@@ -34761,12 +36601,6 @@ var wd;
     }(wd.ProceduralShaderLib));
     wd.GrassProceduralShaderLib = GrassProceduralShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var WoodProceduralRenderTargetRenderer = (function (_super) {
@@ -34788,12 +36622,6 @@ var wd;
     }(wd.ProceduralRenderTargetRenderer));
     wd.WoodProceduralRenderTargetRenderer = WoodProceduralRenderTargetRenderer;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var WoodProceduralTexture = (function (_super) {
@@ -34813,16 +36641,16 @@ var wd;
             wd.Director.getInstance().scene.addProceduralRenderTargetRenderer(wd.WoodProceduralRenderTargetRenderer.create(this));
             return this;
         };
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], WoodProceduralTexture.prototype, "ampScale", void 0);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], WoodProceduralTexture.prototype, "woodColor", void 0);
         return WoodProceduralTexture;
     }(wd.ProceduralTexture));
     wd.WoodProceduralTexture = WoodProceduralTexture;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var WoodProceduralShaderLib = (function (_super) {
@@ -34852,12 +36680,6 @@ var wd;
     }(wd.ProceduralShaderLib));
     wd.WoodProceduralShaderLib = WoodProceduralShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var RoadProceduralRenderTargetRenderer = (function (_super) {
@@ -34879,12 +36701,6 @@ var wd;
     }(wd.ProceduralRenderTargetRenderer));
     wd.RoadProceduralRenderTargetRenderer = RoadProceduralRenderTargetRenderer;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var RoadProceduralTexture = (function (_super) {
@@ -34903,16 +36719,13 @@ var wd;
             wd.Director.getInstance().scene.addProceduralRenderTargetRenderer(wd.RoadProceduralRenderTargetRenderer.create(this));
             return this;
         };
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], RoadProceduralTexture.prototype, "roadColor", void 0);
         return RoadProceduralTexture;
     }(wd.ProceduralTexture));
     wd.RoadProceduralTexture = RoadProceduralTexture;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var RoadProceduralShaderLib = (function (_super) {
@@ -34941,12 +36754,6 @@ var wd;
     }(wd.ProceduralShaderLib));
     wd.RoadProceduralShaderLib = RoadProceduralShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var CloudProceduralRenderTargetRenderer = (function (_super) {
@@ -34968,12 +36775,6 @@ var wd;
     }(wd.ProceduralRenderTargetRenderer));
     wd.CloudProceduralRenderTargetRenderer = CloudProceduralRenderTargetRenderer;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var CloudProceduralTexture = (function (_super) {
@@ -34993,16 +36794,16 @@ var wd;
             wd.Director.getInstance().scene.addProceduralRenderTargetRenderer(wd.CloudProceduralRenderTargetRenderer.create(this));
             return this;
         };
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], CloudProceduralTexture.prototype, "skyColor", void 0);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], CloudProceduralTexture.prototype, "cloudColor", void 0);
         return CloudProceduralTexture;
     }(wd.ProceduralTexture));
     wd.CloudProceduralTexture = CloudProceduralTexture;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var CloudProceduralShaderLib = (function (_super) {
@@ -35032,12 +36833,6 @@ var wd;
     }(wd.ProceduralShaderLib));
     wd.CloudProceduralShaderLib = CloudProceduralShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var BrickProceduralRenderTargetRenderer = (function (_super) {
@@ -35059,12 +36854,6 @@ var wd;
     }(wd.ProceduralRenderTargetRenderer));
     wd.BrickProceduralRenderTargetRenderer = BrickProceduralRenderTargetRenderer;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var BrickProceduralTexture = (function (_super) {
@@ -35086,16 +36875,22 @@ var wd;
             wd.Director.getInstance().scene.addProceduralRenderTargetRenderer(wd.BrickProceduralRenderTargetRenderer.create(this));
             return this;
         };
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], BrickProceduralTexture.prototype, "tilesHeightNumber", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], BrickProceduralTexture.prototype, "tilesWidthNumber", void 0);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], BrickProceduralTexture.prototype, "brickColor", void 0);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], BrickProceduralTexture.prototype, "jointColor", void 0);
         return BrickProceduralTexture;
     }(wd.ProceduralTexture));
     wd.BrickProceduralTexture = BrickProceduralTexture;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var BrickProceduralShaderLib = (function (_super) {
@@ -35127,12 +36922,6 @@ var wd;
     }(wd.ProceduralShaderLib));
     wd.BrickProceduralShaderLib = BrickProceduralShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var CustomProceduralRenderTargetRenderer = (function (_super) {
@@ -35160,25 +36949,13 @@ var wd;
     }(wd.ProceduralRenderTargetRenderer));
     wd.CustomProceduralRenderTargetRenderer = CustomProceduralRenderTargetRenderer;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var CustomProceduralTexture = (function (_super) {
         __extends(CustomProceduralTexture, _super);
         function CustomProceduralTexture() {
             _super.apply(this, arguments);
-            this.mapManager = wd.MapManager.create(null);
+            this.mapManager = wd.MapManager.create();
             this.uniformMap = wdCb.Hash.create();
             this.fsSource = null;
             this.isAnimate = false;
@@ -35196,26 +36973,42 @@ var wd;
         CustomProceduralTexture.prototype.read = function (shaderConfigId) {
             var shaderConfig = wd.LoaderManager.getInstance().get(shaderConfigId), uniforms = shaderConfig.uniforms;
             this.fsSource = wd.LoaderManager.getInstance().get(shaderConfig.fsSourceId);
-            for (var name_1 in uniforms) {
-                if (uniforms.hasOwnProperty(name_1)) {
-                    var uniform = uniforms[name_1];
+            for (var name_3 in uniforms) {
+                if (uniforms.hasOwnProperty(name_3)) {
+                    var uniform = uniforms[name_3];
                     if (uniform.type === wd.EVariableType.SAMPLER_2D) {
                         this.mapManager.addMap(wd.LoaderManager.getInstance().get(uniform.textureId), {
-                            samplerVariableName: name_1
+                            samplerVariableName: name_3
                         });
                     }
                     else {
-                        this.uniformMap.addChild(name_1, uniform);
+                        this.uniformMap.addChild(name_3, uniform);
                     }
                 }
             }
         };
         __decorate([
+            wd.cloneAttributeAsCustomType(function (source, target, memberName) {
+                source[memberName].getMapList().forEach(function (map) {
+                    target[memberName].addMap(map.clone());
+                });
+            })
+        ], CustomProceduralTexture.prototype, "mapManager", void 0);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], CustomProceduralTexture.prototype, "uniformMap", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], CustomProceduralTexture.prototype, "fsSource", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], CustomProceduralTexture.prototype, "isAnimate", void 0);
+        __decorate([
             wd.require(function (shaderConfigId) {
                 var shaderConfig = wd.LoaderManager.getInstance().get(shaderConfigId), uniforms = shaderConfig.uniforms;
-                for (var name_2 in uniforms) {
-                    if (uniforms.hasOwnProperty(name_2)) {
-                        var uniform = uniforms[name_2];
+                for (var name_4 in uniforms) {
+                    if (uniforms.hasOwnProperty(name_4)) {
+                        var uniform = uniforms[name_4];
                         wd.assert(uniform.type !== wd.EVariableType.SAMPLER_CUBE, wd.Log.info.FUNC_NOT_SUPPORT("uniforms", "EVariableType.SAMPLER_CUBE type"));
                     }
                 }
@@ -35228,12 +37021,6 @@ var wd;
     }(wd.ProceduralTexture));
     wd.CustomProceduralTexture = CustomProceduralTexture;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var CustomProceduralShaderLib = (function (_super) {
@@ -35263,18 +37050,6 @@ var wd;
     }(wd.ProceduralShaderLib));
     wd.CustomProceduralShaderLib = CustomProceduralShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var TerrainMaterial = (function (_super) {
@@ -35285,10 +37060,11 @@ var wd;
         }
         TerrainMaterial.create = function () {
             var obj = new this();
+            obj.initWhenCreate();
             return obj;
         };
         TerrainMaterial.prototype.init = function () {
-            this.mapManager.addArrayMap("u_layerSampler2Ds", this.layer.mapArray);
+            this.mapManager.addMapArray("u_layerSampler2Ds", this.layer.mapArray);
             _super.prototype.init.call(this);
         };
         TerrainMaterial.prototype.addExtendShaderLib = function () {
@@ -35296,6 +37072,9 @@ var wd;
                 this.shader.addLib(wd.TerrainLayerShaderLib.create());
             }
         };
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], TerrainMaterial.prototype, "layer", void 0);
         return TerrainMaterial;
     }(wd.StandardLightMaterial));
     wd.TerrainMaterial = TerrainMaterial;
@@ -35328,6 +37107,9 @@ var wd;
             enumerable: true,
             configurable: true
         });
+        TerrainLayerMapModel.prototype.clone = function () {
+            return wd.CloneUtils.clone(this);
+        };
         __decorate([
             wd.requireSetter(function (mapDataList) {
                 mapDataList.forEach(function (mapData) {
@@ -35342,12 +37124,13 @@ var wd;
                         wd.assert(mapData.minHeight >= data.maxHeight || mapData.maxHeight <= data.minHeight, wd.Log.info.FUNC_SHOULD_NOT("height range", "overlap"));
                     });
                 });
-            })
+            }),
+            wd.cloneAttributeAsCloneable()
         ], TerrainLayerMapModel.prototype, "mapDataList", null);
         __decorate([
             wd.ensureGetter(function (mapArray) {
-                for (var _i = 0, mapArray_1 = mapArray; _i < mapArray_1.length; _i++) {
-                    var map = mapArray_1[_i];
+                for (var _i = 0, mapArray_2 = mapArray; _i < mapArray_2.length; _i++) {
+                    var map = mapArray_2[_i];
                     wd.assert(map instanceof wd.Texture, wd.Log.info.FUNC_SHOULD("return Array<Texture>"));
                 }
             })
@@ -35356,18 +37139,6 @@ var wd;
     }());
     wd.TerrainLayerMapModel = TerrainLayerMapModel;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var TerrainLayerShaderLib = (function (_super) {
@@ -35404,18 +37175,6 @@ var wd;
     }(wd.EngineShaderLib));
     wd.TerrainLayerShaderLib = TerrainLayerShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var WaterMaterial = (function (_super) {
@@ -35433,6 +37192,7 @@ var wd;
         }
         WaterMaterial.create = function () {
             var obj = new this();
+            obj.initWhenCreate();
             return obj;
         };
         Object.defineProperty(WaterMaterial.prototype, "bumpMap", {
@@ -35476,9 +37236,9 @@ var wd;
             enumerable: true,
             configurable: true
         });
-        WaterMaterial.prototype.bindAndUpdateTexture = function () {
-            _super.prototype.bindAndUpdateTexture.call(this);
+        WaterMaterial.prototype.updateShader = function (quadCmd) {
             this._computeTime();
+            _super.prototype.updateShader.call(this, quadCmd);
         };
         WaterMaterial.prototype.addExtendShaderLib = function () {
             if (this.bumpMap) {
@@ -35488,7 +37248,7 @@ var wd;
                 this.shader.addLib(wd.WaterNoBumpMapShaderLib.create());
             }
             this.shader.addLib(wd.WaterShaderLib.create());
-            if (this.reflectionMap && this.reflectionMap) {
+            if (this.reflectionMap && this.refractionMap) {
                 this.shader.addLib(wd.WaterFresnelShaderLib.create());
             }
             else if (this.reflectionMap) {
@@ -35507,8 +37267,30 @@ var wd;
         __decorate([
             wd.requireSetter(function (bumpMap) {
                 wd.assert(bumpMap instanceof wd.ImageTexture);
-            })
+            }),
+            wd.cloneAttributeAsCloneable()
         ], WaterMaterial.prototype, "bumpMap", null);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], WaterMaterial.prototype, "reflectionMap", null);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], WaterMaterial.prototype, "refractionMap", null);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], WaterMaterial.prototype, "wind", void 0);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], WaterMaterial.prototype, "wave", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], WaterMaterial.prototype, "fresnelLevel", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], WaterMaterial.prototype, "reflectionLevel", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], WaterMaterial.prototype, "refractionLevel", void 0);
         return WaterMaterial;
     }(wd.StandardLightMaterial));
     wd.WaterMaterial = WaterMaterial;
@@ -35528,6 +37310,15 @@ var wd;
             enumerable: true,
             configurable: true
         });
+        WaterWindModel.prototype.clone = function () {
+            return wd.CloneUtils.clone(this);
+        };
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], WaterWindModel.prototype, "time", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], WaterWindModel.prototype, "direction", void 0);
         return WaterWindModel;
     }());
     wd.WaterWindModel = WaterWindModel;
@@ -35540,16 +37331,19 @@ var wd;
             var obj = new this();
             return obj;
         };
+        WaterWaveModel.prototype.clone = function () {
+            return wd.CloneUtils.clone(this);
+        };
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], WaterWaveModel.prototype, "height", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], WaterWaveModel.prototype, "length", void 0);
         return WaterWaveModel;
     }());
     wd.WaterWaveModel = WaterWaveModel;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var WaterShaderLib = (function (_super) {
@@ -35576,12 +37370,6 @@ var wd;
     }(wd.EngineShaderLib));
     wd.WaterShaderLib = WaterShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var WaterReflectionMapShaderLib = (function (_super) {
@@ -35595,25 +37383,21 @@ var wd;
             return obj;
         };
         WaterReflectionMapShaderLib.prototype.sendShaderVariables = function (program, cmd, material) {
+            wd.RenderTargerRendererShaderLibUtils.judgeAndSendIsRenderListEmptyVariable(program, wd.EShaderGLSLData.MIRROR, "u_isReflectionRenderListEmpty");
             program.sendStructureData("u_levelData.reflectionLevel", wd.EVariableType.FLOAT_1, material.reflectionLevel);
         };
         WaterReflectionMapShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
             _super.prototype.setShaderDefinition.call(this, quadCmd, material);
             this.addUniformVariable([
-                wd.VariableNameTable.getVariableName("reflectionMap"),
-                "u_levelData"
+                "u_levelData",
+                "u_isReflectionRenderListEmpty",
+                wd.VariableNameTable.getVariableName("reflectionMap")
             ]);
         };
         return WaterReflectionMapShaderLib;
     }(wd.EngineShaderLib));
     wd.WaterReflectionMapShaderLib = WaterReflectionMapShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var WaterRefractionMapShaderLib = (function (_super) {
@@ -35627,25 +37411,21 @@ var wd;
             return obj;
         };
         WaterRefractionMapShaderLib.prototype.sendShaderVariables = function (program, cmd, material) {
+            wd.RenderTargerRendererShaderLibUtils.judgeAndSendIsRenderListEmptyVariable(program, wd.EShaderGLSLData.REFRACTION, "u_isRefractionRenderListEmpty");
             program.sendStructureData("u_levelData.refractionLevel", wd.EVariableType.FLOAT_1, material.refractionLevel);
         };
         WaterRefractionMapShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
             _super.prototype.setShaderDefinition.call(this, quadCmd, material);
             this.addUniformVariable([
-                wd.VariableNameTable.getVariableName("refractionMap"),
-                "u_levelData"
+                "u_levelData",
+                "u_isRefractionRenderListEmpty",
+                wd.VariableNameTable.getVariableName("refractionMap")
             ]);
         };
         return WaterRefractionMapShaderLib;
     }(wd.EngineShaderLib));
     wd.WaterRefractionMapShaderLib = WaterRefractionMapShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var WaterFresnelShaderLib = (function (_super) {
@@ -35659,6 +37439,8 @@ var wd;
             return obj;
         };
         WaterFresnelShaderLib.prototype.sendShaderVariables = function (program, cmd, material) {
+            wd.RenderTargerRendererShaderLibUtils.judgeAndSendIsRenderListEmptyVariable(program, wd.EShaderGLSLData.MIRROR, "u_isReflectionRenderListEmpty");
+            wd.RenderTargerRendererShaderLibUtils.judgeAndSendIsRenderListEmptyVariable(program, wd.EShaderGLSLData.REFRACTION, "u_isRefractionRenderListEmpty");
             program.sendStructureData("u_levelData.fresnelLevel", wd.EVariableType.FLOAT_1, material.fresnelLevel);
             program.sendStructureData("u_levelData.refractionLevel", wd.EVariableType.FLOAT_1, material.refractionLevel);
             program.sendStructureData("u_levelData.reflectionLevel", wd.EVariableType.FLOAT_1, material.reflectionLevel);
@@ -35666,21 +37448,17 @@ var wd;
         WaterFresnelShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
             _super.prototype.setShaderDefinition.call(this, quadCmd, material);
             this.addUniformVariable([
+                "u_levelData",
+                "u_isReflectionRenderListEmpty",
+                "u_isRefractionRenderListEmpty",
                 wd.VariableNameTable.getVariableName("reflectionMap"),
                 wd.VariableNameTable.getVariableName("refractionMap"),
-                "u_levelData"
             ]);
         };
         return WaterFresnelShaderLib;
     }(wd.EngineShaderLib));
     wd.WaterFresnelShaderLib = WaterFresnelShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var WaterNoLightEffectShaderLib = (function (_super) {
@@ -35699,12 +37477,6 @@ var wd;
     }(wd.EngineShaderLib));
     wd.WaterNoLightEffectShaderLib = WaterNoLightEffectShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var WaterBumpMapShaderLib = (function (_super) {
@@ -35731,12 +37503,6 @@ var wd;
     }(wd.EngineShaderLib));
     wd.WaterBumpMapShaderLib = WaterBumpMapShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var WaterNoBumpMapShaderLib = (function (_super) {
@@ -35755,12 +37521,6 @@ var wd;
     }(wd.EngineShaderLib));
     wd.WaterNoBumpMapShaderLib = WaterNoBumpMapShaderLib;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var MirrorMaterial = (function (_super) {
@@ -35771,6 +37531,7 @@ var wd;
         }
         MirrorMaterial.create = function () {
             var obj = new this();
+            obj.initWhenCreate();
             return obj;
         };
         Object.defineProperty(MirrorMaterial.prototype, "reflectionMap", {
@@ -35791,16 +37552,13 @@ var wd;
                 this.shader.addLib(wd.MirrorShaderLib.create());
             }
         };
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], MirrorMaterial.prototype, "reflectionMap", null);
         return MirrorMaterial;
     }(wd.StandardLightMaterial));
     wd.MirrorMaterial = MirrorMaterial;
 })(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var MirrorShaderLib = (function (_super) {
@@ -35814,10 +37572,12 @@ var wd;
             return obj;
         };
         MirrorShaderLib.prototype.sendShaderVariables = function (program, cmd, material) {
+            wd.RenderTargerRendererShaderLibUtils.judgeAndSendIsRenderListEmptyVariable(program, wd.EShaderGLSLData.MIRROR);
         };
         MirrorShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
             _super.prototype.setShaderDefinition.call(this, quadCmd, material);
             this.addUniformVariable([
+                "u_isRenderListEmpty",
                 wd.VariableNameTable.getVariableName("reflectionMap")
             ]);
         };
@@ -35825,7 +37585,6 @@ var wd;
     }(wd.EngineShaderLib));
     wd.MirrorShaderLib = MirrorShaderLib;
 })(wd || (wd = {}));
-
 var wd;
 (function (wd) {
     var ShaderChunk = (function () {
@@ -35833,44 +37592,49 @@ var wd;
         }
         ShaderChunk.empty = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "" };
         ShaderChunk.NULL = -1.0;
-        ShaderChunk.morphNormal_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "vec3 a_normal = a_currentFrameNormal + (a_nextFrameNormal - a_currentFrameNormal) * u_interpolation;\n", };
-        ShaderChunk.morphVertice_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "vec3 a_position = a_currentFramePosition + (a_nextFramePosition - a_currentFramePosition) * u_interpolation;\n", };
-        ShaderChunk.basicEnd_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "gl_FragColor = vec4(totalColor.rgb, totalColor.a * u_opacity);\n", };
+        ShaderChunk.normal_morph_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "vec3 a_normal = a_currentFrameNormal + (a_nextFrameNormal - a_currentFrameNormal) * u_interpolation;\n", };
+        ShaderChunk.vertice_morph_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "vec3 a_position = a_currentFramePosition + (a_nextFramePosition - a_currentFramePosition) * u_interpolation;\n", };
         ShaderChunk.basic_fragment = { top: "", define: "", varDeclare: "varying vec3 v_color;\n", funcDeclare: "", funcDefine: "", body: "vec4 totalColor = vec4(v_color, 1.0);\n", };
         ShaderChunk.basic_vertex = { top: "", define: "", varDeclare: "varying vec3 v_color;\n", funcDeclare: "", funcDefine: "", body: "v_color = a_color;\n", };
+        ShaderChunk.end_basic_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "gl_FragColor = vec4(totalColor.rgb, totalColor.a * u_opacity);\n", };
         ShaderChunk.common_define = { top: "", define: "#define NULL -1.0\n", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
         ShaderChunk.common_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
-        ShaderChunk.common_function = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "mat2 transpose(mat2 m) {\n  return mat2(  m[0][0], m[1][0],   // new col 0\n                m[0][1], m[1][1]    // new col 1\n             );\n  }\nmat3 transpose(mat3 m) {\n  return mat3(  m[0][0], m[1][0], m[2][0],  // new col 0\n                m[0][1], m[1][1], m[2][1],  // new col 1\n                m[0][2], m[1][2], m[2][2]   // new col 1\n             );\n  }\n", body: "", };
+        ShaderChunk.common_function = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "mat2 transpose(mat2 m) {\n  return mat2(  m[0][0], m[1][0],   // new col 0\n                m[0][1], m[1][1]    // new col 1\n             );\n  }\nmat3 transpose(mat3 m) {\n  return mat3(  m[0][0], m[1][0], m[2][0],  // new col 0\n                m[0][1], m[1][1], m[2][1],  // new col 1\n                m[0][2], m[1][2], m[2][2]   // new col 1\n             );\n  }\n\nbool isRenderListEmpty(int isRenderListEmpty){\n  return isRenderListEmpty == 1;\n}\n", body: "", };
         ShaderChunk.common_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
         ShaderChunk.highp_fragment = { top: "precision highp float;\nprecision highp int;\n", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
         ShaderChunk.lowp_fragment = { top: "precision lowp float;\nprecision lowp int;\n", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
         ShaderChunk.mediump_fragment = { top: "precision mediump float;\nprecision mediump int;\n", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
+        ShaderChunk.common_envMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec3 flipNormal(vec3 normal){\n    vec3 normalForRefraction = normal;\n    normalForRefraction.y = -normalForRefraction.y;\n    normalForRefraction.z = -normalForRefraction.z;\n\n    return normalForRefraction;\n}\n", body: "", };
+        ShaderChunk.modelMatrix_instance_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "mat4 mMatrix = mat4(a_mVec4_0, a_mVec4_1, a_mVec4_2, a_mVec4_3);\n", };
+        ShaderChunk.modelMatrix_noInstance_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "mat4 mMatrix = u_mMatrix;\n", };
+        ShaderChunk.normalMatrix_instance_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "mat3 normalMatrix = mat3(a_normalVec4_0, a_normalVec4_1, a_normalVec4_2);\n", };
+        ShaderChunk.normalMatrix_noInstance_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "mat3 normalMatrix = u_normalMatrix;\n", };
         ShaderChunk.lightCommon_fragment = { top: "", define: "", varDeclare: "varying vec3 v_worldPosition;\n#if POINT_LIGHTS_COUNT > 0\nstruct PointLight {\n    vec3 position;\n    vec4 color;\n    float intensity;\n\n    float range;\n    float constant;\n    float linear;\n    float quadratic;\n};\nuniform PointLight u_pointLights[POINT_LIGHTS_COUNT];\n\n#endif\n\n\n#if DIRECTION_LIGHTS_COUNT > 0\nstruct DirectionLight {\n    vec3 position;\n\n    float intensity;\n\n    vec4 color;\n};\nuniform DirectionLight u_directionLights[DIRECTION_LIGHTS_COUNT];\n#endif\n", funcDeclare: "", funcDefine: "", body: "", };
-        ShaderChunk.lightCommon_vertex = { top: "", define: "", varDeclare: "varying vec3 v_worldPosition;\n#if POINT_LIGHTS_COUNT > 0\nstruct PointLight {\n    vec3 position;\n    vec4 color;\n    float intensity;\n\n    float range;\n    float constant;\n    float linear;\n    float quadratic;\n};\nuniform PointLight u_pointLights[POINT_LIGHTS_COUNT];\n\n#endif\n\n\n#if DIRECTION_LIGHTS_COUNT > 0\nstruct DirectionLight {\n    vec3 position;\n\n    float intensity;\n\n    vec4 color;\n};\nuniform DirectionLight u_directionLights[DIRECTION_LIGHTS_COUNT];\n#endif\n", funcDeclare: "", funcDefine: "", body: "v_worldPosition = vec3(u_mMatrix * vec4(a_position, 1.0));\n", };
+        ShaderChunk.lightCommon_vertex = { top: "", define: "", varDeclare: "varying vec3 v_worldPosition;\n#if POINT_LIGHTS_COUNT > 0\nstruct PointLight {\n    vec3 position;\n    vec4 color;\n    float intensity;\n\n    float range;\n    float constant;\n    float linear;\n    float quadratic;\n};\nuniform PointLight u_pointLights[POINT_LIGHTS_COUNT];\n\n#endif\n\n\n#if DIRECTION_LIGHTS_COUNT > 0\nstruct DirectionLight {\n    vec3 position;\n\n    float intensity;\n\n    vec4 color;\n};\nuniform DirectionLight u_directionLights[DIRECTION_LIGHTS_COUNT];\n#endif\n", funcDeclare: "", funcDefine: "", body: "v_worldPosition = vec3(mMatrix * vec4(a_position, 1.0));\n", };
         ShaderChunk.lightEnd_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "gl_FragColor = vec4(totalColor.rgb, totalColor.a * u_opacity);\n", };
         ShaderChunk.light_common = { top: "", define: "", varDeclare: "", funcDeclare: "vec3 getDirectionLightDirByLightPos(vec3 lightPos);\nvec3 getPointLightDirByLightPos(vec3 lightPos);\nvec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition);\n", funcDefine: "vec3 getDirectionLightDirByLightPos(vec3 lightPos){\n    return lightPos - vec3(0.0);\n    //return vec3(0.0) - lightPos;\n}\nvec3 getPointLightDirByLightPos(vec3 lightPos){\n    return lightPos - v_worldPosition;\n}\nvec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition){\n    return lightPos - worldPosition;\n}\n", body: "", };
         ShaderChunk.light_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "float getBlinnShininess(float shininess, vec3 normal, vec3 lightDir, vec3 viewDir, float dotResultBetweenNormAndLight){\n        vec3 halfAngle = normalize(lightDir + viewDir);\n        float blinnTerm = dot(normal, halfAngle);\n\n        blinnTerm = clamp(blinnTerm, 0.0, 1.0);\n        blinnTerm = dotResultBetweenNormAndLight != 0.0 ? blinnTerm : 0.0;\n        blinnTerm = pow(blinnTerm, shininess);\n\n        return blinnTerm;\n}\n\nfloat getPhongShininess(float shininess, vec3 normal, vec3 lightDir, vec3 viewDir, float dotResultBetweenNormAndLight){\n        vec3 reflectDir = reflect(-lightDir, normal);\n        float phongTerm = dot(viewDir, reflectDir);\n\n        phongTerm = clamp(phongTerm, 0.0, 1.0);\n        phongTerm = dotResultBetweenNormAndLight != 0.0 ? phongTerm : 0.0;\n        phongTerm = pow(phongTerm, shininess);\n\n        return phongTerm;\n}\n\nvec4 calcLight(vec3 lightDir, vec4 color, float intensity, float attenuation, vec3 normal, vec3 viewDir)\n{\n        vec4 materialLight = getMaterialLight();\n        vec4 materialDiffuse = getMaterialDiffuse();\n        vec4 materialSpecular = getMaterialSpecular();\n        vec4 materialEmission = getMaterialEmission();\n\n        float dotResultBetweenNormAndLight = dot(normal, lightDir);\n        float diff = max(dotResultBetweenNormAndLight, 0.0);\n\n        vec4 emissionColor = materialEmission;\n\n        vec4 ambientColor = (u_ambient + materialLight) * materialDiffuse;\n\n\n        if(u_lightModel == 3){\n            return emissionColor + ambientColor;\n        }\n\n\n        vec4 diffuseColor = color * materialDiffuse;\n\n        //not affect alpha data\n        diffuseColor = vec4(diff * vec3(diffuseColor) * intensity, diffuseColor.a);\n\n\n        float spec = 0.0;\n\n        if(u_lightModel == 2){\n                spec = getPhongShininess(u_shininess, normal, lightDir, viewDir, diff);\n        }\n        else if(u_lightModel == 1){\n                spec = getBlinnShininess(u_shininess, normal, lightDir, viewDir, diff);\n        }\n\n        //not affect alpha data\n        vec4 specularColor = vec4(spec * vec3(materialSpecular) * intensity, materialSpecular.a);\n\n        vec4 tColor = diffuseColor + specularColor;\n\n        //not affect alpha data\n        return emissionColor + ambientColor + vec4(attenuation * vec3(tColor), tColor.a);\n}\n\n\n\n\n#if POINT_LIGHTS_COUNT > 0\n        vec4 calcPointLight(vec3 lightDir, PointLight light, vec3 normal, vec3 viewDir)\n{\n        //lightDir is not normalize computing distance\n        float distance = length(lightDir);\n\n        float attenuation = 0.0;\n\n        if(light.range == NULL || distance < light.range)\n        {\n            attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));\n        }\n\n        lightDir = normalize(lightDir);\n\n        return calcLight(lightDir, light.color, light.intensity, attenuation, normal, viewDir);\n}\n#endif\n\n\n\n#if DIRECTION_LIGHTS_COUNT > 0\n        vec4 calcDirectionLight(vec3 lightDir, DirectionLight light, vec3 normal, vec3 viewDir)\n{\n        float attenuation = 1.0;\n\n        lightDir = normalize(lightDir);\n\n        return calcLight(lightDir, light.color, light.intensity, attenuation, normal, viewDir);\n}\n#endif\n\n\n\nvec4 calcTotalLight(vec3 norm, vec3 viewDir){\n    vec4 totalLight = vec4(0.0);\n\n    #if POINT_LIGHTS_COUNT > 0\n                for(int i = 0; i < POINT_LIGHTS_COUNT; i++){\n                totalLight += calcPointLight(getPointLightDir(i), u_pointLights[i], norm, viewDir);\n        }\n    #endif\n\n    #if DIRECTION_LIGHTS_COUNT > 0\n                for(int i = 0; i < DIRECTION_LIGHTS_COUNT; i++){\n                totalLight += calcDirectionLight(getDirectionLightDir(i), u_directionLights[i], norm, viewDir);\n        }\n    #endif\n\n        return totalLight;\n}\n", body: "vec3 normal = normalize(getNormal());\n\n#ifdef BOTH_SIDE\nnormal = normal * (-1.0 + 2.0 * float(gl_FrontFacing));\n#endif\n\nvec3 viewDir = normalize(getViewDir());\n\nvec4 totalColor = calcTotalLight(normal, viewDir);\n\ntotalColor *= vec4(getShadowVisibility(), 1.0);\n", };
         ShaderChunk.light_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "gl_Position = u_pMatrix * u_vMatrix * vec4(v_worldPosition, 1.0);\n", };
+        ShaderChunk.skybox_fragment = { top: "", define: "", varDeclare: "varying vec3 v_dir;\n", funcDeclare: "", funcDefine: "", body: "gl_FragColor = textureCube(u_samplerCube0, v_dir);\n", };
+        ShaderChunk.skybox_vertex = { top: "", define: "", varDeclare: "varying vec3 v_dir;\n", funcDeclare: "", funcDefine: "", body: "vec4 pos = u_pMatrix * mat4(mat3(u_vMatrix)) * mMatrix * vec4(a_position, 1.0);\n\n    gl_Position = pos.xyww;\n\n    v_dir = a_position;\n", };
         ShaderChunk.map_forBasic_fragment = { top: "", define: "", varDeclare: "varying vec2 v_mapCoord0;\n", funcDeclare: "", funcDefine: "", body: "totalColor *= vec4(texture2D(u_sampler2D0, v_mapCoord0).xyz, 1.0);\n", };
         ShaderChunk.map_forBasic_vertex = { top: "", define: "", varDeclare: "varying vec2 v_mapCoord0;\n", funcDeclare: "", funcDefine: "", body: "vec2 sourceTexCoord0 = a_texCoord * u_map0SourceRegion.zw + u_map0SourceRegion.xy;\n\n    v_mapCoord0 = sourceTexCoord0 * u_map0RepeatRegion.zw + u_map0RepeatRegion.xy;\n", };
         ShaderChunk.multi_map_forBasic_fragment = { top: "", define: "", varDeclare: "varying vec2 v_mapCoord0;\nvarying vec2 v_mapCoord1;\n", funcDeclare: "", funcDefine: "vec4 getMapColor(){\n            vec4 color0 = vec4(texture2D(u_sampler2D0, v_mapCoord0).xyz, 1.0);\n            vec4 color1 = vec4(texture2D(u_sampler2D1, v_mapCoord1).xyz, 1.0);\n\n            if(u_combineMode == 0){\n                return mix(color0, color1, u_mixRatio);\n            }\n            else if(u_combineMode == 1){\n                return color0 * color1;\n            }\n            else if(u_combineMode == 2){\n                return color0 + color1;\n            }\n\n            /*!\n            solve error in window7 chrome/firefox:\n            not all control paths return a value.\n            failed to create d3d shaders\n            */\n            return vec4(1.0);\n		}\n", body: "totalColor *= getMapColor();\n", };
         ShaderChunk.multi_map_forBasic_vertex = { top: "", define: "", varDeclare: "varying vec2 v_mapCoord1;\n", funcDeclare: "", funcDefine: "", body: "vec2 sourceTexCoord1 = a_texCoord * u_map1SourceRegion.zw + u_map1SourceRegion.xy;\n\n    v_mapCoord1 = sourceTexCoord1 * u_map1RepeatRegion.zw + u_map1RepeatRegion.xy;\n", };
-        ShaderChunk.skybox_fragment = { top: "", define: "", varDeclare: "varying vec3 v_dir;\n", funcDeclare: "", funcDefine: "", body: "gl_FragColor = textureCube(u_samplerCube0, v_dir);\n", };
-        ShaderChunk.skybox_vertex = { top: "", define: "", varDeclare: "varying vec3 v_dir;\n", funcDeclare: "", funcDefine: "", body: "vec4 pos = u_pMatrix * mat4(mat3(u_vMatrix)) * u_mMatrix * vec4(a_position, 1.0);\n\n    gl_Position = pos.xyww;\n\n    v_dir = a_position;\n", };
-        ShaderChunk.envMap_basic_forBasic_fragment = { top: "", define: "", varDeclare: "varying vec3 v_dir;\n", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, v_dir);\n", };
-        ShaderChunk.envMap_basic_forBasic_vertex = { top: "", define: "", varDeclare: "varying vec3 v_dir;\n", funcDeclare: "", funcDefine: "", body: "v_dir = a_position;\n", };
-        ShaderChunk.envMap_forBasic_fragment = { top: "", define: "", varDeclare: "varying vec3 v_normal;\nvarying vec3 v_position;\n", funcDeclare: "", funcDefine: "", body: "vec3 inDir = normalize(v_position - u_cameraPos);\n", };
-        ShaderChunk.envMap_forBasic_vertex = { top: "", define: "", varDeclare: "varying vec3 v_normal;\nvarying vec3 v_position;\n", funcDeclare: "", funcDefine: "", body: "v_normal = normalize( u_normalMatrix * a_normal);\n    v_position = vec3(u_mMatrix * vec4(a_position, 1.0));\n", };
-        ShaderChunk.envMap_fresnel_forBasic_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "float computeFresnelRatio(vec3 inDir, vec3 normal, float refractionRatio){\n    float f = pow(1.0 - refractionRatio, 2.0) / pow(1.0 + refractionRatio, 2.0);\n    float fresnelPower = 5.0;\n    float ratio = f + (1.0 - f) * pow((1.0 - dot(inDir, normal)), fresnelPower);\n\n    return ratio / 100.0;\n}\nvec4 getEnvMapTotalColor(vec3 inDir, vec3 normal){\n    vec3 reflectDir = reflect(inDir, normal);\n    vec3 refractDir = refract(inDir, normal, u_refractionRatio);\n\n    vec4 reflectColor = textureCube(u_samplerCube0, reflectDir);\n    vec4 refractColor = textureCube(u_samplerCube0, refractDir);\n\n    vec4 totalColor = vec4(0.0);\n\n	if(u_reflectivity != NULL){\n        totalColor = mix(reflectColor, refractColor, u_reflectivity);\n	}\n	else{\n        totalColor = mix(reflectColor, refractColor, computeFresnelRatio(inDir, normal, u_refractionRatio));\n	}\n\n	return totalColor;\n}\n", body: "totalColor *= getEnvMapTotalColor(inDir, normalize(v_normal));\n", };
-        ShaderChunk.envMap_reflection_forBasic_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, reflect(inDir, normalize(v_normal)));\n", };
-        ShaderChunk.envMap_refraction_forBasic_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, refract(inDir, normalize(v_normal), u_refractionRatio));\n", };
-        ShaderChunk.envMap_basic_forLight_fragment = { top: "", define: "", varDeclare: "varying vec3 v_basicEnvMap_dir;\n", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, v_basicEnvMap_dir);\n", };
-        ShaderChunk.envMap_basic_forLight_vertex = { top: "", define: "", varDeclare: "varying vec3 v_basicEnvMap_dir;\n", funcDeclare: "", funcDefine: "", body: "v_basicEnvMap_dir = a_position;\n", };
-        ShaderChunk.envMap_forLight_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "vec3 inDir = normalize(v_worldPosition - u_cameraPos);\n", };
-        ShaderChunk.envMap_forLight_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
-        ShaderChunk.envMap_fresnel_forLight_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "float computeFresnelRatio(vec3 inDir, vec3 normal, float refractionRatio){\n    float f = pow(1.0 - refractionRatio, 2.0) / pow(1.0 + refractionRatio, 2.0);\n    float fresnelPower = 5.0;\n    float ratio = f + (1.0 - f) * pow((1.0 - dot(inDir, normal)), fresnelPower);\n\n    return ratio / 100.0;\n}\n\nvec4 getEnvMapTotalColor(vec3 inDir, vec3 normal){\n    vec3 reflectDir = reflect(inDir, normal);\n    vec3 refractDir = refract(inDir, normal, u_refractionRatio);\n\n    vec4 reflectColor = textureCube(u_samplerCube0, reflectDir);\n    vec4 refractColor = textureCube(u_samplerCube0, refractDir);\n\n    vec4 totalColor = vec4(0.0);\n\n	if(u_reflectivity != NULL){\n        totalColor = mix(reflectColor, refractColor, u_reflectivity);\n	}\n	else{\n        totalColor = mix(reflectColor, refractColor, computeFresnelRatio(inDir, normal, u_refractionRatio));\n	}\n\n	return totalColor;\n}\n", body: "totalColor *= getEnvMapTotalColor(inDir, normalize(getNormal()));\n", };
-        ShaderChunk.envMap_reflection_forLight_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, reflect(inDir, normalize(getNormal())));\n", };
-        ShaderChunk.envMap_refraction_forLight_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, refract(inDir, getNormal(), u_refractionRatio));\n", };
+        ShaderChunk.basic_forBasic_envMap_fragment = { top: "", define: "", varDeclare: "varying vec3 v_dir;\n", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, v_dir);\n", };
+        ShaderChunk.basic_forBasic_envMap_vertex = { top: "", define: "", varDeclare: "varying vec3 v_dir;\n", funcDeclare: "", funcDefine: "", body: "v_dir = a_position;\n", };
+        ShaderChunk.forBasic_envMap_fragment = { top: "", define: "", varDeclare: "varying vec3 v_normal;\nvarying vec3 v_position;\n", funcDeclare: "", funcDefine: "", body: "vec3 inDir = normalize(v_position - u_cameraPos);\n", };
+        ShaderChunk.forBasic_envMap_vertex = { top: "", define: "", varDeclare: "varying vec3 v_normal;\nvarying vec3 v_position;\n", funcDeclare: "", funcDefine: "", body: "v_normal = normalize( normalMatrix * a_normal);\n    v_position = vec3(mMatrix * vec4(a_position, 1.0));\n", };
+        ShaderChunk.fresnel_forBasic_envMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "float computeFresnelRatio(vec3 inDir, vec3 normal, float refractionRatio){\n    float f = pow(1.0 - refractionRatio, 2.0) / pow(1.0 + refractionRatio, 2.0);\n    float fresnelPower = 5.0;\n    float ratio = f + (1.0 - f) * pow((1.0 - dot(inDir, normal)), fresnelPower);\n\n    return ratio / 100.0;\n}\nvec4 getEnvMapTotalColor(vec3 inDir, vec3 normal){\n    vec3 reflectDir = reflect(inDir, normal);\n    vec3 refractDir = refract(inDir, flipNormal(normal), u_refractionRatio);\n\n    vec4 reflectColor = textureCube(u_samplerCube0, reflectDir);\n    vec4 refractColor = textureCube(u_samplerCube0, refractDir);\n\n    vec4 totalColor = vec4(0.0);\n\n	if(u_reflectivity != NULL){\n        totalColor = mix(reflectColor, refractColor, u_reflectivity);\n	}\n	else{\n        totalColor = mix(reflectColor, refractColor, computeFresnelRatio(inDir, normal, u_refractionRatio));\n	}\n\n	return totalColor;\n}\n", body: "if(!isRenderListEmpty(u_isRenderListEmpty)){\n    totalColor *= getEnvMapTotalColor(inDir, normalize(v_normal));\n}\n", };
+        ShaderChunk.reflection_forBasic_envMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "if(!isRenderListEmpty(u_isRenderListEmpty)){\n    totalColor *= textureCube(u_samplerCube0, reflect(inDir, normalize(v_normal)));\n}\n", };
+        ShaderChunk.refraction_forBasic_envMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "if(!isRenderListEmpty(u_isRenderListEmpty)){\n    totalColor *= textureCube(u_samplerCube0, refract(inDir, v_normal, u_refractionRatio));\n}\n", };
+        ShaderChunk.basic_forLight_envMap_fragment = { top: "", define: "", varDeclare: "varying vec3 v_basicEnvMap_dir;\n", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, v_basicEnvMap_dir);\n", };
+        ShaderChunk.basic_forLight_envMap_vertex = { top: "", define: "", varDeclare: "varying vec3 v_basicEnvMap_dir;\n", funcDeclare: "", funcDefine: "", body: "v_basicEnvMap_dir = a_position;\n", };
+        ShaderChunk.forLight_envMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "vec3 inDir = normalize(v_worldPosition - u_cameraPos);\n", };
+        ShaderChunk.forLight_envMap_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
+        ShaderChunk.fresnel_forLight_envMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "float computeFresnelRatio(vec3 inDir, vec3 normal, float refractionRatio){\n    float f = pow(1.0 - refractionRatio, 2.0) / pow(1.0 + refractionRatio, 2.0);\n    float fresnelPower = 5.0;\n    float ratio = f + (1.0 - f) * pow((1.0 - dot(inDir, normal)), fresnelPower);\n\n    return ratio / 100.0;\n}\n\nvec4 getEnvMapTotalColor(vec3 inDir, vec3 normal){\n    vec3 reflectDir = reflect(inDir, normal);\n\n/*!\n//todo why only fresnel->refraction need flip normal, but refraction don't need?\n*/\n    vec3 refractDir = refract(inDir, flipNormal(normal), u_refractionRatio);\n\n    vec4 reflectColor = textureCube(u_samplerCube0, reflectDir);\n    vec4 refractColor = textureCube(u_samplerCube0, refractDir);\n\n\n    vec4 totalColor = vec4(0.0);\n\n	if(u_reflectivity != NULL){\n        totalColor = mix(reflectColor, refractColor, u_reflectivity);\n	}\n	else{\n        totalColor = mix(reflectColor, refractColor, computeFresnelRatio(inDir, normal, u_refractionRatio));\n	}\n\n	return totalColor;\n}\n", body: "if(!isRenderListEmpty(u_isRenderListEmpty)){\n	totalColor *= getEnvMapTotalColor(inDir, normalize(getNormal()));\n}\n", };
+        ShaderChunk.reflection_forLight_envMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "if(!isRenderListEmpty(u_isRenderListEmpty)){\n    totalColor *= textureCube(u_samplerCube0, reflect(inDir, normalize(getNormal())));\n}\n", };
+        ShaderChunk.refraction_forLight_envMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "if(!isRenderListEmpty(u_isRenderListEmpty)){\n//    totalColor *= textureCube(u_samplerCube0, refract(inDir, flipNormalWhenRefraction(normal), u_refractionRatio));\n    totalColor *= textureCube(u_samplerCube0, refract(inDir, normal, u_refractionRatio));\n}\n", };
         ShaderChunk.diffuseMap_fragment = { top: "", define: "", varDeclare: "varying vec2 v_diffuseMapTexCoord;\n", funcDeclare: "", funcDefine: "vec4 getMaterialDiffuse() {\n        return texture2D(u_diffuseMapSampler, v_diffuseMapTexCoord);\n    }\n", body: "", };
         ShaderChunk.diffuseMap_vertex = { top: "", define: "", varDeclare: "varying vec2 v_diffuseMapTexCoord;\n", funcDeclare: "", funcDefine: "", body: "//todo optimize(combine, reduce compute numbers)\n    //todo BasicTexture extract textureMatrix\n    vec2 sourceTexCoord = a_texCoord * u_diffuseSourceRegion.zw + u_diffuseSourceRegion.xy;\n    v_diffuseMapTexCoord = sourceTexCoord * u_diffuseRepeatRegion.zw + u_diffuseRepeatRegion.xy;\n", };
         ShaderChunk.emissionMap_fragment = { top: "", define: "", varDeclare: "varying vec2 v_emissionMapTexCoord;\n", funcDeclare: "", funcDefine: "vec4 getMaterialEmission() {\n        return texture2D(u_emissionMapSampler, v_emissionMapTexCoord);\n    }\n", body: "", };
@@ -35881,45 +37645,45 @@ var wd;
         ShaderChunk.noEmissionMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec4 getMaterialEmission() {\n        return u_emission;\n    }\n", body: "", };
         ShaderChunk.noLightMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec4 getMaterialLight() {\n        return vec4(0.0);\n    }\n", body: "", };
         ShaderChunk.noNormalMap_fragment = { top: "", define: "", varDeclare: "varying vec3 v_normal;\n", funcDeclare: "vec3 getNormal();\n\n", funcDefine: "#if POINT_LIGHTS_COUNT > 0\nvec3 getPointLightDir(int index){\n    //workaround '[] : Index expression must be constant' error\n    for (int x = 0; x <= POINT_LIGHTS_COUNT; x++) {\n        if(x == index){\n            return getPointLightDirByLightPos(u_pointLights[x].position);\n        }\n    }\n    /*!\n    solve error in window7 chrome/firefox:\n    not all control paths return a value.\n    failed to create d3d shaders\n    */\n    return vec3(0.0);\n}\n#endif\n\n#if DIRECTION_LIGHTS_COUNT > 0\nvec3 getDirectionLightDir(int index){\n    //workaround '[] : Index expression must be constant' error\n    for (int x = 0; x <= DIRECTION_LIGHTS_COUNT; x++) {\n        if(x == index){\n            return getDirectionLightDirByLightPos(u_directionLights[x].position);\n        }\n    }\n\n    /*!\n    solve error in window7 chrome/firefox:\n    not all control paths return a value.\n    failed to create d3d shaders\n    */\n    return vec3(0.0);\n}\n#endif\n\n\nvec3 getViewDir(){\n    return normalize(u_cameraPos - v_worldPosition);\n}\nvec3 getNormal(){\n    return v_normal;\n}\n\n", body: "", };
-        ShaderChunk.noNormalMap_vertex = { top: "", define: "", varDeclare: "varying vec3 v_normal;\n", funcDeclare: "", funcDefine: "", body: "//v_normal = normalize( vec3(u_normalMatrix * vec4(a_normal, 1.0)));\n    v_normal = normalize( u_normalMatrix * a_normal);\n", };
+        ShaderChunk.noNormalMap_vertex = { top: "", define: "", varDeclare: "varying vec3 v_normal;\n", funcDeclare: "", funcDefine: "", body: "v_normal = normalize(normalMatrix * a_normal);\n", };
         ShaderChunk.noSpecularMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec4 getMaterialSpecular() {\n        return u_specular;\n    }\n", body: "", };
         ShaderChunk.normalMap_fragment = { top: "", define: "", varDeclare: "varying vec2 v_normalMapTexCoord;\nvarying vec3 v_viewDir;\n#if POINT_LIGHTS_COUNT > 0\nvarying vec3 v_pointLightDir[POINT_LIGHTS_COUNT];\n#endif\n\n#if DIRECTION_LIGHTS_COUNT > 0\nvarying vec3 v_directionLightDir[DIRECTION_LIGHTS_COUNT];\n#endif\n\n", funcDeclare: "vec3 getNormal();\n\nvec3 getLightDir(vec3 lightPos);\n\n", funcDefine: "#if POINT_LIGHTS_COUNT > 0\nvec3 getPointLightDir(int index){\n    //workaround '[] : Index expression must be constant' error\n    for (int x = 0; x <= POINT_LIGHTS_COUNT; x++) {\n        if(x == index){\n            return v_pointLightDir[x];\n        }\n    }\n    /*!\n    solve error in window7 chrome/firefox:\n    not all control paths return a value.\n    failed to create d3d shaders\n    */\n    return vec3(0.0);\n}\n#endif\n\n#if DIRECTION_LIGHTS_COUNT > 0\n\nvec3 getDirectionLightDir(int index){\n    //workaround '[] : Index expression must be constant' error\n    for (int x = 0; x <= DIRECTION_LIGHTS_COUNT; x++) {\n        if(x == index){\n            return v_directionLightDir[x];\n        }\n    }\n\n    /*!\n    solve error in window7 chrome/firefox:\n    not all control paths return a value.\n    failed to create d3d shaders\n    */\n    return vec3(0.0);\n}\n#endif\n\n\nvec3 getViewDir(){\n    return v_viewDir;\n}\nvec3 getNormal(){\n        // Obtain normal from normal map in range [0,1]\n        vec3 normal = texture2D(u_normalMapSampler, v_normalMapTexCoord).rgb;\n\n        // Transform normal vector to range [-1,1]\n        return normalize(normal * 2.0 - 1.0);  // this normal is in tangent space\n}\n", body: "", };
-        ShaderChunk.normalMap_vertex = { top: "", define: "", varDeclare: "varying vec2 v_normalMapTexCoord;\n	varying vec3 v_viewDir;\n\n\n#if POINT_LIGHTS_COUNT > 0\nvarying vec3 v_pointLightDir[POINT_LIGHTS_COUNT];\n#endif\n\n#if DIRECTION_LIGHTS_COUNT > 0\nvarying vec3 v_directionLightDir[DIRECTION_LIGHTS_COUNT];\n#endif\n\n", funcDeclare: "", funcDefine: "mat3 computeTBN(){\n            //vec3 T = normalize(normalMatrix * tangent);\n            //vec3 B = normalize(normalMatrix * bitangent);\n            //vec3 N = normalize(normalMatrix * normal);\n\n            vec3 T = normalize(u_normalMatrix * a_tangent);\n            vec3 N = normalize(u_normalMatrix * a_normal);\n            // re-orthogonalize T with respect to N\n            T = normalize(T - dot(T, N) * N);\n            // then retrieve perpendicular vector B with the cross product of T and N\n            vec3 B = cross(T, N);\n\n\n            return transpose(mat3(T, B, N));\n        }\n", body: "mat3 TBN = computeTBN();\n\n    //v_tangentLightPos = TBN * light.position;\n    //v_tangentCameraPos  = TBN * u_cameraPos;\n    //v_tangentPos  = TBN * v_position;\n\n\n    vec3 tangentPosition = TBN * vec3(u_mMatrix * vec4(a_position, 1.0));\n\n    v_normalMapTexCoord = a_texCoord;\n\n    v_viewDir = normalize(TBN * u_cameraPos - tangentPosition);\n\n\n#if POINT_LIGHTS_COUNT > 0\n       for(int i = 0; i < POINT_LIGHTS_COUNT; i++){\n            //not normalize for computing distance\n            v_pointLightDir[i] = TBN * getPointLightDirByLightPos(u_pointLights[i].position, tangentPosition);\n       }\n#endif\n\n#if DIRECTION_LIGHTS_COUNT > 0\n       for(int i = 0; i < DIRECTION_LIGHTS_COUNT; i++){\n            v_directionLightDir[i] = normalize(- TBN * getDirectionLightDirByLightPos(u_directionLights[i].position));\n       }\n#endif\n\n", };
+        ShaderChunk.normalMap_vertex = { top: "", define: "", varDeclare: "varying vec2 v_normalMapTexCoord;\n	varying vec3 v_viewDir;\n\n\n#if POINT_LIGHTS_COUNT > 0\nvarying vec3 v_pointLightDir[POINT_LIGHTS_COUNT];\n#endif\n\n#if DIRECTION_LIGHTS_COUNT > 0\nvarying vec3 v_directionLightDir[DIRECTION_LIGHTS_COUNT];\n#endif\n\n", funcDeclare: "", funcDefine: "mat3 computeTBN(mat3 normalMatrix){\n            vec3 T = normalize(normalMatrix * a_tangent);\n            vec3 N = normalize(normalMatrix * a_normal);\n            // re-orthogonalize T with respect to N\n            T = normalize(T - dot(T, N) * N);\n            // then retrieve perpendicular vector B with the cross product of T and N\n            vec3 B = cross(T, N);\n\n\n            return transpose(mat3(T, B, N));\n        }\n", body: "mat3 TBN = computeTBN(normalMatrix);\n\n    //v_tangentLightPos = TBN * light.position;\n    //v_tangentCameraPos  = TBN * u_cameraPos;\n    //v_tangentPos  = TBN * v_position;\n\n\n    vec3 tangentPosition = TBN * vec3(mMatrix * vec4(a_position, 1.0));\n\n    v_normalMapTexCoord = a_texCoord;\n\n    v_viewDir = normalize(TBN * u_cameraPos - tangentPosition);\n\n\n#if POINT_LIGHTS_COUNT > 0\n       for(int i = 0; i < POINT_LIGHTS_COUNT; i++){\n            //not normalize for computing distance\n            v_pointLightDir[i] = TBN * getPointLightDirByLightPos(u_pointLights[i].position, tangentPosition);\n       }\n#endif\n\n#if DIRECTION_LIGHTS_COUNT > 0\n       for(int i = 0; i < DIRECTION_LIGHTS_COUNT; i++){\n            v_directionLightDir[i] = normalize(- TBN * getDirectionLightDirByLightPos(u_directionLights[i].position));\n       }\n#endif\n\n", };
         ShaderChunk.specularMap_fragment = { top: "", define: "", varDeclare: "varying vec2 v_specularMapTexCoord;\n", funcDeclare: "", funcDefine: "vec4 getMaterialSpecular() {\n        return texture2D(u_specularMapSampler, v_specularMapTexCoord);\n    }\n", body: "", };
         ShaderChunk.specularMap_vertex = { top: "", define: "", varDeclare: "varying vec2 v_specularMapTexCoord;\n", funcDeclare: "", funcDefine: "", body: "v_specularMapTexCoord = a_texCoord;\n", };
         ShaderChunk.buildCubemapShadowMap_fragment = { top: "", define: "", varDeclare: "varying vec3 v_worldPosition;\n", funcDeclare: "", funcDefine: "", body: "\n// get distance between fragment and light source\n    float lightDistance = length(v_worldPosition - u_lightPos);\n\n    // map to [0,1] range by dividing by farPlane\n    lightDistance = lightDistance / u_farPlane;\n\n\ngl_FragData[0] = packDepth(lightDistance);\n\n\n//gl_FragColor = vec4(0.5, 0.0, 1.0, 1.0);\n//gl_FragData[0] = vec4(lightDistance, 1.0, 1.0, 1.0);\n", };
-        ShaderChunk.buildCubemapShadowMap_vertex = { top: "", define: "", varDeclare: "varying vec3 v_worldPosition;\n", funcDeclare: "", funcDefine: "", body: "v_worldPosition = vec3(u_mMatrix * vec4(a_position, 1.0));\n    gl_Position = u_pMatrix * u_vMatrix * vec4(v_worldPosition, 1.0);\n", };
+        ShaderChunk.buildCubemapShadowMap_vertex = { top: "", define: "", varDeclare: "varying vec3 v_worldPosition;\n", funcDeclare: "", funcDefine: "", body: "v_worldPosition = vec3(mMatrix * vec4(a_position, 1.0));\n    gl_Position = u_pMatrix * u_vMatrix * vec4(v_worldPosition, 1.0);\n", };
         ShaderChunk.buildTwoDShadowMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "gl_FragData[0] = packDepth(gl_FragCoord.z);\n", };
-        ShaderChunk.buildTwoDShadowMap_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "gl_Position = u_vpMatrixFromLight * u_mMatrix * vec4(a_position, 1.0);\n//gl_Position = u_pMatrix* u_vMatrix * u_mMatrix * vec4(a_position, 1.0);\n", };
+        ShaderChunk.buildTwoDShadowMap_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "gl_Position = u_vpMatrixFromLight * mMatrix * vec4(a_position, 1.0);\n", };
         ShaderChunk.commonBuildShadowMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "// Packing a float in GLSL with multiplication and mod\nvec4 packDepth(in float depth) {\n    const vec4 bit_shift = vec4(256.0 * 256.0 * 256.0, 256.0 * 256.0, 256.0, 1.0);\n    const vec4 bit_mask = vec4(0.0, 1.0 / 256.0, 1.0 / 256.0, 1.0 / 256.0);\n    // combination of mod and multiplication and division works better\n    vec4 res = mod(depth * bit_shift * vec4(255), vec4(256) ) / vec4(255);\n    res -= res.xxyz * bit_mask;\n\n    return res;\n}\n", body: "", };
-        ShaderChunk.cubemapShadowMap_fragment = { top: "", define: "", varDeclare: "uniform samplerCube u_cubemapShadowMapSampler[ CUBEMAP_SHADOWMAP_COUNT ];\n	uniform float u_cubemapShadowDarkness[ CUBEMAP_SHADOWMAP_COUNT ];\n	uniform float u_cubemapShadowBias[ CUBEMAP_SHADOWMAP_COUNT ];\n	uniform float u_farPlane[ CUBEMAP_SHADOWMAP_COUNT ];\n	uniform vec3 u_cubemapLightPos[ CUBEMAP_SHADOWMAP_COUNT ];\n", funcDeclare: "", funcDefine: "// PCF\nfloat getCubemapShadowVisibilityByPCF(float currentDepth, vec3 fragToLight, samplerCube cubemapShadowMapSampler, float shadowBias, float farPlane, float shadowDarkness){\n    //only support in opengl es 3.0+\n    //vec3 sampleOffsetDirections[20] = vec3[]\n    //(\n       //vec3( 1,  1,  1), vec3( 1, -1,  1), vec3(-1, -1,  1), vec3(-1,  1,  1),\n       //vec3( 1,  1, -1), vec3( 1, -1, -1), vec3(-1, -1, -1), vec3(-1,  1, -1),\n       //vec3( 1,  1,  0), vec3( 1, -1,  0), vec3(-1, -1,  0), vec3(-1,  1,  0),\n       //vec3( 1,  0,  1), vec3(-1,  0,  1), vec3( 1,  0, -1), vec3(-1,  0, -1),\n       //vec3( 0,  1,  1), vec3( 0, -1,  1), vec3( 0, -1, -1), vec3( 0,  1, -1)\n    //);\n\n    vec3 sampleOffsetDirections[20];\n\n    sampleOffsetDirections[0] = vec3( 1,  1,  1);\n    sampleOffsetDirections[1] = vec3( 1,  -1,  1);\n    sampleOffsetDirections[2] = vec3( -1,  -1,  1);\n    sampleOffsetDirections[3] = vec3( -1,  1,  1);\n\n    sampleOffsetDirections[4] = vec3( 1,  1,  -1);\n    sampleOffsetDirections[5] = vec3( 1,  -1,  -1);\n    sampleOffsetDirections[6] = vec3( -1,  -1,  -1);\n    sampleOffsetDirections[7] = vec3( -1,  1,  -1);\n\n    sampleOffsetDirections[8] = vec3( 1,  1,  0);\n    sampleOffsetDirections[9] = vec3( 1,  -1,  0);\n    sampleOffsetDirections[10] = vec3( -1,  -1,  0);\n    sampleOffsetDirections[11] = vec3( -1,  1,  0);\n\n    sampleOffsetDirections[12] = vec3( 1,  0,  1);\n    sampleOffsetDirections[13] = vec3( -1,  0,  1);\n    sampleOffsetDirections[14] = vec3( 1,  0,  -1);\n    sampleOffsetDirections[15] = vec3( -1,  0,  -1);\n\n    sampleOffsetDirections[16] = vec3( 0,  1,  1);\n    sampleOffsetDirections[17] = vec3( 0,  -1,  1);\n    sampleOffsetDirections[18] = vec3( 0,  -1,  -1);\n    sampleOffsetDirections[19] = vec3( 0,  1,  -1);\n\n    float shadow = 0.0;\n    int samples = 20;\n\n    //float diskRadius = 0.00000;\n    //Another interesting trick we can apply here is that we can change the diskRadius based on how far the viewer is away from a fragment; this way we can increase the offset radius by the distance to the viewer, making the shadows softer when far away and sharper when close by.\n    float viewDistance = length(u_cameraPos - v_worldPosition);\n    float diskRadius = (1.0 + (viewDistance / farPlane)) / 25.0;\n\n    //for(int i = 0; i < samples; ++i)\n    for(int i = 0; i < 20; ++i)\n    {\n        float pcfDepth = unpackDepth(textureCube(cubemapShadowMapSampler, fragToLight + sampleOffsetDirections[i] * diskRadius));\n        pcfDepth *= farPlane;   // Undo mapping [0;1]\n        shadow += currentDepth - shadowBias > pcfDepth  ? shadowDarkness : 1.0;\n    }\n    shadow /= float(samples);\n\n    return shadow;\n}\n\n\nfloat getCubemapShadowVisibility(vec3 lightDir, samplerCube cubemapShadowMapSampler, vec3 lightPos, float farPlane, float shadowBias, float  shadowDarkness) {\n// Get vector between fragment position and light position\n    vec3 fragToLight= v_worldPosition - lightPos;\n    // Use the light to fragment vector to sample from the depth map\n    // Now get current linear depth as the length between the fragment and light position\n    float currentDepth = length(fragToLight);\n\n    #if defined(SHADOWMAP_TYPE_PCF)\n    return getCubemapShadowVisibilityByPCF(currentDepth, fragToLight, cubemapShadowMapSampler, getShadowBias(lightDir, shadowBias), farPlane, shadowDarkness);\n    #endif\n\n    float closestDepth = unpackDepth(textureCube(cubemapShadowMapSampler, fragToLight));\n\n    // It is currently in linear range between [0,1]. Re-transform back to original value\n    closestDepth *= farPlane;\n\n\n    return float(currentDepth > closestDepth + getShadowBias(lightDir, shadowBias) ? shadowDarkness : 1.0);\n}\n", body: "", };
+        ShaderChunk.cubemapShadowMap_fragment = { top: "", define: "", varDeclare: "uniform samplerCube u_cubemapShadowMapSampler[ CUBEMAP_SHADOWMAP_COUNT ];\n\n    uniform int u_isCubemapRenderListEmpty[ CUBEMAP_SHADOWMAP_COUNT ];\n	uniform float u_cubemapShadowDarkness[ CUBEMAP_SHADOWMAP_COUNT ];\n	uniform float u_cubemapShadowBias[ CUBEMAP_SHADOWMAP_COUNT ];\n	uniform float u_farPlane[ CUBEMAP_SHADOWMAP_COUNT ];\n	uniform vec3 u_cubemapLightPos[ CUBEMAP_SHADOWMAP_COUNT ];\n", funcDeclare: "", funcDefine: "// PCF\nfloat getCubemapShadowVisibilityByPCF(float currentDepth, vec3 fragToLight, samplerCube cubemapShadowMapSampler, float shadowBias, float farPlane, float shadowDarkness){\n    //only support in opengl es 3.0+\n    //vec3 sampleOffsetDirections[20] = vec3[]\n    //(\n       //vec3( 1,  1,  1), vec3( 1, -1,  1), vec3(-1, -1,  1), vec3(-1,  1,  1),\n       //vec3( 1,  1, -1), vec3( 1, -1, -1), vec3(-1, -1, -1), vec3(-1,  1, -1),\n       //vec3( 1,  1,  0), vec3( 1, -1,  0), vec3(-1, -1,  0), vec3(-1,  1,  0),\n       //vec3( 1,  0,  1), vec3(-1,  0,  1), vec3( 1,  0, -1), vec3(-1,  0, -1),\n       //vec3( 0,  1,  1), vec3( 0, -1,  1), vec3( 0, -1, -1), vec3( 0,  1, -1)\n    //);\n\n    vec3 sampleOffsetDirections[20];\n\n    sampleOffsetDirections[0] = vec3( 1,  1,  1);\n    sampleOffsetDirections[1] = vec3( 1,  -1,  1);\n    sampleOffsetDirections[2] = vec3( -1,  -1,  1);\n    sampleOffsetDirections[3] = vec3( -1,  1,  1);\n\n    sampleOffsetDirections[4] = vec3( 1,  1,  -1);\n    sampleOffsetDirections[5] = vec3( 1,  -1,  -1);\n    sampleOffsetDirections[6] = vec3( -1,  -1,  -1);\n    sampleOffsetDirections[7] = vec3( -1,  1,  -1);\n\n    sampleOffsetDirections[8] = vec3( 1,  1,  0);\n    sampleOffsetDirections[9] = vec3( 1,  -1,  0);\n    sampleOffsetDirections[10] = vec3( -1,  -1,  0);\n    sampleOffsetDirections[11] = vec3( -1,  1,  0);\n\n    sampleOffsetDirections[12] = vec3( 1,  0,  1);\n    sampleOffsetDirections[13] = vec3( -1,  0,  1);\n    sampleOffsetDirections[14] = vec3( 1,  0,  -1);\n    sampleOffsetDirections[15] = vec3( -1,  0,  -1);\n\n    sampleOffsetDirections[16] = vec3( 0,  1,  1);\n    sampleOffsetDirections[17] = vec3( 0,  -1,  1);\n    sampleOffsetDirections[18] = vec3( 0,  -1,  -1);\n    sampleOffsetDirections[19] = vec3( 0,  1,  -1);\n\n    float shadow = 0.0;\n    int samples = 20;\n\n    //float diskRadius = 0.00000;\n    //Another interesting trick we can apply here is that we can change the diskRadius based on how far the viewer is away from a fragment; this way we can increase the offset radius by the distance to the viewer, making the shadows softer when far away and sharper when close by.\n    float viewDistance = length(u_cameraPos - v_worldPosition);\n    float diskRadius = (1.0 + (viewDistance / farPlane)) / 25.0;\n\n    //for(int i = 0; i < samples; ++i)\n    for(int i = 0; i < 20; ++i)\n    {\n        float pcfDepth = unpackDepth(textureCube(cubemapShadowMapSampler, fragToLight + sampleOffsetDirections[i] * diskRadius));\n        pcfDepth *= farPlane;   // Undo mapping [0;1]\n        shadow += currentDepth - shadowBias > pcfDepth  ? shadowDarkness : 1.0;\n    }\n    shadow /= float(samples);\n\n    return shadow;\n}\n\n\nfloat getCubemapShadowVisibility(vec3 lightDir, samplerCube cubemapShadowMapSampler, vec3 lightPos, float farPlane, float shadowBias, float  shadowDarkness) {\n// Get vector between fragment position and light position\n    vec3 fragToLight= v_worldPosition - lightPos;\n    // Use the light to fragment vector to sample from the depth map\n    // Now get current linear depth as the length between the fragment and light position\n    float currentDepth = length(fragToLight);\n\n    #if defined(SHADOWMAP_TYPE_PCF)\n    return getCubemapShadowVisibilityByPCF(currentDepth, fragToLight, cubemapShadowMapSampler, getShadowBias(lightDir, shadowBias), farPlane, shadowDarkness);\n    #endif\n\n    float closestDepth = unpackDepth(textureCube(cubemapShadowMapSampler, fragToLight));\n\n    // It is currently in linear range between [0,1]. Re-transform back to original value\n    closestDepth *= farPlane;\n\n\n    return float(currentDepth > closestDepth + getShadowBias(lightDir, shadowBias) ? shadowDarkness : 1.0);\n}\n", body: "", };
         ShaderChunk.noShadowMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec3 getShadowVisibility() {\n        return vec3(1.0);\n    }\n", body: "", };
-        ShaderChunk.totalShadowMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "float getShadowBias(vec3 lightDir, float shadowBias);\nfloat unpackDepth(vec4 rgbaDepth);\n", funcDefine: "float getShadowBias(vec3 lightDir, float shadowBias){\n    float bias = shadowBias;\n\n    if(shadowBias == NULL){\n        bias = 0.005;\n    }\n\n\n     /*!\n     A shadow bias of 0.005 solves the issues of our scene by a large extent, but some surfaces that have a steep angle to the light source might still produce shadow acne. A more solid approach would be to change the amount of bias based on the surface angle towards the light: something we can solve with the dot product:\n     */\n\n     return max(bias * (1.0 - dot(normalize(getNormal()), lightDir)), bias);\n\n    //return bias;\n}\n\nfloat unpackDepth(vec4 rgbaDepth) {\n    const vec4 bitShift = vec4(1.0 / (256.0 * 256.0 * 256.0), 1.0 / (256.0 * 256.0), 1.0 / 256.0, 1.0);\n    return dot(rgbaDepth, bitShift);\n}\n\nvec3 getShadowVisibility() {\n    vec3 shadowColor = vec3(1.0);\n    vec3 twoDLightDir = vec3(0.0);\n    vec3 cubemapLightDir = vec3(0.0);\n\n\n    //to normalMap, the lightDir use the origin one instead of normalMap's lightDir here(the lightDir is used for computing shadowBias, the origin one is enough for it)\n\n    #if TWOD_SHADOWMAP_COUNT > 0\n	for( int i = 0; i < TWOD_SHADOWMAP_COUNT; i ++ ) {\n        twoDLightDir = getDirectionLightDirByLightPos(u_twoDLightPos[i]);\n\n	////if is opposite to direction of light rays, no shadow\n\n        shadowColor *= getTwoDShadowVisibility(twoDLightDir, u_twoDShadowMapSampler[i], v_positionFromLight[i], u_twoDShadowBias[i], u_twoDShadowDarkness[i], u_twoDShadowSize[i]);\n	}\n	#endif\n\n\n	#if CUBEMAP_SHADOWMAP_COUNT > 0\n	for( int i = 0; i < CUBEMAP_SHADOWMAP_COUNT; i ++ ) {\n        cubemapLightDir = getPointLightDirByLightPos(u_cubemapLightPos[i]);\n\n	////if is opposite to direction of light rays, no shadow\n\n        shadowColor *= getCubemapShadowVisibility(cubemapLightDir, u_cubemapShadowMapSampler[i], u_cubemapLightPos[i], u_farPlane[i], u_cubemapShadowBias[i], u_cubemapShadowDarkness[i]);\n	}\n	#endif\n\n	return shadowColor;\n}\n\n", body: "", };
-        ShaderChunk.twoDShadowMap_fragment = { top: "", define: "", varDeclare: "varying vec4 v_positionFromLight[ TWOD_SHADOWMAP_COUNT ];\n	uniform sampler2D u_twoDShadowMapSampler[ TWOD_SHADOWMAP_COUNT ];\n	uniform float u_twoDShadowDarkness[ TWOD_SHADOWMAP_COUNT ];\n	uniform float u_twoDShadowBias[ TWOD_SHADOWMAP_COUNT ];\n	uniform vec2 u_twoDShadowSize[ TWOD_SHADOWMAP_COUNT ];\n	uniform vec3 u_twoDLightPos[ TWOD_SHADOWMAP_COUNT ];\n", funcDeclare: "", funcDefine: "// PCF\nfloat getTwoDShadowVisibilityByPCF(float currentDepth, vec2 shadowCoord, sampler2D twoDShadowMapSampler, float shadowBias, float shadowDarkness, vec2 shadowMapSize){\n\n    float shadow = 0.0;\n    vec2 texelSize = vec2(1.0 / shadowMapSize[0], 1.0 / shadowMapSize[1]);\n\n    for(int x = -1; x <= 1; ++x)\n    {\n        for(int y = -1; y <= 1; ++y)\n        {\n            float pcfDepth = unpackDepth(texture2D(twoDShadowMapSampler, shadowCoord + vec2(x, y) * texelSize));\n            shadow += currentDepth - shadowBias > pcfDepth  ? shadowDarkness : 1.0;\n        }\n    }\n    shadow /= 9.0;\n\n    return shadow;\n}\n\n\n\nfloat getTwoDShadowVisibility(vec3 lightDir, sampler2D twoDShadowMapSampler, vec4 v_positionFromLight, float shadowBias, float shadowDarkness, vec2 shadowSize) {\n    //project texture\n    vec3 shadowCoord = (v_positionFromLight.xyz / v_positionFromLight.w) / 2.0 + 0.5;\n    //vec3 shadowCoord = vec3(0.5, 0.5, 0.5);\n\n    #ifdef SHADOWMAP_TYPE_PCF\n    // Percentage-close filtering\n    // (9 pixel kernel)\n    return getTwoDShadowVisibilityByPCF(shadowCoord.z, shadowCoord.xy, twoDShadowMapSampler, getShadowBias(lightDir, shadowBias), shadowDarkness, shadowSize);\n\n    #else\n    return shadowCoord.z > unpackDepth(texture2D(twoDShadowMapSampler, shadowCoord.xy)) + getShadowBias(lightDir, shadowBias) ? shadowDarkness : 1.0;\n    #endif\n}\n", body: "", };
+        ShaderChunk.totalShadowMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "float getShadowBias(vec3 lightDir, float shadowBias);\nfloat unpackDepth(vec4 rgbaDepth);\n", funcDefine: "float getShadowBias(vec3 lightDir, float shadowBias){\n    float bias = shadowBias;\n\n    if(shadowBias == NULL){\n        bias = 0.005;\n    }\n\n\n     /*!\n     A shadow bias of 0.005 solves the issues of our scene by a large extent, but some surfaces that have a steep angle to the light source might still produce shadow acne. A more solid approach would be to change the amount of bias based on the surface angle towards the light: something we can solve with the dot product:\n     */\n\n     return max(bias * (1.0 - dot(normalize(getNormal()), lightDir)), bias);\n\n    //return bias;\n}\n\nfloat unpackDepth(vec4 rgbaDepth) {\n    /*! make sure that the visibility from the shadow map which is not builded is always be 1.0 */\n    if(rgbaDepth == vec4(0.0)){\n        return 100000.0;\n    }\n\n    const vec4 bitShift = vec4(1.0 / (256.0 * 256.0 * 256.0), 1.0 / (256.0 * 256.0), 1.0 / 256.0, 1.0);\n    return dot(rgbaDepth, bitShift);\n}\n\nvec3 getShadowVisibility() {\n    vec3 shadowColor = vec3(1.0);\n    vec3 twoDLightDir = vec3(0.0);\n    vec3 cubemapLightDir = vec3(0.0);\n\n\n\n    //to normalMap, the lightDir use the origin one instead of normalMap's lightDir here(the lightDir is used for computing shadowBias, the origin one is enough for it)\n\n    #if TWOD_SHADOWMAP_COUNT > 0\n	for( int i = 0; i < TWOD_SHADOWMAP_COUNT; i ++ ) {\n        if(isRenderListEmpty(u_isTwoDRenderListEmpty[i])){\n            break;\n        }\n\n        twoDLightDir = getDirectionLightDirByLightPos(u_twoDLightPos[i]);\n\n	////if is opposite to direction of light rays, no shadow\n\n        shadowColor *= getTwoDShadowVisibility(twoDLightDir, u_twoDShadowMapSampler[i], v_positionFromLight[i], u_twoDShadowBias[i], u_twoDShadowDarkness[i], u_twoDShadowSize[i]);\n	}\n	#endif\n\n\n	#if CUBEMAP_SHADOWMAP_COUNT > 0\n\n	for( int i = 0; i < CUBEMAP_SHADOWMAP_COUNT; i ++ ) {\n        if(isRenderListEmpty(u_isCubemapRenderListEmpty[i])){\n            break;\n        }\n\n	////if is opposite to direction of light rays, no shadow\n\n        shadowColor *= getCubemapShadowVisibility(cubemapLightDir, u_cubemapShadowMapSampler[i], u_cubemapLightPos[i], u_farPlane[i], u_cubemapShadowBias[i], u_cubemapShadowDarkness[i]);\n	}\n	#endif\n\n	return shadowColor;\n}\n\n", body: "", };
+        ShaderChunk.twoDShadowMap_fragment = { top: "", define: "", varDeclare: "varying vec4 v_positionFromLight[ TWOD_SHADOWMAP_COUNT ];\n    uniform int u_isTwoDRenderListEmpty[ TWOD_SHADOWMAP_COUNT ];\n	uniform sampler2D u_twoDShadowMapSampler[ TWOD_SHADOWMAP_COUNT ];\n	uniform float u_twoDShadowDarkness[ TWOD_SHADOWMAP_COUNT ];\n	uniform float u_twoDShadowBias[ TWOD_SHADOWMAP_COUNT ];\n	uniform vec2 u_twoDShadowSize[ TWOD_SHADOWMAP_COUNT ];\n	uniform vec3 u_twoDLightPos[ TWOD_SHADOWMAP_COUNT ];\n", funcDeclare: "", funcDefine: "// PCF\nfloat getTwoDShadowVisibilityByPCF(float currentDepth, vec2 shadowCoord, sampler2D twoDShadowMapSampler, float shadowBias, float shadowDarkness, vec2 shadowMapSize){\n\n    float shadow = 0.0;\n    vec2 texelSize = vec2(1.0 / shadowMapSize[0], 1.0 / shadowMapSize[1]);\n\n    for(int x = -1; x <= 1; ++x)\n    {\n        for(int y = -1; y <= 1; ++y)\n        {\n            float pcfDepth = unpackDepth(texture2D(twoDShadowMapSampler, shadowCoord + vec2(x, y) * texelSize));\n            shadow += currentDepth - shadowBias > pcfDepth  ? shadowDarkness : 1.0;\n        }\n    }\n    shadow /= 9.0;\n\n    return shadow;\n}\n\n\n\nfloat getTwoDShadowVisibility(vec3 lightDir, sampler2D twoDShadowMapSampler, vec4 v_positionFromLight, float shadowBias, float shadowDarkness, vec2 shadowSize) {\n    //project texture\n    vec3 shadowCoord = (v_positionFromLight.xyz / v_positionFromLight.w) / 2.0 + 0.5;\n    //vec3 shadowCoord = vec3(0.5, 0.5, 0.5);\n\n    #ifdef SHADOWMAP_TYPE_PCF\n    // Percentage-close filtering\n    // (9 pixel kernel)\n    return getTwoDShadowVisibilityByPCF(shadowCoord.z, shadowCoord.xy, twoDShadowMapSampler, getShadowBias(lightDir, shadowBias), shadowDarkness, shadowSize);\n\n    #else\n    return shadowCoord.z > unpackDepth(texture2D(twoDShadowMapSampler, shadowCoord.xy)) + getShadowBias(lightDir, shadowBias) ? shadowDarkness : 1.0;\n    #endif\n}\n", body: "", };
         ShaderChunk.twoDShadowMap_vertex = { top: "", define: "", varDeclare: "varying vec4 v_positionFromLight[ TWOD_SHADOWMAP_COUNT ];\nuniform mat4 u_vpMatrixFromLight[ TWOD_SHADOWMAP_COUNT ];\n", funcDeclare: "", funcDefine: "", body: "for( int i = 0; i < TWOD_SHADOWMAP_COUNT; i ++ ) {\n    v_positionFromLight[i] = u_vpMatrixFromLight[i] * vec4(v_worldPosition, 1.0);\n	}\n", };
-        ShaderChunk.mirror_fragment = { top: "", define: "", varDeclare: "varying vec4 v_reflectionMapCoord;\n", funcDeclare: "", funcDefine: "//todo add more blend way to mix reflectionMap color and textureColor\n		float blendOverlay(float base, float blend) {\n			return( base < 0.5 ? ( 2.0 * base * blend ) : (1.0 - 2.0 * ( 1.0 - base ) * ( 1.0 - blend ) ) );\n		}\n		vec4 getReflectionMapColor(in vec4 materialColor){\n			vec4 color = texture2DProj(u_reflectionMapSampler, v_reflectionMapCoord);\n\n			color = vec4(blendOverlay(materialColor.r, color.r), blendOverlay(materialColor.g, color.g), blendOverlay(materialColor.b, color.b), 1.0);\n\n			return color;\n		}\n", body: "totalColor *= getReflectionMapColor(totalColor);\n", };
+        ShaderChunk.mirror_fragment = { top: "", define: "", varDeclare: "varying vec4 v_reflectionMapCoord;\n", funcDeclare: "", funcDefine: "//todo add more blend way to mix reflectionMap color and textureColor\n		float blendOverlay(float base, float blend) {\n			return( base < 0.5 ? ( 2.0 * base * blend ) : (1.0 - 2.0 * ( 1.0 - base ) * ( 1.0 - blend ) ) );\n		}\n		vec4 getReflectionMapColor(in vec4 materialColor){\n			vec4 color = texture2DProj(u_reflectionMapSampler, v_reflectionMapCoord);\n\n			color = vec4(blendOverlay(materialColor.r, color.r), blendOverlay(materialColor.g, color.g), blendOverlay(materialColor.b, color.b), 1.0);\n\n			return color;\n		}\n", body: "if(!isRenderListEmpty(u_isRenderListEmpty)){\n    totalColor *= getReflectionMapColor(totalColor);\n}\n", };
         ShaderChunk.mirror_vertex = { top: "", define: "", varDeclare: "varying vec4 v_reflectionMapCoord;\n", funcDeclare: "", funcDefine: "", body: "mat4 textureMatrix = mat4(\n                        0.5, 0.0, 0.0, 0.0,\n                        0.0, 0.5, 0.0, 0.0,\n                        0.0, 0.0, 0.5, 0.0,\n                        0.5, 0.5, 0.5, 1.0\n);\n\nv_reflectionMapCoord = textureMatrix * gl_Position;\n", };
         ShaderChunk.terrainLayer_fragment = { top: "", define: "", varDeclare: "struct LayerHeightData {\n    float minHeight;\n    float maxHeight;\n};\nuniform LayerHeightData u_layerHeightDatas[LAYER_COUNT];\n//sampler2D can't be contained in struct\nuniform sampler2D u_layerSampler2Ds[LAYER_COUNT];\n\n\nvarying vec2 v_layerTexCoord;\n", funcDeclare: "", funcDefine: "vec4 getLayerTextureColor(in sampler2D layerSampler2Ds[LAYER_COUNT], in LayerHeightData layerHeightDatas[LAYER_COUNT]){\n    vec4 color = vec4(0.0);\n    bool isInLayer = false;\n\n    float height = v_worldPosition.y;\n\n    for(int i = 0; i < LAYER_COUNT; i++){\n        if(height >= layerHeightDatas[i].minHeight && height <= layerHeightDatas[i].maxHeight){\n            //todo blend color\n            color += texture2D(layerSampler2Ds[i], v_layerTexCoord);\n\n            isInLayer = true;\n\n            break;\n        }\n    }\n\n    return isInLayer ? color : vec4(1.0);\n}\n", body: "\ntotalColor *= getLayerTextureColor(u_layerSampler2Ds, u_layerHeightDatas);\n", };
         ShaderChunk.terrainLayer_vertex = { top: "", define: "", varDeclare: "varying vec2 v_layerTexCoord;\n", funcDeclare: "", funcDefine: "", body: "v_layerTexCoord = a_texCoord;\n", };
-        ShaderChunk.brick_proceduralTexture_fragment = { top: "", define: "", varDeclare: "varying vec2 v_texCoord;\n", funcDeclare: "", funcDefine: "", body: "float brickW = 1.0 / u_tilesWidthNumber;\n	float brickH = 1.0 / u_tilesWidthNumber;\n	float jointWPercentage = 0.01;\n	float jointHPercentage = 0.05;\n	vec3 color = u_brickColor;\n	float yi = v_texCoord.y / brickH;\n	float nyi = round(yi);\n	float xi = v_texCoord.x / brickW;\n\n	if (mod(floor(yi), 2.0) == 0.0){\n		xi = xi - 0.5;\n	}\n\n	float nxi = round(xi);\n	vec2 brickv_texCoord = vec2((xi - floor(xi)) / brickH, (yi - floor(yi)) /  brickW);\n\n	if (yi < nyi + jointHPercentage && yi > nyi - jointHPercentage){\n		color = mix(u_jointColor, vec3(0.37, 0.25, 0.25), (yi - nyi) / jointHPercentage + 0.2);\n	}\n	else if (xi < nxi + jointWPercentage && xi > nxi - jointWPercentage){\n		color = mix(u_jointColor, vec3(0.44, 0.44, 0.44), (xi - nxi) / jointWPercentage + 0.2);\n	}\n	else {\n		float u_brickColorSwitch = mod(floor(yi) + floor(xi), 3.0);\n\n		if (u_brickColorSwitch == 0.0)\n			color = mix(color, vec3(0.33, 0.33, 0.33), 0.3);\n		else if (u_brickColorSwitch == 2.0)\n			color = mix(color, vec3(0.11, 0.11, 0.11), 0.3);\n	}\n\n	gl_FragColor = vec4(color, 1.0);\n", };
         ShaderChunk.water_bump_fragment = { top: "", define: "", varDeclare: "varying vec2 v_bumpTexCoord;\n", funcDeclare: "", funcDefine: "", body: "// fetch bump texture, unpack from [0..1] to [-1..1]\n	vec3 bumpNormal = 2.0 * texture2D(u_bumpMapSampler, v_bumpTexCoord).rgb - 1.0;\n	vec2 perturbation = u_waveData.height * bumpNormal.rg;\n", };
         ShaderChunk.water_bump_vertex = { top: "", define: "", varDeclare: "struct WaveData {\n    float length;\n    float height;\n};\nuniform WaveData u_waveData;\nvarying vec2 v_bumpTexCoord;\n", funcDeclare: "", funcDefine: "", body: "vec2 bumpTexCoord = vec2(u_windMatrix * vec4(a_texCoord, 0.0, 1.0));\n	v_bumpTexCoord = bumpTexCoord / u_waveData.length;\n", };
-        ShaderChunk.water_fragment = { top: "", define: "", varDeclare: "struct WaveData {\n    float length;\n    float height;\n};\nuniform WaveData u_waveData;\nstruct LevelData {\n    float fresnelLevel;\n    float reflectionLevel;\n    float refractionLevel;\n};\nuniform LevelData u_levelData;\n\nvarying vec4 v_reflectionAndRefractionMapCoord;\n", funcDeclare: "", funcDefine: "", body: "vec2 projectedTexCoords = v_reflectionAndRefractionMapCoord.xy / v_reflectionAndRefractionMapCoord.w + perturbation;\n\n\n\n\n//totalColor = vec4(1.0 - fresnelTerm);\n//totalColor *= vec4(refractionColor, 1.0);\n//totalColor *= vec4(mix(reflectionColor, refractionColor, fresnelTerm), 1.0);\n//totalColor += vec4(reflectionColor * fresnelTerm * u_levelData.reflectionLevel + (1.0 - fresnelTerm) * refractionColor * u_levelData.refractionLevel, 1.0);\n\n//totalColor += vec4(reflectionColor * fresnelTerm * u_levelData.reflectionLevel + (1.0 - fresnelTerm) * refractionColor * u_levelData.refractionLevel, 1.0);\n\ntotalColor += getLightEffectColor(projectedTexCoords);\n\n\n//totalColor *= vec4(mix(reflectionColor, refractionColor, 0.5), 1.0);\n", };
-        ShaderChunk.water_fresnel_fragment = { top: "", define: "", varDeclare: "varying vec3 v_position;\n", funcDeclare: "", funcDefine: "vec4 getLightEffectColor(vec2 projectedTexCoords){\n	vec3 reflectionColor = texture2D(u_reflectionMapSampler, projectedTexCoords).rgb;\n\n	vec3 refractionColor = texture2D(u_refractionMapSampler, projectedTexCoords).rgb;\n\n    vec3 inDir = normalize(v_position - u_cameraPos);\n\n	float fresnelTerm = max(dot(inDir, v_normal), 0.0);\n	fresnelTerm = clamp((1.0 - fresnelTerm) * u_levelData.fresnelLevel, 0., 1.);\n\n	return vec4(reflectionColor * fresnelTerm * u_levelData.reflectionLevel + (1.0 - fresnelTerm) * refractionColor * u_levelData.refractionLevel, 1.0);\n}\n", body: "", };
+        ShaderChunk.water_fragment = { top: "", define: "", varDeclare: "struct WaveData {\n    float length;\n    float height;\n};\nuniform WaveData u_waveData;\nstruct LevelData {\n    float fresnelLevel;\n    float reflectionLevel;\n    float refractionLevel;\n};\nuniform LevelData u_levelData;\n\nvarying vec4 v_reflectionAndRefractionMapCoord;\n", funcDeclare: "", funcDefine: "", body: "vec2 projectedTexCoords = v_reflectionAndRefractionMapCoord.xy / v_reflectionAndRefractionMapCoord.w + perturbation;\n\n\n\n\n//totalColor = vec4(1.0 - fresnelTerm);\n//totalColor *= vec4(refractionColor, 1.0);\n//totalColor *= vec4(mix(reflectionColor, refractionColor, fresnelTerm), 1.0);\n//totalColor += vec4(reflectionColor * fresnelTerm * u_levelData.reflectionLevel + (1.0 - fresnelTerm) * refractionColor * u_levelData.refractionLevel, 1.0);\n\n//totalColor += vec4(reflectionColor * fresnelTerm * u_levelData.reflectionLevel + (1.0 - fresnelTerm) * refractionColor * u_levelData.refractionLevel, 1.0);\n\ntotalColor += vec4(getLightEffectColor(projectedTexCoords), 1.0);\n\n\n//totalColor *= vec4(mix(reflectionColor, refractionColor, 0.5), 1.0);\n", };
+        ShaderChunk.water_fresnel_fragment = { top: "", define: "", varDeclare: "varying vec3 v_position;\n", funcDeclare: "", funcDefine: "vec3 getLightEffectColor(vec2 projectedTexCoords){\n	vec3 reflectionColor;\n	vec3 refractionColor;\n\n    vec3 inDir = normalize(v_position - u_cameraPos);\n\n	float fresnelTerm = max(dot(inDir, v_normal), 0.0);\n	fresnelTerm = clamp((1.0 - fresnelTerm) * u_levelData.fresnelLevel, 0., 1.);\n\n    if(!isRenderListEmpty(u_isReflectionRenderListEmpty)){\n        reflectionColor = texture2D(u_reflectionMapSampler, projectedTexCoords).rgb;\n        reflectionColor = reflectionColor * fresnelTerm * u_levelData.reflectionLevel;\n	}\n	else{\n        reflectionColor = vec3(0.0);\n	}\n\n    if(!isRenderListEmpty(u_isRefractionRenderListEmpty)){\n        refractionColor = texture2D(u_refractionMapSampler, projectedTexCoords).rgb;\n        refractionColor = (1.0 - fresnelTerm) * refractionColor * u_levelData.refractionLevel;\n	}\n	else{\n        refractionColor = vec3(0.0);\n	}\n\n	return reflectionColor + refractionColor;\n}\n", body: "", };
         ShaderChunk.water_fresnel_vertex = { top: "", define: "", varDeclare: "varying vec3 v_position;\n", funcDeclare: "", funcDefine: "", body: "v_position = a_position;\n", };
         ShaderChunk.water_noBump_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "vec2 perturbation = vec2(0.0);\n", };
         ShaderChunk.water_noLightEffect_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec4 getLightEffectColor(vec2 projectedTexCoords){\n    return vec4(1.0);\n}\n", body: "", };
-        ShaderChunk.water_reflection_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec4 getLightEffectColor(vec2 projectedTexCoords){\n	return vec4(texture2D(u_reflectionMapSampler, projectedTexCoords).rgb * u_levelData.reflectionLevel, 1.0);\n}\n", body: "", };
-        ShaderChunk.water_refraction_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec4 getLightEffectColor(vec2 projectedTexCoords){\n	return vec4(texture2D(u_refractionMapSampler, projectedTexCoords).rgb * u_levelData.refractionLevel, 1.0);\n}\n", body: "", };
+        ShaderChunk.water_reflection_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec3 getLightEffectColor(vec2 projectedTexCoords){\n    if(!isRenderListEmpty(u_isReflectionRenderListEmpty)){\n        return texture2D(u_reflectionMapSampler, projectedTexCoords).rgb * u_levelData.reflectionLevel;\n    }\n    return vec3(0.0);\n}\n", body: "", };
+        ShaderChunk.water_refraction_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec3 getLightEffectColor(vec2 projectedTexCoords){\n    if(!isRenderListEmpty(u_isRefractionRenderListEmpty)){\n        return texture2D(u_refractionMapSampler, projectedTexCoords).rgb * u_levelData.refractionLevel;\n    }\n    return vec3(0.0);\n}\n", body: "", };
         ShaderChunk.water_vertex = { top: "", define: "", varDeclare: "varying vec4 v_reflectionAndRefractionMapCoord;\n", funcDeclare: "", funcDefine: "", body: "mat4 textureMatrix = mat4(\n                        0.5, 0.0, 0.0, 0.0,\n                        0.0, 0.5, 0.0, 0.0,\n                        0.0, 0.0, 0.5, 0.0,\n                        0.5, 0.5, 0.5, 1.0\n);\n\nv_reflectionAndRefractionMapCoord = textureMatrix * gl_Position;\n", };
         ShaderChunk.cloud_proceduralTexture_fragment = { top: "", define: "", varDeclare: "varying vec2 v_texCoord;\n", funcDeclare: "", funcDefine: "", body: "gl_FragColor = mix(u_skyColor, u_cloudColor, fbm(v_texCoord * 12.0));\n", };
+        ShaderChunk.brick_proceduralTexture_fragment = { top: "", define: "", varDeclare: "varying vec2 v_texCoord;\n", funcDeclare: "", funcDefine: "", body: "float brickW = 1.0 / u_tilesWidthNumber;\n	float brickH = 1.0 / u_tilesWidthNumber;\n	float jointWPercentage = 0.01;\n	float jointHPercentage = 0.05;\n	vec3 color = u_brickColor;\n	float yi = v_texCoord.y / brickH;\n	float nyi = round(yi);\n	float xi = v_texCoord.x / brickW;\n\n	if (mod(floor(yi), 2.0) == 0.0){\n		xi = xi - 0.5;\n	}\n\n	float nxi = round(xi);\n	vec2 brickv_texCoord = vec2((xi - floor(xi)) / brickH, (yi - floor(yi)) /  brickW);\n\n	if (yi < nyi + jointHPercentage && yi > nyi - jointHPercentage){\n		color = mix(u_jointColor, vec3(0.37, 0.25, 0.25), (yi - nyi) / jointHPercentage + 0.2);\n	}\n	else if (xi < nxi + jointWPercentage && xi > nxi - jointWPercentage){\n		color = mix(u_jointColor, vec3(0.44, 0.44, 0.44), (xi - nxi) / jointWPercentage + 0.2);\n	}\n	else {\n		float u_brickColorSwitch = mod(floor(yi) + floor(xi), 3.0);\n\n		if (u_brickColorSwitch == 0.0)\n			color = mix(color, vec3(0.33, 0.33, 0.33), 0.3);\n		else if (u_brickColorSwitch == 2.0)\n			color = mix(color, vec3(0.11, 0.11, 0.11), 0.3);\n	}\n\n	gl_FragColor = vec4(color, 1.0);\n", };
+        ShaderChunk.fire_proceduralTexture_fragment = { top: "", define: "", varDeclare: "varying vec2 v_texCoord;\nstruct FireColor {\n    vec3 c1;\n    vec3 c2;\n    vec3 c3;\n    vec3 c4;\n    vec3 c5;\n    vec3 c6;\n};\nuniform FireColor u_fireColor;\n", funcDeclare: "", funcDefine: "", body: "vec2 p = v_texCoord * 8.0;\n	float q = fbm(p - u_time * 0.1);\n	vec2 r = vec2(fbm(p + q + u_time * u_speed.x - p.x - p.y), fbm(p + q - u_time * u_speed.y));\n	vec3 c = mix(u_fireColor.c1, u_fireColor.c2, fbm(p + r)) + mix(u_fireColor.c3, u_fireColor.c4, r.x) - mix(u_fireColor.c5, u_fireColor.c6, r.y);\n	vec3 color = c * cos(u_shift * v_texCoord.y);\n	float luminance = dot(color.rgb, vec3(0.3, 0.59, 0.11));\n\n	gl_FragColor = vec4(color, luminance * u_alphaThreshold + (1.0 - u_alphaThreshold));\n", };
+        ShaderChunk.marble_proceduralTexture_fragment = { top: "", define: "", varDeclare: "varying vec2 v_texCoord;\nconst vec3 TILE_SIZE = vec3(1.1, 1.0, 1.1);\n//const vec3 TILE_PCT = vec3(0.98, 1.0, 0.98);\n", funcDeclare: "", funcDefine: "vec3 marble_color(float x)\n{\n	vec3 col;\n	x = 0.5*(x + 1.);\n	x = sqrt(x);\n	x = sqrt(x);\n	x = sqrt(x);\n	col = vec3(.2 + .75*x);\n	col.b *= 0.95;\n	return col;\n}\n", body: "vec3 color;\n	float brickW = 1.0 / u_tilesHeightNumber;\n	float brickH = 1.0 / u_tilesWidthNumber;\n	float jointWPercentage = 0.01;\n	float jointHPercentage = 0.01;\n	float yi = v_texCoord.y / brickH;\n	float nyi = round(yi);\n	float xi = v_texCoord.x / brickW;\n\n	if (mod(floor(yi), 2.0) == 0.0){\n		xi = xi - 0.5;\n	}\n\n	float nxi = round(xi);\n	vec2 brickv_texCoord = vec2((xi - floor(xi)) / brickH, (yi - floor(yi)) / brickW);\n\n	if (yi < nyi + jointHPercentage && yi > nyi - jointHPercentage){\n		color = mix(u_jointColor, vec3(0.37, 0.25, 0.25), (yi - nyi) / jointHPercentage + 0.2);\n	}\n	else if (xi < nxi + jointWPercentage && xi > nxi - jointWPercentage){\n		color = mix(u_jointColor, vec3(0.44, 0.44, 0.44), (xi - nxi) / jointWPercentage + 0.2);\n	}\n	else {\n		float t = 6.28 * brickv_texCoord.x / (TILE_SIZE.x + noise(vec2(v_texCoord)*6.0));\n		t += u_amplitude * turbulence(brickv_texCoord.xy);\n		t = sin(t);\n		color = marble_color(t);\n	}\n\n	gl_FragColor = vec4(color, 1.0);\n", };
+        ShaderChunk.road_proceduralTexture_fragment = { top: "", define: "", varDeclare: "varying vec2 v_texCoord;\n", funcDeclare: "", funcDefine: "", body: "float ratioy = mod(gl_FragCoord.y * 100.0 , fbm(v_texCoord * 2.0));\n	vec3 color = u_roadColor * ratioy;\n\n	gl_FragColor = vec4(color, 1.0);\n", };
+        ShaderChunk.grass_proceduralTexture_fragment = { top: "", define: "", varDeclare: "varying vec2 v_texCoord;\n", funcDeclare: "", funcDefine: "", body: "vec3 color = mix(u_groundColor, u_herb1Color, rand(gl_FragCoord.xy * 4.0));\n	color = mix(color, u_herb2Color, rand(gl_FragCoord.xy * 8.0));\n	color = mix(color, u_herb3Color, rand(gl_FragCoord.xy));\n	color = mix(color, u_herb1Color, fbm(gl_FragCoord.xy * 16.0));\n\n	gl_FragColor = vec4(color, 1.0);\n", };
         ShaderChunk.common_proceduralTexture_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "float rand(vec2 n) {\n	return fract(cos(dot(n, vec2(12.9898, 4.1414))) * 43758.5453);\n}\nfloat noise(vec2 n) {\n	const vec2 d = vec2(0.0, 1.0);\n	vec2 b = floor(n), f = smoothstep(vec2(0.0), vec2(1.0), fract(n));\n	return mix(mix(rand(b), rand(b + d.yx), f.x), mix(rand(b + d.xy), rand(b + d.yy), f.x), f.y);\n}\n\nfloat turbulence(vec2 P)\n{\n	float val = 0.0;\n	float freq = 1.0;\n	for (int i = 0; i < 4; i++)\n	{\n		val += abs(noise(P*freq) / freq);\n		freq *= 2.07;\n	}\n	return val;\n}\n\nfloat fbm(vec2 n) {\n	float total = 0.0, amplitude = 1.0;\n	for (int i = 0; i < 4; i++) {\n		total += noise(n) * amplitude;\n		n += n;\n		amplitude *= 0.5;\n	}\n	return total;\n}\n\nfloat round(float number){\n	return sign(number)*floor(abs(number) + 0.5);\n}\n", body: "", };
         ShaderChunk.common_proceduralTexture_vertex = { top: "", define: "", varDeclare: "varying vec2 v_texCoord;\nconst vec2 MADD=vec2(0.5,0.5);\n", funcDeclare: "", funcDefine: "", body: "v_texCoord=a_positionVec2*MADD+MADD;\n\n    gl_Position=vec4(a_positionVec2, 0.0 ,1.0);\n", };
-        ShaderChunk.fire_proceduralTexture_fragment = { top: "", define: "", varDeclare: "varying vec2 v_texCoord;\nstruct FireColor {\n    vec3 c1;\n    vec3 c2;\n    vec3 c3;\n    vec3 c4;\n    vec3 c5;\n    vec3 c6;\n};\nuniform FireColor u_fireColor;\n", funcDeclare: "", funcDefine: "", body: "vec2 p = v_texCoord * 8.0;\n	float q = fbm(p - u_time * 0.1);\n	vec2 r = vec2(fbm(p + q + u_time * u_speed.x - p.x - p.y), fbm(p + q - u_time * u_speed.y));\n	vec3 c = mix(u_fireColor.c1, u_fireColor.c2, fbm(p + r)) + mix(u_fireColor.c3, u_fireColor.c4, r.x) - mix(u_fireColor.c5, u_fireColor.c6, r.y);\n	vec3 color = c * cos(u_shift * v_texCoord.y);\n	float luminance = dot(color.rgb, vec3(0.3, 0.59, 0.11));\n\n	gl_FragColor = vec4(color, luminance * u_alphaThreshold + (1.0 - u_alphaThreshold));\n", };
-        ShaderChunk.grass_proceduralTexture_fragment = { top: "", define: "", varDeclare: "varying vec2 v_texCoord;\n", funcDeclare: "", funcDefine: "", body: "vec3 color = mix(u_groundColor, u_herb1Color, rand(gl_FragCoord.xy * 4.0));\n	color = mix(color, u_herb2Color, rand(gl_FragCoord.xy * 8.0));\n	color = mix(color, u_herb3Color, rand(gl_FragCoord.xy));\n	color = mix(color, u_herb1Color, fbm(gl_FragCoord.xy * 16.0));\n\n	gl_FragColor = vec4(color, 1.0);\n", };
-        ShaderChunk.marble_proceduralTexture_fragment = { top: "", define: "", varDeclare: "varying vec2 v_texCoord;\nconst vec3 TILE_SIZE = vec3(1.1, 1.0, 1.1);\n//const vec3 TILE_PCT = vec3(0.98, 1.0, 0.98);\n", funcDeclare: "", funcDefine: "vec3 marble_color(float x)\n{\n	vec3 col;\n	x = 0.5*(x + 1.);\n	x = sqrt(x);\n	x = sqrt(x);\n	x = sqrt(x);\n	col = vec3(.2 + .75*x);\n	col.b *= 0.95;\n	return col;\n}\n", body: "vec3 color;\n	float brickW = 1.0 / u_tilesHeightNumber;\n	float brickH = 1.0 / u_tilesWidthNumber;\n	float jointWPercentage = 0.01;\n	float jointHPercentage = 0.01;\n	float yi = v_texCoord.y / brickH;\n	float nyi = round(yi);\n	float xi = v_texCoord.x / brickW;\n\n	if (mod(floor(yi), 2.0) == 0.0){\n		xi = xi - 0.5;\n	}\n\n	float nxi = round(xi);\n	vec2 brickv_texCoord = vec2((xi - floor(xi)) / brickH, (yi - floor(yi)) / brickW);\n\n	if (yi < nyi + jointHPercentage && yi > nyi - jointHPercentage){\n		color = mix(u_jointColor, vec3(0.37, 0.25, 0.25), (yi - nyi) / jointHPercentage + 0.2);\n	}\n	else if (xi < nxi + jointWPercentage && xi > nxi - jointWPercentage){\n		color = mix(u_jointColor, vec3(0.44, 0.44, 0.44), (xi - nxi) / jointWPercentage + 0.2);\n	}\n	else {\n		float t = 6.28 * brickv_texCoord.x / (TILE_SIZE.x + noise(vec2(v_texCoord)*6.0));\n		t += u_amplitude * turbulence(brickv_texCoord.xy);\n		t = sin(t);\n		color = marble_color(t);\n	}\n\n	gl_FragColor = vec4(color, 1.0);\n", };
         ShaderChunk.wood_proceduralTexture_fragment = { top: "", define: "", varDeclare: "varying vec2 v_texCoord;\n", funcDeclare: "", funcDefine: "", body: "float ratioy = mod(v_texCoord.x * u_ampScale, 2.0 + fbm(v_texCoord * 0.8));\n	vec3 wood = u_woodColor * ratioy;\n\n	gl_FragColor = vec4(wood, 1.0);\n", };
-        ShaderChunk.road_proceduralTexture_fragment = { top: "", define: "", varDeclare: "varying vec2 v_texCoord;\n", funcDeclare: "", funcDefine: "", body: "float ratioy = mod(gl_FragCoord.y * 100.0 , fbm(v_texCoord * 2.0));\n	vec3 color = u_roadColor * ratioy;\n\n	gl_FragColor = vec4(color, 1.0);\n", };
         return ShaderChunk;
     }());
     wd.ShaderChunk = ShaderChunk;
