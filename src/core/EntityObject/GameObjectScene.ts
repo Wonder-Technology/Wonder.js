@@ -164,7 +164,7 @@ module wd {
         //}
 
         protected getRenderList(){
-            return RenderUtils.getGameObjectRenderList(this.children);
+            return RenderUtils.getGameObjectRenderList(this.getChildren());
         }
 
         protected createTransform(){

@@ -68,6 +68,7 @@
 /// <reference path="core/entityObject/UIObjectScene"/>
 
 /// <reference path="core/entityObject/ComponentManager"/>
+/// <reference path="core/entityObject/EntityObjectManager"/>
 
 
 

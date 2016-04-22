@@ -33,7 +33,6 @@ module wd {
 
         public actionManager:ActionManager = null;
 
-        protected children:wdCb.Collection<any> = wdCb.Collection.create<any>();
         protected startLoopHandler:() => void = null;
         protected endLoopHandler:() => void = null;
 
@@ -42,6 +41,7 @@ module wd {
         private _getComponentCache:wdCb.Hash<boolean> = wdCb.Hash.create<boolean>();
         private _componentChangeSubscription:wdFrp.IDisposable = null;
         private _componentManager:ComponentManager = ComponentManager.create(this);
+        private _entityObjectManager:EntityObjectManager = EntityObjectManager.create(this);
 
         @virtual
         public initWhenCreate(){
@@ -87,11 +87,8 @@ module wd {
                     self._onComponentChange();
             });
 
-            this._componentManager.initComponent();
-
-            this.forEach((child:EntityObject) => {
-                child.init();
-            });
+            this._componentManager.init();
+            this._entityObjectManager.init();
 
             this.afterInitChildren();
 
@@ -138,32 +135,17 @@ module wd {
             this._componentChangeSubscription && this._componentChangeSubscription.dispose();
 
             this._componentManager.dispose();
-
-            this.forEach((child:EntityObject) => {
-                child.dispose();
-            });
+            this._entityObjectManager.dispose();
         }
 
         public hasChild(child:EntityObject):boolean {
-            return this.children.hasChild(child);
+            return this._entityObjectManager.hasChild(child);
         }
 
         public addChild(child:EntityObject):EntityObject {
-            if (child.parent) {
-                child.parent.removeChild(child);
-            }
+            this._entityObjectManager.addChild(child);
 
-            child.parent = this;
             child.transform.parent = this.transform;
-
-            this.children.addChild(child);
-
-            /*!
-             no need to sort!
-             because WebGLRenderer enable depth test, it will sort when needed(just as WebGLRenderer->renderSortedTransparentCommands sort the commands)
-             */
-
-            child.onEnter();
 
             return this;
         }
@@ -173,72 +155,55 @@ module wd {
         public addChildren(children:wdCb.Collection<EntityObject>);
 
         public addChildren(...args) {
-            if(JudgeUtils.isArray(args[0])){
-                let children:Array<EntityObject> = args[0];
-
-                for (let child of children){
-                    this.addChild(child);
-                }
-            }
-            else if(JudgeUtils.isCollection(args[0])){
-                let children:wdCb.Collection<EntityObject> = args[0];
-
-                children.forEach((child:EntityObject) => {
-                    this.addChild(child);
-                });
-            }
-            else{
-                this.addChild(args[0]);
-            }
+            this._entityObjectManager.addChildren(args[0]);
 
             return this;
         }
 
         public forEach(func:(entityObject:EntityObject, index:number) => void){
-            this.children.forEach(func);
+            this._entityObjectManager.forEach(func);
 
             return this;
         }
 
         public filter(func:(entityObject:EntityObject) => boolean){
-            return this.children.filter(func);
+            return this._entityObjectManager.filter(func);
         }
 
         public sort(func:(a:EntityObject, b:EntityObject) => any, isSortSelf = false){
-            return this.children.sort(func, isSortSelf);
+            return this._entityObjectManager.sort(func, isSortSelf);
         }
 
         public getChildren(){
-            return this.children;
+            return this._entityObjectManager.getChildren();
         }
 
         public getChild(index:number){
-            return this.children.getChild(index);
+            return this._entityObjectManager.getChild(index);
         }
 
         public findChildByUid(uid:number){
-            return this.children.findOne((child:EntityObject) => {
-                return child.uid === uid;
-            });
+            return this._entityObjectManager.findChildByUid(uid);
         }
 
         public findChildByTag(tag:string){
-            return this.children.findOne((child:EntityObject) => {
-                return child.hasTag(tag);
-            });
+            return this._entityObjectManager.findChildByTag(tag);
         }
 
         public findChildByName(name:string){
-            return this.children.findOne((child:EntityObject) => {
-                return child.name.search(name) > -1;
-            });
+            return this._entityObjectManager.findChildByName(name);
         }
 
         public findChildrenByName(name:string):wdCb.Collection<EntityObject>{
-            return this.children.filter((child:EntityObject) => {
-                return child.name.search(name) > -1;
-            });
+            return this._entityObjectManager.findChildrenByName(name);
         }
+
+        public removeChild(child:EntityObject):EntityObject {
+            this._entityObjectManager.removeChild(child);
+
+            return this;
+        }
+
 
         @cache(function(_class:any){
             return this._getComponentCache.hasChild(_class.name);
@@ -261,16 +226,6 @@ module wd {
 
         public forEachComponent(func:(component:Component) => void){
             this._componentManager.forEachComponent(func);
-
-            return this;
-        }
-
-        public removeChild(child:EntityObject):EntityObject {
-            child.onExit();
-
-            this.children.removeChild(child);
-
-            child.parent = null;
 
             return this;
         }
@@ -441,7 +396,7 @@ module wd {
                 return null;
             }
 
-            return this.children;
+            return this._entityObjectManager.getChildren();
         }
 
         @virtual

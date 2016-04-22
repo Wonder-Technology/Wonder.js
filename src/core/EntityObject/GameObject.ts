@@ -22,7 +22,6 @@ module wd {
         public update(elapsedTime:number):void {
             var lod = this.getComponent<LOD>(LOD),
                 octree = this.getComponent<Octree>(Octree);
-                //geometry = this.getComponent<Geometry>(Geometry);
 
             if(lod){
                 lod.update(elapsedTime);
@@ -31,10 +30,6 @@ module wd {
             if(octree){
                 octree.update(elapsedTime);
             }
-            //
-            //if(geometry){
-            //    geometry.update(elapsedTime);
-            //}
 
             super.update(elapsedTime);
         }
@@ -58,17 +53,13 @@ module wd {
                 return RenderUtils.getGameObjectRenderListFromSpacePartition(this.getSpacePartition().getRenderListByFrustumCull());
             }
 
-            return RenderUtils.getGameObjectRenderList(this.children);
+            return RenderUtils.getGameObjectRenderList(this.getChildren());
         }
 
         protected afterInitChildren(){
             if(this.hasComponent(Octree)){
                 return this.getSpacePartition().build();
             }
-        }
-
-        private _isGeometry(_class:any){
-            return _class.name === "Geometry";
         }
     }
 }

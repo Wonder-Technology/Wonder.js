@@ -19,7 +19,7 @@ module wd{
         private _collider:Collider = null;
         private _geometry:Geometry = null;
 
-        public initComponent(){
+        public init(){
             this._components.insertSort((a:Component, b:Component) => {
                     return ComponentInitOrderTable.getOrder(a) < ComponentInitOrderTable.getOrder(b);
                 }, false)
