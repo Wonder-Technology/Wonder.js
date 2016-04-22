@@ -203,7 +203,6 @@ module wd {
             return this;
         }
 
-
         @cache(function(_class:any){
             return this._getComponentCache.hasChild(_class.name);
         }, function(_class:any){
@@ -370,18 +369,7 @@ module wd {
         }
 
         protected getAllChildren(){
-            var result = wdCb.Collection.create<EntityObject>();
-            var getChildren = (entityObject:EntityObject) => {
-                result.addChildren(entityObject.getChildren());
-
-                entityObject.forEach((child:EntityObject) => {
-                    getChildren(child);
-                });
-            }
-
-            getChildren(this);
-
-            return result;
+            return this._entityObjectManager.getAllChildren();
         }
 
         public clearCache(){

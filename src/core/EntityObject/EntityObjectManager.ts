@@ -92,6 +92,21 @@ module wd{
             return this._children;
         }
 
+        public getAllChildren(){
+            var result = wdCb.Collection.create<EntityObject>();
+            var getChildren = (entityObject:EntityObject) => {
+                result.addChildren(entityObject.getChildren());
+
+                entityObject.forEach((child:EntityObject) => {
+                    getChildren(child);
+                });
+            }
+
+            getChildren(this._entityObject);
+
+            return result;
+        }
+
         public getChild(index:number){
             return this._children.getChild(index);
         }
