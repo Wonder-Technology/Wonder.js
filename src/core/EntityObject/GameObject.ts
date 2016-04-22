@@ -19,18 +19,6 @@ module wd {
             return this.getComponent<SpacePartition>(SpacePartition);
         }
 
-        public getComponent<T>(_class:any):T{
-            if(this._isGeometry(_class)){
-                let lod:LOD = this.getComponent<LOD>(LOD);
-
-                if(lod && lod.activeGeometry) {
-                    return <any>lod.activeGeometry;
-                }
-            }
-
-            return <any>super.getComponent(_class);
-        }
-
         public update(elapsedTime:number):void {
             var lod = this.getComponent<LOD>(LOD),
                 octree = this.getComponent<Octree>(Octree);
@@ -49,6 +37,16 @@ module wd {
             //}
 
             super.update(elapsedTime);
+        }
+
+        protected getGeometry():Geometry{
+            var lod:LOD = this.getComponent<LOD>(LOD);
+
+            if(lod && lod.activeGeometry) {
+                return <any>lod.activeGeometry;
+            }
+
+            return super.getGeometry();
         }
 
         protected createTransform(){

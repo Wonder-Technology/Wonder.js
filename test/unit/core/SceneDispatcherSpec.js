@@ -196,15 +196,16 @@ describe("SceneDispatcher", function() {
     });
 
     describe("addComponent", function(){
-        it("if component exist, return", function(){
+        it("if component exist, contract error", function(){
+            testTool.openContractCheck(sandbox);
+
             var component = new wd.Action();
-            sandbox.stub(wd.Log, "assert");
 
             scene.addComponent(component);
-            var result = scene.addComponent(component);
 
-            expect(wd.Log.assert).toCalledOnce();
-            expect(result).toEqual(scene);
+            expect(function(){
+                scene.addComponent(component);
+            }).toThrow();
         });
         it("set component's entityObject", function(){
             var component = new wd.Action();

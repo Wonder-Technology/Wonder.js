@@ -20,6 +20,10 @@ module wd {
             }
         }
 
+        get transform(){
+            return this._componentManager.transform;
+        }
+
         @cloneAttributeAsBasicType()
         public name:string = null;
         @cloneAttributeAsBasicType()
@@ -27,22 +31,17 @@ module wd {
         @cloneAttributeAsBasicType()
         public isVisible:boolean = true;
 
-        public transform:Transform = null;
-
         public actionManager:ActionManager = null;
 
         protected children:wdCb.Collection<any> = wdCb.Collection.create<any>();
         protected startLoopHandler:() => void = null;
         protected endLoopHandler:() => void = null;
-        protected components:wdCb.Collection<any> = wdCb.Collection.create<any>();
 
         private _scriptExecuteHistory:wdCb.Hash<boolean> = wdCb.Hash.create<boolean>();
         private _hasComponentCache:wdCb.Hash<boolean> = wdCb.Hash.create<boolean>();
         private _getComponentCache:wdCb.Hash<boolean> = wdCb.Hash.create<boolean>();
-        private _rendererComponent:RendererComponent = null;
-        private _animation:Animation = null;
-        private _collider:Collider = null;
         private _componentChangeSubscription:wdFrp.IDisposable = null;
+        private _componentManager:ComponentManager = ComponentManager.create(this);
 
         @virtual
         public initWhenCreate(){
@@ -70,16 +69,6 @@ module wd {
             return result;
         }
 
-        private _cloneChildren(result:EntityObject){
-            this.forEach((child:EntityObject) => {
-                var resultChild = child.clone();
-
-                if(resultChild !== null){
-                    result.addChild(resultChild);
-                }
-            });
-        }
-
         public init() {
             var self = this;
 
@@ -98,7 +87,7 @@ module wd {
                     self._onComponentChange();
             });
 
-            this.initComponent();
+            this._componentManager.initComponent();
 
             this.forEach((child:EntityObject) => {
                 child.init();
@@ -134,8 +123,6 @@ module wd {
         }
 
         public dispose() {
-            var components = null;
-
             this.onDispose();
 
             if(this.parent){
@@ -150,13 +137,7 @@ module wd {
 
             this._componentChangeSubscription && this._componentChangeSubscription.dispose();
 
-            components = this.removeAllComponent();
-
-            components.forEach((component:Component) => {
-                component.dispose();
-            });
-
-            this.components.removeAllChildren();
+            this._componentManager.dispose();
 
             this.forEach((child:EntityObject) => {
                 child.dispose();
@@ -267,23 +248,19 @@ module wd {
             this._getComponentCache.addChild(_class.name, result);
         })
         public getComponent<T>(_class:any):T{
-            return this.components.findOne((component:Component) => {
-                return component instanceof _class;
-            });
+            return this._componentManager.getComponent<T>(_class);
         }
 
         public getAllComponent(){
-            return this.components;
+            return this._componentManager.getAllComponent();
         }
 
         public findComponentByUid(uid:number){
-            return this.components.findOne((component:Component) => {
-                return component.uid === uid;
-            });
+            return this._componentManager.findComponentByUid(uid);
         }
 
         public forEachComponent(func:(component:Component) => void){
-            this.components.forEach(func);
+            this._componentManager.forEachComponent(func);
 
             return this;
         }
@@ -313,18 +290,7 @@ module wd {
                 return result;
             }
 
-            if(JudgeUtils.isComponenet(args[0])){
-                let component = args[0];
-
-                result = this.components.hasChild(component);
-            }
-            else{
-                let _class = args[0];
-
-                result = this.components.hasChildWithFunc((component) => {
-                    return component instanceof _class;
-                });
-            }
+            result =  this._componentManager.hasComponent(args[0]);
 
             this._hasComponentCache.addChild(key, result);
 
@@ -332,35 +298,7 @@ module wd {
         }
 
         public addComponent(component:Component, isShareComponent:boolean = false){
-            if(!component){
-                return;
-            }
-
-            if(this.hasComponent(component)){
-                Log.assert(false, "the component already exist");
-                return this;
-            }
-
-            if(component instanceof RendererComponent){
-                this._rendererComponent = component;
-            }
-            else if(component instanceof Animation){
-                this._animation = component;
-            }
-            else if(component instanceof Collider){
-                this._collider = component;
-            }
-            else if(component instanceof Transform){
-                if(this.transform){
-                    this.removeComponent(this.transform);
-                }
-
-                this.transform = component;
-            }
-
-            this.components.addChild(component);
-
-            component.addToObject(this, isShareComponent);
+            this._componentManager.addComponent(component, isShareComponent);
 
             this.componentDirty = true;
 
@@ -371,18 +309,7 @@ module wd {
         public removeComponent(_class:Function);
 
         public removeComponent(...args){
-            var component:Component = null;
-
-            if(args[0] instanceof Component){
-                component = <Component>args[0];
-            }
-            else{
-                component = this.getComponent<any>(<Function>args[0]);
-            }
-
-            this.components.removeChild(component);
-
-            this._removeComponentHandler(component);
+            this._componentManager.removeComponent(args[0]);
 
             this.componentDirty = true;
 
@@ -390,17 +317,9 @@ module wd {
         }
 
         public removeAllComponent(){
-            var result = wdCb.Collection.create<Component>();
-
-            this.components.forEach((component:Component) => {
-                this._removeComponentHandler(component);
-
-                result.addChild(component)
-            }, this);
-
             this.componentDirty = true;
 
-            return result;
+            return this._componentManager.removeAllComponent();
         }
 
         public render(renderer:Renderer, camera:GameObject):void {
@@ -411,8 +330,8 @@ module wd {
                 return;
             }
 
-            geometry = this._getGeometry();
-            rendererComponent = this._getRendererComponent();
+            geometry = this.getGeometry();
+            rendererComponent = this._componentManager.getRendererComponent();
 
             if(rendererComponent && geometry){
                 rendererComponent.render(renderer, geometry,  camera);
@@ -424,8 +343,8 @@ module wd {
         }
 
         public update(elapsedTime:number):void {
-            var animation = this._getAnimation(),
-                collider = this._getCollider();
+            var animation = this._componentManager.getAnimation(),
+                collider = this._componentManager.getCollider();
 
             if(animation){
                 animation.update(elapsedTime);
@@ -493,9 +412,7 @@ module wd {
         }
 
         public getComponentCount(_class:Function){
-            return this.components.filter((component:Component) => {
-                return component instanceof _class;
-            }).getCount();
+            return this._componentManager.getComponentCount(_class);
         }
 
         protected abstract createTransform():Transform;
@@ -527,13 +444,9 @@ module wd {
             return this.children;
         }
 
-        protected initComponent(){
-            this.components.insertSort((a:Component, b:Component) => {
-                    return ComponentInitOrderTable.getOrder(a) < ComponentInitOrderTable.getOrder(b);
-                }, false)
-                .forEach((component:Component) => {
-                    component.init();
-                });
+        @virtual
+        protected getGeometry(){
+            return this._componentManager.getGeometry();
         }
 
         protected getAllChildren(){
@@ -554,38 +467,6 @@ module wd {
         public clearCache(){
             this._hasComponentCache.removeAllChildren();
             this._getComponentCache.removeAllChildren();
-        }
-
-        @require(function(){
-            assert(this.getComponentCount(Geometry) <= 1, Log.info.FUNC_SHOULD_NOT("entityObject", "contain more than 1 geometry component"));
-        })
-        private _getGeometry():Geometry{
-            return this.getComponent<Geometry>(Geometry);
-        }
-
-        @require(function(){
-            assert(this.getComponentCount(Animation) <= 1, Log.info.FUNC_SHOULD_NOT("entityObject", "contain more than 1 animation component"));
-        })
-        private _getAnimation():Animation{
-            return this._animation;
-        }
-
-        @require(function(){
-            assert(this.getComponentCount(RendererComponent) <= 1, Log.info.FUNC_SHOULD_NOT("entityObject", "contain more than 1 rendererComponent"));
-        })
-        private _getRendererComponent():RendererComponent{
-            return this._rendererComponent;
-        }
-
-        @require(function(){
-            assert(this.getComponentCount(Collider) <= 1, Log.info.FUNC_SHOULD_NOT("entityObject", "contain more than 1 collider component"));
-        })
-        private _getCollider():Collider{
-            return this._collider;
-        }
-
-        private _removeComponentHandler(component:Component){
-            component.removeFromObject(this);
         }
 
         private _addToScriptExecuteHistory(scriptName:string, method:string){
@@ -618,6 +499,16 @@ module wd {
 
         private _onComponentChange(){
             this.clearCache();
+        }
+
+        private _cloneChildren(result:EntityObject){
+            this.forEach((child:EntityObject) => {
+                var resultChild = child.clone();
+
+                if(resultChild !== null){
+                    result.addChild(resultChild);
+                }
+            });
         }
     }
 }

@@ -67,6 +67,8 @@
 /// <reference path="core/entityObject/GameObjectScene"/>
 /// <reference path="core/entityObject/UIObjectScene"/>
 
+/// <reference path="core/entityObject/ComponentManager"/>
+
 
 
 

@@ -133,7 +133,7 @@ describe("SourceInstance", function(){
                 it("test", function () {
                     box1Instance1 = instanceTool.cloneInstance(box1, "instance1");
 
-                    box1.components
+                    box1.getAllComponent()
                         .filter(function(component){
                             return !(component instanceof wd.Geometry) && !(component instanceof wd.SourceInstance) && !(component instanceof wd.Transform);
                         })
