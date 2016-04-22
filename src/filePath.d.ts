@@ -53,6 +53,7 @@
 /// <reference path="math/Plane"/>
 /// <reference path="math/Ray"/>
 
+
 /// <reference path="core/Entity"/>
 /// <reference path="core/Component"/>
 /// <reference path="core/Scheduler"/>
@@ -60,21 +61,22 @@
 /// <reference path="core/Main"/>
 /// <reference path="core/DomEventManager"/>
 /// <reference path="core/entityObject/EntityObject"/>
-/// <reference path="core/entityObject/UIObject"/>
-/// <reference path="core/entityObject/GameObject"/>
-/// <reference path="core/entityObject/SceneDispatcher"/>
-/// <reference path="core/entityObject/Scene"/>
-/// <reference path="core/entityObject/GameObjectScene"/>
-/// <reference path="core/entityObject/UIObjectScene"/>
 
 /// <reference path="core/entityObject/manager/ComponentManager"/>
 /// <reference path="core/entityObject/manager/EntityObjectManager"/>
 /// <reference path="core/entityObject/manager/ScriptManager"/>
-
 /// <reference path="core/entityObject/manager/ComponentContainer"/>
 /// <reference path="core/entityObject/manager/ActionManager"/>
-/// <reference path="core/entityObject/manager/UIManager"/>
 
+/// <reference path="core/entityObject/uiObject/UIObject"/>
+/// <reference path="core/entityObject/uiObject/UIManager"/>
+
+/// <reference path="core/entityObject/gameObject/GameObject"/>
+
+/// <reference path="core/entityObject/scene/SceneDispatcher"/>
+/// <reference path="core/entityObject/scene/Scene"/>
+/// <reference path="core/entityObject/scene/GameObjectScene"/>
+/// <reference path="core/entityObject/scene/UIObjectScene"/>
 
 
 
