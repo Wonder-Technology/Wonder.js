@@ -29,7 +29,7 @@ module wd {
 
         public transform:Transform = null;
 
-        public actionManager:ActionManager = ActionManager.create();
+        public actionManager:ActionManager = null;
 
         protected children:wdCb.Collection<any> = wdCb.Collection.create<any>();
         protected startLoopHandler:() => void = null;
@@ -47,6 +47,9 @@ module wd {
         @virtual
         public initWhenCreate(){
             this.addComponent(this.createTransform());
+
+            this.actionManager = ActionManager.create();
+            this.addComponent(this.actionManager);
         }
 
         public clone(){

@@ -27,7 +27,7 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        //'test/unit/**',
+        'test/unit/**',
 
         //'test/unit/**/cubemapTexture*',
 
@@ -64,6 +64,7 @@
 
 
         //'test/unit/renderer/shadow/shadowMapSpec.js',
+        //'test/unit/**/Shadow*',
 
         //'test/unit/**/Shadow*Spec.js',
 
@@ -184,7 +185,7 @@
         //'test/unit/**/*Asset*',
         //
         //'test/unit/**/FontSpec*',
-        'test/unit/**/PlainFontSpec*',
+        //'test/unit/**/PlainFontSpec*',
         //'test/unit/**/UIRendererSpec*',
         //'test/unit/**/BitmapFontSpec*',
         //

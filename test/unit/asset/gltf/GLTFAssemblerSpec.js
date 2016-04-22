@@ -12,6 +12,16 @@ describe("GLTFAssembler", function () {
         return cloneTool.extend(parseData);
     }
 
+    function getSingleModel(data){
+        return data.getChild("models").getChild(0);
+    }
+
+    function getComponent(data, _class){
+        //return getSingleModel(data).components.getChild(1);
+        return getSingleModel(data).getComponent(_class)
+    }
+
+
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
         builder = new wd.GLTFAssembler();
@@ -62,10 +72,6 @@ describe("GLTFAssembler", function () {
                 setSingleObject({
                     components:componentData
                 });
-            }
-
-            function getSingleModel(data){
-                return data.getChild("models").getChild(0);
             }
 
             beforeEach(function(){
@@ -152,10 +158,6 @@ describe("GLTFAssembler", function () {
             });
 
             describe("add components", function(){
-                function getComponent(data){
-                    return getSingleModel(data).components.getChild(1);
-                }
-
                 function judgeEqual(source, target){
                     expect(testTool.getValues(
                         source
@@ -180,11 +182,6 @@ describe("GLTFAssembler", function () {
                 describe("add ThreeDTransform component", function(){
                     var matrix;
 
-                    function getComponent(data){
-                        //return getSingleModel(data).getFirstComponent();
-                        return getSingleModel(data).components.getChild(0);
-                    }
-
                     beforeEach(function(){
                         matrix = wd.Matrix4.create();
                     });
@@ -203,8 +200,8 @@ describe("GLTFAssembler", function () {
 
                         var data = builder.build(parseData);
 
-                        var component = getComponent(data);
-                        expect(component).toBeInstanceOf(wd.ThreeDTransform);
+                        var component = getComponent(data, wd.ThreeDTransform);
+                        //expect(component).toBeInstanceOf(wd.ThreeDTransform);
 
                         judgeEqual(component.position, matrix.getTranslation());
                         /*!
@@ -228,8 +225,8 @@ describe("GLTFAssembler", function () {
 
                         var data = builder.build(parseData);
 
-                        var component = getComponent(data);
-                        expect(component).toBeInstanceOf(wd.ThreeDTransform);
+                        var component = getComponent(data, wd.ThreeDTransform);
+                        //expect(component).toBeInstanceOf(wd.ThreeDTransform);
                         matrix.setTRS(position, rotation, scale);
                         judgeEqual(component.position, matrix.getTranslation());
                         judgeRotation(component.rotation, matrix.getRotation())
@@ -249,8 +246,8 @@ describe("GLTFAssembler", function () {
 
                         var data = builder.build(parseData);
 
-                        var component = getComponent(data);
-                        expect(component).toBeInstanceOf(wd.BasicCameraController);
+                        var component = getComponent(data, wd.BasicCameraController);
+                        //expect(component).toBeInstanceOf(wd.BasicCameraController);
                         expect(component.camera.near).toEqual(camera.near);
                     });
                 });
@@ -270,8 +267,8 @@ describe("GLTFAssembler", function () {
 
                         var data = builder.build(parseData);
 
-                        var component = getComponent(data);
-                        expect(component).toBeInstanceOf(wd.AmbientLight);
+                        var component = getComponent(data, wd.AmbientLight);
+                        //expect(component).toBeInstanceOf(wd.AmbientLight);
                         expect(component.color).toEqual(color);
                     });
                     it("add DirectionLight", function(){
@@ -282,8 +279,8 @@ describe("GLTFAssembler", function () {
 
                         var data = builder.build(parseData);
 
-                        var component = getComponent(data);
-                        expect(component).toBeInstanceOf(wd.DirectionLight);
+                        var component = getComponent(data, wd.DirectionLight);
+                        //expect(component).toBeInstanceOf(wd.DirectionLight);
                         expect(component.color).toEqual(color);
                     });
                     it("add PointLight", function(){
@@ -298,8 +295,8 @@ describe("GLTFAssembler", function () {
 
                         var data = builder.build(parseData);
 
-                        var component = getComponent(data);
-                        expect(component).toBeInstanceOf(wd.PointLight);
+                        var component = getComponent(data, wd.PointLight);
+                        //expect(component).toBeInstanceOf(wd.PointLight);
                         expect(component.color).toEqual(color);
                         expect(component.range).toEqual(10);
                         expect(component.linear).toEqual(0.1);
@@ -321,8 +318,9 @@ describe("GLTFAssembler", function () {
 
                         var data = builder.build(parseData);
 
-                        var component = getComponent(data);
-                        expect(component).toBeInstanceOf(wd.ModelGeometry);
+                        var component = getComponent(data, wd.ModelGeometry);
+                        //expect(component).toBeInstanceOf(wd.ModelGeometry);
+                        expect(component).toBeExist();
                     });
                     it("add geometryData", function () {
                         var vertices = [Vector3.create(1,2,3), Vector3.create(2,2,3), Vector3.create(1,2,3)];
@@ -348,7 +346,7 @@ describe("GLTFAssembler", function () {
 
 
 
-                        var component = getComponent(data);
+                        var component = getComponent(data, wd.Geometry);
                         expect(component.vertices).toEqual(vertices);
                         expect(component.colors).toEqual(colors);
                         expect(component.texCoords).toEqual(texCoords);
@@ -365,14 +363,14 @@ describe("GLTFAssembler", function () {
 
                         var data = builder.build(parseData);
 
-                        var component = getComponent(data);
+                        var component = getComponent(data, wd.Geometry);
                         expect(component.drawMode).toEqual(wd.EDrawMode.LINE_LOOP);
                     });
 
 
                     describe("add material", function(){
                         function getMaterial(data){
-                            return getComponent(data).material;
+                            return getComponent(data, wd.Geometry).material;
                         }
                         function setMaterial(data){
                             setComponent({
@@ -562,8 +560,8 @@ describe("GLTFAssembler", function () {
 
                         var data = builder.build(parseData);
 
-                        var component = getComponent(data);
-                        expect(component).toBeInstanceOf(wd.MeshRenderer);
+                        var component = getComponent(data, wd.MeshRenderer);
+                    expect(component).toBeExist();
                 });
 
                 describe("add animation component", function(){
@@ -588,8 +586,7 @@ describe("GLTFAssembler", function () {
                         var data = builder.build(parseData);
 
 
-                        var component = getComponent(data);
-                        expect(component).toBeInstanceOf(wd.ArticulatedAnimation);
+                        var component = getComponent(data, wd.ArticulatedAnimation);
                         expect(component.data).toBeInstanceOf(wdCb.Hash);
                         expect(component.data.getChildren()).toEqual(animData);
                     });
