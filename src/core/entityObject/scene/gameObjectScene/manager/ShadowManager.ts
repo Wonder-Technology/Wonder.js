@@ -45,6 +45,8 @@ module wd{
         public dispose(){
             this._endLoopSubscription && this._endLoopSubscription.dispose();
             this._shadowMapLayerChangeSubscription && this._shadowMapLayerChangeSubscription.dispose();
+
+            this._shadowMapManager.dispose();
         }
 
         public setShadowRenderListInEachLoop(){

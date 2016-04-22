@@ -35,7 +35,6 @@ module wd {
         public cubemapShadowMapDataMap:wdCb.Hash<wdCb.Collection<CubemapShadowMapData>> = wdCb.Hash.create<wdCb.Collection<CubemapShadowMapData>>();
 
         private _shadowManager:ShadowManager = null;
-        private _shadowMapLayerChangeSubscription:wdFrp.IDisposable = null;
         private _lastTwoDShadowMapDataMap:wdCb.Hash<wdCb.Collection<TwoDShadowMapData>> = null;
         private _lastCubemapShadowMapDataMap:wdCb.Hash<wdCb.Collection<CubemapShadowMapData>> = null;
 
@@ -170,7 +169,6 @@ module wd {
         }
 
         public dispose(){
-            this._shadowMapLayerChangeSubscription.dispose();
         }
     }
 
