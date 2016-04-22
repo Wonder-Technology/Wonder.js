@@ -1,12 +1,18 @@
 module wd {
     export class UIManager extends ComponentContainer{
-        public static create() {
-            var obj = new this();
+        public static create(uiObject:UIObject) {
+            var obj = new this(uiObject);
 
             return obj;
         }
 
-        public entityObject:UIObject;
+        constructor(uiObject:UIObject){
+            super();
+
+            this._uiObject = uiObject;
+        }
+
+        private _uiObject:UIObject;
 
         @require(function(elapsedTime:number){
             assert(this.list.getCount() <= 1, Log.info.FUNC_SHOULD("only contain one ui component"));
@@ -24,7 +30,7 @@ module wd {
         }
 
         private _isDirty() {
-            return this.entityObject.getComponent<UIRenderer>(UIRenderer).state === EUIRendererState.DIRTY;
+            return this._uiObject.getComponent<UIRenderer>(UIRenderer).state === EUIRendererState.DIRTY;
         }
     }
 }

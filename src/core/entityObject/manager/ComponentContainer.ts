@@ -1,5 +1,5 @@
 module wd{
-    export abstract class ComponentContainer extends Component{
+    export abstract class ComponentContainer{
         protected list:wdCb.Collection<Component> = wdCb.Collection.create<Component>();
 
         public addChild(component:Component){

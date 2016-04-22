@@ -11,7 +11,7 @@ module wd {
         public transform:RectTransform;
         public parent:UIObject;
 
-        public uiManager:UIManager = null;
+        public uiManager:UIManager = UIManager.create(this);
 
         protected children:wdCb.Collection<UIObject>;
 
@@ -27,9 +27,6 @@ module wd {
             super.initWhenCreate();
 
             this.name = `uiObject${String(this.uid)}`;
-
-            this.uiManager = UIManager.create();
-            this.addComponent(this.uiManager);
         }
 
         @require(function(component:Component){

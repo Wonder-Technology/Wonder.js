@@ -30,7 +30,7 @@ module wd {
         @cloneAttributeAsBasicType()
         public isVisible:boolean = true;
 
-        public actionManager:ActionManager = null;
+        public actionManager:ActionManager = ActionManager.create();
 
         protected startLoopHandler:() => void = null;
         protected endLoopHandler:() => void = null;
@@ -45,9 +45,6 @@ module wd {
         @virtual
         public initWhenCreate(){
             this.addComponent(this.createTransform());
-
-            this.actionManager = ActionManager.create();
-            this.addComponent(this.actionManager);
         }
 
         public clone(){

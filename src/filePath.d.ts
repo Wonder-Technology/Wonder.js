@@ -67,9 +67,13 @@
 /// <reference path="core/entityObject/GameObjectScene"/>
 /// <reference path="core/entityObject/UIObjectScene"/>
 
-/// <reference path="core/entityObject/ComponentManager"/>
-/// <reference path="core/entityObject/EntityObjectManager"/>
-/// <reference path="core/entityObject/ScriptManager"/>
+/// <reference path="core/entityObject/manager/ComponentManager"/>
+/// <reference path="core/entityObject/manager/EntityObjectManager"/>
+/// <reference path="core/entityObject/manager/ScriptManager"/>
+
+/// <reference path="core/entityObject/manager/ComponentContainer"/>
+/// <reference path="core/entityObject/manager/ActionManager"/>
+/// <reference path="core/entityObject/manager/UIManager"/>
 
 
 
@@ -150,10 +154,6 @@
 /// <reference path="component/transform/ThreeDTransform"/>
 /// <reference path="component/transform/RectTransform"/>
 /// <reference path="component/transform/ETransformState"/>
-
-/// <reference path="component/container/ComponentContainer"/>
-/// <reference path="component/container/ActionManager"/>
-/// <reference path="component/container/UIManager"/>
 
 
 /// <reference path="component/scene/SceneComponent"/>
