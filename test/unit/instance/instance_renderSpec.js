@@ -740,12 +740,4 @@ describe("use instance to batch draw calls", function(){
             expect(gl.bufferSubData).toCalledTwice();
         });
     });
-
-
-    //todo instance transform can vary independent
-
-
-    //todo test procedural texture(ProceduralCommand)?
-
-    //todo test collision,picking,shadow,lod with instance
 });
