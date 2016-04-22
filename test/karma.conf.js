@@ -204,7 +204,7 @@
         //
         //'test/unit/**/LightShaderLibSpec*',
         //
-        'test/unit/**/SceneDispatcherSpec*',
+        //'test/unit/**/SceneDispatcherSpec*',
         //'test/unit/**/GameObjectSceneSpec*',
         //
         //'test/unit/**/MathUtils*',

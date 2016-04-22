@@ -69,6 +69,7 @@
 
 /// <reference path="core/entityObject/ComponentManager"/>
 /// <reference path="core/entityObject/EntityObjectManager"/>
+/// <reference path="core/entityObject/ScriptManager"/>
 
 
 

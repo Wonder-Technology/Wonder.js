@@ -48,8 +48,6 @@ module wd{
         }
 
         public addToObject(entityObject:EntityObject, isShareComponent:boolean = false){
-            var self = this;
-
             super.addToObject(entityObject, isShareComponent);
 
             this._subscription = this.createLoadJsStream()

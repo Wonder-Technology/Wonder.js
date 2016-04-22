@@ -1,8 +1,7 @@
 module wd {
     export abstract class EntityObject extends Entity{
-        protected p_scriptList:wdCb.Hash<IScriptBehavior> = wdCb.Hash.create<IScriptBehavior>();
         get scriptList(){
-            return this.p_scriptList;
+            return this._scriptManager.scriptList;
         }
 
         private _bubbleParent:EntityObject = null;
@@ -36,12 +35,12 @@ module wd {
         protected startLoopHandler:() => void = null;
         protected endLoopHandler:() => void = null;
 
-        private _scriptExecuteHistory:wdCb.Hash<boolean> = wdCb.Hash.create<boolean>();
         private _hasComponentCache:wdCb.Hash<boolean> = wdCb.Hash.create<boolean>();
         private _getComponentCache:wdCb.Hash<boolean> = wdCb.Hash.create<boolean>();
         private _componentChangeSubscription:wdFrp.IDisposable = null;
         private _componentManager:ComponentManager = ComponentManager.create(this);
         private _entityObjectManager:EntityObjectManager = EntityObjectManager.create(this);
+        private _scriptManager:ScriptManager = ScriptManager.create(this);
 
         @virtual
         public initWhenCreate(){
@@ -83,9 +82,9 @@ module wd {
             this.bindEndLoopEvent();
 
             this._componentChangeSubscription = EventManager.fromEvent(this, <any>EEngineEvent.COMPONENT_CHANGE)
-            .subscribe(() => {
+                .subscribe(() => {
                     self._onComponentChange();
-            });
+                });
 
             this._componentManager.init();
             this._entityObjectManager.init();
@@ -325,45 +324,11 @@ module wd {
         public execScript(method:string, arg:any, isExecOnlyOnce:boolean);
 
         public execScript(...args){
-            var method:string = args[0],
-                self = this;
-
-            if(args.length === 1){
-                this.p_scriptList.forEach((script:IScriptBehavior, scriptName:string) => {
-                    script[method] && script[method]();
-
-                    self._addToScriptExecuteHistory(scriptName, method);
-                });
-            }
-            else if(args.length === 2){
-                let arg:any = args[1];
-
-                this.p_scriptList.forEach((script:IScriptBehavior, scriptName:string) => {
-                    script[method] && script[method](arg);
-
-                    self._addToScriptExecuteHistory(scriptName, method);
-                });
-            }
-            else if(args.length === 3){
-                let arg:any = args[1],
-                    isExecOnlyOnce:boolean = args[2];
-
-                this.p_scriptList.forEach((script:IScriptBehavior, scriptName:string) => {
-                    if(isExecOnlyOnce && self._isScriptExecuted(scriptName, method)){
-                        return;
-                    }
-
-                    script[method] && script[method](arg);
-
-                    self._addToScriptExecuteHistory(scriptName, method);
-                });
-            }
+            this._scriptManager.execScript.apply(this._scriptManager, args);
         }
 
-        public execEventScript(method:string, arg?:any){
-            this.p_scriptList.forEach((script:IEventScriptBehavior) => {
-                script[method] && (arg ? script[method](arg) : script[method]());
-            });
+        public execEventScript(method:string, arg:any = null){
+            this._scriptManager.execEventScript(method, arg);
         }
 
         public getComponentCount(_class:Function){
@@ -422,18 +387,6 @@ module wd {
         public clearCache(){
             this._hasComponentCache.removeAllChildren();
             this._getComponentCache.removeAllChildren();
-        }
-
-        private _addToScriptExecuteHistory(scriptName:string, method:string){
-            this._scriptExecuteHistory.addChild(this._buildScriptHistoryKey(scriptName, method), true);
-        }
-
-        private _isScriptExecuted(scriptName:string, method:string):boolean{
-            return this._scriptExecuteHistory.getChild(this._buildScriptHistoryKey(scriptName, method));
-        }
-
-        private _buildScriptHistoryKey(scriptName:string, method:string){
-            return `${scriptName}_${method}`;
         }
 
         @ensure(function(key:string){

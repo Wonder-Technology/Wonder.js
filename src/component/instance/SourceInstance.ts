@@ -140,9 +140,6 @@ module wd{
 
                 instance.addComponent(objectInstanceComponent);
 
-                //todo clone scriptList?
-
-                //instance.p_scriptList = this.scriptList;
                 instance.bubbleParent = entityObject.bubbleParent;
                 instance.parent = entityObject.parent;
                 instance.isVisible = entityObject.isVisible;
