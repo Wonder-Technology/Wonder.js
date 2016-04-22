@@ -71,7 +71,8 @@ gulp.task("compileTsConfig", function(){
         }));
 });
 
-gulp.task("compileTs", function() {
+
+gulp.task("compileDTS", function() {
     var tsProject = gulpTs.createProject(path.join(process.cwd(), tsconfigFile[0]), {
         sortOutput: true,
         declaration: true,
@@ -81,11 +82,25 @@ gulp.task("compileTs", function() {
     var tsResult = tsProject.src()
         .pipe(gulpTs(tsProject));
 
-
     return merge([
         tsResult.dts
             .pipe(gulpConcat("wd.d.ts"))
-            .pipe(gulp.dest("dist")),
+            .pipe(gulp.dest("dist"))
+    ])
+});
+
+
+gulp.task("compileTs", function() {
+    var tsProject = gulpTs.createProject(path.join(process.cwd(), tsconfigFile[0]), {
+        out: "wd.js",
+        typescript: require('typescript')
+    });
+
+    var tsResult = tsProject.src()
+        .pipe(gulpTs(tsProject));
+
+
+    return merge([
         tsResult.js
             .pipe(gulpConcat("wd.js"))
             .pipe(gulp.dest("dist/"))

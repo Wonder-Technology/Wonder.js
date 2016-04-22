@@ -11,7 +11,7 @@ require("./build/gulp_task/createInnerFile/index");
 
 require("./build/gulp_task/test/test");
 
-gulp.task("build", gulpSync.sync(["clean", "createInnerFile", "compileTsConfig", "compileTs", "compileTsDebug", "combineInnerLib", "removeReference", "compress"]));
+gulp.task("build", gulpSync.sync(["clean", "createInnerFile", "compileTsConfig", "compileDTS", "compileTs", "compileTsDebug", "combineInnerLib", "removeReference", "compress"]));
 
 gulp.task("buildCI", gulpSync.sync(["clean", "createInnerFile", "compileTsConfig", "compileTsDebug", "combineInnerLib", "removeReference", "compress"]));
 
