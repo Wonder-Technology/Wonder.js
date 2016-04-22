@@ -1,22 +1,25 @@
 module wd{
-    export class CollisionDetector extends SceneComponent{
-        public static create() {
-            var obj = new this();
+    export class CollisionDetector{
+        public static create(gameObjectScene:GameObjectScene) {
+            var obj = new this(gameObjectScene);
 
             return obj;
         }
 
-        public entityObject:GameObjectScene;
+        constructor(gameObjectScene:GameObjectScene){
+            this.gameObjectScene = gameObjectScene;
+        }
 
+        private gameObjectScene:GameObjectScene = null;
         private _collisionTable:wdCb.Hash<CollisionDataInTable> = wdCb.Hash.create<CollisionDataInTable>();
         private _lastCollisionTable:wdCb.Hash<CollisionDataInTable> = wdCb.Hash.create<CollisionDataInTable>();
 
         public update(elapsedTime:number){
             //todo optimize:use worker
-            var scene = this.entityObject,
-                checkTargetList = scene.filter((entityObject:GameObject) => {
-                    return entityObject.hasComponent(Collider)
-                        || (JudgeUtils.isSpacePartitionObject(entityObject) && entityObject.getSpacePartition().isCollideEnable)
+            var scene = this.gameObjectScene,
+                checkTargetList = scene.filter((gameObjectScene:GameObject) => {
+                    return gameObjectScene.hasComponent(Collider)
+                        || (JudgeUtils.isSpacePartitionObject(gameObjectScene) && gameObjectScene.getSpacePartition().isCollideEnable)
                 }),
                 self = this;
 
@@ -26,12 +29,12 @@ module wd{
 
             this._clearCollisionTable();
 
-            checkTargetList.forEach((entityObject:GameObject) => {
-                if(entityObject.hasComponent(RigidBody)){
+            checkTargetList.forEach((gameObjectScene:GameObject) => {
+                if(gameObjectScene.hasComponent(RigidBody)){
                     return;
                 }
 
-                self._recordCollideObjects(entityObject, checkTargetList);
+                self._recordCollideObjects(gameObjectScene, checkTargetList);
             });
 
             this._triggerCollisionEvent();
@@ -176,8 +179,8 @@ module wd{
             }
         }
 
-        private _isCollisionStart(entityObject:GameObject){
-            return !entityObject.hasTag(<any>ECollisionTag.COLLIDED);
+        private _isCollisionStart(gameObjectScene:GameObject){
+            return !gameObjectScene.hasTag(<any>ECollisionTag.COLLIDED);
         }
 
         private _triggerCollisionEventOfCollideObjectWhichHasRigidBody(collideObjects:wdCb.Collection<GameObject>, currentGameObject:GameObject, eventList:Array<string>){
@@ -185,8 +188,8 @@ module wd{
                 return;
             }
 
-            collideObjects.filter((entityObject:GameObject) => {
-                    return entityObject.hasComponent(RigidBody);
+            collideObjects.filter((gameObjectScene:GameObject) => {
+                    return gameObjectScene.hasComponent(RigidBody);
                 })
                 .forEach((collideObject:GameObject) => {
                     for(let eventName of eventList){
@@ -234,8 +237,8 @@ module wd{
             });
         }
 
-        private _isNotTransform(entityObject:GameObject){
-            return !entityObject.transform.isTransform;
+        private _isNotTransform(gameObjectScene:GameObject){
+            return !gameObjectScene.transform.isTransform;
         }
     }
 

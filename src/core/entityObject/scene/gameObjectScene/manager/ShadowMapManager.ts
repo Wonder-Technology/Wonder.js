@@ -40,7 +40,7 @@ module wd {
         private _lastCubemapShadowMapDataMap:wdCb.Hash<wdCb.Collection<CubemapShadowMapData>> = null;
 
         public initShadowMapData(shadowLayerList:ShadowLayerList){
-            var scene:GameObjectScene = this._shadowManager.entityObject;
+            var scene:GameObjectScene = this._shadowManager.gameObjectScene;
 
             if(scene.directionLights){
                 scene.directionLights.forEach((lightObject:GameObject) => {
@@ -66,7 +66,7 @@ module wd {
         public updateWhenShadowLayerChange({addLayerList,removeLayerList}){
             var scene:GameObjectScene = null;
 
-            scene = this._shadowManager.entityObject;
+            scene = this._shadowManager.gameObjectScene;
 
             if(scene.directionLights){
                 let twoDShadowMapDataMap = this.twoDShadowMapDataMap;

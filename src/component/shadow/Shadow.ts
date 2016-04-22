@@ -134,8 +134,8 @@ module wd{
 
         private _addBuildShadowMapShaderAndShadowMapsToObjectAndChildren(){
             var self = this,
-                twoDShadowMapDataMap:wdCb.Hash<wdCb.Collection<TwoDShadowMapData>> = Director.getInstance().scene.gameObjectScene.getComponent(ShadowManager).twoDShadowMapDataMap,
-                cubemapShadowMapDataMap:wdCb.Hash<wdCb.Collection<CubemapShadowMapData>> = Director.getInstance().scene.gameObjectScene.getComponent(ShadowManager).cubemapShadowMapDataMap;
+                twoDShadowMapDataMap:wdCb.Hash<wdCb.Collection<TwoDShadowMapData>> = Director.getInstance().scene.gameObjectScene.shadowManager.twoDShadowMapDataMap,
+                cubemapShadowMapDataMap:wdCb.Hash<wdCb.Collection<CubemapShadowMapData>> = Director.getInstance().scene.gameObjectScene.shadowManager.cubemapShadowMapDataMap;
             var handle = (gameObject:GameObject) => {
                 if (gameObject.hasComponent(Geometry)) {
                     let geometry:Geometry = gameObject.getComponent<Geometry>(Geometry),
@@ -234,8 +234,8 @@ module wd{
 
         private _addShadowMapsToObjectAndChildren(){
             var self = this,
-                twoDShadowMapDataMap:wdCb.Hash<wdCb.Collection<TwoDShadowMapData>> = Director.getInstance().scene.gameObjectScene.getComponent(ShadowManager).twoDShadowMapDataMap,
-                cubemapShadowMapDataMap:wdCb.Hash<wdCb.Collection<CubemapShadowMapData>> = Director.getInstance().scene.gameObjectScene.getComponent(ShadowManager).cubemapShadowMapDataMap;
+                twoDShadowMapDataMap:wdCb.Hash<wdCb.Collection<TwoDShadowMapData>> = Director.getInstance().scene.gameObjectScene.shadowManager.twoDShadowMapDataMap,
+                cubemapShadowMapDataMap:wdCb.Hash<wdCb.Collection<CubemapShadowMapData>> = Director.getInstance().scene.gameObjectScene.shadowManager.cubemapShadowMapDataMap;
             var handle = (gameObject:GameObject) => {
                 if (gameObject.hasComponent(Geometry)) {
                     let material:Material = gameObject.getComponent<Geometry>(Geometry).material,

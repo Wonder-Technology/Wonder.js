@@ -55,29 +55,12 @@ module wd {
         public glslData:wdCb.Hash<any> = wdCb.Hash.create<any>();
         public currentShaderType:EShaderTypeOfScene = null;
         public shadowLayerList:ShadowLayerList = ShadowLayerList.create();
-        public renderTargetRendererManager:RenderTargetRendererManager = null;
+        public renderTargetRendererManager:RenderTargetRendererManager = RenderTargetRendererManager.create();
+        public shadowManager:ShadowManager = ShadowManager.create(this);
 
-        private _shadowManager:ShadowManager = null;
-        private _lightManager:LightManager = null;
-        private _collisionDetector:CollisionDetector = null;
+        private _lightManager:LightManager = LightManager.create();
+        private _collisionDetector:CollisionDetector = CollisionDetector.create(this);
         private _cameraList:wdCb.Collection<GameObject> = wdCb.Collection.create<GameObject>();
-        //private _shaderMap:wdCb.Hash<Shader> = wdCb.Hash.create<Shader>();
-
-        public initWhenCreate(){
-            super.initWhenCreate();
-
-            this._shadowManager = ShadowManager.create();
-            this.addComponent(this._shadowManager);
-
-            this._lightManager = LightManager.create();
-            this.addComponent(this._lightManager);
-
-            this.renderTargetRendererManager = RenderTargetRendererManager.create();
-            this.addComponent(this.renderTargetRendererManager);
-
-            this._collisionDetector = CollisionDetector.create();
-            this.addComponent(this._collisionDetector);
-        }
 
         public init(){
             if(this.physics.enable){
@@ -85,11 +68,20 @@ module wd {
                 this.physicsEngineAdapter.init();
             }
 
+            this.shadowManager.init();
+
             super.init();
 
-            this.renderTargetRendererManager.afterInit();
+            this.renderTargetRendererManager.init();
 
             return this;
+        }
+
+        public dispose(){
+            super.dispose();
+
+            this.shadowManager.dispose();
+            this.renderTargetRendererManager.dispose();
         }
 
         public addChild(child:GameObject):GameObject{
@@ -108,8 +100,8 @@ module wd {
 
         public update(elapsedTime:number){
             var currentCamera= this._getCurrentCameraComponent(),
-                shadowManager:ShadowManager = this.getComponent<ShadowManager>(ShadowManager),
-                collisionDetector:CollisionDetector = this.getComponent<CollisionDetector>(CollisionDetector);
+                shadowManager:ShadowManager = this.shadowManager,
+                collisionDetector:CollisionDetector = this._collisionDetector;
 
             if(this.physics.enable){
                 this.physicsEngineAdapter.update(elapsedTime);
@@ -127,7 +119,7 @@ module wd {
         }
 
         public render(renderer:Renderer) {
-            this._shadowManager.setShadowRenderListInEachLoop();
+            this.shadowManager.setShadowRenderListInEachLoop();
 
             this.renderTargetRendererManager.renderCommonRenderTargetRenderer(renderer, this.currentCamera);
 
@@ -140,28 +132,7 @@ module wd {
 
         public unUseShader(){
             this.currentShaderType = null;
-
-            //EventManager.trigger(CustomEvent.create(<any>EEngineEvent.UNUSE_SCENE_SHADER));
         }
-
-        //public addShader(key:EShaderMapKeyOfScene, shader:Shader){
-        //    this._shaderMap.addChild(<any>key, shader);
-        //}
-        //
-        //public hasShader(key:EShaderMapKeyOfScene){
-        //    return this._shaderMap.hasChild(<any>key);
-        //}
-        //
-        //public getShader(key:EShaderMapKeyOfScene){
-        //    var shader = this._shaderMap.getChild(<any>key);
-        //
-        //    /*! defer init
-        //     init when get shader(it will be judged in "init" method that not init if already inited)
-        //     */
-        //    shader.init(null);
-        //
-        //    return shader;
-        //}
 
         protected getRenderList(){
             return RenderUtils.getGameObjectRenderList(this.getChildren());

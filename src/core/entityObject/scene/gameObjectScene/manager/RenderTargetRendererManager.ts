@@ -1,5 +1,5 @@
 module wd{
-    export class RenderTargetRendererManager extends SceneComponent{
+    export class RenderTargetRendererManager{
         public static create() {
         	var obj = new this();
 
@@ -9,7 +9,7 @@ module wd{
         private _commonRenderTargetRendererList:wdCb.Collection<CommonRenderTargetRenderer> = wdCb.Collection.create<CommonRenderTargetRenderer>();
         private _proceduralRendererList:wdCb.Collection<ProceduralRenderTargetRenderer> = wdCb.Collection.create<ProceduralRenderTargetRenderer>();
 
-        public afterInit(){
+        public init(){
             this._commonRenderTargetRendererList.forEach((renderTargetRenderer:RenderTargetRenderer) => renderTargetRenderer.init());
             this._proceduralRendererList.forEach((renderTargetRenderer:ProceduralRenderTargetRenderer) => renderTargetRenderer.init());
         }

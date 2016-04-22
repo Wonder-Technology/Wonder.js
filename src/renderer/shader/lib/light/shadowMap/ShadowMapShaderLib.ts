@@ -23,7 +23,7 @@ module wd{
 
         private _setShadowMapSource(){
             var scene:SceneDispatcher = Director.getInstance().scene,
-                shadowManager:ShadowManager = scene.gameObjectScene.getComponent<ShadowManager>(ShadowManager),
+                shadowManager:ShadowManager = scene.gameObjectScene.shadowManager,
                 twoDShadowMapCountForGLSL = shadowManager.twoDShadowMapCountForGLSL,
                 cubemapShadowMapCountForGLSL = shadowManager.cubemapShadowMapCountForGLSL;
 

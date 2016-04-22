@@ -1,9 +1,13 @@
 module wd{
-    export class ShadowManager extends SceneComponent{
-        public static create() {
-            var obj = new this();
+    export class ShadowManager{
+        public static create(gameObjectScene:GameObjectScene) {
+            var obj = new this(gameObjectScene);
 
             return obj;
+        }
+
+        constructor(gameObjectScene:GameObjectScene){
+            this.gameObjectScene = gameObjectScene;
         }
 
         get twoDShadowMapDataMap(){
@@ -22,7 +26,8 @@ module wd{
             return this._shadowMapManager.cubemapShadowMapCountForGLSL;
         }
 
-        public entityObject:GameObjectScene;
+
+        public gameObjectScene:GameObjectScene = null;
 
         private _shadowRenderList:wdCb.Collection<GameObject> = null;
         private _endLoopSubscription:wdFrp.IDisposable = null;
@@ -34,7 +39,7 @@ module wd{
                 return;
             }
 
-            this.entityObject.shadowLayerList.update();
+            this.gameObjectScene.shadowLayerList.update();
         }
 
         public dispose(){
@@ -62,13 +67,13 @@ module wd{
             var shadowLayerList:ShadowLayerList = null,
                 self = this;
 
-            if(this.entityObject.shadowLayerList.dirty){
-                return <any>this.entityObject.shadowLayerList.removeRepeatItems();
+            if(this.gameObjectScene.shadowLayerList.dirty){
+                return <any>this.gameObjectScene.shadowLayerList.removeRepeatItems();
             }
 
             shadowLayerList = ShadowLayerList.create();
 
-            RenderUtils.getGameObjectRenderList(this.entityObject.getChildren())
+            RenderUtils.getGameObjectRenderList(this.gameObjectScene.getChildren())
                 .forEach((child:GameObject) => {
                     if(JudgeUtils.isSpacePartitionObject(child)){
                         child.forEach((c:GameObject) => {
@@ -92,14 +97,14 @@ module wd{
 
         public init(){
             var self = this,
-                scene:GameObjectScene = this.entityObject;
+                scene:GameObjectScene = this.gameObjectScene;
 
             if(!this._isShadowMapEnable() || !this._hasShadow()) {
                 return;
             }
 
-            this.entityObject.shadowLayerList = this.getShadowLayerList();
-            this._shadowMapManager.initShadowMapData(this.entityObject.shadowLayerList);
+            this.gameObjectScene.shadowLayerList = this.getShadowLayerList();
+            this._shadowMapManager.initShadowMapData(this.gameObjectScene.shadowLayerList);
 
             this._shadowMapManager.twoDShadowMapDataMap.forEach((twoDShadowMapDataList:wdCb.Collection<TwoDShadowMapData>, layer:string) => {
                 twoDShadowMapDataList.forEach(({shadowMap, light}) => {
@@ -130,7 +135,7 @@ module wd{
         @require(function(){
             var self = this;
             var checkFirstLevelOfGameObjectScene = () => {
-                    self.entityObject.getChildren()
+                    self.gameObjectScene.getChildren()
                         .filter((firstLevelChild:GameObject) => {
                             return !JudgeUtils.isSpacePartitionObject(firstLevelChild);
                         })
@@ -151,7 +156,7 @@ module wd{
                         });
                 },
                 checkFirstLevelOfSpacePartitionObject = () => {
-                    self.entityObject.getChildren()
+                    self.gameObjectScene.getChildren()
                         .filter((firstLevelChild:GameObject) => {
                             return JudgeUtils.isSpacePartitionObject(firstLevelChild);
                         })
@@ -181,7 +186,7 @@ module wd{
             var list = wdCb.Collection.create<GameObject>(),
                 self = this;
 
-            RenderUtils.getGameObjectRenderList(this.entityObject.getChildren())
+            RenderUtils.getGameObjectRenderList(this.gameObjectScene.getChildren())
                 .forEach((child:GameObject) => {
                     if(JudgeUtils.isSpacePartitionObject(child)){
                         //todo optimize:cache gameObjectRenderListFromSpacePartition or renderListByFrustumCull?
@@ -204,7 +209,7 @@ module wd{
         }
 
         @require(function(){
-            var shadowLayerList = this.entityObject.shadowLayerList;
+            var shadowLayerList = this.gameObjectScene.shadowLayerList;
 
             assert(shadowLayerList.dirty, Log.info.FUNC_SHOULD("shadowLayerList", "dirty"));
 
@@ -214,7 +219,7 @@ module wd{
                 });
         })
         private _updateWhenShadowLayerChange(){
-            var scene:GameObjectScene = this.entityObject;
+            var scene:GameObjectScene = this.gameObjectScene;
 
             if(!this._hasShadow()) {
                 return;
@@ -233,10 +238,10 @@ module wd{
         }
 
         @ensure(function(){
-            assert(!this.entityObject.renderTargetRendererManager.getCommonRenderTargetRendererList().hasRepeatItems(), Log.info.FUNC_SHOULD_NOT("scene->commonRenderTargetRendererList", "has repeat items"));
+            assert(!this.gameObjectScene.renderTargetRendererManager.getCommonRenderTargetRendererList().hasRepeatItems(), Log.info.FUNC_SHOULD_NOT("scene->commonRenderTargetRendererList", "has repeat items"));
         })
         private _refreshRenderTargerRendererList(addTwoDShadowMapData:wdCb.Hash<wdCb.Collection<TwoDShadowMapData>>, removeTwoDShadowMapData:wdCb.Collection<TwoDShadowMapData>, addCubemapShadowMapData:wdCb.Hash<wdCb.Collection<CubemapShadowMapData>>, removeCubemapShadowMapData:wdCb.Collection<CubemapShadowMapData>){
-            var scene:GameObjectScene = this.entityObject;
+            var scene:GameObjectScene = this.gameObjectScene;
 
             scene.renderTargetRendererManager.removeCommonRenderTargetRenderer((renderTargetRenderer:CommonRenderTargetRenderer) => {
                 var texture = renderTargetRenderer.texture;
@@ -295,13 +300,13 @@ module wd{
         }
 
         private _hasShadow(){
-            var scene = this.entityObject;
+            var scene = this.gameObjectScene;
 
             return !!scene.directionLights || !!scene.pointLights;
         }
 
         private _isShadowMapEnable(){
-            return this.entityObject.shadowMap.enable;
+            return this.gameObjectScene.shadowMap.enable;
         }
     }
 }

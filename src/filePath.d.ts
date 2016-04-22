@@ -75,8 +75,20 @@
 
 /// <reference path="core/entityObject/scene/SceneDispatcher"/>
 /// <reference path="core/entityObject/scene/Scene"/>
-/// <reference path="core/entityObject/scene/GameObjectScene"/>
 /// <reference path="core/entityObject/scene/UIObjectScene"/>
+
+
+/// <reference path="core/entityObject/scene/gameObjectScene/GameObjectScene"/>
+/// <reference path="core/entityObject/scene/gameObjectScene/CollisionDetector"/>
+
+/// <reference path="core/entityObject/scene/gameObjectScene/manager/ShadowManager"/>
+/// <reference path="core/entityObject/scene/gameObjectScene/manager/ShadowMapManager"/>
+/// <reference path="core/entityObject/scene/gameObjectScene/manager/LightManager"/>
+/// <reference path="core/entityObject/scene/gameObjectScene/manager/RenderTargetRendererManager"/>
+
+/// <reference path="core/entityObject/scene/gameObjectScene/structure/ShadowLayerList"/>
+
+
 
 
 
@@ -156,18 +168,6 @@
 /// <reference path="component/transform/ThreeDTransform"/>
 /// <reference path="component/transform/RectTransform"/>
 /// <reference path="component/transform/ETransformState"/>
-
-
-/// <reference path="component/scene/SceneComponent"/>
-
-/// <reference path="component/scene/manager/ShadowManager"/>
-/// <reference path="component/scene/manager/ShadowMapManager"/>
-/// <reference path="component/scene/manager/LightManager"/>
-/// <reference path="component/scene/manager/RenderTargetRendererManager"/>
-
-/// <reference path="component/scene/CollisionDetector"/>
-
-/// <reference path="component/scene/manager/structure/ShadowLayerList"/>
 
 
 

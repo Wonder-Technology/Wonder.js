@@ -5,7 +5,7 @@ describe("ShadowManager", function() {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
         manager = wd.ShadowManager.create();
-        manager.entityObject = wd.Director.getInstance().scene.gameObjectScene;
+        manager.gameObjectScene = wd.Director.getInstance().scene.gameObjectScene;
     });
     afterEach(function () {
         sandbox.restore();

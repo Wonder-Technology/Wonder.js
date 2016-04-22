@@ -29,7 +29,7 @@ module wd {
         }
 
         protected  getRenderList():wdCb.Hash<wdCb.Collection<GameObject>>{
-            var renderList = Director.getInstance().scene.gameObjectScene.getComponent(ShadowManager).getShadowRenderListByLayer(this._layer);
+            var renderList = Director.getInstance().scene.gameObjectScene.shadowManager.getShadowRenderListByLayer(this._layer);
 
             return wdCb.Hash.create<wdCb.Collection<GameObject>>({
                 px:renderList,

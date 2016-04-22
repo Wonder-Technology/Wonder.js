@@ -82,7 +82,7 @@ describe("CollisionDetector", function () {
 
             beforeEach(function(){
                 gameObjectScene = wd.GameObjectScene.create();
-                detector.entityObject = gameObjectScene;
+                detector.gameObjectScene = gameObjectScene;
 
                 box1 = createBox("box1");
                 box1.transform.position = wd.Vector3.create(9, 9, 9);

@@ -997,7 +997,7 @@ describe("point shadow map", function() {
 
                 beforeEach(function(){
                     director._init();
-                    sandbox.stub(director.scene.gameObjectScene.getComponent(wd.ShadowManager), "getShadowRenderListByLayer").returns(wdCb.Collection.create());
+                    sandbox.stub(director.scene.gameObjectScene.shadowManager, "getShadowRenderListByLayer").returns(wdCb.Collection.create());
 
 
                     setDrawShadowMapShaderAndProgram(sphere);

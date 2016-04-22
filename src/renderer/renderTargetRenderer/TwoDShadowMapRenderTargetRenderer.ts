@@ -37,7 +37,7 @@ module wd {
         }
 
         protected getRenderList():wdCb.Collection<GameObject>{
-            return Director.getInstance().scene.gameObjectScene.getComponent(ShadowManager).getShadowRenderListByLayer(this._layer);
+            return Director.getInstance().scene.gameObjectScene.shadowManager.getShadowRenderListByLayer(this._layer);
         }
 
         protected renderRenderer(renderer:Renderer){
