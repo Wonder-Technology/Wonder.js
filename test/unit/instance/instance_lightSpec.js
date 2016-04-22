@@ -87,9 +87,11 @@ describe("instance with light", function () {
 
             var matricesInstancesArray = gl.bufferSubData.firstCall.args[2];
 
-            matricesInstancesArray.forEach(function(data, index){
-                expect(data).toEqual(targetMatricesInstancesArray[index]);
-            });
+            for(var i = 0, len = matricesInstancesArray.length; i < len; i++){
+                var data = matricesInstancesArray[i];
+
+                expect(data).toEqual(targetMatricesInstancesArray[i]);
+            }
         }
 
         function judgeSendModelMatrixVecData(location, index){

@@ -153,9 +153,11 @@ describe("use instance to batch draw calls", function(){
 
             var modelMatricesInstancesArray = gl.bufferSubData.firstCall.args[2];
 
-            modelMatricesInstancesArray.forEach(function(data, index){
-                expect(data).toEqual(targetModelMatricesInstancesArray[index]);
-            });
+            for(var i = 0, len = modelMatricesInstancesArray.length; i < len; i++){
+                var data = modelMatricesInstancesArray[i];
+
+                expect(data).toEqual(targetModelMatricesInstancesArray[i]);
+            }
         }
 
         function judgeSendModelMatrixVecData(location, index){
