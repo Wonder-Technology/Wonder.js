@@ -17,10 +17,10 @@ module wd{
                 return renderList;
             }
 
-            return this._replaceObjectInstanceObjectWithItsSourceObject(renderList);
+            return this._replaceObjectWhichContainObjectInstanceWithItsSourceObject(renderList);
         }
 
-        private static _replaceObjectInstanceObjectWithItsSourceObject(renderList:wdCb.Collection<GameObject>){
+        private static _replaceObjectWhichContainObjectInstanceWithItsSourceObject(renderList:wdCb.Collection<GameObject>){
             var map = wdCb.Hash.create<GameObject>();
 
             renderList.forEach((child:GameObject) => {

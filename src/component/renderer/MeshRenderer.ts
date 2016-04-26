@@ -50,7 +50,7 @@ module wd {
                 assert(InstanceUtils.isSourceInstance(target) && !InstanceUtils.isObjectInstance(target), Log.info.FUNC_SHOULD("if use instance to batch draw, target", "be SourceInstance"));
             }
         })
-        @ensure(function(cmd, target:GameObject){
+        @ensure(function(cmd:RenderCommand, target:GameObject){
             if(cmd instanceof InstanceCommand){
                 assert(InstanceUtils.isHardwareSupport(), Log.info.FUNC_SHOULD("hardware", "support instance"));
             }
@@ -58,7 +58,7 @@ module wd {
         private _createCommand(target:GameObject, material:Material){
             var cmd:any = null;
 
-            if(InstanceUtils.isInstance(target) && InstanceUtils.isHardwareSupport()){
+            if(InstanceUtils.isHardwareSupport() && InstanceUtils.isInstance(target)){
                 let instanceComponent:Instance = target.getComponent<Instance>(Instance);
 
                 cmd = InstanceCommand.create();

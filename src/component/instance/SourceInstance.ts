@@ -175,6 +175,9 @@ module wd{
             this._toRenderInstanceList.forEach(func);
         }
 
+        @ensure(function(returnValue:any, source:GameObject, instance:GameObject){
+            assert(instance.hasComponent(ThreeDTransform), Log.info.FUNC_SHOULD("instance", "contain ThreeDTransform component"));
+        })
         private _addComponentsFromSourceToObject(source:GameObject, instance:GameObject){
             var isHardwareSupport:boolean = InstanceUtils.isHardwareSupport();
 

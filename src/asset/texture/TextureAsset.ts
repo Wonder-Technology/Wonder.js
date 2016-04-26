@@ -51,6 +51,8 @@ module wd{
         public abstract cloneToCubemapFaceTexture(cubemapFaceTexture:any);
 
         public clone(){
+            //todo clone more attributes
+
             return CloneUtils.clone(this);
         }
 
