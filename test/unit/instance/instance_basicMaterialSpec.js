@@ -537,7 +537,7 @@ describe("instance with basic material", function(){
                 director.scene.gameObjectScene.render(renderer);
                 renderer.render();
 
-                expect(gl.bindBuffer.withArgs(gl.ARRAY_BUFFER).callCount).toEqual(7);
+                expect(gl.bindBuffer.withArgs(gl.ARRAY_BUFFER).callCount).toEqual(6);
                 expect(gl.bindBuffer.withArgs(gl.ELEMENT_ARRAY_BUFFER).callCount).toEqual(2);
             });
             it("draw one instance in one draw call", function(){

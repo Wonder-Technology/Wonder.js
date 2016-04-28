@@ -12,7 +12,8 @@ module wd{
             return this._capacity / 4;
         }
 
-        private _capacity:number = 32 * 16 * 4; // let's start with a maximum of 32 instances
+        /*! start with a maximum of 32 instances */
+        private _capacity:number = 32 * 16 * 4;
 
         public initWhenCreate() {
             this.buffer = this._createBuffer();
@@ -36,9 +37,6 @@ module wd{
             }
         }
 
-        //@require(function(){
-        //    assert(InstanceUtils.isHardwareSupport(), Log.info.FUNC_SHOULD("hardware", "support instance"));
-        //})
         public resetData(data: Float32Array, offsetLocations: number[]): void {
             var gl = DeviceManager.getInstance().gl;
 
@@ -47,8 +45,8 @@ module wd{
         }
 
         private _createBuffer(): WebGLBuffer {
-            var gl = DeviceManager.getInstance().gl;
-            var buffer = gl.createBuffer();
+            var gl = DeviceManager.getInstance().gl,
+                buffer = gl.createBuffer();
 
             gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
             gl.bufferData(gl.ARRAY_BUFFER, this._capacity, gl.DYNAMIC_DRAW);

@@ -261,6 +261,18 @@ describe("SourceInstance", function(){
         });
     });
 
+    it("defer to create instance buffer until get it", function () {
+        var gl = wd.DeviceManager.getInstance().gl;
+
+        sourceInstance.init();
+
+        expect(gl.createBuffer).not.toCalled();
+
+        var instanceBuffer = sourceInstance.instanceBuffer;
+
+        expect(gl.createBuffer).toCalledOnce();
+    });
+
     describe("dispose", function(){
         beforeEach(function(){
             sourceInstance.init();

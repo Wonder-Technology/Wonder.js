@@ -27,6 +27,10 @@ module wd{
 
         private _instanceBuffer:InstanceBuffer = null;
         get instanceBuffer(){
+            if(this._instanceBuffer === null){
+                this._instanceBuffer = InstanceBuffer.create();
+            }
+
             return this._instanceBuffer;
         }
 
@@ -55,8 +59,6 @@ module wd{
             if(!this._isAddSourceInstanceToChildren){
                 this._addSourceInstanceToChildren();
             }
-
-            this._instanceBuffer = InstanceBuffer.create();
 
             this._endLoopSubscription = EventManager.fromEvent(<any>EEngineEvent.ENDLOOP)
                 .subscribe(() => {
