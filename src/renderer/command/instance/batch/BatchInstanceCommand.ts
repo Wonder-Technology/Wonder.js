@@ -20,10 +20,10 @@ module wd {
 
             switch (this.glslData){
                 case EInstanceGLSLData.MODELMATRIX:
-                    drawer = ModelMatrixBatchInstanceDrawer.create();
+                    drawer = ModelMatrixBatchInstanceDrawer.getInstance();
                     break;
                 case EInstanceGLSLData.NORMALMATRIX_MODELMATRIX:
-                    drawer = NormalMatrixModelMatrixBatchInstanceDrawer.create();
+                    drawer = NormalMatrixModelMatrixBatchInstanceDrawer.getInstance();
                     break;
             }
 
