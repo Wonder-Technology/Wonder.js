@@ -46,35 +46,92 @@ module wd {
         }
 
         @require(function(target:GameObject){
-            if(InstanceUtils.isInstance(target) && InstanceUtils.isHardwareSupport()){
-                assert(InstanceUtils.isSourceInstance(target) && !InstanceUtils.isObjectInstance(target), Log.info.FUNC_SHOULD("if use instance to batch draw, target", "be SourceInstance"));
+            //if(InstanceUtils.isInstance(target) && InstanceUtils.isHardwareSupport()){
+                if(InstanceUtils.isInstance(target)){
+                assert(InstanceUtils.isSourceInstance(target), Log.info.FUNC_SHOULD("if use instance to batch draw, target", "be SourceInstance"));
             }
         })
         @ensure(function(cmd:RenderCommand, target:GameObject){
-            if(cmd instanceof InstanceCommand){
+            if(cmd instanceof HardwareInstanceCommand){
                 assert(InstanceUtils.isHardwareSupport(), Log.info.FUNC_SHOULD("hardware", "support instance"));
+            }
+            else if(cmd instanceof BatchInstanceCommand){
+                assert(!InstanceUtils.isHardwareSupport(), Log.info.FUNC_SHOULD_NOT("hardware", "support instance"));
             }
         })
         private _createCommand(target:GameObject, material:Material){
             var cmd:any = null;
 
-            if(InstanceUtils.isHardwareSupport() && InstanceUtils.isInstance(target)){
-                let instanceComponent:Instance = target.getComponent<Instance>(Instance);
-
-                cmd = InstanceCommand.create();
-
-                cmd.instanceList = instanceComponent.toRenderInstanceListForDraw;
-                cmd.instanceBuffer = instanceComponent.instanceBuffer;
-
-                if(material.shader.hasLib(NormalMatrixInstanceShaderLib)){
-                    cmd.glslData = EInstanceGLSLData.NORMALMATRIX_MODELMATRIX;
+            material.shader.getLibs().forEach((lib:ShaderLib) => {
+                if(!(lib instanceof InstanceShaderLib)){
+                    return;
                 }
-            }
-            else{
+
+                if(lib instanceof NormalMatrixModelMatrixHardwareInstanceShaderLib){
+                    cmd = this._createHardwareInstanceCommand(target, material, EInstanceGLSLData.NORMALMATRIX_MODELMATRIX);
+
+                    return wdCb.$BREAK;
+                }
+
+                if(lib instanceof NormalMatrixModelMatrixBatchInstanceShaderLib){
+                    cmd = this._createBatchInstanceCommand(target, material, EInstanceGLSLData.NORMALMATRIX_MODELMATRIX);
+
+                    return wdCb.$BREAK;
+                }
+
+
+                if(lib instanceof ModelMatrixHardwareInstanceShaderLib){
+                    cmd = this._createHardwareInstanceCommand(target, material, EInstanceGLSLData.MODELMATRIX);
+
+                    return wdCb.$BREAK;
+                }
+
+                if(lib instanceof ModelMatrixBatchInstanceShaderLib){
+                    cmd = this._createBatchInstanceCommand(target, material, EInstanceGLSLData.MODELMATRIX);
+
+                    return wdCb.$BREAK;
+                }
+            });
+
+            //if(InstanceUtils.isInstance(target)){
+            //    if(InstanceUtils.isHardwareSupport()){
+            //        cmd = this._createHardwareInstanceCommand(target, material);
+            //    }
+            //    else{
+            //        cmd = this._createBatchInstanceCommand(target, material);
+            //    }
+            //}
+            //else{
+            if(cmd === null){
                 cmd = SingleDrawCommand.create();
 
                 cmd.mMatrix = this.entityObject.transform.localToWorldMatrix;
             }
+            //}
+
+            return cmd;
+        }
+
+        private _createHardwareInstanceCommand(target:GameObject, material:Material, glslData:EInstanceGLSLData){
+            var instanceComponent:SourceInstance = target.getComponent<SourceInstance>(SourceInstance),
+                cmd = HardwareInstanceCommand.create();
+
+            cmd.instanceList = instanceComponent.toRenderInstanceListForDraw;
+            cmd.instanceBuffer = instanceComponent.instanceBuffer;
+
+            cmd.glslData = glslData;
+
+            return cmd;
+        }
+
+        private _createBatchInstanceCommand(target:GameObject, material:Material, glslData:EInstanceGLSLData){
+            var instanceComponent:SourceInstance = target.getComponent<SourceInstance>(SourceInstance),
+                cmd = BatchInstanceCommand.create();
+
+            cmd.instanceList = instanceComponent.toRenderInstanceListForDraw;
+            //cmd.instanceBuffer = instanceComponent.instanceBuffer;
+
+            cmd.glslData = glslData;
 
             return cmd;
         }

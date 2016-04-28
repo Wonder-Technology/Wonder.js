@@ -121,12 +121,7 @@ module wd{
         protected addShaderLib(){
             var envMap = null;
 
-            if(InstanceUtils.isHardwareSupport() && InstanceUtils.isSourceInstance(this.geometry.entityObject)){
-                this.shader.addLib(NormalMatrixInstanceShaderLib.create());
-            }
-            else{
-                this.shader.addLib(NormalMatrixNoInstanceShaderLib.create());
-            }
+            InstanceUtils.addNormalModelMatrixShaderLib(this.shader, this.geometry.entityObject);
 
             this.addNormalShaderLib();
             this.shader.addLib(LightCommonShaderLib.create());

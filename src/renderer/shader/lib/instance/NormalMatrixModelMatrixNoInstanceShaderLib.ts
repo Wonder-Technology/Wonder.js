@@ -1,12 +1,12 @@
 module wd{
-    export class NormalMatrixNoInstanceShaderLib extends NoInstanceShaderLib{
+    export class NormalMatrixModelMatrixNoInstanceShaderLib extends NoInstanceShaderLib{
         public static create() {
             var obj = new this();
 
             return obj;
         }
 
-        public type:string = "normalMatrix_noInstance";
+        public type:string = "normalMatrix_modelMatrix_noInstance";
 
         public sendShaderVariables(program:Program, cmd:SingleDrawCommand, material:EngineMaterial){
             this.sendUniformData(program, "u_normalMatrix", cmd.normalMatrix);

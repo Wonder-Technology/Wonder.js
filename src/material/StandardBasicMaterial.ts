@@ -58,12 +58,7 @@ module wd{
 
             envMap = this.envMap;
             if(envMap){
-                if(InstanceUtils.isHardwareSupport() && InstanceUtils.isSourceInstance(this.geometry.entityObject)){
-                    this.shader.addLib(NormalMatrixInstanceShaderLib.create());
-                }
-                else{
-                    this.shader.addLib(NormalMatrixNoInstanceShaderLib.create());
-                }
+                InstanceUtils.addNormalModelMatrixShaderLib(this.shader, this.geometry.entityObject);
 
                 this._setEnvMapShaderLib(envMap);
             }

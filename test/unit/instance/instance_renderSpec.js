@@ -1,4 +1,4 @@
-describe("use instance to batch draw calls", function(){
+describe("use instance to batch draw calls(instance with basic material)", function(){
     var gl = null;
     var device;
     var sandbox;
@@ -47,8 +47,8 @@ describe("use instance to batch draw calls", function(){
 
         instanceArr.push(box1);
 
-        box1Instance1 = instanceTool.cloneInstance(box1, "0");
-        box1Instance2 = instanceTool.cloneInstance(box1, "1");
+        box1Instance1 = instanceTool.cloneInstance(box1, "1");
+        box1Instance2 = instanceTool.cloneInstance(box1, "2");
 
         instanceArr.push(box1Instance1, box1Instance2);
 
@@ -488,30 +488,97 @@ describe("use instance to batch draw calls", function(){
     describe("if hardware not support instance", function(){
         beforeEach(function(){
             wd.GPUDetector.getInstance().extensionInstancedArrays = null;
+
+            testTool.openContractCheck(sandbox);
         });
 
-        it("draw one instance in one draw call", function () {
-            prepareWithoutChild();
-            director._init();
+        describe("batch draw instances", function(){
+            var box1Material;
+            var map;
+            var program;
 
-            director.scene.gameObjectScene.render(renderer);
-            renderer.render();
+            beforeEach(function(){
+                prepareWithoutChild();
+                box1Material = box1.getComponent(wd.Geometry).material;
 
-            expect(gl.drawElements.callCount).toEqual(3);
-            expect(wd.DebugStatistics.count.drawCalls).toEqual(3);
-            expect(extensionInstancedArrays.drawElementsInstancedANGLE).not.toCalled();
-        });
-        it("send mMatrix data to glsl", function () {
-            prepareWithoutChild();
-            director._init();
+                map = wd.ImageTexture.create({});
+                sandbox.stub(map, "bindToUnit");
 
-            var mMatrixPos = 1;
-            gl.getUniformLocation.withArgs(sinon.match.any, "u_mMatrix").returns(mMatrixPos);
+                box1Material.map = map;
+                box1Material.redWrite = false;
 
-            director.scene.gameObjectScene.render(renderer);
-            renderer.render();
 
-            expect(gl.uniformMatrix4fv.withArgs(mMatrixPos).callCount).toEqual(3);
+
+                program = box1Material.program;
+                program.name = "box1Program";
+                sandbox.spy(program, "use");
+                sandbox.spy(program, "sendUniformData");
+                sandbox.spy(program, "sendAttributeData");
+            });
+
+            it("set webgl state and use program and bind texture and send glsl data(except mMatrix) only once", function () {
+                director._init();
+
+                director.scene.gameObjectScene.render(renderer);
+                renderer.render();
+
+                expect(gl.colorMask.withArgs(false, true, true, true)).toCalledOnce();
+                expect(program.use).toCalledOnce();
+                expect(map.bindToUnit).toCalledOnce();
+                expect(program.sendAttributeData.withArgs("a_position")).toCalledOnce();
+
+                expect(gl.drawElements.callCount).toEqual(3);
+                expect(wd.DebugStatistics.count.drawCalls).toEqual(3);
+                expect(extensionInstancedArrays.drawElementsInstancedANGLE).not.toCalled();
+            });
+            it("not bind array,element buffer when draw instance", function () {
+                director._init();
+
+                director.scene.gameObjectScene.render(renderer);
+                renderer.render();
+
+                expect(gl.bindBuffer.withArgs(gl.ARRAY_BUFFER).callCount).toEqual(7);
+                expect(gl.bindBuffer.withArgs(gl.ELEMENT_ARRAY_BUFFER).callCount).toEqual(2);
+            });
+            it("draw one instance in one draw call", function(){
+                director._init();
+
+                director.scene.gameObjectScene.render(renderer);
+                renderer.render();
+
+                expect(gl.drawElements.callCount).toEqual(3);
+                expect(wd.DebugStatistics.count.drawCalls).toEqual(3);
+                expect(extensionInstancedArrays.drawElementsInstancedANGLE).not.toCalled();
+            });
+            it("send mMatrix data to glsl", function () {
+                director._init();
+
+                var mMatrixPos = 1;
+                gl.getUniformLocation.withArgs(sinon.match.any, "u_mMatrix").returns(mMatrixPos);
+
+                director.scene.gameObjectScene.render(renderer);
+                renderer.render();
+
+                expect(gl.uniformMatrix4fv.withArgs(mMatrixPos).callCount).toEqual(3);
+            });
+            it("vs glsl should contain u_mMatrix", function () {
+                director._init();
+
+                expect(glslTool.contain(
+                    box1Material.shader.vsSource,
+                    "u_mMatrix"
+                )).toBeTruthy();
+            });
+
+            it("test transparent object", function () {
+                box1Material.opacity = 0.5;
+
+                //todo
+            });
+
+            describe("test multi loops", function () {
+                //todo
+            });
         });
 
         describe("remove object instance", function () {
@@ -536,11 +603,11 @@ describe("use instance to batch draw calls", function(){
 
                 expect(box1.render).toCalledOnce();
                 expect(box1Instance1.render).not.toCalled();
-                expect(box1Instance2.render).toCalledOnce();
+                expect(box1Instance2.render).not.toCalledOnce();
 
                 expect(box1Child1.render).toCalledOnce();
                 expect(box1Instance1.getChild(0).render).not.toCalled();
-                expect(box1Instance2.getChild(0).render).toCalledOnce();
+                expect(box1Instance2.getChild(0).render).not.toCalledOnce();
 
                 expect(wd.DebugStatistics.count.renderGameObjects).toEqual(2 * 2);
 

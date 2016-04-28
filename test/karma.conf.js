@@ -27,7 +27,7 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        'test/unit/**',
+        //'test/unit/**',
 
         //'test/unit/**/cubemapTexture*',
 
@@ -75,6 +75,8 @@
         //'test/unit/renderer/*ShadowMap_*Spec.js',
         //
         //'test/unit/**/instance/*',
+
+        'test/unit/**/instance/instance_renderSpec*',
 
         //'test/unit/**/instance_script*',
 

@@ -222,12 +222,7 @@ module wd{
                 shader.addLib(VerticeCommonShaderLib.create());
             }
 
-            if (InstanceUtils.isHardwareSupport() && InstanceUtils.isInstance(gameObject)) {
-                shader.addLib(ModelMatrixInstanceShaderLib.create());
-            }
-            else {
-                shader.addLib(ModelMatrixNoInstanceShaderLib.create());
-            }
+            InstanceUtils.addModelMatrixShaderLib(shader, gameObject);
 
             return shader;
         }

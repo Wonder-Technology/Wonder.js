@@ -1,5 +1,5 @@
 module wd {
-    export class ModelMatrixInstanceDrawer extends InstanceDrawer{
+    export class ModelMatrixHardwareInstanceDrawer extends HardwareInstanceDrawer{
         public static create(){
             var obj = new this();
 

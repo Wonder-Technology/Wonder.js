@@ -44,12 +44,8 @@ module wd {
 
         private _addTopShaderLib(){
             this.shader.addLib(CommonShaderLib.create());
-            if(InstanceUtils.isHardwareSupport() && InstanceUtils.isSourceInstance(this.geometry.entityObject)){
-                this.shader.addLib(ModelMatrixInstanceShaderLib.create());
-            }
-            else{
-                this.shader.addLib(ModelMatrixNoInstanceShaderLib.create());
-            }
+
+            InstanceUtils.addModelMatrixShaderLib(this.shader, this.geometry.entityObject);
 
             if(GlobalGeometryUtils.hasAnimation(this.geometry)){
                 this.shader.addLib(CommonMorphShaderLib.create());
