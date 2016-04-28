@@ -370,21 +370,22 @@
 /// <reference path="renderer/command/RenderCommand"/>
 /// <reference path="renderer/command/QuadCommand"/>
 /// <reference path="renderer/command/SingleDrawCommand"/>
-/// <reference path="renderer/command/InstanceCommand"/>
-/// <reference path="renderer/command/HardwareInstanceCommand"/>
-/// <reference path="renderer/command/BatchInstanceCommand"/>
+
+/// <reference path="renderer/command/instance/EInstanceGLSLData"/>
+/// <reference path="renderer/command/instance/InstanceCommand"/>
+
+/// <reference path="renderer/command/instance/hardware/HardwareInstanceCommand"/>
 /// <reference path="renderer/command/ProceduralCommand"/>
-/// <reference path="renderer/command/IInstanceDrawer"/>
-/// <reference path="renderer/command/InstanceDrawer"/>
-/// <reference path="renderer/command/HardwareInstanceDrawer"/>
-/// <reference path="renderer/command/ModelMatrixHardwareInstanceDrawer"/>
-/// <reference path="renderer/command/NormalMatrixModelMatrixHardwareInstanceDrawer"/>
+/// <reference path="renderer/command/instance/InstanceDrawer"/>
+/// <reference path="renderer/command/instance/hardware/HardwareInstanceDrawer"/>
+/// <reference path="renderer/command/instance/hardware/ModelMatrixHardwareInstanceDrawer"/>
+/// <reference path="renderer/command/instance/hardware/NormalMatrixModelMatrixHardwareInstanceDrawer"/>
 
-/// <reference path="renderer/command/BatchInstanceDrawer"/>
-/// <reference path="renderer/command/ModelMatrixBatchInstanceDrawer"/>
-/// <reference path="renderer/command/NormalMatrixModelMatrixBatchInstanceDrawer"/>
+/// <reference path="renderer/command/instance/batch/BatchInstanceCommand"/>
+/// <reference path="renderer/command/instance/batch/BatchInstanceDrawer"/>
+/// <reference path="renderer/command/instance/batch/ModelMatrixBatchInstanceDrawer"/>
+/// <reference path="renderer/command/instance/batch/NormalMatrixModelMatrixBatchInstanceDrawer"/>
 
-/// <reference path="renderer/command/EInstanceGLSLData"/>
 
 
 /// <reference path="renderer/GlUtils"/>
@@ -486,13 +487,16 @@
 /// <reference path="renderer/shader/lib/instance/InstanceShaderLib"/>
 /// <reference path="renderer/shader/lib/instance/NoInstanceShaderLib"/>
 /// <reference path="renderer/shader/lib/instance/ModelMatrixInstanceShaderLib"/>
-/// <reference path="renderer/shader/lib/instance/ModelMatrixHardwareInstanceShaderLib"/>
-/// <reference path="renderer/shader/lib/instance/ModelMatrixBatchInstanceShaderLib"/>
 /// <reference path="renderer/shader/lib/instance/NormalMatrixModelMatrixInstanceShaderLib"/>
-/// <reference path="renderer/shader/lib/instance/NormalMatrixModelMatrixHardwareInstanceShaderLib"/>
-/// <reference path="renderer/shader/lib/instance/NormalMatrixModelMatrixBatchInstanceShaderLib"/>
-/// <reference path="renderer/shader/lib/instance/ModelMatrixNoInstanceShaderLib"/>
-/// <reference path="renderer/shader/lib/instance/NormalMatrixModelMatrixNoInstanceShaderLib"/>
+
+/// <reference path="renderer/shader/lib/instance/hardware/ModelMatrixHardwareInstanceShaderLib"/>
+/// <reference path="renderer/shader/lib/instance/hardware/NormalMatrixModelMatrixHardwareInstanceShaderLib"/>
+
+/// <reference path="renderer/shader/lib/instance/batch/ModelMatrixBatchInstanceShaderLib"/>
+/// <reference path="renderer/shader/lib/instance/batch/NormalMatrixModelMatrixBatchInstanceShaderLib"/>
+
+/// <reference path="renderer/shader/lib/instance/noInstance/ModelMatrixNoInstanceShaderLib"/>
+/// <reference path="renderer/shader/lib/instance/noInstance/NormalMatrixModelMatrixNoInstanceShaderLib"/>
 
 
 /// <reference path="renderer/shader/chunk/ShaderChunk"/>
