@@ -490,13 +490,13 @@
 /// <reference path="renderer/shader/lib/instance/NormalMatrixModelMatrixInstanceShaderLib"/>
 
 /// <reference path="renderer/shader/lib/instance/hardware/ModelMatrixHardwareInstanceShaderLib"/>
-/// <reference path="renderer/shader/lib/instance/hardware/NormalMatrixModelMatrixHardwareInstanceShaderLib"/>
+/// <reference path="renderer/shader/lib/instance/hardware/NormalMatrixHardwareInstanceShaderLib"/>
 
 /// <reference path="renderer/shader/lib/instance/batch/ModelMatrixBatchInstanceShaderLib"/>
-/// <reference path="renderer/shader/lib/instance/batch/NormalMatrixModelMatrixBatchInstanceShaderLib"/>
+/// <reference path="renderer/shader/lib/instance/batch/NormalMatrixBatchInstanceShaderLib"/>
 
 /// <reference path="renderer/shader/lib/instance/noInstance/ModelMatrixNoInstanceShaderLib"/>
-/// <reference path="renderer/shader/lib/instance/noInstance/NormalMatrixModelMatrixNoInstanceShaderLib"/>
+/// <reference path="renderer/shader/lib/instance/noInstance/NormalMatrixNoInstanceShaderLib"/>
 
 
 /// <reference path="renderer/shader/chunk/ShaderChunk"/>

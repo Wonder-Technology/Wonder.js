@@ -60,56 +60,98 @@ module wd {
             }
         })
         private _createCommand(target:GameObject, material:Material){
-            var cmd:any = null;
+            var cmd:any = null,
+                glslData:EInstanceGLSLData = null;
+            var {
+                isModelMatrixInstance,
+                isNormalMatrixInstance,
+                isHardwareInstance,
+                isBatchInstance
+            } = this._judgeInstanceState(material);
+
+            glslData = this._getInstanceGLSLData(isModelMatrixInstance, isNormalMatrixInstance);
+
+            if(isHardwareInstance){
+                cmd = this._createHardwareInstanceCommand(target, material, glslData);
+            }
+            else if(isBatchInstance){
+                cmd = this._createBatchInstanceCommand(target, material, glslData);
+            }
+            else{
+                cmd = SingleDrawCommand.create();
+
+                cmd.mMatrix = this.entityObject.transform.localToWorldMatrix;
+            }
+
+            return cmd;
+        }
+
+        @ensure(function({
+                isModelMatrixInstance,
+                isNormalMatrixInstance,
+                isHardwareInstance,
+                isBatchInstance
+            }){
+            if(isNormalMatrixInstance){
+                assert(isModelMatrixInstance === true, Log.info.FUNC_MUST_BE("modelMatrixInstance if is normalMatrixInstance"));
+            }
+
+            assert(!(isHardwareInstance && isBatchInstance), Log.info.FUNC_SHOULD_NOT("both be hardware insstance and batch instance"));
+        })
+        private _judgeInstanceState(material:Material){
+            var isModelMatrixInstance = false,
+                isNormalMatrixInstance = false,
+                isHardwareInstance = false,
+                isBatchInstance = false;
 
             material.shader.getLibs().forEach((lib:ShaderLib) => {
                 if(!(lib instanceof InstanceShaderLib)){
                     return;
                 }
 
-                if(lib instanceof NormalMatrixModelMatrixHardwareInstanceShaderLib){
-                    cmd = this._createHardwareInstanceCommand(target, material, EInstanceGLSLData.NORMALMATRIX_MODELMATRIX);
+                if(lib instanceof NormalMatrixHardwareInstanceShaderLib){
+                    isNormalMatrixInstance = true;
+                    isHardwareInstance = true;
 
                     return wdCb.$BREAK;
                 }
 
-                if(lib instanceof NormalMatrixModelMatrixBatchInstanceShaderLib){
-                    cmd = this._createBatchInstanceCommand(target, material, EInstanceGLSLData.NORMALMATRIX_MODELMATRIX);
+                if(lib instanceof NormalMatrixBatchInstanceShaderLib){
+                    isNormalMatrixInstance = true;
+                    isBatchInstance = true;
 
                     return wdCb.$BREAK;
                 }
-
 
                 if(lib instanceof ModelMatrixHardwareInstanceShaderLib){
-                    cmd = this._createHardwareInstanceCommand(target, material, EInstanceGLSLData.MODELMATRIX);
+                    isModelMatrixInstance = true;
+                    isHardwareInstance = true;
 
-                    return wdCb.$BREAK;
+                    return;
                 }
 
                 if(lib instanceof ModelMatrixBatchInstanceShaderLib){
-                    cmd = this._createBatchInstanceCommand(target, material, EInstanceGLSLData.MODELMATRIX);
+                    isModelMatrixInstance = true;
+                    isBatchInstance = true;
 
-                    return wdCb.$BREAK;
+                    return;
                 }
             });
 
-            //if(InstanceUtils.isInstance(target)){
-            //    if(InstanceUtils.isHardwareSupport()){
-            //        cmd = this._createHardwareInstanceCommand(target, material);
-            //    }
-            //    else{
-            //        cmd = this._createBatchInstanceCommand(target, material);
-            //    }
-            //}
-            //else{
-            if(cmd === null){
-                cmd = SingleDrawCommand.create();
-
-                cmd.mMatrix = this.entityObject.transform.localToWorldMatrix;
+            return {
+                isModelMatrixInstance:isModelMatrixInstance,
+                isNormalMatrixInstance:isNormalMatrixInstance,
+                isHardwareInstance:isHardwareInstance,
+                isBatchInstance:isBatchInstance
             }
-            //}
+        }
 
-            return cmd;
+        private _getInstanceGLSLData(isModelMatrixInstance:boolean, isNormalMatrixInstance:boolean){
+            if(isNormalMatrixInstance){
+                return EInstanceGLSLData.NORMALMATRIX_MODELMATRIX;
+            }
+
+            return EInstanceGLSLData.MODELMATRIX;
         }
 
         private _createHardwareInstanceCommand(target:GameObject, material:Material, glslData:EInstanceGLSLData){

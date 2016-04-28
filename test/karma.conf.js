@@ -76,8 +76,9 @@
         //
         //'test/unit/**/instance/*',
 
-        'test/unit/**/instance/SourceInstance*',
-        'test/unit/**/instance/instance_basic*',
+        //'test/unit/**/instance/SourceInstance*',
+        //'test/unit/**/instance/instance_basic*',
+        'test/unit/**/instance/instance_light*',
 
         //'test/unit/**/instance_script*',
 

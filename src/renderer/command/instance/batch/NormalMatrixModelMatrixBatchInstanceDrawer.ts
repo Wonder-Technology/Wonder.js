@@ -17,7 +17,7 @@ module wd {
         protected sendGLSLData(program:Program, instance:GameObject, [modelMatrixLocation, normalMatrixLocation]):void{
             program.sendUniformData(modelMatrixLocation, EVariableType.FLOAT_MAT4, instance.transform.localToWorldMatrix);
             //todo transform add normalMatrix cache
-            program.sendUniformData(normalMatrixLocation, EVariableType.FLOAT_MAT4, instance.transform.localToWorldMatrix.invertTo3x3().transpose());
+            program.sendUniformData(normalMatrixLocation, EVariableType.FLOAT_MAT3, instance.transform.localToWorldMatrix.invertTo3x3().transpose());
         }
     }
 }

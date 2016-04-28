@@ -1,4 +1,4 @@
-describe("instance with light", function () {
+describe("instance with light material", function () {
     var gl = null;
     var device;
     var sandbox;
@@ -206,34 +206,107 @@ describe("instance with light", function () {
     describe("if hardware not support instance", function(){
         beforeEach(function(){
             wd.GPUDetector.getInstance().extensionInstancedArrays = null;
-            prepareWithoutChild();
+
+            testTool.openContractCheck(sandbox);
         });
 
-        it("send normalMatrix and mMatrix data to glsl", function () {
-            var mMatrixPos = 1;
-            gl.getUniformLocation.withArgs(sinon.match.any, "u_mMatrix").returns(mMatrixPos);
+        describe("batch draw instances", function(){
+            var box1Material;
+            var map;
+            var program;
 
-            var normalMatrixPos = 2;
-            gl.getUniformLocation.withArgs(sinon.match.any, "u_normalMatrix").returns(normalMatrixPos);
+            beforeEach(function(){
+                prepareWithoutChild();
+                box1Material = box1.getComponent(wd.Geometry).material;
 
-            director.scene.gameObjectScene.render(renderer);
-            renderer.render();
+                map = wd.MarbleProceduralTexture.create();
+                sandbox.stub(map, "bindToUnit");
 
-            expect(gl.uniformMatrix4fv.withArgs(mMatrixPos).callCount).toEqual(3);
-            expect(gl.uniformMatrix3fv.withArgs(normalMatrixPos).callCount).toEqual(3);
-        });
-        it("glsl code should contain noInstance_modelMatrix/normalMatrix code", function () {
-            var box1Shader = box1.getComponent(wd.Geometry).material.shader;
-            var box1Instance1Shader = box1Instance1.getComponent(wd.Geometry).material.shader;
-            var box1Instance2Shader = box1Instance2.getComponent(wd.Geometry).material.shader;
+                box1Material.diffuseMap = map;
+                box1Material.redWrite = false;
 
-            expect(glslTool.contain(box1Shader.vsSource, "mat4 mMatrix = u_mMatrix;")).toBeTruthy();
-            expect(glslTool.contain(box1Shader.vsSource, "mat3 normalMatrix = u_normalMatrix;")).toBeTruthy();
 
-            expect(glslTool.contain(box1Instance1Shader.vsSource, "mat4 mMatrix = u_mMatrix;")).toBeTruthy();
-            expect(glslTool.contain(box1Instance1Shader.vsSource, "mat3 normalMatrix = u_normalMatrix;")).toBeTruthy();
-            expect(glslTool.contain(box1Instance2Shader.vsSource, "mat4 mMatrix = u_mMatrix;")).toBeTruthy();
-            expect(glslTool.contain(box1Instance2Shader.vsSource, "mat3 normalMatrix = u_normalMatrix;")).toBeTruthy();
+                program = box1Material.program;
+                program.name = "box1Program";
+                sandbox.spy(program, "use");
+                sandbox.spy(program, "sendUniformData");
+                sandbox.spy(program, "sendAttributeData");
+            });
+
+            it("set webgl state and use program and bind texture and send glsl data(except mMatrix) only once", function () {
+                director._init();
+
+                director.scene.gameObjectScene.render(renderer);
+                renderer.render();
+
+                expect(gl.colorMask.withArgs(false, true, true, true)).toCalledOnce();
+                expect(program.use).toCalledOnce();
+                expect(map.bindToUnit).toCalledOnce();
+                expect(program.sendAttributeData.withArgs("a_position")).toCalledOnce();
+                expect(program.sendUniformData.withArgs("u_shininess")).toCalledOnce();
+
+                expect(gl.drawElements.callCount).toEqual(3);
+                expect(wd.DebugStatistics.count.drawCalls).toEqual(3);
+                expect(extensionInstancedArrays.drawElementsInstancedANGLE).not.toCalled();
+            });
+            it("not bind array,element buffer when draw instance", function () {
+                director._init();
+
+                director.scene.gameObjectScene.render(renderer);
+                renderer.render();
+
+                expect(gl.bindBuffer.withArgs(gl.ARRAY_BUFFER).callCount).toEqual(6);
+                expect(gl.bindBuffer.withArgs(gl.ELEMENT_ARRAY_BUFFER).callCount).toEqual(2);
+            });
+            it("draw one instance in one draw call", function(){
+                director._init();
+
+                director.scene.gameObjectScene.render(renderer);
+                renderer.render();
+
+                expect(gl.drawElements.callCount).toEqual(3);
+                expect(wd.DebugStatistics.count.drawCalls).toEqual(3);
+                expect(extensionInstancedArrays.drawElementsInstancedANGLE).not.toCalled();
+            });
+            it("send mMatrix and normalMatrix data to glsl", function () {
+                director._init();
+
+                var mMatrixPos = 1;
+                gl.getUniformLocation.withArgs(sinon.match.any, "u_mMatrix").returns(mMatrixPos);
+
+                var normalMatrixPos = 2;
+                gl.getUniformLocation.withArgs(sinon.match.any, "u_normalMatrix").returns(normalMatrixPos);
+
+                director.scene.gameObjectScene.render(renderer);
+                renderer.render();
+
+                expect(gl.uniformMatrix4fv.withArgs(mMatrixPos).callCount).toEqual(3);
+                expect(gl.uniformMatrix3fv.withArgs(normalMatrixPos).callCount).toEqual(3);
+            });
+            it("glsl code should contain u_mMatrix,u_normalMatrix", function () {
+                director._init();
+
+
+                expect(glslTool.contain(
+                    box1Material.shader.vsSource,
+                    "mat4 mMatrix = u_mMatrix;"
+                )).toBeTruthy();
+
+                expect(glslTool.contain(
+                    box1Material.shader.vsSource,
+                    "mat3 normalMatrix = u_normalMatrix;"
+                )).toBeTruthy();
+            });
+
+            it("test transparent object", function () {
+                box1Material.opacity = 0.5;
+
+                //todo
+            });
+
+            describe("test multi loops", function () {
+                //todo
+            });
         });
     });
 });

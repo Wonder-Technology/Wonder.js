@@ -35,17 +35,17 @@ module wd {
         public static addNormalModelMatrixShaderLib(shader:Shader, gameObject:GameObject){
             if(InstanceUtils.isInstance(gameObject)){
                 if(InstanceUtils.isHardwareSupport()){
-                    shader.addLib(NormalMatrixModelMatrixHardwareInstanceShaderLib.create());
+                    shader.addLib(NormalMatrixHardwareInstanceShaderLib.create());
 
                     return;
                 }
 
-                shader.addLib(NormalMatrixModelMatrixBatchInstanceShaderLib.create());
+                shader.addLib(NormalMatrixBatchInstanceShaderLib.create());
 
                 return;
             }
 
-            shader.addLib(NormalMatrixModelMatrixNoInstanceShaderLib.create());
+            shader.addLib(NormalMatrixNoInstanceShaderLib.create());
         }
     }
 }
