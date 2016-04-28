@@ -76,7 +76,7 @@
         //
         //'test/unit/**/instance/*',
 
-        'test/unit/**/instance/instance_renderSpec*',
+        'test/unit/**/instance/instance_basic*',
 
         //'test/unit/**/instance_script*',
 

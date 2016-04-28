@@ -1,4 +1,4 @@
-describe("use instance to batch draw calls(instance with basic material)", function(){
+describe("instance with basic material", function(){
     var gl = null;
     var device;
     var sandbox;
