@@ -298,15 +298,11 @@ describe("instance with light material", function () {
                 )).toBeTruthy();
             });
 
-            it("test transparent object", function () {
-                box1Material.opacity = 0.5;
+            //it("test transparent object", function () {
+            //});
 
-                //todo
-            });
-
-            describe("test multi loops", function () {
-                //todo
-            });
+            //describe("test multi loops", function () {
+            //});
         });
     });
 });

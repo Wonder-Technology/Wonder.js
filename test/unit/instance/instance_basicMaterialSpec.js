@@ -497,6 +497,64 @@ describe("instance with basic material", function(){
             var map;
             var program;
 
+            function judge1(){
+                director._init();
+
+                director.scene.gameObjectScene.render(renderer);
+                renderer.render();
+
+                expect(gl.colorMask.withArgs(false, true, true, true)).toCalledOnce();
+                expect(program.use).toCalledOnce();
+                expect(map.bindToUnit).toCalledOnce();
+                expect(program.sendAttributeData.withArgs("a_position")).toCalledOnce();
+
+                expect(gl.drawElements.callCount).toEqual(3);
+                expect(wd.DebugStatistics.count.drawCalls).toEqual(3);
+                expect(extensionInstancedArrays.drawElementsInstancedANGLE).not.toCalled();
+            }
+
+            function judge2(){
+                director._init();
+
+                director.scene.gameObjectScene.render(renderer);
+                renderer.render();
+
+                expect(gl.bindBuffer.withArgs(gl.ARRAY_BUFFER).callCount).toEqual(6);
+                expect(gl.bindBuffer.withArgs(gl.ELEMENT_ARRAY_BUFFER).callCount).toEqual(2);
+            }
+
+            function judge3(){
+                director._init();
+
+                director.scene.gameObjectScene.render(renderer);
+                renderer.render();
+
+                expect(gl.drawElements.callCount).toEqual(3);
+                expect(wd.DebugStatistics.count.drawCalls).toEqual(3);
+                expect(extensionInstancedArrays.drawElementsInstancedANGLE).not.toCalled();
+            }
+
+            function judge4(){
+                director._init();
+
+                var mMatrixPos = 1;
+                gl.getUniformLocation.withArgs(sinon.match.any, "u_mMatrix").returns(mMatrixPos);
+
+                director.scene.gameObjectScene.render(renderer);
+                renderer.render();
+
+                expect(gl.uniformMatrix4fv.withArgs(mMatrixPos).callCount).toEqual(3);
+            }
+
+            function judge5(){
+                director._init();
+
+                expect(glslTool.contain(
+                    box1Material.shader.vsSource,
+                    "u_mMatrix"
+                )).toBeTruthy();
+            }
+
             beforeEach(function(){
                 prepareWithoutChild();
                 box1Material = box1.getComponent(wd.Geometry).material;
@@ -517,67 +575,51 @@ describe("instance with basic material", function(){
             });
 
             it("set webgl state and use program and bind texture and send glsl data(except mMatrix) only once", function () {
-                director._init();
-
-                director.scene.gameObjectScene.render(renderer);
-                renderer.render();
-
-                expect(gl.colorMask.withArgs(false, true, true, true)).toCalledOnce();
-                expect(program.use).toCalledOnce();
-                expect(map.bindToUnit).toCalledOnce();
-                expect(program.sendAttributeData.withArgs("a_position")).toCalledOnce();
-
-                expect(gl.drawElements.callCount).toEqual(3);
-                expect(wd.DebugStatistics.count.drawCalls).toEqual(3);
-                expect(extensionInstancedArrays.drawElementsInstancedANGLE).not.toCalled();
+                judge1();
             });
             it("not bind array,element buffer when draw instance", function () {
-                director._init();
-
-                director.scene.gameObjectScene.render(renderer);
-                renderer.render();
-
-                expect(gl.bindBuffer.withArgs(gl.ARRAY_BUFFER).callCount).toEqual(6);
-                expect(gl.bindBuffer.withArgs(gl.ELEMENT_ARRAY_BUFFER).callCount).toEqual(2);
+                judge2();
             });
             it("draw one instance in one draw call", function(){
-                director._init();
-
-                director.scene.gameObjectScene.render(renderer);
-                renderer.render();
-
-                expect(gl.drawElements.callCount).toEqual(3);
-                expect(wd.DebugStatistics.count.drawCalls).toEqual(3);
-                expect(extensionInstancedArrays.drawElementsInstancedANGLE).not.toCalled();
+                judge3();
             });
             it("send each instance's mMatrix data to glsl", function () {
-                director._init();
-
-                var mMatrixPos = 1;
-                gl.getUniformLocation.withArgs(sinon.match.any, "u_mMatrix").returns(mMatrixPos);
-
-                director.scene.gameObjectScene.render(renderer);
-                renderer.render();
-
-                expect(gl.uniformMatrix4fv.withArgs(mMatrixPos).callCount).toEqual(3);
+                judge4();
             });
             it("vs glsl should contain u_mMatrix", function () {
-                director._init();
-
-                expect(glslTool.contain(
-                    box1Material.shader.vsSource,
-                    "u_mMatrix"
-                )).toBeTruthy();
+                judge5();
             });
 
-            it("test transparent object", function () {
-                box1Material.opacity = 0.5;
+            describe("test transparent object", function () {
+                beforeEach(function(){
+                    box1Material.opacity = 0.5;
+                });
 
-                //todo
+                it("set webgl state and use program and bind texture and send glsl data(except mMatrix) only once", function () {
+                    judge1();
+
+                    expect(program.sendUniformData.withArgs("u_opacity", wd.EVariableType.FLOAT_1, 0.5)).toCalledOnce();
+                });
+
+                it("not bind array,element buffer when draw instance", function () {
+                    judge2();
+                });
+                it("draw one instance in one draw call", function(){
+                    judge3();
+                });
+                it("send each instance's mMatrix data to glsl", function () {
+                    judge3();
+                });
+                it("vs glsl should contain u_mMatrix", function () {
+                    judge4();
+                });
+                it("vs glsl should contain u_mMatrix", function () {
+                    judge5();
+                });
             });
 
             describe("test multi loops", function () {
-                //todo
+                //todo optimize:if elementBuffer not change, not bind again
             });
         });
 
