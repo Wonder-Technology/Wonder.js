@@ -185,21 +185,15 @@ module wd{
             assert(instance.hasComponent(ThreeDTransform), Log.info.FUNC_SHOULD("instance", "contain ThreeDTransform component"));
         })
         private _addComponentsFromSourceToObject(source:GameObject, instance:GameObject){
-            var isHardwareSupport:boolean = InstanceUtils.isHardwareSupport();
-
             instance.removeComponent(Transform);
 
             source.forEachComponent((component:Component) => {
                 if(component instanceof SourceInstance
-                    || (isHardwareSupport && component instanceof LOD)){
+                || (component instanceof LOD)){
                     return;
                 }
 
-                //todo any more component should be share, not clone(to save the memory)?
-                if(component instanceof LOD){
-                    instance.addComponent(component.clone(true));
-                }
-                else if(component instanceof Geometry
+                if(component instanceof Geometry
                 || component instanceof Script){
                     instance.addComponent(component, true);
                 }

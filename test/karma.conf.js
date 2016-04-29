@@ -75,8 +75,9 @@
         //'test/unit/renderer/*ShadowMap_*Spec.js',
         //
         //'test/unit/**/instance/*',
+        'test/unit/**/instance/*lod*',
 
-        //'test/unit/**/instance/SourceInstance*',
+        'test/unit/**/instance/SourceInstance*',
         //'test/unit/**/instance/instance_basic*',
         //'test/unit/**/instance/instance_light*',
 
@@ -85,8 +86,8 @@
         //'test/unit/**/instance_animation*',
 
         //'test/unit/**/instance_shadow_morph*',
-        'test/unit/**/instance_shadowSpec*',
-        'test/unit/**/instance_shadow_*',
+        //'test/unit/**/instance_shadowSpec*',
+        //'test/unit/**/instance_shadow_*',
         //'test/unit/**/instance_render*',
         //'test/unit/**/instance_space*',
 

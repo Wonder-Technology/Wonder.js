@@ -13,7 +13,7 @@ describe("instance with lod", function () {
     var camera;
 
     function prepare() {
-        instance = instanceTool.cloneInstance(source, "0");
+        instance = instanceTool.cloneInstance(source, "1");
 
         instance.transform.position = wd.Vector3.create(-30, 0, 0);
 
@@ -66,7 +66,7 @@ describe("instance with lod", function () {
 
 
 
-        director.scene.gameObjectScene.update();
+        directorTool.updateGameObjectScene();
 
         director.scene.gameObjectScene.render(renderer);
 
@@ -92,7 +92,7 @@ describe("instance with lod", function () {
 
 
 
-        director.scene.gameObjectScene.update();
+        directorTool.updateGameObjectScene();
 
 
         //instance share lod with source
@@ -123,16 +123,21 @@ describe("instance with lod", function () {
     describe("if hardware not support", function(){
         beforeEach(function(){
             wd.GPUDetector.getInstance().extensionInstancedArrays = null;
+
+            testTool.openContractCheck(sandbox);
         });
 
-        it("if source not visible but instance is visible, source shouldn't be rendered and the instance should be rendered", function(){
+        //it("if source not visible but instance is visible, source shouldn't be rendered and the instance should be rendered one by one by drawElements", function(){
+            it("if source not visible but instance is visible, source and instance all should be not rendered", function(){
             var result = lodTool.prepareLod(sandbox);
             source = result.model;
+            source.name = "source";
+
             prepare();
             instance.transform.position = wd.Vector3.create(10, 0, 0);
             lodTool.setCameraPos(camera, wd.Vector3.create(40, 0, 0));
 
-            var instance2 = instanceTool.cloneInstance(source, "1");
+            var instance2 = instanceTool.cloneInstance(source, "2");
 
             instance2.transform.position = wd.Vector3.create(30, 0, 0);
 
@@ -155,7 +160,7 @@ describe("instance with lod", function () {
 
 
 
-            director.scene.gameObjectScene.update();
+            directorTool.updateGameObjectScene();
 
 
             expect(instance.isVisible).toBeTruthy();
@@ -169,15 +174,52 @@ describe("instance with lod", function () {
             renderer.render();
 
 
+            //expect(source.render).not.toCalled();
+            //expect(instance.render).toCalledOnce();
+            //expect(instance2.render).toCalledOnce();
             expect(source.render).not.toCalled();
-            expect(instance.render).toCalledOnce();
-            expect(instance2.render).toCalledOnce();
+            expect(instance.render).not.toCalled();
+            expect(instance2.render).not.toCalled();
 
 
-            expect(gl.drawElements).toCalledTwice();
+            expect(gl.drawElements.callCount).toEqual(0);
             expect(extensionInstancedArrays.drawElementsInstancedANGLE).not.toCalled();
-            lodTool.judgeSelectGeometry(0, result.geoLevel2, instanceRendererComponent);
-            lodTool.judgeSelectGeometry(0, result.geo, instance2RendererComponent);
+            //lodTool.judgeSelectGeometry(0, result.geoLevel2, instanceRendererComponent);
+            //lodTool.judgeSelectGeometry(0, result.geo, instance2RendererComponent);
+        });
+        it("if there is instance not visible but the source is visible, all should be rendered", function () {
+            var result = lodTool.prepareLod(sandbox);
+            source = result.model;
+            prepare();
+            instance.transform.position = wd.Vector3.create(-30, 0, 0);
+            lodTool.setCameraPos(camera, wd.Vector3.create(20, 0, 0));
+
+            director._init();
+
+
+
+            directorTool.updateGameObjectScene();
+
+
+            //instance share lod with source
+            expect(instance.isVisible).toBeTruthy();
+            expect(source.isVisible).toBeTruthy();
+
+
+
+            director.scene.gameObjectScene.render(renderer);
+
+            renderer.render();
+
+
+            expect(source.render).toCalledOnce();
+            expect(instance.render).not.toCalled();
+
+            expect(gl.drawElements.callCount).toEqual(2);
+
+
+            lodTool.judgeSelectGeometry(0, result.geoLevel1);
+            //instanceTool.judgeInstanceCount(extensionInstancedArrays, 0, 2);
         });
     });
 });
