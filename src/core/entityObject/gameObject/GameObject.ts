@@ -50,7 +50,7 @@ module wd {
 
         protected getRenderList(){
             if(this.hasComponent(Octree)){
-                return RenderUtils.getGameObjectRenderListFromSpacePartition(this.getSpacePartition().getRenderListByFrustumCull());
+                return this.getSpacePartition().getRenderList();
             }
 
             return RenderUtils.getGameObjectRenderList(this.getChildren());

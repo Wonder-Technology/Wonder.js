@@ -119,7 +119,7 @@ module wd {
         }
 
         public render(renderer:Renderer) {
-            this.shadowManager.setShadowRenderListInEachLoop();
+            this.shadowManager.setShadowRenderListForCurrentLoop();
 
             this.renderTargetRendererManager.renderCommonRenderTargetRenderer(renderer, this.currentCamera);
 

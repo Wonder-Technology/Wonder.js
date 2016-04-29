@@ -49,7 +49,7 @@ module wd{
             this._shadowMapManager.dispose();
         }
 
-        public setShadowRenderListInEachLoop(){
+        public setShadowRenderListForCurrentLoop(){
             if(!this._isShadowMapEnable()){
                 return;
             }
@@ -191,10 +191,8 @@ module wd{
             RenderUtils.getGameObjectRenderList(this.gameObjectScene.getChildren())
                 .forEach((child:GameObject) => {
                     if(JudgeUtils.isSpacePartitionObject(child)){
-                        //todo optimize:cache gameObjectRenderListFromSpacePartition or renderListByFrustumCull?
                         list.addChildren(
-                            RenderUtils.getGameObjectRenderListFromSpacePartition(child.getSpacePartition().getRenderListByFrustumCull())
-                                .filter((c:GameObject) => {
+                            child.getSpacePartition().getRenderList().filter((c:GameObject) => {
                                     return self._isCastShadow(c);
                                 })
                         );

@@ -13,6 +13,7 @@ module wd {
 
         private _root:OctreeNode = null;
         private _selectionList:wdCb.Collection<GameObject> = wdCb.Collection.create<GameObject>();
+        private _renderListCache:wdCb.Collection<GameObject> = null;
 
         @require(function(entityObject:GameObject){
             assert(entityObject instanceof GameObject, Log.info.FUNC_SHOULD("Octree component", "add to GameObject"));
@@ -29,10 +30,14 @@ module wd {
         }
 
         public update(elapsedTime:number):void {
-            if(InstanceUtils.isHardwareSupport()){
-                //todo optimize:cache renderListByFrustumCull
-                this._setToRenderInstanceListWhenGetGameObjectRenderListFromSpacePartition(this.getRenderListByFrustumCull());
-            }
+            this._renderListCache = this._getRenderListForCurrentLoop();
+        }
+
+        @ensure(function(renderList:wdCb.Collection<GameObject>){
+            assert(!!renderList && renderList instanceof wdCb.Collection, Log.info.FUNC_NOT_EXIST("renderList"));
+        })
+        public getRenderList(){
+            return this._renderListCache;
         }
 
         public build() {
@@ -132,7 +137,7 @@ module wd {
 
         private _getWorldExtends(gameObjectList:wdCb.Collection<GameObject>):{worldMin:Vector3, worldMax:Vector3} {
             var worldMin = Vector3.create(Number.MAX_VALUE, Number.MAX_VALUE, Number.MAX_VALUE),
-            worldMax = Vector3.create(-Number.MAX_VALUE, -Number.MAX_VALUE, -Number.MAX_VALUE),
+                worldMax = Vector3.create(-Number.MAX_VALUE, -Number.MAX_VALUE, -Number.MAX_VALUE),
                 self = this;
 
             gameObjectList.forEach((gameObject:GameObject) => {
@@ -187,37 +192,6 @@ module wd {
             }
         }
 
-        private _setToRenderInstanceListWhenGetGameObjectRenderListFromSpacePartition(renderList:wdCb.Collection<GameObject>){
-            var self = this,
-                instanceSourceMap = wdCb.Hash.create<GameObject>();
-
-            renderList.forEach((child:GameObject) => {
-                if(!InstanceUtils.isInstance(child)){
-                    return;
-                }
-
-                if(InstanceUtils.isSourceInstance(child)){
-                    let instanceComponent:SourceInstance = child.getComponent<SourceInstance>(SourceInstance);
-
-                    self._addSelfToToRenderInstanceList(child, instanceComponent);
-
-                    return;
-                }
-
-                let sourceObject:GameObject = (child.getComponent<ObjectInstance>(ObjectInstance)).sourceObject,
-                    sourceInstanceComponent:SourceInstance = sourceObject.getComponent<SourceInstance>(SourceInstance);
-
-                self._addSelfToToRenderInstanceList(child, sourceInstanceComponent);
-                instanceSourceMap.addChild(String(sourceObject.uid), sourceObject);
-            });
-
-            instanceSourceMap.forEach((sourceObject:GameObject, uid:string) => {
-                var sourceInstanceComponent:SourceInstance = sourceObject.getComponent<SourceInstance>(SourceInstance);
-
-                self._setToRenderInstanceListOfChildren(sourceObject, sourceInstanceComponent);
-            });
-        }
-
         @require(function(sourceObject:GameObject, sourceInstanceComponent:SourceInstance){
             assert(sourceInstanceComponent.hasToRenderInstance(), Log.info.FUNC_SHOULD("top SourceInstance", "has to render instance"));
         })
@@ -246,6 +220,49 @@ module wd {
         })
         private _addSelfToToRenderInstanceList(self:GameObject, instanceComponent:SourceInstance){
             instanceComponent.addToRenderIntance(self);
+        }
+
+        private _getRenderListForCurrentLoop(){
+            var renderListByFrustumCull = this.getRenderListByFrustumCull(),
+                resultRenderList = wdCb.Collection.create<GameObject>(),
+                instanceSourceMap = wdCb.Hash.create<GameObject>();
+
+            renderListByFrustumCull.forEach((gameObject:GameObject) => {
+                if(!InstanceUtils.isInstance(gameObject)){
+                    resultRenderList.addChild(gameObject);
+
+                    return;
+                }
+
+                if(InstanceUtils.isSourceInstance(gameObject)){
+                    let instanceComponent:SourceInstance = gameObject.getComponent<SourceInstance>(SourceInstance);
+
+                    this._addSelfToToRenderInstanceList(gameObject, instanceComponent);
+
+                    instanceSourceMap.addChild(String(gameObject.uid), gameObject);
+
+                    return;
+                }
+
+                let sourceObject:GameObject = (gameObject.getComponent<ObjectInstance>(ObjectInstance)).sourceObject,
+                    sourceInstanceComponent:SourceInstance = sourceObject.getComponent<SourceInstance>(SourceInstance);
+
+                this._addSelfToToRenderInstanceList(gameObject, sourceInstanceComponent);
+
+                instanceSourceMap.addChild(String(sourceObject.uid), sourceObject);
+            }, this);
+
+            instanceSourceMap.forEach((sourceObject:GameObject, uid:string) => {
+                var sourceInstanceComponent:SourceInstance = sourceObject.getComponent<SourceInstance>(SourceInstance);
+
+                //todo optimize: if toRenderList == defaultToRenderList, not set
+
+                this._setToRenderInstanceListOfChildren(sourceObject, sourceInstanceComponent);
+
+                resultRenderList.addChild(sourceObject);
+            }, this);
+
+            return resultRenderList;
         }
     }
 }

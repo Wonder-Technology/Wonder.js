@@ -271,69 +271,202 @@ describe("instance with spacePartition", function() {
             wd.GPUDetector.getInstance().extensionInstancedArrays = null;
         });
 
-        it("render all the no-culled objects(whether the source nor the instance)", function () {
-            prepareBox1AndInstances();
+        //it("render all the no-culled objects(whether the source nor the instance)", function () {
+        //    prepareBox1AndInstances();
+        //
+        //    director.scene.addChild(octreeContainer);
+        //
+        //
+        //    var octreeRenderList = wdCb.Collection.create(
+        //        [
+        //            box1,
+        //            boxInstance2
+        //        ]
+        //    );
+        //    sandbox.stub(octreeContainer.getSpacePartition(), "getRenderListByFrustumCull").returns(octreeRenderList);
+        //
+        //
+        //    var camera = testTool.createCamera();
+        //    var renderer = wd.WebGLRenderer.create();
+        //
+        //
+        //    director.scene.addChild(camera);
+        //
+        //    director._init();
+        //
+        //
+        //    director.scene.gameObjectScene.render(renderer);
+        //
+        //    renderer.render();
+        //
+        //
+        //
+        //
+        //    expect(wd.DebugStatistics.count.renderGameObjects).toEqual(4 * 2);
+        //
+        //    expect(box1.render).toCalledOnce();
+        //
+        //    expect(boxInstance1.render).not.toCalled();
+        //    expect(boxInstance2.render).toCalledOnce();
+        //
+        //
+        //    expect(child1.render).toCalledOnce();
+        //
+        //    expect(boxInstance1.getChild(0).render).not.toCalled();
+        //    expect(boxInstance2.getChild(0).render).toCalledOnce();
+        //
+        //
+        //    expect(child11.render).toCalledOnce();
+        //
+        //    expect(boxInstance1.getChild(0).getChild(0).render).not.toCalled();
+        //    expect(boxInstance2.getChild(0).getChild(0).render).toCalledOnce();
+        //
+        //
+        //
+        //    expect(child2.render).toCalledOnce();
+        //
+        //    expect(boxInstance1.getChild(1).render).not.toCalled();
+        //    expect(boxInstance2.getChild(1).render).toCalledOnce();
+        //
+        //
+        //
+        //
+        //    expect(gl.drawElements.callCount).toEqual(4 * 2);
+        //
+        //    expect(extensionInstancedArrays.drawElementsInstancedANGLE.callCount).toEqual(0);
+        //});
 
-            director.scene.addChild(octreeContainer);
+        describe("batch draw instances", function(){
+            var box1Material;
+            var map;
+            var program;
+
+            beforeEach(function(){
+                prepareBox1AndInstances();
+                director.scene.addChild(octreeContainer);
 
 
-            var octreeRenderList = wdCb.Collection.create(
-                [
-                    box1,
-                    boxInstance2
-                ]
-            );
-            sandbox.stub(octreeContainer.getSpacePartition(), "getRenderListByFrustumCull").returns(octreeRenderList);
+                box1Material = box1.getComponent(wd.Geometry).material;
+
+                map = wd.ImageTexture.create({});
+                sandbox.stub(map, "bindToUnit");
+
+                box1Material.map = map;
+                box1Material.redWrite = false;
 
 
-            var camera = testTool.createCamera();
-            var renderer = wd.WebGLRenderer.create();
-
-
-            director.scene.addChild(camera);
-
-            director._init();
-
-
-            director.scene.gameObjectScene.render(renderer);
-
-            renderer.render();
-
-
-
-
-            expect(wd.DebugStatistics.count.renderGameObjects).toEqual(4 * 2);
-
-            expect(box1.render).toCalledOnce();
-
-            expect(boxInstance1.render).not.toCalled();
-            expect(boxInstance2.render).toCalledOnce();
-
-
-            expect(child1.render).toCalledOnce();
-
-            expect(boxInstance1.getChild(0).render).not.toCalled();
-            expect(boxInstance2.getChild(0).render).toCalledOnce();
-
-
-            expect(child11.render).toCalledOnce();
-
-            expect(boxInstance1.getChild(0).getChild(0).render).not.toCalled();
-            expect(boxInstance2.getChild(0).getChild(0).render).toCalledOnce();
-
-
-
-            expect(child2.render).toCalledOnce();
-
-            expect(boxInstance1.getChild(1).render).not.toCalled();
-            expect(boxInstance2.getChild(1).render).toCalledOnce();
+                program = box1Material.program;
+                program.name = "box1Program";
+                sandbox.spy(program, "use");
+                sandbox.spy(program, "sendUniformData");
+                sandbox.spy(program, "sendAttributeData");
 
 
 
 
-            expect(gl.drawElements.callCount).toEqual(4 * 2);
 
-            expect(extensionInstancedArrays.drawElementsInstancedANGLE.callCount).toEqual(0);
+
+                var octreeRenderList = wdCb.Collection.create(
+                    [
+                        box1,
+                        boxInstance2
+                    ]
+                );
+                sandbox.stub(octreeContainer.getSpacePartition(), "getRenderListByFrustumCull").returns(octreeRenderList);
+
+
+                var camera = testTool.createCamera();
+
+
+                director.scene.addChild(camera);
+
+            });
+
+            it("only render source object, but draw all the no-culled objects one by one by drawElements", function () {
+                director._init();
+
+
+                director._loopBody(1);
+
+
+
+
+                expect(wd.DebugStatistics.count.renderGameObjects).toEqual(4 * 2);
+
+                expect(box1.render).toCalledOnce();
+
+                expect(boxInstance1.render).not.toCalled();
+                expect(boxInstance2.render).not.toCalled();
+
+
+                expect(child1.render).toCalledOnce();
+
+                expect(boxInstance1.getChild(0).render).not.toCalled();
+                expect(boxInstance2.getChild(0).render).not.toCalled();
+
+
+                expect(child11.render).toCalledOnce();
+
+                expect(boxInstance1.getChild(0).getChild(0).render).not.toCalled();
+                expect(boxInstance2.getChild(0).getChild(0).render).not.toCalled();
+
+
+
+                expect(child2.render).toCalledOnce();
+
+                expect(boxInstance1.getChild(1).render).not.toCalled();
+                expect(boxInstance2.getChild(1).render).not.toCalled();
+
+
+
+
+                expect(gl.drawElements.callCount).toEqual(4 * 2);
+
+                expect(extensionInstancedArrays.drawElementsInstancedANGLE.callCount).toEqual(0);
+            });
+
+            it("set webgl state and use program and bind texture and send glsl data(except mMatrix) only once", function () {
+                director._init();
+
+                director._loopBody(1);
+
+                expect(gl.colorMask.withArgs(false, true, true, true)).toCalledOnce();
+                expect(program.use).toCalledOnce();
+                expect(map.bindToUnit).toCalledOnce();
+                expect(program.sendAttributeData.withArgs("a_position")).toCalledOnce();
+            });
+            it("not bind array,element buffer when draw instance", function () {
+                director._init();
+
+                director._loopBody(1);
+
+                expect(gl.bindBuffer.withArgs(gl.ARRAY_BUFFER).callCount).toEqual(18);
+                expect(gl.bindBuffer.withArgs(gl.ELEMENT_ARRAY_BUFFER).callCount).toEqual(8);
+            });
+            it("send each instance's mMatrix data to glsl ", function () {
+                director._init();
+
+                var mMatrixPos = 1;
+                gl.getUniformLocation.withArgs(sinon.match.any, "u_mMatrix").returns(mMatrixPos);
+
+                director._loopBody(1);
+
+                expect(gl.uniformMatrix4fv.withArgs(mMatrixPos).callCount).toEqual(8);
+            });
+            it("glsl code should contain u_mMatrix", function () {
+                director._init();
+
+
+                expect(glslTool.contain(
+                    box1Material.shader.vsSource,
+                    "mat4 mMatrix = u_mMatrix;"
+                )).toBeTruthy();
+
+                expect(glslTool.contain(
+                    box1Material.shader.vsSource,
+                    "mat3 normalMatrix = u_normalMatrix;"
+                )).toBeTruthy();
+            });
         });
 
         describe("dispose object instance", function () {

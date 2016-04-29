@@ -268,7 +268,7 @@ describe("instance with light material", function () {
                 expect(wd.DebugStatistics.count.drawCalls).toEqual(3);
                 expect(extensionInstancedArrays.drawElementsInstancedANGLE).not.toCalled();
             });
-            it("send mMatrix and normalMatrix data to glsl", function () {
+            it("send each instance's mMatrix and normalMatrix data to glsl", function () {
                 director._init();
 
                 var mMatrixPos = 1;

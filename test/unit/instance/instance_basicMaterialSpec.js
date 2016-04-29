@@ -550,7 +550,7 @@ describe("instance with basic material", function(){
                 expect(wd.DebugStatistics.count.drawCalls).toEqual(3);
                 expect(extensionInstancedArrays.drawElementsInstancedANGLE).not.toCalled();
             });
-            it("send mMatrix data to glsl", function () {
+            it("send each instance's mMatrix data to glsl", function () {
                 director._init();
 
                 var mMatrixPos = 1;

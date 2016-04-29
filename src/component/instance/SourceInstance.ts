@@ -19,10 +19,14 @@ module wd{
         })
         get toRenderInstanceListForDraw(){
             if(!this.hasToRenderInstance()){
-                return this._toRenderInstanceList.clone().addChild(this.entityObject).addChildren(this.instanceList);
+                this._toRenderInstanceList = this.defaultToRenderInstanceList;
             }
 
             return this._toRenderInstanceList;
+        }
+
+        get defaultToRenderInstanceList(){
+            return wdCb.Collection.create().addChild(this.entityObject).addChildren(this.instanceList);
         }
 
         private _instanceBuffer:InstanceBuffer = null;

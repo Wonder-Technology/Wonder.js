@@ -24,11 +24,13 @@ describe("instance with shadow and octree", function () {
 
     function prepareWithChild() {
         sphere1 = createSphere();
+        sphere1.name = "sphere1";
         var sourceInstance = wd.SourceInstance.create();
         sphere1.addComponent(sourceInstance);
 
 
         child1 = createSphere();
+        child1.name = "sphere1_child1";
         child1.removeComponent(wd.Shadow);
 
         sphere1.addChild(child1);
@@ -50,6 +52,7 @@ describe("instance with shadow and octree", function () {
 
 
         octreeObject = octreeTool.createOctree();
+        octreeObject.name = "octreeObject";
 
         octreeObject.addChildren(instanceArr);
 
@@ -76,6 +79,8 @@ describe("instance with shadow and octree", function () {
         extensionInstancedArrays = instanceTool.prepareExtensionInstancedArrays(sandbox);
 
         camera = testTool.createCamera();
+        camera.name = "cameraObject";
+
         renderer = wd.WebGLRenderer.create();
     });
     afterEach(function () {
@@ -92,6 +97,7 @@ describe("instance with shadow and octree", function () {
 
 
             light = shadowTool.createDirectionLight();
+            light.name = "light";
 
             director.scene.addChild(light);
         });
@@ -131,6 +137,8 @@ describe("instance with shadow and octree", function () {
         describe("if hardware not support", function () {
             beforeEach(function () {
                 wd.GPUDetector.getInstance().extensionInstancedArrays = null;
+
+                octreeObject.getComponent(wd.Octree).isCollideEnable = false;
             });
 
             it("init shouldn't contract error", function () {
@@ -139,6 +147,64 @@ describe("instance with shadow and octree", function () {
                 expect(function(){
                     director._init();
                 }).not.toThrow();
+            });
+
+            describe("test build shadow map", function(){
+                var shader;
+                var program;
+
+                function setBuildShadowMapShaderAndProgram(obj, handleProgramFunc) {
+                    shadowTool.setTwoDBuildShadowMapShaderAndProgramHelper(sandbox, obj, handleProgramFunc, function(s, p){
+                        shader = s;
+                        program = p;
+                    })
+                }
+
+                describe("batch draw instances", function() {
+                    var sphere1Material;
+                    var map;
+
+                    beforeEach(function () {
+                        sphere1Material = sphere1.getComponent(wd.Geometry).material;
+
+                        map = wd.ImageTexture.create({});
+                        sandbox.stub(map, "bindToUnit");
+
+                        sphere1Material.map = map;
+                        sphere1Material.redWrite = false;
+
+                        setBuildShadowMapShaderAndProgram(sphere1, function(program){
+                            //sandbox.spy(program, "use");
+                            //sandbox.spy(program, "sendUniformData");
+                            //sandbox.spy(program, "sendAttributeData");
+                        })
+                    });
+
+                    it("only render source object, but draw all the no-culled objects one by one by drawElements", function () {
+                        director._init();
+
+
+                        directorTool.updateGameObjectScene();
+                        director.scene.gameObjectScene.render(renderer);
+
+
+                        expect(wd.DebugStatistics.count.renderGameObjects).toEqual(2 + 2);
+
+                        expect(sphere1.render).toCalledTwice();
+
+                        expect(sphere1Instance1.render).not.toCalled();
+
+
+                        expect(child1.render).toCalledTwice();
+
+                        expect(sphere1Instance1.getChild(0).render).not.toCalled();
+
+
+                        expect(gl.drawElements.callCount).toEqual(2 + 2);
+
+                        expect(extensionInstancedArrays.drawElementsInstancedANGLE.callCount).toEqual(0);
+                    });
+                });
             });
         });
     });
