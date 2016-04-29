@@ -461,11 +461,6 @@ describe("instance with spacePartition", function() {
                     box1Material.shader.vsSource,
                     "mat4 mMatrix = u_mMatrix;"
                 )).toBeTruthy();
-
-                expect(glslTool.contain(
-                    box1Material.shader.vsSource,
-                    "mat3 normalMatrix = u_normalMatrix;"
-                )).toBeTruthy();
             });
         });
 
