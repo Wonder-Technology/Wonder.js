@@ -431,9 +431,10 @@ describe("Geometry", function() {
                 var newMaterial = wd.BasicMaterial.create();
                 newMaterial.color = wd.Color.create("#222222");
 
+                geo.material = newMaterial;
+
                 newMaterial.init();
 
-                geo.material = newMaterial;
 
 
                 var newColors = geo.buffers.getChild(wd.EBufferDataType.COLOR);
@@ -446,34 +447,34 @@ describe("Geometry", function() {
             });
         });
 
-        it('just "init material" instead of "add to geometry and init material" when "change material", so that material->init is not related to geometry', function(){
-            //var newMaterial = wd.BasicMaterial.create();
-            //newMaterial.color = wd.Color.create("#222222");
-            //
-            //newMaterial.init();
-            //
-            //expect(newMaterial.shader.getLibs().getCount()).toEqual(0);
-            //
-            //
-            //
-            //
-            //prepareTool.prepareGeo(sandbox, wd.GameObject.create(), geo, newMaterial);
-            //
-            //var director = wd.Director.getInstance();
-            //director._init();
-            //
-            //expect(newMaterial.shader.getLibs().getCount()).not.toEqual(0);
-
-
-
-            var newMaterial = wd.BasicMaterial.create();
-
-            newMaterial.color = wd.Color.create("#222222");
-
-            newMaterial.init();
-
-            expect(newMaterial.shader.getLibs().getCount()).not.toEqual(0);
-        });
+        //it('just "init material" instead of "add to geometry and init material" when "change material", so that material->init is not related to geometry', function(){
+        //    //var newMaterial = wd.BasicMaterial.create();
+        //    //newMaterial.color = wd.Color.create("#222222");
+        //    //
+        //    //newMaterial.init();
+        //    //
+        //    //expect(newMaterial.shader.getLibs().getCount()).toEqual(0);
+        //    //
+        //    //
+        //    //
+        //    //
+        //    //prepareTool.prepareGeo(sandbox, wd.GameObject.create(), geo, newMaterial);
+        //    //
+        //    //var director = wd.Director.getInstance();
+        //    //director._init();
+        //    //
+        //    //expect(newMaterial.shader.getLibs().getCount()).not.toEqual(0);
+        //
+        //
+        //
+        //    var newMaterial = wd.BasicMaterial.create();
+        //
+        //    newMaterial.color = wd.Color.create("#222222");
+        //
+        //    newMaterial.init();
+        //
+        //    expect(newMaterial.shader.getLibs().getCount()).not.toEqual(0);
+        //});
     });
 });
 

@@ -27,6 +27,10 @@ describe("EngineMaterial", function() {
         });
 
         describe("add top shader libs", function(){
+            beforeEach(function(){
+                material.geometry = {};
+            });
+
             it("add CommonShaderLib", function () {
                 material.init();
 

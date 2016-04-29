@@ -27,13 +27,14 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        //'test/unit/**',
+        'test/unit/**',
 
         //'test/unit/**/cubemapTexture*',
 
         //'test/unit/**/BasicMaterial*',
         //'test/unit/**/LightMaterial*',
         //'test/unit/**/Material*',
+        //'test/unit/**/*Material*',
 
         //'test/unit/**/material_lib/**',
 
@@ -72,12 +73,13 @@
         //
         //'test/unit/renderer/shadow/**',
         //'test/unit/renderer/shadow/directionShadowMapSpec.js',
+        //'test/unit/renderer/shadow/directionShadowMap*',
         //'test/unit/renderer/*ShadowMap_*Spec.js',
         //
         //'test/unit/**/instance/*',
-        'test/unit/**/instance/*lod*',
+        //'test/unit/**/instance/*lod*',
 
-        'test/unit/**/instance/SourceInstance*',
+        //'test/unit/**/instance/SourceInstance*',
         //'test/unit/**/instance/instance_basic*',
         //'test/unit/**/instance/instance_light*',
 
@@ -122,6 +124,7 @@
 
         //'test/unit/**/renderWebGL*',
         //'test/unit/**/*CommandSpec*',
+        //'test/unit/**/*InstanceCommand*',
 
         //'test/unit/renderer/**/DiffuseMapShaderLib*',
         //

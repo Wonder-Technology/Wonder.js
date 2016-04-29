@@ -17,6 +17,10 @@ module wd {
         }
 
         public static addModelMatrixShaderLib(shader:Shader, gameObject:GameObject){
+            if(!gameObject){
+                return;
+            }
+
             if(InstanceUtils.isInstance(gameObject)){
                 if(InstanceUtils.isHardwareSupport()){
                     shader.addLib(ModelMatrixHardwareInstanceShaderLib.create());
@@ -33,6 +37,10 @@ module wd {
         }
 
         public static addNormalModelMatrixShaderLib(shader:Shader, gameObject:GameObject){
+            if(!gameObject){
+                return;
+            }
+
             if(InstanceUtils.isInstance(gameObject)){
                 if(InstanceUtils.isHardwareSupport()){
                     shader.addLib(NormalMatrixHardwareInstanceShaderLib.create());

@@ -71,6 +71,7 @@ describe("shadow map", function() {
                     expect(function () {
                         director._init();
 
+                        directorTool.updateGameObjectScene();
                         director.scene.gameObjectScene.render(renderer);
                     }).not.toThrow();
                 });

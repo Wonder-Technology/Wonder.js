@@ -98,6 +98,7 @@ describe("direction shadow map with octree", function() {
 
                     director._init();
 
+                    directorTool.updateGameObjectScene();
                     director.scene.gameObjectScene.render(renderer);
 
 
@@ -266,6 +267,7 @@ describe("direction shadow map with octree", function() {
                 sandbox.stub(shadowMap1, "bindToUnit");
 
 
+                directorTool.updateGameObjectScene();
                 director.scene.gameObjectScene.render(renderer);
 
 

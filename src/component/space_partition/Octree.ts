@@ -81,9 +81,13 @@ module wd {
             assert(!!Director.getInstance().scene.currentCamera.getComponent(CameraController), Log.info.FUNC_SHOULD("contain CameraController component"));
         })
         public getRenderListByFrustumCull(){
-            var frustumPlanes = Director.getInstance().scene.currentCamera.getComponent(CameraController).getPlanes();
+            var currentCamera = Director.getInstance().scene.currentCamera;
 
-            return this._visitRoot("findAndAddToRenderList", [frustumPlanes, this._selectionList]);
+            if(!currentCamera){
+                return wdCb.Collection.create<GameObject>();
+            }
+
+            return this._visitRoot("findAndAddToRenderList", [currentCamera.getComponent(CameraController).getPlanes(), this._selectionList]);
         }
 
         @require(function(){

@@ -8,7 +8,7 @@ describe("InstanceCommand", function() {
         deviceManager = wd.DeviceManager.getInstance();
         sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
 
-        cmd = wd.InstanceCommand.create();
+        cmd = wd.HardwareInstanceCommand.create();
     });
     afterEach(function () {
         testTool.clearInstance(sandbox);
@@ -21,7 +21,7 @@ describe("InstanceCommand", function() {
         function addCommand(isNoIndexBuffer){
             var cmd,shader,material,geometry;
 
-            cmd = wd.InstanceCommand.create();
+            cmd = wd.HardwareInstanceCommand.create();
             var vsSource = "",
                 fsSource = "";
             shader = wd.CommonShader.create( vsSource, fsSource );
