@@ -73,7 +73,6 @@ module wd{
 
             this.texCoords = this._mergeData(sourceGeometryData.texCoords, targetGeometryData.texCoords);
             this.colors = this._mergeData(sourceGeometryData.colors, targetGeometryData.colors);
-            this.morphTargets = this._mergeMorphData(sourceGeometryData.morphTargets, targetGeometryData.morphTargets);
         }
 
         private _getSourceGeometryData():GeometryDataType{
@@ -85,8 +84,7 @@ module wd{
                 vertices: this.vertices,
                 texCoords: this.texCoords,
                 colors: this.colors,
-                faces: this.faces,
-                morphTargets: this.morphTargets
+                faces: this.faces
             }
         }
 
@@ -95,8 +93,7 @@ module wd{
                 vertices: geometryData.vertices || [],
                 texCoords: geometryData.texCoords || [],
                 colors: geometryData.colors || [],
-                faces: geometryData.faces || [],
-                morphTargets: geometryData.morphTargets || wdCb.Hash.create<MorphTargetsData>()
+                faces: geometryData.faces || []
             }
         }
 
@@ -110,8 +107,7 @@ module wd{
                     vertices: targetGeometry.vertices,
                     texCoords: targetGeometry.texCoords,
                     colors: targetGeometry.colors,
-                    faces: targetGeometry.faces,
-                    morphTargets: targetGeometry.morphTargets
+                    faces: targetGeometry.faces
                 }
             }
 
@@ -147,7 +143,9 @@ module wd{
             for(let face of targetFaces){
                 let clonedFace = Face3.create(face.aIndex + sourceVertexOffset, face.bIndex + sourceVertexOffset, face.cIndex + sourceVertexOffset);
 
-                clonedFace.faceNormal = face.faceNormal.clone().applyMatrix3(normalMatrix);
+                if(face.hasFaceNormal()){
+                    clonedFace.faceNormal = face.faceNormal.clone().applyMatrix3(normalMatrix);
+                }
 
                 if(face.vertexNormals){
                     let clonedVertexNormals = wdCb.Collection.create<Vector3>();
@@ -181,16 +179,6 @@ module wd{
             for(let face of target){
                 source.push(face.clone());
             }
-
-            return source;
-        }
-
-        private _mergeMorphData(source:wdCb.Hash<wdCb.Collection<Array<number>>>, target:wdCb.Hash<wdCb.Collection<Array<number>>>){
-            if(!target){
-                return source;
-            }
-
-            source.addChildren(this._getDeepCloneMorphData(target));
 
             return source;
         }

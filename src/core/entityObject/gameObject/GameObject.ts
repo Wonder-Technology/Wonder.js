@@ -9,19 +9,29 @@ module wd {
         }
 
         @require(function(gameObjectArr:Array<GameObject>){
-            var checkHasTheSameMaterialClass = () => {
-                var materialClassName = (<any>gameObjectArr[0].getComponent<Geometry>(Geometry).material.constructor).name;
+            var checkShouldContainGeometry = (gameObject:GameObject) => {
+                    assert(gameObject.hasComponent(Geometry), Log.info.FUNC_SHOULD("contain geometry component"));
+                },
+                checkShouldHasTheSameMaterialClass = () => {
+                    var sourceObject = gameObjectArr[0],
+                        materialClassName:string = null;
 
-                for(let i = 1, len = gameObjectArr.length; i < len; i++){
-                    let gameObject = gameObjectArr[i];
+                    checkShouldContainGeometry(sourceObject);
 
-                    assert((<any>gameObject.getComponent<Geometry>(Geometry).material.constructor).name === materialClassName, Log.info.FUNC_SHOULD("gameObjectArr", "has the same material class"));
-                }
-            };
+                    materialClassName = (<any>sourceObject.getComponent<Geometry>(Geometry).material.constructor).name;
+
+                    for(let i = 1, len = gameObjectArr.length; i < len; i++){
+                        let gameObject = gameObjectArr[i];
+
+                        checkShouldContainGeometry(gameObject);
+
+                        assert((<any>gameObject.getComponent<Geometry>(Geometry).material.constructor).name === materialClassName, Log.info.FUNC_SHOULD("gameObjectArr", "has the same material class"));
+                    }
+                };
 
             assert(gameObjectArr.length > 1, Log.info.FUNC_SHOULD("object count", "> 1"));
 
-            checkHasTheSameMaterialClass();
+            checkShouldHasTheSameMaterialClass();
         })
         @ensure(function(mergedObject:GameObject){
             assert(mergedObject.getChildren().getCount() === 0, Log.info.FUNC_SHOULD("merged object", "has no children"));

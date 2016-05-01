@@ -381,6 +381,25 @@ describe("ModelGeometry", function() {
                             3,-3,3
                         ]);
                     });
+
+                    it("if target face has no faceNormal data, the merged face should also has no faceNormal data", function () {
+                        geo2.faces = createFaces([
+                            1,0,2
+                        ]);
+
+                        var transform = wd.ThreeDTransform.create();
+
+
+
+                        geo.merge(geo2, transform);
+
+
+
+                        var face2 = geo.faces[1];
+                        expect(face2.hasFaceNormal()).toBeFalsy();
+                        var face1 = geo.faces[0];
+                        expect(face1.hasFaceNormal()).toBeTruthy();
+                    });
                 });
             });
 

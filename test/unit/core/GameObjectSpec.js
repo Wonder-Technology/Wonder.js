@@ -30,18 +30,28 @@ describe("GameObject", function() {
                 obj2 = prepareTool.createSphere();
             });
 
-            it("each object should has the same shader, otherwise error", function () {
-                expect(function(){
-                    GameObject.merge([obj1, obj2]);
-                }).not.toThrow();
+            describe("check", function(){
+                it("each object should has the same shader", function () {
+                    expect(function(){
+                        GameObject.merge([obj1, obj2]);
+                    }).not.toThrow();
 
 
-                obj2.getComponent(wd.Geometry).material = wd.LightMaterial.create();
-                expect(function(){
-                    GameObject.merge([obj1, obj2]);
-                }).toThrow("should has the same material class");
+                    obj2.getComponent(wd.Geometry).material = wd.LightMaterial.create();
+                    expect(function(){
+                        GameObject.merge([obj1, obj2]);
+                    }).toThrow("should has the same material class");
+                });
+                it("object should contain geometry component", function () {
+                    obj1.removeComponent(wd.Geometry);
+
+                    expect(function(){
+                        GameObject.merge([obj1, obj2]);
+                    }).toThrow("should contain geometry component");
+                });
+
             });
-            //it("clone the source object(the first object of the objectArr) as the initial result object but not clone the source's geometry(except the material)", function () {
+
             it("the merged object should has the cloned components(except geometry component) from the source object(the first object of the objectArr)", function () {
                 var collider = wd.BoxCollider.create();
                 var clonedCollider = wd.BoxCollider.create();
