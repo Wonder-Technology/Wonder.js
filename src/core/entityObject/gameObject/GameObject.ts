@@ -18,14 +18,14 @@ module wd {
 
                     checkShouldContainGeometry(sourceObject);
 
-                    materialClassName = (<any>sourceObject.getComponent<Geometry>(Geometry).material.constructor).name;
+                    materialClassName = ClassUtils.getClassName(sourceObject.getComponent<Geometry>(Geometry).material);
 
                     for(let i = 1, len = gameObjectArr.length; i < len; i++){
                         let gameObject = gameObjectArr[i];
 
                         checkShouldContainGeometry(gameObject);
 
-                        assert((<any>gameObject.getComponent<Geometry>(Geometry).material.constructor).name === materialClassName, Log.info.FUNC_SHOULD("gameObjectArr", "has the same material class"));
+                        assert(ClassUtils.getClassName(gameObject.getComponent<Geometry>(Geometry).material) === materialClassName, Log.info.FUNC_SHOULD("gameObjectArr", "has the same material class"));
                     }
                 };
 

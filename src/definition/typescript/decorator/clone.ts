@@ -26,7 +26,7 @@ module wd {
     };
 
     var getAllCloneAttributeMembers = (obj:any) => {
-        const IS_GATHERED_ATTRIBUTE_NAME = `__decorator_clone_isGathered_${obj.constructor.name}_cloneAttributeMembers`;
+        const IS_GATHERED_ATTRIBUTE_NAME = `__decorator_clone_isGathered_${ClassUtils.getClassName(obj)}_cloneAttributeMembers`;
         var result = wdCb.Collection.create<CloneMemberData>();
         var gather = (obj:any) => {
                 if(!obj){
@@ -69,7 +69,7 @@ module wd {
     };
 
     var buildMemberContainerAttributeName = (obj:any) => {
-        return `__decorator_clone_${obj.constructor.name}_cloneAttributeMembers`;
+        return `__decorator_clone_${ClassUtils.getClassName(obj)}_cloneAttributeMembers`;
     };
 
     var generateCloneableMember = (cloneType:CloneType, ...cloneDataArr) => {
@@ -118,8 +118,6 @@ module wd {
 
     export class CloneUtils{
         @require(function(source:any, cloneData:any = null, createDataArr:Array<any> = null){
-            assert(!!source.constructor.name, Log.info.FUNC_CAN_NOT("get class name from source.constructor.name"));
-
             if(createDataArr){
                 assert(JudgeUtils.isArrayExactly(createDataArr), Log.info.FUNC_MUST_BE("param:createDataArr", "be arr"));
             }
@@ -129,7 +127,7 @@ module wd {
                 .sort((memberDataA:any, memberDataB:any) => {
                     return memberDataA.configData.order - memberDataB.configData.order;
                 }),
-                className = (<any>source.constructor).name,
+                className = ClassUtils.getClassName(source),
                 target = null;
 
             if(createDataArr){

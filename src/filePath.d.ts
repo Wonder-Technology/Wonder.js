@@ -26,6 +26,7 @@
 
 
 /// <reference path="utils/JudgeUtils"/>
+/// <reference path="utils/ClassUtils"/>
 /// <reference path="utils/MathUtils"/>
 /// <reference path="utils/CoordinateUtils"/>
 /// <reference path="utils/RenderUtils"/>
