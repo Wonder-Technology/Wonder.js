@@ -1,4 +1,5 @@
 module wd {
+    import ExtendUtils = wdCb.ExtendUtils;
     export abstract class EntityObject extends Entity{
         get scriptList(){
             return this._scriptManager.scriptList;
@@ -47,20 +48,38 @@ module wd {
             this.addComponent(this.createTransform());
         }
 
-        public clone(){
+        //todo test new logic
+        public clone(config:CloneEntityObjectConfigData = <any>{}){
             var result = null;
 
             if(CloneUtils.isNotClone((this))){
                 return null;
             }
 
+            config = ExtendUtils.extend({
+                cloneChildren:true,
+                shareGeometry:false,
+                cloneGeometry:true
+            }, config);
+
             result = CloneUtils.clone<EntityObject>(this);
 
             this.forEachComponent((component:Component) => {
+                if(!config.cloneGeometry && component instanceof Geometry){
+                    return;
+                }
+
+                if(config.shareGeometry && component instanceof Geometry){
+                    result.addComponent(component, true);
+                    return;
+                }
+
                 result.addComponent(component.clone());
             });
 
-            this._cloneChildren(result);
+            if(config.cloneChildren){
+                this._cloneChildren(result);
+            }
 
             return result;
         }
@@ -198,6 +217,11 @@ module wd {
             this._entityObjectManager.removeChild(child);
 
             return this;
+        }
+
+        //todo test
+        public removeAllChildren(){
+            this._entityObjectManager.removeAllChildren();
         }
 
         @cache(function(_class:any){
@@ -403,6 +427,12 @@ module wd {
                 }
             });
         }
+    }
+
+    type CloneEntityObjectConfigData = {
+        cloneChildren?:boolean;
+        shareGeometry?:boolean;
+        cloneGeometry?:boolean;
     }
 }
 

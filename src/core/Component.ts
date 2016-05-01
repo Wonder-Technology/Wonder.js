@@ -11,7 +11,7 @@ module wd{
         }
 
         @virtual
-        public clone(...datas):any{
+        public clone():any{
             return CloneUtils.clone(this);
         }
 

@@ -19,7 +19,7 @@ module wd{
         @cloneAttributeAsBasicType()
         public depthSegments:number = 1;
 
-        protected computeData(){
+        public computeData(){
             var width = this.width,
                 height = this.height,
                 depth = this.depth,

@@ -144,5 +144,11 @@ module wd{
 
             return this;
         }
+
+        public removeAllChildren(){
+            this._children.forEach((child:EntityObject) => {
+                this.removeChild(child);
+            }, this);
+        }
     }
 }

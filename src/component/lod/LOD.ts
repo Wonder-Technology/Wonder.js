@@ -101,10 +101,6 @@ module wd{
                 this.activeGeometry = this._originGeometry;
             }
         }
-
-        public clone(isShareGeometry:boolean = false){
-            return CloneUtils.clone(this, isShareGeometry);
-        }
     }
 
     export type LevelData = {

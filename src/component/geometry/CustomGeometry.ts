@@ -84,7 +84,7 @@ module wd{
             }
         }
 
-        protected computeData(){
+        public computeData(){
             return {
                 vertices: this.vertices,
                 faces: GeometryUtils.convertToFaces(this.indices, this.normals),

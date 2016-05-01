@@ -27,7 +27,7 @@ module wd{
         })
         public heightMapAsset:ImageTextureAsset = null;
 
-        protected computeData(): GeometryDataType{
+        public computeData(): GeometryDataType{
             var image:HTMLImageElement = this.heightMapAsset.source,
                 bufferWidth = image.width,
                 bufferHeight = image.height;

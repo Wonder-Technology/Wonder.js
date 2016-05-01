@@ -17,6 +17,10 @@ module wd{
         }
 
         get geometryData(){
+            if(this.buffers === null){
+                return null;
+            }
+
             return this.buffers.geometryData;
         }
 
@@ -24,6 +28,8 @@ module wd{
         public buffers:BufferContainer = null;
         @cloneAttributeAsBasicType()
         public drawMode:EDrawMode = EDrawMode.TRIANGLES;
+
+        public abstract computeData(): GeometryDataType;
 
         @ensure(function(){
             var geometryData = this.buffers.geometryData;
@@ -96,8 +102,6 @@ module wd{
         public createBuffersFromGeometryData(){
             this.buffers.createBuffersFromGeometryData();
         }
-
-        protected abstract computeData(): GeometryDataType;
 
         @virtual
         protected computeNormals(){

@@ -15,26 +15,29 @@ module wd{
         @cloneAttributeAsBasicType()
         public segments:number = 20;
 
-        protected computeData(){
+        @require(function(){
+            assert(this.sphereDrawMode === ESphereDrawMode.LATITUDELONGTITUDE, Log.info.FUNC_MUST_BE("sphereDrawMode", "ESphereDrawMode.LATITUDELONGTITUDE"));
+        })
+        public computeData(){
             var radius = this.radius,
                 sphereDrawMode = this.sphereDrawMode,
-                segments = this.segments,
-                data = null;
+                segments = this.segments;
+            //data = null;
 
-            if(sphereDrawMode === ESphereDrawMode.LATITUDELONGTITUDE){
-                var { vertices, indices, normals, texCoords } = GetDataByLatitudeLongtitude.create(radius, segments).getData();
+            //if(sphereDrawMode === ESphereDrawMode.LATITUDELONGTITUDE){
+            var { vertices, indices, normals, texCoords } = GetDataByLatitudeLongtitude.create(radius, segments).getData();
 
-                return {
-                    vertices: vertices,
-                    faces: GeometryUtils.convertToFaces(indices, normals),
-                    texCoords: texCoords
-                }
+            return {
+                vertices: vertices,
+                faces: GeometryUtils.convertToFaces(indices, normals),
+                texCoords: texCoords
             }
+            //}
             //else if(sphereDrawMode === ESphereDrawMode.DECOMPOSITION){
             //    data = GetDataByDecomposition.create(radius, segments).getData();
             //}
 
-            return data;
+            //return data;
         }
     }
 

@@ -15,7 +15,7 @@ module wd{
         @cloneAttributeAsBasicType()
         public heightSegments:number = 1;
 
-        protected computeData(){
+        public computeData(){
             var width = this.width,
                 height = this.height,
                 widthSegments = this.widthSegments,

@@ -11,17 +11,17 @@ module wd{
         @cloneAttributeAsBasicType()
         public height:number = null;
 
-        protected computeData(){
+        public computeData(){
             var width = this.width,
                 height = this.height,
                 left = -width / 2,
                 right = width / 2,
                 up = height / 2,
                 down = -height / 2,
-                vertices = [],
-                texCoords = [],
-                indices = [],
-                normals = [];
+                vertices = null,
+                texCoords = null,
+                indices = null,
+                normals = null;
 
             vertices = [
                 0.0, up, 0,

@@ -14,6 +14,88 @@ describe("GameObject", function() {
         sandbox.restore();
     });
 
+    describe("static method", function(){
+        beforeEach(function(){
+        });
+
+        describe("merge", function(){
+            var obj1,obj2;
+
+            beforeEach(function(){
+                testTool.openContractCheck(sandbox);
+
+                sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+
+                obj1 = prepareTool.createBox();
+                obj2 = prepareTool.createSphere();
+            });
+
+            it("each object should has the same shader, otherwise error", function () {
+                expect(function(){
+                    GameObject.merge([obj1, obj2]);
+                }).not.toThrow();
+
+
+                obj2.getComponent(wd.Geometry).material = wd.LightMaterial.create();
+                expect(function(){
+                    GameObject.merge([obj1, obj2]);
+                }).toThrow("should has the same material class");
+            });
+            //it("clone the source object(the first object of the objectArr) as the initial result object but not clone the source's geometry(except the material)", function () {
+            it("the merged object should has the cloned components(except geometry component) from the source object(the first object of the objectArr)", function () {
+                var collider = wd.BoxCollider.create();
+                var clonedCollider = wd.BoxCollider.create();
+                sandbox.stub(collider, "clone").returns(clonedCollider);
+                obj1.addComponent(collider);
+
+
+                var mergedObject = GameObject.merge([obj1, obj2]);
+
+
+                expect(mergedObject.hasComponent(clonedCollider)).toBeTruthy();
+            });
+            it("the merged object should has ModelGeometry component with the cloned material from the soure object", function () {
+                var material = obj1.getComponent(wd.Geometry).material;
+                var clonedMaterial = {};
+                sandbox.stub(material, "clone").returns(clonedMaterial);
+
+
+                var mergedObject = GameObject.merge([obj1, obj2]);
+
+
+                expect(mergedObject.hasComponent(wd.ModelGeometry)).toBeTruthy();
+                expect(
+                    mergedObject.getComponent(wd.ModelGeometry).material === clonedMaterial
+                ).toBeTruthy();
+            });
+            it("the merged object should only contain one geometry", function () {
+                var mergedObject = GameObject.merge([obj1, obj2]);
+
+                expect(mergedObject.getComponentCount(wd.Geometry)).toEqual(1);
+            });
+            it("the merged object's geometry should merge all objects in the objectArr", function () {
+                var modelGeometry = wd.ModelGeometry.create();
+                sandbox.stub(modelGeometry, "merge");
+                sandbox.stub(wd.ModelGeometry, "create").returns(modelGeometry);
+
+                var mergedObject = GameObject.merge([obj1, obj2]);
+
+                expect(modelGeometry.merge).toCalledTwice();
+                expect(modelGeometry.merge.firstCall).toCalledWith(obj1.getComponent(wd.Geometry), obj1.transform);
+                expect(modelGeometry.merge.secondCall).toCalledWith(obj2.getComponent(wd.Geometry), obj2.transform);
+            });
+
+            it("if object of objectArr has children, not merge its children so that the merged object don't has children", function () {
+                var child1 = prepareTool.createSphere();
+                obj1.addChild(child1);
+
+                var mergedObject = GameObject.merge([obj1, obj2]);
+
+                expect(mergedObject.getChildren().getCount()).toEqual(0);
+            });
+        });
+    });
+
     describe("findChildByUid", function(){
         it("match uid, return the first result.", function(){
             var parent = GameObject.create();

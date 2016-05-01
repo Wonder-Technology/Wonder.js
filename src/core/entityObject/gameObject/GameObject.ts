@@ -8,12 +8,55 @@ module wd {
             return obj;
         }
 
+        @require(function(gameObjectArr:Array<GameObject>){
+            var checkHasTheSameMaterialClass = () => {
+                var materialClassName = (<any>gameObjectArr[0].getComponent<Geometry>(Geometry).material.constructor).name;
+
+                for(let i = 1, len = gameObjectArr.length; i < len; i++){
+                    let gameObject = gameObjectArr[i];
+
+                    assert((<any>gameObject.getComponent<Geometry>(Geometry).material.constructor).name === materialClassName, Log.info.FUNC_SHOULD("gameObjectArr", "has the same material class"));
+                }
+            };
+
+            assert(gameObjectArr.length > 1, Log.info.FUNC_SHOULD("object count", "> 1"));
+
+            checkHasTheSameMaterialClass();
+        })
+        @ensure(function(mergedObject:GameObject){
+            assert(mergedObject.getChildren().getCount() === 0, Log.info.FUNC_SHOULD("merged object", "has no children"));
+        })
+        public static merge(gameObjectArr:Array<GameObject>){
+            var source:GameObject = gameObjectArr[0],
+            resultObject:GameObject = source.clone({
+                cloneChildren:false,
+                cloneGeometry:false
+            }),
+                mergedGeometry:ModelGeometry = ModelGeometry.create();
+
+            resultObject.removeAllChildren();
+
+            for(let gameObject of gameObjectArr){
+                mergedGeometry.merge(gameObject.getComponent<Geometry>(Geometry), gameObject.transform);
+            }
+
+            mergedGeometry.material = source.getComponent<Geometry>(Geometry).material.clone();
+
+            resultObject.addComponent(mergedGeometry);
+
+            return resultObject;
+        }
+
         public transform:ThreeDTransform;
         public parent:GameObject;
 
-        public name:string = `gameObject${String(this.uid)}`;
-
         protected children:wdCb.Collection<GameObject>;
+
+        public initWhenCreate(){
+            super.initWhenCreate();
+
+            this.name = `gameObject${String(this.uid)}`;
+        }
 
         public getSpacePartition(){
             return this.getComponent<SpacePartition>(SpacePartition);

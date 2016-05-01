@@ -339,6 +339,19 @@ module wd{
             return [this.x, this.y, this.z];
         }
 
+        public applyMatrix3(m:Matrix3) {
+            var x = this.x,
+                y = this.y,
+                z = this.z,
+                e = m.values;
+
+            this.x = e[ 0 ] * x + e[ 3 ] * y + e[ 6 ] * z;
+            this.y = e[ 1 ] * x + e[ 4 ] * y + e[ 7 ] * z;
+            this.z = e[ 2 ] * x + e[ 5 ] * y + e[ 8 ] * z;
+
+            return this;
+        }
+
         public applyMatrix4(m:Matrix4) {
             var x = this.x,
                 y = this.y,
