@@ -234,6 +234,68 @@ beforeEach(function () {
                     }
                 }
             };
+        },
+        toThrow: function () {
+            return {
+                compare: function (actual, expectedMsg) {
+                    var result = false;
+                    var resultMsg = "";
+                    var exception;
+
+                    try {
+                        actual();
+                    } catch (e) {
+                        exception = e;
+                    }
+                    finally {
+                        if(exception){
+                            if(exception.message.indexOf(expectedMsg) > -1){
+                                result = true;
+                                resultMsg = "";
+                            }
+                            else{
+                                result = false;
+                                resultMsg = "expect error message to contain:" + expectedMsg + ", but actual the error message is:" + exception.message;
+                            }
+                        }
+                        else{
+                            result = false;
+                            resultMsg = "expect to be error, but actual is not error";
+                        }
+
+                        return {
+                            pass: result,
+                            message: resultMsg
+                        }
+                    }
+                },
+                negativeCompare: function (actual, expected) {
+                    var result = false;
+                    var resultMsg = "";
+                    var exception;
+
+                    try {
+                        actual();
+                    } catch (e) {
+                        exception = e;
+                    }
+                    finally {
+                        if(exception){
+                            result = false;
+
+                            resultMsg = "expect not to be error, but actual is error";
+                        }
+                        else{
+                            result = true;
+                        }
+
+                        return {
+                            pass: result,
+                            message: resultMsg
+                        }
+                    }
+                }
+            };
         }
     });
 
