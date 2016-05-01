@@ -16,6 +16,8 @@ describe("Main", function () {
             });
 
             it("it will open wonder-frp contract check", function(){
+                sandbox.stub(Main, "isTest", false);
+
                 expect(function(){
                     wdFrp.fromArray([1, 2]).take(-1);
                 }).not.toThrow();

@@ -223,22 +223,22 @@ describe("LOD", function() {
             );
             expect(result !== lod).toBeTruthy();
         });
-        it("if param->isShareGeometry is true, cloned levelList->geometry share with source->levelList->geometry", function(){
-            var result = lod.clone(true);
-
-            expect(result.levelList.getChildren()).toEqual( [
-                    {
-                        distanceBetweenCameraAndObject: 20,
-                        geometry:wd.ELODGeometryState.INVISIBLE
-                    },
-                    {
-                        distanceBetweenCameraAndObject: 10,
-                        geometry:geo
-                    }
-                ]
-            );
-            expect(result !== lod).toBeTruthy();
-        });
+        //it("if param->isShareGeometry is true, cloned levelList->geometry share with source->levelList->geometry", function(){
+        //    var result = lod.clone(true);
+        //
+        //    expect(result.levelList.getChildren()).toEqual( [
+        //            {
+        //                distanceBetweenCameraAndObject: 20,
+        //                geometry:wd.ELODGeometryState.INVISIBLE
+        //            },
+        //            {
+        //                distanceBetweenCameraAndObject: 10,
+        //                geometry:geo
+        //            }
+        //        ]
+        //    );
+        //    expect(result !== lod).toBeTruthy();
+        //});
     });
 });
 

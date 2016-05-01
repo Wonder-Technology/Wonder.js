@@ -249,13 +249,19 @@ beforeEach(function () {
                     }
                     finally {
                         if(exception){
-                            if(exception.message.indexOf(expectedMsg) > -1){
+                            if(!expectedMsg){
                                 result = true;
                                 resultMsg = "";
                             }
                             else{
-                                result = false;
-                                resultMsg = "expect error message to contain:" + expectedMsg + ", but actual the error message is:" + exception.message;
+                                if(exception.message.indexOf(expectedMsg) > -1){
+                                    result = true;
+                                    resultMsg = "";
+                                }
+                                else{
+                                    result = false;
+                                    resultMsg = "expect error message to contain:" + expectedMsg + ", but actual the error message is:" + exception.message;
+                                }
                             }
                         }
                         else{
