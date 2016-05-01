@@ -265,54 +265,88 @@ describe("GameObject", function() {
                 expect(result.bubbleParent === gameObject.bubbleParent).toBeTruthy();
                 expect(result.parent === gameObject.parent).toBeTruthy();
             });
-            it("clone components", function () {
-                var geo = wd.SphereGeometry.create();
-                var resultGeo = wd.SphereGeometry.create();
-                sandbox.stub(geo, "clone").returns(resultGeo);
 
+            describe("clone components", function () {
+                var geo,resultGeo;
+
+                beforeEach(function(){
+                    geo = wd.SphereGeometry.create();
+                    resultGeo = wd.SphereGeometry.create();
+                    sandbox.stub(geo, "clone").returns(resultGeo);
+
+                    gameObject.addComponent(geo);
+                });
+
+                it("test", function () {
                     var shadow = wd.Shadow.create();
-                var resultShadow = wd.Shadow.create();
-                sandbox.stub(shadow, "clone").returns(resultShadow);
+                    var resultShadow = wd.Shadow.create();
+                    sandbox.stub(shadow, "clone").returns(resultShadow);
 
-                gameObject.addComponent(geo);
-                gameObject.addComponent(shadow);
+                    gameObject.addComponent(shadow);
 
 
-                var result = gameObject.clone();
+                    var result = gameObject.clone();
 
-                judgeTool.isObjectEqual(result.getComponent(wd.Shadow), (resultShadow));
-                judgeTool.isObjectEqual(result.getComponent(wd.Geometry), (resultGeo));
+                    judgeTool.isObjectEqual(result.getComponent(wd.Shadow), (resultShadow));
+                    judgeTool.isObjectEqual(result.getComponent(wd.Geometry), (resultGeo));
+                });
+                it("if config data->shareGeometry is true, share geometry component", function () {
+                    var result = gameObject.clone({
+                        shareGeometry:true
+                    });
+
+                    expect(result.getComponent(wd.Geometry) === geo).toBeTruthy();
+                });
+                it("if config data->cloneGeometry is false, not clone geometry component", function () {
+                    var result = gameObject.clone({
+                        cloneGeometry: false
+                    });
+
+                    expect(result.hasComponent(wd.Geometry)).toBeFalsy();
+                });
             });
-            it("clone children", function () {
-                var child1 = wd.GameObject.create();
-                var resultChild1 = wd.GameObject.create();
-                sandbox.stub(child1, "clone").returns(resultChild1);
 
-                var child2 = wd.GameObject.create();
-                sandbox.spy(child2, "clone");
+            describe("clone children", function () {
+                var child1,resultChild1;
+                var child2;
+                var child21, resultChild21;
 
-                var child21 = wd.GameObject.create();
-                var resultChild21 = wd.GameObject.create();
-                sandbox.stub(child21, "clone").returns(resultChild21);
+                beforeEach(function(){
+                    child1 = wd.GameObject.create();
+                    resultChild1 = wd.GameObject.create();
+                    sandbox.stub(child1, "clone").returns(resultChild1);
 
-                child2.addChild(child21);
+                    child2 = wd.GameObject.create();
+                    sandbox.spy(child2, "clone");
 
+                    child21 = wd.GameObject.create();
+                    resultChild21 = wd.GameObject.create();
+                    sandbox.stub(child21, "clone").returns(resultChild21);
 
-                gameObject.addChildren([child1, child2]);
-
-
-
-
-                var result = gameObject.clone();
+                    child2.addChild(child21);
 
 
+                    gameObject.addChildren([child1, child2]);
+                });
 
-                judgeTool.isObjectEqual(result.getChild(0), resultChild1);
+                it("test", function () {
+                    var result = gameObject.clone();
 
-                expect(child2.clone).toCalledOnce();
-                expect(result.getChild(1)).not.toEqual(child2);
-                judgeTool.isObjectEqual(result.getChild(1).getChild(0), resultChild21);
+                    judgeTool.isObjectEqual(result.getChild(0), resultChild1);
+
+                    expect(child2.clone).toCalledOnce();
+                    expect(result.getChild(1)).not.toEqual(child2);
+                    judgeTool.isObjectEqual(result.getChild(1).getChild(0), resultChild21);
+                });
+                it("if config data->cloneChildren is false, not clone children", function () {
+                    var result = gameObject.clone({
+                        cloneChildren: false
+                    });
+
+                    expect(result.getAllChildren().getCount()).toEqual(0);
+                });
             });
+
             it("clone data", function () {
                 var name = "a",
                     isVisible = false;

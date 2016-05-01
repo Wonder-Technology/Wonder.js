@@ -48,7 +48,6 @@ module wd {
             this.addComponent(this.createTransform());
         }
 
-        //todo test new logic
         public clone(config:CloneEntityObjectConfigData = <any>{}){
             var result = null;
 
@@ -219,7 +218,6 @@ module wd {
             return this;
         }
 
-        //todo test
         public removeAllChildren(){
             this._entityObjectManager.removeAllChildren();
         }

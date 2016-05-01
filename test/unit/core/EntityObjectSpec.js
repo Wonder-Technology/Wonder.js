@@ -203,6 +203,18 @@ describe("EntityObject", function() {
         });
     });
 
+    describe("removeAllChildren", function(){
+        it("remove all children", function(){
+            var child1 = new EntityObject();
+            var child2 = new EntityObject();
+            entityObject.addChildren([child1, child2]);
+
+            entityObject.removeAllChildren();
+
+            expect(entityObject.getAllChildren().getCount()).toEqual(0);
+        });
+    });
+
     describe("init", function(){
         beforeEach(function(){
 
