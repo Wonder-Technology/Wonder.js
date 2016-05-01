@@ -233,8 +233,8 @@ module wd {
             return this._componentManager.getComponent<T>(_class);
         }
 
-        public getAllComponent(){
-            return this._componentManager.getAllComponent();
+        public getComponents(){
+            return this._componentManager.getComponents();
         }
 
         public findComponentByUid(uid:number){

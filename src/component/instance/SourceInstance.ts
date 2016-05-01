@@ -206,7 +206,7 @@ module wd{
         @ensure(function(){
             IterateUtils.forEachAll(this.entityObject, (gameObject:GameObject) => {
                 assert(
-                    gameObject.getAllComponent()
+                    gameObject.getComponents()
                         .filter((component:Component) =>{
                             return component instanceof SourceInstance;
                         })

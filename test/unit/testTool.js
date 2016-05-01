@@ -279,7 +279,7 @@ var testTool = (function () {
             })
         },
         getAllComponents:function(entityObject, componentClass){
-            return entityObject.getAllComponent().filter(function(component){
+            return entityObject.getComponents().filter(function(component){
                 return component instanceof componentClass;
             });
         }

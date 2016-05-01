@@ -58,7 +58,7 @@ module wd{
             });
         }
 
-        public getAllComponent(){
+        public getComponents(){
             return this._components;
         }
 

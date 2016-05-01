@@ -49,7 +49,7 @@ describe("EntityObject", function() {
 
         describe("test cache", function(){
             beforeEach(function(){
-                sandbox.spy(entityObject.getAllComponent(), "findOne");
+                sandbox.spy(entityObject.getComponents(), "findOne");
             });
 
             it("if cached, return cache data", function(){
@@ -58,7 +58,7 @@ describe("EntityObject", function() {
 
                 expect(component1).toEqual(component);
                 expect(component1 === component2).toBeTruthy();
-                expect(entityObject.getAllComponent().findOne).toCalledOnce();
+                expect(entityObject.getComponents().findOne).toCalledOnce();
             });
         });
 
@@ -79,8 +79,8 @@ describe("EntityObject", function() {
 
         describe("test cache", function(){
             beforeEach(function(){
-                sandbox.spy(entityObject.getAllComponent(), "hasChild");
-                sandbox.spy(entityObject.getAllComponent(), "hasChildWithFunc");
+                sandbox.spy(entityObject.getComponents(), "hasChild");
+                sandbox.spy(entityObject.getComponents(), "hasChildWithFunc");
             });
 
             describe("if cached, return cache data", function(){
@@ -90,7 +90,7 @@ describe("EntityObject", function() {
 
                     expect(hasComponent1).toBeTruthy();
                     expect(hasComponent2).toBeTruthy();
-                    expect(entityObject.getAllComponent().hasChildWithFunc).toCalledOnce();
+                    expect(entityObject.getComponents().hasChildWithFunc).toCalledOnce();
                 });
                 it("test param is Component instance", function () {
                     var hasComponent1 = entityObject.hasComponent(component);
@@ -98,7 +98,7 @@ describe("EntityObject", function() {
 
                     expect(hasComponent1).toBeTruthy();
                     expect(hasComponent2).toBeTruthy();
-                    expect(entityObject.getAllComponent().hasChild).toCalledOnce();
+                    expect(entityObject.getComponents().hasChild).toCalledOnce();
                 });
             });
         });
