@@ -20,12 +20,11 @@ module wd{
         private _geometry:Geometry = null;
 
         public init(){
-            this._components.insertSort((a:Component, b:Component) => {
-                    return ComponentInitOrderTable.getOrder(a) < ComponentInitOrderTable.getOrder(b);
-                }, false)
-                .forEach((component:Component) => {
-                    component.init();
-                });
+            for(let component of SortUtils.insertSort(this._components.getChildren(), (a:Component, b:Component) => {
+                return ComponentInitOrderTable.getOrder(a) < ComponentInitOrderTable.getOrder(b);
+            })) {
+                component.init();
+            }
         }
 
         public dispose(){
