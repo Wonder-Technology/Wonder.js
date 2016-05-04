@@ -48,7 +48,14 @@ module wd{
             return this.libDirty || this.definitionDataDirty;
         }
 
-        public program:Program = Program.create();
+        @ensureGetter(function(program:Program){
+            assert(!!program, Log.info.FUNC_NOT_EXIST(`program\nits table key is:${this._getProgramTableKey()}`))
+        })
+        //todo add cache
+        get program(){
+            return ProgramTable.getProgram(this._getProgramTableKey());
+        }
+
         public libDirty:boolean = false;
         public definitionDataDirty:boolean = false;
         public mapManager:MapManager = MapManager.create();
@@ -82,7 +89,6 @@ module wd{
         }
 
         public dispose(){
-            this.program.dispose();
             this.attributes.removeAllChildren();
             this.uniforms.removeAllChildren();
 
@@ -188,13 +194,33 @@ module wd{
             }
 
             if(this.definitionDataDirty){
+                //todo test
                 //todo optimize: batch init program(if it's the same as the last program, not initWithShader)
-                this.program.initWithShader(this);
+                this._registerProgram();
+                this._updateProgram();
             }
 
 
             this.libDirty = false;
             this.definitionDataDirty = false;
+        }
+
+        private _registerProgram(){
+            var key = this._getProgramTableKey();
+
+            if(ProgramTable.hasProgram(key)){
+                return;
+            }
+
+            ProgramTable.addProgram(key, Program.create());
+        }
+
+        private _updateProgram(){
+            this.program.initWithShader(this);
+        }
+
+        private _getProgramTableKey(){
+            return `${this.vsSource}\n${this.fsSource}`;
         }
 
         private _initShader(shader, source){

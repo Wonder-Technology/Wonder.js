@@ -27,7 +27,7 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        'test/unit/**',
+        //'test/unit/**',
 
         //'test/unit/**/cubemapTexture*',
 
@@ -122,7 +122,9 @@
         //'test/unit/**/ShaderSpec*',
         //'test/unit/**/*ShaderSpec*',
 
-        //'test/unit/**/renderWebGL*',
+        'test/unit/**/renderWebGL*',
+        //'test/unit/**/SortUtils*',
+
         //'test/unit/**/*CommandSpec*',
         //'test/unit/**/*InstanceCommand*',
 

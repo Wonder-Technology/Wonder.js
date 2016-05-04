@@ -1,5 +1,5 @@
 module wd{
-    export class Program{
+    export class Program extends Entity{
         public static create():Program {
             var obj = new this();
 

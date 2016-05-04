@@ -60,6 +60,9 @@ module wd {
         public transform:ThreeDTransform;
         public parent:GameObject;
 
+        public renderGroup:number = 0;
+        public renderPriority:number = 0;
+
         protected children:wdCb.Collection<GameObject>;
 
         public initWhenCreate(){

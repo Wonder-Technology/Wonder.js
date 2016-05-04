@@ -57,10 +57,15 @@ describe("renderWebGL", function() {
     describe("render", function(){
         var gl, program;
 
-        function addCommand(){
+        function addCommand(commandClass){
             var quadCmd;
 
-            quadCmd = new wd.RenderCommand();
+            if(commandClass){
+             quadCmd = new commandClass();
+            }
+            else{
+                quadCmd = new wd.RenderCommand();
+            }
 
             quadCmd.execute = sandbox.stub();
 
@@ -96,55 +101,194 @@ describe("renderWebGL", function() {
             };
         });
 
-        it("fist, render opaque commands;then lock depth buffer and render sorted transparent commands; then unlock depth buffer", function(){
-            var result1 = addCommand();
-            var result2 = addCommand();
-            var result3 = addCommand();
-            var result4 = addCommand();
-            var quad1 = result1.quadCmd,
-                quad2 = result2.quadCmd,
-                quad3 = result3.quadCmd,
-                quad4 = result4.quadCmd;
-
-            quad1.blend = true;
-            quad2.blend = true;
-            quad3.blend = false;
-            quad4.blend = false;
-
-            sandbox.stub(wd.Director.getInstance().scene, "currentCamera", testTool.createCamera(wd.Vector3.create(0, 0, 10)));
-
-            var depthWriteArr = [];
-            testTool.stubGetterSetter(sinon, wd.DeviceManager.prototype, "depthWrite", null, function(val){
-                depthWriteArr.push(val);
+        describe("1. render opaque commands", function(){
+            beforeEach(function(){
+                testTool.openContractCheck(sandbox);
             });
 
-            quad1.z = 8;
-            quad2.z = 7;
-            quad3.z = 2;
-            quad4.z = -1;
+            describe("sort command by renderGroup, renderPriority, shader, texture, buffer", function(){
+                var quad1,quad2,quad3;
 
-            renderer.render();
+                function prepare(){
+                    var result1 = addCommand(wd.QuadCommand);
+                    var result2 = addCommand(wd.QuadCommand);
+                    var result3 = addCommand(wd.QuadCommand);
 
-            expect(quad3.execute).toCalledBefore(quad4.execute);
-            expect(quad4.execute).toCalledBefore(quad2.execute);
-            expect(quad2.execute).toCalledBefore(quad1.execute);
-            expect(depthWriteArr).toEqual([
-                false, true
-            ]);
+                    quad1 = result1.quadCmd;
+                    quad2 = result2.quadCmd;
+                    quad3 = result3.quadCmd;
+
+
+                    quad1.blend = false;
+                    quad2.blend = false;
+                    quad3.blend = false;
+                }
+
+                function setSortData(quad1Data, quad2Data, quad3Data){
+                    var target1 = {
+                        renderGroup:quad1Data.renderGroup || 0,
+                        renderPriority:quad1Data.renderPriority || 0
+                    }
+                    var target2 = {
+                        renderGroup:quad2Data.renderGroup || 0,
+                        renderPriority:quad2Data.renderPriority || 0
+                    }
+                    var target3 = {
+                        renderGroup:quad3Data.renderGroup || 0,
+                        renderPriority:quad3Data.renderPriority || 0
+                    }
+
+                    quad1.target = target1;
+                    quad2.target = target2;
+                    quad3.target = target3;
+
+                    var shader1 = {
+                        program:{
+                            uid:quad1Data.programId || 1
+                        }
+                    }
+                    var shader2 = {
+                        program:{
+                            uid:quad2Data.programId || 1
+                        }
+                    }
+                    var shader3 = {
+                        program:{
+                            uid:quad3Data.programId || 1
+                        }
+                    }
+
+                    quad1.material = {
+                        shader:shader1
+                    }
+                    quad2.material = {
+                        shader:shader2
+                    }
+                    quad3.material = {
+                        shader:shader3
+                    }
+                }
+
+                beforeEach(function(){
+                    prepare();
+                });
+
+                it("test sort by group, priority(asce order)", function(){
+                    setSortData({
+                            renderGroup: 31,
+                            renderPriority: 31
+                        },
+                        {
+                            renderGroup:0,
+                            renderPriority:31
+                        },
+                        {
+                            renderGroup:0,
+                            renderPriority:30
+                        });
+
+                    renderer.render();
+
+                    orderTool.judgeInvokeOrder([quad3, quad2, quad1], "execute");
+                });
+                it("test sort by priority, shader", function(){
+                    setSortData({
+                            renderPriority: 31,
+                            programId: 1023
+                        },
+                        {
+                            renderPriority:30,
+
+                            programId: 1
+                        },
+                        {
+                            renderPriority:31,
+
+                            programId: 1025
+                        });
+
+                    renderer.render();
+
+                    orderTool.judgeInvokeOrder([quad2, quad3, quad1], "execute");
+                });
+                it("test sort by shader, texture", function(){
+                    //todo
+                });
+                it("test sort by texture, buffer", function(){
+                    //todo
+                });
+            });
         });
 
-        it("execute renderCommand", function(){
-            var result1 = addCommand();
-            var result2 = addCommand();
-            var quad1 = result1.quadCmd,
-                quad2 = result2.quadCmd;
+        describe("2. render procedural commands", function(){
+            beforeEach(function(){
 
-            renderer.render();
+            });
 
-            expect(quad1.execute).toCalledOnce();
-            expect(quad2.execute).toCalledOnce();
-            expect(quad1.execute).toCalledBefore(quad2.execute);
+            it("", function(){
+
+            });
         });
+
+        describe("3. render transparent commands", function(){
+            beforeEach(function(){
+
+            });
+
+            it("", function(){
+
+            });
+        });
+
+        //it("fist, render opaque commands;then lock depth buffer and render sorted transparent commands; then unlock depth buffer", function(){
+        //    var result1 = addCommand();
+        //    var result2 = addCommand();
+        //    var result3 = addCommand();
+        //    var result4 = addCommand();
+        //    var quad1 = result1.quadCmd,
+        //        quad2 = result2.quadCmd,
+        //        quad3 = result3.quadCmd,
+        //        quad4 = result4.quadCmd;
+        //
+        //    quad1.blend = true;
+        //    quad2.blend = true;
+        //    quad3.blend = false;
+        //    quad4.blend = false;
+        //
+        //    sandbox.stub(wd.Director.getInstance().scene, "currentCamera", testTool.createCamera(wd.Vector3.create(0, 0, 10)));
+        //
+        //    var depthWriteArr = [];
+        //    testTool.stubGetterSetter(sinon, wd.DeviceManager.prototype, "depthWrite", null, function(val){
+        //        depthWriteArr.push(val);
+        //    });
+        //
+        //    quad1.z = 8;
+        //    quad2.z = 7;
+        //    quad3.z = 2;
+        //    quad4.z = -1;
+        //
+        //    renderer.render();
+        //
+        //    expect(quad3.execute).toCalledBefore(quad4.execute);
+        //    expect(quad4.execute).toCalledBefore(quad2.execute);
+        //    expect(quad2.execute).toCalledBefore(quad1.execute);
+        //    expect(depthWriteArr).toEqual([
+        //        false, true
+        //    ]);
+        //});
+        //
+        //it("execute renderCommand", function(){
+        //    var result1 = addCommand();
+        //    var result2 = addCommand();
+        //    var quad1 = result1.quadCmd,
+        //        quad2 = result2.quadCmd;
+        //
+        //    renderer.render();
+        //
+        //    expect(quad1.execute).toCalledOnce();
+        //    expect(quad2.execute).toCalledOnce();
+        //    expect(quad1.execute).toCalledBefore(quad2.execute);
+        //});
 
         describe("if skyboxCommand exist, execute skyboxCommand", function(){
             it("set depthFunc to be LEQUAL, then set skyboxCommand's state, then execute skyboxCommand, then restore depthFunc to be LESS", function(){

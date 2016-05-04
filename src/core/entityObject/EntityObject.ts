@@ -427,7 +427,7 @@ module wd {
         }
     }
 
-    type CloneEntityObjectConfigData = {
+    export type CloneEntityObjectConfigData = {
         cloneChildren?:boolean;
         shareGeometry?:boolean;
         cloneGeometry?:boolean;

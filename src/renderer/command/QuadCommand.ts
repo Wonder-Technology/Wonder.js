@@ -4,6 +4,7 @@ module wd {
             return this.material.program;
         }
 
+        //todo refactor:change to public attri
         private _vMatrix:Matrix4 = null;
         get vMatrix(){
             return this._vMatrix;
@@ -18,6 +19,14 @@ module wd {
         }
         set pMatrix(pMatrix:Matrix4){
             this._pMatrix = pMatrix;
+        }
+
+        private _sortId:number = null;
+        get sortId(){
+            return this._sortId;
+        }
+        set sortId(sortId:number){
+            this._sortId = sortId;
         }
 
         public buffers:BufferContainer = null;
