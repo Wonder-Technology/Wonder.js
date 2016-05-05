@@ -23,16 +23,7 @@ module wd {
         public init(){
             super.init();
 
-            this._vertexBuffer = ArrayBuffer.create(new Float32Array([
-                1, 1,
-                -1, 1,
-                -1, -1,
-                1, -1
-            ]), 2, EBufferType.FLOAT);
-            this._indexBuffer = ElementBuffer.create(new Uint16Array([
-                0, 1, 2,
-                0, 2, 3
-            ]), EBufferType.UNSIGNED_SHORT);
+            this._initBuffer();
 
             this._shader = this.createShader();
             this._shader.init();
@@ -87,6 +78,35 @@ module wd {
 
         protected isRenderListEmpty(){
             return false;
+        }
+
+        private _initBuffer(){
+            if(BufferTable.hasBuffer(<any>BufferTableKey.PROCEDURAL_VERTEX)){
+             this._vertexBuffer = BufferTable.getBuffer<ArrayBuffer>(<any>BufferTableKey.PROCEDURAL_VERTEX);
+            }
+            else{
+                this._vertexBuffer = ArrayBuffer.create(new Float32Array([
+                    1, 1,
+                    -1, 1,
+                    -1, -1,
+                    1, -1
+                ]), 2, EBufferType.FLOAT);
+
+                BufferTable.addBuffer(<any>BufferTableKey.PROCEDURAL_VERTEX, this._vertexBuffer);
+            }
+
+
+            if(BufferTable.hasBuffer(<any>BufferTableKey.PROCEDURAL_INDEX)){
+                this._indexBuffer = BufferTable.getBuffer<ElementBuffer>(<any>BufferTableKey.PROCEDURAL_INDEX);
+            }
+            else{
+                this._indexBuffer = ElementBuffer.create(new Uint16Array([
+                    0, 1, 2,
+                    0, 2, 3
+                ]), EBufferType.UNSIGNED_SHORT);
+
+                BufferTable.addBuffer(<any>BufferTableKey.PROCEDURAL_INDEX, this._indexBuffer);
+            }
         }
 
         private _createRenderCommand(){

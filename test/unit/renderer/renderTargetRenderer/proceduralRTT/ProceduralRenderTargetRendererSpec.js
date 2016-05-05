@@ -75,19 +75,23 @@ describe("ProceduralRenderTargetRenderer", function () {
 
             expect(frameBufferOperator.unBind).toCalledOnce();
         });
-        it("init vertexBuffer,indexBuffer", function () {
+        it("share the vertexBuffer,indexBuffer from BufferTable", function () {
             renderTargetRenderer.init();
 
-            expect(renderTargetRenderer._vertexBuffer).toEqual(wd.ArrayBuffer.create(new Float32Array([
+            expect(renderTargetRenderer._vertexBuffer.data).toEqual(new Float32Array([
                 1, 1,
                 -1, 1,
                 -1, -1,
                 1, -1
-            ]), 2, wd.EBufferType.FLOAT));
-            expect(renderTargetRenderer._indexBuffer).toEqual(wd.ElementBuffer.create(new Uint16Array([
+            ]));
+            expect(renderTargetRenderer._indexBuffer.data).toEqual(new Uint16Array([
                 0, 1, 2,
                 0, 2, 3
-            ]), wd.EBufferType.UNSIGNED_SHORT));
+            ]));
+
+
+            expect(renderTargetRenderer._vertexBuffer === wd.BufferTable.getBuffer(wd.BufferTableKey.PROCEDURAL_VERTEX)).toBeTruthy();
+            expect(renderTargetRenderer._indexBuffer === wd.BufferTable.getBuffer(wd.BufferTableKey.PROCEDURAL_INDEX)).toBeTruthy();
         });
         it("create shader", function () {
             renderTargetRenderer.init();

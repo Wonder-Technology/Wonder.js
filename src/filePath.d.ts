@@ -362,6 +362,8 @@
 /// <reference path="renderer/EDrawMode"/>
 /// <reference path="renderer/buffer/EBufferType"/>
 /// <reference path="renderer/buffer/EBufferDataType"/>
+/// <reference path="renderer/buffer/BufferTable"/>
+
 /// <reference path="renderer/buffer/EBufferUsage"/>
 /// <reference path="renderer/buffer/Buffer"/>
 /// <reference path="renderer/buffer/ElementBuffer"/>

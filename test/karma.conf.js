@@ -29,6 +29,10 @@
 
         //'test/unit/**',
 
+        'test/unit/**/*ProceduralRenderTargetRenderer*',
+
+
+
         //'test/unit/**/cubemapTexture*',
 
         //'test/unit/**/BasicMaterial*',
@@ -122,7 +126,7 @@
         //'test/unit/**/ShaderSpec*',
         //'test/unit/**/*ShaderSpec*',
 
-        'test/unit/**/renderWebGL*',
+        //'test/unit/**/renderWebGL*',
         //'test/unit/**/SortUtils*',
 
         //'test/unit/**/*CommandSpec*',
