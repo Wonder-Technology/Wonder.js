@@ -194,10 +194,8 @@ module wd{
             }
 
             if(this.definitionDataDirty){
-                //todo test
                 //todo optimize: batch init program(if it's the same as the last program, not initWithShader)
-                this._registerProgram();
-                this._updateProgram();
+                this._registerAndUpdateProgram();
             }
 
 
@@ -205,7 +203,7 @@ module wd{
             this.definitionDataDirty = false;
         }
 
-        private _registerProgram(){
+        private _registerAndUpdateProgram(){
             var key = this._getProgramTableKey();
 
             if(ProgramTable.hasProgram(key)){
@@ -213,6 +211,7 @@ module wd{
             }
 
             ProgramTable.addProgram(key, Program.create());
+            this._updateProgram();
         }
 
         private _updateProgram(){
