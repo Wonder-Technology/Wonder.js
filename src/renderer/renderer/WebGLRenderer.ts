@@ -9,12 +9,12 @@ module wd{
          */
         SHADER_ID_MAX = 1024,
         TEXTURE_ID_MAX = 1024,
+        BUFFER_ID_MAX = 1024,
 
         TOTAL_BIT = 30,
         RENDER_GROUP_MOVE_LEFT_BIT = TOTAL_BIT - 5,
         RENDER_PRIORITY_MOVE_LEFT_BIT = TOTAL_BIT - 5 - 5,
-        SHADER_ID_MOVE_LEFT_BIT = TOTAL_BIT - 5 - 5 - 10,
-        TEXTURE_ID_MOVE_LEFT_BIT = TOTAL_BIT - 5 - 5 - 10 - 10;
+        SHADER_ID_MOVE_LEFT_BIT = TOTAL_BIT - 5 - 5 - 10;
 
     export class WebGLRenderer extends Renderer{
         public static create():WebGLRenderer {
@@ -164,25 +164,17 @@ module wd{
         //todo optimize:add cache
         private _buildOpaqueCommandSortId(opaqueCommand:QuadCommand){
             var target:GameObject = opaqueCommand.target,
-                targetMaterial = opaqueCommand.material,
-                targetShader:Shader = null,
-                targetShaderSortId:number = null,
-                targetTexture:Texture = null,
-                targetBuffer:ArrayBuffer = null;
-
-            targetShader = targetMaterial.shader;
+                targetMaterial = opaqueCommand.material;
 
             //todo optimize:add cache
-            targetShaderSortId = this._buildShaderSortId(targetShader);
 
+            /*!
+            bit operator can only handle 32 bit, but javascript number is 64 bit.
+             so here assemble two segments data(30 bit and 10 bit) to a number data to ensure that opaqueCommand only has one sortId.
+             */
 
-            //todo finish texture,buffer
-
-            ////todo check must be array buffer
-            //targetBuffer = targetGeometry.buffers.getChild(EBufferDataType.VERTICE);
-
-
-            opaqueCommand.sortId = (target.renderGroup << RENDER_GROUP_MOVE_LEFT_BIT) + (target.renderPriority << RENDER_PRIORITY_MOVE_LEFT_BIT) + (targetShaderSortId << SHADER_ID_MOVE_LEFT_BIT) + (this._mapEntityIdToRenderId(this._getTargetTexture(targetMaterial).uid, TEXTURE_ID_MAX) << TEXTURE_ID_MOVE_LEFT_BIT)
+            opaqueCommand.sortId = ((target.renderGroup << RENDER_GROUP_MOVE_LEFT_BIT) + (target.renderPriority << RENDER_PRIORITY_MOVE_LEFT_BIT) + (this._buildShaderSortId(targetMaterial.shader) << SHADER_ID_MOVE_LEFT_BIT) + (this._mapEntityIdToRenderId(this._getTargetTexture(targetMaterial).uid, TEXTURE_ID_MAX))) * BUFFER_ID_MAX
+            + (this._mapEntityIdToRenderId(this._getTargetBuffer(targetMaterial).uid, BUFFER_ID_MAX));
         }
 
         private _buildShaderSortId(shader:Shader){
@@ -193,8 +185,6 @@ module wd{
             assert(!!texture, Log.info.FUNC_CAN_NOT(`get target texture from material:${material} for sort`));
         })
         private _getTargetTexture(material:Material){
-            var targetTexture:Texture = null;
-
             if(material instanceof StandardBasicMaterial){
                 return material.mapList.getChild(0);
             }
@@ -203,31 +193,20 @@ module wd{
             }
         }
 
-        //@ensure(function(textureId:number){
-        //    assert(!!textureId, Log.info.FUNC_NOT_EXIST("textureId"));
-        //})
-        //private _getTextureId(material:Material){
-        //    var targetTexture:Texture = null;
-        //
-        //    if(material instanceof StandardBasicMaterial){
-        //        targetTexture = material.mapList.getChild(0);
-        //    }
-        //    else{
-        //        targetTexture = (<StandardLightMaterial>material).diffuseMap;
-        //    }
-        //
-        //    return this._mapEntityIdToRenderId(targetTexture.uid, TEXTURE_ID_MAX);
-        //}
+        @ensure(function(buffer:Buffer, material:Material){
+            assert(!!buffer, Log.info.FUNC_CAN_NOT(`get target buffer from material for sort`));
+
+            assert(buffer instanceof ArrayBuffer, Log.info.FUNC_MUST_BE("buffer", "ArrayBuffer"))
+        })
+        private _getTargetBuffer(material:Material){
+            return material.geometry.buffers.getChild(EBufferDataType.VERTICE);
+        }
 
         @ensure(function(mappedId:number, entityId:number, maxId:number){
             assert(mappedId >= 0 && mappedId <= maxId, Log.info.FUNC_SHOULD(`mappedId:${mappedId}`, `in range:[0, ${maxId}]`));
         })
         private _mapEntityIdToRenderId(entityId:number, maxId:number){
             return entityId % maxId;
-        }
-
-        private _isStandardBasicMaterial(material:Material){
-            return
         }
 
         @require(function(opaqueCommandArr:Array<QuadCommand>){

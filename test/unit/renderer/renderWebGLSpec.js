@@ -291,13 +291,58 @@ describe("renderWebGL", function() {
                     orderTool.judgeInvokeOrder([quad3, quad2, quad1], "execute");
                 });
 
+                describe("test sort all", function () {
+                    it("test1", function () {
+                    setSortData({
+                        renderGroup:31,
+                        bufferId:1000
+                        },
+                        {
+
+                            renderGroup:31,
+                            bufferId:999
+                        },
+                        {
+
+                            renderGroup:30,
+                            bufferId:1100
+
+                        });
+
+                    renderer.render();
+
+                    orderTool.judgeInvokeOrder([quad3, quad2, quad1], "execute");
+                    });
+                    it("test2", function () {
+                        setSortData({
+                                renderPriority:31,
+                            textureId:2,
+                                bufferId:1000
+                            },
+                            {
+
+                                renderPriority:31,
+                                textureId:100,
+                                bufferId:999
+                            },
+                            {
+
+                                renderPriority:30,
+                                textureId:1000,
+                                bufferId:1100
+
+                            });
+
+                        renderer.render();
+
+                        orderTool.judgeInvokeOrder([quad3, quad1, quad2], "execute");
+                    });
+                });
+
                 describe("test get target texture", function(){
-                    it("if material is StandardBasicMaterial, the target texture is the first map;" +
-                        "else if material is StandardLightMaterial, the target texture is the diffuseMap", function () {
+                    it("if material is StandardBasicMaterial, the target texture is the first map", function(){
                         var t1 = wd.ImageTexture.create({});
-                        t1.uid = 2333;
                         var t2 = wd.ImageTexture.create({});
-                        t2.uid = 600;
 
                         var material1 = wd.BasicMaterial.create();
                         material1.map = [t1, t2];
@@ -307,13 +352,32 @@ describe("renderWebGL", function() {
                         expect(renderer._getTargetTexture(material1)).toEqual(t1);
                         expect(renderer._getTargetTexture(material2)).toEqual(t2);
                     });
-                    it("if material is StandardLightMaterial, the target texture is the diffuseMap", function () {
+                    it("else if material is StandardLightMaterial, the target texture is the diffuseMap", function () {
                         var t1 = wd.ImageTexture.create({});
-                        t1.uid = 1;
                         var material1 = wd.LightMaterial.create();
                         material1.diffuseMap = t1;
 
                         expect(renderer._getTargetTexture(material1)).toEqual(t1);
+                    });
+                });
+
+                describe("test get target buffer", function(){
+                    it("get vertice buffer as the target", function () {
+                        var b1 = wd.ArrayBuffer.create();
+                        var b2 = wd.ArrayBuffer.create();
+                        var b3 = wd.ElementBuffer.create();
+
+                        var material1 = {
+                            geometry: {
+                                buffers: wdCb.Hash.create()
+                            }
+                        };
+
+                        material1.geometry.buffers.addChild(wd.EBufferDataType.COLOR, b1);
+                        material1.geometry.buffers.addChild(wd.EBufferDataType.VERTICE, b2);
+                        material1.geometry.buffers.addChild(wd.EBufferDataType.INDICE, b3);
+
+                        expect(renderer._getTargetBuffer(material1)).toEqual(b2);
                     });
                 });
             });

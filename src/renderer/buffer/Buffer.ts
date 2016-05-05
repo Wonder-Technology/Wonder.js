@@ -1,5 +1,5 @@
 module wd{
-    export abstract class Buffer{
+    export abstract class Buffer extends Entity{
         public buffer:any = null;
         public type:string = null;
         public count:number = null;

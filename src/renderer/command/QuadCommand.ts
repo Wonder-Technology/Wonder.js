@@ -21,18 +21,12 @@ module wd {
             this._pMatrix = pMatrix;
         }
 
-        private _sortId:number = null;
-        get sortId(){
-            return this._sortId;
-        }
-        set sortId(sortId:number){
-            this._sortId = sortId;
-        }
-
         public buffers:BufferContainer = null;
         public material:Material = null;
         public z:number = null;
         public target:GameObject = null;
+
+        public sortId:number = null;
 
         public execute() {
             var material = this.material;
