@@ -1,6 +1,7 @@
 module wd{
     export class BufferTable{
-        //public static lastUsedBuffer:Buffer = null;
+        public static lastBindedArrayBuffer:ArrayBuffer = null;
+        public static lastBindedElementBuffer:ElementBuffer = null;
 
         private static _table:wdCb.Hash<Buffer> = wdCb.Hash.create<Buffer>();
 

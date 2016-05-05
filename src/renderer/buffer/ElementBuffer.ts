@@ -44,10 +44,11 @@ module wd{
                     return null;
                 }
 
-                gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffer);
+                this._bindBuffer(gl);
+
                 gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, data, gl[usage]);
 
-                gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
+                //gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
 
                 this.type = gl[type];
                 this._type = type;
@@ -65,7 +66,10 @@ module wd{
         public resetData(data:any, type:EBufferType = this._type){
             var gl = DeviceManager.getInstance().gl;
 
-            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffer);
+            this._bindBuffer(gl);
+
+            BufferTable.lastBindedElementBuffer = this;
+
             gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, data, gl.DYNAMIC_DRAW);
 
             this.type = gl[type];
@@ -81,6 +85,12 @@ module wd{
             var info = this._getInfo(type);
 
             return data instanceof info.typeClass;
+        }
+
+        private _bindBuffer(gl:any){
+            if(!JudgeUtils.isEqual(this, BufferTable.lastBindedElementBuffer)){
+                gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffer);
+            }
         }
 
         private _getInfo(type:EBufferType):{typeClass:any,size:number}{

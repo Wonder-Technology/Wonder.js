@@ -29,8 +29,12 @@
 
         //'test/unit/**',
 
-        'test/unit/**/*ProceduralRenderTargetRenderer*',
+        //'test/unit/**/*ProceduralRenderTargetRenderer*',
 
+        'test/unit/**/*ArrayBuffer*',
+        'test/unit/**/*ElementBuffer*',
+
+        'test/unit/**/proceduralRenderTargetRenderer*',
 
 
         //'test/unit/**/cubemapTexture*',
