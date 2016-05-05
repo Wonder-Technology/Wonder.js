@@ -80,6 +80,10 @@
 /// <reference path="core/entityObject/scene/UIObjectScene"/>
 
 
+/// <reference path="core/entityObject/scene/cache/BufferTable"/>
+/// <reference path="core/entityObject/scene/cache/ProgramTable"/>
+
+
 /// <reference path="core/entityObject/scene/gameObjectScene/GameObjectScene"/>
 /// <reference path="core/entityObject/scene/gameObjectScene/CollisionDetector"/>
 
@@ -362,7 +366,6 @@
 /// <reference path="renderer/EDrawMode"/>
 /// <reference path="renderer/buffer/EBufferType"/>
 /// <reference path="renderer/buffer/EBufferDataType"/>
-/// <reference path="renderer/buffer/BufferTable"/>
 
 /// <reference path="renderer/buffer/EBufferUsage"/>
 /// <reference path="renderer/buffer/Buffer"/>
@@ -371,7 +374,6 @@
 /// <reference path="renderer/buffer/InstanceBuffer"/>
 /// <reference path="renderer/buffer/BufferDataTable"/>
 /// <reference path="renderer/Program"/>
-/// <reference path="renderer/ProgramTable"/>
 /// <reference path="renderer/command/RenderCommand"/>
 /// <reference path="renderer/command/QuadCommand"/>
 /// <reference path="renderer/command/SingleDrawCommand"/>
