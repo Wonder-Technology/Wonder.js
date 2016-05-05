@@ -23,6 +23,23 @@ describe("Program", function(){
         testTool.clearInstance(sandbox);
     });
 
+    describe("use", function(){
+        it("if the program is already used, not use again", function () {
+            program.use();
+
+            program.use();
+
+            expect(gl.useProgram).toCalledOnce();
+        });
+        it("else, use program", function () {
+            program._program = {};
+
+            program.use();
+
+            expect(gl.useProgram).toCalledWith(program._program);
+        });
+    });
+
     describe("getUniformLocation", function(){
         var pos;
 

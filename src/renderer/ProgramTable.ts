@@ -1,5 +1,7 @@
 module wd{
     export class ProgramTable{
+        public static lastUsedProgram:Program = null;
+
         private static _table:wdCb.Hash<Program> = wdCb.Hash.create<Program>();
 
         public static hasProgram(key:string){

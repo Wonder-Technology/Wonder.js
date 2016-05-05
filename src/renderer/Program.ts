@@ -13,6 +13,12 @@ module wd{
         private _vertexAttribHistory:wdCb.Hash<number> = wdCb.Hash.create<number>();
 
         public use(){
+            if(JudgeUtils.isEqual(this, ProgramTable.lastUsedProgram)){
+                return;
+            }
+
+            ProgramTable.lastUsedProgram = this;
+
             DeviceManager.getInstance().gl.useProgram(this._program);
         }
 
