@@ -173,17 +173,14 @@ module wd{
              so here assemble two segments data(30 bit and 10 bit) to a number data to ensure that opaqueCommand only has one sortId.
              */
 
-            opaqueCommand.sortId = ((target.renderGroup << RENDER_GROUP_MOVE_LEFT_BIT) + (target.renderPriority << RENDER_PRIORITY_MOVE_LEFT_BIT) + (this._buildShaderSortId(targetMaterial.shader) << SHADER_ID_MOVE_LEFT_BIT) + (this._mapEntityIdToRenderId(this._getTargetTexture(targetMaterial).uid, TEXTURE_ID_MAX))) * BUFFER_ID_MAX
-            + (this._mapEntityIdToRenderId(this._getTargetBuffer(targetMaterial).uid, BUFFER_ID_MAX));
+            opaqueCommand.sortId = ((target.renderGroup << RENDER_GROUP_MOVE_LEFT_BIT) + (target.renderPriority << RENDER_PRIORITY_MOVE_LEFT_BIT) + (this._buildShaderSortId(targetMaterial.shader) << SHADER_ID_MOVE_LEFT_BIT) + (this._mapEntityIdToRenderId(this._getTargetTexture(targetMaterial), TEXTURE_ID_MAX))) * BUFFER_ID_MAX
+            + (this._mapEntityIdToRenderId(this._getTargetBuffer(targetMaterial), BUFFER_ID_MAX));
         }
 
         private _buildShaderSortId(shader:Shader){
-            return this._mapEntityIdToRenderId(shader.program.uid, SHADER_ID_MAX);
+            return this._mapEntityIdToRenderId(shader.program, SHADER_ID_MAX);
         }
 
-        @ensure(function(texture:Texture, material:Material){
-            assert(!!texture, Log.info.FUNC_CAN_NOT(`get target texture from material:${material} for sort`));
-        })
         private _getTargetTexture(material:Material){
             if(material instanceof StandardBasicMaterial){
                 return material.mapList.getChild(0);
@@ -205,8 +202,12 @@ module wd{
         @ensure(function(mappedId:number, entityId:number, maxId:number){
             assert(mappedId >= 0 && mappedId <= maxId, Log.info.FUNC_SHOULD(`mappedId:${mappedId}`, `in range:[0, ${maxId}]`));
         })
-        private _mapEntityIdToRenderId(entityId:number, maxId:number){
-            return entityId % maxId;
+        private _mapEntityIdToRenderId(entity:Entity, maxId:number){
+            if(!entity){
+                return 1;
+            }
+
+            return entity.uid % maxId;
         }
 
         @require(function(opaqueCommandArr:Array<QuadCommand>){

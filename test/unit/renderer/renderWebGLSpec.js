@@ -380,6 +380,29 @@ describe("renderWebGL", function() {
                         expect(renderer._getTargetBuffer(material1)).toEqual(b2);
                     });
                 });
+
+                describe("test special cases", function(){
+                    beforeEach(function(){
+                    });
+
+                    it("if no texture, its sortId is 1", function(){
+                    setSortData({
+                            textureId: 2
+                        },
+                        {
+
+                            textureId: 1023
+                        },
+                        {
+
+                        });
+                        renderer._getTargetTexture.onCall(2).returns(undefined);
+
+                    renderer.render();
+
+                    orderTool.judgeInvokeOrder([quad3, quad1, quad2], "execute");
+                    });
+                });
             });
         });
 
