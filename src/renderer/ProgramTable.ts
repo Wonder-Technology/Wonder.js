@@ -16,10 +16,13 @@ module wd{
             return this._table.getChild(key);
         }
 
+        //todo test
         public static dispose(){
             this._table.forEach((program:Program) => {
                 program.dispose();
             });
+
+            this.lastUsedProgram = null;
         }
     }
 }
