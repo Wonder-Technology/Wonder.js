@@ -119,10 +119,10 @@
         //'test/unit/**/ShaderSourceBuilderSpec*',
         //'test/unit/**/*ShaderSourceBuilderSpec*',
 
-        'test/unit/**/ShaderSpec*',
+        //'test/unit/**/ShaderSpec*',
         //'test/unit/**/*ShaderSpec*',
 
-        //'test/unit/**/renderWebGL*',
+        'test/unit/**/renderWebGL*',
         //'test/unit/**/SortUtils*',
 
         //'test/unit/**/*CommandSpec*',
@@ -224,7 +224,7 @@
         //'test/unit/**/collider/**',
         //'test/unit/**/ActionManagerSpec*',
         //'test/unit/**/TwoDShadow*Spec.js',
-        'test/unit/**/ProgramSpec.js',
+        //'test/unit/**/ProgramSpec.js',
         //'test/unit/**/*CustomGeo*.js',
         //'test/unit/**/SphereColliderSpec.js',
         //'test/unit/**/*ColliderSpec.js',

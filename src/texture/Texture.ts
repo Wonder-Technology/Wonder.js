@@ -1,5 +1,5 @@
 module wd{
-    export abstract class Texture{
+    export abstract class Texture extends Entity{
         get geometry(){
             return this.material.geometry;
         }

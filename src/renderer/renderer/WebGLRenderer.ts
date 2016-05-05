@@ -8,11 +8,13 @@ module wd{
         shader id start from 1, so its max is 1024
          */
         SHADER_ID_MAX = 1024,
+        TEXTURE_ID_MAX = 1024,
 
         TOTAL_BIT = 30,
         RENDER_GROUP_MOVE_LEFT_BIT = TOTAL_BIT - 5,
         RENDER_PRIORITY_MOVE_LEFT_BIT = TOTAL_BIT - 5 - 5,
-        SHADER_ID_MOVE_LEFT_BIT = TOTAL_BIT - 5 - 5 - 10;
+        SHADER_ID_MOVE_LEFT_BIT = TOTAL_BIT - 5 - 5 - 10,
+        TEXTURE_ID_MOVE_LEFT_BIT = TOTAL_BIT - 5 - 5 - 10 - 10;
 
     export class WebGLRenderer extends Renderer{
         public static create():WebGLRenderer {
@@ -173,30 +175,59 @@ module wd{
             //todo optimize:add cache
             targetShaderSortId = this._buildShaderSortId(targetShader);
 
-            opaqueCommand.sortId = (target.renderGroup << RENDER_GROUP_MOVE_LEFT_BIT) + (target.renderPriority << RENDER_PRIORITY_MOVE_LEFT_BIT) + (targetShaderSortId << SHADER_ID_MOVE_LEFT_BIT);
 
             //todo finish texture,buffer
 
-            //if(targetMaterial instanceof StandardBasicMaterial){
-            //    targetTexture = targetMaterial.mapList.getChild(0);
-            //}
-            //else{
-            //    targetTexture = (<StandardLightMaterial>targetMaterial).diffuseMap;
-            //}
-            //
             ////todo check must be array buffer
             //targetBuffer = targetGeometry.buffers.getChild(EBufferDataType.VERTICE);
+
+
+            opaqueCommand.sortId = (target.renderGroup << RENDER_GROUP_MOVE_LEFT_BIT) + (target.renderPriority << RENDER_PRIORITY_MOVE_LEFT_BIT) + (targetShaderSortId << SHADER_ID_MOVE_LEFT_BIT) + (this._mapEntityIdToRenderId(this._getTargetTexture(targetMaterial).uid, TEXTURE_ID_MAX) << TEXTURE_ID_MOVE_LEFT_BIT)
         }
 
         private _buildShaderSortId(shader:Shader){
             return this._mapEntityIdToRenderId(shader.program.uid, SHADER_ID_MAX);
         }
 
+        @ensure(function(texture:Texture, material:Material){
+            assert(!!texture, Log.info.FUNC_CAN_NOT(`get target texture from material:${material} for sort`));
+        })
+        private _getTargetTexture(material:Material){
+            var targetTexture:Texture = null;
+
+            if(material instanceof StandardBasicMaterial){
+                return material.mapList.getChild(0);
+            }
+            else{
+                return (<StandardLightMaterial>material).diffuseMap;
+            }
+        }
+
+        //@ensure(function(textureId:number){
+        //    assert(!!textureId, Log.info.FUNC_NOT_EXIST("textureId"));
+        //})
+        //private _getTextureId(material:Material){
+        //    var targetTexture:Texture = null;
+        //
+        //    if(material instanceof StandardBasicMaterial){
+        //        targetTexture = material.mapList.getChild(0);
+        //    }
+        //    else{
+        //        targetTexture = (<StandardLightMaterial>material).diffuseMap;
+        //    }
+        //
+        //    return this._mapEntityIdToRenderId(targetTexture.uid, TEXTURE_ID_MAX);
+        //}
+
         @ensure(function(mappedId:number, entityId:number, maxId:number){
             assert(mappedId >= 0 && mappedId <= maxId, Log.info.FUNC_SHOULD(`mappedId:${mappedId}`, `in range:[0, ${maxId}]`));
         })
         private _mapEntityIdToRenderId(entityId:number, maxId:number){
             return entityId % maxId;
+        }
+
+        private _isStandardBasicMaterial(material:Material){
+            return
         }
 
         @require(function(opaqueCommandArr:Array<QuadCommand>){

@@ -61,7 +61,7 @@ describe("renderWebGL", function() {
             var quadCmd;
 
             if(commandClass){
-             quadCmd = new commandClass();
+                quadCmd = new commandClass();
             }
             else{
                 quadCmd = new wd.RenderCommand();
@@ -158,6 +158,8 @@ describe("renderWebGL", function() {
                         }
                     }
 
+
+
                     quad1.material = {
                         shader:shader1
                     }
@@ -167,6 +169,42 @@ describe("renderWebGL", function() {
                     quad3.material = {
                         shader:shader3
                     }
+
+
+                    var texture1 = {
+                        uid:quad1Data.textureId || 1
+                    };
+
+                    var texture2 = {
+                        uid:quad2Data.textureId || 1
+                    };
+                    var texture3 = {
+                        uid:quad3Data.textureId || 1
+                    };
+
+                    sandbox.stub(renderer, "_getTargetTexture");
+                    renderer._getTargetTexture.onCall(0).returns(texture1);
+                    renderer._getTargetTexture.onCall(1).returns(texture2);
+                    renderer._getTargetTexture.onCall(2).returns(texture3);
+
+
+
+
+                    var buffer1 = {
+                        uid:quad1Data.bufferId || 1
+                    };
+
+                    var buffer2 = {
+                        uid:quad2Data.bufferId || 1
+                    };
+                    var buffer3 = {
+                        uid:quad3Data.bufferId || 1
+                    };
+
+                    sandbox.stub(renderer, "_getTargetBuffer");
+                    renderer._getTargetBuffer.onCall(0).returns(buffer1);
+                    renderer._getTargetBuffer.onCall(1).returns(buffer2);
+                    renderer._getTargetBuffer.onCall(2).returns(buffer3);
                 }
 
                 beforeEach(function(){
@@ -212,10 +250,71 @@ describe("renderWebGL", function() {
                     orderTool.judgeInvokeOrder([quad2, quad3, quad1], "execute");
                 });
                 it("test sort by shader, texture", function(){
-                    //todo
+                    setSortData({
+                            programId: 10,
+                            textureId: 500
+                        },
+                        {
+
+                            programId: 10,
+                            textureId:2333
+                        },
+                        {
+
+                            programId: 1,
+                            textureId: 2555
+                        });
+
+                    renderer.render();
+
+                    orderTool.judgeInvokeOrder([quad3, quad2, quad1], "execute");
                 });
-                it("test sort by texture, buffer", function(){
-                    //todo
+                it("test sort by texture, buffer", function() {
+                    setSortData({
+                            textureId: 1023,
+                        bufferId:1026
+                        },
+                        {
+
+                            textureId: 1023,
+                            bufferId:1024
+                        },
+                        {
+
+                            textureId:1024,
+                            bufferId:1
+
+                        });
+
+                    renderer.render();
+
+                    orderTool.judgeInvokeOrder([quad3, quad2, quad1], "execute");
+                });
+
+                describe("test get target texture", function(){
+                    it("if material is StandardBasicMaterial, the target texture is the first map;" +
+                        "else if material is StandardLightMaterial, the target texture is the diffuseMap", function () {
+                        var t1 = wd.ImageTexture.create({});
+                        t1.uid = 2333;
+                        var t2 = wd.ImageTexture.create({});
+                        t2.uid = 600;
+
+                        var material1 = wd.BasicMaterial.create();
+                        material1.map = [t1, t2];
+                        var material2 = wd.BasicMaterial.create();
+                        material2.map = t2;
+
+                        expect(renderer._getTargetTexture(material1)).toEqual(t1);
+                        expect(renderer._getTargetTexture(material2)).toEqual(t2);
+                    });
+                    it("if material is StandardLightMaterial, the target texture is the diffuseMap", function () {
+                        var t1 = wd.ImageTexture.create({});
+                        t1.uid = 1;
+                        var material1 = wd.LightMaterial.create();
+                        material1.diffuseMap = t1;
+
+                        expect(renderer._getTargetTexture(material1)).toEqual(t1);
+                    });
                 });
             });
         });
@@ -296,8 +395,8 @@ describe("renderWebGL", function() {
                 var stub = sandbox.stub();
 
                 testTool.stubGetterSetter(sinon, wd.DeviceManager.prototype, "depthFunc", null, function(val){
-                        depthFuncValArr.push(val);
-                    });
+                    depthFuncValArr.push(val);
+                });
                 var cmd = {
                     dispose:sandbox.stub(),
                     execute: sandbox.stub()
