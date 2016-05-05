@@ -170,10 +170,28 @@ describe("Texture", function() {
 
                     mapManager.bindAndUpdate();
 
-                    expect(wd.Log.warn).toCalledOnce();
+                    //expect(wd.Log.warn).toCalledOnce();
 
                     done();
                 });
+            });
+        });
+
+
+        describe("test texture cache", function(){
+            it("if texture of the specific unit is cached, not bind and active it again", function () {
+                var texture2 = buildTexture();
+
+                texture.bindToUnit(0);
+                texture2.bindToUnit(1);
+                expect(gl.activeTexture).toCalledTwice();
+                expect(gl.bindTexture).toCalledTwice();
+
+                texture.bindToUnit(0);
+                texture2.bindToUnit(1);
+
+                expect(gl.activeTexture).toCalledTwice();
+                expect(gl.bindTexture).toCalledTwice();
             });
         });
     });

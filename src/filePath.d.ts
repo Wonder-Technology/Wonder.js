@@ -82,6 +82,7 @@
 
 /// <reference path="core/entityObject/scene/cache/BufferTable"/>
 /// <reference path="core/entityObject/scene/cache/ProgramTable"/>
+/// <reference path="core/entityObject/scene/cache/TextureCache"/>
 
 
 /// <reference path="core/entityObject/scene/gameObjectScene/GameObjectScene"/>

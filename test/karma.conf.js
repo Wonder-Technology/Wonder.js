@@ -29,6 +29,8 @@
 
         //'test/unit/**',
 
+        'test/unit/**/TextureSpec*',
+
         //'test/unit/**/*ProceduralRenderTargetRenderer*',
 
         //'test/unit/**/*ArrayBuffer*',
@@ -130,7 +132,7 @@
         //'test/unit/**/ShaderSpec*',
         //'test/unit/**/*ShaderSpec*',
 
-        'test/unit/**/renderWebGL*',
+        //'test/unit/**/renderWebGL*',
         //'test/unit/**/SortUtils*',
 
         //'test/unit/**/*CommandSpec*',

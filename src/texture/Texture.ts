@@ -38,13 +38,19 @@ module wd{
             return CloneUtils.clone(this);
         }
 
-        public bindToUnit (unit:number) {
-            var gl = DeviceManager.getInstance().gl,
-                maxUnit = GPUDetector.getInstance().maxTextureUnit;
+        @require(function(unit:number, texture:Texture){
+            var maxTextureUnit = GPUDetector.getInstance().maxTextureUnit;
 
-            if(unit >= maxUnit){
-                Log.warn(`trying to use ${unit} texture units, but GPU only supports ${maxUnit} units`);
+            assert(unit >= 0, Log.info.FUNC_SHOULD("texture unit", `>= 0, but actual is ${unit}`));
+            assert(unit < maxTextureUnit, `trying to cache ${unit} texture units, but GPU only supports ${maxTextureUnit} units`);        })
+        public bindToUnit (unit:number) {
+            var gl = DeviceManager.getInstance().gl;
+
+            if(TextureCache.isCached(unit, this)){
+                return;
             }
+
+            TextureCache.addActiveTexture(unit, this);
 
             gl.activeTexture(gl["TEXTURE" + String(unit)]);
             gl.bindTexture(gl[this.target], this.glTexture);
