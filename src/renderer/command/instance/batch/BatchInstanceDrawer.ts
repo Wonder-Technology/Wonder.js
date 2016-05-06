@@ -5,12 +5,9 @@ module wd{
         })
         public draw(instanceList:wdCb.Collection<GameObject>, program:Program, buffers:BufferContainer, drawMode:EDrawMode):void{
             var indexBuffer:ElementBuffer = null,
-                offsetLocationArr:Array<number> = null,
-            gl = DeviceManager.getInstance().gl;
-                //vertexBuffer:ArrayBuffer =  null;
-                offsetLocationArr = this.getOffsetLocationArray(program);
-
-            //this.setCapacity(instanceList, instanceBuffer);
+                uniformDataNameArr:Array<string> = null,
+                gl = DeviceManager.getInstance().gl;
+            uniformDataNameArr = this.getUniformDataNameArray(program);
 
             indexBuffer = <ElementBuffer>buffers.getChild(EBufferDataType.INDICE);
 
@@ -21,8 +18,7 @@ module wd{
                 instanceList.forEach((instance:GameObject) => {
                     var startOffset:number = 0;
 
-                    this.sendGLSLData(program, instance, offsetLocationArr);
-
+                    this.sendGLSLData(program, instance, uniformDataNameArr);
 
                     GlUtils.drawElements(gl[drawMode], indexBuffer.count, indexBuffer.type, indexBuffer.typeSize * startOffset);
                 }, this);
@@ -33,16 +29,16 @@ module wd{
                 instanceList.forEach((instance:GameObject) => {
                     var startOffset:number = 0;
 
-                    this.sendGLSLData(program, instance, offsetLocationArr);
+                    this.sendGLSLData(program, instance, uniformDataNameArr);
 
                     GlUtils.drawArrays(gl[drawMode], startOffset, vertexBuffer.count);
                 }, this);
             }
         }
 
-        protected abstract getOffsetLocationArray(program:Program):Array<number>;
+        protected abstract getUniformDataNameArray(program:Program):Array<string>;
 
-        protected abstract sendGLSLData(program:Program, instance:GameObject, offsetLocationArray:Array<number>):void;
+        protected abstract sendGLSLData(program:Program, instance:GameObject, uniformDataNameArray:Array<string>):void;
     }
 }
 

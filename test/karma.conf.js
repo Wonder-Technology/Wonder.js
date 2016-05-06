@@ -45,6 +45,7 @@
         //'test/unit/**/LightMaterial*',
         //'test/unit/**/Material*',
         //'test/unit/**/*Material*',
+        //'test/unit/**/mirrorMaterial*',
 
         //'test/unit/**/material_lib/**',
 
@@ -132,7 +133,8 @@
         //'test/unit/**/ShaderSpec*',
         //'test/unit/**/*ShaderSpec*',
 
-        'test/unit/**/renderWebGL*',
+        //'test/unit/**/customShaderSpec*',
+        //'test/unit/**/renderWebGL*',
         //'test/unit/**/SortUtils*',
 
         //'test/unit/**/*CommandSpec*',
@@ -160,7 +162,7 @@
 
         //'test/unit/**/*animation*',
         //'test/unit/component/**/*Animation*.js',
-        'test/unit/component/**/morphAnimation*.js',
+        //'test/unit/component/**/morphAnimation*.js',
 
         //'test/unit/**/GLTFParserSpec*',
         //'test/unit/**/GLTFAssemblerSpec*',
@@ -234,7 +236,7 @@
         //'test/unit/**/collider/**',
         //'test/unit/**/ActionManagerSpec*',
         //'test/unit/**/TwoDShadow*Spec.js',
-        //'test/unit/**/ProgramSpec.js',
+        'test/unit/**/ProgramSpec.js',
         //'test/unit/**/*CustomGeo*.js',
         //'test/unit/**/SphereColliderSpec.js',
         //'test/unit/**/*ColliderSpec.js',
@@ -272,8 +274,8 @@
         //'test/unit/component/**/GeometrySpec.js',
         //'test/unit/component/**/TerrainGeometrySpec.js',
         //'test/unit/component/**/ModelGeometrySpec.js',
-        'test/unit/**/CommonBufferContainerSpec.js',
-        'test/unit/**/MorphBufferContainerSpec.js',
+        //'test/unit/**/CommonBufferContainerSpec.js',
+        //'test/unit/**/MorphBufferContainerSpec.js',
         //'test/unit/core/*.js',
         //'test/unit/device/*.js',
         //'test/unit/event/**',

@@ -7,7 +7,6 @@ module wd{
         }
 
         private _program:any = null;
-        private _shader:Shader = null;
         private _getAttribLocationCache:wdCb.Hash<number> = wdCb.Hash.create<number>();
         private _getUniformLocationCache:wdCb.Hash<number> = wdCb.Hash.create<number>();
         private _vertexAttribHistory:wdCb.Hash<number> = wdCb.Hash.create<number>();
@@ -20,6 +19,8 @@ module wd{
             ProgramTable.lastUsedProgram = this;
 
             DeviceManager.getInstance().gl.useProgram(this._program);
+
+            //this._clearSendDataCache();
         }
 
         /*!
@@ -31,12 +32,10 @@ module wd{
                 gl = DeviceManager.getInstance().gl;
 
 
-            if(!this._shader.dirty){
-                pos = this._getUniformLocationCache.getChild(name);
+            pos = this._getUniformLocationCache.getChild(name);
 
-                if(pos !== void 0){
-                    return pos;
-                }
+            if(pos !== void 0){
+                return pos;
             }
 
             pos = gl.getUniformLocation(this._program, name);
@@ -54,12 +53,10 @@ module wd{
             var pos = null,
                 gl = DeviceManager.getInstance().gl;
 
-            if(!this._shader.dirty){
-                pos = this._getAttribLocationCache.getChild(name);
+            pos = this._getAttribLocationCache.getChild(name);
 
-                if(pos !== void 0){
-                    return pos;
-                }
+            if(pos !== void 0){
+                return pos;
             }
 
             pos = gl.getAttribLocation(this._program, name);
@@ -69,67 +66,213 @@ module wd{
             return pos;
         }
 
-        public sendUniformData(name:string, type:EVariableType, data:any);
-        public sendUniformData(pos:WebGLUniformLocation, type:EVariableType, data:any);
+        public sendUniformData(name:string, type:EVariableType, data:any){
+            var pos:any = null;
 
-        //todo ensure: only send data of the same name one time in one frame
-        public sendUniformData(...args){
-            var gl = DeviceManager.getInstance().gl,
-                pos = null,
-                type:EVariableType = null,
-                data:any = null;
-
-            type = args[1];
-            data = args[2];
-
-            if(JudgeUtils.isString(args[0])){
-                let name:string = args[0];
-
-                pos = this.getUniformLocation(name);
-            }
-            else{
-                pos = args[0];
-            }
+            pos = this.getUniformLocation(name);
 
             if (this.isUniformDataNotExistByLocation(pos) || data === null) {
                 return;
             }
 
+            this._sendUniformData(type, name, pos, data);
+        }
+
+        private _sendUniformData(type:EVariableType, name:string, pos:any, data:any){
             switch (type){
                 case EVariableType.FLOAT_1:
-                    gl.uniform1f(pos, Number(data));
+                    this._sendFloat1(name, pos, data);
                     break;
                 case EVariableType.FLOAT_2:
-                    data = this._convertToArray2(data);
-                    gl.uniform2f(pos, data[0], data[1]);
+                    this._sendFloat2(name, pos, data);
                     break;
                 case EVariableType.FLOAT_3:
-                    data = this._convertToArray3(data);
-                    gl.uniform3f(pos, data[0], data[1], data[2]);
+                    this._sendFloat3(name, pos, data);
                     break;
                 case EVariableType.FLOAT_4:
-                    data = this._convertToArray4(data);
-                    gl.uniform4f(pos, data[0], data[1], data[2], data[3]);
+                    this._sendFloat4(name, pos, data);
                     break;
                 case EVariableType.FLOAT_MAT3:
-                    gl.uniformMatrix3fv(pos,false, data.values);
+                    this._sendMatrix3(name, pos, data);
                     break;
                 case EVariableType.FLOAT_MAT4:
-                    gl.uniformMatrix4fv(pos,false, data.values);
+                    this._sendMatrix4(name, pos, data);
                     break;
                 case EVariableType.NUMBER_1:
                 case EVariableType.SAMPLER_CUBE:
                 case EVariableType.SAMPLER_2D:
-                    gl.uniform1i(pos, Number(data));
+                    this._sendNum1(name, pos, data);
                     break;
                 case EVariableType.SAMPLER_ARRAY:
-                    this._sendSampleArray(gl, pos, data);
+                    this._sendSampleArray(name, pos, data);
                     break;
                 default :
                     Log.error(true, Log.info.FUNC_INVALID("EVariableType:", type));
                     break;
             }
         }
+
+        @cache(function(name:string, pos:number, data:any){
+            var recordedData:any = this._uniformTable.getChild(name);
+
+            return recordedData == data;
+        }, function(name:string, pos:number, data:any){
+            return this._uniformTable.getChild(name);
+        }, function(result:any, name:string, pos:number, data:any){
+            this._recordUniformData(name, data);
+        })
+        private _sendFloat1(name:string, pos:number, data:any){
+            var gl = DeviceManager.getInstance().gl;
+
+            gl.uniform1f(pos, Number(data));
+        }
+
+        @cache(function(name:string, pos:number, data:any){
+            var recordedData:any = this._uniformTable.getChild(name);
+
+            if(!recordedData){
+                return false;
+            }
+
+            if(JudgeUtils.isArray(data)){
+                return recordedData[0] === data[0] && recordedData[1] === data[1];
+            }
+
+            return (<Vector2>recordedData).isEqual(<Vector2>data);
+        }, function(name:string, pos:number, data:any){
+            return this._uniformTable.getChild(name);
+        }, function(result:any, name:string, pos:number, data:any){
+            this._recordUniformData(name, data);
+        })
+        private _sendFloat2(name:string, pos:number, data:any){
+            var gl = DeviceManager.getInstance().gl;
+
+            data = this._convertToArray2(data);
+
+            gl.uniform2f(pos, data[0], data[1]);
+        }
+
+        @cache(function(name:string, pos:number, data:any){
+            var recordedData:any = this._uniformTable.getChild(name);
+
+            if(!recordedData){
+                return false;
+            }
+
+            if(JudgeUtils.isArray(data)){
+                return recordedData[0] === data[0] && recordedData[1] === data[1] && recordedData[2] === data[2];
+            }
+
+            return (<Vector3>recordedData).isEqual(<Vector3>data);
+        }, function(name:string, pos:number, data:any){
+            return this._uniformTable.getChild(name);
+        }, function(result:any, name:string, pos:number, data:any){
+            this._recordUniformData(name, data);
+        })
+        private _sendFloat3(name:string, pos:number, data:any){
+            var gl = DeviceManager.getInstance().gl;
+
+            data = this._convertToArray3(data);
+
+            gl.uniform3f(pos, data[0], data[1], data[2]);
+        }
+
+
+        @cache(function(name:string, pos:number, data:any){
+            var recordedData:any = this._uniformTable.getChild(name);
+
+            if(!recordedData){
+                return false;
+            }
+
+            if(JudgeUtils.isArray(data)){
+                return recordedData[0] === data[0] && recordedData[1] === data[1] && recordedData[2] === data[2] && recordedData[3] === data[3];
+            }
+
+            return (<Vector4>recordedData).isEqual(<Vector4>data);
+        }, function(name:string, pos:number, data:any){
+            return this._uniformTable.getChild(name);
+        }, function(result:any, name:string, pos:number, data:any){
+            this._recordUniformData(name, data);
+        })
+        private _sendFloat4(name:string, pos:number, data:any){
+            var gl = DeviceManager.getInstance().gl;
+
+            data = this._convertToArray4(data);
+
+            gl.uniform4f(pos, data[0], data[1], data[2], data[3]);
+        }
+
+        @cache(function(name:string, pos:number, data:any){
+            var recordedData:any = this._uniformTable.getChild(name);
+
+            return recordedData == data;
+        }, function(name:string, pos:number, data:any){
+            return this._uniformTable.getChild(name);
+        }, function(result:any, name:string, pos:number, data:any){
+            this._recordUniformData(name, data);
+        })
+        private _sendNum1(name:string, pos:number, data:any){
+            var gl = DeviceManager.getInstance().gl;
+
+            gl.uniform1i(pos, Number(data));
+        }
+
+        private _sendMatrix3(name:string, pos:string, data:Matrix3){
+            var gl = DeviceManager.getInstance().gl;
+
+            gl.uniformMatrix3fv(pos,false, data.values);
+        }
+
+        private _sendMatrix4(name:string, pos:string, data:Matrix4){
+            var gl = DeviceManager.getInstance().gl;
+
+            gl.uniformMatrix4fv(pos,false, data.values);
+        }
+
+        @require(function(name:string, pos:string, data:Array<number>){
+            assert(JudgeUtils.isArrayExactly(data), Log.info.FUNC_SHOULD("data", `be array, but actual is ${data}`));
+
+            for(let unit of data){
+                assert(JudgeUtils.isNumber(unit), Log.info.FUNC_SHOULD("data", `be Array<number>, but actual is ${data}`));
+            }
+        })
+        @cache(function(name:string, pos:string, data:Array<number>){
+            var recordedData:any = this._uniformTable.getChild(name),
+                isEqual:boolean = true;
+
+            if(!recordedData){
+                return false;
+            }
+
+            for(let i = 0, len = data.length; i < len; i++){
+                if(recordedData[i] !== data[i]){
+                    isEqual = false;
+                    break;
+                }
+            }
+
+            return isEqual;
+        }, function(name:string, pos:string, data:Array<number>){
+            return this._uniformTable.getChild(name);
+        }, function(result:any, name:string, pos:string, data:Array<number>){
+            this._recordUniformData(name, data);
+        })
+        private _sendSampleArray(name:string, pos:string, data:Array<number>){
+            var gl = DeviceManager.getInstance().gl;
+
+            gl.uniform1iv(pos, data);
+        }
+
+        private _recordUniformData(name:string, data:any){
+            this._uniformTable.addChild(name, data);
+        }
+
+        private _uniformTable:wdCb.Hash<any> = wdCb.Hash.create<any>();
+
+
+
+
 
         //todo ensure: only send data of the same name one time in one frame
         @require(function(name:string, type:EVariableType, data:any){
@@ -183,8 +326,6 @@ module wd{
 
             vs = shader.createVsShader();
             fs = shader.createFsShader();
-
-            this._shader = shader;
 
             gl.attachShader(this._program, vs);
             gl.attachShader(this._program, fs);
@@ -253,16 +394,18 @@ module wd{
                 gl.disableVertexAttribArray(position);
             });
 
-            this._clearCache();
+            this._clearAllCache();
         }
 
         public isUniformDataNotExistByLocation(pos:any){
             return pos === null;
         }
 
-        private _clearCache(){
+        private _clearAllCache(){
             this._getAttribLocationCache.removeAllChildren();
             this._getUniformLocationCache.removeAllChildren();
+
+            this._uniformTable.removeAllChildren();
         }
 
         private _convertToArray2(data:Array<number>);
@@ -305,17 +448,6 @@ module wd{
             }
 
             return [data.x, data.y, data.z, data.w];
-        }
-
-        @require(function(gl:any, pos:string, data:Array<number>){
-            assert(JudgeUtils.isArrayExactly(data), Log.info.FUNC_SHOULD("data", `be array, but actual is ${data}`));
-
-            for(let unit of data){
-                assert(JudgeUtils.isNumber(unit), Log.info.FUNC_SHOULD("data", `be Array<number>, but actual is ${data}`));
-            }
-        })
-        private _sendSampleArray(gl:any, pos:string, data:Array<number>){
-            gl.uniform1iv(pos, data);
         }
     }
 }

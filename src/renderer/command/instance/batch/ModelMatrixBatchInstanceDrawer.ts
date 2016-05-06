@@ -10,12 +10,12 @@ module wd {
             return this._instance;
         }
 
-        protected getOffsetLocationArray(program:Program):Array<number>{
-            return [program.getUniformLocation("u_mMatrix")];
+        protected getUniformDataNameArray(program:Program):Array<string>{
+            return ["u_mMatrix"];
         }
 
-        protected sendGLSLData(program:Program, instance:GameObject, [modelMatrixLocation]):void{
-            program.sendUniformData(modelMatrixLocation, EVariableType.FLOAT_MAT4, instance.transform.localToWorldMatrix);
+        protected sendGLSLData(program:Program, instance:GameObject, [modelMatrixUniformDataName]):void{
+            program.sendUniformData(modelMatrixUniformDataName, EVariableType.FLOAT_MAT4, instance.transform.localToWorldMatrix);
         }
     }
 }

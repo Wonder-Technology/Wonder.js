@@ -78,6 +78,10 @@ module wd{
             return this;
         }
 
+        public isEqual(v:Vector4){
+            return this.x === v.x && this.y === v.y && this.z === v.z && this.w === v.w;
+        }
+
         public clone():Vector4{
             return this.copyHelper(Vector4.create());
         }

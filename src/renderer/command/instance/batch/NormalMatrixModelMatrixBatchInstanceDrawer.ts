@@ -10,14 +10,14 @@ module wd {
             return this._instance;
         }
 
-        protected getOffsetLocationArray(program:Program):Array<number>{
-            return [program.getUniformLocation("u_mMatrix"), program.getUniformLocation("u_normalMatrix")];
+        protected getUniformDataNameArray(program:Program):Array<string>{
+            return ["u_mMatrix", "u_normalMatrix"];
         }
 
-        protected sendGLSLData(program:Program, instance:GameObject, [modelMatrixLocation, normalMatrixLocation]):void{
-            program.sendUniformData(modelMatrixLocation, EVariableType.FLOAT_MAT4, instance.transform.localToWorldMatrix);
+        protected sendGLSLData(program:Program, instance:GameObject, [modelMatrixUniformDataName, normalMatrixUniformDataName]):void{
+            program.sendUniformData(modelMatrixUniformDataName, EVariableType.FLOAT_MAT4, instance.transform.localToWorldMatrix);
             //todo transform add normalMatrix cache
-            program.sendUniformData(normalMatrixLocation, EVariableType.FLOAT_MAT3, instance.transform.localToWorldMatrix.invertTo3x3().transpose());
+            program.sendUniformData(normalMatrixUniformDataName, EVariableType.FLOAT_MAT3, instance.transform.localToWorldMatrix.invertTo3x3().transpose());
         }
     }
 }
