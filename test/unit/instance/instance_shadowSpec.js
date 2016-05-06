@@ -350,7 +350,7 @@ describe("instance with shadow", function () {
 
             describe("test shadow layer", function(){
                 beforeEach(function(){
-                    testTool.openContractCheck(sandbox);
+                    //testTool.openContractCheck(sandbox);
                 });
 
                 it("instance shadow layer should always be the same with its source object's shadow layer", function () {

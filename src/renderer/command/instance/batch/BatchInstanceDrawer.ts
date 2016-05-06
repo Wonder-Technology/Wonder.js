@@ -12,7 +12,6 @@ module wd{
             indexBuffer = <ElementBuffer>buffers.getChild(EBufferDataType.INDICE);
 
             if(indexBuffer){
-                //todo optimize:if elementBuffer not change, not bind again
                 gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer.buffer);
 
                 instanceList.forEach((instance:GameObject) => {

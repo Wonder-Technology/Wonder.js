@@ -1284,12 +1284,21 @@
                     if (!isFunction(wrappedMethod)) {
                         error = new TypeError("Attempted to wrap " + (typeof wrappedMethod) + " property " +
                             property + " as function");
-                    } else if (wrappedMethod.restore && wrappedMethod.restore.sinon) {
-                        error = new TypeError("Attempted to wrap " + property + " which is already wrapped");
-                    } else if (wrappedMethod.calledBefore) {
-                        var verb = wrappedMethod.returns ? "stubbed" : "spied on";
-                        error = new TypeError("Attempted to wrap " + property + " which is already " + verb);
                     }
+
+
+                    //by yyc
+
+                    //else if (wrappedMethod.restore && wrappedMethod.restore.sinon) {
+                    //    error = new TypeError("Attempted to wrap " + property + " which is already wrapped");
+                    //}
+                    //else if (wrappedMethod.calledBefore) {
+                    //    var verb = wrappedMethod.returns ? "stubbed" : "spied on";
+                    //    error = new TypeError("Attempted to wrap " + property + " which is already " + verb);
+                    //}
+
+
+
 
                     if (error) {
                         if (wrappedMethod && wrappedMethod.stackTrace) {

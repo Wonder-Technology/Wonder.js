@@ -497,8 +497,13 @@ describe("instance with basic material", function(){
             var map;
             var program;
 
-            function judge1(){
+            function initDirector(){
                 director._init();
+                program = shaderTool.getAndSpyProgram(sandbox, box1Material, "box1Program");
+            }
+
+            function judge1(){
+                initDirector();
 
                 director.scene.gameObjectScene.render(renderer);
                 renderer.render();
@@ -514,7 +519,7 @@ describe("instance with basic material", function(){
             }
 
             function judge2(){
-                director._init();
+                initDirector();
 
                 director.scene.gameObjectScene.render(renderer);
                 renderer.render();
@@ -524,7 +529,7 @@ describe("instance with basic material", function(){
             }
 
             function judge3(){
-                director._init();
+                initDirector();
 
                 director.scene.gameObjectScene.render(renderer);
                 renderer.render();
@@ -535,7 +540,7 @@ describe("instance with basic material", function(){
             }
 
             function judge4(){
-                director._init();
+                initDirector();
 
                 var mMatrixPos = 1;
                 gl.getUniformLocation.withArgs(sinon.match.any, "u_mMatrix").returns(mMatrixPos);
@@ -547,7 +552,7 @@ describe("instance with basic material", function(){
             }
 
             function judge5(){
-                director._init();
+                initDirector();
 
                 expect(glslTool.contain(
                     box1Material.shader.vsSource,
@@ -564,14 +569,6 @@ describe("instance with basic material", function(){
 
                 box1Material.map = map;
                 box1Material.redWrite = false;
-
-
-
-                program = box1Material.program;
-                program.name = "box1Program";
-                sandbox.spy(program, "use");
-                sandbox.spy(program, "sendUniformData");
-                sandbox.spy(program, "sendAttributeData");
             });
 
             it("set webgl state and use program and bind texture and send glsl data(except mMatrix) only once", function () {

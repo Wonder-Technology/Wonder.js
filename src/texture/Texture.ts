@@ -42,7 +42,8 @@ module wd{
             var maxTextureUnit = GPUDetector.getInstance().maxTextureUnit;
 
             assert(unit >= 0, Log.info.FUNC_SHOULD("texture unit", `>= 0, but actual is ${unit}`));
-            assert(unit < maxTextureUnit, `trying to cache ${unit} texture units, but GPU only supports ${maxTextureUnit} units`);        })
+            assert(unit < maxTextureUnit, `trying to cache ${unit} texture units, but GPU only supports ${maxTextureUnit} units`);
+        })
         public bindToUnit (unit:number) {
             var gl = DeviceManager.getInstance().gl;
 

@@ -77,7 +77,6 @@ describe("instance+morph animation", function () {
         //director = wd.Director.getInstance();
 
 
-        modelProgram = material.shader.program;
 
         return model;
     }
@@ -93,8 +92,6 @@ describe("instance+morph animation", function () {
         modelInstance = instanceTool.cloneInstance(model, "0");
 
         modelInstanceAnim = modelInstance.getComponent(wd.MorphAnimation);
-
-        modelInstanceProgram = modelInstance.getComponent(wd.Geometry).material.shader.program;
 
 
         instanceArr.push(modelInstance);
@@ -225,6 +222,8 @@ describe("instance+morph animation", function () {
         modelAnim.play("play", fps);
         modelInstanceAnim.play("stand", fps);
         director._init();
+        modelProgram = shaderTool.getAndStubProgram(sandbox, material);
+        modelInstanceProgram = shaderTool.getAndStubProgram(sandbox, modelInstance.getComponent(wd.Geometry).material);
 
 
         director._run(duration / 100);
@@ -262,6 +261,8 @@ describe("instance+morph animation", function () {
             modelAnim.play("play", fps);
             modelInstanceAnim.play("stand", fps);
             director._init();
+            modelProgram = shaderTool.getAndStubProgram(sandbox, material);
+            modelInstanceProgram = shaderTool.getAndStubProgram(sandbox, modelInstance.getComponent(wd.Geometry).material);
 
 
             director._run(duration / 100);

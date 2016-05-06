@@ -87,7 +87,7 @@
         //'test/unit/renderer/shadow/directionShadowMap*',
         //'test/unit/renderer/*ShadowMap_*Spec.js',
         //
-        //'test/unit/**/instance/*',
+        'test/unit/**/instance/*',
         //'test/unit/**/instance/*lod*',
 
         //'test/unit/**/instance/SourceInstance*',
@@ -236,7 +236,7 @@
         //'test/unit/**/collider/**',
         //'test/unit/**/ActionManagerSpec*',
         //'test/unit/**/TwoDShadow*Spec.js',
-        'test/unit/**/ProgramSpec.js',
+        //'test/unit/**/ProgramSpec.js',
         //'test/unit/**/*CustomGeo*.js',
         //'test/unit/**/SphereColliderSpec.js',
         //'test/unit/**/*ColliderSpec.js',

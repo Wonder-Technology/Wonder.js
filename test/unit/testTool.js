@@ -207,10 +207,10 @@ var testTool = (function () {
         openContractCheck: function (sandbox) {
             wd.Main.isTest = true;
 
-            this.initForTest();
+            this.initForTest(sandbox);
         },
 
-        initForTest: function(){
+        initForTest: function(sandbox){
             wd.ProgramTable.addProgram("\n", wd.Program.create());
 
             Object.defineProperty(wd.Shader.prototype, "program", {
@@ -218,6 +218,11 @@ var testTool = (function () {
                     return wd.ProgramTable.getProgram(this._getProgramTableKey()) || wd.Program.create();
                 }
             });
+
+
+
+
+            sandbox.stub(wd.GPUDetector.getInstance(), "maxTextureUnit", 16);
         },
 
 

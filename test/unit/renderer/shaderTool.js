@@ -1,31 +1,24 @@
 var shaderTool = (function(){
     return {
-        getAndSpyProgram: function(sandbox, material){
-            //var isTest = wd.Main.isTest;
-            //
-            //testTool.closeContractCheck();
-            //
-            //var program = shader.program;
-            //
-            //wd.Main.isTest = isTest;
-            //
-            //if(program){
-            //    return program;
-            //}
-            //
-            //
-            //
-            //return wd.Program.create();
+        getAndSpyProgram: function(sandbox, material, programName){
             var program = material.program;
 
             this.spyProgram(sandbox, material);
+
+            if(programName){
+                program.name = programName;
+            }
 
             return program;
         },
-        getAndStubProgram: function(sandbox, material){
+        getAndStubProgram: function(sandbox, material, programName){
             var program = material.program;
 
             this.spyProgram(sandbox, material);
+
+            if(programName){
+                program.name = programName;
+            }
 
             return program;
         },

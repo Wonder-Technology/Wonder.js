@@ -355,15 +355,6 @@ describe("instance with spacePartition", function() {
                 box1Material.redWrite = false;
 
 
-                program = box1Material.program;
-                program.name = "box1Program";
-                sandbox.spy(program, "use");
-                sandbox.spy(program, "sendUniformData");
-                sandbox.spy(program, "sendAttributeData");
-
-
-
-
 
 
                 var octreeRenderList = wdCb.Collection.create(
@@ -427,6 +418,11 @@ describe("instance with spacePartition", function() {
 
             it("set webgl state and use program and bind texture and send glsl data(except mMatrix) only once", function () {
                 director._init();
+                program = shaderTool.getAndSpyProgram(sandbox, box1Material, "box1Program");
+
+
+
+
 
                 director._loopBody(1);
 
