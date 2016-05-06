@@ -62,18 +62,18 @@ describe("Program", function(){
             expect(program._getUniformLocationCache.removeAllChildren).toCalledOnce();
         });
         it("clear _uniformTable", function () {
-            sandbox.stub(program._uniformTable, "removeAllChildren");
+            sandbox.stub(program._sender._uniformTable, "removeAllChildren");
 
             program._clearAllCache();
 
-            expect(program._uniformTable.removeAllChildren).toCalledOnce();
+            expect(program._sender._uniformTable.removeAllChildren).toCalledOnce();
         });
         it("clear _attributeTable", function () {
-            sandbox.stub(program._attributeTable, "removeAllChildren");
+            sandbox.stub(program._sender._attributeTable, "removeAllChildren");
 
             program._clearAllCache();
 
-            expect(program._attributeTable.removeAllChildren).toCalledOnce();
+            expect(program._sender._attributeTable.removeAllChildren).toCalledOnce();
         });
     });
 

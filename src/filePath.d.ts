@@ -376,6 +376,7 @@
 /// <reference path="renderer/buffer/BufferDataTable"/>
 
 /// <reference path="renderer/program/Program"/>
+/// <reference path="renderer/program/GLSLDataSender"/>
 
 /// <reference path="renderer/command/RenderCommand"/>
 /// <reference path="renderer/command/QuadCommand"/>
