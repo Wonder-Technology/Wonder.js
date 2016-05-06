@@ -201,7 +201,18 @@ var testTool = (function () {
          */
         openContractCheck: function () {
             wd.Main.isTest = true;
+
+            this._initForTest();
         },
+
+        _initForTest: function(){
+            Object.defineProperty(wd.Shader.prototype, "program", {
+                get: function () {
+                    return wd.ProgramTable.getProgram(this._getProgramTableKey()) || wd.Program.create();
+                }
+            });
+        },
+
         closeContractCheck: function () {
             wd.Main.isTest = false;
         },
