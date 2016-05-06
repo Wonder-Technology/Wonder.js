@@ -166,11 +166,7 @@ module wd {
         public abstract getTextureForRenderSort():Texture;
 
         public clone(){
-            var result = CloneUtils.clone(this);
-
-            //result._shaderManager.shader.mapManager = this.mapManager.clone(result);
-
-            return result;
+            return CloneUtils.clone(this);
         }
 
         public initWhenCreate(){
