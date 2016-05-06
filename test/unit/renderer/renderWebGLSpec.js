@@ -361,26 +361,6 @@ describe("renderWebGL", function() {
                     });
                 });
 
-                describe("test get target buffer", function(){
-                    it("get vertice buffer as the target", function () {
-                        var b1 = wd.ArrayBuffer.create();
-                        var b2 = wd.ArrayBuffer.create();
-                        var b3 = wd.ElementBuffer.create();
-
-                        var material1 = {
-                            geometry: {
-                                buffers: wdCb.Hash.create()
-                            }
-                        };
-
-                        material1.geometry.buffers.addChild(wd.EBufferDataType.COLOR, b1);
-                        material1.geometry.buffers.addChild(wd.EBufferDataType.VERTICE, b2);
-                        material1.geometry.buffers.addChild(wd.EBufferDataType.INDICE, b3);
-
-                        expect(renderer._getTargetBuffer(material1)).toEqual(b2);
-                    });
-                });
-
                 describe("test special cases", function(){
                     beforeEach(function(){
                     });

@@ -11,6 +11,17 @@ module wd {
         private _verticeBuffer:ArrayBuffer = null;
         private _normalBuffer:ArrayBuffer = null;
 
+
+        public getBufferForRenderSort():Buffer{
+            var buffer = this.getChild(EBufferDataType.VERTICE);
+
+            if(!buffer){
+                return null;
+            }
+
+            return buffer;
+        }
+
         @cache(function(type:EBufferDataType){
             return this.container.hasChild(<any>type);
         }, function(type){

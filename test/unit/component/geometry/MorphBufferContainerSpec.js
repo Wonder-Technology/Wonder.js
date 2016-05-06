@@ -71,6 +71,12 @@ describe("MorphBufferContainer", function() {
             testTool.clearInstance(sandbox);
         });
 
+        describe("getBufferForRenderSort", function(){
+            it("return null", function () {
+                expect(container.getBufferForRenderSort()).toBeNull();
+            });
+        });
+
         describe("get vertice buffer", function(){
             beforeEach(function(){
                 geometryData.vertices = [1,-1,0, 0,1,0,0,0,1];

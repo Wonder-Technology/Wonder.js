@@ -29,7 +29,7 @@
 
         //'test/unit/**',
 
-        'test/unit/**/TextureSpec*',
+        //'test/unit/**/TextureSpec*',
 
         //'test/unit/**/*ProceduralRenderTargetRenderer*',
 
@@ -132,7 +132,7 @@
         //'test/unit/**/ShaderSpec*',
         //'test/unit/**/*ShaderSpec*',
 
-        //'test/unit/**/renderWebGL*',
+        'test/unit/**/renderWebGL*',
         //'test/unit/**/SortUtils*',
 
         //'test/unit/**/*CommandSpec*',
@@ -160,7 +160,7 @@
 
         //'test/unit/**/*animation*',
         //'test/unit/component/**/*Animation*.js',
-        //'test/unit/component/**/morphAnimation*.js',
+        'test/unit/component/**/morphAnimation*.js',
 
         //'test/unit/**/GLTFParserSpec*',
         //'test/unit/**/GLTFAssemblerSpec*',
@@ -272,8 +272,8 @@
         //'test/unit/component/**/GeometrySpec.js',
         //'test/unit/component/**/TerrainGeometrySpec.js',
         //'test/unit/component/**/ModelGeometrySpec.js',
-        //'test/unit/**/CommonBufferContainerSpec.js',
-        //'test/unit/**/MorphBufferContainerSpec.js',
+        'test/unit/**/CommonBufferContainerSpec.js',
+        'test/unit/**/MorphBufferContainerSpec.js',
         //'test/unit/core/*.js',
         //'test/unit/device/*.js',
         //'test/unit/event/**',

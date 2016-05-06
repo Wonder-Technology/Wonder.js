@@ -15,6 +15,8 @@ module wd {
         private _indiceBuffer:ElementBuffer = null;
         private _materialChangeSubscription:wdFrp.IDisposable = null;
 
+        public abstract getBufferForRenderSort():Buffer;
+
         public init(){
             var self = this;
 

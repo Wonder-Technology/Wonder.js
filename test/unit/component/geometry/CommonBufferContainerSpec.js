@@ -57,6 +57,25 @@ describe("CommonBufferContainer", function() {
             testTool.clearInstance(sandbox);
         });
 
+        describe("getBufferForRenderSort", function(){
+            it("return vertice buffer", function () {
+                geometryData.vertices = [1,2,2,10,4,-1,-3,5,1.2];
+                geometryData.faces = wd.GeometryUtils.convertToFaces([0,2,1]);
+                geometryData.texCoords = [];
+                geometryData.colors = [];
+
+                prepareBufferContainer();
+
+
+
+                result1 = container.getBufferForRenderSort();
+
+
+
+                expect(testTool.getValues(result1.data)).toEqual(geometryData.vertices);
+            });
+        });
+
         describe("get vertice buffer", function(){
             beforeEach(function(){
                 geometryData.vertices = [1,2,2,10,4,-1,-3,5,1.2];

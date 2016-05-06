@@ -171,6 +171,11 @@ describe("morph animation", function () {
             sandbox.stub(wd.Director.getInstance()._timeController, "elapsed", time);
         }
 
+        function setProgram(material){
+            program = material.shader.program;
+            sandbox.stub(program, "sendUniformData");
+            sandbox.stub(program, "sendAttributeData");
+        }
 
         beforeEach(function(){
             vertice = [1,-1,0, 0,1,0,0,0,1, 2,3,-2, 10,5,1,  -10, 2, -2];
@@ -204,6 +209,8 @@ describe("morph animation", function () {
             beforeEach(function(){
                 anim.play("play", fps);
                 director._init();
+
+                setProgram(material);
             });
 
             it("test interpolation", function () {
@@ -257,6 +264,7 @@ describe("morph animation", function () {
                 anim.play("play", fps);
 
                 director._init();
+                setProgram(material);
 
                 director._run(1);
 
@@ -289,10 +297,11 @@ describe("morph animation", function () {
             });
 
             describe("pause,resume", function(){
-                it("", function () {
+                it("test1", function () {
                     anim.play("play", fps);
 
                     director._init();
+                    setProgram(material);
 
                     director._run(1);
 
@@ -333,10 +342,11 @@ describe("morph animation", function () {
                         frameNormals2
                     );
                 });
-                it("", function () {
+                it("test2", function () {
                     anim.play("play", fps);
 
                     director._init();
+                    setProgram(material);
 
                     director._run(1);
 
@@ -380,6 +390,7 @@ describe("morph animation", function () {
 
         it("use static vertices,normals of morphTargets when not play animation", function(){
             director._init();
+            setProgram(material);
 
             director._loopBody(1);
 

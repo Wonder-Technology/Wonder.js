@@ -190,13 +190,8 @@ module wd{
             }
         }
 
-        @ensure(function(buffer:Buffer, material:Material){
-            assert(!!buffer, Log.info.FUNC_CAN_NOT(`get target buffer from material for sort`));
-
-            assert(buffer instanceof ArrayBuffer, Log.info.FUNC_MUST_BE("buffer", "ArrayBuffer"))
-        })
         private _getTargetBuffer(material:Material){
-            return material.geometry.buffers.getChild(EBufferDataType.VERTICE);
+            return material.geometry.buffers.getBufferForRenderSort();
         }
 
         @ensure(function(mappedId:number, entityId:number, maxId:number){

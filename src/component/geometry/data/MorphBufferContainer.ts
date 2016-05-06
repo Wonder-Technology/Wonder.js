@@ -24,6 +24,10 @@ module wd {
         private _currentNormalBuffer:ArrayBuffer = null;
         private _nextNormalBuffer:ArrayBuffer = null;
 
+        public getBufferForRenderSort():Buffer{
+            return null;
+        }
+
         @require(function (type:EBufferDataType) {
             assert(this.geometryData.morphTargets && this.geometryData.morphTargets.getCount() > 0, Log.info.FUNC_SHOULD("set morphTargets"));
         })
@@ -51,9 +55,7 @@ module wd {
                 return null;
             }
 
-            frames = morphDataTargets.getChild(this._animation.currentAnimName);
-
-            wdCb.Log.error(!frames, wdCb.Log.info.FUNC_SHOULD(`"${this._animation.currentAnimName}" animation`, "contain frame data"));
+            frames = this._getFrames(morphDataTargets);
 
             cacheData = this.container.getChild(<any>type);
 
@@ -97,6 +99,13 @@ module wd {
             }
 
             return result;
+        }
+
+        @ensure(function(frames:wdCb.Collection<Array<number>>){
+            wdCb.Log.error(!frames, wdCb.Log.info.FUNC_SHOULD(`"${this._animation.currentAnimName}" animation`, "contain frame data"));
+        })
+        private _getFrames(morphDataTargets:wdCb.Hash<wdCb.Collection<Array<number>>>){
+            return morphDataTargets.getChild(this._animation.currentAnimName);
         }
 
         @require(function(type:EBufferDataType){
