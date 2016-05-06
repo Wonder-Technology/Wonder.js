@@ -24,5 +24,11 @@ module wd{
 
             this.lastUsedProgram = null;
         }
+
+        public static clearAll(){
+            this._table.removeAllChildren();
+
+            this.lastUsedProgram = null;
+        }
     }
 }

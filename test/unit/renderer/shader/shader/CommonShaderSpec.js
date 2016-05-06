@@ -20,7 +20,7 @@ describe("CommonShader", function() {
             quadCmd = rendererTool.createQuadCommand(sandbox);
             material = wd.LightMaterial.create();
 
-            shader.program = wd.Program.create();
+            //shader.program = wd.Program.create();
 
 
             sandbox.stub(shader, "judgeRefreshShader");

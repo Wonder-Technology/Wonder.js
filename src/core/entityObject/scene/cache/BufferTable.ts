@@ -26,6 +26,13 @@ module wd{
             this.lastBindedArrayBuffer = null;
             this.lastBindedElementBuffer = null;
         }
+
+        public static clearAll(){
+            this._table.removeAllChildren();
+
+            this.lastBindedArrayBuffer = null;
+            this.lastBindedElementBuffer = null;
+        }
     }
 
     export enum BufferTableKey{

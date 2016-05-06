@@ -9,6 +9,7 @@ describe("custom shader", function () {
         sandbox.stub(wd.GPUDetector.getInstance(), "precision", wd.EGPUPrecision.HIGHP);
 
         testTool.closeContractCheck(sandbox);
+        testTool.initForTest(sandbox);
 
 
         gl = wd.DeviceManager.getInstance().gl;
@@ -29,8 +30,6 @@ describe("custom shader", function () {
 
             beforeEach(function () {
                 shader = material.shader;
-                program = shader.program;
-
                 sandbox.stub(wd.ArrayBuffer, "create", function(arr, num, type){
                     return testTool.getValues(arr);
                 });
@@ -147,9 +146,6 @@ describe("custom shader", function () {
 
                 beforeEach(function () {
                     sandbox.spy(material.mapManager, "sendData");
-                    sandbox.stub(shader.program, "sendAttributeData");
-                    sandbox.stub(shader.program, "sendUniformData");
-                    sandbox.stub(shader.program, "use");
 
                     quadCmd = rendererTool.createSingleDrawCommand(sandbox);
 
@@ -164,6 +160,9 @@ describe("custom shader", function () {
                     material.read("definitionDataId");
 
                     rendererTool.triggerMaterialAddShaderLib(material);
+
+                    program = shaderTool.getAndStubProgram(sandbox, material);
+
 
                     material.updateShader(quadCmd);
                 });

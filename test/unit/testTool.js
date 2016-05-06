@@ -168,6 +168,11 @@ var testTool = (function () {
 
             wd.Entity.uid = 0;
 
+            wd.ProgramTable.clearAll();
+            wd.BufferTable.clearAll();
+            wd.TextureCache.clearAll();
+
+
             this.closeContractCheck();
         },
 
@@ -206,12 +211,15 @@ var testTool = (function () {
         },
 
         initForTest: function(){
+            wd.ProgramTable.addProgram("\n", wd.Program.create());
+
             Object.defineProperty(wd.Shader.prototype, "program", {
                 get: function () {
                     return wd.ProgramTable.getProgram(this._getProgramTableKey()) || wd.Program.create();
                 }
             });
         },
+
 
         closeContractCheck: function () {
             wd.Main.isTest = false;

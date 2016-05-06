@@ -33,11 +33,13 @@ var shaderTool = (function(){
             sandbox.spy(material.program, "sendUniformData");
             sandbox.spy(material.program, "sendAttributeData");
             sandbox.spy(material.program, "sendStructureData");
+            sandbox.spy(material.program, "use");
         },
         stubProgram:function(sandbox, material){
             sandbox.stub(material.program, "sendUniformData");
             sandbox.stub(material.program, "sendAttributeData");
             sandbox.stub(material.program, "sendStructureData");
+            sandbox.stub(material.program, "use");
         },
         judgeGLSLDefine: function(shaderSource, defineStr, defineData){
                 expect(shaderSource.indexOf("#define " + defineStr + " " + defineData) > -1).toBeTruthy();
