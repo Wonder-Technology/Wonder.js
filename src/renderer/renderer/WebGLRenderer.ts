@@ -182,12 +182,7 @@ module wd{
         }
 
         private _getTargetTexture(material:Material){
-            if(material instanceof StandardBasicMaterial){
-                return material.mapList.getChild(0);
-            }
-            else{
-                return (<StandardLightMaterial>material).diffuseMap;
-            }
+            return material.getTextureForRenderSort();
         }
 
         private _getTargetBuffer(material:Material){

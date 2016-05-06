@@ -178,9 +178,6 @@ describe("LightMaterial", function() {
 
 
             director = wd.Director.getInstance();
-
-
-            program = material.shader.program;
         });
 
         it("if no envMap, return", function(){
@@ -195,6 +192,7 @@ describe("LightMaterial", function() {
             envMap.mode = wd.EEnvMapMode.BASIC;
 
             director._init();
+            program = shaderTool.getAndStubProgram(sandbox, material);
 
             expect(material.shader.hasLib(wd.BasicForLightEnvMapShaderLib)).toBeTruthy();
 
@@ -207,6 +205,7 @@ describe("LightMaterial", function() {
             envMap.mode = wd.EEnvMapMode.REFLECTION;
 
             director._init();
+            program = shaderTool.getAndStubProgram(sandbox, material);
 
             expect(material.shader.hasLib(wd.ReflectionForLightEnvMapShaderLib)).toBeTruthy();
 
@@ -220,6 +219,7 @@ describe("LightMaterial", function() {
             envMap.mode = wd.EEnvMapMode.REFRACTION;
 
             director._init();
+            program = shaderTool.getAndStubProgram(sandbox, material);
 
             expect(material.shader.hasLib(wd.RefractionForLightEnvMapShaderLib)).toBeTruthy();
 
@@ -236,6 +236,7 @@ describe("LightMaterial", function() {
                 envMap.mode = wd.EEnvMapMode.FRESNEL;
 
                 director._init();
+                program = shaderTool.getAndStubProgram(sandbox, material);
 
                 expect(material.shader.hasLib(wd.FresnelForLightEnvMapShaderLib)).toBeTruthy();
 
@@ -250,6 +251,7 @@ describe("LightMaterial", function() {
                 envMap.mode = wd.EEnvMapMode.FRESNEL;
 
                 director._init();
+                program = shaderTool.getAndStubProgram(sandbox, material);
 
                 expect(material.shader.hasLib(wd.FresnelForLightEnvMapShaderLib)).toBeTruthy();
 
@@ -261,6 +263,15 @@ describe("LightMaterial", function() {
                 expect(program.sendUniformData.withArgs("u_cameraPos")).toCalledOnce();
             });
         })
+    });
+
+    describe("getTextureForRenderSort", function(){
+        it("return diffuseMap", function () {
+            var texture1 = wd.ImageTexture.create({});
+            material.diffuseMap = texture1;
+
+            expect(material.getTextureForRenderSort()).toEqual(texture1);
+        });
     });
 
     describe("clone", function(){

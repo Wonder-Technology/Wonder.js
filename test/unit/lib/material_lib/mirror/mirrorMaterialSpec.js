@@ -10,6 +10,8 @@ describe("mirror material", function () {
         sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
 
         material = wd.MirrorMaterial.create();
+
+        //testTool.initForTest(sandbox);
     });
     afterEach(function () {
         sandbox.restore();
@@ -46,11 +48,6 @@ describe("mirror material", function () {
         var reflectionMap;
 
         beforeEach(function () {
-            sandbox.spy(material.program, "sendUniformData");
-            sandbox.spy(material.program, "sendAttributeData");
-            sandbox.spy(material.program, "sendStructureData");
-
-
             wd.Director.getInstance().scene.currentCamera = wd.GameObject.create();
 
 
@@ -80,6 +77,9 @@ describe("mirror material", function () {
 
 
                 material.init();
+                shaderTool.spyProgram(sandbox, material);
+
+
 
 
                 material.updateShader(quadCmd);

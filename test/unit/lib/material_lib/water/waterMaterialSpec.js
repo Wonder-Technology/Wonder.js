@@ -122,11 +122,6 @@ describe("water material", function () {
         var bumpMap, reflectionMap, refractionMap;
 
         beforeEach(function () {
-            sandbox.spy(material.program, "sendUniformData");
-            sandbox.spy(material.program, "sendAttributeData");
-            sandbox.spy(material.program, "sendStructureData");
-
-
             //wd.Director.getInstance().scene = wd.SceneDispatcher.create();
 
             wd.Director.getInstance().scene.currentCamera = wd.GameObject.create();
@@ -162,6 +157,8 @@ describe("water material", function () {
 
 
                 material.init();
+                shaderTool.spyProgram(sandbox, material);
+
 
 
 
@@ -198,6 +195,7 @@ describe("water material", function () {
                 material.wave.length = 0.8;
 
                 material.init();
+                shaderTool.spyProgram(sandbox, material);
 
                 material.updateShader(quadCmd);
 

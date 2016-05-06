@@ -199,13 +199,13 @@ var testTool = (function () {
          can only affect In,Out check
          Invariant check will be invoked when load the file
          */
-        openContractCheck: function () {
+        openContractCheck: function (sandbox) {
             wd.Main.isTest = true;
 
-            this._initForTest();
+            this.initForTest();
         },
 
-        _initForTest: function(){
+        initForTest: function(){
             Object.defineProperty(wd.Shader.prototype, "program", {
                 get: function () {
                     return wd.ProgramTable.getProgram(this._getProgramTableKey()) || wd.Program.create();

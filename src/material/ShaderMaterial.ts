@@ -19,6 +19,10 @@ module wd{
             super.init();
         }
 
+        public getTextureForRenderSort():Texture{
+            return null;
+        }
+
         public read(definitionDataId:string){
             this.shader.read(LoaderManager.getInstance().get(definitionDataId));
 

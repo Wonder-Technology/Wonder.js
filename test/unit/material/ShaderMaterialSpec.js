@@ -70,4 +70,10 @@ describe("ShaderMaterial", function () {
             });
         });
     });
+
+    describe("getTextureForRenderSort", function(){
+        it("return null", function () {
+            expect(material.getTextureForRenderSort()).toBeNull();
+        });
+    });
 });

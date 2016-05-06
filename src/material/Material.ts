@@ -163,6 +163,8 @@ module wd {
 
         private _shaderManager:ShaderManager = ShaderManager.create(this);
 
+        public abstract getTextureForRenderSort():Texture;
+
         public clone(){
             var result = CloneUtils.clone(this);
 

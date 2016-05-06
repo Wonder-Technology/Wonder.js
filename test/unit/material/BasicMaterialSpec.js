@@ -4,7 +4,7 @@ describe("BasicMaterial", function () {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        material = new wd.BasicMaterial();
+        material = wd.BasicMaterial.create();
         sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
     });
     afterEach(function () {
@@ -77,7 +77,6 @@ describe("BasicMaterial", function () {
             director = wd.Director.getInstance();
 
 
-            program = material.shader.program;
 
 
             prepareTool.prepareForMap(sandbox);
@@ -99,6 +98,7 @@ describe("BasicMaterial", function () {
             material.map = map;
 
             director._init();
+            program = shaderTool.getAndStubProgram(sandbox, material);
 
             expect(material.shader.hasLib(wd.BasicMapShaderLib)).toBeTruthy();
 
@@ -113,6 +113,7 @@ describe("BasicMaterial", function () {
 
 
             director._init();
+            program = shaderTool.getAndStubProgram(sandbox, material);
 
             expect(material.shader.hasLib(wd.MultiMapShaderLib)).toBeTruthy();
 
@@ -162,9 +163,6 @@ describe("BasicMaterial", function () {
 
 
             director = wd.Director.getInstance();
-
-
-            program = material.shader.program;
         });
 
         it("if no envMap, return", function () {
@@ -179,6 +177,8 @@ describe("BasicMaterial", function () {
             envMap.mode = wd.EEnvMapMode.BASIC;
 
             director._init();
+            program = shaderTool.getAndStubProgram(sandbox, material);
+
             director._loopBody(1);
 
             expect(program.sendAttributeData.withArgs("a_normal")).toCalledOnce();
@@ -192,6 +192,8 @@ describe("BasicMaterial", function () {
             envMap.mode = wd.EEnvMapMode.BASIC;
 
             director._init();
+            program = shaderTool.getAndStubProgram(sandbox, material);
+
 
             expect(material.shader.hasLib(wd.BasicForBasicEnvMapShaderLib)).toBeTruthy();
 
@@ -204,6 +206,7 @@ describe("BasicMaterial", function () {
             envMap.mode = wd.EEnvMapMode.REFLECTION;
 
             director._init();
+            program = shaderTool.getAndStubProgram(sandbox, material);
 
             expect(material.shader.hasLib(wd.ReflectionForBasicEnvMapShaderLib)).toBeTruthy();
 
@@ -217,6 +220,7 @@ describe("BasicMaterial", function () {
             envMap.mode = wd.EEnvMapMode.REFRACTION;
 
             director._init();
+            program = shaderTool.getAndStubProgram(sandbox, material);
 
             expect(material.shader.hasLib(wd.RefractionForBasicEnvMapShaderLib)).toBeTruthy();
 
@@ -233,6 +237,7 @@ describe("BasicMaterial", function () {
                 envMap.mode = wd.EEnvMapMode.FRESNEL;
 
                 director._init();
+                program = shaderTool.getAndStubProgram(sandbox, material);
 
                 expect(material.shader.hasLib(wd.FresnelForBasicEnvMapShaderLib)).toBeTruthy();
 
@@ -247,6 +252,7 @@ describe("BasicMaterial", function () {
                 envMap.mode = wd.EEnvMapMode.FRESNEL;
 
                 director._init();
+                program = shaderTool.getAndStubProgram(sandbox, material);
 
                 expect(material.shader.hasLib(wd.FresnelForBasicEnvMapShaderLib)).toBeTruthy();
 
@@ -258,6 +264,16 @@ describe("BasicMaterial", function () {
                 expect(program.sendUniformData.withArgs("u_cameraPos")).toCalledOnce();
             });
         })
+    });
+
+    describe("getTextureForRenderSort", function(){
+        it("return first map", function () {
+            var texture1 = wd.ImageTexture.create({});
+            var texture2 = wd.ImageTexture.create({});
+            material.map = [texture1, texture2];
+
+            expect(material.getTextureForRenderSort()).toEqual(texture1);
+        });
     });
 
     describe("clone", function(){

@@ -49,6 +49,10 @@ module wd{
             this._opacity = opacity;
         }
 
+        public getTextureForRenderSort():Texture{
+            return this.mapList.getChild(0);
+        }
+
         protected addShaderLib(){
             var envMap = null;
 

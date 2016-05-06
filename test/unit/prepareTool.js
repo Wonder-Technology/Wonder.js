@@ -67,10 +67,7 @@ var prepareTool = (function () {
             director.scene.addChild(testTool.createCamera());
 
 
-            program = material.shader.program;
-            sandbox.stub(program, "sendAttributeData");
-            sandbox.stub(program, "sendUniformData");
-            sandbox.stub(program, "getUniformLocation");
+            //program = shaderTool.getAndStubProgram(sandbox, material.shader);
         },
         prepareForMap:function(sandbox){
             sandbox.stub(wd.DeviceManager.getInstance(), "view", {

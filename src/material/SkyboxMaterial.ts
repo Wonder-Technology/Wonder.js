@@ -14,6 +14,10 @@ module wd{
             this.side = ESide.BACK;
         }
 
+        public getTextureForRenderSort():Texture{
+            return null;
+        }
+
         protected addShaderLib(){
             this.shader.addLib(SkyboxShaderLib.create());
         }

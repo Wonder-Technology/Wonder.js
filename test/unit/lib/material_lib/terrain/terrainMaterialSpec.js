@@ -99,11 +99,6 @@ describe("terrain material", function() {
         var map1,map2,map3;
 
         beforeEach(function(){
-            sandbox.spy(material.program, "sendUniformData");
-            sandbox.spy(material.program, "sendAttributeData");
-            sandbox.spy(material.program, "sendStructureData");
-
-
             wd.Director.getInstance().scene = wd.SceneDispatcher.create();
 
             wd.Director.getInstance().scene.currentCamera = wd.GameObject.create()
@@ -157,6 +152,7 @@ describe("terrain material", function() {
 
 
                 material.init();
+                shaderTool.spyProgram(sandbox, material);
 
 
 
@@ -255,6 +251,7 @@ describe("terrain material", function() {
 
 
                 material.init();
+                shaderTool.spyProgram(sandbox, material);
 
 
 
@@ -288,6 +285,7 @@ describe("terrain material", function() {
 
 
                     material.init();
+                    shaderTool.spyProgram(sandbox, material);
 
 
 

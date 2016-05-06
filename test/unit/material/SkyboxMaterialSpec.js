@@ -15,5 +15,11 @@ describe("SkyboxMaterial", function() {
 
         expect(material.side).toEqual(wd.ESide.BACK);
     });
+
+    describe("getTextureForRenderSort", function(){
+        it("return null", function () {
+            expect(material.getTextureForRenderSort()).toBeNull();
+        });
+    });
 });
 

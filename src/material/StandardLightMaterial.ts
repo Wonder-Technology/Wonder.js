@@ -114,6 +114,10 @@ module wd{
         @cloneAttributeAsBasicType()
         public lightMapIntensity:number = 1;
 
+        public getTextureForRenderSort():Texture{
+            return this.diffuseMap;
+        }
+
         @virtual
         protected addExtendShaderLib(){
         }
