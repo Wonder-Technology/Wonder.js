@@ -5,6 +5,20 @@ module wd{
 
         private static _table:wdCb.Hash<Buffer> = wdCb.Hash.create<Buffer>();
 
+        public static bindIndexBuffer(indexBuffer:ElementBuffer){
+            var gl:any = null;
+
+            if(this.lastBindedElementBuffer === indexBuffer){
+                return;
+            }
+
+            this.lastBindedElementBuffer = indexBuffer;
+
+            gl = DeviceManager.getInstance().gl;
+
+            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer.buffer);
+        }
+
         public static hasBuffer(key:string){
             return this._table.hasChild(key);
         }

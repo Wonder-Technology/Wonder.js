@@ -7,7 +7,6 @@ module wd{
         }
 
         private _uniformTable:wdCb.Hash<any> = wdCb.Hash.create<any>();
-        private _attributeTable:wdCb.Hash<any> = wdCb.Hash.create<any>();
         private _vertexAttribHistory:wdCb.Hash<number> = wdCb.Hash.create<number>();
 
         @cache(function(name:string, pos:any, data:any){
@@ -162,18 +161,12 @@ module wd{
             gl.uniform1iv(pos, data);
         }
 
+        //todo pass test
         @cache(function(name:string, pos:any, buffer:ArrayBuffer){
-            var recordedData:any = this._attributeTable.getChild(name);
-
-            if(!recordedData){
-                return false;
-            }
-
-            return recordedData.uid === buffer.uid;
+            return BufferTable.lastBindedArrayBuffer === buffer;
         }, function(name:string, pos:any, buffer:ArrayBuffer){
-            return this._attributeTable.getChild(name);
         }, function(result:any, name:string, pos:any, buffer:ArrayBuffer){
-            this._recordAttributeData(name, buffer);
+            BufferTable.lastBindedArrayBuffer = buffer;
         })
         public sendBuffer(name:string, pos:any, buffer:ArrayBuffer){
             var gl = DeviceManager.getInstance().gl;
@@ -187,7 +180,6 @@ module wd{
 
         public clearAllCache(){
             this._uniformTable.removeAllChildren();
-            this._attributeTable.removeAllChildren();
         }
 
         public dispose(){
@@ -248,10 +240,6 @@ module wd{
 
         private _recordUniformData(name:string, data:any){
             this._uniformTable.addChild(name, data);
-        }
-
-        private _recordAttributeData(name:string, data:any){
-            this._attributeTable.addChild(name, data);
         }
     }
 }

@@ -12,7 +12,8 @@ module wd{
             indexBuffer = <ElementBuffer>buffers.getChild(EBufferDataType.INDICE);
 
             if(indexBuffer){
-                gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer.buffer);
+                //todo test
+                BufferTable.bindIndexBuffer(indexBuffer);
 
                 instanceList.forEach((instance:GameObject) => {
                     var startOffset:number = 0;

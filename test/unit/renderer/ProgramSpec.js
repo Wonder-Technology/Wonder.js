@@ -68,13 +68,6 @@ describe("Program", function(){
 
             expect(program._sender._uniformTable.removeAllChildren).toCalledOnce();
         });
-        it("clear _attributeTable", function () {
-            sandbox.stub(program._sender._attributeTable, "removeAllChildren");
-
-            program._clearAllCache();
-
-            expect(program._sender._attributeTable.removeAllChildren).toCalledOnce();
-        });
     });
 
     describe("getUniformLocation", function(){
