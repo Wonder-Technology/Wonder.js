@@ -10,6 +10,8 @@ module wd{
 
         public sendShaderVariables(program:Program, cmd:ProceduralCommand){
             this.sendAttributeData(program, "a_positionVec2", cmd.vertexBuffer);
+
+            program.sendAllBufferData();
         }
 
         public setShaderDefinition(cmd:ProceduralCommand){

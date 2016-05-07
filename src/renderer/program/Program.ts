@@ -65,7 +65,7 @@ module wd{
         }
 
         public sendUniformData(name:string, type:EVariableType, data:any){
-            var pos:any = null;
+            var pos:number = null;
 
             pos = this.getUniformLocation(name);
 
@@ -92,11 +92,16 @@ module wd{
                 return;
             }
 
-            this._sendAttributeData(type, name, pos, data);
+            this._sendAttributeData(type, pos, data);
         }
 
         public sendStructureData(name:string, type:EVariableType, data:any){
             this.sendUniformData(name, type, data);
+        }
+
+        public sendAllBufferData(){
+            this._sender.sendAllBufferData();
+            this._sender.clearBufferList();
         }
 
         public initWithShader(shader:Shader){
@@ -175,7 +180,7 @@ module wd{
             this._clearAllCache();
         }
 
-        public isUniformDataNotExistByLocation(pos:any){
+        public isUniformDataNotExistByLocation(pos:number){
             return pos === null;
         }
 
@@ -186,7 +191,7 @@ module wd{
             this._sender.clearAllCache();
         }
 
-        private _sendUniformData(type:EVariableType, name:string, pos:any, data:any){
+        private _sendUniformData(type:EVariableType, name:string, pos:number, data:any){
             switch (type){
                 case EVariableType.FLOAT_1:
                     this._sender.sendFloat1(name, pos, data);
@@ -220,10 +225,11 @@ module wd{
             }
         }
 
-        private _sendAttributeData(type:EVariableType, name:string, pos:any, data:any){
+        private _sendAttributeData(type:EVariableType, pos:number, data:any){
             switch (type){
                 case EVariableType.BUFFER:
-                    this._sender.sendBuffer(name, pos, data);
+                    //todo test
+                    this._sender.addBufferToToSendList(pos, data);
                     break;
                 default :
                     Log.error(true, Log.info.FUNC_INVALID("EVariableType:", type));

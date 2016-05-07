@@ -1,9 +1,16 @@
 var prepareTool = (function () {
     return {
-        createBox: function(size){
+        createBox: function(size, materialClass){
             var size = size || 5;
 
-            var material = wd.BasicMaterial.create();
+            var material;
+
+            if(materialClass){
+                material = materialClass.create();
+            }
+            else{
+                material = wd.BasicMaterial.create();
+            }
 
             var geo = wd.BoxGeometry.create();
             geo.width = size;
@@ -19,10 +26,17 @@ var prepareTool = (function () {
 
             return box;
         },
-        createSphere: function(radius){
+        createSphere: function(radius, materialClass){
             var radius = radius || 5;
 
-            var material = wd.BasicMaterial.create();
+            var material;
+
+            if(materialClass){
+                material = materialClass.create();
+            }
+            else{
+                material = wd.BasicMaterial.create();
+            }
 
             var geo = wd.SphereGeometry.create();
             geo.radius = radius;

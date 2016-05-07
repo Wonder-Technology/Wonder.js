@@ -224,6 +224,8 @@ module wd{
 
             InstanceUtils.addModelMatrixShaderLib(shader, gameObject);
 
+            shader.addLib(EndShaderLib.create());
+
             return shader;
         }
 

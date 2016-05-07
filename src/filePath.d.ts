@@ -435,9 +435,12 @@
 /// <reference path="renderer/shader/lib/ShaderLib"/>
 /// <reference path="renderer/shader/lib/CustomShaderLib"/>
 /// <reference path="renderer/shader/lib/EngineShaderLib"/>
+
 /// <reference path="renderer/shader/lib/common/CommonShaderLib"/>
+/// <reference path="renderer/shader/lib/common/EndShaderLib"/>
 /// <reference path="renderer/shader/lib/common/VerticeCommonShaderLib"/>
 /// <reference path="renderer/shader/lib/common/NormalCommonShaderLib"/>
+
 /// <reference path="renderer/shader/lib/basic/BasicShaderLib"/>
 /// <reference path="renderer/shader/lib/basic/EndBasicShaderLib"/>
 /// <reference path="renderer/shader/lib/animation/morph/CommonMorphShaderLib"/>

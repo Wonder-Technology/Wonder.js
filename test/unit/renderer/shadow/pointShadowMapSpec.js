@@ -3,6 +3,7 @@ describe("point shadow map", function() {
     var shadow = null;
 
     var deviceManager;
+    var gl;
 
     var director;
     var sphere;
@@ -20,6 +21,8 @@ describe("point shadow map", function() {
         deviceManager = wd.DeviceManager.getInstance();
 
         sandbox.stub(deviceManager, "gl", testTool.buildFakeGl(sandbox));
+
+        gl = deviceManager.gl;
 
         renderer = wd.WebGLRenderer.create();
     });
@@ -74,34 +77,57 @@ describe("point shadow map", function() {
                     sphere.getComponent(wd.Shadow).cast = true;
                 });
 
-                it("send u_lightPos,u_farPlane, u_mMatrix,u_vMatrix,u_pMatrix,a_position", function () {
-                    var pointLight = light.getComponent(wd.PointLight);
-                    setBuildShadowMapShaderAndProgram(sphere, function (program) {
-                        sandbox.stub(program, "sendAttributeData");
-                        sandbox.stub(program, "sendUniformData");
+
+                describe("test send data", function(){
+                    beforeEach(function(){
+                        setBuildShadowMapShaderAndProgram(sphere, function (program) {
+                            sandbox.spy(program, "sendAttributeData");
+                            sandbox.stub(program, "sendUniformData");
+                        });
+
+
+                        director._init();
                     });
 
+                    it("bind and send vertex buffer", function(){
+                        var pos = 1;
+                        gl.getAttribLocation.withArgs(sinon.match.any, "a_position").returns(pos);
 
-                    director._init();
+                        director.scene.gameObjectScene.render(renderer);
 
-                    director.scene.gameObjectScene.render(renderer);
+                        expect(gl.vertexAttribPointer.withArgs(pos)).toCalledOnce();
+                    });
+                    it("not bind and not send other buffers", function () {
+                        var pos = 1;
+                        gl.getAttribLocation.withArgs(sinon.match.any, "a_normal").returns(pos);
+
+                        director.scene.gameObjectScene.render(renderer);
+
+                        expect(gl.vertexAttribPointer.withArgs(pos)).not.toCalled();
+                    });
+                    it("send u_lightPos,u_farPlane, u_mMatrix,u_vMatrix,u_pMatrix", function () {
+                        var pointLight = light.getComponent(wd.PointLight);
 
 
-                    expect(program.sendUniformData.withArgs("u_lightPos").callCount).toEqual(6);
-                    var position = light.transform.position;
-                    expect(program.sendUniformData.withArgs("u_lightPos").getCall(0).args[2]).toEqual(position);
-                    expect(program.sendUniformData.withArgs("u_lightPos").getCall(1).args[2]).toEqual(position);
-                    expect(program.sendUniformData.withArgs("u_lightPos").getCall(5).args[2]).toEqual(position);
+                        director.scene.gameObjectScene.render(renderer);
 
-                    expect(program.sendUniformData.withArgs("u_farPlane").callCount).toEqual(6);
-                    expect(program.sendUniformData.withArgs("u_farPlane").getCall(1).args[2]).toEqual(pointLight.shadowCameraFar);
-                    expect(program.sendUniformData.withArgs("u_farPlane").getCall(5).args[2]).toEqual(pointLight.shadowCameraFar);
 
-                    expect(program.sendUniformData.withArgs("u_mMatrix")).toCalledBefore(program.sendUniformData.withArgs("u_lightPos"));
-                    expect(program.sendUniformData.withArgs("u_vMatrix")).toCalledBefore(program.sendUniformData.withArgs("u_lightPos"));
-                    expect(program.sendUniformData.withArgs("u_pMatrix")).toCalledBefore(program.sendUniformData.withArgs("u_lightPos"));
-                    expect(program.sendAttributeData.withArgs("a_position")).toCalledBefore(program.sendUniformData.withArgs("u_lightPos"));
+                        expect(program.sendUniformData.withArgs("u_lightPos").callCount).toEqual(6);
+                        var position = light.transform.position;
+                        expect(program.sendUniformData.withArgs("u_lightPos").getCall(0).args[2]).toEqual(position);
+                        expect(program.sendUniformData.withArgs("u_lightPos").getCall(1).args[2]).toEqual(position);
+                        expect(program.sendUniformData.withArgs("u_lightPos").getCall(5).args[2]).toEqual(position);
+
+                        expect(program.sendUniformData.withArgs("u_farPlane").callCount).toEqual(6);
+                        expect(program.sendUniformData.withArgs("u_farPlane").getCall(1).args[2]).toEqual(pointLight.shadowCameraFar);
+                        expect(program.sendUniformData.withArgs("u_farPlane").getCall(5).args[2]).toEqual(pointLight.shadowCameraFar);
+
+                        expect(program.sendUniformData.withArgs("u_mMatrix")).toCalledBefore(program.sendUniformData.withArgs("u_lightPos"));
+                        expect(program.sendUniformData.withArgs("u_vMatrix")).toCalledBefore(program.sendUniformData.withArgs("u_lightPos"));
+                        expect(program.sendUniformData.withArgs("u_pMatrix")).toCalledBefore(program.sendUniformData.withArgs("u_lightPos"));
+                    });
                 });
+
                 it("only bind shadow map, not send shadow map unit(because glsl only bind one texture, and its unit is 0 defaultly)", function () {
                     director._init();
 
@@ -371,11 +397,11 @@ describe("point shadow map", function() {
                         it("children should send shadow map data", function () {
                             director._loopBody();
 
-                            expect(program1.sendUniformData.withArgs("u_cubemapShadowMapSampler[0]", sinon.match.any, 0)).toCalledOnce();
-                            expect(program1.sendUniformData.withArgs("u_diffuseMapSampler", sinon.match.any, 1)).toCalledOnce();
+                            expect(program1.sendUniformData.withArgs("u_cubemapShadowMapSampler[0]", sinon.match.any, 0)).toCalledThrice();
+                            expect(program1.sendUniformData.withArgs("u_diffuseMapSampler", sinon.match.any, 1)).toCalledThrice();
 
-                            expect(program2.sendUniformData.withArgs("u_cubemapShadowMapSampler[0]", sinon.match.any, 0)).toCalledOnce();
-                            expect(program2.sendUniformData.withArgs("u_diffuseMapSampler", sinon.match.any, 1)).toCalledOnce();
+                            expect(program2.sendUniformData.withArgs("u_cubemapShadowMapSampler[0]", sinon.match.any, 0)).toCalledThrice();
+                            expect(program2.sendUniformData.withArgs("u_diffuseMapSampler", sinon.match.any, 1)).toCalledThrice();
                         });
 
                         it("children fs glsl should contain shadow map glsl", function () {
@@ -678,24 +704,27 @@ describe("point shadow map", function() {
                     var data3 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere3);
                     var program3 = data3.program;
 
+                    expect(program1 === program2).toBeTruthy();
+                    expect(program2 === program3).toBeTruthy();
+
 
                     director.scene.gameObjectScene.render(renderer);
                     renderer.render();
 
-                    expect(program1.sendUniformData.withArgs("u_cubemapShadowMapSampler[0]", sinon.match.any, 0)).toCalledOnce();
-                    expect(program1.sendUniformData.withArgs("u_cubemapShadowMapSampler[1]", sinon.match.any, 1)).toCalledOnce();
-                    expect(program1.sendUniformData.withArgs("u_diffuseMapSampler", sinon.match.any, 2)).toCalledOnce();
+                    expect(program1.sendUniformData.withArgs("u_cubemapShadowMapSampler[0]", sinon.match.any, 0)).toCalledThrice();
+                    expect(program1.sendUniformData.withArgs("u_cubemapShadowMapSampler[1]", sinon.match.any, 1)).toCalledThrice();
+                    expect(program1.sendUniformData.withArgs("u_diffuseMapSampler", sinon.match.any, 2)).toCalledThrice();
 
 
-                    expect(program2.sendUniformData.withArgs("u_cubemapShadowMapSampler[0]", sinon.match.any, 0)).toCalledOnce();
-                    expect(program2.sendUniformData.withArgs("u_cubemapShadowMapSampler[1]", sinon.match.any, 1)).toCalledOnce();
-                    expect(program2.sendUniformData.withArgs("u_diffuseMapSampler", sinon.match.any, 2)).toCalledOnce();
-
-
-
-                    expect(program3.sendUniformData.withArgs("u_cubemapShadowMapSampler[0]", sinon.match.any, 0)).toCalledOnce();
-                    expect(program3.sendUniformData.withArgs("u_cubemapShadowMapSampler[1]", sinon.match.any, 1)).toCalledOnce();
-                    expect(program3.sendUniformData.withArgs("u_diffuseMapSampler", sinon.match.any, 2)).toCalledOnce();
+                    //expect(program2.sendUniformData.withArgs("u_cubemapShadowMapSampler[0]", sinon.match.any, 0)).toCalledOnce();
+                    //expect(program2.sendUniformData.withArgs("u_cubemapShadowMapSampler[1]", sinon.match.any, 1)).toCalledOnce();
+                    //expect(program2.sendUniformData.withArgs("u_diffuseMapSampler", sinon.match.any, 2)).toCalledOnce();
+                    //
+                    //
+                    //
+                    //expect(program3.sendUniformData.withArgs("u_cubemapShadowMapSampler[0]", sinon.match.any, 0)).toCalledOnce();
+                    //expect(program3.sendUniformData.withArgs("u_cubemapShadowMapSampler[1]", sinon.match.any, 1)).toCalledOnce();
+                    //expect(program3.sendUniformData.withArgs("u_diffuseMapSampler", sinon.match.any, 2)).toCalledOnce();
                 });
                 it("fs glsl should define CUBEMAP_SHADOWMAP_COUNT", function () {
                     director._init();

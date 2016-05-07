@@ -134,57 +134,6 @@ describe("Program", function(){
     });
 
     describe("sendAttributeData", function(){
-        var buffer = null;
-        var pos;
-
-        beforeEach(function(){
-            //program.initWithShader(wd.CommonShader.create());
-
-            pos = 1000;
-            gl.UNSIGNED_SHORT = "UNSIGNED_SHORT";
-            gl.getAttribLocation.returns(pos);
-        });
-
-        describe("test send BUFFER", function () {
-            beforeEach(function(){
-                buffer = wd.ArrayBuffer.create([1,2, 3, 1.2,0.2,3.1, 3.3, 10.5, 9.1], 3, wd.EBufferType.UNSIGNED_SHORT);
-            });
-
-            it("bind array buffer", function(){
-                program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer);
-
-                expect(gl.bindBuffer).toCalledWith(gl.ARRAY_BUFFER, buffer.buffer);
-            });
-            it("attach buffer to attribute", function(){
-                program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer);
-
-                expect(gl.vertexAttribPointer).toCalledWith(pos, 3, gl[wd.EBufferType.UNSIGNED_SHORT], false, 0, 0);
-            });
-            it("enable attribute", function(){
-                program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer);
-
-                expect(gl.enableVertexAttribArray).toCalledWith(pos);
-            });
-
-            describe("test cache", function(){
-                beforeEach(function(){
-                });
-
-                it("if cached, return cached data", function () {
-                    program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer);
-                    program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer);
-
-                    expect(gl.vertexAttribPointer.withArgs(pos, 3, gl[wd.EBufferType.UNSIGNED_SHORT], false, 0, 0)).toCalledOnce();
-                });
-                it("if data not equal, cache miss", function () {
-                    program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer);
-                    program.sendAttributeData("a_position", wd.EVariableType.BUFFER, wd.ArrayBuffer.create([1,2, 3, 1.2,0.2,3.1, 3.3, 10.5, 9.1], 3, wd.EBufferType.UNSIGNED_SHORT));
-
-                    expect(gl.vertexAttribPointer.withArgs(pos)).toCalledTwice();
-                });
-            });
-        });
-
     });
 
     describe("sendUniformData", function(){
@@ -433,15 +382,20 @@ describe("Program", function(){
         });
 
         describe("unbind vertex buffer", function () {
+            var pos;
+
             beforeEach(function(){
                 gl.VERTEX_ATTRIB_ARRAY_ENABLED = 2;
 
-                program.initWithShader(wd.CommonShader.create());
+                //program.initWithShader(wd.CommonShader.create());
+
+                pos = 2;
+
+                program._sender.sendBuffer(pos, wd.ArrayBuffer.create());
             });
 
             it("if position > gl.VERTEX_ATTRIB_ARRAY_ENABLED, not disable", function () {
                 gl.VERTEX_ATTRIB_ARRAY_ENABLED = 1;
-                var pos = 2;
                 gl.getAttribLocation.returns(pos);
                 program.sendAttributeData("a", wd.EVariableType.BUFFER, {});
 
@@ -450,7 +404,6 @@ describe("Program", function(){
                 expect(gl.disableVertexAttribArray).not.toCalled();
             });
             it("else, disable", function () {
-                var pos = 1;
                 gl.getAttribLocation.returns(pos);
                 program.sendAttributeData("a", wd.EVariableType.BUFFER, {});
 
@@ -458,13 +411,14 @@ describe("Program", function(){
 
                 expect(gl.disableVertexAttribArray).toCalledOnce();
             });
-            it("clear all cache", function () {
-                sandbox.stub(program, "_clearAllCache");
+        });
 
-                program.dispose();
+        it("clear all cache", function () {
+            sandbox.stub(program, "_clearAllCache");
 
-                expect(program._clearAllCache).toCalledOnce();
-            });
+            program.dispose();
+
+            expect(program._clearAllCache).toCalledOnce();
         });
     });
 });

@@ -12,6 +12,7 @@ module wd {
         public init(){
             this._addTopShaderLib();
             this.addShaderLib();
+            this._addEndShaderLib();
 
             super.init();
         }
@@ -58,6 +59,10 @@ module wd {
 
         private _addShaderLibToTop(lib:ShaderLib){
             this.shader.addShaderLibToTop(lib);
+        }
+
+        private _addEndShaderLib(){
+            this.shader.addLib(EndShaderLib.create());
         }
     }
 }

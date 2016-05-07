@@ -1,6 +1,6 @@
 module wd{
     export class BufferTable{
-        public static lastBindedArrayBuffer:ArrayBuffer = null;
+        public static lastBindedArrayBufferList:wdCb.Collection<ToSendBufferData> = null;
         public static lastBindedElementBuffer:ElementBuffer = null;
 
         private static _table:wdCb.Hash<Buffer> = wdCb.Hash.create<Buffer>();
@@ -37,14 +37,14 @@ module wd{
                 buffer.dispose();
             });
 
-            this.lastBindedArrayBuffer = null;
+            this.lastBindedArrayBufferList = null;
             this.lastBindedElementBuffer = null;
         }
 
         public static clearAll(){
             this._table.removeAllChildren();
 
-            this.lastBindedArrayBuffer = null;
+            this.lastBindedArrayBufferList = null;
             this.lastBindedElementBuffer = null;
         }
     }

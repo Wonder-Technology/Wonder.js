@@ -9,22 +9,21 @@ module wd{
         private _uniformTable:wdCb.Hash<any> = wdCb.Hash.create<any>();
         private _vertexAttribHistory:wdCb.Hash<number> = wdCb.Hash.create<number>();
 
-        @cache(function(name:string, pos:any, data:any){
+        @cache(function(name:string, pos:number, data:any){
             var recordedData:any = this._uniformTable.getChild(name);
 
             return recordedData == data;
-        }, function(name:string, pos:any, data:any){
-            return this._uniformTable.getChild(name);
-        }, function(result:any, name:string, pos:any, data:any){
+        }, function(name:string, pos:number, data:any){
+        }, function(result:any, name:string, pos:number, data:any){
             this._recordUniformData(name, data);
         })
-        public sendFloat1(name:string, pos:any, data:any){
+        public sendFloat1(name:string, pos:number, data:any){
             var gl = DeviceManager.getInstance().gl;
 
             gl.uniform1f(pos, Number(data));
         }
 
-        @cache(function(name:string, pos:any, data:any){
+        @cache(function(name:string, pos:number, data:any){
             var recordedData:any = this._uniformTable.getChild(name);
 
             if(!recordedData){
@@ -36,12 +35,11 @@ module wd{
             }
 
             return (<Vector2>recordedData).isEqual(<Vector2>data);
-        }, function(name:string, pos:any, data:any){
-            return this._uniformTable.getChild(name);
-        }, function(result:any, name:string, pos:any, data:any){
+        }, function(name:string, pos:number, data:any){
+        }, function(result:any, name:string, pos:number, data:any){
             this._recordUniformData(name, data);
         })
-        public sendFloat2(name:string, pos:any, data:any){
+        public sendFloat2(name:string, pos:number, data:any){
             var gl = DeviceManager.getInstance().gl;
 
             data = this._convertToArray2(data);
@@ -49,7 +47,7 @@ module wd{
             gl.uniform2f(pos, data[0], data[1]);
         }
 
-        @cache(function(name:string, pos:any, data:any){
+        @cache(function(name:string, pos:number, data:any){
             var recordedData:any = this._uniformTable.getChild(name);
 
             if(!recordedData){
@@ -61,12 +59,11 @@ module wd{
             }
 
             return (<Vector3>recordedData).isEqual(<Vector3>data);
-        }, function(name:string, pos:any, data:any){
-            return this._uniformTable.getChild(name);
-        }, function(result:any, name:string, pos:any, data:any){
+        }, function(name:string, pos:number, data:any){
+        }, function(result:any, name:string, pos:number, data:any){
             this._recordUniformData(name, data);
         })
-        public sendFloat3(name:string, pos:any, data:any){
+        public sendFloat3(name:string, pos:number, data:any){
             var gl = DeviceManager.getInstance().gl;
 
             data = this._convertToArray3(data);
@@ -75,7 +72,7 @@ module wd{
         }
 
 
-        @cache(function(name:string, pos:any, data:any){
+        @cache(function(name:string, pos:number, data:any){
             var recordedData:any = this._uniformTable.getChild(name);
 
             if(!recordedData){
@@ -87,12 +84,11 @@ module wd{
             }
 
             return (<Vector4>recordedData).isEqual(<Vector4>data);
-        }, function(name:string, pos:any, data:any){
-            return this._uniformTable.getChild(name);
-        }, function(result:any, name:string, pos:any, data:any){
+        }, function(name:string, pos:number, data:any){
+        }, function(result:any, name:string, pos:number, data:any){
             this._recordUniformData(name, data);
         })
-        public sendFloat4(name:string, pos:any, data:any){
+        public sendFloat4(name:string, pos:number, data:any){
             var gl = DeviceManager.getInstance().gl;
 
             data = this._convertToArray4(data);
@@ -100,41 +96,40 @@ module wd{
             gl.uniform4f(pos, data[0], data[1], data[2], data[3]);
         }
 
-        @cache(function(name:string, pos:any, data:any){
+        @cache(function(name:string, pos:number, data:any){
             var recordedData:any = this._uniformTable.getChild(name);
 
             return recordedData == data;
-        }, function(name:string, pos:any, data:any){
-            return this._uniformTable.getChild(name);
-        }, function(result:any, name:string, pos:any, data:any){
+        }, function(name:string, pos:number, data:any){
+        }, function(result:any, name:string, pos:number, data:any){
             this._recordUniformData(name, data);
         })
-        public sendNum1(name:string, pos:any, data:any){
+        public sendNum1(name:string, pos:number, data:any){
             var gl = DeviceManager.getInstance().gl;
 
             gl.uniform1i(pos, Number(data));
         }
 
-        public sendMatrix3(name:string, pos:any, data:Matrix3){
+        public sendMatrix3(name:string, pos:number, data:Matrix3){
             var gl = DeviceManager.getInstance().gl;
 
             gl.uniformMatrix3fv(pos,false, data.values);
         }
 
-        public sendMatrix4(name:string, pos:any, data:Matrix4){
+        public sendMatrix4(name:string, pos:number, data:Matrix4){
             var gl = DeviceManager.getInstance().gl;
 
             gl.uniformMatrix4fv(pos,false, data.values);
         }
 
-        @require(function(name:string, pos:any, data:Array<number>){
+        @require(function(name:string, pos:number, data:Array<number>){
             assert(JudgeUtils.isArrayExactly(data), Log.info.FUNC_SHOULD("data", `be array, but actual is ${data}`));
 
             for(let unit of data){
                 assert(JudgeUtils.isNumber(unit), Log.info.FUNC_SHOULD("data", `be Array<number>, but actual is ${data}`));
             }
         })
-        @cache(function(name:string, pos:any, data:Array<number>){
+        @cache(function(name:string, pos:number, data:Array<number>){
             var recordedData:any = this._uniformTable.getChild(name),
                 isEqual:boolean = true;
 
@@ -150,25 +145,75 @@ module wd{
             }
 
             return isEqual;
-        }, function(name:string, pos:any, data:Array<number>){
-            return this._uniformTable.getChild(name);
-        }, function(result:any, name:string, pos:any, data:Array<number>){
+        }, function(name:string, pos:number, data:Array<number>){
+        }, function(result:any, name:string, pos:number, data:Array<number>){
             this._recordUniformData(name, data);
         })
-        public sendSampleArray(name:string, pos:any, data:Array<number>){
+        public sendSampleArray(name:string, pos:number, data:Array<number>){
             var gl = DeviceManager.getInstance().gl;
 
             gl.uniform1iv(pos, data);
         }
 
-        //todo pass test
-        @cache(function(name:string, pos:any, buffer:ArrayBuffer){
-            return BufferTable.lastBindedArrayBuffer === buffer;
-        }, function(name:string, pos:any, buffer:ArrayBuffer){
-        }, function(result:any, name:string, pos:any, buffer:ArrayBuffer){
-            BufferTable.lastBindedArrayBuffer = buffer;
+        public addBufferToToSendList(pos:number, buffer:ArrayBuffer){
+            this._toSendBufferList.addChild({
+                pos:pos,
+                buffer:buffer
+            });
+        }
+
+        @require(function(){
+            assert(!this._toSendBufferList.map((data:ToSendBufferData) => {
+                    return data.buffer;
+                })
+                .hasRepeatItems(), Log.info.FUNC_SHOULD_NOT("_toSendBufferList", "has repeat buffer"));
         })
-        public sendBuffer(name:string, pos:any, buffer:ArrayBuffer){
+        @cache(function(){
+            var result = true,
+                toSendBufferList = this._toSendBufferList;
+
+            if(!BufferTable.lastBindedArrayBufferList){
+                return false;
+            }
+
+            //todo optimize?
+
+            BufferTable.lastBindedArrayBufferList.forEach((lastBindedArrayBufferData:ToSendBufferData, index:number) => {
+                var bufferData:ToSendBufferData = toSendBufferList.getChild(index);
+
+                if(!bufferData || !JudgeUtils.isEqual(lastBindedArrayBufferData.buffer, bufferData.buffer)){
+                    result = false;
+                    return wdCb.$BREAK;
+                }
+            });
+
+            return result;
+        }, function(){
+        }, function(result:any){
+            BufferTable.lastBindedArrayBufferList = this._toSendBufferList.clone(false);
+        })
+        public sendAllBufferData(){
+            this._toSendBufferList.forEach((data:ToSendBufferData) => {
+                this.sendBuffer(data.pos, data.buffer);
+            }, this);
+        }
+
+        public clearBufferList(){
+            this._toSendBufferList.removeAllChildren();
+        }
+
+        private _toSendBufferList:wdCb.Collection<ToSendBufferData> = wdCb.Collection.create<ToSendBufferData>();
+
+
+
+
+
+
+
+
+
+        //todo pass test
+        public sendBuffer(pos:number, buffer:ArrayBuffer){
             var gl = DeviceManager.getInstance().gl;
 
             this._vertexAttribHistory.addChild(String(pos), true);
@@ -241,5 +286,10 @@ module wd{
         private _recordUniformData(name:string, data:any){
             this._uniformTable.addChild(name, data);
         }
+    }
+
+    export type ToSendBufferData = {
+        pos:number;
+        buffer:ArrayBuffer;
     }
 }
