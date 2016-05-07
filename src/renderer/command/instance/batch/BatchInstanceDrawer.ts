@@ -12,7 +12,6 @@ module wd{
             indexBuffer = <ElementBuffer>buffers.getChild(EBufferDataType.INDICE);
 
             if(indexBuffer){
-                //todo test
                 BufferTable.bindIndexBuffer(indexBuffer);
 
                 instanceList.forEach((instance:GameObject) => {

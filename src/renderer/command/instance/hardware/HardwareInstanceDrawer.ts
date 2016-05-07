@@ -45,7 +45,8 @@ module wd{
             var startOffset:number = 0,
                 gl = DeviceManager.getInstance().gl;
 
-            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer.buffer);
+            BufferTable.bindIndexBuffer(indexBuffer);
+
             GlUtils.drawElementsInstancedANGLE(gl[drawMode], indexBuffer.count, indexBuffer.type, indexBuffer.typeSize * startOffset, instancesCount);
         }
 

@@ -173,11 +173,38 @@ describe("instance with shadow", function () {
                     director._init();
 
                     director.scene.gameObjectScene.render(renderer);
-                    renderer.render();
+                    //renderer.render();
 
 
                     expect(glslTool.contain(shader.vsSource, "attribute vec4 a_mVec4_0")).toBeTruthy();
                     expect(glslTool.contain(shader.vsSource, "mat4 mMatrix = mat4(a_mVec4_0, a_mVec4_1, a_mVec4_2, a_mVec4_3);")).toBeTruthy();
+                });
+
+                it("bind and send vertex buffer", function(){
+                    var pos = 1;
+                    gl.getAttribLocation.withArgs(sinon.match.any, "a_position").returns(pos);
+
+                    setBuildShadowMapShaderAndProgram();
+
+
+                    director._init();
+
+                    director.scene.gameObjectScene.render(renderer);
+
+                    /*!
+                    sphere1+sphere1Instance1, sphere2
+                     */
+                    expect(gl.vertexAttribPointer.withArgs(pos)).toCalledTwice();
+                });
+                it("not bind and not send other buffers", function () {
+                    var pos = 1;
+                    gl.getAttribLocation.withArgs(sinon.match.any, "a_normal").returns(pos);
+
+                    director._init();
+
+                    director.scene.gameObjectScene.render(renderer);
+
+                    expect(gl.vertexAttribPointer.withArgs(pos)).not.toCalled();
                 });
             });
 

@@ -86,14 +86,14 @@
 
         //'test/unit/**/Shadow*Spec.js',
 
-        'test/unit/renderer/shadow/pointShadowMapSpec.js',
+        //'test/unit/renderer/shadow/pointShadowMapSpec.js',
         //
         //'test/unit/renderer/shadow/**',
-        'test/unit/renderer/shadow/directionShadowMapSpec.js',
+        //'test/unit/renderer/shadow/directionShadowMapSpec.js',
         //'test/unit/renderer/shadow/directionShadowMap*',
         //'test/unit/renderer/*ShadowMap_*Spec.js',
         //
-        //'test/unit/**/instance/*',
+        'test/unit/**/instance/*',
         //'test/unit/**/instance/*lod*',
 
         //'test/unit/**/instance/SourceInstance*',

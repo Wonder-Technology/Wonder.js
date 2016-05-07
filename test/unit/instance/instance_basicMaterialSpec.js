@@ -269,6 +269,24 @@ describe("instance with basic material", function(){
 
             expect(extensionInstancedArrays.drawElementsInstancedANGLE).toCalledAfter(gl.bindBuffer.withArgs(gl.ELEMENT_ARRAY_BUFFER));
         });
+
+        it("if lastBindedElementBuffer is this element buffer, not bind it", function () {
+            prepareWithoutChild();
+            director._init();
+
+            director.scene.gameObjectScene.render(renderer);
+            renderer.render();
+
+            var callCount = gl.bindBuffer.withArgs(gl.ELEMENT_ARRAY_BUFFER).callCount;
+
+
+
+            director.scene.gameObjectScene.render(renderer);
+            renderer.render();
+
+
+            expect(gl.bindBuffer.withArgs(gl.ELEMENT_ARRAY_BUFFER).callCount).toEqual(callCount);
+        });
     });
 
 
@@ -518,14 +536,39 @@ describe("instance with basic material", function(){
                 expect(extensionInstancedArrays.drawElementsInstancedANGLE).not.toCalled();
             }
 
-            function judge2(){
+            function judge2_1(){
                 initDirector();
 
                 director.scene.gameObjectScene.render(renderer);
                 renderer.render();
 
                 expect(gl.bindBuffer.withArgs(gl.ARRAY_BUFFER).callCount).toEqual(6);
+            }
+
+            function judge2_2(){
+                initDirector();
+
+                director.scene.gameObjectScene.render(renderer);
+                renderer.render();
+
                 expect(gl.bindBuffer.withArgs(gl.ELEMENT_ARRAY_BUFFER).callCount).toEqual(2);
+            }
+
+            function judge2_3(){
+                initDirector();
+
+                director.scene.gameObjectScene.render(renderer);
+                renderer.render();
+
+                var callCount = gl.bindBuffer.withArgs(gl.ELEMENT_ARRAY_BUFFER).callCount;
+
+
+
+                director.scene.gameObjectScene.render(renderer);
+                renderer.render();
+
+
+                expect(gl.bindBuffer.withArgs(gl.ELEMENT_ARRAY_BUFFER).callCount).toEqual(callCount);
             }
 
             function judge3(){
@@ -574,9 +617,23 @@ describe("instance with basic material", function(){
             it("set webgl state and use program and bind texture and send glsl data(except mMatrix) only once", function () {
                 judge1();
             });
-            it("not bind array,element buffer when draw instance", function () {
-                judge2();
+
+            describe("test bind buffer", function(){
+                beforeEach(function(){
+                });
+
+                it("not bind array buffer when draw instance", function () {
+                    judge2_1();
+                });
+
+                it("bind element buffer when draw instance", function () {
+                    judge2_2();
+                });
+                it("if lastBindedElementBuffer is this element buffer, not bind it", function () {
+                    judge2_3();
+                });
             });
+
             it("draw one instance in one draw call", function(){
                 judge3();
             });
@@ -598,9 +655,22 @@ describe("instance with basic material", function(){
                     expect(program.sendUniformData.withArgs("u_opacity", wd.EVariableType.FLOAT_1, 0.5)).toCalledOnce();
                 });
 
-                it("not bind array,element buffer when draw instance", function () {
-                    judge2();
+                describe("test bind buffer", function(){
+                    beforeEach(function(){
+                    });
+
+                    it("not bind array buffer when draw instance", function () {
+                        judge2_1();
+                    });
+
+                    it("bind element buffer when draw instance", function () {
+                        judge2_2();
+                    });
+                    it("if lastBindedElementBuffer is this element buffer, not bind it", function () {
+                        judge2_3();
+                    });
                 });
+
                 it("draw one instance in one draw call", function(){
                     judge3();
                 });
