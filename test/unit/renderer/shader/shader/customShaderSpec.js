@@ -162,12 +162,12 @@ describe("custom shader", function () {
                     rendererTool.triggerMaterialAddShaderLib(material);
 
                     program = shaderTool.getAndStubProgram(sandbox, material);
-
-
-                    material.updateShader(quadCmd);
                 });
 
                 it("build definition data", function () {
+                    material.updateShader(quadCmd);
+
+
                     var attributes = shaderDefinitionData.attributes;
                     var uniforms = shaderDefinitionData.uniforms;
 
@@ -202,21 +202,35 @@ describe("custom shader", function () {
                     expect(shader.fsSource).toEqual(fsSource);
                 });
                 it("if definition data change, program will reset shader", function () {
+                    material.updateShader(quadCmd);
+
                     expect(gl.attachShader).toCalledTwice();
                 });
                 it("use program", function(){
+                    material.updateShader(quadCmd);
+
                     expect(program.use).toCalledAfter(gl.attachShader);
                 });
                 it("send attribute data", function () {
-                    expect(program.sendAttributeData).toCalledAfter(program.use);
+                    var pos1 = 1;
+                    gl.getAttribLocation.withArgs(sinon.match.any, "a_position").returns(pos1);
 
-                    expect(program.sendAttributeData).toCalledWith("a_position", wd.EVariableType.BUFFER, vertices);
-                    expect(program.sendAttributeData).toCalledWith("a_texCoord", wd.EVariableType.BUFFER, texCoords);
+                    var pos2 = 2;
+                    gl.getAttribLocation.withArgs(sinon.match.any, "a_texCoord").returns(pos2);
 
-                    expect(program.sendAttributeData).toCalledWith("a_color", wd.EVariableType.BUFFER, colors);
+                    var pos3 = 3;
+                    gl.getAttribLocation.withArgs(sinon.match.any, "a_color").returns(pos3);
 
+                    material.updateShader(quadCmd);
+
+
+                    expect(gl.vertexAttribPointer.withArgs(pos1)).toCalledOnce();
+                    expect(gl.vertexAttribPointer.withArgs(pos2)).toCalledOnce();
+                    expect(gl.vertexAttribPointer.withArgs(pos3)).toCalledOnce();
                 });
                 it("send uniforms data", function () {
+                    material.updateShader(quadCmd);
+
                     expect(program.sendUniformData).toCalledAfter(program.use);
 
                     expect(program.sendUniformData).toCalledWith("u_mvpMatrix", wd.EVariableType.FLOAT_MAT4, quadCmd.mMatrix.applyMatrix(quadCmd.vMatrix, true).applyMatrix(quadCmd.pMatrix, false));
@@ -229,9 +243,13 @@ describe("custom shader", function () {
                     expect(program.sendUniformData).toCalledWith("u_test3.b", wd.EVariableType.FLOAT_1, 3.3);
                 });
                 it("ShaderMaterial should add the correspond twoD maps of uniformData->sampler2D ", function () {
+                    material.updateShader(quadCmd);
+
                     expect(material.mapManager.hasMap(map)).toBeTruthy();
                 });
                 it("send map data", function () {
+                    material.updateShader(quadCmd);
+
                     expect(material.mapManager.sendData).toCalledOnce();
                 });
             });

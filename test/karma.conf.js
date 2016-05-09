@@ -27,7 +27,7 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        'test/unit/**',
+        //'test/unit/**',
 
 
         //'test/unit/renderer/**',
@@ -144,7 +144,7 @@
         //'test/unit/**/ShaderSpec*',
         //'test/unit/**/*ShaderSpec*',
 
-        //'test/unit/**/customShaderSpec*',
+        'test/unit/**/customShaderSpec*',
         //'test/unit/**/renderWebGL*',
         //'test/unit/**/SortUtils*',
 

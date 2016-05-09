@@ -11,10 +11,11 @@ module wd{
         public shader:CustomShader;
 
         @ensure(function(){
-            assert(this.shader.getLibs().getCount() === 1 && this.shader.hasLib(CustomShaderLib), Log.info.FUNC_SHOULD("only has CustomShaderLib, not has other shader libs"));
+            assert(this.shader.getLibs().getCount() === 2 && this.shader.hasLib(CustomShaderLib), Log.info.FUNC_SHOULD("only has CustomShaderLib and EndShaderLib, not has other shader libs"));
         })
         public init(){
             this.shader.addLib(CustomShaderLib.create());
+            this.shader.addLib(EndShaderLib.create());
 
             super.init();
         }
