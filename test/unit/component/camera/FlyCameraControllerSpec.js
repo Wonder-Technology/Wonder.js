@@ -79,7 +79,7 @@ describe("FlyCameraController", function () {
     //});
 
     it("if camera is ortho, get/set zoomSpeed attr should contract error", function () {
-        testTool.openContractCheck();
+        testTool.openContractCheck(sandbox);
 
         prepareOrthoCamera(sandbox);
 

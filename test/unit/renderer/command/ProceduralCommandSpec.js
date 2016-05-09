@@ -38,10 +38,10 @@ describe("ProceduralCommand", function() {
                 update:sandbox.stub()
             };
 
-            cmd.indexBuffer = wd.ElementBuffer.create(new Uint16Array([
+            cmd.indexBuffer = wd.ElementBuffer.create([
                 0, 1, 2,
                 0, 2, 3
-            ]), wd.EBufferType.UNSIGNED_SHORT);
+            ], wd.EBufferType.UNSIGNED_SHORT);
         });
 
         it("update procedural shader", function(){
@@ -56,7 +56,7 @@ describe("ProceduralCommand", function() {
             var indexBuffer = cmd.indexBuffer;
 
             expect(gl.bindBuffer.args.slice(-1)).toEqual([[gl.ELEMENT_ARRAY_BUFFER, indexBuffer.buffer]]);
-            expect(gl.drawElements).toCalledWith(gl.TRIANGLES, indexBuffer.count, indexBuffer.type, indexBuffer.typeSize * 0);
+            expect(gl.drawElements).toCalledWith(gl.TRIANGLES, indexBuffer.count, deviceManager.gl[indexBuffer.type], indexBuffer.typeSize * 0);
         });
     });
 });

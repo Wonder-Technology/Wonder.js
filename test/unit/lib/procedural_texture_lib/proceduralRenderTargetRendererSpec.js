@@ -33,7 +33,7 @@ describe("procedural renderTargetRenderer", function () {
         renderTargetRenderer.init();
         renderTargetRenderer2.init();
 
-        expect(gl.bindBuffer.withArgs(gl.ELEMENT_ARRAY_BUFFER)).toCalledOnce();
-        expect(gl.bindBuffer.withArgs(gl.ARRAY_BUFFER)).toCalledOnce();
+        expect(gl.bindBuffer.withArgs(gl.ELEMENT_ARRAY_BUFFER, sinon.match.object)).toCalledOnce();
+        expect(gl.bindBuffer.withArgs(gl.ARRAY_BUFFER, sinon.match.object)).toCalledOnce();
     });
 });

@@ -22,9 +22,6 @@ describe("water fresnel", function () {
         var quadCmd;
 
         beforeEach(function () {
-            sandbox.spy(material.program, "sendStructureData");
-
-
             wd.Director.getInstance().scene.currentCamera = wd.GameObject.create();
 
 
@@ -49,6 +46,9 @@ describe("water fresnel", function () {
                 material.reflectionLevel = 0.2;
                 material.refractionLevel = 0.3;
                 material.init();
+                sandbox.spy(material.program, "sendStructureData");
+
+
 
                 material.updateShader(quadCmd);
 

@@ -22,9 +22,6 @@ describe("water refractionMap", function () {
         var quadCmd;
 
         beforeEach(function () {
-            sandbox.spy(material.program, "sendStructureData");
-
-
             wd.Director.getInstance().scene.currentCamera = wd.GameObject.create();
 
 
@@ -45,6 +42,9 @@ describe("water refractionMap", function () {
             it("send u_levelData.refractionLevel", function () {
                 material.refractionLevel = 0.1;
                 material.init();
+                sandbox.spy(material.program, "sendStructureData");
+
+
 
                 material.updateShader(quadCmd);
 

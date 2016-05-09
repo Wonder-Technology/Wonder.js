@@ -65,17 +65,17 @@ describe("shaderLibSpec", function () {
 
                 expect(shader.fsSource).not.toContain("define SHADOWMAP_TYPE_PCF");
             });
-            it("optimize:only when definition data change that program will reset shader", function(){
-                shader.update(quadCmd, material);
-
-                shader.update(quadCmd, material);
-
-                scene.shadowMap.softType = wd.EShadowMapSoftType.NONE;
-
-                shader.update(quadCmd, material);
-
-                expect(program.initWithShader).toCalledTwice();
-            });
+            //it("optimize:only when definition data change that program will reset shader", function(){
+            //    shader.update(quadCmd, material);
+            //
+            //    shader.update(quadCmd, material);
+            //
+            //    scene.shadowMap.softType = wd.EShadowMapSoftType.NONE;
+            //
+            //    shader.update(quadCmd, material);
+            //
+            //    expect(program.initWithShader).toCalledTwice();
+            //});
         });
     });
 
@@ -108,21 +108,30 @@ describe("shaderLibSpec", function () {
         //quadCmd.mMatrix = wd.Matrix4.create();
         //quadCmd.vMatrix = wd.Matrix4.create();
         //quadCmd.pMatrix = wd.Matrix4.create();
-        sandbox.stub(material1.program, "sendUniformData");
-        sandbox.stub(material1.program, "sendAttributeData");
-
-        sandbox.stub(material2.program, "sendUniformData");
-        sandbox.stub(material2.program, "sendAttributeData");
 
 
 
         material1.shader.read(shaderDefinitionData);
         material1.init();
+
+        sandbox.stub(material1.program, "sendUniformData");
+        sandbox.stub(material1.program, "sendAttributeData");
+
         material1.updateShader(quadCmd);
+
+
+
+
 
         material2.shader.read(shaderDefinitionData);
         material2.init();
+
+        sandbox.stub(material2.program, "sendUniformData");
+        sandbox.stub(material2.program, "sendAttributeData");
+
         material2.updateShader(quadCmd);
+
+
 
         expect(material1.program.sendAttributeData.withArgs("a_color")).toCalledOnce();
         expect(material2.program.sendAttributeData.withArgs("a_color")).toCalledOnce();

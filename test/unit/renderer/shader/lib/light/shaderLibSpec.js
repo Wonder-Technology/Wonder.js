@@ -21,9 +21,6 @@ describe("shaderLibSpec", function () {
         sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
 
 
-        sandbox.stub(material.program, "sendUniformData");
-        sandbox.stub(material.program, "sendAttributeData");
-
 
 
         var quadCmd = rendererTool.createQuadCommand(sandbox);
@@ -48,6 +45,13 @@ describe("shaderLibSpec", function () {
 
 
         material.init();
+
+
+
+        sandbox.stub(material.program, "sendUniformData");
+        sandbox.stub(material.program, "sendAttributeData");
+
+
 
         var pos = 1;
         sandbox.stub(material.program, "getUniformLocation").returns(pos);

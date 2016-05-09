@@ -155,18 +155,21 @@ describe("direction shadow map with octree", function() {
 
                 describe("test object with children", function () {
                     var part1, part2;
-                    var program1, program2;
+                    var program1, program2, program3;
                     var shader1, shader2;
 
                     function setChildrenDrawShadowMapShaderAndProgram() {
                         var data1 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, part1);
                         var data2 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, part2);
 
+                        var data3 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
+
                         shader1 = data1.shader;
                         shader2 = data2.shader;
 
                         program1 = data1.program;
                         program2 = data2.program;
+                        program3 = data3.program;
                     }
 
                     beforeEach(function () {
@@ -193,11 +196,14 @@ describe("direction shadow map with octree", function() {
                         });
 
                         it("children should send shadow map data", function () {
-                            expect(program1.sendUniformData.withArgs("u_twoDShadowMapSampler[0]", sinon.match.any, 0)).toCalledOnce();
-                            expect(program1.sendUniformData.withArgs("u_diffuseMapSampler", sinon.match.any, 1)).toCalledOnce();
+                            expect(program1 === program2).toBeTruthy();
+                            expect(program2 === program3).toBeTruthy();
 
-                            expect(program2.sendUniformData.withArgs("u_twoDShadowMapSampler[0]", sinon.match.any, 0)).toCalledOnce();
-                            expect(program2.sendUniformData.withArgs("u_diffuseMapSampler", sinon.match.any, 1)).toCalledOnce();
+                            expect(program1.sendUniformData.withArgs("u_twoDShadowMapSampler[0]", sinon.match.any, 0)).toCalledThrice();
+                            expect(program1.sendUniformData.withArgs("u_diffuseMapSampler", sinon.match.any, 1)).toCalledThrice();
+
+                            //expect(program2.sendUniformData.withArgs("u_twoDShadowMapSampler[0]", sinon.match.any, 0)).toCalledOnce();
+                            //expect(program2.sendUniformData.withArgs("u_diffuseMapSampler", sinon.match.any, 1)).toCalledOnce();
                         });
 
                         it("children fs glsl should contain shadow map glsl", function () {

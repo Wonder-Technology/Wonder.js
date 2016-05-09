@@ -1,4 +1,4 @@
-describe("InstanceCommand", function() {
+describe("HardwareInstanceCommand", function() {
     var sandbox = null;
     var deviceManager = null;
     var cmd;
@@ -33,7 +33,7 @@ describe("InstanceCommand", function() {
 
 
 
-            sandbox.stub(material, "init");
+            sandbox.spy(material, "init");
 
 
             geometry = wd.BoxGeometry.create();

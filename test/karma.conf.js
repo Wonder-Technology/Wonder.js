@@ -27,7 +27,11 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        //'test/unit/**',
+        'test/unit/**',
+
+
+        //'test/unit/renderer/**',
+        //'test/unit/**/*InstanceCommand*',
 
         //'test/unit/**/ProgramSpec.js',
         //'test/unit/**/GLSLDataSenderSpec.js',
@@ -41,7 +45,7 @@
 
         //'test/unit/**/*ArrayBuffer*',
         //'test/unit/**/*ElementBuffer*',
-        'test/unit/**/*InstanceBuffer*',
+        //'test/unit/**/*InstanceBuffer*',
 
         //'test/unit/**/proceduralRenderTargetRenderer*',
 
@@ -161,7 +165,7 @@
 
 
         //'test/unit/**/*GeometryData*',
-        'test/unit/**/**BufferContainer*',
+        //'test/unit/**/**BufferContainer*',
         //
         //'test/unit/**/Face3*',
 

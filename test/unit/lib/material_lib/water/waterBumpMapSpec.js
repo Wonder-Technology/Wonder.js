@@ -22,9 +22,6 @@ describe("water bumpMap", function () {
         var quadCmd;
 
         beforeEach(function () {
-            sandbox.spy(material.program, "sendUniformData");
-
-
             wd.Director.getInstance().scene.currentCamera = wd.GameObject.create();
 
 
@@ -54,6 +51,9 @@ describe("water bumpMap", function () {
 
                 it("change matrix by compute time before update shader", function () {
                     material.init();
+                    sandbox.spy(material.program, "sendUniformData");
+
+
 
                     material.updateShader(quadCmd);
 

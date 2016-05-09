@@ -22,9 +22,6 @@ describe("water reflectionMap", function () {
         var quadCmd;
 
         beforeEach(function () {
-            sandbox.spy(material.program, "sendStructureData");
-
-
             wd.Director.getInstance().scene.currentCamera = wd.GameObject.create();
 
 
@@ -45,6 +42,9 @@ describe("water reflectionMap", function () {
             it("send u_levelData.reflectionLevel", function () {
                 material.reflectionLevel = 0.1;
                 material.init();
+                sandbox.spy(material.program, "sendStructureData");
+
+
 
                 material.updateShader(quadCmd);
 
