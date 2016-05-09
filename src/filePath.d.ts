@@ -370,9 +370,10 @@
 
 /// <reference path="renderer/buffer/EBufferUsage"/>
 /// <reference path="renderer/buffer/Buffer"/>
+/// <reference path="renderer/buffer/InstanceBuffer"/>
+/// <reference path="renderer/buffer/CommonBuffer"/>
 /// <reference path="renderer/buffer/ElementBuffer"/>
 /// <reference path="renderer/buffer/ArrayBuffer"/>
-/// <reference path="renderer/buffer/InstanceBuffer"/>
 /// <reference path="renderer/buffer/BufferDataTable"/>
 
 /// <reference path="renderer/program/Program"/>

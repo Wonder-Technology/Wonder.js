@@ -1,12 +1,8 @@
 module wd{
-    export class ArrayBuffer extends Buffer{
-        //public static create():ArrayBuffer;
-        //public static create(data:Float32Array, size:number, type:EBufferType, usage?:EBufferUsage):ArrayBuffer;
-
+    export class ArrayBuffer extends CommonBuffer{
         public static create(data:Array<number>, size:number, type:EBufferType = EBufferType.FLOAT, usage:EBufferUsage = EBufferUsage.STATIC_DRAW):ArrayBuffer {
             var obj = new this();
 
-            //obj.initWhenCreate.apply(obj, args);
             obj.initWhenCreate(data, size, type, usage);
 
             return obj;
@@ -15,9 +11,6 @@ module wd{
         public size:number = null;
         public data:Float32Array = null;
 
-
-        //public initWhenCreate();
-        //public initWhenCreate(data:Float32Array, size:number, type:EBufferType, usage?:EBufferUsage);
 
         public initWhenCreate(data:Array<number>, size:number, type:EBufferType, usage:EBufferUsage) {
             var gl = DeviceManager.getInstance().gl,
@@ -30,33 +23,23 @@ module wd{
                 return null;
             }
 
-            //if(args.length === 0){
-            //    return;
-            //}
-            //else{
-            //    let data:Float32Array = args[0],
-            //        size:number = args[1],
-            //        type:EBufferType = args[2],
-            //        usage:EBufferUsage = args[3] || EBufferUsage.STATIC_DRAW;
-
-                if(!data){
-                    return null;
-                }
+            if(!data){
+                return null;
+            }
 
             typedData = this._convertToTypedArray(data, type);
 
 
-                gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
 
-                gl.bufferData(gl.ARRAY_BUFFER, typedData, gl[usage]);
+            gl.bufferData(gl.ARRAY_BUFFER, typedData, gl[usage]);
 
             //todo test
             BufferTable.resetBindedArrayBuffer();
 
             this._saveData(typedData, size, type, usage);
 
-                return this.buffer;
-            //}
+            return this.buffer;
         }
 
         @require(function(data:Array<number>, size:number = this.size, type:EBufferType = this.type, offset:number = 0){
@@ -64,7 +47,7 @@ module wd{
         })
         public resetData(data:Array<number>, size:number = this.size, type:EBufferType = this.type, offset:number = 0){
             var gl = DeviceManager.getInstance().gl,
-            typedData:Float32Array = this._convertToTypedArray(data, type);
+                typedData:Float32Array = this._convertToTypedArray(data, type);
 
             gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
 

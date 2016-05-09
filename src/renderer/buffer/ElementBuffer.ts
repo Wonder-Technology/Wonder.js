@@ -1,5 +1,5 @@
 module wd{
-    export class ElementBuffer extends Buffer{
+    export class ElementBuffer extends CommonBuffer{
         public static create(data:Array<number>, type:EBufferType = null, usage:EBufferUsage = EBufferUsage.STATIC_DRAW):ElementBuffer{
             var obj = new this();
 

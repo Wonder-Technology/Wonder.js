@@ -3,6 +3,15 @@ describe("InstanceBuffer", function () {
     var buffer = null;
     var gl;
 
+    function judgeResetBindedArrayBuffer(){
+        it("release binded buffer", function(){
+            expect(gl.bindBuffer.getCall(1).args[1]).toBeNull();
+        });
+        it("empty BufferTable->lastBindedArrayBufferList", function () {
+            expect(wd.BufferTable.lastBindedArrayBufferList).toBeNull();
+        });
+    }
+
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
         sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
@@ -14,6 +23,18 @@ describe("InstanceBuffer", function () {
     afterEach(function () {
         testTool.clearInstance(sandbox);
         sandbox.restore();
+    });
+
+    describe("test static method", function(){
+        describe("create", function(){
+            describe("reset binded array buffer", function(){
+                beforeEach(function(){
+                    buffer = wd.InstanceBuffer.create();
+                });
+
+                judgeResetBindedArrayBuffer();
+            });
+        });
     });
 
     describe("float32InstanceArraySize(getter)", function(){

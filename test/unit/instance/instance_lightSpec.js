@@ -255,8 +255,8 @@ describe("instance with light material", function () {
                 director.scene.gameObjectScene.render(renderer);
                 renderer.render();
 
-                expect(gl.bindBuffer.withArgs(gl.ARRAY_BUFFER).callCount).toEqual(6);
-                expect(gl.bindBuffer.withArgs(gl.ELEMENT_ARRAY_BUFFER).callCount).toEqual(2);
+                expect(gl.bindBuffer.withArgs(gl.ARRAY_BUFFER, sinon.match.object).callCount).toEqual(6);
+                expect(gl.bindBuffer.withArgs(gl.ELEMENT_ARRAY_BUFFER, sinon.match.object).callCount).toEqual(2);
             });
             it("draw one instance in one draw call", function(){
                 director._init();

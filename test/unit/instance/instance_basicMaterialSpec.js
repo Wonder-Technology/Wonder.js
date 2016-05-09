@@ -265,7 +265,7 @@ describe("instance with basic material", function(){
 
             expect(extensionInstancedArrays.drawElementsInstancedANGLE).toCalledOnce();
 
-            expect(gl.bindBuffer.withArgs(gl.ELEMENT_ARRAY_BUFFER).callCount).toEqual(2);
+            expect(gl.bindBuffer.withArgs(gl.ELEMENT_ARRAY_BUFFER, sinon.match.object).callCount).toEqual(2);
 
             expect(extensionInstancedArrays.drawElementsInstancedANGLE).toCalledAfter(gl.bindBuffer.withArgs(gl.ELEMENT_ARRAY_BUFFER));
         });
@@ -542,7 +542,7 @@ describe("instance with basic material", function(){
                 director.scene.gameObjectScene.render(renderer);
                 renderer.render();
 
-                expect(gl.bindBuffer.withArgs(gl.ARRAY_BUFFER).callCount).toEqual(6);
+                expect(gl.bindBuffer.withArgs(gl.ARRAY_BUFFER, sinon.match.object).callCount).toEqual(6);
             }
 
             function judge2_2(){
@@ -551,7 +551,7 @@ describe("instance with basic material", function(){
                 director.scene.gameObjectScene.render(renderer);
                 renderer.render();
 
-                expect(gl.bindBuffer.withArgs(gl.ELEMENT_ARRAY_BUFFER).callCount).toEqual(2);
+                expect(gl.bindBuffer.withArgs(gl.ELEMENT_ARRAY_BUFFER, sinon.match.object).callCount).toEqual(2);
             }
 
             function judge2_3(){

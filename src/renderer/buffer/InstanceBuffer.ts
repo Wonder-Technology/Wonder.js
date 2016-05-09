@@ -51,6 +51,8 @@ module wd{
             gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
             gl.bufferData(gl.ARRAY_BUFFER, this._capacity, gl.DYNAMIC_DRAW);
 
+            BufferTable.resetBindedArrayBuffer();
+
             return buffer;
         }
     }

@@ -79,7 +79,7 @@ describe("ArrayBuffer", function() {
             });
         });
 
-        describe("reset binded element buffer", function(){
+        describe("reset binded array buffer", function(){
             beforeEach(function(){
                 buffer.resetData([1,1,1]);
             });
