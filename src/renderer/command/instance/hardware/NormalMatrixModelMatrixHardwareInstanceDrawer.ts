@@ -30,8 +30,7 @@ module wd {
 
             instanceList.forEach((instance:GameObject) => {
                 var mMatrix:Matrix4 = instance.transform.localToWorldMatrix,
-                    //todo transform add normalMatrix cache
-                    normalMatrix:Matrix3 = mMatrix.invertTo3x3().transpose();
+                    normalMatrix:Matrix3 = instance.transform.normalMatrix;
 
                 mMatrix.cloneToArray(matricesArrayForInstance, offset);
                 offset += 16;

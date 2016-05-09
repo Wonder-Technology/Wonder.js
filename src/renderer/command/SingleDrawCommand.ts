@@ -7,13 +7,6 @@ module wd {
         }
 
         @requireGetter(function(){
-            assert(!!this.mMatrix, Log.info.FUNC_NOT_EXIST("mMatrix"));
-        })
-        get normalMatrix(){
-            return this.mMatrix.invertTo3x3().transpose();
-        }
-
-        @requireGetter(function(){
             assert(!!this.mMatrix && !!this.vMatrix && !!this.pMatrix, Log.info.FUNC_NOT_EXIST("mMatrix or vMatrix or pMatrix"));
         })
         get mvpMatrix(){
@@ -27,6 +20,8 @@ module wd {
         set mMatrix(mMatrix:Matrix4){
             this._mMatrix = mMatrix;
         }
+
+        public normalMatrix:Matrix3 = null;
 
         protected draw(material:Material){
             var vertexBuffer:ArrayBuffer = null,

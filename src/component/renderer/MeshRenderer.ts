@@ -81,6 +81,7 @@ module wd {
                 cmd = SingleDrawCommand.create();
 
                 cmd.mMatrix = this.entityObject.transform.localToWorldMatrix;
+                cmd.normalMatrix = this.entityObject.transform.normalMatrix;
             }
 
             return cmd;

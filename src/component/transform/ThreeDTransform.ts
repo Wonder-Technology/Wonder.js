@@ -18,6 +18,19 @@ module wd{
             return this.getMatrix("sync", "_localToWorldMatrix");
         }
 
+        @cacheGetter(function(){
+            return this._normalMatrixCache !== null;
+        }, function(){
+            return this._normalMatrixCache;
+        }, function(result){
+            this._normalMatrixCache = result;
+        })
+        get normalMatrix(){
+            return this.localToWorldMatrix.invertTo3x3().transpose();
+        }
+
+        private _normalMatrixCache:Matrix3 = null;
+
         private _position:Vector3 = Vector3.create();
         @cloneAttributeAsCloneable()
         @cacheGetter(function(){

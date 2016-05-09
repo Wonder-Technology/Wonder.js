@@ -141,7 +141,7 @@
         //'test/unit/**/ShaderSourceBuilderSpec*',
         //'test/unit/**/*ShaderSourceBuilderSpec*',
 
-        'test/unit/**/ShaderSpec*',
+        //'test/unit/**/ShaderSpec*',
         //'test/unit/**/*ShaderSpec*',
 
         //'test/unit/**/customShaderSpec*',
@@ -228,7 +228,7 @@
         //
         //'test/unit/**/ImageSpec*',
         //
-        //'test/unit/**/ThreeDTransformSpec.js',
+        'test/unit/**/ThreeDTransformSpec.js',
         //'test/unit/**/RectTransformSpec*',
         //'test/unit/**/TransformSpec*',
         //'test/unit/**/component/**',

@@ -47,6 +47,13 @@ describe("ThreeDTransform", function(){
             matrix = wd.Matrix4.create();
         });
 
+        it("normalMatrix(getter)", function(){
+            judgeCache(function(){
+                sandbox.spy(tra1.localToWorldMatrix, "invertTo3x3");
+            }, "normalMatrix", function(){
+                expect(tra1.localToWorldMatrix.invertTo3x3).toCalledOnce();
+            });
+        });
         it("localToWorldMatrix(getter)", function(){
             judgeCache(function(){
                 sandbox.stub(tra1, "getMatrix");

@@ -137,8 +137,7 @@ module wd{
                 return sourceFaces;
             }
 
-            //todo transform add normalMatrix cache
-            normalMatrix = targetTransform.localToWorldMatrix.invertTo3x3().transpose();
+            normalMatrix = targetTransform.normalMatrix;
 
             for(let face of targetFaces){
                 let clonedFace = Face3.create(face.aIndex + sourceVertexOffset, face.bIndex + sourceVertexOffset, face.cIndex + sourceVertexOffset);
