@@ -141,10 +141,10 @@
         //'test/unit/**/ShaderSourceBuilderSpec*',
         //'test/unit/**/*ShaderSourceBuilderSpec*',
 
-        //'test/unit/**/ShaderSpec*',
+        'test/unit/**/ShaderSpec*',
         //'test/unit/**/*ShaderSpec*',
 
-        'test/unit/**/customShaderSpec*',
+        //'test/unit/**/customShaderSpec*',
         //'test/unit/**/renderWebGL*',
         //'test/unit/**/SortUtils*',
 

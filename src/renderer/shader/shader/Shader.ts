@@ -51,7 +51,13 @@ module wd{
         @ensureGetter(function(program:Program){
             assert(!!program, Log.info.FUNC_NOT_EXIST(`program\nits table key is:${this._getProgramTableKey()}`))
         })
-        //todo add cache
+        @cacheGetter(function(){
+            return !this.dirty && this._cacheProgram !== null;
+        }, function(){
+            return this._cacheProgram;
+        }, function(program:Program){
+            this._cacheProgram = program;
+        })
         get program(){
             return ProgramTable.getProgram(this._getProgramTableKey());
         }
@@ -62,6 +68,9 @@ module wd{
 
         protected libs:wdCb.Collection<ShaderLib> = wdCb.Collection.create<ShaderLib>();
         protected sourceBuilder:ShaderSourceBuilder = this.createShaderSourceBuilder();
+
+        private _cacheProgram:Program = null;
+        private _cacheInstanceState:InstanceState = null;
 
         public abstract update(cmd:RenderCommand, material:Material);
 
@@ -97,6 +106,8 @@ module wd{
             });
 
             this.mapManager.dispose();
+
+            this._clearAllCache();
         }
 
         public hasLib(lib:ShaderLib);
@@ -184,6 +195,73 @@ module wd{
             this.libs.sort(func, true);
         }
 
+        @ensure(function({
+            isModelMatrixInstance,
+            isNormalMatrixInstance,
+            isHardwareInstance,
+            isBatchInstance
+            }){
+            if(isNormalMatrixInstance){
+                assert(isModelMatrixInstance === true, Log.info.FUNC_MUST_BE("modelMatrixInstance if is normalMatrixInstance"));
+            }
+
+            assert(!(isHardwareInstance && isBatchInstance), Log.info.FUNC_SHOULD_NOT("both be hardware insstance and batch instance"));
+        })
+        @cache(function(){
+            return !this.dirty && this._cacheInstanceState;
+        }, function(){
+            return this._cacheInstanceState;
+        }, function(instanceState:InstanceState){
+            this._cacheInstanceState = instanceState;
+        })
+        public getInstanceState(){
+            var isModelMatrixInstance = false,
+                isNormalMatrixInstance = false,
+                isHardwareInstance = false,
+                isBatchInstance = false;
+
+            this.libs.forEach((lib:ShaderLib) => {
+                if(!(lib instanceof InstanceShaderLib)){
+                    return;
+                }
+
+                if(lib instanceof NormalMatrixHardwareInstanceShaderLib){
+                    isNormalMatrixInstance = true;
+                    isHardwareInstance = true;
+
+                    return wdCb.$BREAK;
+                }
+
+                if(lib instanceof NormalMatrixBatchInstanceShaderLib){
+                    isNormalMatrixInstance = true;
+                    isBatchInstance = true;
+
+                    return wdCb.$BREAK;
+                }
+
+                if(lib instanceof ModelMatrixHardwareInstanceShaderLib){
+                    isModelMatrixInstance = true;
+                    isHardwareInstance = true;
+
+                    return;
+                }
+
+                if(lib instanceof ModelMatrixBatchInstanceShaderLib){
+                    isModelMatrixInstance = true;
+                    isBatchInstance = true;
+
+                    return;
+                }
+            });
+
+            return {
+                isModelMatrixInstance:isModelMatrixInstance,
+                isNormalMatrixInstance:isNormalMatrixInstance,
+                isHardwareInstance:isHardwareInstance,
+                isBatchInstance:isBatchInstance
+            }
+        }
+
         protected abstract createShaderSourceBuilder():ShaderSourceBuilder;
         protected abstract buildDefinitionData(cmd:RenderCommand, material:Material):void;
 
@@ -253,11 +331,23 @@ module wd{
 
             return result;
         }
+
+        private _clearAllCache(){
+            this._cacheProgram = null;
+            this._cacheInstanceState = null;
+        }
     }
 
     export type ShaderData = {
         type:EVariableType;
         value?:any;
         textureId?:string;
+    }
+
+    type InstanceState = {
+        isModelMatrixInstance:boolean;
+        isNormalMatrixInstance:boolean;
+        isHardwareInstance:boolean;
+        isBatchInstance:boolean
     }
 }

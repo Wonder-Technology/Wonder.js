@@ -205,10 +205,12 @@ var testTool = (function () {
          can only affect In,Out check
          Invariant check will be invoked when load the file
          */
-        openContractCheck: function (sandbox) {
+        openContractCheck: function (sandbox, isInit) {
             wd.Main.isTest = true;
 
-            this.initForTest(sandbox);
+            if(isInit !== false){
+                this.initForTest(sandbox);
+            }
         },
 
         initForTest: function(sandbox){

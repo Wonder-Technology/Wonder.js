@@ -9,7 +9,7 @@ describe("Shader", function() {
 
         shader = new wd.Shader();
 
-        testTool.openContractCheck(sandbox);
+        testTool.openContractCheck(sandbox, false);
     });
     afterEach(function () {
         sandbox.restore();
@@ -105,7 +105,7 @@ describe("Shader", function() {
     describe("test program", function(){
         var vsSource,
             fsSource;
-        var program;
+        var registerdProgram1;
 
         function getProgramTableKey(){
             return vsSource + "\n" + fsSource;
@@ -115,7 +115,7 @@ describe("Shader", function() {
             vsSource = "a";
             fsSource = "b";
 
-            program = {
+            registerdProgram1 = {
                 initWithShader:sandbox.stub()
             };
         });
@@ -124,7 +124,7 @@ describe("Shader", function() {
         describe("test register and update program", function(){
             describe("if definitionDataDirty", function(){
                 beforeEach(function(){
-                    sandbox.stub(wd.Program, "create").returns(program);
+                    sandbox.stub(wd.Program, "create").returns(registerdProgram1);
 
                     shader.vsSource = vsSource;
                     shader.fsSource = fsSource;
@@ -137,14 +137,14 @@ describe("Shader", function() {
                     it("register program", function () {
                         expect(wd.ProgramTable.hasProgram(getProgramTableKey())).toBeTruthy();
                         it("update program", function () {
-                            expect(program.initWithShader).toCalledOnce();
+                            expect(registerdProgram1.initWithShader).toCalledOnce();
                         });
                     });
                 });
 
                 describe("else", function(){
                     beforeEach(function(){
-                        wd.ProgramTable.addProgram(getProgramTableKey(), program);
+                        wd.ProgramTable.addProgram(getProgramTableKey(), registerdProgram1);
                     });
 
                     it("not register and update program", function(){
@@ -153,7 +153,7 @@ describe("Shader", function() {
                         shader.judgeRefreshShader();
 
                         expect(wd.ProgramTable.addProgram).not.toCalled();
-                        expect(program.initWithShader).not.toCalled();
+                        expect(registerdProgram1.initWithShader).not.toCalled();
                     });
                 });
             });
@@ -190,18 +190,84 @@ describe("Shader", function() {
         });
 
         describe("get program", function(){
-            //it("if program is undefined, error", function () {
-            //    expect(function(){
-            //        var program  = shader.program;
-            //    }).toThrow("not exist");
-            //});
+            it("if program is undefined, error", function () {
+                expect(function(){
+                    var program  = shader.program;
+                }).toThrow("not exist");
+            });
 
-            it("get program from ProgramTable", function () {
-                shader.vsSource = vsSource;
-                shader.fsSource = fsSource;
-                wd.ProgramTable.addProgram(getProgramTableKey(), program);
+            describe("test cache", function(){
+                beforeEach(function(){
+                    shader.vsSource = vsSource;
+                    shader.fsSource = fsSource;
+                    wd.ProgramTable.addProgram(getProgramTableKey(), registerdProgram1);
+                });
 
-                expect(shader.program).toEqual(program);
+                it("if not dirty and cached, return cached program", function () {
+                    var program1  = shader.program;
+                    var program2  = shader.program;
+
+                    expect(program1 === program2).toBeTruthy();
+                });
+
+                describe("else, get program from ProgramTable", function(){
+                    it("test if dirty, cache miss ", function () {
+                        var program1  = shader.program;
+
+                        vsSource = "aaaaaaaaaa";
+                        var registerdProgram2 = wd.Program.create();
+                        wd.ProgramTable.addProgram(getProgramTableKey(), registerdProgram2);
+                        shader.vsSource = vsSource;
+
+                        var program2  = shader.program;
+
+                        expect(program1 === program2).toBeFalsy();
+                        expect(program1 === registerdProgram1);
+                        expect(program2 === registerdProgram2);
+                    });
+                    it("test if not cached, cache miss", function () {
+                        var program1  = shader.program;
+
+                        shader._clearAllCache();
+                        sandbox.spy(wd.ProgramTable, "getProgram");
+
+                        var program2  = shader.program;
+
+                        expect(wd.ProgramTable.getProgram).toCalledOnce();
+                    });
+                });
+            });
+        });
+    });
+
+    describe("getInstanceState", function(){
+        describe("test cache", function(){
+            it("if not dirty and cached, return cached state", function () {
+                var state1  = shader.getInstanceState();
+                var state2  = shader.getInstanceState();
+
+                expect(state1 === state2).toBeTruthy();
+            });
+
+            describe("else, get program from ProgramTable", function(){
+                it("test if dirty, cache miss ", function () {
+                    var state1  = shader.getInstanceState();
+
+                    shader.fsSource = "bbbbbbbb";
+
+                    var state2  = shader.getInstanceState();
+
+                    expect(state1 === state2).toBeFalsy();
+                });
+                it("test if not cached, cache miss", function () {
+                    var state1  = shader.getInstanceState();
+
+                    shader._clearAllCache();
+
+                    var state2  = shader.getInstanceState();
+
+                    expect(state1 === state2).toBeFalsy();
+                });
             });
         });
     });

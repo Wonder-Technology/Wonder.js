@@ -67,7 +67,7 @@ module wd {
                 isNormalMatrixInstance,
                 isHardwareInstance,
                 isBatchInstance
-            } = this._judgeInstanceState(material);
+            } = material.shader.getInstanceState();
 
             glslData = this._getInstanceGLSLData(isModelMatrixInstance, isNormalMatrixInstance);
 
@@ -84,66 +84,6 @@ module wd {
             }
 
             return cmd;
-        }
-
-        @ensure(function({
-                isModelMatrixInstance,
-                isNormalMatrixInstance,
-                isHardwareInstance,
-                isBatchInstance
-            }){
-            if(isNormalMatrixInstance){
-                assert(isModelMatrixInstance === true, Log.info.FUNC_MUST_BE("modelMatrixInstance if is normalMatrixInstance"));
-            }
-
-            assert(!(isHardwareInstance && isBatchInstance), Log.info.FUNC_SHOULD_NOT("both be hardware insstance and batch instance"));
-        })
-        private _judgeInstanceState(material:Material){
-            var isModelMatrixInstance = false,
-                isNormalMatrixInstance = false,
-                isHardwareInstance = false,
-                isBatchInstance = false;
-
-            material.shader.getLibs().forEach((lib:ShaderLib) => {
-                if(!(lib instanceof InstanceShaderLib)){
-                    return;
-                }
-
-                if(lib instanceof NormalMatrixHardwareInstanceShaderLib){
-                    isNormalMatrixInstance = true;
-                    isHardwareInstance = true;
-
-                    return wdCb.$BREAK;
-                }
-
-                if(lib instanceof NormalMatrixBatchInstanceShaderLib){
-                    isNormalMatrixInstance = true;
-                    isBatchInstance = true;
-
-                    return wdCb.$BREAK;
-                }
-
-                if(lib instanceof ModelMatrixHardwareInstanceShaderLib){
-                    isModelMatrixInstance = true;
-                    isHardwareInstance = true;
-
-                    return;
-                }
-
-                if(lib instanceof ModelMatrixBatchInstanceShaderLib){
-                    isModelMatrixInstance = true;
-                    isBatchInstance = true;
-
-                    return;
-                }
-            });
-
-            return {
-                isModelMatrixInstance:isModelMatrixInstance,
-                isNormalMatrixInstance:isNormalMatrixInstance,
-                isHardwareInstance:isHardwareInstance,
-                isBatchInstance:isBatchInstance
-            }
         }
 
         private _getInstanceGLSLData(isModelMatrixInstance:boolean, isNormalMatrixInstance:boolean){
