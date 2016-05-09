@@ -36,7 +36,7 @@ module wd{
         private _convertArrayToArrayBuffer(type:EVariableType, value:Array<any>) {
             var size = this._getBufferSize(type);
 
-            return ArrayBuffer.create(new Float32Array(value), size, EBufferType.FLOAT);
+            return ArrayBuffer.create(value, size, EBufferType.FLOAT);
         }
 
         private _getBufferSize(type:EVariableType){

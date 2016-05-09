@@ -219,7 +219,7 @@ module wd{
             this._vertexAttribHistory.addChild(String(pos), true);
 
             gl.bindBuffer(gl.ARRAY_BUFFER, buffer.buffer);
-            gl.vertexAttribPointer(pos, buffer.size, buffer.type, false, 0, 0);
+            gl.vertexAttribPointer(pos, buffer.size, gl[buffer.type], false, 0, 0);
             gl.enableVertexAttribArray(pos);
         }
 

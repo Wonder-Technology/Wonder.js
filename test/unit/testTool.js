@@ -7,6 +7,7 @@ var testTool = (function () {
                 FLOAT:"FLOAT",
 
                 DYNAMIC_DRAW:"DYNAMIC_DRAW",
+                STATIC_DRAW:"STATIC_DRAW",
 
                 LINES: "LINES",
                 TRIANGLES: "TRIANGLES",

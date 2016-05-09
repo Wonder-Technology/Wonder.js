@@ -47,6 +47,22 @@ module wd{
             this.lastBindedArrayBufferList = null;
             this.lastBindedElementBuffer = null;
         }
+
+        public static resetBindedArrayBuffer(){
+            var gl = DeviceManager.getInstance().gl;
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, null);
+
+            this.lastBindedArrayBufferList = null;
+        }
+
+        public static resetBindedElementBuffer(){
+            var gl = DeviceManager.getInstance().gl;
+
+            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
+
+            this.lastBindedElementBuffer = null;
+        }
     }
 
     export enum BufferTableKey{

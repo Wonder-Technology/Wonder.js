@@ -1,83 +1,93 @@
 module wd{
     export class ArrayBuffer extends Buffer{
-        public static create():ArrayBuffer;
-        public static create(data:any, size:number, type:EBufferType, usage?:EBufferUsage):ArrayBuffer;
+        //public static create():ArrayBuffer;
+        //public static create(data:Float32Array, size:number, type:EBufferType, usage?:EBufferUsage):ArrayBuffer;
 
-        public static create(...args):ArrayBuffer {
+        public static create(data:Array<number>, size:number, type:EBufferType = EBufferType.FLOAT, usage:EBufferUsage = EBufferUsage.STATIC_DRAW):ArrayBuffer {
             var obj = new this();
 
-            obj.initWhenCreate.apply(obj, args);
+            //obj.initWhenCreate.apply(obj, args);
+            obj.initWhenCreate(data, size, type, usage);
 
             return obj;
         }
 
         public size:number = null;
-        public data:any = null;
-
-        private _type:EBufferType = null;
+        public data:Float32Array = null;
 
 
-        public initWhenCreate();
-        public initWhenCreate(data:any, size:number, type:EBufferType, usage?:EBufferUsage);
+        //public initWhenCreate();
+        //public initWhenCreate(data:Float32Array, size:number, type:EBufferType, usage?:EBufferUsage);
 
-        public initWhenCreate(...args) {
-            var gl = DeviceManager.getInstance().gl;
-
+        public initWhenCreate(data:Array<number>, size:number, type:EBufferType, usage:EBufferUsage) {
+            var gl = DeviceManager.getInstance().gl,
+                typedData:Float32Array = null;
 
             this.buffer = gl.createBuffer();
+
             if (!this.buffer) {
-                Log.log('Failed to create the this.buffer object');
+                Log.warn('Failed to create the this.buffer object');
                 return null;
             }
 
-            if(args.length === 0){
-                return;
-            }
-            else{
-                let data:any = args[0],
-                    size:number = args[1],
-                    type:EBufferType = args[2],
-                    usage:EBufferUsage = args[3] || EBufferUsage.STATIC_DRAW;
+            //if(args.length === 0){
+            //    return;
+            //}
+            //else{
+            //    let data:Float32Array = args[0],
+            //        size:number = args[1],
+            //        type:EBufferType = args[2],
+            //        usage:EBufferUsage = args[3] || EBufferUsage.STATIC_DRAW;
 
                 if(!data){
                     return null;
                 }
 
+            typedData = this._convertToTypedArray(data, type);
+
 
                 gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
 
-                gl.bufferData(gl.ARRAY_BUFFER, data, gl[usage]);
+                gl.bufferData(gl.ARRAY_BUFFER, typedData, gl[usage]);
 
-                //gl.bindBuffer(gl.ARRAY_BUFFER, null);
+            //todo test
+            BufferTable.resetBindedArrayBuffer();
 
-                this.size = size;
-                this.type = gl[type];
-                this._type = type;
-                this.count = data.length / size;
-
-                this.data = data;
+            this._saveData(typedData, size, type, usage);
 
                 return this.buffer;
-            }
+            //}
         }
 
-        @require(function(data:any, size:number = this.size, type:EBufferType = this._type){
+        @require(function(data:Array<number>, size:number = this.size, type:EBufferType = this.type, offset:number = 0){
             assert(this.buffer, Log.info.FUNC_MUST("create gl buffer"));
         })
-        public resetData(data:any, size:number = this.size, type:EBufferType = this._type){
-            var gl = DeviceManager.getInstance().gl;
+        public resetData(data:Array<number>, size:number = this.size, type:EBufferType = this.type, offset:number = 0){
+            var gl = DeviceManager.getInstance().gl,
+            typedData:Float32Array = this._convertToTypedArray(data, type);
 
             gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
 
-            gl.bufferData(gl.ARRAY_BUFFER, data, gl.DYNAMIC_DRAW);
+            this.resetBufferData("ARRAY_BUFFER", typedData, offset);
 
-            this.size = size;
-            this.type = gl[type];
-            this._type = type;
-            this.count = data.length / size;
-            this.data = data;
+            BufferTable.resetBindedArrayBuffer();
+
+            this._saveData(typedData, size, type, EBufferUsage.DYNAMIC_DRAW);
 
             return this;
+        }
+
+        private _convertToTypedArray(data:Array<number>, type:EBufferType){
+            return new Float32Array(data);
+        }
+
+        private _saveData(data:Float32Array, size:number, type:EBufferType, usage:EBufferUsage){
+            this.size = size;
+            this.type = type;
+            this.count = data.length / size;
+            this.usage = usage;
+
+            this.data = data;
         }
     }
 }

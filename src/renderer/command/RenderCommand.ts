@@ -28,7 +28,7 @@ module wd {
             //todo test
             BufferTable.bindIndexBuffer(indexBuffer);
 
-            GlUtils.drawElements(gl[this.drawMode], indexBuffer.count, indexBuffer.type, indexBuffer.typeSize * startOffset);
+            GlUtils.drawElements(gl[this.drawMode], indexBuffer.count, gl[indexBuffer.type], indexBuffer.typeSize * startOffset);
         }
 
         protected drawArray(vertexBuffer:ArrayBuffer){

@@ -19,7 +19,7 @@ module wd{
 
                     this.sendGLSLData(program, instance, uniformDataNameArr);
 
-                    GlUtils.drawElements(gl[drawMode], indexBuffer.count, indexBuffer.type, indexBuffer.typeSize * startOffset);
+                    GlUtils.drawElements(gl[drawMode], indexBuffer.count, gl[indexBuffer.type], indexBuffer.typeSize * startOffset);
                 }, this);
             }
             else{

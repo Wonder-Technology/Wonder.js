@@ -860,6 +860,12 @@ beforeEach(function () {
                             pass: actual.calledOnce,
                             message: "Expected to be called Once, but actual callCount is " + actual.callCount
                         }
+                    },
+                    negativeCompare: function(actual, expected) {
+                        return {
+                            pass: !actual.calledOnce,
+                            message: "Expected not to be called Once, but actual callCount is " + actual.callCount
+                        }
                     }
                 };
             },
@@ -870,6 +876,12 @@ beforeEach(function () {
                             pass: actual.calledTwice,
                             message: "Expected to be called Twice, but actual callCount is " + actual.callCount
                         }
+                    },
+                    negativeCompare: function(actual, expected) {
+                        return {
+                            pass: !actual.calledTwice,
+                            message: "Expected not to be called Twice, but actual callCount is " + actual.callCount
+                        }
                     }
                 };
             },
@@ -878,7 +890,13 @@ beforeEach(function () {
                     compare: function (actual, expected) {
                         return {
                             pass: actual.calledThrice,
-                            message: "Expected to be called Thrice, but actual callCount is " + actual.callCount
+                            message: "Expected to be called thrice, but actual callCount is " + actual.callCount
+                        }
+                    },
+                    negativeCompare: function(actual, expected) {
+                        return {
+                            pass: !actual.calledThrice,
+                            message: "Expected not to be called thrice, but actual callCount is " + actual.callCount
                         }
                     }
                 };

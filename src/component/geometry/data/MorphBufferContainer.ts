@@ -60,12 +60,8 @@ module wd {
             cacheData = this.container.getChild(<any>type);
 
             if (!cacheData) {
-                let currentBuffer = this._getCurrentBuffer(type),
-                    nextBuffer = this._getNextBuffer(type);
-
-                currentBuffer.resetData(new Float32Array(frames.getChild(this._animation.currentFrame)), 3, EBufferType.FLOAT);
-                nextBuffer.resetData(new Float32Array(frames.getChild(this._animation.nextFrame)), 3, EBufferType.FLOAT);
-
+                let currentBuffer = this._getCurrentBufferWhichIsCreatedOnlyOnce(type, frames.getChild(this._animation.currentFrame), 3),
+                    nextBuffer = this._getNextBufferWhichIsCreatedOnlyOnce(type, frames.getChild(this._animation.nextFrame), 3);
 
                 result = [currentBuffer, nextBuffer];
 
@@ -81,7 +77,7 @@ module wd {
 
                     //todo use double-buffer cache?
                     newCurrentBuffer = nextBuffer;
-                    newNextBuffer = currentBuffer.resetData(new Float32Array(frames.getChild(this._animation.nextFrame)));
+                    newNextBuffer = currentBuffer.resetData(frames.getChild(this._animation.nextFrame));
 
                     result = [newCurrentBuffer, newNextBuffer];
 
@@ -108,32 +104,32 @@ module wd {
             return morphDataTargets.getChild(this._animation.currentAnimName);
         }
 
-        @require(function(type:EBufferDataType){
+        @require(function(type:EBufferDataType, data:Array<number>, size:number){
             assert(type === EBufferDataType.VERTICE || type === EBufferDataType.NORMAL, Log.info.FUNC_SHOULD("type", "be EBufferDataType.VERTICE or EBufferDataType.NORMAL"));
         })
-        private _getCurrentBuffer(type:EBufferDataType){
+        private _getCurrentBufferWhichIsCreatedOnlyOnce(type:EBufferDataType, data:Array<number>, size:number){
             if(type === EBufferDataType.VERTICE){
-                this.createBufferOnlyOnce("_currentVerticeBuffer", ArrayBuffer);
+                this.createOnlyOnceAndUpdateArrayBuffer("_currentVerticeBuffer", data, size, EBufferType.FLOAT, 0, EBufferUsage.DYNAMIC_DRAW);
 
                 return this._currentVerticeBuffer;
             }
 
-            this.createBufferOnlyOnce("_currentNormalBuffer", ArrayBuffer);
+            this.createOnlyOnceAndUpdateArrayBuffer("_currentNormalBuffer", data, size, EBufferType.FLOAT, 0, EBufferUsage.DYNAMIC_DRAW);
 
             return this._currentNormalBuffer;
         }
 
-        @require(function(type:EBufferDataType){
+        @require(function(type:EBufferDataType, data:Array<number>, size:number){
             assert(type === EBufferDataType.VERTICE || type === EBufferDataType.NORMAL, Log.info.FUNC_SHOULD("type", "be EBufferDataType.VERTICE or EBufferDataType.NORMAL"));
         })
-        private _getNextBuffer(type:EBufferDataType){
+        private _getNextBufferWhichIsCreatedOnlyOnce(type:EBufferDataType, data:Array<number>, size:number){
             if(type === EBufferDataType.VERTICE){
-                this.createBufferOnlyOnce("_nextVerticeBuffer", ArrayBuffer);
+                this.createOnlyOnceAndUpdateArrayBuffer("_nextVerticeBuffer", data, size, EBufferType.FLOAT, 0, EBufferUsage.DYNAMIC_DRAW);
 
                 return this._nextVerticeBuffer;
             }
 
-            this.createBufferOnlyOnce("_nextNormalBuffer", ArrayBuffer);
+            this.createOnlyOnceAndUpdateArrayBuffer("_nextNormalBuffer", data, size, EBufferType.FLOAT, 0, EBufferUsage.DYNAMIC_DRAW);
 
             return this._nextNormalBuffer;
         }
@@ -176,12 +172,8 @@ module wd {
             this._animation.interpolation = 0;
 
             result = [
-                this._getCurrentBuffer(type).resetData(
-                    new Float32Array(data), 3, EBufferType.FLOAT
-                ),
-                this._getNextBuffer(type).resetData(
-                    new Float32Array(data), 3, EBufferType.FLOAT
-                )
+                this._getCurrentBufferWhichIsCreatedOnlyOnce(type, data, 3),
+                this._getNextBufferWhichIsCreatedOnlyOnce(type, data, 3),
                 ];
 
             return result;

@@ -36,9 +36,7 @@ module wd {
                 return null;
             }
 
-            this.createBufferOnlyOnce("_verticeBuffer", ArrayBuffer);
-
-            this._verticeBuffer.resetData(new Float32Array(geometryData), 3, EBufferType.FLOAT);
+            this.createOnlyOnceAndUpdateArrayBuffer("_verticeBuffer", geometryData, 3);
 
             return this._verticeBuffer;
         }
@@ -57,9 +55,7 @@ module wd {
                 return null;
             }
 
-            this.createBufferOnlyOnce("_normalBuffer", ArrayBuffer);
-
-            this._normalBuffer.resetData(new Float32Array(geometryData), 3, EBufferType.FLOAT);
+            this.createOnlyOnceAndUpdateArrayBuffer("_normalBuffer", geometryData, 3);
 
             return this._normalBuffer;
         }

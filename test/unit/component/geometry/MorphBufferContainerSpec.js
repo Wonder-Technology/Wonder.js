@@ -143,11 +143,7 @@ describe("MorphBufferContainer", function() {
                     animation.play("play", 10);
 
                     bufferContainerTool.judgeUpdateBufferData(container, gl, wd.EBufferDataType.VERTICE, 2, function(){
-                        expect(gl.bufferData.callCount).toEqual(4);
-                        expect(gl.bufferData.getCall(0).args[2]).toEqual(gl.DYNAMIC_DRAW);
-                        expect(gl.bufferData.getCall(1).args[2]).toEqual(gl.DYNAMIC_DRAW);
-                        expect(gl.bufferData.getCall(2).args[2]).toEqual(gl.DYNAMIC_DRAW);
-                        expect(gl.bufferData.getCall(3).args[2]).toEqual(gl.DYNAMIC_DRAW);
+                        expect(gl.bufferSubData.callCount).toEqual(2);
                     });
                 });
             });

@@ -31,7 +31,7 @@
 
         //'test/unit/**/ProgramSpec.js',
         //'test/unit/**/GLSLDataSenderSpec.js',
-        'test/unit/**/programIn*',
+        //'test/unit/**/programIn*',
 
         //'test/unit/**/renderer/**',
 
@@ -39,8 +39,8 @@
 
         //'test/unit/**/*ProceduralRenderTargetRenderer*',
 
-        //'test/unit/**/*ArrayBuffer*',
-        //'test/unit/**/*ElementBuffer*',
+        'test/unit/**/*ArrayBuffer*',
+        'test/unit/**/*ElementBuffer*',
 
         //'test/unit/**/proceduralRenderTargetRenderer*',
 
@@ -93,7 +93,7 @@
         //'test/unit/renderer/shadow/directionShadowMap*',
         //'test/unit/renderer/*ShadowMap_*Spec.js',
         //
-        'test/unit/**/instance/*',
+        //'test/unit/**/instance/*',
         //'test/unit/**/instance/*lod*',
 
         //'test/unit/**/instance/SourceInstance*',
@@ -160,7 +160,7 @@
 
 
         //'test/unit/**/*GeometryData*',
-        //'test/unit/**/**BufferContainer*',
+        'test/unit/**/**BufferContainer*',
         //
         //'test/unit/**/Face3*',
 

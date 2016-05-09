@@ -85,12 +85,12 @@ module wd {
              this._vertexBuffer = BufferTable.getBuffer<ArrayBuffer>(<any>BufferTableKey.PROCEDURAL_VERTEX);
             }
             else{
-                this._vertexBuffer = ArrayBuffer.create(new Float32Array([
+                this._vertexBuffer = ArrayBuffer.create([
                     1, 1,
                     -1, 1,
                     -1, -1,
                     1, -1
-                ]), 2, EBufferType.FLOAT);
+                ], 2, EBufferType.FLOAT);
 
                 BufferTable.addBuffer(<any>BufferTableKey.PROCEDURAL_VERTEX, this._vertexBuffer);
             }
@@ -100,10 +100,10 @@ module wd {
                 this._indexBuffer = BufferTable.getBuffer<ElementBuffer>(<any>BufferTableKey.PROCEDURAL_INDEX);
             }
             else{
-                this._indexBuffer = ElementBuffer.create(new Uint16Array([
+                this._indexBuffer = ElementBuffer.create([
                     0, 1, 2,
                     0, 2, 3
-                ]), EBufferType.UNSIGNED_SHORT);
+                ], EBufferType.UNSIGNED_SHORT);
 
                 BufferTable.addBuffer(<any>BufferTableKey.PROCEDURAL_INDEX, this._indexBuffer);
             }

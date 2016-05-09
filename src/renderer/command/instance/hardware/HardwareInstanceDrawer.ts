@@ -47,7 +47,7 @@ module wd{
 
             BufferTable.bindIndexBuffer(indexBuffer);
 
-            GlUtils.drawElementsInstancedANGLE(gl[drawMode], indexBuffer.count, indexBuffer.type, indexBuffer.typeSize * startOffset, instancesCount);
+            GlUtils.drawElementsInstancedANGLE(gl[drawMode], indexBuffer.count, gl[indexBuffer.type], indexBuffer.typeSize * startOffset, instancesCount);
         }
 
         private _drawArraysInstancedANGLE(vertexBuffer:ArrayBuffer, instancesCount:number, drawMode:EDrawMode){

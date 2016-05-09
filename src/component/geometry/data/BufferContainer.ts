@@ -86,13 +86,39 @@ module wd {
         protected abstract getVertice(type);
         protected abstract getNormal(type);
 
-        protected createBufferOnlyOnce(bufferAttriName:string, bufferClass:any){
-            if(this[bufferAttriName]){
+        protected createOnlyOnceAndUpdateArrayBuffer(bufferAttriName:string, data:Array<number>, size:number, type:EBufferType = EBufferType.FLOAT, offset:number = 0, usage:EBufferUsage = EBufferUsage.STATIC_DRAW){
+            var buffer:ArrayBuffer = this[bufferAttriName];
+
+            if(buffer){
+                buffer.resetData(data, size, type, offset);
+
                 return;
             }
 
-            this[bufferAttriName] = bufferClass.create();
+            this[bufferAttriName] = ArrayBuffer.create(data, size, type, usage);
         }
+
+        protected createOnlyOnceAndUpdateElememntBuffer(bufferAttriName:string, data:Array<number>, type:EBufferType = null, offset:number = 0, usage:EBufferUsage = EBufferUsage.STATIC_DRAW){
+            var buffer:ElementBuffer = this[bufferAttriName];
+
+            if(buffer){
+                buffer.resetData(data, type, offset);
+
+                return;
+            }
+
+            this[bufferAttriName] = ElementBuffer.create(data, type, usage);
+        }
+
+        //protected createBufferOnlyOnce(bufferAttriName:string, bufferClass:any, data:Float32Array, size:number, type:EBufferType, usage:EBufferUsage = EBufferUsage.STATIC_DRAW):boolean{
+        //    if(this[bufferAttriName]){
+        //        return false;
+        //    }
+        //
+        //    this[bufferAttriName] = bufferClass.create(data, size, type,usage);
+        //
+        //    return true;
+        //}
 
         protected hasData(data:Array<number>) {
             return data && data.length > 0;
@@ -114,9 +140,7 @@ module wd {
                 return null;
             }
 
-            this.createBufferOnlyOnce("_tangentBuffer", ArrayBuffer);
-
-            this._tangentBuffer.resetData(new Float32Array(geometryData), 3, EBufferType.FLOAT);
+            this.createOnlyOnceAndUpdateArrayBuffer("_tangentBuffer", geometryData, 3);
 
             return this._tangentBuffer;
         }
@@ -137,9 +161,7 @@ module wd {
                 return null;
             }
 
-            this.createBufferOnlyOnce("_colorBuffer", ArrayBuffer);
-
-            this._colorBuffer.resetData(new Float32Array(geometryData), 3, EBufferType.FLOAT);
+            this.createOnlyOnceAndUpdateArrayBuffer("_colorBuffer", geometryData, 3);
 
             return this._colorBuffer;
         }
@@ -160,9 +182,7 @@ module wd {
                 return null;
             }
 
-            this.createBufferOnlyOnce("_indiceBuffer", ElementBuffer);
-
-            this._indiceBuffer.resetData(new Uint16Array(geometryData), EBufferType.UNSIGNED_SHORT);
+            this.createOnlyOnceAndUpdateElememntBuffer("_indiceBuffer", geometryData);
 
             return this._indiceBuffer;
         }
@@ -175,7 +195,8 @@ module wd {
             this.container.addChild(<any>type, result);
         })
         private _getTexCoord(type){
-            var geometryData = null;
+            var geometryData = null,
+                isCreatBuffer:boolean = null;
 
             geometryData = this.geometryData[BufferDataTable.getGeometryDataName(type)];
 
@@ -183,9 +204,7 @@ module wd {
                 return null;
             }
 
-            this.createBufferOnlyOnce("_texCoordBuffer", ArrayBuffer);
-
-            this._texCoordBuffer.resetData(new Float32Array(geometryData), 2, EBufferType.FLOAT);
+            this.createOnlyOnceAndUpdateArrayBuffer("_texCoordBuffer", geometryData, 2);
 
             return this._texCoordBuffer;
         }
