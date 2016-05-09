@@ -33,9 +33,9 @@
         //'test/unit/renderer/**',
         //'test/unit/**/*InstanceCommand*',
 
-        //'test/unit/**/ProgramSpec.js',
+        'test/unit/**/ProgramSpec.js',
         //'test/unit/**/GLSLDataSenderSpec.js',
-        //'test/unit/**/programIn*',
+        'test/unit/**/programIn*',
 
         //'test/unit/**/renderer/**',
 
@@ -145,7 +145,7 @@
         //'test/unit/**/*ShaderSpec*',
 
         //'test/unit/**/customShaderSpec*',
-        'test/unit/**/renderWebGL*',
+        //'test/unit/**/renderWebGL*',
         //'test/unit/**/SortUtils*',
 
         //'test/unit/**/*CommandSpec*',

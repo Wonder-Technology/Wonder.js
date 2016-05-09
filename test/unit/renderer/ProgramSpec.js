@@ -37,11 +37,11 @@ describe("Program", function(){
             });
 
             it("use program", function () {
-                program._program = {};
+                program.glProgram = {};
 
                 program.use();
 
-                expect(gl.useProgram).toCalledWith(program._program);
+                expect(gl.useProgram).toCalledWith(program.glProgram);
             });
         });
     });
@@ -55,18 +55,24 @@ describe("Program", function(){
             expect(program._getAttribLocationCache.removeAllChildren).toCalledOnce();
         });
         it("clear _getUniformLocationCache", function () {
-            sandbox.stub(program._getUniformLocationCache, "removeAllChildren");
+            var pos1 = program.getUniformLocation("a");
 
             program._clearAllCache();
 
-            expect(program._getUniformLocationCache.removeAllChildren).toCalledOnce();
+
+            var pos2 = program.getUniformLocation("a");
+
+            expect(gl.getUniformLocation).toCalledTwice();
         });
         it("clear _uniformTable", function () {
-            sandbox.stub(program._sender._uniformTable, "removeAllChildren");
+            program.sendUniformData("u_a", wd.EVariableType.FLOAT_2, [1.1, 2.1]);
 
             program._clearAllCache();
 
-            expect(program._sender._uniformTable.removeAllChildren).toCalledOnce();
+
+            program.sendUniformData("u_a", wd.EVariableType.FLOAT_2, [1.1, 2.1]);
+
+            expect(gl.uniform2f).toCalledTwice();
         });
     });
 

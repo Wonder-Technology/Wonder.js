@@ -6,10 +6,10 @@ module wd{
             return obj;
         }
 
-        private _program:any = null;
+        public glProgram:any = null;
+
         private _getAttribLocationCache:wdCb.Hash<number> = wdCb.Hash.create<number>();
-        private _getUniformLocationCache:wdCb.Hash<number> = wdCb.Hash.create<number>();
-        private _sender:GLSLDataSender = GLSLDataSender.create();
+        private _sender:GLSLDataSender = GLSLDataSender.create(this);
 
         public use(){
             if(JudgeUtils.isEqual(this, ProgramTable.lastUsedProgram)){
@@ -18,29 +18,7 @@ module wd{
 
             ProgramTable.lastUsedProgram = this;
 
-            DeviceManager.getInstance().gl.useProgram(this._program);
-        }
-
-        /*!
-         not use @cache,
-         here judge return pos of "getChild", so it don't need to invoke "hasChild"
-         */
-        public getUniformLocation(name:string){
-            var pos = null,
-                gl = DeviceManager.getInstance().gl;
-
-
-            pos = this._getUniformLocationCache.getChild(name);
-
-            if(pos !== void 0){
-                return pos;
-            }
-
-            pos = gl.getUniformLocation(this._program, name);
-
-            this._getUniformLocationCache.addChild(name, pos);
-
-            return pos;
+            DeviceManager.getInstance().gl.useProgram(this.glProgram);
         }
 
         /*!
@@ -57,23 +35,53 @@ module wd{
                 return pos;
             }
 
-            pos = gl.getAttribLocation(this._program, name);
+            pos = gl.getAttribLocation(this.glProgram, name);
 
             this._getAttribLocationCache.addChild(name, pos);
 
             return pos;
         }
 
+        public getUniformLocation(name:string){
+            return this._sender.getUniformLocation(name);
+        }
+
         public sendUniformData(name:string, type:EVariableType, data:any){
-            var pos:number = null;
-
-            pos = this.getUniformLocation(name);
-
-            if (this.isUniformDataNotExistByLocation(pos) || data === null) {
+            if(data === null){
                 return;
             }
 
-            this._sendUniformData(type, name, pos, data);
+            switch (type){
+                case EVariableType.FLOAT_1:
+                    this._sender.sendFloat1(name, data);
+                    break;
+                case EVariableType.FLOAT_2:
+                    this._sender.sendFloat2(name, data);
+                    break;
+                case EVariableType.FLOAT_3:
+                    this._sender.sendFloat3(name, data);
+                    break;
+                case EVariableType.FLOAT_4:
+                    this._sender.sendFloat4(name, data);
+                    break;
+                case EVariableType.FLOAT_MAT3:
+                    this._sender.sendMatrix3(name, data);
+                    break;
+                case EVariableType.FLOAT_MAT4:
+                    this._sender.sendMatrix4(name, data);
+                    break;
+                case EVariableType.NUMBER_1:
+                case EVariableType.SAMPLER_CUBE:
+                case EVariableType.SAMPLER_2D:
+                    this._sender.sendNum1(name, data);
+                    break;
+                case EVariableType.SAMPLER_ARRAY:
+                    this._sender.sendSampleArray(name, data);
+                    break;
+                default :
+                    Log.error(true, Log.info.FUNC_INVALID("EVariableType:", type));
+                    break;
+            }
         }
 
         @require(function(name:string, type:EVariableType, data:any){
@@ -109,23 +117,23 @@ module wd{
                 vs = null,
                 fs = null;
 
-            if(this._program){
+            if(this.glProgram){
                 this.dispose();
             }
 
-            this._program = DeviceManager.getInstance().gl.createProgram();
+            this.glProgram = DeviceManager.getInstance().gl.createProgram();
 
             vs = shader.createVsShader();
             fs = shader.createFsShader();
 
-            gl.attachShader(this._program, vs);
-            gl.attachShader(this._program, fs);
+            gl.attachShader(this.glProgram, vs);
+            gl.attachShader(this.glProgram, fs);
 
 
             /*!
              if warn:"Attribute 0 is disabled. This has significant performance penalty" when run,
              then do this before linkProgram:
-             gl.bindAttribLocation( this._program, 0, "a_position");
+             gl.bindAttribLocation( this.glProgram, 0, "a_position");
 
 
 
@@ -145,12 +153,12 @@ module wd{
             /*!
              Always have vertex attrib 0 array enabled. If you draw with vertex attrib 0 array disabled, you will force the browser to do complicated emulation when running on desktop OpenGL (e.g. on Mac OSX). This is because in desktop OpenGL, nothing gets drawn if vertex attrib 0 is not array-enabled. You can use bindAttribLocation() to force a vertex attribute to use location 0, and use enableVertexAttribArray() to make it array-enabled.
              */
-            gl.bindAttribLocation( this._program, 0, "a_position");
+            gl.bindAttribLocation( this.glProgram, 0, "a_position");
 
 
-            gl.linkProgram(this._program);
+            gl.linkProgram(this.glProgram);
 
-            Log.error(gl.getProgramParameter(this._program, gl.LINK_STATUS) === false, gl.getProgramInfoLog(this._program));
+            Log.error(gl.getProgramParameter(this.glProgram, gl.LINK_STATUS) === false, gl.getProgramInfoLog(this.glProgram));
 
 
 
@@ -172,57 +180,17 @@ module wd{
         public dispose(){
             var gl = DeviceManager.getInstance().gl;
 
-            gl.deleteProgram(this._program);
-            this._program = null;
+            gl.deleteProgram(this.glProgram);
+            this.glProgram = null;
 
             this._sender.dispose();
 
             this._clearAllCache();
         }
 
-        public isUniformDataNotExistByLocation(pos:number){
-            return pos === null;
-        }
-
         private _clearAllCache(){
             this._getAttribLocationCache.removeAllChildren();
-            this._getUniformLocationCache.removeAllChildren();
-
             this._sender.clearAllCache();
-        }
-
-        private _sendUniformData(type:EVariableType, name:string, pos:number, data:any){
-            switch (type){
-                case EVariableType.FLOAT_1:
-                    this._sender.sendFloat1(name, pos, data);
-                    break;
-                case EVariableType.FLOAT_2:
-                    this._sender.sendFloat2(name, pos, data);
-                    break;
-                case EVariableType.FLOAT_3:
-                    this._sender.sendFloat3(name, pos, data);
-                    break;
-                case EVariableType.FLOAT_4:
-                    this._sender.sendFloat4(name, pos, data);
-                    break;
-                case EVariableType.FLOAT_MAT3:
-                    this._sender.sendMatrix3(name, pos, data);
-                    break;
-                case EVariableType.FLOAT_MAT4:
-                    this._sender.sendMatrix4(name, pos, data);
-                    break;
-                case EVariableType.NUMBER_1:
-                case EVariableType.SAMPLER_CUBE:
-                case EVariableType.SAMPLER_2D:
-                    this._sender.sendNum1(name, pos, data);
-                    break;
-                case EVariableType.SAMPLER_ARRAY:
-                    this._sender.sendSampleArray(name, pos, data);
-                    break;
-                default :
-                    Log.error(true, Log.info.FUNC_INVALID("EVariableType:", type));
-                    break;
-            }
         }
 
         private _sendAttributeData(type:EVariableType, pos:number, data:any){

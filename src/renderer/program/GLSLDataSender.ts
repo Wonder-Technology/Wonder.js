@@ -1,30 +1,41 @@
 module wd{
     export class GLSLDataSender{
-        public static create() {
-        	var obj = new this();
+        public static create(program:Program) {
+            var obj = new this(program);
 
-        	return obj;
+            return obj;
         }
 
-        private _uniformTable:wdCb.Hash<any> = wdCb.Hash.create<any>();
-        private _vertexAttribHistory:wdCb.Hash<number> = wdCb.Hash.create<number>();
+        constructor(program:Program){
+            this._program = program;
+        }
 
-        @cache(function(name:string, pos:number, data:any){
-            var recordedData:any = this._uniformTable.getChild(name);
+        private _program:Program = null;
+        private _uniformTable:Object = {};
+        private _vertexAttribHistory:wdCb.Hash<number> = wdCb.Hash.create<number>();
+        private _getUniformLocationCache:Object = {};
+
+        @cache(function(name:string, data:any){
+            var recordedData:any = this._uniformTable[name];
 
             return recordedData == data;
-        }, function(name:string, pos:number, data:any){
-        }, function(result:any, name:string, pos:number, data:any){
+        }, function(name:string, data:any){
+        }, function(result:any, name:string, data:any){
             this._recordUniformData(name, data);
         })
-        public sendFloat1(name:string, pos:number, data:any){
-            var gl = DeviceManager.getInstance().gl;
+        public sendFloat1(name:string, data:any){
+            var gl = DeviceManager.getInstance().gl,
+                pos = this.getUniformLocation(name);
+
+            if(this._isUniformDataNotExistByLocation(pos)){
+                return;
+            }
 
             gl.uniform1f(pos, Number(data));
         }
 
-        @cache(function(name:string, pos:number, data:any){
-            var recordedData:any = this._uniformTable.getChild(name);
+        @cache(function(name:string, data:any){
+            var recordedData:any = this._uniformTable[name];
 
             if(!recordedData){
                 return false;
@@ -35,20 +46,25 @@ module wd{
             }
 
             return (<Vector2>recordedData).isEqual(<Vector2>data);
-        }, function(name:string, pos:number, data:any){
-        }, function(result:any, name:string, pos:number, data:any){
+        }, function(name:string, data:any){
+        }, function(result:any, name:string, data:any){
             this._recordUniformData(name, data);
         })
-        public sendFloat2(name:string, pos:number, data:any){
-            var gl = DeviceManager.getInstance().gl;
+        public sendFloat2(name:string, data:any){
+            var gl = DeviceManager.getInstance().gl,
+                pos = this.getUniformLocation(name);
+
+            if(this._isUniformDataNotExistByLocation(pos)){
+                return;
+            }
 
             data = this._convertToArray2(data);
 
             gl.uniform2f(pos, data[0], data[1]);
         }
 
-        @cache(function(name:string, pos:number, data:any){
-            var recordedData:any = this._uniformTable.getChild(name);
+        @cache(function(name:string, data:any){
+            var recordedData:any = this._uniformTable[name];
 
             if(!recordedData){
                 return false;
@@ -59,12 +75,17 @@ module wd{
             }
 
             return (<Vector3>recordedData).isEqual(<Vector3>data);
-        }, function(name:string, pos:number, data:any){
-        }, function(result:any, name:string, pos:number, data:any){
+        }, function(name:string, data:any){
+        }, function(result:any, name:string, data:any){
             this._recordUniformData(name, data);
         })
-        public sendFloat3(name:string, pos:number, data:any){
-            var gl = DeviceManager.getInstance().gl;
+        public sendFloat3(name:string, data:any){
+            var gl = DeviceManager.getInstance().gl,
+                pos = this.getUniformLocation(name);
+
+            if(this._isUniformDataNotExistByLocation(pos)){
+                return;
+            }
 
             data = this._convertToArray3(data);
 
@@ -72,8 +93,8 @@ module wd{
         }
 
 
-        @cache(function(name:string, pos:number, data:any){
-            var recordedData:any = this._uniformTable.getChild(name);
+        @cache(function(name:string, data:any){
+            var recordedData:any = this._uniformTable[name];
 
             if(!recordedData){
                 return false;
@@ -84,53 +105,73 @@ module wd{
             }
 
             return (<Vector4>recordedData).isEqual(<Vector4>data);
-        }, function(name:string, pos:number, data:any){
-        }, function(result:any, name:string, pos:number, data:any){
+        }, function(name:string, data:any){
+        }, function(result:any, name:string, data:any){
             this._recordUniformData(name, data);
         })
-        public sendFloat4(name:string, pos:number, data:any){
-            var gl = DeviceManager.getInstance().gl;
+        public sendFloat4(name:string, data:any){
+            var gl = DeviceManager.getInstance().gl,
+                pos = this.getUniformLocation(name);
+
+            if(this._isUniformDataNotExistByLocation(pos)){
+                return;
+            }
 
             data = this._convertToArray4(data);
 
             gl.uniform4f(pos, data[0], data[1], data[2], data[3]);
         }
 
-        @cache(function(name:string, pos:number, data:any){
-            var recordedData:any = this._uniformTable.getChild(name);
+        @cache(function(name:string, data:any){
+            var recordedData:any = this._uniformTable[name];
 
             return recordedData == data;
-        }, function(name:string, pos:number, data:any){
-        }, function(result:any, name:string, pos:number, data:any){
+        }, function(name:string, data:any){
+        }, function(result:any, name:string, data:any){
             this._recordUniformData(name, data);
         })
-        public sendNum1(name:string, pos:number, data:any){
-            var gl = DeviceManager.getInstance().gl;
+        public sendNum1(name:string, data:any){
+            var gl = DeviceManager.getInstance().gl,
+                pos = this.getUniformLocation(name);
+
+            if(this._isUniformDataNotExistByLocation(pos)){
+                return;
+            }
 
             gl.uniform1i(pos, Number(data));
         }
 
-        public sendMatrix3(name:string, pos:number, data:Matrix3){
-            var gl = DeviceManager.getInstance().gl;
+        public sendMatrix3(name:string, data:Matrix3){
+            var gl = DeviceManager.getInstance().gl,
+                pos = this.getUniformLocation(name);
+
+            if(this._isUniformDataNotExistByLocation(pos)){
+                return;
+            }
 
             gl.uniformMatrix3fv(pos,false, data.values);
         }
 
-        public sendMatrix4(name:string, pos:number, data:Matrix4){
-            var gl = DeviceManager.getInstance().gl;
+        public sendMatrix4(name:string, data:Matrix4){
+            var gl = DeviceManager.getInstance().gl,
+                pos = this.getUniformLocation(name);
+
+            if(this._isUniformDataNotExistByLocation(pos)){
+                return;
+            }
 
             gl.uniformMatrix4fv(pos,false, data.values);
         }
 
-        @require(function(name:string, pos:number, data:Array<number>){
+        @require(function(name:string, data:Array<number>){
             assert(JudgeUtils.isArrayExactly(data), Log.info.FUNC_SHOULD("data", `be array, but actual is ${data}`));
 
             for(let unit of data){
                 assert(JudgeUtils.isNumber(unit), Log.info.FUNC_SHOULD("data", `be Array<number>, but actual is ${data}`));
             }
         })
-        @cache(function(name:string, pos:number, data:Array<number>){
-            var recordedData:any = this._uniformTable.getChild(name),
+        @cache(function(name:string, data:Array<number>){
+            var recordedData:any = this._uniformTable[name],
                 isEqual:boolean = true;
 
             if(!recordedData){
@@ -145,14 +186,40 @@ module wd{
             }
 
             return isEqual;
-        }, function(name:string, pos:number, data:Array<number>){
-        }, function(result:any, name:string, pos:number, data:Array<number>){
+        }, function(name:string, data:Array<number>){
+        }, function(result:any, name:string, data:Array<number>){
             this._recordUniformData(name, data);
         })
-        public sendSampleArray(name:string, pos:number, data:Array<number>){
-            var gl = DeviceManager.getInstance().gl;
+        public sendSampleArray(name:string, data:Array<number>){
+            var gl = DeviceManager.getInstance().gl,
+                pos = this.getUniformLocation(name);
+
+            if(this._isUniformDataNotExistByLocation(pos)){
+                return;
+            }
 
             gl.uniform1iv(pos, data);
+        }
+
+        /*!
+         not use @cache,
+         here judge return pos of "getChild", so it don't need to invoke "hasChild"
+         */
+        public getUniformLocation(name:string){
+            var pos = null,
+                gl = DeviceManager.getInstance().gl;
+
+            pos = this._getUniformLocationCache[name];
+
+            if(pos !== void 0){
+                return pos;
+            }
+
+            pos = gl.getUniformLocation(this._program.glProgram, name);
+
+            this._getUniformLocationCache[name] = pos;
+
+            return pos;
         }
 
         public addBufferToToSendList(pos:number, buffer:ArrayBuffer){
@@ -224,7 +291,9 @@ module wd{
         }
 
         public clearAllCache(){
-            this._uniformTable.removeAllChildren();
+            this._getUniformLocationCache = {};
+
+            this._uniformTable = {};
         }
 
         public dispose(){
@@ -284,7 +353,11 @@ module wd{
         }
 
         private _recordUniformData(name:string, data:any){
-            this._uniformTable.addChild(name, data);
+            this._uniformTable[name] = data;
+        }
+
+        private _isUniformDataNotExistByLocation(pos:number){
+            return pos === null;
         }
     }
 
@@ -293,3 +366,4 @@ module wd{
         buffer:ArrayBuffer;
     }
 }
+
