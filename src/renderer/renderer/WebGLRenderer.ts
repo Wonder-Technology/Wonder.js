@@ -124,14 +124,11 @@ module wd{
             var self = this,
                 cameraPositionZ = Director.getInstance().scene.currentCamera.transform.position.z;
 
-            //todo optimize sort
-            transparentCommandArr
-                .sort((a:QuadCommand, b:QuadCommand) => {
-                    return self._getObjectToCameraZDistance(cameraPositionZ, b) - self._getObjectToCameraZDistance(cameraPositionZ, a);
-                })
-                .forEach((command:QuadCommand) => {
-                    command.execute();
-                });
+            for (let command of SortUtils.insertSort(transparentCommandArr, (a:QuadCommand, b:QuadCommand) => {
+                    return self._getObjectToCameraZDistance(cameraPositionZ, b) < self._getObjectToCameraZDistance(cameraPositionZ, a);
+                })){
+                command.execute();
+            }
         }
 
         private _getObjectToCameraZDistance(cameraPositionZ:number, cmd:QuadCommand){
