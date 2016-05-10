@@ -5,7 +5,7 @@ module wd{
 
     export function require(inFunc) {
         return function (target, name, descriptor) {
-            if(CompileConfig.openTestConfig){
+            if(CompileConfig.isTest){
                 let value = descriptor.value;
 
                 descriptor.value = function(args){
@@ -23,7 +23,7 @@ module wd{
 
     export function ensure(outFunc) {
         return function (target, name, descriptor) {
-            if(CompileConfig.openTestConfig){
+            if(CompileConfig.isTest){
                 let value = descriptor.value;
 
                 descriptor.value = function (args) {
@@ -51,7 +51,7 @@ module wd{
 
     export function requireGetterAndSetter(inGetterFunc, inSetterFunc) {
         return function (target, name, descriptor) {
-            if(CompileConfig.openTestConfig){
+            if(CompileConfig.isTest){
                 let getter = descriptor.get,
                     setter = descriptor.set;
 
@@ -78,7 +78,7 @@ module wd{
 
     export function requireGetter(inFunc) {
         return function (target, name, descriptor) {
-            if(CompileConfig.openTestConfig){
+            if(CompileConfig.isTest){
                 let getter = descriptor.get;
 
                 descriptor.get = function() {
@@ -97,7 +97,7 @@ module wd{
 
     export function requireSetter(inFunc) {
         return function (target, name, descriptor) {
-            if(CompileConfig.openTestConfig){
+            if(CompileConfig.isTest){
                 let setter = descriptor.set;
 
                 descriptor.set = function(val) {
@@ -115,7 +115,7 @@ module wd{
 
     export function ensureGetterAndSetter(outGetterFunc, outSetterFunc) {
         return function (target, name, descriptor) {
-            if(CompileConfig.openTestConfig){
+            if(CompileConfig.isTest){
                 let getter = descriptor.get,
                     setter = descriptor.set;
 
@@ -145,7 +145,7 @@ module wd{
 
     export function ensureGetter(outFunc) {
         return function (target, name, descriptor) {
-            if(CompileConfig.openTestConfig){
+            if(CompileConfig.isTest){
                 let getter = descriptor.get;
 
                 descriptor.get = function() {
@@ -165,7 +165,7 @@ module wd{
 
     export function ensureSetter(outFunc) {
         return function (target, name, descriptor) {
-            if(CompileConfig.openTestConfig){
+            if(CompileConfig.isTest){
                 let setter = descriptor.set;
 
                 descriptor.set = function(val) {
@@ -184,7 +184,7 @@ module wd{
 
     export function invariant(func) {
         return function (target) {
-            if(CompileConfig.openTestConfig) {
+            if(CompileConfig.isTest) {
                 if(Main.isTest) {
                     func(target);
                 }
