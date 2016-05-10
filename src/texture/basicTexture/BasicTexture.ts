@@ -11,6 +11,25 @@ module wd{
             this.p_sourceRegionMethod = sourceRegionMethod;
         }
 
+        private _sourceRegion:RectRegion = null;
+        @cloneAttributeAsCloneable()
+        get sourceRegion(){
+            return this._sourceRegion;
+        }
+        set sourceRegion(sourceRegion:RectRegion){
+            this._sourceRegion = sourceRegion;
+
+            this._sourceRegionDirty = true;
+        }
+
+        @cacheGetter(function(){
+            return !this._sourceRegionDirty && this._sourceRegionForGLSLCache !== null;
+        }, function(){
+            return this._sourceRegionForGLSLCache;
+        }, function(result){
+            this._sourceRegionForGLSLCache = result;
+            this._sourceRegionDirty = false;
+        })
         get sourceRegionForGLSL(){
             if(this.sourceRegion && this.sourceRegionMethod === ETextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL){
                 return this._convertSourceRegionToUV(this.sourceRegion);
@@ -27,8 +46,6 @@ module wd{
         public source:any = null;
         @cloneAttributeAsCloneable()
         public repeatRegion:RectRegion = null;
-        @cloneAttributeAsCloneable()
-        public sourceRegion:RectRegion = null;
         @cloneAttributeAsBasicType()
         public sourceRegionMapping:ETextureSourceRegionMapping = null;
         @cloneAttributeAsBasicType()
@@ -44,6 +61,9 @@ module wd{
         @cloneAttributeAsBasicType()
         public anisotropy:number = null;
 
+        private _sourceRegionDirty:boolean = false;
+        private _sourceRegionForGLSLCache:RectRegion = null;
+
         public initWhenCreate(...args){
             var gl = DeviceManager.getInstance().gl;
             //texture.addEventListener( "dispose", onTextureDispose );
@@ -56,6 +76,12 @@ module wd{
         }
 
         public init(){
+        }
+
+        public dispose(){
+            super.dispose();
+
+            this._sourceRegionForGLSLCache = null;
         }
 
         public update(){

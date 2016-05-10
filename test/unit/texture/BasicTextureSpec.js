@@ -116,6 +116,40 @@ describe("BasicTexture", function() {
 
             expect(testTool.getValues(sourceRegion)).toEqual(testTool.getValues(wd.RectRegion.create(0,0,1,1)));
         });
+
+        describe("test cache", function(){
+            beforeEach(function(){
+                texture.sourceRegionMethod = wd.ETextureSourceRegionMethod.DRAW_IN_CANVAS;
+            });
+
+            it("if sourceRegion not dirty, return cached data", function () {
+                var sourceRegion1 = texture.sourceRegionForGLSL;
+                var sourceRegion2 = texture.sourceRegionForGLSL;
+
+                expect(sourceRegion1 === sourceRegion2).toBeTruthy();
+            });
+
+            describe("test cache miss", function(){
+                it("if dirty, cache miss", function () {
+                    var sourceRegion1 = texture.sourceRegionForGLSL;
+
+                    texture.sourceRegion = wd.RectRegion.create(1,2,3,1);
+
+                    var sourceRegion2 = texture.sourceRegionForGLSL;
+
+                    expect(sourceRegion1 === sourceRegion2).toBeFalsy();
+                });
+                it("if not cached, cache miss", function () {
+                    var sourceRegion1 = texture.sourceRegionForGLSL;
+
+                    texture.dispose();
+
+                    var sourceRegion2 = texture.sourceRegionForGLSL;
+
+                    expect(sourceRegion1 === sourceRegion2).toBeFalsy();
+                });
+            });
+        });
     });
 
     describe("update", function(){

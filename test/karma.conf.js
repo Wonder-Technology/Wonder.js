@@ -29,13 +29,14 @@
 
         //'test/unit/**',
 
+        'test/unit/**/BasicTexture*',
 
         //'test/unit/renderer/**',
         //'test/unit/**/*InstanceCommand*',
 
-        'test/unit/**/ProgramSpec.js',
+        //'test/unit/**/ProgramSpec.js',
         //'test/unit/**/GLSLDataSenderSpec.js',
-        'test/unit/**/programIn*',
+        //'test/unit/**/programIn*',
 
         //'test/unit/**/renderer/**',
 
