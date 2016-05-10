@@ -5,15 +5,17 @@ module wd{
 
     export function require(inFunc) {
         return function (target, name, descriptor) {
-            var value = descriptor.value;
+            if(CompileConfig.openTestConfig){
+                let value = descriptor.value;
 
-            descriptor.value = function(...args){
-                if(Main.isTest){
-                    inFunc.apply(this, args);
-                }
+                descriptor.value = function(args){
+                    if(Main.isTest) {
+                        inFunc.apply(this, arguments);
+                    }
 
-                return value.apply(this, args);
-            };
+                    return value.apply(this, arguments);
+                };
+            }
 
             return descriptor;
         }
@@ -21,18 +23,27 @@ module wd{
 
     export function ensure(outFunc) {
         return function (target, name, descriptor) {
-            var value = descriptor.value;
+            if(CompileConfig.openTestConfig){
+                let value = descriptor.value;
 
-            descriptor.value = function (...args) {
-                var result = value.apply(this, args);
+                descriptor.value = function (args) {
+                    var result = value.apply(this, arguments);
 
-                if(Main.isTest) {
-                    let params = [result].concat(args);
-                    outFunc.apply(this, params);
+                    if(Main.isTest)
+                    {
+
+                        var params = [result];
+
+                        for (let i = 0, len = arguments.length; i < len; i++) {
+                            params[i + 1] = arguments[i];
+                        }
+
+                        outFunc.apply(this, params);
+                    }
+
+                    return result;
                 }
-
-                return result;
-            };
+            }
 
             return descriptor;
         }
@@ -40,24 +51,26 @@ module wd{
 
     export function requireGetterAndSetter(inGetterFunc, inSetterFunc) {
         return function (target, name, descriptor) {
-            var getter = descriptor.get,
-                setter = descriptor.set;
+            if(CompileConfig.openTestConfig){
+                let getter = descriptor.get,
+                    setter = descriptor.set;
 
-            descriptor.get = function() {
-                if(Main.isTest){
-                    inGetterFunc.call(this);
-                }
+                descriptor.get = function() {
+                    if(Main.isTest) {
+                        inGetterFunc.call(this);
+                    }
 
-                return getter.call(this);
-            };
+                    return getter.call(this);
+                };
 
-            descriptor.set = function(val) {
-                if(Main.isTest){
-                    inSetterFunc.call(this, val);
-                }
+                descriptor.set = function(val) {
+                    if(Main.isTest) {
+                        inSetterFunc.call(this, val);
+                    }
 
-                setter.call(this, val);
-            };
+                    setter.call(this, val);
+                };
+            }
 
             return descriptor;
         }
@@ -65,15 +78,18 @@ module wd{
 
     export function requireGetter(inFunc) {
         return function (target, name, descriptor) {
-            var getter = descriptor.get;
+            if(CompileConfig.openTestConfig){
+                let getter = descriptor.get;
 
-            descriptor.get = function() {
-                if(Main.isTest){
-                    inFunc.call(this);
-                }
+                descriptor.get = function() {
+                    if(Main.isTest){
+                        inFunc.call(this);
+                    }
 
-                return getter.call(this);
-            };
+                    return getter.call(this);
+                };
+
+            }
 
             return descriptor;
         }
@@ -81,15 +97,17 @@ module wd{
 
     export function requireSetter(inFunc) {
         return function (target, name, descriptor) {
-            var setter = descriptor.set;
+            if(CompileConfig.openTestConfig){
+                let setter = descriptor.set;
 
-            descriptor.set = function(val) {
-                if(Main.isTest){
-                    inFunc.call(this, val);
-                }
+                descriptor.set = function(val) {
+                    if(Main.isTest){
+                        inFunc.call(this, val);
+                    }
 
-                setter.call(this, val);
-            };
+                    setter.call(this, val);
+                };
+            }
 
             return descriptor;
         }
@@ -97,27 +115,29 @@ module wd{
 
     export function ensureGetterAndSetter(outGetterFunc, outSetterFunc) {
         return function (target, name, descriptor) {
-            var getter = descriptor.get,
-                setter = descriptor.set;
+            if(CompileConfig.openTestConfig){
+                let getter = descriptor.get,
+                    setter = descriptor.set;
 
-            descriptor.get = function() {
-                var result = getter.call(this);
+                descriptor.get = function() {
+                    var result = getter.call(this);
 
-                if(Main.isTest){
-                    outGetterFunc.call(this, result);
-                }
+                    if(Main.isTest){
+                        outGetterFunc.call(this, result);
+                    }
 
-                return result;
-            };
+                    return result;
+                };
 
-            descriptor.set = function(val) {
-                var result = setter.call(this, val);
+                descriptor.set = function(val) {
+                    var result = setter.call(this, val);
 
-                if(Main.isTest){
-                    let params = [result, val];
-                    outSetterFunc.apply(this, params);
-                }
-            };
+                    if(Main.isTest){
+                        let params = [result, val];
+                        outSetterFunc.apply(this, params);
+                    }
+                };
+            }
 
             return descriptor;
         }
@@ -125,17 +145,19 @@ module wd{
 
     export function ensureGetter(outFunc) {
         return function (target, name, descriptor) {
-            var getter = descriptor.get;
+            if(CompileConfig.openTestConfig){
+                let getter = descriptor.get;
 
-            descriptor.get = function() {
-                var result = getter.call(this);
+                descriptor.get = function() {
+                    var result = getter.call(this);
 
-                if(Main.isTest){
-                    outFunc.call(this, result);
-                }
+                    if(Main.isTest){
+                        outFunc.call(this, result);
+                    }
 
-                return result;
-            };
+                    return result;
+                };
+            }
 
             return descriptor;
         }
@@ -143,16 +165,18 @@ module wd{
 
     export function ensureSetter(outFunc) {
         return function (target, name, descriptor) {
-            var setter = descriptor.set;
+            if(CompileConfig.openTestConfig){
+                let setter = descriptor.set;
 
-            descriptor.set = function(val) {
-                var result = setter.call(this, val);
+                descriptor.set = function(val) {
+                    var result = setter.call(this, val);
 
-                if(Main.isTest){
-                    let params = [result, val];
-                    outFunc.apply(this, params);
-                }
-            };
+                    if(Main.isTest){
+                        let params = [result, val];
+                        outFunc.apply(this, params);
+                    }
+                };
+            }
 
             return descriptor;
         }
@@ -160,9 +184,12 @@ module wd{
 
     export function invariant(func) {
         return function (target) {
-            if(Main.isTest) {
-                func(target);
+            if(CompileConfig.openTestConfig) {
+                if(Main.isTest) {
+                    func(target);
+                }
             }
         }
     }
 }
+

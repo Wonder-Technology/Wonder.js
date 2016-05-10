@@ -13,6 +13,7 @@
 
 
 
+/// <reference path="config/CompileConfig"/>
 
 
 /// <reference path="definition/typescript/decorator/contract"/>
