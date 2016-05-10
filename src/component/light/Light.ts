@@ -34,10 +34,19 @@ module wd {
             this._shadowMapHeight = shadowMapHeight;
         }
 
+        private _color:Color = Color.create("#ffffff");
+        @cloneAttributeAsCloneable()
+        get color(){
+            return this._color;
+        }
+        set color(color:Color){
+            this._color = color;
+
+            this._isColorDirty = true;
+        }
+
         public entityObject:GameObject;
 
-        @cloneAttributeAsCloneable()
-        public color:Color = Color.create("#ffffff");
         @cloneAttributeAsBasicType()
         public castShadow:boolean = false;
         @cloneAttributeAsBasicType()
@@ -48,6 +57,21 @@ module wd {
         public shadowBias:number = ShaderChunk.NULL;
         @cloneAttributeAsBasicType()
         public shadowDarkness:number = 0;
+
+        private _isColorDirty:boolean = true;
+
+        public isPositionDirty(){
+            return this.entityObject.transform.isTranslate;
+        }
+
+        public isColorDirty(){
+            return this._isColorDirty;
+        }
+
+        @virtual
+        public resetGLSLDirty(){
+            this._isColorDirty =  false;
+        }
     }
 }
 

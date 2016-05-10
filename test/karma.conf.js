@@ -29,7 +29,7 @@
 
         //'test/unit/**',
 
-        'test/unit/**/BasicTexture*',
+        //'test/unit/**/BasicTexture*',
 
         //'test/unit/renderer/**',
         //'test/unit/**/*InstanceCommand*',
@@ -189,7 +189,7 @@
         //'test/unit/**/CollisionDetectorSpec*',
         //'test/unit/**/BoundingRegionUtilsSpec*',
 
-        //'test/unit/**/SourceLightSpec*',
+        'test/unit/**/SourceLightSpec*',
 
         //'test/unit/**/RigidBodySpec*',
 
@@ -236,7 +236,7 @@
         //'test/unit/**/PanelSpec*',
         //
         //
-        //'test/unit/**/LightShaderLibSpec*',
+        'test/unit/**/LightShaderLibSpec*',
         //
         //'test/unit/**/SceneDispatcherSpec*',
         //'test/unit/**/GameObjectSceneSpec*',
