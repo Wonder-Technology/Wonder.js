@@ -51,8 +51,8 @@ module wd{
             pointLights.forEach((pointLight:GameObject, index:number) => {
                 var lightComponent:PointLight = pointLight.getComponent<PointLight>(PointLight);
 
-                program.sendStructureData(`u_pointLights[${index}].position`, EVariableType.FLOAT_3, lightComponent.position);
-                program.sendStructureData(`u_pointLights[${index}].color`, EVariableType.FLOAT_4, lightComponent.color.toVector4());
+                program.sendStructureData(`u_pointLights[${index}].position`, EVariableType.VECTOR_3, lightComponent.position);
+                program.sendStructureData(`u_pointLights[${index}].color`, EVariableType.VECTOR_4, lightComponent.color.toVector4());
 
                 program.sendStructureData(`u_pointLights[${index}].intensity`, EVariableType.FLOAT_1, lightComponent.intensity);
                 program.sendStructureData(`u_pointLights[${index}].constant`, EVariableType.FLOAT_1, lightComponent.constant);
@@ -75,13 +75,13 @@ module wd{
                 var lightComponent:DirectionLight = directionLight.getComponent<DirectionLight>(DirectionLight);
 
                 if(self._isZero(lightComponent.position)){
-                    program.sendStructureData(`u_directionLights[${index}].position`, EVariableType.FLOAT_3, DirectionLight.defaultPosition);
+                    program.sendStructureData(`u_directionLights[${index}].position`, EVariableType.VECTOR_3, DirectionLight.defaultPosition);
                 }
                 else{
-                    program.sendStructureData(`u_directionLights[${index}].position`, EVariableType.FLOAT_3, lightComponent.position);
+                    program.sendStructureData(`u_directionLights[${index}].position`, EVariableType.VECTOR_3, lightComponent.position);
                 }
 
-                program.sendStructureData(`u_directionLights[${index}].color`, EVariableType.FLOAT_4, lightComponent.color.toVector4());
+                program.sendStructureData(`u_directionLights[${index}].color`, EVariableType.VECTOR_4, lightComponent.color.toVector4());
 
                 program.sendStructureData(`u_directionLights[${index}].intensity`, EVariableType.FLOAT_1, lightComponent.intensity);
             });

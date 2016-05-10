@@ -64,6 +64,15 @@ module wd{
                 case EVariableType.FLOAT_4:
                     this._sender.sendFloat4(name, data);
                     break;
+                case EVariableType.VECTOR_2:
+                    this._sender.sendVector2(name, data);
+                    break;
+                case EVariableType.VECTOR_3:
+                    this._sender.sendVector3(name, data);
+                    break;
+                case EVariableType.VECTOR_4:
+                    this._sender.sendVector4(name, data);
+                    break;
                 case EVariableType.FLOAT_MAT3:
                     this._sender.sendMatrix3(name, data);
                     break;

@@ -6,6 +6,11 @@ module wd{
     _table.addChild(<any>EVariableType.FLOAT_2, "vec2");
     _table.addChild(<any>EVariableType.FLOAT_3, "vec3");
     _table.addChild(<any>EVariableType.FLOAT_4, "vec4");
+
+    _table.addChild(<any>EVariableType.VECTOR_2, "vec2");
+    _table.addChild(<any>EVariableType.VECTOR_3, "vec3");
+    _table.addChild(<any>EVariableType.VECTOR_4, "vec4");
+
     _table.addChild(<any>EVariableType.FLOAT_MAT3, "mat3");
     _table.addChild(<any>EVariableType.FLOAT_MAT4, "mat4");
     _table.addChild(<any>EVariableType.NUMBER_1, "int");

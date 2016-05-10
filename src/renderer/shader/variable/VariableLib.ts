@@ -123,7 +123,7 @@ module wd{
         };
 
         public static u_cameraPos:ShaderVariable = {
-            type:EVariableType.FLOAT_3,
+            type:EVariableType.VECTOR_3,
             value:EVariableCategory.ENGINE
         };
 
@@ -138,32 +138,32 @@ module wd{
         };
 
         public static u_map0SourceRegion:ShaderVariable = {
-            type:EVariableType.FLOAT_4,
+            type:EVariableType.VECTOR_4,
             value:EVariableCategory.ENGINE
         };
 
         public static u_map1SourceRegion:ShaderVariable = {
-            type:EVariableType.FLOAT_4,
+            type:EVariableType.VECTOR_4,
             value:EVariableCategory.ENGINE
         };
 
         public static u_diffuseSourceRegion:ShaderVariable = {
-            type:EVariableType.FLOAT_4,
+            type:EVariableType.VECTOR_4,
             value:EVariableCategory.ENGINE
         };
 
         public static u_map0RepeatRegion:ShaderVariable = {
-            type:EVariableType.FLOAT_4,
+            type:EVariableType.VECTOR_4,
             value:EVariableCategory.ENGINE
         };
 
         public static u_map1RepeatRegion:ShaderVariable = {
-            type:EVariableType.FLOAT_4,
+            type:EVariableType.VECTOR_4,
             value:EVariableCategory.ENGINE
         };
 
         public static u_diffuseRepeatRegion:ShaderVariable = {
-            type:EVariableType.FLOAT_4,
+            type:EVariableType.VECTOR_4,
             value:EVariableCategory.ENGINE
         };
 
@@ -183,17 +183,17 @@ module wd{
         };
 
         public static u_diffuse:ShaderVariable = {
-            type:EVariableType.FLOAT_4,
+            type:EVariableType.VECTOR_4,
             value:EVariableCategory.ENGINE
         };
 
         public static u_specular:ShaderVariable = {
-            type:EVariableType.FLOAT_4,
+            type:EVariableType.VECTOR_4,
             value:EVariableCategory.ENGINE
         };
 
         public static u_emission:ShaderVariable = {
-            type:EVariableType.FLOAT_4,
+            type:EVariableType.VECTOR_4,
             value:EVariableCategory.ENGINE
         };
 
@@ -218,7 +218,7 @@ module wd{
         };
 
         public static u_ambient:ShaderVariable = {
-            type:EVariableType.FLOAT_4,
+            type:EVariableType.VECTOR_4,
             value:EVariableCategory.ENGINE
         };
 
@@ -238,7 +238,7 @@ module wd{
         };
 
         public static u_lightPos:ShaderVariable = {
-            type:EVariableType.FLOAT_3,
+            type:EVariableType.VECTOR_3,
             value:EVariableCategory.ENGINE
         };
 
@@ -268,7 +268,7 @@ module wd{
         };
 
         public static u_jointColor:ShaderVariable = {
-            type:EVariableType.FLOAT_3,
+            type:EVariableType.VECTOR_3,
             value:EVariableCategory.ENGINE
         };
 
@@ -278,7 +278,7 @@ module wd{
         };
 
         public static u_speed:ShaderVariable = {
-            type:EVariableType.FLOAT_2,
+            type:EVariableType.VECTOR_2,
             value:EVariableCategory.ENGINE
         };
 
@@ -308,22 +308,22 @@ module wd{
         };
 
         public static u_herb1Color:ShaderVariable = {
-            type:EVariableType.FLOAT_3,
+            type:EVariableType.VECTOR_3,
             value:EVariableCategory.ENGINE
         };
 
         public static u_herb2Color:ShaderVariable = {
-            type:EVariableType.FLOAT_3,
+            type:EVariableType.VECTOR_3,
             value:EVariableCategory.ENGINE
         };
 
         public static u_herb3Color:ShaderVariable = {
-            type:EVariableType.FLOAT_3,
+            type:EVariableType.VECTOR_3,
             value:EVariableCategory.ENGINE
         };
 
         public static u_groundColor:ShaderVariable = {
-            type:EVariableType.FLOAT_3,
+            type:EVariableType.VECTOR_3,
             value:EVariableCategory.ENGINE
         };
 
@@ -333,27 +333,27 @@ module wd{
         };
 
         public static u_woodColor:ShaderVariable = {
-            type:EVariableType.FLOAT_3,
+            type:EVariableType.VECTOR_3,
             value:EVariableCategory.ENGINE
         };
 
         public static u_roadColor:ShaderVariable = {
-            type:EVariableType.FLOAT_3,
+            type:EVariableType.VECTOR_3,
             value:EVariableCategory.ENGINE
         };
 
         public static u_skyColor:ShaderVariable = {
-            type:EVariableType.FLOAT_4,
+            type:EVariableType.VECTOR_4,
             value:EVariableCategory.ENGINE
         };
 
         public static u_cloudColor:ShaderVariable = {
-            type:EVariableType.FLOAT_4,
+            type:EVariableType.VECTOR_4,
             value:EVariableCategory.ENGINE
         };
 
         public static u_brickColor:ShaderVariable = {
-            type:EVariableType.FLOAT_3,
+            type:EVariableType.VECTOR_3,
             value:EVariableCategory.ENGINE
         };
 

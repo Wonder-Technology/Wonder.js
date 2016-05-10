@@ -35,7 +35,7 @@ module wd{
                 program.sendStructureData(`u_twoDShadowSize[${index}]`, EVariableType.FLOAT_2, [light.shadowMapWidth, light.shadowMapHeight]);
                 program.sendStructureData(`u_twoDShadowBias[${index}]`, EVariableType.FLOAT_1, light.shadowBias);
                 program.sendStructureData(`u_twoDShadowDarkness[${index}]`, EVariableType.FLOAT_1, light.shadowDarkness);
-                program.sendStructureData(`u_twoDLightPos[${index}]`, EVariableType.FLOAT_3, light.position);
+                program.sendStructureData(`u_twoDLightPos[${index}]`, EVariableType.VECTOR_3, light.position);
             });
         }
     }

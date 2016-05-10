@@ -11,21 +11,22 @@ module wd{
         }
 
         private _program:Program = null;
-        private _uniformTable:Object = {};
+        private _uniformCache:Object = {};
         private _vertexAttribHistory:wdCb.Hash<number> = wdCb.Hash.create<number>();
         private _getUniformLocationCache:Object = {};
 
-        @cache(function(name:string, data:any){
-            var recordedData:any = this._uniformTable[name];
-
-            return recordedData == data;
-        }, function(name:string, data:any){
-        }, function(result:any, name:string, data:any){
-            this._recordUniformData(name, data);
-        })
         public sendFloat1(name:string, data:any){
-            var gl = DeviceManager.getInstance().gl,
-                pos = this.getUniformLocation(name);
+            var gl = null,
+                pos = null;
+
+            if(this._uniformCache[name] == data){
+                return;
+            }
+
+            this._recordUniformData(name, data);
+
+            gl = DeviceManager.getInstance().gl;
+            pos = this.getUniformLocation(name);
 
             if(this._isUniformDataNotExistByLocation(pos)){
                 return;
@@ -34,111 +35,153 @@ module wd{
             gl.uniform1f(pos, Number(data));
         }
 
-        @cache(function(name:string, data:any){
-            var recordedData:any = this._uniformTable[name];
-
-            if(!recordedData){
-                return false;
-            }
-
-            if(JudgeUtils.isArray(data)){
-                return recordedData[0] === data[0] && recordedData[1] === data[1];
-            }
-
-            return (<Vector2>recordedData).isEqual(<Vector2>data);
-        }, function(name:string, data:any){
-        }, function(result:any, name:string, data:any){
-            this._recordUniformData(name, data);
-        })
         public sendFloat2(name:string, data:any){
-            var gl = DeviceManager.getInstance().gl,
-                pos = this.getUniformLocation(name);
+            var gl = null,
+                pos = null,
+            recordedData:any = this._uniformCache[name];
+
+            if(recordedData && recordedData[0] === data[0] && recordedData[1] === data[1]){
+                return;
+            }
+
+            this._recordUniformData(name, data);
+
+            gl = DeviceManager.getInstance().gl;
+            pos = this.getUniformLocation(name);
 
             if(this._isUniformDataNotExistByLocation(pos)){
                 return;
             }
-
-            data = this._convertToArray2(data);
 
             gl.uniform2f(pos, data[0], data[1]);
         }
 
-        @cache(function(name:string, data:any){
-            var recordedData:any = this._uniformTable[name];
-
-            if(!recordedData){
-                return false;
-            }
-
-            if(JudgeUtils.isArray(data)){
-                return recordedData[0] === data[0] && recordedData[1] === data[1] && recordedData[2] === data[2];
-            }
-
-            return (<Vector3>recordedData).isEqual(<Vector3>data);
-        }, function(name:string, data:any){
-        }, function(result:any, name:string, data:any){
-            this._recordUniformData(name, data);
-        })
         public sendFloat3(name:string, data:any){
-            var gl = DeviceManager.getInstance().gl,
-                pos = this.getUniformLocation(name);
+            var gl = null,
+                pos = null,
+                recordedData:any = this._uniformCache[name];
+
+            if(recordedData && recordedData[0] === data[0] && recordedData[1] === data[1] && recordedData[2] === data[2]){
+                return;
+            }
+
+            this._recordUniformData(name, data);
+
+            gl = DeviceManager.getInstance().gl;
+            pos = this.getUniformLocation(name);
 
             if(this._isUniformDataNotExistByLocation(pos)){
                 return;
             }
-
-            data = this._convertToArray3(data);
 
             gl.uniform3f(pos, data[0], data[1], data[2]);
         }
 
-
-        @cache(function(name:string, data:any){
-            var recordedData:any = this._uniformTable[name];
-
-            if(!recordedData){
-                return false;
-            }
-
-            if(JudgeUtils.isArray(data)){
-                return recordedData[0] === data[0] && recordedData[1] === data[1] && recordedData[2] === data[2] && recordedData[3] === data[3];
-            }
-
-            return (<Vector4>recordedData).isEqual(<Vector4>data);
-        }, function(name:string, data:any){
-        }, function(result:any, name:string, data:any){
-            this._recordUniformData(name, data);
-        })
         public sendFloat4(name:string, data:any){
-            var gl = DeviceManager.getInstance().gl,
-                pos = this.getUniformLocation(name);
+            var gl = null,
+                pos = null,
+                recordedData:any = this._uniformCache[name];
+
+            if(recordedData && recordedData[0] === data[0] && recordedData[1] === data[1] && recordedData[2] === data[2] && recordedData[3] === data[3]){
+                return;
+            }
+
+            this._recordUniformData(name, data);
+
+            gl = DeviceManager.getInstance().gl;
+            pos = this.getUniformLocation(name);
 
             if(this._isUniformDataNotExistByLocation(pos)){
                 return;
             }
-
-            data = this._convertToArray4(data);
 
             gl.uniform4f(pos, data[0], data[1], data[2], data[3]);
         }
 
-        @cache(function(name:string, data:any){
-            var recordedData:any = this._uniformTable[name];
+        public sendVector2(name:string, data:any){
+            var gl = null,
+                pos = null,
+                recordedData:any = this._uniformCache[name];
 
-            return recordedData == data;
-        }, function(name:string, data:any){
-        }, function(result:any, name:string, data:any){
+            if(recordedData && recordedData.isEqual(data)){
+                return;
+            }
+
             this._recordUniformData(name, data);
+
+            gl = DeviceManager.getInstance().gl;
+            pos = this.getUniformLocation(name);
+
+            if(this._isUniformDataNotExistByLocation(pos)){
+                return;
+            }
+
+            gl.uniform2f(pos, data.x, data.y);
+        }
+
+        public sendVector3(name:string, data:any){
+            var gl = null,
+                pos = null,
+                recordedData:any = this._uniformCache[name];
+
+            if(recordedData && recordedData.isEqual(data)){
+                return;
+            }
+
+            this._recordUniformData(name, data);
+
+            gl = DeviceManager.getInstance().gl;
+            pos = this.getUniformLocation(name);
+
+            if(this._isUniformDataNotExistByLocation(pos)){
+                return;
+            }
+
+            gl.uniform3f(pos, data.x, data.y, data.z);
+        }
+
+        public sendVector4(name:string, data:any){
+            var gl = null,
+                pos = null,
+                recordedData:any = this._uniformCache[name];
+
+            if(recordedData && recordedData.isEqual(data)){
+                return;
+            }
+
+            this._recordUniformData(name, data);
+
+            gl = DeviceManager.getInstance().gl;
+            pos = this.getUniformLocation(name);
+
+            if(this._isUniformDataNotExistByLocation(pos)){
+                return;
+            }
+
+            gl.uniform4f(pos, data.x, data.y, data.z, data.w);
+        }
+
+        @require(function(name:string, data:number){
+            assert(JudgeUtils.isNumber(data), Log.info.FUNC_MUST_BE("data", "be number"));
         })
-        public sendNum1(name:string, data:any){
-            var gl = DeviceManager.getInstance().gl,
+        public sendNum1(name:string, data:number){
+            var gl = null,
+                pos = null;
+
+            if(this._uniformCache[name] === data){
+                return;
+            }
+
+            this._recordUniformData(name, data);
+
+             gl = DeviceManager.getInstance().gl;
                 pos = this.getUniformLocation(name);
 
             if(this._isUniformDataNotExistByLocation(pos)){
                 return;
             }
 
-            gl.uniform1i(pos, Number(data));
+            gl.uniform1i(pos, data);
         }
 
         public sendMatrix3(name:string, data:Matrix3){
@@ -170,29 +213,29 @@ module wd{
                 assert(JudgeUtils.isNumber(unit), Log.info.FUNC_SHOULD("data", `be Array<number>, but actual is ${data}`));
             }
         })
-        @cache(function(name:string, data:Array<number>){
-            var recordedData:any = this._uniformTable[name],
+        public sendSampleArray(name:string, data:Array<number>){
+            var gl = null,
+                pos = null,
+                recordedData:any = this._uniformCache[name],
                 isEqual:boolean = true;
 
-            if(!recordedData){
-                return false;
-            }
+            if(recordedData){
+                for(let i = 0, len = data.length; i < len; i++){
+                    if(recordedData[i] !== data[i]){
+                        isEqual = false;
+                        break;
+                    }
+                }
 
-            for(let i = 0, len = data.length; i < len; i++){
-                if(recordedData[i] !== data[i]){
-                    isEqual = false;
-                    break;
+                if(isEqual){
+                    return;
                 }
             }
 
-            return isEqual;
-        }, function(name:string, data:Array<number>){
-        }, function(result:any, name:string, data:Array<number>){
             this._recordUniformData(name, data);
-        })
-        public sendSampleArray(name:string, data:Array<number>){
-            var gl = DeviceManager.getInstance().gl,
-                pos = this.getUniformLocation(name);
+
+            gl = DeviceManager.getInstance().gl;
+            pos = this.getUniformLocation(name);
 
             if(this._isUniformDataNotExistByLocation(pos)){
                 return;
@@ -293,7 +336,7 @@ module wd{
         public clearAllCache(){
             this._getUniformLocationCache = {};
 
-            this._uniformTable = {};
+            this._uniformCache = {};
         }
 
         public dispose(){
@@ -353,7 +396,7 @@ module wd{
         }
 
         private _recordUniformData(name:string, data:any){
-            this._uniformTable[name] = data;
+            this._uniformCache[name] = data;
         }
 
         private _isUniformDataNotExistByLocation(pos:number){

@@ -182,8 +182,34 @@ describe("Program", function(){
         });
 
         describe("test send FLOAT_2", function () {
-            it("convert data to array", function () {
-                program.sendUniformData("u_a", wd.EVariableType.FLOAT_2, wd.Vector2.create(1,2));
+            it("test", function () {
+                program.sendUniformData("u_a", wd.EVariableType.FLOAT_2, [1,2.1]);
+
+                expect(gl.uniform2f).toCalledWith(pos, 1, 2.1);
+            });
+
+            describe("test cache", function(){
+                beforeEach(function(){
+                });
+
+                it("if cached, return cached data", function () {
+                    program.sendUniformData("u_a", wd.EVariableType.FLOAT_2, [1,2.1]);
+                    program.sendUniformData("u_a", wd.EVariableType.FLOAT_2, [1,2.1]);
+
+                    expect(gl.uniform2f.withArgs(pos)).toCalledOnce();
+                });
+                it("if data not equal, cache miss", function () {
+                    program.sendUniformData("u_a", wd.EVariableType.FLOAT_2, [1,2.1]);
+                    program.sendUniformData("u_a", wd.EVariableType.FLOAT_2, [3.1,2.1]);
+
+                    expect(gl.uniform2f.withArgs(pos)).toCalledTwice();
+                });
+            });
+        });
+
+        describe("test send VECTOR_2", function () {
+            it("test", function () {
+                program.sendUniformData("u_a", wd.EVariableType.VECTOR_2, wd.Vector2.create(1,2));
 
                 expect(gl.uniform2f).toCalledWith(pos, 1, 2);
             });
@@ -193,14 +219,14 @@ describe("Program", function(){
                 });
 
                 it("if cached, return cached data", function () {
-                    program.sendUniformData("u_a", wd.EVariableType.FLOAT_2, wd.Vector2.create(1,2));
-                    program.sendUniformData("u_a", wd.EVariableType.FLOAT_2, wd.Vector2.create(1,2));
+                    program.sendUniformData("u_a", wd.EVariableType.VECTOR_2, wd.Vector2.create(1,2));
+                    program.sendUniformData("u_a", wd.EVariableType.VECTOR_2, wd.Vector2.create(1,2));
 
                     expect(gl.uniform2f.withArgs(pos)).toCalledOnce();
                 });
                 it("if data not equal, cache miss", function () {
-                    program.sendUniformData("u_a", wd.EVariableType.FLOAT_2, wd.Vector2.create(2,2));
-                    program.sendUniformData("u_a", wd.EVariableType.FLOAT_2, wd.Vector2.create(1,2));
+                    program.sendUniformData("u_a", wd.EVariableType.VECTOR_2, wd.Vector2.create(2,2));
+                    program.sendUniformData("u_a", wd.EVariableType.VECTOR_2, wd.Vector2.create(1,2));
 
                     expect(gl.uniform2f.withArgs(pos)).toCalledTwice();
                 });
@@ -208,8 +234,34 @@ describe("Program", function(){
         });
 
         describe("test send FLOAT_3", function () {
-            it("convert data to array", function () {
-                program.sendUniformData("u_a", wd.EVariableType.FLOAT_3, wd.Vector3.create(1,2,3));
+            it("test", function () {
+                program.sendUniformData("u_a", wd.EVariableType.FLOAT_3, [1,2.1,3.1]);
+
+                expect(gl.uniform3f).toCalledWith(pos, 1, 2.1, 3.1);
+            });
+
+            describe("test cache", function(){
+                beforeEach(function(){
+                });
+
+                it("if cached, return cached data", function () {
+                    program.sendUniformData("u_a", wd.EVariableType.FLOAT_3, [1,2,3]);
+                    program.sendUniformData("u_a", wd.EVariableType.FLOAT_3, [1,2,3]);
+
+                    expect(gl.uniform3f.withArgs(pos)).toCalledOnce();
+                });
+                it("if data not equal, cache miss", function () {
+                    program.sendUniformData("u_a", wd.EVariableType.FLOAT_3, [1,2,3]);
+                    program.sendUniformData("u_a", wd.EVariableType.FLOAT_3, [2,2,3]);
+
+                    expect(gl.uniform3f.withArgs(pos)).toCalledTwice();
+                });
+            });
+        });
+
+        describe("test send VECTOR_3", function () {
+            it("test", function () {
+                program.sendUniformData("u_a", wd.EVariableType.VECTOR_3, wd.Vector3.create(1,2,3));
 
                 expect(gl.uniform3f).toCalledWith(pos, 1, 2, 3);
             });
@@ -219,14 +271,14 @@ describe("Program", function(){
                 });
 
                 it("if cached, return cached data", function () {
-                    program.sendUniformData("u_a", wd.EVariableType.FLOAT_3, wd.Vector3.create(1,2,3));
-                    program.sendUniformData("u_a", wd.EVariableType.FLOAT_3, wd.Vector3.create(1,2,3));
+                    program.sendUniformData("u_a", wd.EVariableType.VECTOR_3, wd.Vector3.create(1,2,3));
+                    program.sendUniformData("u_a", wd.EVariableType.VECTOR_3, wd.Vector3.create(1,2,3));
 
                     expect(gl.uniform3f.withArgs(pos)).toCalledOnce();
                 });
                 it("if data not equal, cache miss", function () {
-                    program.sendUniformData("u_a", wd.EVariableType.FLOAT_3, wd.Vector3.create(1,2,3));
-                    program.sendUniformData("u_a", wd.EVariableType.FLOAT_3, wd.Vector3.create(2,2,3));
+                    program.sendUniformData("u_a", wd.EVariableType.VECTOR_3, wd.Vector3.create(1,2,3));
+                    program.sendUniformData("u_a", wd.EVariableType.VECTOR_3, wd.Vector3.create(2,2,3));
 
                     expect(gl.uniform3f.withArgs(pos)).toCalledTwice();
                 });
@@ -234,8 +286,8 @@ describe("Program", function(){
         });
 
         describe("test send FLOAT_4", function () {
-            it("convert data to array", function () {
-                program.sendUniformData("u_a", wd.EVariableType.FLOAT_4, wd.Vector4.create(1,2,3,4));
+            it("test", function () {
+                program.sendUniformData("u_a", wd.EVariableType.FLOAT_4, [1,2,3,4]);
 
                 expect(gl.uniform4f).toCalledWith(pos, 1, 2, 3, 4);
             });
@@ -245,14 +297,40 @@ describe("Program", function(){
                 });
 
                 it("if cached, return cached data", function () {
-                    program.sendUniformData("u_a", wd.EVariableType.FLOAT_4, wd.Vector4.create(1,2,3,4));
-                    program.sendUniformData("u_a", wd.EVariableType.FLOAT_4, wd.Vector4.create(1,2,3,4));
+                    program.sendUniformData("u_a", wd.EVariableType.FLOAT_4, [1,2,3,4]);
+                    program.sendUniformData("u_a", wd.EVariableType.FLOAT_4, [1,2,3,4]);
 
                     expect(gl.uniform4f.withArgs(pos)).toCalledOnce();
                 });
                 it("if data not equal, cache miss", function () {
-                    program.sendUniformData("u_a", wd.EVariableType.FLOAT_4, wd.Vector4.create(1,2,3,4));
-                    program.sendUniformData("u_a", wd.EVariableType.FLOAT_4, wd.Vector4.create(2,2,3,4));
+                    program.sendUniformData("u_a", wd.EVariableType.FLOAT_4, [1,2,3,4]);
+                    program.sendUniformData("u_a", wd.EVariableType.FLOAT_4, [2,2,3,4]);
+
+                    expect(gl.uniform4f.withArgs(pos)).toCalledTwice();
+                });
+            });
+        });
+
+        describe("test send VECTOR_4", function () {
+            it("convert data to array", function () {
+                program.sendUniformData("u_a", wd.EVariableType.VECTOR_4, wd.Vector4.create(1,2,3,4));
+
+                expect(gl.uniform4f).toCalledWith(pos, 1, 2, 3, 4);
+            });
+
+            describe("test cache", function(){
+                beforeEach(function(){
+                });
+
+                it("if cached, return cached data", function () {
+                    program.sendUniformData("u_a", wd.EVariableType.VECTOR_4, wd.Vector4.create(1,2,3,4));
+                    program.sendUniformData("u_a", wd.EVariableType.VECTOR_4, wd.Vector4.create(1,2,3,4));
+
+                    expect(gl.uniform4f.withArgs(pos)).toCalledOnce();
+                });
+                it("if data not equal, cache miss", function () {
+                    program.sendUniformData("u_a", wd.EVariableType.VECTOR_4, wd.Vector4.create(1,2,3,4));
+                    program.sendUniformData("u_a", wd.EVariableType.VECTOR_4, wd.Vector4.create(2,2,3,4));
 
                     expect(gl.uniform4f.withArgs(pos)).toCalledTwice();
                 });
@@ -274,7 +352,7 @@ describe("Program", function(){
 
         describe("test send NUMBER_1", function () {
             it("test", function () {
-                program.sendUniformData("u_a", wd.EVariableType.NUMBER_1, "1");
+                program.sendUniformData("u_a", wd.EVariableType.NUMBER_1, 1);
 
                 expect(gl.uniform1i).toCalledWith(pos, 1);
             });
@@ -284,13 +362,13 @@ describe("Program", function(){
                 });
 
                 it("if cached, return cached data", function () {
-                    program.sendUniformData("u_a", wd.EVariableType.NUMBER_1, "1");
+                    program.sendUniformData("u_a", wd.EVariableType.NUMBER_1, 1);
                     program.sendUniformData("u_a", wd.EVariableType.NUMBER_1, 1);
 
                     expect(gl.uniform1i.withArgs(pos)).toCalledOnce();
                 });
                 it("if data not equal, cache miss", function () {
-                    program.sendUniformData("u_a", wd.EVariableType.NUMBER_1, "1");
+                    program.sendUniformData("u_a", wd.EVariableType.NUMBER_1, 1);
                     program.sendUniformData("u_a", wd.EVariableType.NUMBER_1, 2);
 
                     expect(gl.uniform1i.withArgs(pos)).toCalledTwice();

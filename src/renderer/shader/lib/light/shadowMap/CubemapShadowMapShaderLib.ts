@@ -26,7 +26,7 @@ module wd{
                     program.sendStructureData(`u_isCubemapRenderListEmpty[${index}]`, EVariableType.NUMBER_1, 0);
                 }
 
-                program.sendStructureData(`u_cubemapLightPos[${index}]`, EVariableType.FLOAT_3, light.position);
+                program.sendStructureData(`u_cubemapLightPos[${index}]`, EVariableType.VECTOR_3, light.position);
                 program.sendStructureData(`u_farPlane[${index}]`, EVariableType.FLOAT_1, light.shadowCameraFar);
                 program.sendStructureData(`u_cubemapShadowBias[${index}]`, EVariableType.FLOAT_1, light.shadowBias);
                 program.sendStructureData(`u_cubemapShadowDarkness[${index}]`, EVariableType.FLOAT_1, light.shadowDarkness);
