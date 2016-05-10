@@ -14,6 +14,7 @@ module wd{
         private _uniformCache:Object = {};
         private _vertexAttribHistory:wdCb.Hash<number> = wdCb.Hash.create<number>();
         private _getUniformLocationCache:Object = {};
+        private _toSendBufferUid:string = "";
 
         public sendFloat1(name:string, data:any){
             var gl = null,
@@ -38,7 +39,7 @@ module wd{
         public sendFloat2(name:string, data:any){
             var gl = null,
                 pos = null,
-            recordedData:any = this._uniformCache[name];
+                recordedData:any = this._uniformCache[name];
 
             if(recordedData && recordedData[0] === data[0] && recordedData[1] === data[1]){
                 return;
@@ -174,8 +175,8 @@ module wd{
 
             this._recordUniformData(name, data);
 
-             gl = DeviceManager.getInstance().gl;
-                pos = this.getUniformLocation(name);
+            gl = DeviceManager.getInstance().gl;
+            pos = this.getUniformLocation(name);
 
             if(this._isUniformDataNotExistByLocation(pos)){
                 return;
@@ -270,6 +271,8 @@ module wd{
                 pos:pos,
                 buffer:buffer
             });
+
+            this._toSendBufferUid += String(buffer.uid);
         }
 
         @require(function(){
@@ -279,28 +282,10 @@ module wd{
                 .hasRepeatItems(), Log.info.FUNC_SHOULD_NOT("_toSendBufferList", "has repeat buffer"));
         })
         @cache(function(){
-            var result = true,
-                toSendBufferList = this._toSendBufferList;
-
-            if(!BufferTable.lastBindedArrayBufferList){
-                return false;
-            }
-
-            //todo optimize?
-
-            BufferTable.lastBindedArrayBufferList.forEach((lastBindedArrayBufferData:ToSendBufferData, index:number) => {
-                var bufferData:ToSendBufferData = toSendBufferList.getChild(index);
-
-                if(!bufferData || !JudgeUtils.isEqual(lastBindedArrayBufferData.buffer, bufferData.buffer)){
-                    result = false;
-                    return wdCb.$BREAK;
-                }
-            });
-
-            return result;
+            return BufferTable.lastBindedArrayBufferListUid === this._toSendBufferUid;
         }, function(){
-        }, function(result:any){
-            BufferTable.lastBindedArrayBufferList = this._toSendBufferList.clone(false);
+        }, function(){
+            BufferTable.lastBindedArrayBufferListUid = this._toSendBufferUid;
         })
         public sendAllBufferData(){
             this._toSendBufferList.forEach((data:ToSendBufferData) => {
@@ -310,6 +295,8 @@ module wd{
 
         public clearBufferList(){
             this._toSendBufferList.removeAllChildren();
+
+            this._toSendBufferUid = "";
         }
 
         private _toSendBufferList:wdCb.Collection<ToSendBufferData> = wdCb.Collection.create<ToSendBufferData>();

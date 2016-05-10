@@ -1,6 +1,6 @@
 module wd{
     export class BufferTable{
-        public static lastBindedArrayBufferList:wdCb.Collection<ToSendBufferData> = null;
+        public static lastBindedArrayBufferListUid:string = null;
         public static lastBindedElementBuffer:ElementBuffer = null;
 
         private static _table:wdCb.Hash<Buffer> = wdCb.Hash.create<Buffer>();
@@ -37,14 +37,14 @@ module wd{
                 buffer.dispose();
             });
 
-            this.lastBindedArrayBufferList = null;
+            this.lastBindedArrayBufferListUid = null;
             this.lastBindedElementBuffer = null;
         }
 
         public static clearAll(){
             this._table.removeAllChildren();
 
-            this.lastBindedArrayBufferList = null;
+            this.lastBindedArrayBufferListUid = null;
             this.lastBindedElementBuffer = null;
         }
 
@@ -53,7 +53,7 @@ module wd{
 
             gl.bindBuffer(gl.ARRAY_BUFFER, null);
 
-            this.lastBindedArrayBufferList = null;
+            this.lastBindedArrayBufferListUid = null;
         }
 
         public static resetBindedElementBuffer(){
