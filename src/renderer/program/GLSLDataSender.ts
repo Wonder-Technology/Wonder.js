@@ -12,7 +12,7 @@ module wd{
 
         private _program:Program = null;
         private _uniformCache:Object = {};
-        private _vertexAttribHistory:wdCb.Hash<number> = wdCb.Hash.create<number>();
+        private _vertexAttribHistory:Array<boolean> = [];
         private _getUniformLocationCache:Object = {};
         private _toSendBufferUid:string = "";
 
@@ -267,7 +267,7 @@ module wd{
         }
 
         public addBufferToToSendList(pos:number, buffer:ArrayBuffer){
-            this._toSendBufferList.addChild({
+            this._toSendBufferArr.push({
                 pos:pos,
                 buffer:buffer
             });
@@ -276,10 +276,10 @@ module wd{
         }
 
         @require(function(){
-            assert(!this._toSendBufferList.map((data:ToSendBufferData) => {
-                    return data.buffer;
-                })
-                .hasRepeatItems(), Log.info.FUNC_SHOULD_NOT("_toSendBufferList", "has repeat buffer"));
+            //assert(!this._toSendBufferArr.map((data:ToSendBufferData) => {
+            //        return data.buffer;
+            //    })
+            //    .hasRepeatItems(), Log.info.FUNC_SHOULD_NOT("_toSendBufferArr", "has repeat buffer"));
         })
         @cache(function(){
             return BufferTable.lastBindedArrayBufferListUid === this._toSendBufferUid;
@@ -288,18 +288,22 @@ module wd{
             BufferTable.lastBindedArrayBufferListUid = this._toSendBufferUid;
         })
         public sendAllBufferData(){
-            this._toSendBufferList.forEach((data:ToSendBufferData) => {
+            var toSendBufferArr = this._toSendBufferArr;
+
+            for(let i = 0, len = toSendBufferArr.length; i < len; i++){
+                let data = toSendBufferArr[i];
+
                 this.sendBuffer(data.pos, data.buffer);
-            }, this);
+            }
         }
 
         public clearBufferList(){
-            this._toSendBufferList.removeAllChildren();
+            this._toSendBufferArr = [];
 
             this._toSendBufferUid = "";
         }
 
-        private _toSendBufferList:wdCb.Collection<ToSendBufferData> = wdCb.Collection.create<ToSendBufferData>();
+        private _toSendBufferArr:Array<ToSendBufferData> = [];
 
 
 
@@ -313,7 +317,7 @@ module wd{
         public sendBuffer(pos:number, buffer:ArrayBuffer){
             var gl = DeviceManager.getInstance().gl;
 
-            this._vertexAttribHistory.addChild(String(pos), true);
+            this._vertexAttribHistory[pos] = true;
 
             gl.bindBuffer(gl.ARRAY_BUFFER, buffer.buffer);
             gl.vertexAttribPointer(pos, buffer.size, gl[buffer.type], false, 0, 0);
@@ -329,15 +333,18 @@ module wd{
         public dispose(){
             var gl = DeviceManager.getInstance().gl;
 
-            this._vertexAttribHistory.forEach((value:boolean, pos:string) => {
-                var position = Number(pos);
+            for(let i in this._vertexAttribHistory){
+                //make sure this is a number)
+                let iAsNumber = +i;
 
-                if (position > gl.VERTEX_ATTRIB_ARRAY_ENABLED) {
-                    return;
+                if (iAsNumber > gl.VERTEX_ATTRIB_ARRAY_ENABLED || !this._vertexAttribHistory[iAsNumber]) {
+                    continue;
                 }
+                this._vertexAttribHistory[iAsNumber] = false;
+                gl.disableVertexAttribArray(iAsNumber);
+            }
 
-                gl.disableVertexAttribArray(position);
-            });
+            this._vertexAttribHistory = [];
         }
 
         private _convertToArray2(data:Array<number>);
