@@ -31,17 +31,17 @@ describe("ThreeDTransform", function(){
             judgeStubFunc();
         }
 
-        //function judgeClearCache(getMethod, getAttr){
-        //    sandbox.stub(tra1, getMethod).returns(matrix);
-        //    var m1 = tra1[getAttr];
-        //
-        //    wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.ENDLOOP));
-        //
-        //    var m2 = tra1[getAttr];
-        //
-        //    expect(m1 === m2).toBeTruthy();
-        //    expect(tra1[getMethod]).toCalledTwice();
-        //}
+        function judgeClearCache(getMethod, getAttr){
+            sandbox.stub(tra1, getMethod).returns(matrix);
+            var m1 = tra1[getAttr];
+
+            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.ENDLOOP));
+
+            var m2 = tra1[getAttr];
+
+            expect(m1 === m2).toBeTruthy();
+            expect(tra1[getMethod]).toCalledTwice();
+        }
 
         beforeEach(function(){
             matrix = wd.Matrix4.create();
@@ -97,33 +97,45 @@ describe("ThreeDTransform", function(){
             });
         });
 
-        //describe("clear cache on EndLoop", function(){
-        //    beforeEach(function(){
-        //        tra1.init();
-        //    });
-        //
-        //    it("clear localToWorldMatrix cache", function () {
-        //        judgeClearCache("getMatrix", "localToWorldMatrix");
-        //    });
-        //    it("clear position,rotation,scale,eulerAngles,localEulerAngles cache", function () {
-        //        var m1 = tra1.position;
-        //        var m2 = tra1.rotation;
-        //        var m3 = tra1.scale;
-        //        var m4 = tra1.eulerAngles;
-        //        var m5 = tra1.localEulerAngles;
-        //
-        //        wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.ENDLOOP));
-        //
-        //        expect(tra1._positionCache).toBeNull();
-        //        expect(tra1._rotationCache).toBeNull();
-        //        expect(tra1._scaleCache).toBeNull();
-        //        expect(tra1._eulerAnglesCache).toBeNull();
-        //        expect(tra1._localEulerAnglesCache).toBeNull();
-        //    });
-        //});
+        describe("test clear cache", function(){
+            beforeEach(function(){
+                tra1.init();
+            });
 
-        // more:clear cache when set isXXX true
-        // already tested
+            it("test clear localToWorldMatrix cache", function () {
+                var m1 = tra1.localToWorldMatrix;
+
+                tra1.translate(1,2,3);
+
+                var m2 = tra1.localToWorldMatrix;
+
+                expect(m1 === m2).toBeFalsy();
+            });
+            it("test clear normalMatrix cache", function () {
+                var m1 = tra1.normalMatrix;
+
+                tra1.translate(1,2,3);
+
+                var m2 = tra1.normalMatrix;
+
+                expect(m1 === m2).toBeFalsy();
+            });
+            //it("clear position,rotation,scale,eulerAngles,localEulerAngles cache", function () {
+            //    var m1 = tra1.position;
+            //    var m2 = tra1.rotation;
+            //    var m3 = tra1.scale;
+            //    var m4 = tra1.eulerAngles;
+            //    var m5 = tra1.localEulerAngles;
+            //
+            //    wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.ENDLOOP));
+            //
+            //    expect(tra1._positionCache).toBeNull();
+            //    expect(tra1._rotationCache).toBeNull();
+            //    expect(tra1._scaleCache).toBeNull();
+            //    expect(tra1._eulerAnglesCache).toBeNull();
+            //    expect(tra1._localEulerAnglesCache).toBeNull();
+            //});
+        });
     });
 
     it("the change of parent before setted as parent will affect child", function(){

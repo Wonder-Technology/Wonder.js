@@ -409,6 +409,7 @@ module wd{
 
         protected clearCache(){
             this._localToWorldMatrixCache = null;
+            this._normalMatrixCache = null;
             this._positionCache = null;
             this._rotationCache = null;
             this._scaleCache = null;
