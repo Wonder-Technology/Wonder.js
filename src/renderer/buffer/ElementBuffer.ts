@@ -41,7 +41,6 @@ module wd{
 
             gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, typedData, gl[usage]);
 
-            //todo test
             BufferTable.resetBindedElementBuffer();
 
             this._saveData(typedData, this._getType(isNeed32Bits, type), usage);

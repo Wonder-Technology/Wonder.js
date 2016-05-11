@@ -222,7 +222,7 @@ describe("point shadow map", function() {
                 });
 
 
-                describe("test multi direction lights", function(){
+                describe("test multi point lights", function(){
                     var light2;
 
                     beforeEach(function(){
@@ -325,7 +325,6 @@ describe("point shadow map", function() {
                         expect(program.sendUniformData.withArgs("u_cubemapShadowMapSampler[0]", sinon.match.any, 0)).toCalledOnce();
                         expect(program.sendUniformData.withArgs("u_diffuseMapSampler", sinon.match.any, 1)).toCalledOnce();
                     });
-
                     it("fs glsl should contain shadow map glsl", function () {
                         director._init();
 
@@ -436,7 +435,7 @@ describe("point shadow map", function() {
                 });
             });
 
-            describe("test multi direction lights", function(){
+            describe("test multi point lights", function(){
                 var light2;
 
                 beforeEach(function(){

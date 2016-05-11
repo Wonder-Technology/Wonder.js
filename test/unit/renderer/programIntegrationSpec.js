@@ -45,8 +45,6 @@ describe("program integration test", function() {
             expect(program._sender.sendBuffer.secondCall).toCalledWith(pos2, buffer2);
         });
 
-        //todo fix morph
-
         describe("test cache", function () {
             var buffer1, buffer2;
             var pos1, pos2;

@@ -25,7 +25,6 @@ module wd {
             var startOffset:number = 0,
                 gl = DeviceManager.getInstance().gl;
 
-            //todo test
             BufferTable.bindIndexBuffer(indexBuffer);
 
             GlUtils.drawElements(gl[this.drawMode], indexBuffer.count, gl[indexBuffer.type], indexBuffer.typeSize * startOffset);

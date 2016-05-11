@@ -31,7 +31,6 @@ module wd{
             return <any>this._table.getChild(key);
         }
 
-        //todo test
         public static dispose(){
             this._table.forEach((buffer:Buffer) => {
                 buffer.dispose();

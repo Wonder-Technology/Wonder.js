@@ -4,23 +4,8 @@ module wd {
             return this.material.program;
         }
 
-        //todo refactor:change to public attri
-        private _vMatrix:Matrix4 = null;
-        get vMatrix(){
-            return this._vMatrix;
-        }
-        set vMatrix(vMatrix:Matrix4){
-            this._vMatrix = vMatrix;
-        }
-
-        private _pMatrix:Matrix4 = null;
-        get pMatrix(){
-            return this._pMatrix;
-        }
-        set pMatrix(pMatrix:Matrix4){
-            this._pMatrix = pMatrix;
-        }
-
+        public vMatrix:Matrix4 = null;
+        public pMatrix:Matrix4 = null;
         public buffers:BufferContainer = null;
         public material:Material = null;
         public z:number = null;
