@@ -52,11 +52,11 @@ module wd{
             assert(!!program, Log.info.FUNC_NOT_EXIST(`program\nits table key is:${this._getProgramTableKey()}`))
         })
         @cacheGetter(function(){
-            return !this.dirty && this._cacheProgram !== null;
+            return !this.dirty && this._programCache !== null;
         }, function(){
-            return this._cacheProgram;
+            return this._programCache;
         }, function(program:Program){
-            this._cacheProgram = program;
+            this._programCache = program;
         })
         get program(){
             return ProgramTable.getProgram(this._getProgramTableKey());
@@ -69,8 +69,8 @@ module wd{
         protected libs:wdCb.Collection<ShaderLib> = wdCb.Collection.create<ShaderLib>();
         protected sourceBuilder:ShaderSourceBuilder = this.createShaderSourceBuilder();
 
-        private _cacheProgram:Program = null;
-        private _cacheInstanceState:InstanceState = null;
+        private _programCache:Program = null;
+        private _instanceStateCache:InstanceState = null;
 
         public abstract update(cmd:RenderCommand, material:Material);
 
@@ -208,11 +208,11 @@ module wd{
             assert(!(isHardwareInstance && isBatchInstance), Log.info.FUNC_SHOULD_NOT("both be hardware insstance and batch instance"));
         })
         @cache(function(){
-            return !this.dirty && this._cacheInstanceState;
+            return !this.dirty && this._instanceStateCache;
         }, function(){
-            return this._cacheInstanceState;
+            return this._instanceStateCache;
         }, function(instanceState:InstanceState){
-            this._cacheInstanceState = instanceState;
+            this._instanceStateCache = instanceState;
         })
         public getInstanceState(){
             var isModelMatrixInstance = false,
@@ -333,8 +333,8 @@ module wd{
         }
 
         private _clearAllCache(){
-            this._cacheProgram = null;
-            this._cacheInstanceState = null;
+            this._programCache = null;
+            this._instanceStateCache = null;
         }
     }
 
