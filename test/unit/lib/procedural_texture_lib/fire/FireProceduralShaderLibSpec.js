@@ -85,7 +85,7 @@ describe("FireProceduralShaderLib", function () {
             it("send c1", function(){
                 lib.sendShaderVariables(program, cmd);
 
-                expect(program.sendUniformData).toCalledWith("u_fireColor.c1", wd.EVariableType.FLOAT_3, fireColor.c1.toVector3());
+                expect(program.sendUniformData).toCalledWith("u_fireColor.c1", wd.EVariableType.VECTOR_3, fireColor.c1.toVector3());
             });
         });
     });

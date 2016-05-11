@@ -27,7 +27,7 @@ module wd{
             this.sendUniformData(program, "u_alphaThreshold", texture.alphaThreshold);
 
             texture.fireColorMap.forEach((color:Color, name:string) => {
-                program.sendStructureData(`u_fireColor.${name}`, EVariableType.FLOAT_3, color.toVector3());
+                program.sendStructureData(`u_fireColor.${name}`, EVariableType.VECTOR_3, color.toVector3());
             });
         }
 
