@@ -15,6 +15,7 @@ module wd{
         private _vertexAttribHistory:Array<boolean> = [];
         private _getUniformLocationCache:Object = {};
         private _toSendBufferUid:string = "";
+        private _toSendBufferArr:Array<ToSendBufferData> = [];
 
         public sendFloat1(name:string, data:any){
             var gl = null,
@@ -276,16 +277,15 @@ module wd{
         }
 
         @require(function(){
-            //assert(!this._toSendBufferArr.map((data:ToSendBufferData) => {
-            //        return data.buffer;
-            //    })
-            //    .hasRepeatItems(), Log.info.FUNC_SHOULD_NOT("_toSendBufferArr", "has repeat buffer"));
+            assert(!ArrayUtils.hasRepeatItems(this._toSendBufferArr.map((data:ToSendBufferData) => {
+                    return data.buffer;
+                })), Log.info.FUNC_SHOULD_NOT("_toSendBufferArr", "has repeat buffer"));
         })
         @cache(function(){
-            return BufferTable.lastBindedArrayBufferListUid === this._toSendBufferUid;
+            return BufferTable.lastBindedArrayBufferListUidStr === this._toSendBufferUid;
         }, function(){
         }, function(){
-            BufferTable.lastBindedArrayBufferListUid = this._toSendBufferUid;
+            BufferTable.lastBindedArrayBufferListUidStr = this._toSendBufferUid;
         })
         public sendAllBufferData(){
             var toSendBufferArr = this._toSendBufferArr;
@@ -303,17 +303,6 @@ module wd{
             this._toSendBufferUid = "";
         }
 
-        private _toSendBufferArr:Array<ToSendBufferData> = [];
-
-
-
-
-
-
-
-
-
-        //todo pass test
         public sendBuffer(pos:number, buffer:ArrayBuffer){
             var gl = DeviceManager.getInstance().gl;
 
@@ -345,48 +334,6 @@ module wd{
             }
 
             this._vertexAttribHistory = [];
-        }
-
-        private _convertToArray2(data:Array<number>);
-        private _convertToArray2(data:Vector2);
-
-        @require(function (data:any) {
-            assert(JudgeUtils.isArray(data) || data instanceof Vector2, Log.info.FUNC_MUST_BE("shader->attributes->value", "Array<Array<any>> or Array<Vector2> stucture"));
-        })
-        private _convertToArray2(data:any) {
-            if(JudgeUtils.isArray(data)){
-                return data;
-            }
-
-            return [data.x, data.y];
-        }
-
-        private _convertToArray3(data:Array<number>);
-        private _convertToArray3(data:Vector3);
-
-        @require(function (data:any) {
-            assert(JudgeUtils.isArray(data) || data instanceof Vector3, Log.info.FUNC_MUST_BE("shader->attributes->value", "Array<Array<any>> or Array<Vector3> stucture"));
-        })
-        private _convertToArray3(data:any) {
-            if(JudgeUtils.isArray(data)){
-                return data;
-            }
-
-            return [data.x, data.y, data.z];
-        }
-
-        private _convertToArray4(data:Array<number>);
-        private _convertToArray4(data:Vector4);
-
-        @require(function (data:any) {
-            assert(JudgeUtils.isArray(data) || data instanceof Vector4, Log.info.FUNC_MUST_BE("shader->attributes->value", "Array<Array<any>> or Array<Vector4> stucture"));
-        })
-        private _convertToArray4(data:any) {
-            if(JudgeUtils.isArray(data)){
-                return data;
-            }
-
-            return [data.x, data.y, data.z, data.w];
         }
 
         private _recordUniformData(name:string, data:any){

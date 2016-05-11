@@ -1,0 +1,37 @@
+module wd{
+    export class ArrayUtils extends wdCb.ArrayUtils{
+        public static hasRepeatItems(arr:Array<any>){
+            var noRepeatArr = [],
+                hasRepeat:boolean = false;
+
+            for(let item of arr){
+                if (this.contain(noRepeatArr, item)) {
+                    hasRepeat = true;
+
+                    break;
+                }
+
+                noRepeatArr.push(item);
+            }
+
+            return hasRepeat;
+        }
+
+        public static contain(arr:Array<any>, item:any):boolean {
+            var c:any = null;
+
+            for (let i = 0, len = arr.length; i < len; i++) {
+                c = arr[i];
+
+                if (item.uid && c.uid && item.uid == c.uid) {
+                    return true;
+                }
+                else if(item === c){
+                    return true;
+                }
+            }
+
+            return false;
+        }
+    }
+}
