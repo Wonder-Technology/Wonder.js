@@ -190,11 +190,11 @@ describe("Shader", function() {
         });
 
         describe("get program", function(){
-            it("if program is undefined, error", function () {
-                expect(function(){
-                    var program  = shader.program;
-                }).toThrow("not exist");
-            });
+            //it("if program is undefined, error", function () {
+            //    expect(function(){
+            //        var program  = shader.program;
+            //    }).toThrow("not exist");
+            //});
 
             describe("test cache", function(){
                 beforeEach(function(){

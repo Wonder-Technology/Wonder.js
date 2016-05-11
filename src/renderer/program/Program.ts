@@ -205,7 +205,6 @@ module wd{
         private _sendAttributeData(type:EVariableType, pos:number, data:any){
             switch (type){
                 case EVariableType.BUFFER:
-                    //todo test
                     this._sender.addBufferToToSendList(pos, data);
                     break;
                 default :

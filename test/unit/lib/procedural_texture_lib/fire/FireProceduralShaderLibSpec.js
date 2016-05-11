@@ -65,7 +65,7 @@ describe("FireProceduralShaderLib", function () {
         it("send u_speed", function () {
             lib.sendShaderVariables(program, cmd);
 
-            expect(program.sendUniformData).toCalledWith("u_speed", wd.EVariableType.FLOAT_2, lib._proceduralTexture.speed);
+            expect(program.sendUniformData).toCalledWith("u_speed", wd.EVariableType.VECTOR_2, lib._proceduralTexture.speed);
         });
         it("send u_shift", function () {
             lib.sendShaderVariables(program, cmd);

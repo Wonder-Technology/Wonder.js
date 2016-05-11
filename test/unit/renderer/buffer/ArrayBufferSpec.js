@@ -87,8 +87,8 @@ describe("ArrayBuffer", function() {
             it("release binded buffer", function(){
                 expect(gl.bindBuffer.getCall(1).args[1]).toBeNull();
             });
-            it("empty BufferTable->lastBindedArrayBufferList", function () {
-                expect(wd.BufferTable.lastBindedArrayBufferList).toBeNull();
+            it("null BufferTable->lastBindedArrayBufferListUidStr", function () {
+                expect(wd.BufferTable.lastBindedArrayBufferListUidStr).toBeNull();
             });
         });
 

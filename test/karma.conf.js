@@ -27,7 +27,7 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        //'test/unit/**',
+        'test/unit/**',
 
         //'test/unit/**/BasicTexture*',
 
@@ -236,7 +236,7 @@
         //'test/unit/**/PanelSpec*',
         //
         //
-        'test/unit/**/LightShaderLibSpec*',
+        //'test/unit/**/LightShaderLibSpec*',
         //
         //'test/unit/**/SceneDispatcherSpec*',
         //'test/unit/**/GameObjectSceneSpec*',

@@ -53,7 +53,7 @@ describe("MarbleProceduralShaderLib", function () {
         it("send u_jointColor", function () {
             lib.sendShaderVariables(program, cmd);
 
-            expect(program.sendUniformData).toCalledWith("u_jointColor", wd.EVariableType.FLOAT_3, lib._proceduralTexture.jointColor.toVector3());
+            expect(program.sendUniformData).toCalledWith("u_jointColor", wd.EVariableType.VECTOR_3, lib._proceduralTexture.jointColor.toVector3());
         });
     });
 

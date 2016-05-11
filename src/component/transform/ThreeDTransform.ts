@@ -29,8 +29,6 @@ module wd{
             return this.localToWorldMatrix.invertTo3x3().transpose();
         }
 
-        private _normalMatrixCache:Matrix3 = null;
-
         private _position:Vector3 = Vector3.create();
         @cloneAttributeAsCloneable()
         @cacheGetter(function(){
@@ -208,6 +206,7 @@ module wd{
         private _scaleCache:Vector3 = null;
         private _eulerAnglesCache:Vector3 = null;
         private _localEulerAnglesCache:Vector3 = null;
+        private _normalMatrixCache:Matrix3 = null;
 
 
         public init(){

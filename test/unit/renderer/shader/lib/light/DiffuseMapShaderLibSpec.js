@@ -41,14 +41,14 @@ describe("DiffuseMapShaderLib", function () {
 
                 lib.sendShaderVariables(program, quadCmd, material);
 
-                expect(program.sendUniformData).toCalledWith("u_diffuseSourceRegion", wd.EVariableType.FLOAT_4, material.diffuseMap.sourceRegionForGLSL);
+                expect(program.sendUniformData).toCalledWith("u_diffuseSourceRegion", wd.EVariableType.VECTOR_4, material.diffuseMap.sourceRegionForGLSL);
             });
             it("send diffuseRepeatRegion", function () {
                 material.diffuseMap.repeatRegion = wd.RectRegion.create(0,64,100,200);
 
                 lib.sendShaderVariables(program, quadCmd, material);
 
-                expect(program.sendUniformData).toCalledWith("u_diffuseRepeatRegion", wd.EVariableType.FLOAT_4, material.diffuseMap.repeatRegion);
+                expect(program.sendUniformData).toCalledWith("u_diffuseRepeatRegion", wd.EVariableType.VECTOR_4, material.diffuseMap.repeatRegion);
             });
         });
 
@@ -60,12 +60,12 @@ describe("DiffuseMapShaderLib", function () {
             it("send diffuseSourceRegion", function () {
                 lib.sendShaderVariables(program, quadCmd, material);
 
-                expect(program.sendUniformData).toCalledWith("u_diffuseSourceRegion", wd.EVariableType.FLOAT_4, wd.RectRegion.create(0, 0, 1, 1));
+                expect(program.sendUniformData).toCalledWith("u_diffuseSourceRegion", wd.EVariableType.VECTOR_4, wd.RectRegion.create(0, 0, 1, 1));
             });
             it("send diffuseRepeatRegion", function () {
                 lib.sendShaderVariables(program, quadCmd, material);
 
-                expect(program.sendUniformData).toCalledWith("u_diffuseRepeatRegion", wd.EVariableType.FLOAT_4, wd.RectRegion.create(0, 0, 1, 1));
+                expect(program.sendUniformData).toCalledWith("u_diffuseRepeatRegion", wd.EVariableType.VECTOR_4, wd.RectRegion.create(0, 0, 1, 1));
             });
         });
     });

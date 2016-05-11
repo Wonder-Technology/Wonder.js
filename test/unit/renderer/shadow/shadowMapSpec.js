@@ -613,7 +613,7 @@ describe("shadow map", function() {
                         director._loopBody(1);
 
 
-                        oldGLProgram = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere, true).program._program;
+                        oldGLProgram = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere, true).program.glProgram;
 
                         director.scene.shadowLayerList.removeChild(layer2);
                     });
@@ -744,7 +744,7 @@ describe("shadow map", function() {
                                     director.scene.gameObjectScene.update(1);
 
 
-                                    var newGLProgram = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere, true).program._program;
+                                    var newGLProgram = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere, true).program.glProgram;
 
 
 
@@ -766,7 +766,7 @@ describe("shadow map", function() {
                                 //    director.scene.gameObjectScene.update(1);
                                 //
                                 //
-                                //    var newGLProgram = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere, true).program._program;
+                                //    var newGLProgram = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere, true).program.glProgram;
                                 //
                                 //
                                 //
