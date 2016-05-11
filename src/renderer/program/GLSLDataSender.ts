@@ -17,6 +17,10 @@ module wd{
         private _toSendBufferUid:string = "";
         private _toSendBufferArr:Array<ToSendBufferData> = [];
 
+        public isCached(name:string){
+            return !!this._uniformCache[name];
+        }
+
         public sendFloat1(name:string, data:any){
             var gl = null,
                 pos = null;
@@ -105,11 +109,14 @@ module wd{
                 pos = null,
                 recordedData:any = this._uniformCache[name];
 
-            if(recordedData && recordedData.isEqual(data)){
+            if(recordedData && recordedData[0] == data.x && recordedData[1] == data.y){
                 return;
             }
 
-            this._recordUniformData(name, data);
+            let x = data.x,
+                y = data.y;
+
+            this._recordUniformData(name, [x, y]);
 
             gl = DeviceManager.getInstance().gl;
             pos = this.getUniformLocation(name);
@@ -118,7 +125,7 @@ module wd{
                 return;
             }
 
-            gl.uniform2f(pos, data.x, data.y);
+            gl.uniform2f(pos, x, y);
         }
 
         public sendVector3(name:string, data:any){
@@ -126,11 +133,15 @@ module wd{
                 pos = null,
                 recordedData:any = this._uniformCache[name];
 
-            if(recordedData && recordedData.isEqual(data)){
+            if(recordedData && recordedData[0] == data.x && recordedData[1] == data.y && recordedData[2] == data.z){
                 return;
             }
 
-            this._recordUniformData(name, data);
+            let x = data.x,
+                y = data.y,
+                z = data.z;
+
+            this._recordUniformData(name, [x, y, z]);
 
             gl = DeviceManager.getInstance().gl;
             pos = this.getUniformLocation(name);
@@ -139,7 +150,7 @@ module wd{
                 return;
             }
 
-            gl.uniform3f(pos, data.x, data.y, data.z);
+            gl.uniform3f(pos, x, y, z);
         }
 
         public sendVector4(name:string, data:any){
@@ -147,11 +158,16 @@ module wd{
                 pos = null,
                 recordedData:any = this._uniformCache[name];
 
-            if(recordedData && recordedData.isEqual(data)){
+            if(recordedData && recordedData[0] == data.x && recordedData[1] == data.y && recordedData[2] == data.z && recordedData[3] == data.w){
                 return;
             }
 
-            this._recordUniformData(name, data);
+            let x = data.x,
+                y = data.y,
+                z = data.z,
+                w = data.w;
+
+            this._recordUniformData(name, [x, y, z, w]);
 
             gl = DeviceManager.getInstance().gl;
             pos = this.getUniformLocation(name);
@@ -160,7 +176,34 @@ module wd{
                 return;
             }
 
-            gl.uniform4f(pos, data.x, data.y, data.z, data.w);
+            gl.uniform4f(pos, x, y, z, w);
+        }
+
+        public sendColor4(name:string, data:Color){
+            var gl = null,
+                pos = null,
+                recordedData:any = this._uniformCache[name],
+                convertedData = null;
+
+            if(recordedData && recordedData[0] == data.r && recordedData[1] == data.g && recordedData[2] == data.b && recordedData[3] == data.a){
+                return;
+            }
+
+            let r = data.r,
+                g = data.g,
+                b = data.b,
+                a = data.a;
+
+            this._recordUniformData(name, [r, g, b, a]);
+
+            gl = DeviceManager.getInstance().gl;
+            pos = this.getUniformLocation(name);
+
+            if(this._isUniformDataNotExistByLocation(pos)){
+                return;
+            }
+
+            gl.uniform4f(pos, r, g, b, a);
         }
 
         @require(function(name:string, data:number){

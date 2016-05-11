@@ -435,6 +435,13 @@
 /// <reference path="renderer/shader/variable/VariableTypeTable"/>
 /// <reference path="renderer/shader/variable/VariableNameTable"/>
 
+
+
+
+
+/// <reference path="renderer/shader/lib/cache/GLSLDataCache"/>
+
+
 /// <reference path="renderer/shader/lib/ShaderLib"/>
 /// <reference path="renderer/shader/lib/CustomShaderLib"/>
 /// <reference path="renderer/shader/lib/EngineShaderLib"/>
@@ -514,6 +521,8 @@
 
 /// <reference path="renderer/shader/lib/instance/noInstance/ModelMatrixNoInstanceShaderLib"/>
 /// <reference path="renderer/shader/lib/instance/noInstance/NormalMatrixNoInstanceShaderLib"/>
+
+
 
 
 /// <reference path="renderer/shader/chunk/ShaderChunk"/>

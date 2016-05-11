@@ -16,8 +16,6 @@ module wd{
         set rangeLevel(rangeLevel:number){
             this._rangeLevel = rangeLevel;
             this._attenuation.rangeLevel = this._rangeLevel;
-
-            this._isRangeDataDirty = true;
         }
 
         @cloneAttributeAsBasicType()
@@ -26,8 +24,6 @@ module wd{
         }
         set range(range:number){
             this._attenuation.range = range;
-
-            this._isRangeDataDirty = true;
         }
 
         @cloneAttributeAsBasicType()
@@ -36,8 +32,6 @@ module wd{
         }
         set constant(constant:number){
             this._attenuation.constant = constant;
-
-            this._isRangeDataDirty = true;
         }
 
         @cloneAttributeAsBasicType()
@@ -46,8 +40,6 @@ module wd{
         }
         set linear(linear:number){
             this._attenuation.linear = linear;
-
-            this._isRangeDataDirty = true;
         }
 
         @cloneAttributeAsBasicType()
@@ -56,21 +48,8 @@ module wd{
         }
         set quadratic(quadratic:number){
             this._attenuation.quadratic = quadratic;
-
-            this._isRangeDataDirty = true;
         }
 
         private _attenuation:Attenuation = Attenuation.create();
-        private _isRangeDataDirty:boolean = true;
-
-        public isRangeDataDirty(){
-            return this._isRangeDataDirty;
-        }
-
-        public resetGLSLDirty(){
-            super.resetGLSLDirty();
-
-            this._isRangeDataDirty = false;
-        }
     }
 }

@@ -803,6 +803,8 @@ describe("shadow map", function() {
         });
 
         describe("test change shadow->receive at runtime", function(){
+
+
             describe("test change not receive to receive", function () {
                 beforeEach(function(){
                     sphere.getComponent(wd.Shadow).receive = false;
@@ -845,14 +847,34 @@ describe("shadow map", function() {
 
             describe("test change receive to not receive", function () {
                 beforeEach(function(){
-                    sphere.getComponent(wd.Shadow).receive = true;
+                });
+
+                it("if gameObject has no shadow map, not add duplicate NoShadowMapShaderLib", function () {
+                    testTool.openContractCheck(sandbox);
+
+                    var shadow = sphere.getComponent(wd.Shadow);
+                    shadow.cast = false;
+                    shadow.receive = true;
 
                     director._init();
 
                     director._loopBody(1);
+
+
+                    sphere.getComponent(wd.Shadow).receive = false;
+
+                    expect(shaderTool.getShaderLibCount(sphere.getComponent(wd.Geometry).material.shader, wd.NoShadowMapShaderLib)).toEqual(1);
                 });
 
                 describe("test draw shadow map", function(){
+                    beforeEach(function(){
+                        sphere.getComponent(wd.Shadow).receive = true;
+
+                        director._init();
+
+                        director._loopBody(1);
+                    });
+
                     it("not draw the shadow map", function () {
                         var twoDShadowMapList1 = shadowTool.getDefaultMapManager(sphere).getTwoDShadowMapList();
 

@@ -116,6 +116,54 @@ module wd{
             this.sendUniformData(name, type, data);
         }
 
+        public sendFloat1(name:string, data:any){
+            this._sender.sendFloat1(name, data);
+        }
+
+        public sendFloat2(name:string, data:any){
+            this._sender.sendFloat2(name, data);
+        }
+
+        public sendFloat3(name:string, data:any){
+            this._sender.sendFloat3(name, data);
+        }
+
+        public sendFloat4(name:string, data:any){
+            this._sender.sendFloat4(name, data);
+        }
+
+        public sendVector2(name:string, data:any){
+            this._sender.sendVector2(name, data);
+        }
+
+        public sendVector3(name:string, data:any){
+            this._sender.sendVector3(name, data);
+        }
+
+        public sendVector4(name:string, data:any){
+            this._sender.sendVector4(name, data);
+        }
+
+        public sendColor4(name:string, data:any){
+            this._sender.sendColor4(name, data);
+        }
+
+        public sendNum1(name:string, data:any){
+            this._sender.sendNum1(name, data);
+        }
+
+        public sendMatrix3(name:string, data:any){
+            this._sender.sendMatrix3(name, data);
+        }
+
+        public sendMatrix4(name:string, data:any){
+            this._sender.sendMatrix4(name, data);
+        }
+
+        public sendSampleArray(name:string, data:any){
+            this._sender.sendSampleArray(name, data);
+        }
+
         public sendAllBufferData(){
             this._sender.sendAllBufferData();
             this._sender.clearBufferList();
@@ -195,6 +243,10 @@ module wd{
             this._sender.dispose();
 
             this._clearAllCache();
+        }
+
+        public isCached(name:string){
+            return this._sender.isCached(name);
         }
 
         private _clearAllCache(){

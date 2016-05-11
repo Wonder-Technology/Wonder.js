@@ -49,31 +49,24 @@ module wd{
 
         private _sendPointLightVariables(program: Program, pointLights:wdCb.Collection<GameObject> ){
             pointLights.forEach((pointLight:GameObject, index:number) => {
-                var lightComponent:PointLight = pointLight.getComponent<PointLight>(PointLight);
+                var lightComponent:PointLight = pointLight.getComponent<PointLight>(PointLight),
+                    structureMemberNameData:any = POINT_LIGHT_GLSLDATA_STRUCTURE_MEMBER_NAME[index];
 
-                if(lightComponent.isPositionDirty()){
-                    program.sendStructureData(`u_pointLights[${index}].position`, EVariableType.VECTOR_3, lightComponent.position);
+                program.sendVector3(structureMemberNameData.position, lightComponent.position);
+
+                program.sendColor4(structureMemberNameData.color, lightComponent.color);
+
+                program.sendFloat1(structureMemberNameData.intensity, lightComponent.intensity);
+
+                program.sendFloat1(structureMemberNameData.constant, lightComponent.constant);
+                program.sendFloat1(structureMemberNameData.linear, lightComponent.linear);
+                program.sendFloat1(structureMemberNameData.quadratic, lightComponent.quadratic);
+
+                if(lightComponent.range !== null){
+                    program.sendFloat1(structureMemberNameData.range, lightComponent.range);
                 }
-
-                if(lightComponent.isColorDirty()){
-                    program.sendStructureData(`u_pointLights[${index}].color`, EVariableType.VECTOR_4, lightComponent.color.toVector4());
-                }
-
-                if(lightComponent.isIntensityDirty()){
-                    program.sendStructureData(`u_pointLights[${index}].intensity`, EVariableType.FLOAT_1, lightComponent.intensity);
-                }
-
-                if(lightComponent.isRangeDataDirty()){
-                    program.sendStructureData(`u_pointLights[${index}].constant`, EVariableType.FLOAT_1, lightComponent.constant);
-                    program.sendStructureData(`u_pointLights[${index}].linear`, EVariableType.FLOAT_1, lightComponent.linear);
-                    program.sendStructureData(`u_pointLights[${index}].quadratic`, EVariableType.FLOAT_1, lightComponent.quadratic);
-
-                    if(lightComponent.range !== null){
-                        program.sendStructureData(`u_pointLights[${index}].range`, EVariableType.FLOAT_1, lightComponent.range);
-                    }
-                    else{
-                        program.sendStructureData(`u_pointLights[${index}].range`, EVariableType.FLOAT_1, ShaderChunk.NULL);
-                    }
+                else{
+                    program.sendFloat1(structureMemberNameData.range, ShaderChunk.NULL);
                 }
             });
         }
@@ -82,24 +75,19 @@ module wd{
             var self = this;
 
             directionLights.forEach((directionLight:GameObject, index:number) => {
-                var lightComponent:DirectionLight = directionLight.getComponent<DirectionLight>(DirectionLight);
+                var lightComponent:DirectionLight = directionLight.getComponent<DirectionLight>(DirectionLight),
+                    structureMemberNameData = DIRECTION_LIGHT_GLSLDATA_STRUCTURE_MEMBER_NAME[index];
 
-                if(lightComponent.isPositionDirty()){
-                    if(self._isZero(lightComponent.position)){
-                        program.sendStructureData(`u_directionLights[${index}].position`, EVariableType.VECTOR_3, DirectionLight.defaultPosition);
-                    }
-                    else{
-                        program.sendStructureData(`u_directionLights[${index}].position`, EVariableType.VECTOR_3, lightComponent.position);
-                    }
+                if(self._isZero(lightComponent.position)){
+                    program.sendVector3(structureMemberNameData.position, DirectionLight.defaultPosition);
+                }
+                else{
+                    program.sendVector3(structureMemberNameData.position, lightComponent.position);
                 }
 
-                if(lightComponent.isColorDirty()){
-                    program.sendStructureData(`u_directionLights[${index}].color`, EVariableType.VECTOR_4, lightComponent.color.toVector4());
-                }
+                program.sendColor4(structureMemberNameData.color, lightComponent.color);
 
-                if(lightComponent.isIntensityDirty()){
-                    program.sendStructureData(`u_directionLights[${index}].intensity`, EVariableType.FLOAT_1, lightComponent.intensity);
-                }
+                program.sendFloat1(structureMemberNameData.intensity, lightComponent.intensity);
             });
         }
 

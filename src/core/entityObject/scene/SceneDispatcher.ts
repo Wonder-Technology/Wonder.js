@@ -25,11 +25,17 @@ module wd {
         get ambientLight():GameObject {
             return this.gameObjectScene.ambientLight;
         }
-        
+
+        @ensureGetter(function(directionLights:wdCb.Collection<GameObject>){
+            assert(directionLights.getCount() <= 4, Log.info.FUNC_SHOULD("direction lights' count", "<= 4"));
+        })
         get directionLights(): wdCb.Collection<GameObject>{
             return this.gameObjectScene.directionLights;
         }
-        
+
+        @ensureGetter(function(pointLights:wdCb.Collection<GameObject>){
+            assert(pointLights.getCount() <= 4, Log.info.FUNC_SHOULD("point lights' count", "<= 4"));
+        })
         get pointLights(): wdCb.Collection<GameObject>{
             return this.gameObjectScene.pointLights;
         }

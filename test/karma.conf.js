@@ -29,6 +29,9 @@
 
         //'test/unit/**',
 
+        //'test/unit/**/BufferTable*',
+        //'test/unit/**/ProgramTable*',
+
         //'test/unit/**/BasicTexture*',
 
         //'test/unit/renderer/**',
@@ -70,7 +73,7 @@
 
         //'test/unit/**/command/*',
 
-        //'test/unit/**/light/**',
+        'test/unit/**/light/**',
 
         //'test/unit/**/*RigidBodySpec*',
 
@@ -87,7 +90,7 @@
         //'test/unit/**/scene/**',
 
 
-        //'test/unit/renderer/shadow/shadowMapSpec.js',
+        'test/unit/renderer/shadow/shadowMapSpec.js',
         //'test/unit/**/Shadow*',
 
         //'test/unit/**/Shadow*Spec.js',
@@ -229,14 +232,14 @@
         //
         //'test/unit/**/ImageSpec*',
         //
-        'test/unit/**/ThreeDTransformSpec.js',
+        //'test/unit/**/ThreeDTransformSpec.js',
         //'test/unit/**/RectTransformSpec*',
         //'test/unit/**/TransformSpec*',
         //'test/unit/**/component/**',
         //'test/unit/**/PanelSpec*',
         //
         //
-        //'test/unit/**/LightShaderLibSpec*',
+        'test/unit/**/LightShaderLibSpec*',
         //
         //'test/unit/**/SceneDispatcherSpec*',
         //'test/unit/**/GameObjectSceneSpec*',

@@ -322,7 +322,9 @@ module wd{
                 return lib instanceof TwoDShadowMapShaderLib || lib instanceof CubemapShadowMapShaderLib || lib instanceof TotalShadowMapShaderLib
             });
 
-            shader.addLib(NoShadowMapShaderLib.create());
+            if(!shader.hasLib(NoShadowMapShaderLib)){
+                shader.addLib(NoShadowMapShaderLib.create());
+            }
         }
 
         private _isTwoDShadowMap(mapManager:MapManager){
