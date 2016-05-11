@@ -81,10 +81,22 @@ describe("LightShaderLib", function () {
 
                     scene.addChild(light1);
 
+                    light1.init();
+
 
                     lib.sendShaderVariables(program, quadCmd, material);
 
-                    expect(program.sendUniformData.withArgs("u_pointLights[0].position", wd.EVariableType.VECTOR_3)).not.toCalled();
+                    expect(program.sendUniformData.withArgs("u_pointLights[0].position", wd.EVariableType.VECTOR_3)).toCalledOnce();
+
+
+                    wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.ENDLOOP));
+
+
+
+
+                    lib.sendShaderVariables(program, quadCmd, material);
+
+                    expect(program.sendUniformData.withArgs("u_pointLights[0].position", wd.EVariableType.VECTOR_3)).not.toCalledTwice();
                 });
             });
             describe("send point light's range data", function(){
@@ -145,7 +157,6 @@ describe("LightShaderLib", function () {
 
         describe("send direction light data", function(){
             beforeEach(function(){
-
             });
 
             describe("send direction light's position", function(){
@@ -156,14 +167,16 @@ describe("LightShaderLib", function () {
 
                     scene.addChild(light1);
 
+                    light1.init();
+
 
                     lib.sendShaderVariables(program, quadCmd, material);
 
 
                     expect(program.sendUniformData.withArgs("u_directionLights[0].position", wd.EVariableType.VECTOR_3, light1.transform.position)).toCalledOnce();
 
-                    light1.transform._resetTransformFlag();
 
+                    wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.ENDLOOP));
 
 
 
@@ -206,12 +219,15 @@ describe("LightShaderLib", function () {
 
                     scene.addChild(light1);
 
+                    light1.init();
+
 
                     lib.sendShaderVariables(program, quadCmd, material);
 
                     expect(program.sendUniformData.withArgs("u_directionLights[0].color", wd.EVariableType.VECTOR_4, color.toVector4())).toCalledOnce();
 
 
+                    wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.ENDLOOP));
 
 
 
@@ -237,6 +253,10 @@ describe("LightShaderLib", function () {
             scene.addChild(light2);
 
 
+            light1.init();
+            light2.init();
+
+
             lib.sendShaderVariables(program, quadCmd, material);
 
             expect(program.sendUniformData.withArgs("u_directionLights[0].color", wd.EVariableType.VECTOR_4)).toCalledOnce();
@@ -246,6 +266,11 @@ describe("LightShaderLib", function () {
             expect(program.sendUniformData.withArgs("u_pointLights[0].color", wd.EVariableType.VECTOR_4)).toCalledOnce();
             expect(program.sendUniformData.withArgs("u_pointLights[0].intensity", wd.EVariableType.FLOAT_1)).toCalledOnce();
             expect(program.sendUniformData.withArgs("u_pointLights[0].constant", wd.EVariableType.FLOAT_1)).toCalledOnce();
+
+
+            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.ENDLOOP));
+
+
 
 
 

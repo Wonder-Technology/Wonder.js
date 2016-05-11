@@ -13,7 +13,7 @@ module wd{
             return this.isTranslate || this.isRotate || this.isScale;
         }
 
-        private _isTranslate:boolean = false;
+        private _isTranslate:boolean = true;
         get isTranslate(){
             return this._isTranslate;
         }
@@ -21,7 +21,7 @@ module wd{
             this._setGlobalTransformState(ETransformState.ISTRANSLATE, isTranslate);
         }
 
-        private _isRotate:boolean = false;
+        private _isRotate:boolean = true;
         get isRotate(){
             return this._isRotate;
         }
@@ -29,7 +29,7 @@ module wd{
             this._setGlobalTransformState(ETransformState.ISROTATE, isRotate);
         }
 
-        private _isScale:boolean = false;
+        private _isScale:boolean = true;
         get isScale(){
             return this._isScale;
         }

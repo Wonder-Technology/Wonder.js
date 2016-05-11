@@ -27,7 +27,7 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        'test/unit/**',
+        //'test/unit/**',
 
         //'test/unit/**/BasicTexture*',
 
@@ -229,14 +229,14 @@
         //
         //'test/unit/**/ImageSpec*',
         //
-        //'test/unit/**/ThreeDTransformSpec.js',
-        //'test/unit/**/RectTransformSpec*',
-        //'test/unit/**/TransformSpec*',
+        'test/unit/**/ThreeDTransformSpec.js',
+        'test/unit/**/RectTransformSpec*',
+        'test/unit/**/TransformSpec*',
         //'test/unit/**/component/**',
         //'test/unit/**/PanelSpec*',
         //
         //
-        //'test/unit/**/LightShaderLibSpec*',
+        'test/unit/**/LightShaderLibSpec*',
         //
         //'test/unit/**/SceneDispatcherSpec*',
         //'test/unit/**/GameObjectSceneSpec*',

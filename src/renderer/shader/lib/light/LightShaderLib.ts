@@ -75,8 +75,6 @@ module wd{
                         program.sendStructureData(`u_pointLights[${index}].range`, EVariableType.FLOAT_1, ShaderChunk.NULL);
                     }
                 }
-
-                lightComponent.resetGLSLDirty();
             });
         }
 
@@ -102,8 +100,6 @@ module wd{
                 if(lightComponent.isIntensityDirty()){
                     program.sendStructureData(`u_directionLights[${index}].intensity`, EVariableType.FLOAT_1, lightComponent.intensity);
                 }
-
-                lightComponent.resetGLSLDirty();
             });
         }
 

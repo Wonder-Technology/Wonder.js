@@ -59,6 +59,20 @@ module wd {
         public shadowDarkness:number = 0;
 
         private _isColorDirty:boolean = true;
+        private _endLoopSubscription:wdFrp.IDisposable = null;
+
+        public init(){
+            var self = this;
+
+            this._endLoopSubscription = EventManager.fromEvent(<any>EEngineEvent.ENDLOOP)
+            .subscribe(() => {
+                self.resetGLSLDirty();
+            });
+        }
+
+        public dispose(){
+            this._endLoopSubscription.dispose();
+        }
 
         public isPositionDirty(){
             return this.entityObject.transform.isTranslate;
