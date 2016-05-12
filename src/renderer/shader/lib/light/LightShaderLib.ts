@@ -11,7 +11,6 @@ module wd{
         public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
             this.sendUniformData(program, "u_cameraPos", Director.getInstance().scene.currentCamera.transform.position);
 
-
             this.sendUniformData(program, "u_shininess", material.shininess);
             this.sendUniformData(program, "u_opacity", material.opacity);
 

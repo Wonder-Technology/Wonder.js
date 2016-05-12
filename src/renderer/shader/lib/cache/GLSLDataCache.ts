@@ -61,4 +61,6 @@ module wd{
             intensity: "u_directionLights[3].intensity"
         }
     ];
+
+
 }

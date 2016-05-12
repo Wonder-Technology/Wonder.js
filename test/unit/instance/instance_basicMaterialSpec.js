@@ -686,7 +686,7 @@ describe("instance with basic material", function(){
             });
 
             describe("test multi loops", function () {
-                //todo optimize:if elementBuffer not change, not bind again
+                //todo test:if elementBuffer not change, not bind again
             });
         });
 
