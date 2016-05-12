@@ -14,13 +14,43 @@ describe("deviceManager", function() {
         sandbox.restore();
     });
     
-    describe("clear", function(){
-        it("clear color passed from options", function(){
-            device.clear({
-                color:wd.Color.create("#ffffff")
-            });
+    describe("scissorTest(setter)", function(){
+        beforeEach(function(){
+            
+        });
+        
+        it("if old one === new one, return", function(){
+            device.scissorTest = true;
 
-            expect(gl.clearColor).toCalledWith(1, 1, 1, 1);
+            device.scissorTest = true;
+
+            expect(gl.enable.withArgs(gl.SCISSOR_TEST)).toCalledOnce();
+        });
+
+        describe("else", function () {
+            it("if set to be false, disable gl.SCISSOR_TEST", function () {
+                device.scissorTest = true;
+
+                device.scissorTest = false;
+
+                expect(gl.disable.withArgs(gl.SCISSOR_TEST)).toCalledOnce();
+            });
+        });
+    });
+    
+    describe("clear", function(){
+        describe("set clear color passed from options", function(){
+            it("if already setted this color, not set again", function () {
+                device.clear({
+                    color:wd.Color.create("#ffffff")
+                });
+
+                device.clear({
+                    color:wd.Color.create("#ffffff")
+                });
+
+                expect(gl.clearColor.withArgs(1, 1, 1, 1)).toCalledOnce();
+            });
         });
         it("enable all color and alpha write to ensure the clear buffer will not be affected by it", function(){
             device.clear({
@@ -93,28 +123,41 @@ describe("deviceManager", function() {
             expect(view.width).toEqual(50);
             expect(view.height > 0).toBeTruthy();
             expect(device.gl.viewport).toCalledWith(0, 0, view.width, view.height);
-            expect(device.viewport).toEqual(wd.RectRegion.create(0, 0, view.width, view.height));
+            expect(device.getViewport()).toEqual(wd.RectRegion.create(0, 0, view.width, view.height));
             expect($("#event-test").css("left")).toEqual("10px");
             expect($("#event-test").css("top")).toEqual("0px");
         });
     });
-    
+
     describe("setViewport", function(){
         beforeEach(function(){
         });
-        
-        it("save viewport data", function(){
+
+        it("if old viewport equal new one, return", function () {
             device.setViewport(1,2,3,4);
 
-            expect(device.viewport.x).toEqual(1);
-            expect(device.viewport.y).toEqual(2);
-            expect(device.viewport.width).toEqual(3);
-            expect(device.viewport.height).toEqual(4);
+            device.setViewport(1,2,3,4);
+
+            expect(gl.viewport).toCalledOnce();
         });
-        it("set gl->viewport", function () {
-            device.setViewport(1,2,3,4);
 
-            expect(device.gl.viewport).toCalledWith(1,2,3,4);
+        describe("else", function(){
+            beforeEach(function(){
+            });
+
+            it("save viewport data", function(){
+                device.setViewport(1,2,3,4);
+
+                expect(device.getViewport().x).toEqual(1);
+                expect(device.getViewport().y).toEqual(2);
+                expect(device.getViewport().width).toEqual(3);
+                expect(device.getViewport().height).toEqual(4);
+            });
+            it("set gl->viewport", function () {
+                device.setViewport(1,2,3,4);
+
+                expect(device.gl.viewport).toCalledWith(1,2,3,4);
+            });
         });
     });
 });

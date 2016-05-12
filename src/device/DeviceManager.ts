@@ -1,5 +1,5 @@
 /*!
-DeviceManager is responsible for global setting of gl
+ DeviceManager is responsible for global setting of gl
  */
 module wd {
     export class DeviceManager {
@@ -14,11 +14,10 @@ module wd {
 
         public view:IView = null;
         public gl:WebGLRenderingContext = null;
-        public viewport:RectRegion = RectRegion.create();
 
         /*!
-        test order:
-        scissor test -> depth test -> stencil test -> specular add -> fog -> alpha blend -> write mask
+         test order:
+         scissor test -> depth test -> stencil test -> specular add -> fog -> alpha blend -> write mask
          */
 
         /*!
@@ -34,6 +33,10 @@ module wd {
         set scissorTest(scissorTest:boolean){
             var gl = this.gl;
 
+            if(this._scissorTest === scissorTest){
+                return;
+            }
+
             if (scissorTest) {
                 gl.enable(gl.SCISSOR_TEST);
             }
@@ -42,23 +45,6 @@ module wd {
             }
 
             this._scissorTest = scissorTest;
-        }
-
-        /**
-         * @function
-         * @name setScissor
-         * @description Set the active scissor rectangle on the specified device.
-         * @param {Number} x The pixel space x-coordinate of the bottom left corner of the scissor rectangle.
-         * @param {Number} y The pixel space y-coordinate of the bottom left corner of the scissor rectangle.
-         * @param {Number} w The width of the scissor rectangle in pixels.
-         * @param {Number} h The height of the scissor rectangle in pixels.
-         */
-        public setScissor(x:number, y:number, width:number, height:number) {
-            this.gl.scissor(x, y, width, height);
-
-            if (!this.scissorTest) {
-                this.scissorTest = true;
-            }
         }
 
         /*! Difference between viewports and scissor rectangles
@@ -80,8 +66,16 @@ module wd {
          * @param {Number} h The height of the viewport in pixels.
          */
         public setViewport(x:number, y:number, width:number, height:number) {
-            this.viewport.set(x, y, width, height);
+            if(this._viewport.x === x && this._viewport.y === y && this._viewport.width === width && this._viewport.height === height){
+                return;
+            }
+
+            this._viewport.set(x, y, width, height);
             this.gl.viewport(x, y, width, height);
+        }
+
+        public getViewport(){
+            return this._viewport;
         }
 
 
@@ -218,7 +212,7 @@ module wd {
         }
 
         /*! blend record
-        所谓源颜色和目标颜色，是跟绘制的顺序有关的。假如先绘制了一个红色的物体，再在其上绘制绿色的物体。则绿色是源颜色，红色是目标颜色。如果顺序反过来，则 红色就是源颜色，绿色才是目标颜色。在绘制时，应该注意顺序，使得绘制的源颜色与设置的源因子对应，目标颜色与设置的目标因子对应。不要被混乱的顺序搞晕 了。
+         所谓源颜色和目标颜色，是跟绘制的顺序有关的。假如先绘制了一个红色的物体，再在其上绘制绿色的物体。则绿色是源颜色，红色是目标颜色。如果顺序反过来，则 红色就是源颜色，绿色才是目标颜色。在绘制时，应该注意顺序，使得绘制的源颜色与设置的源因子对应，目标颜色与设置的目标因子对应。不要被混乱的顺序搞晕 了。
 
 
          也许你迫不及待的想要绘制一个三维的带有半透明物体的场景了。但是现在恐怕还不行，还有一点是在进行三维场景的混合时必须注意的，那就是深度缓冲。
@@ -226,7 +220,7 @@ module wd {
 
          在进行混合时，绘制的顺序十分重要。因为在绘制时，正要绘制上去的是源颜色，原来存在的是目标颜色，因此先绘制的物体就成为目标颜色，后来绘制的则成为源颜色。绘制的顺序要考虑清楚，将目标颜色和设置的目标因子相对应，源颜色和设置的源因子相对应。
          在进行三维混合时，不仅要考虑源因子和目标因子，还应该考虑深度缓冲区。必须先绘制所有不透明的物体，再绘制半透明的物体。在绘制半透明物体时前，还需要将深度缓冲区设置为只读形式，否则可能出现画面错误。
-        */
+         */
 
         private _blend:boolean = null;
         get blend(){
@@ -247,6 +241,17 @@ module wd {
             }
         }
 
+        private _writeRed:boolean = null;
+        private _writeGreen:boolean = null;
+        private _writeBlue:boolean = null;
+        private _writeAlpha:boolean = null;
+        private _blendSrc:EBlendFunc = null;
+        private _blendDst:EBlendFunc = null;
+        private _blendEquation: EBlendEquation = null;
+        private _blendFuncSeparate:Array<EBlendFunc> = null;
+        private _blendEquationSeparate:Array<EBlendEquation> = null;
+        private _viewport:RectRegion = RectRegion.create();
+        private _clearColor:Color = null;
 
         /**
          * @function
@@ -332,26 +337,17 @@ module wd {
             }
         }
 
-        private _writeRed:boolean = null;
-        private _writeGreen:boolean = null;
-        private _writeBlue:boolean = null;
-        private _writeAlpha:boolean = null;
-        private _blendSrc:EBlendFunc = null;
-        private _blendDst:EBlendFunc = null;
-        private _blendEquation: EBlendEquation = null;
-        private _blendFuncSeparate:Array<EBlendFunc> = null;
-        private _blendEquationSeparate:Array<EBlendEquation> = null;
-
         public clear(options:any) {
             var gl = this.gl,
                 color = options.color;
 
-            gl.clearColor(color.r, color.g, color.b, color.a);
+            this._setClearColor(color);
 
             this.setColorWrite(true, true, true, true);
 
             gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
         }
+
 
         public createGL(canvasId:string){
             var canvas = null;
@@ -398,6 +394,16 @@ module wd {
             this.view.height = height;
 
             this.setViewport(0, 0, width, height);
+        }
+
+        private _setClearColor(color:Color){
+            if(this._clearColor && this._clearColor.isEqual(color)){
+                return;
+            }
+
+            this.gl.clearColor(color.r, color.g, color.b, color.a);
+
+            this._clearColor = color;
         }
     }
 

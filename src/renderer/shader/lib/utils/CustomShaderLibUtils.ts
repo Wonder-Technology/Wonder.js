@@ -129,7 +129,7 @@ module wd{
                 case EVariableSemantic.MODEL_VIEW_INVERSE_TRANSPOSE:
                     return cmd.mMatrix.applyMatrix(cmd.vMatrix, true).invertTo3x3().transpose();
                 case EVariableSemantic.VIEWPORT:
-                    return DeviceManager.getInstance().viewport;
+                    return DeviceManager.getInstance().getViewport();
 
                 //todo support local
 
