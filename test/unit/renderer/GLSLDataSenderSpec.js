@@ -39,10 +39,22 @@ describe("GLSLDataSender", function () {
 
             expect(gl.vertexAttribPointer).toCalledWith(pos, 3, gl[wd.EBufferType.UNSIGNED_SHORT], false, 0, 0);
         });
-        it("enable attribute", function () {
-            sender.sendBuffer(pos, buffer);
+        describe("enable attribute", function () {
+            it("if already enabled since use this program, not enable", function () {
+                sender.sendBuffer(pos, buffer);
+                sender.sendBuffer(pos, buffer);
 
-            expect(gl.enableVertexAttribArray).toCalledWith(pos);
+                expect(gl.enableVertexAttribArray.withArgs(pos)).toCalledOnce();
+            });
+            it("else, enable", function () {
+                sender.sendBuffer(pos, buffer);
+
+                sender.disableVertexAttribArray();
+
+                sender.sendBuffer(pos, buffer);
+
+                expect(gl.enableVertexAttribArray.withArgs(pos)).toCalledTwice();
+            });
         });
 
         //describe("test cache", function () {

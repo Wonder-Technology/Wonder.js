@@ -349,20 +349,17 @@ module wd{
         public sendBuffer(pos:number, buffer:ArrayBuffer){
             var gl = DeviceManager.getInstance().gl;
 
-            this._vertexAttribHistory[pos] = true;
-
             gl.bindBuffer(gl.ARRAY_BUFFER, buffer.buffer);
             gl.vertexAttribPointer(pos, buffer.size, gl[buffer.type], false, 0, 0);
-            gl.enableVertexAttribArray(pos);
+
+            if(!this._vertexAttribHistory[pos]){
+                gl.enableVertexAttribArray(pos);
+
+                this._vertexAttribHistory[pos] = true;
+            }
         }
 
-        public clearAllCache(){
-            this._getUniformLocationCache = {};
-
-            this._uniformCache = {};
-        }
-
-        public dispose(){
+        public disableVertexAttribArray(){
             var gl = DeviceManager.getInstance().gl;
 
             for(let i in this._vertexAttribHistory){
@@ -377,6 +374,16 @@ module wd{
             }
 
             this._vertexAttribHistory = [];
+        }
+
+        public clearAllCache(){
+            this._getUniformLocationCache = {};
+
+            this._uniformCache = {};
+        }
+
+        public dispose(){
+            this.disableVertexAttribArray();
         }
 
         private _recordUniformData(name:string, data:any){

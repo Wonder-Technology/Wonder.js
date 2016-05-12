@@ -19,6 +19,8 @@ module wd{
             ProgramTable.lastUsedProgram = this;
 
             DeviceManager.getInstance().gl.useProgram(this.glProgram);
+
+            this._sender.disableVertexAttribArray();
         }
 
         /*!
