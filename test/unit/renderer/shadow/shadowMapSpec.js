@@ -836,11 +836,13 @@ describe("shadow map", function() {
                         var data1 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
                         var program1 = data1.program;
 
+                        shaderTool.stubProgram(sandbox, program1);
+
 
                         director.scene.gameObjectScene.render(renderer);
                         renderer.render();
 
-                        expect(program1.sendUniformData.withArgs("u_twoDShadowSize[0]")).toCalledOnce();
+                        expect(program1.sendFloat2.withArgs("u_twoDShadowSize[0]")).toCalledOnce();
                     });
                 });
             });

@@ -12,8 +12,8 @@ module wd{
             Director.getInstance().scene.glslData.getChild(<any>EShaderGLSLData.BUILD_CUBEMAP_SHADOWMAP).forEach((data:CubemapShadowMapShaderLibData, index:number) => {
                 var light = data.light;
 
-                this.sendUniformData(program, "u_lightPos", light.position);
-                this.sendUniformData(program, "u_farPlane", light.shadowCameraFar);
+                program.sendVector3("u_lightPos", light.position);
+                program.sendFloat1("u_farPlane", light.shadowCameraFar);
             });
         }
 

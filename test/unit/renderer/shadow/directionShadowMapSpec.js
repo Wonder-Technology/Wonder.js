@@ -80,8 +80,10 @@ describe("direction shadow map", function() {
                 describe("test send data", function(){
                     beforeEach(function(){
                         setBuildShadowMapShaderAndProgram(sphere, function (program) {
-                            sandbox.spy(program, "sendAttributeData");
-                            sandbox.stub(program, "sendUniformData");
+                            //sandbox.spy(program, "sendAttributeData");
+                            //sandbox.stub(program, "sendUniformData");
+
+                            shaderTool.spyProgram(sandbox, program);
                         });
 
 
@@ -108,11 +110,11 @@ describe("direction shadow map", function() {
                     it("send u_vpMatrixFromLight,u_mMatrix,u_vMatrix,u_pMatrix", function () {
                         director.scene.gameObjectScene.render(renderer);
 
-                        expect(program.sendUniformData.withArgs("u_vpMatrixFromLight")).toCalledOnce();
-                        expect(program.sendUniformData.withArgs("u_vpMatrixFromLight").firstCall.args[2]).toEqual(jasmine.any(wd.Matrix4));
-                        expect(program.sendUniformData.withArgs("u_mMatrix")).toCalledBefore(program.sendUniformData.withArgs("u_vpMatrixFromLight"));
-                        expect(program.sendUniformData.withArgs("u_vMatrix")).toCalledBefore(program.sendUniformData.withArgs("u_vpMatrixFromLight"));
-                        expect(program.sendUniformData.withArgs("u_pMatrix")).toCalledBefore(program.sendUniformData.withArgs("u_vpMatrixFromLight"));
+                        expect(program.sendMatrix4.withArgs("u_vpMatrixFromLight")).toCalledOnce();
+                        expect(program.sendMatrix4.withArgs("u_vpMatrixFromLight").firstCall.args[1]).toEqual(jasmine.any(wd.Matrix4));
+                        expect(program.sendUniformData.withArgs("u_mMatrix")).toCalledBefore(program.sendMatrix4.withArgs("u_vpMatrixFromLight"));
+                        expect(program.sendUniformData.withArgs("u_vMatrix")).toCalledBefore(program.sendMatrix4.withArgs("u_vpMatrixFromLight"));
+                        expect(program.sendUniformData.withArgs("u_pMatrix")).toCalledBefore(program.sendMatrix4.withArgs("u_vpMatrixFromLight"));
                     });
                 });
 
@@ -248,6 +250,8 @@ describe("direction shadow map", function() {
 
                 shader = data.shader;
                 program = data.program;
+
+                shaderTool.stubProgram(sandbox, program);
             }
 
             describe("test shadow map", function(){
@@ -288,8 +292,7 @@ describe("direction shadow map", function() {
                     });
 
                     it("shouldn't send shadow map data", function () {
-                        expect(program.sendUniformData.withArgs("u_twoDShadowMapSampler[0]", sinon.match.any, 0)).not.toCalled();
-
+                        expect(program.sendUniformData.withArgs("u_twoDShadowMapSampler", sinon.match.any, 0)).not.toCalledOnce();
                         expect(program.sendUniformData.withArgs("u_diffuseMapSampler", sinon.match.any, 0)).toCalledOnce();
                     });
 
@@ -371,9 +374,8 @@ describe("direction shadow map", function() {
                         it("shouldn't send shadow map data", function () {
                             director._loopBody();
 
-                            expect(program1.sendUniformData.withArgs("u_twoDShadowMapSampler[0]", sinon.match.any, 0)).not.toCalled();
-
-                            expect(program2.sendUniformData.withArgs("u_twoDShadowMapSampler[0]", sinon.match.any, 0)).not.toCalled();
+                            expect(program1.sendUniformData.withArgs("u_twoDShadowMapSampler", sinon.match.any, 0)).not.toCalledOnce();
+                            expect(program2.sendUniformData.withArgs("u_twoDShadowMapSampler", sinon.match.any, 0)).not.toCalledOnce();
                         });
 
                         it("fs glsl shouldn't contain shadow map glsl", function () {
@@ -441,28 +443,28 @@ describe("direction shadow map", function() {
                     director._loopBody();
 
 
-                    expect(program.sendUniformData.withArgs("u_vpMatrixFromLight[0]")).toCalledOnce();
-                    expect(program.sendUniformData.withArgs("u_vpMatrixFromLight[1]")).toCalledOnce();
+                    expect(program.sendMatrix4.withArgs("u_vpMatrixFromLight[0]")).toCalledOnce();
+                    expect(program.sendMatrix4.withArgs("u_vpMatrixFromLight[1]")).toCalledOnce();
 
-                    expect(program.sendUniformData.withArgs("u_twoDShadowSize[0]")).toCalledOnce();
-                    expect(program.sendUniformData.withArgs("u_twoDShadowSize[0]").firstCall.args[2]).toEqual([100, 200]);
-                    expect(program.sendUniformData.withArgs("u_twoDShadowSize[1]")).toCalledOnce();
-                    expect(program.sendUniformData.withArgs("u_twoDShadowSize[1]").firstCall.args[2]).toEqual([101, 201]);
+                    expect(program.sendFloat2.withArgs("u_twoDShadowSize[0]")).toCalledOnce();
+                    expect(program.sendFloat2.withArgs("u_twoDShadowSize[0]").firstCall.args[1]).toEqual([100, 200]);
+                    expect(program.sendFloat2.withArgs("u_twoDShadowSize[1]")).toCalledOnce();
+                    expect(program.sendFloat2.withArgs("u_twoDShadowSize[1]").firstCall.args[1]).toEqual([101, 201]);
 
-                    expect(program.sendUniformData.withArgs("u_twoDShadowBias[0]")).toCalledOnce();
-                    expect(program.sendUniformData.withArgs("u_twoDShadowBias[0]").firstCall.args[2]).toEqual(0.1);
-                    expect(program.sendUniformData.withArgs("u_twoDShadowBias[1]")).toCalledOnce();
-                    expect(program.sendUniformData.withArgs("u_twoDShadowBias[1]").firstCall.args[2]).toEqual(0.2);
+                    expect(program.sendFloat1.withArgs("u_twoDShadowBias[0]")).toCalledOnce();
+                    expect(program.sendFloat1.withArgs("u_twoDShadowBias[0]").firstCall.args[1]).toEqual(0.1);
+                    expect(program.sendFloat1.withArgs("u_twoDShadowBias[1]")).toCalledOnce();
+                    expect(program.sendFloat1.withArgs("u_twoDShadowBias[1]").firstCall.args[1]).toEqual(0.2);
 
-                    expect(program.sendUniformData.withArgs("u_twoDShadowDarkness[0]")).toCalledOnce();
-                    expect(program.sendUniformData.withArgs("u_twoDShadowDarkness[0]").firstCall.args[2]).toEqual(0.5);
-                    expect(program.sendUniformData.withArgs("u_twoDShadowDarkness[1]")).toCalledOnce();
-                    expect(program.sendUniformData.withArgs("u_twoDShadowDarkness[1]").firstCall.args[2]).toEqual(0.6);
+                    expect(program.sendFloat1.withArgs("u_twoDShadowDarkness[0]")).toCalledOnce();
+                    expect(program.sendFloat1.withArgs("u_twoDShadowDarkness[0]").firstCall.args[1]).toEqual(0.5);
+                    expect(program.sendFloat1.withArgs("u_twoDShadowDarkness[1]")).toCalledOnce();
+                    expect(program.sendFloat1.withArgs("u_twoDShadowDarkness[1]").firstCall.args[1]).toEqual(0.6);
 
-                    expect(program.sendUniformData.withArgs("u_twoDLightPos[0]")).toCalledOnce();
-                    expect(program.sendUniformData.withArgs("u_twoDLightPos[0]").firstCall.args[2]).toEqual(position1);
-                    expect(program.sendUniformData.withArgs("u_twoDLightPos[1]")).toCalledOnce();
-                    expect(program.sendUniformData.withArgs("u_twoDLightPos[1]").firstCall.args[2]).toEqual(position2);
+                    expect(program.sendVector3.withArgs("u_twoDLightPos[0]")).toCalledOnce();
+                    expect(program.sendVector3.withArgs("u_twoDLightPos[0]").firstCall.args[1]).toEqual(position1);
+                    expect(program.sendVector3.withArgs("u_twoDLightPos[1]")).toCalledOnce();
+                    expect(program.sendVector3.withArgs("u_twoDLightPos[1]").firstCall.args[1]).toEqual(position2);
                 });
 
                 it("test change glsl data", function () {
@@ -487,8 +489,8 @@ describe("direction shadow map", function() {
                     director._loopBody();
 
 
-                    expect(program.sendUniformData.withArgs("u_twoDShadowBias[0]").secondCall.args[2]).toEqual(1.1);
-                    expect(program.sendUniformData.withArgs("u_twoDShadowBias[1]").secondCall.args[2]).toEqual(1.2);
+                    expect(program.sendFloat1.withArgs("u_twoDShadowBias[0]").secondCall.args[1]).toEqual(1.1);
+                    expect(program.sendFloat1.withArgs("u_twoDShadowBias[1]").secondCall.args[1]).toEqual(1.2);
                 });
             });
 
@@ -507,7 +509,7 @@ describe("direction shadow map", function() {
                     director._loopBody();
 
 
-                    expect(program.sendUniformData.withArgs("u_isTwoDRenderListEmpty[0]", sinon.match.any, 1)).toCalledOnce();
+                    expect(program.sendNum1.withArgs("u_isTwoDRenderListEmpty[0]", 1)).toCalledOnce();
                 });
                 it("else, send u_isTwoDRenderListEmpty:0", function(){
                     setDrawShadowMapShaderAndProgram();
@@ -515,7 +517,7 @@ describe("direction shadow map", function() {
                     director._loopBody();
 
 
-                    expect(program.sendUniformData.withArgs("u_isTwoDRenderListEmpty[0]", sinon.match.any, 0)).toCalledOnce();
+                    expect(program.sendNum1.withArgs("u_isTwoDRenderListEmpty[0]", 0)).toCalledOnce();
                 });
             });
         });
@@ -663,8 +665,10 @@ describe("direction shadow map", function() {
                 describe("test build shadow map", function () {
                     beforeEach(function(){
                         setBuildShadowMapShaderAndProgram(sphere, function (program) {
-                            sandbox.spy(program, "sendAttributeData");
-                            sandbox.stub(program, "sendUniformData");
+                            //sandbox.spy(program, "sendAttributeData");
+                            //sandbox.stub(program, "sendUniformData");
+                            //
+                            shaderTool.spyProgram(sandbox, program);
                         });
 
 
@@ -708,7 +712,7 @@ describe("direction shadow map", function() {
 
                          //expect(program.sendUniformData.withArgs("u_vpMatrixFromLight")).toCalledOnce();
                          */
-                        expect(program.sendUniformData.withArgs("u_vpMatrixFromLight")).toCalledTwice();
+                        expect(program.sendMatrix4.withArgs("u_vpMatrixFromLight")).toCalledTwice();
                         //expect(program.sendUniformData.withArgs("u_mMatrix")).toCalledBefore(program.sendUniformData.withArgs("u_vpMatrixFromLight"));
                         //expect(program.sendUniformData.withArgs("u_vMatrix")).toCalledBefore(program.sendUniformData.withArgs("u_vpMatrixFromLight"));
                         //expect(program.sendUniformData.withArgs("u_pMatrix")).toCalledBefore(program.sendUniformData.withArgs("u_vpMatrixFromLight"));
@@ -810,7 +814,7 @@ describe("direction shadow map", function() {
 
                         expect(shadowMap1.bindToUnit.callCount).toEqual(0);
                         //expect(program1.sendUniformData.withArgs("u_twoDShadowMapSampler[0]", sinon.match.any, 0)).toCalledOnce();
-                        expect(program1.sendUniformData).not.toCalled();
+                        expect(program1.sendNum1).not.toCalled();
                     });
 
                     it("if scene only has one object with the same layer which receive shadow, still bind and send shadow map" +
@@ -850,6 +854,7 @@ describe("direction shadow map", function() {
 
 
                         expect(shadowMap1.bindToUnit.callCount).toEqual(1);
+                        //expect(program1.sendNum1.withArgs("u_twoDShadowMapSampler[0]", 0)).toCalledOnce();
                         expect(program1.sendUniformData.withArgs("u_twoDShadowMapSampler[0]", sinon.match.any, 0)).toCalledOnce();
                     });
                     //it("if scene has other objects with the same layer which cast shadow, bind and send shadow map", function () {
@@ -881,7 +886,7 @@ describe("direction shadow map", function() {
                 shader = data.shader;
                 program = data.program;
 
-                sandbox.stub(program, "sendStructureData");
+                shaderTool.stubProgram(sandbox, program);
             }
 
             beforeEach(function(){
@@ -928,7 +933,7 @@ describe("direction shadow map", function() {
                     });
 
                     it("not send glsl data", function(){
-                        expect(program.sendStructureData.withArgs("u_vpMatrixFromLight[0]")).not.toCalled();
+                        expect(program.sendMatrix4.withArgs("u_vpMatrixFromLight[0]")).not.toCalled();
                     });
                     it("send shadow map data", function () {
                         expect(program.sendUniformData.withArgs("u_twoDShadowMapSampler[0]", sinon.match.any, sinon.match.number)).toCalledOnce();
@@ -964,7 +969,7 @@ describe("direction shadow map", function() {
 
 
 
-                expect(program.sendStructureData.withArgs("u_vpMatrixFromLight[0]")).not.toCalled();
+                expect(program.sendMatrix4.withArgs("u_vpMatrixFromLight[0]")).not.toCalled();
             });
         });
 

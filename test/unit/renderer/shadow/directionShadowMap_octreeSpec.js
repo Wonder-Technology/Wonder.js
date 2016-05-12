@@ -91,8 +91,7 @@ describe("direction shadow map with octree", function() {
 
                 it("send u_vpMatrixFromLight,u_mMatrix,u_vMatrix,u_pMatrix,a_position", function () {
                     setBuildShadowMapShaderAndProgram(sphere, function (program) {
-                        sandbox.stub(program, "sendAttributeData");
-                        sandbox.stub(program, "sendUniformData");
+                        shaderTool.stubProgram(sandbox, program);
                     });
 
 
@@ -102,12 +101,12 @@ describe("direction shadow map with octree", function() {
                     director.scene.gameObjectScene.render(renderer);
 
 
-                    expect(program.sendUniformData.withArgs("u_vpMatrixFromLight")).toCalledOnce();
-                    expect(program.sendUniformData.withArgs("u_vpMatrixFromLight").firstCall.args[2]).toEqual(jasmine.any(wd.Matrix4));
-                    expect(program.sendUniformData.withArgs("u_mMatrix")).toCalledBefore(program.sendUniformData.withArgs("u_vpMatrixFromLight"));
-                    expect(program.sendUniformData.withArgs("u_vMatrix")).toCalledBefore(program.sendUniformData.withArgs("u_vpMatrixFromLight"));
-                    expect(program.sendUniformData.withArgs("u_pMatrix")).toCalledBefore(program.sendUniformData.withArgs("u_vpMatrixFromLight"));
-                    expect(program.sendAttributeData.withArgs("a_position")).toCalledBefore(program.sendUniformData.withArgs("u_vpMatrixFromLight"));
+                    expect(program.sendMatrix4.withArgs("u_vpMatrixFromLight")).toCalledOnce();
+                    expect(program.sendMatrix4.withArgs("u_vpMatrixFromLight").firstCall.args[1]).toEqual(jasmine.any(wd.Matrix4));
+                    expect(program.sendUniformData.withArgs("u_mMatrix")).toCalledBefore(program.sendMatrix4.withArgs("u_vpMatrixFromLight"));
+                    expect(program.sendUniformData.withArgs("u_vMatrix")).toCalledBefore(program.sendMatrix4.withArgs("u_vpMatrixFromLight"));
+                    expect(program.sendUniformData.withArgs("u_pMatrix")).toCalledBefore(program.sendMatrix4.withArgs("u_vpMatrixFromLight"));
+                    expect(program.sendAttributeData.withArgs("a_position")).toCalledBefore(program.sendMatrix4.withArgs("u_vpMatrixFromLight"));
                 });
             });
         });

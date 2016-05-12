@@ -81,8 +81,7 @@ describe("point shadow map", function() {
                 describe("test send data", function(){
                     beforeEach(function(){
                         setBuildShadowMapShaderAndProgram(sphere, function (program) {
-                            sandbox.spy(program, "sendAttributeData");
-                            sandbox.stub(program, "sendUniformData");
+                            shaderTool.spyProgram(sandbox, program);
                         });
 
 
@@ -112,19 +111,19 @@ describe("point shadow map", function() {
                         director.scene.gameObjectScene.render(renderer);
 
 
-                        expect(program.sendUniformData.withArgs("u_lightPos").callCount).toEqual(6);
+                        expect(program.sendVector3.withArgs("u_lightPos").callCount).toEqual(6);
                         var position = light.transform.position;
-                        expect(program.sendUniformData.withArgs("u_lightPos").getCall(0).args[2]).toEqual(position);
-                        expect(program.sendUniformData.withArgs("u_lightPos").getCall(1).args[2]).toEqual(position);
-                        expect(program.sendUniformData.withArgs("u_lightPos").getCall(5).args[2]).toEqual(position);
+                        expect(program.sendVector3.withArgs("u_lightPos").getCall(0).args[1]).toEqual(position);
+                        expect(program.sendVector3.withArgs("u_lightPos").getCall(1).args[1]).toEqual(position);
+                        expect(program.sendVector3.withArgs("u_lightPos").getCall(5).args[1]).toEqual(position);
 
-                        expect(program.sendUniformData.withArgs("u_farPlane").callCount).toEqual(6);
-                        expect(program.sendUniformData.withArgs("u_farPlane").getCall(1).args[2]).toEqual(pointLight.shadowCameraFar);
-                        expect(program.sendUniformData.withArgs("u_farPlane").getCall(5).args[2]).toEqual(pointLight.shadowCameraFar);
+                        expect(program.sendFloat1.withArgs("u_farPlane").callCount).toEqual(6);
+                        expect(program.sendFloat1.withArgs("u_farPlane").getCall(1).args[1]).toEqual(pointLight.shadowCameraFar);
+                        expect(program.sendFloat1.withArgs("u_farPlane").getCall(5).args[1]).toEqual(pointLight.shadowCameraFar);
 
-                        expect(program.sendUniformData.withArgs("u_mMatrix")).toCalledBefore(program.sendUniformData.withArgs("u_lightPos"));
-                        expect(program.sendUniformData.withArgs("u_vMatrix")).toCalledBefore(program.sendUniformData.withArgs("u_lightPos"));
-                        expect(program.sendUniformData.withArgs("u_pMatrix")).toCalledBefore(program.sendUniformData.withArgs("u_lightPos"));
+                        expect(program.sendUniformData.withArgs("u_mMatrix")).toCalledBefore(program.sendVector3.withArgs("u_lightPos"));
+                        expect(program.sendUniformData.withArgs("u_vMatrix")).toCalledBefore(program.sendVector3.withArgs("u_lightPos"));
+                        expect(program.sendUniformData.withArgs("u_pMatrix")).toCalledBefore(program.sendVector3.withArgs("u_lightPos"));
                     });
                 });
 
@@ -249,8 +248,7 @@ describe("point shadow map", function() {
 
 
                         setBuildShadowMapShaderAndProgram(sphere, function (program) {
-                            program.sendAttributeData = sandbox.stub();
-                            program.sendUniformData = sandbox.stub();
+                            shaderTool.stubProgram(sandbox, program);
                         });
 
 
@@ -260,20 +258,20 @@ describe("point shadow map", function() {
 
 
 
-                        expect(program.sendUniformData.withArgs("u_lightPos").callCount).toEqual(6 + 6);
-                        expect(program.sendUniformData.withArgs("u_lightPos").getCall(0).args[2]).toEqual(position1);
-                        expect(program.sendUniformData.withArgs("u_lightPos").getCall(1).args[2]).toEqual(position2);
+                        expect(program.sendVector3.withArgs("u_lightPos").callCount).toEqual(6 + 6);
+                        expect(program.sendVector3.withArgs("u_lightPos").getCall(0).args[1]).toEqual(position1);
+                        expect(program.sendVector3.withArgs("u_lightPos").getCall(1).args[1]).toEqual(position2);
 
-                        expect(program.sendUniformData.withArgs("u_lightPos").getCall(6).args[2]).toEqual(position1);
-                        expect(program.sendUniformData.withArgs("u_lightPos").getCall(7).args[2]).toEqual(position2);
+                        expect(program.sendVector3.withArgs("u_lightPos").getCall(6).args[1]).toEqual(position1);
+                        expect(program.sendVector3.withArgs("u_lightPos").getCall(7).args[1]).toEqual(position2);
 
 
-                        expect(program.sendUniformData.withArgs("u_farPlane").callCount).toEqual(6 + 6);
-                        expect(program.sendUniformData.withArgs("u_farPlane").getCall(0).args[2]).toEqual(pointLight1.shadowCameraFar);
-                        expect(program.sendUniformData.withArgs("u_farPlane").getCall(1).args[2]).toEqual(pointLight2.shadowCameraFar);
+                        expect(program.sendFloat1.withArgs("u_farPlane").callCount).toEqual(6 + 6);
+                        expect(program.sendFloat1.withArgs("u_farPlane").getCall(0).args[1]).toEqual(pointLight1.shadowCameraFar);
+                        expect(program.sendFloat1.withArgs("u_farPlane").getCall(1).args[1]).toEqual(pointLight2.shadowCameraFar);
 
-                        expect(program.sendUniformData.withArgs("u_farPlane").getCall(6).args[2]).toEqual(pointLight1.shadowCameraFar);
-                        expect(program.sendUniformData.withArgs("u_farPlane").getCall(7).args[2]).toEqual(pointLight2.shadowCameraFar);
+                        expect(program.sendFloat1.withArgs("u_farPlane").getCall(6).args[1]).toEqual(pointLight1.shadowCameraFar);
+                        expect(program.sendFloat1.withArgs("u_farPlane").getCall(7).args[1]).toEqual(pointLight2.shadowCameraFar);
 
                         expect(program.sendUniformData.withArgs("u_mMatrix").callCount).toEqual(6);
                         expect(program.sendUniformData.withArgs("u_vMatrix").callCount).toEqual(6);
@@ -305,6 +303,8 @@ describe("point shadow map", function() {
 
                 shader = data.shader;
                 program = data.program;
+
+                shaderTool.stubProgram(sandbox, program);
             }
 
             describe("test shadow map", function(){
@@ -492,20 +492,20 @@ describe("point shadow map", function() {
 
 
 
-                    expect(program.sendUniformData.withArgs("u_cubemapShadowBias[0]")).toCalledOnce();
-                    expect(program.sendUniformData.withArgs("u_cubemapShadowBias[0]").firstCall.args[2]).toEqual(0.1);
-                    expect(program.sendUniformData.withArgs("u_cubemapShadowBias[1]")).toCalledOnce();
-                    expect(program.sendUniformData.withArgs("u_cubemapShadowBias[1]").firstCall.args[2]).toEqual(0.2);
+                    expect(program.sendFloat1.withArgs("u_cubemapShadowBias[0]")).toCalledOnce();
+                    expect(program.sendFloat1.withArgs("u_cubemapShadowBias[0]").firstCall.args[1]).toEqual(0.1);
+                    expect(program.sendFloat1.withArgs("u_cubemapShadowBias[1]")).toCalledOnce();
+                    expect(program.sendFloat1.withArgs("u_cubemapShadowBias[1]").firstCall.args[1]).toEqual(0.2);
 
-                    expect(program.sendUniformData.withArgs("u_cubemapShadowDarkness[0]")).toCalledOnce();
-                    expect(program.sendUniformData.withArgs("u_cubemapShadowDarkness[0]").firstCall.args[2]).toEqual(0.5);
-                    expect(program.sendUniformData.withArgs("u_cubemapShadowDarkness[1]")).toCalledOnce();
-                    expect(program.sendUniformData.withArgs("u_cubemapShadowDarkness[1]").firstCall.args[2]).toEqual(0.6);
+                    expect(program.sendFloat1.withArgs("u_cubemapShadowDarkness[0]")).toCalledOnce();
+                    expect(program.sendFloat1.withArgs("u_cubemapShadowDarkness[0]").firstCall.args[1]).toEqual(0.5);
+                    expect(program.sendFloat1.withArgs("u_cubemapShadowDarkness[1]")).toCalledOnce();
+                    expect(program.sendFloat1.withArgs("u_cubemapShadowDarkness[1]").firstCall.args[1]).toEqual(0.6);
 
-                    expect(program.sendUniformData.withArgs("u_cubemapLightPos[0]")).toCalledOnce();
-                    expect(program.sendUniformData.withArgs("u_cubemapLightPos[0]").firstCall.args[2]).toEqual(position1);
-                    expect(program.sendUniformData.withArgs("u_cubemapLightPos[1]")).toCalledOnce();
-                    expect(program.sendUniformData.withArgs("u_cubemapLightPos[1]").firstCall.args[2]).toEqual(position2);
+                    expect(program.sendVector3.withArgs("u_cubemapLightPos[0]")).toCalledOnce();
+                    expect(program.sendVector3.withArgs("u_cubemapLightPos[0]").firstCall.args[1]).toEqual(position1);
+                    expect(program.sendVector3.withArgs("u_cubemapLightPos[1]")).toCalledOnce();
+                    expect(program.sendVector3.withArgs("u_cubemapLightPos[1]").firstCall.args[1]).toEqual(position2);
                 });
 
                 it("test change glsl data", function () {
@@ -530,8 +530,8 @@ describe("point shadow map", function() {
                     director._loopBody();
 
 
-                    expect(program.sendUniformData.withArgs("u_cubemapShadowBias[0]").secondCall.args[2]).toEqual(1.1);
-                    expect(program.sendUniformData.withArgs("u_cubemapShadowBias[1]").secondCall.args[2]).toEqual(1.2);
+                    expect(program.sendFloat1.withArgs("u_cubemapShadowBias[0]").secondCall.args[1]).toEqual(1.1);
+                    expect(program.sendFloat1.withArgs("u_cubemapShadowBias[1]").secondCall.args[1]).toEqual(1.2);
                 });
             });
 
@@ -550,7 +550,7 @@ describe("point shadow map", function() {
                     director._loopBody();
 
 
-                    expect(program.sendUniformData.withArgs("u_isCubemapRenderListEmpty[0]", sinon.match.any, 1)).toCalledOnce();
+                    expect(program.sendNum1.withArgs("u_isCubemapRenderListEmpty[0]", 1)).toCalledOnce();
                 });
                 it("else, , send u_isCubemapRenderListEmpty:0", function(){
                     setDrawShadowMapShaderAndProgram();
@@ -558,7 +558,7 @@ describe("point shadow map", function() {
                     director._loopBody();
 
 
-                    expect(program.sendUniformData.withArgs("u_isCubemapRenderListEmpty[0]", sinon.match.any, 0)).toCalledOnce();
+                    expect(program.sendNum1.withArgs("u_isCubemapRenderListEmpty[0]", 0)).toCalledOnce();
                 });
             });
         });
@@ -992,7 +992,7 @@ describe("point shadow map", function() {
                 shader = data.shader;
                 program = data.program;
 
-                sandbox.stub(program, "sendStructureData");
+                shaderTool.stubProgram(sandbox, program);
             }
 
             beforeEach(function(){
@@ -1039,7 +1039,7 @@ describe("point shadow map", function() {
                     });
 
                     it("send glsl data", function(){
-                        expect(program.sendStructureData.withArgs("u_cubemapLightPos[0]")).toCalledOnce();
+                        expect(program.sendVector3.withArgs("u_cubemapLightPos[0]")).toCalledOnce();
                     });
                     it("send shadow map data", function () {
                         expect(program.sendUniformData.withArgs("u_cubemapShadowMapSampler[0]", sinon.match.any, sinon.match.number)).toCalledOnce();
@@ -1074,7 +1074,7 @@ describe("point shadow map", function() {
 
 
 
-                expect(program.sendStructureData.withArgs("u_cubemapLightPos[0]")).not.toCalled();
+                expect(program.sendVector3.withArgs("u_cubemapLightPos[0]")).not.toCalled();
             });
         });
 

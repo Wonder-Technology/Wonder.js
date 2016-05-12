@@ -47,7 +47,7 @@ module wd{
                 {
                     name: "CUBEMAP_SHADOWMAP_COUNT",
                     value: cubemapShadowMapCountForGLSL
-                },
+                }
             ]);
         }
     }

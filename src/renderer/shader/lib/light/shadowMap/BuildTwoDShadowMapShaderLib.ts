@@ -10,7 +10,7 @@ module wd{
         public type:string = "buildTwoDShadowMap";
 
         public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
-            this.sendUniformData(program, "u_vpMatrixFromLight", quadCmd.vMatrix.applyMatrix(quadCmd.pMatrix, true));
+            program.sendMatrix4("u_vpMatrixFromLight", quadCmd.vMatrix.applyMatrix(quadCmd.pMatrix, true));
         }
 
         public setShaderDefinition(quadCmd:QuadCommand, material:EngineMaterial){

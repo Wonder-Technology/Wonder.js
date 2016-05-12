@@ -23,19 +23,18 @@ module wd{
                     light:Light = data.light;
 
                 if(data.isRenderListEmpty){
-                    program.sendStructureData(`u_isTwoDRenderListEmpty[${index}]`, EVariableType.NUMBER_1, 1);
+                    program.sendNum1(`u_isTwoDRenderListEmpty[${index}]`, 1);
                     return
                 }
 
-
-                program.sendStructureData(`u_isTwoDRenderListEmpty[${index}]`, EVariableType.NUMBER_1, 0);
+                program.sendNum1(`u_isTwoDRenderListEmpty[${index}]`, 0);
 
                 //todo cache vpMatrix
-                program.sendStructureData(`u_vpMatrixFromLight[${index}]`, EVariableType.FLOAT_MAT4, camera.worldToCameraMatrix.applyMatrix(camera.pMatrix, true));
-                program.sendStructureData(`u_twoDShadowSize[${index}]`, EVariableType.FLOAT_2, [light.shadowMapWidth, light.shadowMapHeight]);
-                program.sendStructureData(`u_twoDShadowBias[${index}]`, EVariableType.FLOAT_1, light.shadowBias);
-                program.sendStructureData(`u_twoDShadowDarkness[${index}]`, EVariableType.FLOAT_1, light.shadowDarkness);
-                program.sendStructureData(`u_twoDLightPos[${index}]`, EVariableType.VECTOR_3, light.position);
+                program.sendMatrix4(`u_vpMatrixFromLight[${index}]`, camera.worldToCameraMatrix.applyMatrix(camera.pMatrix, true));
+                program.sendFloat2(`u_twoDShadowSize[${index}]`, [light.shadowMapWidth, light.shadowMapHeight]);
+                program.sendFloat1(`u_twoDShadowBias[${index}]`, light.shadowBias);
+                program.sendFloat1(`u_twoDShadowDarkness[${index}]`, light.shadowDarkness);
+                program.sendVector3(`u_twoDLightPos[${index}]`, light.position);
             });
         }
     }
