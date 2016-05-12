@@ -73,7 +73,7 @@ module wd{
             }, this);
 
             if(opaqueQuadCommandArr.length > 0){
-                opaqueQuadCommandArr = this._sortOpaqueQuadCommand(opaqueQuadCommandArr);
+                this._sortOpaqueQuadCommand(opaqueQuadCommandArr);
 
                 for(let command of opaqueQuadCommandArr){
                     command.execute();
@@ -204,9 +204,9 @@ module wd{
             }
         })
         private _sortOpaqueQuadCommand(opaqueCommandArr:Array<QuadCommand>){
-            return SortUtils.insertSort(opaqueCommandArr, (commandA:QuadCommand, commandB:QuadCommand) => {
+            SortUtils.quickSort(opaqueCommandArr, (commandA:QuadCommand, commandB:QuadCommand) => {
                 return commandA.sortId < commandB.sortId;
-            })
+            }, true);
         }
     }
 }
