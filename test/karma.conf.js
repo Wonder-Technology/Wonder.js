@@ -27,8 +27,8 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        'test/unit/**',
-
+        //'test/unit/**',
+        //
         //'test/unit/**/BufferTable*',
         //'test/unit/**/ProgramTable*',
 
@@ -193,7 +193,7 @@
         //'test/unit/**/CollisionDetectorSpec*',
         //'test/unit/**/BoundingRegionUtilsSpec*',
 
-        'test/unit/**/SourceLightSpec*',
+        //'test/unit/**/SourceLightSpec*',
 
         //'test/unit/**/RigidBodySpec*',
 
@@ -240,7 +240,7 @@
         //'test/unit/**/PanelSpec*',
         //
         //
-        'test/unit/**/LightShaderLibSpec*',
+        //'test/unit/**/LightShaderLibSpec*',
         //
         //'test/unit/**/SceneDispatcherSpec*',
         //'test/unit/**/GameObjectSceneSpec*',
@@ -293,7 +293,7 @@
         //'test/unit/**/CommonBufferContainerSpec.js',
         //'test/unit/**/MorphBufferContainerSpec.js',
         //'test/unit/core/*.js',
-        //'test/unit/device/*.js',
+        'test/unit/device/*.js',
         //'test/unit/event/**',
         //'test/unit/event/mouseEv*.js',
         //'test/unit/event/customEv*.js',

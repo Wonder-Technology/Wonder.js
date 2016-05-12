@@ -47,6 +47,27 @@ module wd {
             this._scissorTest = scissorTest;
         }
 
+        /**
+         * @function
+         * @name setScissor
+         * @description Set the active scissor rectangle on the specified device.
+         * @param {Number} x The pixel space x-coordinate of the bottom left corner of the scissor rectangle.
+         * @param {Number} y The pixel space y-coordinate of the bottom left corner of the scissor rectangle.
+         * @param {Number} w The width of the scissor rectangle in pixels.
+         * @param {Number} h The height of the scissor rectangle in pixels.
+         */
+        public setScissor(x:number, y:number, width:number, height:number) {
+            if(this._scissorRegion.y === y && this._scissorRegion.width === width && this._scissorRegion.height === height){
+                return;
+            }
+
+            this.gl.scissor(x, y, width, height);
+
+            this._scissorRegion.set(x, y, width, height);
+
+            this.scissorTest = true;
+        }
+
         /*! Difference between viewports and scissor rectangles
 
          Viewports are basically scaled views, the left side is 0 and the right side is 1. The entire view will be scaled down into that viewport after everything is projected.
@@ -250,6 +271,7 @@ module wd {
         private _blendEquation: EBlendEquation = null;
         private _blendFuncSeparate:Array<EBlendFunc> = null;
         private _blendEquationSeparate:Array<EBlendEquation> = null;
+        private _scissorRegion:RectRegion = RectRegion.create();
         private _viewport:RectRegion = RectRegion.create();
         private _clearColor:Color = null;
 

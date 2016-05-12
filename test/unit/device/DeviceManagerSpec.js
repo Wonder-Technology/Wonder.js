@@ -37,7 +37,36 @@ describe("deviceManager", function() {
             });
         });
     });
-    
+
+    describe("setScissor", function(){
+        beforeEach(function(){
+
+        });
+
+        it("if already set the same one, return", function(){
+            device.setScissor(1,2,3,4);
+            device.setScissor(1,2,3,4);
+
+            expect(gl.scissor).toCalledOnce();
+        });
+
+        describe("else", function () {
+            it("set gl", function () {
+                device.setScissor(1,2,3,4);
+
+                expect(gl.scissor.withArgs(1,2,3,4)).toCalledOnce();
+            });
+            it("set scissorTest to be true", function () {
+                device.scissorTest = false;
+
+                device.setScissor(1,2,3,4);
+
+                expect(device.scissorTest).toBeTruthy();
+                expect(gl.enable.withArgs(gl.SCISSOR_TEST)).toCalledOnce();
+            });
+        });
+    });
+
     describe("clear", function(){
         describe("set clear color passed from options", function(){
             it("if already setted this color, not set again", function () {

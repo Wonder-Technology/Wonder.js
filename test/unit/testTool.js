@@ -38,6 +38,8 @@ var testTool = (function () {
 
                 getParameter: sandbox.stub(),
                 getExtension: sandbox.stub(),
+
+                scissor: sandbox.stub(),
                 viewport: sandbox.stub(),
 
                 checkFramebufferStatus: sandbox.stub(),
