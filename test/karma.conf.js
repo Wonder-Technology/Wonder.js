@@ -27,7 +27,7 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        //'test/unit/**',
+        'test/unit/**',
 
         //'test/unit/**/BufferTable*',
         //'test/unit/**/ProgramTable*',
@@ -90,18 +90,18 @@
         //'test/unit/**/scene/**',
 
 
-        'test/unit/renderer/shadow/shadowMapSpec.js',
-        'test/unit/**/Shadow*',
-
-        'test/unit/**/Shadow*Spec.js',
-        'test/unit/**/*Shadow*Spec.js',
-
-        'test/unit/renderer/shadow/pointShadowMapSpec.js',
+        //'test/unit/renderer/shadow/shadowMapSpec.js',
+        //'test/unit/**/Shadow*',
         //
-        'test/unit/renderer/shadow/**',
-        'test/unit/renderer/shadow/directionShadowMapSpec.js',
-        'test/unit/renderer/shadow/directionShadowMap*',
-        'test/unit/renderer/*ShadowMap_*Spec.js',
+        //'test/unit/**/Shadow*Spec.js',
+        //'test/unit/**/*Shadow*Spec.js',
+        //
+        //'test/unit/renderer/shadow/pointShadowMapSpec.js',
+        ////
+        //'test/unit/renderer/shadow/**',
+        //'test/unit/renderer/shadow/directionShadowMapSpec.js',
+        //'test/unit/renderer/shadow/directionShadowMap*',
+        //'test/unit/renderer/*ShadowMap_*Spec.js',
         //
         //'test/unit/**/instance/*',
         //'test/unit/**/instance/*lod*',
@@ -254,6 +254,7 @@
         //'test/unit/**/TwoDShadow*Spec.js',
         //'test/unit/**/*CustomGeo*.js',
         //'test/unit/**/SphereColliderSpec.js',
+        //'test/unit/**/BoxColliderSpec*',
         //'test/unit/**/*ColliderSpec.js',
         //'test/unit/**/colliderSpec.js',
         //'test/unit/**/collider/optimizeSpec.js',

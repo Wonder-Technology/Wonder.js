@@ -353,24 +353,26 @@ describe("instance with shadow", function () {
 
                         var sphere1Program = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere1, true).program;
                         var sphere1Instance1Program = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere1Instance1).program;
+                        shaderTool.stubProgram(sandbox, sphere1Program);
+                        shaderTool.stubProgram(sandbox, sphere1Instance1Program);
 
                         director._loopBody(1);
 
 
-                        expect(sphere1Program.sendUniformData.withArgs("u_twoDLightPos[0]").firstCall.args[2]).toEqual(position1);
-                        //expect(sphere1Program.sendUniformData.withArgs("u_twoDLightPos[0]").secondCall.args[2]).toEqual(position1);
+                        expect(sphere1Program.sendVector3.withArgs("u_twoDLightPos[0]").firstCall.args[1]).toEqual(position1);
+                        //expect(sphere1Program.sendUniformData.withArgs("u_twoDLightPos[0]").secondCall.args[1]).toEqual(position1);
 
-                        expect(sphere1Instance1Program.sendUniformData.withArgs("u_twoDLightPos[0]").firstCall.args[2]).toEqual(position1);
-                        //expect(sphere1Instance1Program.sendUniformData.withArgs("u_twoDLightPos[0]").secondCall.args[2]).toEqual(position1);
-
-
+                        expect(sphere1Instance1Program.sendVector3.withArgs("u_twoDLightPos[0]").firstCall.args[1]).toEqual(position1);
+                        //expect(sphere1Instance1Program.sendUniformData.withArgs("u_twoDLightPos[0]").secondCall.args[1]).toEqual(position1);
 
 
-                        expect(sphere1Program.sendUniformData.withArgs("u_twoDLightPos[1]").firstCall.args[2]).toEqual(position2);
-                        //expect(sphere1Program.sendUniformData.withArgs("u_twoDLightPos[1]").secondCall.args[2]).toEqual(position2);
 
-                        expect(sphere1Instance1Program.sendUniformData.withArgs("u_twoDLightPos[1]").firstCall.args[2]).toEqual(position2);
-                        //expect(sphere1Instance1Program.sendUniformData.withArgs("u_twoDLightPos[1]").secondCall.args[2]).toEqual(position2);
+
+                        expect(sphere1Program.sendVector3.withArgs("u_twoDLightPos[1]").firstCall.args[1]).toEqual(position2);
+                        //expect(sphere1Program.sendUniformData.withArgs("u_twoDLightPos[1]").secondCall.args[1]).toEqual(position2);
+
+                        expect(sphere1Instance1Program.sendVector3.withArgs("u_twoDLightPos[1]").firstCall.args[1]).toEqual(position2);
+                        //expect(sphere1Instance1Program.sendUniformData.withArgs("u_twoDLightPos[1]").secondCall.args[1]).toEqual(position2);
                     });
                 });
             });
