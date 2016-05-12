@@ -96,22 +96,20 @@ module wd{
         }
 
         @require(function(name:string, type:EVariableType, data:any){
-            if(data){
-                assert(data instanceof ArrayBuffer, Log.info.FUNC_MUST_BE("ArrayBuffer"));
+            assert(data instanceof ArrayBuffer, Log.info.FUNC_MUST_BE("ArrayBuffer"));
 
-                assert(type === EVariableType.BUFFER, Log.info.FUNC_SHOULD("type", `be EVariableType.BUFFER, but actual is ${type}`));
-            }
+            assert(type === EVariableType.BUFFER, Log.info.FUNC_SHOULD("type", `be EVariableType.BUFFER, but actual is ${type}`));
         })
         public sendAttributeData(name:string, type:EVariableType, data:any){
             var pos:number = null;
 
             pos = this.getAttribLocation(name);
 
-            if (pos === -1 || data === null) {
+            if (pos === -1) {
                 return;
             }
 
-            this._sendAttributeData(type, pos, data);
+            this._sender.addBufferToToSendList(pos, data);
         }
 
         public sendStructureData(name:string, type:EVariableType, data:any){
@@ -254,17 +252,6 @@ module wd{
         private _clearAllCache(){
             this._getAttribLocationCache.removeAllChildren();
             this._sender.clearAllCache();
-        }
-
-        private _sendAttributeData(type:EVariableType, pos:number, data:any){
-            switch (type){
-                case EVariableType.BUFFER:
-                    this._sender.addBufferToToSendList(pos, data);
-                    break;
-                default :
-                    Log.error(true, Log.info.FUNC_INVALID("EVariableType:", type));
-                    break;
-            }
         }
     }
 }
