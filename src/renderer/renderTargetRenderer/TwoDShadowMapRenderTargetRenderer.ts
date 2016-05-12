@@ -77,7 +77,7 @@ module wd {
             orthoCameraComponent.near = light.shadowCameraNear;
             orthoCameraComponent.far = light.shadowCameraFar;
 
-            camera.addComponent(BasicCameraController.create(orthoCameraComponent));
+            camera.addComponent(RenderTargetRendererCameraController.create(orthoCameraComponent));
 
             //todo optimize:dirty?
             camera.transform.translate(light.position);

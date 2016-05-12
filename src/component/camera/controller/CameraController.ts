@@ -40,21 +40,10 @@ module wd {
         private _clearCacheSubscription:wdFrp.IDisposable = null;
 
         public init() {
-            var self = this;
-
             this.camera.entityObject = <GameObject>this.entityObject;
             this.camera.init();
 
-            this._clearCacheSubscription = wdFrp.fromArray([
-                    EventManager.fromEvent(<any>EEngineEvent.ENDLOOP),
-                    EventManager.fromEvent(this.entityObject, <any>EEngineEvent.TRANSFORM_TRANSLATE),
-                    EventManager.fromEvent(this.entityObject, <any>EEngineEvent.TRANSFORM_ROTATE),
-                    EventManager.fromEvent(this.entityObject, <any>EEngineEvent.TRANSFORM_SCALE)
-                ])
-                .mergeAll()
-                .subscribe(() => {
-                    self._clearCache();
-                });
+            this.bindClearCacheEvent();
         }
 
         public update(elapsedTime:number){
@@ -64,7 +53,7 @@ module wd {
         public dispose(){
             this.camera.dispose();
 
-            this._clearCacheSubscription && this._clearCacheSubscription.dispose();
+            this.disposeClearCacheEvent();
         }
 
         public clone(){
@@ -105,6 +94,27 @@ module wd {
             this._setPlanes(transform, frustumPlanes);
 
             return frustumPlanes;
+        }
+
+        @virtual
+        protected bindClearCacheEvent(){
+            var self = this;
+
+            this._clearCacheSubscription = wdFrp.fromArray([
+                    EventManager.fromEvent(<any>EEngineEvent.ENDLOOP),
+                    EventManager.fromEvent(this.entityObject, <any>EEngineEvent.TRANSFORM_TRANSLATE),
+                    EventManager.fromEvent(this.entityObject, <any>EEngineEvent.TRANSFORM_ROTATE),
+                    EventManager.fromEvent(this.entityObject, <any>EEngineEvent.TRANSFORM_SCALE)
+                ])
+                .mergeAll()
+                .subscribe(() => {
+                    self._clearCache();
+                });
+        }
+
+        @virtual
+        protected disposeClearCacheEvent(){
+            this._clearCacheSubscription && this._clearCacheSubscription.dispose();
         }
 
         private _setPlanes(transform:Matrix4, frustumPlanes: Array<Plane>): void {

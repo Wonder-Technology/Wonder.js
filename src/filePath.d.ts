@@ -215,6 +215,7 @@
 /// <reference path="component/camera/OrthographicCamera"/>
 /// <reference path="component/camera/PerspectiveCamera"/>
 /// <reference path="component/camera/controller/CameraController"/>
+/// <reference path="component/camera/controller/renderTargetRenderer/RenderTargetRendererCameraController"/>
 /// <reference path="component/camera/controller/basic/BasicCameraController"/>
 /// <reference path="component/camera/controller/fly/FlyCameraController"/>
 /// <reference path="component/camera/controller/fly/FlyCameraControl"/>

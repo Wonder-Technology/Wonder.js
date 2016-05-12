@@ -58,7 +58,7 @@ module wd {
             mirrorCameraComponent.worldToCameraMatrix = mirrorCameraViewMatrix.clone();
             mirrorCameraComponent.pMatrix = projectionMatrix;
 
-            return GameObject.create().addComponent(wd.BasicCameraController.create(mirrorCameraComponent)).init();
+            return GameObject.create().addComponent(RenderTargetRendererCameraController.create(mirrorCameraComponent)).init();
         }
 
         private _setSceneSide(side:ESide){

@@ -122,7 +122,7 @@ module wd {
             cubeCameraComponent.fovy = 90;
             this.setCamera(cubeCameraComponent);
 
-            camera.addComponent(BasicCameraController.create(cubeCameraComponent));
+            camera.addComponent(RenderTargetRendererCameraController.create(cubeCameraComponent));
 
             camera.transform.translate(pos);
 
