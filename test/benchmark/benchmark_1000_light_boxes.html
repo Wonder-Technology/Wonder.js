@@ -15,30 +15,41 @@
             screenSize: wd.EScreenSize.FULL
         }).init();
 
-        var director = wd.Director.getInstance();
+        wd.LoaderManager.getInstance().load([
+            {url: "../../examples/asset/texture/1.jpg", id: "texture"}
+        ]).subscribe(null, null, function () {
+            initSample();
+        });
 
 
-        director.scene.addChildren(createBoxes());
+        function initSample() {
+            var director = wd.Director.getInstance();
+
+
+            director.scene.addChildren(createBoxes());
 
 
 
-        director.scene.addChild(createAmbientLight());
-        director.scene.addChild(createDirectionLight());
-        director.scene.addChild(createPointLight());
+            director.scene.addChild(createAmbientLight());
+            director.scene.addChild(createDirectionLight());
+            director.scene.addChild(createPointLight());
 
 
-        director.scene.addChild(createCamera());
+            director.scene.addChild(createCamera());
 
 
-        director.start();
+            director.start();
 
+        }
 
         function createBoxes(){
             var resultArr = [],
                     playgroundSize = 500;
 
+            var map = wd.LoaderManager.getInstance().get("texture").toTexture();
+
             for (var index = 0; index < 1000; index++) {
-                var box = createBox();
+                var box = createBox(map);
 
                 var scale = Math.random() * 0.8 + 0.6;
                 box.transform.scale = wd.Vector3.create(scale, scale, scale);
@@ -50,9 +61,10 @@
             return resultArr;
         }
 
-        function createBox(){
+        function createBox(map){
             var material = wd.LightMaterial.create();
             material.color = wd.Color.create("rgb(1.0,0.0,1.0)");
+            material.diffuseMap = map;
 
             var geometry = wd.BoxGeometry.create();
             geometry.material = material;

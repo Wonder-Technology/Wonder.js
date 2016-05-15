@@ -5,6 +5,10 @@ module wd{
                 hasRepeat:boolean = false;
 
             for(let item of arr){
+                if(!item){
+                    continue;
+                }
+
                 if (this.contain(noRepeatArr, item)) {
                     hasRepeat = true;
 

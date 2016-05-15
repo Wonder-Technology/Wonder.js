@@ -310,9 +310,7 @@ module wd{
         }
 
         @require(function(){
-            assert(!ArrayUtils.hasRepeatItems(this._toSendBufferArr.map((data:ToSendBufferData) => {
-                    return data.buffer;
-                })), Log.info.FUNC_SHOULD_NOT("_toSendBufferArr", "has repeat buffer"));
+            assert(!ArrayUtils.hasRepeatItems(this._toSendBufferArr), Log.info.FUNC_SHOULD_NOT("_toSendBufferArr", "has repeat buffer"));
         })
         @cache(function(){
             var toSendBufferArr = this._toSendBufferArr,

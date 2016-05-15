@@ -28,6 +28,8 @@
             var director = wd.Director.getInstance();
 
             var sphere = createSphere();
+            sphere.name = "sphere";
+
             sphere.transform.translate(wd.Vector3.create(-30, 20, 0));
 
             var layer1 = "layer1";
@@ -43,6 +45,7 @@
 
 
             var ground = createGround();
+            ground.name = "ground";
 
             director.scene.addChild(sphere);
             director.scene.addChild(sphere2);

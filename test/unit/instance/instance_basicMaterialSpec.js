@@ -542,7 +542,7 @@ describe("instance with basic material", function(){
                 director.scene.gameObjectScene.render(renderer);
                 renderer.render();
 
-                expect(gl.bindBuffer.withArgs(gl.ARRAY_BUFFER, sinon.match.object).callCount).toEqual(6);
+                expect(gl.bindBuffer.withArgs(gl.ARRAY_BUFFER, sinon.match.object).callCount).toEqual(3);
             }
 
             function judge2_2(){
