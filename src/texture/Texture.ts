@@ -68,6 +68,8 @@ module wd{
 
             gl.deleteTexture(this.glTexture);
             delete this.glTexture;
+
+            this._unBindAllUnit();
         }
 
         public filterFallback(filter:ETextureFilterMode) {
@@ -132,6 +134,19 @@ module wd{
                 gl.texParameteri(textureType, gl.TEXTURE_MAG_FILTER, gl[this.filterFallback(this.magFilter)]);
                 gl.texParameteri(textureType, gl.TEXTURE_MIN_FILTER, gl[this.filterFallback(this.minFilter)]);
             }
+        }
+
+        private _unBindAllUnit(){
+            var gl = wd.DeviceManager.getInstance().gl,
+                maxTextureUnit = GPUDetector.getInstance().maxTextureUnit;
+
+            for (var channel = 0; channel < maxTextureUnit; channel++) {
+                gl.activeTexture(gl["TEXTURE" + channel]);
+                gl.bindTexture(gl.TEXTURE_2D, null);
+                gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);
+            }
+
+            TextureCache.clearAllBindTextureUnitCache();
         }
     }
 }

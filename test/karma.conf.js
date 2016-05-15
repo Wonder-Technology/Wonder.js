@@ -37,13 +37,13 @@
         //'test/unit/renderer/**',
         //'test/unit/**/*InstanceCommand*',
 
-        'test/unit/**/ProgramSpec.js',
-        'test/unit/**/GLSLDataSenderSpec.js',
-        'test/unit/**/programIn*',
+        //'test/unit/**/ProgramSpec.js',
+        //'test/unit/**/GLSLDataSenderSpec.js',
+        //'test/unit/**/programIn*',
 
         //'test/unit/**/renderer/**',
 
-        //'test/unit/**/TextureSpec*',
+        'test/unit/**/TextureSpec*',
 
         //'test/unit/**/*ProceduralRenderTargetRenderer*',
 

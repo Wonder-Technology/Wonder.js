@@ -21,6 +21,10 @@ describe("Texture", function() {
         mapManager = wd.MapManager.create();
         director = wd.Director.getInstance();
         gl = {
+            TEXTURE0:"TEXTURE0",
+            TEXTURE1:"TEXTURE1",
+            TEXTURE2:"TEXTURE2",
+
             TEXTURE_2D: "TEXTURE_2D",
             TEXTURE_WRAP_S: "TEXTURE_WRAP_S",
             TEXTURE_WRAP_T: "TEXTURE_WRAP_T",
@@ -69,6 +73,39 @@ describe("Texture", function() {
 
         it("", function(){
 
+        });
+    });
+
+    describe("dispose", function(){
+        it("delete texture", function () {
+            var glTexture = {};
+            texture.glTexture = glTexture;
+
+            texture.dispose();
+
+            expect(gl.deleteTexture).toCalledWith(glTexture);
+            expect(texture.glTexture).toBeUndefined();
+        });
+        it("unbind all texture unit", function () {
+            var gpuDetector = {
+                maxTextureUnit:2
+            };
+            sandbox.stub(wd.GPUDetector, "getInstance").returns(gpuDetector);
+
+            texture.dispose();
+
+            expect(gl.activeTexture.withArgs(gl["TEXTURE0"])).toCalledBefore(gl.bindTexture.withArgs(gl.TEXTURE_2D));
+            expect(gl.bindTexture.withArgs(gl.TEXTURE_2D)).toCalledBefore(gl.bindTexture.withArgs(gl.TEXTURE_CUBE_MAP));
+
+
+            expect(gl.activeTexture.withArgs(gl["TEXTURE1"])).toCalledOnce();
+        });
+        it("clear all bind texture unit cache", function () {
+            sandbox.stub(wd.TextureCache, "clearAllBindTextureUnitCache");
+
+            texture.dispose();
+
+            expect(wd.TextureCache.clearAllBindTextureUnitCache).toCalledOnce();
         });
     });
 
