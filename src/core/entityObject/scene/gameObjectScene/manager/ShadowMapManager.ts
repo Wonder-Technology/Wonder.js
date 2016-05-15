@@ -35,13 +35,13 @@ module wd {
         public cubemapShadowMapDataMap:wdCb.Hash<wdCb.Collection<CubemapShadowMapData>> = wdCb.Hash.create<wdCb.Collection<CubemapShadowMapData>>();
 
         private _shadowManager:ShadowManager = null;
-        private _lastTwoDShadowMapDataMap:wdCb.Hash<wdCb.Collection<TwoDShadowMapData>> = null;
-        private _lastCubemapShadowMapDataMap:wdCb.Hash<wdCb.Collection<CubemapShadowMapData>> = null;
+        private _lastTwoDShadowMapDataMap:wdCb.Hash<wdCb.Collection<TwoDShadowMapData>> = wdCb.Hash.create<wdCb.Collection<TwoDShadowMapData>>();
+        private _lastCubemapShadowMapDataMap:wdCb.Hash<wdCb.Collection<CubemapShadowMapData>> = wdCb.Hash.create<wdCb.Collection<CubemapShadowMapData>>();
 
         public initShadowMapData(shadowLayerList:ShadowLayerList){
             var scene:GameObjectScene = this._shadowManager.gameObjectScene;
 
-            if(scene.directionLights){
+            if(scene.directionLights && scene.directionLights.getCount() > 0){
                 scene.directionLights.forEach((lightObject:GameObject) => {
                     var light:DirectionLight = lightObject.getComponent<DirectionLight>(DirectionLight);
 
@@ -51,7 +51,7 @@ module wd {
                 }, this);
             }
 
-            if(scene.pointLights){
+            if(scene.pointLights && scene.pointLights.getCount() > 0){
                 scene.pointLights.forEach((lightObject:GameObject) => {
                     var light:PointLight = lightObject.getComponent<PointLight>(PointLight);
 
@@ -67,7 +67,7 @@ module wd {
 
             scene = this._shadowManager.gameObjectScene;
 
-            if(scene.directionLights){
+            if(scene.directionLights && scene.directionLights.getCount() > 0){
                 let twoDShadowMapDataMap = this.twoDShadowMapDataMap;
 
                 this._lastTwoDShadowMapDataMap = twoDShadowMapDataMap.clone();
@@ -85,7 +85,7 @@ module wd {
                 }, this);
             }
 
-            if(scene.pointLights){
+            if(scene.pointLights && scene.pointLights.getCount() > 0){
                 let cubemapShadowMapDataMap = this.cubemapShadowMapDataMap;
 
                 this._lastCubemapShadowMapDataMap = cubemapShadowMapDataMap.clone();

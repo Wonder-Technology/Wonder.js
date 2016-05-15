@@ -447,6 +447,7 @@ describe("shadow map", function() {
                         layer4 = "layer4";
 
                         sphere4 = shadowTool.createSphere();
+                        sphere4.getComponent(wd.Geometry).material.emissionMap = wd.ImageTexture.create({});
                         sphere4.name = "sphere4";
                         var shadow4 = sphere4.getComponent(wd.Shadow);
                         shadow4.layer = layer4;
@@ -553,19 +554,19 @@ describe("shadow map", function() {
 
 
 
-                            expect(program1 === program4).toBeTruthy();
+                            expect(program1 === program4).toBeFalsy();
 
 
 
                             director.scene.gameObjectScene.render(renderer);
                             renderer.render();
 
-                            expect(program1.sendUniformData.withArgs("u_twoDShadowMapSampler[0]", sinon.match.any, 0)).toCalledTwice();
-                            expect(program1.sendUniformData.withArgs("u_twoDShadowMapSampler[1]", sinon.match.any, 1)).toCalledTwice();
+                            expect(program1.sendUniformData.withArgs("u_twoDShadowMapSampler[0]", sinon.match.any, 0)).toCalledOnce();
+                            expect(program1.sendUniformData.withArgs("u_twoDShadowMapSampler[1]", sinon.match.any, 1)).toCalledOnce();
 
 
-                            //expect(program4.sendUniformData.withArgs("u_twoDShadowMapSampler[0]", sinon.match.any, 0)).toCalledOnce();
-                            //expect(program4.sendUniformData.withArgs("u_twoDShadowMapSampler[1]", sinon.match.any, 1)).toCalledOnce();
+                            expect(program4.sendUniformData.withArgs("u_twoDShadowMapSampler[0]", sinon.match.any, 0)).toCalledOnce();
+                            expect(program4.sendUniformData.withArgs("u_twoDShadowMapSampler[1]", sinon.match.any, 1)).toCalledOnce();
                         });
                         it("fs glsl->TWOD_SHADOWMAP_COUNT should be refreshed", function () {
 
@@ -781,13 +782,16 @@ describe("shadow map", function() {
                                 it("fs glsl->TWOD_SHADOWMAP_COUNT should be refreshed", function () {
                                     director.scene.gameObjectScene.update(1);
 
-                                    var data1 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
-                                    var shader1 = data1.shader;
-
 
 
                                     director.scene.gameObjectScene.render(renderer);
                                     renderer.render();
+
+
+                                    var data1 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
+                                    var shader1 = data1.shader;
+
+
 
                                     expect(glslTool.contain(shader1.fsSource, "TWOD_SHADOWMAP_COUNT 1")).toBeTruthy();
                                 });
@@ -795,6 +799,72 @@ describe("shadow map", function() {
                         });
                     });
                 });
+
+                describe("fix bug", function(){
+                    beforeEach(function(){
+
+                    });
+
+
+                    describe("fix bug in 'add layer'", function(){
+                        var ground;
+                        var layer4;
+
+                        beforeEach(function(){
+                            sphere.getComponent(wd.Shadow).layer = wd.EShadowLayer.DEFAULT;
+
+
+                            director.scene.shadowLayerList.removeAllChildren();
+                            director.scene.shadowLayerList.addChild(wd.EShadowLayer.DEFAULT);
+                            director.scene.removeChild(sphere2);
+                            director.scene.removeChild(sphere3);
+
+                            ground = shadowTool.createGround();
+                            ground.name = "ground";
+
+                            ground.getComponent(wd.Shadow).layer = wd.EShadowLayer.DEFAULT;
+
+                            director.scene.addChild(ground);
+                        });
+
+                        it("fs glsl->TWOD_SHADOWMAP_COUNT should be refreshed", function () {
+                            director._init();
+
+                            director._loopBody(1);
+
+
+                            layer4 = "layer4";
+
+                            sphere.getComponent(wd.Shadow).layer = layer4;
+
+                            director.scene.shadowLayerList.addChild(layer4);
+
+
+
+
+
+                            director.scene.gameObjectScene.update(1);
+
+
+
+
+                            var data1 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
+                            var shader1 = data1.shader;
+
+                            var data2 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, ground );
+                            var shader2 = data2.shader;
+
+
+                            director.scene.gameObjectScene.render(renderer);
+                            renderer.render();
+
+                            expect(glslTool.contain(shader1.fsSource, "TWOD_SHADOWMAP_COUNT 2")).toBeTruthy();
+                            expect(glslTool.contain(shader2.fsSource, "TWOD_SHADOWMAP_COUNT 2")).toBeTruthy();
+                        });
+                    });
+                });
+
+
             });
         });
 

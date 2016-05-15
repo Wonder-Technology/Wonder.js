@@ -201,5 +201,34 @@ var shadowTool = {
         //gameObject.transform.translate(wd.Vector3.create(-30, 20, 0));
 
         return gameObject;
+    },
+    createGround: function(){
+        var material = wd.LightMaterial.create();
+        material.specularColor = wd.Color.create("#ffdd99");
+        material.shininess = 16;
+        //material.diffuseMap = wd.ImageTexture.create({});
+        material.shading = wd.EShading.SMOOTH;
+
+
+        var geometry = wd.PlaneGeometry.create();
+        geometry.material = material;
+        geometry.width = 50;
+        geometry.height = 50;
+
+
+        var gameObject = wd.GameObject.create();
+
+        gameObject.addComponent(wd.MeshRenderer.create());
+        gameObject.addComponent(geometry);
+
+
+        var shadow = wd.Shadow.create();
+        shadow.receive = true;
+        shadow.cast = false;
+
+        gameObject.addComponent(shadow);
+
+
+        return gameObject;
     }
 };

@@ -106,6 +106,9 @@ module wd{
             }
 
             this.gameObjectScene.shadowLayerList = this.getShadowLayerList();
+
+            this.gameObjectScene.shadowLayerList.init();
+
             this._shadowMapManager.initShadowMapData(this.gameObjectScene.shadowLayerList);
 
             this._shadowMapManager.twoDShadowMapDataMap.forEach((twoDShadowMapDataList:wdCb.Collection<TwoDShadowMapData>, layer:string) => {

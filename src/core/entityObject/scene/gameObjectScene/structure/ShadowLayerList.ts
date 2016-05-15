@@ -11,6 +11,10 @@ module wd{
         private _list:wdCb.Collection<string> = wdCb.Collection.create<string>();
         private _lastList:wdCb.Collection<string> = null;
 
+        public init(){
+            this._lastList = this._list.clone();
+        }
+
         public update(){
             if(this.dirty){
                 EventManager.trigger(CustomEvent.create(<any>EEngineEvent.SHADOWMAP_LAYER_CHANGE));
