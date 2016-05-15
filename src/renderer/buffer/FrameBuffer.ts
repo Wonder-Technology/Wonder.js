@@ -40,6 +40,11 @@ module wd{
             deviceManager.scissorTest = false;
         }
 
+        @ensure(function(){
+            var deviceManager = DeviceManager.getInstance();
+
+            assert(deviceManager.scissorTest !== null, Log.info.FUNC_SHOULD_NOT("DeviceManager->scissorTest", "be null"));
+        })
         public restoreViewport(){
             var deviceManager = DeviceManager.getInstance(),
                 view = deviceManager.view;

@@ -26,7 +26,7 @@ module wd {
          Scissor rectangles cannot be set larger than the render target, but they can be set larger than the viewport.
          The scissor rectangle is managed by a device render state. A scissor test is enabled or disabled by setting the renderstate to TRUE or FALSE. This test is performed after the fragment color is computed but before alpha testing. IDirect3DDevice9
          */
-        private _scissorTest:boolean = null;
+        private _scissorTest:boolean = false;
         get scissorTest(){
             return this._scissorTest;
         }
