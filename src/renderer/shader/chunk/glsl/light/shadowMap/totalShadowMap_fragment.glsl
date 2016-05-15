@@ -43,7 +43,7 @@ vec3 getShadowVisibility() {
     #if TWOD_SHADOWMAP_COUNT > 0
 	for( int i = 0; i < TWOD_SHADOWMAP_COUNT; i ++ ) {
         if(isRenderListEmpty(u_isTwoDRenderListEmpty[i])){
-            break;
+            continue;
         }
 
         twoDLightDir = getDirectionLightDirByLightPos(u_twoDLightPos[i]);
@@ -59,7 +59,7 @@ vec3 getShadowVisibility() {
 
 	for( int i = 0; i < CUBEMAP_SHADOWMAP_COUNT; i ++ ) {
         if(isRenderListEmpty(u_isCubemapRenderListEmpty[i])){
-            break;
+            continue;
         }
 
 	////if is opposite to direction of light rays, no shadow
