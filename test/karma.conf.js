@@ -37,9 +37,9 @@
         //'test/unit/renderer/**',
         //'test/unit/**/*InstanceCommand*',
 
-        //'test/unit/**/ProgramSpec.js',
-        //'test/unit/**/GLSLDataSenderSpec.js',
-        //'test/unit/**/programIn*',
+        'test/unit/**/ProgramSpec.js',
+        'test/unit/**/GLSLDataSenderSpec.js',
+        'test/unit/**/programIn*',
 
         //'test/unit/**/renderer/**',
 
@@ -90,7 +90,7 @@
         //'test/unit/**/scene/**',
 
 
-        'test/unit/renderer/shadow/shadowMapSpec.js',
+        //'test/unit/renderer/shadow/shadowMapSpec.js',
         //'test/unit/**/Shadow*',
         //
         //'test/unit/**/Shadow*Spec.js',
@@ -148,6 +148,7 @@
 
         //'test/unit/**/ShaderSpec*',
         //'test/unit/**/*ShaderSpec*',
+        //'test/unit/**/ProceduralShaderSpec*',
 
         //'test/unit/**/customShaderSpec*',
         //'test/unit/**/renderWebGL*',

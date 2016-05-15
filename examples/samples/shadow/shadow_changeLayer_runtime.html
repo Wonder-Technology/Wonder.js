@@ -28,6 +28,8 @@
             var director = wd.Director.getInstance();
 
             var sphere = createSphere();
+            sphere.name = "sphere";
+
             sphere.transform.translate(wd.Vector3.create(-30, 20, 0));
 
             var layer1 = "layer1";
@@ -35,9 +37,12 @@
 //            sphere.getComponent(wd.Shadow).layer = layer1;
 
 //            director.scene.shadowLayerList.addChildren([layer1, wd.EShadowLayer.DEFAULT]);
+//            director.scene.shadowLayerList.addChildren([layer1, wd.EShadowLayer.DEFAULT]);
 
 
             var sphere2 = createSphere();
+            sphere2.name = "sphere2";
+//
             sphere2.transform.translate(wd.Vector3.create(-70, 20, 0));
 
 //            var sphere3 = createSphere();
@@ -45,10 +50,19 @@
 
 
             var ground = createGround();
+            ground.name = "ground";
 
             director.scene.addChild(sphere);
-            director.scene.addChild(sphere2);
+//            director.scene.addChild(sphere2);
             director.scene.addChild(ground);
+
+
+//            sphere.getComponent(wd.Shadow).layer = layer1;
+
+//            director.scene.shadowLayerList.addChild(layer1);
+
+
+
 
 
             wd.Director.getInstance().scheduler.scheduleTime(function(){
@@ -65,10 +79,18 @@
 
 
 
+
+            wd.Director.getInstance().scheduler.scheduleTime(function(){
+                director.scene.shadowLayerList.addChild(layer1);
+
+                director.scene.addChild(sphere);
+            }, 3000);
+
+
             director.scene.addChild(createAmbientLight());
-            director.scene.addChild(createDirectionLight(wd.Vector3.create(0, 100, 100)));
+//            director.scene.addChild(createDirectionLight(wd.Vector3.create(0, 100, 100)));
             director.scene.addChild(createDirectionLight(wd.Vector3.create(100, 100, 0)));
-            director.scene.addChild(createPointLight(wd.Vector3.create(50, 50, -50)));
+//            director.scene.addChild(createPointLight(wd.Vector3.create(50, 50, -50)));
             director.scene.addChild(createCamera());
 
             director.start();
@@ -78,7 +100,7 @@
             var material = wd.LightMaterial.create();
             material.specularColor = wd.Color.create("#ffdd99");
             material.shininess = 16;
-            material.diffuseMap = wd.TextureLoader.getInstance().get("texture").toTexture();
+//            material.diffuseMap = wd.TextureLoader.getInstance().get("texture").toTexture();
             material.shading = wd.EShading.SMOOTH;
 
 
@@ -105,20 +127,20 @@
 
 
 
-            var boxChild1 = createBox();
-            var boxChild2 = createBox();
-            var boxChild21 = createBox();
-
-            gameObject.addChild(boxChild1);
-//            gameObject.addChild(boxChild2);
+//            var boxChild1 = createBox();
+//            var boxChild2 = createBox();
+//            var boxChild21 = createBox();
 //
-//            boxChild2.addChild(boxChild21);
-
-
-            boxChild1.transform.translateLocal(50, 0, 0);
-            boxChild2.transform.translateLocal(-50, 0, 0);
-
-            boxChild21.transform.translateLocal(-60, 0, 0);
+//            gameObject.addChild(boxChild1);
+////            gameObject.addChild(boxChild2);
+////
+////            boxChild2.addChild(boxChild21);
+//
+//
+//            boxChild1.transform.translateLocal(50, 0, 0);
+//            boxChild2.transform.translateLocal(-50, 0, 0);
+//
+//            boxChild21.transform.translateLocal(-60, 0, 0);
 
 
 
@@ -178,7 +200,7 @@
             var material = wd.LightMaterial.create();
             material.specularColor = wd.Color.create("#ffdd99");
             material.shininess = 32;
-            material.diffuseMap = map;
+//            material.diffuseMap = map;
 
 
             var plane = wd.PlaneGeometry.create();

@@ -21,6 +21,8 @@ module wd{
             DeviceManager.getInstance().gl.useProgram(this.glProgram);
 
             this._sender.disableVertexAttribArray();
+
+            BufferTable.lastBindedArrayBufferListUidStr = null;
         }
 
         /*!
@@ -243,10 +245,6 @@ module wd{
             this._sender.dispose();
 
             this._clearAllCache();
-        }
-
-        public isCached(name:string){
-            return this._sender.isCached(name);
         }
 
         private _clearAllCache(){

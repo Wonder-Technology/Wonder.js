@@ -789,71 +789,122 @@ describe("shadow map", function() {
                     });
                 });
 
-                describe("fix bug", function(){
+                describe("test with only one cast and receive shadow gameObject and one receive shadow gameObject that their shadow layer all are EShaderLayer.DEFAULT ", function(){
+                    var ground;
+                    var layer4;
+
                     beforeEach(function(){
+                        sphere.getComponent(wd.Shadow).layer = wd.EShadowLayer.DEFAULT;
+
+
+                        director.scene.shadowLayerList.removeAllChildren();
+                        director.scene.shadowLayerList.addChild(wd.EShadowLayer.DEFAULT);
+                        director.scene.removeChild(sphere2);
+                        director.scene.removeChild(sphere3);
+
+                        ground = shadowTool.createGround();
+                        ground.name = "ground";
+
+                        ground.getComponent(wd.Shadow).layer = wd.EShadowLayer.DEFAULT;
+
+                        director.scene.addChild(ground);
+
+
+
+                        director._init();
+
+                        director._loopBody(1);
+
 
                     });
 
 
-                    describe("fix bug in 'add layer'", function(){
-                        var ground;
-                        var layer4;
+                    //describe("test change layer", function(){
+                    //    describe("test draw shadow map", function(){
+                    //        beforeEach(function(){
+                    //        });
+                    //
+                    //        it("if the layer that no gameObject's shadow use it still exist in shadowLayerList, the layer's corresponding shadow map of the gameObject whose shadow->receive is true shouldn't be drawed ", function () {
+                    //            layer4 = "layer4";
+                    //
+                    //            sphere.getComponent(wd.Shadow).layer = layer4;
+                    //
+                    //            director.scene.shadowLayerList.addChild(layer4);
+                    //
+                    //
+                    //
+                    //
+                    //
+                    //            director.scene.gameObjectScene.update(1);
+                    //
+                    //
+                    //
+                    //var twoDShadowMapList1 = shadowTool.getDefaultMapManager(sphere).getTwoDShadowMapList();
+                    //            var twoDShadowMapList2 = shadowTool.getDefaultMapManager(ground).getTwoDShadowMapList();
+                    //
+                    //expect(twoDShadowMapList1.getCount()).toEqual(1);
+                    //            expect(twoDShadowMapList2.getCount()).toEqual(1);
+                    //
+                    //
+                    //            expect(twoDShadowMapList1.getChild(0) === twoDShadowMapList2.getChild(0)).toBeTruthy();
+                    //
+                    //
+                    //var shadowMap1 = twoDShadowMapList1.getChild(0);
+                    ////var shadowMap2 = twoDShadowMapList1.getChild(1);
+                    //sandbox.stub(shadowMap1, "bindToUnit");
+                    ////sandbox.stub(shadowMap2, "bindToUnit");
+                    //
+                    //
+                    //director.scene.gameObjectScene.render(renderer);
+                    //renderer.render();
+                    //
+                    ////expect(shadowMap1.bindToUnit.callCount).toEqual(0 + 0);
+                    //expect(shadowMap1.bindToUnit.callCount).toEqual(1 + 2);
+                    //        });
+                    //    });
+                    //});
 
+                    describe("fix bug", function(){
                         beforeEach(function(){
-                            sphere.getComponent(wd.Shadow).layer = wd.EShadowLayer.DEFAULT;
-
-
-                            director.scene.shadowLayerList.removeAllChildren();
-                            director.scene.shadowLayerList.addChild(wd.EShadowLayer.DEFAULT);
-                            director.scene.removeChild(sphere2);
-                            director.scene.removeChild(sphere3);
-
-                            ground = shadowTool.createGround();
-                            ground.name = "ground";
-
-                            ground.getComponent(wd.Shadow).layer = wd.EShadowLayer.DEFAULT;
-
-                            director.scene.addChild(ground);
                         });
 
-                        it("fs glsl->TWOD_SHADOWMAP_COUNT should be refreshed", function () {
-                            director._init();
 
-                            director._loopBody(1);
+                        describe("fix bug in 'add layer'", function(){
+                            beforeEach(function(){
+                            });
 
+                            it("fs glsl->TWOD_SHADOWMAP_COUNT should be refreshed", function () {
+                                layer4 = "layer4";
 
-                            layer4 = "layer4";
+                                sphere.getComponent(wd.Shadow).layer = layer4;
 
-                            sphere.getComponent(wd.Shadow).layer = layer4;
-
-                            director.scene.shadowLayerList.addChild(layer4);
-
-
-
-
-
-                            director.scene.gameObjectScene.update(1);
+                                director.scene.shadowLayerList.addChild(layer4);
 
 
 
 
-                            var data1 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
-                            var shader1 = data1.shader;
 
-                            var data2 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, ground );
-                            var shader2 = data2.shader;
+                                director.scene.gameObjectScene.update(1);
 
 
-                            director.scene.gameObjectScene.render(renderer);
-                            renderer.render();
 
-                            expect(glslTool.contain(shader1.fsSource, "TWOD_SHADOWMAP_COUNT 2")).toBeTruthy();
-                            expect(glslTool.contain(shader2.fsSource, "TWOD_SHADOWMAP_COUNT 2")).toBeTruthy();
+
+                                var data1 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
+                                var shader1 = data1.shader;
+
+                                var data2 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, ground );
+                                var shader2 = data2.shader;
+
+
+                                director.scene.gameObjectScene.render(renderer);
+                                renderer.render();
+
+                                expect(glslTool.contain(shader1.fsSource, "TWOD_SHADOWMAP_COUNT 2")).toBeTruthy();
+                                expect(glslTool.contain(shader2.fsSource, "TWOD_SHADOWMAP_COUNT 2")).toBeTruthy();
+                            });
                         });
                     });
                 });
-
-
             });
         });
 

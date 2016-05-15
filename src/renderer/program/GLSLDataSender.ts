@@ -17,10 +17,6 @@ module wd{
         private _toSendBufferUid:string = "";
         private _toSendBufferArr:Array<ToSendBufferData> = [];
 
-        public isCached(name:string){
-            return !!this._uniformCache[name];
-        }
-
         public sendFloat1(name:string, data:any){
             var gl = null,
                 pos = null;
@@ -352,7 +348,7 @@ module wd{
             gl.bindBuffer(gl.ARRAY_BUFFER, buffer.buffer);
             gl.vertexAttribPointer(pos, buffer.size, gl[buffer.type], false, 0, 0);
 
-            if(!this._vertexAttribHistory[pos]){
+            if(this._vertexAttribHistory[pos] !== true){
                 gl.enableVertexAttribArray(pos);
 
                 this._vertexAttribHistory[pos] = true;

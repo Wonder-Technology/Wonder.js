@@ -57,7 +57,36 @@ describe("program integration test", function() {
                 pos2 = 2;
                 gl.getAttribLocation.withArgs(sinon.match.any, "a_texCoord").returns(pos2);
 
-                sandbox.stub(program._sender, "sendBuffer");
+                sandbox.spy(program._sender, "sendBuffer");
+            });
+
+            it("if switch program, clear cache and send it and enableVertexAttribArray location", function () {
+                program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer1);
+                program.sendAttributeData("a_texCoord", wd.EVariableType.BUFFER, buffer2);
+
+
+                program.sendAllBufferData();
+
+
+                expect(program._sender.sendBuffer).toCalledTwice();
+                expect(gl.enableVertexAttribArray.callCount).toEqual(2);
+
+
+                var program2 = wd.Program.create();
+                program2.use();
+
+                program.use();
+
+
+                program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer1);
+                program.sendAttributeData("a_texCoord", wd.EVariableType.BUFFER, buffer2);
+
+
+                program.sendAllBufferData();
+
+
+                expect(program._sender.sendBuffer.callCount).toEqual(4);
+                expect(gl.enableVertexAttribArray.callCount).toEqual(4);
             });
 
             it("if lastBindedArrayBufferList equal this buffer list which is to be sended, not send again", function () {
@@ -101,6 +130,10 @@ describe("program integration test", function() {
                 expect(program._sender.sendBuffer.callCount).toEqual(4);
             });
         });
+
+        //it("when switch program and the lastBindedArrayBufferList equal this buffer list which is to be sended, send it", function(){
+        //
+        //});
     });
 
     describe("fix bug", function(){
