@@ -1,6 +1,6 @@
 {
   "name": "wonder",
-  "version": "0.5.6",
+  "version": "0.5.7",
   "homepage": "https://github.com/yyc-git/Wonder.js",
   "authors": [
     "Yuanchao Yang <395976266@qq.com>"
@@ -8,6 +8,8 @@
   "description": "3d html5 game engine",
   "keywords": [
     "wonder",
+    "wonderjs",
+    "wonder.js",
     "webgl",
     "3d",
     "engine",

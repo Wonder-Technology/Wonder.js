@@ -31,6 +31,8 @@ Join us, We can create the amazing 3D world together!
 * Feature
 - Batch Draw
   - Instance
+  - Render Queue Sort By RenderGroup,RenderPriority,Shader,Texture,VBO
+  - Merge GameObject
 - Water
 - Procedural
   - Procedural Texture
