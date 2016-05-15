@@ -1978,14 +1978,12 @@ var wdCb;
 
 var wdCb;
 (function (wdCb) {
-    Object.defineProperty(wdCb, "root", {
-        get: function () {
-            if (wdCb.JudgeUtils.isNodeJs()) {
-                return global;
-            }
-            return window;
-        }
-    });
+    if (wdCb.JudgeUtils.isNodeJs()) {
+        wdCb.root = global;
+    }
+    else {
+        wdCb.root = window;
+    }
 })(wdCb || (wdCb = {}));
 
 var wdCb;
@@ -2335,7 +2333,7 @@ var wdCb;
             return result;
         };
         List.prototype._forEach = function (arr, func, context) {
-            var scope = context || wdCb.root, i = 0, len = arr.length;
+            var scope = context, i = 0, len = arr.length;
             for (i = 0; i < len; i++) {
                 if (func.call(scope, arr[i], i) === wdCb.$BREAK) {
                     break;
@@ -2421,27 +2419,6 @@ var wdCb;
             }
             return Collection.create(this.copyChildren().sort(func));
         };
-        Collection.prototype.insertSort = function (compareFunc, isSortSelf) {
-            if (isSortSelf === void 0) { isSortSelf = false; }
-            var children = null;
-            if (isSortSelf) {
-                children = this.children;
-            }
-            else {
-                children = wdCb.ExtendUtils.extend([], this.children);
-            }
-            for (var i = 1, len = this.getCount(); i < len; i++) {
-                for (var j = i; j > 0 && compareFunc(children[j], children[j - 1]); j--) {
-                    this._swap(children, j - 1, j);
-                }
-            }
-            if (isSortSelf) {
-                return this;
-            }
-            else {
-                return Collection.create(children);
-            }
-        };
         Collection.prototype.map = function (func) {
             var resultArr = [];
             this.forEach(function (e, index) {
@@ -2472,12 +2449,6 @@ var wdCb;
                 noRepeatList.addChild(item);
             });
             return hasRepeat;
-        };
-        Collection.prototype._swap = function (children, i, j) {
-            var t = null;
-            t = children[i];
-            children[i] = children[j];
-            children[j] = t;
         };
         return Collection;
     })(wdCb.List);
@@ -3591,14 +3562,12 @@ var wdFrp;
 
 var wdFrp;
 (function (wdFrp) {
-    Object.defineProperty(wdFrp, "root", {
-        get: function () {
-            if (wdFrp.JudgeUtils.isNodeJs()) {
-                return global;
-            }
-            return window;
-        }
-    });
+    if (wdFrp.JudgeUtils.isNodeJs()) {
+        wdFrp.root = global;
+    }
+    else {
+        wdFrp.root = window;
+    }
 })(wdFrp || (wdFrp = {}));
 
 var wdFrp;
