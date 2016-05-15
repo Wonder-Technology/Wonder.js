@@ -35,6 +35,9 @@ var testTool = (function () {
                 TEXTURE_2D: "TEXTURE_2D",
                 TEXTURE_CUBE_MAP:"TEXTURE_CUBE_MAP",
 
+                FRAMEBUFFER: "FRAMEBUFFER",
+                RENDERBUFFER: "RENDERBUFFER",
+
 
                 getParameter: sandbox.stub(),
                 getExtension: sandbox.stub(),

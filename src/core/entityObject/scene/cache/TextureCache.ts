@@ -1,6 +1,6 @@
 module wd{
     export class TextureCache{
-        private static _cache:Array<Texture> = [];
+        private static _bindTextureUnitCache:Array<Texture> = [];
 
         public static isCached(unit:number, texture:Texture){
             return JudgeUtils.isEqual(this.getActiveTexture(unit), texture);
@@ -10,19 +10,26 @@ module wd{
             this._checkUnit(unit);
         })
         public static addActiveTexture(unit:number, texture:Texture){
-            this._cache[unit] = texture;
+            this._bindTextureUnitCache[unit] = texture;
         }
 
         @require(function(unit:number, texture:Texture){
             this._checkUnit(unit);
         })
         public static getActiveTexture(unit:number){
-            return this._cache[unit];
+            return this._bindTextureUnitCache[unit];
         }
 
-        //todo test
         public static clearAll(){
-            this._cache = [];
+            this._bindTextureUnitCache = [];
+        }
+
+        public static clearAllBindTextureUnitCache(){
+            this._bindTextureUnitCache = [];
+        }
+
+        public static clearBindTextureUnitCache(unit:number){
+            this._bindTextureUnitCache[unit] = null;
         }
 
         private static _checkUnit(unit:number){

@@ -48,7 +48,7 @@ module wd {
             frameBuffer.bindFrameBuffer(this.frameBuffer);
             frameBuffer.attachTexture(gl.TEXTURE_2D, this.texture.glTexture);
             frameBuffer.check();
-            frameBuffer.unBind();
+            frameBuffer.unBindAll();
         }
 
         protected renderFrameBufferTexture(renderList:any, renderer:Renderer){
@@ -62,7 +62,7 @@ module wd {
             renderer.webglState = BasicState.create();
             renderer.render();
 
-            this.frameBufferOperator.unBind();
+            this.frameBufferOperator.unBindFrameBuffer();
             this.frameBufferOperator.restoreViewport();
         }
 

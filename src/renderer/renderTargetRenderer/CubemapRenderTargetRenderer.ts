@@ -38,7 +38,7 @@ module wd {
                 frameBufferOperator.check();
             }
 
-            frameBufferOperator.unBind();
+            frameBufferOperator.unBindAll();
         }
 
         @require(function(renderList:wdCb.Hash<any>, renderer:Renderer, camera:GameObject){
@@ -103,7 +103,7 @@ module wd {
                 this._lastPosition = position;
             }
 
-            this.frameBufferOperator.unBind();
+            this.frameBufferOperator.unBindFrameBuffer();
             this.frameBufferOperator.restoreViewport();
         }
 

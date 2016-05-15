@@ -19,6 +19,7 @@ module wd{
         public height:number = null;
 
         private _originScissorTest:boolean = null;
+        private _glTarget:any = null;
 
         public createFrameBuffer(){
             return this.gl.createFramebuffer();
@@ -48,14 +49,33 @@ module wd{
         }
 
         public dispose(){
-            this.unBind();
+            this.unBindAll();
         }
 
-        public unBind(){
+        @require(function(){
+            assert(this._glTarget !== null, Log.info.FUNC_SHOULD("attachTexture before"));
+        })
+        public unBindAll(){
             var gl = this.gl;
+
+            gl.bindTexture(this._glTarget, null);
+            TextureCache.clearAllBindTextureUnitCache();
 
             gl.bindFramebuffer(gl.FRAMEBUFFER, null);
             gl.bindRenderbuffer(gl.RENDERBUFFER, null);
+        }
+
+        public unBindFrameBuffer(){
+            var gl = this.gl;
+
+            gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+
+            /*!
+            need to unBind???
+
+             gl.bindTexture(this._glTarget, null);
+             TextureCache.clearBindTextureUnitCache(0);
+             */
         }
 
         @ensure(function(renderBuffer){
@@ -69,9 +89,10 @@ module wd{
             return renderBuffer;
         }
 
+        //todo save glTarget?
         public attachTexture(glTarget:any, texture:WebGLTexture){
             var gl = this.gl;
-            
+
             //todo support mipmap?
             gl.framebufferTexture2D(
                 gl.FRAMEBUFFER,
@@ -79,6 +100,8 @@ module wd{
                 glTarget,
                 texture,
                 0);
+
+            this._glTarget = glTarget;
         }
 
         public attachRenderBuffer(type:string, renderBuffer:WebGLRenderbuffer){

@@ -43,10 +43,11 @@
 
         //'test/unit/**/renderer/**',
 
-        'test/unit/**/TextureSpec*',
+        //'test/unit/**/TextureSpec*',
 
         //'test/unit/**/*ProceduralRenderTargetRenderer*',
 
+        'test/unit/**/FrameBuffer*',
         //'test/unit/**/*ArrayBuffer*',
         //'test/unit/**/*ElementBuffer*',
         //'test/unit/**/*InstanceBuffer*',

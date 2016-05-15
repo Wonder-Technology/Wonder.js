@@ -68,4 +68,47 @@ describe("FrameBuffer", function() {
             });
         });
     });
+
+    describe("unBindAll", function(){
+        var gl;
+
+        beforeEach(function(){
+            gl = device.gl;
+        });
+
+        it("unbind texture and clear texture unit cache", function(){
+            var glTarget = "TEXTURE_2D";
+            buffer.attachTexture(glTarget, {});
+            sandbox.stub(wd.TextureCache, "clearAllBindTextureUnitCache");
+
+            buffer.unBindAll();
+
+            expect(gl.bindTexture).toCalledWith(glTarget, null);
+            expect(wd.TextureCache.clearAllBindTextureUnitCache).toCalledOnce();
+        });
+        it("unbind frame buffer", function () {
+            buffer.unBindAll();
+
+            expect(gl.bindFramebuffer).toCalledWith(gl.FRAMEBUFFER, null);
+        });
+        it("unbind render buffer", function () {
+            buffer.unBindAll();
+
+            expect(gl.bindRenderbuffer).toCalledWith(gl.RENDERBUFFER, null);
+        });
+    });
+
+    describe("unBindFrameBuffer", function(){
+        var gl;
+
+        beforeEach(function(){
+            gl = device.gl;
+        });
+
+        it("unbind frame buffer", function () {
+            buffer.unBindAll();
+
+            expect(gl.bindFramebuffer).toCalledWith(gl.FRAMEBUFFER, null);
+        });
+    });
 });

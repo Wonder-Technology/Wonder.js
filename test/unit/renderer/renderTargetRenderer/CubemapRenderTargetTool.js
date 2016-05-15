@@ -88,7 +88,8 @@ var CubemapRenderTargetTool = YYC.Class({
                         attachTexture: self.sandbox.stub(),
                         attachRenderBuffer: self.sandbox.stub(),
                         check: self.sandbox.stub(),
-                        unBind: self.sandbox.stub()
+                        unBindAll: self.sandbox.stub(),
+                        unBindFrameBuffer: self.sandbox.stub()
                     };
 
                     glTexture = {};
@@ -160,7 +161,7 @@ var CubemapRenderTargetTool = YYC.Class({
                 it("unBind frame buffer", function(){
                     self.renderTargetRenderer.init();
 
-                    expect(frameBufferOperator.unBind).toCalledOnce();
+                    expect(frameBufferOperator.unBindAll).toCalledOnce();
                 });
             });
 
@@ -210,7 +211,8 @@ var CubemapRenderTargetTool = YYC.Class({
                     frameBufferOperator = {
                         bindFrameBuffer: self.sandbox.stub(),
                         setViewport: self.sandbox.stub(),
-                        unBind: self.sandbox.stub(),
+                        unBindAll: self.sandbox.stub(),
+                        unBindFrameBuffer: self.sandbox.stub(),
                         restoreViewport: self.sandbox.stub()
                     };
 
@@ -377,8 +379,8 @@ var CubemapRenderTargetTool = YYC.Class({
                 it("unbind frameBuffer and restore viewport", function(){
                     self.renderTargetRenderer.render(renderer, camera);
 
-                    expect(frameBufferOperator.unBind).toCalledBefore(frameBufferOperator.restoreViewport);
-                    expect(frameBufferOperator.unBind).toCalledOnce();
+                    expect(frameBufferOperator.unBindFrameBuffer).toCalledBefore(frameBufferOperator.restoreViewport);
+                    expect(frameBufferOperator.unBindFrameBuffer).toCalledOnce();
                     expect(frameBufferOperator.restoreViewport).toCalledOnce();
                 });
 

@@ -15,7 +15,8 @@ describe("ProceduralRenderTargetRenderer", function () {
             bindFrameBuffer: sandbox.stub(),
             attachTexture: sandbox.stub(),
             check: sandbox.stub(),
-            unBind: sandbox.stub()
+            unBindAll: sandbox.stub(),
+            unBindFrameBuffer: sandbox.stub()
         };
 
         glTexture = {};
@@ -73,7 +74,7 @@ describe("ProceduralRenderTargetRenderer", function () {
         it("unBind frame buffer", function(){
             renderTargetRenderer.init();
 
-            expect(frameBufferOperator.unBind).toCalledOnce();
+            expect(frameBufferOperator.unBindAll).toCalledOnce();
         });
         it("share the vertexBuffer,indexBuffer from BufferTable", function () {
             renderTargetRenderer.init();
@@ -115,7 +116,8 @@ describe("ProceduralRenderTargetRenderer", function () {
                 check: sandbox.stub(),
                 bindFrameBuffer: sandbox.stub(),
                 setViewport: sandbox.stub(),
-                unBind: sandbox.stub(),
+                unBindAll: sandbox.stub(),
+                unBindFrameBuffer: sandbox.stub(),
                 restoreViewport: sandbox.stub()
             };
 
@@ -182,7 +184,7 @@ describe("ProceduralRenderTargetRenderer", function () {
         it("unbind frameBuffer and restore viewport", function(){
             renderTargetRenderer.render(renderer);
 
-            expect(frameBufferOperator.unBind).toCalledBefore(frameBufferOperator.restoreViewport);
+            expect(frameBufferOperator.unBindFrameBuffer).toCalledBefore(frameBufferOperator.restoreViewport);
         });
     });
 

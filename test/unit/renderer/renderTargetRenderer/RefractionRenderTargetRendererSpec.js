@@ -27,7 +27,8 @@ describe("RefractionRenderTargetRenderer", function () {
             frameBufferOperator = {
                 bindFrameBuffer: sandbox.stub(),
                 setViewport: sandbox.stub(),
-                unBind: sandbox.stub(),
+                unBindAll: sandbox.stub(),
+                unBindFrameBuffer: sandbox.stub(),
                 restoreViewport: sandbox.stub()
             };
 

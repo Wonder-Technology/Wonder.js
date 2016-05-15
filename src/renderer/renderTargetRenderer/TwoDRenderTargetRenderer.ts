@@ -33,7 +33,7 @@ module wd {
             frameBuffer.attachTexture(gl.TEXTURE_2D, this.texture.glTexture);
             frameBuffer.attachRenderBuffer("DEPTH_ATTACHMENT", this.renderBuffer);
             frameBuffer.check();
-            frameBuffer.unBind();
+            frameBuffer.unBindAll();
         }
 
         @require(function(renderList:wdCb.Collection<GameObject>, renderer:Renderer, camera:GameObject){
@@ -76,7 +76,7 @@ module wd {
             renderer.clear();
             this.renderRenderer(renderer);
 
-            this.frameBufferOperator.unBind();
+            this.frameBufferOperator.unBindFrameBuffer();
             this.frameBufferOperator.restoreViewport();
         }
 
