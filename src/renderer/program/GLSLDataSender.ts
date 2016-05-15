@@ -14,8 +14,7 @@ module wd{
         private _uniformCache:Object = {};
         private _vertexAttribHistory:Array<boolean> = [];
         private _getUniformLocationCache:Object = {};
-        private _toSendBufferUid:string = "";
-        private _toSendBufferArr:Array<ToSendBufferData> = [];
+        private _toSendBufferArr:Array<ArrayBuffer> = [];
 
         public sendFloat1(name:string, data:any){
             var gl = null,
@@ -307,12 +306,7 @@ module wd{
         }
 
         public addBufferToToSendList(pos:number, buffer:ArrayBuffer){
-            this._toSendBufferArr.push({
-                pos:pos,
-                buffer:buffer
-            });
-
-            this._toSendBufferUid += String(buffer.uid);
+            this._toSendBufferArr[pos] = buffer;
         }
 
         @require(function(){
@@ -321,25 +315,39 @@ module wd{
                 })), Log.info.FUNC_SHOULD_NOT("_toSendBufferArr", "has repeat buffer"));
         })
         @cache(function(){
-            return BufferTable.lastBindedArrayBufferListUidStr === this._toSendBufferUid;
+            var toSendBufferArr = this._toSendBufferArr,
+                lastBindedArrayBufferArr = BufferTable.lastBindedArrayBufferArr;
+
+            if(!lastBindedArrayBufferArr){
+                return false;
+            }
+
+            for(let i = 0, len = toSendBufferArr.length; i < len; i++){
+                let buffer = toSendBufferArr[i];
+                if(buffer && buffer !== lastBindedArrayBufferArr[i]){
+                    return false;
+                }
+            }
+
+            return true;
         }, function(){
         }, function(){
-            BufferTable.lastBindedArrayBufferListUidStr = this._toSendBufferUid;
+            BufferTable.lastBindedArrayBufferArr = this._toSendBufferArr;
         })
         public sendAllBufferData(){
             var toSendBufferArr = this._toSendBufferArr;
 
             for(let i = 0, len = toSendBufferArr.length; i < len; i++){
-                let data = toSendBufferArr[i];
+                let buffer = toSendBufferArr[i];
 
-                this.sendBuffer(data.pos, data.buffer);
+                if(buffer){
+                    this.sendBuffer(i, buffer);
+                }
             }
         }
 
         public clearBufferList(){
             this._toSendBufferArr = [];
-
-            this._toSendBufferUid = "";
         }
 
         public sendBuffer(pos:number, buffer:ArrayBuffer){

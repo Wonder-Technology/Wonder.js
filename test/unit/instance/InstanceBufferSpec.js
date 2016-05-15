@@ -7,8 +7,8 @@ describe("InstanceBuffer", function () {
         it("release binded buffer", function(){
             expect(gl.bindBuffer.getCall(1).args[1]).toBeNull();
         });
-        it("null BufferTable->lastBindedArrayBufferListUidStr", function () {
-            expect(wd.BufferTable.lastBindedArrayBufferListUidStr).toBeNull();
+        it("null BufferTable->lastBindedArrayBufferArr", function () {
+            expect(wd.BufferTable.lastBindedArrayBufferArr).toBeNull();
         });
     }
 
