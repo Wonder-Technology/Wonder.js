@@ -52,7 +52,7 @@ module wd{
             assert(!!program, Log.info.FUNC_NOT_EXIST(`program\nits table key is:${this._getProgramTableKey()}`))
         })
         @cacheGetter(function(){
-            return !this.dirty && this._programCache !== null;
+            return this._programCache !== null;
         }, function(){
             return this._programCache;
         }, function(program:Program){
@@ -208,7 +208,7 @@ module wd{
             assert(!(isHardwareInstance && isBatchInstance), Log.info.FUNC_SHOULD_NOT("both be hardware insstance and batch instance"));
         })
         @cache(function(){
-            return !this.dirty && this._instanceStateCache;
+            return this._instanceStateCache;
         }, function(){
             return this._instanceStateCache;
         }, function(instanceState:InstanceState){
@@ -268,12 +268,14 @@ module wd{
 
         protected judgeRefreshShader(cmd:RenderCommand, material:Material){
             if(this.libDirty){
+                this._instanceStateCache = null;
                 this.buildDefinitionData(cmd, material);
             }
 
             if(this.definitionDataDirty){
-                //todo optimize: batch init program(if it's the same as the last program, not initWithShader)
+                this._programCache = null;
                 this._registerAndUpdateProgram();
+                this._programCache = null;
             }
 
 

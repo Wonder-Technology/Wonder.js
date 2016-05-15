@@ -2,12 +2,17 @@ describe("Shader", function() {
     var sandbox = null;
     var shader = null;
 
+    function createShader(){
+        wd.Shader.prototype.createShaderSourceBuilder = sandbox.stub().returns(new wd.ShaderSourceBuilder());
+        wd.Shader.prototype.buildDefinitionData = sandbox.stub();
+
+        return new wd.Shader();
+    }
+
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
-        wd.Shader.prototype.createShaderSourceBuilder = sandbox.stub().returns(new wd.ShaderSourceBuilder());
-
-        shader = new wd.Shader();
+        shader = createShader();
 
         testTool.openContractCheck(sandbox, false);
     });
@@ -203,7 +208,7 @@ describe("Shader", function() {
                     wd.ProgramTable.addProgram(getProgramTableKey(), registerdProgram1);
                 });
 
-                it("if not dirty and cached, return cached program", function () {
+                it("if cached, return cached program", function () {
                     var program1  = shader.program;
                     var program2  = shader.program;
 
@@ -211,29 +216,22 @@ describe("Shader", function() {
                 });
 
                 describe("else, get program from ProgramTable", function(){
-                    it("test if dirty, cache miss ", function () {
+                    it("test if definitionDataDirty and judgeRefreshShader, cache miss ", function () {
                         var program1  = shader.program;
 
                         vsSource = "aaaaaaaaaa";
+
                         var registerdProgram2 = wd.Program.create();
                         wd.ProgramTable.addProgram(getProgramTableKey(), registerdProgram2);
                         shader.vsSource = vsSource;
+
+                        shader.judgeRefreshShader();
 
                         var program2  = shader.program;
 
                         expect(program1 === program2).toBeFalsy();
                         expect(program1 === registerdProgram1);
                         expect(program2 === registerdProgram2);
-                    });
-                    it("test if not cached, cache miss", function () {
-                        var program1  = shader.program;
-
-                        shader._clearAllCache();
-                        sandbox.spy(wd.ProgramTable, "getProgram");
-
-                        var program2  = shader.program;
-
-                        expect(wd.ProgramTable.getProgram).toCalledOnce();
                     });
                 });
             });
@@ -250,10 +248,11 @@ describe("Shader", function() {
             });
 
             describe("else, get program from ProgramTable", function(){
-                it("test if dirty, cache miss ", function () {
+                it("test if lib dirty and judgeRefreshShader, cache miss ", function () {
                     var state1  = shader.getInstanceState();
 
-                    shader.fsSource = "bbbbbbbb";
+                    shader.libDirty = true;
+                    shader.judgeRefreshShader();
 
                     var state2  = shader.getInstanceState();
 

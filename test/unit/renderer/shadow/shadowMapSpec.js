@@ -711,21 +711,10 @@ describe("shadow map", function() {
                                 expect(shadowMap2.bindToUnit.callCount).toEqual(0);
                             });
                             it("should not send the removed shadow map data", function () {
-                                var data1 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
-                                var program1 = data1.program;
-
-                                var data2 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere2);
-                                var program2 = data2.program;
-
-                                var data3 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere3);
-                                var program3 = data3.program;
-
-
-                                expect(program1 === program2).toBeTruthy();
-                                expect(program2 === program3).toBeTruthy();
-
-
                                 director.scene.gameObjectScene.update(1);
+
+                                var program1 = shadowTool.getNewProgramWhichIsAddedToProgramTable(sandbox);
+
 
                                 director.scene.gameObjectScene.render(renderer);
                                 renderer.render();
@@ -903,10 +892,8 @@ describe("shadow map", function() {
                         expect(shadowMap1.bindToUnit.callCount).toEqual(1 + 1);
                     });
                     it("should send glsl data", function () {
-                        var data1 = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere);
-                        var program1 = data1.program;
+                        var program1 = shadowTool.getNewProgramWhichIsAddedToProgramTable(sandbox);
 
-                        shaderTool.stubProgram(sandbox, program1);
 
 
                         director.scene.gameObjectScene.render(renderer);

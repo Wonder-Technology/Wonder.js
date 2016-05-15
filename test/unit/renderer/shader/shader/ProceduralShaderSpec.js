@@ -7,6 +7,8 @@ describe("ProceduralShader", function() {
         shader = new wd.ProceduralShader();
 
         testTool.openContractCheck(sandbox);
+
+        sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
     });
     afterEach(function () {
         sandbox.restore();
@@ -39,26 +41,57 @@ describe("ProceduralShader", function() {
             shader.program = wd.Program.create();
 
 
-            sandbox.stub(shader, "judgeRefreshShader");
+            //sandbox.spy(shader, "judgeRefreshShader");
             sandbox.stub(shader.program, "use");
 
             lib = {
-                sendShaderVariables:sandbox.stub()
+                sendShaderVariables:sandbox.stub(),
+                setShaderDefinition:sandbox.stub()
             }
             shader.addLib(lib);
         });
 
-        it("judge to refresh shader", function(){
-            shader.update(cmd, material);
+        //it("judge to refresh shader", function(){
+        //    shader.update(cmd, material);
+        //
+        //    expect(shader.judgeRefreshShader).toCalledOnce();
+        //});
 
-            expect(shader.judgeRefreshShader).toCalledOnce();
-        });
-        it("use program", function () {
-            shader.update(cmd, material);
+        describe("use program", function () {
+            var oldProgram;
 
-            expect(shader.program.use).toCalledOnce();
-            expect(shader.program.use).toCalledBefore(lib.sendShaderVariables);
+            beforeEach(function(){
+                oldProgram = shader.program;
+
+                shader.libDirty = false;
+            });
+
+            it("if definitionDataDirty, use the new program added to ProgramTable", function () {
+                shader.vsSource = "aaaaa";
+
+                var newProgram = shadowTool.getNewProgramWhichIsAddedToProgramTable(sandbox);
+
+
+
+                shader.update(cmd, material);
+
+
+                expect(newProgram !== oldProgram).toBeTruthy();
+
+                expect(oldProgram.use).not.toCalled();
+
+
+                expect(newProgram.use).toCalledOnce();
+                expect(newProgram.use).toCalledBefore(lib.sendShaderVariables);
+            });
+            it("else, use old program", function () {
+                shader.update(cmd, material);
+
+                expect(oldProgram.use).toCalledOnce();
+                expect(oldProgram.use).toCalledBefore(lib.sendShaderVariables);
+            });
         });
+
         it("send shaderLib->variables", function () {
             shader.update(cmd, material);
 

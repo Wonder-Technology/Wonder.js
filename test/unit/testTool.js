@@ -218,11 +218,11 @@ var testTool = (function () {
         initForTest: function(sandbox){
             wd.ProgramTable.addProgram("\n", wd.Program.create());
 
-            Object.defineProperty(wd.Shader.prototype, "program", {
-                get: function () {
-                    return wd.ProgramTable.getProgram(this._getProgramTableKey()) || wd.Program.create();
-                }
-            });
+            //Object.defineProperty(wd.Shader.prototype, "program", {
+            //    get: function () {
+            //        return wd.ProgramTable.getProgram(this._getProgramTableKey()) || wd.Program.create();
+            //    }
+            //});
 
 
 

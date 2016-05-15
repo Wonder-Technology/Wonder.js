@@ -94,37 +94,37 @@ describe("custom shader", function () {
                 sandbox.stub(wd.LoaderManager.getInstance(), "get");
 
                 vsSource = [
-                        "attribute vec3 a_position;",
-                        "attribute vec2 a_texCoord;",
-                        "varying vec3 v_color;",
-                        "varying vec2 v_texCoord;",
-                        "uniform mat4 u_mvpMatrix;",
+                    "attribute vec3 a_position;",
+                    "attribute vec2 a_texCoord;",
+                    "varying vec3 v_color;",
+                    "varying vec2 v_texCoord;",
+                    "uniform mat4 u_mvpMatrix;",
 
-                        "void main(void){",
-                        "v_color = a_color;",
-                        "v_texCoord = a_texCoord;",
-                        "float a = u_test1;",
-                        "gl_Position = u_mvpMatrix * vec4(a_position, 1.0);",
-                        "}"
+                    "void main(void){",
+                    "v_color = a_color;",
+                    "v_texCoord = a_texCoord;",
+                    "float a = u_test1;",
+                    "gl_Position = u_mvpMatrix * vec4(a_position, 1.0);",
+                    "}"
                 ].join("\n");
 
                 wd.LoaderManager.getInstance().get.withArgs("vsSourceId").returns(vsSource);
 
                 fsSource = [
-                        "uniform sampler2D u_sampler2D;",
-                        "varying vec3 v_color;",
-                        "varying vec2 v_texCoord;",
+                    "uniform sampler2D u_sampler2D;",
+                    "varying vec3 v_color;",
+                    "varying vec2 v_texCoord;",
 
-                        "uniform float u_test2;",
-                        "struct Test3{float b;};",
-                        "Test3 u_test3;",
+                    "uniform float u_test2;",
+                    "struct Test3{float b;};",
+                    "Test3 u_test3;",
 
-                        "void main(void){",
-                        "float a = u_test2;",
-                        "float b = u_test3.b;",
-                        "gl_FragColor = vec4(v_color, 1.0) * texture2D(u_sampler2D, v_texCoord);",
-                        "}"
-                    ].join("\n");
+                    "void main(void){",
+                    "float a = u_test2;",
+                    "float b = u_test3.b;",
+                    "gl_FragColor = vec4(v_color, 1.0) * texture2D(u_sampler2D, v_texCoord);",
+                    "}"
+                ].join("\n");
 
                 wd.LoaderManager.getInstance().get.withArgs("fsSourceId").returns(fsSource);
 
@@ -206,11 +206,43 @@ describe("custom shader", function () {
 
                     expect(gl.attachShader).toCalledTwice();
                 });
-                it("use program", function(){
-                    material.updateShader(quadCmd);
 
-                    expect(program.use).toCalledAfter(gl.attachShader);
+                describe("use program", function () {
+                    var oldProgram;
+
+                    beforeEach(function(){
+                        oldProgram = program;
+
+                        shader.libDirty = false;
+                    });
+
+                    it("if definitionDataDirty, use the new program added to ProgramTable", function () {
+                        shader.vsSource = "aaaaa";
+
+                        var newProgram = shadowTool.getNewProgramWhichIsAddedToProgramTable(sandbox);
+
+
+
+                        material.updateShader(quadCmd);
+
+
+                        expect(newProgram !== oldProgram).toBeTruthy();
+
+                        expect(oldProgram.use).not.toCalled();
+
+
+                        expect(newProgram.use).toCalledOnce();
+                        expect(newProgram.use).toCalledAfter(gl.attachShader);
+                    });
+                    it("else, use old program", function () {
+                        material.updateShader(quadCmd);
+
+                        expect(oldProgram.use).toCalledOnce();
+                        expect(oldProgram.use).toCalledAfter(gl.attachShader);
+                    });
                 });
+
+
                 it("send attribute data", function () {
                     var pos1 = 1;
                     gl.getAttribLocation.withArgs(sinon.match.any, "a_position").returns(pos1);
@@ -256,3 +288,4 @@ describe("custom shader", function () {
         });
     });
 });
+

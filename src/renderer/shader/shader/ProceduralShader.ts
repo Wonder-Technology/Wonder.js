@@ -9,11 +9,13 @@ module wd{
         }
 
         public update(cmd:ProceduralCommand){
-            var program = this.program;
+            var program = null;
 
             this.judgeRefreshShader(cmd, null);
 
-            this.program.use();
+            program = this.program;
+
+            program.use();
 
             this.libs.forEach((lib:ProceduralShaderLib) => {
                 lib.sendShaderVariables(program, cmd);

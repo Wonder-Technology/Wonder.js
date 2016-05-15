@@ -7,9 +7,11 @@ module wd{
         }
 
         public update(quadCmd:QuadCommand, material:Material){
-            var program = this.program;
+            var program = null;
 
             this.judgeRefreshShader(quadCmd, material);
+
+            program = this.program;
 
             program.use();
 

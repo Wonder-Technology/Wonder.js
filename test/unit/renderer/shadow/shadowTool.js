@@ -170,6 +170,14 @@ var shadowTool = {
     getDrawShadowMapShaderAndProgramHelper:function (sandbox, obj, isNotStub){
         return renderTargetRendererTool.getDrawShadowMapShaderAndProgramHelper(sandbox, obj, isNotStub);
     },
+    getNewProgramWhichIsAddedToProgramTable: function getNewProgram(sandbox, onCallIndex){
+        var program = wd.Program.create();
+        shaderTool.stubProgram(sandbox, program);
+
+        sandbox.stub(wd.Program, "create").returns(program);
+
+        return program;
+    },
     createSphere: function(){
         var material = wd.LightMaterial.create();
         material.specularColor = wd.Color.create("#ffdd99");
