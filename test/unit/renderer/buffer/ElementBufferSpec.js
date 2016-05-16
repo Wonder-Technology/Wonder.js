@@ -12,6 +12,8 @@ describe("ElementBuffer", function() {
         gl = device.gl;
 
         buffer = new wd.ElementBuffer();
+
+        sandbox.stub(wd.GPUDetector.getInstance(), "extensionUintIndices", true);
     });
     afterEach(function () {
         sandbox.restore();
@@ -107,16 +109,33 @@ describe("ElementBuffer", function() {
             });
         });
 
-        it("if not pass param type, buffer should set type by check data", function () {
-            buffer.resetData([1,2,3]);
+        describe("if not pass param type, buffer should set type by check data", function () {
+            it("if extensionUintIndices is false, type should be 16 bit without check", function () {
+                sandbox.stub(wd.GPUDetector.getInstance(), "extensionUintIndices", false);
 
-            expect(buffer.type).toEqual(wd.EBufferType.UNSIGNED_SHORT);
+                buffer.resetData([1,2,3]);
+
+                expect(buffer.type).toEqual(wd.EBufferType.UNSIGNED_SHORT);
 
 
 
-            buffer.resetData([1,65536,3]);
+                buffer.resetData([1,65536,3]);
 
-            expect(buffer.type).toEqual(wd.EBufferType.UNSIGNED_INT);
+                expect(buffer.type).toEqual(wd.EBufferType.UNSIGNED_SHORT);
+            });
+            it("else, set type by check data", function () {
+                sandbox.stub(wd.GPUDetector.getInstance(), "extensionUintIndices", true);
+
+                buffer.resetData([1,2,3]);
+
+                expect(buffer.type).toEqual(wd.EBufferType.UNSIGNED_SHORT);
+
+
+
+                buffer.resetData([1,65536,3]);
+
+                expect(buffer.type).toEqual(wd.EBufferType.UNSIGNED_INT);
+            });
         });
     });
 });

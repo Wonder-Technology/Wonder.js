@@ -21,6 +21,7 @@ module wd {
         public extensionCompressedTextureS3TC:any = null;
         public extensionTextureFilterAnisotropic:any = null;
         public extensionInstancedArrays:any = null;
+        public extensionUintIndices:boolean = null;
         public precision:number = null;
 
         private _isDetected:boolean = false;
@@ -37,6 +38,7 @@ module wd {
             this.extensionCompressedTextureS3TC = this._getExtension("WEBGL_compressed_texture_s3tc");
             this.extensionTextureFilterAnisotropic = this._getExtension("EXT_texture_filter_anisotropic");
             this.extensionInstancedArrays = this._getExtension("ANGLE_instanced_arrays");
+            this.extensionUintIndices = this._getExtension("OES_element_index_uint") !== null;
         }
 
         private _detectCapabilty() {

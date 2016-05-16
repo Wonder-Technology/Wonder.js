@@ -85,11 +85,16 @@ module wd{
             }
 
             //todo optimize?
-            for (let indice of indices) {
-                if (indice > 65535) {
-                    isNeed32Bits = true;
-                    break;
+            if(GPUDetector.getInstance().extensionUintIndices){
+                for (let indice of indices) {
+                    if (indice > 65535) {
+                        isNeed32Bits = true;
+                        break;
+                    }
                 }
+            }
+            else{
+                isNeed32Bits = false;
             }
 
             return isNeed32Bits;
