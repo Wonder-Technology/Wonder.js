@@ -7,6 +7,8 @@ describe("ImageTextureAsset", function() {
 
         testTool.openContractCheck(sandbox);
 
+        sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+
         asset = new wd.ImageTextureAsset();
     });
     afterEach(function () {

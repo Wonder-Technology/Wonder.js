@@ -38,6 +38,16 @@ var testTool = (function () {
                 FRAMEBUFFER: "FRAMEBUFFER",
                 RENDERBUFFER: "RENDERBUFFER",
 
+                BROWSER_DEFAULT_WEBGL: "BROWSER_DEFAULT_WEBGL",
+                NONE: "NONE",
+
+                PACK_ALIGNMENT: "PACK_ALIGNMENT",
+                UNPACK_ALIGNMENT: "UNPACK_ALIGNMENT",
+                UNPACK_FLIP_Y_WEBGL: "UNPACK_FLIP_Y_WEBGL",
+                UNPACK_PREMULTIPLY_ALPHA_WEBGL: "UNPACK_PREMULTIPLY_ALPHA_WEBGL",
+                UNPACK_COLORSPACE_CONVERSION_WEBGL: "UNPACK_COLORSPACE_CONVERSION_WEBGL",
+
+
 
                 getParameter: sandbox.stub(),
                 getExtension: sandbox.stub(),

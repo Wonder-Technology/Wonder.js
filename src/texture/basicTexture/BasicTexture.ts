@@ -49,11 +49,16 @@ module wd{
         @cloneAttributeAsBasicType()
         public sourceRegionMapping:ETextureSourceRegionMapping = null;
         @cloneAttributeAsBasicType()
+        public packAlignment:number = null;
+        @cloneAttributeAsBasicType()
+        public unpackAlignment:number = null;
+        @cloneAttributeAsBasicType()
         public flipY:boolean = null;
         @cloneAttributeAsBasicType()
         public premultiplyAlpha:boolean = null;
         @cloneAttributeAsBasicType()
-        public unpackAlignment:number = null;
+        public colorspaceConversion:any = null;
+
         @cloneAttributeAsBasicType()
         public type:ETextureType = null;
         @cloneAttributeAsCloneable()
@@ -88,12 +93,20 @@ module wd{
             var gl = DeviceManager.getInstance().gl,
                 isSourcePowerOfTwo = this.isSourcePowerOfTwo();
 
-            gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, this.flipY);
-
-
-            //todo not set UNPACK_PREMULTIPLY_ALPHA_WEBGL,UNPACK_ALIGNMENT when cubemap?
-            gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, this.premultiplyAlpha);
+            /*!
+            refer to <<WebGL Insights>> -> p 41:
+             The pixel format is only one of several factors that could require a conversion. Other factors are controlled by pixelStorei parameters. They are the stride (UNPACK_ ALIGNMENT), the alpha channel premultiplication status (UNPACK_PREMULTIPLY_ ALPHA_WEBGL), and the vertical flipping (UNPACK_FLIP_Y_WEBGL).
+             For the tex[Sub]Image2D overloads taking an HTML element or canvas ImageData, another case needs to be mentioned: the case of opting out from colorspace conversion. This is achieved by setting another pixelStorei parameter, UNPACK_ COLORSPACE_CONVERSION_WEBGL, to the value NONE. This is implemented by re- decoding the image from its original stream, from scratch. This, of course, is costly.
+             There is one particularly nasty corner case with UNPACK_PREMULTIPLY_ALPHA_ WEBGL that may also require re-decoding an image from scratch. This is the case when the image source is an HTML <img> element that was already premultiplied in the browser’s memory (which is very commonly done by browsers), and UNPACK_PREMULTIPLY_ ALPHA_WEBGL has its default value of false. Un-premultiplying a previously premul- tiplied element doesn’t exactly recover the original image, so the WebGL spec requires implementing this by re-decoding the image from scratch, like we described above for the case where UNPACK_COLORSPACE_CONVERSION_WEBGL is set to NONE.
+             For the tex[Sub]Image2D overloads taking an ArrayBufferView, things are a lot simpler: There is no possibility of format or stride or colorspace conversion, no possibility of un-premultiplication, and in the default state there is no conversion at all. Nondefault pixelStorei parameters can still require conversions: Setting UNPACK_FLIP_Y_ WEBGL or UNPACK_PREMULTIPLY_ALPHA_WEBGL to true will still require a flip- ping or a premultiplication, respectively.
+             A practical takeaway from this conversation is that the default state of UNPACK_ PREMULTIPLY_ALPHA_WEBGL, set to the value false, is best for tex[Sub] Image2D overloads taking an ArrayBufferView or other image sources that are known not to be premultiplied, such as canvas ImageData, but can be very painful for the overloads taking an HTML element, which typically are premultiplied. For those, setting UNPACK_PREMULTIPLY_ALPHA_WEBGL to true allows for cheaper texture uploads with more accurate results.
+             */
+            //todo optimize: add dirty to avoid set the default value?
+            gl.pixelStorei(gl.PACK_ALIGNMENT, this.packAlignment);
             gl.pixelStorei(gl.UNPACK_ALIGNMENT, this.unpackAlignment);
+            gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, this.flipY);
+            gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, this.premultiplyAlpha);
+            gl.pixelStorei(gl.UNPACK_COLORSPACE_CONVERSION_WEBGL, this.colorspaceConversion);
 
             if(this.needClampMaxSize()){
                 this.clampToMaxSize();

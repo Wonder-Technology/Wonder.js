@@ -28,9 +28,12 @@ module wd{
 
         public sourceRegionMapping:ETextureSourceRegionMapping = ETextureSourceRegionMapping.CANVAS;
 
+        //todo use gl.getParameter(e.g., gl.getParameter(gl.UNPACK_ALIGNMENT)) to query the actual value?
+        public packAlignment:number = 4;
+        public unpackAlignment:number = 4;
         public flipY:boolean = true;
         public premultiplyAlpha:boolean = false;
-        public unpackAlignment:number = 4;
+        public colorspaceConversion:any = DeviceManager.getInstance().gl.BROWSER_DEFAULT_WEBGL;
 
         //todo extract TextureDefault class to save default setting?
 
@@ -56,19 +59,22 @@ module wd{
             return CloneUtils.clone(this);
         }
 
-        public cloneToCubemapTexture(cubemapFaceTexture:ICubemapTextureAsset){
-            cubemapFaceTexture.generateMipmaps = this.generateMipmaps;
-            cubemapFaceTexture.minFilter = this.minFilter;
-            cubemapFaceTexture.magFilter = this.magFilter;
-            cubemapFaceTexture.width = this.width;
-            cubemapFaceTexture.height = this.height;
-            cubemapFaceTexture.wrapS = this.wrapS;
-            cubemapFaceTexture.wrapT = this.wrapT;
-            cubemapFaceTexture.anisotropy = this.anisotropy;
-            cubemapFaceTexture.premultiplyAlpha = this.premultiplyAlpha;
-            cubemapFaceTexture.unpackAlignment = this.unpackAlignment;
-            cubemapFaceTexture.needUpdate = this.needUpdate;
-            cubemapFaceTexture.mode = EEnvMapMode.BASIC;
+        public cloneToCubemapTexture(cubemapTexture:ICubemapTextureAsset){
+            cubemapTexture.generateMipmaps = this.generateMipmaps;
+            cubemapTexture.minFilter = this.minFilter;
+            cubemapTexture.magFilter = this.magFilter;
+            cubemapTexture.width = this.width;
+            cubemapTexture.height = this.height;
+            cubemapTexture.wrapS = this.wrapS;
+            cubemapTexture.wrapT = this.wrapT;
+            cubemapTexture.anisotropy = this.anisotropy;
+            cubemapTexture.premultiplyAlpha = this.premultiplyAlpha;
+            cubemapTexture.flipY = false;
+            cubemapTexture.unpackAlignment = this.unpackAlignment;
+            cubemapTexture.packAlignment = this.packAlignment;
+            cubemapTexture.colorspaceConversion = this.colorspaceConversion;
+            cubemapTexture.needUpdate = this.needUpdate;
+            cubemapTexture.mode = EEnvMapMode.BASIC;
         }
 
         public cloneTo(texture:BasicTexture){
@@ -102,6 +108,8 @@ module wd{
             texture.premultiplyAlpha = this.premultiplyAlpha;
             texture.flipY = this.flipY;
             texture.unpackAlignment = this.unpackAlignment;
+            texture.packAlignment = this.packAlignment;
+            texture.colorspaceConversion = this.colorspaceConversion;
 
             texture.needUpdate = this.needUpdate;
 

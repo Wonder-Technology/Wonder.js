@@ -6,10 +6,12 @@ describe("ImageTexture", function() {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
+
+        sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+
         texture = new wd.ImageTexture();
         director = wd.Director.getInstance();
 
-        sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
     });
     afterEach(function () {
         testTool.clearInstance(sandbox);

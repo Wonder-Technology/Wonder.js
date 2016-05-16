@@ -9,9 +9,11 @@ module wd{
         repeatRegion:RectRegion;
         sourceRegion:RectRegion;
         sourceRegionMapping:ETextureSourceRegionMapping;
+        unpackAlignment:number;
+        packAlignment:number;
         flipY:boolean;
         premultiplyAlpha:boolean;
-        unpackAlignment:number;
+        colorspaceConversion:any;
         wrapS:ETextureWrapMode;
         wrapT:ETextureWrapMode;
         magFilter:ETextureFilterMode;
@@ -31,8 +33,11 @@ module wd{
         wrapS:ETextureWrapMode;
         wrapT:ETextureWrapMode;
         anisotropy:number;
-        premultiplyAlpha:boolean;
         unpackAlignment:number;
+        packAlignment:number;
+        flipY:boolean;
+        premultiplyAlpha:boolean;
+        colorspaceConversion:any;
         needUpdate:boolean;
         mode:EEnvMapMode;
     }

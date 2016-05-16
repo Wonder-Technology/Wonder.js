@@ -160,6 +160,22 @@ describe("BasicTexture", function() {
             });
         });
 
+        it("set pixelStorei", function(){
+            texture.packAlignment = 2;
+            texture.unpackAlignment = 4;
+            texture.flipY = true;
+            texture.premultiplyAlpha = true;
+            texture.colorspaceConversion = gl.NONE;
+
+            texture.update();
+
+            expect(gl.pixelStorei.withArgs(gl.PACK_ALIGNMENT, 2)).toCalledOnce();
+            expect(gl.pixelStorei.withArgs(gl.UNPACK_ALIGNMENT, 4)).toCalledOnce();
+            expect(gl.pixelStorei.withArgs(gl.UNPACK_FLIP_Y_WEBGL, true)).toCalledOnce();
+            expect(gl.pixelStorei.withArgs(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true)).toCalledOnce();
+            expect(gl.pixelStorei.withArgs(gl.UNPACK_COLORSPACE_CONVERSION_WEBGL, gl.NONE)).toCalledOnce();
+        });
+
         it("if source's size exceed max size, then make souce to be canvas and scale the canvas", function(done){
             texture.source = new Image();
             texture.source.src = testTool.resPath + "test/res/1.jpg";

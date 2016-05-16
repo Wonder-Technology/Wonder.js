@@ -49,7 +49,7 @@
 
         //'test/unit/**/FrameBuffer*',
         //'test/unit/**/*ArrayBuffer*',
-        'test/unit/**/*ElementBuffer*',
+        //'test/unit/**/*ElementBuffer*',
         //'test/unit/**/*InstanceBuffer*',
 
         //'test/unit/**/proceduralRenderTargetRenderer*',
@@ -133,7 +133,7 @@
         //
         //'test/unit/**/envMap*',
         //
-        //'test/unit/texture/**',
+        'test/unit/texture/**',
         //'test/unit/**/*ProceduralTexture*',
 
         //
@@ -222,7 +222,7 @@
         //'test/unit/**/UIStateMachineSpec*',
 
 
-        //'test/unit/**/*Asset*',
+        'test/unit/**/*Asset*',
         //
         //'test/unit/**/FontSpec*',
         //'test/unit/**/PlainFontSpec*',
