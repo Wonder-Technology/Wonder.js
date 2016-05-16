@@ -63,8 +63,13 @@ module wd{
         public unBindAll(){
             var gl = this.gl;
 
-            gl.bindTexture(this._glTarget, null);
-            TextureCache.clearAllBindTextureUnitCache();
+            /*!
+            not bind texture when initFrameBuffer(this method invoke unBindAll), so no need to unbind texture?
+
+             gl.bindTexture(this._glTarget, null);
+
+             TextureCache.clearAllBindTextureUnitCache();
+             */
 
             gl.bindFramebuffer(gl.FRAMEBUFFER, null);
             gl.bindRenderbuffer(gl.RENDERBUFFER, null);

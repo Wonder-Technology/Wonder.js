@@ -76,16 +76,16 @@ describe("FrameBuffer", function() {
             gl = device.gl;
         });
 
-        it("unbind texture and clear texture unit cache", function(){
-            var glTarget = "TEXTURE_2D";
-            buffer.attachTexture(glTarget, {});
-            sandbox.stub(wd.TextureCache, "clearAllBindTextureUnitCache");
-
-            buffer.unBindAll();
-
-            expect(gl.bindTexture).toCalledWith(glTarget, null);
-            expect(wd.TextureCache.clearAllBindTextureUnitCache).toCalledOnce();
-        });
+        //it("unbind texture and clear texture unit cache", function(){
+        //    var glTarget = "TEXTURE_2D";
+        //    buffer.attachTexture(glTarget, {});
+        //    sandbox.stub(wd.TextureCache, "clearAllBindTextureUnitCache");
+        //
+        //    buffer.unBindAll();
+        //
+        //    expect(gl.bindTexture).toCalledWith(glTarget, null);
+        //    expect(wd.TextureCache.clearAllBindTextureUnitCache).toCalledOnce();
+        //});
         it("unbind frame buffer", function () {
             buffer.unBindAll();
 
