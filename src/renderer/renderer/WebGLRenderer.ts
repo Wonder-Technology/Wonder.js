@@ -58,6 +58,10 @@ module wd{
             this._commandQueue.forEach((command:RenderCommand) => {
                 command.webglState = webglState;
 
+                /*!
+                //todo optimize: if all commands->blendType === EBlendType.ADDITIVE, sort the transparentCommandArr as the opaque command arr(but it's not necessarily because many rendering effects do not fall into this category?)
+                 However, if the blending is additive-only, then this is not needed. In the case of our game Oort Online, the “effects” pass only contains geometries rendered with additive blending, which is correct no matter the order; this means that we can employ more efficient sorting for this group.
+                 */
                 if(command.blend){
                     //todo optimize: sort command here
                     transparentCommandArr.push(command);
@@ -159,6 +163,17 @@ module wd{
             assert(target.renderPriority <= RENDER_PRIORITY_MAX && target.renderPriority >= 0, Log.info.FUNC_SHOULD(`renderPriority:${target.renderPriority}`, `in range:[0, ${RENDER_PRIORITY_MAX}]`));
         })
         //todo optimize:add cache
+        /*!
+        //todo add sort by distance
+
+         The front-to-back sorting helps to improve performance on all but Imagination’s PowerVR series of GPUs, which implement deferred fragment shading in hardware [Merry 12]. Also note that if shaders modify the fragment depth value or contain discard statements, the early z-test hardware won’t help.
+          Another possible technique is to use a z-prepass, it’s typically not worth the overhead.
+         A z-prepass is even more handicapped in JavaScript/WebGL because of the additional overhead compared to native code. And, as before, on tile-based deferred architectures, this solution may actually go against the optimizations done in hardware and result in more GPU overhead.
+
+         If overdraw is a significant issue, then we will use the distance to the camera on the higher bits, while in some other cases it is the shading technique that requires optimization, either because overdraw is not significant or because the hardware can deal with it
+         efficiently—for example, on tile-based deferred GPUs that only shade the visible fragment when required at the end of the rendering..
+         */
+        //todo add sort config by user(e.g., user can config sort by distance or only by buffer)
         private _buildOpaqueCommandSortId(opaqueCommand:QuadCommand){
             var target:GameObject = opaqueCommand.target,
                 targetMaterial = opaqueCommand.material;
@@ -168,9 +183,12 @@ module wd{
             /*!
             bit operator can only handle 32 bit, but javascript number is 64 bit.
              so here assemble two segments data(30 bit and 10 bit) to a number data to ensure that opaqueCommand only has one sortId.
+
+            this will cause some overhead(but the overhead minor in chrome,firefox in Mac OS X by profiling benchmark, maybe it's big in IE 11 in windows?):
+             Comparing integers is significantly cheaper than comparing floating- point values. The JIT compiler will optimize for either integers or floating-point values, but performance is more predictable if we use the same types everywhere, every time.
              */
 
-            opaqueCommand.sortId = ((target.renderGroup << RENDER_GROUP_MOVE_LEFT_BIT) + (target.renderPriority << RENDER_PRIORITY_MOVE_LEFT_BIT) + (this._buildShaderSortId(targetMaterial.shader) << SHADER_ID_MOVE_LEFT_BIT) + (this._mapEntityIdToRenderId(this._getTargetTexture(targetMaterial), TEXTURE_ID_MAX))) * BUFFER_ID_MAX
+            opaqueCommand.sortId = ((target.renderGroup << RENDER_GROUP_MOVE_LEFT_BIT) | (target.renderPriority << RENDER_PRIORITY_MOVE_LEFT_BIT) | (this._buildShaderSortId(targetMaterial.shader) << SHADER_ID_MOVE_LEFT_BIT) | (this._mapEntityIdToRenderId(this._getTargetTexture(targetMaterial), TEXTURE_ID_MAX))) * BUFFER_ID_MAX
             + (this._mapEntityIdToRenderId(this._getTargetBuffer(targetMaterial), BUFFER_ID_MAX));
         }
 
