@@ -82,6 +82,8 @@ describe("Button", function() {
 
         testTool.openContractCheck(sandbox);
 
+        sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+
         Button = wd.Button;
 
         director = wd.Director.getInstance();

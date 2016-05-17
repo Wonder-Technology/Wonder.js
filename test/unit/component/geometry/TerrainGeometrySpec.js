@@ -4,6 +4,9 @@ describe("TerrainGeometry", function() {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
+
+        sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+
         geo = new wd.TerrainGeometry();
     });
     afterEach(function () {
