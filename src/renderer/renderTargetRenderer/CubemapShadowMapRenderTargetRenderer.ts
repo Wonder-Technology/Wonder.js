@@ -1,4 +1,7 @@
 module wd {
+    /*!
+    note: now webgl not support cube map depth texture
+     */
     export class CubemapShadowMapRenderTargetRenderer extends CubemapRenderTargetRenderer{
         public static create(shadowMap:CubemapShadowMapTexture, light:PointLight, layer:string) {
             var obj = new this(shadowMap, light, layer);
