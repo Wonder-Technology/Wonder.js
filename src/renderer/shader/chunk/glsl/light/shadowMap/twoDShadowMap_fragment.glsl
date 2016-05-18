@@ -20,7 +20,7 @@ float getTwoDShadowVisibilityByPCF(float currentDepth, vec2 shadowCoord, sampler
     {
         for(int y = -1; y <= 1; ++y)
         {
-            float pcfDepth = unpackDepth(texture2D(twoDShadowMapSampler, shadowCoord + vec2(x, y) * texelSize));
+            float pcfDepth = handleDepthMap(texture2D(twoDShadowMapSampler, shadowCoord + vec2(x, y) * texelSize));
             shadow += currentDepth - shadowBias > pcfDepth  ? shadowDarkness : 1.0;
         }
     }
@@ -42,7 +42,7 @@ float getTwoDShadowVisibility(vec3 lightDir, sampler2D twoDShadowMapSampler, vec
     return getTwoDShadowVisibilityByPCF(shadowCoord.z, shadowCoord.xy, twoDShadowMapSampler, getShadowBias(lightDir, shadowBias), shadowDarkness, shadowSize);
 
     #else
-    return shadowCoord.z > unpackDepth(texture2D(twoDShadowMapSampler, shadowCoord.xy)) + getShadowBias(lightDir, shadowBias) ? shadowDarkness : 1.0;
+    return shadowCoord.z > handleDepthMap(texture2D(twoDShadowMapSampler, shadowCoord.xy)) + getShadowBias(lightDir, shadowBias) ? shadowDarkness : 1.0;
     #endif
 }
 @end

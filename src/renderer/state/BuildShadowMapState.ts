@@ -11,6 +11,11 @@ module wd{
 
             deviceManager.side = this.getSide(material);
             deviceManager.blend = false;
+
+            if(GPUDetector.getInstance().extensionDepthTexture) {
+                //not write to color buffer
+                deviceManager.setColorWrite(false, false, false, false);
+            }
         }
     }
 }

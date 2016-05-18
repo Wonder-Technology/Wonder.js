@@ -14,11 +14,22 @@ module wd{
         }
 
         public setShaderDefinition(quadCmd:QuadCommand, material:EngineMaterial){
+            var fs:GLSLChunk = null;
+
             super.setShaderDefinition(quadCmd, material);
 
             this.addUniformVariable([
                 "u_vpMatrixFromLight"
             ]);
+
+            if(GPUDetector.getInstance().extensionDepthTexture) {
+                fs = this.getFsChunk("buildTwoDShadowMap_depthMap");
+            }
+            else{
+                fs = this.getFsChunk("buildTwoDShadowMap_packDepth");
+            }
+
+            this.fsSourceBody = fs.body;
         }
     }
 }

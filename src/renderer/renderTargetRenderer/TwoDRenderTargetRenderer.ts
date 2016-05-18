@@ -1,6 +1,7 @@
 module wd {
     export abstract class TwoDRenderTargetRenderer extends CommonRenderTargetRenderer{
         protected frameBuffer:WebGLFramebuffer = null;
+        //todo move to TwoDCommonRenderTargetRenderer
         protected renderBuffer:WebGLRenderbuffer= null;
 
         private _lastCamera:GameObject = null;
@@ -18,20 +19,44 @@ module wd {
             return null;
         }
 
+        @virtual
+        protected setFrameBufferTexture(){
+            var frameBuffer = this.frameBufferOperator,
+                gl = DeviceManager.getInstance().gl;
+
+            frameBuffer.attachTexture(gl.TEXTURE_2D, this.texture.glTexture, EFrameBufferAttachType.COLOR_ATTACHMENT0);
+        }
+
+        @virtual
+        protected createAndAttachDepthBuffer(){
+            var frameBuffer = this.frameBufferOperator,
+                gl = DeviceManager.getInstance().gl;
+
+            this.renderBuffer = frameBuffer.createRenderBuffer();
+
+            frameBuffer.attachRenderBuffer("DEPTH_ATTACHMENT", this.renderBuffer);
+        }
+
+        @virtual
+        protected deleteRenderBuffer(){
+            var gl = DeviceManager.getInstance().gl;
+
+            gl.deleteRenderbuffer(this.renderBuffer);
+        }
+
         protected isRenderListEmpty(renderList:wdCb.Collection<GameObject>){
             return renderList.getCount() ===  0;
         }
 
         protected initFrameBuffer(){
-            var frameBuffer = this.frameBufferOperator,
-                gl = DeviceManager.getInstance().gl;
+            var frameBuffer = this.frameBufferOperator;
 
             this.frameBuffer = frameBuffer.createFrameBuffer();
-            this.renderBuffer = frameBuffer.createRenderBuffer();
 
             frameBuffer.bindFrameBuffer(this.frameBuffer);
-            frameBuffer.attachTexture(gl.TEXTURE_2D, this.texture.glTexture);
-            frameBuffer.attachRenderBuffer("DEPTH_ATTACHMENT", this.renderBuffer);
+            this.setFrameBufferTexture();
+            this.createAndAttachDepthBuffer();
+
             frameBuffer.check();
             frameBuffer.unBindAll();
         }
@@ -84,7 +109,8 @@ module wd {
             var gl = DeviceManager.getInstance().gl;
 
             gl.deleteFramebuffer(this.frameBuffer);
-            gl.deleteRenderbuffer(this.renderBuffer);
+
+            this.deleteRenderBuffer();
         }
     }
 }

@@ -30,9 +30,16 @@ module wd {
 
             this.setEmptyTexture(texture);
 
-            gl.texImage2D(gl[this.target], 0, gl.RGBA, this.width, this.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+            this.texImageEmpty();
 
             this.glTexture = texture;
+        }
+
+        @virtual
+        protected texImageEmpty(){
+            var gl = DeviceManager.getInstance().gl;
+
+            gl.texImage2D(gl[this.target], 0, gl.RGBA, this.width, this.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
         }
     }
 }

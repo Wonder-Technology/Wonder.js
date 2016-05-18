@@ -20,6 +20,21 @@ module wd {
 
             ShadowMapTextureUtils.setTextureParameters(textureType);
         }
+
+        protected texImageEmpty(){
+            if(GPUDetector.getInstance().extensionDepthTexture) {
+                let gl = DeviceManager.getInstance().gl;
+
+                /*!
+                 note:WebGL2 supports FloatType instead of UNSIGNED_SHORT for the depth texture
+                 */
+                gl.texImage2D(gl[this.target], 0, gl.DEPTH_COMPONENT, this.width, this.height, 0, gl.DEPTH_COMPONENT, gl.UNSIGNED_SHORT, null);
+
+                return;
+            }
+
+            super.texImageEmpty();
+        }
     }
 }
 

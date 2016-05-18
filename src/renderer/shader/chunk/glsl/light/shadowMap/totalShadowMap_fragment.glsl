@@ -1,6 +1,5 @@
 @funcDeclare
 float getShadowBias(vec3 lightDir, float shadowBias);
-float unpackDepth(vec4 rgbaDepth);
 @end
 
 @funcDefine
@@ -19,16 +18,6 @@ float getShadowBias(vec3 lightDir, float shadowBias){
      return max(bias * (1.0 - dot(normalize(getNormal()), lightDir)), bias);
 
     //return bias;
-}
-
-float unpackDepth(vec4 rgbaDepth) {
-    /*! make sure that the visibility from the shadow map which is not builded is always be 1.0 */
-    if(rgbaDepth == vec4(0.0)){
-        return 100000.0;
-    }
-
-    const vec4 bitShift = vec4(1.0 / (256.0 * 256.0 * 256.0), 1.0 / (256.0 * 256.0), 1.0 / 256.0, 1.0);
-    return dot(rgbaDepth, bitShift);
 }
 
 vec3 getShadowVisibility() {

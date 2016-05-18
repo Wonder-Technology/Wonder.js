@@ -406,6 +406,7 @@
 /// <reference path="renderer/GlUtils"/>
 
 /// <reference path="renderer/buffer/FrameBuffer"/>
+/// <reference path="renderer/buffer/EFrameBufferAttachType"/>
 
 /// <reference path="renderer/shader/shader/Shader"/>
 /// <reference path="renderer/shader/shader/CustomShader"/>

@@ -87,6 +87,50 @@ module wd {
 
             return camera;
         }
+
+        protected setFrameBufferTexture(){
+            if(GPUDetector.getInstance().extensionDepthTexture){
+                let frameBuffer = this.frameBufferOperator,
+                    gl = DeviceManager.getInstance().gl;
+
+                //todo optimize: not attach color texture in WebGL 2?
+                frameBuffer.attachTexture(gl.TEXTURE_2D, this._createEmptyColorTexture(), EFrameBufferAttachType.COLOR_ATTACHMENT0);
+                frameBuffer.attachTexture(gl.TEXTURE_2D, this.texture.glTexture, EFrameBufferAttachType.DEPTH_ATTACHMENT);
+
+                return;
+            }
+
+            super.setFrameBufferTexture();
+        }
+
+        protected createAndAttachDepthBuffer(){
+            if(GPUDetector.getInstance().extensionDepthTexture){
+                return;
+            }
+
+            super.createAndAttachDepthBuffer();
+        }
+
+        protected deleteRenderBuffer(){
+            if(GPUDetector.getInstance().extensionDepthTexture){
+                return;
+            }
+
+            let gl = DeviceManager.getInstance().gl;
+
+            gl.deleteRenderbuffer(this.renderBuffer);
+        }
+
+        private _createEmptyColorTexture(){
+            var gl = DeviceManager.getInstance().gl,
+                colorTexture = gl.createTexture();
+
+            gl.bindTexture(gl.TEXTURE_2D, colorTexture);
+
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.texture.width, this.texture.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+
+            return colorTexture;
+        }
     }
 }
 

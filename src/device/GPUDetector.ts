@@ -22,6 +22,7 @@ module wd {
         public extensionTextureFilterAnisotropic:any = null;
         public extensionInstancedArrays:any = null;
         public extensionUintIndices:boolean = null;
+        public extensionDepthTexture:boolean = null;
         public precision:number = null;
 
         private _isDetected:boolean = false;
@@ -38,7 +39,9 @@ module wd {
             this.extensionCompressedTextureS3TC = this._getExtension("WEBGL_compressed_texture_s3tc");
             this.extensionTextureFilterAnisotropic = this._getExtension("EXT_texture_filter_anisotropic");
             this.extensionInstancedArrays = this._getExtension("ANGLE_instanced_arrays");
-            this.extensionUintIndices = this._getExtension("OES_element_index_uint") !== null;
+            //todo test
+            this.extensionUintIndices = this._getExtension("element_index_uint");
+            this.extensionDepthTexture = this._getExtension("depth_texture");
         }
 
         private _detectCapabilty() {
@@ -67,6 +70,12 @@ module wd {
                     break;
                 case "ANGLE_instanced_arrays":
                     extension = gl.getExtension("ANGLE_instanced_arrays");
+                    break;
+                case "element_index_uint":
+                    extension = this._getExtension("OES_element_index_uint") !== null;
+                    break;
+                case "depth_texture":
+                    extension = this._getExtension("WEBKIT_WEBGL_depth_texture") !== null || this._getExtension("WEBGL_depth_texture") !== null;
                     break;
                 default:
                     extension = gl.getExtension(name);

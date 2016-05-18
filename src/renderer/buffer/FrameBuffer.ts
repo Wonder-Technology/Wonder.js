@@ -59,7 +59,7 @@ module wd{
         }
 
         @require(function(){
-            assert(this._glTarget !== null, Log.info.FUNC_SHOULD("attachTexture before"));
+            //assert(this._glTarget !== null, Log.info.FUNC_SHOULD("attachTexture before"));
         })
         public unBindAll(){
             var gl = this.gl;
@@ -100,13 +100,13 @@ module wd{
             return renderBuffer;
         }
 
-        public attachTexture(glTarget:any, texture:WebGLTexture){
+        public attachTexture(glTarget:any, texture:WebGLTexture, attachType:EFrameBufferAttachType = EFrameBufferAttachType.COLOR_ATTACHMENT0){
             var gl = this.gl;
 
             //todo support mipmap?
             gl.framebufferTexture2D(
                 gl.FRAMEBUFFER,
-                gl.COLOR_ATTACHMENT0,
+                gl[attachType],
                 glTarget,
                 texture,
                 0);
