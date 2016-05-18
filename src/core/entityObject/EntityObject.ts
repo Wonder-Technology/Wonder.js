@@ -1,5 +1,4 @@
 module wd {
-    import ExtendUtils = wdCb.ExtendUtils;
     export abstract class EntityObject extends Entity{
         get scriptList(){
             return this._scriptManager.scriptList;
@@ -55,7 +54,7 @@ module wd {
                 return null;
             }
 
-            config = ExtendUtils.extend({
+            config = wdCb.ExtendUtils.extend({
                 cloneChildren:true,
                 shareGeometry:false,
                 cloneGeometry:true

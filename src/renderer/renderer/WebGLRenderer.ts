@@ -184,8 +184,15 @@ module wd{
             bit operator can only handle 32 bit, but javascript number is 64 bit.
              so here assemble two segments data(30 bit and 10 bit) to a number data to ensure that opaqueCommand only has one sortId.
 
-            this will cause some overhead(but the overhead minor in chrome,firefox in Mac OS X by profiling benchmark, maybe it's big in IE 11 in windows?):
+
+
+
+
+            this will cause some overhead(but the overhead is minor in chrome,firefox in Mac OS X by profiling benchmark, maybe it's big in IE 11 in windows or in Chrome/Firefox in windows?):
              Comparing integers is significantly cheaper than comparing floating- point values. The JIT compiler will optimize for either integers or floating-point values, but performance is more predictable if we use the same types everywhere, every time.
+             Numbers
+
+             V8 uses tagging to represent values efficiently when types can change. V8 infers from the values that you use what number type you are dealing with. Once V8 has made this inference, it uses tagging to represent values efficiently, because these types can change dynamically. However, there is sometimes a cost to changing these type tags, so it's best to use number types consistently, and in general it is most optimal to use 31-bit signed integers where appropriate.
              */
 
             opaqueCommand.sortId = ((target.renderGroup << RENDER_GROUP_MOVE_LEFT_BIT) | (target.renderPriority << RENDER_PRIORITY_MOVE_LEFT_BIT) | (this._buildShaderSortId(targetMaterial.shader) << SHADER_ID_MOVE_LEFT_BIT) | (this._mapEntityIdToRenderId(this._getTargetTexture(targetMaterial), TEXTURE_ID_MAX))) * BUFFER_ID_MAX

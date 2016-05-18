@@ -28,6 +28,7 @@ module wd{
         public bindFrameBuffer(buffer:WebGLFramebuffer){
             var gl = this.gl;
 
+            //todo optimize: record last binded framebuffer to avoid duplicate bind?
             gl.bindFramebuffer(gl.FRAMEBUFFER, buffer);
         }
 
@@ -99,7 +100,6 @@ module wd{
             return renderBuffer;
         }
 
-        //todo save glTarget?
         public attachTexture(glTarget:any, texture:WebGLTexture){
             var gl = this.gl;
 
