@@ -47,6 +47,14 @@ var testTool = (function () {
                 UNPACK_PREMULTIPLY_ALPHA_WEBGL: "UNPACK_PREMULTIPLY_ALPHA_WEBGL",
                 UNPACK_COLORSPACE_CONVERSION_WEBGL: "UNPACK_COLORSPACE_CONVERSION_WEBGL",
 
+                COLOR_ATTACHMENT0: "COLOR_ATTACHMENT0",
+                DEPTH_ATTACHMENT: "DEPTH_ATTACHMENT",
+
+                UNSIGNED_SHORT: "UNSIGNED_SHORT",
+                UNSIGNED_BYTE: "UNSIGNED_BYTE",
+
+                DEPTH_COMPONENT:"DEPTH_COMPONENT",
+
 
 
                 getParameter: sandbox.stub(),

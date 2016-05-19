@@ -213,6 +213,23 @@ describe("direction shadow map", function() {
                         expect(gl.disable.withArgs("BLEND")).toCalledTwice();
                         expect(gl.enable.withArgs("BLEND")).not.toCalledTwice();
                     });
+
+                    describe("test if webgl_depth_texture extension support", function(){
+                        beforeEach(function(){
+                            wd.GPUDetector.getInstance().extensionDepthTexture = true;
+                        });
+
+                        it("not write to color buffer", function(){
+                        director._init();
+
+
+                        director.scene.gameObjectScene.render(renderer);
+
+
+                        expect(gl.colorMask.withArgs(false, false, false, false)).toCalledOnce();
+                        });
+                    });
+
                     it("not set other webgl effect", function () {
                         director._init();
 

@@ -39,7 +39,6 @@ module wd {
             this.extensionCompressedTextureS3TC = this._getExtension("WEBGL_compressed_texture_s3tc");
             this.extensionTextureFilterAnisotropic = this._getExtension("EXT_texture_filter_anisotropic");
             this.extensionInstancedArrays = this._getExtension("ANGLE_instanced_arrays");
-            //todo test
             this.extensionUintIndices = this._getExtension("element_index_uint");
             this.extensionDepthTexture = this._getExtension("depth_texture");
         }
