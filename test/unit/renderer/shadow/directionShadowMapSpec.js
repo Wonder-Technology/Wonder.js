@@ -230,6 +230,22 @@ describe("direction shadow map", function() {
                         });
                     });
 
+                    describe("if not support", function(){
+                        beforeEach(function(){
+                            wd.GPUDetector.getInstance().extensionDepthTexture = false;
+                        });
+
+                        it("write to color buffer", function(){
+                            director._init();
+
+
+                            director.scene.gameObjectScene.render(renderer);
+
+
+                            expect(gl.colorMask.withArgs(false, false, false, false)).not.toCalled();
+                        });
+                    });
+
                     it("not set other webgl effect", function () {
                         director._init();
 
@@ -241,6 +257,43 @@ describe("direction shadow map", function() {
                         director.scene.gameObjectScene.render(renderer);
 
                         expect(gl.colorMask.withArgs(false, true, true, true)).not.toCalled();
+                    });
+                });
+
+
+                describe("test glsl", function () {
+                    describe("test if webgl_depth_texture extension support", function() {
+                        beforeEach(function(){
+                            wd.GPUDetector.getInstance().extensionDepthTexture = true;
+                        });
+
+                        it("fs glsl should not pack depth", function () {
+                            director._init();
+
+                            setBuildShadowMapShaderAndProgram(sphere, function (program) {
+                            });
+
+                            director.scene.gameObjectScene.render(renderer);
+
+                            expect(glslTool.contain(shader.fsSource, "gl_FragData[0] = packDepth(gl_FragCoord.z);")).toBeFalsy();
+                        });
+                    });
+
+                    describe("else", function() {
+                        beforeEach(function(){
+                            wd.GPUDetector.getInstance().extensionDepthTexture = false;
+                        });
+
+                        it("fs glsl should pack depth", function () {
+                            director._init();
+
+                            setBuildShadowMapShaderAndProgram(sphere, function (program) {
+                            });
+
+                            director.scene.gameObjectScene.render(renderer);
+
+                            expect(glslTool.contain(shader.fsSource, "gl_FragData[0] = packDepth(gl_FragCoord.z);")).toBeTruthy();
+                        });
                     });
                 });
             });
@@ -400,6 +453,40 @@ describe("direction shadow map", function() {
 
                             expect(glslTool.contain(shader2.fsSource, "u_twoDShadowMapSampler")).toBeFalsy();
                         });
+                    });
+                });
+            });
+
+            describe("test webgl_depth_texture extension", function () {
+                describe("if webgl_depth_texture extension support", function() {
+                    beforeEach(function(){
+                        wd.GPUDetector.getInstance().extensionDepthTexture = true;
+                    });
+
+                    it("fs glsl should just read depth texture's r as depth value", function () {
+                        director._init();
+
+                        setDrawShadowMapShaderAndProgram();
+                        director._loopBody();
+
+                    expect(glslTool.contain(shader.fsSource, "handleDepthMap(")).toBeTruthy();
+                        expect(glslTool.contain(shader.fsSource, "return rgbaDepth.r;")).toBeTruthy();
+                    });
+                });
+
+                describe("else", function() {
+                    beforeEach(function(){
+                        wd.GPUDetector.getInstance().extensionDepthTexture = false;
+                    });
+
+                    it("fs glsl should unpack depth", function () {
+                        director._init();
+
+                        setDrawShadowMapShaderAndProgram();
+                        director._loopBody();
+
+                    expect(glslTool.contain(shader.fsSource, "handleDepthMap(")).toBeTruthy();
+                        expect(glslTool.contain(shader.fsSource, "return unpackDepth(rgbaDepth);")).toBeTruthy();
                     });
                 });
             });

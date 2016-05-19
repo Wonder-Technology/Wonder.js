@@ -37,6 +37,22 @@ module wd{
                 program.sendVector3(`u_twoDLightPos[${index}]`, light.position);
             });
         }
+
+        public setShaderDefinition(quadCmd:QuadCommand, material:EngineMaterial){
+            var fs:GLSLChunk = null;
+
+            super.setShaderDefinition(quadCmd, material);
+
+            if(GPUDetector.getInstance().extensionDepthTexture) {
+                fs = this.getFsChunk("twoDShadowMap_depthMap");
+            }
+            else{
+                fs = this.getFsChunk("twoDShadowMap_unpackDepth");
+            }
+
+            this.fsSourceFuncDeclare += fs.funcDeclare;
+            this.fsSourceFuncDefine += fs.funcDefine;
+        }
     }
 
     export type TwoDShadowMapShaderLibData = {

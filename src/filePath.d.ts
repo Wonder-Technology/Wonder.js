@@ -366,6 +366,8 @@
 /// <reference path="renderer/state/WebGLState"/>
 /// <reference path="renderer/state/BasicState"/>
 /// <reference path="renderer/state/BuildShadowMapState"/>
+/// <reference path="renderer/state/BuildTwoDShadowMapState"/>
+/// <reference path="renderer/state/BuildCubemapShadowMapState"/>
 
 /// <reference path="renderer/EDrawMode"/>
 /// <reference path="renderer/buffer/EBufferType"/>

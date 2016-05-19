@@ -7,6 +7,10 @@ module wd {
 
             return obj;
         }
+
+        protected setWebglState(renderer:Renderer){
+            renderer.webglState = BuildTwoDShadowMapState.create();
+        }
     }
 }
 

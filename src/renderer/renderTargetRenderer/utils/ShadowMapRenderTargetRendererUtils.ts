@@ -23,9 +23,11 @@ module wd {
         }
 
         public renderRenderer(renderer:Renderer){
-            renderer.webglState = BuildShadowMapState.create();
+            this.setWebglState(renderer);
             renderer.render();
         }
+
+        protected abstract setWebglState(renderer:Renderer);
     }
 }
 
