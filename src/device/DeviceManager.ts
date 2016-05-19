@@ -371,7 +371,7 @@ module wd {
         }
 
 
-        public createGL(canvasId:string){
+        public createGL(canvasId:string, contextConfig:ContextConfigData){
             var canvas = null;
 
             if(canvasId){
@@ -382,7 +382,7 @@ module wd {
             }
 
             this.view = ViewWebGL.create(canvas);
-            this.gl = this.view.getContext();
+            this.gl = this.view.getContext(contextConfig);
         }
 
         @require(function(){

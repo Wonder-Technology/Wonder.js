@@ -47,7 +47,7 @@
 
         //'test/unit/**/*ProceduralRenderTargetRenderer*',
 
-        'test/unit/**/FrameBuffer*',
+        //'test/unit/**/FrameBuffer*',
         //'test/unit/**/*ArrayBuffer*',
         //'test/unit/**/*ElementBuffer*',
         //'test/unit/**/*InstanceBuffer*',
@@ -97,10 +97,10 @@
         //'test/unit/**/Shadow*Spec.js',
         //'test/unit/**/*Shadow*Spec.js',
         //
-        'test/unit/renderer/shadow/pointShadowMapSpec.js',
+        //'test/unit/renderer/shadow/pointShadowMapSpec.js',
         ////
         //'test/unit/renderer/shadow/**',
-        'test/unit/renderer/shadow/directionShadowMapSpec.js',
+        //'test/unit/renderer/shadow/directionShadowMapSpec.js',
         //'test/unit/renderer/shadow/directionShadowMap*',
         //'test/unit/renderer/*ShadowMap_*Spec.js',
         //
@@ -212,7 +212,7 @@
         //'test/unit/**/TransitionManagerSpec*',
 
 
-        //'test/unit/**/MainSpec*',
+        'test/unit/**/MainSpec*',
 
         //'test/unit/component/event/eventSpec*',
 

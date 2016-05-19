@@ -57,8 +57,8 @@ module wd {
             this._dom.style.top = `${y}px`;
         }
 
-        public getContext():WebGLRenderingContext{
-            return this._dom.getContext("webgl") || this._dom.getContext("experimental-webgl");
+        public getContext(contextConfig:ContextConfigData):WebGLRenderingContext{
+            return this._dom.getContext("webgl", contextConfig.options) || this._dom.getContext("experimental-webgl", contextConfig.options);
         }
     }
 
@@ -69,7 +69,7 @@ module wd {
         width:number;
         height:number;
         dom:any;
-        getContext():WebGLRenderingContext;
+        getContext(contextConfig:ContextConfigData):WebGLRenderingContext;
     }
 
 }
