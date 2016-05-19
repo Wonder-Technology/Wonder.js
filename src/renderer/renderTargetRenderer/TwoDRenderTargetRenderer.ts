@@ -1,9 +1,8 @@
 module wd {
     export abstract class TwoDRenderTargetRenderer extends CommonRenderTargetRenderer{
         protected frameBuffer:WebGLFramebuffer = null;
-        //todo move to TwoDCommonRenderTargetRenderer
-        protected renderBuffer:WebGLRenderbuffer= null;
 
+        private _renderBuffer:WebGLRenderbuffer= null;
         private _lastCamera:GameObject = null;
 
         protected abstract beforeRenderFrameBufferTexture(renderCamera:GameObject);
@@ -32,16 +31,16 @@ module wd {
             var frameBuffer = this.frameBufferOperator,
                 gl = DeviceManager.getInstance().gl;
 
-            this.renderBuffer = frameBuffer.createRenderBuffer();
+            this._renderBuffer = frameBuffer.createRenderBuffer();
 
-            frameBuffer.attachRenderBuffer("DEPTH_ATTACHMENT", this.renderBuffer);
+            frameBuffer.attachRenderBuffer("DEPTH_ATTACHMENT", this._renderBuffer);
         }
 
         @virtual
         protected deleteRenderBuffer(){
             var gl = DeviceManager.getInstance().gl;
 
-            gl.deleteRenderbuffer(this.renderBuffer);
+            gl.deleteRenderbuffer(this._renderBuffer);
         }
 
         protected isRenderListEmpty(renderList:wdCb.Collection<GameObject>){

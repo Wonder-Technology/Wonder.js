@@ -116,9 +116,7 @@ module wd {
                 return;
             }
 
-            let gl = DeviceManager.getInstance().gl;
-
-            gl.deleteRenderbuffer(this.renderBuffer);
+            super.deleteRenderBuffer();
         }
 
         private _createEmptyColorTexture(){
