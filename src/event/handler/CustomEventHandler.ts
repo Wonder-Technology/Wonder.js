@@ -146,20 +146,6 @@ module wd {
             }
 
             registerDataList.forEach((registerData:CustomEventRegisterData) => {
-                //var eventCopy = event.clone();
-
-                //eventCopy.currentTarget = registerData.target;
-                //
-                //self._setUserData(eventCopy, userData);
-                //
-                //registerData.handler(eventCopy);
-                //
-                //if(eventCopy.isStopPropagation){
-                //    isStopPropagation = true;
-                //}
-
-
-
                 event.currentTarget = registerData.target;
 
                 self._setUserData(event, userData);

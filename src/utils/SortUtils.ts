@@ -12,43 +12,6 @@ module wd{
             return resultArr;
         }
 
-        //@require(function(targetArr:Array<any>, l:number, r:number){
-        //    assert(l >= 0, Log.info.FUNC_SHOULD("l", ">= 0"));
-        //    assert(r <= targetArr.length - 1, Log.info.FUNC_SHOULD("r", `<= ${targetArr.length - 1}`));
-        //})
-        //public static quickSortAsc(targetArr:Array<any>, l:number, r:number):void{
-        //    if(l >= r){
-        //        return;
-        //    }
-        //
-        //    let i = l, j = r, x = targetArr[l];
-        //
-        //    while (i < j)
-        //    {
-        //        while(i < j && targetArr[j] >= x){
-        //            j--;
-        //        }
-        //
-        //        if(i < j){
-        //            targetArr[i++] = targetArr[j];
-        //        }
-        //
-        //        while(i < j && targetArr[i] < x){
-        //            i++;
-        //        }
-        //
-        //        if(i < j){
-        //            targetArr[j--] = targetArr[i];
-        //        }
-        //    }
-        //
-        //    targetArr[i] = x;
-        //
-        //    SortUtils.quickSortAsc(targetArr, l, i - 1);
-        //    SortUtils.quickSortAsc(targetArr, i + 1, r);
-        //}
-
-
         public static quickSort(targetArr:Array<any>, compareFunc:(a:any, b:any) => boolean, isChangeSelf = false):Array<any>{
             var resultArr:Array<any> = isChangeSelf ? targetArr : wdCb.ExtendUtils.extend([], targetArr);
             var sort = (l:number, r:number) => {

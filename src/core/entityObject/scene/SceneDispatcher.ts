@@ -117,18 +117,6 @@ module wd {
             this.gameObjectScene.unUseShader();
         }
 
-        //public addShader(key:EShaderMapKeyOfScene, shader:Shader){
-        //    this.gameObjectScene.addShader(key, shader);
-        //}
-        //
-        //public hasShader(key:EShaderMapKeyOfScene){
-        //    return this.gameObjectScene.hasShader(key);
-        //}
-        //
-        //public getShader(key:EShaderMapKeyOfScene){
-        //    return this.gameObjectScene.getShader(key);
-        //}
-
         public addChild(child:EntityObject):EntityObject{
             if(child instanceof GameObject){
                 this.gameObjectScene.addChild(child);
