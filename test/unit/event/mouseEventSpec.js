@@ -16,7 +16,7 @@ describe("mouse event", function () {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
         insertDom();
-        wd.DeviceManager.getInstance().createGL("#event-test");
+        prepareTool.createGL("event-test");
         fakeEvent = {
             pageX:10,
             pageY:10

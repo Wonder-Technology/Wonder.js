@@ -17,7 +17,7 @@ describe("dom event", function () {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
         insertDom();
-        wd.DeviceManager.getInstance().createGL("#event-test");
+        prepareTool.createGL("event-test");
         target = wd.GameObject.create();
         manager = wd.EventManager;
         Listener = wd.EventListener;

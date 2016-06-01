@@ -92,6 +92,9 @@ var prepareTool = (function () {
             var gl = wd.DeviceManager.getInstance().gl;
             gl.createTexture.returns({});
             gl.createRenderbuffer.returns({});
+        },
+        createGL: function(domId){
+            wd.DeviceManager.getInstance().createGL("#" + domId, {});
         }
     }
 })();

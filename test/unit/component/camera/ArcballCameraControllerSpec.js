@@ -46,7 +46,7 @@ describe("ArcballCameraController", function () {
         manager = wd.EventManager;
 
         insertDom();
-        wd.DeviceManager.getInstance().createGL("#event-test");
+        prepareTool.createGL("event-test");
     });
     afterEach(function () {
         wd.EventManager.off();
