@@ -133,11 +133,16 @@ describe("deviceManager", function() {
                 canvasId: "#event-test"
             }).init();
 
+
+            var dom = $("#event-test");
+
             expect(view.x).toEqual(0);
             expect(view.y).toEqual(0);
             expect(view.width > 0).toBeTruthy();
             expect(view.height > 0).toBeTruthy();
-            expect(device.gl.viewport).toCalledWith(view.x, view.y, view.width, view.height);
+            expect(dom.get(0).style.width).toEqual("100%");
+            expect(dom.get(0).style.height).toEqual("100%");
+            expect(device.gl.viewport).toCalledWith(0, 0, view.width, view.height);
         });
         it("support custom screen size and position", function(){
             var view = device.view;
@@ -155,6 +160,26 @@ describe("deviceManager", function() {
             expect(device.getViewport()).toEqual(wd.RectRegion.create(0, 0, view.width, view.height));
             expect($("#event-test").css("left")).toEqual("10px");
             expect($("#event-test").css("top")).toEqual("0px");
+        });
+    });
+
+    describe("setHardwareScaling", function(){
+        beforeEach(function(){
+        });
+
+        it("scale canvas and reset viewport", function(){
+            var width = 100;
+            var height = 50;
+            sandbox.stub(device, "view", {
+                width:width,
+                height:height
+            });
+
+            device.setHardwareScaling(2);
+
+            expect(device.view.width).toEqual(width / 2);
+            expect(device.view.height).toEqual(height / 2);
+            expect(device.gl.viewport).toCalledWith(0, 0, width / 2, height / 2);
         });
     });
 

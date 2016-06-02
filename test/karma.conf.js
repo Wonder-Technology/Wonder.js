@@ -98,7 +98,7 @@
         //'test/unit/**/scene/**',
 
 
-        'test/unit/renderer/shadow/shadowMapSpec.js',
+        //'test/unit/renderer/shadow/shadowMapSpec.js',
         //'test/unit/**/Shadow*',
         ////
         //'test/unit/**/Shadow*Spec.js',
@@ -219,7 +219,7 @@
         //'test/unit/**/TransitionManagerSpec*',
 
 
-        'test/unit/**/MainSpec*',
+        //'test/unit/**/MainSpec*',
 
         //'test/unit/component/event/eventSpec*',
 
@@ -253,8 +253,8 @@
         //
         //'test/unit/**/LightShaderLibSpec*',
         //
-        'test/unit/**/SceneDispatcherSpec*',
-        'test/unit/**/GameObjectSceneSpec*',
+        //'test/unit/**/SceneDispatcherSpec*',
+        //'test/unit/**/GameObjectSceneSpec*',
         //
         //'test/unit/**/MathUtils*',
         //'test/unit/**/rayPicking*',
@@ -304,7 +304,7 @@
         //'test/unit/**/CommonBufferContainerSpec.js',
         //'test/unit/**/MorphBufferContainerSpec.js',
         //'test/unit/core/*.js',
-        //'test/unit/device/*.js',
+        'test/unit/device/*.js',
         //'test/unit/event/**',
         //'test/unit/event/mouseEv*.js',
         //'test/unit/event/customEv*.js',
