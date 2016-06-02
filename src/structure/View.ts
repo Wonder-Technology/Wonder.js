@@ -41,11 +41,24 @@ module wd {
             this._dom.height = height;
         }
 
+        get styleWidth(){
+            return this._dom.style.width;
+        }
+        set styleWidth(styleWidth:string){
+            this._dom.style.width = styleWidth;
+        }
+
+        get styleHeight(){
+            return this._dom.style.height;
+        }
+        set styleHeight(styleHeight:string){
+            this._dom.style.height = styleHeight;
+        }
+
         get x(){
             return Number(this._dom.style.left.slice(0, -2));
         }
         set x(x:number){
-            this._dom.style.position = "absolute";
             this._dom.style.left = `${x}px`;
         }
 
@@ -53,8 +66,11 @@ module wd {
             return Number(this._dom.style.top.slice(0, -2));
         }
         set y(y:number){
-            this._dom.style.position = "absolute";
             this._dom.style.top = `${y}px`;
+        }
+
+        public initCanvas(){
+            this._dom.style.cssText = "position:absolute;left:0;top:0;";
         }
 
         public getContext(contextConfig:ContextConfigData):WebGLRenderingContext{
@@ -68,8 +84,11 @@ module wd {
         y:number;
         width:number;
         height:number;
+        styleWidth:string;
+        styleHeight:string;
         dom:any;
         getContext(contextConfig:ContextConfigData):WebGLRenderingContext;
+        initCanvas():void;
     }
 
 }

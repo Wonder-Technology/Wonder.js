@@ -393,13 +393,17 @@ module wd {
                 x = null,
                 y = null,
                 width = null,
-                height = null;
+                height = null,
+                styleWidth = null,
+                styleHeight = null;
 
             if(screenSize === EScreenSize.FULL){
                 x = 0;
                 y = 0;
                 width = root.innerWidth;
                 height = root.innerHeight;
+                styleWidth = "100%";
+                styleHeight = "100%";
 
                 wdCb.DomQuery.create("body").css("margin", "0");
             }
@@ -408,10 +412,29 @@ module wd {
                 y = screenSize.y || 0;
                 width = screenSize.width || root.innerWidth;
                 height = screenSize.height || root.innerHeight;
+                styleWidth = `${width}px`;
+                styleHeight = `${height}px`;
             }
+
+            this.view.initCanvas();
 
             this.view.x = x;
             this.view.y = y;
+            this.view.width = width;
+            this.view.height = height;
+            this.view.styleWidth = styleWidth;
+            this.view.styleHeight = styleHeight;
+
+            this.setViewport(0, 0, width, height);
+        }
+
+        @require(function(level:number){
+            assert(level > 0, Log.info.FUNC_SHOULD("level", `> 0, but actual is ${level}`))
+        })
+        public setHardwareScaling(level:number){
+            var width = this.view.width / level,
+                height = this.view.height / level;
+
             this.view.width = width;
             this.view.height = height;
 
