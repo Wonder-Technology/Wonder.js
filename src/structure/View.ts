@@ -28,14 +28,14 @@ module wd {
         }
 
         get width(){
-            return this._dom.width;
+            return this._dom.clientWidth;
         }
         set width(width:number){
             this._dom.width = width;
         }
 
         get height(){
-            return this._dom.height;
+            return this._dom.clientHeight;
         }
         set height(height:number){
             this._dom.height = height;

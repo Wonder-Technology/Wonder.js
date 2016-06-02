@@ -47,7 +47,6 @@ module wd {
             this.gameObjectScene.side = side;
         }
 
-        //todo test
         get shadowMap(){
             return this.gameObjectScene.shadowMap;
         }
