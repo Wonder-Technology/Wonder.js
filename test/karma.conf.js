@@ -27,8 +27,15 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        'test/unit/**',
-        //
+        //'test/unit/**',
+
+
+
+        'test/unit/**/procedural_texture_lib/**',
+
+
+
+
         //'test/unit/**/BufferTable*',
         //'test/unit/**/ProgramTable*',
 
@@ -247,7 +254,7 @@
         //'test/unit/**/LightShaderLibSpec*',
         //
         //'test/unit/**/SceneDispatcherSpec*',
-        //'test/unit/**/GameObjectSceneSpec*',
+        'test/unit/**/GameObjectSceneSpec*',
         //
         //'test/unit/**/MathUtils*',
         //'test/unit/**/rayPicking*',

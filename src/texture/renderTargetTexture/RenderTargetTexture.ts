@@ -1,5 +1,16 @@
 module wd {
     export abstract class RenderTargetTexture extends Texture {
+        /*!
+         Use 0 to render just once, 1 to render on every frame, 2 to render every two frames and so on...
+        */
+        private _renderRate:number = 1;
+        get renderRate(){
+            return this._renderRate;
+        }
+        set renderRate(renderRate:number){
+            this._renderRate = renderRate;
+        }
+
         public abstract createEmptyTexture();
 
         public initWhenCreate(){

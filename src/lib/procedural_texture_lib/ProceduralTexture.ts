@@ -9,6 +9,12 @@ module wd {
 
         //public needUpdate:boolean = false;
 
+        public initWhenCreate(){
+            super.initWhenCreate();
+
+            this.renderRate = 0;
+        }
+
         public getSamplerName(unit:number){
             return this.getSamplerNameByVariableData(unit, EVariableType.SAMPLER_2D);
         }

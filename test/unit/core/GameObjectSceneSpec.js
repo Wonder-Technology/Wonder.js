@@ -311,19 +311,57 @@ describe("GameObjectScene", function() {
     describe("GameObjectScene->render", function(){
         var renderer,camera;
 
+        function createProceduralRenderTargetRenderer(textureClass, rendererClass, renderRate){
+            textureClass = textureClass || wd.FireProceduralTexture;
+            rendererClass = rendererClass || wd.FireProceduralRenderTargetRenderer;
+
+            var texture = textureClass.create();
+
+            if(renderRate !== undefined){
+                texture.renderRate = renderRate;
+            }
+
+            var renderer = rendererClass.create(texture);
+
+            sandbox.stub(renderer, "render");
+
+            return renderer;
+        }
+
+        function createCommonRenderTargetRenderer(renderRate){
+            var texture = wd.RefractionTexture.create();
+
+            texture.renderRate = renderRate || 0;
+            texture.renderList = wdCb.Collection.create();
+
+            //var renderer = new wd.CommonRenderTargetRenderer();
+            var renderer = wd.MirrorRenderTargetRenderer.create(texture);
+
+
+            sandbox.stub(renderer, "render");
+
+            return renderer;
+        }
+
         beforeEach(function(){
+            //sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+
+            //prepareTool.prepareForMap(sandbox);
+
+
+            //renderer = wd.WebGLRenderer.create();
+            //sandbox.stub(renderer, "render");
             renderer = {};
+
             camera = wd.GameObject.create();
             scene.currentCamera = camera;
         });
 
         describe("render proceduralRenderTargetRenderers", function(){
             it("render proceduralRenderTargetRenderer before render common renderTargetRenderer", function () {
-                var proceduralRenderTargetRenderer = new wd.FireProceduralRenderTargetRenderer();
-                sandbox.stub(proceduralRenderTargetRenderer, "render");
+                var proceduralRenderTargetRenderer = createProceduralRenderTargetRenderer();
 
-                var commonRenderTargetRenderer = new wd.CommonRenderTargetRenderer();
-                sandbox.stub(commonRenderTargetRenderer, "render");
+                var commonRenderTargetRenderer = createCommonRenderTargetRenderer();
 
 
                 scene.renderTargetRendererManager.addProceduralRenderTargetRenderer(proceduralRenderTargetRenderer);
@@ -336,8 +374,7 @@ describe("GameObjectScene", function() {
             });
 
             it("render FireProceduralRenderTargetRenderer every frame", function () {
-                var proceduralRenderTargetRenderer = new wd.FireProceduralRenderTargetRenderer();
-                sandbox.stub(proceduralRenderTargetRenderer, "render");
+                var proceduralRenderTargetRenderer = createProceduralRenderTargetRenderer(wd.FireProceduralTexture, wd.FireProceduralRenderTargetRenderer);
 
 
                 scene.renderTargetRendererManager.addProceduralRenderTargetRenderer(proceduralRenderTargetRenderer);
@@ -350,8 +387,7 @@ describe("GameObjectScene", function() {
                 expect(proceduralRenderTargetRenderer.render).toCalledWith(renderer);
             });
             it("render MarbleProceduralRenderTargetRenderer only once", function () {
-                var proceduralRenderTargetRenderer = new wd.MarbleProceduralRenderTargetRenderer();
-                sandbox.stub(proceduralRenderTargetRenderer, "render");
+                var proceduralRenderTargetRenderer = createProceduralRenderTargetRenderer(wd.MarbleProceduralTexture, wd.MarbleProceduralRenderTargetRenderer);
 
 
                 scene.renderTargetRendererManager.addProceduralRenderTargetRenderer(proceduralRenderTargetRenderer);
@@ -366,9 +402,9 @@ describe("GameObjectScene", function() {
             describe("CustomProceduralRenderTargetRenderer", function(){
                 var proceduralRenderTargetRenderer;
 
-                function run(isAnimate){
+                function run(renderRate){
                     var texture = wd.CustomProceduralTexture.create();
-                    texture.isAnimate = isAnimate;
+                    texture.renderRate = renderRate;
 
                     proceduralRenderTargetRenderer = wd.CustomProceduralRenderTargetRenderer.create(texture);
                     sandbox.stub(proceduralRenderTargetRenderer, "render");
@@ -384,13 +420,13 @@ describe("GameObjectScene", function() {
                 beforeEach(function(){
                 });
 
-                it("if isAnimate === true, render every frame", function(){
-                    run(true);
+                it("if renderRate === 1, render on every frame", function(){
+                    run(1);
 
                     expect(proceduralRenderTargetRenderer.render).toCalledTwice();
                 });
-                it("else, render only once", function () {
-                    run(false);
+                it("if renderRate === 0, render only once", function () {
+                    run(0);
 
                     expect(proceduralRenderTargetRenderer.render).toCalledOnce();
                 });
@@ -398,10 +434,7 @@ describe("GameObjectScene", function() {
         });
 
         it("render renderTargetRenderers", function(){
-            var renderTargetRenderer = {
-                init: sandbox.stub(),
-                render: sandbox.stub()
-            };
+            var renderTargetRenderer = createCommonRenderTargetRenderer();
             scene.renderTargetRendererManager.addCommonRenderTargetRenderer(renderTargetRenderer);
 
             scene.render(renderer);
@@ -421,10 +454,7 @@ describe("GameObjectScene", function() {
             expect(rendererComponent.render).toCalledWith(renderer, geometry, camera);
         });
         it("render children", function(){
-            var renderTargetRenderer = {
-                init: sandbox.stub(),
-                render: sandbox.stub()
-            };
+            var renderTargetRenderer = createCommonRenderTargetRenderer();
             scene.renderTargetRendererManager.addCommonRenderTargetRenderer(renderTargetRenderer);
 
             var gameObject1 = wd.GameObject.create();
@@ -436,6 +466,51 @@ describe("GameObjectScene", function() {
 
             expect(gameObject1.render).toCalledWith(renderer, camera);
             expect(gameObject1.render).toCalledAfter(renderTargetRenderer.render);
+        });
+
+        describe("test renderRate", function(){
+            beforeEach(function(){
+
+            });
+
+            it("if it's 0, render just once", function(){
+                var proceduralRenderTargetRenderer = createProceduralRenderTargetRenderer(wd.FireProceduralTexture, wd.FireProceduralRenderTargetRenderer, 0);
+
+
+                scene.renderTargetRendererManager.addProceduralRenderTargetRenderer(proceduralRenderTargetRenderer);
+
+                scene.render(renderer);
+                scene.render(renderer);
+
+
+                expect(proceduralRenderTargetRenderer.render).toCalledOnce();
+            });
+            it("else if it's 1, render on every frame", function(){
+                var renderer = createCommonRenderTargetRenderer(1);
+
+
+                scene.renderTargetRendererManager.addCommonRenderTargetRenderer(renderer);
+
+                scene.render(renderer);
+                scene.render(renderer);
+                scene.render(renderer);
+
+
+                expect(renderer.render.callCount).toEqual(3);
+            });
+            it("else if it's 2, render on every two frames", function(){
+                var renderer = createCommonRenderTargetRenderer(2);
+
+
+                scene.renderTargetRendererManager.addCommonRenderTargetRenderer(renderer);
+
+                scene.render(renderer);
+                scene.render(renderer);
+                scene.render(renderer);
+
+
+                expect(renderer.render.callCount).toEqual(2);
+            });
         });
     });
 });

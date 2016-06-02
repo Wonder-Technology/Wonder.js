@@ -9,6 +9,7 @@ module wd {
         protected frameBufferOperator:FrameBuffer = null;
 
         private _isRenderListEmpty:boolean = false;
+        private _renderCount:number = 0;
 
         public initWhenCreate(){
             this.frameBufferOperator = FrameBuffer.create(this.texture.width, this.texture.height);
@@ -17,6 +18,27 @@ module wd {
         public init(){
             this.texture.createEmptyTexture();
             this.initFrameBuffer();
+        }
+
+
+        @require(function(){
+            assert(this.texture.renderRate >= 0, Log.info.FUNC_SHOULD("renderTargetTexture->renderRate", `>= 0, but actual is ${this.texture.renderRate}`));
+        })
+        @virtual
+        public needRender():boolean{
+            var renderRate:number = this.texture.renderRate,
+                needRender:boolean = false;
+
+            if(renderRate === 0){
+                needRender = this._shouldRenderOnce();
+            }
+            else{
+                needRender = this._shouldRenderAtRate(renderRate);
+            }
+
+            this._renderCount++;
+
+            return needRender;
         }
 
         public render(renderer:Renderer);
@@ -70,6 +92,27 @@ module wd {
         })
         protected isRenderListEmptyWhenRender(){
             return this._isRenderListEmpty;
+        }
+
+        private _shouldRenderOnce(){
+            return this._renderCount === 0;
+        }
+
+        private _shouldRenderAtRate(renderRate:number){
+            var renderCount = this._renderCount;
+
+            if(renderCount === 0){
+                return true;
+            }
+
+            if(renderCount === renderRate){
+
+                this._renderCount = 0;
+
+                return true;
+            }
+
+            return false;
         }
     }
 }

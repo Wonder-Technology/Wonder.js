@@ -81,6 +81,12 @@ module wd {
         @cloneAttributeAsBasicType()
         public time:number = 0;
 
+        public initWhenCreate(){
+            super.initWhenCreate();
+
+            this.renderRate = 1;
+        }
+
         public init(){
             super.init();
 

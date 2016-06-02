@@ -7,18 +7,6 @@ module wd {
         private _indexBuffer:ElementBuffer = null;
         private _vertexBuffer:ArrayBuffer = null;
         private _shader:ProceduralShader = null;
-        private _isRendered:boolean = false;
-
-        @virtual
-        public needRender():boolean{
-            if(this._isRendered){
-                return false;
-            }
-
-            this._isRendered = true;
-
-            return true;
-        }
 
         public init(){
             super.init();

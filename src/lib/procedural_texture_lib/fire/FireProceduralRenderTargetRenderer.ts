@@ -10,10 +10,6 @@ module wd {
 
         public texture:FireProceduralTexture;
 
-        public needRender():boolean{
-            return true;
-        }
-
         protected createShader(){
             var shader = CommonProceduralShader.create();
 

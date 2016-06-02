@@ -18,8 +18,6 @@ module wd {
         public uniformMap:wdCb.Hash<ShaderData> = wdCb.Hash.create<ShaderData>();
         @cloneAttributeAsBasicType()
         public fsSource:string = null;
-        @cloneAttributeAsBasicType()
-        public isAnimate:boolean = false;
 
         public init(){
             super.init();
@@ -51,6 +49,7 @@ module wd {
 
             this.fsSource =  LoaderManager.getInstance().get(shaderConfig.fsSourceId);
 
+            this.renderRate = shaderConfig.renderRate || 0;
 
             for (let name in uniforms){
                 if(uniforms.hasOwnProperty(name)){
@@ -71,7 +70,8 @@ module wd {
 
     export type CustomProceduralTextureShaderDefinitionData = {
         uniforms:wdCb.Hash<ShaderData>;
-        fsSourceId:string
+        fsSourceId:string;
+        renderRate:number;
     }
 }
 

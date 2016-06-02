@@ -13,7 +13,6 @@ describe("CustomProceduralTexture", function () {
     });
 
     it("test default value", function () {
-        expect(texture.isAnimate).toBeFalsy();
     });
 
 
@@ -74,6 +73,23 @@ describe("CustomProceduralTexture", function () {
 
             expect(texture.fsSource).toEqual(fsSource);
         });
+
+        describe("read renderRate", function () {
+            it("the default value should be 0", function(){
+                texture.read(shaderConfigId);
+
+                expect(texture.renderRate).toEqual(0);
+            });
+            it("test read", function () {
+                var renderRate = 2;
+                shaderConfig.renderRate = renderRate;
+
+                texture.read(shaderConfigId);
+
+                expect(texture.renderRate).toEqual(renderRate);
+            });
+        });
+
         it("add correspond maps of sampler2D uniform data", function () {
             sandbox.stub(texture.mapManager, "addMap");
 
@@ -151,7 +167,6 @@ uniformMap:uniformMap
             var result = texture.clone();
 
             expect(result.fsSource).toEqual(fsSource);
-            expect(result.isAnimate).toEqual(isAnimate);
         });
     })
 });

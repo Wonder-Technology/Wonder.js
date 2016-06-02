@@ -105,6 +105,17 @@ describe("FireProceduralTexture", function () {
         });
     });
 
+    describe("initWhenCreate", function(){
+        beforeEach(function(){
+        });
+
+        it("ensure that the texture should be rendered more than 1 time", function () {
+            texture = wd.FireProceduralTexture.create();
+
+            expect(texture.renderRate).toEqual(1);
+        });
+    });
+
     describe("init", function(){
         it("add FireProceduralRenderTargetRenderer to scene", function(){
             sandbox.stub(wd.Director.getInstance().scene, "addProceduralRenderTargetRenderer");

@@ -121,7 +121,7 @@ module wd {
         public render(renderer:Renderer) {
             this.shadowManager.setShadowRenderListForCurrentLoop();
 
-            this.renderTargetRendererManager.renderCommonRenderTargetRenderer(renderer, this.currentCamera);
+            this.renderTargetRendererManager.render(renderer, this.currentCamera);
 
             super.render(renderer, this.currentCamera);
         }

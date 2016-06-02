@@ -35,7 +35,7 @@ module wd{
             this._proceduralRendererList.addChild(renderTargetRenderer);
         }
 
-        public renderCommonRenderTargetRenderer(renderer:Renderer, camera:GameObject) {
+        public render(renderer:Renderer, camera:GameObject) {
             this._proceduralRendererList.filter((target:ProceduralRenderTargetRenderer) =>{
                     return target.needRender();
                 })
@@ -43,9 +43,12 @@ module wd{
                     target.render(renderer);
                 });
 
-            this._commonRenderTargetRendererList.forEach((target:RenderTargetRenderer) =>{
-                target.render(renderer, camera);
-            });
+            this._commonRenderTargetRendererList.filter((target:CommonRenderTargetRenderer) =>{
+                    return target.needRender();
+                })
+                .forEach((target:CommonRenderTargetRenderer) =>{
+                    target.render(renderer, camera);
+                });
         }
     }
 }
