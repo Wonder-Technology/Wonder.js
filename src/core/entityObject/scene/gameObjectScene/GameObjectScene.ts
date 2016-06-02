@@ -54,7 +54,6 @@ module wd {
         public physicsEngineAdapter:IPhysicsEngineAdapter = null;
         public glslData:wdCb.Hash<any> = wdCb.Hash.create<any>();
         public currentShaderType:EShaderTypeOfScene = null;
-        public shadowLayerList:ShadowLayerList = ShadowLayerList.create();
         public renderTargetRendererManager:RenderTargetRendererManager = RenderTargetRendererManager.create();
         public shadowManager:ShadowManager = ShadowManager.create(this);
 
@@ -213,11 +212,11 @@ module wd {
         	return obj;
         }
 
-        private _scene:GameObjectScene = null;
-
         constructor(scene:GameObjectScene){
             this._scene = scene;
         }
+
+        private _scene:GameObjectScene = null;
 
         private _enable:boolean = true;
         get enable(){
@@ -239,6 +238,16 @@ module wd {
 
                 this._softType = softType;
             }
+        }
+
+        public shadowLayerList:ShadowLayerList = ShadowLayerList.create();
+
+        public getTwoDShadowMapDataMap(layer:string) {
+            return this._scene.shadowManager.getTwoDShadowMapDataMap(layer);
+        }
+
+        public getCubemapShadowMapDataMap(layer:string){
+            return this._scene.shadowManager.getCubemapShadowMapDataMap(layer);
         }
     }
 }

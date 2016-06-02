@@ -47,26 +47,10 @@ module wd {
             this.gameObjectScene.side = side;
         }
 
-        //todo refactor
+        //todo test
         get shadowMap(){
             return this.gameObjectScene.shadowMap;
         }
-        set shadowMap(shadowMap:any){
-            this.gameObjectScene.shadowMap = shadowMap;
-        }
-
-
-        public getTwoDShadowMapDataMap(layer:string) {
-            return this.gameObjectScene.shadowManager.getTwoDShadowMapDataMap(layer);
-        }
-
-        public getCubemapShadowMapDataMap(layer:string){
-            return this.gameObjectScene.shadowManager.getCubemapShadowMapDataMap(layer);
-        }
-
-
-
-
 
         get currentCamera():GameObject{
             return this.gameObjectScene.currentCamera;
@@ -103,13 +87,13 @@ module wd {
         get currentShaderType(){
             return this.gameObjectScene.currentShaderType;
         }
-
-        get shadowLayerList(){
-            return this.gameObjectScene.shadowLayerList;
-        }
-        set shadowLayerList(shadowLayerList:ShadowLayerList){
-            this.gameObjectScene.shadowLayerList = shadowLayerList;
-        }
+        //
+        //get shadowLayerList(){
+        //    return this.gameObjectScene.shadowLayerList;
+        //}
+        //set shadowLayerList(shadowLayerList:ShadowLayerList){
+        //    this.gameObjectScene.shadowLayerList = shadowLayerList;
+        //}
 
         public name:string = `scene${String(this.uid)}`;
 

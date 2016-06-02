@@ -308,7 +308,7 @@ describe("GameObjectScene", function() {
         });
     });
 
-    describe("GameObjectScene->render", function(){
+    describe("render", function(){
         var renderer,camera;
 
         function createProceduralRenderTargetRenderer(textureClass, rendererClass, renderRate){

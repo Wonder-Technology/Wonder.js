@@ -31,7 +31,7 @@
 
 
 
-        'test/unit/**/procedural_texture_lib/**',
+        //'test/unit/**/procedural_texture_lib/**',
 
 
 
@@ -98,14 +98,14 @@
         //'test/unit/**/scene/**',
 
 
-        //'test/unit/renderer/shadow/shadowMapSpec.js',
+        'test/unit/renderer/shadow/shadowMapSpec.js',
         //'test/unit/**/Shadow*',
-        //
+        ////
         //'test/unit/**/Shadow*Spec.js',
         //'test/unit/**/*Shadow*Spec.js',
-        //
-        //'test/unit/renderer/shadow/pointShadowMapSpec.js',
         ////
+        //'test/unit/renderer/shadow/pointShadowMapSpec.js',
+        //////
         //'test/unit/renderer/shadow/**',
         //'test/unit/renderer/shadow/directionShadowMapSpec.js',
         //'test/unit/renderer/shadow/directionShadowMap*',
@@ -253,7 +253,7 @@
         //
         //'test/unit/**/LightShaderLibSpec*',
         //
-        //'test/unit/**/SceneDispatcherSpec*',
+        'test/unit/**/SceneDispatcherSpec*',
         'test/unit/**/GameObjectSceneSpec*',
         //
         //'test/unit/**/MathUtils*',

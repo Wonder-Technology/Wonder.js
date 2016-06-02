@@ -39,7 +39,7 @@ module wd{
                 return;
             }
 
-            this.gameObjectScene.shadowLayerList.update();
+            this.gameObjectScene.shadowMap.shadowLayerList.update();
         }
 
         public dispose(){
@@ -75,10 +75,11 @@ module wd{
         //todo optimize?
         public getShadowLayerList():ShadowLayerList{
             var shadowLayerList:ShadowLayerList = null,
+                sceneShadowLayerList = this.gameObjectScene.shadowMap.shadowLayerList,
                 self = this;
 
-            if(this.gameObjectScene.shadowLayerList.dirty){
-                return <any>this.gameObjectScene.shadowLayerList.removeRepeatItems();
+            if(sceneShadowLayerList.dirty){
+                return <any>sceneShadowLayerList.removeRepeatItems();
             }
 
             shadowLayerList = ShadowLayerList.create();
@@ -107,17 +108,20 @@ module wd{
 
         public init(){
             var self = this,
-                scene:GameObjectScene = this.gameObjectScene;
+                scene:GameObjectScene = this.gameObjectScene,
+                sceneShadowLayerList = null;
 
             if(!this._isShadowMapEnable() || !this._hasShadow()) {
                 return;
             }
 
-            this.gameObjectScene.shadowLayerList = this.getShadowLayerList();
+            this.gameObjectScene.shadowMap.shadowLayerList = this.getShadowLayerList();
 
-            this.gameObjectScene.shadowLayerList.init();
+            sceneShadowLayerList = this.gameObjectScene.shadowMap.shadowLayerList;
 
-            this._shadowMapManager.initShadowMapData(this.gameObjectScene.shadowLayerList);
+            sceneShadowLayerList.init();
+
+            this._shadowMapManager.initShadowMapData(sceneShadowLayerList);
 
             this._shadowMapManager.twoDShadowMapDataMap.forEach((twoDShadowMapDataList:wdCb.Collection<TwoDShadowMapData>, layer:string) => {
                 twoDShadowMapDataList.forEach(({shadowMap, light}) => {
@@ -220,7 +224,7 @@ module wd{
         }
 
         @require(function(){
-            var shadowLayerList = this.gameObjectScene.shadowLayerList;
+            var shadowLayerList = this.gameObjectScene.shadowMap.shadowLayerList;
 
             assert(shadowLayerList.dirty, Log.info.FUNC_SHOULD("shadowLayerList", "dirty"));
 
@@ -236,7 +240,7 @@ module wd{
                 return;
             }
 
-            this._shadowMapManager.updateWhenShadowLayerChange(scene.shadowLayerList.getDiffData());
+            this._shadowMapManager.updateWhenShadowLayerChange(scene.shadowMap.shadowLayerList.getDiffData());
 
             let {
                 addTwoDShadowMapData,

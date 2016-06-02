@@ -36,7 +36,7 @@
 
 
             wd.Director.getInstance().scheduler.scheduleTime(function(){
-                director.scene.getTwoDShadowMapDataMap("layer_sphere2").forEach(function(data){
+                director.scene.shadowMap.getTwoDShadowMapDataMap("layer_sphere2").forEach(function(data){
                     data.shadowMap.renderRate = 60;
                 })
             }, 1000);

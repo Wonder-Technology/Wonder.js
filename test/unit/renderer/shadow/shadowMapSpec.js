@@ -205,19 +205,19 @@ describe("shadow map", function() {
             describe("test build shadowLayerList", function () {
                 it("user can specify shadowLayerList", function () {
 
-                    director.scene.shadowLayerList.removeAllChildren();
-                    director.scene.shadowLayerList.addChild("a");
+                    director.scene.shadowMap.shadowLayerList.removeAllChildren();
+                    director.scene.shadowMap.shadowLayerList.addChild("a");
 
 
                     director._init();
 
-                    expect(director.scene.shadowLayerList.getChildren()).toEqual(["a"]);
+                    expect(director.scene.shadowMap.shadowLayerList.getChildren()).toEqual(["a"]);
                 });
 
                 it("else, auto build it when init", function () {
                     director._init();
 
-                    expect(director.scene.shadowLayerList.getChildren()).toEqual([layer1, layer2]);
+                    expect(director.scene.shadowMap.shadowLayerList.getChildren()).toEqual([layer1, layer2]);
                 });
             });
 
@@ -439,7 +439,7 @@ describe("shadow map", function() {
 
                         director._loopBody(1);
 
-                        director.scene.shadowLayerList.removeChild(layer2);
+                        director.scene.shadowMap.shadowLayerList.removeChild(layer2);
                         director.scene.removeChild(sphere2);
                         director.scene.removeChild(sphere3);
 
@@ -457,7 +457,7 @@ describe("shadow map", function() {
                         sphere4.init();
 
 
-                        director.scene.shadowLayerList.addChild(layer4);
+                        director.scene.shadowMap.shadowLayerList.addChild(layer4);
                     });
 
                     it("add the shadow map of the layer", function () {
@@ -575,7 +575,7 @@ describe("shadow map", function() {
                             //sphere4.init();
 
 
-                            director.scene.shadowLayerList.addChild(layer2);
+                            director.scene.shadowMap.shadowLayerList.addChild(layer2);
 
 
 
@@ -616,7 +616,7 @@ describe("shadow map", function() {
 
                         oldGLProgram = shadowTool.getDrawShadowMapShaderAndProgramHelper(sandbox, sphere, true).program.glProgram;
 
-                        director.scene.shadowLayerList.removeChild(layer2);
+                        director.scene.shadowMap.shadowLayerList.removeChild(layer2);
                     });
 
                     it("if scene has the shadow objects with the layer, contract error", function(){
@@ -797,8 +797,8 @@ describe("shadow map", function() {
                         sphere.getComponent(wd.Shadow).layer = wd.EShadowLayer.DEFAULT;
 
 
-                        director.scene.shadowLayerList.removeAllChildren();
-                        director.scene.shadowLayerList.addChild(wd.EShadowLayer.DEFAULT);
+                        director.scene.shadowMap.shadowLayerList.removeAllChildren();
+                        director.scene.shadowMap.shadowLayerList.addChild(wd.EShadowLayer.DEFAULT);
                         director.scene.removeChild(sphere2);
                         director.scene.removeChild(sphere3);
 
@@ -829,7 +829,7 @@ describe("shadow map", function() {
                     //
                     //            sphere.getComponent(wd.Shadow).layer = layer4;
                     //
-                    //            director.scene.shadowLayerList.addChild(layer4);
+                    //            director.scene.shadowMap.shadowLayerList.addChild(layer4);
                     //
                     //
                     //
@@ -878,7 +878,7 @@ describe("shadow map", function() {
 
                                 sphere.getComponent(wd.Shadow).layer = layer4;
 
-                                director.scene.shadowLayerList.addChild(layer4);
+                                director.scene.shadowMap.shadowLayerList.addChild(layer4);
 
 
 
@@ -911,6 +911,7 @@ describe("shadow map", function() {
         describe("test change shadow->cast at runtime", function(){
             //todo test
         });
+
 
         describe("test change shadow->receive at runtime", function(){
 
@@ -1168,6 +1169,49 @@ describe("shadow map", function() {
             //
             //    });
             //});
+        });
+
+        describe("test set shadowMap's renderRate to control build shadowMap rate", function(){
+            var shadowMap;
+
+            beforeEach(function(){
+                director._init();
+
+                director._loopBody(1);
+
+
+                var data = director.scene.shadowMap.getTwoDShadowMapDataMap(wd.EShadowLayer.DEFAULT);
+
+                expect(data.getCount()).toEqual(1);
+
+                shadowMap = data.getChild(0).shadowMap;
+
+                sandbox.stub(shadowMap, "bindToUnit");
+            });
+
+            it("if rate === 0, build only once", function () {
+                shadowMap.renderRate = 0;
+
+                director.scene.gameObjectScene.render(renderer);
+                director.scene.gameObjectScene.render(renderer);
+
+                expect(shadowMap.bindToUnit).not.toCalled();
+            });
+            it("if rate === 2, build on every two frames", function () {
+                shadowMap.renderRate = 2;
+
+                director.scene.gameObjectScene.render(renderer);
+                director.scene.gameObjectScene.render(renderer);
+                director.scene.gameObjectScene.render(renderer);
+
+                expect(shadowMap.bindToUnit.callCount).toEqual(1);
+
+
+
+                director.scene.gameObjectScene.render(renderer);
+
+                expect(shadowMap.bindToUnit.callCount).toEqual(2);
+            });
         });
 
         describe("fix bug", function(){
