@@ -34,6 +34,18 @@
             sphere2.transform.translate(50,50,50);
 
 
+
+            wd.Director.getInstance().scheduler.scheduleTime(function(){
+                director.scene.getTwoDShadowMapDataMap("layer_sphere2").forEach(function(data){
+                    data.shadowMap.renderRate = 60;
+                })
+            }, 1000);
+
+
+
+
+
+
             var ground = createGround();
 
             director.scene.addChild(ground);
@@ -41,7 +53,7 @@
             director.scene.addChild(sphere2);
             director.scene.addChild(createAmbientLight());
             director.scene.addChild(createDirectionLight(wd.Vector3.create(0, 500, 500)));
-            director.scene.addChild(createPointLight(wd.Vector3.create(50, 50, 50)));
+//            director.scene.addChild(createPointLight(wd.Vector3.create(50, 50, 50)));
             director.scene.addChild(createCamera());
 
             director.start();

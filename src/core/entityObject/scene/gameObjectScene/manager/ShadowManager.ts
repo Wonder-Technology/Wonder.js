@@ -49,6 +49,14 @@ module wd{
             this._shadowMapManager.dispose();
         }
 
+        public getTwoDShadowMapDataMap(layer:string) {
+            return this._shadowMapManager.twoDShadowMapDataMap.getChild(layer);
+        }
+
+        public getCubemapShadowMapDataMap(layer:string){
+            return this._shadowMapManager.cubemapShadowMapDataMap.getChild(layer);
+        }
+
         public setShadowRenderListForCurrentLoop(){
             if(!this._isShadowMapEnable()){
                 return;

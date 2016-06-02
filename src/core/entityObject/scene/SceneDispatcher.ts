@@ -46,13 +46,27 @@ module wd {
         set side(side:ESide){
             this.gameObjectScene.side = side;
         }
-        
+
+        //todo refactor
         get shadowMap(){
             return this.gameObjectScene.shadowMap;
         }
         set shadowMap(shadowMap:any){
             this.gameObjectScene.shadowMap = shadowMap;
         }
+
+
+        public getTwoDShadowMapDataMap(layer:string) {
+            return this.gameObjectScene.shadowManager.getTwoDShadowMapDataMap(layer);
+        }
+
+        public getCubemapShadowMapDataMap(layer:string){
+            return this.gameObjectScene.shadowManager.getCubemapShadowMapDataMap(layer);
+        }
+
+
+
+
 
         get currentCamera():GameObject{
             return this.gameObjectScene.currentCamera;
