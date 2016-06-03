@@ -38,7 +38,13 @@ module wd{
             fs && this.setFsSource(fs);
         }
 
-        protected sendAttributeData(program:Program, name:string, data:any){
+        //todo refactor:must pass vaoManager param
+        protected sendAttributeData(program:Program, name:string, data:any, vaoManager:VAOManager = null){
+            //todo refactor?
+            if(vaoManager && GPUDetector.getInstance().extensionVAO && !vaoManager.dirty){
+                return;
+            }
+
             program.sendAttributeData(name, EVariableType.BUFFER, data);
         }
 

@@ -9,7 +9,7 @@ module wd{
         public type:string = "end";
 
         public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:EngineMaterial){
-            program.sendAllBufferData();
+            program.sendAllBufferData(quadCmd.vaoManager);
         }
     }
 }

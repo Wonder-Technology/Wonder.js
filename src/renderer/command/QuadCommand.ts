@@ -7,6 +7,7 @@ module wd {
         public vMatrix:Matrix4 = null;
         public pMatrix:Matrix4 = null;
         public buffers:BufferContainer = null;
+        public vaoManager:VAOManager = null;
         public material:Material = null;
         public z:number = null;
         public target:GameObject = null;

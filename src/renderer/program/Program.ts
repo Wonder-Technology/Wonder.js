@@ -97,12 +97,12 @@ module wd{
             }
         }
 
-        @require(function(name:string, type:EVariableType, data:any){
-            assert(data instanceof ArrayBuffer, Log.info.FUNC_MUST_BE("ArrayBuffer"));
+        @require(function(name:string, type:EVariableType, buffer:ArrayBuffer){
+            assert(buffer instanceof ArrayBuffer, Log.info.FUNC_MUST_BE("ArrayBuffer"));
 
             assert(type === EVariableType.BUFFER, Log.info.FUNC_SHOULD("type", `be EVariableType.BUFFER, but actual is ${type}`));
         })
-        public sendAttributeData(name:string, type:EVariableType, data:any){
+        public sendAttributeData(name:string, type:EVariableType, buffer:ArrayBuffer){
             var pos:number = null;
 
             pos = this.getAttribLocation(name);
@@ -111,7 +111,7 @@ module wd{
                 return;
             }
 
-            this._sender.addBufferToToSendList(pos, data);
+            this._sender.addBufferToToSendList(pos, buffer);
         }
 
         public sendStructureData(name:string, type:EVariableType, data:any){
@@ -166,8 +166,8 @@ module wd{
             this._sender.sendSampleArray(name, data);
         }
 
-        public sendAllBufferData(){
-            this._sender.sendAllBufferData();
+        public sendAllBufferData(vaoManager:VAOManager = null){
+            this._sender.sendAllBufferData(vaoManager);
             this._sender.clearBufferList();
         }
 

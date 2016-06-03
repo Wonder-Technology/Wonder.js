@@ -1,5 +1,4 @@
 module wd {
-    //todo check extension/capability support
     export class GPUDetector {
         private static _instance = null;
 
@@ -23,6 +22,7 @@ module wd {
         public extensionInstancedArrays:any = null;
         public extensionUintIndices:boolean = null;
         public extensionDepthTexture:boolean = null;
+        public extensionVAO:any = null;
         public precision:number = null;
 
         private _isDetected:boolean = false;
@@ -41,6 +41,7 @@ module wd {
             this.extensionInstancedArrays = this._getExtension("ANGLE_instanced_arrays");
             this.extensionUintIndices = this._getExtension("element_index_uint");
             this.extensionDepthTexture = this._getExtension("depth_texture");
+        this.extensionVAO = this._getExtension("vao");
         }
 
         private _detectCapabilty() {
@@ -75,6 +76,9 @@ module wd {
                     break;
                 case "depth_texture":
                     extension = this._getExtension("WEBKIT_WEBGL_depth_texture") !== null || this._getExtension("WEBGL_depth_texture") !== null;
+                    break;
+                case "vao":
+                    extension = this._getExtension("OES_vertex_array_object");
                     break;
                 default:
                     extension = gl.getExtension(name);

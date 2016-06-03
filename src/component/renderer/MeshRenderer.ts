@@ -31,6 +31,8 @@ module wd {
 
             cmd.buffers = geometry.buffers;
 
+            cmd.vaoManager = geometry.vaoManager;
+
             cmd.drawMode = geometry.drawMode;
 
             cmd.vMatrix = cameraComponent.worldToCameraMatrix;

@@ -193,6 +193,7 @@
 /// <reference path="component/animation/EArticulatedAnimationTarget"/>
 
 /// <reference path="component/geometry/Geometry"/>
+/// <reference path="component/geometry/VAOManager"/>
 /// <reference path="component/geometry/GeometryUtils"/>
 /// <reference path="component/geometry/CustomGeometry"/>
 /// <reference path="component/geometry/ModelGeometry"/>

@@ -26,6 +26,7 @@ module wd{
 
         public entityObject:GameObject;
         public buffers:BufferContainer = null;
+        public vaoManager:VAOManager = !!GPUDetector.getInstance().extensionVAO ? VAOManager.create() : null;
         @cloneAttributeAsBasicType()
         public drawMode:EDrawMode = EDrawMode.TRIANGLES;
 
@@ -59,6 +60,8 @@ module wd{
             this._material.init();
 
             this.computeNormals();
+
+            this.vaoManager && this.vaoManager.init();
         }
 
         @require(function(){
