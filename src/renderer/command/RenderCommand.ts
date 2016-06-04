@@ -10,6 +10,7 @@ module wd {
 
         public drawMode:EDrawMode = EDrawMode.TRIANGLES;
         public blend:boolean = false;
+        public vaoManager:VAOManager = null;
 
         public abstract execute():void;
 

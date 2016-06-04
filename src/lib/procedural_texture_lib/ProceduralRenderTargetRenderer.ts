@@ -7,6 +7,7 @@ module wd {
         private _indexBuffer:ElementBuffer = null;
         private _vertexBuffer:ArrayBuffer = null;
         private _shader:ProceduralShader = null;
+        private _vaoManager:VAOManager = !!GPUDetector.getInstance().extensionVAO ? VAOManager.create() : null;
 
         public init(){
             super.init();
@@ -15,6 +16,8 @@ module wd {
 
             this._shader = this.createShader();
             this._shader.init();
+
+            this._vaoManager && this._vaoManager.init();
         }
 
         public dispose(){
@@ -103,6 +106,7 @@ module wd {
             command.vertexBuffer = this._vertexBuffer;
             command.indexBuffer = this._indexBuffer;
             command.shader = this._shader;
+            command.vaoManager = this._vaoManager;
 
             return command;
         }

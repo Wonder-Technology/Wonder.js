@@ -381,6 +381,29 @@ describe("program integration test", function() {
                     expect(extensionVAO.bindVertexArrayOES.getCall(1)).toCalledWith(vao2);
                 });
             });
+
+            describe('fix "procedural_texture_animate sample not show fire plane" bug', function(){
+                beforeEach(function(){
+                });
+
+                it("the 'build fire texture' should use vao", function(){
+                    prepareTool.prepareForMap(sandbox);
+
+                    var texture = wd.FireProceduralTexture.create();
+                    var renderTargetRenderer = wd.FireProceduralRenderTargetRenderer.create(texture);
+
+                    renderTargetRenderer.init();
+
+                    var program = renderTargetRenderer._shader.program;
+                    sandbox.stub(program, "sendAllBufferData");
+
+                    var renderer =  wd.WebGLRenderer.create();
+                    renderTargetRenderer.render(renderer);
+
+
+                    expect(program.sendAllBufferData).toCalledWith(renderTargetRenderer._vaoManager);
+                });
+            });
         });
     });
 });

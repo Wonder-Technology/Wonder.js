@@ -166,7 +166,7 @@ module wd{
             this._sender.sendSampleArray(name, data);
         }
 
-        public sendAllBufferData(vaoManager:VAOManager = null){
+        public sendAllBufferData(vaoManager:VAOManager){
             this._sender.sendAllBufferData(vaoManager);
             this._sender.clearBufferList();
         }

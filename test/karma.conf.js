@@ -181,7 +181,7 @@
 
 
         //'test/unit/**/*GeometryData*',
-        'test/unit/**/**BufferContainer*',
+        //'test/unit/**/**BufferContainer*',
         //
         //'test/unit/**/Face3*',
 
@@ -304,7 +304,7 @@
         //'test/unit/**/CommonBufferContainerSpec.js',
         //'test/unit/**/MorphBufferContainerSpec.js',
         //'test/unit/core/*.js',
-        'test/unit/device/*.js',
+        //'test/unit/device/*.js',
         //'test/unit/event/**',
         //'test/unit/event/mouseEv*.js',
         //'test/unit/event/customEv*.js',
