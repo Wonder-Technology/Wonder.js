@@ -68,12 +68,12 @@
             wd.Director.getInstance().scheduler.scheduleTime(function(){
                 sphere.getComponent(wd.Shadow).layer = layer1;
 
-                director.scene.shadowLayerList.addChild(layer1);
+                director.scene.shadowMap.shadowLayerList.addChild(layer1);
             }, 1000);
 
 
             wd.Director.getInstance().scheduler.scheduleTime(function(){
-                director.scene.shadowLayerList.removeChild(layer1);
+                director.scene.shadowMap.shadowLayerList.removeChild(layer1);
                 director.scene.removeChild(sphere);
             }, 2000);
 
@@ -81,7 +81,7 @@
 
 
             wd.Director.getInstance().scheduler.scheduleTime(function(){
-                director.scene.shadowLayerList.addChild(layer1);
+                director.scene.shadowMap.shadowLayerList.addChild(layer1);
 
                 director.scene.addChild(sphere);
             }, 3000);
