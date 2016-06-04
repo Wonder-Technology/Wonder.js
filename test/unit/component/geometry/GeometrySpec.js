@@ -29,6 +29,32 @@ describe("Geometry", function() {
         sandbox.restore();
     });
 
+    describe("dispose", function(){
+        var geo;
+
+        beforeEach(function(){
+            wd.GPUDetector.getInstance().extensionVAO = {};
+
+            geo = createGeometry(wd.RectGeometry);
+
+            geo.init();
+
+            geo.material = {
+                dispose:sandbox.stub()
+            }
+        });
+
+        //todo test more
+
+        it("dispose vaoManager", function(){
+            sandbox.stub(geo.vaoManager, "dispose");
+
+            geo.dispose();
+
+            expect(geo.vaoManager.dispose).toCalledOnce();
+        });
+    });
+
     describe("defer create buffer ", function(){
         var geo,arrayBuffer,eleBuffer;
 

@@ -190,6 +190,9 @@ describe("ProceduralRenderTargetRenderer", function () {
 
     describe("dispose", function(){
         beforeEach(function(){
+            wd.GPUDetector.getInstance().extensionVAO = {};
+            renderTargetRenderer = new wd.ProceduralRenderTargetRenderer();
+
             prepareForInit();
 
             frameBufferOperator.dispose = sandbox.stub();
@@ -202,8 +205,8 @@ describe("ProceduralRenderTargetRenderer", function () {
 
             sandbox.stub(renderTargetRenderer._vertexBuffer, "dispose");
             sandbox.stub(renderTargetRenderer._indexBuffer, "dispose");
+            sandbox.stub(renderTargetRenderer._vaoManager, "dispose");
 
-            //renderTargetRenderer.init();
 
             renderTargetRenderer.dispose();
         });
@@ -223,6 +226,9 @@ describe("ProceduralRenderTargetRenderer", function () {
         });
         it("dispose shader", function () {
             expect(renderTargetRenderer._shader.dispose).toCalledOnce();
+        });
+        it("dispose vaoManager", function () {
+            expect(renderTargetRenderer._vaoManager.dispose).toCalledOnce();
         });
     });
 });

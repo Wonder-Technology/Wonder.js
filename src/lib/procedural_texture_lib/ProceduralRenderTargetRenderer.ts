@@ -26,6 +26,7 @@ module wd {
             this._indexBuffer.dispose();
             this._vertexBuffer.dispose();
             this._shader.dispose();
+            this._vaoManager && this._vaoManager.dispose();
         }
 
         protected abstract createShader():ProceduralShader;

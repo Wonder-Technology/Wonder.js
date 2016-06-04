@@ -86,6 +86,8 @@ module wd{
             this.buffers.dispose();
 
             this._material.dispose();
+
+            this.vaoManager && this.vaoManager.dispose();
         }
 
         @require(function(){

@@ -18,9 +18,13 @@ module wd{
             assert(!!GPUDetector.getInstance().extensionVAO, Log.info.FUNC_SHOULD("hardware", "support vao extension"));
         })
         public init(){
-            //todo
-
             this._extension = GPUDetector.getInstance().extensionVAO;
+        }
+
+        public dispose(){
+            //todo dispose vao?
+
+            this._vaoMap.removeAllChildren();
         }
 
         public getVAOData(toSendBuffersUidStr:string){
