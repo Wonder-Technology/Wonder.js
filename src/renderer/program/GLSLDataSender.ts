@@ -313,30 +313,16 @@ module wd{
 
         private _toSendBuffersUidStr:string = "";
 
-        //todo finish
-        //@require(function(){
-        //    assert(!ArrayUtils.hasRepeatItems(this._toSendBufferArr), Log.info.FUNC_SHOULD_NOT("_toSendBufferArr", "has repeat buffer"));
-        //})
-        //@cache(function(){
-        //    var toSendBufferArr = this._toSendBufferArr,
-        //        lastBindedArrayBufferArr = BufferTable.lastBindedArrayBufferArr;
-        //
-        //    if(!lastBindedArrayBufferArr){
-        //        return false;
-        //    }
-        //
-        //    for(let i = 0, len = toSendBufferArr.length; i < len; i++){
-        //        let buffer = toSendBufferArr[i];
-        //        if(buffer && buffer !== lastBindedArrayBufferArr[i]){
-        //            return false;
-        //        }
-        //    }
-        //
-        //    return true;
-        //}, function(){
-        //}, function(){
-        //    BufferTable.lastBindedArrayBufferArr = this._toSendBufferArr;
-        //})
+        @require(function(){
+            assert(!ArrayUtils.hasRepeatItems(this._toSendBufferArr), Log.info.FUNC_SHOULD_NOT("_toSendBufferArr", "has repeat buffer"));
+        })
+        @cache(function(){
+            return BufferTable.lastBindedArrayBufferListUidStr === this._toSendBuffersUidStr;
+        }, function(){
+        }, function(){
+            BufferTable.lastBindedArrayBufferListUidStr = this._toSendBuffersUidStr;
+
+        })
         public sendAllBufferData(vaoManager:VAOManager){
             var toSendBufferArr = this._toSendBufferArr;
 

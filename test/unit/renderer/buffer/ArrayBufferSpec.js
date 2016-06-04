@@ -84,12 +84,12 @@ describe("ArrayBuffer", function() {
                 buffer.resetData([1,1,1]);
             });
 
-            it("release binded buffer", function(){
-                expect(gl.bindBuffer.getCall(1).args[1]).toBeNull();
-            });
-            it("null BufferTable->lastBindedArrayBufferArr", function () {
-                expect(wd.BufferTable.lastBindedArrayBufferArr).toBeNull();
-            });
+            //it("release binded buffer", function(){
+            //    expect(gl.bindBuffer.getCall(1).args[1]).toBeNull();
+            //});
+            //it("null BufferTable->lastBindedArrayBufferArr", function () {
+            //    expect(wd.BufferTable.lastBindedArrayBufferArr).toBeNull();
+            //});
         });
 
         it("if not pass param type, the buffer->type should be the setted type  which is set when create", function () {

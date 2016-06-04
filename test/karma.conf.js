@@ -55,8 +55,8 @@
         //'test/unit/**/*ProceduralRenderTargetRenderer*',
 
         //'test/unit/**/FrameBuffer*',
-        //'test/unit/**/*ArrayBuffer*',
-        //'test/unit/**/*ElementBuffer*',
+        'test/unit/**/*ArrayBuffer*',
+        'test/unit/**/*ElementBuffer*',
         //'test/unit/**/*InstanceBuffer*',
 
         //'test/unit/**/proceduralRenderTargetRenderer*',

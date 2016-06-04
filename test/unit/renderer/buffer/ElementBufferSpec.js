@@ -96,18 +96,18 @@ describe("ElementBuffer", function() {
             });
         });
 
-        describe("reset binded element buffer", function(){
-            beforeEach(function(){
-                buffer.resetData([1,1,1]);
-            });
-
-            it("release binded buffer", function(){
-                expect(gl.bindBuffer.getCall(1).args[1]).toBeNull();
-            });
-            it("empty BufferTable->lastBindedElementBuffer", function () {
-                expect(wd.BufferTable.lastBindedElementBuffer).toBeNull();
-            });
-        });
+        //describe("reset binded element buffer", function(){
+        //    beforeEach(function(){
+        //        buffer.resetData([1,1,1]);
+        //    });
+        //
+        //    it("release binded buffer", function(){
+        //        expect(gl.bindBuffer.getCall(1).args[1]).toBeNull();
+        //    });
+        //    it("empty BufferTable->lastBindedElementBuffer", function () {
+        //        expect(wd.BufferTable.lastBindedElementBuffer).toBeNull();
+        //    });
+        //});
 
         describe("if not pass param type, buffer should set type by check data", function () {
             it("if extensionUintIndices is false, type should be 16 bit without check", function () {

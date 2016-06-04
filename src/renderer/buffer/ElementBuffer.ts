@@ -58,11 +58,9 @@ module wd{
 
             gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffer);
 
-            //todo test
             this.resetBufferData("ELEMENT_ARRAY_BUFFER", typedData, offset);
 
-            //todo test
-            BufferTable.resetBindedElementBuffer();
+            //BufferTable.resetBindedElementBuffer();
 
             this._saveData(typedData, this._getType(isNeed32Bits, type), EBufferUsage.DYNAMIC_DRAW);
 

@@ -52,7 +52,7 @@ module wd{
 
             this.resetBufferData("ARRAY_BUFFER", typedData, offset);
 
-            BufferTable.resetBindedArrayBuffer();
+            //BufferTable.resetBindedArrayBuffer();
 
             this._saveData(typedData, size, type, EBufferUsage.DYNAMIC_DRAW);
 

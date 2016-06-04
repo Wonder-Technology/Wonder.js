@@ -22,7 +22,7 @@ module wd{
 
             this._sender.disableVertexAttribArray();
 
-            BufferTable.lastBindedArrayBufferArr = null;
+            BufferTable.lastBindedArrayBufferListUidStr = null;
         }
 
         /*!

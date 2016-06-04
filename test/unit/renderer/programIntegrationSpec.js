@@ -21,6 +21,92 @@ describe("program integration test", function() {
         beforeEach(function () {
         });
 
+        describe("test cache", function () {
+            var buffer1, buffer2;
+            var pos1, pos2;
+
+            beforeEach(function () {
+                buffer1 = wd.ArrayBuffer.create([1, 2, 3], 3, wd.EBufferType.UNSIGNED_SHORT);
+                buffer2 = wd.ArrayBuffer.create([2, 3, 4], 3, wd.EBufferType.UNSIGNED_SHORT);
+                pos1 = 1;
+                gl.getAttribLocation.withArgs(sinon.match.any, "a_position").returns(pos1);
+                pos2 = 2;
+                gl.getAttribLocation.withArgs(sinon.match.any, "a_texCoord").returns(pos2);
+
+                sandbox.spy(program._sender, "sendBuffer");
+            });
+
+            it("if switch program, clear cache and send it and enableVertexAttribArray location", function () {
+                program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer1);
+                program.sendAttributeData("a_texCoord", wd.EVariableType.BUFFER, buffer2);
+
+
+                program.sendAllBufferData();
+
+
+                expect(program._sender.sendBuffer).toCalledTwice();
+                expect(gl.enableVertexAttribArray.callCount).toEqual(2);
+
+
+                var program2 = wd.Program.create();
+                program2.use();
+
+                program.use();
+
+
+                program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer1);
+                program.sendAttributeData("a_texCoord", wd.EVariableType.BUFFER, buffer2);
+
+
+                program.sendAllBufferData();
+
+
+                expect(program._sender.sendBuffer.callCount).toEqual(4);
+                expect(gl.enableVertexAttribArray.callCount).toEqual(4);
+            });
+
+            it("if last send buffers equal current send buffers, not send again", function () {
+                program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer1);
+                program.sendAttributeData("a_texCoord", wd.EVariableType.BUFFER, buffer2);
+
+
+                program.sendAllBufferData();
+
+
+                expect(program._sender.sendBuffer).toCalledTwice();
+
+
+                program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer1);
+                program.sendAttributeData("a_texCoord", wd.EVariableType.BUFFER, buffer2);
+
+
+                program.sendAllBufferData();
+
+
+                expect(program._sender.sendBuffer).toCalledTwice();
+            });
+            it("else, send", function () {
+                program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer1);
+                program.sendAttributeData("a_texCoord", wd.EVariableType.BUFFER, buffer2);
+
+
+                program.sendAllBufferData();
+
+
+                expect(program._sender.sendBuffer).toCalledTwice();
+
+
+                program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer2);
+                program.sendAttributeData("a_texCoord", wd.EVariableType.BUFFER, buffer1);
+
+
+                program.sendAllBufferData();
+
+
+                expect(program._sender.sendBuffer.callCount).toEqual(4);
+            });
+        });
+
         describe("if hardware support vao", function(){
             var extensionVAO;
             var vao;
@@ -49,72 +135,133 @@ describe("program integration test", function() {
                 pos2 = 2;
                 gl.getAttribLocation.withArgs(sinon.match.any, "a_texCoord").returns(pos2);
 
-                program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer1);
-                program.sendAttributeData("a_texCoord", wd.EVariableType.BUFFER, buffer2);
-
-
                 vaoManager = wd.VAOManager.create();
                 vaoManager.init();
             });
 
-            it("bind vao", function () {
-                program.sendAllBufferData(vaoManager);
+            describe("test cache miss", function(){
+                beforeEach(function(){
+                    program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer1);
+                    program.sendAttributeData("a_texCoord", wd.EVariableType.BUFFER, buffer2);
+                });
 
-                expect(extensionVAO.bindVertexArrayOES).toCalledWith(vao);
+                it("bind vao", function () {
+                    program.sendAllBufferData(vaoManager);
+
+                    expect(extensionVAO.bindVertexArrayOES).toCalledWith(vao);
+                });
+                it("clear BufferTable.lastBindedElementBuffer to ensure that the index buffer should be binded after bind vao", function () {
+                    wd.BufferTable.lastBindedElementBuffer = {};
+
+                    program.sendAllBufferData(vaoManager);
+
+                    expect(wd.BufferTable.lastBindedElementBuffer).toBeNull();
+                });
+                it("if the vao is not setted, bind and vertexAttribPointer the array buffers", function () {
+                    program.sendAllBufferData(vaoManager);
+
+                    var bindBufferCallCount = gl.bindBuffer.callCount;
+
+                    expect(gl.bindBuffer.getCall(bindBufferCallCount - 1 - 1)).toCalledWith(gl.ARRAY_BUFFER, buffer1.buffer);
+                    expect(gl.vertexAttribPointer.getCall(0)).toCalledWith(pos1, buffer1.size);
+                    expect(gl.enableVertexAttribArray.getCall(0)).toCalledWith(pos1);
+
+                    expect(gl.bindBuffer.getCall(bindBufferCallCount - 1)).toCalledWith(gl.ARRAY_BUFFER, buffer2.buffer);
+                    expect(gl.vertexAttribPointer.getCall(1)).toCalledWith(pos2, buffer2.size);
+                    expect(gl.enableVertexAttribArray.getCall(1)).toCalledWith(pos2);
+                });
             });
-            it("clear BufferTable.lastBindedElementBuffer to ensure that the index buffer should be binded after bind vao", function () {
-                wd.BufferTable.lastBindedElementBuffer = {};
 
-                program.sendAllBufferData(vaoManager);
-
-                expect(wd.BufferTable.lastBindedElementBuffer).toBeNull();
-            });
-            it("if the vao is not setted, bind and vertexAttribPointer the array buffers", function () {
-                program.sendAllBufferData(vaoManager);
-
-                var bindBufferCallCount = gl.bindBuffer.callCount;
-
-                expect(gl.bindBuffer.getCall(bindBufferCallCount - 1 - 1)).toCalledWith(gl.ARRAY_BUFFER, buffer1.buffer);
-                expect(gl.vertexAttribPointer.getCall(0)).toCalledWith(pos1, buffer1.size);
-                expect(gl.enableVertexAttribArray.getCall(0)).toCalledWith(pos1);
-
-                expect(gl.bindBuffer.getCall(bindBufferCallCount - 1)).toCalledWith(gl.ARRAY_BUFFER, buffer2.buffer);
-                expect(gl.vertexAttribPointer.getCall(1)).toCalledWith(pos2, buffer2.size);
-                expect(gl.enableVertexAttribArray.getCall(1)).toCalledWith(pos2);
-            });
-
-            //todo finish cache
             describe("test cache", function(){
                 beforeEach(function(){
                 });
 
                 describe("if to-send buffer changed", function () {
-                    it("if its buffer data changed, cache hit", function () {
+                    it("if its buffer data changed, still cache hit", function () {
+                        program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer1);
 
+
+                        program.sendAllBufferData(vaoManager);
+
+
+                        expect(extensionVAO.bindVertexArrayOES).toCalledOnce();
+
+
+                        buffer1.resetData([1,2,3]);
+                        program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer1);
+
+
+                        program.sendAllBufferData(vaoManager);
+
+
+                        expect(extensionVAO.bindVertexArrayOES).not.toCalledTwice();
                     });
                     it("if the buffer is changed, cache miss and create new vao and set it", function () {
+                        program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer1);
 
+
+                        program.sendAllBufferData(vaoManager);
+
+
+                        expect(extensionVAO.bindVertexArrayOES).toCalledOnce();
+
+
+                        program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer1);
+                        program.sendAttributeData("a_texCoord", wd.EVariableType.BUFFER, buffer2);
+
+
+                        program.sendAllBufferData(vaoManager);
+
+
+                        expect(extensionVAO.bindVertexArrayOES).toCalledTwice();
                     });
                 });
             });
         });
 
         describe("if hardware not support vao", function(){
+            var buffer1,buffer2;
+            var pos1,pos2;
+
             beforeEach(function(){
                 wd.GPUDetector.getInstance().extensionVAO = null;
-            });
 
-            it("sendAttributeData only add buffer data to list; sendAllBufferData will send all buffer data in the list", function () {
-                var buffer1 = wd.ArrayBuffer.create([1, 2, 3], 3, wd.EBufferType.UNSIGNED_SHORT);
-                var buffer2 = wd.ArrayBuffer.create([2, 3, 4], 3, wd.EBufferType.UNSIGNED_SHORT);
-                var pos1 = 1;
+                buffer1 = wd.ArrayBuffer.create([1, 2, 3], 3, wd.EBufferType.UNSIGNED_SHORT);
+                buffer2 = wd.ArrayBuffer.create([2, 3, 4], 3, wd.EBufferType.UNSIGNED_SHORT);
+                pos1 = 1;
                 gl.getAttribLocation.withArgs(sinon.match.any, "a_position").returns(pos1);
-                var pos2 = 2;
+                pos2 = 2;
                 gl.getAttribLocation.withArgs(sinon.match.any, "a_texCoord").returns(pos2);
 
                 sandbox.stub(program._sender, "sendBuffer");
+            });
+
+            describe("test cache", function() {
+                beforeEach(function () {
+                });
+
+                it("if its buffer data changed, still cache hit", function () {
+                    program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer1);
 
 
+                    program.sendAllBufferData();
+
+
+                    expect(program._sender.sendBuffer).toCalledOnce();
+
+
+                    buffer1.resetData([1, 2, 3]);
+                    program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer1);
+
+
+                    program.sendAllBufferData();
+
+
+                    expect(program._sender.sendBuffer).not.toCalledTwice();
+                });
+            });
+
+            it("sendAttributeData only add buffer data to list; sendAllBufferData will send all buffer data in the list", function () {
                 program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer1);
                 program.sendAttributeData("a_texCoord", wd.EVariableType.BUFFER, buffer2);
                 expect(program._sender.sendBuffer).not.toCalled();
@@ -127,92 +274,6 @@ describe("program integration test", function() {
                 expect(program._sender.sendBuffer.firstCall).toCalledWith(pos1, buffer1);
                 expect(program._sender.sendBuffer.secondCall).toCalledWith(pos2, buffer2);
             });
-
-            //describe("test cache", function () {
-            //    var buffer1, buffer2;
-            //    var pos1, pos2;
-            //
-            //    beforeEach(function () {
-            //        buffer1 = wd.ArrayBuffer.create([1, 2, 3], 3, wd.EBufferType.UNSIGNED_SHORT);
-            //        buffer2 = wd.ArrayBuffer.create([2, 3, 4], 3, wd.EBufferType.UNSIGNED_SHORT);
-            //        pos1 = 1;
-            //        gl.getAttribLocation.withArgs(sinon.match.any, "a_position").returns(pos1);
-            //        pos2 = 2;
-            //        gl.getAttribLocation.withArgs(sinon.match.any, "a_texCoord").returns(pos2);
-            //
-            //        sandbox.spy(program._sender, "sendBuffer");
-            //    });
-            //
-            //    it("if switch program, clear cache and send it and enableVertexAttribArray location", function () {
-            //        program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer1);
-            //        program.sendAttributeData("a_texCoord", wd.EVariableType.BUFFER, buffer2);
-            //
-            //
-            //        program.sendAllBufferData();
-            //
-            //
-            //        expect(program._sender.sendBuffer).toCalledTwice();
-            //        expect(gl.enableVertexAttribArray.callCount).toEqual(2);
-            //
-            //
-            //        var program2 = wd.Program.create();
-            //        program2.use();
-            //
-            //        program.use();
-            //
-            //
-            //        program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer1);
-            //        program.sendAttributeData("a_texCoord", wd.EVariableType.BUFFER, buffer2);
-            //
-            //
-            //        program.sendAllBufferData();
-            //
-            //
-            //        expect(program._sender.sendBuffer.callCount).toEqual(4);
-            //        expect(gl.enableVertexAttribArray.callCount).toEqual(4);
-            //    });
-            //
-            //    it("if lastBindedArrayBufferList equal this buffer list which is to be sended, not send again", function () {
-            //        program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer1);
-            //        program.sendAttributeData("a_texCoord", wd.EVariableType.BUFFER, buffer2);
-            //
-            //
-            //        program.sendAllBufferData();
-            //
-            //
-            //        expect(program._sender.sendBuffer).toCalledTwice();
-            //
-            //
-            //        program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer1);
-            //        program.sendAttributeData("a_texCoord", wd.EVariableType.BUFFER, buffer2);
-            //
-            //
-            //        program.sendAllBufferData();
-            //
-            //
-            //        expect(program._sender.sendBuffer).toCalledTwice();
-            //    });
-            //    it("else, send", function () {
-            //        program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer1);
-            //        program.sendAttributeData("a_texCoord", wd.EVariableType.BUFFER, buffer2);
-            //
-            //
-            //        program.sendAllBufferData();
-            //
-            //
-            //        expect(program._sender.sendBuffer).toCalledTwice();
-            //
-            //
-            //        program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer2);
-            //        program.sendAttributeData("a_texCoord", wd.EVariableType.BUFFER, buffer1);
-            //
-            //
-            //        program.sendAllBufferData();
-            //
-            //
-            //        expect(program._sender.sendBuffer.callCount).toEqual(4);
-            //    });
-            //});
         });
 
         //it("when switch program and the lastBindedArrayBufferList equal this buffer list which is to be sended, send it", function(){
