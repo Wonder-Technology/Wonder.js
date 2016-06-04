@@ -26,12 +26,12 @@ describe("BufferTable", function () {
             expect(buffer1.dispose).toCalledOnce();
             expect(buffer2.dispose).toCalledOnce();
         });
-        it("clear last binded array buffer arr", function () {
-            Table.lastBindedArrayBufferArr = [{}];
+        it("clear last binded array buffer arr uid string", function () {
+            Table.lastBindedArrayBufferListUidStr = "";
 
             Table.dispose();
 
-            expect(Table.lastBindedArrayBufferArr).toBeNull();
+            expect(Table.lastBindedArrayBufferListUidStr).toBeNull();
         });
         it("clear last binded element buffer", function () {
             var buffer1 = {dispose:sandbox.stub()};

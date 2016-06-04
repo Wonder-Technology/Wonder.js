@@ -27,7 +27,7 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        //'test/unit/**',
+        'test/unit/**',
 
 
 
@@ -46,20 +46,20 @@
 
         //'test/unit/**/ProgramSpec.js',
         //'test/unit/**/GLSLDataSenderSpec.js',
-        'test/unit/**/programIn*',
+        //'test/unit/**/programIn*',
 
         //'test/unit/**/renderer/**',
 
         //'test/unit/**/TextureSpec*',
 
-        'test/unit/**/*ProceduralRenderTargetRenderer*',
+        //'test/unit/**/*ProceduralRenderTargetRenderer*',
 
         //'test/unit/**/FrameBuffer*',
         //'test/unit/**/*ArrayBuffer*',
         //'test/unit/**/*ElementBuffer*',
         //'test/unit/**/*InstanceBuffer*',
 
-        'test/unit/**/proceduralRenderTargetRenderer*',
+        //'test/unit/**/proceduralRenderTargetRenderer*',
 
 
         //'test/unit/**/cubemapTexture*',
@@ -73,9 +73,9 @@
         //'test/unit/**/material_lib/**',
 
         //'test/unit/**/SphereGeometrySpec*',
-        'test/unit/**/*GeometrySpec*',
+        //'test/unit/**/*GeometrySpec*',
 
-        'test/unit/**/VAOManager*',
+        //'test/unit/**/VAOManager*',
         //
         //'test/unit/**/action/*',
 
@@ -160,7 +160,7 @@
 
         //'test/unit/**/ShaderSpec*',
         //'test/unit/**/*ShaderSpec*',
-        'test/unit/**/ProceduralShaderSpec*',
+        //'test/unit/**/ProceduralShaderSpec*',
 
         //'test/unit/**/customShaderSpec*',
         //'test/unit/**/renderWebGL*',

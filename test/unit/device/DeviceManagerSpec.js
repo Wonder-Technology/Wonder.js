@@ -142,7 +142,9 @@ describe("deviceManager", function() {
             expect(view.height > 0).toBeTruthy();
             expect(dom.get(0).style.width).toEqual("100%");
             expect(dom.get(0).style.height).toEqual("100%");
-            expect(device.gl.viewport).toCalledWith(0, 0, view.width, view.height);
+
+            //expect(device.gl.viewport).toCalledWith(0, 0, view.width, view.height);
+            expect(device.gl.viewport).toCalledWith(0, 0, sinon.match.number, sinon.match.number);
         });
         it("support custom screen size and position", function(){
             var view = device.view;
