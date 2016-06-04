@@ -80,7 +80,7 @@ describe("direction shadow map", function() {
                 describe("test send data", function(){
                     beforeEach(function(){
                         setBuildShadowMapShaderAndProgram(sphere, function (program) {
-                            //sandbox.spy(program, "sendAttributeData");
+                            //sandbox.spy(program, "sendAttributeBuffer");
                             //sandbox.stub(program, "sendUniformData");
 
                             shaderTool.spyProgram(sandbox, program);
@@ -156,7 +156,7 @@ describe("direction shadow map", function() {
                 //
                 //it("test send shadowMap data", function () {
                 //    setBuildShadowMapShaderAndProgram(sphere, function (program) {
-                //        sandbox.stub(program, "sendAttributeData");
+                //        sandbox.stub(program, "sendAttributeBuffer");
                 //        sandbox.stub(program, "sendUniformData");
                 //    });
                 //
@@ -769,7 +769,7 @@ describe("direction shadow map", function() {
                 describe("test build shadow map", function () {
                     beforeEach(function(){
                         setBuildShadowMapShaderAndProgram(sphere, function (program) {
-                            //sandbox.spy(program, "sendAttributeData");
+                            //sandbox.spy(program, "sendAttributeBuffer");
                             //sandbox.stub(program, "sendUniformData");
                             //
                             shaderTool.spyProgram(sandbox, program);
@@ -799,7 +799,7 @@ describe("direction shadow map", function() {
                     it("send u_vpMatrixFromLight,u_mMatrix,u_vMatrix,u_pMatrix", function () {
                         //
                         //setBuildShadowMapShaderAndProgram(sphere2, function (program) {
-                        //    sandbox.stub(program, "sendAttributeData");
+                        //    sandbox.stub(program, "sendAttributeBuffer");
                         //    sandbox.stub(program, "sendUniformData");
                         //});
                         //
@@ -820,7 +820,7 @@ describe("direction shadow map", function() {
                         //expect(program.sendUniformData.withArgs("u_mMatrix")).toCalledBefore(program.sendUniformData.withArgs("u_vpMatrixFromLight"));
                         //expect(program.sendUniformData.withArgs("u_vMatrix")).toCalledBefore(program.sendUniformData.withArgs("u_vpMatrixFromLight"));
                         //expect(program.sendUniformData.withArgs("u_pMatrix")).toCalledBefore(program.sendUniformData.withArgs("u_vpMatrixFromLight"));
-                        //expect(program.sendAttributeData.withArgs("a_position")).toCalledBefore(program.sendUniformData.withArgs("u_vpMatrixFromLight"));
+                        //expect(program.sendAttributeBuffer.withArgs("a_position")).toCalledBefore(program.sendUniformData.withArgs("u_vpMatrixFromLight"));
                     });
                     it("bind shadow map", function () {
                         var shadowMap = shadowTool.getBuildShadowMap(0);
@@ -864,7 +864,7 @@ describe("direction shadow map", function() {
                     //it("not send u_vpMatrixFromLight,u_mMatrix,u_vMatrix,u_pMatrix,a_position", function () {
                     //
                     //    setBuildShadowMapShaderAndProgram(sphere, function (program) {
-                    //        sandbox.stub(program, "sendAttributeData");
+                    //        sandbox.stub(program, "sendAttributeBuffer");
                     //        sandbox.stub(program, "sendUniformData");
                     //    });
                     //

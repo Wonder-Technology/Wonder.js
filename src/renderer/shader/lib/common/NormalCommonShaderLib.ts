@@ -25,7 +25,7 @@ module wd{
                 return;
             }
 
-            this.sendAttributeData(program, "a_normal", normalBuffer);
+            this.sendAttributeBuffer(program, "a_normal", normalBuffer);
         }
     }
 }

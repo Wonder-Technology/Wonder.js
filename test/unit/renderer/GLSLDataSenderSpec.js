@@ -62,14 +62,14 @@ describe("GLSLDataSender", function () {
         //    });
         //
         //    it("if cached, return cached data", function () {
-        //        program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer);
-        //        program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer);
+        //        program.sendAttributeBuffer("a_position", wd.EVariableType.BUFFER, buffer);
+        //        program.sendAttributeBuffer("a_position", wd.EVariableType.BUFFER, buffer);
         //
         //        expect(gl.vertexAttribPointer.withArgs(pos, 3, gl[wd.EBufferType.UNSIGNED_SHORT], false, 0, 0)).toCalledOnce();
         //    });
         //    it("if data not equal, cache miss", function () {
-        //        program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer);
-        //        program.sendAttributeData("a_position", wd.EVariableType.BUFFER, wd.ArrayBuffer.create([1, 2, 3, 1.2, 0.2, 3.1, 3.3, 10.5, 9.1], 3, wd.EBufferType.UNSIGNED_SHORT));
+        //        program.sendAttributeBuffer("a_position", wd.EVariableType.BUFFER, buffer);
+        //        program.sendAttributeBuffer("a_position", wd.EVariableType.BUFFER, wd.ArrayBuffer.create([1, 2, 3, 1.2, 0.2, 3.1, 3.3, 10.5, 9.1], 3, wd.EBufferType.UNSIGNED_SHORT));
         //
         //        expect(gl.vertexAttribPointer.withArgs(pos)).toCalledTwice();
         //    });

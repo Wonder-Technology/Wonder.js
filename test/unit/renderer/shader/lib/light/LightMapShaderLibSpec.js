@@ -26,7 +26,7 @@ describe("LightMapShaderLib", function () {
                 getChild: sandbox.stub().returns([])
             });
 
-            sandbox.stub(program, "sendAttributeData");
+            sandbox.stub(program, "sendAttributeBuffer");
             sandbox.stub(program, "sendUniformData");
         });
 

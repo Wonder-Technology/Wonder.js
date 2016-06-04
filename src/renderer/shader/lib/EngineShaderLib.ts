@@ -38,8 +38,8 @@ module wd{
             fs && this.setFsSource(fs);
         }
 
-        protected sendAttributeData(program:Program, name:string, data:any){
-            program.sendAttributeData(name, EVariableType.BUFFER, data);
+        protected sendAttributeBuffer(program:Program, name:string, data:any){
+            program.sendAttributeBuffer(name, EVariableType.BUFFER, data);
         }
 
         @require(function(program:Program, name:string, data:any){

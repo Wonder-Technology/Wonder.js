@@ -32,8 +32,8 @@ describe("shaderLibSpec", function () {
                     use: sandbox.stub(),
                     initWithShader: sandbox.stub(),
                     sendUniformData: sandbox.stub(),
-                    sendAttributeData: sandbox.stub(),
-                    sendAttributeDataFromCustomShader: sandbox.stub(),
+                    sendAttributeBuffer: sandbox.stub(),
+                    sendAttributeBufferFromCustomShader: sandbox.stub(),
                     sendUniformDataFromCustomShader: sandbox.stub()
                 };
 
@@ -115,7 +115,7 @@ describe("shaderLibSpec", function () {
         material1.init();
 
         sandbox.stub(material1.program, "sendUniformData");
-        sandbox.stub(material1.program, "sendAttributeData");
+        sandbox.stub(material1.program, "sendAttributeBuffer");
 
         material1.updateShader(quadCmd);
 
@@ -127,14 +127,14 @@ describe("shaderLibSpec", function () {
         material2.init();
 
         sandbox.stub(material2.program, "sendUniformData");
-        sandbox.stub(material2.program, "sendAttributeData");
+        sandbox.stub(material2.program, "sendAttributeBuffer");
 
         material2.updateShader(quadCmd);
 
 
 
-        expect(material1.program.sendAttributeData.withArgs("a_color")).toCalledOnce();
-        expect(material2.program.sendAttributeData.withArgs("a_color")).toCalledOnce();
+        expect(material1.program.sendAttributeBuffer.withArgs("a_color")).toCalledOnce();
+        expect(material2.program.sendAttributeBuffer.withArgs("a_color")).toCalledOnce();
     });
 });
 

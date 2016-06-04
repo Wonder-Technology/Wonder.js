@@ -20,7 +20,7 @@ describe("CustomShaderLib", function () {
         beforeEach(function(){
             program = {
                 sendUniformData:sandbox.stub(),
-                sendAttributeData:sandbox.stub()
+                sendAttributeBuffer:sandbox.stub()
             }
 
             material = wd.ShaderMaterial.create();
@@ -92,19 +92,19 @@ describe("CustomShaderLib", function () {
                 });
 
                 it("POSITION->vertices", function(){
-                    expect(program.sendAttributeData).toCalledWith("a_position", wd.EVariableType.BUFFER, vertices);
+                    expect(program.sendAttributeBuffer).toCalledWith("a_position", wd.EVariableType.BUFFER, vertices);
                 });
                 it("TEXCOORD->texCoords", function(){
-                    expect(program.sendAttributeData).toCalledWith("a_texCoord", wd.EVariableType.BUFFER, texCoords);
+                    expect(program.sendAttributeBuffer).toCalledWith("a_texCoord", wd.EVariableType.BUFFER, texCoords);
                 });
                 it("COLOR->colors", function(){
-                    expect(program.sendAttributeData).toCalledWith("a_color", wd.EVariableType.BUFFER, colors);
+                    expect(program.sendAttributeBuffer).toCalledWith("a_color", wd.EVariableType.BUFFER, colors);
                 });
                 it("NORMAL->normals", function(){
-                    expect(program.sendAttributeData).toCalledWith("a_normal", wd.EVariableType.BUFFER, normals);
+                    expect(program.sendAttributeBuffer).toCalledWith("a_normal", wd.EVariableType.BUFFER, normals);
                 });
                 it("TANGENT->tangents", function(){
-                    expect(program.sendAttributeData).toCalledWith("a_tangent", wd.EVariableType.BUFFER, tangents);
+                    expect(program.sendAttributeBuffer).toCalledWith("a_tangent", wd.EVariableType.BUFFER, tangents);
                 });
             });
 

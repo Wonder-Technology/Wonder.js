@@ -33,7 +33,7 @@ var shaderTool = (function(){
             }
 
             sandbox.spy(program, "sendUniformData");
-            sandbox.spy(program, "sendAttributeData");
+            sandbox.spy(program, "sendAttributeBuffer");
             sandbox.spy(program, "sendStructureData");
             sandbox.spy(program, "use");
 
@@ -62,7 +62,7 @@ var shaderTool = (function(){
 
 
             sandbox.stub(program, "sendUniformData");
-            sandbox.stub(program, "sendAttributeData");
+            sandbox.stub(program, "sendAttributeBuffer");
             sandbox.stub(program, "sendStructureData");
             sandbox.stub(program, "use");
 

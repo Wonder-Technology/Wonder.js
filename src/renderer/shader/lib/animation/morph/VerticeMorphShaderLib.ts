@@ -18,8 +18,8 @@ module wd{
                 return;
             }
 
-            this.sendAttributeData(program, "a_currentFramePosition", morphVerticeData[0]);
-            this.sendAttributeData(program, "a_nextFramePosition", morphVerticeData[1]);
+            this.sendAttributeBuffer(program, "a_currentFramePosition", morphVerticeData[0]);
+            this.sendAttributeBuffer(program, "a_nextFramePosition", morphVerticeData[1]);
         }
 
         public setShaderDefinition(quadCmd:QuadCommand, material:EngineMaterial){

@@ -19,7 +19,7 @@ module wd{
                 return;
             }
 
-            this.sendAttributeData(program, "a_tangent", tangentBuffer);
+            this.sendAttributeBuffer(program, "a_tangent", tangentBuffer);
         }
 
         public setShaderDefinition(quadCmd:QuadCommand, material:EngineMaterial){

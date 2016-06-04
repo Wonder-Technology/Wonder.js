@@ -9,7 +9,7 @@ module wd{
         public type:string = "common_proceduralTexture";
 
         public sendShaderVariables(program:Program, cmd:ProceduralCommand){
-            this.sendAttributeData(program, "a_positionVec2", cmd.vertexBuffer);
+            this.sendAttributeBuffer(program, "a_positionVec2", cmd.vertexBuffer);
 
             program.sendAllBufferData(cmd.vaoManager);
         }

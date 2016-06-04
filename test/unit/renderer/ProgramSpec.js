@@ -124,8 +124,8 @@ describe("Program", function(){
             //it("if shader dirty, no cache", function () {
             //    setShaderDirty(true);
             //
-            //    program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer);
-            //    program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer);
+            //    program.sendAttributeBuffer("a_position", wd.EVariableType.BUFFER, buffer);
+            //    program.sendAttributeBuffer("a_position", wd.EVariableType.BUFFER, buffer);
             //
             //    expect(device.gl.getAttribLocation).toCalledTwice();
             //});
@@ -139,7 +139,7 @@ describe("Program", function(){
         });
     });
 
-    describe("sendAttributeData", function(){
+    describe("sendAttributeBuffer", function(){
     });
 
     describe("sendUniformData", function(){
@@ -481,7 +481,7 @@ describe("Program", function(){
             it("if position > gl.VERTEX_ATTRIB_ARRAY_ENABLED, not disable", function () {
                 gl.VERTEX_ATTRIB_ARRAY_ENABLED = 1;
                 gl.getAttribLocation.returns(pos);
-                program.sendAttributeData("a", wd.EVariableType.BUFFER, {});
+                program.sendAttributeBuffer("a", wd.EVariableType.BUFFER, {});
 
                 program.dispose();
 
@@ -489,7 +489,7 @@ describe("Program", function(){
             });
             it("else, disable", function () {
                 gl.getAttribLocation.returns(pos);
-                program.sendAttributeData("a", wd.EVariableType.BUFFER, {});
+                program.sendAttributeBuffer("a", wd.EVariableType.BUFFER, {});
 
                 program.dispose();
 

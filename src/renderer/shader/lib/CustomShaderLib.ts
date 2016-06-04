@@ -12,7 +12,7 @@ module wd{
             var shader:CustomShader = this.shader;
 
                 shader.attributes.forEach((attribute:ShaderData, name:string) => {
-                    CustomShaderLibUtils.sendAttributeDataWithSemantic(name, attribute.type, attribute.value, program, cmd);
+                    CustomShaderLibUtils.sendAttributeBufferWithSemantic(name, attribute.type, attribute.value, program, cmd);
                 });
 
             shader.uniforms.forEach((uniform:ShaderData, name:string) => {

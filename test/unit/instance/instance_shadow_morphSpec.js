@@ -123,7 +123,7 @@ describe("instance+shadow+morph", function () {
 
                 it("should send u_interpolation,a_currentFramePosition,a_nextFramePosition", function () {
                     setBuildShadowMapShaderAndProgram(function (program) {
-                        sandbox.stub(program, "sendAttributeData");
+                        sandbox.stub(program, "sendAttributeBuffer");
                         sandbox.stub(program, "sendUniformData");
                     });
 
@@ -133,8 +133,8 @@ describe("instance+shadow+morph", function () {
 
 
                     expect(program.sendUniformData.withArgs("u_interpolation")).toCalledOnce();
-                    expect(program.sendAttributeData.withArgs("a_currentFramePosition")).toCalledOnce();
-                    expect(program.sendAttributeData.withArgs("a_nextFramePosition")).toCalledOnce();
+                    expect(program.sendAttributeBuffer.withArgs("a_currentFramePosition")).toCalledOnce();
+                    expect(program.sendAttributeBuffer.withArgs("a_nextFramePosition")).toCalledOnce();
                 });
             });
         });

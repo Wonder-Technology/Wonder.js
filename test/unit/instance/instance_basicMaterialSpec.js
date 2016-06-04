@@ -529,7 +529,7 @@ describe("instance with basic material", function(){
                 expect(gl.colorMask.withArgs(false, true, true, true)).toCalledOnce();
                 expect(program.use).toCalledOnce();
                 expect(map.bindToUnit).toCalledOnce();
-                expect(program.sendAttributeData.withArgs("a_position")).toCalledOnce();
+                expect(program.sendAttributeBuffer.withArgs("a_position")).toCalledOnce();
 
                 expect(gl.drawElements.callCount).toEqual(3);
                 expect(wd.DebugStatistics.count.drawCalls).toEqual(3);

@@ -132,7 +132,7 @@ describe("instance with shadow", function () {
                     setBuildShadowMapShaderAndProgram(function (program) {
 
 
-                        sandbox.stub(program, "sendAttributeData");
+                        sandbox.stub(program, "sendAttributeBuffer");
                         sandbox.stub(program, "sendUniformData");
                         sandbox.stub(program, "getAttribLocation");
                         program.getAttribLocation.withArgs("a_mVec4_0").returns(offsetLocation0);
@@ -273,7 +273,7 @@ describe("instance with shadow", function () {
             director._init();
 
             shadowTool.setTwoDBuildShadowMapShaderAndProgramHelper(sandbox,  child, function(program){
-                sandbox.stub(program, "sendAttributeData");
+                sandbox.stub(program, "sendAttributeBuffer");
                 sandbox.stub(program, "sendUniformData");
                 sandbox.stub(program, "getAttribLocation");
             }, function(s, p){

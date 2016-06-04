@@ -25,7 +25,7 @@ module wd{
                 return;
             }
 
-            this.sendAttributeData(program, "a_position", verticeBuffer);
+            this.sendAttributeBuffer(program, "a_position", verticeBuffer);
         }
     }
 }

@@ -106,7 +106,7 @@ describe("direction shadow map with octree", function() {
                     expect(program.sendUniformData.withArgs("u_mMatrix")).toCalledBefore(program.sendMatrix4.withArgs("u_vpMatrixFromLight"));
                     expect(program.sendUniformData.withArgs("u_vMatrix")).toCalledBefore(program.sendMatrix4.withArgs("u_vpMatrixFromLight"));
                     expect(program.sendUniformData.withArgs("u_pMatrix")).toCalledBefore(program.sendMatrix4.withArgs("u_vpMatrixFromLight"));
-                    expect(program.sendAttributeData.withArgs("a_position")).toCalledBefore(program.sendMatrix4.withArgs("u_vpMatrixFromLight"));
+                    expect(program.sendAttributeBuffer.withArgs("a_position")).toCalledBefore(program.sendMatrix4.withArgs("u_vpMatrixFromLight"));
                 });
             });
         });

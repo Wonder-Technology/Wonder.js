@@ -104,7 +104,7 @@ describe("BasicMaterial", function () {
 
             director._loopBody(1);
 
-            expect(program.sendAttributeData.withArgs("a_texCoord")).toCalledOnce();
+            expect(program.sendAttributeBuffer.withArgs("a_texCoord")).toCalledOnce();
             expect(program.sendUniformData.withArgs("u_map0SourceRegion")).toCalledOnce();
             expect(program.sendUniformData.withArgs("u_map0RepeatRegion")).toCalledOnce();
         });
@@ -119,7 +119,7 @@ describe("BasicMaterial", function () {
 
             director._loopBody(1);
 
-            expect(program.sendAttributeData.withArgs("a_texCoord")).toCalledOnce();
+            expect(program.sendAttributeBuffer.withArgs("a_texCoord")).toCalledOnce();
             expect(program.sendUniformData.withArgs("u_map0SourceRegion")).toCalledOnce();
             expect(program.sendUniformData.withArgs("u_map0RepeatRegion")).toCalledOnce();
             expect(program.sendUniformData.withArgs("u_map1SourceRegion")).toCalledOnce();
@@ -181,9 +181,9 @@ describe("BasicMaterial", function () {
 
             director._loopBody(1);
 
-            expect(program.sendAttributeData.withArgs("a_normal")).toCalledOnce();
+            expect(program.sendAttributeBuffer.withArgs("a_normal")).toCalledOnce();
             expect(testTool.getValues(
-                program.sendAttributeData.withArgs("a_normal").getCall(0).args[2].data
+                program.sendAttributeBuffer.withArgs("a_normal").getCall(0).args[2].data
             )).toEqual(
                 normals
             )

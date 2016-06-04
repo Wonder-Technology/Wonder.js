@@ -230,7 +230,7 @@ describe("instance with light material", function () {
                 program.name = "box1Program";
                 sandbox.spy(program, "use");
                 sandbox.spy(program, "sendUniformData");
-                sandbox.spy(program, "sendAttributeData");
+                sandbox.spy(program, "sendAttributeBuffer");
             });
 
             it("set webgl state and use program and bind texture and send glsl data(except mMatrix) only once", function () {
@@ -242,7 +242,7 @@ describe("instance with light material", function () {
                 expect(gl.colorMask.withArgs(false, true, true, true)).toCalledOnce();
                 expect(program.use).toCalledOnce();
                 expect(map.bindToUnit).toCalledOnce();
-                expect(program.sendAttributeData.withArgs("a_position")).toCalledOnce();
+                expect(program.sendAttributeBuffer.withArgs("a_position")).toCalledOnce();
                 expect(program.sendUniformData.withArgs("u_shininess")).toCalledOnce();
 
                 expect(gl.drawElements.callCount).toEqual(3);

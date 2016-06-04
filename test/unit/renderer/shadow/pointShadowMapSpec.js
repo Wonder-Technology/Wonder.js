@@ -344,7 +344,7 @@ describe("point shadow map", function() {
                         expect(program.sendUniformData.withArgs("u_mMatrix").callCount).toEqual(6);
                         expect(program.sendUniformData.withArgs("u_vMatrix").callCount).toEqual(6);
                         expect(program.sendUniformData.withArgs("u_pMatrix").callCount).toEqual(6);
-                        expect(program.sendAttributeData.withArgs("a_position").callCount).toEqual(6);
+                        expect(program.sendAttributeBuffer.withArgs("a_position").callCount).toEqual(6);
                     });
                 });
             });

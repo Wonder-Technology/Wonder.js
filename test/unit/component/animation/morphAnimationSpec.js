@@ -144,24 +144,24 @@ describe("morph animation", function () {
 
         function judgeFrameState(callIndex, currentFramePosition, nextFramePosition, currentFrameNormal, nextFrameNormal){
             expect(testTool.getValues(
-                program.sendAttributeData.withArgs("a_currentFramePosition").getCall(callIndex).args[2].data
+                program.sendAttributeBuffer.withArgs("a_currentFramePosition").getCall(callIndex).args[2].data
             )).toEqual(
                 currentFramePosition
             )
             expect(testTool.getValues(
-                program.sendAttributeData.withArgs("a_nextFramePosition").getCall(callIndex).args[2].data
+                program.sendAttributeBuffer.withArgs("a_nextFramePosition").getCall(callIndex).args[2].data
             )).toEqual(
                 nextFramePosition
             )
 
 
             expect(testTool.getValues(
-                program.sendAttributeData.withArgs("a_currentFrameNormal").getCall(callIndex).args[2].data
+                program.sendAttributeBuffer.withArgs("a_currentFrameNormal").getCall(callIndex).args[2].data
             )).toEqual(
                 currentFrameNormal
             )
             expect(testTool.getValues(
-                program.sendAttributeData.withArgs("a_nextFrameNormal").getCall(callIndex).args[2].data
+                program.sendAttributeBuffer.withArgs("a_nextFrameNormal").getCall(callIndex).args[2].data
             )).toEqual(
                 nextFrameNormal
             )
@@ -174,7 +174,7 @@ describe("morph animation", function () {
         function setProgram(material){
             program = material.shader.program;
             sandbox.stub(program, "sendUniformData");
-            sandbox.stub(program, "sendAttributeData");
+            sandbox.stub(program, "sendAttributeBuffer");
         }
 
         beforeEach(function(){

@@ -49,7 +49,7 @@ describe("shaderLibSpec", function () {
 
 
         sandbox.stub(material.program, "sendUniformData");
-        sandbox.stub(material.program, "sendAttributeData");
+        sandbox.stub(material.program, "sendAttributeBuffer");
 
 
 
@@ -66,7 +66,7 @@ describe("shaderLibSpec", function () {
         material.updateShader(quadCmd);
 
 
-        expect(material.program.sendAttributeData.withArgs("a_texCoord")).toCalledOnce();
+        expect(material.program.sendAttributeBuffer.withArgs("a_texCoord")).toCalledOnce();
     });
 });
 

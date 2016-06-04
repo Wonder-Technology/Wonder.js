@@ -298,7 +298,7 @@ describe("terrain material", function() {
                     material.updateShader(quadCmd);
 
 
-                    expect(material.program.sendAttributeData.withArgs("a_texCoord")).toCalledOnce();
+                    expect(material.program.sendAttributeBuffer.withArgs("a_texCoord")).toCalledOnce();
                 });
             });
 

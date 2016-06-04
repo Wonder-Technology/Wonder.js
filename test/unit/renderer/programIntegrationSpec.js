@@ -37,8 +37,8 @@ describe("program integration test", function() {
             });
 
             it("if switch program, clear cache and send it and enableVertexAttribArray location", function () {
-                program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer1);
-                program.sendAttributeData("a_texCoord", wd.EVariableType.BUFFER, buffer2);
+                program.sendAttributeBuffer("a_position", wd.EVariableType.BUFFER, buffer1);
+                program.sendAttributeBuffer("a_texCoord", wd.EVariableType.BUFFER, buffer2);
 
 
                 program.sendAllBufferData();
@@ -54,8 +54,8 @@ describe("program integration test", function() {
                 program.use();
 
 
-                program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer1);
-                program.sendAttributeData("a_texCoord", wd.EVariableType.BUFFER, buffer2);
+                program.sendAttributeBuffer("a_position", wd.EVariableType.BUFFER, buffer1);
+                program.sendAttributeBuffer("a_texCoord", wd.EVariableType.BUFFER, buffer2);
 
 
                 program.sendAllBufferData();
@@ -66,8 +66,8 @@ describe("program integration test", function() {
             });
 
             it("if last send buffers equal current send buffers, not send again", function () {
-                program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer1);
-                program.sendAttributeData("a_texCoord", wd.EVariableType.BUFFER, buffer2);
+                program.sendAttributeBuffer("a_position", wd.EVariableType.BUFFER, buffer1);
+                program.sendAttributeBuffer("a_texCoord", wd.EVariableType.BUFFER, buffer2);
 
 
                 program.sendAllBufferData();
@@ -76,8 +76,8 @@ describe("program integration test", function() {
                 expect(program._sender.sendBuffer).toCalledTwice();
 
 
-                program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer1);
-                program.sendAttributeData("a_texCoord", wd.EVariableType.BUFFER, buffer2);
+                program.sendAttributeBuffer("a_position", wd.EVariableType.BUFFER, buffer1);
+                program.sendAttributeBuffer("a_texCoord", wd.EVariableType.BUFFER, buffer2);
 
 
                 program.sendAllBufferData();
@@ -86,8 +86,8 @@ describe("program integration test", function() {
                 expect(program._sender.sendBuffer).toCalledTwice();
             });
             it("else, send", function () {
-                program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer1);
-                program.sendAttributeData("a_texCoord", wd.EVariableType.BUFFER, buffer2);
+                program.sendAttributeBuffer("a_position", wd.EVariableType.BUFFER, buffer1);
+                program.sendAttributeBuffer("a_texCoord", wd.EVariableType.BUFFER, buffer2);
 
 
                 program.sendAllBufferData();
@@ -96,8 +96,8 @@ describe("program integration test", function() {
                 expect(program._sender.sendBuffer).toCalledTwice();
 
 
-                program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer2);
-                program.sendAttributeData("a_texCoord", wd.EVariableType.BUFFER, buffer1);
+                program.sendAttributeBuffer("a_position", wd.EVariableType.BUFFER, buffer2);
+                program.sendAttributeBuffer("a_texCoord", wd.EVariableType.BUFFER, buffer1);
 
 
                 program.sendAllBufferData();
@@ -141,8 +141,8 @@ describe("program integration test", function() {
 
             describe("test cache miss", function(){
                 beforeEach(function(){
-                    program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer1);
-                    program.sendAttributeData("a_texCoord", wd.EVariableType.BUFFER, buffer2);
+                    program.sendAttributeBuffer("a_position", wd.EVariableType.BUFFER, buffer1);
+                    program.sendAttributeBuffer("a_texCoord", wd.EVariableType.BUFFER, buffer2);
                 });
 
                 it("bind vao", function () {
@@ -178,7 +178,7 @@ describe("program integration test", function() {
 
                 describe("if to-send buffer changed", function () {
                     it("if its buffer data changed, still cache hit", function () {
-                        program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer1);
+                        program.sendAttributeBuffer("a_position", wd.EVariableType.BUFFER, buffer1);
 
 
                         program.sendAllBufferData(vaoManager);
@@ -188,7 +188,7 @@ describe("program integration test", function() {
 
 
                         buffer1.resetData([1,2,3]);
-                        program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer1);
+                        program.sendAttributeBuffer("a_position", wd.EVariableType.BUFFER, buffer1);
 
 
                         program.sendAllBufferData(vaoManager);
@@ -197,7 +197,7 @@ describe("program integration test", function() {
                         expect(extensionVAO.bindVertexArrayOES).not.toCalledTwice();
                     });
                     it("if the buffer is changed, cache miss and create new vao and set it", function () {
-                        program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer1);
+                        program.sendAttributeBuffer("a_position", wd.EVariableType.BUFFER, buffer1);
 
 
                         program.sendAllBufferData(vaoManager);
@@ -206,8 +206,8 @@ describe("program integration test", function() {
                         expect(extensionVAO.bindVertexArrayOES).toCalledOnce();
 
 
-                        program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer1);
-                        program.sendAttributeData("a_texCoord", wd.EVariableType.BUFFER, buffer2);
+                        program.sendAttributeBuffer("a_position", wd.EVariableType.BUFFER, buffer1);
+                        program.sendAttributeBuffer("a_texCoord", wd.EVariableType.BUFFER, buffer2);
 
 
                         program.sendAllBufferData(vaoManager);
@@ -241,7 +241,7 @@ describe("program integration test", function() {
                 });
 
                 it("if its buffer data changed, still cache hit", function () {
-                    program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer1);
+                    program.sendAttributeBuffer("a_position", wd.EVariableType.BUFFER, buffer1);
 
 
                     program.sendAllBufferData();
@@ -251,7 +251,7 @@ describe("program integration test", function() {
 
 
                     buffer1.resetData([1, 2, 3]);
-                    program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer1);
+                    program.sendAttributeBuffer("a_position", wd.EVariableType.BUFFER, buffer1);
 
 
                     program.sendAllBufferData();
@@ -261,9 +261,9 @@ describe("program integration test", function() {
                 });
             });
 
-            it("sendAttributeData only add buffer data to list; sendAllBufferData will send all buffer data in the list", function () {
-                program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer1);
-                program.sendAttributeData("a_texCoord", wd.EVariableType.BUFFER, buffer2);
+            it("sendAttributeBuffer only add buffer data to list; sendAllBufferData will send all buffer data in the list", function () {
+                program.sendAttributeBuffer("a_position", wd.EVariableType.BUFFER, buffer1);
+                program.sendAttributeBuffer("a_texCoord", wd.EVariableType.BUFFER, buffer2);
                 expect(program._sender.sendBuffer).not.toCalled();
 
 
@@ -365,7 +365,7 @@ describe("program integration test", function() {
                 });
                 
                 it("the 'build shadow map' and the 'draw shadow map' should bind the independent vao of the same geometry", function(){
-                    program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer1);
+                    program.sendAttributeBuffer("a_position", wd.EVariableType.BUFFER, buffer1);
 
                     program.sendAllBufferData(vaoManager);
 
@@ -373,8 +373,8 @@ describe("program integration test", function() {
 
 
 
-                    program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer1);
-                    program.sendAttributeData("a_texCoord", wd.EVariableType.BUFFER, buffer2);
+                    program.sendAttributeBuffer("a_position", wd.EVariableType.BUFFER, buffer1);
+                    program.sendAttributeBuffer("a_texCoord", wd.EVariableType.BUFFER, buffer2);
 
                     program.sendAllBufferData(vaoManager);
 

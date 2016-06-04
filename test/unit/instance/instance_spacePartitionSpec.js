@@ -429,7 +429,7 @@ describe("instance with spacePartition", function() {
                 expect(gl.colorMask.withArgs(false, true, true, true)).toCalledOnce();
                 expect(program.use).toCalledOnce();
                 expect(map.bindToUnit).toCalledOnce();
-                expect(program.sendAttributeData.withArgs("a_position")).toCalledOnce();
+                expect(program.sendAttributeBuffer.withArgs("a_position")).toCalledOnce();
             });
             it("not bind array,element buffer when draw instance", function () {
                 director._init();

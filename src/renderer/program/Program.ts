@@ -102,7 +102,7 @@ module wd{
 
             assert(type === EVariableType.BUFFER, Log.info.FUNC_SHOULD("type", `be EVariableType.BUFFER, but actual is ${type}`));
         })
-        public sendAttributeData(name:string, type:EVariableType, buffer:ArrayBuffer){
+        public sendAttributeBuffer(name:string, type:EVariableType, buffer:ArrayBuffer){
             var pos:number = null;
 
             pos = this.getAttribLocation(name);

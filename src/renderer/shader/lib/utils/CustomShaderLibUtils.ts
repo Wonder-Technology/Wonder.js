@@ -40,8 +40,8 @@ module wd{
             }
         }
 
-        public static sendAttributeDataWithSemantic(name:string, type:EVariableType, value:any, program:Program, cmd:QuadCommand){
-            program.sendAttributeData(name, this._getAttributeType(type), this._getAttributeData(value, type, cmd));
+        public static sendAttributeBufferWithSemantic(name:string, type:EVariableType, value:any, program:Program, cmd:QuadCommand){
+            program.sendAttributeBuffer(name, this._getAttributeType(type), this._getAttributeData(value, type, cmd));
         }
 
         private static _sendStructureData(name:string, data:Object, program:Program){

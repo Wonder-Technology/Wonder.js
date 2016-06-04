@@ -25,7 +25,7 @@ describe("CommonProceduralShaderLib", function () {
 
     describe("sendShaderVariables", function() {
         beforeEach(function () {
-            sandbox.stub(program, "sendAttributeData");
+            sandbox.stub(program, "sendAttributeBuffer");
         });
 
         it("send a_positionVec2", function () {
@@ -38,7 +38,7 @@ describe("CommonProceduralShaderLib", function () {
 
             lib.sendShaderVariables(program, cmd);
 
-            expect(program.sendAttributeData).toCalledWith("a_positionVec2", wd.EVariableType.BUFFER, cmd.vertexBuffer);
+            expect(program.sendAttributeBuffer).toCalledWith("a_positionVec2", wd.EVariableType.BUFFER, cmd.vertexBuffer);
         });
     });
 

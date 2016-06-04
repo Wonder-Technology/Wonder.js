@@ -176,7 +176,7 @@ describe("instance with shadow and octree", function () {
                         setBuildShadowMapShaderAndProgram(sphere1, function(program){
                             //sandbox.spy(program, "use");
                             //sandbox.spy(program, "sendUniformData");
-                            //sandbox.spy(program, "sendAttributeData");
+                            //sandbox.spy(program, "sendAttributeBuffer");
                         })
                     });
 

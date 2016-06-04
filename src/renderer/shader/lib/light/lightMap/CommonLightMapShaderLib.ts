@@ -13,7 +13,7 @@ module wd{
                 return;
             }
 
-            this.sendAttributeData(program, "a_texCoord", texCoordBuffer);
+            this.sendAttributeBuffer(program, "a_texCoord", texCoordBuffer);
         }
 
         public setShaderDefinition(quadCmd:QuadCommand, material:EngineMaterial){

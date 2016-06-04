@@ -20,7 +20,7 @@ module wd{
              because a_color'pos is 0, and it should be array data(like Float32Array)
              refer to: https://www.khronos.org/webgl/wiki/WebGL_and_OpenGL_Differences#Vertex_Attribute_0
              */
-            this.sendAttributeData(program, "a_color", colorBuffer);
+            this.sendAttributeBuffer(program, "a_color", colorBuffer);
             this.sendUniformData(program, "u_opacity", material.opacity);
         }
 

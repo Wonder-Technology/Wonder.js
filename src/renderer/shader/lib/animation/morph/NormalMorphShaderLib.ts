@@ -15,8 +15,8 @@ module wd{
                 return;
             }
 
-            this.sendAttributeData(program, "a_currentFrameNormal", morphNormalData[0]);
-            this.sendAttributeData(program, "a_nextFrameNormal", morphNormalData[1]);
+            this.sendAttributeBuffer(program, "a_currentFrameNormal", morphNormalData[0]);
+            this.sendAttributeBuffer(program, "a_nextFrameNormal", morphNormalData[1]);
         }
 
         public setShaderDefinition(quadCmd:QuadCommand, material:EngineMaterial){

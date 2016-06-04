@@ -113,24 +113,24 @@ describe("instance+morph animation", function () {
 
     function judgeFrameState(program, callIndex, currentFramePosition, nextFramePosition, currentFrameNormal, nextFrameNormal){
         expect(testTool.getValues(
-            program.sendAttributeData.withArgs("a_currentFramePosition").getCall(callIndex).args[2].data
+            program.sendAttributeBuffer.withArgs("a_currentFramePosition").getCall(callIndex).args[2].data
         )).toEqual(
             currentFramePosition
         )
         expect(testTool.getValues(
-            program.sendAttributeData.withArgs("a_nextFramePosition").getCall(callIndex).args[2].data
+            program.sendAttributeBuffer.withArgs("a_nextFramePosition").getCall(callIndex).args[2].data
         )).toEqual(
             nextFramePosition
         )
 
 
         expect(testTool.getValues(
-            program.sendAttributeData.withArgs("a_currentFrameNormal").getCall(callIndex).args[2].data
+            program.sendAttributeBuffer.withArgs("a_currentFrameNormal").getCall(callIndex).args[2].data
         )).toEqual(
             currentFrameNormal
         )
         expect(testTool.getValues(
-            program.sendAttributeData.withArgs("a_nextFrameNormal").getCall(callIndex).args[2].data
+            program.sendAttributeBuffer.withArgs("a_nextFrameNormal").getCall(callIndex).args[2].data
         )).toEqual(
             nextFrameNormal
         )
