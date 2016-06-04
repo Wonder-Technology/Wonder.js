@@ -6,10 +6,12 @@ module wd{
         	return obj;
         }
 
-        //todo if buffer or shader lib(may cause sended buffers change) change, set dirty
-        public dirty:boolean = true;
+        //todo optimize: dispose not-used vao
 
-        private _vao:any = null;
+        //todo if buffer or shader lib(may cause sended buffers change) change, set dirty
+        //public dirty:boolean = true;
+
+        private _vaoMap:wdCb.Hash<any> = wdCb.Hash.create<any>();
         private _extension:any = null;
 
         @require(function(){
@@ -21,15 +23,31 @@ module wd{
             this._extension = GPUDetector.getInstance().extensionVAO;
         }
 
-        public getVAO(){
+        public getVAOData(toSendBuffersUidStr:string){
             //todo if dirty, create new vao?
 
+            var isBinded:boolean = false;
+            var vao = this._vaoMap.getChild(toSendBuffersUidStr);
 
-            if(!this._vao){
-                this._vao = this._extension.createVertexArrayOES();
+            if(!vao){
+                vao = this._extension.createVertexArrayOES();
+
+                this._vaoMap.addChild(toSendBuffersUidStr, vao);
+
+                isBinded = false;
+            }
+            else{
+                isBinded = true;
             }
 
-            return this._vao;
+            this._lastVAO = vao;
+
+            return {
+                vao:vao,
+                isBinded:isBinded
+            }
         }
+
+        public _lastVAO = null;
     }
 }

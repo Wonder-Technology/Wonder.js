@@ -307,7 +307,11 @@ module wd{
 
         public addBufferToToSendList(pos:number, buffer:ArrayBuffer){
             this._toSendBufferArr[pos] = buffer;
+
+            this._toSendBuffersUidStr += String(buffer.uid);
         }
+
+        private _toSendBuffersUidStr:string = "";
 
         //todo finish
         //@require(function(){
@@ -342,12 +346,16 @@ module wd{
                 var extensionVAO:any = GPUDetector.getInstance().extensionVAO;
 
                 if(extensionVAO){
-                    let vao = vaoManager.getVAO();
+                    let {vao, isBinded} = vaoManager.getVAOData(this._toSendBuffersUidStr);
+
+                    BufferTable.lastBindedElementBuffer = null;
+
 
                     extensionVAO.bindVertexArrayOES(vao);
 
                     //if(!vaoManager.isSetted || vaoManager.dirty){
-                    if(vaoManager.dirty){
+                    //if(vaoManager.dirty){
+                        if(!isBinded){
                         //let vao = extensionVAO.createVertexArrayOES();
                         //let vao = vaoManager.getVAO();
                         //
@@ -369,7 +377,7 @@ module wd{
                         }
 
 
-                        vaoManager.dirty = false;
+                        //vaoManager.dirty = false;
                     }
 
 
@@ -404,6 +412,7 @@ module wd{
         //todo modify with vao?
         public clearBufferList(){
             this._toSendBufferArr = [];
+            this._toSendBuffersUidStr = "";
         }
 
         public sendBuffer(pos:number, buffer:ArrayBuffer){
