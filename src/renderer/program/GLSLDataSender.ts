@@ -326,76 +326,23 @@ module wd{
         public sendAllBufferData(vaoManager:VAOManager){
             var toSendBufferArr = this._toSendBufferArr;
 
-            //todo refactor:move to VAOManager?
-
             if(vaoManager){
-                var extensionVAO:any = GPUDetector.getInstance().extensionVAO;
+                vaoManager.sendAllBufferData(this._toSendBuffersUidStr, toSendBufferArr);
 
-                if(extensionVAO){
-                    let {vao, isSetted} = vaoManager.getVAOData(this._toSendBuffersUidStr);
-
-                    BufferTable.lastBindedElementBuffer = null;
-
-
-                    extensionVAO.bindVertexArrayOES(vao);
-
-                    //if(!vaoManager.isSetted || vaoManager.dirty){
-                    //if(vaoManager.dirty){
-                        if(!isSetted){
-                        //let vao = extensionVAO.createVertexArrayOES();
-                        //let vao = vaoManager.getVAO();
-                        //
-                        //extensionVAO.bindVertexArrayOES(vao);
-
-
-                        for(let pos = 0, len = toSendBufferArr.length; pos < len; pos++){
-                            let buffer = toSendBufferArr[pos];
-
-                            if(buffer){
-
-                                var gl = DeviceManager.getInstance().gl;
-
-                                gl.bindBuffer(gl.ARRAY_BUFFER, buffer.buffer);
-                                gl.vertexAttribPointer(pos, buffer.size, gl[buffer.type], false, 0, 0);
-
-                                gl.enableVertexAttribArray(pos);
-                            }
-                        }
-
-
-                        //vaoManager.dirty = false;
-                    }
-
-
-                    //extensionVAO.bindVertexArrayOES(null);
-
-                    return;
-                }
+                return;
             }
-
-
-            //var extensionVAO:any = GPUDetector.getInstance().extensionVAO;
-            //if(extensionVAO){
-            //    if(!this._isSetVAO){
-            //
-            //    }
-            //}
 
             for(let pos = 0, len = toSendBufferArr.length; pos < len; pos++){
                 let buffer = toSendBufferArr[pos];
 
-                if(buffer){
-                    this.sendBuffer(pos, buffer);
+                if(!buffer){
+                    continue;
                 }
+
+                this.sendBuffer(pos, buffer);
             }
         }
 
-
-        //private _isSetVAO:boolean = false;
-
-
-
-        //todo modify with vao?
         public clearBufferList(){
             this._toSendBufferArr = [];
             this._toSendBuffersUidStr = "";
@@ -448,11 +395,6 @@ module wd{
         private _isUniformDataNotExistByLocation(pos:number){
             return pos === null;
         }
-    }
-
-    export type ToSendBufferData = {
-        pos:number;
-        buffer:ArrayBuffer;
     }
 }
 

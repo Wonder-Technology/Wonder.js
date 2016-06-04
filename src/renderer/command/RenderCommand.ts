@@ -22,8 +22,6 @@ module wd {
         public dispose() {
         }
 
-        //todo bind null vao after draw if vao support
-
         protected drawElements(indexBuffer:ElementBuffer){
             var startOffset:number = 0,
                 gl = DeviceManager.getInstance().gl;
