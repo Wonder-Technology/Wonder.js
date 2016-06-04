@@ -44,11 +44,7 @@ module wd {
         }
 
         private _getLights(type:string){
-            if(this._lights.hasChild(type)){
-                return this._lights.getChild(type);
-            }
-
-            return wdCb.Collection.create<GameObject>();
+            return this._lights.getChild(type);
         }
     }
 }

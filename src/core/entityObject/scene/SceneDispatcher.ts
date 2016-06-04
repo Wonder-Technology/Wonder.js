@@ -27,6 +27,10 @@ module wd {
         }
 
         @ensureGetter(function(directionLights:wdCb.Collection<GameObject>){
+            if(!directionLights){
+                return;
+            }
+
             assert(directionLights.getCount() <= 4, Log.info.FUNC_SHOULD("direction lights' count", "<= 4"));
         })
         get directionLights(): wdCb.Collection<GameObject>{
@@ -34,6 +38,10 @@ module wd {
         }
 
         @ensureGetter(function(pointLights:wdCb.Collection<GameObject>){
+            if(!pointLights){
+                return;
+            }
+
             assert(pointLights.getCount() <= 4, Log.info.FUNC_SHOULD("point lights' count", "<= 4"));
         })
         get pointLights(): wdCb.Collection<GameObject>{
