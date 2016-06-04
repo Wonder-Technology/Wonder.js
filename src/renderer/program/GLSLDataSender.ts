@@ -346,7 +346,7 @@ module wd{
                 var extensionVAO:any = GPUDetector.getInstance().extensionVAO;
 
                 if(extensionVAO){
-                    let {vao, isBinded} = vaoManager.getVAOData(this._toSendBuffersUidStr);
+                    let {vao, isSetted} = vaoManager.getVAOData(this._toSendBuffersUidStr);
 
                     BufferTable.lastBindedElementBuffer = null;
 
@@ -355,7 +355,7 @@ module wd{
 
                     //if(!vaoManager.isSetted || vaoManager.dirty){
                     //if(vaoManager.dirty){
-                        if(!isBinded){
+                        if(!isSetted){
                         //let vao = extensionVAO.createVertexArrayOES();
                         //let vao = vaoManager.getVAO();
                         //

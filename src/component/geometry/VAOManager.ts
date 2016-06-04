@@ -26,7 +26,7 @@ module wd{
         public getVAOData(toSendBuffersUidStr:string){
             //todo if dirty, create new vao?
 
-            var isBinded:boolean = false;
+            var isSetted:boolean = false;
             var vao = this._vaoMap.getChild(toSendBuffersUidStr);
 
             if(!vao){
@@ -34,17 +34,17 @@ module wd{
 
                 this._vaoMap.addChild(toSendBuffersUidStr, vao);
 
-                isBinded = false;
+                isSetted = false;
             }
             else{
-                isBinded = true;
+                isSetted = true;
             }
 
             this._lastVAO = vao;
 
             return {
                 vao:vao,
-                isBinded:isBinded
+                isSetted:isSetted
             }
         }
 

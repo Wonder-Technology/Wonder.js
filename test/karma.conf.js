@@ -46,7 +46,7 @@
 
         //'test/unit/**/ProgramSpec.js',
         //'test/unit/**/GLSLDataSenderSpec.js',
-        //'test/unit/**/programIn*',
+        'test/unit/**/programIn*',
 
         //'test/unit/**/renderer/**',
 
