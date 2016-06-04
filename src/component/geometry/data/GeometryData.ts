@@ -12,6 +12,8 @@ module wd {
         set vertices(vertices:Array<number>) {
             this._vertices = vertices;
             this.tangentDirty = true;
+
+            this.geometry.buffers.removeCache(EBufferDataType.VERTICE);
         }
 
         @requireGetter(function () {
@@ -44,6 +46,7 @@ module wd {
 
                 return this.normalsFromVertexNormals;
             }
+
             if (!this.hasFaceNormals()) {
                 this.computeFaceNormals();
             }
@@ -152,6 +155,10 @@ module wd {
 
         set faces(faces:Array<Face3>) {
             this._faces = faces;
+
+            this.geometry.buffers.removeCache(EBufferDataType.NORMAL);
+            this.geometry.buffers.removeCache(EBufferDataType.INDICE);
+
             this.onChangeFace();
         }
 
@@ -163,6 +170,8 @@ module wd {
         set texCoords(texCoords:Array<number>) {
             this._texCoords = texCoords;
             this.tangentDirty = true;
+
+            this.geometry.buffers.removeCache(EBufferDataType.TEXCOORD);
         }
 
         private _colors:Array<number> = null;
@@ -187,6 +196,8 @@ module wd {
         set colors(colors:Array<number>) {
             this._colors = colors;
             this.colorDirty = true;
+
+            this.geometry.buffers.removeCache(EBufferDataType.COLOR);
         }
 
         private _tangents:Array<number> = null;

@@ -21,9 +21,6 @@ describe("MorphBufferContainer", function() {
         }
 
         function prepareBufferContainer(){
-            container.geometryData = geometryData;
-
-
             container.init();
         }
 
@@ -41,6 +38,7 @@ describe("MorphBufferContainer", function() {
             geo.geometryData = geometryData;
 
 
+
             animation = createAnimation();
 
 
@@ -51,7 +49,13 @@ describe("MorphBufferContainer", function() {
             model.addComponent(animation);
 
 
+
+
             container = wd.MorphBufferContainer.create(model, animation);
+
+            container.geometryData = geometryData;
+
+            geo.buffers = container;
 
 
             geometryData.morphTargets = wdCb.Hash.create({

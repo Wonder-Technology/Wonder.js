@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>change customShader's geometry data</title>
+
+    <script src="../../../dist/wd.innerLib.js" type="text/javascript"></script>
+    <script src="../../../dist/wd.debug.js" type="text/javascript"></script>
+</head>
+<body>
+
+<script>
+    window.onload = function () {
+        wd.Main.setConfig({
+            //open contract check
+            isTest: true,
+            screenSize: wd.EScreenSize.FULL
+        }).init();
+
+        wd.LoaderManager.getInstance().load([
+            {url: "./glsl/shaderConfig.json", id: "shaderConfig"},
+            {url: "../../asset/texture/1.jpg", id: "texture"},
+            {url: "./glsl/vertex.glsl", id: "vs"},
+            {url: "./glsl/fragment.glsl", id: "fs"}
+        ]).subscribe(null, null, function () {
+            initSample();
+        });
+
+        function initSample() {
+            var director = wd.Director.getInstance();
+
+
+            var rect = createRect();
+
+            changeColor(rect);
+            changeTexCoord(rect);
+
+
+            director.scene.addChild(rect);
+            director.scene.addChild(createCamera());
+
+            director.start();
+        }
+
+        function changeColor(gameObject) {
+            var a = 0;
+
+            wd.Director.getInstance().scheduler.scheduleLoop(function () {
+                var data = a % 2 === 1 ? [
+                    0, 0, 1,
+                    0, 0, 0,
+                    0, 0, 0,
+                    0, 0, 0
+                ] : [
+                    1, 0, 0,
+                    0, 0, 0,
+                    0, 0, 0,
+                    1, 0, 0
+                ];
+
+                ++a;
+
+                gameObject.getComponent(wd.Geometry).material.shader.attributes.getChild("a_color").value.resetData(data);
+            });
+        }
+
+        function changeTexCoord(gameObject) {
+            var a = 0;
+
+            wd.Director.getInstance().scheduler.scheduleLoop(function () {
+                var data = a % 2 === 1 ? [
+                    1, 1,
+                    0, 1,
+                    0, 0,
+                    1, 0
+                ] : [
+                    0, 0,
+                    1, 1,
+                    0, 1,
+                    1, 0
+                ];
+
+                ++a;
+
+                gameObject.getComponent(wd.Geometry).geometryData.texCoords = data;
+            });
+        }
+
+        function createRect() {
+            var material = wd.ShaderMaterial.create();
+            material.read("shaderConfig");
+
+
+            var geometry = wd.RectGeometry.create();
+            geometry.material = material;
+            geometry.width = 5;
+            geometry.height = 5;
+
+
+            var gameObject = wd.GameObject.create();
+            gameObject.addComponent(geometry);
+
+            gameObject.addComponent(wd.MeshRenderer.create());
+
+            return gameObject;
+        }
+
+        function createCamera() {
+            var camera = wd.GameObject.create(),
+                    view = wd.Director.getInstance().view,
+                    cameraComponent = wd.PerspectiveCamera.create();
+
+            cameraComponent.fovy = 60;
+            cameraComponent.aspect = view.width / view.height;
+            cameraComponent.near = 0.1;
+            cameraComponent.far = 80;
+
+            var controller = wd.BasicCameraController.create(cameraComponent);
+            camera.addComponent(controller);
+
+            camera.transform.translate(wd.Vector3.create(0, 0, 5));
+
+            return camera;
+        }
+    };
+</script>
+</body>
+</html>

@@ -55,8 +55,8 @@
         //'test/unit/**/*ProceduralRenderTargetRenderer*',
 
         //'test/unit/**/FrameBuffer*',
-        'test/unit/**/*ArrayBuffer*',
-        'test/unit/**/*ElementBuffer*',
+        //'test/unit/**/*ArrayBuffer*',
+        //'test/unit/**/*ElementBuffer*',
         //'test/unit/**/*InstanceBuffer*',
 
         //'test/unit/**/proceduralRenderTargetRenderer*',
@@ -181,7 +181,7 @@
 
 
         //'test/unit/**/*GeometryData*',
-        //'test/unit/**/**BufferContainer*',
+        'test/unit/**/**BufferContainer*',
         //
         //'test/unit/**/Face3*',
 
