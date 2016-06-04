@@ -30,8 +30,6 @@ module wd {
             BufferTable.bindIndexBuffer(indexBuffer);
 
             GlUtils.drawElements(gl[this.drawMode], indexBuffer.count, gl[indexBuffer.type], indexBuffer.typeSize * startOffset);
-
-            this._unbindAfterDraw();
         }
 
         protected drawArray(vertexBuffer:ArrayBuffer){
@@ -39,16 +37,6 @@ module wd {
                 gl = DeviceManager.getInstance().gl;
 
             GlUtils.drawArrays(gl[this.drawMode], startOffset, vertexBuffer.count);
-
-            this._unbindAfterDraw();
-        }
-
-        private _unbindAfterDraw(){
-            var extensionVAO = GPUDetector.getInstance().extensionVAO;
-
-            if(extensionVAO){
-                extensionVAO.bindVertexArrayOES(null);
-            }
         }
     }
 }
