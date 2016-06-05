@@ -120,6 +120,12 @@ module wd{
 
             this.setTextureParameters( gl[this.target], isSourcePowerOfTwo);
 
+            /*! optimize in ANGLE:
+             - Create new textures, rather than changing the dimensions or format of old ones.
+             - if only the pixel data contained in a texture need to be updated, it is best to reuse the texture.
+             the additional overhead is only incurred when updating texture format or dimensions, because these require redefinition of the mipmap chain.
+             */
+
             this.allocateSourceToTexture(isSourcePowerOfTwo);
 
             if (this.generateMipmaps && isSourcePowerOfTwo) {
