@@ -134,13 +134,13 @@ module wd {
 
                 In: function (k) {
 
-                    return k === 0 ? 0 : Math.pow(1024, k - 1);
+                    return k === 0 ? 0 : 1024 ** (k - 1);
 
                 },
 
                 Out: function (k) {
 
-                    return k === 1 ? 1 : 1 - Math.pow(2, -10 * k);
+                    return k === 1 ? 1 : 1 - 2 ** (-10 * k);
 
                 },
 
@@ -148,8 +148,8 @@ module wd {
 
                     if (k === 0) return 0;
                     if (k === 1) return 1;
-                    if (( k *= 2 ) < 1) return 0.5 * Math.pow(1024, k - 1);
-                    return 0.5 * ( -Math.pow(2, -10 * ( k - 1 )) + 2 );
+                    if (( k *= 2 ) < 1) return 0.5 * 1024 ** (k - 1);
+                    return 0.5 * ( -(2 ** (-10 * ( k - 1 ))) + 2 );
 
                 }
 
@@ -190,7 +190,7 @@ module wd {
                         s = p / 4;
                     }
                     else s = p * Math.asin(1 / a) / ( 2 * Math.PI );
-                    return -( a * Math.pow(2, 10 * ( k -= 1 )) * Math.sin(( k - s ) * ( 2 * Math.PI ) / p) );
+                    return -( a * 2 ** (10 * ( k -= 1 )) * Math.sin(( k - s ) * ( 2 * Math.PI ) / p) );
 
                 },
 
@@ -204,7 +204,7 @@ module wd {
                         s = p / 4;
                     }
                     else s = p * Math.asin(1 / a) / ( 2 * Math.PI );
-                    return ( a * Math.pow(2, -10 * k) * Math.sin(( k - s ) * ( 2 * Math.PI ) / p) + 1 );
+                    return ( a * 2 ** (-10 * k) * Math.sin(( k - s ) * ( 2 * Math.PI ) / p) + 1 );
 
                 },
 
@@ -218,8 +218,8 @@ module wd {
                         s = p / 4;
                     }
                     else s = p * Math.asin(1 / a) / ( 2 * Math.PI );
-                    if (( k *= 2 ) < 1) return -0.5 * ( a * Math.pow(2, 10 * ( k -= 1 )) * Math.sin(( k - s ) * ( 2 * Math.PI ) / p) );
-                    return a * Math.pow(2, -10 * ( k -= 1 )) * Math.sin(( k - s ) * ( 2 * Math.PI ) / p) * 0.5 + 1;
+                    if (( k *= 2 ) < 1) return -0.5 * ( a * 2 ** (10 * ( k -= 1 )) * Math.sin(( k - s ) * ( 2 * Math.PI ) / p) );
+                    return a * 2 ** (-10 * ( k -= 1 )) * Math.sin(( k - s ) * ( 2 * Math.PI ) / p) * 0.5 + 1;
 
                 }
 
@@ -306,10 +306,10 @@ module wd {
 
             Bezier: function (v, k) {
 
-                var b = 0, n = v.length - 1, pw = Math.pow, bn = Tween.Interpolation.Utils.Bernstein, i;
+                var b = 0, n = v.length - 1, bn = Tween.Interpolation.Utils.Bernstein, i;
 
                 for (i = 0; i <= n; i++) {
-                    b += pw(1 - k, n - i) * pw(k, i) * v[i] * bn(n, i);
+                    b += (1 - k) ** (n - i) * k ** i * v[i] * bn(n, i);
                 }
 
                 return b;
