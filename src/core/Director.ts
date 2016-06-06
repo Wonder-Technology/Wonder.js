@@ -113,10 +113,10 @@ module wd{
             uiObjectScene.init();
         }
 
-        public runUIObjectScene(elapseTime:number){
+        public runUIObjectScene(elapsed:number){
             var uiObjectScene:UIObjectScene = this.scene.uiObjectScene;
 
-            uiObjectScene.update(elapseTime);
+            uiObjectScene.update(elapsed);
 
             uiObjectScene.render();
         }
@@ -176,38 +176,41 @@ module wd{
         }
 
         private _loopBody(time) {
-            var elapseTime = null;
+            var elapsed:number = null;
 
             if(this._gameState === EGameState.PAUSE || this._gameState === EGameState.STOP){
                 return false;
             }
 
-            elapseTime = this._timeController.computeElapseTime(time);
+            elapsed = this._timeController.computeElapseTime(time);
 
-            this._run(elapseTime);
+            this._run(elapsed);
 
             return true;
         }
 
-        private _run(elapseTime:number){
-            this._timeController.tick(elapseTime);
+        private _run(elapsed:number){
+            this._timeController.tick(elapsed);
 
             EventManager.trigger(CustomEvent.create(<any>EEngineEvent.STARTLOOP));
 
-            this._runGameObjectScene(elapseTime);
+            this._update(elapsed);
 
-            this.runUIObjectScene(elapseTime);
+            this._render();
 
             EventManager.trigger(CustomEvent.create(<any>EEngineEvent.ENDLOOP));
         }
 
-        private _runGameObjectScene(elapseTime:number) {
-            var gameObjectScene:GameObjectScene = this.scene.gameObjectScene;
+        private _update(elapsed:number){
+            this.scheduler.update(elapsed);
 
-            this.scheduler.update(elapseTime);
+            this.scene.gameObjectScene.update(elapsed);
 
-            gameObjectScene.update(elapseTime);
-            gameObjectScene.render(this.renderer);
+            this.scene.uiObjectScene.update(elapsed);
+        }
+
+        private _render(){
+            this.scene.gameObjectScene.render(this.renderer);
 
             this.renderer.clear();
 
@@ -215,6 +218,8 @@ module wd{
                 this.renderer.webglState = BasicState.create();
                 this.renderer.render();
             }
+
+            this.scene.uiObjectScene.render();
         }
 
         @execOnlyOnce("_isInitDomEvent")

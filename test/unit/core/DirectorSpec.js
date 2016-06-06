@@ -282,14 +282,14 @@ describe("Director", function () {
         });
     });
 
-    describe("_runGameObjectScene", function(){
+    describe("_render", function(){
         beforeEach(function(){
         });
 
         it("renderer->clear", function(){
             sandbox.stub(director.renderer, "clear");
 
-            director._runGameObjectScene(1);
+            director._render();
 
             expect(director.renderer.clear).toCalledOnce();
         });
@@ -297,7 +297,7 @@ describe("Director", function () {
         it("if renderer has command, renderer->render", function(){
             sandbox.stub(director.renderer, "render");
 
-            director._runGameObjectScene(1);
+            director._render();
 
             expect(director.renderer.render).not.toCalled();
 
@@ -306,9 +306,17 @@ describe("Director", function () {
 
             director.renderer.skyboxCommand = rendererTool.createQuadCommand(sandbox);
 
-            director._runGameObjectScene(1);
+            director._render();
 
             expect(director.renderer.render).toCalledOnce();
         });
+        it("render uiObjectScene", function () {
+           sandbox.stub(director.scene.uiObjectScene, "render");
+
+            director._render();
+
+            expect(director.scene.uiObjectScene.render).toCalledOnce();
+        });
+
     });
 });
