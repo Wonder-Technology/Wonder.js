@@ -37,14 +37,14 @@ module wd {
             this._drawProgressBar();
         }
 
-        protected shouldNotUpdate(){
+        protected shouldNotRender(){
             return this.percent <= 0;
         }
 
-        @require(function(elapsedTime:number){
+        @require(function(){
             assert(this.percent >= 0 && this.percent <= 1, Log.info.FUNC_SHOULD("percent", " >= 0 and <= 1"));
         })
-        protected draw(elapsedTime:number){
+        protected draw(){
             var position = this.entityObject.transform.position;
 
             this._drawFromLeft(position);

@@ -120,6 +120,8 @@ module wd{
 
             uiObjectScene.update(elapseTime);
 
+            uiObjectScene.render();
+
             EventManager.trigger(uiObjectScene, CustomEvent.create(<any>EEngineEvent.ENDLOOP));
         }
 

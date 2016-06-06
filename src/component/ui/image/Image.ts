@@ -74,11 +74,11 @@ module wd {
         //implement it in STATIC_CONSTRUCTOR
         private _blendColorWithSource:Function;
 
-        protected shouldNotUpdate(){
+        protected shouldNotRender(){
             return this._getDrawSource() === null && this._getDrawColor() === null;
         }
 
-        protected draw(elapsedTime:number){
+        protected draw(){
             var drawColor = this._getDrawColor(),
                 drawSource = this._getDrawSource();
 

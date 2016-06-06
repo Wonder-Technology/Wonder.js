@@ -21,17 +21,13 @@ module wd {
             this._sortSiblingChildren();
         }
 
-        protected createTransform(){
-            return null;
-        }
-
-        @require(function(elapsedTime:number){
+        @require(function(){
             this.forEach((child:UIObject) => {
                 assert(child instanceof UIObject, Log.info.FUNC_MUST_BE("child", "UIObject"));
                 assert(child.hasComponent(UI), Log.info.FUNC_SHOULD("UIObject", "contain ui component"))
             });
         })
-        protected beforeUpdateChildren(elapsedTime:number){
+        public render() {
             var self = this;
 
             this._resetAllRendererState();
@@ -54,7 +50,13 @@ module wd {
                         renderer.state = EUIRendererState.NOT_DIRTY;
                     }
                 }
+
+                child.render();
             });
+        }
+
+        protected createTransform(){
+            return null;
         }
 
         protected bindStartLoopEvent(){

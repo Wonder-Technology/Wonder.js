@@ -33,6 +33,9 @@ module wd {
         public entityObject:UIObject;
         public context:CanvasRenderingContext2D = null;
 
+        @virtual
+        public update(elapsed:number){
+        }
 
         public init(){
             this.context = this.getContext();
@@ -53,13 +56,13 @@ module wd {
             entityObject.uiManager.removeChild(this);
         }
 
-        @require(function(elapsedTime:number){
+        @require(function(){
             assert(this.context !== null, Log.info.FUNC_SHOULD("set context"));
         })
-        public update(elapsedTime:number){
+        public render(){
             var context = this.context;
 
-            if(this.shouldNotUpdate()){
+            if(this.shouldNotRender()){
                 return;
             }
 
@@ -67,17 +70,18 @@ module wd {
 
             this._setCanvasTransformForRotation();
 
-            this.draw(elapsedTime);
+            this.draw();
 
             context.restore();
+
         }
 
         @virtual
-        protected draw(elapsedTime:number){
+        protected draw(){
         }
 
         @virtual
-        protected shouldNotUpdate(){
+        protected shouldNotRender(){
             return false;
         }
 

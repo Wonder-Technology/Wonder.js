@@ -66,11 +66,11 @@ module wd {
             this._subscription.dispose();
         }
 
-        protected shouldNotUpdate(){
+        protected shouldNotRender(){
             return this.rectRegion === null || (this.width === 0 && this.height === 0);
         }
 
-        protected draw(elapsedTime:number){
+        protected draw(){
             var transform:RectTransform = null,
                 position:Vector2 = null,
                 dw = null,

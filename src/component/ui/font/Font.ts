@@ -24,7 +24,7 @@ module wd {
             }
         }
 
-        public update(elapsedTime:number){
+        public update(elapsed:number){
             if(!this._isFirstUpdate){
                 if(this.needFormat){
                     this.reFormat();
@@ -35,8 +35,6 @@ module wd {
             }
 
             this.needFormat = false;
-
-            super.update(elapsedTime);
         }
 
         @virtual

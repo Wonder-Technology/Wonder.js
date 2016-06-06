@@ -103,10 +103,10 @@ module wd {
             this._stateMachine.changeState(EUIState.DISABLED);
         }
 
-        @require(function(elapsedTime:number){
+        @require(function(){
             assert(this.getObject(EButtonObjectName.BACKGROUND).hasComponent(Image), Log.info.FUNC_SHOULD("Button UIObject", "contain Image component"));
         })
-        public update(elapsedTime:number) {
+        public update(elapsed:number) {
             var target = this.transitionManager.getObjectTarget(EButtonObjectName.BACKGROUND);
 
             if(!target){
