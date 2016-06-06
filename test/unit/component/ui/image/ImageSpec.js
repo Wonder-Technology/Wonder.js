@@ -79,14 +79,14 @@ describe("Image", function () {
         it("if source === null && targetSource === null && color === null && targetColor === null, return", function(){
             image.source = null;
 
-            image.update(1);
+            image.render();
 
             expect(context.save).not.toCalled();
 
             image.source = null;
             image.color = {};
 
-            image.update(1);
+            image.render();
 
             expect(context.save).toCalledOnce();
 
@@ -95,7 +95,7 @@ describe("Image", function () {
             image.source = null;
             image.color = null;
 
-            image.update(1);
+            image.render();
 
             expect(context.save).toCalledTwice();
 
@@ -105,7 +105,7 @@ describe("Image", function () {
             image.color = null;
             image.targetColor = {};
 
-            image.update(1);
+            image.render();
 
             expect(context.save.callCount).toEqual(3);
         });
@@ -138,19 +138,19 @@ describe("Image", function () {
                 });
 
                 it("if draw color->a < 1, set global alpha", function(){
-                    image.update(1);
+                    image.render();
 
                     expect(context.globalAlpha).toBeUndefined();
 
 
                     image.color.a = 0.2;
 
-                    image.update(1);
+                    image.render();
 
                     expect(context.globalAlpha).toEqual(0.2);
                 });
                 it("fillRect image range", function(){
-                    image.update(1);
+                    image.render();
 
                     expect(context.fillRect).toCalledWith(position.x - width / 2, position.y - height / 2, width, height);
                 });
@@ -166,7 +166,7 @@ describe("Image", function () {
                         it("if browser support canvas.globalCompositeOperation->multiply, use multiply to blend", function(){
                             image._blendColorWithSource = image._blendByMultiply;
 
-                            image.update(1);
+                            image.render();
 
                             expect(context.globalCompositeOperation).toEqual("multiply");
                             judgeDrawSource();
@@ -181,7 +181,7 @@ describe("Image", function () {
                                 data:[0.1, 0.2, 0.3, 0.5]
                             });
 
-                            image.update(1);
+                            image.render();
 
                             expect(context.globalCompositeOperation).toEqual("clone");
                             expect(context.getImageData).toCalledWith(0, 0, 100, 50);
@@ -200,7 +200,7 @@ describe("Image", function () {
                 });
 
                 it("draw whole image", function(){
-                    image.update(1);
+                    image.render();
 
                     judgeDrawSource();
                 });

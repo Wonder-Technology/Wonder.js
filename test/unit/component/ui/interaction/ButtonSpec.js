@@ -209,9 +209,9 @@ describe("Button", function() {
             });
 
 
-            describe("change text will cause update", function(){
+            describe("change text will cause render", function(){
                 beforeEach(function(){
-                    sandbox.stub(button, "update");
+                    sandbox.stub(button, "render");
 
                     director.scene.addChild(uiObject);
                 });
@@ -225,24 +225,24 @@ describe("Button", function() {
                         director.runUIObjectScene();
                         director.runUIObjectScene();
 
-                        expect(button.update).toCalledOnce();
+                        expect(button.render).toCalledOnce();
 
                     });
 
-                    it("if the new data equal old data, not dirty and not update text", function(){
+                    it("if the new data equal old data, not dirty and not render text", function(){
                         button.text = "ccc";
 
                         director.runUIObjectScene();
 
-                        expect(button.update).not.toCalledTwice();
+                        expect(button.render).not.toCalledTwice();
                     });
 
-                    it("else, cause update", function(){
+                    it("else, cause render", function(){
                         button.text = "ddd";
 
                         director.runUIObjectScene();
 
-                        expect(button.update).toCalledTwice();
+                        expect(button.render).toCalledTwice();
                     });
                 });
             });
@@ -478,7 +478,7 @@ describe("Button", function() {
         });
     });
 
-    describe("update", function(){
+    describe("render", function(){
         beforeEach(function(){
             renderer.context = canvasTool.buildFakeContext(sandbox);
 

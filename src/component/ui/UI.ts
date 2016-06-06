@@ -73,7 +73,6 @@ module wd {
             this.draw();
 
             context.restore();
-
         }
 
         @virtual

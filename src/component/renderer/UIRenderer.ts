@@ -30,15 +30,12 @@ module wd {
         set dirty(dirty:boolean){
             if(dirty){
                 this._dirty = true;
-
-                this.dirtyDuringCurrentLoop = true;
             }
             else{
                 this.resetDirty();
             }
         }
 
-        public dirtyDuringCurrentLoop:boolean = false;
         public isClearCanvas:boolean = false;
         public state:EUIRendererState = EUIRendererState.NORMAL;
         public context:any = null;

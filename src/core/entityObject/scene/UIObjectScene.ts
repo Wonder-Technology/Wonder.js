@@ -11,7 +11,6 @@ module wd {
         public onEndLoop() {
             super.onEndLoop();
 
-            this._resetAllTransformState();
             this._resetAllRendererClearCanvasFlag();
         }
 
@@ -38,7 +37,6 @@ module wd {
                 if(renderer.dirty){
                     if(!renderer.isClearCanvas) {
                         renderer.clearCanvas();
-                        renderer.dirtyDuringCurrentLoop = false;
                     }
 
                     renderer.state = EUIRendererState.DIRTY;
@@ -50,7 +48,9 @@ module wd {
                         renderer.state = EUIRendererState.NOT_DIRTY;
                     }
                 }
+            });
 
+            this.forEach((child:UIObject) => {
                 child.render();
             });
         }
@@ -109,36 +109,6 @@ module wd {
 
                 renderer.state = EUIRendererState.NORMAL;
             });
-        }
-
-        private _resetAllTransformState(){
-            var self = this;
-
-            var reset = (uiObject:UIObject) => {
-                if(self._isNotDirtyDuringThisLoop(self._getUIRenderer(uiObject))){
-                    self._resetTransformFlag(uiObject);
-                }
-
-                uiObject.forEach((child:UIObject) => {
-                    reset(child);
-                });
-            }
-
-            this.forEach((child:UIObject) => {
-                reset(child);
-            });
-        }
-
-        private _isNotDirtyDuringThisLoop(renderer:UIRenderer){
-            return !renderer.dirtyDuringCurrentLoop;
-        }
-
-        private _resetTransformFlag(uiObject:UIObject){
-            var transform:RectTransform = uiObject.transform;
-
-            transform.isTranslate = false;
-            transform.isScale = false;
-            transform.isRotate = false;
         }
 
         //todo support "put all children together, so it can sort all children by zIndex"?

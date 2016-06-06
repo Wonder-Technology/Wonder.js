@@ -77,7 +77,7 @@
 
         //'test/unit/**/VAOManager*',
         //
-        'test/unit/**/action/*',
+        //'test/unit/**/action/*',
 
         //'test/unit/**/RenderUtils*',
 
@@ -215,22 +215,22 @@
 
         //'test/unit/**/ColorSpec*',
 
-        //'test/unit/**/interactionUISpec*',
-        //'test/unit/**/TransitionSpec*',
-        //'test/unit/**/SpriteTransitionSpec*',
-        //'test/unit/**/TransitionManagerSpec*',
+        'test/unit/**/interactionUISpec*',
+        'test/unit/**/TransitionSpec*',
+        'test/unit/**/SpriteTransitionSpec*',
+        'test/unit/**/TransitionManagerSpec*',
 
 
         //'test/unit/**/MainSpec*',
 
         //'test/unit/component/event/eventSpec*',
 
-        //'test/unit/**/ui/**',
-        //'test/unit/**/UIObjectSpec*',
+        'test/unit/**/ui/**',
+        'test/unit/**/UIObjectSpec*',
         //
         //
-        //'test/unit/**/ButtonSpec*',
-        //'test/unit/**/UIStateMachineSpec*',
+        'test/unit/**/ButtonSpec*',
+        'test/unit/**/UIStateMachineSpec*',
 
 
         //'test/unit/**/*Asset*',
@@ -246,9 +246,9 @@
         //
         //'test/unit/**/ImageSpec*',
         //
-        //'test/unit/**/ThreeDTransformSpec.js',
-        //'test/unit/**/RectTransformSpec*',
-        //'test/unit/**/TransformSpec*',
+        'test/unit/**/ThreeDTransformSpec.js',
+        'test/unit/**/RectTransformSpec*',
+        'test/unit/**/TransformSpec*',
         //'test/unit/**/component/**',
         //'test/unit/**/PanelSpec*',
         //

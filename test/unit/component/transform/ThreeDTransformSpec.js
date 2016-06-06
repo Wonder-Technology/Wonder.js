@@ -732,20 +732,6 @@ describe("ThreeDTransform", function(){
         });
     });
 
-    describe("dispose", function(){
-        it("unbind ENDLOOP event", function(){
-            tra1.init();
-
-            tra1.isTranslate = true;
-
-            tra1.dispose();
-
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.ENDLOOP));
-
-            expect(tra1.isTranslate).toBeTruthy();
-        });
-    });
-    
     describe("clone", function(){
         beforeEach(function(){
             

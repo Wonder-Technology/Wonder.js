@@ -53,6 +53,22 @@ module wd{
 
         protected children:wdCb.Collection<Transform> = wdCb.Collection.create<Transform>();
 
+        private _endLoopSubscription:wdFrp.IDisposable = null;
+
+        public init(){
+            var self = this;
+
+            this._endLoopSubscription = EventManager.fromEvent(<any>EEngineEvent.ENDLOOP)
+                .subscribe(() => {
+                    self._resetTransformFlag();
+                });
+        }
+
+        public dispose(){
+            super.dispose();
+
+            this._endLoopSubscription && this._endLoopSubscription.dispose();
+        }
 
         public addChild(child:Transform){
             this.children.addChild(child);
@@ -134,6 +150,12 @@ module wd{
             if(state){
                 this.setChildrenTransformState(transformState, state);
             }
+        }
+
+        private _resetTransformFlag(){
+            this.isTranslate = false;
+            this.isScale = false;
+            this.isRotate = false;
         }
     }
 }

@@ -442,7 +442,7 @@ describe("BitmapFont", function () {
         });
 
 
-        describe("if ui not change, not clear ui canvas and not update ui", function() {
+        describe("if ui not change, not clear ui canvas and not render ui", function() {
             it("test text has newline char", function () {
                 font.text = "正\na";
                 setWidth(10);
@@ -618,28 +618,28 @@ describe("BitmapFont", function () {
 
                     charFontUIObject = getCharFontUIObject(0);
                     charFont = charFontUIObject.getComponent(wd.CharFont);
-                    sandbox.spy(charFont, "update");
+                    sandbox.spy(charFont, "render");
 
                     prepareAfterInit();
 
 
                     director._loopBody(2);
 
-                    expect(charFont.update).toCalledOnce();
+                    expect(charFont.render).toCalledOnce();
                     expect(charFont.dirty).toBeFalsy();
                 });
 
                 it("if uiObject transform change, char font dirty", function(){
                     director._loopBody(2);
 
-                    expect(charFont.update).toCalledOnce();
+                    expect(charFont.render).toCalledOnce();
 
 
                     charFontUIObject.transform.translate(2,3);
 
                     director._loopBody(3);
 
-                    expect(charFont.update).toCalledTwice();
+                    expect(charFont.render).toCalledTwice();
                     expect(charFont.dirty).toBeFalsy();
 
 
@@ -647,7 +647,7 @@ describe("BitmapFont", function () {
 
                     director._loopBody(4);
 
-                    expect(charFont.update.callCount).toEqual(3);
+                    expect(charFont.render.callCount).toEqual(3);
 
 
 
@@ -656,44 +656,44 @@ describe("BitmapFont", function () {
 
                     director._loopBody(5);
 
-                    expect(charFont.update.callCount).toEqual(4);
+                    expect(charFont.render.callCount).toEqual(4);
 
 
 
 
                     director._loopBody(6);
 
-                    expect(charFont.update.callCount).toEqual(4);
+                    expect(charFont.render.callCount).toEqual(4);
                 });
                 it("if width change, char font dirty", function(){
                     charFontUIObject.transform.width = 2000;
 
                     director._loopBody(3);
 
-                    expect(charFont.update).toCalledTwice();
+                    expect(charFont.render).toCalledTwice();
 
 
 
                     director._loopBody(4);
 
-                    expect(charFont.update).toCalledTwice();
+                    expect(charFont.render).toCalledTwice();
                 });
                 it("if height change, char font dirty", function(){
                     charFontUIObject.transform.height = 2000;
 
                     director._loopBody(3);
 
-                    expect(charFont.update).toCalledTwice();
+                    expect(charFont.render).toCalledTwice();
 
 
 
                     director._loopBody(4);
 
-                    expect(charFont.update).toCalledTwice();
+                    expect(charFont.render).toCalledTwice();
                 });
             });
 
-            describe("change data will cause dirty and update font", function(){
+            describe("change data will cause dirty and render font", function(){
                 it("test change uiObject transform", function(){
                     font.text = "a";
                     setWidth(10);

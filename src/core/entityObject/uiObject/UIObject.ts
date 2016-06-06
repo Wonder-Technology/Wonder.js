@@ -13,11 +13,25 @@ module wd {
 
         public uiManager:UIManager = UIManager.create(this);
 
+        public update(elapsed:number){
+            this.uiManager.update(elapsed);
+
+            super.update(elapsed);
+        }
+
+        public render(){
+            this.uiManager.render();
+
+            this.forEach((child:UIObject) => {
+                child.render();
+            });
+        }
+
         protected children:wdCb.Collection<UIObject>;
 
-        protected beforeUpdateChildren(elapsedTime:number){
-            this.uiManager.update(elapsedTime);
-        }
+        //protected beforeUpdateChildren(elapsedTime:number){
+        //    this.uiManager.update(elapsedTime);
+        //}
 
         protected createTransform(){
             return RectTransform.create();

@@ -199,7 +199,6 @@ module wd{
         protected children:wdCb.Collection<ThreeDTransform>;
 
         private _localToParentMatrix:Matrix4 = Matrix4.create();
-        private _endLoopSubscription:wdFrp.IDisposable = null;
         private _localToWorldMatrixCache:Matrix4 = null;
         private _positionCache:Vector3 = null;
         private _rotationCache:Vector3 = null;
@@ -208,21 +207,6 @@ module wd{
         private _localEulerAnglesCache:Vector3 = null;
         private _normalMatrixCache:Matrix3 = null;
 
-
-        public init(){
-            var self = this;
-
-            this._endLoopSubscription = EventManager.fromEvent(<any>EEngineEvent.ENDLOOP)
-                .subscribe(() => {
-                    self._resetTransformFlag();
-                });
-        }
-
-        public dispose(){
-            super.dispose();
-
-            this._endLoopSubscription && this._endLoopSubscription.dispose();
-        }
 
         public sync(){
             if (this.dirtyLocal) {
@@ -436,12 +420,6 @@ module wd{
             }
 
             EventManager.trigger(this.entityObject, CustomEvent.create(eventName));
-        }
-
-        private _resetTransformFlag(){
-            this.isTranslate = false;
-            this.isScale = false;
-            this.isRotate = false;
         }
     }
 }

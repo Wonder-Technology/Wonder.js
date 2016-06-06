@@ -140,6 +140,9 @@ module wd {
             }
         }
 
+        public render(){
+        }
+
         private _createBackgroundObject(){
             var object = UIObject.create(),
                 image = Image.create(),

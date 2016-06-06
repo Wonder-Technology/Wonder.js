@@ -228,12 +228,6 @@ module wd{
         private _rotationMatrixCache:Matrix3 = null;
         private _localPositionAndScaleMatrixCache:Matrix3 = null;
 
-        public init(){
-        }
-
-        public dispose(){
-        }
-
         public syncRotation(){
             if(this.dirtyRotation){
                 if (this.p_parent === null) {

@@ -194,17 +194,19 @@ module wd{
         }
 
         private _run(elapseTime:number){
+            this._timeController.tick(elapseTime);
+
+            EventManager.trigger(CustomEvent.create(<any>EEngineEvent.STARTLOOP));
+
             this._runGameObjectScene(elapseTime);
 
             this.runUIObjectScene(elapseTime);
+
+            EventManager.trigger(CustomEvent.create(<any>EEngineEvent.ENDLOOP));
         }
 
         private _runGameObjectScene(elapseTime:number) {
             var gameObjectScene:GameObjectScene = this.scene.gameObjectScene;
-
-            this._timeController.tick(elapseTime);
-
-            EventManager.trigger(CustomEvent.create(<any>EEngineEvent.STARTLOOP));
 
             this.scheduler.update(elapseTime);
 
@@ -217,8 +219,6 @@ module wd{
                 this.renderer.webglState = BasicState.create();
                 this.renderer.render();
             }
-
-            EventManager.trigger(CustomEvent.create(<any>EEngineEvent.ENDLOOP));
         }
 
         @execOnlyOnce("_isInitDomEvent")

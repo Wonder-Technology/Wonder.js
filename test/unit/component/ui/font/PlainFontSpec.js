@@ -249,7 +249,7 @@ describe("PlainFont", function () {
         });
     });
 
-    describe("update", function () {
+    describe("render", function () {
         var context;
 
         function setFakeContext(fakeContext) {
@@ -295,7 +295,7 @@ describe("PlainFont", function () {
         });
 
         it("save context", function () {
-            font.update(1);
+            font.render(1);
 
             expect(context.save).toCalledOnce();
         });
@@ -303,7 +303,7 @@ describe("PlainFont", function () {
             font.entityObject.transform.rotate(45);
             var rotationMatrix = font.entityObject.transform.rotationMatrix;
 
-            font.update(-1);
+            font.render(-1);
 
             expect(context.setTransform).toCalledWith(rotationMatrix.a, rotationMatrix.b, rotationMatrix.c, rotationMatrix.d, rotationMatrix.tx, rotationMatrix.ty);
         });
@@ -311,20 +311,20 @@ describe("PlainFont", function () {
             font.fontSize = 10;
             font.fontFamily = "微软雅黑";
 
-            font.update(1);
+            font.render(1);
 
             expect(context.font).toEqual("10px '微软雅黑'");
         });
 
         describe("set context alignment", function(){
             it("set y alignment to be top", function(){
-                font.update(1);
+                font.render(1);
 
                 expect(context.textBaseline).toEqual("top");
             });
 
             it("set x alignment to be start", function(){
-                font.update(1);
+                font.render(1);
 
                 expect(context.textAlign).toEqual("start");
             });
@@ -340,7 +340,7 @@ describe("PlainFont", function () {
                     var fillStyle = "rgba(10,10,10,1)";
                     font.enableFill(fillStyle);
 
-                    font.update(1);
+                    font.render(1);
 
                     expect(context.fillStyle).toEqual(fillStyle);
                     expect(context.fillText).toCalledThrice();
@@ -352,7 +352,7 @@ describe("PlainFont", function () {
                     var strokeStyle = "rgba(10,10,10,1)";
                     font.enableStroke(strokeStyle);
 
-                    font.update(1);
+                    font.render(1);
 
                     expect(context.strokeStyle).toEqual(strokeStyle);
                     expect(context.strokeText).toCalledThrice();
@@ -369,7 +369,7 @@ describe("PlainFont", function () {
                     font.xAlignment = wd.EFontXAlignment.CENTER;
                     font.yAlignment = wd.EFontYAlignment.BOTTOM;
 
-                    font.update(1);
+                    font.render(1);
 
                     expect(context.fillStyle).toEqual(fillStyle);
                     expect(context.fillText).toCalledThrice();
@@ -386,7 +386,7 @@ describe("PlainFont", function () {
                     font.xAlignment = wd.EFontXAlignment.RIGHT;
                     font.yAlignment = wd.EFontYAlignment.MIDDLE;
 
-                    font.update(1);
+                    font.render(1);
 
                     expect(context.fillStyle).toEqual(fillStyle);
                     expect(context.fillText).toCalledThrice();
@@ -407,7 +407,7 @@ describe("PlainFont", function () {
                     var fillStyle = "rgba(10,10,10,1)";
                     font.enableFill(fillStyle);
 
-                    font.update(1);
+                    font.render(1);
 
                     expect(context.fillStyle).toEqual(fillStyle);
                     expect(context.fillText).toCalledWith("hi 1;", -250, -200);
@@ -416,7 +416,7 @@ describe("PlainFont", function () {
                     var strokeStyle = "rgba(10,10,10,1)";
                     font.enableStroke(strokeStyle);
 
-                    font.update(1);
+                    font.render(1);
 
                     expect(context.strokeStyle).toEqual(strokeStyle);
                     expect(context.strokeText).toCalledWith("hi 1;", -250, -200);
@@ -430,7 +430,7 @@ describe("PlainFont", function () {
                     font.xAlignment = wd.EFontXAlignment.CENTER;
                     font.yAlignment = wd.EFontYAlignment.BOTTOM;
 
-                    font.update(1);
+                    font.render(1);
 
                     expect(context.fillStyle).toEqual(fillStyle);
                     expect(context.fillText).toCalledWith("hi 1;", -125, 150);
@@ -444,7 +444,7 @@ describe("PlainFont", function () {
                     font.xAlignment = wd.EFontXAlignment.RIGHT;
                     font.yAlignment = wd.EFontYAlignment.MIDDLE;
 
-                    font.update(1);
+                    font.render(1);
 
                     expect(context.fillStyle).toEqual(fillStyle);
                     expect(context.fillText).toCalledWith("hi 1;", 0, -25);
@@ -459,7 +459,7 @@ describe("PlainFont", function () {
             var fillStyle = "rgba(10,10,10,1)";
             font.enableFill(fillStyle);
 
-            font.update(1);
+            font.render(1);
 
             expect(context.fillStyle).toEqual(fillStyle);
             expect(context.fillText).toCalledThrice();
@@ -469,7 +469,7 @@ describe("PlainFont", function () {
         });
 
         it("restore context", function(){
-            font.update(1);
+            font.render(1);
 
             expect(context.restore).toCalledOnce();
             expect(context.restore).toCalledAfter(context.save);
@@ -518,25 +518,39 @@ describe("PlainFont", function () {
             font.init();
         });
 
-        it("if the new data equal old data, not dirty and not update text", function(){
+        it("if the new data equal old data, not dirty and not reformat text and not render text", function(){
             sandbox.stub(font, "reFormat");
+            sandbox.stub(font, "_drawSingleLine");
 
             font.update();
 
             expect(font.reFormat).not.toCalled();
 
+            //font.render();
+
+            //expect(font._drawSingleLine).toCalledOnce();
+
+
             font.text = "a";
 
             font.update();
 
             expect(font.reFormat).toCalledOnce();
 
+            //font.render();
+
+            //expect(font._drawSingleLine).toCalledTwice();
+
+
             font.text = "a";
 
             font.update();
 
-            expect(font.reFormat).toCalledOnce();
+            expect(font.reFormat.callCount).not.toEqual(2);
 
+            //font.render();
+
+            //expect(font._drawSingleLine.callCount).toEqual(3);
         });
 
         describe("else", function(){
@@ -544,16 +558,18 @@ describe("PlainFont", function () {
                 font.text = "阿斯";
 
                 font.update();
+                font.render();
             });
 
             it("formatText when change text", function(){
                 font.text = "a";
 
                 font.update();
+                font.render();
 
                 expect(context.fillText.secondCall).toCalledWith("a", -250, -200);
             });
-            it("formatText and update line height change fontSize", function(){
+            it("formatText and render line height change fontSize", function(){
                 if(bowser.firefox){
                     expect().toPass();
                     return;
@@ -563,6 +579,7 @@ describe("PlainFont", function () {
                 font.fontSize = 200;
 
                 font.update();
+                font.render();
 
                 expect(context.fillText.secondCall).toCalledWith("a", -250, -200);
                 expect(context.font).toEqual("200px '" + font.fontFamily + "'");
@@ -570,7 +587,7 @@ describe("PlainFont", function () {
                 expect(font._lineHeight).toEqual(200);
                 expect(context.fillText.getCall(2)).toCalledWith("b", -250, 0);
             });
-            it("formatText and update line height change fontFamily", function(){
+            it("formatText and render line height change fontFamily", function(){
                 if(bowser.firefox){
                     expect().toPass();
                     return;
@@ -579,6 +596,7 @@ describe("PlainFont", function () {
                 font.fontFamily = "aaa";
 
                 font.update();
+                font.render();
 
                 expect(context.font).toEqual("50px 'aaa'");
                 //lineHeight should be affected by the fontFamily, but here it can't test(the lineHeight will not change here)
@@ -589,6 +607,7 @@ describe("PlainFont", function () {
                 font.xAlignment = wd.EFontXAlignment.LEFT;
 
                 font.update();
+                font.render();
 
                 expect(context.fillText.secondCall).toCalledWith("阿", -1, -200);
 
@@ -604,6 +623,7 @@ describe("PlainFont", function () {
                 font.yAlignment = wd.EFontYAlignment.BOTTOM;
 
                 font.update();
+                font.render();
 
                 expect(context.fillText.secondCall).toCalledWith("阿斯", -250, 0);
             });
@@ -611,6 +631,7 @@ describe("PlainFont", function () {
                 font.xAlignment = wd.EFontXAlignment.RIGHT;
 
                 font.update();
+                font.render();
 
                 expect(context.fillText.secondCall).toCalledWith("阿斯", 150, -200);
             });
@@ -618,6 +639,7 @@ describe("PlainFont", function () {
                 font.yAlignment = wd.EFontYAlignment.MIDDLE;
 
                 font.update();
+                font.render();
 
                 expect(context.fillText.secondCall).toCalledWith("阿斯", -250, -25);
             });

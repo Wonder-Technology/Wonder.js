@@ -78,17 +78,107 @@ describe("UIObject", function () {
         sandbox.restore();
     });
 
-    describe("UIObjectScene->update", function(){
+    describe("UIObjectScene->render", function(){
         beforeEach(function(){
         });
 
-        describe("if any one of its children's ui component dirty, clear canvas and mark all children to be update_dirty", function(){
+        describe("if any one of its children's ui component dirty, clear canvas and mark all children to be render_dirty", function(){
             beforeEach(function(){
             });
 
-            describe("defer to update ui(next loop) when new dirty occur during current loop", function(){
-                //var rotationMatrix;
+            //describe("defer to render ui(next loop) when new dirty occur during current loop", function(){
+            //    //var rotationMatrix;
+            //
+            //    function addAction(uiObject){
+            //        var action = wd.CallFunc.create(function(){
+            //            this.getComponent(wd.UI).dirty = true;
+            //        }, uiObject);
+            //
+            //        uiObject.addComponent(action);
+            //
+            //        action.init();
+            //    }
+            //
+            //    function addRotateAction(uiObject, angle){
+            //        var action = wd.CallFunc.create(function(){
+            //            this.transform.rotation = angle;
+            //            this.getComponent(wd.UI).dirty = true;
+            //        }, uiObject);
+            //
+            //        uiObject.addComponent(action);
+            //
+            //        action.init();
+            //    }
+            //
+            //    beforeEach(function(){
+            //        sandbox.stub(window.performance, "now").returns(0);
+            //
+            //        director.scene.addChild(uiObject);
+            //
+            //        director._init();
+            //    });
+            //
+            //    it("test defer to render ui", function(){
+            //        var ui = uiObject.getComponent(wd.UI);
+            //        //sandbox.stub(ui, "update");
+            //        sandbox.stub(ui, "render");
+            //
+            //
+            //        director._loopBody(199);
+            //
+            //        expect(ui.render).toCalledOnce();
+            //        expect(ui.dirty).toBeFalsy();
+            //
+            //
+            //        wd.Director.getInstance().scheduler.scheduleTime(function(){
+            //            addAction(
+            //                uiObject
+            //            );
+            //        }, 200);
+            //
+            //
+            //        director._loopBody(200);
+            //
+            //        expect(ui.render).toCalledOnce();
+            //        expect(ui.dirty).toBeTruthy();
+            //
+            //
+            //        director._loopBody(201);
+            //
+            //
+            //        expect(ui.render).toCalledTwice();
+            //        expect(ui.dirty).toBeFalsy();
+            //    });
+            //    it("test defer to reset transform state when new dirty occur during current loop", function(){
+            //        var ui = uiObject.getComponent(wd.UI);
+            //        sandbox.stub(ui, "render");
+            //
+            //
+            //        director._loopBody(199);
+            //
+            //        expect(uiObject.transform.isRotate).toBeFalsy();
+            //
+            //        wd.Director.getInstance().scheduler.scheduleTime(function(){
+            //            addRotateAction(
+            //                uiObject,
+            //                45
+            //            );
+            //        }, 200);
+            //
+            //
+            //        director._loopBody(200);
+            //
+            //        expect(uiObject.transform.isRotate).toBeTruthy();
+            //
+            //
+            //        director._loopBody(201);
+            //
+            //
+            //        expect(uiObject.transform.isRotate).toBeFalsy();
+            //    });
+            //});
 
+            describe("instantly to render ui(in current loop) when new dirty occur during current loop", function(){
                 function addAction(uiObject){
                     var action = wd.CallFunc.create(function(){
                         this.getComponent(wd.UI).dirty = true;
@@ -118,14 +208,16 @@ describe("UIObject", function () {
                     director._init();
                 });
 
-                it("test defer to update ui", function(){
+                it("test instantly to render ui", function(){
                     var ui = uiObject.getComponent(wd.UI);
-                    sandbox.stub(ui, "update");
+                    sandbox.stub(ui, "render");
 
 
                     director._loopBody(199);
 
-                    expect(ui.update).toCalledOnce();
+                    expect(ui.render).toCalledOnce();
+                    expect(ui.dirty).toBeFalsy();
+
 
                     wd.Director.getInstance().scheduler.scheduleTime(function(){
                         addAction(
@@ -136,19 +228,12 @@ describe("UIObject", function () {
 
                     director._loopBody(200);
 
-                    expect(ui.update).toCalledOnce();
-                    expect(ui.dirty).toBeTruthy();
-
-
-                    director._loopBody(201);
-
-
-                    expect(ui.update).toCalledTwice();
+                    expect(ui.render).toCalledTwice();
                     expect(ui.dirty).toBeFalsy();
                 });
-                it("test defer to reset transform state when new dirty occur during current loop", function(){
+                it("test instantly to reset transform state when new dirty occur during current loop", function(){
                     var ui = uiObject.getComponent(wd.UI);
-                    sandbox.stub(ui, "update");
+                    sandbox.stub(ui, "render");
 
 
                     director._loopBody(199);
@@ -165,17 +250,11 @@ describe("UIObject", function () {
 
                     director._loopBody(200);
 
-                    expect(uiObject.transform.isRotate).toBeTruthy();
-
-
-                    director._loopBody(201);
-
-
                     expect(uiObject.transform.isRotate).toBeFalsy();
                 });
             });
 
-            describe("firstly clear canvas(only once), then update every one", function(){
+            describe("firstly clear canvas(only once), then render every one", function(){
                 beforeEach(function(){
                     sandbox.stub(wd.LoaderManager.getInstance(), "get").returns({});
                 });
@@ -196,9 +275,9 @@ describe("UIObject", function () {
 
                     uiObject.addChild(charFontUIObject);
 
-                    sandbox.spy(plainFont, "update");
-                    sandbox.spy(bitmapFont, "update");
-                    sandbox.spy(charFont, "update");
+                    sandbox.spy(plainFont, "render");
+                    sandbox.spy(bitmapFont, "render");
+                    sandbox.spy(charFont, "render");
 
 
 
@@ -220,13 +299,13 @@ describe("UIObject", function () {
 
 
                     expect(renderer.context.clearRect).toCalledOnce();
-                    expect(renderer.context.clearRect).toCalledBefore(plainFont.update);
-                    expect(plainFont.update).toCalledBefore(bitmapFont.update);
-                    expect(bitmapFont.update).toCalledBefore(charFont.update);
+                    expect(renderer.context.clearRect).toCalledBefore(plainFont.render);
+                    expect(plainFont.render).toCalledBefore(bitmapFont.render);
+                    expect(bitmapFont.render).toCalledBefore(charFont.render);
 
-                    expect(plainFont.update).toCalledOnce();
-                    expect(bitmapFont.update).toCalledOnce();
-                    expect(charFont.update).toCalledOnce();
+                    expect(plainFont.render).toCalledOnce();
+                    expect(bitmapFont.render).toCalledOnce();
+                    expect(charFont.render).toCalledOnce();
                 });
                 it("test BitmapFont component and CharFont component which is generated by the BitmapFont component", function(){
                     uiObject.removeComponent(wd.PlainFont);
@@ -243,8 +322,8 @@ describe("UIObject", function () {
 
                     uiObject.addChild(charFontUIObject);
 
-                    sandbox.spy(bitmapFont, "update");
-                    sandbox.spy(charFont, "update");
+                    sandbox.spy(bitmapFont, "render");
+                    sandbox.spy(charFont, "render");
 
 
 
@@ -265,11 +344,11 @@ describe("UIObject", function () {
 
 
                     expect(renderer.context.clearRect).toCalledOnce();
-                    expect(renderer.context.clearRect).toCalledBefore(bitmapFont.update);
-                    expect(bitmapFont.update).toCalledBefore(charFont.update);
+                    expect(renderer.context.clearRect).toCalledBefore(bitmapFont.render);
+                    expect(bitmapFont.render).toCalledBefore(charFont.render);
 
-                    expect(bitmapFont.update).toCalledOnce();
-                    expect(charFont.update).toCalledOnce();
+                    expect(bitmapFont.render).toCalledOnce();
+                    expect(charFont.render).toCalledOnce();
                 });
                 it("test UIObject with different UIRenderers, so that each UIRenderer can clear once", function(){
                     var data1 = createUIObject(wd.BitmapFont.create(), renderer);
@@ -311,10 +390,10 @@ describe("UIObject", function () {
 
 
 
-                    sandbox.spy(plainFont, "update");
-                    sandbox.spy(bitmapFont, "update");
-                    sandbox.spy(bitmapFont2, "update");
-                    sandbox.spy(plainFont2, "update");
+                    sandbox.spy(plainFont, "render");
+                    sandbox.spy(bitmapFont, "render");
+                    sandbox.spy(bitmapFont2, "render");
+                    sandbox.spy(plainFont2, "render");
 
 
 
@@ -339,28 +418,27 @@ describe("UIObject", function () {
 
 
                     expect(renderer.context.clearRect).toCalledOnce();
-                    expect(renderer.context.clearRect).toCalledBefore(plainFont.update);
-                    expect(plainFont.update).toCalledBefore(bitmapFont.update);
+                    expect(renderer.context.clearRect).toCalledBefore(plainFont.render);
+                    expect(plainFont.render).toCalledBefore(bitmapFont.render);
 
-                    expect(plainFont.update).toCalledOnce();
-                    expect(bitmapFont.update).toCalledOnce();
+                    expect(plainFont.render).toCalledOnce();
+                    expect(bitmapFont.render).toCalledOnce();
 
 
 
                     expect(renderer2.context.clearRect).toCalledOnce();
-                    //expect(renderer2.context.clearRect).toCalledAfter(bitmapFont.update);
-                    expect(renderer2.context.clearRect).toCalledBefore(bitmapFont.update);
-                    expect(renderer2.context.clearRect).toCalledBefore(plainFont2.update);
-                    expect(plainFont2.update).toCalledBefore(bitmapFont2.update);
+                    expect(renderer2.context.clearRect).toCalledBefore(bitmapFont.render);
+                    expect(renderer2.context.clearRect).toCalledBefore(plainFont2.render);
+                    expect(plainFont2.render).toCalledBefore(bitmapFont2.render);
 
-                    expect(plainFont2.update).toCalledOnce();
-                    expect(bitmapFont2.update).toCalledOnce();
+                    expect(plainFont2.render).toCalledOnce();
+                    expect(bitmapFont2.render).toCalledOnce();
                 });
 
                 //todo test more ui
             });
 
-            it("the UIObject which has the same UIRenderer with the dirty one should also be updated", function(){
+            it("the UIObject which has the same UIRenderer with the dirty one should also be renderd", function(){
                 director.scene.addChild(uiObject);
 
                 var data = createUIObject(wd.Button.create(), renderer);
@@ -371,8 +449,8 @@ describe("UIObject", function () {
 
                 director.scene.addChild(buttonUIObject);
 
-                sandbox.spy(plainFont, "update");
-                sandbox.spy(button, "update");
+                sandbox.spy(plainFont, "render");
+                sandbox.spy(button, "render");
 
 
 
@@ -392,13 +470,13 @@ describe("UIObject", function () {
 
 
                 expect(renderer.context.clearRect).toCalledOnce();
-                expect(button.update).toCalledAfter(plainFont.update);
+                expect(button.render).toCalledAfter(plainFont.render);
             });
         });
 
-        describe("if ui not dirty, not clear ui canvas and not update ui", function(){
+        describe("if ui not dirty, not clear ui canvas and not render ui", function(){
             it("test uiObject only has PlainFont component", function(){
-                sandbox.spy(plainFont, "update");
+                sandbox.spy(plainFont, "render");
                 director.scene.addChild(uiObject);
 
                 director._init();
@@ -409,7 +487,7 @@ describe("UIObject", function () {
                 director._loopBody(2);
 
                 expect(renderer.context.clearRect).toCalledOnce();
-                expect(plainFont.update).toCalledOnce();
+                expect(plainFont.render).toCalledOnce();
             });
 
             //todo test more ui
