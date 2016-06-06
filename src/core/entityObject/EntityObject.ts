@@ -30,8 +30,6 @@ module wd {
         @cloneAttributeAsBasicType()
         public isVisible:boolean = true;
 
-        public actionManager:ActionManager = ActionManager.create();
-
         protected startLoopHandler:() => void = null;
         protected endLoopHandler:() => void = null;
 
@@ -320,8 +318,6 @@ module wd {
             if(animation){
                 animation.update(elapsedTime);
             }
-
-            this.actionManager.update(elapsedTime);
 
             this.execScript("update", elapsedTime);
 

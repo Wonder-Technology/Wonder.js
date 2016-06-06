@@ -204,6 +204,8 @@ module wd{
         private _update(elapsed:number){
             this.scheduler.update(elapsed);
 
+            ActionManager.getInstance().update(elapsed);
+
             this.scene.gameObjectScene.update(elapsed);
 
             this.scene.uiObjectScene.update(elapsed);

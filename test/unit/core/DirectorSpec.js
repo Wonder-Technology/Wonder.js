@@ -282,6 +282,20 @@ describe("Director", function () {
         });
     });
 
+    describe("_update", function(){
+        beforeEach(function(){
+
+        });
+
+        it("update ActionManager", function(){
+            sandbox.stub(wd.ActionManager.getInstance(), "update");
+
+            director._update(1);
+
+            expect(wd.ActionManager.getInstance().update).toCalledWith(1);
+        });
+    });
+
     describe("_render", function(){
         beforeEach(function(){
         });

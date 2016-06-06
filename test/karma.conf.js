@@ -77,7 +77,7 @@
 
         //'test/unit/**/VAOManager*',
         //
-        //'test/unit/**/action/*',
+        'test/unit/**/action/*',
 
         //'test/unit/**/RenderUtils*',
 
@@ -215,10 +215,10 @@
 
         //'test/unit/**/ColorSpec*',
 
-        'test/unit/**/interactionUISpec*',
-        'test/unit/**/TransitionSpec*',
-        'test/unit/**/SpriteTransitionSpec*',
-        'test/unit/**/TransitionManagerSpec*',
+        //'test/unit/**/interactionUISpec*',
+        //'test/unit/**/TransitionSpec*',
+        //'test/unit/**/SpriteTransitionSpec*',
+        //'test/unit/**/TransitionManagerSpec*',
 
 
         //'test/unit/**/MainSpec*',
@@ -246,16 +246,16 @@
         //
         //'test/unit/**/ImageSpec*',
         //
-        'test/unit/**/ThreeDTransformSpec.js',
-        'test/unit/**/RectTransformSpec*',
-        'test/unit/**/TransformSpec*',
+        //'test/unit/**/ThreeDTransformSpec.js',
+        //'test/unit/**/RectTransformSpec*',
+        //'test/unit/**/TransformSpec*',
         //'test/unit/**/component/**',
         //'test/unit/**/PanelSpec*',
         //
         //
         //'test/unit/**/LightShaderLibSpec*',
         //
-        //'test/unit/**/SceneDispatcherSpec*',
+        'test/unit/**/SceneDispatcherSpec*',
         //'test/unit/**/GameObjectSceneSpec*',
         //
         //'test/unit/**/MathUtils*',

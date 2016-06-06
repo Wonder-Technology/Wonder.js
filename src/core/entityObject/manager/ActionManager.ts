@@ -1,9 +1,13 @@
 module wd{
     export class ActionManager extends ComponentContainer{
-        public static create():ActionManager {
-            var obj = new this();
+        private static _instance = null;
 
-            return obj;
+        public static getInstance() {
+            if (this._instance === null) {
+                this._instance = new this();
+            }
+
+            return this._instance;
         }
 
         protected list:wdCb.Collection<Action>;

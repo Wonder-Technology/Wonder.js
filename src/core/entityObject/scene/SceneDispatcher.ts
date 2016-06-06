@@ -15,13 +15,6 @@ module wd {
             return this.gameObjectScene.scriptList;
         }
 
-        /*!
-         use gameObjectScene->actionManager as scene->actionManager
-         */
-        get actionManager(){
-            return this.gameObjectScene.actionManager;
-        }
-
         get ambientLight():GameObject {
             return this.gameObjectScene.ambientLight;
         }

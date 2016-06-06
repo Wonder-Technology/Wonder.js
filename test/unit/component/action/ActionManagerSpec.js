@@ -1,6 +1,6 @@
 describe("ActionManager", function () {
     var sandbox = null;
-    var manager = null;
+    var Manager = null;
     var gameObject = null;
 
     beforeEach(function () {
@@ -8,7 +8,7 @@ describe("ActionManager", function () {
 
         gameObject = wd.GameObject.create();
 
-        manager = wd.ActionManager.create();
+        Manager = wd.ActionManager.getInstance();
     });
     afterEach(function () {
         sandbox.restore();
@@ -22,10 +22,8 @@ describe("ActionManager", function () {
 
             gameObject.init();
 
-            gameObject.update(1);
-            gameObject.update(2);
-
-            manager = gameObject.actionManager;
+            Manager.update(1);
+            Manager.update(2);
         }
 
         beforeEach(function(){
@@ -42,7 +40,7 @@ describe("ActionManager", function () {
             });
 
             it("remove from ActionManager", function(){
-                expect(manager.hasChild(action)).toBeFalsy();
+                expect(Manager.hasChild(action)).toBeFalsy();
             });
             it("remove from GameObject->components", function(){
                 expect(gameObject.hasComponent(action)).toBeFalsy();
@@ -55,8 +53,8 @@ describe("ActionManager", function () {
             var action2 = wd.CallFunc.create(function(){ });
             prepare([action1, action2]);
 
-            expect(manager.hasChild(action1)).toBeTruthy();
-            expect(manager.hasChild(action2)).toBeFalsy();
+            expect(Manager.hasChild(action1)).toBeTruthy();
+            expect(Manager.hasChild(action2)).toBeFalsy();
         });
     });
 });

@@ -133,8 +133,8 @@ describe("UIRenderer", function () {
         expect(font.update).toCalledOnce();
     });
 
-    it("clear canvas before update ui", function(){
-        sandbox.stub(font, "update");
+    it("clear canvas before render ui", function(){
+        sandbox.stub(font, "render");
 
         director.scene.addChild(uiObject);
 
@@ -146,7 +146,7 @@ describe("UIRenderer", function () {
 
         director._loopBody(1);
 
-        expect(renderer.context.clearRect).toCalledBefore(font.update);
+        expect(renderer.context.clearRect).toCalledBefore(font.render);
     });
 
     it("each UIRenderer has one independent canvas", function(){

@@ -41,14 +41,16 @@ module wd{
         public addToObject(entityObject:EntityObject, isShareComponent:boolean = false){
             super.addToObject(entityObject, isShareComponent);
 
+            //todo not set target?use entityObject instead?
             this.target = entityObject;
-            entityObject.actionManager.addChild(this);
+
+            ActionManager.getInstance().addChild(this);
         }
 
         public removeFromObject(entityObject:EntityObject){
             super.removeFromObject(entityObject);
 
-            entityObject.actionManager.removeChild(this);
+            ActionManager.getInstance().removeChild(this);
         }
 
         public init(){

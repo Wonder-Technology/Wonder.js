@@ -266,32 +266,32 @@ describe("GameObjectScene", function() {
                 expect(camera1.getComponent(wd.CameraController).update).not.toCalled();
                 expect(camera2.getComponent(wd.CameraController).update).toCalledOnce();
             });
-            it("invoke scene's and it's children's all action->update", function(){
-                scene.addComponent(action1);
-                gameObject1.addComponent(action2);
-                gameObject2.addComponent(action3);
-                gameObject3.addComponent(action4);
-                gameObject3.addComponent(action5);
-                scene.init();
-
-                scene.update(elapsedTime);
-
-                expect(action1.update).toCalledWith(elapsedTime);
-                expect(action1.update).toCalledOnce();
-                //expect(action1.update).toCalledBefore(scene.actionManager.update);
-                expect(action1.update).toCalledBefore(action3.update);
-                expect(action3.update).toCalledWith(elapsedTime);
-                expect(action3.update).toCalledOnce();
-                expect(action3.update).toCalledBefore(action2.update);
-                expect(action2.update).toCalledWith(elapsedTime);
-                expect(action2.update).toCalledOnce();
-                expect(action2.update).toCalledBefore(action4.update);
-                expect(action4.update).toCalledWith(elapsedTime);
-                expect(action4.update).toCalledOnce();
-                expect(action4.update).toCalledBefore(action5.update);
-                expect(action5.update).toCalledWith(elapsedTime);
-                expect(action5.update).toCalledOnce();
-            });
+            //it("invoke scene's and it's children's all action->update", function(){
+            //    scene.addComponent(action1);
+            //    gameObject1.addComponent(action2);
+            //    gameObject2.addComponent(action3);
+            //    gameObject3.addComponent(action4);
+            //    gameObject3.addComponent(action5);
+            //    scene.init();
+            //
+            //    scene.update(elapsedTime);
+            //
+            //    expect(action1.update).toCalledWith(elapsedTime);
+            //    expect(action1.update).toCalledOnce();
+            //    //expect(action1.update).toCalledBefore(scene.actionManager.update);
+            //    expect(action1.update).toCalledBefore(action3.update);
+            //    expect(action3.update).toCalledWith(elapsedTime);
+            //    expect(action3.update).toCalledOnce();
+            //    expect(action3.update).toCalledBefore(action2.update);
+            //    expect(action2.update).toCalledWith(elapsedTime);
+            //    expect(action2.update).toCalledOnce();
+            //    expect(action2.update).toCalledBefore(action4.update);
+            //    expect(action4.update).toCalledWith(elapsedTime);
+            //    expect(action4.update).toCalledOnce();
+            //    expect(action4.update).toCalledBefore(action5.update);
+            //    expect(action5.update).toCalledWith(elapsedTime);
+            //    expect(action5.update).toCalledOnce();
+            //});
             it("invoke scene and it's children's script->update", function(){
                 scene.update(elapsedTime);
 

@@ -223,13 +223,13 @@ describe("SceneDispatcher", function() {
         });
 
         describe("if component is Action", function(){
-            it("set action's target and add it to actionManager", function(){
+            it("set action's target and add it to ActionManager", function(){
                 var component = new wd.Action();
 
                 scene.addComponent(component);
 
                 expect(component.target).toEqual(scene);
-                expect(scene.actionManager.hasChild(component)).toBeTruthy();
+                expect(wd.ActionManager.getInstance().hasChild(component)).toBeTruthy();
             });
         });
     });
@@ -253,13 +253,13 @@ describe("SceneDispatcher", function() {
         //});
 
         describe("if component is Action", function(){
-            it("remove it from actionManager", function(){
+            it("remove it from ActionManager", function(){
                 var component = new wd.Action();
                 scene.addComponent(component);
 
                 scene.removeComponent(component);
 
-                expect(scene.actionManager.hasChild(component)).toBeFalsy();
+                expect(wd.ActionManager.getInstance().hasChild(component)).toBeFalsy();
             });
         });
     });
