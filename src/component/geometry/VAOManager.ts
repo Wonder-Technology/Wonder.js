@@ -44,8 +44,7 @@ module wd{
         }
 
         public sendAllBufferData(toSendBuffersUidStr:string, toSendBufferArr:Array<ArrayBuffer>){
-            var {vao, isSetted} = this.getVAOData(toSendBuffersUidStr),
-                gl:any = null;
+            var {vao, isSetted} = this.getVAOData(toSendBuffersUidStr);
 
             BufferTable.lastBindedElementBuffer = null;
 
@@ -55,18 +54,19 @@ module wd{
                 return;
             }
 
-            gl = DeviceManager.getInstance().gl;
-
             for(let pos = 0, len = toSendBufferArr.length; pos < len; pos++){
                 let buffer = toSendBufferArr[pos];
 
-                if(!buffer){
-                    continue;
-                }
+                if(!buffer){}
 
-                gl.bindBuffer(gl.ARRAY_BUFFER, buffer.buffer);
-                gl.vertexAttribPointer(pos, buffer.size, gl[buffer.type], false, 0, 0);
-                gl.enableVertexAttribArray(pos);
+                if(buffer){
+                    var gl = DeviceManager.getInstance().gl;
+
+                    gl.bindBuffer(gl.ARRAY_BUFFER, buffer.buffer);
+                    gl.vertexAttribPointer(pos, buffer.size, gl[buffer.type], false, 0, 0);
+
+                    gl.enableVertexAttribArray(pos);
+                }
             }
         }
     }
