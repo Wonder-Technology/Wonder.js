@@ -240,7 +240,7 @@
         //'test/unit/**/UIRendererSpec*',
         //'test/unit/**/BitmapFontSpec*',
         //
-        //'test/unit/**/DirectorSpec*',
+        'test/unit/**/DirectorSpec*',
         //
         //'test/unit/**/ProgressBarSpec*',
         //

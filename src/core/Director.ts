@@ -116,13 +116,9 @@ module wd{
         public runUIObjectScene(elapseTime:number){
             var uiObjectScene:UIObjectScene = this.scene.uiObjectScene;
 
-            EventManager.trigger(uiObjectScene, CustomEvent.create(<any>EEngineEvent.STARTLOOP));
-
             uiObjectScene.update(elapseTime);
 
             uiObjectScene.render();
-
-            EventManager.trigger(uiObjectScene, CustomEvent.create(<any>EEngineEvent.ENDLOOP));
         }
 
         private _startLoop() {

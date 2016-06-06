@@ -275,32 +275,10 @@ describe("Director", function () {
             sandbox.stub(scene, "update");
         });
 
-        it("trigger STARTLOOP bind on uiObjectScene", function(){
-            var sum = 0;
-
-            wd.EventManager.on(scene, wd.EEngineEvent.STARTLOOP, function(){
-                sum++;
-            });
-
-            director.runUIObjectScene(1);
-
-            expect(sum).toEqual(1);
-        });
         it("invoke uiObjectScene->update", function () {
             director.runUIObjectScene(1);
 
             expect(scene.update).toCalledWith(1);
-        });
-        it("trigger ENDLOOP bind on uiObjectScene", function(){
-            var sum = 0;
-
-            wd.EventManager.on(scene, wd.EEngineEvent.ENDLOOP, function(){
-                sum++;
-            });
-
-            director.runUIObjectScene(1);
-
-            expect(sum).toEqual(1);
         });
     });
 

@@ -59,14 +59,6 @@ module wd {
             return null;
         }
 
-        protected bindStartLoopEvent(){
-            EventManager.on(this, <any>EEngineEvent.STARTLOOP, this.startLoopHandler);
-        }
-
-        protected bindEndLoopEvent(){
-            EventManager.on(this, <any>EEngineEvent.ENDLOOP, this.endLoopHandler);
-        }
-
         @require(function(uiObject:UIObject){
             assert(uiObject.getComponentCount(UIRenderer) <= 1, Log.info.FUNC_SHOULD_NOT("uiObject", "contain more than 1 uiRenderer component"));
         })
