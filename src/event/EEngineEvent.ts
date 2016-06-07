@@ -4,7 +4,7 @@ module wd{
         ENDLOOP = <any>"wd_endLoop",
         BEFORE_GAMEOBJECT_INIT = <any>"wd_beforeGameObjectInit",
         AFTER_GAMEOBJECT_INIT = <any>"wd_afterGameObjectInit",
-        AFTER_GAMEOBJECT_INIT_RIGIDBODY_ADD_CONSTRAINT = <any>"wd_afterGameObjectInit_rigidBowd_addConstraint",
+        AFTER_GAMEOBJECT_INIT_RIGIDBODY_ADD_CONSTRAINT = <any>"wd_afterGameObjectInit_rigidBody_addConstraint",
 
         MOUSE_CLICK = <any>"wd_mouseclick",
         MOUSE_DOWN = <any>"wd_mousedown",

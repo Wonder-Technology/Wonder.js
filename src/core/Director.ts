@@ -194,15 +194,21 @@ module wd{
 
             EventManager.trigger(CustomEvent.create(<any>EEngineEvent.STARTLOOP));
 
+            ScriptEngine.getInstance().execScript("onStartLoop");
+
             this._update(elapsed);
 
             this._render();
+
+            ScriptEngine.getInstance().execScript("onEndLoop");
 
             EventManager.trigger(CustomEvent.create(<any>EEngineEvent.ENDLOOP));
         }
 
         private _update(elapsed:number){
             this.scheduler.update(elapsed);
+
+            ScriptEngine.getInstance().execScriptWithData("update", elapsed);
 
             ActionEngine.getInstance().update(elapsed);
 

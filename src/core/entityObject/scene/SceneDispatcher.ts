@@ -8,11 +8,8 @@ module wd {
             return obj;
         }
 
-        /*!
-         use gameObjectScene->scriptList as scene->scriptList
-         */
-        get scriptList(){
-            return this.gameObjectScene.scriptList;
+        get scriptManager(){
+            return this.gameObjectScene.scriptManager;
         }
 
         get ambientLight():GameObject {
@@ -249,14 +246,6 @@ module wd {
         public onDispose(){
             this.gameObjectScene.onDispose();
             this.uiObjectScene.onDispose();
-        }
-
-        public execScript(method:string, arg?:any){
-            this.gameObjectScene.execScript.apply(this.gameObjectScene, arguments);
-        }
-
-        public execEventScript(method:string, arg?:any){
-            this.gameObjectScene.execEventScript.apply(this.gameObjectScene, arguments);
         }
 
         protected createTransform(){

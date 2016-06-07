@@ -200,7 +200,7 @@ module wd{
 
             event.getDataFromCustomEvent(customEvent);
 
-            entityObject.execEventScript(handlerName, event);
+            ScriptEngine.getInstance().execEntityObjectEventScriptWithData(entityObject, handlerName, event);
 
             if (!event.isStopPropagation && entityObject.bubbleParent) {
                 this._trigger(event.clone(), entityObject.bubbleParent, true);

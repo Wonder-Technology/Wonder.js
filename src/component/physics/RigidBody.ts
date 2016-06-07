@@ -171,15 +171,15 @@ module wd {
         }
 
         private _onContact(collideObject:GameObject) {
-            this.entityObject.execScript("onContact", wdCb.Collection.create([collideObject]));
+            ScriptEngine.getInstance().execEntityObjectScriptWithData(this.entityObject, "onContact", wdCb.Collection.create([collideObject]));
         }
 
         private _onCollisionStart(collideObject:GameObject) {
-            this.entityObject.execScript("onCollisionStart", wdCb.Collection.create([collideObject]));
+            ScriptEngine.getInstance().execEntityObjectScriptWithData(this.entityObject, "onCollisionStart", wdCb.Collection.create([collideObject]));
         }
 
         private _onCollisionEnd() {
-            this.entityObject.execScript("onCollisionEnd");
+            ScriptEngine.getInstance().execEntityObjectScript(this.entityObject, "onCollisionEnd");
         }
 
         private _isContainer(entityObject:GameObject){

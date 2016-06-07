@@ -1,11 +1,12 @@
 module wd{
     export class GlobalScriptUtils{
         public static handlerAfterLoadedScript(entityObject:EntityObject){
-            entityObject.execScript("onEnter", null, true);
+            ScriptEngine.getInstance().execEntityObjectScriptOnlyOnce(entityObject, "onEnter");
 
+            //todo fix trigger entityObject event?
             EventManager.trigger(CustomEvent.create(<any>EEngineEvent.BEFORE_GAMEOBJECT_INIT));
 
-            entityObject.execScript("init", null, true);
+            ScriptEngine.getInstance().execEntityObjectScriptOnlyOnce(entityObject, "init");
 
             EventManager.trigger(CustomEvent.create(<any>EEngineEvent.AFTER_GAMEOBJECT_INIT));
 
@@ -13,7 +14,7 @@ module wd{
         }
 
         public static addScriptToEntityObject(entityObject:EntityObject, data:ScriptFileData){
-            entityObject.scriptList.addChild(data.name, new data.class(entityObject));
+            ScriptEngine.getInstance().addChild(entityObject, data.name, new data.class(entityObject));
         }
     }
 }

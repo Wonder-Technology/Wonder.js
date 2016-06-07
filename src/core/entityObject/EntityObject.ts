@@ -1,9 +1,5 @@
 module wd {
     export abstract class EntityObject extends Entity{
-        get scriptList(){
-            return this._scriptManager.scriptList;
-        }
-
         private _bubbleParent:EntityObject = null;
         @cloneAttributeAsBasicType()
         get bubbleParent(){
@@ -30,6 +26,8 @@ module wd {
         @cloneAttributeAsBasicType()
         public isVisible:boolean = true;
 
+        public scriptManager:ScriptManager = ScriptManager.create(this);
+
         protected startLoopHandler:() => void = null;
         protected endLoopHandler:() => void = null;
 
@@ -38,7 +36,7 @@ module wd {
         private _componentChangeSubscription:wdFrp.IDisposable = null;
         private _componentManager:ComponentManager = ComponentManager.create(this);
         private _entityObjectManager:EntityObjectManager = EntityObjectManager.create(this);
-        private _scriptManager:ScriptManager = ScriptManager.create(this);
+        //private _scriptManager:ScriptManager = ScriptManager.create(this);
 
         @virtual
         public initWhenCreate(){
@@ -107,27 +105,27 @@ module wd {
         }
 
         public onStartLoop() {
-            this.execScript("onStartLoop");
+            //this.execScript("onStartLoop");
         }
 
         public onEndLoop() {
-            this.execScript("onEndLoop");
+            //this.execScript("onEndLoop");
         }
 
         public onEnter() {
-            this.execScript("onEnter");
+            ScriptEngine.getInstance().execEntityObjectScriptOnlyOnce(this, "onEnter");
 
             EventManager.trigger(this, CustomEvent.create(<any>EEngineEvent.ENTER));
         }
 
         public onExit() {
-            this.execScript("onExit");
+            ScriptEngine.getInstance().execEntityObjectScriptOnlyOnce(this, "onExit");
 
             EventManager.trigger(this, CustomEvent.create(<any>EEngineEvent.EXIT));
         }
 
         public onDispose(){
-            this.execScript("onDispose");
+            ScriptEngine.getInstance().execEntityObjectScriptOnlyOnce(this, "onDispose");
         }
 
         public dispose() {
@@ -319,8 +317,6 @@ module wd {
                 animation.update(elapsedTime);
             }
 
-            this.execScript("update", elapsedTime);
-
             if(collider){
                 collider.update(elapsedTime);
             }
@@ -330,18 +326,6 @@ module wd {
             this.forEach((child:EntityObject) => {
                 child.update(elapsedTime);
             });
-        }
-
-        public execScript(method:string);
-        public execScript(method:string, arg:any);
-        public execScript(method:string, arg:any, isExecOnlyOnce:boolean);
-
-        public execScript(...args){
-            this._scriptManager.execScript.apply(this._scriptManager, args);
-        }
-
-        public execEventScript(method:string, arg:any = null){
-            this._scriptManager.execEventScript(method, arg);
         }
 
         public getComponentCount(_class:Function){

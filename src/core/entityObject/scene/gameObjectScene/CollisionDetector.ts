@@ -193,7 +193,7 @@ module wd{
                 })
                 .forEach((collideObject:GameObject) => {
                     for(let eventName of eventList){
-                        collideObject.execScript(eventName, wdCb.Collection.create([currentGameObject]));
+                        ScriptEngine.getInstance().execEntityObjectScriptWithData(collideObject, eventName, wdCb.Collection.create([currentGameObject]));
                     }
                 });
         }
@@ -204,13 +204,13 @@ module wd{
 
                 if(this._isCollisionStart(sourceObject)){
 
-                    sourceObject.execScript("onCollisionStart", targetObjects);
-                    sourceObject.execScript("onContact", targetObjects);
+                    ScriptEngine.getInstance().execEntityObjectScriptWithData(sourceObject, "onCollisionStart", targetObjects);
+                    ScriptEngine.getInstance().execEntityObjectScriptWithData(sourceObject, "onContact", targetObjects);
 
                     this._triggerCollisionEventOfCollideObjectWhichHasRigidBody(targetObjects, sourceObject, ["onCollisionStart", "onContact"]);
                 }
                 else{
-                    sourceObject.execScript("onContact", targetObjects);
+                    ScriptEngine.getInstance().execEntityObjectScriptWithData(sourceObject, "onContact", targetObjects);
                     this._triggerCollisionEventOfCollideObjectWhichHasRigidBody(targetObjects, sourceObject, ["onContact"]);
                 }
 
@@ -229,7 +229,7 @@ module wd{
 
             this._lastCollisionTable.forEach(({sourceObject, targetObjectMap}) => {
                 if(!table.hasChild(String(sourceObject.uid))){
-                    sourceObject.execScript("onCollisionEnd");
+                    ScriptEngine.getInstance().execEntityObjectScript(sourceObject, "onCollisionEnd");
                     this._triggerCollisionEventOfCollideObjectWhichHasRigidBody(targetObjectMap.toCollection(), sourceObject, ["onCollisionEnd"]);
 
                     sourceObject.removeTag(<any>ECollisionTag.COLLIDED);

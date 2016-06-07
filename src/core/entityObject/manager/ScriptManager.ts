@@ -10,54 +10,102 @@ module wd {
             this._entityObject = entityObject;
         }
 
-        public scriptList:wdCb.Hash<IScriptBehavior> = wdCb.Hash.create<IScriptBehavior>();
+        private _scriptList:wdCb.Hash<IScriptBehavior> = wdCb.Hash.create<IScriptBehavior>();
 
         private _entityObject:EntityObject = null;
         private _scriptExecuteHistory:wdCb.Hash<boolean> = wdCb.Hash.create<boolean>();
 
-        public execScript(method:string);
-        public execScript(method:string, arg:any);
-        public execScript(method:string, arg:any, isExecOnlyOnce:boolean);
-
-        public execScript(...args){
-            var method:string = args[0],
-                self = this;
-
-            if(args.length === 1){
-                this.scriptList.forEach((script:IScriptBehavior, scriptName:string) => {
-                    script[method] && script[method]();
-
-                    self._addToScriptExecuteHistory(scriptName, method);
-                });
-            }
-            else if(args.length === 2){
-                let arg:any = args[1];
-
-                this.scriptList.forEach((script:IScriptBehavior, scriptName:string) => {
-                    script[method] && script[method](arg);
-
-                    self._addToScriptExecuteHistory(scriptName, method);
-                });
-            }
-            else if(args.length === 3){
-                let arg:any = args[1],
-                    isExecOnlyOnce:boolean = args[2];
-
-                this.scriptList.forEach((script:IScriptBehavior, scriptName:string) => {
-                    if(isExecOnlyOnce && self._isScriptExecuted(scriptName, method)){
-                        return;
-                    }
-
-                    script[method] && script[method](arg);
-
-                    self._addToScriptExecuteHistory(scriptName, method);
-                });
-            }
+        public addChild(scriptName:string, classInstance:IScriptBehavior){
+            this._scriptList.addChild(scriptName, classInstance);
         }
 
-        public execEventScript(method:string, arg:any){
-            this.scriptList.forEach((script:IEventScriptBehavior) => {
-                script[method] && (arg !== null ? script[method](arg) : script[method]());
+        public getChild(scriptName:string){
+            return this._scriptList.getChild(scriptName);
+        }
+
+        public execScriptOnlyOnce(method:string){
+            this._scriptList.forEach((script:IScriptBehavior, scriptName:string) => {
+                if(this._isScriptExecuted(scriptName, method)){
+                    return;
+                }
+
+                if(script && script[method]){
+                    script[method]();
+                }
+
+                this._addToScriptExecuteHistory(scriptName, method);
+            }, this);
+        }
+
+        public execScriptWithData(method:string, data:any){
+            this._scriptList.forEach((script:IScriptBehavior) => {
+                if(script[method]){
+                    script[method](data);
+                }
+            });
+        }
+
+        public execScript(method:string){
+            this._scriptList.forEach((script:IScriptBehavior) => {
+                if(script[method]){
+                    script[method]();
+                }
+            });
+        }
+
+        //public execScript(method:string);
+        //public execScript(method:string, arg:any);
+        //public execScript(method:string, arg:any, isExecOnlyOnce:boolean);
+        //
+        //public execScript(...args){
+        //    var method:string = args[0],
+        //        self = this;
+        //
+        //    if(args.length === 1){
+        //        this._scriptList.forEach((script:IScriptBehavior, scriptName:string) => {
+        //            script[method] && script[method]();
+        //
+        //            self._addToScriptExecuteHistory(scriptName, method);
+        //        });
+        //    }
+        //    else if(args.length === 2){
+        //        let arg:any = args[1];
+        //
+        //        this._scriptList.forEach((script:IScriptBehavior, scriptName:string) => {
+        //            script[method] && script[method](arg);
+        //
+        //            self._addToScriptExecuteHistory(scriptName, method);
+        //        });
+        //    }
+        //    else if(args.length === 3){
+        //        let arg:any = args[1],
+        //            isExecOnlyOnce:boolean = args[2];
+        //
+        //        this._scriptList.forEach((script:IScriptBehavior, scriptName:string) => {
+        //            if(isExecOnlyOnce && self._isScriptExecuted(scriptName, method)){
+        //                return;
+        //            }
+        //
+        //            script[method] && script[method](arg);
+        //
+        //            self._addToScriptExecuteHistory(scriptName, method);
+        //        });
+        //    }
+        //}
+
+        //public execEventScript(method:string){
+        //    this._scriptList.forEach((script:IEventScriptBehavior) => {
+        //        if(script && script[method]){
+        //            script[method]();
+        //        }
+        //    });
+        //}
+
+        public execEventScriptWithData(method:string, data:any){
+            this._scriptList.forEach((script:IEventScriptBehavior) => {
+                if(script && script[method]){
+                    script[method](data);
+                }
             });
         }
 
