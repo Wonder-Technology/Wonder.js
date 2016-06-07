@@ -241,7 +241,7 @@ describe("GameObjectScene", function() {
                 action4 = buildAction();
                 action5 = buildAction();
 
-                //sandbox.stub(scene.actionManager, "update");
+                //sandbox.stub(scene.actionEngine, "update");
             });
 
             it("if enable physics, update phsics engine adapter", function () {
@@ -278,7 +278,7 @@ describe("GameObjectScene", function() {
             //
             //    expect(action1.update).toCalledWith(elapsedTime);
             //    expect(action1.update).toCalledOnce();
-            //    //expect(action1.update).toCalledBefore(scene.actionManager.update);
+            //    //expect(action1.update).toCalledBefore(scene.actionEngine.update);
             //    expect(action1.update).toCalledBefore(action3.update);
             //    expect(action3.update).toCalledWith(elapsedTime);
             //    expect(action3.update).toCalledOnce();

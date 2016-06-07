@@ -19,11 +19,11 @@ describe("DelayTime", function () {
         gameObject.addComponent(action);
 
         action.start();
-        wd.ActionManager.getInstance().update(50);
+        wd.ActionEngine.getInstance().update(50);
 
         expect(action.isFinish).toBeFalsy();
 
-        wd.ActionManager.getInstance().update(100);
+        wd.ActionEngine.getInstance().update(100);
 
         expect(action.isFinish).toBeTruthy();
     });
@@ -46,17 +46,17 @@ describe("DelayTime", function () {
             gameObject.addComponent(action);
 
             action.start();
-            wd.ActionManager.getInstance().update(50);
+            wd.ActionEngine.getInstance().update(50);
             action.stop();
-            wd.ActionManager.getInstance().update(150);
+            wd.ActionEngine.getInstance().update(150);
             expect(action.isFinish).toBeFalsy();
 
             window.performance.now.returns(150);
             action.start();
-            wd.ActionManager.getInstance().update(200);
+            wd.ActionEngine.getInstance().update(200);
             expect(action.isFinish).toBeFalsy();
 
-            wd.ActionManager.getInstance().update(250);
+            wd.ActionEngine.getInstance().update(250);
             expect(action.isFinish).toBeTruthy();
         });
     });
@@ -67,19 +67,19 @@ describe("DelayTime", function () {
             gameObject.addComponent(action);
 
             action.start();
-            wd.ActionManager.getInstance().update(50);
+            wd.ActionEngine.getInstance().update(50);
             window.performance.now.returns(50);
             action.pause();
 
-            wd.ActionManager.getInstance().update(100);
+            wd.ActionEngine.getInstance().update(100);
             expect(action.isFinish).toBeFalsy();
             window.performance.now.returns(100);
             action.resume();
 
-            wd.ActionManager.getInstance().update(120);
+            wd.ActionEngine.getInstance().update(120);
             expect(action.isFinish).toBeFalsy();
 
-            wd.ActionManager.getInstance().update(150);
+            wd.ActionEngine.getInstance().update(150);
             expect(action.isFinish).toBeTruthy();
         });
     });

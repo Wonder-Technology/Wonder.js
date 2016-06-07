@@ -223,13 +223,13 @@ describe("SceneDispatcher", function() {
         });
 
         describe("if component is Action", function(){
-            it("set action's target and add it to ActionManager", function(){
+            it("set action's target and add it to ActionEngine", function(){
                 var component = new wd.Action();
 
                 scene.addComponent(component);
 
                 expect(component.target).toEqual(scene);
-                expect(wd.ActionManager.getInstance().hasChild(component)).toBeTruthy();
+                expect(wd.ActionEngine.getInstance().hasChild(component)).toBeTruthy();
             });
         });
     });
@@ -253,13 +253,13 @@ describe("SceneDispatcher", function() {
         //});
 
         describe("if component is Action", function(){
-            it("remove it from ActionManager", function(){
+            it("remove it from ActionEngine", function(){
                 var component = new wd.Action();
                 scene.addComponent(component);
 
                 scene.removeComponent(component);
 
-                expect(wd.ActionManager.getInstance().hasChild(component)).toBeFalsy();
+                expect(wd.ActionEngine.getInstance().hasChild(component)).toBeFalsy();
             });
         });
     });
@@ -305,11 +305,11 @@ describe("SceneDispatcher", function() {
 
             expect(scene.scriptList.getCount()).toEqual(1);
         });
-        it("use gameObjectScene->actionManager as scene->actionManager", function(){
+        it("use gameObjectScene->actionEngine as scene->actionEngine", function(){
             var action = buildAction();
             scene.gameObjectScene.addComponent(action);
 
-            expect(scene.actionManager).toEqual(scene.gameObjectScene.actionManager);
+            expect(scene.actionEngine).toEqual(scene.gameObjectScene.actionEngine);
         });
 
         describe("dispatch", function(){

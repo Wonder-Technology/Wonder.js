@@ -287,12 +287,12 @@ describe("Director", function () {
 
         });
 
-        it("update ActionManager", function(){
-            sandbox.stub(wd.ActionManager.getInstance(), "update");
+        it("update ActionEngine", function(){
+            sandbox.stub(wd.ActionEngine.getInstance(), "update");
 
             director._update(1);
 
-            expect(wd.ActionManager.getInstance().update).toCalledWith(1);
+            expect(wd.ActionEngine.getInstance().update).toCalledWith(1);
         });
     });
 

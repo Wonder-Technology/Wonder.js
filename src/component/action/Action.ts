@@ -44,13 +44,13 @@ module wd{
             //todo not set target?use entityObject instead?
             this.target = entityObject;
 
-            ActionManager.getInstance().addChild(this);
+            ActionEngine.getInstance().addChild(this);
         }
 
         public removeFromObject(entityObject:EntityObject){
             super.removeFromObject(entityObject);
 
-            ActionManager.getInstance().removeChild(this);
+            ActionEngine.getInstance().removeChild(this);
         }
 
         public init(){

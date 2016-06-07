@@ -195,8 +195,8 @@ describe("Spawn", function () {
             gameObject.addComponent(action);
             action.reverse();
             action.start();
-            wd.ActionManager.getInstance().update();
-            wd.ActionManager.getInstance().update();
+            wd.ActionEngine.getInstance().update();
+            wd.ActionEngine.getInstance().update();
 
             expect(context.name).toEqual("ba");
         });

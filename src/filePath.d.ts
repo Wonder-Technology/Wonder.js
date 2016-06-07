@@ -70,7 +70,6 @@
 /// <reference path="core/entityObject/manager/EntityObjectManager"/>
 /// <reference path="core/entityObject/manager/ScriptManager"/>
 /// <reference path="core/entityObject/manager/ComponentContainer"/>
-/// <reference path="core/entityObject/manager/ActionManager"/>
 
 /// <reference path="core/entityObject/uiObject/UIObject"/>
 /// <reference path="core/entityObject/uiObject/UIManager"/>
@@ -715,3 +714,6 @@
 /// <reference path="lib/material_lib/mirror/MirrorMaterial"/>
 /// <reference path="lib/material_lib/mirror/MirrorShaderLib"/>
 
+
+
+/// <reference path="engine/ActionEngine"/>

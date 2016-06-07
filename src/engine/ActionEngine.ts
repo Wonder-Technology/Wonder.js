@@ -1,5 +1,5 @@
 module wd{
-    export class ActionManager extends ComponentContainer{
+    export class ActionEngine extends ComponentContainer{
         private static _instance = null;
 
         public static getInstance() {
