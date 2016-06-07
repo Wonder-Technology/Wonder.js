@@ -47,7 +47,9 @@ module wd {
         public addToObject(entityObject:UIObject, isShareComponent:boolean = false){
             super.addToObject(entityObject, isShareComponent);
 
-            entityObject.uiManager.addChild(this);
+            if(!entityObject.uiManager.hasChild(this)){
+                entityObject.uiManager.addChild(this);
+            }
         }
 
         public removeFromObject(entityObject:UIObject){

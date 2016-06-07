@@ -3,10 +3,6 @@ module wd{
         protected list:wdCb.Collection<Component> = wdCb.Collection.create<Component>();
 
         public addChild(component:Component){
-            if(this.hasChild(component)){
-                return;
-            }
-
             this.list.addChild(component);
         }
 

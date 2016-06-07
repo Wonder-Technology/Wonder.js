@@ -39,12 +39,16 @@ module wd{
 
 
         public addToObject(entityObject:EntityObject, isShareComponent:boolean = false){
+            var engine = ActionEngine.getInstance();
+
             super.addToObject(entityObject, isShareComponent);
 
             //todo not set target?use entityObject instead?
             this.target = entityObject;
 
-            ActionEngine.getInstance().addChild(this);
+            if(!engine.hasChild(this)){
+                engine.addChild(this);
+            }
         }
 
         public removeFromObject(entityObject:EntityObject){
