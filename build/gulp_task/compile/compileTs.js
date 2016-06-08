@@ -115,14 +115,19 @@ gulp.task("compileTsDebug", function() {
 
     var tsResult = tsProject.src()
         .pipe(gulpSourcemaps.init())
-        .pipe(gulpTs(tsProject));
+        .pipe(gulpTs(tsProject))
+
+        .pipe(gulpSourcemaps.write("./"))
+        .pipe(gulp.dest("dist/"))
 
 
-    return merge([
-        tsResult.js
-            .pipe(gulpSourcemaps.write())
-            .pipe(gulp.dest("dist/"))
-    ])
+    //return merge([
+    //    tsResult.js
+    //        .pipe(gulpSourcemaps.write("./"))
+    //        .pipe(gulp.dest("dist/"))
+    //])
+
+    return tsResult;
 });
 
 gulp.task("removeReference", function(){
