@@ -77,7 +77,7 @@
 
         //'test/unit/**/VAOManager*',
         //
-        'test/unit/**/action/*',
+        //'test/unit/**/action/*',
 
         //'test/unit/**/RenderUtils*',
 
@@ -200,7 +200,7 @@
 
         //'test/unit/**/EntityObjectSpec*',
 
-        //'test/unit/component/physics/**/eventSpec*',
+        'test/unit/component/physics/**/eventSpec*',
 
         //'test/unit/**/OctreeSpec*',
         //'test/unit/**/CollisionDetectorSpec*',
@@ -223,14 +223,14 @@
 
         //'test/unit/**/MainSpec*',
 
-        //'test/unit/component/event/eventSpec*',
+        'test/unit/component/event/eventSpec*',
 
-        'test/unit/**/ui/**',
-        'test/unit/**/UIObjectSpec*',
-        //
-        //
-        'test/unit/**/ButtonSpec*',
-        'test/unit/**/UIStateMachineSpec*',
+        //'test/unit/**/ui/**',
+        //'test/unit/**/UIObjectSpec*',
+        ////
+        ////
+        //'test/unit/**/ButtonSpec*',
+        //'test/unit/**/UIStateMachineSpec*',
 
 
         //'test/unit/**/*Asset*',
@@ -255,7 +255,7 @@
         //
         //'test/unit/**/LightShaderLibSpec*',
         //
-        'test/unit/**/SceneDispatcherSpec*',
+        //'test/unit/**/SceneDispatcherSpec*',
         //'test/unit/**/GameObjectSceneSpec*',
         //
         //'test/unit/**/MathUtils*',
@@ -289,7 +289,7 @@
         //'test/unit/**/*Shape*.js',
         //'test/unit/**/Arcball*',
         //'test/unit/**/FlyCameraController*',
-        //'test/unit/**/scriptSpec.js',
+        'test/unit/**/scriptSpec.js',
       //
       //  'test/unit/**/*ControllerSpec.js',
       //'test/unit/core/Tran*.js',

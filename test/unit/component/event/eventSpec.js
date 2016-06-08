@@ -4,6 +4,48 @@ describe("event component", function () {
     var manager;
     var view;
 
+    var Event = (function () {
+        function Event(entityObject) {
+        }
+        Event.prototype.onMouseClick = function (e) {
+        };
+        Event.prototype.onMouseOver = function (e) {
+        };
+        Event.prototype.onMouseOut = function (e) {
+        };
+        Event.prototype.onMouseMove = function (e) {
+        };
+        Event.prototype.onMouseDown = function (e) {
+        };
+        Event.prototype.onMouseUp = function (e) {
+        };
+        Event.prototype.onMouseWheel = function (e) {
+        };
+        Event.prototype.onMouseDrag = function (e) {
+        };
+        return Event;
+    }());
+
+    function testScript(gameObject, eventName, judgeOnEnter, judgeBeforeLoopBody, judgeAfterLoopBody, done){
+        scriptTool.testScriptNotLoadScript(gameObject, {
+            scriptName: eventName,
+            class: Event,
+            judgeOnEnter: judgeOnEnter,
+            judgeBeforeLoopBody: judgeBeforeLoopBody,
+            judgeAfterLoopBody: judgeAfterLoopBody
+        }, done);
+    }
+
+    function testSceneScript(judgeOnEnter, judgeBeforeLoopBody, judgeAfterLoopBody){
+        scriptTool.testScriptNotLoadScript(director.scene, {
+            scriptName: "event",
+            class: Event,
+            judgeOnEnter: judgeOnEnter,
+            judgeBeforeLoopBody: judgeBeforeLoopBody,
+            judgeAfterLoopBody: judgeAfterLoopBody
+        });
+    }
+
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
@@ -346,12 +388,13 @@ describe("event component", function () {
                     expect(event.locationInView.y).toEqual(fakeEvent.pageY);
                 }
 
-                it("when move onto view, trigger onMouseOver; then, when move on view, trigger onMouseMove; when move out view, trigger onMouseOut", function (done) {
-                    scriptTool.testScript(director.scene, "event", function (test) {
+                it("when move onto view, trigger onMouseOver; then, when move on view, trigger onMouseMove; when move out view, trigger onMouseOut", function () {
+                    testSceneScript(function (test) {
                         sandbox.spy(test, "onMouseMove");
                         sandbox.spy(test, "onMouseOver");
                         sandbox.spy(test, "onMouseOut");
-                    }, function (test) {
+                    },
+                    function (test) {
                         judgeEvent(test, {
                             pageX: 1,
                             pageY: 0
@@ -365,8 +408,7 @@ describe("event component", function () {
                             pageX: 1001,
                             pageY: 0
                         }, "onMouseOut", "MOUSEMOVE", "mouseout");
-                    }, function (test, time, gameObject) {
-                    }, done);
+                    });
                 });
                 it("it should trigger scene->mouseoverand trigger scene->mousemove when mouseout object which is in scene range", function(){
                     var renderer = createUIRenderer();
@@ -467,8 +509,8 @@ describe("event component", function () {
                     uiObject.transform.translate(300,100);
                 });
 
-                it("test not trigger", function(done){
-                    scriptTool.testScript(uiObject, "event", function(test){
+                it("test not trigger", function(){
+                    testScript(uiObject, "event", function(test){
                         sandbox.spy(test, "onMouseClick");
                     }, function(test){
                         fakeEvent = {
@@ -479,12 +521,12 @@ describe("event component", function () {
 
                         expect(test.onMouseClick).not.toCalled();
                     }, function(test, time, gameObject){
-                    }, done);
+                    });
                 });
 
                 describe("test trigger", function(){
-                    function judge(eventHandlerName, eventName, done){
-                        scriptTool.testScript(uiObject, "event", function(test, uiObject){
+                    function judge(eventHandlerName, eventName){
+                        testScript(uiObject, "event", function(test, uiObject){
                             sandbox.spy(test, eventHandlerName);
 
                             wd.EventManager.on(uiObject, wd.EEngineEvent[wd.EventTriggerTable.getScriptEngineEvent(wd.EEventName[eventName])], function(e){
@@ -506,7 +548,7 @@ describe("event component", function () {
                             expect(event.locationInView.x).toEqual(fakeEvent.pageX);
                             expect(event.locationInView.y).toEqual(fakeEvent.pageY);
                         }, function(test, time, uiObject){
-                        }, done);
+                        });
                     }
 
                     beforeEach(function(){
@@ -531,8 +573,8 @@ describe("event component", function () {
                         beforeEach(function(){
                         });
 
-                        it("when move onto entityObject, trigger onMouseOver; then, when move on entityObject, trigger onMouseMove; when move out entityObject, trigger onMouseOut", function(done){
-                            scriptTool.testScript(uiObject, "event", function(test){
+                        it("when move onto entityObject, trigger onMouseOver; then, when move on entityObject, trigger onMouseMove; when move out entityObject, trigger onMouseOut", function(){
+                            testScript(uiObject, "event", function(test){
                                 sandbox.spy(test, "onMouseMove");
                                 sandbox.spy(test, "onMouseOver");
                                 sandbox.spy(test, "onMouseOut");
@@ -561,7 +603,7 @@ describe("event component", function () {
                                 expect(test.onMouseMove).not.toCalledTwice();
 
                             }, function(test, time, gameObject){
-                            }, done);
+                            });
                         });
                     });
 
@@ -569,8 +611,8 @@ describe("event component", function () {
                         beforeEach(function(){
                         });
 
-                        it("test", function(done){
-                            scriptTool.testScript(uiObject, "event", function(test){
+                        it("test", function(){
+                            testScript(uiObject, "event", function(test){
                                 sandbox.spy(test, "onMouseMove");
                                 sandbox.spy(test, "onMouseDown");
                                 sandbox.spy(test, "onMouseUp");
@@ -595,22 +637,22 @@ describe("event component", function () {
                                 expect(event.locationInView.x).toEqual(fakeEvent.pageX);
                                 expect(event.locationInView.y).toEqual(fakeEvent.pageY);
                             }, function(test, time, gameObject){
-                            }, done);
+                            });
                         });
                     });
 
 
-                    it("test trigger onMouseClick", function(done){
-                        judge("onMouseClick", "CLICK", done);
+                    it("test trigger onMouseClick", function(){
+                        judge("onMouseClick", "CLICK");
                     });
-                    it("test trigger onMouseDown", function(done){
-                        judge("onMouseDown", "MOUSEDOWN", done);
+                    it("test trigger onMouseDown", function(){
+                        judge("onMouseDown", "MOUSEDOWN");
                     });
-                    it("test trigger onMouseUp", function(done){
-                        judge("onMouseUp", "MOUSEUP", done);
+                    it("test trigger onMouseUp", function(){
+                        judge("onMouseUp", "MOUSEUP");
                     });
-                    it("test trigger onMouseWheel", function(done){
-                        judge("onMouseWheel", "MOUSEWHEEL", done);
+                    it("test trigger onMouseWheel", function(){
+                        judge("onMouseWheel", "MOUSEWHEEL");
                     });
                 });
             });
@@ -631,8 +673,8 @@ describe("event component", function () {
                 beforeEach(function(){
                 });
 
-                it("test not trigger", function (done) {
-                    scriptTool.testScript(gameObject, "event", function (test) {
+                it("test not trigger", function () {
+                    testScript(gameObject, "event", function (test) {
                         sandbox.spy(test, "onMouseClick");
                     }, function (test) {
                     }, function (test, time, gameObject) {
@@ -644,10 +686,10 @@ describe("event component", function () {
                         manager.trigger(document.body, wd.MouseEvent.create(fakeEvent, wd.EEventName.CLICK));
 
                         expect(test.onMouseClick).not.toCalled();
-                    }, done);
+                    });
                 });
-                it("test trigger", function (done) {
-                    scriptTool.testScript(gameObject, "event", function (test, gameObject) {
+                it("test trigger", function () {
+                    testScript(gameObject, "event", function (test, gameObject) {
                         sandbox.spy(test, "onMouseClick");
 
 
@@ -664,7 +706,7 @@ describe("event component", function () {
                         manager.trigger(document.body, wd.MouseEvent.create(fakeEvent, wd.EEventName.CLICK));
 
                         expect(test.onMouseClick).toCalledOnce();
-                    }, done);
+                    });
                 });
             });
         });
@@ -678,8 +720,8 @@ describe("event component", function () {
             });
 
             describe("test Director->pause/resume event", function(){
-                it("if pause, not trigger event script handler", function(done){
-                    scriptTool.testScript(gameObject, "event", function (test) {
+                it("if pause, not trigger event script handler", function(){
+                    testScript(gameObject, "event", function (test) {
                         sandbox.spy(test, "onMouseClick");
                     }, function (test) {
                         fakeEvent = {
@@ -702,13 +744,13 @@ describe("event component", function () {
 
                         expect(test.onMouseClick).toCalledOnce();
                     }, function (test, time, gameObject) {
-                    }, done);
+                    });
                 });
             });
 
             describe("test Director->start/stop event", function(){
-                it("if stop, remove event", function(done){
-                    scriptTool.testScript(gameObject, "event", function (test) {
+                it("if stop, remove event", function(){
+                    testScript(gameObject, "event", function (test) {
                         sandbox.spy(test, "onMouseClick");
                     }, function (test) {
                         fakeEvent = {
@@ -731,7 +773,7 @@ describe("event component", function () {
 
                         expect(test.onMouseClick).not.toCalledTwice();
                     }, function (test, time, gameObject) {
-                    }, done);
+                    });
                 });
             });
         });
