@@ -52,6 +52,22 @@ module wd{
             super.init();
         }
 
+        public addToObject(entityObject:EntityObject, isShareComponent:boolean = false){
+            var engine:LODEngine = LODEngine.getInstance();
+
+            super.addToObject(entityObject, isShareComponent);
+
+            if(!engine.hasChild(this)){
+                engine.addChild(this);
+            }
+        }
+
+        public removeFromObject(entityObject:EntityObject){
+            super.removeFromObject(entityObject);
+
+            LODEngine.getInstance().removeChild(this);
+        }
+
         public addGeometryLevel(distanceBetweenCameraAndObject, levelGeometry:Geometry|ELODGeometryState){
             this.levelList.addChild({
                 distanceBetweenCameraAndObject: distanceBetweenCameraAndObject,

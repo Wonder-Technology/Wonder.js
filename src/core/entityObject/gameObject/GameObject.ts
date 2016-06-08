@@ -76,12 +76,7 @@ module wd {
         }
 
         public update(elapsedTime:number):void {
-            var lod = this.getComponent<LOD>(LOD),
-                octree = this.getComponent<Octree>(Octree);
-
-            if(lod){
-                lod.update(elapsedTime);
-            }
+            var octree = this.getComponent<Octree>(Octree);
 
             if(octree){
                 octree.update(elapsedTime);

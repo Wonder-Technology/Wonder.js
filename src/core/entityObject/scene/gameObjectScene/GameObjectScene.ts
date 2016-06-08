@@ -97,24 +97,26 @@ module wd {
             return <GameObject>super.addChild(child);
         }
 
-        public update(elapsedTime:number){
+        public update(elapsed:number){
             var currentCamera= this._getCurrentCameraComponent(),
                 shadowManager:ShadowManager = this.shadowManager,
                 collisionDetector:CollisionDetector = this._collisionDetector;
 
             if(this.physics.enable){
-                this.physicsEngineAdapter.update(elapsedTime);
+                this.physicsEngineAdapter.update(elapsed);
             }
 
             if(currentCamera){
-                currentCamera.update(elapsedTime);
+                currentCamera.update(elapsed);
             }
 
-            shadowManager.update(elapsedTime);
+            shadowManager.update(elapsed);
 
-            super.update(elapsedTime);
+            LODEngine.getInstance().update(elapsed);
 
-            collisionDetector.update(elapsedTime);
+            super.update(elapsed);
+
+            collisionDetector.update(elapsed);
         }
 
         public render(renderer:Renderer) {

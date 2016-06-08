@@ -718,3 +718,4 @@
 
 /// <reference path="engine/ActionEngine"/>
 /// <reference path="engine/ScriptEngine"/>
+/// <reference path="engine/LODEngine"/>
