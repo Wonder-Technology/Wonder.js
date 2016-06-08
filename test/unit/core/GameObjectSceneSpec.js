@@ -170,12 +170,12 @@ describe("GameObjectScene", function() {
             prepareTool.addScript(gameObject2, script3, "customScript3");
             prepareTool.addScript(gameObject3, script4, "customScript4");
 
-            sandbox.stub(gameObject1, "onStartLoop");
-            sandbox.stub(gameObject2, "onStartLoop");
-            sandbox.stub(gameObject3, "onStartLoop");
-            sandbox.stub(gameObject1, "onEndLoop");
-            sandbox.stub(gameObject2, "onEndLoop");
-            sandbox.stub(gameObject3, "onEndLoop");
+            //sandbox.stub(gameObject1, "onStartLoop");
+            //sandbox.stub(gameObject2, "onStartLoop");
+            //sandbox.stub(gameObject3, "onStartLoop");
+            //sandbox.stub(gameObject1, "onEndLoop");
+            //sandbox.stub(gameObject2, "onEndLoop");
+            //sandbox.stub(gameObject3, "onEndLoop");
             sandbox.stub(gameObject1, "onExit");
             sandbox.stub(gameObject2, "onExit");
             sandbox.stub(gameObject3, "onExit");
@@ -185,19 +185,19 @@ describe("GameObjectScene", function() {
             beforeEach(function () {
             });
 
-            it("bind global hook", function () {
-                scene.init();
-
-                wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.STARTLOOP));
-                wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.ENDLOOP));
-
-                expect(gameObject1.onStartLoop).toCalledOnce();
-                expect(gameObject2.onStartLoop).toCalledOnce();
-                expect(gameObject3.onStartLoop).toCalledOnce();
-                expect(gameObject1.onEndLoop).toCalledOnce();
-                expect(gameObject2.onEndLoop).toCalledOnce();
-                expect(gameObject3.onEndLoop).toCalledOnce();
-            });
+            //it("bind global hook", function () {
+            //    scene.init();
+            //
+            //    wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.STARTLOOP));
+            //    wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.ENDLOOP));
+            //
+            //    expect(gameObject1.onStartLoop).toCalledOnce();
+            //    expect(gameObject2.onStartLoop).toCalledOnce();
+            //    expect(gameObject3.onStartLoop).toCalledOnce();
+            //    expect(gameObject1.onEndLoop).toCalledOnce();
+            //    expect(gameObject2.onEndLoop).toCalledOnce();
+            //    expect(gameObject3.onEndLoop).toCalledOnce();
+            //});
             it("invoke components' init", function () {
                 var geometry = new wd.BoxGeometry();
                 var material = wd.BasicMaterial.create();

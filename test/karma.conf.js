@@ -27,7 +27,7 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        'test/unit/**',
+        //'test/unit/**',
 
 
 
@@ -200,10 +200,10 @@
 
         //'test/unit/**/EntityObjectSpec*',
 
-        'test/unit/component/physics/**/eventSpec*',
+        //'test/unit/component/physics/**/eventSpec*',
 
         //'test/unit/**/OctreeSpec*',
-        'test/unit/**/CollisionDetectorSpec*',
+        //'test/unit/**/CollisionDetectorSpec*',
         //'test/unit/**/BoundingRegionUtilsSpec*',
 
         //'test/unit/**/SourceLightSpec*',
@@ -223,7 +223,7 @@
 
         //'test/unit/**/MainSpec*',
 
-        'test/unit/component/event/eventSpec*',
+        //'test/unit/component/event/eventSpec*',
 
         //'test/unit/**/ui/**',
         //'test/unit/**/UIObjectSpec*',
@@ -240,7 +240,7 @@
         //'test/unit/**/UIRendererSpec*',
         //'test/unit/**/BitmapFontSpec*',
         //
-        'test/unit/**/DirectorSpec*',
+        //'test/unit/**/DirectorSpec*',
         //
         //'test/unit/**/ProgressBarSpec*',
         //
@@ -256,7 +256,7 @@
         //'test/unit/**/LightShaderLibSpec*',
         //
         //'test/unit/**/SceneDispatcherSpec*',
-        'test/unit/**/GameObjectSceneSpec*',
+        //'test/unit/**/GameObjectSceneSpec*',
         //
         //'test/unit/**/MathUtils*',
         //'test/unit/**/rayPicking*',
@@ -280,16 +280,16 @@
         //'test/unit/**/physics/optimize*',
         //'test/unit/**/physics/**/impulseSpec*',
         //'test/unit/**/physics/**/damping*',
-        'test/unit/**/physics/**/collision*',
+        //'test/unit/**/physics/**/collision*',
         //'test/unit/**/physics/**/bodyType*',
         //'test/unit/**/physics/**/bounce*',
         //'test/unit/**/physics/**/constraint*',
         //'test/unit/**/physics/**/compound*',
-        'test/unit/**/GameObjectSpec.js',
+        //'test/unit/**/GameObjectSpec.js',
         //'test/unit/**/*Shape*.js',
         //'test/unit/**/Arcball*',
         //'test/unit/**/FlyCameraController*',
-        //'test/unit/**/scriptSpec.js',
+        'test/unit/**/scriptSpec.js',
       //
       //  'test/unit/**/*ControllerSpec.js',
       //'test/unit/core/Tran*.js',

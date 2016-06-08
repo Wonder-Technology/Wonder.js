@@ -25,6 +25,8 @@ module wd {
                 .subscribe(() => {
                     self._resetAllRendererClearCanvasFlag();
                 });
+
+            return this;
         }
 
         public onDispose(){

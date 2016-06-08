@@ -56,14 +56,6 @@ module wd{
                     GlobalScriptUtils.handlerAfterLoadedScript(entityObject);
                 });
         }
-
-        //todo test
-        public removeFromObject(entityObject:EntityObject){
-            super.removeFromObject(entityObject);
-
-            //todo remove from engine(and remove from manager by engine)
-            //ScriptEngine.getInstance().removeChild(this);
-        }
     }
 
     export type ScriptFileData = {

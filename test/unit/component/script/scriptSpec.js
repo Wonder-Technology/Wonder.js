@@ -72,7 +72,7 @@ describe("script", function () {
         return testTool.createCamera();
     }
 
-    function testScript(judgeOnEnter, judgeBeforeLoopBody, judgeAfterLoopBody, done){
+    function testScript(judgeOnEnter, judgeBeforeLoopBody, judgeAfterLoopBody){
         var gameObject = wd.GameObject.create();
 
         scriptTool.testScriptNotLoadScript(gameObject, {
@@ -81,7 +81,7 @@ describe("script", function () {
             judgeOnEnter: judgeOnEnter,
             judgeBeforeLoopBody: judgeBeforeLoopBody,
             judgeAfterLoopBody: judgeAfterLoopBody
-        }, done);
+        });
     }
 
     function testTwoScriptNotLoadScript(judgeTest1OnEnter, judgeTest2OnEnter, judgeBeforeLoopBody, judgeAfterLoopBody){
@@ -322,4 +322,18 @@ describe("script", function () {
     //        expect(wd.CustomEvent.create.withArgs(wd.EEngineEvent.AFTER_GAMEOBJECT_INIT_RIGIDBODY_ADD_CONSTRAINT)).toCalledAfter(wd.CustomEvent.create.withArgs(wd.EEngineEvent.AFTER_GAMEOBJECT_INIT));
     //    });
     //});
+
+    it("test remove script", function(){
+        testScript(function(test){
+            sandbox.spy(test, "update");
+        }, function(test, entityObject){
+            expect(entityObject.scriptManager.hasChild(test)).toBeTruthy();
+
+            wd.ScriptEngine.getInstance().removeChild(entityObject, test);
+
+            expect(entityObject.scriptManager.hasChild(test)).toBeFalsy();
+        }, function(test, time, gameObject){
+            expect(test.update).not.toCalled();
+        });
+    });
 });

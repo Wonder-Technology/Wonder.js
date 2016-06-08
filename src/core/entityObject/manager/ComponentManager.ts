@@ -147,9 +147,11 @@ module wd{
                 component = this.getComponent<any>(<Function>args[0]);
             }
 
-            this._components.removeChild(component);
+            if(component){
+                this._components.removeChild(component);
 
-            this._removeComponentHandler(component);
+                this._removeComponentHandler(component);
+            }
 
             //this._componentDirty = true;
 

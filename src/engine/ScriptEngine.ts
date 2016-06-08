@@ -25,13 +25,11 @@ module wd{
             this._scriptList.addChild(classInstance);
         }
 
-        public removeChild(uid:number){
-            this._scriptList.removeChild(String(uid));
-        }
+        public removeChild(entityObject:EntityObject, classInstance:IScriptBehavior){
+            entityObject.scriptManager.removeChild(classInstance);
 
-        //public hasChild(uid:number){
-        //    return this._scriptList.hasChild(String(uid));
-        //}
+            this._scriptList.removeChild(classInstance);
+        }
 
         public findScript(entityObject:EntityObject, scriptName:string){
             return entityObject.scriptManager.getChild(scriptName);

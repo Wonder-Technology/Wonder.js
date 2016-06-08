@@ -23,6 +23,18 @@ module wd {
             return this._scriptList.getChild(scriptName);
         }
 
+        public removeChild(targetClassInstance:IScriptBehavior){
+            return this._scriptList.removeChild((classInstance:IScriptBehavior) => {
+                return classInstance === targetClassInstance;
+            });
+        }
+
+        public hasChild(targetClassInstance:IScriptBehavior){
+            return this._scriptList.hasChildWithFunc((classInstance:IScriptBehavior) => {
+                return classInstance === targetClassInstance;
+            });
+        }
+
         public execScriptOnlyOnce(method:string){
             this._scriptList.forEach((script:IScriptBehavior, scriptName:string) => {
                 if(this._isScriptExecuted(scriptName, method)){
