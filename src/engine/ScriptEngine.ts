@@ -24,6 +24,10 @@ module wd{
             this._scriptList.removeChild(classInstance);
         }
 
+        public removeAllChildren(){
+            this._scriptList.removeAllChildren();
+        }
+
         public findScript(entityObject:EntityObject, scriptName:string){
             return entityObject.scriptManager.getChild(scriptName);
         }

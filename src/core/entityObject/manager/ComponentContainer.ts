@@ -10,6 +10,10 @@ module wd{
             this.list.removeChild(component);
         }
 
+        public removeAllChildren(){
+            this.list.removeAllChildren();
+        }
+
         public hasChild(component:Component){
             return this.list.hasChild(component);
         }

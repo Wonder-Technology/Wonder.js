@@ -719,3 +719,4 @@
 /// <reference path="engine/ActionEngine"/>
 /// <reference path="engine/ScriptEngine"/>
 /// <reference path="engine/LODEngine"/>
+/// <reference path="engine/SPacePartitionEngine"/>

@@ -19,7 +19,19 @@ module wd {
             assert(entityObject instanceof GameObject, Log.info.FUNC_SHOULD("Octree component", "add to GameObject"));
         })
         public addToObject(entityObject:GameObject, isShareComponent:boolean = false){
+            var engine:SpacePartitionEngine = SpacePartitionEngine.getInstance();
+
             super.addToObject(entityObject, isShareComponent);
+
+            if(!engine.hasChild(this)){
+                engine.addChild(this);
+            }
+        }
+
+        public removeFromObject(entityObject:EntityObject){
+            super.removeFromObject(entityObject);
+
+            SpacePartitionEngine.getInstance().removeChild(this);
         }
 
         @require(function(){

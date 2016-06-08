@@ -75,16 +75,6 @@ module wd {
             return this.getComponent<SpacePartition>(SpacePartition);
         }
 
-        public update(elapsedTime:number):void {
-            var octree = this.getComponent<Octree>(Octree);
-
-            if(octree){
-                octree.update(elapsedTime);
-            }
-
-            super.update(elapsedTime);
-        }
-
         protected getGeometry():Geometry{
             var lod:LOD = this.getComponent<LOD>(LOD);
 

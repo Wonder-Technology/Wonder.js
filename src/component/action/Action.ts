@@ -39,7 +39,7 @@ module wd{
 
 
         public addToObject(entityObject:EntityObject, isShareComponent:boolean = false){
-            var engine = ActionEngine.getInstance();
+            var engine:ActionEngine = ActionEngine.getInstance();
 
             super.addToObject(entityObject, isShareComponent);
 

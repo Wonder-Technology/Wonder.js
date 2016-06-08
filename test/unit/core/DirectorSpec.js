@@ -8,6 +8,9 @@ describe("Director", function () {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
+
+        testTool.clearInstance(sandbox);
+
         director = wd.Director.getInstance();
         sandbox.stub(window.performance, "now").returns(0);
         sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
