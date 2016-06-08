@@ -10,14 +10,7 @@ module wd{
             return this._instance;
         }
 
-        //private _scriptList:wdCb.Hash<IScriptBehavior> = wdCb.Hash.create<IScriptBehavior>();
-        //private _scriptMap:wdCb.Hash<wdCb.Hash<IScriptBehavior>> = wdCb.Hash.create<wdCb.Hash<IScriptBehavior>>();
-
         private _scriptList:wdCb.Collection<IScriptBehavior> = wdCb.Collection.create<IScriptBehavior>();
-
-        //public getChild(uid:number){
-        //    return this._scriptList.getChild(String(uid));
-        //}
 
         public addChild(entityObject:EntityObject, scriptName:string, classInstance:IScriptBehavior){
             entityObject.scriptManager.addChild(scriptName, classInstance);
@@ -36,11 +29,6 @@ module wd{
         }
 
         public execEntityObjectScript(entityObject:EntityObject, method:string){
-        //    var script:IScriptBehavior = this._scriptList.getChild(String(uid));
-        //
-        //    if(script && script[method]){
-        //        script[method]();
-        //    }
             entityObject.scriptManager.execScript(method);
         }
 
@@ -49,12 +37,6 @@ module wd{
         }
 
         public execEntityObjectScriptWithData(entityObject:EntityObject, method:string, data:any){
-            //var script:IScriptBehavior = this._scriptList.getChild(String(uid));
-            //
-            //if(script && script[method]){
-            //    script[method](data);
-            //}
-
             entityObject.scriptManager.execScriptWithData(method, data);
         }
 
@@ -74,21 +56,7 @@ module wd{
             });
         }
 
-        //public execEntityObjectEventScript(uid:number, method:string){
-        //    var script:IEventScriptBehavior = this._scriptList.getChild(String(uid));
-        //
-        //    if(script && script[method]){
-        //        script[method]();
-        //    }
-        //}
-
         public execEntityObjectEventScriptWithData(entityObject:EntityObject, method:string, data:any){
-            //var script:IEventScriptBehavior = this._scriptList.getChild(String(uid));
-            //
-            //if(script && script[method]){
-            //    script[method](data);
-            //}
-            //
             entityObject.scriptManager.execEventScriptWithData(method, data);
         }
     }
