@@ -282,9 +282,53 @@ describe("Director", function () {
         });
     });
 
+    describe("test exec script", function(){
+        var script, script2;
+
+        function buildScript(){
+            return {
+                onStartLoop: sandbox.stub(),
+                onEndLoop:sandbox.stub(),
+                update: sandbox.stub()
+            }
+        }
+
+        beforeEach(function(){
+            script = buildScript();
+            prepareTool.addScript(director.scene, script, "script");
+
+            script2 = buildScript();
+            prepareTool.addScript(director.scene, script2, "script");
+        });
+
+        it("exec all scripts->onStartLoop after trigger STARTLOOP event", function(){
+            var startLoopHander = sandbox.stub();
+                wd.EventManager.on(wd.EEngineEvent.STARTLOOP, startLoopHander);
+
+            director._run();
+
+            expect(script.onStartLoop).toCalledAfter(startLoopHander);
+            expect(script2.onStartLoop).toCalledAfter(startLoopHander);
+        });
+        it("exec all scripts->onEndLoop before trigger ENDLOOP event", function(){
+            var endLoopHander = sandbox.stub();
+                wd.EventManager.on(wd.EEngineEvent.ENDLOOP, endLoopHander);
+
+            director._run();
+
+            expect(script.onEndLoop).toCalledBefore(endLoopHander);
+            expect(script2.onEndLoop).toCalledBefore(endLoopHander);
+        });
+        it("exec all scripts->update", function () {
+            director._run(1);
+
+            expect(script.update).toCalledWith(1);
+            expect(script2.update).toCalledWith(1);
+        });
+    });
+
     describe("_update", function(){
         beforeEach(function(){
-
         });
 
         it("update ActionEngine", function(){

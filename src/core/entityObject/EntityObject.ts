@@ -28,15 +28,11 @@ module wd {
 
         public scriptManager:ScriptManager = ScriptManager.create(this);
 
-        protected startLoopHandler:() => void = null;
-        protected endLoopHandler:() => void = null;
-
         private _hasComponentCache:wdCb.Hash<boolean> = wdCb.Hash.create<boolean>();
         private _getComponentCache:wdCb.Hash<boolean> = wdCb.Hash.create<boolean>();
         private _componentChangeSubscription:wdFrp.IDisposable = null;
         private _componentManager:ComponentManager = ComponentManager.create(this);
         private _entityObjectManager:EntityObjectManager = EntityObjectManager.create(this);
-        //private _scriptManager:ScriptManager = ScriptManager.create(this);
 
         @virtual
         public initWhenCreate(){
@@ -81,16 +77,6 @@ module wd {
         public init() {
             var self = this;
 
-            this.startLoopHandler = wdCb.FunctionUtils.bind(this, () => {
-                this.onStartLoop();
-            });
-            this.endLoopHandler = wdCb.FunctionUtils.bind(this, () => {
-                this.onEndLoop();
-            });
-
-            this.bindStartLoopEvent();
-            this.bindEndLoopEvent();
-
             this._componentChangeSubscription = EventManager.fromEvent(this, <any>EEngineEvent.COMPONENT_CHANGE)
                 .subscribe(() => {
                     self._onComponentChange();
@@ -102,14 +88,6 @@ module wd {
             this.afterInitChildren();
 
             return this;
-        }
-
-        public onStartLoop() {
-            //this.execScript("onStartLoop");
-        }
-
-        public onEndLoop() {
-            //this.execScript("onEndLoop");
         }
 
         public onEnter() {
@@ -137,9 +115,6 @@ module wd {
             }
 
             EventManager.off(this);
-
-            EventManager.off(<any>EEngineEvent.STARTLOOP, this.startLoopHandler);
-            EventManager.off(<any>EEngineEvent.ENDLOOP, this.endLoopHandler);
 
             this._componentChangeSubscription && this._componentChangeSubscription.dispose();
 
@@ -340,16 +315,6 @@ module wd {
 
         @virtual
         protected afterInitChildren(){
-        }
-
-        @virtual
-        protected bindStartLoopEvent(){
-            EventManager.on(<any>EEngineEvent.STARTLOOP, this.startLoopHandler);
-        }
-
-        @virtual
-        protected bindEndLoopEvent(){
-            EventManager.on(<any>EEngineEvent.ENDLOOP, this.endLoopHandler);
         }
 
         @virtual

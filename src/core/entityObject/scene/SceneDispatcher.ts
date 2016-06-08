@@ -223,16 +223,6 @@ module wd {
             }
         }
 
-        public onStartLoop() {
-            this.gameObjectScene.onStartLoop();
-            this.uiObjectScene.onStartLoop();
-        }
-
-        public onEndLoop() {
-            this.gameObjectScene.onEndLoop();
-            this.uiObjectScene.onEndLoop();
-        }
-
         public onEnter() {
             this.gameObjectScene.onEnter();
             this.uiObjectScene.onEnter();

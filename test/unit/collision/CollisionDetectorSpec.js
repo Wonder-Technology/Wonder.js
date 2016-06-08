@@ -26,14 +26,14 @@ describe("CollisionDetector", function () {
                 var onCollisionStartCallCount = onCollisionStartCallCount || 1,
                     callIndex = callIndex || 0;
 
-                expect(box.execScript.withArgs("onCollisionStart").callCount).toEqual(onCollisionStartCallCount);
+                expect(box.scriptManager.execScriptWithData.withArgs("onCollisionStart").callCount).toEqual(onCollisionStartCallCount);
 
                 judgeCollideObjects(box, "onCollisionStart", callIndex, expectedCollideObjectArr);
                 //judgeCollideObjects(box, "onContact", callIndex, expectedCollideObjectArr);
             }
 
             function judgeCollideObjects(box, event, callIndex, expectedCollideObjectArr){
-                var collideObjects = box.execScript.withArgs(event).getCall(callIndex).args[1];
+                var collideObjects = box.scriptManager.execScriptWithData.withArgs(event).getCall(callIndex).args[1];
 
                 judgeTool.isObjectListEqual(collideObjects.getChildren(), expectedCollideObjectArr);
             }
@@ -45,7 +45,8 @@ describe("CollisionDetector", function () {
                     box.name = name;
                 }
 
-                sandbox.stub(box, "execScript");
+                sandbox.stub(box.scriptManager, "execScript");
+                sandbox.stub(box.scriptManager, "execScriptWithData");
 
                 return box;
             }
@@ -76,8 +77,8 @@ describe("CollisionDetector", function () {
                 detector.update();
 
 
-                expect(box1.execScript.withArgs("onCollisionEnd")).toCalledOnce();
-                expect(box3.execScript.withArgs("onCollisionEnd")).toCalledOnce();
+                expect(box1.scriptManager.execScript.withArgs("onCollisionEnd")).toCalledOnce();
+                expect(box3.scriptManager.execScript.withArgs("onCollisionEnd")).toCalledOnce();
             }
 
             beforeEach(function(){
@@ -132,8 +133,8 @@ describe("CollisionDetector", function () {
                         detector.update();
 
 
-                        expect(box1.execScript.withArgs("onCollisionStart")).not.toCalled();
-                        expect(box3.execScript.withArgs("onCollisionStart")).not.toCalled();
+                        expect(box1.scriptManager.execScriptWithData.withArgs("onCollisionStart")).not.toCalled();
+                        expect(box3.scriptManager.execScriptWithData.withArgs("onCollisionStart")).not.toCalled();
 
 
 
@@ -214,8 +215,8 @@ describe("CollisionDetector", function () {
                         detector.update();
 
 
-                        expect(box1.execScript.withArgs("onCollisionEnd")).toCalledOnce();
-                        expect(box3.execScript.withArgs("onCollisionEnd")).toCalledOnce();
+                        expect(box1.scriptManager.execScript.withArgs("onCollisionEnd")).toCalledOnce();
+                        expect(box3.scriptManager.execScript.withArgs("onCollisionEnd")).toCalledOnce();
 
 
 
@@ -237,8 +238,8 @@ describe("CollisionDetector", function () {
                         judge(box1, [box3], 2, 1);
                         judge(box3, [box1], 2, 1);
 
-                        expect(box1.execScript.withArgs("onCollisionEnd")).not.toCalledTwice();
-                        expect(box3.execScript.withArgs("onCollisionEnd")).not.toCalledTwice();
+                        expect(box1.scriptManager.execScript.withArgs("onCollisionEnd")).not.toCalledTwice();
+                        expect(box3.scriptManager.execScript.withArgs("onCollisionEnd")).not.toCalledTwice();
 
 
                         box1.transform.position = wd.Vector3.create(25, 0, 0);
@@ -249,8 +250,8 @@ describe("CollisionDetector", function () {
                         detector.update();
 
 
-                        expect(box1.execScript.withArgs("onCollisionEnd")).toCalledTwice();
-                        expect(box3.execScript.withArgs("onCollisionEnd")).toCalledTwice();
+                        expect(box1.scriptManager.execScript.withArgs("onCollisionEnd")).toCalledTwice();
+                        expect(box3.scriptManager.execScript.withArgs("onCollisionEnd")).toCalledTwice();
                     });
 
                     it("test collide twice", function () {
@@ -265,8 +266,8 @@ describe("CollisionDetector", function () {
                         detector.update();
 
 
-                        expect(box1.execScript.withArgs("onContact")).toCalledOnce();
-                        expect(box3.execScript.withArgs("onContact")).toCalledOnce();
+                        expect(box1.scriptManager.execScriptWithData.withArgs("onContact")).toCalledOnce();
+                        expect(box3.scriptManager.execScriptWithData.withArgs("onContact")).toCalledOnce();
                         judgeCollideObjects(box1, "onContact", 0, [box3]);
                         judgeCollideObjects(box3, "onContact", 0, [box1]);
 
@@ -277,8 +278,8 @@ describe("CollisionDetector", function () {
                         detector.update();
 
 
-                        expect(box1.execScript.withArgs("onContact")).toCalledTwice();
-                        expect(box3.execScript.withArgs("onContact")).toCalledTwice();
+                        expect(box1.scriptManager.execScriptWithData.withArgs("onContact")).toCalledTwice();
+                        expect(box3.scriptManager.execScriptWithData.withArgs("onContact")).toCalledTwice();
                         judgeCollideObjects(box1, "onContact", 1, [box3]);
                         judgeCollideObjects(box3, "onContact", 1, [box1]);
                     });
@@ -323,9 +324,9 @@ describe("CollisionDetector", function () {
                         judge(box5, [box1, box6]);
                         judge(box6, [box1, box3, box5]);
 
-                        expect(box3.execScript.withArgs("onContact").callCount).toEqual(1);
-                        expect(box5.execScript.withArgs("onContact").callCount).toEqual(1);
-                        expect(box6.execScript.withArgs("onContact").callCount).toEqual(1);
+                        expect(box3.scriptManager.execScriptWithData.withArgs("onContact").callCount).toEqual(1);
+                        expect(box5.scriptManager.execScriptWithData.withArgs("onContact").callCount).toEqual(1);
+                        expect(box6.scriptManager.execScriptWithData.withArgs("onContact").callCount).toEqual(1);
 
 
 
@@ -344,10 +345,10 @@ describe("CollisionDetector", function () {
 
 
 
-                        expect(box1.execScript.withArgs("onCollisionEnd")).toCalledOnce();
-                        expect(box3.execScript.withArgs("onCollisionEnd")).toCalledOnce();
-                        expect(box5.execScript.withArgs("onCollisionEnd")).toCalledOnce();
-                        expect(box6.execScript.withArgs("onCollisionEnd")).toCalledOnce();
+                        expect(box1.scriptManager.execScript.withArgs("onCollisionEnd")).toCalledOnce();
+                        expect(box3.scriptManager.execScript.withArgs("onCollisionEnd")).toCalledOnce();
+                        expect(box5.scriptManager.execScript.withArgs("onCollisionEnd")).toCalledOnce();
+                        expect(box6.scriptManager.execScript.withArgs("onCollisionEnd")).toCalledOnce();
                     });
                 });
 
@@ -374,8 +375,8 @@ describe("CollisionDetector", function () {
 
 
 
-                    expect(box1.execScript.withArgs("onCollisionEnd")).toCalledOnce();
-                    expect(box3.execScript.withArgs("onCollisionEnd")).toCalledOnce();
+                    expect(box1.scriptManager.execScript.withArgs("onCollisionEnd")).toCalledOnce();
+                    expect(box3.scriptManager.execScript.withArgs("onCollisionEnd")).toCalledOnce();
                 });
 
                 describe("optimize", function(){
@@ -403,8 +404,8 @@ describe("CollisionDetector", function () {
                         detector.update();
 
 
-                        expect(box1.execScript.withArgs("onCollisionStart")).not.toCalled();
-                        expect(box3.execScript.withArgs("onCollisionStart")).not.toCalled();
+                        expect(box1.scriptManager.execScriptWithData.withArgs("onCollisionStart")).not.toCalled();
+                        expect(box3.scriptManager.execScriptWithData.withArgs("onCollisionStart")).not.toCalled();
                     });
 
                     describe("if gameObject->Collider->enable === false, not check if it collide with others", function(){
@@ -425,8 +426,8 @@ describe("CollisionDetector", function () {
                             detector.update();
 
 
-                            expect(box1.execScript.withArgs("onCollisionStart")).not.toCalled();
-                            expect(box3.execScript.withArgs("onCollisionStart")).not.toCalled();
+                            expect(box1.scriptManager.execScriptWithData.withArgs("onCollisionStart")).not.toCalled();
+                            expect(box3.scriptManager.execScriptWithData.withArgs("onCollisionStart")).not.toCalled();
                         });
                         it("test octree collide with octree", function () {
                             var octreeContainer2 = wd.GameObject.create();
@@ -450,8 +451,8 @@ describe("CollisionDetector", function () {
                             detector.update();
 
 
-                            expect(box1.execScript.withArgs("onCollisionStart")).not.toCalled();
-                            expect(box3.execScript.withArgs("onCollisionStart")).not.toCalled();
+                            expect(box1.scriptManager.execScriptWithData.withArgs("onCollisionStart")).not.toCalled();
+                            expect(box3.scriptManager.execScriptWithData.withArgs("onCollisionStart")).not.toCalled();
                         });
                     });
                 });

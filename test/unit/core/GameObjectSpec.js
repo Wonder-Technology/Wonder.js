@@ -184,31 +184,31 @@ describe("GameObject", function() {
     });
 
     describe("dispose", function(){
-        it("off startLoop,endLoop event->exec script handler", function(){
-            var script = {
-                onStartLoop:sandbox.stub(),
-                onEndLoop:sandbox.stub()
-            };
-            prepareTool.addScript(gameObject, script);
-
-            gameObject.init();
-
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.STARTLOOP));
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.ENDLOOP));
-
-            expect(script.onStartLoop).toCalledOnce();
-            expect(script.onEndLoop).toCalledOnce();
-
-
-            gameObject.dispose();
-
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.STARTLOOP));
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.ENDLOOP));
-
-
-            expect(script.onStartLoop).toCalledOnce();
-            expect(script.onEndLoop).toCalledOnce();
-        });
+        //it("off startLoop,endLoop event->exec script handler", function(){
+        //    var script = {
+        //        onStartLoop:sandbox.stub(),
+        //        onEndLoop:sandbox.stub()
+        //    };
+        //    prepareTool.addScript(gameObject, script);
+        //
+        //    gameObject.init();
+        //
+        //    wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.STARTLOOP));
+        //    wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.ENDLOOP));
+        //
+        //    expect(script.onStartLoop).toCalledOnce();
+        //    expect(script.onEndLoop).toCalledOnce();
+        //
+        //
+        //    gameObject.dispose();
+        //
+        //    wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.STARTLOOP));
+        //    wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.ENDLOOP));
+        //
+        //
+        //    expect(script.onStartLoop).toCalledOnce();
+        //    expect(script.onEndLoop).toCalledOnce();
+        //});
         it("invoke its and children's script->dispose", function(){
             var script1 = {
                 onDispose:sandbox.stub()

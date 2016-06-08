@@ -8,16 +8,30 @@ module wd {
             return obj;
         }
 
-        public onEndLoop() {
-            super.onEndLoop();
+        private _startLoopSubscription:wdFrp.IDisposable = null;
+        private _endLoopSubscription:wdFrp.IDisposable = null;
 
-            this._resetAllRendererClearCanvasFlag();
+        public init(){
+            var self = this;
+
+            super.init();
+
+            this._startLoopSubscription = EventManager.fromEvent(<any>EEngineEvent.STARTLOOP)
+            .subscribe(() => {
+                self._sortSiblingChildren();
+            });
+
+            this._endLoopSubscription = EventManager.fromEvent(<any>EEngineEvent.ENDLOOP)
+                .subscribe(() => {
+                    self._resetAllRendererClearCanvasFlag();
+                });
         }
 
-        public onStartLoop(){
-            super.onStartLoop();
+        public onDispose(){
+            super.onDispose();
 
-            this._sortSiblingChildren();
+            this._startLoopSubscription.dispose();
+            this._endLoopSubscription.dispose();
         }
 
         @require(function(){

@@ -165,7 +165,6 @@ describe("GameObjectScene", function() {
             script3 = buildScript();
             script4 = buildScript();
 
-            scene.scriptList.addChild("customScript1", script1);
             prepareTool.addScript(scene, script1, "customScript1");
             prepareTool.addScript(gameObject1, script2, "customScript2");
             prepareTool.addScript(gameObject2, script3, "customScript3");
@@ -292,19 +291,19 @@ describe("GameObjectScene", function() {
             //    expect(action5.update).toCalledWith(elapsedTime);
             //    expect(action5.update).toCalledOnce();
             //});
-            it("invoke scene and it's children's script->update", function(){
-                scene.update(elapsedTime);
-
-                expect(script1.update).toCalledOnce();
-                expect(script1.update).toCalledWith(elapsedTime);
-                expect(script2.update).toCalledOnce();
-                expect(script3.update).toCalledOnce();
-                expect(script4.update).toCalledOnce();
-
-                expect(script1.update).toCalledBefore(script3.update);
-                expect(script3.update).toCalledBefore(script2.update);
-                expect(script2.update).toCalledBefore(script4.update);
-            });
+            //it("invoke scene and it's children's script->update", function(){
+            //    scene.update(elapsedTime);
+            //
+            //    expect(script1.update).toCalledOnce();
+            //    expect(script1.update).toCalledWith(elapsedTime);
+            //    expect(script2.update).toCalledOnce();
+            //    expect(script3.update).toCalledOnce();
+            //    expect(script4.update).toCalledOnce();
+            //
+            //    expect(script1.update).toCalledBefore(script3.update);
+            //    expect(script3.update).toCalledBefore(script2.update);
+            //    expect(script2.update).toCalledBefore(script4.update);
+            //});
         });
     });
 

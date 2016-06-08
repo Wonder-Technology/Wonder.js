@@ -1,4 +1,5 @@
 describe("SceneDispatcher", function() {
+
     var sandbox = null;
     var scene = null;
     var SceneDispatcher = null;
@@ -56,7 +57,6 @@ describe("SceneDispatcher", function() {
             script3 = buildScript();
             script4 = buildScript();
 
-            scene.scriptList.addChild("customScript1", script1);
             prepareTool.addScript(scene, script1, "customScript1");
             prepareTool.addScript(gameObject1, script2, "customScript2");
             prepareTool.addScript(gameObject2, script3, "customScript3");
@@ -298,13 +298,13 @@ describe("SceneDispatcher", function() {
             scene.addChild(uiObject1);
         });
 
-        it("use gameObjectScene->script as scene->script", function(){
-            script1 = buildScript();
-
-            prepareTool.addScript(scene.gameObjectScene, script1, "customScript1");
-
-            expect(scene.scriptList.getCount()).toEqual(1);
-        });
+        //it("use gameObjectScene->script as scene->script", function(){
+        //    script1 = buildScript();
+        //
+        //    prepareTool.addScript(scene.gameObjectScene, script1, "customScript1");
+        //
+        //    expect(scene.scriptList.getCount()).toEqual(1);
+        //});
         it("use gameObjectScene->actionEngine as scene->actionEngine", function(){
             var action = buildAction();
             scene.gameObjectScene.addComponent(action);
