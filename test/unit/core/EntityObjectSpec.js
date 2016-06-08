@@ -241,38 +241,6 @@ describe("EntityObject", function() {
         beforeEach(function(){
         });
 
-        it("unbind startLoop event", function(){
-            entityObject.init();
-            sandbox.stub(entityObject, "onStartLoop");
-
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.STARTLOOP));
-
-            expect(entityObject.onStartLoop).toCalledOnce();
-
-
-            entityObject.dispose();
-
-
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.STARTLOOP));
-
-            expect(entityObject.onStartLoop).not.toCalledTwice();
-        });
-        it("unbind endLoop event", function(){
-            entityObject.init();
-            sandbox.stub(entityObject, "onEndLoop");
-
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.ENDLOOP));
-
-            expect(entityObject.onEndLoop).toCalledOnce();
-
-
-            entityObject.dispose();
-
-
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.ENDLOOP));
-
-            expect(entityObject.onEndLoop).not.toCalledTwice();
-        });
         it("unbind component_change event", function(){
             entityObject.init();
             sandbox.stub(entityObject, "_onComponentChange");

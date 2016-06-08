@@ -198,7 +198,7 @@
 
         //'test/unit/**/Debug*',
 
-        //'test/unit/**/EntityObjectSpec*',
+        'test/unit/**/EntityObjectSpec*',
 
         //'test/unit/component/physics/**/eventSpec*',
 
@@ -240,7 +240,7 @@
         //'test/unit/**/UIRendererSpec*',
         //'test/unit/**/BitmapFontSpec*',
         //
-        //'test/unit/**/DirectorSpec*',
+        'test/unit/**/DirectorSpec*',
         //
         //'test/unit/**/ProgressBarSpec*',
         //
@@ -255,7 +255,7 @@
         //
         //'test/unit/**/LightShaderLibSpec*',
         //
-        //'test/unit/**/SceneDispatcherSpec*',
+        'test/unit/**/SceneDispatcherSpec*',
         //'test/unit/**/GameObjectSceneSpec*',
         //
         //'test/unit/**/MathUtils*',
@@ -289,7 +289,7 @@
         //'test/unit/**/*Shape*.js',
         //'test/unit/**/Arcball*',
         //'test/unit/**/FlyCameraController*',
-        'test/unit/**/scriptSpec.js',
+        //'test/unit/**/scriptSpec.js',
       //
       //  'test/unit/**/*ControllerSpec.js',
       //'test/unit/core/Tran*.js',

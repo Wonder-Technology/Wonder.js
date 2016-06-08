@@ -62,12 +62,12 @@ describe("SceneDispatcher", function() {
             prepareTool.addScript(gameObject2, script3, "customScript3");
             prepareTool.addScript(gameObject3, script4, "customScript4");
 
-            sandbox.stub(gameObject1, "onStartLoop");
-            sandbox.stub(gameObject2, "onStartLoop");
-            sandbox.stub(gameObject3, "onStartLoop");
-            sandbox.stub(gameObject1, "onEndLoop");
-            sandbox.stub(gameObject2, "onEndLoop");
-            sandbox.stub(gameObject3, "onEndLoop");
+            //sandbox.stub(gameObject1, "onStartLoop");
+            //sandbox.stub(gameObject2, "onStartLoop");
+            //sandbox.stub(gameObject3, "onStartLoop");
+            //sandbox.stub(gameObject1, "onEndLoop");
+            //sandbox.stub(gameObject2, "onEndLoop");
+            //sandbox.stub(gameObject3, "onEndLoop");
             sandbox.stub(gameObject1, "onExit");
             sandbox.stub(gameObject2, "onExit");
             sandbox.stub(gameObject3, "onExit");
@@ -426,12 +426,12 @@ describe("SceneDispatcher", function() {
                 judge("dispose");
             });
 
-            it("onStartLoop", function(){
-                judge("onStartLoop");
-            });
-            it("onEndLoop", function(){
-                judge("onEndLoop");
-            });
+            //it("onStartLoop", function(){
+            //    judge("onStartLoop");
+            //});
+            //it("onEndLoop", function(){
+            //    judge("onEndLoop");
+            //});
             it("onEnter", function(){
                 judge("onEnter");
             });

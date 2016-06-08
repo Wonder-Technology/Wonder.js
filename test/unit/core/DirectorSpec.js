@@ -275,14 +275,44 @@ describe("Director", function () {
             sandbox.stub(scene, "update");
         });
 
+        it("trigger STARTLOOP", function () {
+            var startLoopHandler = sandbox.stub();
+            wd.EventManager.on(wd.EEngineEvent.STARTLOOP, startLoopHandler);
+
+            director.runUIObjectScene(1);
+
+            expect(startLoopHandler).toCalledOnce();
+        });
+        it("exec all scripts->onStartLoop", function () {
+            sandbox.stub(wd.ScriptEngine.getInstance(), "execScript");
+
+            director.runUIObjectScene(1);
+
+            expect(wd.ScriptEngine.getInstance().execScript).toCalledWith("onStartLoop");
+        });
         it("invoke uiObjectScene->update", function () {
             director.runUIObjectScene(1);
 
             expect(scene.update).toCalledWith(1);
         });
+        it("exec all scripts->onEndLoop", function () {
+            sandbox.stub(wd.ScriptEngine.getInstance(), "execScript");
+
+            director.runUIObjectScene(1);
+
+            expect(wd.ScriptEngine.getInstance().execScript).toCalledWith("onEndLoop");
+        });
+        it("trigger ENDLOOP", function () {
+            var endLoopHandler = sandbox.stub();
+            wd.EventManager.on(wd.EEngineEvent.ENDLOOP, endLoopHandler);
+
+            director.runUIObjectScene(1);
+
+            expect(endLoopHandler).toCalledOnce();
+        });
     });
 
-    describe("test exec script", function(){
+    describe("test exec script in _run method", function(){
         var script, script2;
 
         function buildScript(){
@@ -302,22 +332,22 @@ describe("Director", function () {
         });
 
         it("exec all scripts->onStartLoop after trigger STARTLOOP event", function(){
-            var startLoopHander = sandbox.stub();
-                wd.EventManager.on(wd.EEngineEvent.STARTLOOP, startLoopHander);
+            var startLoopHandler = sandbox.stub();
+                wd.EventManager.on(wd.EEngineEvent.STARTLOOP, startLoopHandler);
 
             director._run();
 
-            expect(script.onStartLoop).toCalledAfter(startLoopHander);
-            expect(script2.onStartLoop).toCalledAfter(startLoopHander);
+            expect(script.onStartLoop).toCalledAfter(startLoopHandler);
+            expect(script2.onStartLoop).toCalledAfter(startLoopHandler);
         });
         it("exec all scripts->onEndLoop before trigger ENDLOOP event", function(){
-            var endLoopHander = sandbox.stub();
-                wd.EventManager.on(wd.EEngineEvent.ENDLOOP, endLoopHander);
+            var endLoopHandler = sandbox.stub();
+                wd.EventManager.on(wd.EEngineEvent.ENDLOOP, endLoopHandler);
 
             director._run();
 
-            expect(script.onEndLoop).toCalledBefore(endLoopHander);
-            expect(script2.onEndLoop).toCalledBefore(endLoopHander);
+            expect(script.onEndLoop).toCalledBefore(endLoopHandler);
+            expect(script2.onEndLoop).toCalledBefore(endLoopHandler);
         });
         it("exec all scripts->update", function () {
             director._run(1);

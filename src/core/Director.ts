@@ -116,9 +116,17 @@ module wd{
         public runUIObjectScene(elapsed:number){
             var uiObjectScene:UIObjectScene = this.scene.uiObjectScene;
 
+            EventManager.trigger(CustomEvent.create(<any>EEngineEvent.STARTLOOP));
+
+            ScriptEngine.getInstance().execScript("onStartLoop");
+
             uiObjectScene.update(elapsed);
 
             uiObjectScene.render();
+
+            ScriptEngine.getInstance().execScript("onEndLoop");
+
+            EventManager.trigger(CustomEvent.create(<any>EEngineEvent.ENDLOOP));
         }
 
         private _startLoop() {
