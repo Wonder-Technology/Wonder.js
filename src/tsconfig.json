@@ -538,7 +538,7 @@
 		"engine/ActionEngine.ts",
 		"engine/ScriptEngine.ts",
 		"engine/LODEngine.ts",
-		"engine/SPacePartitionEngine.ts",
+		"engine/SpacePartitionEngine.ts",
 		"engine/AnimationEngine.ts",
 		"engine/ColliderEngine.ts",
 		"engine/RigidBodyEngine.ts",
