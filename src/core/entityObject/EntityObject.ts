@@ -284,11 +284,11 @@ module wd {
             });
         }
 
-        public update(elapsedTime:number):void {
-            this.beforeUpdateChildren(elapsedTime);
+        public update(elapsed:number):void {
+            this.beforeUpdateChildren(elapsed);
 
             this.forEach((child:EntityObject) => {
-                child.update(elapsedTime);
+                child.update(elapsed);
             });
         }
 
@@ -299,7 +299,7 @@ module wd {
         protected abstract createTransform():Transform;
 
         @virtual
-        protected beforeUpdateChildren(elapsedTime:number){
+        protected beforeUpdateChildren(elapsed:number){
         }
 
         @virtual

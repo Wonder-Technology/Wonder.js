@@ -15,6 +15,6 @@ module wd {
 
         public abstract getChildren():wdCb.Collection<GameObject>;
 
-        public abstract update(elapsedTime:number):void;
+        public abstract update(elapsed:number):void;
     }
 }

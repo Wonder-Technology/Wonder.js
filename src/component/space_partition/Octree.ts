@@ -41,7 +41,7 @@ module wd {
             super.init();
         }
 
-        public update(elapsedTime:number):void {
+        public update(elapsed:number):void {
             this._renderListCache = this._getRenderListForCurrentLoop();
         }
 

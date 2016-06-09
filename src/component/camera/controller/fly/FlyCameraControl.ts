@@ -29,7 +29,7 @@ module wd {
             this._bindCanvasEvent();
         }
 
-        public update(elapsedTime:number){
+        public update(elapsed:number){
             if (!this._isRotate) {
                 return;
             }

@@ -41,7 +41,7 @@ module wd {
             this._bindCanvasEvent();
         }
 
-        public update(elapsedTime:number) {
+        public update(elapsed:number) {
             /*!
              X= r*cos(phi)*sin(theta);
              Z= r*sin(phi)*sin(theta);
@@ -51,7 +51,7 @@ module wd {
                 y = null,
                 z = null;
 
-            super.update(elapsedTime);
+            super.update(elapsed);
 
             if(!this._isChange){
                 return;

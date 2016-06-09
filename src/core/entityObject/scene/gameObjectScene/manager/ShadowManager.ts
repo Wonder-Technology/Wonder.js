@@ -34,7 +34,7 @@ module wd{
         private _shadowMapManager:ShadowMapManager = ShadowMapManager.create(this);
         private _shadowMapLayerChangeSubscription:wdFrp.IDisposable = null;
 
-        public update(elapsedTime:number){
+        public update(elapsed:number){
             if(!this._isShadowMapEnable()){
                 return;
             }

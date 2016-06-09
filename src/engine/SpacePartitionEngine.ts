@@ -12,9 +12,9 @@ module wd{
 
         protected list:wdCb.Collection<SpacePartition>;
 
-        public update(elapsedTime:number){
+        public update(elapsed:number){
             this.list.forEach(function(child:SpacePartition){
-                child.update(elapsedTime);
+                child.update(elapsed);
             });
         }
     }

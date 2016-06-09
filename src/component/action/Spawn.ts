@@ -21,13 +21,13 @@ module wd {
         })
         private _actions:wdCb.Collection<Action> = wdCb.Collection.create<Action>();
 
-        public update(elapsedTime) {
+        public update(elapsed) {
             if (this._isFinish()) {
                 this.finish();
                 return;
             }
 
-            this.iterate("update", [elapsedTime]);
+            this.iterate("update", [elapsed]);
 
             if (this._isFinish()) {
                 this.finish();

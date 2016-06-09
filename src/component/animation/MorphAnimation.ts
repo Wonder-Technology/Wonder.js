@@ -59,13 +59,13 @@ module wd{
             this.state = EAnimationState.RUN;
         }
 
-        protected handleWhenPause(elapsedTime:number):void{
+        protected handleWhenPause(elapsed:number):void{
         }
 
-        protected handleWhenCurrentFrameFinish(elapsedTime:number):void{
+        protected handleWhenCurrentFrameFinish(elapsed:number):void{
             this.isFrameChange = true;
 
-            this._prevFrameEndTime = MathUtils.maxFloorIntegralMultiple((elapsedTime - this.pauseDuration), this.duration);
+            this._prevFrameEndTime = MathUtils.maxFloorIntegralMultiple((elapsed - this.pauseDuration), this.duration);
 
             this.currentFrame++;
 
@@ -74,21 +74,21 @@ module wd{
             }
         }
 
-        protected handleBeforeJudgeWhetherCurrentFrameFinish(elapsedTime:number):void{
+        protected handleBeforeJudgeWhetherCurrentFrameFinish(elapsed:number):void{
             if(this._prevFrameEndTime === null){
                 this._prevFrameEndTime = this.getCurrentTime();
             }
         }
 
-        @require(function(elapsedTime:number){
-            assert(elapsedTime - this._prevFrameEndTime - this.pauseDuration >= 0, Log.info.FUNC_SHOULD(`elapsedTime of current frame:${elapsedTime - this._prevFrameEndTime - this.pauseDuration}`, ">= 0"));
+        @require(function(elapsed:number){
+            assert(elapsed - this._prevFrameEndTime - this.pauseDuration >= 0, Log.info.FUNC_SHOULD(`elapsed of current frame:${elapsed - this._prevFrameEndTime - this.pauseDuration}`, ">= 0"));
         })
-        protected isCurrentFrameFinish(elapsedTime:number):boolean{
-            return elapsedTime - this._prevFrameEndTime - this.pauseDuration > this.duration;
+        protected isCurrentFrameFinish(elapsed:number):boolean{
+            return elapsed - this._prevFrameEndTime - this.pauseDuration > this.duration;
         }
 
-        protected handleAfterJudgeWhetherCurrentFrameFinish(elapsedTime:number):void{
-            this._computeInterpolation(elapsedTime);
+        protected handleAfterJudgeWhetherCurrentFrameFinish(elapsed:number):void{
+            this._computeInterpolation(elapsed);
         }
 
         protected resetAnim(){
@@ -102,8 +102,8 @@ module wd{
 
             assert(interpolation >= 0 && interpolation <= 1 , Log.info.FUNC_SHOULD(`interpolation(${interpolation}`, ">= 0 && <= 1"));
         })
-        private _computeInterpolation(elapsedTime:number):void{
-            this.interpolation = this.fps * (elapsedTime - this._prevFrameEndTime - this.pauseDuration) / 1000;
+        private _computeInterpolation(elapsed:number):void{
+            this.interpolation = this.fps * (elapsed - this._prevFrameEndTime - this.pauseDuration) / 1000;
         }
 
         private _isFinishAllFrames(){

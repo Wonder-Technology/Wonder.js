@@ -60,42 +60,42 @@ module wd{
             this.state = EAnimationState.STOP;
         }
 
-        public update(elapsedTime:number){
+        public update(elapsed:number){
             if(this.state === EAnimationState.DEFAULT || this.isStop){
                 return;
             }
 
             if(this.isPause){
-                this.handleWhenPause(elapsedTime);
+                this.handleWhenPause(elapsed);
                 return;
             }
 
             if(this._isResume){
                 this._isResume = false;
-                this.continueFromPausePoint(elapsedTime);
+                this.continueFromPausePoint(elapsed);
             }
 
-            this.handleBeforeJudgeWhetherCurrentFrameFinish(elapsedTime);
+            this.handleBeforeJudgeWhetherCurrentFrameFinish(elapsed);
 
-            if(this.isCurrentFrameFinish(elapsedTime)){
-                this.handleWhenCurrentFrameFinish(elapsedTime)
+            if(this.isCurrentFrameFinish(elapsed)){
+                this.handleWhenCurrentFrameFinish(elapsed)
             }
             else{
                 this.isFrameChange = false;
             }
 
-            this.handleAfterJudgeWhetherCurrentFrameFinish(elapsedTime);
+            this.handleAfterJudgeWhetherCurrentFrameFinish(elapsed);
 
-            //this.computeInterpolation(elapsedTime);
+            //this.computeInterpolation(elapsed);
             //
             //this.updateTargets();
         }
 
-        protected abstract handleWhenPause(elapsedTime:number):void;
-        protected abstract handleWhenCurrentFrameFinish(elapsedTime:number):void;
-        protected abstract handleBeforeJudgeWhetherCurrentFrameFinish(elapsedTime:number):void;
-        protected abstract handleAfterJudgeWhetherCurrentFrameFinish(elapsedTime:number):void;
-        protected abstract isCurrentFrameFinish(elapsedTime:number):boolean;
+        protected abstract handleWhenPause(elapsed:number):void;
+        protected abstract handleWhenCurrentFrameFinish(elapsed:number):void;
+        protected abstract handleBeforeJudgeWhetherCurrentFrameFinish(elapsed:number):void;
+        protected abstract handleAfterJudgeWhetherCurrentFrameFinish(elapsed:number):void;
+        protected abstract isCurrentFrameFinish(elapsed:number):boolean;
         protected abstract resetAnim():void;
 
         protected getPauseTime(){
@@ -110,7 +110,7 @@ module wd{
             return Director.getInstance().elapsed;
         }
 
-        protected continueFromPausePoint(elapsedTime:number){
+        protected continueFromPausePoint(elapsed:number){
             this.pauseDuration += this.resumeTime - this.pauseTime;
         }
     }

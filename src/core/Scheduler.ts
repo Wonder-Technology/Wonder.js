@@ -9,13 +9,13 @@ module wd{
         private _scheduleCount = 0;
         private _schedules:wdCb.Hash<any> = wdCb.Hash.create<any>();
 
-        public update(elapsedTime:number) {
+        public update(elapsed:number) {
             this._schedules.forEach((scheduleItem:any, scheduleId:string) => {
                 if(scheduleItem.isStop || scheduleItem.isPause){
                     return;
                 }
 
-                scheduleItem.update(elapsedTime);
+                scheduleItem.update(elapsed);
 
                 if(scheduleItem.isFinish){
                     this.remove(scheduleId);
@@ -228,8 +228,8 @@ module wd{
 
         private _time:number = null;
 
-        public update(elapsedTime:number){
-            var elapsed = this.timeController.computeElapseTime(elapsedTime);
+        public update(elapsed:number){
+            var elapsed = this.timeController.computeElapseTime(elapsed);
 
             if (elapsed >= this._time) {
                 this.task.apply(this, this.args);
@@ -254,8 +254,8 @@ module wd{
         private _intervalTime:number = null;
         private _elapsed:number = 0;
 
-        public update(elapsedTime:number){
-            var elapsed = this.timeController.computeElapseTime(elapsedTime);
+        public update(elapsed:number){
+            var elapsed = this.timeController.computeElapseTime(elapsed);
 
             if (elapsed - this._elapsed >= this._intervalTime) {
                 this.task.apply(this, this.args);
@@ -277,7 +277,7 @@ module wd{
             return obj;
         }
 
-        public update(elapsedTime:number){
+        public update(elapsed:number){
             this.task.apply(this, this.args);
         }
     }
@@ -297,7 +297,7 @@ module wd{
 
         private _frame:number = null;
 
-        public update(elapsedTime:number){
+        public update(elapsed:number){
             this._frame--;
 
             if (this._frame <= 0) {

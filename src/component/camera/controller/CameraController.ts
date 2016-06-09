@@ -46,8 +46,8 @@ module wd {
             this.bindClearCacheEvent();
         }
 
-        public update(elapsedTime:number){
-            this.camera.update(elapsedTime);
+        public update(elapsed:number){
+            this.camera.update(elapsed);
         }
 
         public dispose(){

@@ -14,9 +14,9 @@ module wd{
 
         private _collisionDetector:CollisionDetector = CollisionDetector.create();
 
-        public update(elapsedTime:number){
+        public update(elapsed:number){
             this.list.forEach(function(child:Collider){
-                child.update(elapsedTime);
+                child.update(elapsed);
             });
         }
 

@@ -3,7 +3,7 @@ module wd {
         world:any;
 
         init():void;
-        update(elapsedTime:number):void;
+        update(elapsed:number):void;
 
         getGravity(gravity:number):Vector3;
         setGravity( gravity:Vector3):void;

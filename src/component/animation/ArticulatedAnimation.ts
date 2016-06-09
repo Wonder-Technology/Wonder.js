@@ -98,31 +98,31 @@ module wd{
             this.state = EAnimationState.RUN;
         }
 
-        protected handleWhenPause(elapsedTime:number):void{
+        protected handleWhenPause(elapsed:number):void{
         }
 
-        protected handleWhenCurrentFrameFinish(elapsedTime:number):void{
+        protected handleWhenCurrentFrameFinish(elapsed:number):void{
             this.isFrameChange = true;
 
-            this._updateFrame(elapsedTime);
+            this._updateFrame(elapsed);
             this._saveStartFrameData(this._prevFrameData);
         }
 
-        protected handleBeforeJudgeWhetherCurrentFrameFinish(elapsedTime:number):void{
+        protected handleBeforeJudgeWhetherCurrentFrameFinish(elapsed:number):void{
             if(this._beginElapsedTimeOfFirstFrame === null){
                 this._beginElapsedTimeOfFirstFrame = this.getCurrentTime();
             }
         }
 
-        @require(function(elapsedTime:number){
-            assert(elapsedTime - this._beginElapsedTimeOfFirstFrame - this.pauseDuration >= 0, Log.info.FUNC_SHOULD(`elapsedTime of current frame:${elapsedTime - this._beginElapsedTimeOfFirstFrame - this.pauseDuration}`, ">= 0"));
+        @require(function(elapsed:number){
+            assert(elapsed - this._beginElapsedTimeOfFirstFrame - this.pauseDuration >= 0, Log.info.FUNC_SHOULD(`elapsed of current frame:${elapsed - this._beginElapsedTimeOfFirstFrame - this.pauseDuration}`, ">= 0"));
         })
-        protected isCurrentFrameFinish(elapsedTime:number):boolean{
-            return elapsedTime - this._beginElapsedTimeOfFirstFrame - this.pauseDuration > this._currentFrameData.time;
+        protected isCurrentFrameFinish(elapsed:number):boolean{
+            return elapsed - this._beginElapsedTimeOfFirstFrame - this.pauseDuration > this._currentFrameData.time;
         }
 
-        protected handleAfterJudgeWhetherCurrentFrameFinish(elapsedTime:number):void{
-            this._updateTargets(elapsedTime);
+        protected handleAfterJudgeWhetherCurrentFrameFinish(elapsed:number):void{
+            this._updateTargets(elapsed);
         }
 
         protected resetAnim(){
@@ -137,7 +137,7 @@ module wd{
             this._startFrameDataMap.removeAllChildren();
         }
 
-        private _updateTargets(elapsedTime:number):void{
+        private _updateTargets(elapsed:number):void{
             var self = this,
                 transform = this.entityObject.transform,
                 startFrameDataMap = this._startFrameDataMap;
@@ -145,7 +145,7 @@ module wd{
             this._currentFrameData.targets.forEach((target:ArticulatedAnimationFrameTargetData) => {
                 var endFrameData = target.data,
                     startFrameData = startFrameDataMap.getChild(<any>target.target),
-                    interpolation = self._computeInterpolation(elapsedTime, target.interpolationMethod);
+                    interpolation = self._computeInterpolation(elapsed, target.interpolationMethod);
 
                 switch (target.target){
                     case EArticulatedAnimationTarget.TRANSLATION:
@@ -164,10 +164,10 @@ module wd{
             });
         }
 
-        @ensure(function(interpolation:number, elapsedTime:number, interpolationMethod:EKeyFrameInterpolation){
+        @ensure(function(interpolation:number, elapsed:number, interpolationMethod:EKeyFrameInterpolation){
             assert(interpolation >= 0 && interpolation <= 1 , Log.info.FUNC_SHOULD(`interpolation:${interpolation}`, ">= 0 && <= 1"));
         })
-        private _computeInterpolation(elapsedTime:number, interpolationMethod:EKeyFrameInterpolation){
+        private _computeInterpolation(elapsed:number, interpolationMethod:EKeyFrameInterpolation){
             var interpolation:number = null;
 
             switch (interpolationMethod){
@@ -176,7 +176,7 @@ module wd{
                         interpolation = 1;
                     }
                     else{
-                        interpolation = (elapsedTime - this._beginElapsedTimeOfFirstFrame - this.pauseDuration - this._prevFrameTime) / (this._currentFrameData.time - this._prevFrameTime);
+                        interpolation = (elapsed - this._beginElapsedTimeOfFirstFrame - this.pauseDuration - this._prevFrameTime) / (this._currentFrameData.time - this._prevFrameTime);
                     }
                     break;
                 default:
@@ -225,12 +225,12 @@ module wd{
             this._currentFrameData = this._currentAnimData.getChild(this._currentFrame);
         }
 
-        private _updateFrame(elapsedTime:number){
-            this._updateCurrentFrameIndex(elapsedTime);
+        private _updateFrame(elapsed:number){
+            this._updateCurrentFrameIndex(elapsed);
 
             if(this._isFinishAllFrames()){
                 this._currentFrame = 0;
-                this._beginElapsedTimeOfFirstFrame = this._getBeginElapsedTimeOfFirstFrameWhenFinishAllFrames(elapsedTime);
+                this._beginElapsedTimeOfFirstFrame = this._getBeginElapsedTimeOfFirstFrameWhenFinishAllFrames(elapsed);
                 this._prevFrameTime = 0;
 
                 this._prevFrameData = this._currentAnimData.getChild(this.frameCount - 1);
@@ -241,26 +241,26 @@ module wd{
             }
         }
 
-        @require(function(elapsedTime:number){
+        @require(function(elapsed:number){
             var lastEndFrameTime = this._currentAnimData.getChild(this.frameCount - 1).time;
 
-            assert(elapsedTime >= lastEndFrameTime, Log.info.FUNC_SHOULD(`elapsedTime:${elapsedTime}`, `>= lastEndFrameTime:${lastEndFrameTime}`));
+            assert(elapsed >= lastEndFrameTime, Log.info.FUNC_SHOULD(`elapsed:${elapsed}`, `>= lastEndFrameTime:${lastEndFrameTime}`));
         })
-        private _getBeginElapsedTimeOfFirstFrameWhenFinishAllFrames(elapsedTime:number){
-            return MathUtils.maxFloorIntegralMultiple(elapsedTime, this._currentAnimData.getChild(this.frameCount - 1).time);
+        private _getBeginElapsedTimeOfFirstFrameWhenFinishAllFrames(elapsed:number){
+            return MathUtils.maxFloorIntegralMultiple(elapsed, this._currentAnimData.getChild(this.frameCount - 1).time);
         }
 
         private _isFinishAllFrames(){
             return this._currentFrame >= this.frameCount;
         }
 
-        private _updateCurrentFrameIndex(elapsedTime:number){
+        private _updateCurrentFrameIndex(elapsed:number){
             do{
                 this._currentFrame++;
 
                 this._prevFrameData = this._currentFrameData;
                 this._updateCurrentFrameData();
-            }while(!this._isFinishAllFrames() && this.isCurrentFrameFinish(elapsedTime));
+            }while(!this._isFinishAllFrames() && this.isCurrentFrameFinish(elapsed));
         }
 
         private _isFrameData(data:any){

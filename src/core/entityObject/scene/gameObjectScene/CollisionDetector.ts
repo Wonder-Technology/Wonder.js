@@ -9,7 +9,7 @@ module wd{
         private _collisionTable:wdCb.Hash<CollisionDataInTable> = wdCb.Hash.create<CollisionDataInTable>();
         private _lastCollisionTable:wdCb.Hash<CollisionDataInTable> = wdCb.Hash.create<CollisionDataInTable>();
 
-        public update(elapsedTime:number){
+        public update(elapsed:number){
             //todo optimize:use worker
             var scene = Director.getInstance().scene.gameObjectScene,
                 checkTargetList = scene.filter((gameObjectScene:GameObject) => {

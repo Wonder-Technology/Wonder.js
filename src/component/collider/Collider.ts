@@ -43,7 +43,7 @@ module wd {
             return CloneUtils.clone(this);
         }
 
-        public update(elapsedTime:number){
+        public update(elapsed:number){
             this.boundingRegion.update();
         }
 

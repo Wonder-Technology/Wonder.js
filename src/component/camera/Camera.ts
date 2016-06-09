@@ -75,7 +75,7 @@ module wd{
             return CloneUtils.clone(this);
         }
 
-        public update(elapsedTime:number){
+        public update(elapsed:number){
             if(this.dirty){
                 this.updateProjectionMatrix();
 

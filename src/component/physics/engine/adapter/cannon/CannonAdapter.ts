@@ -193,7 +193,7 @@ module wd {
                 });
         }
 
-        public update(elapsedTime:number):void {
+        public update(elapsed:number):void {
             this._gameObjectDataList.updateBodyTransformData();
 
             this.world.step(Director.getInstance().getDeltaTime() / 1000);

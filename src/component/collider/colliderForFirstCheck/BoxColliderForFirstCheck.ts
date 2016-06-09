@@ -20,8 +20,8 @@ module wd {
             this._collider.init();
         }
 
-        public update(elapsedTime:number){
-            this._collider.update(elapsedTime);
+        public update(elapsed:number){
+            this._collider.update(elapsed);
         }
     }
 }

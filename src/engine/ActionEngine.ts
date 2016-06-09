@@ -12,7 +12,7 @@ module wd{
 
         protected list:wdCb.Collection<Action>;
 
-        public update(elapsedTime:number){
+        public update(elapsed:number){
             var removeQueue = [];
 
             this.list.forEach(function(child:Action){
@@ -29,7 +29,7 @@ module wd{
                     return;
                 }
 
-                child.update(elapsedTime);
+                child.update(elapsed);
             });
 
             for (let child of removeQueue){

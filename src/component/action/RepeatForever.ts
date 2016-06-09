@@ -15,8 +15,8 @@ module wd {
         @cloneAttributeAsCloneable()
         private _innerAction:Action = null;
 
-        public update(elapsedTime) {
-            this._innerAction.update(elapsedTime);
+        public update(elapsed) {
+            this._innerAction.update(elapsed);
 
             if (this._innerAction.isFinish) {
                 this._innerAction.reset();

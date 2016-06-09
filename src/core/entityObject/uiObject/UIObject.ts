@@ -29,8 +29,8 @@ module wd {
 
         protected children:wdCb.Collection<UIObject>;
 
-        //protected beforeUpdateChildren(elapsedTime:number){
-        //    this.uiManager.update(elapsedTime);
+        //protected beforeUpdateChildren(elapsed:number){
+        //    this.uiManager.update(elapsed);
         //}
 
         protected createTransform(){

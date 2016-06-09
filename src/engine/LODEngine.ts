@@ -12,9 +12,9 @@ module wd{
 
         protected list:wdCb.Collection<LOD>;
 
-        public update(elapsedTime:number){
+        public update(elapsed:number){
             this.list.forEach(function(child:LOD){
-                child.update(elapsedTime);
+                child.update(elapsed);
             });
         }
     }

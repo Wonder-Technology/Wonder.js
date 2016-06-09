@@ -22,7 +22,7 @@ module wd{
 
         public isFinish:boolean = false;
 
-        public abstract update(elapsedTime:number);
+        public abstract update(elapsed:number);
         public abstract start();
         public abstract stop();
         public abstract pause();

@@ -84,7 +84,7 @@ module wd{
                 assert(!InstanceUtils.isObjectInstance(this.entityObject), Log.info.FUNC_SHOULD_NOT("if hardware support instance, object instance", "add lod component"));
             }
         })
-        public update(elapsedTime:number):void {
+        public update(elapsed:number):void {
             //todo optimize: only when camera move, then compute lod; reduce compute rate
             var currentDistanceBetweenCameraAndObject:number = Vector3.create().sub2(Director.getInstance().scene.currentCamera.transform.position, this.entityObject.transform.position).length(),
                 useOriginGeometry:boolean = true,

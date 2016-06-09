@@ -54,10 +54,10 @@ module wd {
             this._control.init(this.entityObject);
         }
 
-        public update(elapsedTime:number){
-            super.update(elapsedTime);
+        public update(elapsed:number){
+            super.update(elapsed);
 
-            this._control.update(elapsedTime);
+            this._control.update(elapsed);
         }
 
         public dispose() {

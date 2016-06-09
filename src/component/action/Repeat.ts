@@ -25,13 +25,13 @@ module wd {
             this._originTimes = this._times;
         }
 
-        public update(elapsedTime) {
+        public update(elapsed) {
             if (this._times === 0) {
                 this.finish();
 
                 return;
             }
-            this._innerAction.update(elapsedTime);
+            this._innerAction.update(elapsed);
 
             if (this._innerAction.isFinish) {
                 this._times -= 1;

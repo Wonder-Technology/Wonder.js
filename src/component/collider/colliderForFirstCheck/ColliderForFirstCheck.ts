@@ -3,7 +3,7 @@ module wd {
         public entityObject:GameObject;
 
         public abstract init();
-        public abstract update(elapsedTime:number);
+        public abstract update(elapsed:number);
 
         public clone(){
             return CloneUtils.clone(this);
