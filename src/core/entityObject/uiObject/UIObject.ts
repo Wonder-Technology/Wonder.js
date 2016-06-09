@@ -11,27 +11,8 @@ module wd {
         public transform:RectTransform;
         public parent:UIObject;
 
-        //public uiManager:UIManager = UIManager.create(this);
-
-        //public update(elapsed:number){
-        //    this.uiManager.update(elapsed);
-        //
-        //    super.update(elapsed);
-        //}
-        //
-        //public render(){
-        //    this.uiManager.render();
-        //
-        //    this.forEach((child:UIObject) => {
-        //        child.render();
-        //    });
-        //}
 
         protected children:wdCb.Collection<UIObject>;
-
-        //protected beforeUpdateChildren(elapsed:number){
-        //    this.uiManager.update(elapsed);
-        //}
 
         protected createTransform(){
             return RectTransform.create();

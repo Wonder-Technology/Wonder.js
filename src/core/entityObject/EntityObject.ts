@@ -285,8 +285,6 @@ module wd {
         }
 
         public update(elapsed:number):void {
-            this.beforeUpdateChildren(elapsed);
-
             this.forEach((child:EntityObject) => {
                 child.update(elapsed);
             });
@@ -297,10 +295,6 @@ module wd {
         }
 
         protected abstract createTransform():Transform;
-
-        @virtual
-        protected beforeUpdateChildren(elapsed:number){
-        }
 
         @virtual
         protected afterInitChildren(){
