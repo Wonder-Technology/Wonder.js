@@ -14,6 +14,7 @@
     "glob-stream": "^5.0.0",
     "gulp": "^3.9.0",
     "gulp-concat": "^2.6.0",
+    "gulp-header": "^1.8.2",
     "gulp-rename": "^1.2.2",
     "gulp-sourcemaps": "^1.5.2",
     "gulp-sync": "^0.1.4",

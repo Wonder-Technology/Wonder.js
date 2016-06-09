@@ -15,5 +15,4 @@ converter/**/*.js
 test/coverage
 //dist/
 src/**/ShaderChunk.ts
-examples/**/forRunTest*
-examples/**/*forRunTest*
+**/*forRunTest*

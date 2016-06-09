@@ -3,9 +3,14 @@ var gulp = require("gulp");
 var gulpTs = require("gulp-typescript");
 var gulpSourcemaps = require("gulp-sourcemaps");
 var gulpConcat = require("gulp-concat");
+
 var merge = require("merge2");
 var fs = require("fs-extra");
 var path = require("path");
+
+var gulpHeader = require("gulp-header");
+var bowerConfig = require("../../../bower.json");
+var banner = require("./banner").banner;
 
 
 //var tsFilePaths = [
@@ -97,14 +102,18 @@ gulp.task("compileTs", function() {
     });
 
     var tsResult = tsProject.src()
-        .pipe(gulpTs(tsProject));
+        .pipe(gulpTs(tsProject))
+        .pipe(gulp.dest("dist/"));
 
 
-    return merge([
-        tsResult.js
-            .pipe(gulpConcat("wd.js"))
-            .pipe(gulp.dest("dist/"))
-    ])
+    //return merge([
+    //    tsResult.js
+    //        .pipe(gulpConcat("wd.js"))
+    //        .pipe(gulpHeader(banner, {bowerConfig:bowerConfig}))
+    //        .pipe(gulp.dest("dist/"))
+    //])
+
+    return tsResult;
 });
 
 gulp.task("compileTsDebug", function() {
@@ -118,6 +127,7 @@ gulp.task("compileTsDebug", function() {
         .pipe(gulpTs(tsProject))
 
         .pipe(gulpSourcemaps.write("./"))
+        .pipe(gulpHeader(banner, {bowerConfig:bowerConfig}))
         .pipe(gulp.dest("dist/"))
 
 
