@@ -10097,6 +10097,8 @@ declare module wd {
         static refraction_forBasic_envMap_fragment: GLSLChunk;
         static modelMatrix_batch_instance_vertex: GLSLChunk;
         static normalMatrix_batch_instance_vertex: GLSLChunk;
+        static modelMatrix_hardware_instance_vertex: GLSLChunk;
+        static normalMatrix_hardware_instance_vertex: GLSLChunk;
         static basic_forLight_envMap_fragment: GLSLChunk;
         static basic_forLight_envMap_vertex: GLSLChunk;
         static forLight_envMap_fragment: GLSLChunk;
@@ -10104,8 +10106,6 @@ declare module wd {
         static fresnel_forLight_envMap_fragment: GLSLChunk;
         static reflection_forLight_envMap_fragment: GLSLChunk;
         static refraction_forLight_envMap_fragment: GLSLChunk;
-        static modelMatrix_hardware_instance_vertex: GLSLChunk;
-        static normalMatrix_hardware_instance_vertex: GLSLChunk;
         static modelMatrix_noInstance_vertex: GLSLChunk;
         static normalMatrix_noInstance_vertex: GLSLChunk;
         static diffuseMap_fragment: GLSLChunk;
@@ -10138,10 +10138,10 @@ declare module wd {
         static twoDShadowMap_fragment: GLSLChunk;
         static twoDShadowMap_unpackDepth_fragment: GLSLChunk;
         static twoDShadowMap_vertex: GLSLChunk;
-        static mirror_fragment: GLSLChunk;
-        static mirror_vertex: GLSLChunk;
         static terrainLayer_fragment: GLSLChunk;
         static terrainLayer_vertex: GLSLChunk;
+        static mirror_fragment: GLSLChunk;
+        static mirror_vertex: GLSLChunk;
         static water_bump_fragment: GLSLChunk;
         static water_bump_vertex: GLSLChunk;
         static water_fragment: GLSLChunk;
@@ -10159,8 +10159,8 @@ declare module wd {
         static fire_proceduralTexture_fragment: GLSLChunk;
         static grass_proceduralTexture_fragment: GLSLChunk;
         static marble_proceduralTexture_fragment: GLSLChunk;
-        static wood_proceduralTexture_fragment: GLSLChunk;
         static road_proceduralTexture_fragment: GLSLChunk;
+        static wood_proceduralTexture_fragment: GLSLChunk;
     }
     type GLSLChunk = {
         top?: string;
