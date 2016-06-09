@@ -1,3 +1,11 @@
+/**
+ * wonder - 3d html5 game engine
+ * @version v0.5.8
+ * @author Yuanchao Yang <395976266@qq.com>
+ * @link https://github.com/yyc-git/Wonder.js
+ * @license MIT
+ */
+
 /*!
   * Bowser - a browser detector
   * https://github.com/ded/bowser
@@ -6714,14 +6722,11 @@ var wd;
         function GlobalScriptUtils() {
         }
         GlobalScriptUtils.handlerAfterLoadedScript = function (entityObject) {
-            entityObject.execScript("onEnter", null, true);
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.BEFORE_GAMEOBJECT_INIT));
-            entityObject.execScript("init", null, true);
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.AFTER_GAMEOBJECT_INIT));
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.AFTER_GAMEOBJECT_INIT_RIGIDBODY_ADD_CONSTRAINT));
+            wd.ScriptEngine.getInstance().execEntityObjectScriptOnlyOnce(entityObject, "onEnter");
+            wd.ScriptEngine.getInstance().execEntityObjectScriptOnlyOnce(entityObject, "init");
         };
         GlobalScriptUtils.addScriptToEntityObject = function (entityObject, data) {
-            entityObject.scriptList.addChild(data.name, new data.class(entityObject));
+            wd.ScriptEngine.getInstance().addChild(entityObject, data.name, new data.class(entityObject));
         };
         return GlobalScriptUtils;
     }());
@@ -8902,13 +8907,13 @@ var wd;
             var obj = new this();
             return obj;
         };
-        Scheduler.prototype.update = function (elapsedTime) {
+        Scheduler.prototype.update = function (elapsed) {
             var _this = this;
             this._schedules.forEach(function (scheduleItem, scheduleId) {
                 if (scheduleItem.isStop || scheduleItem.isPause) {
                     return;
                 }
-                scheduleItem.update(elapsedTime);
+                scheduleItem.update(elapsed);
                 if (scheduleItem.isFinish) {
                     _this.remove(scheduleId);
                 }
@@ -9048,8 +9053,8 @@ var wd;
             var obj = new this(task, time, args);
             return obj;
         };
-        TimeScheduleItem.prototype.update = function (elapsedTime) {
-            var elapsed = this.timeController.computeElapseTime(elapsedTime);
+        TimeScheduleItem.prototype.update = function (elapsed) {
+            var elapsed = this.timeController.computeElapseTime(elapsed);
             if (elapsed >= this._time) {
                 this.task.apply(this, this.args);
                 this.finish();
@@ -9073,8 +9078,8 @@ var wd;
             var obj = new this(task, time, args);
             return obj;
         };
-        IntervalScheduleItem.prototype.update = function (elapsedTime) {
-            var elapsed = this.timeController.computeElapseTime(elapsedTime);
+        IntervalScheduleItem.prototype.update = function (elapsed) {
+            var elapsed = this.timeController.computeElapseTime(elapsed);
             if (elapsed - this._elapsed >= this._intervalTime) {
                 this.task.apply(this, this.args);
                 this._elapsed = elapsed;
@@ -9096,7 +9101,7 @@ var wd;
             var obj = new this(task, args);
             return obj;
         };
-        LoopScheduleItem.prototype.update = function (elapsedTime) {
+        LoopScheduleItem.prototype.update = function (elapsed) {
             this.task.apply(this, this.args);
         };
         return LoopScheduleItem;
@@ -9116,7 +9121,7 @@ var wd;
             var obj = new this(task, frame, args);
             return obj;
         };
-        FrameScheduleItem.prototype.update = function (elapsedTime) {
+        FrameScheduleItem.prototype.update = function (elapsed) {
             this._frame--;
             if (this._frame <= 0) {
                 this.task.apply(this, this.args);
@@ -9246,11 +9251,14 @@ var wd;
             uiObjectScene.onEnter();
             uiObjectScene.init();
         };
-        Director.prototype.runUIObjectScene = function (elapseTime) {
+        Director.prototype.runUIObjectScene = function (elapsed) {
             var uiObjectScene = this.scene.uiObjectScene;
-            wd.EventManager.trigger(uiObjectScene, wd.CustomEvent.create(wd.EEngineEvent.STARTLOOP));
-            uiObjectScene.update(elapseTime);
-            wd.EventManager.trigger(uiObjectScene, wd.CustomEvent.create(wd.EEngineEvent.ENDLOOP));
+            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.STARTLOOP));
+            wd.ScriptEngine.getInstance().execScript("onStartLoop");
+            uiObjectScene.update(elapsed);
+            uiObjectScene.render();
+            wd.ScriptEngine.getInstance().execScript("onEndLoop");
+            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.ENDLOOP));
         };
         Director.prototype._startLoop = function () {
             var self = this;
@@ -9275,44 +9283,48 @@ var wd;
         Director.prototype._initGameObjectScene = function () {
             var gameObjectScene = this.scene.gameObjectScene;
             this._initDomEvent();
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.BEFORE_GAMEOBJECT_INIT));
             gameObjectScene.onEnter();
             gameObjectScene.init();
             this.renderer.init();
             this._timeController.start();
             this.scheduler.start();
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.AFTER_GAMEOBJECT_INIT));
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.AFTER_GAMEOBJECT_INIT_RIGIDBODY_ADD_CONSTRAINT));
         };
         Director.prototype._buildLoopStream = function () {
             return wdFrp.intervalRequest();
         };
         Director.prototype._loopBody = function (time) {
-            var elapseTime = null;
+            var elapsed = null;
             if (this._gameState === EGameState.PAUSE || this._gameState === EGameState.STOP) {
                 return false;
             }
-            elapseTime = this._timeController.computeElapseTime(time);
-            this._run(elapseTime);
+            elapsed = this._timeController.computeElapseTime(time);
+            this._run(elapsed);
             return true;
         };
-        Director.prototype._run = function (elapseTime) {
-            this._runGameObjectScene(elapseTime);
-            this.runUIObjectScene(elapseTime);
-        };
-        Director.prototype._runGameObjectScene = function (elapseTime) {
-            var gameObjectScene = this.scene.gameObjectScene;
-            this._timeController.tick(elapseTime);
+        Director.prototype._run = function (elapsed) {
+            this._timeController.tick(elapsed);
             wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.STARTLOOP));
-            this.scheduler.update(elapseTime);
-            gameObjectScene.update(elapseTime);
-            gameObjectScene.render(this.renderer);
+            wd.ScriptEngine.getInstance().execScript("onStartLoop");
+            this._update(elapsed);
+            this._render();
+            wd.ScriptEngine.getInstance().execScript("onEndLoop");
+            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.ENDLOOP));
+        };
+        Director.prototype._update = function (elapsed) {
+            this.scheduler.update(elapsed);
+            wd.ScriptEngine.getInstance().execScriptWithData("update", elapsed);
+            wd.ActionEngine.getInstance().update(elapsed);
+            this.scene.gameObjectScene.update(elapsed);
+            this.scene.uiObjectScene.update(elapsed);
+        };
+        Director.prototype._render = function () {
+            this.scene.gameObjectScene.render(this.renderer);
             this.renderer.clear();
             if (this.renderer.hasCommand()) {
                 this.renderer.webglState = wd.BasicState.create();
                 this.renderer.render();
             }
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.ENDLOOP));
+            this.scene.uiObjectScene.render();
         };
         Director.prototype._initDomEvent = function () {
             this._eventSubscription = this.domEventManager.initDomEvent();
@@ -9345,14 +9357,33 @@ var wd;
             configurable: true
         });
         Main.setConfig = function (_a) {
-            var canvasId = _a.canvasId, _b = _a.isTest, isTest = _b === void 0 ? wd.DebugConfig.isTest : _b, _c = _a.screenSize, screenSize = _c === void 0 ? wd.EScreenSize.FULL : _c;
+            var _b = _a.canvasId, canvasId = _b === void 0 ? null : _b, _c = _a.isTest, isTest = _c === void 0 ? wd.DebugConfig.isTest : _c, _d = _a.screenSize, screenSize = _d === void 0 ? wd.EScreenSize.FULL : _d, _e = _a.contextConfig, contextConfig = _e === void 0 ? {
+                options: {
+                    alpha: true,
+                    depth: true,
+                    stencil: false,
+                    antialias: true,
+                    premultipliedAlpha: true,
+                    preserveDrawingBuffer: false
+                }
+            } : _e;
             this.isTest = isTest;
             this.screenSize = screenSize;
             this._canvasId = canvasId;
+            this._contextConfig = {
+                options: wdCb.ExtendUtils.extend({
+                    alpha: true,
+                    depth: true,
+                    stencil: false,
+                    antialias: true,
+                    premultipliedAlpha: true,
+                    preserveDrawingBuffer: false
+                }, contextConfig.options)
+            };
             return this;
         };
         Main.init = function () {
-            wd.DeviceManager.getInstance().createGL(this._canvasId);
+            wd.DeviceManager.getInstance().createGL(this._canvasId, this._contextConfig);
             wd.DeviceManager.getInstance().setScreen();
             wd.GPUDetector.getInstance().detect();
             return this;
@@ -9360,6 +9391,7 @@ var wd;
         Main._isTest = false;
         Main.screenSize = null;
         Main._canvasId = null;
+        Main._contextConfig = null;
         return Main;
     }());
     wd.Main = Main;
@@ -9520,7 +9552,7 @@ var wd;
             customEvent.getDataFromDomEvent(event);
             wd.EventManager.trigger(entityObject, customEvent, event, notSetTarget);
             event.getDataFromCustomEvent(customEvent);
-            entityObject.execEventScript(handlerName, event);
+            wd.ScriptEngine.getInstance().execEntityObjectEventScriptWithData(entityObject, handlerName, event);
             if (!event.isStopPropagation && entityObject.bubbleParent) {
                 this._trigger(event.clone(), entityObject.bubbleParent, true);
             }
@@ -9623,7 +9655,6 @@ var wd;
 })(wd || (wd = {}));
 var wd;
 (function (wd) {
-    var ExtendUtils = wdCb.ExtendUtils;
     var EntityObject = (function (_super) {
         __extends(EntityObject, _super);
         function EntityObject() {
@@ -9632,23 +9663,13 @@ var wd;
             this.name = null;
             this.parent = null;
             this.isVisible = true;
-            this.actionManager = wd.ActionManager.create();
-            this.startLoopHandler = null;
-            this.endLoopHandler = null;
+            this.scriptManager = wd.ScriptManager.create(this);
             this._hasComponentCache = wdCb.Hash.create();
             this._getComponentCache = wdCb.Hash.create();
             this._componentChangeSubscription = null;
             this._componentManager = wd.ComponentManager.create(this);
             this._entityObjectManager = wd.EntityObjectManager.create(this);
-            this._scriptManager = wd.ScriptManager.create(this);
         }
-        Object.defineProperty(EntityObject.prototype, "scriptList", {
-            get: function () {
-                return this._scriptManager.scriptList;
-            },
-            enumerable: true,
-            configurable: true
-        });
         Object.defineProperty(EntityObject.prototype, "bubbleParent", {
             get: function () {
                 return this._bubbleParent ? this._bubbleParent : this.parent;
@@ -9684,7 +9705,7 @@ var wd;
             if (wd.CloneUtils.isNotClone((this))) {
                 return null;
             }
-            config = ExtendUtils.extend({
+            config = wdCb.ExtendUtils.extend({
                 cloneChildren: true,
                 shareGeometry: false,
                 cloneGeometry: true
@@ -9706,16 +9727,7 @@ var wd;
             return result;
         };
         EntityObject.prototype.init = function () {
-            var _this = this;
             var self = this;
-            this.startLoopHandler = wdCb.FunctionUtils.bind(this, function () {
-                _this.onStartLoop();
-            });
-            this.endLoopHandler = wdCb.FunctionUtils.bind(this, function () {
-                _this.onEndLoop();
-            });
-            this.bindStartLoopEvent();
-            this.bindEndLoopEvent();
             this._componentChangeSubscription = wd.EventManager.fromEvent(this, wd.EEngineEvent.COMPONENT_CHANGE)
                 .subscribe(function () {
                 self._onComponentChange();
@@ -9725,22 +9737,16 @@ var wd;
             this.afterInitChildren();
             return this;
         };
-        EntityObject.prototype.onStartLoop = function () {
-            this.execScript("onStartLoop");
-        };
-        EntityObject.prototype.onEndLoop = function () {
-            this.execScript("onEndLoop");
-        };
         EntityObject.prototype.onEnter = function () {
-            this.execScript("onEnter");
+            wd.ScriptEngine.getInstance().execEntityObjectScriptOnlyOnce(this, "onEnter");
             wd.EventManager.trigger(this, wd.CustomEvent.create(wd.EEngineEvent.ENTER));
         };
         EntityObject.prototype.onExit = function () {
-            this.execScript("onExit");
+            wd.ScriptEngine.getInstance().execEntityObjectScriptOnlyOnce(this, "onExit");
             wd.EventManager.trigger(this, wd.CustomEvent.create(wd.EEngineEvent.EXIT));
         };
         EntityObject.prototype.onDispose = function () {
-            this.execScript("onDispose");
+            wd.ScriptEngine.getInstance().execEntityObjectScriptOnlyOnce(this, "onDispose");
         };
         EntityObject.prototype.dispose = function () {
             this.onDispose();
@@ -9749,8 +9755,6 @@ var wd;
                 this.parent = null;
             }
             wd.EventManager.off(this);
-            wd.EventManager.off(wd.EEngineEvent.STARTLOOP, this.startLoopHandler);
-            wd.EventManager.off(wd.EEngineEvent.ENDLOOP, this.endLoopHandler);
             this._componentChangeSubscription && this._componentChangeSubscription.dispose();
             this._componentManager.dispose();
             this._entityObjectManager.dispose();
@@ -9866,44 +9870,15 @@ var wd;
                 child.render(renderer, camera);
             });
         };
-        EntityObject.prototype.update = function (elapsedTime) {
-            var animation = this._componentManager.getAnimation(), collider = this._componentManager.getCollider();
-            if (animation) {
-                animation.update(elapsedTime);
-            }
-            this.actionManager.update(elapsedTime);
-            this.execScript("update", elapsedTime);
-            if (collider) {
-                collider.update(elapsedTime);
-            }
-            this.beforeUpdateChildren(elapsedTime);
+        EntityObject.prototype.update = function (elapsed) {
             this.forEach(function (child) {
-                child.update(elapsedTime);
+                child.update(elapsed);
             });
-        };
-        EntityObject.prototype.execScript = function () {
-            var args = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                args[_i - 0] = arguments[_i];
-            }
-            this._scriptManager.execScript.apply(this._scriptManager, args);
-        };
-        EntityObject.prototype.execEventScript = function (method, arg) {
-            if (arg === void 0) { arg = null; }
-            this._scriptManager.execEventScript(method, arg);
         };
         EntityObject.prototype.getComponentCount = function (_class) {
             return this._componentManager.getComponentCount(_class);
         };
-        EntityObject.prototype.beforeUpdateChildren = function (elapsedTime) {
-        };
         EntityObject.prototype.afterInitChildren = function () {
-        };
-        EntityObject.prototype.bindStartLoopEvent = function () {
-            wd.EventManager.on(wd.EEngineEvent.STARTLOOP, this.startLoopHandler);
-        };
-        EntityObject.prototype.bindEndLoopEvent = function () {
-            wd.EventManager.on(wd.EEngineEvent.ENDLOOP, this.endLoopHandler);
         };
         EntityObject.prototype.getRenderList = function () {
             if (!this.isVisible) {
@@ -9972,16 +9947,7 @@ var wd;
         ], EntityObject.prototype, "getComponent", null);
         __decorate([
             wd.virtual
-        ], EntityObject.prototype, "beforeUpdateChildren", null);
-        __decorate([
-            wd.virtual
         ], EntityObject.prototype, "afterInitChildren", null);
-        __decorate([
-            wd.virtual
-        ], EntityObject.prototype, "bindStartLoopEvent", null);
-        __decorate([
-            wd.virtual
-        ], EntityObject.prototype, "bindEndLoopEvent", null);
         __decorate([
             wd.virtual
         ], EntityObject.prototype, "getRenderList", null);
@@ -10005,7 +9971,6 @@ var wd;
             this._entityObject = null;
             this._components = wdCb.Collection.create();
             this._rendererComponent = null;
-            this._animation = null;
             this._collider = null;
             this._geometry = null;
             this._entityObject = entityObject;
@@ -10081,9 +10046,6 @@ var wd;
             if (component instanceof wd.RendererComponent) {
                 this._rendererComponent = component;
             }
-            else if (component instanceof wd.Animation) {
-                this._animation = component;
-            }
             else if (component instanceof wd.Collider) {
                 this._collider = component;
             }
@@ -10112,8 +10074,10 @@ var wd;
             else {
                 component = this.getComponent(args[0]);
             }
-            this._components.removeChild(component);
-            this._removeComponentHandler(component);
+            if (component) {
+                this._components.removeChild(component);
+                this._removeComponentHandler(component);
+            }
             return this;
         };
         ComponentManager.prototype.getComponentCount = function (_class) {
@@ -10123,9 +10087,6 @@ var wd;
         };
         ComponentManager.prototype.getGeometry = function () {
             return this._geometry;
-        };
-        ComponentManager.prototype.getAnimation = function () {
-            return this._animation;
         };
         ComponentManager.prototype.getRendererComponent = function () {
             return this._rendererComponent;
@@ -10150,11 +10111,6 @@ var wd;
                 wd.assert(this.getComponentCount(wd.Geometry) <= 1, wd.Log.info.FUNC_SHOULD_NOT("entityObject", "contain more than 1 geometry component"));
             })
         ], ComponentManager.prototype, "getGeometry", null);
-        __decorate([
-            wd.require(function () {
-                wd.assert(this.getComponentCount(wd.Animation) <= 1, wd.Log.info.FUNC_SHOULD_NOT("entityObject", "contain more than 1 animation component"));
-            })
-        ], ComponentManager.prototype, "getAnimation", null);
         __decorate([
             wd.require(function () {
                 wd.assert(this.getComponentCount(wd.RendererComponent) <= 1, wd.Log.info.FUNC_SHOULD_NOT("entityObject", "contain more than 1 rendererComponent"));
@@ -10295,7 +10251,7 @@ var wd;
 (function (wd) {
     var ScriptManager = (function () {
         function ScriptManager(entityObject) {
-            this.scriptList = wdCb.Hash.create();
+            this._scriptList = wdCb.Hash.create();
             this._entityObject = null;
             this._scriptExecuteHistory = wdCb.Hash.create();
             this._entityObject = entityObject;
@@ -10304,39 +10260,53 @@ var wd;
             var obj = new this(entityObject);
             return obj;
         };
-        ScriptManager.prototype.execScript = function () {
-            var args = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                args[_i - 0] = arguments[_i];
-            }
-            var method = args[0], self = this;
-            if (args.length === 1) {
-                this.scriptList.forEach(function (script, scriptName) {
-                    script[method] && script[method]();
-                    self._addToScriptExecuteHistory(scriptName, method);
-                });
-            }
-            else if (args.length === 2) {
-                var arg_1 = args[1];
-                this.scriptList.forEach(function (script, scriptName) {
-                    script[method] && script[method](arg_1);
-                    self._addToScriptExecuteHistory(scriptName, method);
-                });
-            }
-            else if (args.length === 3) {
-                var arg_2 = args[1], isExecOnlyOnce_1 = args[2];
-                this.scriptList.forEach(function (script, scriptName) {
-                    if (isExecOnlyOnce_1 && self._isScriptExecuted(scriptName, method)) {
-                        return;
-                    }
-                    script[method] && script[method](arg_2);
-                    self._addToScriptExecuteHistory(scriptName, method);
-                });
-            }
+        ScriptManager.prototype.addChild = function (scriptName, classInstance) {
+            this._scriptList.addChild(scriptName, classInstance);
         };
-        ScriptManager.prototype.execEventScript = function (method, arg) {
-            this.scriptList.forEach(function (script) {
-                script[method] && (arg !== null ? script[method](arg) : script[method]());
+        ScriptManager.prototype.getChild = function (scriptName) {
+            return this._scriptList.getChild(scriptName);
+        };
+        ScriptManager.prototype.removeChild = function (targetClassInstance) {
+            return this._scriptList.removeChild(function (classInstance) {
+                return classInstance === targetClassInstance;
+            });
+        };
+        ScriptManager.prototype.hasChild = function (targetClassInstance) {
+            return this._scriptList.hasChildWithFunc(function (classInstance) {
+                return classInstance === targetClassInstance;
+            });
+        };
+        ScriptManager.prototype.execScriptOnlyOnce = function (method) {
+            var _this = this;
+            this._scriptList.forEach(function (script, scriptName) {
+                if (_this._isScriptExecuted(scriptName, method)) {
+                    return;
+                }
+                if (script && script[method]) {
+                    script[method]();
+                }
+                _this._addToScriptExecuteHistory(scriptName, method);
+            }, this);
+        };
+        ScriptManager.prototype.execScriptWithData = function (method, data) {
+            this._scriptList.forEach(function (script) {
+                if (script[method]) {
+                    script[method](data);
+                }
+            });
+        };
+        ScriptManager.prototype.execScript = function (method) {
+            this._scriptList.forEach(function (script) {
+                if (script[method]) {
+                    script[method]();
+                }
+            });
+        };
+        ScriptManager.prototype.execEventScriptWithData = function (method, data) {
+            this._scriptList.forEach(function (script) {
+                if (script && script[method]) {
+                    script[method](data);
+                }
             });
         };
         ScriptManager.prototype._addToScriptExecuteHistory = function (scriptName, method) {
@@ -10359,13 +10329,13 @@ var wd;
             this.list = wdCb.Collection.create();
         }
         ComponentContainer.prototype.addChild = function (component) {
-            if (this.hasChild(component)) {
-                return;
-            }
             this.list.addChild(component);
         };
         ComponentContainer.prototype.removeChild = function (component) {
             this.list.removeChild(component);
+        };
+        ComponentContainer.prototype.removeAllChildren = function () {
+            this.list.removeAllChildren();
         };
         ComponentContainer.prototype.hasChild = function (component) {
             return this.list.hasChild(component);
@@ -10376,51 +10346,15 @@ var wd;
 })(wd || (wd = {}));
 var wd;
 (function (wd) {
-    var ActionManager = (function (_super) {
-        __extends(ActionManager, _super);
-        function ActionManager() {
-            _super.apply(this, arguments);
-        }
-        ActionManager.create = function () {
-            var obj = new this();
-            return obj;
-        };
-        ActionManager.prototype.update = function (elapsedTime) {
-            var removeQueue = [];
-            this.list.forEach(function (child) {
-                if (child.isFinish) {
-                    removeQueue.push(child);
-                    return;
-                }
-                if (child.isStop || child.isPause) {
-                    return;
-                }
-                child.update(elapsedTime);
-            });
-            for (var _i = 0, removeQueue_1 = removeQueue; _i < removeQueue_1.length; _i++) {
-                var child = removeQueue_1[_i];
-                child.entityObject.removeComponent(child);
-            }
-        };
-        return ActionManager;
-    }(wd.ComponentContainer));
-    wd.ActionManager = ActionManager;
-})(wd || (wd = {}));
-var wd;
-(function (wd) {
     var UIObject = (function (_super) {
         __extends(UIObject, _super);
         function UIObject() {
             _super.apply(this, arguments);
-            this.uiManager = wd.UIManager.create(this);
         }
         UIObject.create = function () {
             var obj = new this();
             obj.initWhenCreate();
             return obj;
-        };
-        UIObject.prototype.beforeUpdateChildren = function (elapsedTime) {
-            this.uiManager.update(elapsedTime);
         };
         UIObject.prototype.createTransform = function () {
             return wd.RectTransform.create();
@@ -10452,40 +10386,6 @@ var wd;
         return UIObject;
     }(wd.EntityObject));
     wd.UIObject = UIObject;
-})(wd || (wd = {}));
-var wd;
-(function (wd) {
-    var UIManager = (function (_super) {
-        __extends(UIManager, _super);
-        function UIManager(uiObject) {
-            _super.call(this);
-            this._uiObject = uiObject;
-        }
-        UIManager.create = function (uiObject) {
-            var obj = new this(uiObject);
-            return obj;
-        };
-        UIManager.prototype.update = function (elapsedTime) {
-            if (this.list.getCount() === 0) {
-                return;
-            }
-            if (this._isDirty()) {
-                this.list.forEach(function (ui) {
-                    ui.update(elapsedTime);
-                });
-            }
-        };
-        UIManager.prototype._isDirty = function () {
-            return this._uiObject.getComponent(wd.UIRenderer).state === wd.EUIRendererState.DIRTY;
-        };
-        __decorate([
-            wd.require(function (elapsedTime) {
-                wd.assert(this.list.getCount() <= 1, wd.Log.info.FUNC_SHOULD("only contain one ui component"));
-            })
-        ], UIManager.prototype, "update", null);
-        return UIManager;
-    }(wd.ComponentContainer));
-    wd.UIManager = UIManager;
 })(wd || (wd = {}));
 var wd;
 (function (wd) {
@@ -10521,16 +10421,6 @@ var wd;
         };
         GameObject.prototype.getSpacePartition = function () {
             return this.getComponent(wd.SpacePartition);
-        };
-        GameObject.prototype.update = function (elapsedTime) {
-            var lod = this.getComponent(wd.LOD), octree = this.getComponent(wd.Octree);
-            if (lod) {
-                lod.update(elapsedTime);
-            }
-            if (octree) {
-                octree.update(elapsedTime);
-            }
-            _super.prototype.update.call(this, elapsedTime);
         };
         GameObject.prototype.getGeometry = function () {
             var lod = this.getComponent(wd.LOD);
@@ -10593,16 +10483,9 @@ var wd;
             obj.initWhenCreate();
             return obj;
         };
-        Object.defineProperty(SceneDispatcher.prototype, "scriptList", {
+        Object.defineProperty(SceneDispatcher.prototype, "scriptManager", {
             get: function () {
-                return this.gameObjectScene.scriptList;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(SceneDispatcher.prototype, "actionManager", {
-            get: function () {
-                return this.gameObjectScene.actionManager;
+                return this.gameObjectScene.scriptManager;
             },
             enumerable: true,
             configurable: true
@@ -10641,9 +10524,6 @@ var wd;
         Object.defineProperty(SceneDispatcher.prototype, "shadowMap", {
             get: function () {
                 return this.gameObjectScene.shadowMap;
-            },
-            set: function (shadowMap) {
-                this.gameObjectScene.shadowMap = shadowMap;
             },
             enumerable: true,
             configurable: true
@@ -10698,16 +10578,6 @@ var wd;
         Object.defineProperty(SceneDispatcher.prototype, "currentShaderType", {
             get: function () {
                 return this.gameObjectScene.currentShaderType;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(SceneDispatcher.prototype, "shadowLayerList", {
-            get: function () {
-                return this.gameObjectScene.shadowLayerList;
-            },
-            set: function (shadowLayerList) {
-                this.gameObjectScene.shadowLayerList = shadowLayerList;
             },
             enumerable: true,
             configurable: true
@@ -10809,14 +10679,6 @@ var wd;
                 return this.uiObjectScene.removeChild(child);
             }
         };
-        SceneDispatcher.prototype.onStartLoop = function () {
-            this.gameObjectScene.onStartLoop();
-            this.uiObjectScene.onStartLoop();
-        };
-        SceneDispatcher.prototype.onEndLoop = function () {
-            this.gameObjectScene.onEndLoop();
-            this.uiObjectScene.onEndLoop();
-        };
         SceneDispatcher.prototype.onEnter = function () {
             this.gameObjectScene.onEnter();
             this.uiObjectScene.onEnter();
@@ -10829,22 +10691,22 @@ var wd;
             this.gameObjectScene.onDispose();
             this.uiObjectScene.onDispose();
         };
-        SceneDispatcher.prototype.execScript = function (method, arg) {
-            this.gameObjectScene.execScript.apply(this.gameObjectScene, arguments);
-        };
-        SceneDispatcher.prototype.execEventScript = function (method, arg) {
-            this.gameObjectScene.execEventScript.apply(this.gameObjectScene, arguments);
-        };
         SceneDispatcher.prototype.createTransform = function () {
             return null;
         };
         __decorate([
             wd.ensureGetter(function (directionLights) {
+                if (!directionLights) {
+                    return;
+                }
                 wd.assert(directionLights.getCount() <= 4, wd.Log.info.FUNC_SHOULD("direction lights' count", "<= 4"));
             })
         ], SceneDispatcher.prototype, "directionLights", null);
         __decorate([
             wd.ensureGetter(function (pointLights) {
+                if (!pointLights) {
+                    return;
+                }
                 wd.assert(pointLights.getCount() <= 4, wd.Log.info.FUNC_SHOULD("point lights' count", "<= 4"));
             })
         ], SceneDispatcher.prototype, "pointLights", null);
@@ -10869,25 +10731,37 @@ var wd;
         __extends(UIObjectScene, _super);
         function UIObjectScene() {
             _super.apply(this, arguments);
+            this._startLoopSubscription = null;
+            this._endLoopSubscription = null;
         }
         UIObjectScene.create = function () {
             var obj = new this();
             obj.initWhenCreate();
             return obj;
         };
-        UIObjectScene.prototype.onEndLoop = function () {
-            _super.prototype.onEndLoop.call(this);
-            this._resetAllTransformState();
-            this._resetAllRendererClearCanvasFlag();
+        UIObjectScene.prototype.init = function () {
+            var self = this;
+            _super.prototype.init.call(this);
+            this._startLoopSubscription = wd.EventManager.fromEvent(wd.EEngineEvent.STARTLOOP)
+                .subscribe(function () {
+                self._sortSiblingChildren();
+            });
+            this._endLoopSubscription = wd.EventManager.fromEvent(wd.EEngineEvent.ENDLOOP)
+                .subscribe(function () {
+                self._resetAllRendererClearCanvasFlag();
+            });
+            return this;
         };
-        UIObjectScene.prototype.onStartLoop = function () {
-            _super.prototype.onStartLoop.call(this);
-            this._sortSiblingChildren();
+        UIObjectScene.prototype.update = function (elapsed) {
+            _super.prototype.update.call(this, elapsed);
+            wd.UIEngine.getInstance().update(elapsed);
         };
-        UIObjectScene.prototype.createTransform = function () {
-            return null;
+        UIObjectScene.prototype.onDispose = function () {
+            _super.prototype.onDispose.call(this);
+            this._startLoopSubscription.dispose();
+            this._endLoopSubscription.dispose();
         };
-        UIObjectScene.prototype.beforeUpdateChildren = function (elapsedTime) {
+        UIObjectScene.prototype.render = function () {
             var self = this;
             this._resetAllRendererState();
             this.forEach(function (child) {
@@ -10895,7 +10769,6 @@ var wd;
                 if (renderer.dirty) {
                     if (!renderer.isClearCanvas) {
                         renderer.clearCanvas();
-                        renderer.dirtyDuringCurrentLoop = false;
                     }
                     renderer.state = wd.EUIRendererState.DIRTY;
                     renderer.resetDirty();
@@ -10906,12 +10779,10 @@ var wd;
                     }
                 }
             });
+            wd.UIEngine.getInstance().render();
         };
-        UIObjectScene.prototype.bindStartLoopEvent = function () {
-            wd.EventManager.on(this, wd.EEngineEvent.STARTLOOP, this.startLoopHandler);
-        };
-        UIObjectScene.prototype.bindEndLoopEvent = function () {
-            wd.EventManager.on(this, wd.EEngineEvent.ENDLOOP, this.endLoopHandler);
+        UIObjectScene.prototype.createTransform = function () {
+            return null;
         };
         UIObjectScene.prototype._getUIRenderer = function (uiObject) {
             return uiObject.getComponent(wd.UIRenderer);
@@ -10930,29 +10801,6 @@ var wd;
                 renderer.state = wd.EUIRendererState.NORMAL;
             });
         };
-        UIObjectScene.prototype._resetAllTransformState = function () {
-            var self = this;
-            var reset = function (uiObject) {
-                if (self._isNotDirtyDuringThisLoop(self._getUIRenderer(uiObject))) {
-                    self._resetTransformFlag(uiObject);
-                }
-                uiObject.forEach(function (child) {
-                    reset(child);
-                });
-            };
-            this.forEach(function (child) {
-                reset(child);
-            });
-        };
-        UIObjectScene.prototype._isNotDirtyDuringThisLoop = function (renderer) {
-            return !renderer.dirtyDuringCurrentLoop;
-        };
-        UIObjectScene.prototype._resetTransformFlag = function (uiObject) {
-            var transform = uiObject.transform;
-            transform.isTranslate = false;
-            transform.isScale = false;
-            transform.isRotate = false;
-        };
         UIObjectScene.prototype._sortSiblingChildren = function () {
             var sort = function (uiObject) {
                 uiObject.sort(function (a, b) {
@@ -10965,13 +10813,13 @@ var wd;
             sort(this);
         };
         __decorate([
-            wd.require(function (elapsedTime) {
+            wd.require(function () {
                 this.forEach(function (child) {
                     wd.assert(child instanceof wd.UIObject, wd.Log.info.FUNC_MUST_BE("child", "UIObject"));
                     wd.assert(child.hasComponent(wd.UI), wd.Log.info.FUNC_SHOULD("UIObject", "contain ui component"));
                 });
             })
-        ], UIObjectScene.prototype, "beforeUpdateChildren", null);
+        ], UIObjectScene.prototype, "render", null);
         __decorate([
             wd.require(function (uiObject) {
                 wd.assert(uiObject.getComponentCount(wd.UIRenderer) <= 1, wd.Log.info.FUNC_SHOULD_NOT("uiObject", "contain more than 1 uiRenderer component"));
@@ -11026,25 +10874,25 @@ var wd;
             this._table.forEach(function (buffer) {
                 buffer.dispose();
             });
-            this.lastBindedArrayBufferArr = null;
+            this.lastBindedArrayBufferListUidStr = null;
             this.lastBindedElementBuffer = null;
         };
         BufferTable.clearAll = function () {
             this._table.removeAllChildren();
-            this.lastBindedArrayBufferArr = null;
+            this.lastBindedArrayBufferListUidStr = null;
             this.lastBindedElementBuffer = null;
         };
         BufferTable.resetBindedArrayBuffer = function () {
             var gl = wd.DeviceManager.getInstance().gl;
             gl.bindBuffer(gl.ARRAY_BUFFER, null);
-            this.lastBindedArrayBufferArr = null;
+            this.lastBindedArrayBufferListUidStr = null;
         };
         BufferTable.resetBindedElementBuffer = function () {
             var gl = wd.DeviceManager.getInstance().gl;
             gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
             this.lastBindedElementBuffer = null;
         };
-        BufferTable.lastBindedArrayBufferArr = null;
+        BufferTable.lastBindedArrayBufferListUidStr = null;
         BufferTable.lastBindedElementBuffer = null;
         BufferTable._table = wdCb.Hash.create();
         return BufferTable;
@@ -11142,11 +10990,9 @@ var wd;
             this.physicsEngineAdapter = null;
             this.glslData = wdCb.Hash.create();
             this.currentShaderType = null;
-            this.shadowLayerList = wd.ShadowLayerList.create();
             this.renderTargetRendererManager = wd.RenderTargetRendererManager.create();
             this.shadowManager = wd.ShadowManager.create(this);
             this._lightManager = wd.LightManager.create();
-            this._collisionDetector = wd.CollisionDetector.create(this);
             this._cameraList = wdCb.Collection.create();
         }
         GameObjectScene.create = function () {
@@ -11207,6 +11053,8 @@ var wd;
             this.shadowManager.init();
             _super.prototype.init.call(this);
             this.renderTargetRendererManager.init();
+            wd.RigidBodyEngine.getInstance().initBody();
+            wd.RigidBodyEngine.getInstance().initConstraint();
             return this;
         };
         GameObjectScene.prototype.dispose = function () {
@@ -11224,21 +11072,25 @@ var wd;
             }
             return _super.prototype.addChild.call(this, child);
         };
-        GameObjectScene.prototype.update = function (elapsedTime) {
-            var currentCamera = this._getCurrentCameraComponent(), shadowManager = this.shadowManager, collisionDetector = this._collisionDetector;
+        GameObjectScene.prototype.update = function (elapsed) {
+            var currentCamera = this._getCurrentCameraComponent(), shadowManager = this.shadowManager;
             if (this.physics.enable) {
-                this.physicsEngineAdapter.update(elapsedTime);
+                this.physicsEngineAdapter.update(elapsed);
             }
             if (currentCamera) {
-                currentCamera.update(elapsedTime);
+                currentCamera.update(elapsed);
             }
-            shadowManager.update(elapsedTime);
-            _super.prototype.update.call(this, elapsedTime);
-            collisionDetector.update(elapsedTime);
+            shadowManager.update(elapsed);
+            wd.LODEngine.getInstance().update(elapsed);
+            wd.SpacePartitionEngine.getInstance().update(elapsed);
+            wd.AnimationEngine.getInstance().update(elapsed);
+            wd.ColliderEngine.getInstance().update(elapsed);
+            _super.prototype.update.call(this, elapsed);
+            wd.ColliderEngine.getInstance().detect(elapsed);
         };
         GameObjectScene.prototype.render = function (renderer) {
             this.shadowManager.setShadowRenderListForCurrentLoop();
-            this.renderTargetRendererManager.renderCommonRenderTargetRenderer(renderer, this.currentCamera);
+            this.renderTargetRendererManager.render(renderer, this.currentCamera);
             _super.prototype.render.call(this, renderer, this.currentCamera);
         };
         GameObjectScene.prototype.useShaderType = function (type) {
@@ -11327,6 +11179,7 @@ var wd;
             this._scene = null;
             this._enable = true;
             this._softType = wd.EShadowMapSoftType.NONE;
+            this.shadowLayerList = wd.ShadowLayerList.create();
             this._scene = scene;
         }
         ShadowMapModel.create = function (scene) {
@@ -11356,6 +11209,12 @@ var wd;
             enumerable: true,
             configurable: true
         });
+        ShadowMapModel.prototype.getTwoDShadowMapDataMap = function (layer) {
+            return this._scene.shadowManager.getTwoDShadowMapDataMap(layer);
+        };
+        ShadowMapModel.prototype.getCubemapShadowMapDataMap = function (layer) {
+            return this._scene.shadowManager.getCubemapShadowMapDataMap(layer);
+        };
         return ShadowMapModel;
     }());
     wd.ShadowMapModel = ShadowMapModel;
@@ -11363,18 +11222,16 @@ var wd;
 var wd;
 (function (wd) {
     var CollisionDetector = (function () {
-        function CollisionDetector(gameObjectScene) {
-            this.gameObjectScene = null;
+        function CollisionDetector() {
             this._collisionTable = wdCb.Hash.create();
             this._lastCollisionTable = wdCb.Hash.create();
-            this.gameObjectScene = gameObjectScene;
         }
-        CollisionDetector.create = function (gameObjectScene) {
-            var obj = new this(gameObjectScene);
+        CollisionDetector.create = function () {
+            var obj = new this();
             return obj;
         };
-        CollisionDetector.prototype.update = function (elapsedTime) {
-            var scene = this.gameObjectScene, checkTargetList = scene.filter(function (gameObjectScene) {
+        CollisionDetector.prototype.update = function (elapsed) {
+            var scene = wd.Director.getInstance().scene.gameObjectScene, checkTargetList = scene.filter(function (gameObjectScene) {
                 return gameObjectScene.hasComponent(wd.Collider)
                     || (wd.JudgeUtils.isSpacePartitionObject(gameObjectScene) && gameObjectScene.getSpacePartition().isCollideEnable);
             }), self = this;
@@ -11497,7 +11354,7 @@ var wd;
                 .forEach(function (collideObject) {
                 for (var _i = 0, eventList_1 = eventList; _i < eventList_1.length; _i++) {
                     var eventName = eventList_1[_i];
-                    collideObject.execScript(eventName, wdCb.Collection.create([currentGameObject]));
+                    wd.ScriptEngine.getInstance().execEntityObjectScriptWithData(collideObject, eventName, wdCb.Collection.create([currentGameObject]));
                 }
             });
         };
@@ -11507,12 +11364,12 @@ var wd;
                 var sourceObject = _a.sourceObject, targetObjectMap = _a.targetObjectMap;
                 var targetObjects = targetObjectMap.toCollection();
                 if (_this._isCollisionStart(sourceObject)) {
-                    sourceObject.execScript("onCollisionStart", targetObjects);
-                    sourceObject.execScript("onContact", targetObjects);
+                    wd.ScriptEngine.getInstance().execEntityObjectScriptWithData(sourceObject, "onCollisionStart", targetObjects);
+                    wd.ScriptEngine.getInstance().execEntityObjectScriptWithData(sourceObject, "onContact", targetObjects);
                     _this._triggerCollisionEventOfCollideObjectWhichHasRigidBody(targetObjects, sourceObject, ["onCollisionStart", "onContact"]);
                 }
                 else {
-                    sourceObject.execScript("onContact", targetObjects);
+                    wd.ScriptEngine.getInstance().execEntityObjectScriptWithData(sourceObject, "onContact", targetObjects);
                     _this._triggerCollisionEventOfCollideObjectWhichHasRigidBody(targetObjects, sourceObject, ["onContact"]);
                 }
                 if (!sourceObject.hasTag(ECollisionTag.COLLIDED)) {
@@ -11528,7 +11385,7 @@ var wd;
             this._lastCollisionTable.forEach(function (_a) {
                 var sourceObject = _a.sourceObject, targetObjectMap = _a.targetObjectMap;
                 if (!table.hasChild(String(sourceObject.uid))) {
-                    sourceObject.execScript("onCollisionEnd");
+                    wd.ScriptEngine.getInstance().execEntityObjectScript(sourceObject, "onCollisionEnd");
                     _this._triggerCollisionEventOfCollideObjectWhichHasRigidBody(targetObjectMap.toCollection(), sourceObject, ["onCollisionEnd"]);
                     sourceObject.removeTag(ECollisionTag.COLLIDED);
                 }
@@ -11600,16 +11457,22 @@ var wd;
             enumerable: true,
             configurable: true
         });
-        ShadowManager.prototype.update = function (elapsedTime) {
+        ShadowManager.prototype.update = function (elapsed) {
             if (!this._isShadowMapEnable()) {
                 return;
             }
-            this.gameObjectScene.shadowLayerList.update();
+            this.gameObjectScene.shadowMap.shadowLayerList.update();
         };
         ShadowManager.prototype.dispose = function () {
             this._endLoopSubscription && this._endLoopSubscription.dispose();
             this._shadowMapLayerChangeSubscription && this._shadowMapLayerChangeSubscription.dispose();
             this._shadowMapManager.dispose();
+        };
+        ShadowManager.prototype.getTwoDShadowMapDataMap = function (layer) {
+            return this._shadowMapManager.twoDShadowMapDataMap.getChild(layer);
+        };
+        ShadowManager.prototype.getCubemapShadowMapDataMap = function (layer) {
+            return this._shadowMapManager.cubemapShadowMapDataMap.getChild(layer);
         };
         ShadowManager.prototype.setShadowRenderListForCurrentLoop = function () {
             if (!this._isShadowMapEnable()) {
@@ -11623,9 +11486,9 @@ var wd;
             });
         };
         ShadowManager.prototype.getShadowLayerList = function () {
-            var shadowLayerList = null, self = this;
-            if (this.gameObjectScene.shadowLayerList.dirty) {
-                return this.gameObjectScene.shadowLayerList.removeRepeatItems();
+            var shadowLayerList = null, sceneShadowLayerList = this.gameObjectScene.shadowMap.shadowLayerList, self = this;
+            if (sceneShadowLayerList.dirty) {
+                return sceneShadowLayerList.removeRepeatItems();
             }
             shadowLayerList = wd.ShadowLayerList.create();
             wd.RenderUtils.getGameObjectRenderList(this.gameObjectScene.getChildren())
@@ -11646,13 +11509,14 @@ var wd;
             return shadowLayerList.removeRepeatItems();
         };
         ShadowManager.prototype.init = function () {
-            var self = this, scene = this.gameObjectScene;
+            var self = this, scene = this.gameObjectScene, sceneShadowLayerList = null;
             if (!this._isShadowMapEnable() || !this._hasShadow()) {
                 return;
             }
-            this.gameObjectScene.shadowLayerList = this.getShadowLayerList();
-            this.gameObjectScene.shadowLayerList.init();
-            this._shadowMapManager.initShadowMapData(this.gameObjectScene.shadowLayerList);
+            this.gameObjectScene.shadowMap.shadowLayerList = this.getShadowLayerList();
+            sceneShadowLayerList = this.gameObjectScene.shadowMap.shadowLayerList;
+            sceneShadowLayerList.init();
+            this._shadowMapManager.initShadowMapData(sceneShadowLayerList);
             this._shadowMapManager.twoDShadowMapDataMap.forEach(function (twoDShadowMapDataList, layer) {
                 twoDShadowMapDataList.forEach(function (_a) {
                     var shadowMap = _a.shadowMap, light = _a.light;
@@ -11694,7 +11558,7 @@ var wd;
             if (!this._hasShadow()) {
                 return;
             }
-            this._shadowMapManager.updateWhenShadowLayerChange(scene.shadowLayerList.getDiffData());
+            this._shadowMapManager.updateWhenShadowLayerChange(scene.shadowMap.shadowLayerList.getDiffData());
             var _a = this._shadowMapManager.getAllDiffShadowMapDataWhenShadowLayerChange(), addTwoDShadowMapData = _a.addTwoDShadowMapData, removeTwoDShadowMapData = _a.removeTwoDShadowMapData, addCubemapShadowMapData = _a.addCubemapShadowMapData, removeCubemapShadowMapData = _a.removeCubemapShadowMapData;
             this._refreshRenderTargerRendererList(addTwoDShadowMapData, removeTwoDShadowMapData, addCubemapShadowMapData, removeCubemapShadowMapData);
         };
@@ -11800,7 +11664,7 @@ var wd;
         ], ShadowManager.prototype, "_getShadowRenderList", null);
         __decorate([
             wd.require(function () {
-                var shadowLayerList = this.gameObjectScene.shadowLayerList;
+                var shadowLayerList = this.gameObjectScene.shadowMap.shadowLayerList;
                 wd.assert(shadowLayerList.dirty, wd.Log.info.FUNC_SHOULD("shadowLayerList", "dirty"));
                 this._getShadowRenderList()
                     .forEach(function (gameObject) {
@@ -12018,10 +11882,7 @@ var wd;
             });
         };
         LightManager.prototype._getLights = function (type) {
-            if (this._lights.hasChild(type)) {
-                return this._lights.getChild(type);
-            }
-            return wdCb.Collection.create();
+            return this._lights.getChild(type);
         };
         return LightManager;
     }());
@@ -12058,14 +11919,17 @@ var wd;
         RenderTargetRendererManager.prototype.addProceduralRenderTargetRenderer = function (renderTargetRenderer) {
             this._proceduralRendererList.addChild(renderTargetRenderer);
         };
-        RenderTargetRendererManager.prototype.renderCommonRenderTargetRenderer = function (renderer, camera) {
+        RenderTargetRendererManager.prototype.render = function (renderer, camera) {
             this._proceduralRendererList.filter(function (target) {
                 return target.needRender();
             })
                 .forEach(function (target) {
                 target.render(renderer);
             });
-            this._commonRenderTargetRendererList.forEach(function (target) {
+            this._commonRenderTargetRendererList.filter(function (target) {
+                return target.needRender();
+            })
+                .forEach(function (target) {
                 target.render(renderer, camera);
             });
         };
@@ -14089,8 +13953,15 @@ var wd;
             return arg && arg.currentTarget !== void 0;
         };
         EventUtils.isEntityObject = function (arg) {
-            return arg && arg.scriptList !== void 0;
+            return arg && arg.bubbleParent !== void 0;
         };
+        __decorate([
+            wd.ensure(function (isEntityObject, arg) {
+                if (isEntityObject) {
+                    wd.assert(arg instanceof wd.EntityObject, wd.Log.info.FUNC_MUST_BE("EntityObject, but actual is " + arg));
+                }
+            })
+        ], EventUtils, "isEntityObject", null);
         return EventUtils;
     }());
     wd.EventUtils = EventUtils;
@@ -14366,9 +14237,6 @@ var wd;
     (function (EEngineEvent) {
         EEngineEvent[EEngineEvent["STARTLOOP"] = "wd_startLoop"] = "STARTLOOP";
         EEngineEvent[EEngineEvent["ENDLOOP"] = "wd_endLoop"] = "ENDLOOP";
-        EEngineEvent[EEngineEvent["BEFORE_GAMEOBJECT_INIT"] = "wd_beforeGameObjectInit"] = "BEFORE_GAMEOBJECT_INIT";
-        EEngineEvent[EEngineEvent["AFTER_GAMEOBJECT_INIT"] = "wd_afterGameObjectInit"] = "AFTER_GAMEOBJECT_INIT";
-        EEngineEvent[EEngineEvent["AFTER_GAMEOBJECT_INIT_RIGIDBODY_ADD_CONSTRAINT"] = "wd_afterGameObjectInit_rigidBowd_addConstraint"] = "AFTER_GAMEOBJECT_INIT_RIGIDBODY_ADD_CONSTRAINT";
         EEngineEvent[EEngineEvent["MOUSE_CLICK"] = "wd_mouseclick"] = "MOUSE_CLICK";
         EEngineEvent[EEngineEvent["MOUSE_DOWN"] = "wd_mousedown"] = "MOUSE_DOWN";
         EEngineEvent[EEngineEvent["MOUSE_UP"] = "wd_mouseup"] = "MOUSE_UP";
@@ -14445,6 +14313,18 @@ var wd;
             });
             _super.prototype.init.call(this);
         };
+        LOD.prototype.addToObject = function (entityObject, isShareComponent) {
+            if (isShareComponent === void 0) { isShareComponent = false; }
+            var engine = wd.LODEngine.getInstance();
+            _super.prototype.addToObject.call(this, entityObject, isShareComponent);
+            if (!engine.hasChild(this)) {
+                engine.addChild(this);
+            }
+        };
+        LOD.prototype.removeFromObject = function (entityObject) {
+            _super.prototype.removeFromObject.call(this, entityObject);
+            wd.LODEngine.getInstance().removeChild(this);
+        };
         LOD.prototype.addGeometryLevel = function (distanceBetweenCameraAndObject, levelGeometry) {
             this.levelList.addChild({
                 distanceBetweenCameraAndObject: distanceBetweenCameraAndObject,
@@ -14454,7 +14334,7 @@ var wd;
                 return levelData2.distanceBetweenCameraAndObject - levelData1.distanceBetweenCameraAndObject;
             }, true);
         };
-        LOD.prototype.update = function (elapsedTime) {
+        LOD.prototype.update = function (elapsed) {
             var currentDistanceBetweenCameraAndObject = wd.Vector3.create().sub2(wd.Director.getInstance().scene.currentCamera.transform.position, this.entityObject.transform.position).length(), useOriginGeometry = true, activeGeometry = null;
             this.levelList.forEach(function (_a) {
                 var geometry = _a.geometry, distanceBetweenCameraAndObject = _a.distanceBetweenCameraAndObject;
@@ -15038,6 +14918,7 @@ var wd;
             this._isScale = false;
             this.dirtyLocal = true;
             this.children = wdCb.Collection.create();
+            this._endLoopSubscription = null;
         }
         Object.defineProperty(Transform.prototype, "parent", {
             get: function () {
@@ -15107,6 +14988,17 @@ var wd;
             enumerable: true,
             configurable: true
         });
+        Transform.prototype.init = function () {
+            var self = this;
+            this._endLoopSubscription = wd.EventManager.fromEvent(wd.EEngineEvent.ENDLOOP)
+                .subscribe(function () {
+                self._resetTransformFlag();
+            });
+        };
+        Transform.prototype.dispose = function () {
+            _super.prototype.dispose.call(this);
+            this._endLoopSubscription && this._endLoopSubscription.dispose();
+        };
         Transform.prototype.addChild = function (child) {
             this.children.addChild(child);
         };
@@ -15165,6 +15057,11 @@ var wd;
                 this.setChildrenTransformState(transformState, state);
             }
         };
+        Transform.prototype._resetTransformFlag = function () {
+            this.isTranslate = false;
+            this.isScale = false;
+            this.isRotate = false;
+        };
         __decorate([
             wd.cloneAttributeAsBasicType()
         ], Transform.prototype, "parent", null);
@@ -15192,7 +15089,6 @@ var wd;
             this._localScale = wd.Vector3.create(1, 1, 1);
             this.dirtyWorld = null;
             this._localToParentMatrix = wd.Matrix4.create();
-            this._endLoopSubscription = null;
             this._localToWorldMatrixCache = null;
             this._positionCache = null;
             this._rotationCache = null;
@@ -15351,17 +15247,6 @@ var wd;
             enumerable: true,
             configurable: true
         });
-        ThreeDTransform.prototype.init = function () {
-            var self = this;
-            this._endLoopSubscription = wd.EventManager.fromEvent(wd.EEngineEvent.ENDLOOP)
-                .subscribe(function () {
-                self._resetTransformFlag();
-            });
-        };
-        ThreeDTransform.prototype.dispose = function () {
-            _super.prototype.dispose.call(this);
-            this._endLoopSubscription && this._endLoopSubscription.dispose();
-        };
         ThreeDTransform.prototype.sync = function () {
             if (this.dirtyLocal) {
                 this._localToParentMatrix.setTRS(this._localPosition, this._localRotation, this._localScale);
@@ -15526,11 +15411,6 @@ var wd;
                     break;
             }
             wd.EventManager.trigger(this.entityObject, wd.CustomEvent.create(eventName));
-        };
-        ThreeDTransform.prototype._resetTransformFlag = function () {
-            this.isTranslate = false;
-            this.isScale = false;
-            this.isRotate = false;
         };
         __decorate([
             wd.cacheGetter(function () {
@@ -15801,10 +15681,6 @@ var wd;
             enumerable: true,
             configurable: true
         });
-        RectTransform.prototype.init = function () {
-        };
-        RectTransform.prototype.dispose = function () {
-        };
         RectTransform.prototype.syncRotation = function () {
             if (this.dirtyRotation) {
                 if (this.p_parent === null) {
@@ -16380,6 +16256,18 @@ var wd;
             enumerable: true,
             configurable: true
         });
+        Animation.prototype.addToObject = function (entityObject, isShareComponent) {
+            if (isShareComponent === void 0) { isShareComponent = false; }
+            var engine = wd.AnimationEngine.getInstance();
+            _super.prototype.addToObject.call(this, entityObject, isShareComponent);
+            if (!engine.hasChild(this)) {
+                engine.addChild(this);
+            }
+        };
+        Animation.prototype.removeFromObject = function (entityObject) {
+            _super.prototype.removeFromObject.call(this, entityObject);
+            wd.AnimationEngine.getInstance().removeChild(this);
+        };
         Animation.prototype.clone = function () {
             return wd.CloneUtils.clone(this);
         };
@@ -16395,26 +16283,26 @@ var wd;
         Animation.prototype.stop = function () {
             this.state = EAnimationState.STOP;
         };
-        Animation.prototype.update = function (elapsedTime) {
+        Animation.prototype.update = function (elapsed) {
             if (this.state === EAnimationState.DEFAULT || this.isStop) {
                 return;
             }
             if (this.isPause) {
-                this.handleWhenPause(elapsedTime);
+                this.handleWhenPause(elapsed);
                 return;
             }
             if (this._isResume) {
                 this._isResume = false;
-                this.continueFromPausePoint(elapsedTime);
+                this.continueFromPausePoint(elapsed);
             }
-            this.handleBeforeJudgeWhetherCurrentFrameFinish(elapsedTime);
-            if (this.isCurrentFrameFinish(elapsedTime)) {
-                this.handleWhenCurrentFrameFinish(elapsedTime);
+            this.handleBeforeJudgeWhetherCurrentFrameFinish(elapsed);
+            if (this.isCurrentFrameFinish(elapsed)) {
+                this.handleWhenCurrentFrameFinish(elapsed);
             }
             else {
                 this.isFrameChange = false;
             }
-            this.handleAfterJudgeWhetherCurrentFrameFinish(elapsedTime);
+            this.handleAfterJudgeWhetherCurrentFrameFinish(elapsed);
         };
         Animation.prototype.getPauseTime = function () {
             return this.getCurrentTime();
@@ -16425,7 +16313,7 @@ var wd;
         Animation.prototype.getCurrentTime = function () {
             return wd.Director.getInstance().elapsed;
         };
-        Animation.prototype.continueFromPausePoint = function (elapsedTime) {
+        Animation.prototype.continueFromPausePoint = function (elapsed) {
             this.pauseDuration += this.resumeTime - this.pauseTime;
         };
         return Animation;
@@ -16480,34 +16368,34 @@ var wd;
             this.resetAnim();
             this.state = wd.EAnimationState.RUN;
         };
-        MorphAnimation.prototype.handleWhenPause = function (elapsedTime) {
+        MorphAnimation.prototype.handleWhenPause = function (elapsed) {
         };
-        MorphAnimation.prototype.handleWhenCurrentFrameFinish = function (elapsedTime) {
+        MorphAnimation.prototype.handleWhenCurrentFrameFinish = function (elapsed) {
             this.isFrameChange = true;
-            this._prevFrameEndTime = wd.MathUtils.maxFloorIntegralMultiple((elapsedTime - this.pauseDuration), this.duration);
+            this._prevFrameEndTime = wd.MathUtils.maxFloorIntegralMultiple((elapsed - this.pauseDuration), this.duration);
             this.currentFrame++;
             if (this._isFinishAllFrames()) {
                 this.currentFrame = 0;
             }
         };
-        MorphAnimation.prototype.handleBeforeJudgeWhetherCurrentFrameFinish = function (elapsedTime) {
+        MorphAnimation.prototype.handleBeforeJudgeWhetherCurrentFrameFinish = function (elapsed) {
             if (this._prevFrameEndTime === null) {
                 this._prevFrameEndTime = this.getCurrentTime();
             }
         };
-        MorphAnimation.prototype.isCurrentFrameFinish = function (elapsedTime) {
-            return elapsedTime - this._prevFrameEndTime - this.pauseDuration > this.duration;
+        MorphAnimation.prototype.isCurrentFrameFinish = function (elapsed) {
+            return elapsed - this._prevFrameEndTime - this.pauseDuration > this.duration;
         };
-        MorphAnimation.prototype.handleAfterJudgeWhetherCurrentFrameFinish = function (elapsedTime) {
-            this._computeInterpolation(elapsedTime);
+        MorphAnimation.prototype.handleAfterJudgeWhetherCurrentFrameFinish = function (elapsed) {
+            this._computeInterpolation(elapsed);
         };
         MorphAnimation.prototype.resetAnim = function () {
             this._prevFrameEndTime = null;
             this.currentFrame = 0;
             this.pauseDuration = 0;
         };
-        MorphAnimation.prototype._computeInterpolation = function (elapsedTime) {
-            this.interpolation = this.fps * (elapsedTime - this._prevFrameEndTime - this.pauseDuration) / 1000;
+        MorphAnimation.prototype._computeInterpolation = function (elapsed) {
+            this.interpolation = this.fps * (elapsed - this._prevFrameEndTime - this.pauseDuration) / 1000;
         };
         MorphAnimation.prototype._isFinishAllFrames = function () {
             return this.currentFrame >= this.frameCount;
@@ -16538,8 +16426,8 @@ var wd;
             })
         ], MorphAnimation.prototype, "play", null);
         __decorate([
-            wd.require(function (elapsedTime) {
-                wd.assert(elapsedTime - this._prevFrameEndTime - this.pauseDuration >= 0, wd.Log.info.FUNC_SHOULD("elapsedTime of current frame:" + (elapsedTime - this._prevFrameEndTime - this.pauseDuration), ">= 0"));
+            wd.require(function (elapsed) {
+                wd.assert(elapsed - this._prevFrameEndTime - this.pauseDuration >= 0, wd.Log.info.FUNC_SHOULD("elapsed of current frame:" + (elapsed - this._prevFrameEndTime - this.pauseDuration), ">= 0"));
             })
         ], MorphAnimation.prototype, "isCurrentFrameFinish", null);
         __decorate([
@@ -16602,23 +16490,23 @@ var wd;
             this.frameCount = this._currentAnimData.getCount();
             this.state = wd.EAnimationState.RUN;
         };
-        ArticulatedAnimation.prototype.handleWhenPause = function (elapsedTime) {
+        ArticulatedAnimation.prototype.handleWhenPause = function (elapsed) {
         };
-        ArticulatedAnimation.prototype.handleWhenCurrentFrameFinish = function (elapsedTime) {
+        ArticulatedAnimation.prototype.handleWhenCurrentFrameFinish = function (elapsed) {
             this.isFrameChange = true;
-            this._updateFrame(elapsedTime);
+            this._updateFrame(elapsed);
             this._saveStartFrameData(this._prevFrameData);
         };
-        ArticulatedAnimation.prototype.handleBeforeJudgeWhetherCurrentFrameFinish = function (elapsedTime) {
+        ArticulatedAnimation.prototype.handleBeforeJudgeWhetherCurrentFrameFinish = function (elapsed) {
             if (this._beginElapsedTimeOfFirstFrame === null) {
                 this._beginElapsedTimeOfFirstFrame = this.getCurrentTime();
             }
         };
-        ArticulatedAnimation.prototype.isCurrentFrameFinish = function (elapsedTime) {
-            return elapsedTime - this._beginElapsedTimeOfFirstFrame - this.pauseDuration > this._currentFrameData.time;
+        ArticulatedAnimation.prototype.isCurrentFrameFinish = function (elapsed) {
+            return elapsed - this._beginElapsedTimeOfFirstFrame - this.pauseDuration > this._currentFrameData.time;
         };
-        ArticulatedAnimation.prototype.handleAfterJudgeWhetherCurrentFrameFinish = function (elapsedTime) {
-            this._updateTargets(elapsedTime);
+        ArticulatedAnimation.prototype.handleAfterJudgeWhetherCurrentFrameFinish = function (elapsed) {
+            this._updateTargets(elapsed);
         };
         ArticulatedAnimation.prototype.resetAnim = function () {
             this._beginElapsedTimeOfFirstFrame = null;
@@ -16629,10 +16517,10 @@ var wd;
             this._updateCurrentFrameData();
             this._startFrameDataMap.removeAllChildren();
         };
-        ArticulatedAnimation.prototype._updateTargets = function (elapsedTime) {
+        ArticulatedAnimation.prototype._updateTargets = function (elapsed) {
             var self = this, transform = this.entityObject.transform, startFrameDataMap = this._startFrameDataMap;
             this._currentFrameData.targets.forEach(function (target) {
-                var endFrameData = target.data, startFrameData = startFrameDataMap.getChild(target.target), interpolation = self._computeInterpolation(elapsedTime, target.interpolationMethod);
+                var endFrameData = target.data, startFrameData = startFrameDataMap.getChild(target.target), interpolation = self._computeInterpolation(elapsed, target.interpolationMethod);
                 switch (target.target) {
                     case wd.EArticulatedAnimationTarget.TRANSLATION:
                         transform.localPosition = wd.Vector3.create().lerp(startFrameData, endFrameData, interpolation);
@@ -16649,7 +16537,7 @@ var wd;
                 }
             });
         };
-        ArticulatedAnimation.prototype._computeInterpolation = function (elapsedTime, interpolationMethod) {
+        ArticulatedAnimation.prototype._computeInterpolation = function (elapsed, interpolationMethod) {
             var interpolation = null;
             switch (interpolationMethod) {
                 case wd.EKeyFrameInterpolation.LINEAR:
@@ -16657,7 +16545,7 @@ var wd;
                         interpolation = 1;
                     }
                     else {
-                        interpolation = (elapsedTime - this._beginElapsedTimeOfFirstFrame - this.pauseDuration - this._prevFrameTime) / (this._currentFrameData.time - this._prevFrameTime);
+                        interpolation = (elapsed - this._beginElapsedTimeOfFirstFrame - this.pauseDuration - this._prevFrameTime) / (this._currentFrameData.time - this._prevFrameTime);
                     }
                     break;
                 default:
@@ -16688,11 +16576,11 @@ var wd;
         ArticulatedAnimation.prototype._updateCurrentFrameData = function () {
             this._currentFrameData = this._currentAnimData.getChild(this._currentFrame);
         };
-        ArticulatedAnimation.prototype._updateFrame = function (elapsedTime) {
-            this._updateCurrentFrameIndex(elapsedTime);
+        ArticulatedAnimation.prototype._updateFrame = function (elapsed) {
+            this._updateCurrentFrameIndex(elapsed);
             if (this._isFinishAllFrames()) {
                 this._currentFrame = 0;
-                this._beginElapsedTimeOfFirstFrame = this._getBeginElapsedTimeOfFirstFrameWhenFinishAllFrames(elapsedTime);
+                this._beginElapsedTimeOfFirstFrame = this._getBeginElapsedTimeOfFirstFrameWhenFinishAllFrames(elapsed);
                 this._prevFrameTime = 0;
                 this._prevFrameData = this._currentAnimData.getChild(this.frameCount - 1);
                 this._updateCurrentFrameData();
@@ -16701,18 +16589,18 @@ var wd;
                 this._prevFrameTime = this._currentAnimData.getChild(this._currentFrame - 1).time;
             }
         };
-        ArticulatedAnimation.prototype._getBeginElapsedTimeOfFirstFrameWhenFinishAllFrames = function (elapsedTime) {
-            return wd.MathUtils.maxFloorIntegralMultiple(elapsedTime, this._currentAnimData.getChild(this.frameCount - 1).time);
+        ArticulatedAnimation.prototype._getBeginElapsedTimeOfFirstFrameWhenFinishAllFrames = function (elapsed) {
+            return wd.MathUtils.maxFloorIntegralMultiple(elapsed, this._currentAnimData.getChild(this.frameCount - 1).time);
         };
         ArticulatedAnimation.prototype._isFinishAllFrames = function () {
             return this._currentFrame >= this.frameCount;
         };
-        ArticulatedAnimation.prototype._updateCurrentFrameIndex = function (elapsedTime) {
+        ArticulatedAnimation.prototype._updateCurrentFrameIndex = function (elapsed) {
             do {
                 this._currentFrame++;
                 this._prevFrameData = this._currentFrameData;
                 this._updateCurrentFrameData();
-            } while (!this._isFinishAllFrames() && this.isCurrentFrameFinish(elapsedTime));
+            } while (!this._isFinishAllFrames() && this.isCurrentFrameFinish(elapsed));
         };
         ArticulatedAnimation.prototype._isFrameData = function (data) {
             return data.time !== void 0 && data.targets !== void 0;
@@ -16761,12 +16649,12 @@ var wd;
             })
         ], ArticulatedAnimation.prototype, "play", null);
         __decorate([
-            wd.require(function (elapsedTime) {
-                wd.assert(elapsedTime - this._beginElapsedTimeOfFirstFrame - this.pauseDuration >= 0, wd.Log.info.FUNC_SHOULD("elapsedTime of current frame:" + (elapsedTime - this._beginElapsedTimeOfFirstFrame - this.pauseDuration), ">= 0"));
+            wd.require(function (elapsed) {
+                wd.assert(elapsed - this._beginElapsedTimeOfFirstFrame - this.pauseDuration >= 0, wd.Log.info.FUNC_SHOULD("elapsed of current frame:" + (elapsed - this._beginElapsedTimeOfFirstFrame - this.pauseDuration), ">= 0"));
             })
         ], ArticulatedAnimation.prototype, "isCurrentFrameFinish", null);
         __decorate([
-            wd.ensure(function (interpolation, elapsedTime, interpolationMethod) {
+            wd.ensure(function (interpolation, elapsed, interpolationMethod) {
                 wd.assert(interpolation >= 0 && interpolation <= 1, wd.Log.info.FUNC_SHOULD("interpolation:" + interpolation, ">= 0 && <= 1"));
             })
         ], ArticulatedAnimation.prototype, "_computeInterpolation", null);
@@ -16786,9 +16674,9 @@ var wd;
             })
         ], ArticulatedAnimation.prototype, "_saveStartFrameData", null);
         __decorate([
-            wd.require(function (elapsedTime) {
+            wd.require(function (elapsed) {
                 var lastEndFrameTime = this._currentAnimData.getChild(this.frameCount - 1).time;
-                wd.assert(elapsedTime >= lastEndFrameTime, wd.Log.info.FUNC_SHOULD("elapsedTime:" + elapsedTime, ">= lastEndFrameTime:" + lastEndFrameTime));
+                wd.assert(elapsed >= lastEndFrameTime, wd.Log.info.FUNC_SHOULD("elapsed:" + elapsed, ">= lastEndFrameTime:" + lastEndFrameTime));
             })
         ], ArticulatedAnimation.prototype, "_getBeginElapsedTimeOfFirstFrameWhenFinishAllFrames", null);
         return ArticulatedAnimation;
@@ -16819,6 +16707,7 @@ var wd;
             _super.apply(this, arguments);
             this._material = null;
             this.buffers = null;
+            this.vaoManager = !!wd.GPUDetector.getInstance().extensionVAO ? wd.VAOManager.create() : null;
             this.drawMode = wd.EDrawMode.TRIANGLES;
         }
         Object.defineProperty(Geometry.prototype, "material", {
@@ -16855,6 +16744,7 @@ var wd;
             this.buffers.init();
             this._material.init();
             this.computeNormals();
+            this.vaoManager && this.vaoManager.init();
         };
         Geometry.prototype.hasFaceNormals = function () {
             return this.buffers.geometryData.hasFaceNormals();
@@ -16868,6 +16758,7 @@ var wd;
         Geometry.prototype.dispose = function () {
             this.buffers.dispose();
             this._material.dispose();
+            this.vaoManager && this.vaoManager.dispose();
         };
         Geometry.prototype.computeFaceNormals = function () {
             this.buffers.geometryData.computeFaceNormals();
@@ -16950,6 +16841,65 @@ var wd;
         return Geometry;
     }(wd.Component));
     wd.Geometry = Geometry;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var VAOManager = (function () {
+        function VAOManager() {
+            this._vaoMap = wdCb.Hash.create();
+            this._extension = null;
+        }
+        VAOManager.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        VAOManager.prototype.init = function () {
+            this._extension = wd.GPUDetector.getInstance().extensionVAO;
+        };
+        VAOManager.prototype.dispose = function () {
+            this._vaoMap.removeAllChildren();
+        };
+        VAOManager.prototype.getVAOData = function (toSendBuffersUidStr) {
+            var isSetted = false, vao = this._vaoMap.getChild(toSendBuffersUidStr);
+            if (!vao) {
+                vao = this._extension.createVertexArrayOES();
+                this._vaoMap.addChild(toSendBuffersUidStr, vao);
+                isSetted = false;
+            }
+            else {
+                isSetted = true;
+            }
+            return {
+                vao: vao,
+                isSetted: isSetted
+            };
+        };
+        VAOManager.prototype.sendAllBufferData = function (toSendBuffersUidStr, toSendBufferArr) {
+            var _a = this.getVAOData(toSendBuffersUidStr), vao = _a.vao, isSetted = _a.isSetted;
+            wd.BufferTable.lastBindedElementBuffer = null;
+            this._extension.bindVertexArrayOES(vao);
+            if (isSetted) {
+                return;
+            }
+            for (var pos = 0, len = toSendBufferArr.length; pos < len; pos++) {
+                var buffer = toSendBufferArr[pos];
+                if (!buffer) { }
+                if (buffer) {
+                    var gl = wd.DeviceManager.getInstance().gl;
+                    gl.bindBuffer(gl.ARRAY_BUFFER, buffer.buffer);
+                    gl.vertexAttribPointer(pos, buffer.size, gl[buffer.type], false, 0, 0);
+                    gl.enableVertexAttribArray(pos);
+                }
+            }
+        };
+        __decorate([
+            wd.require(function () {
+                wd.assert(!!wd.GPUDetector.getInstance().extensionVAO, wd.Log.info.FUNC_SHOULD("hardware", "support vao extension"));
+            })
+        ], VAOManager.prototype, "init", null);
+        return VAOManager;
+    }());
+    wd.VAOManager = VAOManager;
 })(wd || (wd = {}));
 var wd;
 (function (wd) {
@@ -17876,6 +17826,7 @@ var wd;
             set: function (vertices) {
                 this._vertices = vertices;
                 this.tangentDirty = true;
+                this.geometry.buffers.removeCache(wd.EBufferDataType.VERTICE);
             },
             enumerable: true,
             configurable: true
@@ -17952,6 +17903,8 @@ var wd;
             },
             set: function (faces) {
                 this._faces = faces;
+                this.geometry.buffers.removeCache(wd.EBufferDataType.NORMAL);
+                this.geometry.buffers.removeCache(wd.EBufferDataType.INDICE);
                 this.onChangeFace();
             },
             enumerable: true,
@@ -17964,6 +17917,7 @@ var wd;
             set: function (texCoords) {
                 this._texCoords = texCoords;
                 this.tangentDirty = true;
+                this.geometry.buffers.removeCache(wd.EBufferDataType.TEXCOORD);
             },
             enumerable: true,
             configurable: true
@@ -17978,6 +17932,7 @@ var wd;
             set: function (colors) {
                 this._colors = colors;
                 this.colorDirty = true;
+                this.geometry.buffers.removeCache(wd.EBufferDataType.COLOR);
             },
             enumerable: true,
             configurable: true
@@ -18813,7 +18768,7 @@ var wd;
         Camera.prototype.clone = function () {
             return wd.CloneUtils.clone(this);
         };
-        Camera.prototype.update = function (elapsedTime) {
+        Camera.prototype.update = function (elapsed) {
             if (this.dirty) {
                 this.updateProjectionMatrix();
                 this.dirty = false;
@@ -19037,8 +18992,8 @@ var wd;
             this.camera.init();
             this.bindClearCacheEvent();
         };
-        CameraController.prototype.update = function (elapsedTime) {
-            this.camera.update(elapsedTime);
+        CameraController.prototype.update = function (elapsed) {
+            this.camera.update(elapsed);
         };
         CameraController.prototype.dispose = function () {
             this.camera.dispose();
@@ -19232,9 +19187,9 @@ var wd;
             _super.prototype.init.call(this);
             this._control.init(this.entityObject);
         };
-        FlyCameraController.prototype.update = function (elapsedTime) {
-            _super.prototype.update.call(this, elapsedTime);
-            this._control.update(elapsedTime);
+        FlyCameraController.prototype.update = function (elapsed) {
+            _super.prototype.update.call(this, elapsed);
+            this._control.update(elapsed);
         };
         FlyCameraController.prototype.dispose = function () {
             _super.prototype.dispose.call(this);
@@ -19280,7 +19235,7 @@ var wd;
             this._gameObject = entityObject;
             this._bindCanvasEvent();
         };
-        FlyCameraControl.prototype.update = function (elapsedTime) {
+        FlyCameraControl.prototype.update = function (elapsed) {
             if (!this._isRotate) {
                 return;
             }
@@ -19406,9 +19361,9 @@ var wd;
             _super.prototype.init.call(this);
             this._bindCanvasEvent();
         };
-        ArcballCameraController.prototype.update = function (elapsedTime) {
+        ArcballCameraController.prototype.update = function (elapsed) {
             var x = null, y = null, z = null;
-            _super.prototype.update.call(this, elapsedTime);
+            _super.prototype.update.call(this, elapsed);
             if (!this._isChange) {
                 return;
             }
@@ -19560,13 +19515,16 @@ var wd;
         };
         Action.prototype.addToObject = function (entityObject, isShareComponent) {
             if (isShareComponent === void 0) { isShareComponent = false; }
+            var engine = wd.ActionEngine.getInstance();
             _super.prototype.addToObject.call(this, entityObject, isShareComponent);
             this.target = entityObject;
-            entityObject.actionManager.addChild(this);
+            if (!engine.hasChild(this)) {
+                engine.addChild(this);
+            }
         };
         Action.prototype.removeFromObject = function (entityObject) {
             _super.prototype.removeFromObject.call(this, entityObject);
-            entityObject.actionManager.removeChild(this);
+            wd.ActionEngine.getInstance().removeChild(this);
         };
         Action.prototype.init = function () {
             this.start();
@@ -19636,7 +19594,7 @@ var wd;
         CallFunc.prototype.reverse = function () {
             return this;
         };
-        CallFunc.prototype.update = function (elapsedTime) {
+        CallFunc.prototype.update = function (elapsed) {
             if (this._callFunc) {
                 this._callFunc.call(this._context, this.p_target, this._dataArr);
             }
@@ -19683,12 +19641,12 @@ var wd;
             enumerable: true,
             configurable: true
         });
-        ActionInterval.prototype.update = function (elapsedTime) {
-            if (elapsedTime < this._timeController.startTime) {
+        ActionInterval.prototype.update = function (elapsed) {
+            if (elapsed < this._timeController.startTime) {
                 return;
             }
-            this.elapsed = this._convertToRatio(this._timeController.computeElapseTime(elapsedTime));
-            this.updateBody(elapsedTime);
+            this.elapsed = this._convertToRatio(this._timeController.computeElapseTime(elapsed));
+            this.updateBody(elapsed);
             if (this.elapsed === 1) {
                 this.finish();
             }
@@ -19788,7 +19746,7 @@ var wd;
         Sequence.prototype.initWhenCreate = function () {
             this._currentAction = this._actions.getChild(0);
         };
-        Sequence.prototype.update = function (elapsedTime) {
+        Sequence.prototype.update = function (elapsed) {
             if (this._actionIndex === this._actions.getCount()) {
                 this.finish();
                 return;
@@ -19798,7 +19756,7 @@ var wd;
                 this._startNextActionAndJudgeFinish();
                 return;
             }
-            this._currentAction.update(elapsedTime);
+            this._currentAction.update(elapsed);
             if (this._currentAction.isFinish) {
                 this._startNextActionAndJudgeFinish();
             }
@@ -19883,12 +19841,12 @@ var wd;
             spawn = new this(args);
             return spawn;
         };
-        Spawn.prototype.update = function (elapsedTime) {
+        Spawn.prototype.update = function (elapsed) {
             if (this._isFinish()) {
                 this.finish();
                 return;
             }
-            this.iterate("update", [elapsedTime]);
+            this.iterate("update", [elapsed]);
             if (this._isFinish()) {
                 this.finish();
             }
@@ -19992,12 +19950,12 @@ var wd;
         Repeat.prototype.initWhenCreate = function () {
             this._originTimes = this._times;
         };
-        Repeat.prototype.update = function (elapsedTime) {
+        Repeat.prototype.update = function (elapsed) {
             if (this._times === 0) {
                 this.finish();
                 return;
             }
-            this._innerAction.update(elapsedTime);
+            this._innerAction.update(elapsed);
             if (this._innerAction.isFinish) {
                 this._times -= 1;
                 if (this._times !== 0) {
@@ -20055,8 +20013,8 @@ var wd;
             var repeat = new this(action);
             return repeat;
         };
-        RepeatForever.prototype.update = function (elapsedTime) {
-            this._innerAction.update(elapsedTime);
+        RepeatForever.prototype.update = function (elapsed) {
+            this._innerAction.update(elapsed);
             if (this._innerAction.isFinish) {
                 this._innerAction.reset();
                 this._innerAction.start();
@@ -20285,10 +20243,10 @@ var wd;
             },
             Exponential: {
                 In: function (k) {
-                    return k === 0 ? 0 : Math.pow(1024, k - 1);
+                    return k === 0 ? 0 : Math.pow(1024, (k - 1));
                 },
                 Out: function (k) {
-                    return k === 1 ? 1 : 1 - Math.pow(2, -10 * k);
+                    return k === 1 ? 1 : 1 - Math.pow(2, (-10 * k));
                 },
                 InOut: function (k) {
                     if (k === 0)
@@ -20296,8 +20254,8 @@ var wd;
                     if (k === 1)
                         return 1;
                     if ((k *= 2) < 1)
-                        return 0.5 * Math.pow(1024, k - 1);
-                    return 0.5 * (-Math.pow(2, -10 * (k - 1)) + 2);
+                        return 0.5 * Math.pow(1024, (k - 1));
+                    return 0.5 * (-(Math.pow(2, (-10 * (k - 1)))) + 2);
                 }
             },
             Circular: {
@@ -20326,7 +20284,7 @@ var wd;
                     }
                     else
                         s = p * Math.asin(1 / a) / (2 * Math.PI);
-                    return -(a * Math.pow(2, 10 * (k -= 1)) * Math.sin((k - s) * (2 * Math.PI) / p));
+                    return -(a * Math.pow(2, (10 * (k -= 1))) * Math.sin((k - s) * (2 * Math.PI) / p));
                 },
                 Out: function (k) {
                     var s, a = 0.1, p = 0.4;
@@ -20340,7 +20298,7 @@ var wd;
                     }
                     else
                         s = p * Math.asin(1 / a) / (2 * Math.PI);
-                    return (a * Math.pow(2, -10 * k) * Math.sin((k - s) * (2 * Math.PI) / p) + 1);
+                    return (a * Math.pow(2, (-10 * k)) * Math.sin((k - s) * (2 * Math.PI) / p) + 1);
                 },
                 InOut: function (k) {
                     var s, a = 0.1, p = 0.4;
@@ -20355,8 +20313,8 @@ var wd;
                     else
                         s = p * Math.asin(1 / a) / (2 * Math.PI);
                     if ((k *= 2) < 1)
-                        return -0.5 * (a * Math.pow(2, 10 * (k -= 1)) * Math.sin((k - s) * (2 * Math.PI) / p));
-                    return a * Math.pow(2, -10 * (k -= 1)) * Math.sin((k - s) * (2 * Math.PI) / p) * 0.5 + 1;
+                        return -0.5 * (a * Math.pow(2, (10 * (k -= 1))) * Math.sin((k - s) * (2 * Math.PI) / p));
+                    return a * Math.pow(2, (-10 * (k -= 1))) * Math.sin((k - s) * (2 * Math.PI) / p) * 0.5 + 1;
                 }
             },
             Back: {
@@ -20410,9 +20368,9 @@ var wd;
                 return fn(v[i], v[i + 1 > m ? m : i + 1], f - i);
             },
             Bezier: function (v, k) {
-                var b = 0, n = v.length - 1, pw = Math.pow, bn = Tween.Interpolation.Utils.Bernstein, i;
+                var b = 0, n = v.length - 1, bn = Tween.Interpolation.Utils.Bernstein, i;
                 for (i = 0; i <= n; i++) {
-                    b += pw(1 - k, n - i) * pw(k, i) * v[i] * bn(n, i);
+                    b += Math.pow((1 - k), (n - i)) * Math.pow(k, i) * v[i] * bn(n, i);
                 }
                 return b;
             },
@@ -20520,6 +20478,7 @@ var wd;
             cmd = this._createCommand(target, material);
             cmd.target = target;
             cmd.buffers = geometry.buffers;
+            cmd.vaoManager = geometry.vaoManager;
             cmd.drawMode = geometry.drawMode;
             cmd.vMatrix = cameraComponent.worldToCameraMatrix;
             cmd.pMatrix = cameraComponent.pMatrix;
@@ -20616,7 +20575,6 @@ var wd;
             _super.apply(this, arguments);
             this._zIndex = 1;
             this._dirty = true;
-            this.dirtyDuringCurrentLoop = false;
             this.isClearCanvas = false;
             this.state = wd.EUIRendererState.NORMAL;
             this.context = null;
@@ -20650,7 +20608,6 @@ var wd;
             set: function (dirty) {
                 if (dirty) {
                     this._dirty = true;
-                    this.dirtyDuringCurrentLoop = true;
                 }
                 else {
                     this.resetDirty();
@@ -20758,12 +20715,20 @@ var wd;
         };
         Octree.prototype.addToObject = function (entityObject, isShareComponent) {
             if (isShareComponent === void 0) { isShareComponent = false; }
+            var engine = wd.SpacePartitionEngine.getInstance();
             _super.prototype.addToObject.call(this, entityObject, isShareComponent);
+            if (!engine.hasChild(this)) {
+                engine.addChild(this);
+            }
+        };
+        Octree.prototype.removeFromObject = function (entityObject) {
+            _super.prototype.removeFromObject.call(this, entityObject);
+            wd.SpacePartitionEngine.getInstance().removeChild(this);
         };
         Octree.prototype.init = function () {
             _super.prototype.init.call(this);
         };
-        Octree.prototype.update = function (elapsedTime) {
+        Octree.prototype.update = function (elapsed) {
             this._renderListCache = this._getRenderListForCurrentLoop();
         };
         Octree.prototype.getRenderList = function () {
@@ -21085,8 +21050,8 @@ var wd;
             this._collider.entityObject = this.entityObject;
             this._collider.init();
         };
-        BoxColliderForFirstCheck.prototype.update = function (elapsedTime) {
-            this._collider.update(elapsedTime);
+        BoxColliderForFirstCheck.prototype.update = function (elapsed) {
+            this._collider.update(elapsed);
         };
         __decorate([
             wd.cloneAttributeAsCloneable()
@@ -21117,10 +21082,22 @@ var wd;
             this.boundingRegion.init();
             this.buildBoundingRegion();
         };
+        Collider.prototype.addToObject = function (entityObject, isShareComponent) {
+            if (isShareComponent === void 0) { isShareComponent = false; }
+            var engine = wd.ColliderEngine.getInstance();
+            _super.prototype.addToObject.call(this, entityObject, isShareComponent);
+            if (!engine.hasChild(this)) {
+                engine.addChild(this);
+            }
+        };
+        Collider.prototype.removeFromObject = function (entityObject) {
+            _super.prototype.removeFromObject.call(this, entityObject);
+            wd.ColliderEngine.getInstance().removeChild(this);
+        };
         Collider.prototype.clone = function () {
             return wd.CloneUtils.clone(this);
         };
-        Collider.prototype.update = function (elapsedTime) {
+        Collider.prototype.update = function (elapsed) {
             this.boundingRegion.update();
         };
         Collider.prototype.updateShape = function () {
@@ -21821,8 +21798,6 @@ var wd;
             this.distanceConstraint = wd.DistanceConstraint.create(this);
             this.hingeConstraint = wd.HingeConstraint.create(this);
             this.pointToPointConstraintList = wd.PointToPointConstraintList.create(this);
-            this._afterInitSubscription = null;
-            this._afterInitRigidbodyAddConstraintSubscription = null;
         }
         Object.defineProperty(RigidBody.prototype, "friction", {
             get: function () {
@@ -21864,16 +21839,13 @@ var wd;
             enumerable: true,
             configurable: true
         });
-        RigidBody.prototype.init = function () {
-            var self = this;
-            this._afterInitSubscription = wd.EventManager.fromEvent(wd.EEngineEvent.AFTER_GAMEOBJECT_INIT)
-                .subscribe(function () {
-                self._afterInitHandler();
-            });
-            this._afterInitRigidbodyAddConstraintSubscription = wd.EventManager.fromEvent(wd.EEngineEvent.AFTER_GAMEOBJECT_INIT_RIGIDBODY_ADD_CONSTRAINT)
-                .subscribe(function () {
-                self._afterInitRigidbodyAddConstraintHandler();
-            });
+        RigidBody.prototype.addToObject = function (entityObject, isShareComponent) {
+            if (isShareComponent === void 0) { isShareComponent = false; }
+            var engine = wd.RigidBodyEngine.getInstance();
+            _super.prototype.addToObject.call(this, entityObject, isShareComponent);
+            if (!engine.hasChild(this)) {
+                engine.addChild(this);
+            }
         };
         RigidBody.prototype.addConstraint = function () {
             var _this = this;
@@ -21900,19 +21872,24 @@ var wd;
                 this.getPhysicsEngineAdapter().removeConstraints(entityObject);
             }
             _super.prototype.removeFromObject.call(this, entityObject);
+            wd.RigidBodyEngine.getInstance().removeChild(this);
         };
         RigidBody.prototype.dispose = function () {
             this._children.forEach(function (child) {
                 child.removeTag("isRigidbodyChild");
             }, this);
-            this._afterInitSubscription && this._afterInitSubscription.dispose();
-            this._afterInitRigidbodyAddConstraintSubscription && this._afterInitRigidbodyAddConstraintSubscription.dispose();
         };
         RigidBody.prototype.getPhysicsEngineAdapter = function () {
             return wd.Director.getInstance().scene.physicsEngineAdapter;
         };
         RigidBody.prototype.isPhysicsEngineAdapterExist = function () {
             return !!wd.Director.getInstance().scene && !!wd.Director.getInstance().scene.physicsEngineAdapter;
+        };
+        RigidBody.prototype.initBody = function () {
+            this.addBody();
+        };
+        RigidBody.prototype.initConstraint = function () {
+            this.addConstraint();
         };
         RigidBody.prototype.addBodyToPhysicsEngine = function (method, data) {
             if (data === void 0) { data = {}; }
@@ -21930,23 +21907,17 @@ var wd;
             }, data));
         };
         RigidBody.prototype._onContact = function (collideObject) {
-            this.entityObject.execScript("onContact", wdCb.Collection.create([collideObject]));
+            wd.ScriptEngine.getInstance().execEntityObjectScriptWithData(this.entityObject, "onContact", wdCb.Collection.create([collideObject]));
         };
         RigidBody.prototype._onCollisionStart = function (collideObject) {
-            this.entityObject.execScript("onCollisionStart", wdCb.Collection.create([collideObject]));
+            wd.ScriptEngine.getInstance().execEntityObjectScriptWithData(this.entityObject, "onCollisionStart", wdCb.Collection.create([collideObject]));
         };
         RigidBody.prototype._onCollisionEnd = function () {
-            this.entityObject.execScript("onCollisionEnd");
+            wd.ScriptEngine.getInstance().execEntityObjectScript(this.entityObject, "onCollisionEnd");
         };
         RigidBody.prototype._isContainer = function (entityObject) {
             var rigidBody = entityObject.getComponent(RigidBody);
             return rigidBody.children.getCount() > 0;
-        };
-        RigidBody.prototype._afterInitHandler = function () {
-            this.addBody();
-        };
-        RigidBody.prototype._afterInitRigidbodyAddConstraintHandler = function () {
-            this.addConstraint();
         };
         __decorate([
             wd.operateBodyDataGetterAndSetter("Friction"),
@@ -21980,6 +21951,12 @@ var wd;
             })
         ], RigidBody.prototype, "pointToPointConstraintList", void 0);
         __decorate([
+            wd.execOnlyOnce("_initBody")
+        ], RigidBody.prototype, "initBody", null);
+        __decorate([
+            wd.execOnlyOnce("_initConstraint")
+        ], RigidBody.prototype, "initConstraint", null);
+        __decorate([
             wd.require(function () {
                 if (this._isContainer(this.entityObject)) {
                     wd.assert(!this.entityObject.getComponent(wd.Collider), wd.Log.info.FUNC_SHOULD_NOT("container", "add collider component in the case of compound"));
@@ -21990,12 +21967,6 @@ var wd;
                 }
             })
         ], RigidBody.prototype, "addBodyToPhysicsEngine", null);
-        __decorate([
-            wd.execOnlyOnce("_isAfterInit")
-        ], RigidBody.prototype, "_afterInitHandler", null);
-        __decorate([
-            wd.execOnlyOnce("_isAfterInitRigidbodyAddConstraint")
-        ], RigidBody.prototype, "_afterInitRigidbodyAddConstraintHandler", null);
         return RigidBody;
     }(wd.Component));
     wd.RigidBody = RigidBody;
@@ -22893,7 +22864,7 @@ var wd;
                 self._pointToPointConstraint.removeConstraint(pointToPointConstraint);
             });
         };
-        CannonAdapter.prototype.update = function (elapsedTime) {
+        CannonAdapter.prototype.update = function (elapsed) {
             this._gameObjectDataList.updateBodyTransformData();
             this.world.step(wd.Director.getInstance().getDeltaTime() / 1000);
             this._gameObjectDataList.updateGameObjectTransformData();
@@ -23714,31 +23685,36 @@ var wd;
             enumerable: true,
             configurable: true
         });
+        UI.prototype.update = function (elapsed) {
+        };
         UI.prototype.init = function () {
             this.context = this.getContext();
         };
         UI.prototype.addToObject = function (entityObject, isShareComponent) {
             if (isShareComponent === void 0) { isShareComponent = false; }
+            var engine = wd.UIEngine.getInstance();
             _super.prototype.addToObject.call(this, entityObject, isShareComponent);
-            entityObject.uiManager.addChild(this);
+            if (!engine.hasChild(this)) {
+                engine.addChild(this);
+            }
         };
         UI.prototype.removeFromObject = function (entityObject) {
             _super.prototype.removeFromObject.call(this, entityObject);
-            entityObject.uiManager.removeChild(this);
+            wd.UIEngine.getInstance().removeChild(this);
         };
-        UI.prototype.update = function (elapsedTime) {
+        UI.prototype.render = function () {
             var context = this.context;
-            if (this.shouldNotUpdate()) {
+            if (this.shouldNotRender()) {
                 return;
             }
             context.save();
             this._setCanvasTransformForRotation();
-            this.draw(elapsedTime);
+            this.draw();
             context.restore();
         };
-        UI.prototype.draw = function (elapsedTime) {
+        UI.prototype.draw = function () {
         };
-        UI.prototype.shouldNotUpdate = function () {
+        UI.prototype.shouldNotRender = function () {
             return false;
         };
         UI.prototype.getContext = function () {
@@ -23776,21 +23752,24 @@ var wd;
             wd.virtual
         ], UI.prototype, "dirty", null);
         __decorate([
+            wd.virtual
+        ], UI.prototype, "update", null);
+        __decorate([
             wd.require(function (entityObject) {
                 wd.assert(entityObject instanceof wd.UIObject, wd.Log.info.FUNC_SHOULD("Octree component", "add to GameObject"));
             })
         ], UI.prototype, "addToObject", null);
         __decorate([
-            wd.require(function (elapsedTime) {
+            wd.require(function () {
                 wd.assert(this.context !== null, wd.Log.info.FUNC_SHOULD("set context"));
             })
-        ], UI.prototype, "update", null);
+        ], UI.prototype, "render", null);
         __decorate([
             wd.virtual
         ], UI.prototype, "draw", null);
         __decorate([
             wd.virtual
-        ], UI.prototype, "shouldNotUpdate", null);
+        ], UI.prototype, "shouldNotRender", null);
         return UI;
     }(wd.Component));
     wd.UI = UI;
@@ -23845,7 +23824,7 @@ var wd;
                 this._sizeChangeEventSubscription.dispose();
             }
         };
-        Font.prototype.update = function (elapsedTime) {
+        Font.prototype.update = function (elapsed) {
             if (!this._isFirstUpdate) {
                 if (this.needFormat) {
                     this.reFormat();
@@ -23855,7 +23834,6 @@ var wd;
                 this._isFirstUpdate = false;
             }
             this.needFormat = false;
-            _super.prototype.update.call(this, elapsedTime);
         };
         Font.prototype.reFormat = function () {
         };
@@ -24570,10 +24548,10 @@ var wd;
             _super.prototype.dispose.call(this);
             this._subscription.dispose();
         };
-        CharFont.prototype.shouldNotUpdate = function () {
+        CharFont.prototype.shouldNotRender = function () {
             return this.rectRegion === null || (this.width === 0 && this.height === 0);
         };
-        CharFont.prototype.draw = function (elapsedTime) {
+        CharFont.prototype.draw = function () {
             var transform = null, position = null, dw = null, dh = null;
             transform = this.entityObject.transform;
             position = transform.position;
@@ -24623,10 +24601,10 @@ var wd;
             this._createOffScreenCanvas();
             this._drawProgressBar();
         };
-        ProgressBar.prototype.shouldNotUpdate = function () {
+        ProgressBar.prototype.shouldNotRender = function () {
             return this.percent <= 0;
         };
-        ProgressBar.prototype.draw = function (elapsedTime) {
+        ProgressBar.prototype.draw = function () {
             var position = this.entityObject.transform.position;
             this._drawFromLeft(position);
             this._drawBorder(position);
@@ -24662,7 +24640,7 @@ var wd;
             wd.cloneAttributeAsBasicType()
         ], ProgressBar.prototype, "radius", void 0);
         __decorate([
-            wd.require(function (elapsedTime) {
+            wd.require(function () {
                 wd.assert(this.percent >= 0 && this.percent <= 1, wd.Log.info.FUNC_SHOULD("percent", " >= 0 and <= 1"));
             })
         ], ProgressBar.prototype, "draw", null);
@@ -24714,10 +24692,10 @@ var wd;
             enumerable: true,
             configurable: true
         });
-        Image.prototype.shouldNotUpdate = function () {
+        Image.prototype.shouldNotRender = function () {
             return this._getDrawSource() === null && this._getDrawColor() === null;
         };
-        Image.prototype.draw = function (elapsedTime) {
+        Image.prototype.draw = function () {
             var drawColor = this._getDrawColor(), drawSource = this._getDrawSource();
             if (drawColor !== null) {
                 var position = this.entityObject.transform.position;
@@ -24906,10 +24884,10 @@ var wd;
         };
         Button.prototype.init = function () {
             _super.prototype.init.call(this);
+            this.entityObject.addChild(this._createBackgroundObject());
             if (!this._hasFontObject()) {
                 this.entityObject.addChild(this._createFontObject());
             }
-            this.entityObject.addChild(this._createBackgroundObject());
             this._bindEvent();
         };
         Button.prototype.dispose = function () {
@@ -24931,7 +24909,7 @@ var wd;
         Button.prototype.disable = function () {
             this._stateMachine.changeState(wd.EUIState.DISABLED);
         };
-        Button.prototype.update = function (elapsedTime) {
+        Button.prototype.update = function (elapsed) {
             var target = this.transitionManager.getObjectTarget(wd.EButtonObjectName.BACKGROUND);
             if (!target) {
                 var image = this.getObject(wd.EButtonObjectName.BACKGROUND).getComponent(wd.Image);
@@ -24959,6 +24937,8 @@ var wd;
                     wd.Log.error(true, wd.Log.info.FUNC_UNEXPECT("transitionMode"));
                     break;
             }
+        };
+        Button.prototype.render = function () {
         };
         Button.prototype._createBackgroundObject = function () {
             var object = wd.UIObject.create(), image = wd.Image.create(), transform = this.entityObject.transform;
@@ -25029,7 +25009,7 @@ var wd;
             })
         ], Button.prototype, "_stateMachine", void 0);
         __decorate([
-            wd.require(function (elapsedTime) {
+            wd.require(function () {
                 wd.assert(this.getObject(wd.EButtonObjectName.BACKGROUND).hasComponent(wd.Image), wd.Log.info.FUNC_SHOULD("Button UIObject", "contain Image component"));
             })
         ], Button.prototype, "update", null);
@@ -25367,6 +25347,7 @@ var wd;
             this.texture = null;
             this.frameBufferOperator = null;
             this._isRenderListEmpty = false;
+            this._renderCount = 0;
             this.texture = renderTargetTexture;
         }
         RenderTargetRenderer.prototype.initWhenCreate = function () {
@@ -25375,6 +25356,17 @@ var wd;
         RenderTargetRenderer.prototype.init = function () {
             this.texture.createEmptyTexture();
             this.initFrameBuffer();
+        };
+        RenderTargetRenderer.prototype.needRender = function () {
+            var renderRate = this.texture.renderRate, needRender = false;
+            if (renderRate === 0) {
+                needRender = this._shouldRenderOnce();
+            }
+            else {
+                needRender = this._shouldRenderAtRate(renderRate);
+            }
+            this._renderCount++;
+            return needRender;
         };
         RenderTargetRenderer.prototype.render = function () {
             var args = [];
@@ -25405,6 +25397,26 @@ var wd;
         RenderTargetRenderer.prototype.isRenderListEmptyWhenRender = function () {
             return this._isRenderListEmpty;
         };
+        RenderTargetRenderer.prototype._shouldRenderOnce = function () {
+            return this._renderCount === 0;
+        };
+        RenderTargetRenderer.prototype._shouldRenderAtRate = function (renderRate) {
+            var renderCount = this._renderCount;
+            if (renderCount === 0) {
+                return true;
+            }
+            if (renderCount === renderRate) {
+                this._renderCount = 0;
+                return true;
+            }
+            return false;
+        };
+        __decorate([
+            wd.require(function () {
+                wd.assert(this.texture.renderRate >= 0, wd.Log.info.FUNC_SHOULD("renderTargetTexture->renderRate", ">= 0, but actual is " + this.texture.renderRate));
+            }),
+            wd.virtual
+        ], RenderTargetRenderer.prototype, "needRender", null);
         __decorate([
             wd.virtual
         ], RenderTargetRenderer.prototype, "beforeRender", null);
@@ -25440,7 +25452,7 @@ var wd;
         function TwoDRenderTargetRenderer() {
             _super.apply(this, arguments);
             this.frameBuffer = null;
-            this.renderBuffer = null;
+            this._renderBuffer = null;
             this._lastCamera = null;
         }
         TwoDRenderTargetRenderer.prototype.isNeedCreateCamera = function () {
@@ -25453,16 +25465,28 @@ var wd;
             }
             return null;
         };
+        TwoDRenderTargetRenderer.prototype.setFrameBufferTexture = function () {
+            var frameBuffer = this.frameBufferOperator, gl = wd.DeviceManager.getInstance().gl;
+            frameBuffer.attachTexture(gl.TEXTURE_2D, this.texture.glTexture, wd.EFrameBufferAttachType.COLOR_ATTACHMENT0);
+        };
+        TwoDRenderTargetRenderer.prototype.createAndAttachDepthBuffer = function () {
+            var frameBuffer = this.frameBufferOperator, gl = wd.DeviceManager.getInstance().gl;
+            this._renderBuffer = frameBuffer.createRenderBuffer();
+            frameBuffer.attachRenderBuffer("DEPTH_ATTACHMENT", this._renderBuffer);
+        };
+        TwoDRenderTargetRenderer.prototype.deleteRenderBuffer = function () {
+            var gl = wd.DeviceManager.getInstance().gl;
+            gl.deleteRenderbuffer(this._renderBuffer);
+        };
         TwoDRenderTargetRenderer.prototype.isRenderListEmpty = function (renderList) {
             return renderList.getCount() === 0;
         };
         TwoDRenderTargetRenderer.prototype.initFrameBuffer = function () {
-            var frameBuffer = this.frameBufferOperator, gl = wd.DeviceManager.getInstance().gl;
+            var frameBuffer = this.frameBufferOperator;
             this.frameBuffer = frameBuffer.createFrameBuffer();
-            this.renderBuffer = frameBuffer.createRenderBuffer();
             frameBuffer.bindFrameBuffer(this.frameBuffer);
-            frameBuffer.attachTexture(gl.TEXTURE_2D, this.texture.glTexture);
-            frameBuffer.attachRenderBuffer("DEPTH_ATTACHMENT", this.renderBuffer);
+            this.setFrameBufferTexture();
+            this.createAndAttachDepthBuffer();
             frameBuffer.check();
             frameBuffer.unBindAll();
         };
@@ -25496,7 +25520,7 @@ var wd;
         TwoDRenderTargetRenderer.prototype.disposeFrameBuffer = function () {
             var gl = wd.DeviceManager.getInstance().gl;
             gl.deleteFramebuffer(this.frameBuffer);
-            gl.deleteRenderbuffer(this.renderBuffer);
+            this.deleteRenderBuffer();
         };
         __decorate([
             wd.virtual
@@ -25504,6 +25528,15 @@ var wd;
         __decorate([
             wd.virtual
         ], TwoDRenderTargetRenderer.prototype, "createCamera", null);
+        __decorate([
+            wd.virtual
+        ], TwoDRenderTargetRenderer.prototype, "setFrameBufferTexture", null);
+        __decorate([
+            wd.virtual
+        ], TwoDRenderTargetRenderer.prototype, "createAndAttachDepthBuffer", null);
+        __decorate([
+            wd.virtual
+        ], TwoDRenderTargetRenderer.prototype, "deleteRenderBuffer", null);
         __decorate([
             wd.require(function (renderList, renderer, camera) {
                 wd.assert(!!camera, wd.Log.info.FUNC_SHOULD("pass param->camera"));
@@ -25687,6 +25720,33 @@ var wd;
             camera.transform.lookAt(0, 0, 0);
             camera.init();
             return camera;
+        };
+        TwoDShadowMapRenderTargetRenderer.prototype.setFrameBufferTexture = function () {
+            if (wd.GPUDetector.getInstance().extensionDepthTexture) {
+                var frameBuffer = this.frameBufferOperator, gl = wd.DeviceManager.getInstance().gl;
+                frameBuffer.attachTexture(gl.TEXTURE_2D, this._createEmptyColorTexture(), wd.EFrameBufferAttachType.COLOR_ATTACHMENT0);
+                frameBuffer.attachTexture(gl.TEXTURE_2D, this.texture.glTexture, wd.EFrameBufferAttachType.DEPTH_ATTACHMENT);
+                return;
+            }
+            _super.prototype.setFrameBufferTexture.call(this);
+        };
+        TwoDShadowMapRenderTargetRenderer.prototype.createAndAttachDepthBuffer = function () {
+            if (wd.GPUDetector.getInstance().extensionDepthTexture) {
+                return;
+            }
+            _super.prototype.createAndAttachDepthBuffer.call(this);
+        };
+        TwoDShadowMapRenderTargetRenderer.prototype.deleteRenderBuffer = function () {
+            if (wd.GPUDetector.getInstance().extensionDepthTexture) {
+                return;
+            }
+            _super.prototype.deleteRenderBuffer.call(this);
+        };
+        TwoDShadowMapRenderTargetRenderer.prototype._createEmptyColorTexture = function () {
+            var gl = wd.DeviceManager.getInstance().gl, colorTexture = gl.createTexture();
+            gl.bindTexture(gl.TEXTURE_2D, colorTexture);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.texture.width, this.texture.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+            return colorTexture;
         };
         return TwoDShadowMapRenderTargetRenderer;
     }(wd.TwoDRenderTargetRenderer));
@@ -26001,7 +26061,7 @@ var wd;
             wd.Director.getInstance().scene.unUseShader();
         };
         ShadowMapRenderTargetRendererUtils.prototype.renderRenderer = function (renderer) {
-            renderer.webglState = wd.BuildShadowMapState.create();
+            this.setWebglState(renderer);
             renderer.render();
         };
         return ShadowMapRenderTargetRendererUtils;
@@ -26020,6 +26080,9 @@ var wd;
             obj.initWhenCreate();
             return obj;
         };
+        CubemapShadowMapRenderTargetRendererUtils.prototype.setWebglState = function (renderer) {
+            renderer.webglState = wd.BuildCubemapShadowMapState.create();
+        };
         return CubemapShadowMapRenderTargetRendererUtils;
     }(wd.ShadowMapRenderTargetRendererUtils));
     wd.CubemapShadowMapRenderTargetRendererUtils = CubemapShadowMapRenderTargetRendererUtils;
@@ -26035,6 +26098,9 @@ var wd;
             var obj = new this(light, texture);
             obj.initWhenCreate();
             return obj;
+        };
+        TwoDShadowMapRenderTargetRendererUtils.prototype.setWebglState = function (renderer) {
+            renderer.webglState = wd.BuildTwoDShadowMapState.create();
         };
         return TwoDShadowMapRenderTargetRendererUtils;
     }(wd.ShadowMapRenderTargetRendererUtils));
@@ -26169,7 +26235,7 @@ var wd;
         };
         WebGLRenderer.prototype._buildOpaqueCommandSortId = function (opaqueCommand) {
             var target = opaqueCommand.target, targetMaterial = opaqueCommand.material;
-            opaqueCommand.sortId = ((target.renderGroup << RENDER_GROUP_MOVE_LEFT_BIT) + (target.renderPriority << RENDER_PRIORITY_MOVE_LEFT_BIT) + (this._buildShaderSortId(targetMaterial.shader) << SHADER_ID_MOVE_LEFT_BIT) + (this._mapEntityIdToRenderId(this._getTargetTexture(targetMaterial), TEXTURE_ID_MAX))) * BUFFER_ID_MAX
+            opaqueCommand.sortId = ((target.renderGroup << RENDER_GROUP_MOVE_LEFT_BIT) | (target.renderPriority << RENDER_PRIORITY_MOVE_LEFT_BIT) | (this._buildShaderSortId(targetMaterial.shader) << SHADER_ID_MOVE_LEFT_BIT) | (this._mapEntityIdToRenderId(this._getTargetTexture(targetMaterial), TEXTURE_ID_MAX))) * BUFFER_ID_MAX
                 + (this._mapEntityIdToRenderId(this._getTargetBuffer(targetMaterial), BUFFER_ID_MAX));
         };
         WebGLRenderer.prototype._buildShaderSortId = function (shader) {
@@ -26295,10 +26361,6 @@ var wd;
         function BuildShadowMapState() {
             _super.apply(this, arguments);
         }
-        BuildShadowMapState.create = function () {
-            var obj = new this();
-            return obj;
-        };
         BuildShadowMapState.prototype.setState = function (material) {
             var deviceManager = wd.DeviceManager.getInstance();
             deviceManager.side = this.getSide(material);
@@ -26307,6 +26369,43 @@ var wd;
         return BuildShadowMapState;
     }(wd.WebGLState));
     wd.BuildShadowMapState = BuildShadowMapState;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var BuildTwoDShadowMapState = (function (_super) {
+        __extends(BuildTwoDShadowMapState, _super);
+        function BuildTwoDShadowMapState() {
+            _super.apply(this, arguments);
+        }
+        BuildTwoDShadowMapState.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        BuildTwoDShadowMapState.prototype.setState = function (material) {
+            var deviceManager = wd.DeviceManager.getInstance();
+            _super.prototype.setState.call(this, material);
+            if (wd.GPUDetector.getInstance().extensionDepthTexture) {
+                deviceManager.setColorWrite(false, false, false, false);
+            }
+        };
+        return BuildTwoDShadowMapState;
+    }(wd.BuildShadowMapState));
+    wd.BuildTwoDShadowMapState = BuildTwoDShadowMapState;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var BuildCubemapShadowMapState = (function (_super) {
+        __extends(BuildCubemapShadowMapState, _super);
+        function BuildCubemapShadowMapState() {
+            _super.apply(this, arguments);
+        }
+        BuildCubemapShadowMapState.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        return BuildCubemapShadowMapState;
+    }(wd.BuildShadowMapState));
+    wd.BuildCubemapShadowMapState = BuildCubemapShadowMapState;
 })(wd || (wd = {}));
 var wd;
 (function (wd) {
@@ -26492,7 +26591,6 @@ var wd;
             var gl = wd.DeviceManager.getInstance().gl, isNeed32Bits = this._checkIsNeed32Bits(data, type), typedData = this._convertToTypedArray(isNeed32Bits, data);
             gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffer);
             this.resetBufferData("ELEMENT_ARRAY_BUFFER", typedData, offset);
-            wd.BufferTable.resetBindedElementBuffer();
             this._saveData(typedData, this._getType(isNeed32Bits, type), wd.EBufferUsage.DYNAMIC_DRAW);
             return this;
         };
@@ -26507,12 +26605,17 @@ var wd;
                 }
                 return false;
             }
-            for (var _i = 0, indices_1 = indices; _i < indices_1.length; _i++) {
-                var indice = indices_1[_i];
-                if (indice > 65535) {
-                    isNeed32Bits = true;
-                    break;
+            if (wd.GPUDetector.getInstance().extensionUintIndices) {
+                for (var _i = 0, indices_1 = indices; _i < indices_1.length; _i++) {
+                    var indice = indices_1[_i];
+                    if (indice > 65535) {
+                        isNeed32Bits = true;
+                        break;
+                    }
                 }
+            }
+            else {
+                isNeed32Bits = false;
             }
             return isNeed32Bits;
         };
@@ -26593,7 +26696,6 @@ var wd;
             var gl = wd.DeviceManager.getInstance().gl, typedData = this._convertToTypedArray(data, type);
             gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
             this.resetBufferData("ARRAY_BUFFER", typedData, offset);
-            wd.BufferTable.resetBindedArrayBuffer();
             this._saveData(typedData, size, type, wd.EBufferUsage.DYNAMIC_DRAW);
             return this;
         };
@@ -26665,7 +26767,7 @@ var wd;
             wd.ProgramTable.lastUsedProgram = this;
             wd.DeviceManager.getInstance().gl.useProgram(this.glProgram);
             this._sender.disableVertexAttribArray();
-            wd.BufferTable.lastBindedArrayBufferArr = null;
+            wd.BufferTable.lastBindedArrayBufferListUidStr = null;
         };
         Program.prototype.getAttribLocation = function (name) {
             var pos = null, gl = wd.DeviceManager.getInstance().gl;
@@ -26725,13 +26827,13 @@ var wd;
                     break;
             }
         };
-        Program.prototype.sendAttributeData = function (name, type, data) {
+        Program.prototype.sendAttributeBuffer = function (name, type, buffer) {
             var pos = null;
             pos = this.getAttribLocation(name);
             if (pos === -1) {
                 return;
             }
-            this._sender.addBufferToToSendList(pos, data);
+            this._sender.addBufferToToSendList(pos, buffer);
         };
         Program.prototype.sendStructureData = function (name, type, data) {
             this.sendUniformData(name, type, data);
@@ -26772,8 +26874,8 @@ var wd;
         Program.prototype.sendSampleArray = function (name, data) {
             this._sender.sendSampleArray(name, data);
         };
-        Program.prototype.sendAllBufferData = function () {
-            this._sender.sendAllBufferData();
+        Program.prototype.sendAllBufferData = function (vaoManager) {
+            this._sender.sendAllBufferData(vaoManager);
             this._sender.clearBufferList();
         };
         Program.prototype.initWithShader = function (shader) {
@@ -26805,11 +26907,11 @@ var wd;
             this._sender.clearAllCache();
         };
         __decorate([
-            wd.require(function (name, type, data) {
-                wd.assert(data instanceof wd.ArrayBuffer, wd.Log.info.FUNC_MUST_BE("ArrayBuffer"));
+            wd.require(function (name, type, buffer) {
+                wd.assert(buffer instanceof wd.ArrayBuffer, wd.Log.info.FUNC_MUST_BE("ArrayBuffer"));
                 wd.assert(type === wd.EVariableType.BUFFER, wd.Log.info.FUNC_SHOULD("type", "be EVariableType.BUFFER, but actual is " + type));
             })
-        ], Program.prototype, "sendAttributeData", null);
+        ], Program.prototype, "sendAttributeBuffer", null);
         return Program;
     }(wd.Entity));
     wd.Program = Program;
@@ -26823,6 +26925,7 @@ var wd;
             this._vertexAttribHistory = [];
             this._getUniformLocationCache = {};
             this._toSendBufferArr = [];
+            this._toSendBuffersUidStr = "";
             this._program = program;
         }
         GLSLDataSender.create = function (program) {
@@ -26997,18 +27100,25 @@ var wd;
         };
         GLSLDataSender.prototype.addBufferToToSendList = function (pos, buffer) {
             this._toSendBufferArr[pos] = buffer;
+            this._toSendBuffersUidStr += String(buffer.uid);
         };
-        GLSLDataSender.prototype.sendAllBufferData = function () {
+        GLSLDataSender.prototype.sendAllBufferData = function (vaoManager) {
             var toSendBufferArr = this._toSendBufferArr;
-            for (var i = 0, len = toSendBufferArr.length; i < len; i++) {
-                var buffer = toSendBufferArr[i];
-                if (buffer) {
-                    this.sendBuffer(i, buffer);
+            if (vaoManager) {
+                vaoManager.sendAllBufferData(this._toSendBuffersUidStr, toSendBufferArr);
+                return;
+            }
+            for (var pos = 0, len = toSendBufferArr.length; pos < len; pos++) {
+                var buffer = toSendBufferArr[pos];
+                if (!buffer) {
+                    continue;
                 }
+                this.sendBuffer(pos, buffer);
             }
         };
         GLSLDataSender.prototype.clearBufferList = function () {
             this._toSendBufferArr = [];
+            this._toSendBuffersUidStr = "";
         };
         GLSLDataSender.prototype.sendBuffer = function (pos, buffer) {
             var gl = wd.DeviceManager.getInstance().gl;
@@ -27063,20 +27173,10 @@ var wd;
                 wd.assert(!wd.ArrayUtils.hasRepeatItems(this._toSendBufferArr), wd.Log.info.FUNC_SHOULD_NOT("_toSendBufferArr", "has repeat buffer"));
             }),
             wd.cache(function () {
-                var toSendBufferArr = this._toSendBufferArr, lastBindedArrayBufferArr = wd.BufferTable.lastBindedArrayBufferArr;
-                if (!lastBindedArrayBufferArr) {
-                    return false;
-                }
-                for (var i = 0, len = toSendBufferArr.length; i < len; i++) {
-                    var buffer = toSendBufferArr[i];
-                    if (buffer && buffer !== lastBindedArrayBufferArr[i]) {
-                        return false;
-                    }
-                }
-                return true;
+                return wd.BufferTable.lastBindedArrayBufferListUidStr === this._toSendBuffersUidStr;
             }, function () {
             }, function () {
-                wd.BufferTable.lastBindedArrayBufferArr = this._toSendBufferArr;
+                wd.BufferTable.lastBindedArrayBufferListUidStr = this._toSendBuffersUidStr;
             })
         ], GLSLDataSender.prototype, "sendAllBufferData", null);
         return GLSLDataSender;
@@ -27090,6 +27190,7 @@ var wd;
             this._webglState = null;
             this.drawMode = wd.EDrawMode.TRIANGLES;
             this.blend = false;
+            this.vaoManager = null;
         }
         Object.defineProperty(RenderCommand.prototype, "webglState", {
             get: function () {
@@ -27654,8 +27755,6 @@ var wd;
         };
         FrameBuffer.prototype.unBindAll = function () {
             var gl = this.gl;
-            gl.bindTexture(this._glTarget, null);
-            wd.TextureCache.clearAllBindTextureUnitCache();
             gl.bindFramebuffer(gl.FRAMEBUFFER, null);
             gl.bindRenderbuffer(gl.RENDERBUFFER, null);
         };
@@ -27667,9 +27766,10 @@ var wd;
             var gl = this.gl, renderBuffer = gl.createRenderbuffer();
             return renderBuffer;
         };
-        FrameBuffer.prototype.attachTexture = function (glTarget, texture) {
+        FrameBuffer.prototype.attachTexture = function (glTarget, texture, attachType) {
+            if (attachType === void 0) { attachType = wd.EFrameBufferAttachType.COLOR_ATTACHMENT0; }
             var gl = this.gl;
-            gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, glTarget, texture, 0);
+            gl.framebufferTexture2D(gl.FRAMEBUFFER, gl[attachType], glTarget, texture, 0);
             this._glTarget = glTarget;
         };
         FrameBuffer.prototype.attachRenderBuffer = function (type, renderBuffer) {
@@ -27692,7 +27792,6 @@ var wd;
         ], FrameBuffer.prototype, "restoreViewport", null);
         __decorate([
             wd.require(function () {
-                wd.assert(this._glTarget !== null, wd.Log.info.FUNC_SHOULD("attachTexture before"));
             })
         ], FrameBuffer.prototype, "unBindAll", null);
         __decorate([
@@ -27703,6 +27802,14 @@ var wd;
         return FrameBuffer;
     }());
     wd.FrameBuffer = FrameBuffer;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    (function (EFrameBufferAttachType) {
+        EFrameBufferAttachType[EFrameBufferAttachType["COLOR_ATTACHMENT0"] = "COLOR_ATTACHMENT0"] = "COLOR_ATTACHMENT0";
+        EFrameBufferAttachType[EFrameBufferAttachType["DEPTH_ATTACHMENT"] = "DEPTH_ATTACHMENT"] = "DEPTH_ATTACHMENT";
+    })(wd.EFrameBufferAttachType || (wd.EFrameBufferAttachType = {}));
+    var EFrameBufferAttachType = wd.EFrameBufferAttachType;
 })(wd || (wd = {}));
 var wd;
 (function (wd) {
@@ -29537,7 +29644,7 @@ var wd;
         CustomShaderLib.prototype.sendShaderVariables = function (program, cmd, material) {
             var shader = this.shader;
             shader.attributes.forEach(function (attribute, name) {
-                wd.CustomShaderLibUtils.sendAttributeDataWithSemantic(name, attribute.type, attribute.value, program, cmd);
+                wd.CustomShaderLibUtils.sendAttributeBufferWithSemantic(name, attribute.type, attribute.value, program, cmd);
             });
             shader.uniforms.forEach(function (uniform, name) {
                 if (uniform.type !== wd.EVariableType.SAMPLER_2D) {
@@ -29583,8 +29690,8 @@ var wd;
             vs && this.setVsSource(vs);
             fs && this.setFsSource(fs);
         };
-        EngineShaderLib.prototype.sendAttributeData = function (program, name, data) {
-            program.sendAttributeData(name, wd.EVariableType.BUFFER, data);
+        EngineShaderLib.prototype.sendAttributeBuffer = function (program, name, data) {
+            program.sendAttributeBuffer(name, wd.EVariableType.BUFFER, data);
         };
         EngineShaderLib.prototype.sendUniformData = function (program, name, data) {
             program.sendUniformData(name, wd.VariableLib[name].type, data);
@@ -29767,7 +29874,7 @@ var wd;
             return obj;
         };
         EndShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
-            program.sendAllBufferData();
+            program.sendAllBufferData(quadCmd.vaoManager);
         };
         return EndShaderLib;
     }(wd.EngineShaderLib));
@@ -29797,7 +29904,7 @@ var wd;
             if (!verticeBuffer) {
                 return;
             }
-            this.sendAttributeData(program, "a_position", verticeBuffer);
+            this.sendAttributeBuffer(program, "a_position", verticeBuffer);
         };
         return VerticeCommonShaderLib;
     }(wd.EngineShaderLib));
@@ -29827,7 +29934,7 @@ var wd;
             if (!normalBuffer) {
                 return;
             }
-            this.sendAttributeData(program, "a_normal", normalBuffer);
+            this.sendAttributeBuffer(program, "a_normal", normalBuffer);
         };
         return NormalCommonShaderLib;
     }(wd.EngineShaderLib));
@@ -29850,7 +29957,7 @@ var wd;
             if (!colorBuffer) {
                 return;
             }
-            this.sendAttributeData(program, "a_color", colorBuffer);
+            this.sendAttributeBuffer(program, "a_color", colorBuffer);
             this.sendUniformData(program, "u_opacity", material.opacity);
         };
         BasicShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
@@ -29927,8 +30034,8 @@ var wd;
             if (!morphVerticeData) {
                 return;
             }
-            this.sendAttributeData(program, "a_currentFramePosition", morphVerticeData[0]);
-            this.sendAttributeData(program, "a_nextFramePosition", morphVerticeData[1]);
+            this.sendAttributeBuffer(program, "a_currentFramePosition", morphVerticeData[0]);
+            this.sendAttributeBuffer(program, "a_nextFramePosition", morphVerticeData[1]);
         };
         VerticeMorphShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
             _super.prototype.setShaderDefinition.call(this, quadCmd, material);
@@ -29960,8 +30067,8 @@ var wd;
             if (!morphNormalData) {
                 return;
             }
-            this.sendAttributeData(program, "a_currentFrameNormal", morphNormalData[0]);
-            this.sendAttributeData(program, "a_nextFrameNormal", morphNormalData[1]);
+            this.sendAttributeBuffer(program, "a_currentFrameNormal", morphNormalData[0]);
+            this.sendAttributeBuffer(program, "a_nextFrameNormal", morphNormalData[1]);
         };
         NormalMorphShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
             _super.prototype.setShaderDefinition.call(this, quadCmd, material);
@@ -30283,7 +30390,7 @@ var wd;
             if (!texCoordBuffer) {
                 return;
             }
-            this.sendAttributeData(program, "a_texCoord", texCoordBuffer);
+            this.sendAttributeBuffer(program, "a_texCoord", texCoordBuffer);
             mapList = material.mapList;
             map0 = mapList.getChild(0);
             this.sendUniformData(program, "u_map0SourceRegion", map0.sourceRegionForGLSL);
@@ -30558,7 +30665,7 @@ var wd;
             if (!texCoordBuffer) {
                 return;
             }
-            this.sendAttributeData(program, "a_texCoord", texCoordBuffer);
+            this.sendAttributeBuffer(program, "a_texCoord", texCoordBuffer);
         };
         CommonLightMapShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
             _super.prototype.setShaderDefinition.call(this, quadCmd, material);
@@ -30692,7 +30799,7 @@ var wd;
             if (!tangentBuffer) {
                 return;
             }
-            this.sendAttributeData(program, "a_tangent", tangentBuffer);
+            this.sendAttributeBuffer(program, "a_tangent", tangentBuffer);
         };
         NormalMapShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
             _super.prototype.setShaderDefinition.call(this, quadCmd, material);
@@ -30842,10 +30949,18 @@ var wd;
             program.sendMatrix4("u_vpMatrixFromLight", quadCmd.vMatrix.applyMatrix(quadCmd.pMatrix, true));
         };
         BuildTwoDShadowMapShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
+            var fs = null;
             _super.prototype.setShaderDefinition.call(this, quadCmd, material);
             this.addUniformVariable([
                 "u_vpMatrixFromLight"
             ]);
+            if (wd.GPUDetector.getInstance().extensionDepthTexture) {
+                fs = this.getFsChunk("buildTwoDShadowMap_depthMap");
+            }
+            else {
+                fs = this.getFsChunk("buildTwoDShadowMap_packDepth");
+            }
+            this.fsSourceBody = fs.body;
         };
         return BuildTwoDShadowMapShaderLib;
     }(wd.BuildShadowMapShaderLib));
@@ -30978,6 +31093,18 @@ var wd;
                 program.sendVector3("u_twoDLightPos[" + index + "]", light.position);
             });
         };
+        TwoDShadowMapShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
+            var fs = null;
+            _super.prototype.setShaderDefinition.call(this, quadCmd, material);
+            if (wd.GPUDetector.getInstance().extensionDepthTexture) {
+                fs = this.getFsChunk("twoDShadowMap_depthMap");
+            }
+            else {
+                fs = this.getFsChunk("twoDShadowMap_unpackDepth");
+            }
+            this.fsSourceFuncDeclare += fs.funcDeclare;
+            this.fsSourceFuncDefine += fs.funcDefine;
+        };
         return TwoDShadowMapShaderLib;
     }(wd.ShadowMapShaderLib));
     wd.TwoDShadowMapShaderLib = TwoDShadowMapShaderLib;
@@ -31056,8 +31183,8 @@ var wd;
                 program.sendUniformData(name, type, this._getUniformData(value, cmd));
             }
         };
-        CustomShaderLibUtils.sendAttributeDataWithSemantic = function (name, type, value, program, cmd) {
-            program.sendAttributeData(name, this._getAttributeType(type), this._getAttributeData(value, type, cmd));
+        CustomShaderLibUtils.sendAttributeBufferWithSemantic = function (name, type, value, program, cmd) {
+            program.sendAttributeBuffer(name, this._getAttributeType(type), this._getAttributeData(value, type, cmd));
         };
         CustomShaderLibUtils._sendStructureData = function (name, data, program) {
             for (var fieldName in data) {
@@ -32830,9 +32957,11 @@ var wd;
             this.repeatRegion = wd.RectRegion.create(0, 0, 1, 1);
             this.sourceRegion = null;
             this.sourceRegionMapping = wd.ETextureSourceRegionMapping.CANVAS;
+            this.packAlignment = 4;
+            this.unpackAlignment = 4;
             this.flipY = true;
             this.premultiplyAlpha = false;
-            this.unpackAlignment = 4;
+            this.colorspaceConversion = wd.DeviceManager.getInstance().gl.BROWSER_DEFAULT_WEBGL;
             this.wrapS = wd.ETextureWrapMode.CLAMP_TO_EDGE;
             this.wrapT = wd.ETextureWrapMode.CLAMP_TO_EDGE;
             this.magFilter = wd.ETextureFilterMode.LINEAR;
@@ -32865,19 +32994,22 @@ var wd;
         TextureAsset.prototype.clone = function () {
             return wd.CloneUtils.clone(this);
         };
-        TextureAsset.prototype.cloneToCubemapTexture = function (cubemapFaceTexture) {
-            cubemapFaceTexture.generateMipmaps = this.generateMipmaps;
-            cubemapFaceTexture.minFilter = this.minFilter;
-            cubemapFaceTexture.magFilter = this.magFilter;
-            cubemapFaceTexture.width = this.width;
-            cubemapFaceTexture.height = this.height;
-            cubemapFaceTexture.wrapS = this.wrapS;
-            cubemapFaceTexture.wrapT = this.wrapT;
-            cubemapFaceTexture.anisotropy = this.anisotropy;
-            cubemapFaceTexture.premultiplyAlpha = this.premultiplyAlpha;
-            cubemapFaceTexture.unpackAlignment = this.unpackAlignment;
-            cubemapFaceTexture.needUpdate = this.needUpdate;
-            cubemapFaceTexture.mode = wd.EEnvMapMode.BASIC;
+        TextureAsset.prototype.cloneToCubemapTexture = function (cubemapTexture) {
+            cubemapTexture.generateMipmaps = this.generateMipmaps;
+            cubemapTexture.minFilter = this.minFilter;
+            cubemapTexture.magFilter = this.magFilter;
+            cubemapTexture.width = this.width;
+            cubemapTexture.height = this.height;
+            cubemapTexture.wrapS = this.wrapS;
+            cubemapTexture.wrapT = this.wrapT;
+            cubemapTexture.anisotropy = this.anisotropy;
+            cubemapTexture.premultiplyAlpha = this.premultiplyAlpha;
+            cubemapTexture.flipY = false;
+            cubemapTexture.unpackAlignment = this.unpackAlignment;
+            cubemapTexture.packAlignment = this.packAlignment;
+            cubemapTexture.colorspaceConversion = this.colorspaceConversion;
+            cubemapTexture.needUpdate = this.needUpdate;
+            cubemapTexture.mode = wd.EEnvMapMode.BASIC;
         };
         TextureAsset.prototype.cloneTo = function (texture) {
             wd.Log.error(!texture, wd.Log.info.FUNC_MUST_DEFINE("texture"));
@@ -32900,6 +33032,8 @@ var wd;
             texture.premultiplyAlpha = this.premultiplyAlpha;
             texture.flipY = this.flipY;
             texture.unpackAlignment = this.unpackAlignment;
+            texture.packAlignment = this.packAlignment;
+            texture.colorspaceConversion = this.colorspaceConversion;
             texture.needUpdate = this.needUpdate;
             return texture;
         };
@@ -35348,7 +35482,7 @@ var wd;
             this.setColorWrite(true, true, true, true);
             gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
         };
-        DeviceManager.prototype.createGL = function (canvasId) {
+        DeviceManager.prototype.createGL = function (canvasId, contextConfig) {
             var canvas = null;
             if (canvasId) {
                 canvas = wdCb.DomQuery.create(canvasId).get(0);
@@ -35357,15 +35491,17 @@ var wd;
                 canvas = wdCb.DomQuery.create("<canvas></canvas>").prependTo("body").get(0);
             }
             this.view = wd.ViewWebGL.create(canvas);
-            this.gl = this.view.getContext();
+            this.gl = this.view.getContext(contextConfig);
         };
         DeviceManager.prototype.setScreen = function () {
-            var screenSize = wd.Main.screenSize, x = null, y = null, width = null, height = null;
+            var screenSize = wd.Main.screenSize, x = null, y = null, width = null, height = null, styleWidth = null, styleHeight = null;
             if (screenSize === wd.EScreenSize.FULL) {
                 x = 0;
                 y = 0;
                 width = wd.root.innerWidth;
                 height = wd.root.innerHeight;
+                styleWidth = "100%";
+                styleHeight = "100%";
                 wdCb.DomQuery.create("body").css("margin", "0");
             }
             else {
@@ -35373,9 +35509,20 @@ var wd;
                 y = screenSize.y || 0;
                 width = screenSize.width || wd.root.innerWidth;
                 height = screenSize.height || wd.root.innerHeight;
+                styleWidth = width + "px";
+                styleHeight = height + "px";
             }
+            this.view.initCanvas();
             this.view.x = x;
             this.view.y = y;
+            this.view.width = width;
+            this.view.height = height;
+            this.view.styleWidth = styleWidth;
+            this.view.styleHeight = styleHeight;
+            this.setViewport(0, 0, width, height);
+        };
+        DeviceManager.prototype.setHardwareScaling = function (level) {
+            var width = this.view.width / level, height = this.view.height / level;
             this.view.width = width;
             this.view.height = height;
             this.setViewport(0, 0, width, height);
@@ -35393,6 +35540,11 @@ var wd;
                 wd.assert(wd.Main.screenSize !== null, wd.Log.info.FUNC_NOT_EXIST("Main.screenSize"));
             })
         ], DeviceManager.prototype, "setScreen", null);
+        __decorate([
+            wd.require(function (level) {
+                wd.assert(level > 0, wd.Log.info.FUNC_SHOULD("level", "> 0, but actual is " + level));
+            })
+        ], DeviceManager.prototype, "setHardwareScaling", null);
         return DeviceManager;
     }());
     wd.DeviceManager = DeviceManager;
@@ -35466,6 +35618,9 @@ var wd;
             this.extensionCompressedTextureS3TC = null;
             this.extensionTextureFilterAnisotropic = null;
             this.extensionInstancedArrays = null;
+            this.extensionUintIndices = null;
+            this.extensionDepthTexture = null;
+            this.extensionVAO = null;
             this.precision = null;
             this._isDetected = false;
         }
@@ -35491,6 +35646,9 @@ var wd;
             this.extensionCompressedTextureS3TC = this._getExtension("WEBGL_compressed_texture_s3tc");
             this.extensionTextureFilterAnisotropic = this._getExtension("EXT_texture_filter_anisotropic");
             this.extensionInstancedArrays = this._getExtension("ANGLE_instanced_arrays");
+            this.extensionUintIndices = this._getExtension("element_index_uint");
+            this.extensionDepthTexture = this._getExtension("depth_texture");
+            this.extensionVAO = this._getExtension("vao");
         };
         GPUDetector.prototype._detectCapabilty = function () {
             var gl = this.gl;
@@ -35514,6 +35672,15 @@ var wd;
                     break;
                 case "ANGLE_instanced_arrays":
                     extension = gl.getExtension("ANGLE_instanced_arrays");
+                    break;
+                case "element_index_uint":
+                    extension = this._getExtension("OES_element_index_uint") !== null;
+                    break;
+                case "depth_texture":
+                    extension = this._getExtension("WEBKIT_WEBGL_depth_texture") !== null || this._getExtension("WEBGL_depth_texture") !== null;
+                    break;
+                case "vao":
+                    extension = this._getExtension("OES_vertex_array_object");
                     break;
                 default:
                     extension = gl.getExtension(name);
@@ -35712,7 +35879,7 @@ var wd;
         });
         Object.defineProperty(ViewWebGL.prototype, "width", {
             get: function () {
-                return this._dom.width;
+                return this._dom.clientWidth;
             },
             set: function (width) {
                 this._dom.width = width;
@@ -35722,10 +35889,30 @@ var wd;
         });
         Object.defineProperty(ViewWebGL.prototype, "height", {
             get: function () {
-                return this._dom.height;
+                return this._dom.clientHeight;
             },
             set: function (height) {
                 this._dom.height = height;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(ViewWebGL.prototype, "styleWidth", {
+            get: function () {
+                return this._dom.style.width;
+            },
+            set: function (styleWidth) {
+                this._dom.style.width = styleWidth;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(ViewWebGL.prototype, "styleHeight", {
+            get: function () {
+                return this._dom.style.height;
+            },
+            set: function (styleHeight) {
+                this._dom.style.height = styleHeight;
             },
             enumerable: true,
             configurable: true
@@ -35735,7 +35922,6 @@ var wd;
                 return Number(this._dom.style.left.slice(0, -2));
             },
             set: function (x) {
-                this._dom.style.position = "absolute";
                 this._dom.style.left = x + "px";
             },
             enumerable: true,
@@ -35746,14 +35932,16 @@ var wd;
                 return Number(this._dom.style.top.slice(0, -2));
             },
             set: function (y) {
-                this._dom.style.position = "absolute";
                 this._dom.style.top = y + "px";
             },
             enumerable: true,
             configurable: true
         });
-        ViewWebGL.prototype.getContext = function () {
-            return this._dom.getContext("webgl") || this._dom.getContext("experimental-webgl");
+        ViewWebGL.prototype.initCanvas = function () {
+            this._dom.style.cssText = "position:absolute;left:0;top:0;";
+        };
+        ViewWebGL.prototype.getContext = function (contextConfig) {
+            return this._dom.getContext("webgl", contextConfig.options) || this._dom.getContext("experimental-webgl", contextConfig.options);
         };
         return ViewWebGL;
     }());
@@ -36167,7 +36355,18 @@ var wd;
         __extends(RenderTargetTexture, _super);
         function RenderTargetTexture() {
             _super.apply(this, arguments);
+            this._renderRate = 1;
         }
+        Object.defineProperty(RenderTargetTexture.prototype, "renderRate", {
+            get: function () {
+                return this._renderRate;
+            },
+            set: function (renderRate) {
+                this._renderRate = renderRate;
+            },
+            enumerable: true,
+            configurable: true
+        });
         RenderTargetTexture.prototype.initWhenCreate = function () {
             this.needUpdate = false;
             this.minFilter = wd.ETextureFilterMode.LINEAR;
@@ -36227,8 +36426,12 @@ var wd;
         TwoDRenderTargetTexture.prototype.createEmptyTexture = function () {
             var gl = wd.DeviceManager.getInstance().gl, texture = gl.createTexture();
             this.setEmptyTexture(texture);
-            gl.texImage2D(gl[this.target], 0, gl.RGBA, this.width, this.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+            this.texImageEmpty();
             this.glTexture = texture;
+        };
+        TwoDRenderTargetTexture.prototype.texImageEmpty = function () {
+            var gl = wd.DeviceManager.getInstance().gl;
+            gl.texImage2D(gl[this.target], 0, gl.RGBA, this.width, this.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
         };
         __decorate([
             wd.requireSetter(function (renderList) {
@@ -36236,6 +36439,9 @@ var wd;
             }),
             wd.cloneAttributeAsCloneable()
         ], TwoDRenderTargetTexture.prototype, "renderList", null);
+        __decorate([
+            wd.virtual
+        ], TwoDRenderTargetTexture.prototype, "texImageEmpty", null);
         return TwoDRenderTargetTexture;
     }(wd.RenderTargetTexture));
     wd.TwoDRenderTargetTexture = TwoDRenderTargetTexture;
@@ -36343,6 +36549,14 @@ var wd;
         TwoDShadowMapTexture.prototype.setTextureParameters = function (textureType, isSourcePowerOfTwo) {
             _super.prototype.setTextureParameters.call(this, textureType, isSourcePowerOfTwo);
             wd.ShadowMapTextureUtils.setTextureParameters(textureType);
+        };
+        TwoDShadowMapTexture.prototype.texImageEmpty = function () {
+            if (wd.GPUDetector.getInstance().extensionDepthTexture) {
+                var gl = wd.DeviceManager.getInstance().gl;
+                gl.texImage2D(gl[this.target], 0, gl.DEPTH_COMPONENT, this.width, this.height, 0, gl.DEPTH_COMPONENT, gl.UNSIGNED_SHORT, null);
+                return;
+            }
+            _super.prototype.texImageEmpty.call(this);
         };
         __decorate([
             wd.require(function (unit) {
@@ -36496,9 +36710,11 @@ var wd;
             this.source = null;
             this.repeatRegion = null;
             this.sourceRegionMapping = null;
+            this.packAlignment = null;
+            this.unpackAlignment = null;
             this.flipY = null;
             this.premultiplyAlpha = null;
-            this.unpackAlignment = null;
+            this.colorspaceConversion = null;
             this.type = null;
             this.mipmaps = null;
             this.anisotropy = null;
@@ -36553,9 +36769,11 @@ var wd;
         };
         BasicTexture.prototype.update = function () {
             var gl = wd.DeviceManager.getInstance().gl, isSourcePowerOfTwo = this.isSourcePowerOfTwo();
+            gl.pixelStorei(gl.PACK_ALIGNMENT, this.packAlignment);
+            gl.pixelStorei(gl.UNPACK_ALIGNMENT, this.unpackAlignment);
             gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, this.flipY);
             gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, this.premultiplyAlpha);
-            gl.pixelStorei(gl.UNPACK_ALIGNMENT, this.unpackAlignment);
+            gl.pixelStorei(gl.UNPACK_COLORSPACE_CONVERSION_WEBGL, this.colorspaceConversion);
             if (this.needClampMaxSize()) {
                 this.clampToMaxSize();
                 isSourcePowerOfTwo = this.isSourcePowerOfTwo();
@@ -36646,13 +36864,19 @@ var wd;
         ], BasicTexture.prototype, "sourceRegionMapping", void 0);
         __decorate([
             wd.cloneAttributeAsBasicType()
+        ], BasicTexture.prototype, "packAlignment", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], BasicTexture.prototype, "unpackAlignment", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
         ], BasicTexture.prototype, "flipY", void 0);
         __decorate([
             wd.cloneAttributeAsBasicType()
         ], BasicTexture.prototype, "premultiplyAlpha", void 0);
         __decorate([
             wd.cloneAttributeAsBasicType()
-        ], BasicTexture.prototype, "unpackAlignment", void 0);
+        ], BasicTexture.prototype, "colorspaceConversion", void 0);
         __decorate([
             wd.cloneAttributeAsBasicType()
         ], BasicTexture.prototype, "type", void 0);
@@ -37379,26 +37603,21 @@ var wd;
             this._indexBuffer = null;
             this._vertexBuffer = null;
             this._shader = null;
-            this._isRendered = false;
+            this._vaoManager = !!wd.GPUDetector.getInstance().extensionVAO ? wd.VAOManager.create() : null;
         }
-        ProceduralRenderTargetRenderer.prototype.needRender = function () {
-            if (this._isRendered) {
-                return false;
-            }
-            this._isRendered = true;
-            return true;
-        };
         ProceduralRenderTargetRenderer.prototype.init = function () {
             _super.prototype.init.call(this);
             this._initBuffer();
             this._shader = this.createShader();
             this._shader.init();
+            this._vaoManager && this._vaoManager.init();
         };
         ProceduralRenderTargetRenderer.prototype.dispose = function () {
             _super.prototype.dispose.call(this);
             this._indexBuffer.dispose();
             this._vertexBuffer.dispose();
             this._shader.dispose();
+            this._vaoManager && this._vaoManager.dispose();
         };
         ProceduralRenderTargetRenderer.prototype.initFrameBuffer = function () {
             var frameBuffer = this.frameBufferOperator, gl = wd.DeviceManager.getInstance().gl;
@@ -37458,11 +37677,9 @@ var wd;
             command.vertexBuffer = this._vertexBuffer;
             command.indexBuffer = this._indexBuffer;
             command.shader = this._shader;
+            command.vaoManager = this._vaoManager;
             return command;
         };
-        __decorate([
-            wd.virtual
-        ], ProceduralRenderTargetRenderer.prototype, "needRender", null);
         return ProceduralRenderTargetRenderer;
     }(wd.RenderTargetRenderer));
     wd.ProceduralRenderTargetRenderer = ProceduralRenderTargetRenderer;
@@ -37482,6 +37699,10 @@ var wd;
             enumerable: true,
             configurable: true
         });
+        ProceduralTexture.prototype.initWhenCreate = function () {
+            _super.prototype.initWhenCreate.call(this);
+            this.renderRate = 0;
+        };
         ProceduralTexture.prototype.getSamplerName = function (unit) {
             return this.getSamplerNameByVariableData(unit, wd.EVariableType.SAMPLER_2D);
         };
@@ -37505,8 +37726,8 @@ var wd;
             return obj;
         };
         CommonProceduralShaderLib.prototype.sendShaderVariables = function (program, cmd) {
-            this.sendAttributeData(program, "a_positionVec2", cmd.vertexBuffer);
-            program.sendAllBufferData();
+            this.sendAttributeBuffer(program, "a_positionVec2", cmd.vertexBuffer);
+            program.sendAllBufferData(cmd.vaoManager);
         };
         CommonProceduralShaderLib.prototype.setShaderDefinition = function (cmd) {
             _super.prototype.setShaderDefinition.call(this, cmd);
@@ -37562,9 +37783,6 @@ var wd;
             var obj = new this(texture);
             obj.initWhenCreate();
             return obj;
-        };
-        FireProceduralRenderTargetRenderer.prototype.needRender = function () {
-            return true;
         };
         FireProceduralRenderTargetRenderer.prototype.createShader = function () {
             var shader = wd.CommonProceduralShader.create();
@@ -37648,6 +37866,10 @@ var wd;
             enumerable: true,
             configurable: true
         });
+        FireProceduralTexture.prototype.initWhenCreate = function () {
+            _super.prototype.initWhenCreate.call(this);
+            this.renderRate = 1;
+        };
         FireProceduralTexture.prototype.init = function () {
             _super.prototype.init.call(this);
             wd.Director.getInstance().scene.addProceduralRenderTargetRenderer(wd.FireProceduralRenderTargetRenderer.create(this));
@@ -38205,12 +38427,6 @@ var wd;
             obj.initWhenCreate();
             return obj;
         };
-        CustomProceduralRenderTargetRenderer.prototype.needRender = function () {
-            if (this.texture.isAnimate) {
-                return true;
-            }
-            return _super.prototype.needRender.call(this);
-        };
         CustomProceduralRenderTargetRenderer.prototype.createShader = function () {
             var shader = wd.CustomProceduralShader.create(this.texture);
             shader.addLib(wd.CustomProceduralShaderLib.create(this.texture));
@@ -38229,7 +38445,6 @@ var wd;
             this.mapManager = wd.MapManager.create();
             this.uniformMap = wdCb.Hash.create();
             this.fsSource = null;
-            this.isAnimate = false;
         }
         CustomProceduralTexture.create = function () {
             var obj = new this();
@@ -38244,6 +38459,7 @@ var wd;
         CustomProceduralTexture.prototype.read = function (shaderConfigId) {
             var shaderConfig = wd.LoaderManager.getInstance().get(shaderConfigId), uniforms = shaderConfig.uniforms;
             this.fsSource = wd.LoaderManager.getInstance().get(shaderConfig.fsSourceId);
+            this.renderRate = shaderConfig.renderRate || 0;
             for (var name_2 in uniforms) {
                 if (uniforms.hasOwnProperty(name_2)) {
                     var uniform = uniforms[name_2];
@@ -38271,9 +38487,6 @@ var wd;
         __decorate([
             wd.cloneAttributeAsBasicType()
         ], CustomProceduralTexture.prototype, "fsSource", void 0);
-        __decorate([
-            wd.cloneAttributeAsBasicType()
-        ], CustomProceduralTexture.prototype, "isAnimate", void 0);
         __decorate([
             wd.require(function (shaderConfigId) {
                 var shaderConfig = wd.LoaderManager.getInstance().get(shaderConfigId), uniforms = shaderConfig.uniforms;
@@ -38858,6 +39071,255 @@ var wd;
 })(wd || (wd = {}));
 var wd;
 (function (wd) {
+    var ActionEngine = (function (_super) {
+        __extends(ActionEngine, _super);
+        function ActionEngine() {
+            _super.apply(this, arguments);
+        }
+        ActionEngine.getInstance = function () {
+            if (this._instance === null) {
+                this._instance = new this();
+            }
+            return this._instance;
+        };
+        ActionEngine.prototype.update = function (elapsed) {
+            var removeQueue = [];
+            this.list.forEach(function (child) {
+                if (child.isFinish) {
+                    removeQueue.push(child);
+                    return;
+                }
+                if (child.isStop || child.isPause) {
+                    return;
+                }
+                child.update(elapsed);
+            });
+            for (var _i = 0, removeQueue_1 = removeQueue; _i < removeQueue_1.length; _i++) {
+                var child = removeQueue_1[_i];
+                child.entityObject.removeComponent(child);
+            }
+        };
+        ActionEngine._instance = null;
+        return ActionEngine;
+    }(wd.ComponentContainer));
+    wd.ActionEngine = ActionEngine;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var ScriptEngine = (function () {
+        function ScriptEngine() {
+            this._scriptList = wdCb.Collection.create();
+        }
+        ScriptEngine.getInstance = function () {
+            if (this._instance === null) {
+                this._instance = new this();
+            }
+            return this._instance;
+        };
+        ScriptEngine.prototype.addChild = function (entityObject, scriptName, classInstance) {
+            entityObject.scriptManager.addChild(scriptName, classInstance);
+            this._scriptList.addChild(classInstance);
+        };
+        ScriptEngine.prototype.removeChild = function (entityObject, classInstance) {
+            entityObject.scriptManager.removeChild(classInstance);
+            this._scriptList.removeChild(classInstance);
+        };
+        ScriptEngine.prototype.removeAllChildren = function () {
+            this._scriptList.removeAllChildren();
+        };
+        ScriptEngine.prototype.findScript = function (entityObject, scriptName) {
+            return entityObject.scriptManager.getChild(scriptName);
+        };
+        ScriptEngine.prototype.execEntityObjectScript = function (entityObject, method) {
+            entityObject.scriptManager.execScript(method);
+        };
+        ScriptEngine.prototype.execEntityObjectScriptOnlyOnce = function (entityObject, method) {
+            entityObject.scriptManager.execScriptOnlyOnce(method);
+        };
+        ScriptEngine.prototype.execEntityObjectScriptWithData = function (entityObject, method, data) {
+            entityObject.scriptManager.execScriptWithData(method, data);
+        };
+        ScriptEngine.prototype.execScript = function (method) {
+            this._scriptList.forEach(function (script) {
+                if (script[method]) {
+                    script[method]();
+                }
+            });
+        };
+        ScriptEngine.prototype.execScriptWithData = function (method, data) {
+            this._scriptList.forEach(function (script) {
+                if (script[method]) {
+                    script[method](data);
+                }
+            });
+        };
+        ScriptEngine.prototype.execEntityObjectEventScriptWithData = function (entityObject, method, data) {
+            entityObject.scriptManager.execEventScriptWithData(method, data);
+        };
+        ScriptEngine._instance = null;
+        return ScriptEngine;
+    }());
+    wd.ScriptEngine = ScriptEngine;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var LODEngine = (function (_super) {
+        __extends(LODEngine, _super);
+        function LODEngine() {
+            _super.apply(this, arguments);
+        }
+        LODEngine.getInstance = function () {
+            if (this._instance === null) {
+                this._instance = new this();
+            }
+            return this._instance;
+        };
+        LODEngine.prototype.update = function (elapsed) {
+            this.list.forEach(function (child) {
+                child.update(elapsed);
+            });
+        };
+        LODEngine._instance = null;
+        return LODEngine;
+    }(wd.ComponentContainer));
+    wd.LODEngine = LODEngine;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var SpacePartitionEngine = (function (_super) {
+        __extends(SpacePartitionEngine, _super);
+        function SpacePartitionEngine() {
+            _super.apply(this, arguments);
+        }
+        SpacePartitionEngine.getInstance = function () {
+            if (this._instance === null) {
+                this._instance = new this();
+            }
+            return this._instance;
+        };
+        SpacePartitionEngine.prototype.update = function (elapsed) {
+            this.list.forEach(function (child) {
+                child.update(elapsed);
+            });
+        };
+        SpacePartitionEngine._instance = null;
+        return SpacePartitionEngine;
+    }(wd.ComponentContainer));
+    wd.SpacePartitionEngine = SpacePartitionEngine;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var AnimationEngine = (function (_super) {
+        __extends(AnimationEngine, _super);
+        function AnimationEngine() {
+            _super.apply(this, arguments);
+        }
+        AnimationEngine.getInstance = function () {
+            if (this._instance === null) {
+                this._instance = new this();
+            }
+            return this._instance;
+        };
+        AnimationEngine.prototype.update = function (elapsed) {
+            this.list.forEach(function (child) {
+                child.update(elapsed);
+            });
+        };
+        AnimationEngine._instance = null;
+        return AnimationEngine;
+    }(wd.ComponentContainer));
+    wd.AnimationEngine = AnimationEngine;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var ColliderEngine = (function (_super) {
+        __extends(ColliderEngine, _super);
+        function ColliderEngine() {
+            _super.apply(this, arguments);
+            this._collisionDetector = wd.CollisionDetector.create();
+        }
+        ColliderEngine.getInstance = function () {
+            if (this._instance === null) {
+                this._instance = new this();
+            }
+            return this._instance;
+        };
+        ColliderEngine.prototype.update = function (elapsed) {
+            this.list.forEach(function (child) {
+                child.update(elapsed);
+            });
+        };
+        ColliderEngine.prototype.detect = function (elapsed) {
+            this._collisionDetector.update(elapsed);
+        };
+        ColliderEngine._instance = null;
+        return ColliderEngine;
+    }(wd.ComponentContainer));
+    wd.ColliderEngine = ColliderEngine;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var RigidBodyEngine = (function (_super) {
+        __extends(RigidBodyEngine, _super);
+        function RigidBodyEngine() {
+            _super.apply(this, arguments);
+        }
+        RigidBodyEngine.getInstance = function () {
+            if (this._instance === null) {
+                this._instance = new this();
+            }
+            return this._instance;
+        };
+        RigidBodyEngine.prototype.initBody = function () {
+            this.list.forEach(function (child) {
+                child.initBody();
+            });
+        };
+        RigidBodyEngine.prototype.initConstraint = function () {
+            this.list.forEach(function (child) {
+                child.initConstraint();
+            });
+        };
+        RigidBodyEngine._instance = null;
+        return RigidBodyEngine;
+    }(wd.ComponentContainer));
+    wd.RigidBodyEngine = RigidBodyEngine;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var UIEngine = (function (_super) {
+        __extends(UIEngine, _super);
+        function UIEngine() {
+            _super.apply(this, arguments);
+        }
+        UIEngine.getInstance = function () {
+            if (this._instance === null) {
+                this._instance = new this();
+            }
+            return this._instance;
+        };
+        UIEngine.prototype.update = function (elapsed) {
+            this.list.forEach(function (child) {
+                child.update(elapsed);
+            });
+        };
+        UIEngine.prototype.render = function () {
+            var _this = this;
+            this.list.forEach(function (ui) {
+                if (_this._isDirty(ui.entityObject))
+                    ui.render();
+            }, this);
+        };
+        UIEngine.prototype._isDirty = function (uiObject) {
+            return uiObject.getComponent(wd.UIRenderer).state === wd.EUIRendererState.DIRTY;
+        };
+        UIEngine._instance = null;
+        return UIEngine;
+    }(wd.ComponentContainer));
+    wd.UIEngine = UIEngine;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
     var ShaderChunk = (function () {
         function ShaderChunk() {
         }
@@ -38868,7 +39330,6 @@ var wd;
         ShaderChunk.basic_fragment = { top: "", define: "", varDeclare: "varying vec3 v_color;\n", funcDeclare: "", funcDefine: "", body: "vec4 totalColor = vec4(v_color, 1.0);\n", };
         ShaderChunk.basic_vertex = { top: "", define: "", varDeclare: "varying vec3 v_color;\n", funcDeclare: "", funcDefine: "", body: "v_color = a_color;\n", };
         ShaderChunk.end_basic_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "gl_FragColor = vec4(totalColor.rgb, totalColor.a * u_opacity);\n", };
-        ShaderChunk.common_envMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec3 flipNormal(vec3 normal){\n    vec3 normalForRefraction = normal;\n    normalForRefraction.y = -normalForRefraction.y;\n    normalForRefraction.z = -normalForRefraction.z;\n\n    return normalForRefraction;\n}\n", body: "", };
         ShaderChunk.common_define = { top: "", define: "#define NULL -1.0\n", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
         ShaderChunk.common_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
         ShaderChunk.common_function = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "mat2 transpose(mat2 m) {\n  return mat2(  m[0][0], m[1][0],   // new col 0\n                m[0][1], m[1][1]    // new col 1\n             );\n  }\nmat3 transpose(mat3 m) {\n  return mat3(  m[0][0], m[1][0], m[2][0],  // new col 0\n                m[0][1], m[1][1], m[2][1],  // new col 1\n                m[0][2], m[1][2], m[2][2]   // new col 1\n             );\n  }\n\nbool isRenderListEmpty(int isRenderListEmpty){\n  return isRenderListEmpty == 1;\n}\n", body: "", };
@@ -38876,6 +39337,7 @@ var wd;
         ShaderChunk.highp_fragment = { top: "precision highp float;\nprecision highp int;\n", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
         ShaderChunk.lowp_fragment = { top: "precision lowp float;\nprecision lowp int;\n", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
         ShaderChunk.mediump_fragment = { top: "precision mediump float;\nprecision mediump int;\n", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
+        ShaderChunk.common_envMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec3 flipNormal(vec3 normal){\n    vec3 normalForRefraction = normal;\n    normalForRefraction.y = -normalForRefraction.y;\n    normalForRefraction.z = -normalForRefraction.z;\n\n    return normalForRefraction;\n}\n", body: "", };
         ShaderChunk.lightCommon_fragment = { top: "", define: "", varDeclare: "varying vec3 v_worldPosition;\n#if POINT_LIGHTS_COUNT > 0\nstruct PointLight {\n    vec3 position;\n    vec4 color;\n    float intensity;\n\n    float range;\n    float constant;\n    float linear;\n    float quadratic;\n};\nuniform PointLight u_pointLights[POINT_LIGHTS_COUNT];\n\n#endif\n\n\n#if DIRECTION_LIGHTS_COUNT > 0\nstruct DirectionLight {\n    vec3 position;\n\n    float intensity;\n\n    vec4 color;\n};\nuniform DirectionLight u_directionLights[DIRECTION_LIGHTS_COUNT];\n#endif\n", funcDeclare: "", funcDefine: "", body: "", };
         ShaderChunk.lightCommon_vertex = { top: "", define: "", varDeclare: "varying vec3 v_worldPosition;\n#if POINT_LIGHTS_COUNT > 0\nstruct PointLight {\n    vec3 position;\n    vec4 color;\n    float intensity;\n\n    float range;\n    float constant;\n    float linear;\n    float quadratic;\n};\nuniform PointLight u_pointLights[POINT_LIGHTS_COUNT];\n\n#endif\n\n\n#if DIRECTION_LIGHTS_COUNT > 0\nstruct DirectionLight {\n    vec3 position;\n\n    float intensity;\n\n    vec4 color;\n};\nuniform DirectionLight u_directionLights[DIRECTION_LIGHTS_COUNT];\n#endif\n", funcDeclare: "", funcDefine: "", body: "v_worldPosition = vec3(mMatrix * vec4(a_position, 1.0));\n", };
         ShaderChunk.lightEnd_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "gl_FragColor = vec4(totalColor.rgb, totalColor.a * u_opacity);\n", };
@@ -38888,13 +39350,6 @@ var wd;
         ShaderChunk.multi_map_forBasic_vertex = { top: "", define: "", varDeclare: "varying vec2 v_mapCoord1;\n", funcDeclare: "", funcDefine: "", body: "vec2 sourceTexCoord1 = a_texCoord * u_map1SourceRegion.zw + u_map1SourceRegion.xy;\n\n    v_mapCoord1 = sourceTexCoord1 * u_map1RepeatRegion.zw + u_map1RepeatRegion.xy;\n", };
         ShaderChunk.skybox_fragment = { top: "", define: "", varDeclare: "varying vec3 v_dir;\n", funcDeclare: "", funcDefine: "", body: "gl_FragColor = textureCube(u_samplerCube0, v_dir);\n", };
         ShaderChunk.skybox_vertex = { top: "", define: "", varDeclare: "varying vec3 v_dir;\n", funcDeclare: "", funcDefine: "", body: "vec4 pos = u_pMatrix * mat4(mat3(u_vMatrix)) * mMatrix * vec4(a_position, 1.0);\n\n    gl_Position = pos.xyww;\n\n    v_dir = a_position;\n", };
-        ShaderChunk.basic_forBasic_envMap_fragment = { top: "", define: "", varDeclare: "varying vec3 v_dir;\n", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, v_dir);\n", };
-        ShaderChunk.basic_forBasic_envMap_vertex = { top: "", define: "", varDeclare: "varying vec3 v_dir;\n", funcDeclare: "", funcDefine: "", body: "v_dir = a_position;\n", };
-        ShaderChunk.forBasic_envMap_fragment = { top: "", define: "", varDeclare: "varying vec3 v_normal;\nvarying vec3 v_position;\n", funcDeclare: "", funcDefine: "", body: "vec3 inDir = normalize(v_position - u_cameraPos);\n", };
-        ShaderChunk.forBasic_envMap_vertex = { top: "", define: "", varDeclare: "varying vec3 v_normal;\nvarying vec3 v_position;\n", funcDeclare: "", funcDefine: "", body: "v_normal = normalize( normalMatrix * a_normal);\n    v_position = vec3(mMatrix * vec4(a_position, 1.0));\n", };
-        ShaderChunk.fresnel_forBasic_envMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "float computeFresnelRatio(vec3 inDir, vec3 normal, float refractionRatio){\n    float f = pow(1.0 - refractionRatio, 2.0) / pow(1.0 + refractionRatio, 2.0);\n    float fresnelPower = 5.0;\n    float ratio = f + (1.0 - f) * pow((1.0 - dot(inDir, normal)), fresnelPower);\n\n    return ratio / 100.0;\n}\nvec4 getEnvMapTotalColor(vec3 inDir, vec3 normal){\n    vec3 reflectDir = reflect(inDir, normal);\n    vec3 refractDir = refract(inDir, flipNormal(normal), u_refractionRatio);\n\n    vec4 reflectColor = textureCube(u_samplerCube0, reflectDir);\n    vec4 refractColor = textureCube(u_samplerCube0, refractDir);\n\n    vec4 totalColor = vec4(0.0);\n\n	if(u_reflectivity != NULL){\n        totalColor = mix(reflectColor, refractColor, u_reflectivity);\n	}\n	else{\n        totalColor = mix(reflectColor, refractColor, computeFresnelRatio(inDir, normal, u_refractionRatio));\n	}\n\n	return totalColor;\n}\n", body: "if(!isRenderListEmpty(u_isRenderListEmpty)){\n    totalColor *= getEnvMapTotalColor(inDir, normalize(v_normal));\n}\n", };
-        ShaderChunk.reflection_forBasic_envMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "if(!isRenderListEmpty(u_isRenderListEmpty)){\n    totalColor *= textureCube(u_samplerCube0, reflect(inDir, normalize(v_normal)));\n}\n", };
-        ShaderChunk.refraction_forBasic_envMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "if(!isRenderListEmpty(u_isRenderListEmpty)){\n    totalColor *= textureCube(u_samplerCube0, refract(inDir, v_normal, u_refractionRatio));\n}\n", };
         ShaderChunk.basic_forLight_envMap_fragment = { top: "", define: "", varDeclare: "varying vec3 v_basicEnvMap_dir;\n", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, v_basicEnvMap_dir);\n", };
         ShaderChunk.basic_forLight_envMap_vertex = { top: "", define: "", varDeclare: "varying vec3 v_basicEnvMap_dir;\n", funcDeclare: "", funcDefine: "", body: "v_basicEnvMap_dir = a_position;\n", };
         ShaderChunk.forLight_envMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "vec3 inDir = normalize(v_worldPosition - u_cameraPos);\n", };
@@ -38902,6 +39357,19 @@ var wd;
         ShaderChunk.fresnel_forLight_envMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "float computeFresnelRatio(vec3 inDir, vec3 normal, float refractionRatio){\n    float f = pow(1.0 - refractionRatio, 2.0) / pow(1.0 + refractionRatio, 2.0);\n    float fresnelPower = 5.0;\n    float ratio = f + (1.0 - f) * pow((1.0 - dot(inDir, normal)), fresnelPower);\n\n    return ratio / 100.0;\n}\n\nvec4 getEnvMapTotalColor(vec3 inDir, vec3 normal){\n    vec3 reflectDir = reflect(inDir, normal);\n\n/*!\n//todo why only fresnel->refraction need flip normal, but refraction don't need?\n*/\n    vec3 refractDir = refract(inDir, flipNormal(normal), u_refractionRatio);\n\n    vec4 reflectColor = textureCube(u_samplerCube0, reflectDir);\n    vec4 refractColor = textureCube(u_samplerCube0, refractDir);\n\n\n    vec4 totalColor = vec4(0.0);\n\n	if(u_reflectivity != NULL){\n        totalColor = mix(reflectColor, refractColor, u_reflectivity);\n	}\n	else{\n        totalColor = mix(reflectColor, refractColor, computeFresnelRatio(inDir, normal, u_refractionRatio));\n	}\n\n	return totalColor;\n}\n", body: "if(!isRenderListEmpty(u_isRenderListEmpty)){\n	totalColor *= getEnvMapTotalColor(inDir, normalize(getNormal()));\n}\n", };
         ShaderChunk.reflection_forLight_envMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "if(!isRenderListEmpty(u_isRenderListEmpty)){\n    totalColor *= textureCube(u_samplerCube0, reflect(inDir, normalize(getNormal())));\n}\n", };
         ShaderChunk.refraction_forLight_envMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "if(!isRenderListEmpty(u_isRenderListEmpty)){\n//    totalColor *= textureCube(u_samplerCube0, refract(inDir, flipNormalWhenRefraction(normal), u_refractionRatio));\n    totalColor *= textureCube(u_samplerCube0, refract(inDir, normal, u_refractionRatio));\n}\n", };
+        ShaderChunk.basic_forBasic_envMap_fragment = { top: "", define: "", varDeclare: "varying vec3 v_dir;\n", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, v_dir);\n", };
+        ShaderChunk.basic_forBasic_envMap_vertex = { top: "", define: "", varDeclare: "varying vec3 v_dir;\n", funcDeclare: "", funcDefine: "", body: "v_dir = a_position;\n", };
+        ShaderChunk.forBasic_envMap_fragment = { top: "", define: "", varDeclare: "varying vec3 v_normal;\nvarying vec3 v_position;\n", funcDeclare: "", funcDefine: "", body: "vec3 inDir = normalize(v_position - u_cameraPos);\n", };
+        ShaderChunk.forBasic_envMap_vertex = { top: "", define: "", varDeclare: "varying vec3 v_normal;\nvarying vec3 v_position;\n", funcDeclare: "", funcDefine: "", body: "v_normal = normalize( normalMatrix * a_normal);\n    v_position = vec3(mMatrix * vec4(a_position, 1.0));\n", };
+        ShaderChunk.fresnel_forBasic_envMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "float computeFresnelRatio(vec3 inDir, vec3 normal, float refractionRatio){\n    float f = pow(1.0 - refractionRatio, 2.0) / pow(1.0 + refractionRatio, 2.0);\n    float fresnelPower = 5.0;\n    float ratio = f + (1.0 - f) * pow((1.0 - dot(inDir, normal)), fresnelPower);\n\n    return ratio / 100.0;\n}\nvec4 getEnvMapTotalColor(vec3 inDir, vec3 normal){\n    vec3 reflectDir = reflect(inDir, normal);\n    vec3 refractDir = refract(inDir, flipNormal(normal), u_refractionRatio);\n\n    vec4 reflectColor = textureCube(u_samplerCube0, reflectDir);\n    vec4 refractColor = textureCube(u_samplerCube0, refractDir);\n\n    vec4 totalColor = vec4(0.0);\n\n	if(u_reflectivity != NULL){\n        totalColor = mix(reflectColor, refractColor, u_reflectivity);\n	}\n	else{\n        totalColor = mix(reflectColor, refractColor, computeFresnelRatio(inDir, normal, u_refractionRatio));\n	}\n\n	return totalColor;\n}\n", body: "if(!isRenderListEmpty(u_isRenderListEmpty)){\n    totalColor *= getEnvMapTotalColor(inDir, normalize(v_normal));\n}\n", };
+        ShaderChunk.reflection_forBasic_envMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "if(!isRenderListEmpty(u_isRenderListEmpty)){\n    totalColor *= textureCube(u_samplerCube0, reflect(inDir, normalize(v_normal)));\n}\n", };
+        ShaderChunk.refraction_forBasic_envMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "if(!isRenderListEmpty(u_isRenderListEmpty)){\n    totalColor *= textureCube(u_samplerCube0, refract(inDir, v_normal, u_refractionRatio));\n}\n", };
+        ShaderChunk.modelMatrix_hardware_instance_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "mat4 mMatrix = mat4(a_mVec4_0, a_mVec4_1, a_mVec4_2, a_mVec4_3);\n", };
+        ShaderChunk.normalMatrix_hardware_instance_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "mat3 normalMatrix = mat3(a_normalVec4_0, a_normalVec4_1, a_normalVec4_2);\n", };
+        ShaderChunk.modelMatrix_batch_instance_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "mat4 mMatrix = u_mMatrix;\n", };
+        ShaderChunk.normalMatrix_batch_instance_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "mat3 normalMatrix = u_normalMatrix;\n", };
+        ShaderChunk.modelMatrix_noInstance_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "mat4 mMatrix = u_mMatrix;\n", };
+        ShaderChunk.normalMatrix_noInstance_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "mat3 normalMatrix = u_normalMatrix;\n", };
         ShaderChunk.diffuseMap_fragment = { top: "", define: "", varDeclare: "varying vec2 v_diffuseMapTexCoord;\n", funcDeclare: "", funcDefine: "vec4 getMaterialDiffuse() {\n        return texture2D(u_diffuseMapSampler, v_diffuseMapTexCoord);\n    }\n", body: "", };
         ShaderChunk.diffuseMap_vertex = { top: "", define: "", varDeclare: "varying vec2 v_diffuseMapTexCoord;\n", funcDeclare: "", funcDefine: "", body: "//todo optimize(combine, reduce compute numbers)\n    //todo BasicTexture extract textureMatrix\n    vec2 sourceTexCoord = a_texCoord * u_diffuseSourceRegion.zw + u_diffuseSourceRegion.xy;\n    v_diffuseMapTexCoord = sourceTexCoord * u_diffuseRepeatRegion.zw + u_diffuseRepeatRegion.xy;\n", };
         ShaderChunk.emissionMap_fragment = { top: "", define: "", varDeclare: "varying vec2 v_emissionMapTexCoord;\n", funcDeclare: "", funcDefine: "vec4 getMaterialEmission() {\n        return texture2D(u_emissionMapSampler, v_emissionMapTexCoord);\n    }\n", body: "", };
@@ -38920,20 +39388,18 @@ var wd;
         ShaderChunk.specularMap_vertex = { top: "", define: "", varDeclare: "varying vec2 v_specularMapTexCoord;\n", funcDeclare: "", funcDefine: "", body: "v_specularMapTexCoord = a_texCoord;\n", };
         ShaderChunk.buildCubemapShadowMap_fragment = { top: "", define: "", varDeclare: "varying vec3 v_worldPosition;\n", funcDeclare: "", funcDefine: "", body: "\n// get distance between fragment and light source\n    float lightDistance = length(v_worldPosition - u_lightPos);\n\n    // map to [0,1] range by dividing by farPlane\n    lightDistance = lightDistance / u_farPlane;\n\n\ngl_FragData[0] = packDepth(lightDistance);\n\n\n//gl_FragColor = vec4(0.5, 0.0, 1.0, 1.0);\n//gl_FragData[0] = vec4(lightDistance, 1.0, 1.0, 1.0);\n", };
         ShaderChunk.buildCubemapShadowMap_vertex = { top: "", define: "", varDeclare: "varying vec3 v_worldPosition;\n", funcDeclare: "", funcDefine: "", body: "v_worldPosition = vec3(mMatrix * vec4(a_position, 1.0));\n    gl_Position = u_pMatrix * u_vMatrix * vec4(v_worldPosition, 1.0);\n", };
-        ShaderChunk.buildTwoDShadowMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "gl_FragData[0] = packDepth(gl_FragCoord.z);\n", };
+        ShaderChunk.buildTwoDShadowMap_depthMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
+        ShaderChunk.buildTwoDShadowMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
+        ShaderChunk.buildTwoDShadowMap_packDepth_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "gl_FragData[0] = packDepth(gl_FragCoord.z);\n", };
         ShaderChunk.buildTwoDShadowMap_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "gl_Position = u_vpMatrixFromLight * mMatrix * vec4(a_position, 1.0);\n", };
         ShaderChunk.commonBuildShadowMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "// Packing a float in GLSL with multiplication and mod\nvec4 packDepth(in float depth) {\n    const vec4 bit_shift = vec4(256.0 * 256.0 * 256.0, 256.0 * 256.0, 256.0, 1.0);\n    const vec4 bit_mask = vec4(0.0, 1.0 / 256.0, 1.0 / 256.0, 1.0 / 256.0);\n    // combination of mod and multiplication and division works better\n    vec4 res = mod(depth * bit_shift * vec4(255), vec4(256) ) / vec4(255);\n    res -= res.xxyz * bit_mask;\n\n    return res;\n}\n", body: "", };
         ShaderChunk.cubemapShadowMap_fragment = { top: "", define: "", varDeclare: "uniform samplerCube u_cubemapShadowMapSampler[ CUBEMAP_SHADOWMAP_COUNT ];\n\n    uniform int u_isCubemapRenderListEmpty[ CUBEMAP_SHADOWMAP_COUNT ];\n	uniform float u_cubemapShadowDarkness[ CUBEMAP_SHADOWMAP_COUNT ];\n	uniform float u_cubemapShadowBias[ CUBEMAP_SHADOWMAP_COUNT ];\n	uniform float u_farPlane[ CUBEMAP_SHADOWMAP_COUNT ];\n	uniform vec3 u_cubemapLightPos[ CUBEMAP_SHADOWMAP_COUNT ];\n", funcDeclare: "", funcDefine: "// PCF\nfloat getCubemapShadowVisibilityByPCF(float currentDepth, vec3 fragToLight, samplerCube cubemapShadowMapSampler, float shadowBias, float farPlane, float shadowDarkness){\n    //only support in opengl es 3.0+\n    //vec3 sampleOffsetDirections[20] = vec3[]\n    //(\n       //vec3( 1,  1,  1), vec3( 1, -1,  1), vec3(-1, -1,  1), vec3(-1,  1,  1),\n       //vec3( 1,  1, -1), vec3( 1, -1, -1), vec3(-1, -1, -1), vec3(-1,  1, -1),\n       //vec3( 1,  1,  0), vec3( 1, -1,  0), vec3(-1, -1,  0), vec3(-1,  1,  0),\n       //vec3( 1,  0,  1), vec3(-1,  0,  1), vec3( 1,  0, -1), vec3(-1,  0, -1),\n       //vec3( 0,  1,  1), vec3( 0, -1,  1), vec3( 0, -1, -1), vec3( 0,  1, -1)\n    //);\n\n    vec3 sampleOffsetDirections[20];\n\n    sampleOffsetDirections[0] = vec3( 1,  1,  1);\n    sampleOffsetDirections[1] = vec3( 1,  -1,  1);\n    sampleOffsetDirections[2] = vec3( -1,  -1,  1);\n    sampleOffsetDirections[3] = vec3( -1,  1,  1);\n\n    sampleOffsetDirections[4] = vec3( 1,  1,  -1);\n    sampleOffsetDirections[5] = vec3( 1,  -1,  -1);\n    sampleOffsetDirections[6] = vec3( -1,  -1,  -1);\n    sampleOffsetDirections[7] = vec3( -1,  1,  -1);\n\n    sampleOffsetDirections[8] = vec3( 1,  1,  0);\n    sampleOffsetDirections[9] = vec3( 1,  -1,  0);\n    sampleOffsetDirections[10] = vec3( -1,  -1,  0);\n    sampleOffsetDirections[11] = vec3( -1,  1,  0);\n\n    sampleOffsetDirections[12] = vec3( 1,  0,  1);\n    sampleOffsetDirections[13] = vec3( -1,  0,  1);\n    sampleOffsetDirections[14] = vec3( 1,  0,  -1);\n    sampleOffsetDirections[15] = vec3( -1,  0,  -1);\n\n    sampleOffsetDirections[16] = vec3( 0,  1,  1);\n    sampleOffsetDirections[17] = vec3( 0,  -1,  1);\n    sampleOffsetDirections[18] = vec3( 0,  -1,  -1);\n    sampleOffsetDirections[19] = vec3( 0,  1,  -1);\n\n    float shadow = 0.0;\n    int samples = 20;\n\n    //float diskRadius = 0.00000;\n    //Another interesting trick we can apply here is that we can change the diskRadius based on how far the viewer is away from a fragment; this way we can increase the offset radius by the distance to the viewer, making the shadows softer when far away and sharper when close by.\n    float viewDistance = length(u_cameraPos - v_worldPosition);\n    float diskRadius = (1.0 + (viewDistance / farPlane)) / 25.0;\n\n    //for(int i = 0; i < samples; ++i)\n    for(int i = 0; i < 20; ++i)\n    {\n        float pcfDepth = unpackDepth(textureCube(cubemapShadowMapSampler, fragToLight + sampleOffsetDirections[i] * diskRadius));\n        pcfDepth *= farPlane;   // Undo mapping [0;1]\n        shadow += currentDepth - shadowBias > pcfDepth  ? shadowDarkness : 1.0;\n    }\n    shadow /= float(samples);\n\n    return shadow;\n}\n\n\nfloat getCubemapShadowVisibility(vec3 lightDir, samplerCube cubemapShadowMapSampler, vec3 lightPos, float farPlane, float shadowBias, float  shadowDarkness) {\n// Get vector between fragment position and light position\n    vec3 fragToLight= v_worldPosition - lightPos;\n    // Use the light to fragment vector to sample from the depth map\n    // Now get current linear depth as the length between the fragment and light position\n    float currentDepth = length(fragToLight);\n\n    #if defined(SHADOWMAP_TYPE_PCF)\n    return getCubemapShadowVisibilityByPCF(currentDepth, fragToLight, cubemapShadowMapSampler, getShadowBias(lightDir, shadowBias), farPlane, shadowDarkness);\n    #endif\n\n    float closestDepth = unpackDepth(textureCube(cubemapShadowMapSampler, fragToLight));\n\n    // It is currently in linear range between [0,1]. Re-transform back to original value\n    closestDepth *= farPlane;\n\n\n    return float(currentDepth > closestDepth + getShadowBias(lightDir, shadowBias) ? shadowDarkness : 1.0);\n}\n", body: "", };
         ShaderChunk.noShadowMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec3 getShadowVisibility() {\n        return vec3(1.0);\n    }\n", body: "", };
-        ShaderChunk.totalShadowMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "float getShadowBias(vec3 lightDir, float shadowBias);\nfloat unpackDepth(vec4 rgbaDepth);\n", funcDefine: "float getShadowBias(vec3 lightDir, float shadowBias){\n    float bias = shadowBias;\n\n    if(shadowBias == NULL){\n        bias = 0.005;\n    }\n\n\n     /*!\n     A shadow bias of 0.005 solves the issues of our scene by a large extent, but some surfaces that have a steep angle to the light source might still produce shadow acne. A more solid approach would be to change the amount of bias based on the surface angle towards the light: something we can solve with the dot product:\n     */\n\n     return max(bias * (1.0 - dot(normalize(getNormal()), lightDir)), bias);\n\n    //return bias;\n}\n\nfloat unpackDepth(vec4 rgbaDepth) {\n    /*! make sure that the visibility from the shadow map which is not builded is always be 1.0 */\n    if(rgbaDepth == vec4(0.0)){\n        return 100000.0;\n    }\n\n    const vec4 bitShift = vec4(1.0 / (256.0 * 256.0 * 256.0), 1.0 / (256.0 * 256.0), 1.0 / 256.0, 1.0);\n    return dot(rgbaDepth, bitShift);\n}\n\nvec3 getShadowVisibility() {\n    vec3 shadowColor = vec3(1.0);\n    vec3 twoDLightDir = vec3(0.0);\n    vec3 cubemapLightDir = vec3(0.0);\n\n\n\n    //to normalMap, the lightDir use the origin one instead of normalMap's lightDir here(the lightDir is used for computing shadowBias, the origin one is enough for it)\n\n    #if TWOD_SHADOWMAP_COUNT > 0\n	for( int i = 0; i < TWOD_SHADOWMAP_COUNT; i ++ ) {\n        if(isRenderListEmpty(u_isTwoDRenderListEmpty[i])){\n            continue;\n        }\n\n        twoDLightDir = getDirectionLightDirByLightPos(u_twoDLightPos[i]);\n\n	////if is opposite to direction of light rays, no shadow\n\n        shadowColor *= getTwoDShadowVisibility(twoDLightDir, u_twoDShadowMapSampler[i], v_positionFromLight[i], u_twoDShadowBias[i], u_twoDShadowDarkness[i], u_twoDShadowSize[i]);\n	}\n	#endif\n\n\n	#if CUBEMAP_SHADOWMAP_COUNT > 0\n\n	for( int i = 0; i < CUBEMAP_SHADOWMAP_COUNT; i ++ ) {\n        if(isRenderListEmpty(u_isCubemapRenderListEmpty[i])){\n            continue;\n        }\n\n	////if is opposite to direction of light rays, no shadow\n\n        shadowColor *= getCubemapShadowVisibility(cubemapLightDir, u_cubemapShadowMapSampler[i], u_cubemapLightPos[i], u_farPlane[i], u_cubemapShadowBias[i], u_cubemapShadowDarkness[i]);\n	}\n	#endif\n\n	return shadowColor;\n}\n\n", body: "", };
-        ShaderChunk.twoDShadowMap_fragment = { top: "", define: "", varDeclare: "varying vec4 v_positionFromLight[ TWOD_SHADOWMAP_COUNT ];\n    uniform int u_isTwoDRenderListEmpty[ TWOD_SHADOWMAP_COUNT ];\n	uniform sampler2D u_twoDShadowMapSampler[ TWOD_SHADOWMAP_COUNT ];\n	uniform float u_twoDShadowDarkness[ TWOD_SHADOWMAP_COUNT ];\n	uniform float u_twoDShadowBias[ TWOD_SHADOWMAP_COUNT ];\n	uniform vec2 u_twoDShadowSize[ TWOD_SHADOWMAP_COUNT ];\n	uniform vec3 u_twoDLightPos[ TWOD_SHADOWMAP_COUNT ];\n", funcDeclare: "", funcDefine: "// PCF\nfloat getTwoDShadowVisibilityByPCF(float currentDepth, vec2 shadowCoord, sampler2D twoDShadowMapSampler, float shadowBias, float shadowDarkness, vec2 shadowMapSize){\n\n    float shadow = 0.0;\n    vec2 texelSize = vec2(1.0 / shadowMapSize[0], 1.0 / shadowMapSize[1]);\n\n    for(int x = -1; x <= 1; ++x)\n    {\n        for(int y = -1; y <= 1; ++y)\n        {\n            float pcfDepth = unpackDepth(texture2D(twoDShadowMapSampler, shadowCoord + vec2(x, y) * texelSize));\n            shadow += currentDepth - shadowBias > pcfDepth  ? shadowDarkness : 1.0;\n        }\n    }\n    shadow /= 9.0;\n\n    return shadow;\n}\n\n\n\nfloat getTwoDShadowVisibility(vec3 lightDir, sampler2D twoDShadowMapSampler, vec4 v_positionFromLight, float shadowBias, float shadowDarkness, vec2 shadowSize) {\n    //project texture\n    vec3 shadowCoord = (v_positionFromLight.xyz / v_positionFromLight.w) / 2.0 + 0.5;\n    //vec3 shadowCoord = vec3(0.5, 0.5, 0.5);\n\n    #ifdef SHADOWMAP_TYPE_PCF\n    // Percentage-close filtering\n    // (9 pixel kernel)\n    return getTwoDShadowVisibilityByPCF(shadowCoord.z, shadowCoord.xy, twoDShadowMapSampler, getShadowBias(lightDir, shadowBias), shadowDarkness, shadowSize);\n\n    #else\n    return shadowCoord.z > unpackDepth(texture2D(twoDShadowMapSampler, shadowCoord.xy)) + getShadowBias(lightDir, shadowBias) ? shadowDarkness : 1.0;\n    #endif\n}\n", body: "", };
+        ShaderChunk.totalShadowMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "float getShadowBias(vec3 lightDir, float shadowBias);\nfloat unpackDepth(vec4 rgbaDepth);\n", funcDefine: "float getShadowBias(vec3 lightDir, float shadowBias){\n    float bias = shadowBias;\n\n    if(shadowBias == NULL){\n        bias = 0.005;\n    }\n\n\n     /*!\n     A shadow bias of 0.005 solves the issues of our scene by a large extent, but some surfaces that have a steep angle to the light source might still produce shadow acne. A more solid approach would be to change the amount of bias based on the surface angle towards the light: something we can solve with the dot product:\n     */\n\n     return max(bias * (1.0 - dot(normalize(getNormal()), lightDir)), bias);\n\n    //return bias;\n}\n\nvec3 getShadowVisibility() {\n    vec3 shadowColor = vec3(1.0);\n    vec3 twoDLightDir = vec3(0.0);\n    vec3 cubemapLightDir = vec3(0.0);\n\n\n\n    //to normalMap, the lightDir use the origin one instead of normalMap's lightDir here(the lightDir is used for computing shadowBias, the origin one is enough for it)\n\n    #if TWOD_SHADOWMAP_COUNT > 0\n	for( int i = 0; i < TWOD_SHADOWMAP_COUNT; i ++ ) {\n        if(isRenderListEmpty(u_isTwoDRenderListEmpty[i])){\n            continue;\n        }\n\n        twoDLightDir = getDirectionLightDirByLightPos(u_twoDLightPos[i]);\n\n	////if is opposite to direction of light rays, no shadow\n\n        shadowColor *= getTwoDShadowVisibility(twoDLightDir, u_twoDShadowMapSampler[i], v_positionFromLight[i], u_twoDShadowBias[i], u_twoDShadowDarkness[i], u_twoDShadowSize[i]);\n	}\n	#endif\n\n\n	#if CUBEMAP_SHADOWMAP_COUNT > 0\n\n	for( int i = 0; i < CUBEMAP_SHADOWMAP_COUNT; i ++ ) {\n        if(isRenderListEmpty(u_isCubemapRenderListEmpty[i])){\n            continue;\n        }\n\n	////if is opposite to direction of light rays, no shadow\n\n        shadowColor *= getCubemapShadowVisibility(cubemapLightDir, u_cubemapShadowMapSampler[i], u_cubemapLightPos[i], u_farPlane[i], u_cubemapShadowBias[i], u_cubemapShadowDarkness[i]);\n	}\n	#endif\n\n	return shadowColor;\n}\n\nfloat unpackDepth(vec4 rgbaDepth) {\n    /*! make sure that the visibility from the shadow map which is not builded is always be 1.0 */\n    if(rgbaDepth == vec4(0.0)){\n        return 100000.0;\n    }\n\n    const vec4 bitShift = vec4(1.0 / (256.0 * 256.0 * 256.0), 1.0 / (256.0 * 256.0), 1.0 / 256.0, 1.0);\n    return dot(rgbaDepth, bitShift);\n}\n\n", body: "", };
+        ShaderChunk.twoDShadowMap_depthMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "float handleDepthMap(vec4 rgbaDepth);\n", funcDefine: "float handleDepthMap(vec4 rgbaDepth) {\n    return rgbaDepth.r;\n}\n", body: "", };
+        ShaderChunk.twoDShadowMap_fragment = { top: "", define: "", varDeclare: "varying vec4 v_positionFromLight[ TWOD_SHADOWMAP_COUNT ];\n    uniform int u_isTwoDRenderListEmpty[ TWOD_SHADOWMAP_COUNT ];\n	uniform sampler2D u_twoDShadowMapSampler[ TWOD_SHADOWMAP_COUNT ];\n	uniform float u_twoDShadowDarkness[ TWOD_SHADOWMAP_COUNT ];\n	uniform float u_twoDShadowBias[ TWOD_SHADOWMAP_COUNT ];\n	uniform vec2 u_twoDShadowSize[ TWOD_SHADOWMAP_COUNT ];\n	uniform vec3 u_twoDLightPos[ TWOD_SHADOWMAP_COUNT ];\n", funcDeclare: "", funcDefine: "// PCF\nfloat getTwoDShadowVisibilityByPCF(float currentDepth, vec2 shadowCoord, sampler2D twoDShadowMapSampler, float shadowBias, float shadowDarkness, vec2 shadowMapSize){\n\n    float shadow = 0.0;\n    vec2 texelSize = vec2(1.0 / shadowMapSize[0], 1.0 / shadowMapSize[1]);\n\n    for(int x = -1; x <= 1; ++x)\n    {\n        for(int y = -1; y <= 1; ++y)\n        {\n            float pcfDepth = handleDepthMap(texture2D(twoDShadowMapSampler, shadowCoord + vec2(x, y) * texelSize));\n            shadow += currentDepth - shadowBias > pcfDepth  ? shadowDarkness : 1.0;\n        }\n    }\n    shadow /= 9.0;\n\n    return shadow;\n}\n\n\n\nfloat getTwoDShadowVisibility(vec3 lightDir, sampler2D twoDShadowMapSampler, vec4 v_positionFromLight, float shadowBias, float shadowDarkness, vec2 shadowSize) {\n    //project texture\n    vec3 shadowCoord = (v_positionFromLight.xyz / v_positionFromLight.w) / 2.0 + 0.5;\n    //vec3 shadowCoord = vec3(0.5, 0.5, 0.5);\n\n    #ifdef SHADOWMAP_TYPE_PCF\n    // Percentage-close filtering\n    // (9 pixel kernel)\n    return getTwoDShadowVisibilityByPCF(shadowCoord.z, shadowCoord.xy, twoDShadowMapSampler, getShadowBias(lightDir, shadowBias), shadowDarkness, shadowSize);\n\n    #else\n    return shadowCoord.z > handleDepthMap(texture2D(twoDShadowMapSampler, shadowCoord.xy)) + getShadowBias(lightDir, shadowBias) ? shadowDarkness : 1.0;\n    #endif\n}\n", body: "", };
+        ShaderChunk.twoDShadowMap_unpackDepth_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "float handleDepthMap(vec4 rgbaDepth);\n", funcDefine: "float handleDepthMap(vec4 rgbaDepth) {\n    return unpackDepth(rgbaDepth);\n}\n", body: "", };
         ShaderChunk.twoDShadowMap_vertex = { top: "", define: "", varDeclare: "varying vec4 v_positionFromLight[ TWOD_SHADOWMAP_COUNT ];\nuniform mat4 u_vpMatrixFromLight[ TWOD_SHADOWMAP_COUNT ];\n", funcDeclare: "", funcDefine: "", body: "for( int i = 0; i < TWOD_SHADOWMAP_COUNT; i ++ ) {\n    v_positionFromLight[i] = u_vpMatrixFromLight[i] * vec4(v_worldPosition, 1.0);\n	}\n", };
-        ShaderChunk.modelMatrix_batch_instance_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "mat4 mMatrix = u_mMatrix;\n", };
-        ShaderChunk.normalMatrix_batch_instance_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "mat3 normalMatrix = u_normalMatrix;\n", };
-        ShaderChunk.modelMatrix_hardware_instance_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "mat4 mMatrix = mat4(a_mVec4_0, a_mVec4_1, a_mVec4_2, a_mVec4_3);\n", };
-        ShaderChunk.normalMatrix_hardware_instance_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "mat3 normalMatrix = mat3(a_normalVec4_0, a_normalVec4_1, a_normalVec4_2);\n", };
-        ShaderChunk.modelMatrix_noInstance_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "mat4 mMatrix = u_mMatrix;\n", };
-        ShaderChunk.normalMatrix_noInstance_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "mat3 normalMatrix = u_normalMatrix;\n", };
         ShaderChunk.mirror_fragment = { top: "", define: "", varDeclare: "varying vec4 v_reflectionMapCoord;\n", funcDeclare: "", funcDefine: "//todo add more blend way to mix reflectionMap color and textureColor\n		float blendOverlay(float base, float blend) {\n			return( base < 0.5 ? ( 2.0 * base * blend ) : (1.0 - 2.0 * ( 1.0 - base ) * ( 1.0 - blend ) ) );\n		}\n		vec4 getReflectionMapColor(in vec4 materialColor){\n			vec4 color = texture2DProj(u_reflectionMapSampler, v_reflectionMapCoord);\n\n			color = vec4(blendOverlay(materialColor.r, color.r), blendOverlay(materialColor.g, color.g), blendOverlay(materialColor.b, color.b), 1.0);\n\n			return color;\n		}\n", body: "if(!isRenderListEmpty(u_isRenderListEmpty)){\n    totalColor *= getReflectionMapColor(totalColor);\n}\n", };
         ShaderChunk.mirror_vertex = { top: "", define: "", varDeclare: "varying vec4 v_reflectionMapCoord;\n", funcDeclare: "", funcDefine: "", body: "mat4 textureMatrix = mat4(\n                        0.5, 0.0, 0.0, 0.0,\n                        0.0, 0.5, 0.0, 0.0,\n                        0.0, 0.0, 0.5, 0.0,\n                        0.5, 0.5, 0.5, 1.0\n);\n\nv_reflectionMapCoord = textureMatrix * gl_Position;\n", };
         ShaderChunk.terrainLayer_fragment = { top: "", define: "", varDeclare: "struct LayerHeightData {\n    float minHeight;\n    float maxHeight;\n};\nuniform LayerHeightData u_layerHeightDatas[LAYER_COUNT];\n//sampler2D can't be contained in struct\nuniform sampler2D u_layerSampler2Ds[LAYER_COUNT];\n\n\nvarying vec2 v_layerTexCoord;\n", funcDeclare: "", funcDefine: "vec4 getLayerTextureColor(in sampler2D layerSampler2Ds[LAYER_COUNT], in LayerHeightData layerHeightDatas[LAYER_COUNT]){\n    vec4 color = vec4(0.0);\n    bool isInLayer = false;\n\n    float height = v_worldPosition.y;\n\n    for(int i = 0; i < LAYER_COUNT; i++){\n        if(height >= layerHeightDatas[i].minHeight && height <= layerHeightDatas[i].maxHeight){\n            //todo blend color\n            color += texture2D(layerSampler2Ds[i], v_layerTexCoord);\n\n            isInLayer = true;\n\n            break;\n        }\n    }\n\n    return isInLayer ? color : vec4(1.0);\n}\n", body: "\ntotalColor *= getLayerTextureColor(u_layerSampler2Ds, u_layerHeightDatas);\n", };

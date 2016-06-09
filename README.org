@@ -29,10 +29,14 @@ Please learn samples in examples/samples/ to get more info.
 * Contributing
 Join us, We can create the amazing 3D world together!
 * Feature
-- Batch Draw
+- Extension
+  - VAO
+  - Depth Texture
+- Batch
   - Instance
   - Render Queue Sort By RenderGroup,RenderPriority,Shader,Texture,VBO
   - Merge GameObject
+  - Batch Update Component
 - Water
 - Procedural
   - Procedural Texture
