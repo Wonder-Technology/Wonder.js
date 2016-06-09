@@ -164,8 +164,6 @@ module wd{
 
             this._initDomEvent();
 
-            EventManager.trigger(CustomEvent.create(<any>EEngineEvent.BEFORE_GAMEOBJECT_INIT));
-
             gameObjectScene.onEnter();
             gameObjectScene.init();
 

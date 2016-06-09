@@ -2,7 +2,6 @@ module wd{
     export enum EEngineEvent{
         STARTLOOP = <any>"wd_startLoop",
         ENDLOOP = <any>"wd_endLoop",
-        BEFORE_GAMEOBJECT_INIT = <any>"wd_beforeGameObjectInit",
         AFTER_GAMEOBJECT_INIT = <any>"wd_afterGameObjectInit",
         AFTER_GAMEOBJECT_INIT_RIGIDBODY_ADD_CONSTRAINT = <any>"wd_afterGameObjectInit_rigidBody_addConstraint",
 

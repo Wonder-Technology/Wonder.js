@@ -4,8 +4,6 @@ module wd{
             ScriptEngine.getInstance().execEntityObjectScriptOnlyOnce(entityObject, "onEnter");
 
             //todo fix trigger entityObject event?
-            EventManager.trigger(CustomEvent.create(<any>EEngineEvent.BEFORE_GAMEOBJECT_INIT));
-
             ScriptEngine.getInstance().execEntityObjectScriptOnlyOnce(entityObject, "init");
 
             EventManager.trigger(CustomEvent.create(<any>EEngineEvent.AFTER_GAMEOBJECT_INIT));
