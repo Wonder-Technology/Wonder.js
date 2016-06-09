@@ -718,7 +718,7 @@
 /// <reference path="engine/ActionEngine"/>
 /// <reference path="engine/ScriptEngine"/>
 /// <reference path="engine/LODEngine"/>
-/// <reference path="engine/SPacePartitionEngine"/>
+/// <reference path="engine/SpacePartitionEngine"/>
 /// <reference path="engine/AnimationEngine"/>
 /// <reference path="engine/ColliderEngine"/>
 /// <reference path="engine/RigidBodyEngine"/>
