@@ -43,7 +43,6 @@ module wd{
 
             super.addToObject(entityObject, isShareComponent);
 
-            //todo not set target?use entityObject instead?
             this.target = entityObject;
 
             if(!engine.hasChild(this)){
