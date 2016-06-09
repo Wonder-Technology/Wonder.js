@@ -2,8 +2,6 @@ module wd{
     export enum EEngineEvent{
         STARTLOOP = <any>"wd_startLoop",
         ENDLOOP = <any>"wd_endLoop",
-        AFTER_GAMEOBJECT_INIT = <any>"wd_afterGameObjectInit",
-        AFTER_GAMEOBJECT_INIT_RIGIDBODY_ADD_CONSTRAINT = <any>"wd_afterGameObjectInit_rigidBody_addConstraint",
 
         MOUSE_CLICK = <any>"wd_mouseclick",
         MOUSE_DOWN = <any>"wd_mousedown",

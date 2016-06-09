@@ -12,7 +12,7 @@ describe("RigidBody", function() {
         sandbox.restore();
     });
 
-    describe("init", function(){
+    describe("initBody", function(){
         beforeEach(function(){
 
         });
@@ -20,84 +20,35 @@ describe("RigidBody", function() {
         it("add body after its and its children's collider component init", function(){
             body.addBody = sandbox.stub();
 
-            body.init();
-
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.AFTER_GAMEOBJECT_INIT));
+            body.initBody();
 
             expect(body.addBody).toCalledOnce();
         });
         it("should only add body once", function () {
             body.addBody = sandbox.stub();
 
-            body.init();
-
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.AFTER_GAMEOBJECT_INIT));
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.AFTER_GAMEOBJECT_INIT));
+            body.initBody();
+            body.initBody();
 
             expect(body.addBody).toCalledOnce();
         });
+    });
 
+    describe("initConstraint", function(){
         it("add constraint after all body added", function(){
             body.addConstraint = sandbox.stub();
 
-            body.init();
-
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.AFTER_GAMEOBJECT_INIT_RIGIDBODY_ADD_CONSTRAINT));
+            body.initConstraint();
 
             expect(body.addConstraint).toCalledOnce();
         });
         it("should only add constraint once", function () {
             body.addConstraint = sandbox.stub();
 
-            body.init();
-
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.AFTER_GAMEOBJECT_INIT_RIGIDBODY_ADD_CONSTRAINT));
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.AFTER_GAMEOBJECT_INIT_RIGIDBODY_ADD_CONSTRAINT));
+            body.initConstraint();
+            body.initConstraint();
 
             expect(body.addConstraint).toCalledOnce();
-        });
-    });
-
-    describe("dispose", function(){
-        beforeEach(function(){
-
-        });
-
-        //todo test more
-
-        it("dispose 'after init event' subscription", function(){
-            body.addBody = sandbox.stub();
-
-            body.init();
-
-
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.AFTER_GAMEOBJECT_INIT));
-
-
-            expect(body.addBody).toCalledOnce();
-
-            body.dispose();
-
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.AFTER_GAMEOBJECT_INIT));
-
-            expect(body.addBody).not.toCalledTwice();
-        });
-        it("dispose 'after init rigidbody add constraint event' subscription", function(){
-            body.addConstraint = sandbox.stub();
-
-            body.init();
-
-
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.AFTER_GAMEOBJECT_INIT_RIGIDBODY_ADD_CONSTRAINT));
-
-
-            expect(body.addConstraint).toCalledOnce();
-
-            body.dispose();
-
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.AFTER_GAMEOBJECT_INIT_RIGIDBODY_ADD_CONSTRAINT));
-
-            expect(body.addConstraint).not.toCalledTwice();
         });
     });
 });

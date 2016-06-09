@@ -172,9 +172,6 @@ module wd{
 
             this._timeController.start();
             this.scheduler.start();
-
-            EventManager.trigger(CustomEvent.create(<any>EEngineEvent.AFTER_GAMEOBJECT_INIT));
-            EventManager.trigger(CustomEvent.create(<any>EEngineEvent.AFTER_GAMEOBJECT_INIT_RIGIDBODY_ADD_CONSTRAINT));
         }
 
         private _buildLoopStream(){

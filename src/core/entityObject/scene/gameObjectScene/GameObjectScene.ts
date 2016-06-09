@@ -72,6 +72,9 @@ module wd {
 
             this.renderTargetRendererManager.init();
 
+            RigidBodyEngine.getInstance().initBody();
+            RigidBodyEngine.getInstance().initConstraint();
+
             return this;
         }
 

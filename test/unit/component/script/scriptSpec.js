@@ -290,39 +290,6 @@ describe("script", function () {
         });
     });
 
-    //todo fix trigger entityObject event?
-    //describe("trigger global event after script loaded", function(){
-    //    var entityObject;
-    //
-    //    beforeEach(function(){
-    //        var data = {
-    //            class:function(){},
-    //            name:""
-    //        };
-    //        entityObject = wd.GameObject.create();
-    //
-    //
-    //        sandbox.stub(wd.EventManager, "trigger");
-    //        sandbox.stub(wd.CustomEvent, "create");
-    //        sandbox.stub(entityObject, "execScript");
-    //
-    //        wd.GlobalScriptUtils.addScriptToEntityObject(entityObject, data);
-    //        wd.GlobalScriptUtils.handlerAfterLoadedScript(entityObject);
-    //
-    //        expect(wd.EventManager.trigger.callCount).toEqual(3);
-    //    });
-    //
-    //    it("trigger global BEFORE_GAMEOBJECT_INIT before trigger script->init", function(){
-    //        expect(wd.CustomEvent.create.withArgs(wd.EEngineEvent.BEFORE_GAMEOBJECT_INIT)).toCalledBefore(entityObject.execScript.withArgs("init"));
-    //    });
-    //    it("trigger global AFTER_GAMEOBJECT_INIT after trigger script->init", function(){
-    //        expect(wd.CustomEvent.create.withArgs(wd.EEngineEvent.AFTER_GAMEOBJECT_INIT)).toCalledAfter(entityObject.execScript.withArgs("init"));
-    //    });
-    //    it("trigger global AFTER_GAMEOBJECT_INIT_RIGIDBODY_ADD_CONSTRAINT after trigger global AFTER_GAMEOBJECT_INIT", function(){
-    //        expect(wd.CustomEvent.create.withArgs(wd.EEngineEvent.AFTER_GAMEOBJECT_INIT_RIGIDBODY_ADD_CONSTRAINT)).toCalledAfter(wd.CustomEvent.create.withArgs(wd.EEngineEvent.AFTER_GAMEOBJECT_INIT));
-    //    });
-    //});
-
     it("test remove script", function(){
         testScript(function(test){
             sandbox.spy(test, "update");
