@@ -155,7 +155,7 @@ describe("Button", function() {
                     uiObject.init();
 
                     expect(uiObject.getChildren().getCount()).toEqual(2);
-                    expect(button.getObject(ObjectName.Text).getComponent(wd.PlainFont).text).toEqual("bbb");
+                    expect(button.getObject(ObjectName.TEXT).getComponent(wd.PlainFont).text).toEqual("bbb");
                 });
             });
 
@@ -269,6 +269,47 @@ describe("Button", function() {
 
         });
 
+        describe("add background object", function(){
+            beforeEach(function(){
+            });
+
+            describe("test background object", function(){
+                beforeEach(function(){
+
+                });
+
+                it("add Image component", function(){
+                    uiObject.init();
+
+                    expect(getBackgroundObject().hasComponent(wd.Image)).toBeTruthy();
+                });
+                it("add the same UIRenderer of Button", function () {
+                    uiObject.init();
+
+                    expect(getBackgroundObject().getComponent(wd.UIRenderer) === renderer).toBeTruthy();
+                });
+                it("width,height is equal UIObject.transform->width,height", function(){
+                    setWidth(100);
+                    setHeight(50);
+
+                    uiObject.init();
+
+                    expect(getBackgroundObject().transform.width).toEqual(100);
+                    expect(getBackgroundObject().transform.height).toEqual(50);
+                });
+                it("name is BACKGROUND", function(){
+                    uiObject.init();
+
+                    expect(getBackgroundObject().name).toEqual(ObjectName.BACKGROUND);
+                });
+                it("zIndex < Font->zIndex", function(){
+                    uiObject.init();
+
+                    expect(getBackgroundObject().transform.zIndex < getFontObject().transform.zIndex).toBeTruthy();
+                });
+            });
+        });
+
         describe("if not has Font Object", function(){
             beforeEach(function(){
 
@@ -319,45 +360,22 @@ describe("Button", function() {
             });
         });
 
-        describe("add background object", function(){
-            beforeEach(function(){
-            });
+        it("should render background object before render font object", function () {
+            director.scene.addChild(uiObject);
 
-            describe("test background object", function(){
-                beforeEach(function(){
+            director._init();
 
-                });
+            var image = getBackgroundObject().getComponent(wd.Image);
+            var plaintFont = getFontObject().getComponent(wd.PlainFont);
+            sandbox.stub(image, "render");
+            sandbox.stub(plaintFont, "render");
 
-                it("add Image component", function(){
-                    uiObject.init();
 
-                    expect(getBackgroundObject().hasComponent(wd.Image)).toBeTruthy();
-                });
-                it("add the same UIRenderer of Button", function () {
-                    uiObject.init();
 
-                    expect(getBackgroundObject().getComponent(wd.UIRenderer) === renderer).toBeTruthy();
-                });
-                it("width,height is equal UIObject.transform->width,height", function(){
-                    setWidth(100);
-                    setHeight(50);
 
-                    uiObject.init();
+            director._loopBody(1);
 
-                    expect(getBackgroundObject().transform.width).toEqual(100);
-                    expect(getBackgroundObject().transform.height).toEqual(50);
-                });
-                it("name is BACKGROUND", function(){
-                    uiObject.init();
-
-                    expect(getBackgroundObject().name).toEqual(ObjectName.BACKGROUND);
-                });
-                it("zIndex < Font->zIndex", function(){
-                    uiObject.init();
-
-                    expect(getBackgroundObject().transform.zIndex < getFontObject().transform.zIndex).toBeTruthy();
-                });
-            });
+            expect(image.render).toCalledBefore(plaintFont.render);
         });
 
         describe("bind event", function(){
@@ -479,6 +497,8 @@ describe("Button", function() {
     });
 
     describe("render", function(){
+        var context;
+
         beforeEach(function(){
             renderer.context = canvasTool.buildFakeContext(sandbox);
 
@@ -700,7 +720,7 @@ describe("Button", function() {
             });
 
             it("if rotate Button UIObject when defer to create PlainFont UIObject, the Font UIObject should also be rotated", function(){
-                button.text = "ccc";
+                //button.text = "ccc";
                 var uiObject = createButton(button, renderer);
 
 

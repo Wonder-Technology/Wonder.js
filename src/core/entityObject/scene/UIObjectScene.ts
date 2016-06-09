@@ -29,6 +29,12 @@ module wd {
             return this;
         }
 
+        public update(elapsed:number){
+            super.update(elapsed);
+
+            UIEngine.getInstance().update(elapsed);
+        }
+
         public onDispose(){
             super.onDispose();
 
@@ -66,9 +72,7 @@ module wd {
                 }
             });
 
-            this.forEach((child:UIObject) => {
-                child.render();
-            });
+            UIEngine.getInstance().render();
         }
 
         protected createTransform(){

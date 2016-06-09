@@ -911,7 +911,7 @@ beforeEach(function () {
 
                         if(!_isCalled(expected)){
                             pass = false;
-                            msg += "but expected is not called";
+                            msg += "but expected not called";
                         }
                         else{
                             pass = actual.calledBefore(expected);
@@ -935,7 +935,7 @@ beforeEach(function () {
 
                         if(!_isCalled(expected)){
                             pass = false;
-                            msg += "but expected is not called";
+                            msg += "but expected not called";
                         }
                         else{
                             pass = actual.calledAfter(expected);

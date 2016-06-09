@@ -69,11 +69,11 @@ module wd {
         public init(){
             super.init();
 
+            this.entityObject.addChild(this._createBackgroundObject());
+
             if(!this._hasFontObject()){
                 this.entityObject.addChild(this._createFontObject());
             }
-
-            this.entityObject.addChild(this._createBackgroundObject());
 
             this._bindEvent();
         }

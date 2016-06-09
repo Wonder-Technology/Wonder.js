@@ -198,7 +198,7 @@
 
         //'test/unit/**/Debug*',
 
-        'test/unit/**/EntityObjectSpec*',
+        //'test/unit/**/EntityObjectSpec*',
 
         //'test/unit/component/physics/**/eventSpec*',
 
@@ -225,12 +225,12 @@
 
         //'test/unit/component/event/eventSpec*',
 
-        //'test/unit/**/ui/**',
-        //'test/unit/**/UIObjectSpec*',
+        'test/unit/**/ui/**',
+        'test/unit/**/UIObjectSpec*',
         ////
         ////
-        //'test/unit/**/ButtonSpec*',
-        //'test/unit/**/UIStateMachineSpec*',
+        'test/unit/**/ButtonSpec*',
+        'test/unit/**/UIStateMachineSpec*',
 
 
         //'test/unit/**/*Asset*',
@@ -240,7 +240,7 @@
         //'test/unit/**/UIRendererSpec*',
         //'test/unit/**/BitmapFontSpec*',
         //
-        'test/unit/**/DirectorSpec*',
+        //'test/unit/**/DirectorSpec*',
         //
         //'test/unit/**/ProgressBarSpec*',
         //
@@ -255,7 +255,7 @@
         //
         //'test/unit/**/LightShaderLibSpec*',
         //
-        'test/unit/**/SceneDispatcherSpec*',
+        //'test/unit/**/SceneDispatcherSpec*',
         //'test/unit/**/GameObjectSceneSpec*',
         //
         //'test/unit/**/MathUtils*',
@@ -317,6 +317,7 @@
 
         //{pattern: 'src/**/*.js.map', watched: false, included: false, served: true},
         //{pattern: 'src/**/*.ts', watched: false, included: false, served: true}
+        {pattern: 'dist/wd.debug.js.map', watched: false, included: false, served: true},
         {pattern: 'test/res/*', watched: false, included: false, served: true},
     {pattern: 'test/res/**', watched: false, included: false, served: true}
     ],

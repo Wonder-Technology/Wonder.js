@@ -45,17 +45,19 @@ module wd {
             assert(entityObject instanceof UIObject, Log.info.FUNC_SHOULD("Octree component", "add to GameObject"));
         })
         public addToObject(entityObject:UIObject, isShareComponent:boolean = false){
+            var engine:UIEngine = UIEngine.getInstance();
+
             super.addToObject(entityObject, isShareComponent);
 
-            if(!entityObject.uiManager.hasChild(this)){
-                entityObject.uiManager.addChild(this);
+            if(!engine.hasChild(this)){
+                engine.addChild(this);
             }
         }
 
         public removeFromObject(entityObject:UIObject){
             super.removeFromObject(entityObject);
 
-            entityObject.uiManager.removeChild(this);
+            UIEngine.getInstance().removeChild(this);
         }
 
         @require(function(){

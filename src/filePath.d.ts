@@ -72,7 +72,6 @@
 /// <reference path="core/entityObject/manager/ComponentContainer"/>
 
 /// <reference path="core/entityObject/uiObject/UIObject"/>
-/// <reference path="core/entityObject/uiObject/UIManager"/>
 
 /// <reference path="core/entityObject/gameObject/GameObject"/>
 
@@ -720,3 +719,5 @@
 /// <reference path="engine/ScriptEngine"/>
 /// <reference path="engine/LODEngine"/>
 /// <reference path="engine/SPacePartitionEngine"/>
+
+/// <reference path="engine/UIEngine"/>
