@@ -6,12 +6,14 @@ describe("CollisionDetector", function () {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
+        //detector = wd.ColliderEngine.getInstance()._collisionDetector;
         detector = Detector.create();
 
         sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
     });
     afterEach(function () {
         sandbox.restore();
+        testTool.clearInstance(sandbox);
     });
 
     describe("update", function(){
@@ -60,7 +62,7 @@ describe("CollisionDetector", function () {
                 updateAll();
 
 
-                detector.update();
+
 
 
                 judge(box1, [box3]);
@@ -74,7 +76,7 @@ describe("CollisionDetector", function () {
                 //octreeContainer.update();
                 updateAll();
 
-                detector.update();
+
 
 
                 expect(box1.scriptManager.execScript.withArgs("onCollisionEnd")).toCalledOnce();
@@ -83,7 +85,8 @@ describe("CollisionDetector", function () {
 
             beforeEach(function(){
                 gameObjectScene = wd.GameObjectScene.create();
-                detector.gameObjectScene = gameObjectScene;
+                sandbox.stub(wd.Director.getInstance().scene, "gameObjectScene", gameObjectScene);
+
 
                 box1 = createBox("box1");
                 box1.transform.position = wd.Vector3.create(9, 9, 9);
@@ -109,6 +112,7 @@ describe("CollisionDetector", function () {
                     });
 
                     wd.ColliderEngine.getInstance().update();
+                    wd.ColliderEngine.getInstance().detect();
                 }
 
                 it("collide test1", function () {
@@ -132,7 +136,7 @@ describe("CollisionDetector", function () {
                         updateAll();
 
 
-                        detector.update();
+
 
 
                         expect(box1.scriptManager.execScriptWithData.withArgs("onCollisionStart")).not.toCalled();
@@ -147,7 +151,7 @@ describe("CollisionDetector", function () {
 
                         updateAll();
 
-                        detector.update();
+
 
 
                         judge(box1, [box3]);
@@ -171,6 +175,7 @@ describe("CollisionDetector", function () {
                         octreeContainer.update();
 
                         wd.ColliderEngine.getInstance().update();
+                        wd.ColliderEngine.getInstance().detect();
                     }
 
                     beforeEach(function () {
@@ -202,7 +207,7 @@ describe("CollisionDetector", function () {
                         updateAll();
 
 
-                        detector.update();
+
 
 
                         judge(box1, [box3]);
@@ -214,7 +219,7 @@ describe("CollisionDetector", function () {
 
 
                         updateAll();
-                        detector.update();
+
 
 
                         expect(box1.scriptManager.execScript.withArgs("onCollisionEnd")).toCalledOnce();
@@ -233,7 +238,7 @@ describe("CollisionDetector", function () {
                         box1.transform.position = wd.Vector3.create(9, 9, 9);
 
                         updateAll();
-                        detector.update();
+
 
 
                         judge(box1, [box3], 2, 1);
@@ -248,7 +253,7 @@ describe("CollisionDetector", function () {
 
                         updateAll();
 
-                        detector.update();
+
 
 
                         expect(box1.scriptManager.execScript.withArgs("onCollisionEnd")).toCalledTwice();
@@ -263,7 +268,7 @@ describe("CollisionDetector", function () {
 
                         updateAll();
 
-                        detector.update();
+
 
 
                         expect(box1.scriptManager.execScriptWithData.withArgs("onContact")).toCalledOnce();
@@ -274,7 +279,7 @@ describe("CollisionDetector", function () {
 
                         updateAll();
 
-                        detector.update();
+
 
 
                         expect(box1.scriptManager.execScriptWithData.withArgs("onContact")).toCalledTwice();
@@ -293,6 +298,7 @@ describe("CollisionDetector", function () {
                             octreeContainer2.update();
 
                             wd.ColliderEngine.getInstance().update();
+                            wd.ColliderEngine.getInstance().detect();
                         }
 
                         var box5 = createBox("box5");
@@ -318,7 +324,7 @@ describe("CollisionDetector", function () {
                         //gameObjectScene.update();
                         updateAll();
 
-                        detector.update();
+
 
 
 
@@ -343,7 +349,7 @@ describe("CollisionDetector", function () {
 
 
                         updateAll();
-                        detector.update();
+
 
 
 
@@ -361,6 +367,7 @@ describe("CollisionDetector", function () {
                         octreeContainer.update();
 
                         wd.ColliderEngine.getInstance().update();
+                        wd.ColliderEngine.getInstance().detect();
                     }
 
                     octreeContainer.addChildren([box2, box3, box4]);
@@ -373,14 +380,14 @@ describe("CollisionDetector", function () {
 
                     updateAll();
                     //gameObjectScene.update();
-                    detector.update();
+
 
                     box1.transform.position = wd.Vector3.create(25, 0, 0);
 
 
 
                     updateAll();
-                    detector.update();
+
 
 
 
@@ -394,6 +401,7 @@ describe("CollisionDetector", function () {
                         box1.update();
                         octreeContainer.update();
                         wd.ColliderEngine.getInstance().update();
+                        wd.ColliderEngine.getInstance().detect();
                     }
 
                     beforeEach(function(){
@@ -412,7 +420,7 @@ describe("CollisionDetector", function () {
                         updateAll();
 
 
-                        detector.update();
+
 
 
                         expect(box1.scriptManager.execScriptWithData.withArgs("onCollisionStart")).not.toCalled();
@@ -434,7 +442,7 @@ describe("CollisionDetector", function () {
                             updateAll();
 
 
-                            detector.update();
+
 
 
                             expect(box1.scriptManager.execScriptWithData.withArgs("onCollisionStart")).not.toCalled();
@@ -459,7 +467,7 @@ describe("CollisionDetector", function () {
                             updateAll();
 
 
-                            detector.update();
+
 
 
                             expect(box1.scriptManager.execScriptWithData.withArgs("onCollisionStart")).not.toCalled();

@@ -1,22 +1,17 @@
 module wd{
     export class CollisionDetector{
-        public static create(gameObjectScene:GameObjectScene) {
-            var obj = new this(gameObjectScene);
+        public static create() {
+            var obj = new this();
 
             return obj;
         }
 
-        constructor(gameObjectScene:GameObjectScene){
-            this.gameObjectScene = gameObjectScene;
-        }
-
-        private gameObjectScene:GameObjectScene = null;
         private _collisionTable:wdCb.Hash<CollisionDataInTable> = wdCb.Hash.create<CollisionDataInTable>();
         private _lastCollisionTable:wdCb.Hash<CollisionDataInTable> = wdCb.Hash.create<CollisionDataInTable>();
 
         public update(elapsedTime:number){
             //todo optimize:use worker
-            var scene = this.gameObjectScene,
+            var scene = Director.getInstance().scene.gameObjectScene,
                 checkTargetList = scene.filter((gameObjectScene:GameObject) => {
                     return gameObjectScene.hasComponent(Collider)
                         || (JudgeUtils.isSpacePartitionObject(gameObjectScene) && gameObjectScene.getSpacePartition().isCollideEnable)

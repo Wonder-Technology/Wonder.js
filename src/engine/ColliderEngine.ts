@@ -12,10 +12,16 @@ module wd{
 
         protected list:wdCb.Collection<Collider>;
 
+        private _collisionDetector:CollisionDetector = CollisionDetector.create();
+
         public update(elapsedTime:number){
             this.list.forEach(function(child:Collider){
                 child.update(elapsedTime);
             });
+        }
+
+        public detect(elapsed:number){
+            this._collisionDetector.update(elapsed);
         }
     }
 }

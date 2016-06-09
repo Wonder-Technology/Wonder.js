@@ -58,7 +58,6 @@ module wd {
         public shadowManager:ShadowManager = ShadowManager.create(this);
 
         private _lightManager:LightManager = LightManager.create();
-        private _collisionDetector:CollisionDetector = CollisionDetector.create(this);
         private _cameraList:wdCb.Collection<GameObject> = wdCb.Collection.create<GameObject>();
 
         public init(){
@@ -99,8 +98,7 @@ module wd {
 
         public update(elapsed:number){
             var currentCamera= this._getCurrentCameraComponent(),
-                shadowManager:ShadowManager = this.shadowManager,
-                collisionDetector:CollisionDetector = this._collisionDetector;
+                shadowManager:ShadowManager = this.shadowManager;
 
             if(this.physics.enable){
                 this.physicsEngineAdapter.update(elapsed);
@@ -120,7 +118,7 @@ module wd {
 
             super.update(elapsed);
 
-            collisionDetector.update(elapsed);
+            ColliderEngine.getInstance().detect(elapsed);
         }
 
         public render(renderer:Renderer) {
