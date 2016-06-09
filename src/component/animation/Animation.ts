@@ -23,6 +23,22 @@ module wd{
 
         public abstract play(animName:string, fps:number):void;
 
+        public addToObject(entityObject:EntityObject, isShareComponent:boolean = false){
+            var engine:AnimationEngine = AnimationEngine.getInstance();
+
+            super.addToObject(entityObject, isShareComponent);
+
+            if(!engine.hasChild(this)){
+                engine.addChild(this);
+            }
+        }
+
+        public removeFromObject(entityObject:EntityObject){
+            super.removeFromObject(entityObject);
+
+            AnimationEngine.getInstance().removeChild(this);
+        }
+
         public clone(){
             return CloneUtils.clone(this);
         }

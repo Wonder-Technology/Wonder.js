@@ -719,5 +719,6 @@
 /// <reference path="engine/ScriptEngine"/>
 /// <reference path="engine/LODEngine"/>
 /// <reference path="engine/SPacePartitionEngine"/>
+/// <reference path="engine/AnimationEngine"/>
 
 /// <reference path="engine/UIEngine"/>

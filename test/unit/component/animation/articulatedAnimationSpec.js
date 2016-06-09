@@ -125,7 +125,7 @@ describe("articulated animation", function () {
 
                     anim.play(0);
 
-                    model.update(1);
+                    wd.AnimationEngine.getInstance().update(1);
 
 
                     judgePos([0.3, 0.1, 0]);
@@ -149,7 +149,7 @@ describe("articulated animation", function () {
                 model.init();
 
 
-                model.update(1);
+                wd.AnimationEngine.getInstance().update(1);
 
 
                 judgePos([0,0,0]);
@@ -182,7 +182,7 @@ describe("articulated animation", function () {
                     model.init();
 
 
-                    model.update(0);
+                    wd.AnimationEngine.getInstance().update(0);
 
 
                     judgePos([3,1,0]);
@@ -239,21 +239,21 @@ describe("articulated animation", function () {
                     });
 
                     it("test not finish all keys", function () {
-                        model.update(1);
-                        model.update(21);
+                        wd.AnimationEngine.getInstance().update(1);
+                        wd.AnimationEngine.getInstance().update(21);
 
 
                         judgePos([3.1,1,0]);
                     });
                     it("test finish all keys", function () {
-                        model.update(11);
-                        model.update(31);
+                        wd.AnimationEngine.getInstance().update(11);
+                        wd.AnimationEngine.getInstance().update(31);
 
 
                         judgePos([3.8,1,0]);
                     });
                     it("test2 finish all keys", function () {
-                        model.update(31);
+                        wd.AnimationEngine.getInstance().update(31);
 
 
                         judgePos([3.8,1,0]);
@@ -311,15 +311,15 @@ describe("articulated animation", function () {
 
                 describe("test interpolation", function(){
                     it("test1", function () {
-                        model.update(firstKeyTime/10);
+                        wd.AnimationEngine.getInstance().update(firstKeyTime/10);
 
                         judgePos([0.2,0.1,0]);
                         judgeScale([1, 1.1, 1.2]);
                         judgeRotation([0.5, 2.2, 2.8]);
                     });
                     it("test2", function () {
-                        model.update(firstKeyTime/10);
-                        model.update(firstKeyTime/5);
+                        wd.AnimationEngine.getInstance().update(firstKeyTime/10);
+                        wd.AnimationEngine.getInstance().update(firstKeyTime/5);
 
                         judgePos([0.4,0.2,0]);
                         judgeScale([1, 1.2, 1.4]);
@@ -329,22 +329,22 @@ describe("articulated animation", function () {
 
                 describe("test finish first key", function () {
                     it("test1", function(){
-                        model.update(firstKeyTime);
+                        wd.AnimationEngine.getInstance().update(firstKeyTime);
 
                         judgePos([2,1,0]);
                         judgeScale([1,2,3]);
                         judgeRotation([10,20,30]);
                     });
                     it("test2", function(){
-                        model.update(firstKeyTime * 0.9);
-                        model.update(firstKeyTime + 1);
+                        wd.AnimationEngine.getInstance().update(firstKeyTime * 0.9);
+                        wd.AnimationEngine.getInstance().update(firstKeyTime + 1);
 
                         judgePos([2.2,1,0]);
                         judgeScale([1,2,3.2]);
                         judgeRotation([10,20,32]);
                     });
                     it("test3", function(){
-                        model.update(firstKeyTime + 1);
+                        wd.AnimationEngine.getInstance().update(firstKeyTime + 1);
 
                         judgePos([2.2,1,0]);
                         judgeScale([1,2,3.2]);
@@ -353,16 +353,16 @@ describe("articulated animation", function () {
                 });
 
                 it("test begin second key", function () {
-                    model.update(firstKeyTime);
-                    model.update(firstKeyTime + 1);
+                    wd.AnimationEngine.getInstance().update(firstKeyTime);
+                    wd.AnimationEngine.getInstance().update(firstKeyTime + 1);
 
                     judgePos([2.2,1,0]);
                     judgeScale([1,2,3.2]);
                     judgeRotation([10,20,32]);
                 });
                 it("test finish second key", function () {
-                    model.update(firstKeyTime);
-                    model.update(secondKeyTime);
+                    wd.AnimationEngine.getInstance().update(firstKeyTime);
+                    wd.AnimationEngine.getInstance().update(secondKeyTime);
 
                     judgePos([3,1,0]);
                     judgeScale([1,2,4]);
@@ -371,30 +371,30 @@ describe("articulated animation", function () {
 
                 describe("test finish all keys", function(){
                     beforeEach(function(){
-                        model.update(firstKeyTime + 1);
+                        wd.AnimationEngine.getInstance().update(firstKeyTime + 1);
                     });
 
 
                     it("test first key", function () {
-                        model.update(secondKeyTime + 2);
+                        wd.AnimationEngine.getInstance().update(secondKeyTime + 2);
 
                         judgePos([2.8,1,0]);
                         judgeScale([1,2,3.8]);
                         judgeRotation([10,20,38]);
                     });
                     it("test second key", function () {
-                        model.update(secondKeyTime + 1);
-                        model.update(secondKeyTime + firstKeyTime + 1);
+                        wd.AnimationEngine.getInstance().update(secondKeyTime + 1);
+                        wd.AnimationEngine.getInstance().update(secondKeyTime + firstKeyTime + 1);
 
                         judgePos([2.2,1,0]);
                         judgeScale([1,2,3.2]);
                         judgeRotation([10,20,32]);
                     });
                     it("test finish all key twice", function () {
-                        model.update(secondKeyTime + 1);
-                        model.update(secondKeyTime + firstKeyTime + 1);
+                        wd.AnimationEngine.getInstance().update(secondKeyTime + 1);
+                        wd.AnimationEngine.getInstance().update(secondKeyTime + firstKeyTime + 1);
 
-                        model.update(secondKeyTime + secondKeyTime + 1);
+                        wd.AnimationEngine.getInstance().update(secondKeyTime + secondKeyTime + 1);
 
                         judgePos([2.9,1,0]);
                         judgeScale([1,2,3.9]);
@@ -457,7 +457,7 @@ describe("articulated animation", function () {
             it("play,stop", function(){
                 anim.play("play");
 
-                model.update(1);
+                wd.AnimationEngine.getInstance().update(1);
 
                 judgePos([0.2, 0.1, 0]);
 
@@ -467,7 +467,7 @@ describe("articulated animation", function () {
 
 
 
-                model.update(2);
+                wd.AnimationEngine.getInstance().update(2);
 
                 judgePos([0.2, 0.1, 0]);
 
@@ -480,7 +480,7 @@ describe("articulated animation", function () {
 
 
 
-                model.update(4);
+                wd.AnimationEngine.getInstance().update(4);
 
                 judgePos(
                     wd.Vector3.create().lerp(
@@ -495,7 +495,7 @@ describe("articulated animation", function () {
                 beforeEach(function(){
                     anim.play("play");
 
-                    model.update(1);
+                    wd.AnimationEngine.getInstance().update(1);
 
                     judgePos([0.2, 0.1, 0]);
 
@@ -506,7 +506,7 @@ describe("articulated animation", function () {
 
 
 
-                    model.update(2);
+                    wd.AnimationEngine.getInstance().update(2);
 
                     judgePos([0.2, 0.1, 0]);
 
@@ -516,7 +516,7 @@ describe("articulated animation", function () {
                 });
 
                 it("test in first key", function () {
-                    model.update(4);
+                    wd.AnimationEngine.getInstance().update(4);
 
                     judgePos(
                         wd.Vector3.create().lerp(
@@ -527,15 +527,15 @@ describe("articulated animation", function () {
                     );
                 });
                 it("test switch to second key", function () {
-                    model.update(firstKeyTime + 2);
+                    wd.AnimationEngine.getInstance().update(firstKeyTime + 2);
 
                     judgePos(
                         [2.2, 1, 0]
                     );
                 });
                 it("test finish all keys", function () {
-                    model.update(firstKeyTime + 2);
-                    model.update(secondKeyTime + 2);
+                    wd.AnimationEngine.getInstance().update(firstKeyTime + 2);
+                    wd.AnimationEngine.getInstance().update(secondKeyTime + 2);
 
                     judgePos(
                         [2.9, 1, 0]

@@ -15,7 +15,6 @@ module wd{
         private _entityObject:EntityObject = null;
         private _components:wdCb.Collection<any> = wdCb.Collection.create<any>();
         private _rendererComponent:RendererComponent = null;
-        private _animation:Animation = null;
         private _collider:Collider = null;
         private _geometry:Geometry = null;
 
@@ -110,9 +109,6 @@ module wd{
             if(component instanceof RendererComponent){
                 this._rendererComponent = component;
             }
-            else if(component instanceof Animation){
-                this._animation = component;
-            }
             else if(component instanceof Collider){
                 this._collider = component;
             }
@@ -169,13 +165,6 @@ module wd{
         })
         public getGeometry():Geometry{
             return this._geometry;
-        }
-
-        @require(function(){
-            assert(this.getComponentCount(Animation) <= 1, Log.info.FUNC_SHOULD_NOT("entityObject", "contain more than 1 animation component"));
-        })
-        public getAnimation():Animation{
-            return this._animation;
         }
 
         @require(function(){

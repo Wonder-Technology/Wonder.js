@@ -115,6 +115,8 @@ module wd {
             LODEngine.getInstance().update(elapsed);
             SpacePartitionEngine.getInstance().update(elapsed);
 
+            AnimationEngine.getInstance().update(elapsed);
+
             super.update(elapsed);
 
             collisionDetector.update(elapsed);

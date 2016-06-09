@@ -285,12 +285,7 @@ module wd {
         }
 
         public update(elapsedTime:number):void {
-            var animation = this._componentManager.getAnimation(),
-                collider = this._componentManager.getCollider();
-
-            if(animation){
-                animation.update(elapsedTime);
-            }
+            var collider = this._componentManager.getCollider();
 
             if(collider){
                 collider.update(elapsedTime);
