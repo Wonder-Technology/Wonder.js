@@ -107,6 +107,8 @@ describe("CollisionDetector", function () {
                     [box1,box2,box3,box4].forEach(function(box){
                         box.update();
                     });
+
+                    wd.ColliderEngine.getInstance().update();
                 }
 
                 it("collide test1", function () {
@@ -167,6 +169,8 @@ describe("CollisionDetector", function () {
                     function updateAll(){
                         box1.update();
                         octreeContainer.update();
+
+                        wd.ColliderEngine.getInstance().update();
                     }
 
                     beforeEach(function () {
@@ -195,8 +199,7 @@ describe("CollisionDetector", function () {
 
 
 
-                        box1.update();
-                        octreeContainer.update();
+                        updateAll();
 
 
                         detector.update();
@@ -210,8 +213,7 @@ describe("CollisionDetector", function () {
                         box1.transform.position = wd.Vector3.create(25, 0, 0);
 
 
-                        box1.update();
-                        octreeContainer.update();
+                        updateAll();
                         detector.update();
 
 
@@ -230,8 +232,7 @@ describe("CollisionDetector", function () {
 
                         box1.transform.position = wd.Vector3.create(9, 9, 9);
 
-                        box1.update();
-                        octreeContainer.update();
+                        updateAll();
                         detector.update();
 
 
@@ -245,8 +246,8 @@ describe("CollisionDetector", function () {
                         box1.transform.position = wd.Vector3.create(25, 0, 0);
 
 
-                        box1.update();
-                        octreeContainer.update();
+                        updateAll();
+
                         detector.update();
 
 
@@ -260,8 +261,7 @@ describe("CollisionDetector", function () {
                         gameObjectScene.init();
 
 
-                        box1.update();
-                        octreeContainer.update();
+                        updateAll();
 
                         detector.update();
 
@@ -272,8 +272,7 @@ describe("CollisionDetector", function () {
                         judgeCollideObjects(box3, "onContact", 0, [box1]);
 
 
-                        box1.update();
-                        octreeContainer.update();
+                        updateAll();
 
                         detector.update();
 
@@ -288,6 +287,14 @@ describe("CollisionDetector", function () {
 
                 describe("test octree collide with octree", function() {
                     it("test octree, octree, gameObject collide with each other", function() {
+                        function updateAll(){
+                            box1.update();
+                            octreeContainer.update();
+                            octreeContainer2.update();
+
+                            wd.ColliderEngine.getInstance().update();
+                        }
+
                         var box5 = createBox("box5");
                         box5.transform.position = wd.Vector3.create(8, 9, 9);
 
@@ -306,12 +313,10 @@ describe("CollisionDetector", function () {
 
 
                         gameObjectScene.init();
-                        box1.update();
-                        octreeContainer.update();
-                        octreeContainer2.update();
 
 
                         //gameObjectScene.update();
+                        updateAll();
 
                         detector.update();
 
@@ -337,9 +342,7 @@ describe("CollisionDetector", function () {
 
 
 
-                        box1.update();
-                        octreeContainer.update();
-                        octreeContainer2.update();
+                        updateAll();
                         detector.update();
 
 
@@ -353,14 +356,22 @@ describe("CollisionDetector", function () {
                 });
 
                 it("test onCollisionEnd event", function () {
+                    function updateAll(){
+                        box1.update();
+                        octreeContainer.update();
+
+                        wd.ColliderEngine.getInstance().update();
+                    }
+
                     octreeContainer.addChildren([box2, box3, box4]);
 
                     gameObjectScene.addChildren([box1, octreeContainer]);
 
 
                     gameObjectScene.init();
-                    box1.update();
-                    octreeContainer.update();
+
+
+                    updateAll();
                     //gameObjectScene.update();
                     detector.update();
 
@@ -368,8 +379,7 @@ describe("CollisionDetector", function () {
 
 
 
-                    box1.update();
-                    octreeContainer.update();
+                    updateAll();
                     detector.update();
 
 
@@ -383,6 +393,7 @@ describe("CollisionDetector", function () {
                     function updateAll(){
                         box1.update();
                         octreeContainer.update();
+                        wd.ColliderEngine.getInstance().update();
                     }
 
                     beforeEach(function(){

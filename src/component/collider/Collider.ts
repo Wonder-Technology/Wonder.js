@@ -23,6 +23,22 @@ module wd {
             this.buildBoundingRegion();
         }
 
+        public addToObject(entityObject:EntityObject, isShareComponent:boolean = false){
+            var engine:ColliderEngine = ColliderEngine.getInstance();
+
+            super.addToObject(entityObject, isShareComponent);
+
+            if(!engine.hasChild(this)){
+                engine.addChild(this);
+            }
+        }
+
+        public removeFromObject(entityObject:EntityObject){
+            super.removeFromObject(entityObject);
+
+            ColliderEngine.getInstance().removeChild(this);
+        }
+
         public clone(){
             return CloneUtils.clone(this);
         }

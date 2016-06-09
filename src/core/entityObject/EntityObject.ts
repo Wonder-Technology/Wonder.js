@@ -285,12 +285,6 @@ module wd {
         }
 
         public update(elapsedTime:number):void {
-            var collider = this._componentManager.getCollider();
-
-            if(collider){
-                collider.update(elapsedTime);
-            }
-
             this.beforeUpdateChildren(elapsedTime);
 
             this.forEach((child:EntityObject) => {

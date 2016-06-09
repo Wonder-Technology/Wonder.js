@@ -203,7 +203,7 @@
         //'test/unit/component/physics/**/eventSpec*',
 
         //'test/unit/**/OctreeSpec*',
-        //'test/unit/**/CollisionDetectorSpec*',
+        'test/unit/**/CollisionDetectorSpec*',
         //'test/unit/**/BoundingRegionUtilsSpec*',
 
         //'test/unit/**/SourceLightSpec*',
@@ -225,12 +225,11 @@
 
         //'test/unit/component/event/eventSpec*',
 
-        'test/unit/**/ui/**',
-        'test/unit/**/UIObjectSpec*',
-        ////
-        ////
-        'test/unit/**/ButtonSpec*',
-        'test/unit/**/UIStateMachineSpec*',
+        //'test/unit/**/ui/**',
+        //'test/unit/**/UIObjectSpec*',
+
+        //'test/unit/**/ButtonSpec*',
+        //'test/unit/**/UIStateMachineSpec*',
 
 
         //'test/unit/**/*Asset*',
@@ -262,7 +261,7 @@
         //'test/unit/**/rayPicking*',
         //'test/unit/**/AABBShapeSpec*',
         //'test/unit/**/SphereShapeSpec*',
-        //'test/unit/**/collider/**',
+        'test/unit/**/collider/**',
         //'test/unit/**/ActionManagerSpec*',
         //'test/unit/**/TwoDShadow*Spec.js',
         //'test/unit/**/*CustomGeo*.js',
