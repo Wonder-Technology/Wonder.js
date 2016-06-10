@@ -111,11 +111,11 @@ module wd {
             SpacePartitionEngine.getInstance().update(elapsed);
 
             AnimationEngine.getInstance().update(elapsed);
-            ColliderEngine.getInstance().update(elapsed);
+            CollisionEngine.getInstance().update(elapsed);
 
             super.update(elapsed);
 
-            ColliderEngine.getInstance().detect(elapsed);
+            CollisionEngine.getInstance().detect(elapsed);
         }
 
         public render(renderer:Renderer) {

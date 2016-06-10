@@ -720,7 +720,7 @@
 /// <reference path="engine/LODEngine"/>
 /// <reference path="engine/SpacePartitionEngine"/>
 /// <reference path="engine/AnimationEngine"/>
-/// <reference path="engine/ColliderEngine"/>
+/// <reference path="engine/CollisionEngine"/>
 /// <reference path="engine/PhysicsEngine"/>
 
 /// <reference path="engine/UIEngine"/>

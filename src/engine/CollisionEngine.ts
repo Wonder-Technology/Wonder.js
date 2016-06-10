@@ -1,5 +1,5 @@
 module wd{
-    export class ColliderEngine extends ComponentContainer{
+    export class CollisionEngine extends ComponentContainer{
         private static _instance = null;
 
         public static getInstance() {
