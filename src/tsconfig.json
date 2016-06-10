@@ -540,8 +540,8 @@
 		"engine/LODEngine.ts",
 		"engine/SpacePartitionEngine.ts",
 		"engine/AnimationEngine.ts",
-		"engine/ColliderEngine.ts",
-		"engine/RigidBodyEngine.ts",
+		"engine/CollisionEngine.ts",
+		"engine/PhysicsEngine.ts",
 		"engine/UIEngine.ts"
 	]
 }

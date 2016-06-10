@@ -2739,7 +2739,6 @@ declare module wd {
         shadowMap: ShadowMapModel;
         currentCamera: GameObject;
         physics: PhysicsConfig;
-        physicsEngineAdapter: IPhysicsEngineAdapter;
         glslData: wdCb.Hash<any>;
         isUseShader: boolean;
         currentShaderType: EShaderTypeOfScene;
@@ -2849,7 +2848,6 @@ declare module wd {
         side: ESide;
         shadowMap: ShadowMapModel;
         physics: PhysicsConfig;
-        physicsEngineAdapter: IPhysicsEngineAdapter;
         glslData: wdCb.Hash<any>;
         currentShaderType: EShaderTypeOfScene;
         renderTargetRendererManager: RenderTargetRendererManager;
@@ -5365,6 +5363,8 @@ declare module wd {
         removeHingeConstraint(entityObject: GameObject): void;
         addPointToPointConstraint(entityObject: GameObject, pointToPointConstraint: PointToPointConstraint): void;
         removePointToPointConstraint(pointToPointConstraint: PointToPointConstraint): void;
+        removeGameObject(obj: GameObject): void;
+        removeConstraints(obj: GameObject): void;
     }
 }
 
@@ -10027,7 +10027,7 @@ declare module wd {
 }
 
 declare module wd {
-    class ColliderEngine extends ComponentContainer {
+    class CollisionEngine extends ComponentContainer {
         private static _instance;
         static getInstance(): any;
         protected list: wdCb.Collection<Collider>;
@@ -10038,12 +10038,16 @@ declare module wd {
 }
 
 declare module wd {
-    class RigidBodyEngine extends ComponentContainer {
+    class PhysicsEngine extends ComponentContainer {
         private static _instance;
         static getInstance(): any;
+        physicsEngineAdapter: IPhysicsEngineAdapter;
         protected list: wdCb.Collection<RigidBody>;
+        removeChild(body: RigidBody): void;
+        initPhysicsEngineAdapter(): void;
         initBody(): void;
         initConstraint(): void;
+        update(elapsed: number): void;
     }
 }
 
@@ -10138,8 +10142,6 @@ declare module wd {
         static twoDShadowMap_fragment: GLSLChunk;
         static twoDShadowMap_unpackDepth_fragment: GLSLChunk;
         static twoDShadowMap_vertex: GLSLChunk;
-        static terrainLayer_fragment: GLSLChunk;
-        static terrainLayer_vertex: GLSLChunk;
         static mirror_fragment: GLSLChunk;
         static mirror_vertex: GLSLChunk;
         static water_bump_fragment: GLSLChunk;
@@ -10152,14 +10154,16 @@ declare module wd {
         static water_reflection_fragment: GLSLChunk;
         static water_refraction_fragment: GLSLChunk;
         static water_vertex: GLSLChunk;
+        static terrainLayer_fragment: GLSLChunk;
+        static terrainLayer_vertex: GLSLChunk;
         static brick_proceduralTexture_fragment: GLSLChunk;
         static cloud_proceduralTexture_fragment: GLSLChunk;
         static common_proceduralTexture_fragment: GLSLChunk;
         static common_proceduralTexture_vertex: GLSLChunk;
         static fire_proceduralTexture_fragment: GLSLChunk;
+        static road_proceduralTexture_fragment: GLSLChunk;
         static grass_proceduralTexture_fragment: GLSLChunk;
         static marble_proceduralTexture_fragment: GLSLChunk;
-        static road_proceduralTexture_fragment: GLSLChunk;
         static wood_proceduralTexture_fragment: GLSLChunk;
     }
     type GLSLChunk = {

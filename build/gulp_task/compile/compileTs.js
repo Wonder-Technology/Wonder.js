@@ -125,15 +125,8 @@ gulp.task("compileTsDebug", function() {
     var tsResult = tsProject.src()
         .pipe(gulpSourcemaps.init())
         .pipe(gulpTs(tsProject))
-
-        /*!
-         should not use:
-         pipe(gulpHeader(banner, {bowerConfig:bowerConfig}))
-
-         this will cause "Failed to parse SourceMap" error in chrome!
-         */
+        .pipe(gulpHeader(banner, {bowerConfig:bowerConfig}))
         .pipe(gulpSourcemaps.write("./"))
-        //.pipe(gulpHeader(banner, {bowerConfig:bowerConfig}))
         .pipe(gulp.dest("dist/"))
 
     return tsResult;

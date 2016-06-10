@@ -1,3 +1,11 @@
+/**
+ * wonder - 3d html5 game engine
+ * @version v0.5.8
+ * @author Yuanchao Yang <395976266@qq.com>
+ * @link https://github.com/yyc-git/Wonder.js
+ * @license MIT
+ */
+
 var wd;
 (function (wd) {
     wd.DebugConfig = {
@@ -299,26 +307,26 @@ var wd;
         return function (target, name, descriptor) {
             var getter = descriptor.get, setter = descriptor.set;
             descriptor.get = function () {
-                var scene = wd.Director.getInstance().scene;
-                if (isWorldDefined(scene)) {
-                    var data = scene.physicsEngineAdapter[("get" + dataName)]();
+                var physicsEngineAdapter = wd.PhysicsEngine.getInstance().physicsEngineAdapter;
+                if (isWorldDefined(physicsEngineAdapter)) {
+                    var data = physicsEngineAdapter[("get" + dataName)]();
                     return data !== null ? data : this[("_" + lowerFirstChar(dataName))];
                 }
                 return getter.call(this);
             };
             descriptor.set = function (val) {
-                var scene = wd.Director.getInstance().scene;
+                var physicsEngineAdapter = wd.PhysicsEngine.getInstance().physicsEngineAdapter;
                 setter.call(this, val);
-                if (isWorldDefined(scene)) {
-                    scene.physicsEngineAdapter[("set" + dataName)](val);
+                if (isWorldDefined(physicsEngineAdapter)) {
+                    physicsEngineAdapter[("set" + dataName)](val);
                 }
             };
             return descriptor;
         };
     }
     wd.operateWorldDataGetterAndSetter = operateWorldDataGetterAndSetter;
-    function isWorldDefined(scene) {
-        return scene.physicsEngineAdapter && scene.physicsEngineAdapter.world;
+    function isWorldDefined(physicsEngineAdapter) {
+        return physicsEngineAdapter && physicsEngineAdapter.world;
     }
     function lowerFirstChar(str) {
         var firstChar = str.slice(0, 1);
@@ -4583,16 +4591,6 @@ var wd;
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(SceneDispatcher.prototype, "physicsEngineAdapter", {
-            get: function () {
-                return this.gameObjectScene.physicsEngineAdapter;
-            },
-            set: function (physicsEngineAdapter) {
-                this.gameObjectScene.physicsEngineAdapter = physicsEngineAdapter;
-            },
-            enumerable: true,
-            configurable: true
-        });
         Object.defineProperty(SceneDispatcher.prototype, "glslData", {
             get: function () {
                 return this.gameObjectScene.glslData;
@@ -5022,7 +5020,6 @@ var wd;
             this.side = null;
             this.shadowMap = ShadowMapModel.create(this);
             this.physics = PhysicsConfig.create();
-            this.physicsEngineAdapter = null;
             this.glslData = wdCb.Hash.create();
             this.currentShaderType = null;
             this.renderTargetRendererManager = wd.RenderTargetRendererManager.create();
@@ -5081,15 +5078,12 @@ var wd;
             configurable: true
         });
         GameObjectScene.prototype.init = function () {
-            if (this.physics.enable) {
-                this.physicsEngineAdapter = wd.PhysicsEngineFactory.create(this.physics.engine);
-                this.physicsEngineAdapter.init();
-            }
+            wd.PhysicsEngine.getInstance().initPhysicsEngineAdapter();
             this.shadowManager.init();
             _super.prototype.init.call(this);
             this.renderTargetRendererManager.init();
-            wd.RigidBodyEngine.getInstance().initBody();
-            wd.RigidBodyEngine.getInstance().initConstraint();
+            wd.PhysicsEngine.getInstance().initBody();
+            wd.PhysicsEngine.getInstance().initConstraint();
             return this;
         };
         GameObjectScene.prototype.dispose = function () {
@@ -5109,9 +5103,7 @@ var wd;
         };
         GameObjectScene.prototype.update = function (elapsed) {
             var currentCamera = this._getCurrentCameraComponent(), shadowManager = this.shadowManager;
-            if (this.physics.enable) {
-                this.physicsEngineAdapter.update(elapsed);
-            }
+            wd.PhysicsEngine.getInstance().update(elapsed);
             if (currentCamera) {
                 currentCamera.update(elapsed);
             }
@@ -5119,9 +5111,9 @@ var wd;
             wd.LODEngine.getInstance().update(elapsed);
             wd.SpacePartitionEngine.getInstance().update(elapsed);
             wd.AnimationEngine.getInstance().update(elapsed);
-            wd.ColliderEngine.getInstance().update(elapsed);
+            wd.CollisionEngine.getInstance().update(elapsed);
             _super.prototype.update.call(this, elapsed);
-            wd.ColliderEngine.getInstance().detect(elapsed);
+            wd.CollisionEngine.getInstance().detect(elapsed);
         };
         GameObjectScene.prototype.render = function (renderer) {
             this.shadowManager.setShadowRenderListForCurrentLoop();
@@ -15119,7 +15111,7 @@ var wd;
         };
         Collider.prototype.addToObject = function (entityObject, isShareComponent) {
             if (isShareComponent === void 0) { isShareComponent = false; }
-            var engine = wd.ColliderEngine.getInstance();
+            var engine = wd.CollisionEngine.getInstance();
             _super.prototype.addToObject.call(this, entityObject, isShareComponent);
             if (!engine.hasChild(this)) {
                 engine.addChild(this);
@@ -15127,7 +15119,7 @@ var wd;
         };
         Collider.prototype.removeFromObject = function (entityObject) {
             _super.prototype.removeFromObject.call(this, entityObject);
-            wd.ColliderEngine.getInstance().removeChild(this);
+            wd.CollisionEngine.getInstance().removeChild(this);
         };
         Collider.prototype.clone = function () {
             return wd.CloneUtils.clone(this);
@@ -15876,7 +15868,7 @@ var wd;
         });
         RigidBody.prototype.addToObject = function (entityObject, isShareComponent) {
             if (isShareComponent === void 0) { isShareComponent = false; }
-            var engine = wd.RigidBodyEngine.getInstance();
+            var engine = wd.PhysicsEngine.getInstance();
             _super.prototype.addToObject.call(this, entityObject, isShareComponent);
             if (!engine.hasChild(this)) {
                 engine.addChild(this);
@@ -15901,13 +15893,8 @@ var wd;
             }
         };
         RigidBody.prototype.removeFromObject = function (entityObject) {
-            var engineAdapter = this.getPhysicsEngineAdapter();
-            if (engineAdapter) {
-                this.getPhysicsEngineAdapter().removeGameObject(entityObject);
-                this.getPhysicsEngineAdapter().removeConstraints(entityObject);
-            }
             _super.prototype.removeFromObject.call(this, entityObject);
-            wd.RigidBodyEngine.getInstance().removeChild(this);
+            wd.PhysicsEngine.getInstance().removeChild(this);
         };
         RigidBody.prototype.dispose = function () {
             this._children.forEach(function (child) {
@@ -15915,10 +15902,10 @@ var wd;
             }, this);
         };
         RigidBody.prototype.getPhysicsEngineAdapter = function () {
-            return wd.Director.getInstance().scene.physicsEngineAdapter;
+            return wd.PhysicsEngine.getInstance().physicsEngineAdapter;
         };
         RigidBody.prototype.isPhysicsEngineAdapterExist = function () {
-            return !!wd.Director.getInstance().scene && !!wd.Director.getInstance().scene.physicsEngineAdapter;
+            return !!this.getPhysicsEngineAdapter();
         };
         RigidBody.prototype.initBody = function () {
             this.addBody();
@@ -33267,58 +33254,81 @@ var wd;
 })(wd || (wd = {}));
 var wd;
 (function (wd) {
-    var ColliderEngine = (function (_super) {
-        __extends(ColliderEngine, _super);
-        function ColliderEngine() {
+    var CollisionEngine = (function (_super) {
+        __extends(CollisionEngine, _super);
+        function CollisionEngine() {
             _super.apply(this, arguments);
             this._collisionDetector = wd.CollisionDetector.create();
         }
-        ColliderEngine.getInstance = function () {
+        CollisionEngine.getInstance = function () {
             if (this._instance === null) {
                 this._instance = new this();
             }
             return this._instance;
         };
-        ColliderEngine.prototype.update = function (elapsed) {
+        CollisionEngine.prototype.update = function (elapsed) {
             this.list.forEach(function (child) {
                 child.update(elapsed);
             });
         };
-        ColliderEngine.prototype.detect = function (elapsed) {
+        CollisionEngine.prototype.detect = function (elapsed) {
             this._collisionDetector.update(elapsed);
         };
-        ColliderEngine._instance = null;
-        return ColliderEngine;
+        CollisionEngine._instance = null;
+        return CollisionEngine;
     }(wd.ComponentContainer));
-    wd.ColliderEngine = ColliderEngine;
+    wd.CollisionEngine = CollisionEngine;
 })(wd || (wd = {}));
 var wd;
 (function (wd) {
-    var RigidBodyEngine = (function (_super) {
-        __extends(RigidBodyEngine, _super);
-        function RigidBodyEngine() {
+    var PhysicsEngine = (function (_super) {
+        __extends(PhysicsEngine, _super);
+        function PhysicsEngine() {
             _super.apply(this, arguments);
+            this.physicsEngineAdapter = null;
         }
-        RigidBodyEngine.getInstance = function () {
+        PhysicsEngine.getInstance = function () {
             if (this._instance === null) {
                 this._instance = new this();
             }
             return this._instance;
         };
-        RigidBodyEngine.prototype.initBody = function () {
+        PhysicsEngine.prototype.removeChild = function (body) {
+            var physicsEngineAdapter = this.physicsEngineAdapter;
+            _super.prototype.removeChild.call(this, body);
+            if (physicsEngineAdapter) {
+                var entityObject = body.entityObject;
+                physicsEngineAdapter.removeGameObject(entityObject);
+                physicsEngineAdapter.removeConstraints(entityObject);
+            }
+        };
+        PhysicsEngine.prototype.initPhysicsEngineAdapter = function () {
+            var physics = wd.Director.getInstance().scene.physics;
+            if (physics.enable) {
+                this.physicsEngineAdapter = wd.PhysicsEngineFactory.create(physics.engine);
+                this.physicsEngineAdapter.init();
+            }
+        };
+        PhysicsEngine.prototype.initBody = function () {
             this.list.forEach(function (child) {
                 child.initBody();
             });
         };
-        RigidBodyEngine.prototype.initConstraint = function () {
+        PhysicsEngine.prototype.initConstraint = function () {
             this.list.forEach(function (child) {
                 child.initConstraint();
             });
         };
-        RigidBodyEngine._instance = null;
-        return RigidBodyEngine;
+        PhysicsEngine.prototype.update = function (elapsed) {
+            var physics = wd.Director.getInstance().scene.physics;
+            if (physics.enable) {
+                this.physicsEngineAdapter.update(elapsed);
+            }
+        };
+        PhysicsEngine._instance = null;
+        return PhysicsEngine;
     }(wd.ComponentContainer));
-    wd.RigidBodyEngine = RigidBodyEngine;
+    wd.PhysicsEngine = PhysicsEngine;
 })(wd || (wd = {}));
 var wd;
 (function (wd) {
@@ -33435,8 +33445,6 @@ var wd;
         ShaderChunk.twoDShadowMap_fragment = { top: "", define: "", varDeclare: "varying vec4 v_positionFromLight[ TWOD_SHADOWMAP_COUNT ];\n    uniform int u_isTwoDRenderListEmpty[ TWOD_SHADOWMAP_COUNT ];\n	uniform sampler2D u_twoDShadowMapSampler[ TWOD_SHADOWMAP_COUNT ];\n	uniform float u_twoDShadowDarkness[ TWOD_SHADOWMAP_COUNT ];\n	uniform float u_twoDShadowBias[ TWOD_SHADOWMAP_COUNT ];\n	uniform vec2 u_twoDShadowSize[ TWOD_SHADOWMAP_COUNT ];\n	uniform vec3 u_twoDLightPos[ TWOD_SHADOWMAP_COUNT ];\n", funcDeclare: "", funcDefine: "// PCF\nfloat getTwoDShadowVisibilityByPCF(float currentDepth, vec2 shadowCoord, sampler2D twoDShadowMapSampler, float shadowBias, float shadowDarkness, vec2 shadowMapSize){\n\n    float shadow = 0.0;\n    vec2 texelSize = vec2(1.0 / shadowMapSize[0], 1.0 / shadowMapSize[1]);\n\n    for(int x = -1; x <= 1; ++x)\n    {\n        for(int y = -1; y <= 1; ++y)\n        {\n            float pcfDepth = handleDepthMap(texture2D(twoDShadowMapSampler, shadowCoord + vec2(x, y) * texelSize));\n            shadow += currentDepth - shadowBias > pcfDepth  ? shadowDarkness : 1.0;\n        }\n    }\n    shadow /= 9.0;\n\n    return shadow;\n}\n\n\n\nfloat getTwoDShadowVisibility(vec3 lightDir, sampler2D twoDShadowMapSampler, vec4 v_positionFromLight, float shadowBias, float shadowDarkness, vec2 shadowSize) {\n    //project texture\n    vec3 shadowCoord = (v_positionFromLight.xyz / v_positionFromLight.w) / 2.0 + 0.5;\n    //vec3 shadowCoord = vec3(0.5, 0.5, 0.5);\n\n    #ifdef SHADOWMAP_TYPE_PCF\n    // Percentage-close filtering\n    // (9 pixel kernel)\n    return getTwoDShadowVisibilityByPCF(shadowCoord.z, shadowCoord.xy, twoDShadowMapSampler, getShadowBias(lightDir, shadowBias), shadowDarkness, shadowSize);\n\n    #else\n    return shadowCoord.z > handleDepthMap(texture2D(twoDShadowMapSampler, shadowCoord.xy)) + getShadowBias(lightDir, shadowBias) ? shadowDarkness : 1.0;\n    #endif\n}\n", body: "", };
         ShaderChunk.twoDShadowMap_unpackDepth_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "float handleDepthMap(vec4 rgbaDepth);\n", funcDefine: "float handleDepthMap(vec4 rgbaDepth) {\n    return unpackDepth(rgbaDepth);\n}\n", body: "", };
         ShaderChunk.twoDShadowMap_vertex = { top: "", define: "", varDeclare: "varying vec4 v_positionFromLight[ TWOD_SHADOWMAP_COUNT ];\nuniform mat4 u_vpMatrixFromLight[ TWOD_SHADOWMAP_COUNT ];\n", funcDeclare: "", funcDefine: "", body: "for( int i = 0; i < TWOD_SHADOWMAP_COUNT; i ++ ) {\n    v_positionFromLight[i] = u_vpMatrixFromLight[i] * vec4(v_worldPosition, 1.0);\n	}\n", };
-        ShaderChunk.terrainLayer_fragment = { top: "", define: "", varDeclare: "struct LayerHeightData {\n    float minHeight;\n    float maxHeight;\n};\nuniform LayerHeightData u_layerHeightDatas[LAYER_COUNT];\n//sampler2D can't be contained in struct\nuniform sampler2D u_layerSampler2Ds[LAYER_COUNT];\n\n\nvarying vec2 v_layerTexCoord;\n", funcDeclare: "", funcDefine: "vec4 getLayerTextureColor(in sampler2D layerSampler2Ds[LAYER_COUNT], in LayerHeightData layerHeightDatas[LAYER_COUNT]){\n    vec4 color = vec4(0.0);\n    bool isInLayer = false;\n\n    float height = v_worldPosition.y;\n\n    for(int i = 0; i < LAYER_COUNT; i++){\n        if(height >= layerHeightDatas[i].minHeight && height <= layerHeightDatas[i].maxHeight){\n            //todo blend color\n            color += texture2D(layerSampler2Ds[i], v_layerTexCoord);\n\n            isInLayer = true;\n\n            break;\n        }\n    }\n\n    return isInLayer ? color : vec4(1.0);\n}\n", body: "\ntotalColor *= getLayerTextureColor(u_layerSampler2Ds, u_layerHeightDatas);\n", };
-        ShaderChunk.terrainLayer_vertex = { top: "", define: "", varDeclare: "varying vec2 v_layerTexCoord;\n", funcDeclare: "", funcDefine: "", body: "v_layerTexCoord = a_texCoord;\n", };
         ShaderChunk.mirror_fragment = { top: "", define: "", varDeclare: "varying vec4 v_reflectionMapCoord;\n", funcDeclare: "", funcDefine: "//todo add more blend way to mix reflectionMap color and textureColor\n		float blendOverlay(float base, float blend) {\n			return( base < 0.5 ? ( 2.0 * base * blend ) : (1.0 - 2.0 * ( 1.0 - base ) * ( 1.0 - blend ) ) );\n		}\n		vec4 getReflectionMapColor(in vec4 materialColor){\n			vec4 color = texture2DProj(u_reflectionMapSampler, v_reflectionMapCoord);\n\n			color = vec4(blendOverlay(materialColor.r, color.r), blendOverlay(materialColor.g, color.g), blendOverlay(materialColor.b, color.b), 1.0);\n\n			return color;\n		}\n", body: "if(!isRenderListEmpty(u_isRenderListEmpty)){\n    totalColor *= getReflectionMapColor(totalColor);\n}\n", };
         ShaderChunk.mirror_vertex = { top: "", define: "", varDeclare: "varying vec4 v_reflectionMapCoord;\n", funcDeclare: "", funcDefine: "", body: "mat4 textureMatrix = mat4(\n                        0.5, 0.0, 0.0, 0.0,\n                        0.0, 0.5, 0.0, 0.0,\n                        0.0, 0.0, 0.5, 0.0,\n                        0.5, 0.5, 0.5, 1.0\n);\n\nv_reflectionMapCoord = textureMatrix * gl_Position;\n", };
         ShaderChunk.water_bump_fragment = { top: "", define: "", varDeclare: "varying vec2 v_bumpTexCoord;\n", funcDeclare: "", funcDefine: "", body: "// fetch bump texture, unpack from [0..1] to [-1..1]\n	vec3 bumpNormal = 2.0 * texture2D(u_bumpMapSampler, v_bumpTexCoord).rgb - 1.0;\n	vec2 perturbation = u_waveData.height * bumpNormal.rg;\n", };
@@ -33449,14 +33457,16 @@ var wd;
         ShaderChunk.water_reflection_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec3 getLightEffectColor(vec2 projectedTexCoords){\n    if(!isRenderListEmpty(u_isReflectionRenderListEmpty)){\n        return texture2D(u_reflectionMapSampler, projectedTexCoords).rgb * u_levelData.reflectionLevel;\n    }\n    return vec3(0.0);\n}\n", body: "", };
         ShaderChunk.water_refraction_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec3 getLightEffectColor(vec2 projectedTexCoords){\n    if(!isRenderListEmpty(u_isRefractionRenderListEmpty)){\n        return texture2D(u_refractionMapSampler, projectedTexCoords).rgb * u_levelData.refractionLevel;\n    }\n    return vec3(0.0);\n}\n", body: "", };
         ShaderChunk.water_vertex = { top: "", define: "", varDeclare: "varying vec4 v_reflectionAndRefractionMapCoord;\n", funcDeclare: "", funcDefine: "", body: "mat4 textureMatrix = mat4(\n                        0.5, 0.0, 0.0, 0.0,\n                        0.0, 0.5, 0.0, 0.0,\n                        0.0, 0.0, 0.5, 0.0,\n                        0.5, 0.5, 0.5, 1.0\n);\n\nv_reflectionAndRefractionMapCoord = textureMatrix * gl_Position;\n", };
+        ShaderChunk.terrainLayer_fragment = { top: "", define: "", varDeclare: "struct LayerHeightData {\n    float minHeight;\n    float maxHeight;\n};\nuniform LayerHeightData u_layerHeightDatas[LAYER_COUNT];\n//sampler2D can't be contained in struct\nuniform sampler2D u_layerSampler2Ds[LAYER_COUNT];\n\n\nvarying vec2 v_layerTexCoord;\n", funcDeclare: "", funcDefine: "vec4 getLayerTextureColor(in sampler2D layerSampler2Ds[LAYER_COUNT], in LayerHeightData layerHeightDatas[LAYER_COUNT]){\n    vec4 color = vec4(0.0);\n    bool isInLayer = false;\n\n    float height = v_worldPosition.y;\n\n    for(int i = 0; i < LAYER_COUNT; i++){\n        if(height >= layerHeightDatas[i].minHeight && height <= layerHeightDatas[i].maxHeight){\n            //todo blend color\n            color += texture2D(layerSampler2Ds[i], v_layerTexCoord);\n\n            isInLayer = true;\n\n            break;\n        }\n    }\n\n    return isInLayer ? color : vec4(1.0);\n}\n", body: "\ntotalColor *= getLayerTextureColor(u_layerSampler2Ds, u_layerHeightDatas);\n", };
+        ShaderChunk.terrainLayer_vertex = { top: "", define: "", varDeclare: "varying vec2 v_layerTexCoord;\n", funcDeclare: "", funcDefine: "", body: "v_layerTexCoord = a_texCoord;\n", };
         ShaderChunk.brick_proceduralTexture_fragment = { top: "", define: "", varDeclare: "varying vec2 v_texCoord;\n", funcDeclare: "", funcDefine: "", body: "float brickW = 1.0 / u_tilesWidthNumber;\n	float brickH = 1.0 / u_tilesWidthNumber;\n	float jointWPercentage = 0.01;\n	float jointHPercentage = 0.05;\n	vec3 color = u_brickColor;\n	float yi = v_texCoord.y / brickH;\n	float nyi = round(yi);\n	float xi = v_texCoord.x / brickW;\n\n	if (mod(floor(yi), 2.0) == 0.0){\n		xi = xi - 0.5;\n	}\n\n	float nxi = round(xi);\n	vec2 brickv_texCoord = vec2((xi - floor(xi)) / brickH, (yi - floor(yi)) /  brickW);\n\n	if (yi < nyi + jointHPercentage && yi > nyi - jointHPercentage){\n		color = mix(u_jointColor, vec3(0.37, 0.25, 0.25), (yi - nyi) / jointHPercentage + 0.2);\n	}\n	else if (xi < nxi + jointWPercentage && xi > nxi - jointWPercentage){\n		color = mix(u_jointColor, vec3(0.44, 0.44, 0.44), (xi - nxi) / jointWPercentage + 0.2);\n	}\n	else {\n		float u_brickColorSwitch = mod(floor(yi) + floor(xi), 3.0);\n\n		if (u_brickColorSwitch == 0.0)\n			color = mix(color, vec3(0.33, 0.33, 0.33), 0.3);\n		else if (u_brickColorSwitch == 2.0)\n			color = mix(color, vec3(0.11, 0.11, 0.11), 0.3);\n	}\n\n	gl_FragColor = vec4(color, 1.0);\n", };
         ShaderChunk.cloud_proceduralTexture_fragment = { top: "", define: "", varDeclare: "varying vec2 v_texCoord;\n", funcDeclare: "", funcDefine: "", body: "gl_FragColor = mix(u_skyColor, u_cloudColor, fbm(v_texCoord * 12.0));\n", };
         ShaderChunk.common_proceduralTexture_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "float rand(vec2 n) {\n	return fract(cos(dot(n, vec2(12.9898, 4.1414))) * 43758.5453);\n}\nfloat noise(vec2 n) {\n	const vec2 d = vec2(0.0, 1.0);\n	vec2 b = floor(n), f = smoothstep(vec2(0.0), vec2(1.0), fract(n));\n	return mix(mix(rand(b), rand(b + d.yx), f.x), mix(rand(b + d.xy), rand(b + d.yy), f.x), f.y);\n}\n\nfloat turbulence(vec2 P)\n{\n	float val = 0.0;\n	float freq = 1.0;\n	for (int i = 0; i < 4; i++)\n	{\n		val += abs(noise(P*freq) / freq);\n		freq *= 2.07;\n	}\n	return val;\n}\n\nfloat fbm(vec2 n) {\n	float total = 0.0, amplitude = 1.0;\n	for (int i = 0; i < 4; i++) {\n		total += noise(n) * amplitude;\n		n += n;\n		amplitude *= 0.5;\n	}\n	return total;\n}\n\nfloat round(float number){\n	return sign(number)*floor(abs(number) + 0.5);\n}\n", body: "", };
         ShaderChunk.common_proceduralTexture_vertex = { top: "", define: "", varDeclare: "varying vec2 v_texCoord;\nconst vec2 MADD=vec2(0.5,0.5);\n", funcDeclare: "", funcDefine: "", body: "v_texCoord=a_positionVec2*MADD+MADD;\n\n    gl_Position=vec4(a_positionVec2, 0.0 ,1.0);\n", };
         ShaderChunk.fire_proceduralTexture_fragment = { top: "", define: "", varDeclare: "varying vec2 v_texCoord;\nstruct FireColor {\n    vec3 c1;\n    vec3 c2;\n    vec3 c3;\n    vec3 c4;\n    vec3 c5;\n    vec3 c6;\n};\nuniform FireColor u_fireColor;\n", funcDeclare: "", funcDefine: "", body: "vec2 p = v_texCoord * 8.0;\n	float q = fbm(p - u_time * 0.1);\n	vec2 r = vec2(fbm(p + q + u_time * u_speed.x - p.x - p.y), fbm(p + q - u_time * u_speed.y));\n	vec3 c = mix(u_fireColor.c1, u_fireColor.c2, fbm(p + r)) + mix(u_fireColor.c3, u_fireColor.c4, r.x) - mix(u_fireColor.c5, u_fireColor.c6, r.y);\n	vec3 color = c * cos(u_shift * v_texCoord.y);\n	float luminance = dot(color.rgb, vec3(0.3, 0.59, 0.11));\n\n	gl_FragColor = vec4(color, luminance * u_alphaThreshold + (1.0 - u_alphaThreshold));\n", };
+        ShaderChunk.road_proceduralTexture_fragment = { top: "", define: "", varDeclare: "varying vec2 v_texCoord;\n", funcDeclare: "", funcDefine: "", body: "float ratioy = mod(gl_FragCoord.y * 100.0 , fbm(v_texCoord * 2.0));\n	vec3 color = u_roadColor * ratioy;\n\n	gl_FragColor = vec4(color, 1.0);\n", };
         ShaderChunk.grass_proceduralTexture_fragment = { top: "", define: "", varDeclare: "varying vec2 v_texCoord;\n", funcDeclare: "", funcDefine: "", body: "vec3 color = mix(u_groundColor, u_herb1Color, rand(gl_FragCoord.xy * 4.0));\n	color = mix(color, u_herb2Color, rand(gl_FragCoord.xy * 8.0));\n	color = mix(color, u_herb3Color, rand(gl_FragCoord.xy));\n	color = mix(color, u_herb1Color, fbm(gl_FragCoord.xy * 16.0));\n\n	gl_FragColor = vec4(color, 1.0);\n", };
         ShaderChunk.marble_proceduralTexture_fragment = { top: "", define: "", varDeclare: "varying vec2 v_texCoord;\nconst vec3 TILE_SIZE = vec3(1.1, 1.0, 1.1);\n//const vec3 TILE_PCT = vec3(0.98, 1.0, 0.98);\n", funcDeclare: "", funcDefine: "vec3 marble_color(float x)\n{\n	vec3 col;\n	x = 0.5*(x + 1.);\n	x = sqrt(x);\n	x = sqrt(x);\n	x = sqrt(x);\n	col = vec3(.2 + .75*x);\n	col.b *= 0.95;\n	return col;\n}\n", body: "vec3 color;\n	float brickW = 1.0 / u_tilesHeightNumber;\n	float brickH = 1.0 / u_tilesWidthNumber;\n	float jointWPercentage = 0.01;\n	float jointHPercentage = 0.01;\n	float yi = v_texCoord.y / brickH;\n	float nyi = round(yi);\n	float xi = v_texCoord.x / brickW;\n\n	if (mod(floor(yi), 2.0) == 0.0){\n		xi = xi - 0.5;\n	}\n\n	float nxi = round(xi);\n	vec2 brickv_texCoord = vec2((xi - floor(xi)) / brickH, (yi - floor(yi)) / brickW);\n\n	if (yi < nyi + jointHPercentage && yi > nyi - jointHPercentage){\n		color = mix(u_jointColor, vec3(0.37, 0.25, 0.25), (yi - nyi) / jointHPercentage + 0.2);\n	}\n	else if (xi < nxi + jointWPercentage && xi > nxi - jointWPercentage){\n		color = mix(u_jointColor, vec3(0.44, 0.44, 0.44), (xi - nxi) / jointWPercentage + 0.2);\n	}\n	else {\n		float t = 6.28 * brickv_texCoord.x / (TILE_SIZE.x + noise(vec2(v_texCoord)*6.0));\n		t += u_amplitude * turbulence(brickv_texCoord.xy);\n		t = sin(t);\n		color = marble_color(t);\n	}\n\n	gl_FragColor = vec4(color, 1.0);\n", };
-        ShaderChunk.road_proceduralTexture_fragment = { top: "", define: "", varDeclare: "varying vec2 v_texCoord;\n", funcDeclare: "", funcDefine: "", body: "float ratioy = mod(gl_FragCoord.y * 100.0 , fbm(v_texCoord * 2.0));\n	vec3 color = u_roadColor * ratioy;\n\n	gl_FragColor = vec4(color, 1.0);\n", };
         ShaderChunk.wood_proceduralTexture_fragment = { top: "", define: "", varDeclare: "varying vec2 v_texCoord;\n", funcDeclare: "", funcDefine: "", body: "float ratioy = mod(v_texCoord.x * u_ampScale, 2.0 + fbm(v_texCoord * 0.8));\n	vec3 wood = u_woodColor * ratioy;\n\n	gl_FragColor = vec4(wood, 1.0);\n", };
         return ShaderChunk;
     }());
