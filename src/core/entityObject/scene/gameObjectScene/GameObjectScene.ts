@@ -51,7 +51,6 @@ module wd {
         public side:ESide = null;
         public shadowMap = ShadowMapModel.create(this);
         public physics = PhysicsConfig.create();
-        public physicsEngineAdapter:IPhysicsEngineAdapter = null;
         public glslData:wdCb.Hash<any> = wdCb.Hash.create<any>();
         public currentShaderType:EShaderTypeOfScene = null;
         public renderTargetRendererManager:RenderTargetRendererManager = RenderTargetRendererManager.create();
@@ -61,10 +60,7 @@ module wd {
         private _cameraList:wdCb.Collection<GameObject> = wdCb.Collection.create<GameObject>();
 
         public init(){
-            if(this.physics.enable){
-                this.physicsEngineAdapter = PhysicsEngineFactory.create(this.physics.engine);
-                this.physicsEngineAdapter.init();
-            }
+            PhysicsEngine.getInstance().initPhysicsEngineAdapter();
 
             this.shadowManager.init();
 
@@ -72,8 +68,8 @@ module wd {
 
             this.renderTargetRendererManager.init();
 
-            RigidBodyEngine.getInstance().initBody();
-            RigidBodyEngine.getInstance().initConstraint();
+            PhysicsEngine.getInstance().initBody();
+            PhysicsEngine.getInstance().initConstraint();
 
             return this;
         }
@@ -103,9 +99,7 @@ module wd {
             var currentCamera= this._getCurrentCameraComponent(),
                 shadowManager:ShadowManager = this.shadowManager;
 
-            if(this.physics.enable){
-                this.physicsEngineAdapter.update(elapsed);
-            }
+            PhysicsEngine.getInstance().update(elapsed);
 
             if(currentCamera){
                 currentCamera.update(elapsed);

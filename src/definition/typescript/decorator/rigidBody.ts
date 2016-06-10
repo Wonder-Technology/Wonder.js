@@ -34,10 +34,10 @@ module wd {
                 setter = descriptor.set;
 
             descriptor.get = function () {
-                var scene = Director.getInstance().scene;
+                var physicsEngineAdapter:IPhysicsEngineAdapter = PhysicsEngine.getInstance().physicsEngineAdapter;
 
-                if(isWorldDefined(scene)){
-                    let data = scene.physicsEngineAdapter[`get${dataName}`]();
+                if(isWorldDefined(physicsEngineAdapter)){
+                    let data = physicsEngineAdapter[`get${dataName}`]();
 
                     return data !== null ? data : this[`_${lowerFirstChar(dataName)}`];
                 }
@@ -46,12 +46,12 @@ module wd {
             };
 
             descriptor.set = function(val){
-                var scene = Director.getInstance().scene;
+                var physicsEngineAdapter:IPhysicsEngineAdapter = PhysicsEngine.getInstance().physicsEngineAdapter;
 
                 setter.call(this, val);
 
-                if(isWorldDefined(scene)){
-                    scene.physicsEngineAdapter[`set${dataName}`](val);
+                if(isWorldDefined(physicsEngineAdapter)){
+                    physicsEngineAdapter[`set${dataName}`](val);
                 }
             };
 
@@ -59,8 +59,8 @@ module wd {
         }
     }
 
-    function isWorldDefined(scene:SceneDispatcher){
-        return scene.physicsEngineAdapter && scene.physicsEngineAdapter.world;
+    function isWorldDefined(physicsEngineAdapter:IPhysicsEngineAdapter){
+        return physicsEngineAdapter && physicsEngineAdapter.world;
     }
 
     function lowerFirstChar(str){

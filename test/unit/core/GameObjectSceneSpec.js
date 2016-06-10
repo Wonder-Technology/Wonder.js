@@ -244,13 +244,14 @@ describe("GameObjectScene", function() {
             });
 
             it("if enable physics, update phsics engine adapter", function () {
-                scene.physics.enable = true;
+                sandbox.stub(wd.Director.getInstance().scene.physics, "enable", true);
+
                 scene.init();
-                sandbox.stub(scene.physicsEngineAdapter, "update");
+                sandbox.stub(wd.PhysicsEngine.getInstance().physicsEngineAdapter, "update");
 
                 scene.update(elapsedTime);
 
-                expect(scene.physicsEngineAdapter.update).toCalledWith(elapsedTime);
+                expect(wd.PhysicsEngine.getInstance().physicsEngineAdapter.update).toCalledWith(elapsedTime);
             });
             it("if currentCamera component exist, update it", function () {
                 var camera1 = testTool.createCamera(),

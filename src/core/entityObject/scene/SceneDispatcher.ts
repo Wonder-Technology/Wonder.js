@@ -63,13 +63,6 @@ module wd {
             this.gameObjectScene.physics = physics;
         }
 
-        get physicsEngineAdapter(){
-            return this.gameObjectScene.physicsEngineAdapter;
-        }
-        set physicsEngineAdapter(physicsEngineAdapter:IPhysicsEngineAdapter){
-            this.gameObjectScene.physicsEngineAdapter = physicsEngineAdapter;
-        }
-
         get glslData(){
             return this.gameObjectScene.glslData;
         }

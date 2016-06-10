@@ -62,7 +62,7 @@ module wd {
         public pointToPointConstraintList:PointToPointConstraintList = PointToPointConstraintList.create(this);
 
         public addToObject(entityObject:EntityObject, isShareComponent:boolean = false){
-            var engine:RigidBodyEngine = RigidBodyEngine.getInstance();
+            var engine:PhysicsEngine = PhysicsEngine.getInstance();
 
             super.addToObject(entityObject, isShareComponent);
 
@@ -94,17 +94,10 @@ module wd {
         }
 
         public removeFromObject(entityObject:GameObject){
-            var engineAdapter:IPhysicsEngineAdapter = this.getPhysicsEngineAdapter();
-
-            if(engineAdapter){
-                this.getPhysicsEngineAdapter().removeGameObject(entityObject);
-
-                this.getPhysicsEngineAdapter().removeConstraints(entityObject);
-            }
-
             super.removeFromObject(entityObject);
 
-            RigidBodyEngine.getInstance().removeChild(this);
+            PhysicsEngine.getInstance().removeChild(this);
+
         }
 
         public dispose(){
@@ -114,11 +107,11 @@ module wd {
         }
 
         public getPhysicsEngineAdapter() {
-            return Director.getInstance().scene.physicsEngineAdapter;
+            return PhysicsEngine.getInstance().physicsEngineAdapter;
         }
 
         public isPhysicsEngineAdapterExist(){
-            return !!Director.getInstance().scene && !!Director.getInstance().scene.physicsEngineAdapter;
+            return !!this.getPhysicsEngineAdapter();
         }
 
         @execOnlyOnce("_initBody")

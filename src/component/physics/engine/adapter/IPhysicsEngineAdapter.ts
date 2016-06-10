@@ -33,6 +33,8 @@ module wd {
         removeHingeConstraint(entityObject:GameObject):void;
         addPointToPointConstraint(entityObject:GameObject, pointToPointConstraint:PointToPointConstraint):void;
         removePointToPointConstraint(pointToPointConstraint:PointToPointConstraint):void;
+        removeGameObject(obj:GameObject):void;
+        removeConstraints(obj:GameObject):void;
     }
 }
 

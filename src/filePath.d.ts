@@ -721,6 +721,6 @@
 /// <reference path="engine/SpacePartitionEngine"/>
 /// <reference path="engine/AnimationEngine"/>
 /// <reference path="engine/ColliderEngine"/>
-/// <reference path="engine/RigidBodyEngine"/>
+/// <reference path="engine/PhysicsEngine"/>
 
 /// <reference path="engine/UIEngine"/>
