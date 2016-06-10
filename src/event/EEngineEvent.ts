@@ -28,8 +28,6 @@ module wd{
 
         COMPONENT_CHANGE = <any>"wd_component_change",
 
-        UNUSE_SCENE_SHADER = <any>"wd_unUse_scene_shader",
-
         EXIT = <any>"wd_exit",
         ENTER = <any>"wd_enter"
     }
