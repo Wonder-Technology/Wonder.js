@@ -110,10 +110,6 @@ module wd {
             return PhysicsEngine.getInstance().physicsEngineAdapter;
         }
 
-        public isPhysicsEngineAdapterExist(){
-            return !!this.getPhysicsEngineAdapter();
-        }
-
         @execOnlyOnce("_initBody")
         public initBody(){
             this.addBody();

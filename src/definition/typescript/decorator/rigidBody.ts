@@ -5,21 +5,15 @@ module wd {
                 setter = descriptor.set;
 
             descriptor.get = function () {
-                if(this.isPhysicsEngineAdapterExist()){
-                    let data = this.getPhysicsEngineAdapter()[`get${dataName}`](this.entityObject);
+                let data = this.getPhysicsEngineAdapter()[`get${dataName}`](this.entityObject);
 
-                    return data !== null ? data : this[`_${lowerFirstChar(dataName)}`];
-                }
-
-                return getter.call(this);
+                return data !== null ? data : this[`_${lowerFirstChar(dataName)}`];
             };
 
             descriptor.set = function(val){
                 setter.call(this, val);
 
-                if(this.isPhysicsEngineAdapterExist()){
-                    this.getPhysicsEngineAdapter()[`set${dataName}`](this.entityObject, val);
-                }
+                this.getPhysicsEngineAdapter()[`set${dataName}`](this.entityObject, val);
             };
 
             return descriptor;

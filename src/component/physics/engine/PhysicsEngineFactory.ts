@@ -1,7 +1,15 @@
 module wd{
     export class PhysicsEngineFactory{
-        public static create(type:EPhysicsEngineType){
+        public static createNullAdapter():IPhysicsEngineAdapter{
+            return NullPhysicsEngineAdapter.create();
+        }
+
+        public static create(enable:boolean, type:EPhysicsEngineType):IPhysicsEngineAdapter{
             var result:IPhysicsEngineAdapter = null;
+
+            if(!enable){
+                return NullPhysicsEngineAdapter.create();
+            }
 
             switch (type){
                 case EPhysicsEngineType.CANNON:

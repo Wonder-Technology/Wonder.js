@@ -31,10 +31,6 @@ module wd{
 
             this._connectedBody = connectedBody;
 
-            if(!this.rigidBody.isPhysicsEngineAdapterExist()){
-                return;
-            }
-
             engineAdapter = this.rigidBody.getPhysicsEngineAdapter();
 
             engineAdapter.removeLockConstraint(this.rigidBody.entityObject);
@@ -59,10 +55,6 @@ module wd{
             var engineAdapter:IPhysicsEngineAdapter = null;
 
             this._connectedBody = connectedBody;
-
-            if(!this.rigidBody.isPhysicsEngineAdapterExist()){
-                return;
-            }
 
             engineAdapter = this.rigidBody.getPhysicsEngineAdapter();
 
@@ -92,10 +84,6 @@ module wd{
             var engineAdapter:IPhysicsEngineAdapter = null;
 
             this._connectedBody = connectedBody;
-
-            if(!this.rigidBody.isPhysicsEngineAdapterExist()){
-                return;
-            }
 
             engineAdapter = this.rigidBody.getPhysicsEngineAdapter();
 
@@ -175,10 +163,6 @@ module wd{
 
             this._list.addChild(constraint);
 
-            if(!this._rigidBody.isPhysicsEngineAdapterExist()){
-                return;
-            }
-
             engineAdapter = this._rigidBody.getPhysicsEngineAdapter();
 
             engineAdapter.addPointToPointConstraint(this._rigidBody.entityObject, constraint);
@@ -204,10 +188,6 @@ module wd{
 
             this._list.removeChild(constraint);
 
-            if(!this._rigidBody.isPhysicsEngineAdapterExist()){
-                return;
-            }
-
             engineAdapter = this._rigidBody.getPhysicsEngineAdapter();
 
             engineAdapter.removePointToPointConstraint(constraint);
@@ -215,3 +195,4 @@ module wd{
     }
 
 }
+

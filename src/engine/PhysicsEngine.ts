@@ -10,7 +10,7 @@ module wd{
             return this._instance;
         }
 
-        public physicsEngineAdapter:IPhysicsEngineAdapter = null;
+        public physicsEngineAdapter:IPhysicsEngineAdapter = PhysicsEngineFactory.createNullAdapter();
 
         protected list:wdCb.Collection<RigidBody>;
 
@@ -31,10 +31,8 @@ module wd{
         public initPhysicsEngineAdapter(){
             var physics = Director.getInstance().scene.physics;
 
-            if(physics.enable){
-                this.physicsEngineAdapter = PhysicsEngineFactory.create(physics.engine);
-                this.physicsEngineAdapter.init();
-            }
+            this.physicsEngineAdapter = PhysicsEngineFactory.create(physics.enable, physics.engine);
+            this.physicsEngineAdapter.init();
         }
 
         public initBody(){

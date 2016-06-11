@@ -275,6 +275,8 @@
 /// <reference path="component/physics/engine/adapter/IPhysicsEngineAdapter"/>
 /// <reference path="component/physics/engine/adapter/EPhysicsEngineType"/>
 
+/// <reference path="component/physics/engine/adapter/NullPhysicsEngineAdapter"/>
+
 /// <reference path="component/physics/engine/adapter/cannon/structure/CannonDataList"/>
 /// <reference path="component/physics/engine/adapter/cannon/structure/CannonGameObjectDataList"/>
 /// <reference path="component/physics/engine/adapter/cannon/structure/CannonMaterialList"/>
