@@ -209,6 +209,7 @@
 		"component/physics/engine/PhysicsEngineFactory.ts",
 		"component/physics/engine/adapter/IPhysicsEngineAdapter.ts",
 		"component/physics/engine/adapter/EPhysicsEngineType.ts",
+		"component/physics/engine/adapter/NullPhysicsEngineAdapter.ts",
 		"component/physics/engine/adapter/cannon/structure/CannonDataList.ts",
 		"component/physics/engine/adapter/cannon/structure/CannonGameObjectDataList.ts",
 		"component/physics/engine/adapter/cannon/structure/CannonMaterialList.ts",

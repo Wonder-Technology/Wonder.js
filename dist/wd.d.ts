@@ -3602,7 +3602,6 @@ declare module wd {
         SHADOWMAP_SOFTTYPE_CHANGE,
         SHADOWMAP_LAYER_CHANGE,
         COMPONENT_CHANGE,
-        UNUSE_SCENE_SHADER,
         EXIT,
         ENTER,
     }
@@ -5224,7 +5223,6 @@ declare module wd {
         removeFromObject(entityObject: GameObject): void;
         dispose(): void;
         getPhysicsEngineAdapter(): any;
-        isPhysicsEngineAdapterExist(): boolean;
         initBody(): void;
         initConstraint(): void;
         protected abstract addBody(): any;
@@ -5327,7 +5325,8 @@ declare module wd {
 
 declare module wd {
     class PhysicsEngineFactory {
-        static create(type: EPhysicsEngineType): IPhysicsEngineAdapter;
+        static createNullAdapter(): IPhysicsEngineAdapter;
+        static create(enable: boolean, type: EPhysicsEngineType): IPhysicsEngineAdapter;
     }
 }
 
@@ -5371,6 +5370,44 @@ declare module wd {
 declare module wd {
     enum EPhysicsEngineType {
         CANNON = 0,
+    }
+}
+
+declare module wd {
+    class NullPhysicsEngineAdapter implements IPhysicsEngineAdapter {
+        static create(): NullPhysicsEngineAdapter;
+        world: any;
+        getGravity(gravity: number): any;
+        setGravity(gravity: Vector3): void;
+        getFriction(obj: GameObject, friction: number): any;
+        setFriction(obj: GameObject, friction: number): void;
+        getRestitution(obj: GameObject, restitution: number): any;
+        setRestitution(obj: GameObject, restitution: number): void;
+        getLinearDamping(obj: GameObject): any;
+        setLinearDamping(obj: GameObject, linearDamping: number): void;
+        getAngularDamping(obj: GameObject): any;
+        setAngularDamping(obj: GameObject, angularDamping: number): void;
+        getMass(obj: GameObject): any;
+        setMass(obj: GameObject, mass: number): void;
+        getVelocity(obj: GameObject): any;
+        setVelocity(obj: GameObject, velocity: Vector3): void;
+        getAngularVelocity(obj: GameObject): any;
+        setAngularVelocity(obj: GameObject, angularVelocity: Vector3): void;
+        init(): void;
+        addDynamicBody(entityObject: GameObject, data: any): void;
+        addKinematicBody(entityObject: GameObject, data: any): void;
+        addStaticBody(entityObject: GameObject, data: any): void;
+        addLockConstraint(entityObject: GameObject, lockConstraint: LockConstraint): void;
+        removeLockConstraint(entityObject: GameObject): void;
+        addDistanceConstraint(entityObject: GameObject, distanceConstraint: DistanceConstraint): void;
+        removeDistanceConstraint(entityObject: GameObject): void;
+        addHingeConstraint(entityObject: GameObject, hingeConstraint: HingeConstraint): void;
+        removeHingeConstraint(entityObject: GameObject): void;
+        addPointToPointConstraint(entityObject: GameObject, pointToPointConstraint: PointToPointConstraint): void;
+        removePointToPointConstraint(pointToPointConstraint: PointToPointConstraint): void;
+        removeGameObject(obj: GameObject): void;
+        removeConstraints(obj: GameObject): void;
+        update(elapsed: number): void;
     }
 }
 
@@ -10067,11 +10104,11 @@ declare module wd {
     class ShaderChunk {
         static empty: GLSLChunk;
         static NULL: number;
-        static normal_morph_vertex: GLSLChunk;
-        static vertice_morph_vertex: GLSLChunk;
         static basic_fragment: GLSLChunk;
         static basic_vertex: GLSLChunk;
         static end_basic_fragment: GLSLChunk;
+        static normal_morph_vertex: GLSLChunk;
+        static vertice_morph_vertex: GLSLChunk;
         static common_define: GLSLChunk;
         static common_fragment: GLSLChunk;
         static common_function: GLSLChunk;
@@ -10092,6 +10129,12 @@ declare module wd {
         static multi_map_forBasic_vertex: GLSLChunk;
         static skybox_fragment: GLSLChunk;
         static skybox_vertex: GLSLChunk;
+        static modelMatrix_batch_instance_vertex: GLSLChunk;
+        static normalMatrix_batch_instance_vertex: GLSLChunk;
+        static modelMatrix_hardware_instance_vertex: GLSLChunk;
+        static normalMatrix_hardware_instance_vertex: GLSLChunk;
+        static modelMatrix_noInstance_vertex: GLSLChunk;
+        static normalMatrix_noInstance_vertex: GLSLChunk;
         static basic_forBasic_envMap_fragment: GLSLChunk;
         static basic_forBasic_envMap_vertex: GLSLChunk;
         static forBasic_envMap_fragment: GLSLChunk;
@@ -10099,10 +10142,6 @@ declare module wd {
         static fresnel_forBasic_envMap_fragment: GLSLChunk;
         static reflection_forBasic_envMap_fragment: GLSLChunk;
         static refraction_forBasic_envMap_fragment: GLSLChunk;
-        static modelMatrix_batch_instance_vertex: GLSLChunk;
-        static normalMatrix_batch_instance_vertex: GLSLChunk;
-        static modelMatrix_hardware_instance_vertex: GLSLChunk;
-        static normalMatrix_hardware_instance_vertex: GLSLChunk;
         static basic_forLight_envMap_fragment: GLSLChunk;
         static basic_forLight_envMap_vertex: GLSLChunk;
         static forLight_envMap_fragment: GLSLChunk;
@@ -10110,8 +10149,6 @@ declare module wd {
         static fresnel_forLight_envMap_fragment: GLSLChunk;
         static reflection_forLight_envMap_fragment: GLSLChunk;
         static refraction_forLight_envMap_fragment: GLSLChunk;
-        static modelMatrix_noInstance_vertex: GLSLChunk;
-        static normalMatrix_noInstance_vertex: GLSLChunk;
         static diffuseMap_fragment: GLSLChunk;
         static diffuseMap_vertex: GLSLChunk;
         static emissionMap_fragment: GLSLChunk;
@@ -10144,6 +10181,8 @@ declare module wd {
         static twoDShadowMap_vertex: GLSLChunk;
         static mirror_fragment: GLSLChunk;
         static mirror_vertex: GLSLChunk;
+        static terrainLayer_fragment: GLSLChunk;
+        static terrainLayer_vertex: GLSLChunk;
         static water_bump_fragment: GLSLChunk;
         static water_bump_vertex: GLSLChunk;
         static water_fragment: GLSLChunk;
@@ -10154,16 +10193,14 @@ declare module wd {
         static water_reflection_fragment: GLSLChunk;
         static water_refraction_fragment: GLSLChunk;
         static water_vertex: GLSLChunk;
-        static terrainLayer_fragment: GLSLChunk;
-        static terrainLayer_vertex: GLSLChunk;
         static brick_proceduralTexture_fragment: GLSLChunk;
-        static cloud_proceduralTexture_fragment: GLSLChunk;
         static common_proceduralTexture_fragment: GLSLChunk;
         static common_proceduralTexture_vertex: GLSLChunk;
+        static cloud_proceduralTexture_fragment: GLSLChunk;
         static fire_proceduralTexture_fragment: GLSLChunk;
-        static road_proceduralTexture_fragment: GLSLChunk;
         static grass_proceduralTexture_fragment: GLSLChunk;
         static marble_proceduralTexture_fragment: GLSLChunk;
+        static road_proceduralTexture_fragment: GLSLChunk;
         static wood_proceduralTexture_fragment: GLSLChunk;
     }
     type GLSLChunk = {
