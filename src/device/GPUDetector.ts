@@ -1,13 +1,7 @@
 module wd {
+    @singleton()
     export class GPUDetector {
-        private static _instance = null;
-
-        public static getInstance() {
-            if (this._instance === null) {
-                this._instance = new this();
-            }
-            return this._instance;
-        }
+        public static getInstance():any {}
 
         get gl() {
             return DeviceManager.getInstance().gl;

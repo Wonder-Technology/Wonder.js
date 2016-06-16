@@ -1,14 +1,7 @@
 module wd {
+    @singleton()
     export class ModelMatrixHardwareInstanceDrawer extends HardwareInstanceDrawer{
-        private static _instance = null;
-
-        public static getInstance() {
-            if (this._instance === null) {
-                this._instance = new this();
-            }
-
-            return this._instance;
-        }
+        public static getInstance():any {}
 
         protected getOffsetLocationArray(program:Program):Array<number>{
             return [program.getAttribLocation("a_mVec4_0"), program.getAttribLocation("a_mVec4_1"), program.getAttribLocation("a_mVec4_2"), program.getAttribLocation("a_mVec4_3")];

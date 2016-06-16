@@ -8,15 +8,9 @@ module wd{
 
     declare var document:any;
 
+    @singleton()
     export class FontLoader extends Loader{
-        private static _instance = null;
-
-        public static getInstance() {
-            if (this._instance === null) {
-                this._instance = new this();
-            }
-            return this._instance;
-        }
+        public static getInstance():any {}
 
         private _familyName:string = null;
 

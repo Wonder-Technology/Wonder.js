@@ -1,13 +1,7 @@
 module wd {
+    @singleton()
     export class DomEventBinder extends EventBinder{
-        private static _instance = null;
-
-        public static getInstance() {
-            if (this._instance === null) {
-                this._instance = new this();
-            }
-            return this._instance;
-        }
+        public static getInstance():any {}
 
         public on(listener:{}|EventListener):void;
 

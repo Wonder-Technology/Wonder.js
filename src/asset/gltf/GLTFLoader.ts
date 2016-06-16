@@ -1,15 +1,9 @@
 module wd{
     declare var ArrayBuffer:any;
 
+    @singleton()
     export class GLTFLoader extends Loader{
-        private static _instance = null;
-
-        public static getInstance() {
-            if (this._instance === null) {
-                this._instance = new this();
-            }
-            return this._instance;
-        }
+        public static getInstance():any {}
 
         private _arrayBufferMap:wdCb.Hash<any> = wdCb.Hash.create<any>();
         private _imageMap:wdCb.Hash<HTMLImageElement> = wdCb.Hash.create<HTMLImageElement>();

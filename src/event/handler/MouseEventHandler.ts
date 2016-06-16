@@ -1,24 +1,7 @@
 module wd {
+    @singleton()
     export class MouseEventHandler extends DomEventHandler{
-        private static _instance = null;
-
-        public static getInstance() {
-            if (this._instance === null) {
-                this._instance = new this();
-            }
-            return this._instance;
-        }
-
-        //public static create() {
-        //	var obj = new this();
-        //
-        //	return obj;
-        //}
-
-
-        //public lastX:number = null;
-        //public lastY:number = null;
-
+        public static getInstance():any {}
 
         public on(eventName:EEventName, handler:(event:MouseEvent) => void, priority:number);
         public on(dom:HTMLElement, eventName:EEventName, handler:(event:MouseEvent) => void, priority:number);

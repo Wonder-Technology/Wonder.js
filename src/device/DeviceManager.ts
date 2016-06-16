@@ -2,15 +2,9 @@
  DeviceManager is responsible for global setting of gl
  */
 module wd {
+    @singleton()
     export class DeviceManager {
-        private static _instance = null;
-
-        public static getInstance() {
-            if (this._instance === null) {
-                this._instance = new this();
-            }
-            return this._instance;
-        }
+        public static getInstance():any {}
 
         public view:IView = null;
         public gl:WebGLRenderingContext = null;

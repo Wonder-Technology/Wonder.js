@@ -1,13 +1,7 @@
 module wd {
+    @singleton()
     export class DomEventDispatcher extends EventDispatcher{
-        private static _instance = null;
-
-        public static getInstance() {
-            if (this._instance === null) {
-                this._instance = new this();
-            }
-            return this._instance;
-        }
+        public static getInstance():any {}
 
         public trigger(event:Event):void;
         public trigger(dom:HTMLElement, event:Event):void;

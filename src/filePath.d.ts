@@ -22,6 +22,7 @@
 /// <reference path="definition/typescript/decorator/rigidBody"/>
 /// <reference path="definition/typescript/decorator/script"/>
 /// <reference path="definition/typescript/decorator/control"/>
+/// <reference path="definition/typescript/decorator/singleton"/>
 
 /// <reference path="definition/Global"/>
 

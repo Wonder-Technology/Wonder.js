@@ -7,16 +7,9 @@ module wd{
 
     //todo invoke scene.onExit
 
+    @singleton(true)
     export class Director{
-        private static _instance = null;
-
-        public static getInstance() {
-            if (this._instance === null) {
-                this._instance = new this();
-                this._instance.initWhenCreate();
-            }
-            return this._instance;
-        }
+        public static getInstance():any{};
 
         get gameTime(){
             return this._timeController.gameTime;
