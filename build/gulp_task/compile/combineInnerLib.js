@@ -3,10 +3,6 @@ var gulpSync = require("gulp-sync")(gulp);
 var path = require("path");
 var fs = require("fs-extra");
 
-var gulpHeader = require("gulp-header");
-var bowerConfig = require("../../../bower.json");
-var banner = require("./banner").banner;
-
 var distPath = path.join(process.cwd(), "dist");
 var combineDTsList = [
     "Wonder-CommonLib",
@@ -41,7 +37,6 @@ gulp.task("combineDefinitionFile", function(done){
     );
 
     gulp.src(wdFilePath)
-        .pipe(gulpHeader(banner, {bowerConfig:bowerConfig}))
         .pipe(gulp.dest(distPath));
 
     done();
@@ -68,9 +63,8 @@ gulp.task("combineContent", function(done){
 
     createInnerLibJs();
 
-    gulp.src(wdFilePath)
-        .pipe(gulpHeader(banner, {bowerConfig:bowerConfig}))
-        .pipe(gulp.dest(distPath));
+    //gulp.src(wdFilePath)
+    //    .pipe(gulp.dest(distPath));
 
     done();
 });

@@ -10,6 +10,6 @@ gulp.task("compress", function () {
         .pipe(rename({
             extname: '.min.js'
         }))
-        . pipe(gulp.dest(destDirPath));
+        .pipe(gulp.dest(destDirPath));
 });
 

@@ -8,10 +8,6 @@ var merge = require("merge2");
 var fs = require("fs-extra");
 var path = require("path");
 
-var gulpHeader = require("gulp-header");
-var bowerConfig = require("../../../bower.json");
-var banner = require("./banner").banner;
-
 
 //var tsFilePaths = [
 //    "src/filePath.d.ts",
@@ -97,7 +93,7 @@ gulp.task("compileDTS", function() {
 
 gulp.task("compileTs", function() {
     var tsProject = gulpTs.createProject(path.join(process.cwd(), tsconfigFile[0]), {
-        out: "wd.js",
+        outFile: "wd.js",
         typescript: require('typescript')
     });
 
@@ -105,31 +101,54 @@ gulp.task("compileTs", function() {
         .pipe(gulpTs(tsProject))
         .pipe(gulp.dest("dist/"));
 
-
+    //var tsResult = tsProject.src()
+    //    .pipe(gulpTs(tsProject));
+    //
     //return merge([
     //    tsResult.js
     //        .pipe(gulpConcat("wd.js"))
-    //        .pipe(gulpHeader(banner, {bowerConfig:bowerConfig}))
-    //        .pipe(gulp.dest("dist/"))
+    //        .pipe(gulp.dest("dist"))
     //])
+
 
     return tsResult;
 });
 
 gulp.task("compileTsDebug", function() {
     var tsProject = gulpTs.createProject(path.join(process.cwd(), tsconfigFile[0]), {
-        out: "wd.debug.js",
+        outFile: "wd.debug.js",
+        //outDir:"dist/",
         typescript: require('typescript')
     });
-
     var tsResult = tsProject.src()
         .pipe(gulpSourcemaps.init())
         .pipe(gulpTs(tsProject))
-        .pipe(gulpHeader(banner, {bowerConfig:bowerConfig}))
         .pipe(gulpSourcemaps.write("./"))
-        .pipe(gulp.dest("dist/"))
+        .pipe(gulp.dest("dist/"));
 
     return tsResult;
+
+
+    //    var tsProject = gulpTs.createProject(path.join(process.cwd(), tsconfigFile[0]), {
+    //    outFile: "wd.debug.js",
+    //    typescript: require('typescript')
+    //});
+    //
+    //var tsResult = tsProject.src()
+    //    .pipe(gulpTs(tsProject))
+    //    .pipe(gulp.dest("dist/"));
+    //
+    ////var tsResult = tsProject.src()
+    ////    .pipe(gulpTs(tsProject));
+    ////
+    ////return merge([
+    ////    tsResult.js
+    ////        .pipe(gulpConcat("wd.js"))
+    ////        .pipe(gulp.dest("dist"))
+    ////])
+    //
+    //
+    //return tsResult;
 });
 
 gulp.task("removeReference", function(){
