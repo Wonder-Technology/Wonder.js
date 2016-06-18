@@ -12,8 +12,11 @@ module wd {
             this._innerAction = action;
         }
 
-        @cloneAttributeAsCloneable()
         private _innerAction:Action = null;
+
+        public clone():Action {
+            return CloneUtils.clone(this, null, [this._innerAction.clone()]);
+        }
 
         public update(elapsed) {
             this._innerAction.update(elapsed);

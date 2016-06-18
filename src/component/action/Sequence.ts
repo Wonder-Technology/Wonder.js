@@ -17,15 +17,16 @@ module wd {
             this._actions.addChildren(actionArr);
         }
 
-        @cloneAttributeAsCustomType((source:any, target:any, memberName:string, cloneData:any) => {
-            target[memberName] = source[memberName].clone(true);
-        })
         private _actions:wdCb.Collection<Action> = wdCb.Collection.create<Action>();
         private _currentAction:Action = null;
         private _actionIndex:number = 0;
 
         public initWhenCreate() {
             this._currentAction = this._actions.getChild(0);
+        }
+
+        public clone():Action{
+            return CloneUtils.clone(this, null, this._actions.clone(true).toArray());
         }
 
         public update(elapsed) {

@@ -6,13 +6,16 @@ module wd {
             return action;
         }
 
-        @cloneAttributeAsBasicType()
         protected duration:number;
 
         constructor(delayTime:number) {
             super();
 
             this.duration = delayTime;
+        }
+
+        public clone():Action{
+            return CloneUtils.clone(this, null, [this.duration]);
         }
 
         public reverse() {

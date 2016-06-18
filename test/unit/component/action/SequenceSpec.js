@@ -61,6 +61,13 @@ describe("Sequence", function () {
     });
 
     describe("clone", function(){
+        beforeEach(function(){
+            testTool.openContractCheck(sandbox);
+        });
+        afterEach(function(){
+            testTool.closeContractCheck(sandbox);
+        });
+
         it("return clone one, clone inner action", function () {
             var copy1 = {},
                 copy2 = {a:1};

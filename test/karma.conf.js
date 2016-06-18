@@ -27,7 +27,7 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        'test/unit/**',
+        //'test/unit/**',
 
 
 
@@ -77,7 +77,7 @@
 
         //'test/unit/**/VAOManager*',
         //
-        //'test/unit/**/action/*',
+        'test/unit/**/action/*',
 
         //'test/unit/**/RenderUtils*',
 

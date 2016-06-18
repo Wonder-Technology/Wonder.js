@@ -15,14 +15,13 @@ module wd {
             this._dataArr = wdCb.Collection.create<any>(dataArr);
         }
 
-        @cloneAttributeAsBasicType()
         private _context:any = null;
-        @cloneAttributeAsBasicType()
         private _callFunc:Function = null;
-        @cloneAttributeAsCustomType((source:any, target:any, memberName:string, cloneData:any) => {
-            target[memberName] = source[memberName].clone(true);
-        })
         private _dataArr:wdCb.Collection<any> = null;
+
+        public clone():Action{
+            return CloneUtils.clone(this, null, [this._callFunc, this._context, this._dataArr.clone(true).toArray()]);
+        }
 
         public reverse() {
             return this;

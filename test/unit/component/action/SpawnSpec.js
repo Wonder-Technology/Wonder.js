@@ -5,6 +5,8 @@ describe("Spawn", function () {
     var Spawn = wd.Spawn;
 
     beforeEach(function () {
+        testTool.closeContractCheck(sandbox);
+
         sandbox = sinon.sandbox.create();
         action = new Spawn();
         gameObject = wd.GameObject.create();

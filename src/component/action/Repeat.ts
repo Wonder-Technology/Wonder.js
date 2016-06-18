@@ -15,11 +15,13 @@ module wd {
             this._times = times;
         }
 
-        @cloneAttributeAsCloneable()
         private _innerAction:Action = null;
         private _originTimes:number = null;
-        @cloneAttributeAsBasicType()
         private _times:number = null;
+
+        public clone():Action{
+            return CloneUtils.clone(this, null, [this._innerAction.clone(), this._times]);
+        }
 
         public initWhenCreate() {
             this._originTimes = this._times;

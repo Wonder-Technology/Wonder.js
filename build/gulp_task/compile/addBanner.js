@@ -19,10 +19,10 @@ var distPath = path.join(process.cwd(), "dist");
 
 gulp.task("addBanner", function(done){
         var wdDtsFilePath = path.join(distPath, "wd.d.ts"),
-            wdFilePath = path.join(distPath, "wd.js"),
-            wdDebugFilePath = path.join(distPath, "wd.debug.js");
+            wdFilePath = path.join(distPath, "wd.js");
+            //wdDebugFilePath = path.join(distPath, "wd.debug.js");
 
-        gulp.src([wdDtsFilePath, wdDebugFilePath, wdFilePath])
+        gulp.src([wdDtsFilePath, wdFilePath])
             .pipe(gulpHeader(banner, {bowerConfig:bowerConfig}))
             .pipe(gulp.dest(distPath));
 
