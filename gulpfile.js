@@ -3,6 +3,7 @@ var gulpSync = require("gulp-sync")(gulp);
 
 require("./build/gulp_task/clean/clean");
 require("./build/gulp_task/compress/compress");
+require("./build/gulp_task/compile/operateDefinitionFile");
 require("./build/gulp_task/compile/compileTs");
 require("./build/gulp_task/compile/combineInnerLib");
 require("./build/gulp_task/compile/addBanner");
@@ -12,9 +13,9 @@ require("./build/gulp_task/createInnerFile/index");
 
 require("./build/gulp_task/test/test");
 
-gulp.task("build", gulpSync.sync(["clean", "createInnerFile", "compileTsConfig", "compileDTS", "compileTs", "compileTsDebug", "combineInnerLib", "removeReference", "compress", "addBanner"]));
+gulp.task("build", gulpSync.sync(["clean", "createInnerFile", "rewriteDefinitionFileByParseFilesGlob","compileTsConfig", "compileDTS", "compileTs", "compileTsDebug", "combineInnerLib", "removeReference", "restoreDefinitionFile", "compress", "addBanner"]));
 
-gulp.task("buildCI", gulpSync.sync(["clean", "createInnerFile", "compileTsConfig", "compileTsDebug", "combineInnerLib", "removeReference", "compress"]));
+gulp.task("buildCI", gulpSync.sync(["clean", "createInnerFile", "compileTsConfig", "compileTsDebug", "combineInnerLib", "removeReference",  "compress"]));
 
 
 var tsFilePaths = ["src/*.ts", "src/**/*.ts"];

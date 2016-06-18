@@ -8,69 +8,15 @@ var merge = require("merge2");
 var fs = require("fs-extra");
 var path = require("path");
 
+var convert = require("./convertDefinitionFileToPathArray");
 
-//var tsFilePaths = [
-//    "src/filePath.d.ts",
-//    "src/*.ts",
-//    "src/**/*.ts"
-//];
 var distFilePaths = [
     'dist/*.ts',
     'dist/*.js'
 ];
-var definitionsPath = "src/filePath.d.ts";
 var tsconfigFile = [
     "src/tsconfig.json"
 ];
-
-
-gulp.task("compileTsConfig", function(){
-    var mapFilePath = function(item){
-        var result = /"([^"]+)"/g.exec(item)[1];
-
-        if(result.indexOf(".d.ts") > -1){
-            return result;
-        }
-
-        return result + ".ts";
-    }
-
-    var filterFilePath = function(item){
-        return item !== "";
-    }
-
-    return gulp.src(tsconfigFile)
-        .pipe(through(function (file, encoding, callback) {
-            var arr = null,
-                tsconfig = null,
-                outputConfigStr = null;
-
-            if (file.isNull()) {
-                this.emit("error", new gutil.PluginError(PLUGIN_NAME, 'Streaming not supported'));
-                return callback();
-            }
-            if (file.isBuffer()) {
-                arr = fs.readFileSync(path.join(process.cwd(), definitionsPath), "utf8").split('\n').filter(filterFilePath).map(mapFilePath);
-
-                tsconfig = JSON.parse(file.contents);
-                tsconfig.files = arr;
-
-                outputConfigStr = JSON.stringify(tsconfig,null,"\t");
-
-                fs.writeFileSync(file.path,outputConfigStr);
-
-                this.push(file);
-
-                callback();
-            }
-            if (file.isStream()) {
-                this.emit("error", new gutil.PluginError(PLUGIN_NAME, 'Streaming not supported'));
-                return callback();
-            }
-        }, function (callback) {
-            callback();
-        }));
-});
 
 
 gulp.task("compileDTS", function() {
