@@ -101,7 +101,7 @@ module wd{
 
         private _addVariable(target:wdCb.Hash<ShaderVariable>, variableArr:Array<string>){
             variableArr.forEach((variable:string) => {
-                Log.assert(VariableLib[variable], Log.info.FUNC_SHOULD(variable, "exist in VariableLib"));
+                assert(VariableLib[variable], Log.info.FUNC_SHOULD(variable, "exist in VariableLib"));
 
                 target.addChild(variable, VariableLib[variable]);
             });

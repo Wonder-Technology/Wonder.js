@@ -64,8 +64,8 @@ gulp.task("combineContent", function(done){
 
     createInnerLibJs();
 
-    //gulp.src(wdFilePath)
-    //    .pipe(gulp.dest(distPath));
+    gulp.src(wdFilePath)
+        .pipe(gulp.dest(distPath));
 
     done();
 });

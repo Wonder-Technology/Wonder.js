@@ -35,7 +35,7 @@ module wd {
         }
 
         @require(function(texture:any){
-            Log.assert(!!texture, Log.info.FUNC_NOT_EXIST("texture object"));
+            assert(!!texture, Log.info.FUNC_NOT_EXIST("texture object"));
         })
         protected setEmptyTexture(texture:any){
             var gl = DeviceManager.getInstance().gl;

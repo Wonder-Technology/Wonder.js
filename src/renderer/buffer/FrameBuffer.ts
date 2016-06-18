@@ -90,7 +90,7 @@ module wd{
         }
 
         @ensure(function(renderBuffer){
-            Log.assert(!!renderBuffer, Log.info.FUNC_NOT_EXIST("renderbuffer object"));
+            assert(!!renderBuffer, Log.info.FUNC_NOT_EXIST("renderbuffer object"));
 
         })
         public createRenderBuffer(){
