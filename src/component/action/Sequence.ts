@@ -1,7 +1,7 @@
 module wd {
     export class Sequence extends Control{
         @require(function(...args){
-            Log.assert(args.length >= 2, "Sequence should has two actions at least");
+            expect(args.length).to.greaterThan(1);
         })
         public static create(...args) {
             var sequence = new this(args);

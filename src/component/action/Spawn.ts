@@ -1,9 +1,10 @@
 module wd {
     export class Spawn extends Control{
+        @require(function(...args){
+            expect(args.length).to.greaterThan(1);
+        })
         public static create(...args) {
             var spawn = null;
-
-            Log.assert(args.length >= 2, "Sequence should has two actions at least");
 
             spawn = new this(args);
 

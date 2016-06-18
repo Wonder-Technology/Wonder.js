@@ -13,7 +13,8 @@ var combineDTsList = [
         "Wonder-CommonLib",
         "Wonder-FRP",
         "bowser",
-        "rsvp"
+        "rsvp",
+        "chai"
     ];
 var definitionsPath = "src/filePath.d.ts";
 

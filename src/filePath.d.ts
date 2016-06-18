@@ -1,5 +1,7 @@
 /// <reference path="../lib/inner/bowser/bowser.d.ts"/>
 /// <reference path="../lib/inner/rsvp/rsvp.d.ts"/>
+/// <reference path="../lib/inner/chai/chai.d.ts"/>
+
 /// <reference path="../lib/inner/Wonder-CommonLib/dist/wdCb.d.ts"/>
 /// <reference path="../lib/inner/Wonder-FRP/dist/wdFrp.core.d.ts"/>
 
