@@ -21,53 +21,65 @@ var definitionsPath = "src/filePath.d.ts";
 gulp.task("combineDefinitionFile", function(done){
     var wdFilePath = path.join(distPath, "wd.d.ts");
 
-    combineInnerLibDTs(
-        wdFilePath,
-        path.join(process.cwd(), definitionsPath),
-        function(innerLibDtsPath){
-            var result = false;
+    try{
+        combineInnerLibDTs(
+            wdFilePath,
+            path.join(process.cwd(), definitionsPath),
+            function(innerLibDtsPath){
+                var result = false;
 
-            combineDTsList.forEach(function(dts){
-                if(innerLibDtsPath.indexOf(dts) > -1){
-                    result = true;
-                }
-            })
+                combineDTsList.forEach(function(dts){
+                    if(innerLibDtsPath.indexOf(dts) > -1){
+                        result = true;
+                    }
+                })
 
-            return result;
-        }
-    );
+                return result;
+            }
+        );
 
-    gulp.src(wdFilePath)
-        .pipe(gulp.dest(distPath));
-
-    done();
+        gulp.src(wdFilePath)
+            .pipe(gulp.dest(distPath));
+    }
+    catch(e){
+        console.log(e);
+    }
+    finally {
+        done();
+    }
 });
 
 gulp.task("combineContent", function(done){
     var wdFilePath = path.join(distPath, "wd.js");
 
-    combineInnerLibContent(
-        wdFilePath,
-        path.join(process.cwd(), definitionsPath),
-        function(innerLibDtsPath){
-            var result = false;
+    try{
+        combineInnerLibContent(
+            wdFilePath,
+            path.join(process.cwd(), definitionsPath),
+            function(innerLibDtsPath){
+                var result = false;
 
-            combineContentList.forEach(function(dts){
-                if(innerLibDtsPath.indexOf(dts) > -1){
-                    result = true;
-                }
-            })
+                combineContentList.forEach(function(dts){
+                    if(innerLibDtsPath.indexOf(dts) > -1){
+                        result = true;
+                    }
+                })
 
-            return result;
-        }
-    );
+                return result;
+            }
+        );
 
-    createInnerLibJs();
+        createInnerLibJs();
 
-    gulp.src(wdFilePath)
-        .pipe(gulp.dest(distPath));
-
-    done();
+        gulp.src(wdFilePath)
+            .pipe(gulp.dest(distPath));
+    }
+    catch(e){
+        console.log(e);
+    }
+    finally {
+        done();
+    }
 });
 
 function createInnerLibJs(){
