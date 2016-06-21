@@ -16,7 +16,7 @@ var combineDTsList = [
         "rsvp",
         "chai"
     ];
-var definitionsPath = "src/filePath.d.ts";
+var tsconfigPath = "src/tsconfig.json";
 
 gulp.task("combineDefinitionFile", function(done){
     var wdFilePath = path.join(distPath, "wd.d.ts");
@@ -24,7 +24,7 @@ gulp.task("combineDefinitionFile", function(done){
     try{
         combineInnerLibDTs(
             wdFilePath,
-            path.join(process.cwd(), definitionsPath),
+            path.join(process.cwd(), tsconfigPath),
             function(innerLibDtsPath){
                 var result = false;
 
@@ -55,7 +55,7 @@ gulp.task("combineContent", function(done){
     try{
         combineInnerLibContent(
             wdFilePath,
-            path.join(process.cwd(), definitionsPath),
+            path.join(process.cwd(), tsconfigPath),
             function(innerLibDtsPath){
                 var result = false;
 
@@ -87,7 +87,7 @@ function createInnerLibJs(){
 
     combineInnerLibContent(
         path.join(distPath, "wd.innerLib.js"),
-        path.join(process.cwd(), definitionsPath),
+        path.join(process.cwd(), tsconfigPath),
         function(innerLibDtsPath){
             var result = false;
 
@@ -102,8 +102,8 @@ function createInnerLibJs(){
     );
 }
 
-function combineInnerLibDTs(mainFilePath, definitionDTsPath, filterFunc){
-    getInnerLibDTsPathArr(definitionDTsPath)
+function combineInnerLibDTs(mainFilePath, tsconfigPath, filterFunc){
+    getInnerLibDTsPathArr(tsconfigPath)
         .filter(filterFunc)
         .forEach(function(innerLibDtsPath){
         fs.writeFileSync(
@@ -114,8 +114,8 @@ function combineInnerLibDTs(mainFilePath, definitionDTsPath, filterFunc){
         );
     });
 }
-function combineInnerLibContent(mainFilePath, definitionDTsPath, filterFunc){
-    getInnerLibDTsPathArr(definitionDTsPath)
+function combineInnerLibContent(mainFilePath, tsconfigPath, filterFunc){
+    getInnerLibDTsPathArr(tsconfigPath)
         .filter(filterFunc)
         .forEach(function(innerLibDtsPath){
         fs.writeFileSync(
@@ -127,21 +127,23 @@ function combineInnerLibContent(mainFilePath, definitionDTsPath, filterFunc){
     });
 }
 
-function getInnerLibDTsPathArr(definitionDTsPath){
-    var regex = /"[^"]+\.d\.ts"/g,
-        content = null,
-        result = null,
+function getInnerLibDTsPathArr(tsconfigPath){
+    var regex = /\.d\.ts$/,
+        files = null,
         resultArr = [];
 
-    content = fs.readFileSync(definitionDTsPath, "utf8");
+    files = JSON.parse(fs.readFileSync(tsconfigPath, "utf8")).files;
 
-    while((result = regex.exec(content)) !== null){
-        resultArr.push(
-            parseInnerLibDTsPath(result[0].slice(1, -1))
-        );
+    for(var i = 0, len = files.length; i < len; i++){
+        var file = files[i];
+
+        if(file.match(regex) !== null){
+            resultArr.push(
+                parseInnerLibDTsPath(file)
+            );
+        }
     }
 
-    //to make finial file is build based on filePath.d.ts's sequence
     return resultArr.reverse();
 }
 

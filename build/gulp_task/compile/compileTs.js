@@ -97,31 +97,31 @@ gulp.task("compileTsDebug", function() {
     //return tsResult;
 });
 
-gulp.task("removeReference", function(){
-    return gulp.src(distFilePaths)
-        .pipe(through(function (file, encoding, callback) {
-            var map = null;
-
-            if (file.isNull()) {
-                this.emit("error", new gutil.PluginError(PLUGIN_NAME, 'Streaming not supported'));
-                return callback();
-            }
-            if (file.isBuffer()) {
-                file.contents = new Buffer(file.contents.toString().replace(
-                    /\/\/\/\s*<reference[^>]+>/mg, ""
-                ));
-                this.push(file);
-
-                fs.writeFileSync(file.path, file.contents.toString(), "utf8");
-
-                callback();
-            }
-            if (file.isStream()) {
-                this.emit("error", new gutil.PluginError(PLUGIN_NAME, 'Streaming not supported'));
-                return callback();
-            }
-        }, function (callback) {
-            callback();
-        }));
-
-});
+//gulp.task("removeReference", function(){
+//    return gulp.src(distFilePaths)
+//        .pipe(through(function (file, encoding, callback) {
+//            var map = null;
+//
+//            if (file.isNull()) {
+//                this.emit("error", new gutil.PluginError(PLUGIN_NAME, 'Streaming not supported'));
+//                return callback();
+//            }
+//            if (file.isBuffer()) {
+//                file.contents = new Buffer(file.contents.toString().replace(
+//                    /\/\/\/\s*<reference[^>]+>/mg, ""
+//                ));
+//                this.push(file);
+//
+//                fs.writeFileSync(file.path, file.contents.toString(), "utf8");
+//
+//                callback();
+//            }
+//            if (file.isStream()) {
+//                this.emit("error", new gutil.PluginError(PLUGIN_NAME, 'Streaming not supported'));
+//                return callback();
+//            }
+//        }, function (callback) {
+//            callback();
+//        }));
+//
+//});
