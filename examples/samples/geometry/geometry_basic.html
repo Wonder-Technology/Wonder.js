@@ -26,6 +26,8 @@
             director.scene.addChild(createRect());
             director.scene.addChild(createBox());
             director.scene.addChild(createSphere());
+            director.scene.addChild(createConvexPolygon());
+
             director.scene.addChild(createCamera());
 
             director.start();
@@ -112,24 +114,44 @@
             gameObject.transform.translate(8, -8, 0);
 
             return gameObject;
+        }
 
+        function createConvexPolygon(){
+            var material = wd.BasicMaterial.create();
+            material.color = wd.Color.create("rgb(0, 255, 255)");
+
+            var geometry = wd.ConvexPolygonGeometry.create();
+            geometry.vertices.push(-5, 0, 0);
+            geometry.vertices.push(0, 5, 0);
+            geometry.vertices.push(5, 0, 0);
+            geometry.vertices.push(0, -5, 0);
+            geometry.material = material;
+
+
+            var gameObject = wd.GameObject.create();
+            gameObject.addComponent(geometry);
+
+            gameObject.addComponent(wd.MeshRenderer.create());
+
+            gameObject.transform.translate(18, 0, 0);
+
+            return gameObject;
         }
 
         function createCamera() {
             var camera = wd.GameObject.create(),
-                view = wd.Director.getInstance().view,
-                cameraComponent = wd.PerspectiveCamera.create();
+                    view = wd.Director.getInstance().view,
+                    cameraComponent = wd.PerspectiveCamera.create();
 
             cameraComponent.fovy = 60;
             cameraComponent.aspect = view.width / view.height;
             cameraComponent.near = 0.1;
-            cameraComponent.far = 80;
+            cameraComponent.far = 1000;
 
-            var controller = wd.BasicCameraController.create(cameraComponent);
+            var controller = wd.ArcballCameraController.create(cameraComponent);
+            controller.distance = 20;
+
             camera.addComponent(controller);
-
-            camera.transform.translate(wd.Vector3.create(0, 0, 30));
-
 
             return camera;
         }

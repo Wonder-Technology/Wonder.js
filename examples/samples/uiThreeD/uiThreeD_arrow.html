@@ -18,16 +18,22 @@
 
         wd.LoaderManager.getInstance().load([
             {url: "../../asset/texture/1.jpg", id: "texture"}
-        ]).subscribe(null, null, function(){
+        ]).subscribe(null, null, function () {
             var director = wd.Director.getInstance();
 
-            director.scene.addChild(createArrowByCreateConvexPolygonGeometry());
+
+            var arrow = wd.GameObject.create();
+            arrow.addChild(createArrowByCreateConvexPolygonGeometry());
+            arrow.addChild(createLine());
+
+
+            director.scene.addChild(arrow);
             director.scene.addChild(createCamera());
 
             director.start();
         });
 
-        function createArrowByCreateConvexPolygonGeometry(){
+        function createArrowByCreateConvexPolygonGeometry() {
             var arrow = wd.ConvexPolygonArrow.create();
 
 
@@ -50,7 +56,6 @@
             geometry.material = material;
 
 
-
             var arrowObject = wd.GameObject.create();
 
             arrowObject.addComponent(arrow);
@@ -61,25 +66,49 @@
 
             return arrowObject;
         }
+
+        function createLine() {
+            var line = wd.Line.create();
+
+            var geometry = wd.LineGeometry.create();
+            geometry.vertices.push(0, -10, 0);
+            geometry.vertices.push(0, 0, 0);
+
+            var material = wd.LineMaterial.create();
+            material.color = wd.Color.create("rgb(1.0,0.0,1.0)");
+
+            geometry.material = material;
+
+
+            var lineObject = wd.GameObject.create();
+
+            lineObject.addComponent(line);
+
+            lineObject.addComponent(geometry);
+
+            lineObject.addComponent(wd.MeshRenderer.create());
+
+            return lineObject;
+        }
+
+        function createCamera() {
+            var camera = wd.GameObject.create(),
+                    view = wd.Director.getInstance().view,
+                    cameraComponent = wd.PerspectiveCamera.create();
+
+            cameraComponent.fovy = 60;
+            cameraComponent.aspect = view.width / view.height;
+            cameraComponent.near = 0.1;
+            cameraComponent.far = 1000;
+
+            var controller = wd.ArcballCameraController.create(cameraComponent);
+            controller.distance = 20;
+
+            camera.addComponent(controller);
+
+            return camera;
+        }
     };
-
-    function createCamera() {
-        var camera = wd.GameObject.create(),
-                view = wd.Director.getInstance().view,
-                cameraComponent = wd.PerspectiveCamera.create();
-
-        cameraComponent.fovy = 60;
-        cameraComponent.aspect = view.width / view.height;
-        cameraComponent.near = 0.1;
-        cameraComponent.far = 1000;
-
-        var controller = wd.ArcballCameraController.create(cameraComponent);
-        controller.distance = 20;
-
-        camera.addComponent(controller);
-
-        return camera;
-    }
 </script>
 </body>
 </html>
