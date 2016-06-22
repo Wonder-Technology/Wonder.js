@@ -1,7 +1,9 @@
 module wd {
     export class Spawn extends Control{
         @require(function(...args){
-            expect(args.length).to.greaterThan(1);
+            it("action's count should > 1", () => {
+                expect(args.length).to.greaterThan(1);
+            })
         })
         public static create(...args) {
             var spawn = null;

@@ -3,6 +3,15 @@ module wd{
         Log.error(!cond, message);
     }
 
+    export function it(message:string, func:Function){
+        try{
+            func();
+        }
+        catch(e){
+            assert(false, `${message}: ${e.message}`);
+        }
+    }
+
     export function require(inFunc) {
         return function (target, name, descriptor) {
             if(CompileConfig.isTest){

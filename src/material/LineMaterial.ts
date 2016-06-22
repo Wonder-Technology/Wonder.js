@@ -11,10 +11,14 @@ module wd{
         private _lineWidth:number = 1.0;
         @cloneAttributeAsBasicType()
         @requireSetter(function(lineWidth:number){
-            expect(lineWidth).not.to.greaterThan(1);
+            it("lineWidth should <= 1", () => {
+                expect(lineWidth).not.to.greaterThan(1);
+            });
         })
         @ensureGetter(function(lineWidth:number){
-            expect(lineWidth).not.to.greaterThan(1);
+            it("lineWidth should <= 1", () => {
+                expect(lineWidth).not.to.greaterThan(1);
+            });
         })
         get lineWidth(){
             return this._lineWidth;
