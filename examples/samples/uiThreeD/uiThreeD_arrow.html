@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>uiThreeD+arrow</title>
+
+    <script src="../../../dist/wd.innerLib.js" type="text/javascript"></script>
+    <script src="../../../dist/wd.debug.js" type="text/javascript"></script>
+</head>
+<body>
+<script>
+    window.onload = function () {
+        wd.Main.setConfig({
+            isTest: true,
+            screenSize: wd.EScreenSize.FULL
+        }).init();
+
+
+        wd.LoaderManager.getInstance().load([
+            {url: "../../asset/texture/1.jpg", id: "texture"}
+        ]).subscribe(null, null, function(){
+            var director = wd.Director.getInstance();
+
+            director.scene.addChild(createArrowByCreateConvexPolygonGeometry());
+            director.scene.addChild(createCamera());
+
+            director.start();
+        });
+
+        function createArrowByCreateConvexPolygonGeometry(){
+            var arrow = wd.ConvexPolygonArrow.create();
+
+
+            var geometry = wd.ConvexPolygonGeometry.create();
+            geometry.vertices.push(-10, 0, 0);
+            geometry.vertices.push(0, 10, 0);
+            geometry.vertices.push(10, 0, 0);
+//            geometry.vertices.push(0, -10, 0);
+//            geometry.vertices.push(0, -10, 10);
+
+            geometry.texCoords.push(0, 0);
+            geometry.texCoords.push(1, 0);
+            geometry.texCoords.push(0, 1);
+
+            var material = wd.BasicMaterial.create();
+            material.color = wd.Color.create("rgb(1.0,0.0,1.0)");
+            material.map = wd.LoaderManager.getInstance().get("texture").toTexture();
+//            material.side = wd.ESide.BOTH;
+
+            geometry.material = material;
+
+
+
+            var arrowObject = wd.GameObject.create();
+
+            arrowObject.addComponent(arrow);
+
+            arrowObject.addComponent(geometry);
+
+            arrowObject.addComponent(wd.MeshRenderer.create());
+
+            return arrowObject;
+        }
+    };
+
+    function createCamera() {
+        var camera = wd.GameObject.create(),
+                view = wd.Director.getInstance().view,
+                cameraComponent = wd.PerspectiveCamera.create();
+
+        cameraComponent.fovy = 60;
+        cameraComponent.aspect = view.width / view.height;
+        cameraComponent.near = 0.1;
+        cameraComponent.far = 1000;
+
+        var controller = wd.ArcballCameraController.create(cameraComponent);
+        controller.distance = 20;
+
+        camera.addComponent(controller);
+
+        return camera;
+    }
+</script>
+</body>
+</html>
