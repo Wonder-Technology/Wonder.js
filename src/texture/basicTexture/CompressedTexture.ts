@@ -8,9 +8,13 @@ module wd{
             return obj;
         }
 
+        @ensureGetter(function(sourceRegionMethod:ETextureSourceRegionMethod){
+            it("compressed texture not support ETextureSourceRegionMethod.DRAW_IN_CANVAS, will use ETextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL instead", function () {
+                expect(this.p_sourceRegionMethod).not.to.equal(ETextureSourceRegionMethod.DRAW_IN_CANVAS);
+            expect(sourceRegionMethod).to.equal(ETextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL);
+            });
+        })
         get sourceRegionMethod(){
-            assert(this.p_sourceRegionMethod === ETextureSourceRegionMethod.DRAW_IN_CANVAS, "compressed texture not support ETextureSourceRegionMethod.DRAW_IN_CANVAS, will use ETextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL instead");
-
             return ETextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL;
         }
 

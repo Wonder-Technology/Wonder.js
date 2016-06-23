@@ -59,6 +59,7 @@ describe("MapManager", function() {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
+
         Manager = wd.MapManager;
         manager = Manager.create();
         sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
@@ -406,10 +407,12 @@ describe("MapManager", function() {
         var program;
 
         beforeEach(function(){
+            testTool.openContractCheck(sandbox);
+
             addAllTypeMaps();
             stubAllTypeMaps(function(texture){
                 sandbox.stub(texture, "bindToUnit");
-            })
+            });
             program = wd.Program.create();
             sandbox.stub(program, "getUniformLocation").returns(1);
         });
