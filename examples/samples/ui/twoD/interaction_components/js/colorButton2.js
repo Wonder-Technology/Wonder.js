@@ -4,42 +4,41 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-/// <reference path="../../../../../dist/wd.d.ts"/>
+/// <reference path="../../../../../../dist/wd.d.ts"/>
 var sample;
 (function (sample) {
     var Button = wd.Button;
     var PlainFont = wd.PlainFont;
     var EButtonObjectName = wd.EButtonObjectName;
+    var LoaderManager = wd.LoaderManager;
     var Image = wd.Image;
-    var Color = wd.Color;
-    var ColorButtonScript = (function () {
-        function ColorButtonScript(entityObject) {
+    var ColorButtonScript2 = (function () {
+        function ColorButtonScript2(entityObject) {
             this._entityObject = null;
             this._entityObject = entityObject;
         }
-        ColorButtonScript.prototype.init = function () {
+        ColorButtonScript2.prototype.init = function () {
             this._setText();
             this._setBackground();
         };
-        ColorButtonScript.prototype.onMouseClick = function (e) {
+        ColorButtonScript2.prototype.onMouseClick = function (e) {
             if (this._entityObject.getComponent(Button).isDisabled) {
                 return;
             }
             console.log("click");
         };
-        ColorButtonScript.prototype._setText = function () {
+        ColorButtonScript2.prototype._setText = function () {
             var font = this._entityObject.getComponent(Button).getObject(EButtonObjectName.TEXT).getComponent(PlainFont);
             font.fontSize = 30;
         };
-        ColorButtonScript.prototype._setBackground = function () {
+        ColorButtonScript2.prototype._setBackground = function () {
             var image = this._entityObject.getComponent(Button).getObject(EButtonObjectName.BACKGROUND).getComponent(Image);
-            //if set Button->backgroundTransition->normalColor, background will use it as the source instead of the one setted here
-            image.color = Color.create("rgb(255, 255, 0)");
+            image.source = LoaderManager.getInstance().get("normal");
         };
-        ColorButtonScript = __decorate([
-            wd.script("colorButton")
-        ], ColorButtonScript);
-        return ColorButtonScript;
+        ColorButtonScript2 = __decorate([
+            wd.script("colorButton2")
+        ], ColorButtonScript2);
+        return ColorButtonScript2;
     })();
-    sample.ColorButtonScript = ColorButtonScript;
+    sample.ColorButtonScript2 = ColorButtonScript2;
 })(sample || (sample = {}));

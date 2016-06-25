@@ -45,7 +45,7 @@ module wd {
         @require(function(){
             this.forEach((child:UIObject) => {
                 assert(child instanceof UIObject, Log.info.FUNC_MUST_BE("child", "UIObject"));
-                assert(child.hasComponent(UI), Log.info.FUNC_SHOULD("UIObject", "contain ui component"))
+                assert(child.hasComponent(UITwoD), Log.info.FUNC_SHOULD("UIObject", "contain ui component"))
             });
         })
         public render() {

@@ -22,7 +22,7 @@ module wd {
     }
     //todo support .gif animation(now can only show static picture)
     //todo support draw a part of image asset
-    export class Image extends UI {
+    export class Image extends UITwoD {
         /*!
          can't change prototype directly
          (as:

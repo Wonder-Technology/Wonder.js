@@ -1,5 +1,5 @@
 module wd {
-    export abstract class UI extends Component{
+    export abstract class UITwoD extends Component{
         @virtual
         get dirty(){
             var renderer = this.getUIRenderer();

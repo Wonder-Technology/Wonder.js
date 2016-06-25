@@ -1,5 +1,5 @@
 module wd {
-    export abstract class Font extends UI {
+    export abstract class Font extends UITwoD {
         protected needFormat:boolean = false;
 
         private _isFirstUpdate:boolean = true;
