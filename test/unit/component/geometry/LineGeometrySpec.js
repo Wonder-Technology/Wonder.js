@@ -11,17 +11,28 @@ describe("LineGeometry", function() {
         sandbox.restore();
     });
 
+    describe("initWhenCreate", function(){
+        beforeEach(function(){
+
+        });
+
+        it("set drawMode to be LINE_STRIP", function () {
+            geo = wd.LineGeometry.create();
+            expect(geo.drawMode).toEqual(wd.EDrawMode.LINE_STRIP);
+        });
+    });
+
     describe("clone", function(){
         it("clone geometry data", function () {
-            var vertices = [1,2,3],
-                indices = [1,2,3];
+            var vertices = [1,2,3];
+                //indices = [1,2,3];
                 //normals = [0.1,2,-1],
                 //colors = [0.1,0.2,0.3],
                 //texCoords = [0.3,0.1];
 
             cloneTool.extend(geo, {
-                vertices: vertices,
-                indices:indices
+                vertices: vertices
+                //indices:indices
                 //normals:normals,
                 //colors: colors,
                 //texCoords: texCoords
@@ -32,8 +43,8 @@ describe("LineGeometry", function() {
             expect(result.vertices).toEqual(vertices);
             expect(result.vertices === vertices).toBeFalsy();
 
-            expect(result.indices).toEqual(indices);
-            expect(result.indices === indices).toBeFalsy();
+            //expect(result.indices).toEqual(indices);
+            //expect(result.indices === indices).toBeFalsy();
 
             //expect(result.normals).toEqual(normals);
             //expect(result.normals === normals).toBeFalsy();
@@ -50,19 +61,20 @@ describe("LineGeometry", function() {
         beforeEach(function(){
         });
 
-            it("not contain texCoords", function () {
-                geo.texCoords = [0.1, 0.2];
+        it("only contain vertices", function () {
+            geo.vertices = [
+                1,1.1,0.5,
+                5, 6, 7,
+                2,3,4,
+                8,3,4
+            ];
 
-                var result = geo.computeData();
+            var result = geo.computeData();
 
-                expect(result.texCoords).toBeUndefined();
-            });
-            it("not contain colors", function () {
-                geo.colors = [0.1, 0.2];
-
-                var result = geo.computeData();
-
-                expect(result.colors).toBeUndefined();
+            expect(result.vertices).toEqual(geo.vertices);
+            expect(result.faces).toBeUndefined();
+            expect(result.texCoords).toBeUndefined();
+            expect(result.colors).toBeUndefined();
         });
     });
 });

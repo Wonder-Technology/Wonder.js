@@ -43,7 +43,7 @@ module wd{
             var geometryData = null,
                 {
                     vertices,
-                    faces,
+                    faces = [],
                     texCoords,
                     colors,
                     morphTargets

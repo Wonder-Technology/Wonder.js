@@ -6,71 +6,56 @@ module wd{
             return geom;
         }
 
-        private _vertices:Array<number> = [];
+        private _customGeometry:CustomGeometry = CustomGeometry.create();
+
         @cloneAttributeAsCustomType(function(source:ModelGeometry, target:ModelGeometry, memberName:string){
             target[memberName] = CloneUtils.cloneArray(source[memberName]);
         })
         get vertices(){
-            return this._vertices;
+            return this._customGeometry.vertices;
         }
         set vertices(vertices:Array<number>){
-            this._vertices = vertices;
-
-            if(this.buffers){
-                this.buffers.geometryData.vertices = vertices;
-                this.buffers.removeCache(EBufferDataType.VERTICE);
-            }
+            this._customGeometry.vertices = vertices;
         }
 
-        private _texCoords:Array<number> = [];
         @cloneAttributeAsCustomType(function(source:ModelGeometry, target:ModelGeometry, memberName:string){
             target[memberName] = CloneUtils.cloneArray(source[memberName]);
         })
         get texCoords(){
-            return this._texCoords;
+            return this._customGeometry.texCoords;
         }
         set texCoords(texCoords:Array<number>){
-            this._texCoords = texCoords;
-
-            if(this.buffers) {
-                this.buffers.geometryData.texCoords = texCoords;
-                this.buffers.removeCache(EBufferDataType.TEXCOORD);
-            }
+            this._customGeometry.texCoords = texCoords;
         }
 
-        private _colors:Array<number> = [];
         @cloneAttributeAsCustomType(function(source:ModelGeometry, target:ModelGeometry, memberName:string){
             target[memberName] = CloneUtils.cloneArray(source[memberName]);
         })
         get colors(){
-            return this._colors;
+            return this._customGeometry.colors;
         }
         set colors(colors:Array<number>){
-            this._colors = colors;
-            if(this.buffers) {
-                this.buffers.geometryData.colors = colors;
-                this.buffers.removeCache(EBufferDataType.COLOR);
-            }
+            this._customGeometry.colors = colors;
         }
 
-        private _indices:Array<number> = [];
         @cloneAttributeAsCustomType(function(source:ModelGeometry, target:ModelGeometry, memberName:string){
             target[memberName] = CloneUtils.cloneArray(source[memberName]);
         })
         get indices(){
-            return this._indices;
+            return this._customGeometry.indices;
         }
         set indices(indices:Array<number>){
-            //todo refactor?
-            this._indices = indices;
-            if(this.buffers) {
-                this.buffers.geometryData.faces = GeometryUtils.convertToFaces(indices, this.normals);
-                this.buffers.removeCache(EBufferDataType.INDICE);
-            }
+            this._customGeometry.indices = indices;
         }
 
+        @cloneAttributeAsCustomType(function(source:ModelGeometry, target:ModelGeometry, memberName:string){
+            target[memberName] = CloneUtils.cloneArray(source[memberName]);
+        })
         get normals(){
-            return null;
+            return this._customGeometry.normals;
+        }
+        set normals(normals:Array<number>){
+            this._customGeometry.normals = normals;
         }
 
         public computeData(){

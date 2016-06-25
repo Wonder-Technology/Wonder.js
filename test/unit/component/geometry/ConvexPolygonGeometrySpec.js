@@ -16,14 +16,14 @@ describe("ConvexPolygonGeometry", function() {
             it("clone geometry data", function () {
                 var vertices = [1,2,3],
                     indices = [1,2,3],
-                    //normals = [0.1,2,-1],
+                    normals = [0.1,2,-1],
                     colors = [0.1,0.2,0.3],
                     texCoords = [0.3,0.1];
 
                 cloneTool.extend(geo, {
                     vertices: vertices,
                     indices:indices,
-                    //normals:normals,
+                    normals:normals,
                     colors: colors,
                     texCoords: texCoords
                 })
@@ -36,8 +36,8 @@ describe("ConvexPolygonGeometry", function() {
                 expect(result.indices).toEqual(indices);
                 expect(result.indices === indices).toBeFalsy();
 
-                //expect(result.normals).toEqual(normals);
-                //expect(result.normals === normals).toBeFalsy();
+                expect(result.normals).toEqual(normals);
+                expect(result.normals === normals).toBeFalsy();
 
                 expect(result.colors).toEqual(colors);
                 expect(result.colors === colors).toBeFalsy();
@@ -68,43 +68,29 @@ describe("ConvexPolygonGeometry", function() {
             });
         });
 
-        it("not contain normals", function () {
+        it("contain vertices,faces,texCoords,colors", function () {
             geo.vertices = [
                 1,1.1,0.5,
                 5, 6, 7,
                 2,3,4,
                 8,3,4
             ];
-
-            geo.normals = [
+            var normals = [
                 3,1.1,0.5,
                 5, 6, 7,
                 2,3,4,
                 8,3,4
-            ];
+            ]
+            geo.normals = normals;
 
-            var result = geo.computeData();
-
-            expect(geo.normals).toBeNull();
-            for(var i = 0, len = result.faces.length; i < len; i++){
-                var face = result.faces[i];
-
-                expect(face.vertexNormals.getCount()).toEqual(0);
-                expect(face.faceNormal.isEqual(wd.Vector3.create(0,0,0))).toBeTruthy();
-            }
-        });
-        it("contain texCoords", function () {
             geo.texCoords = [0.1, 0.2];
-
-            var result = geo.computeData();
-
-            expect(result.texCoords).toEqual(geo.texCoords);
-        });
-        it("contain colors", function () {
             geo.colors = [0.1, 0.2];
 
             var result = geo.computeData();
 
+            expect(result.vertices).toEqual(geo.vertices);
+            expect(result.faces).toBeDefined();
+            expect(result.texCoords).toEqual(geo.texCoords);
             expect(result.colors).toEqual(geo.colors);
         });
     });
