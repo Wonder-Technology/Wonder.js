@@ -141,6 +141,7 @@ describe("compressed texture", function() {
                     expect(texture.sourceRegionMethod).toEqual(wd.ETextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL);
                 });
                 it("if it's DRAW_IN_CANVAS, assertion and still be CHANGE_TEXCOORDS_IN_GLSL", function(){
+                    testTool.openContractCheck(sandbox);
                     //loadCompressedTexture(function(texture){
                     //    texture.sourceRegion = wd.RectRegion.create(12.8, 25.6, 12.8, 25.6);
                     //    texture.sourceRegionMethod = wd.ETextureSourceRegionMethod.DRAW_IN_CANVAS;
@@ -156,13 +157,16 @@ describe("compressed texture", function() {
 
 
                     texture.sourceRegionMethod = wd.ETextureSourceRegionMethod.DRAW_IN_CANVAS;
-                    sandbox.stub(wd.Log, "assert");
+                    sandbox.stub(chai, "expect");
 
 
-                    var sourceRegionMethod = texture.sourceRegionMethod;
-
-                    expect(wd.Log.assert).toCalledOnce();
-                    expect(sourceRegionMethod).toEqual(wd.ETextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL);
+                    expect(function(){
+                        var sourceRegionMethod = texture.sourceRegionMethod;
+                    }).toThrow("compressed texture not support ETextureSourceRegionMethod.DRAW_IN_CANVAS, will use ETextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL instead");
+                    //var sourceRegionMethod = texture.sourceRegionMethod;
+                    //
+                    //expect(chai.expect).toCalledOnce();
+                    //expect(sourceRegionMethod).toEqual(wd.ETextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL);
                 });
             });
         });

@@ -27,7 +27,7 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        //'test/unit/**',
+        'test/unit/**',
 
 
 
@@ -64,7 +64,7 @@
 
         //'test/unit/**/cubemapTexture*',
 
-        'test/unit/**/LineMaterial*',
+        //'test/unit/**/LineMaterial*',
         //'test/unit/**/BasicMaterial*',
         //'test/unit/**/LightMaterial*',
         //'test/unit/**/Material*',
@@ -73,8 +73,8 @@
 
         //'test/unit/**/material_lib/**',
 
-        'test/unit/**/ConvexPolygonGeometrySpec*',
-        'test/unit/**/LineGeometrySpec*',
+        //'test/unit/**/ConvexPolygonGeometrySpec*',
+        //'test/unit/**/LineGeometrySpec*',
         //'test/unit/**/SphereGeometrySpec*',
         //'test/unit/**/*GeometrySpec*',
 
@@ -146,6 +146,7 @@
         //'test/unit/**/envMap*',
         //
         //'test/unit/texture/**',
+        //'test/unit/**/compress*',
         //'test/unit/**/*ProceduralTexture*',
 
         //
