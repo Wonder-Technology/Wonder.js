@@ -64,6 +64,7 @@
 
         //'test/unit/**/cubemapTexture*',
 
+        'test/unit/**/LineMaterial*',
         //'test/unit/**/BasicMaterial*',
         //'test/unit/**/LightMaterial*',
         //'test/unit/**/Material*',
@@ -72,12 +73,14 @@
 
         //'test/unit/**/material_lib/**',
 
+        'test/unit/**/ConvexPolygonGeometrySpec*',
+        'test/unit/**/LineGeometrySpec*',
         //'test/unit/**/SphereGeometrySpec*',
         //'test/unit/**/*GeometrySpec*',
 
         //'test/unit/**/VAOManager*',
         //
-        'test/unit/**/action/*',
+        //'test/unit/**/action/*',
 
         //'test/unit/**/RenderUtils*',
 
