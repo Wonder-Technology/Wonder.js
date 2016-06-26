@@ -242,7 +242,7 @@
 		"component/light/ELightModel.ts",
 		"component/ui/threeD/UIThreeD.ts",
 		"component/ui/threeD/Line.ts",
-		"component/ui/threeD/ConvexPolygonArrow.ts",
+		"component/ui/threeD/Arrow.ts",
 		"component/ui/twoD/UITwoD.ts",
 		"component/ui/twoD/font/EFontXAlignment.ts",
 		"component/ui/twoD/font/EFontYAlignment.ts",

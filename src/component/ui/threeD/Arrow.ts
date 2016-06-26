@@ -1,5 +1,5 @@
 module wd{
-    export class ConvexPolygonArrow extends UIThreeD{
+    export class Arrow extends UIThreeD{
         public static create() {
         	var obj = new this();
 

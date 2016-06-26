@@ -23,7 +23,7 @@
 
 
             var arrow = wd.GameObject.create();
-            arrow.addChild(createArrowByCreateConvexPolygonGeometry());
+            arrow.addChild(createArrow());
             arrow.addChild(createLine());
 
 
@@ -33,8 +33,8 @@
             director.start();
         });
 
-        function createArrowByCreateConvexPolygonGeometry() {
-            var arrow = wd.ConvexPolygonArrow.create();
+        function createArrow() {
+            var arrow = wd.Arrow.create();
 
 
             var geometry = wd.ConvexPolygonGeometry.create();
