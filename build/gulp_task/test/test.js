@@ -1,17 +1,39 @@
 var gulp = require("gulp");
+var gulpSync = require("gulp-sync")(gulp);
 var path = require("path");
 var karma = require("karma").server;
 
 var karmaConfPath = path.join(process.cwd(), "test/karma.conf.js");
 var ciKarmaConfPath = path.join(process.cwd(), "karma.conf.js");
 
-gulp.task("test", function (done) {
+
+require("../compile/parseTsconfigFilesGlob");
+require("../compile/removeTsconfigFiles");
+require("../compile/compileTs");
+require("../compile/combineInnerLib");
+
+
+gulp.task("testByKarma", function (done) {
     karma.start({
         configFile: karmaConfPath
         //singleRun:true,
         //autoWatch:false
     }, done);
 });
+
+
+var tsFilePaths = ["src/*.ts", "src/**/*.ts"];
+var glslFilePaths = ["src/renderer/shader/chunk/glsl/**/*.glsl", "src/lib/**/*.glsl"];
+
+gulp.task("watchForTest", function(){
+    var totalPaths = tsFilePaths.concat(glslFilePaths);
+
+    gulp.watch(totalPaths, gulpSync.sync(["createShaderChunk", "parseTsconfigFilesGlob", "compileTsDebugForTest", "removeTsconfigFiles"]));
+});
+
+
+gulp.task("test", gulpSync.sync(["watchForTest", "testByKarma"]));
+
 
 gulp.task("testInCI", function (done) {
     karma.start({

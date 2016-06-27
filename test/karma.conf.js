@@ -27,7 +27,7 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        'test/unit/**',
+        //'test/unit/**',
 
 
 
@@ -80,7 +80,7 @@
 
         //'test/unit/**/VAOManager*',
         //
-        //'test/unit/**/action/*',
+        'test/unit/**/action/*',
 
         //'test/unit/**/RenderUtils*',
 
@@ -320,7 +320,8 @@
 
         //{pattern: 'src/**/*.js.map', watched: false, included: false, served: true},
         //{pattern: 'src/**/*.ts', watched: false, included: false, served: true}
-        {pattern: 'dist/wd.debug.js.map', watched: false, included: false, served: true},
+        //{pattern: 'dist/wd.debug.js.map', watched: false, included: false, served: true, nocache:true},
+
         {pattern: 'test/res/*', watched: false, included: false, served: true},
     {pattern: 'test/res/**', watched: false, included: false, served: true}
     ],

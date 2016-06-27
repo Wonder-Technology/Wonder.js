@@ -97,6 +97,20 @@ gulp.task("compileTsDebug", function() {
     //return tsResult;
 });
 
+gulp.task("compileTsDebugForTest", function() {
+    var tsProject = gulpTs.createProject(path.join(process.cwd(), tsconfigFile[0]), {
+        outFile: "wd.debug.js",
+        typescript: require('typescript')
+    });
+    var tsResult = tsProject.src()
+        .pipe(gulpSourcemaps.init())
+        .pipe(gulpTs(tsProject))
+        .pipe(gulpSourcemaps.write())
+        .pipe(gulp.dest("dist/"));
+
+    return tsResult;
+});
+
 //gulp.task("removeReference", function(){
 //    return gulp.src(distFilePaths)
 //        .pipe(through(function (file, encoding, callback) {
