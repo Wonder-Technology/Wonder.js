@@ -80,7 +80,7 @@
 
         //'test/unit/**/VAOManager*',
         //
-        'test/unit/**/action/*',
+        //'test/unit/**/action/*',
 
         //'test/unit/**/RenderUtils*',
 
@@ -241,7 +241,7 @@
         //'test/unit/**/FontSpec*',
         //'test/unit/**/PlainFontSpec*',
         //'test/unit/**/UIRendererSpec*',
-        //'test/unit/**/BitmapFontSpec*',
+        'test/unit/**/TwoDBitmapFontSpec*',
         //
         //'test/unit/**/DirectorSpec*',
         //

@@ -23,19 +23,28 @@ module wd {
     }
 
     export type FntData = {
-        commonHeight:number,
-        atlasName:string,
+        commonHeight:number;
+        commonBase:number;
+        scaleW:number;
+        scaleH:number;
+        atlasName:string;
         fontDefDictionary: {
-            [charId:string]:{
-                rect: {x: number, y: number, width: number, height: number},
-                xOffset: number,
-                yOffset: number,
+            [charId:string]:FntCharData
+        };
+        kerningArray: Array<{
+            first:string;
+            second:string;
+            amount:number;
+        }>
+    }
 
-                //xadvance等于字符纹理宽度
-                xAdvance: number
+    export type FntCharData = {
+        id:string;
+        rect: {x: number; y: number; width: number; height: number};
+        xOffset: number;
+        yOffset: number;
+        xAdvance: number;
 
-            }
-        }
     }
 }
 

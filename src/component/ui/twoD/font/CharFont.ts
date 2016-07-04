@@ -36,8 +36,6 @@ module wd {
         public xAdvance:number = null;
         public image:HTMLImageElement = null;
         public rectRegion:RectRegion = null;
-        public isNewLine:boolean = false;
-        public isFullLine:boolean = false;
 
         private _subscription:wdFrp.IDisposable = null;
 

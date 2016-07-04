@@ -3,7 +3,7 @@ module wd {
     const COMMON_EXP = /common [^\n]*(\n|$)/gi,
         PAGE_EXP = /page [^\n]*(\n|$)/gi,
         CHAR_EXP = /char [^\n]*(\n|$)/gi,
-    //KERNING_EXP = /kerning [^\n]*(\n|$)/gi,
+    KERNING_EXP = /kerning [^\n]*(\n|$)/gi,
         ITEM_EXP = /\w+=[^ \r\n]+/gi,
         INT_EXP = /^[\-]?\d+$/;       //"-"?
 
@@ -28,6 +28,11 @@ module wd {
 
             fnt.commonHeight = commonObj["lineHeight"];
 
+            //todo test
+            fnt.commonBase = commonObj["base"];
+            fnt.scaleW = commonObj["scaleW"];
+            fnt.scaleH = commonObj["scaleH"];
+
             //todo support pages
             if (commonObj["pages"] !== 1) {
                 Log.log("only supports 1 page");
@@ -44,9 +49,12 @@ module wd {
             this._parseChar(fntStr, fnt);
 
             /*!
-             //todo support kerning
+             ////todo support kerning
              http://www.blueidea.com/design/doc/2007/5160.asp
              */
+
+            //todo test
+            this._parseKerning(fntStr, fnt);
 
 
             //todo use padding?
@@ -86,6 +94,7 @@ module wd {
                     charId = charObj["id"];
 
                 fontDefDictionary[charId] = {
+                    id:charId,
                     rect: {x: charObj["x"], y: charObj["y"], width: charObj["width"], height: charObj["height"]},
                     xOffset: charObj["xoffset"],
                     yOffset: charObj["yoffset"],
@@ -96,6 +105,24 @@ module wd {
             }
 
             fnt.fontDefDictionary = fontDefDictionary;
+        }
+
+        private _parseKerning(fntStr:string, fnt:any) {
+            var kerningLines = fntStr.match(KERNING_EXP),
+                kerningArray = [];
+
+
+            for (let kerning of kerningLines) {
+                let kerningObj = this._parseStrToObj(kerning);
+
+                kerningArray.push({
+                    first: kerningObj["first"],
+                    second:kerningObj["second"],
+                    amount:kerningObj["amount"]
+                });
+            }
+
+            fnt.kerningArray = kerningArray;
         }
 
         //private _parsePadding(fntStr:string){
