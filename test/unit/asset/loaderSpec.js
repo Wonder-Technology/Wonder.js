@@ -592,6 +592,15 @@ describe("loader", function () {
                     expect(fnt.commonHeight).toEqual(90);
                     expect(fnt.atlasName).toEqual(testTool.resPath + "test/res/font/myFont.png");
                     expect(fnt.fontDefDictionary).toBeDefined();
+                    expect(fnt.commonBase).toEqual(70);
+                    expect(fnt.scaleW).toEqual(490);
+                    expect(fnt.scaleH).toEqual(547);
+                    expect(fnt.kerningArray.length).toEqual(241);
+                    expect(fnt.kerningArray[0]).toEqual({
+                        first:89,
+                        second:112,
+                        amount:-3
+                    });
 
                     done();
                 });

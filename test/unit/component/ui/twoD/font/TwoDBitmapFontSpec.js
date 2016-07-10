@@ -116,6 +116,7 @@ describe("TwoDBitmapFont", function () {
     describe("else", function () {
         var image;
         var context;
+        var charData;
 
         function judgeDrawImage(callCount, x, y, width, height) {
             var fontWidth = uiObject.transform.width,
@@ -158,17 +159,18 @@ describe("TwoDBitmapFont", function () {
 
             sandbox.stub(wd.LoaderManager.getInstance(), "get");
 
-            var charData = {
-                        rect: {
-                            x: 0,
-                            y: 0,
-                            width: 100,
-                            height: 200
-                        },
-                        xOffset: 1,
-                        yOffset: 2,
-                        xAdvance: 3
-                    };
+            charData = {
+                id:"1",
+                rect: {
+                    x: 0,
+                    y: 0,
+                    width: 100,
+                    height: 200
+                },
+                xOffset: 1,
+                yOffset: 2,
+                xAdvance: 3
+            };
 
             wd.LoaderManager.getInstance().get.withArgs(font.fntId).returns({
                 fontDefDictionary: {
@@ -178,8 +180,6 @@ describe("TwoDBitmapFont", function () {
                 //todo test
                 commonBase:0
             });
-
-            //todo test kerning
 
             //sandbox.stub(font, "_getFontDef", function (dict) {
             //    return dict[1];
@@ -488,6 +488,40 @@ describe("TwoDBitmapFont", function () {
             });
         });
 
+        describe("test kerning", function(){
+            var amount;
+
+            beforeEach(function(){
+                amount = 1;
+                wd.LoaderManager.getInstance().get.withArgs(font.fntId).returns({
+                    fontDefDictionary: {
+                        1: charData
+                    },
+                    commonHeight:50,
+                    commonBase:0,
+                    kerningArray:[{
+                        first:"1",
+                        second:"1",
+                        amount:amount
+                    }]
+                });
+            });
+
+            it("test", function () {
+                font.text = "正ab";
+                setWidth(1000);
+
+                director._init();
+
+                prepareAfterInit();
+
+                director._loopBody(1);
+
+                judgeDrawImage(0, 1, 2, 100, 200);
+                judgeDrawImage(1, 4 + amount, 2, 100, 200);
+                judgeDrawImage(2, 7 + amount * 2, 2, 100, 200);
+            });
+        });
 
         describe("if ui not change, not clear ui canvas and not render ui", function() {
             it("test text has newline char", function () {

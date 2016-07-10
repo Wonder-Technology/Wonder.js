@@ -301,7 +301,7 @@
       //  'test/unit/asset/*.js',
       //  'test/unit/asset/obj/*.js',
       //  'test/unit/asset/obj/OBJParserSpec.js',
-      //  'test/unit/asset/loaderSpec.js',
+        'test/unit/asset/loaderSpec.js',
         //'test/unit/asset/wd/WDParserSpec.js',
         //'test/unit/asset/wd/WDBuilderSpec.js',
         //'test/unit/math/*.js',
