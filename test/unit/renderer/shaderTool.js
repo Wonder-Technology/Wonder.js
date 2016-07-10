@@ -14,7 +14,7 @@ var shaderTool = (function(){
         getAndStubProgram: function(sandbox, material, programName){
             var program = material.program;
 
-            this.spyProgram(sandbox, material);
+            this.stubProgram(sandbox, material);
 
             if(programName){
                 program.name = programName;

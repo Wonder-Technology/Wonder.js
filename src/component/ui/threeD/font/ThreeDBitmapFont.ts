@@ -38,7 +38,17 @@ module wd {
         public fntId:string = null;
 
         @cloneAttributeAsBasicType()
-        public width:number = null;
+        private _width:number = null;
+        get width(){
+            return this._width;
+        }
+        set width(width:number){
+            if(this._width !== width){
+                this._width = width;
+
+                this.needFormat = true;
+            }
+        }
 
         public layoutDataList:wdCb.Collection<LayoutCharData> = null;
 

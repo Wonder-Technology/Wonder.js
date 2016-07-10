@@ -242,6 +242,8 @@
         //'test/unit/**/PlainFontSpec*',
         //'test/unit/**/UIRendererSpec*',
         'test/unit/**/TwoDBitmapFontSpec*',
+        'test/unit/**/ThreeDBitmapFontSpec*',
+        'test/unit/**/bitmapFontSpec*',
         //
         //'test/unit/**/DirectorSpec*',
         //
