@@ -9,12 +9,10 @@ module wd{
         }
 
         @ensureGetter(function(sourceRegionMethod:ETextureSourceRegionMethod){
-            var self = this;
-
             it("compressed texture not support ETextureSourceRegionMethod.DRAW_IN_CANVAS, will use ETextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL instead", function () {
-                expect(self.p_sourceRegionMethod).not.to.equal(ETextureSourceRegionMethod.DRAW_IN_CANVAS);
+                expect(this.p_sourceRegionMethod).not.to.equal(ETextureSourceRegionMethod.DRAW_IN_CANVAS);
             expect(sourceRegionMethod).to.equal(ETextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL);
-            });
+            }, this);
         })
         get sourceRegionMethod(){
             return ETextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL;

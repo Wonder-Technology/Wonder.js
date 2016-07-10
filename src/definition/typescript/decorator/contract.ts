@@ -3,9 +3,14 @@ module wd{
         Log.error(!cond, message);
     }
 
-    export function it(message:string, func:Function){
+    export function it(message:string, func:Function, context?:any){
         try{
-            func();
+            if(arguments.length === 3){
+                func.call(context, null);
+            }
+            else{
+                func();
+            }
         }
         catch(e){
             assert(false, `${message}: ${e.message}`);

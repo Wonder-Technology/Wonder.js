@@ -11,11 +11,11 @@ module wd{
         @require(function(){
             it("now only support BasicMaterial", function () {
                 expect(this.material).instanceOf(BasicMaterial);
-            });
+            }, this);
             it("should add only one bitmap texture to material", function () {
                 expect(this.material.mapList.getCount()).to.equal(1);
                 expect(this.material.mapList.getChild(0)).instanceOf(BasicTexture);
-            });
+            }, this);
         })
         public computeData(){
             var bitmapFont = this.entityObject.getComponent<ThreeDBitmapFont>(ThreeDBitmapFont),
