@@ -113,6 +113,8 @@ module wd {
             AnimationEngine.getInstance().update(elapsed);
             CollisionEngine.getInstance().update(elapsed);
 
+            ThreeDUIEngine.getInstance().update(elapsed);
+
             super.update(elapsed);
 
             CollisionEngine.getInstance().detect(elapsed);

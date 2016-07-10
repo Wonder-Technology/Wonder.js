@@ -23,10 +23,10 @@ module wd {
             letterSpacing = 0,
             align = EFontXAlignment.LEFT
             }) {
-            var fntObj:FntData = this._getFntObj(fntId);
+            var fntData:FntData = this._getFntObj(fntId);
                 //imageAsset:ImageTextureAsset = this._getImageAsset(bitmapId);
 
-            if (!fntObj) {
+            if (!fntData) {
                 Log.log("impossible to create font: not find fnt file");
 
                 return ;
@@ -40,11 +40,11 @@ module wd {
 
             //var tabSize = 4;
 
-            this._searchGlyph.setupSpaceGlyphs(fntObj, tabSize);
+            this._searchGlyph.setupSpaceGlyphs(fntData, tabSize);
 
 
-            //var lines = BitmapFontWordWrapper.getLines(text, fntObj, {
-            var lines = BitmapFontWordWrapper.getLines(fntObj, text, this._searchGlyph, {
+            //var lines = BitmapFontWordWrapper.getLines(text, fntData, {
+            var lines = BitmapFontWordWrapper.getLines(fntData, text, this._searchGlyph, {
                 width:width,
                 letterSpacing:letterSpacing,
                 //tabSize: tabSize
@@ -63,9 +63,9 @@ module wd {
             //the pen position
             var x = 0
             var y = 0
-            //var lineHeight = number(opt.lineHeight, fntObj.commonHeight)
-            var lineHeight = fntObj.commonHeight;
-            var baseline = fntObj.commonBase;
+            //var lineHeight = number(opt.lineHeight, fntData.commonHeight)
+            var lineHeight = fntData.commonHeight;
+            var baseline = fntData.commonBase;
             var descender = lineHeight - baseline
             var letterSpacing = letterSpacing;
             //var height = lineHeight * lines.length - descender
@@ -97,10 +97,10 @@ module wd {
                 //for each glyph in that line...
                 for (var i = start; i < end; i++) {
                     var id:number = text.charCodeAt(i);
-                    var glyph:FntCharData = this._searchGlyph.getGlyph(fntObj, id);
+                    var glyph:FntCharData = this._searchGlyph.getGlyph(fntData, id);
                     if (glyph) {
                         if (lastGlyph)
-                            x += BitmapFontParser.getKerning(fntObj, lastGlyph.id, glyph.id)
+                            x += BitmapFontParser.getKerning(fntData, lastGlyph.id, glyph.id)
 
                         var tx = x
                         if (align === EFontXAlignment.CENTER)

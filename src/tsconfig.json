@@ -141,6 +141,7 @@
 		"component/animation/EArticulatedAnimationTarget.ts",
 		"component/geometry/Geometry.ts",
 		"component/geometry/VAOManager.ts",
+		"component/geometry/BitmapFontGeometry.ts",
 		"component/geometry/LineGeometry.ts",
 		"component/geometry/ConvexPolygonGeometry.ts",
 		"component/geometry/GeometryUtils.ts",
@@ -244,7 +245,8 @@
 		"component/ui/threeD/UIThreeD.ts",
 		"component/ui/threeD/Line.ts",
 		"component/ui/threeD/Arrow.ts",
-		"component/ui/threeD/font/*.ts",
+		"component/ui/threeD/font/ThreeDFont.ts",
+		"component/ui/threeD/font/ThreeDBitmapFont.ts",
 		"component/ui/twoD/UITwoD.ts",
 		"component/ui/twoD/font/EFontXAlignment.ts",
 		"component/ui/twoD/font/EFontYAlignment.ts",
@@ -551,6 +553,7 @@
 		"engine/AnimationEngine.ts",
 		"engine/CollisionEngine.ts",
 		"engine/PhysicsEngine.ts",
+		"engine/ThreeDUIEngine.ts",
 		"engine/UIEngine.ts"
 	]
 }
