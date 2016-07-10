@@ -25,6 +25,9 @@ gulp.task("testByKarma", function (done) {
 var tsFilePaths = ["src/*.ts", "src/**/*.ts"];
 var glslFilePaths = ["src/renderer/shader/chunk/glsl/**/*.glsl", "src/lib/**/*.glsl"];
 
+
+gulp.task("compileForTest", gulpSync.sync(["createShaderChunk", "parseTsconfigFilesGlob", "compileTsDebugForTest", "removeTsconfigFiles"]));
+
 gulp.task("watchForTest", function(){
     var totalPaths = tsFilePaths.concat(glslFilePaths);
 
@@ -32,7 +35,7 @@ gulp.task("watchForTest", function(){
 });
 
 
-gulp.task("test", gulpSync.sync(["watchForTest", "testByKarma"]));
+gulp.task("test", gulpSync.sync(["compileForTest", "watchForTest", "testByKarma"]));
 
 
 gulp.task("testInCI", function (done) {
