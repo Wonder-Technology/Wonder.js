@@ -8,12 +8,6 @@ var merge = require("merge2");
 var fs = require("fs-extra");
 var path = require("path");
 
-var convert = require("./convertDefinitionFileToPathArray");
-
-var distFilePaths = [
-    'dist/*.ts',
-    'dist/*.js'
-];
 var tsconfigFile = [
     "src/tsconfig.json"
 ];

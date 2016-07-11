@@ -1,6 +1,6 @@
 /*!
  * wonder - 3d html5 game engine
- * @version v0.5.8
+ * @version v0.6.0
  * @author Yuanchao Yang <395976266@qq.com>
  * @link https://github.com/yyc-git/Wonder.js
  * @license MIT
@@ -7998,6 +7998,8 @@ declare module wd {
         static fresnel_forBasic_envMap_fragment: GLSLChunk;
         static reflection_forBasic_envMap_fragment: GLSLChunk;
         static refraction_forBasic_envMap_fragment: GLSLChunk;
+        static modelMatrix_batch_instance_vertex: GLSLChunk;
+        static normalMatrix_batch_instance_vertex: GLSLChunk;
         static basic_forLight_envMap_fragment: GLSLChunk;
         static basic_forLight_envMap_vertex: GLSLChunk;
         static forLight_envMap_fragment: GLSLChunk;
@@ -8005,6 +8007,10 @@ declare module wd {
         static fresnel_forLight_envMap_fragment: GLSLChunk;
         static reflection_forLight_envMap_fragment: GLSLChunk;
         static refraction_forLight_envMap_fragment: GLSLChunk;
+        static modelMatrix_hardware_instance_vertex: GLSLChunk;
+        static normalMatrix_hardware_instance_vertex: GLSLChunk;
+        static modelMatrix_noInstance_vertex: GLSLChunk;
+        static normalMatrix_noInstance_vertex: GLSLChunk;
         static diffuseMap_fragment: GLSLChunk;
         static diffuseMap_vertex: GLSLChunk;
         static emissionMap_fragment: GLSLChunk;
@@ -8035,12 +8041,6 @@ declare module wd {
         static twoDShadowMap_fragment: GLSLChunk;
         static twoDShadowMap_unpackDepth_fragment: GLSLChunk;
         static twoDShadowMap_vertex: GLSLChunk;
-        static modelMatrix_batch_instance_vertex: GLSLChunk;
-        static normalMatrix_batch_instance_vertex: GLSLChunk;
-        static modelMatrix_noInstance_vertex: GLSLChunk;
-        static normalMatrix_noInstance_vertex: GLSLChunk;
-        static modelMatrix_hardware_instance_vertex: GLSLChunk;
-        static normalMatrix_hardware_instance_vertex: GLSLChunk;
         static mirror_fragment: GLSLChunk;
         static mirror_vertex: GLSLChunk;
         static terrainLayer_fragment: GLSLChunk;
@@ -8056,9 +8056,9 @@ declare module wd {
         static water_refraction_fragment: GLSLChunk;
         static water_vertex: GLSLChunk;
         static brick_proceduralTexture_fragment: GLSLChunk;
-        static cloud_proceduralTexture_fragment: GLSLChunk;
         static common_proceduralTexture_fragment: GLSLChunk;
         static common_proceduralTexture_vertex: GLSLChunk;
+        static cloud_proceduralTexture_fragment: GLSLChunk;
         static fire_proceduralTexture_fragment: GLSLChunk;
         static grass_proceduralTexture_fragment: GLSLChunk;
         static marble_proceduralTexture_fragment: GLSLChunk;
