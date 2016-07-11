@@ -555,6 +555,6 @@
 		"engine/PhysicsEngine.ts",
 		"engine/UIEngine.ts",
 		"engine/ThreeDUIEngine.ts",
-		"engine/TwoDEngine.ts"
+		"engine/TwoDUIEngine.ts"
 	]
 }
