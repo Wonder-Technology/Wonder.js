@@ -27,7 +27,7 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        //'test/unit/**',
+        'test/unit/**',
 
 
         //'test/unit/**/procedural_texture_lib/**',
@@ -66,11 +66,11 @@
         //'test/unit/**/LineMaterial*',
         //'test/unit/**/BasicMaterial*',
         //'test/unit/**/LightMaterial*',
-        'test/unit/**/Material*',
-        'test/unit/**/*Material*',
+        //'test/unit/**/Material*',
+        //'test/unit/**/*Material*',
         //'test/unit/**/mirrorMaterial*',
 
-        'test/unit/**/material_lib/**',
+        //'test/unit/**/material_lib/**',
 
         //'test/unit/**/ConvexPolygonGeometrySpec*',
         //'test/unit/**/LineGeometrySpec*',
@@ -145,7 +145,7 @@
         //'test/unit/**/envMap*',
         //
         //'test/unit/texture/**',
-        'test/unit/**/compress*',
+        //'test/unit/**/compress*',
         //'test/unit/**/*ProceduralTexture*',
 
         //
@@ -237,12 +237,12 @@
 
         //'test/unit/**/*Asset*',
         //
-        'test/unit/**/TwoDFontSpec*',
+        //'test/unit/**/TwoDFontSpec*',
         //'test/unit/**/PlainFontSpec*',
         //'test/unit/**/UIRendererSpec*',
-        'test/unit/**/TwoDBitmapFontSpec*',
-        'test/unit/**/ThreeDBitmapFontSpec*',
-        'test/unit/**/bitmapFontSpec*',
+        //'test/unit/**/TwoDBitmapFontSpec*',
+        //'test/unit/**/ThreeDBitmapFontSpec*',
+        //'test/unit/**/bitmapFontSpec*',
         //
         //'test/unit/**/DirectorSpec*',
         //
@@ -300,7 +300,7 @@
       //  'test/unit/asset/*.js',
       //  'test/unit/asset/obj/*.js',
       //  'test/unit/asset/obj/OBJParserSpec.js',
-        'test/unit/asset/loaderSpec.js',
+      //  'test/unit/asset/loaderSpec.js',
         //'test/unit/asset/wd/WDParserSpec.js',
         //'test/unit/asset/wd/WDBuilderSpec.js',
         //'test/unit/math/*.js',

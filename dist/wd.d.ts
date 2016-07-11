@@ -1,4 +1,4 @@
-/**
+/*!
  * wonder - 3d html5 game engine
  * @version v0.5.8
  * @author Yuanchao Yang <395976266@qq.com>
@@ -1952,6 +1952,7 @@ declare module wd {
 
 declare module wd {
     function assert(cond: boolean, message?: string): void;
+    function it(message: string, func: Function, context?: any): void;
     function require(inFunc: any): (target: any, name: any, descriptor: any) => any;
     function ensure(outFunc: any): (target: any, name: any, descriptor: any) => any;
     function requireGetterAndSetter(inGetterFunc: any, inSetterFunc: any): (target: any, name: any, descriptor: any) => any;
@@ -1961,6 +1962,10 @@ declare module wd {
     function ensureGetter(outFunc: any): (target: any, name: any, descriptor: any) => any;
     function ensureSetter(outFunc: any): (target: any, name: any, descriptor: any) => any;
     function invariant(func: any): (target: any) => void;
+}
+
+declare module wd {
+    function singleton(isInitWhenCreate?: boolean): (target: any) => void;
 }
 
 declare module wd {
@@ -1987,6 +1992,7 @@ declare module wd {
 
 declare module wd {
     const ABSTRACT_ATTRIBUTE: any;
+    var expect: Chai.ExpectStatic;
 }
 
 declare module wd {
@@ -2040,12 +2046,12 @@ declare module wd {
     class CoordinateUtils {
         static convertWebGLPositionToCanvasPosition(position: Vector3): Vector2;
         static convertCanvasPositionToWebGLPosition(position: Vector2): Vector3;
-        static convertLeftCornerPositionToCenterPosition(position: Vector2, width: number, height: number): Vector2;
-        static convertLeftCornerPositionXToCenterPositionX(positionX: number, width: number): number;
-        static convertLeftCornerPositionYToCenterPositionY(positionY: number, height: number): number;
-        static convertCenterPositionToLeftCornerPosition(position: Vector2, width: number, height: number): Vector2;
-        static convertCenterPositionXToLeftCornerPositionX(positionX: number, width: number): number;
-        static convertCenterPositionYToLeftCornerPositionY(positionY: number, height: number): number;
+        static convertLeftCornerPositionToCenterPositionInWebGL(position: Vector2, width: number, height: number): Vector2;
+        static convertLeftCornerPositionXToCenterPositionXInWebGL(positionX: number, width: number): number;
+        static convertLeftCornerPositionYToCenterPositionYInWebGL(positionY: number, height: number): number;
+        static convertLeftCornerPositionToCenterPositionInCanvas(position: Vector2, width: number, height: number): Vector2;
+        static convertLeftCornerPositionXToCenterPositionXInCanvas(positionX: number, width: number): number;
+        static convertLeftCornerPositionYToCenterPositionYInCanvas(positionY: number, height: number): number;
     }
 }
 
@@ -2434,7 +2440,6 @@ declare module wd {
 
 declare module wd {
     class Director {
-        private static _instance;
         static getInstance(): any;
         gameTime: number;
         fps: number;
@@ -3303,7 +3308,6 @@ declare module wd {
 
 declare module wd {
     class MouseEventHandler extends DomEventHandler {
-        private static _instance;
         static getInstance(): any;
         on(eventName: EEventName, handler: (event: MouseEvent) => void, priority: number): any;
         on(dom: HTMLElement, eventName: EEventName, handler: (event: MouseEvent) => void, priority: number): any;
@@ -3320,7 +3324,6 @@ declare module wd {
 
 declare module wd {
     class KeyboardEventHandler extends DomEventHandler {
-        private static _instance;
         static getInstance(): any;
         on(eventName: EEventName, handler: (event: MouseEvent) => void, priority: number): any;
         on(dom: HTMLElement, eventName: EEventName, handler: (event: MouseEvent) => void, priority: number): any;
@@ -3338,7 +3341,6 @@ declare module wd {
 
 declare module wd {
     class CustomEventHandler extends EventHandler {
-        private static _instance;
         static getInstance(): any;
         on(eventName: string, handler: Function, priority: number): void;
         on(target: EntityObject, eventName: string, handler: Function, priority: number): void;
@@ -3364,7 +3366,6 @@ declare module wd {
 
 declare module wd {
     class CustomEventDispatcher extends EventDispatcher {
-        private static _instance;
         static getInstance(): any;
         trigger(event: Event): boolean;
         trigger(event: Event, userData: any): boolean;
@@ -3380,7 +3381,6 @@ declare module wd {
 
 declare module wd {
     class DomEventDispatcher extends EventDispatcher {
-        private static _instance;
         static getInstance(): any;
         trigger(event: Event): void;
         trigger(dom: HTMLElement, event: Event): void;
@@ -3423,7 +3423,6 @@ declare module wd {
 
 declare module wd {
     class CustomEventRegister extends EventRegister {
-        private static _instance;
         static getInstance(): any;
         protected listenerMap: CustomEventListenerMap;
         register(target: EntityObject, eventName: EEventName, handler: Function, originHandler: Function, domHandler: Function, priority: number): void;
@@ -3450,7 +3449,6 @@ declare module wd {
 
 declare module wd {
     class DomEventRegister extends EventRegister {
-        private static _instance;
         static getInstance(): any;
         protected listenerMap: DomEventListenerMap;
         register(dom: HTMLElement, eventName: EEventName, eventData: wdCb.Hash<any>, handler: Function, originHandler: Function, domHandler: Function, priority: number): void;
@@ -3482,7 +3480,6 @@ declare module wd {
 
 declare module wd {
     class CustomEventBinder extends EventBinder {
-        private static _instance;
         static getInstance(): any;
         on(eventName: EEventName | string, handler: Function): void;
         on(eventName: EEventName | string, handler: Function, priority: number): void;
@@ -3499,7 +3496,6 @@ declare module wd {
 
 declare module wd {
     class DomEventBinder extends EventBinder {
-        private static _instance;
         static getInstance(): any;
         on(listener: {} | EventListener): void;
         on(eventName: EEventName | string, handler: Function): void;
@@ -4161,6 +4157,52 @@ declare module wd {
 }
 
 declare module wd {
+    class BitmapFontGeometry extends Geometry {
+        static create(): BitmapFontGeometry;
+        material: BasicMaterial;
+        computeData(): {
+            vertices: any;
+            faces: Face3[];
+            texCoords: any;
+        };
+        updateBuffers(): void;
+        private _generateVertices(layoutDataList, bitmapFontWidth, bitmapFontHeight);
+        private _generateTexCoords(layoutDataList, textureWidth, textureHeight, flipY);
+        private _generateIndices(layoutDataList);
+    }
+}
+
+declare module wd {
+    class LineGeometry extends Geometry {
+        static create(): LineGeometry;
+        private _customGeometry;
+        vertices: Array<number>;
+        initWhenCreate(): void;
+        computeData(): {
+            vertices: number[];
+        };
+    }
+}
+
+declare module wd {
+    class ConvexPolygonGeometry extends Geometry {
+        static create(): ConvexPolygonGeometry;
+        private _customGeometry;
+        vertices: Array<number>;
+        texCoords: Array<number>;
+        colors: Array<number>;
+        indices: Array<number>;
+        normals: Array<number>;
+        computeData(): {
+            vertices: number[];
+            faces: Face3[];
+            texCoords: number[];
+            colors: number[];
+        };
+    }
+}
+
+declare module wd {
     class GeometryUtils {
         static convertToFaces(indices: Array<number>, normals?: Array<number>): Array<Face3>;
         static hasData(data: any): boolean;
@@ -4675,6 +4717,7 @@ declare module wd {
         private _context;
         private _callFunc;
         private _dataArr;
+        clone(): Action;
         reverse(): this;
         update(elapsed: any): void;
     }
@@ -4719,6 +4762,7 @@ declare module wd {
         private _currentAction;
         private _actionIndex;
         initWhenCreate(): void;
+        clone(): Action;
         update(elapsed: any): any;
         reset(): this;
         start(): this;
@@ -4736,6 +4780,7 @@ declare module wd {
         static create(...args: any[]): any;
         constructor(actionArr: Array<Action>);
         private _actions;
+        clone(): Action;
         update(elapsed: any): void;
         start(): this;
         stop(): this;
@@ -4754,6 +4799,7 @@ declare module wd {
         static create(delayTime: number): DelayTime;
         protected duration: number;
         constructor(delayTime: number);
+        clone(): Action;
         reverse(): this;
     }
 }
@@ -4765,6 +4811,7 @@ declare module wd {
         private _innerAction;
         private _originTimes;
         private _times;
+        clone(): Action;
         initWhenCreate(): void;
         update(elapsed: any): void;
         reset(): this;
@@ -4781,6 +4828,7 @@ declare module wd {
         static create(action: Action): RepeatForever;
         constructor(action: Action);
         private _innerAction;
+        clone(): Action;
         update(elapsed: any): void;
         start(): void;
         stop(): void;
@@ -5779,7 +5827,137 @@ declare module wd {
 }
 
 declare module wd {
-    abstract class UI extends Component {
+    class BitmapFontLayout {
+        static create(): BitmapFontLayout;
+        private _layoutList;
+        private _searchGlyph;
+        getLayoutData(text: string, fntId: string, {width, tabSize, letterSpacing, align}: {
+            width?: number;
+            tabSize?: number;
+            letterSpacing?: number;
+            align?: EFontXAlignment;
+        }): wdCb.Collection<{
+            position: number[];
+            data: {
+                id: string;
+                rect: {
+                    x: number;
+                    y: number;
+                    width: number;
+                    height: number;
+                };
+                xOffset: number;
+                yOffset: number;
+                xAdvance: number;
+            };
+            index: number;
+            line: number;
+        }>;
+        private _getFntObj(fntId);
+    }
+    type LayoutCharData = {
+        position: Array<number>;
+        data: FntCharData;
+        index: number;
+        line: number;
+    };
+}
+
+declare module wd {
+    class BitmapFontParser {
+        static getKerning(fntObj: FntData, left: string, right: string): number;
+    }
+}
+
+declare module wd {
+    class BitmapFontSearchGlyph {
+        static create(): BitmapFontSearchGlyph;
+        private _fallbackSpaceGlyph;
+        private _fallbackTabGlyph;
+        getGlyph(fntObj: FntData, id: number): {
+            id: string;
+            rect: {
+                x: number;
+                y: number;
+                width: number;
+                height: number;
+            };
+            xOffset: number;
+            yOffset: number;
+            xAdvance: number;
+        };
+        getGlyphById(fntObj: FntData, id: number): FntCharData;
+        setupSpaceGlyphs(fntObj: FntData, tabSize: number): void;
+        private _getMGlyph(fntObj);
+        private _getFirstGlyph(fntObj);
+        private _getFontDefDictionary(fntObj);
+    }
+}
+
+declare module wd {
+    class BitmapFontWordWrapper {
+        static getLines(fntObj: FntData, text: string, searchGlyph: BitmapFontSearchGlyph, {letterSpacing, width, start, end}: {
+            letterSpacing: any;
+            width?: number;
+            start?: number;
+            end?: number;
+        }): any[];
+        private static _greedy(fntObj, text, letterSpacing, searchGlyph, start, end, width);
+        private static _computeMetrics(fntObj, text, letterSpacing, searchGlyph, start, end, width);
+        private static _findNewLineIndex(text, chr, start, end);
+        private static _isWhitespace(chr);
+    }
+}
+
+declare module wd {
+    abstract class ThreeDUI extends Component {
+        update(elapsed: number): void;
+        addToObject(entityObject: GameObject, isShareComponent?: boolean): void;
+        removeFromObject(entityObject: GameObject): void;
+    }
+}
+
+declare module wd {
+    class Line extends ThreeDUI {
+        static create(): Line;
+    }
+}
+
+declare module wd {
+    class Arrow extends ThreeDUI {
+        static create(): Arrow;
+    }
+}
+
+declare module wd {
+    abstract class ThreeDFont extends ThreeDUI {
+        protected needFormat: boolean;
+        private _isFirstUpdate;
+        update(elapsed: number): void;
+        protected reFormat(): void;
+    }
+}
+
+declare module wd {
+    class ThreeDBitmapFont extends ThreeDFont {
+        static create(): ThreeDBitmapFont;
+        private _text;
+        text: string;
+        private _xAlignment;
+        xAlignment: EFontXAlignment;
+        fntId: string;
+        private _width;
+        width: number;
+        height: number;
+        layoutDataList: wdCb.Collection<LayoutCharData>;
+        private _layout;
+        init(): void;
+        protected reFormat(): void;
+    }
+}
+
+declare module wd {
+    abstract class TwoDUI extends Component {
         dirty: boolean;
         width: number;
         height: number;
@@ -5824,7 +6002,7 @@ declare module wd {
 }
 
 declare module wd {
-    abstract class Font extends UI {
+    abstract class TwoDFont extends TwoDUI {
         protected needFormat: boolean;
         private _isFirstUpdate;
         private _sizeChangeEventSubscription;
@@ -5837,7 +6015,7 @@ declare module wd {
 }
 
 declare module wd {
-    class PlainFont extends Font {
+    class PlainFont extends TwoDFont {
         static create(): PlainFont;
         private _text;
         text: string;
@@ -5877,8 +6055,8 @@ declare module wd {
 }
 
 declare module wd {
-    class BitmapFont extends Font {
-        static create(): BitmapFont;
+    class TwoDBitmapFont extends TwoDFont {
+        static create(): TwoDBitmapFont;
         private _text;
         text: string;
         private _xAlignment;
@@ -5886,36 +6064,21 @@ declare module wd {
         fntId: string;
         bitmapId: string;
         private _charFontList;
+        private _layout;
         init(): boolean;
         dispose(): void;
         protected reFormat(): boolean;
-        private _getFntObj();
         private _getImageAsset();
-        private _createAndAddFontCharUIObjects(fntObj, image);
-        private _createAndAddFontCharObjectOfNewLineChar(index, char, uiRenderer);
-        private _createAndAddFontCharObjectOfCommonChar(fontDef, image, index, char, uiRenderer);
-        private _formatText(fntObj);
-        private _formatMultiLine(fntObj);
-        private _formatAlign();
+        private _createAndAddFontCharUIObjects(layoutDataList, imageAsset);
         private _createCharFont(index, uiRenderer);
         private _addCharFontUIObject(charFontUIObject);
-        private _findCharFontUIObject(index);
-        private _isSpaceUnicode(char);
-        private _isNewLine(char);
-        private _getLetterPosXLeft(sp);
-        private _getLetterPosXRight(leftCornerPosition, sp);
-        private _getFontDef(fontDict, key);
-        private _isExceedWidth(leftCornerPosition, charFont, x);
-        private _alignLine(leftCornerPosition, line, lastCharFont);
-        private _trimBottomSpaceChar(line);
         private _setCharFontUIObjectPosition(charFontUIObject, x, y);
-        private _translateCharFontUIObject(charFontUIObject, x, y);
         private _removeAllCharFont();
     }
 }
 
 declare module wd {
-    class CharFont extends Font {
+    class CharFont extends TwoDFont {
         static create(): CharFont;
         x: number;
         y: number;
@@ -5925,8 +6088,6 @@ declare module wd {
         xAdvance: number;
         image: HTMLImageElement;
         rectRegion: RectRegion;
-        isNewLine: boolean;
-        isFullLine: boolean;
         private _subscription;
         clone(): any;
         init(): void;
@@ -5937,7 +6098,7 @@ declare module wd {
 }
 
 declare module wd {
-    class ProgressBar extends UI {
+    class ProgressBar extends TwoDUI {
         static create(): ProgressBar;
         private _percent;
         percent: number;
@@ -5957,7 +6118,7 @@ declare module wd {
 }
 
 declare module wd {
-    class Image extends UI {
+    class Image extends TwoDUI {
         static constructorForBlend: (obj: any) => boolean;
         static constructorInitForBlend: boolean;
         static create(): Image;
@@ -5980,7 +6141,7 @@ declare module wd {
 }
 
 declare module wd {
-    abstract class InteractionUI extends UI {
+    abstract class InteractionUI extends TwoDUI {
         protected p_transitionMode: ETransitionMode;
         transitionMode: ETransitionMode;
         transitionManager: TransitionManager;
@@ -6618,7 +6779,6 @@ declare module wd {
 
 declare module wd {
     class ModelMatrixHardwareInstanceDrawer extends HardwareInstanceDrawer {
-        private static _instance;
         static getInstance(): any;
         protected getOffsetLocationArray(program: Program): Array<number>;
         protected setCapacity(instanceList: wdCb.Collection<GameObject>, instanceBuffer: InstanceBuffer): void;
@@ -6628,7 +6788,6 @@ declare module wd {
 
 declare module wd {
     class NormalMatrixModelMatrixHardwareInstanceDrawer extends HardwareInstanceDrawer {
-        private static _instance;
         static getInstance(): any;
         protected getOffsetLocationArray(program: Program): Array<number>;
         protected setCapacity(instanceList: wdCb.Collection<GameObject>, instanceBuffer: InstanceBuffer): void;
@@ -6656,7 +6815,6 @@ declare module wd {
 
 declare module wd {
     class ModelMatrixBatchInstanceDrawer extends BatchInstanceDrawer {
-        private static _instance;
         static getInstance(): any;
         protected getUniformDataNameArray(program: Program): Array<string>;
         protected sendGLSLData(program: Program, instance: GameObject, [modelMatrixUniformDataName]: [any]): void;
@@ -6665,7 +6823,6 @@ declare module wd {
 
 declare module wd {
     class NormalMatrixModelMatrixBatchInstanceDrawer extends BatchInstanceDrawer {
-        private static _instance;
         static getInstance(): any;
         protected getUniformDataNameArray(program: Program): Array<string>;
         protected sendGLSLData(program: Program, instance: GameObject, [modelMatrixUniformDataName, normalMatrixUniformDataName]: [any, any]): void;
@@ -7806,6 +7963,119 @@ declare module wd {
 }
 
 declare module wd {
+    class ShaderChunk {
+        static empty: GLSLChunk;
+        static NULL: number;
+        static normal_morph_vertex: GLSLChunk;
+        static vertice_morph_vertex: GLSLChunk;
+        static basic_fragment: GLSLChunk;
+        static basic_vertex: GLSLChunk;
+        static end_basic_fragment: GLSLChunk;
+        static common_define: GLSLChunk;
+        static common_fragment: GLSLChunk;
+        static common_function: GLSLChunk;
+        static common_vertex: GLSLChunk;
+        static highp_fragment: GLSLChunk;
+        static lowp_fragment: GLSLChunk;
+        static mediump_fragment: GLSLChunk;
+        static common_envMap_fragment: GLSLChunk;
+        static lightCommon_fragment: GLSLChunk;
+        static lightCommon_vertex: GLSLChunk;
+        static lightEnd_fragment: GLSLChunk;
+        static light_common: GLSLChunk;
+        static light_fragment: GLSLChunk;
+        static light_vertex: GLSLChunk;
+        static map_forBasic_fragment: GLSLChunk;
+        static map_forBasic_vertex: GLSLChunk;
+        static multi_map_forBasic_fragment: GLSLChunk;
+        static multi_map_forBasic_vertex: GLSLChunk;
+        static skybox_fragment: GLSLChunk;
+        static skybox_vertex: GLSLChunk;
+        static basic_forBasic_envMap_fragment: GLSLChunk;
+        static basic_forBasic_envMap_vertex: GLSLChunk;
+        static forBasic_envMap_fragment: GLSLChunk;
+        static forBasic_envMap_vertex: GLSLChunk;
+        static fresnel_forBasic_envMap_fragment: GLSLChunk;
+        static reflection_forBasic_envMap_fragment: GLSLChunk;
+        static refraction_forBasic_envMap_fragment: GLSLChunk;
+        static basic_forLight_envMap_fragment: GLSLChunk;
+        static basic_forLight_envMap_vertex: GLSLChunk;
+        static forLight_envMap_fragment: GLSLChunk;
+        static forLight_envMap_vertex: GLSLChunk;
+        static fresnel_forLight_envMap_fragment: GLSLChunk;
+        static reflection_forLight_envMap_fragment: GLSLChunk;
+        static refraction_forLight_envMap_fragment: GLSLChunk;
+        static diffuseMap_fragment: GLSLChunk;
+        static diffuseMap_vertex: GLSLChunk;
+        static emissionMap_fragment: GLSLChunk;
+        static emissionMap_vertex: GLSLChunk;
+        static lightMap_fragment: GLSLChunk;
+        static lightMap_vertex: GLSLChunk;
+        static noDiffuseMap_fragment: GLSLChunk;
+        static noEmissionMap_fragment: GLSLChunk;
+        static noLightMap_fragment: GLSLChunk;
+        static noNormalMap_fragment: GLSLChunk;
+        static noNormalMap_vertex: GLSLChunk;
+        static noSpecularMap_fragment: GLSLChunk;
+        static normalMap_fragment: GLSLChunk;
+        static normalMap_vertex: GLSLChunk;
+        static specularMap_fragment: GLSLChunk;
+        static specularMap_vertex: GLSLChunk;
+        static buildCubemapShadowMap_fragment: GLSLChunk;
+        static buildCubemapShadowMap_vertex: GLSLChunk;
+        static buildTwoDShadowMap_depthMap_fragment: GLSLChunk;
+        static buildTwoDShadowMap_fragment: GLSLChunk;
+        static buildTwoDShadowMap_packDepth_fragment: GLSLChunk;
+        static buildTwoDShadowMap_vertex: GLSLChunk;
+        static commonBuildShadowMap_fragment: GLSLChunk;
+        static cubemapShadowMap_fragment: GLSLChunk;
+        static noShadowMap_fragment: GLSLChunk;
+        static totalShadowMap_fragment: GLSLChunk;
+        static twoDShadowMap_depthMap_fragment: GLSLChunk;
+        static twoDShadowMap_fragment: GLSLChunk;
+        static twoDShadowMap_unpackDepth_fragment: GLSLChunk;
+        static twoDShadowMap_vertex: GLSLChunk;
+        static modelMatrix_batch_instance_vertex: GLSLChunk;
+        static normalMatrix_batch_instance_vertex: GLSLChunk;
+        static modelMatrix_noInstance_vertex: GLSLChunk;
+        static normalMatrix_noInstance_vertex: GLSLChunk;
+        static modelMatrix_hardware_instance_vertex: GLSLChunk;
+        static normalMatrix_hardware_instance_vertex: GLSLChunk;
+        static mirror_fragment: GLSLChunk;
+        static mirror_vertex: GLSLChunk;
+        static terrainLayer_fragment: GLSLChunk;
+        static terrainLayer_vertex: GLSLChunk;
+        static water_bump_fragment: GLSLChunk;
+        static water_bump_vertex: GLSLChunk;
+        static water_fragment: GLSLChunk;
+        static water_fresnel_fragment: GLSLChunk;
+        static water_fresnel_vertex: GLSLChunk;
+        static water_noBump_fragment: GLSLChunk;
+        static water_noLightEffect_fragment: GLSLChunk;
+        static water_reflection_fragment: GLSLChunk;
+        static water_refraction_fragment: GLSLChunk;
+        static water_vertex: GLSLChunk;
+        static brick_proceduralTexture_fragment: GLSLChunk;
+        static cloud_proceduralTexture_fragment: GLSLChunk;
+        static common_proceduralTexture_fragment: GLSLChunk;
+        static common_proceduralTexture_vertex: GLSLChunk;
+        static fire_proceduralTexture_fragment: GLSLChunk;
+        static grass_proceduralTexture_fragment: GLSLChunk;
+        static marble_proceduralTexture_fragment: GLSLChunk;
+        static road_proceduralTexture_fragment: GLSLChunk;
+        static wood_proceduralTexture_fragment: GLSLChunk;
+    }
+    type GLSLChunk = {
+        top?: string;
+        define?: string;
+        varDeclare?: string;
+        funcDeclare?: string;
+        funcDefine?: string;
+        body?: string;
+    };
+}
+
+declare module wd {
     class ShaderSnippet {
         static main_begin: string;
         static main_end: string;
@@ -7916,6 +8186,14 @@ declare module wd {
 }
 
 declare module wd {
+    class LineMaterial extends StandardBasicMaterial {
+        static create(): LineMaterial;
+        private _lineWidth;
+        lineWidth: number;
+    }
+}
+
+declare module wd {
     class BasicMaterial extends StandardBasicMaterial {
         static create(): BasicMaterial;
     }
@@ -7999,7 +8277,6 @@ declare module wd {
 
 declare module wd {
     class GLSLLoader extends Loader {
-        private static _instance;
         static getInstance(): any;
         protected loadAsset(url: string, id: string): wdFrp.Stream;
         protected loadAsset(url: Array<string>, id: string): wdFrp.Stream;
@@ -8008,7 +8285,6 @@ declare module wd {
 
 declare module wd {
     class JsLoader extends Loader {
-        private static _instance;
         static getInstance(): any;
         protected loadAsset(url: string, id: string): wdFrp.Stream;
         protected loadAsset(url: Array<string>, id: string): wdFrp.Stream;
@@ -8019,7 +8295,6 @@ declare module wd {
 
 declare module wd {
     class JSONLoader extends Loader {
-        private static _instance;
         static getInstance(): any;
         protected loadAsset(url: string, id: string): wdFrp.Stream;
         protected loadAsset(url: Array<string>, id: string): wdFrp.Stream;
@@ -8028,7 +8303,6 @@ declare module wd {
 
 declare module wd {
     class VideoLoader extends Loader {
-        private static _instance;
         static getInstance(): any;
         protected loadAsset(url: string, id: string): wdFrp.Stream;
         protected loadAsset(url: Array<string>, id: string): wdFrp.Stream;
@@ -8037,7 +8311,6 @@ declare module wd {
 
 declare module wd {
     class TextureLoader extends Loader {
-        private static _instance;
         static getInstance(): any;
         protected loadAsset(url: string, id: string): wdFrp.Stream;
         protected loadAsset(url: Array<string>, id: string): wdFrp.Stream;
@@ -8299,7 +8572,6 @@ declare module wd {
 
 declare module wd {
     class LoaderManager {
-        private static _instance;
         static getInstance(): any;
         assetCount: number;
         currentLoadedCount: number;
@@ -8585,7 +8857,6 @@ declare module wd {
 
 declare module wd {
     class GLTFLoader extends Loader {
-        private static _instance;
         static getInstance(): any;
         private _arrayBufferMap;
         private _imageMap;
@@ -8820,7 +9091,6 @@ declare module wd {
 
 declare module wd {
     class WDLoader extends Loader {
-        private static _instance;
         static getInstance(): any;
         private _parseData;
         protected loadAsset(url: string, id: string): wdFrp.Stream;
@@ -8888,7 +9158,6 @@ declare module wd {
 
 declare module wd {
     class FontLoader extends Loader {
-        private static _instance;
         static getInstance(): any;
         private _familyName;
         dispose(): void;
@@ -8904,9 +9173,13 @@ declare module wd {
         static create(): FntParser;
         parseFnt(fntStr: string, url: string): {
             commonHeight: number;
+            commonBase: number;
+            scaleW: number;
+            scaleH: number;
             atlasName: string;
             fontDefDictionary: {
                 [charId: string]: {
+                    id: string;
                     rect: {
                         x: number;
                         y: number;
@@ -8918,15 +9191,20 @@ declare module wd {
                     xAdvance: number;
                 };
             };
+            kerningArray: {
+                first: string;
+                second: string;
+                amount: number;
+            }[];
         };
         private _parseStrToObj(str);
         private _parseChar(fntStr, fnt);
+        private _parseKerning(fntStr, fnt);
     }
 }
 
 declare module wd {
     class FntLoader extends Loader {
-        private static _instance;
         static getInstance(): any;
         private _parser;
         protected loadAsset(url: string, id: string): wdFrp.Stream;
@@ -8934,26 +9212,35 @@ declare module wd {
     }
     type FntData = {
         commonHeight: number;
+        commonBase: number;
+        scaleW: number;
+        scaleH: number;
         atlasName: string;
         fontDefDictionary: {
-            [charId: string]: {
-                rect: {
-                    x: number;
-                    y: number;
-                    width: number;
-                    height: number;
-                };
-                xOffset: number;
-                yOffset: number;
-                xAdvance: number;
-            };
+            [charId: string]: FntCharData;
         };
+        kerningArray: Array<{
+            first: string;
+            second: string;
+            amount: number;
+        }>;
+    };
+    type FntCharData = {
+        id: string;
+        rect: {
+            x: number;
+            y: number;
+            width: number;
+            height: number;
+        };
+        xOffset: number;
+        yOffset: number;
+        xAdvance: number;
     };
 }
 
 declare module wd {
     class DeviceManager {
-        private static _instance;
         static getInstance(): any;
         view: IView;
         gl: WebGLRenderingContext;
@@ -9047,7 +9334,7 @@ declare module wd {
         PREMULTIPLIED = 5,
     }
     enum ECanvasType {
-        UI,
+        TwoDUI,
     }
     type CanvasMapData = {
         canvas: HTMLCanvasElement;
@@ -9057,7 +9344,6 @@ declare module wd {
 
 declare module wd {
     class GPUDetector {
-        private static _instance;
         static getInstance(): any;
         gl: any;
         maxTextureUnit: number;
@@ -9559,7 +9845,6 @@ declare module wd {
 
 declare module wd {
     class VideoManager {
-        private static _instance;
         static getInstance(): any;
         play(id: string): void;
     }
@@ -10011,7 +10296,6 @@ declare module wd {
 
 declare module wd {
     class ActionEngine extends ComponentContainer {
-        private static _instance;
         static getInstance(): any;
         protected list: wdCb.Collection<Action>;
         update(elapsed: number): void;
@@ -10020,7 +10304,6 @@ declare module wd {
 
 declare module wd {
     class ScriptEngine {
-        private static _instance;
         static getInstance(): any;
         private _scriptList;
         addChild(entityObject: EntityObject, scriptName: string, classInstance: IScriptBehavior): void;
@@ -10038,7 +10321,6 @@ declare module wd {
 
 declare module wd {
     class LODEngine extends ComponentContainer {
-        private static _instance;
         static getInstance(): any;
         protected list: wdCb.Collection<LOD>;
         update(elapsed: number): void;
@@ -10047,7 +10329,6 @@ declare module wd {
 
 declare module wd {
     class SpacePartitionEngine extends ComponentContainer {
-        private static _instance;
         static getInstance(): any;
         protected list: wdCb.Collection<SpacePartition>;
         update(elapsed: number): void;
@@ -10056,7 +10337,6 @@ declare module wd {
 
 declare module wd {
     class AnimationEngine extends ComponentContainer {
-        private static _instance;
         static getInstance(): any;
         protected list: wdCb.Collection<Animation>;
         update(elapsed: number): void;
@@ -10065,7 +10345,6 @@ declare module wd {
 
 declare module wd {
     class CollisionEngine extends ComponentContainer {
-        private static _instance;
         static getInstance(): any;
         protected list: wdCb.Collection<Collider>;
         private _collisionDetector;
@@ -10076,7 +10355,6 @@ declare module wd {
 
 declare module wd {
     class PhysicsEngine extends ComponentContainer {
-        private static _instance;
         static getInstance(): any;
         physicsEngineAdapter: IPhysicsEngineAdapter;
         protected list: wdCb.Collection<RigidBody>;
@@ -10089,126 +10367,23 @@ declare module wd {
 }
 
 declare module wd {
-    class UIEngine extends ComponentContainer {
-        private static _instance;
-        static getInstance(): any;
-        protected list: wdCb.Collection<UI>;
+    abstract class UIEngine extends ComponentContainer {
         update(elapsed: number): void;
-        render(): void;
-        private _isDirty(uiObject);
     }
 }
 
-/// <reference path="../../../filePath.d.ts" />
 declare module wd {
-    class ShaderChunk {
-        static empty: GLSLChunk;
-        static NULL: number;
-        static basic_fragment: GLSLChunk;
-        static basic_vertex: GLSLChunk;
-        static end_basic_fragment: GLSLChunk;
-        static normal_morph_vertex: GLSLChunk;
-        static vertice_morph_vertex: GLSLChunk;
-        static common_define: GLSLChunk;
-        static common_fragment: GLSLChunk;
-        static common_function: GLSLChunk;
-        static common_vertex: GLSLChunk;
-        static highp_fragment: GLSLChunk;
-        static lowp_fragment: GLSLChunk;
-        static mediump_fragment: GLSLChunk;
-        static common_envMap_fragment: GLSLChunk;
-        static lightCommon_fragment: GLSLChunk;
-        static lightCommon_vertex: GLSLChunk;
-        static lightEnd_fragment: GLSLChunk;
-        static light_common: GLSLChunk;
-        static light_fragment: GLSLChunk;
-        static light_vertex: GLSLChunk;
-        static map_forBasic_fragment: GLSLChunk;
-        static map_forBasic_vertex: GLSLChunk;
-        static multi_map_forBasic_fragment: GLSLChunk;
-        static multi_map_forBasic_vertex: GLSLChunk;
-        static skybox_fragment: GLSLChunk;
-        static skybox_vertex: GLSLChunk;
-        static modelMatrix_batch_instance_vertex: GLSLChunk;
-        static normalMatrix_batch_instance_vertex: GLSLChunk;
-        static modelMatrix_hardware_instance_vertex: GLSLChunk;
-        static normalMatrix_hardware_instance_vertex: GLSLChunk;
-        static modelMatrix_noInstance_vertex: GLSLChunk;
-        static normalMatrix_noInstance_vertex: GLSLChunk;
-        static basic_forBasic_envMap_fragment: GLSLChunk;
-        static basic_forBasic_envMap_vertex: GLSLChunk;
-        static forBasic_envMap_fragment: GLSLChunk;
-        static forBasic_envMap_vertex: GLSLChunk;
-        static fresnel_forBasic_envMap_fragment: GLSLChunk;
-        static reflection_forBasic_envMap_fragment: GLSLChunk;
-        static refraction_forBasic_envMap_fragment: GLSLChunk;
-        static basic_forLight_envMap_fragment: GLSLChunk;
-        static basic_forLight_envMap_vertex: GLSLChunk;
-        static forLight_envMap_fragment: GLSLChunk;
-        static forLight_envMap_vertex: GLSLChunk;
-        static fresnel_forLight_envMap_fragment: GLSLChunk;
-        static reflection_forLight_envMap_fragment: GLSLChunk;
-        static refraction_forLight_envMap_fragment: GLSLChunk;
-        static diffuseMap_fragment: GLSLChunk;
-        static diffuseMap_vertex: GLSLChunk;
-        static emissionMap_fragment: GLSLChunk;
-        static emissionMap_vertex: GLSLChunk;
-        static lightMap_fragment: GLSLChunk;
-        static lightMap_vertex: GLSLChunk;
-        static noDiffuseMap_fragment: GLSLChunk;
-        static noEmissionMap_fragment: GLSLChunk;
-        static noLightMap_fragment: GLSLChunk;
-        static noNormalMap_fragment: GLSLChunk;
-        static noNormalMap_vertex: GLSLChunk;
-        static noSpecularMap_fragment: GLSLChunk;
-        static normalMap_fragment: GLSLChunk;
-        static normalMap_vertex: GLSLChunk;
-        static specularMap_fragment: GLSLChunk;
-        static specularMap_vertex: GLSLChunk;
-        static buildCubemapShadowMap_fragment: GLSLChunk;
-        static buildCubemapShadowMap_vertex: GLSLChunk;
-        static buildTwoDShadowMap_depthMap_fragment: GLSLChunk;
-        static buildTwoDShadowMap_fragment: GLSLChunk;
-        static buildTwoDShadowMap_packDepth_fragment: GLSLChunk;
-        static buildTwoDShadowMap_vertex: GLSLChunk;
-        static commonBuildShadowMap_fragment: GLSLChunk;
-        static cubemapShadowMap_fragment: GLSLChunk;
-        static noShadowMap_fragment: GLSLChunk;
-        static totalShadowMap_fragment: GLSLChunk;
-        static twoDShadowMap_depthMap_fragment: GLSLChunk;
-        static twoDShadowMap_fragment: GLSLChunk;
-        static twoDShadowMap_unpackDepth_fragment: GLSLChunk;
-        static twoDShadowMap_vertex: GLSLChunk;
-        static mirror_fragment: GLSLChunk;
-        static mirror_vertex: GLSLChunk;
-        static terrainLayer_fragment: GLSLChunk;
-        static terrainLayer_vertex: GLSLChunk;
-        static water_bump_fragment: GLSLChunk;
-        static water_bump_vertex: GLSLChunk;
-        static water_fragment: GLSLChunk;
-        static water_fresnel_fragment: GLSLChunk;
-        static water_fresnel_vertex: GLSLChunk;
-        static water_noBump_fragment: GLSLChunk;
-        static water_noLightEffect_fragment: GLSLChunk;
-        static water_reflection_fragment: GLSLChunk;
-        static water_refraction_fragment: GLSLChunk;
-        static water_vertex: GLSLChunk;
-        static brick_proceduralTexture_fragment: GLSLChunk;
-        static common_proceduralTexture_fragment: GLSLChunk;
-        static common_proceduralTexture_vertex: GLSLChunk;
-        static cloud_proceduralTexture_fragment: GLSLChunk;
-        static fire_proceduralTexture_fragment: GLSLChunk;
-        static grass_proceduralTexture_fragment: GLSLChunk;
-        static marble_proceduralTexture_fragment: GLSLChunk;
-        static road_proceduralTexture_fragment: GLSLChunk;
-        static wood_proceduralTexture_fragment: GLSLChunk;
+    class ThreeDUIEngine extends UIEngine {
+        static getInstance(): any;
+        protected list: wdCb.Collection<ThreeDUI>;
     }
-    type GLSLChunk = {
-        top?: string;
-        define?: string;
-        varDeclare?: string;
-        funcDeclare?: string;
-        funcDefine?: string;
-        body?: string;
-    };
+}
+
+declare module wd {
+    class TwoDUIEngine extends UIEngine {
+        static getInstance(): any;
+        protected list: wdCb.Collection<TwoDUI>;
+        render(): void;
+        private _isDirty(uiObject);
+    }
 }

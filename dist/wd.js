@@ -1,4 +1,4 @@
-/**
+/*!
  * wonder - 3d html5 game engine
  * @version v0.5.8
  * @author Yuanchao Yang <395976266@qq.com>
@@ -247,6 +247,6148 @@
   return bowser
 });
 
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.chai = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+module.exports = require('./lib/chai');
+
+},{"./lib/chai":2}],2:[function(require,module,exports){
+/*!
+ * chai
+ * Copyright(c) 2011-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+var used = []
+  , exports = module.exports = {};
+
+/*!
+ * Chai version
+ */
+
+exports.version = '3.5.0';
+
+/*!
+ * Assertion Error
+ */
+
+exports.AssertionError = require('assertion-error');
+
+/*!
+ * Utils for plugins (not exported)
+ */
+
+var util = require('./chai/utils');
+
+/**
+ * # .use(function)
+ *
+ * Provides a way to extend the internals of Chai
+ *
+ * @param {Function}
+ * @returns {this} for chaining
+ * @api public
+ */
+
+exports.use = function (fn) {
+  if (!~used.indexOf(fn)) {
+    fn(this, util);
+    used.push(fn);
+  }
+
+  return this;
+};
+
+/*!
+ * Utility Functions
+ */
+
+exports.util = util;
+
+/*!
+ * Configuration
+ */
+
+var config = require('./chai/config');
+exports.config = config;
+
+/*!
+ * Primary `Assertion` prototype
+ */
+
+var assertion = require('./chai/assertion');
+exports.use(assertion);
+
+/*!
+ * Core Assertions
+ */
+
+var core = require('./chai/core/assertions');
+exports.use(core);
+
+/*!
+ * Expect interface
+ */
+
+var expect = require('./chai/interface/expect');
+exports.use(expect);
+
+/*!
+ * Should interface
+ */
+
+var should = require('./chai/interface/should');
+exports.use(should);
+
+/*!
+ * Assert interface
+ */
+
+var assert = require('./chai/interface/assert');
+exports.use(assert);
+
+},{"./chai/assertion":3,"./chai/config":4,"./chai/core/assertions":5,"./chai/interface/assert":6,"./chai/interface/expect":7,"./chai/interface/should":8,"./chai/utils":22,"assertion-error":30}],3:[function(require,module,exports){
+/*!
+ * chai
+ * http://chaijs.com
+ * Copyright(c) 2011-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+var config = require('./config');
+
+module.exports = function (_chai, util) {
+  /*!
+   * Module dependencies.
+   */
+
+  var AssertionError = _chai.AssertionError
+    , flag = util.flag;
+
+  /*!
+   * Module export.
+   */
+
+  _chai.Assertion = Assertion;
+
+  /*!
+   * Assertion Constructor
+   *
+   * Creates object for chaining.
+   *
+   * @api private
+   */
+
+  function Assertion (obj, msg, stack) {
+    flag(this, 'ssfi', stack || arguments.callee);
+    flag(this, 'object', obj);
+    flag(this, 'message', msg);
+  }
+
+  Object.defineProperty(Assertion, 'includeStack', {
+    get: function() {
+      console.warn('Assertion.includeStack is deprecated, use chai.config.includeStack instead.');
+      return config.includeStack;
+    },
+    set: function(value) {
+      console.warn('Assertion.includeStack is deprecated, use chai.config.includeStack instead.');
+      config.includeStack = value;
+    }
+  });
+
+  Object.defineProperty(Assertion, 'showDiff', {
+    get: function() {
+      console.warn('Assertion.showDiff is deprecated, use chai.config.showDiff instead.');
+      return config.showDiff;
+    },
+    set: function(value) {
+      console.warn('Assertion.showDiff is deprecated, use chai.config.showDiff instead.');
+      config.showDiff = value;
+    }
+  });
+
+  Assertion.addProperty = function (name, fn) {
+    util.addProperty(this.prototype, name, fn);
+  };
+
+  Assertion.addMethod = function (name, fn) {
+    util.addMethod(this.prototype, name, fn);
+  };
+
+  Assertion.addChainableMethod = function (name, fn, chainingBehavior) {
+    util.addChainableMethod(this.prototype, name, fn, chainingBehavior);
+  };
+
+  Assertion.overwriteProperty = function (name, fn) {
+    util.overwriteProperty(this.prototype, name, fn);
+  };
+
+  Assertion.overwriteMethod = function (name, fn) {
+    util.overwriteMethod(this.prototype, name, fn);
+  };
+
+  Assertion.overwriteChainableMethod = function (name, fn, chainingBehavior) {
+    util.overwriteChainableMethod(this.prototype, name, fn, chainingBehavior);
+  };
+
+  /**
+   * ### .assert(expression, message, negateMessage, expected, actual, showDiff)
+   *
+   * Executes an expression and check expectations. Throws AssertionError for reporting if test doesn't pass.
+   *
+   * @name assert
+   * @param {Philosophical} expression to be tested
+   * @param {String|Function} message or function that returns message to display if expression fails
+   * @param {String|Function} negatedMessage or function that returns negatedMessage to display if negated expression fails
+   * @param {Mixed} expected value (remember to check for negation)
+   * @param {Mixed} actual (optional) will default to `this.obj`
+   * @param {Boolean} showDiff (optional) when set to `true`, assert will display a diff in addition to the message if expression fails
+   * @api private
+   */
+
+  Assertion.prototype.assert = function (expr, msg, negateMsg, expected, _actual, showDiff) {
+    var ok = util.test(this, arguments);
+    if (true !== showDiff) showDiff = false;
+    if (true !== config.showDiff) showDiff = false;
+
+    if (!ok) {
+      var msg = util.getMessage(this, arguments)
+        , actual = util.getActual(this, arguments);
+      throw new AssertionError(msg, {
+          actual: actual
+        , expected: expected
+        , showDiff: showDiff
+      }, (config.includeStack) ? this.assert : flag(this, 'ssfi'));
+    }
+  };
+
+  /*!
+   * ### ._obj
+   *
+   * Quick reference to stored `actual` value for plugin developers.
+   *
+   * @api private
+   */
+
+  Object.defineProperty(Assertion.prototype, '_obj',
+    { get: function () {
+        return flag(this, 'object');
+      }
+    , set: function (val) {
+        flag(this, 'object', val);
+      }
+  });
+};
+
+},{"./config":4}],4:[function(require,module,exports){
+module.exports = {
+
+  /**
+   * ### config.includeStack
+   *
+   * User configurable property, influences whether stack trace
+   * is included in Assertion error message. Default of false
+   * suppresses stack trace in the error message.
+   *
+   *     chai.config.includeStack = true;  // enable stack on error
+   *
+   * @param {Boolean}
+   * @api public
+   */
+
+   includeStack: false,
+
+  /**
+   * ### config.showDiff
+   *
+   * User configurable property, influences whether or not
+   * the `showDiff` flag should be included in the thrown
+   * AssertionErrors. `false` will always be `false`; `true`
+   * will be true when the assertion has requested a diff
+   * be shown.
+   *
+   * @param {Boolean}
+   * @api public
+   */
+
+  showDiff: true,
+
+  /**
+   * ### config.truncateThreshold
+   *
+   * User configurable property, sets length threshold for actual and
+   * expected values in assertion errors. If this threshold is exceeded, for
+   * example for large data structures, the value is replaced with something
+   * like `[ Array(3) ]` or `{ Object (prop1, prop2) }`.
+   *
+   * Set it to zero if you want to disable truncating altogether.
+   *
+   * This is especially userful when doing assertions on arrays: having this
+   * set to a reasonable large value makes the failure messages readily
+   * inspectable.
+   *
+   *     chai.config.truncateThreshold = 0;  // disable truncating
+   *
+   * @param {Number}
+   * @api public
+   */
+
+  truncateThreshold: 40
+
+};
+
+},{}],5:[function(require,module,exports){
+/*!
+ * chai
+ * http://chaijs.com
+ * Copyright(c) 2011-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+module.exports = function (chai, _) {
+  var Assertion = chai.Assertion
+    , toString = Object.prototype.toString
+    , flag = _.flag;
+
+  /**
+   * ### Language Chains
+   *
+   * The following are provided as chainable getters to
+   * improve the readability of your assertions. They
+   * do not provide testing capabilities unless they
+   * have been overwritten by a plugin.
+   *
+   * **Chains**
+   *
+   * - to
+   * - be
+   * - been
+   * - is
+   * - that
+   * - which
+   * - and
+   * - has
+   * - have
+   * - with
+   * - at
+   * - of
+   * - same
+   *
+   * @name language chains
+   * @namespace BDD
+   * @api public
+   */
+
+  [ 'to', 'be', 'been'
+  , 'is', 'and', 'has', 'have'
+  , 'with', 'that', 'which', 'at'
+  , 'of', 'same' ].forEach(function (chain) {
+    Assertion.addProperty(chain, function () {
+      return this;
+    });
+  });
+
+  /**
+   * ### .not
+   *
+   * Negates any of assertions following in the chain.
+   *
+   *     expect(foo).to.not.equal('bar');
+   *     expect(goodFn).to.not.throw(Error);
+   *     expect({ foo: 'baz' }).to.have.property('foo')
+   *       .and.not.equal('bar');
+   *
+   * @name not
+   * @namespace BDD
+   * @api public
+   */
+
+  Assertion.addProperty('not', function () {
+    flag(this, 'negate', true);
+  });
+
+  /**
+   * ### .deep
+   *
+   * Sets the `deep` flag, later used by the `equal` and
+   * `property` assertions.
+   *
+   *     expect(foo).to.deep.equal({ bar: 'baz' });
+   *     expect({ foo: { bar: { baz: 'quux' } } })
+   *       .to.have.deep.property('foo.bar.baz', 'quux');
+   *
+   * `.deep.property` special characters can be escaped
+   * by adding two slashes before the `.` or `[]`.
+   *
+   *     var deepCss = { '.link': { '[target]': 42 }};
+   *     expect(deepCss).to.have.deep.property('\\.link.\\[target\\]', 42);
+   *
+   * @name deep
+   * @namespace BDD
+   * @api public
+   */
+
+  Assertion.addProperty('deep', function () {
+    flag(this, 'deep', true);
+  });
+
+  /**
+   * ### .any
+   *
+   * Sets the `any` flag, (opposite of the `all` flag)
+   * later used in the `keys` assertion.
+   *
+   *     expect(foo).to.have.any.keys('bar', 'baz');
+   *
+   * @name any
+   * @namespace BDD
+   * @api public
+   */
+
+  Assertion.addProperty('any', function () {
+    flag(this, 'any', true);
+    flag(this, 'all', false)
+  });
+
+
+  /**
+   * ### .all
+   *
+   * Sets the `all` flag (opposite of the `any` flag)
+   * later used by the `keys` assertion.
+   *
+   *     expect(foo).to.have.all.keys('bar', 'baz');
+   *
+   * @name all
+   * @namespace BDD
+   * @api public
+   */
+
+  Assertion.addProperty('all', function () {
+    flag(this, 'all', true);
+    flag(this, 'any', false);
+  });
+
+  /**
+   * ### .a(type)
+   *
+   * The `a` and `an` assertions are aliases that can be
+   * used either as language chains or to assert a value's
+   * type.
+   *
+   *     // typeof
+   *     expect('test').to.be.a('string');
+   *     expect({ foo: 'bar' }).to.be.an('object');
+   *     expect(null).to.be.a('null');
+   *     expect(undefined).to.be.an('undefined');
+   *     expect(new Error).to.be.an('error');
+   *     expect(new Promise).to.be.a('promise');
+   *     expect(new Float32Array()).to.be.a('float32array');
+   *     expect(Symbol()).to.be.a('symbol');
+   *
+   *     // es6 overrides
+   *     expect({[Symbol.toStringTag]:()=>'foo'}).to.be.a('foo');
+   *
+   *     // language chain
+   *     expect(foo).to.be.an.instanceof(Foo);
+   *
+   * @name a
+   * @alias an
+   * @param {String} type
+   * @param {String} message _optional_
+   * @namespace BDD
+   * @api public
+   */
+
+  function an (type, msg) {
+    if (msg) flag(this, 'message', msg);
+    type = type.toLowerCase();
+    var obj = flag(this, 'object')
+      , article = ~[ 'a', 'e', 'i', 'o', 'u' ].indexOf(type.charAt(0)) ? 'an ' : 'a ';
+
+    this.assert(
+        type === _.type(obj)
+      , 'expected #{this} to be ' + article + type
+      , 'expected #{this} not to be ' + article + type
+    );
+  }
+
+  Assertion.addChainableMethod('an', an);
+  Assertion.addChainableMethod('a', an);
+
+  /**
+   * ### .include(value)
+   *
+   * The `include` and `contain` assertions can be used as either property
+   * based language chains or as methods to assert the inclusion of an object
+   * in an array or a substring in a string. When used as language chains,
+   * they toggle the `contains` flag for the `keys` assertion.
+   *
+   *     expect([1,2,3]).to.include(2);
+   *     expect('foobar').to.contain('foo');
+   *     expect({ foo: 'bar', hello: 'universe' }).to.include.keys('foo');
+   *
+   * @name include
+   * @alias contain
+   * @alias includes
+   * @alias contains
+   * @param {Object|String|Number} obj
+   * @param {String} message _optional_
+   * @namespace BDD
+   * @api public
+   */
+
+  function includeChainingBehavior () {
+    flag(this, 'contains', true);
+  }
+
+  function include (val, msg) {
+    _.expectTypes(this, ['array', 'object', 'string']);
+
+    if (msg) flag(this, 'message', msg);
+    var obj = flag(this, 'object');
+    var expected = false;
+
+    if (_.type(obj) === 'array' && _.type(val) === 'object') {
+      for (var i in obj) {
+        if (_.eql(obj[i], val)) {
+          expected = true;
+          break;
+        }
+      }
+    } else if (_.type(val) === 'object') {
+      if (!flag(this, 'negate')) {
+        for (var k in val) new Assertion(obj).property(k, val[k]);
+        return;
+      }
+      var subset = {};
+      for (var k in val) subset[k] = obj[k];
+      expected = _.eql(subset, val);
+    } else {
+      expected = (obj != undefined) && ~obj.indexOf(val);
+    }
+    this.assert(
+        expected
+      , 'expected #{this} to include ' + _.inspect(val)
+      , 'expected #{this} to not include ' + _.inspect(val));
+  }
+
+  Assertion.addChainableMethod('include', include, includeChainingBehavior);
+  Assertion.addChainableMethod('contain', include, includeChainingBehavior);
+  Assertion.addChainableMethod('contains', include, includeChainingBehavior);
+  Assertion.addChainableMethod('includes', include, includeChainingBehavior);
+
+  /**
+   * ### .ok
+   *
+   * Asserts that the target is truthy.
+   *
+   *     expect('everything').to.be.ok;
+   *     expect(1).to.be.ok;
+   *     expect(false).to.not.be.ok;
+   *     expect(undefined).to.not.be.ok;
+   *     expect(null).to.not.be.ok;
+   *
+   * @name ok
+   * @namespace BDD
+   * @api public
+   */
+
+  Assertion.addProperty('ok', function () {
+    this.assert(
+        flag(this, 'object')
+      , 'expected #{this} to be truthy'
+      , 'expected #{this} to be falsy');
+  });
+
+  /**
+   * ### .true
+   *
+   * Asserts that the target is `true`.
+   *
+   *     expect(true).to.be.true;
+   *     expect(1).to.not.be.true;
+   *
+   * @name true
+   * @namespace BDD
+   * @api public
+   */
+
+  Assertion.addProperty('true', function () {
+    this.assert(
+        true === flag(this, 'object')
+      , 'expected #{this} to be true'
+      , 'expected #{this} to be false'
+      , this.negate ? false : true
+    );
+  });
+
+  /**
+   * ### .false
+   *
+   * Asserts that the target is `false`.
+   *
+   *     expect(false).to.be.false;
+   *     expect(0).to.not.be.false;
+   *
+   * @name false
+   * @namespace BDD
+   * @api public
+   */
+
+  Assertion.addProperty('false', function () {
+    this.assert(
+        false === flag(this, 'object')
+      , 'expected #{this} to be false'
+      , 'expected #{this} to be true'
+      , this.negate ? true : false
+    );
+  });
+
+  /**
+   * ### .null
+   *
+   * Asserts that the target is `null`.
+   *
+   *     expect(null).to.be.null;
+   *     expect(undefined).to.not.be.null;
+   *
+   * @name null
+   * @namespace BDD
+   * @api public
+   */
+
+  Assertion.addProperty('null', function () {
+    this.assert(
+        null === flag(this, 'object')
+      , 'expected #{this} to be null'
+      , 'expected #{this} not to be null'
+    );
+  });
+
+  /**
+   * ### .undefined
+   *
+   * Asserts that the target is `undefined`.
+   *
+   *     expect(undefined).to.be.undefined;
+   *     expect(null).to.not.be.undefined;
+   *
+   * @name undefined
+   * @namespace BDD
+   * @api public
+   */
+
+  Assertion.addProperty('undefined', function () {
+    this.assert(
+        undefined === flag(this, 'object')
+      , 'expected #{this} to be undefined'
+      , 'expected #{this} not to be undefined'
+    );
+  });
+
+  /**
+   * ### .NaN
+   * Asserts that the target is `NaN`.
+   *
+   *     expect('foo').to.be.NaN;
+   *     expect(4).not.to.be.NaN;
+   *
+   * @name NaN
+   * @namespace BDD
+   * @api public
+   */
+
+  Assertion.addProperty('NaN', function () {
+    this.assert(
+        isNaN(flag(this, 'object'))
+        , 'expected #{this} to be NaN'
+        , 'expected #{this} not to be NaN'
+    );
+  });
+
+  /**
+   * ### .exist
+   *
+   * Asserts that the target is neither `null` nor `undefined`.
+   *
+   *     var foo = 'hi'
+   *       , bar = null
+   *       , baz;
+   *
+   *     expect(foo).to.exist;
+   *     expect(bar).to.not.exist;
+   *     expect(baz).to.not.exist;
+   *
+   * @name exist
+   * @namespace BDD
+   * @api public
+   */
+
+  Assertion.addProperty('exist', function () {
+    this.assert(
+        null != flag(this, 'object')
+      , 'expected #{this} to exist'
+      , 'expected #{this} to not exist'
+    );
+  });
+
+
+  /**
+   * ### .empty
+   *
+   * Asserts that the target's length is `0`. For arrays and strings, it checks
+   * the `length` property. For objects, it gets the count of
+   * enumerable keys.
+   *
+   *     expect([]).to.be.empty;
+   *     expect('').to.be.empty;
+   *     expect({}).to.be.empty;
+   *
+   * @name empty
+   * @namespace BDD
+   * @api public
+   */
+
+  Assertion.addProperty('empty', function () {
+    var obj = flag(this, 'object')
+      , expected = obj;
+
+    if (Array.isArray(obj) || 'string' === typeof object) {
+      expected = obj.length;
+    } else if (typeof obj === 'object') {
+      expected = Object.keys(obj).length;
+    }
+
+    this.assert(
+        !expected
+      , 'expected #{this} to be empty'
+      , 'expected #{this} not to be empty'
+    );
+  });
+
+  /**
+   * ### .arguments
+   *
+   * Asserts that the target is an arguments object.
+   *
+   *     function test () {
+   *       expect(arguments).to.be.arguments;
+   *     }
+   *
+   * @name arguments
+   * @alias Arguments
+   * @namespace BDD
+   * @api public
+   */
+
+  function checkArguments () {
+    var obj = flag(this, 'object')
+      , type = Object.prototype.toString.call(obj);
+    this.assert(
+        '[object Arguments]' === type
+      , 'expected #{this} to be arguments but got ' + type
+      , 'expected #{this} to not be arguments'
+    );
+  }
+
+  Assertion.addProperty('arguments', checkArguments);
+  Assertion.addProperty('Arguments', checkArguments);
+
+  /**
+   * ### .equal(value)
+   *
+   * Asserts that the target is strictly equal (`===`) to `value`.
+   * Alternately, if the `deep` flag is set, asserts that
+   * the target is deeply equal to `value`.
+   *
+   *     expect('hello').to.equal('hello');
+   *     expect(42).to.equal(42);
+   *     expect(1).to.not.equal(true);
+   *     expect({ foo: 'bar' }).to.not.equal({ foo: 'bar' });
+   *     expect({ foo: 'bar' }).to.deep.equal({ foo: 'bar' });
+   *
+   * @name equal
+   * @alias equals
+   * @alias eq
+   * @alias deep.equal
+   * @param {Mixed} value
+   * @param {String} message _optional_
+   * @namespace BDD
+   * @api public
+   */
+
+  function assertEqual (val, msg) {
+    if (msg) flag(this, 'message', msg);
+    var obj = flag(this, 'object');
+    if (flag(this, 'deep')) {
+      return this.eql(val);
+    } else {
+      this.assert(
+          val === obj
+        , 'expected #{this} to equal #{exp}'
+        , 'expected #{this} to not equal #{exp}'
+        , val
+        , this._obj
+        , true
+      );
+    }
+  }
+
+  Assertion.addMethod('equal', assertEqual);
+  Assertion.addMethod('equals', assertEqual);
+  Assertion.addMethod('eq', assertEqual);
+
+  /**
+   * ### .eql(value)
+   *
+   * Asserts that the target is deeply equal to `value`.
+   *
+   *     expect({ foo: 'bar' }).to.eql({ foo: 'bar' });
+   *     expect([ 1, 2, 3 ]).to.eql([ 1, 2, 3 ]);
+   *
+   * @name eql
+   * @alias eqls
+   * @param {Mixed} value
+   * @param {String} message _optional_
+   * @namespace BDD
+   * @api public
+   */
+
+  function assertEql(obj, msg) {
+    if (msg) flag(this, 'message', msg);
+    this.assert(
+        _.eql(obj, flag(this, 'object'))
+      , 'expected #{this} to deeply equal #{exp}'
+      , 'expected #{this} to not deeply equal #{exp}'
+      , obj
+      , this._obj
+      , true
+    );
+  }
+
+  Assertion.addMethod('eql', assertEql);
+  Assertion.addMethod('eqls', assertEql);
+
+  /**
+   * ### .above(value)
+   *
+   * Asserts that the target is greater than `value`.
+   *
+   *     expect(10).to.be.above(5);
+   *
+   * Can also be used in conjunction with `length` to
+   * assert a minimum length. The benefit being a
+   * more informative error message than if the length
+   * was supplied directly.
+   *
+   *     expect('foo').to.have.length.above(2);
+   *     expect([ 1, 2, 3 ]).to.have.length.above(2);
+   *
+   * @name above
+   * @alias gt
+   * @alias greaterThan
+   * @param {Number} value
+   * @param {String} message _optional_
+   * @namespace BDD
+   * @api public
+   */
+
+  function assertAbove (n, msg) {
+    if (msg) flag(this, 'message', msg);
+    var obj = flag(this, 'object');
+    if (flag(this, 'doLength')) {
+      new Assertion(obj, msg).to.have.property('length');
+      var len = obj.length;
+      this.assert(
+          len > n
+        , 'expected #{this} to have a length above #{exp} but got #{act}'
+        , 'expected #{this} to not have a length above #{exp}'
+        , n
+        , len
+      );
+    } else {
+      this.assert(
+          obj > n
+        , 'expected #{this} to be above ' + n
+        , 'expected #{this} to be at most ' + n
+      );
+    }
+  }
+
+  Assertion.addMethod('above', assertAbove);
+  Assertion.addMethod('gt', assertAbove);
+  Assertion.addMethod('greaterThan', assertAbove);
+
+  /**
+   * ### .least(value)
+   *
+   * Asserts that the target is greater than or equal to `value`.
+   *
+   *     expect(10).to.be.at.least(10);
+   *
+   * Can also be used in conjunction with `length` to
+   * assert a minimum length. The benefit being a
+   * more informative error message than if the length
+   * was supplied directly.
+   *
+   *     expect('foo').to.have.length.of.at.least(2);
+   *     expect([ 1, 2, 3 ]).to.have.length.of.at.least(3);
+   *
+   * @name least
+   * @alias gte
+   * @param {Number} value
+   * @param {String} message _optional_
+   * @namespace BDD
+   * @api public
+   */
+
+  function assertLeast (n, msg) {
+    if (msg) flag(this, 'message', msg);
+    var obj = flag(this, 'object');
+    if (flag(this, 'doLength')) {
+      new Assertion(obj, msg).to.have.property('length');
+      var len = obj.length;
+      this.assert(
+          len >= n
+        , 'expected #{this} to have a length at least #{exp} but got #{act}'
+        , 'expected #{this} to have a length below #{exp}'
+        , n
+        , len
+      );
+    } else {
+      this.assert(
+          obj >= n
+        , 'expected #{this} to be at least ' + n
+        , 'expected #{this} to be below ' + n
+      );
+    }
+  }
+
+  Assertion.addMethod('least', assertLeast);
+  Assertion.addMethod('gte', assertLeast);
+
+  /**
+   * ### .below(value)
+   *
+   * Asserts that the target is less than `value`.
+   *
+   *     expect(5).to.be.below(10);
+   *
+   * Can also be used in conjunction with `length` to
+   * assert a maximum length. The benefit being a
+   * more informative error message than if the length
+   * was supplied directly.
+   *
+   *     expect('foo').to.have.length.below(4);
+   *     expect([ 1, 2, 3 ]).to.have.length.below(4);
+   *
+   * @name below
+   * @alias lt
+   * @alias lessThan
+   * @param {Number} value
+   * @param {String} message _optional_
+   * @namespace BDD
+   * @api public
+   */
+
+  function assertBelow (n, msg) {
+    if (msg) flag(this, 'message', msg);
+    var obj = flag(this, 'object');
+    if (flag(this, 'doLength')) {
+      new Assertion(obj, msg).to.have.property('length');
+      var len = obj.length;
+      this.assert(
+          len < n
+        , 'expected #{this} to have a length below #{exp} but got #{act}'
+        , 'expected #{this} to not have a length below #{exp}'
+        , n
+        , len
+      );
+    } else {
+      this.assert(
+          obj < n
+        , 'expected #{this} to be below ' + n
+        , 'expected #{this} to be at least ' + n
+      );
+    }
+  }
+
+  Assertion.addMethod('below', assertBelow);
+  Assertion.addMethod('lt', assertBelow);
+  Assertion.addMethod('lessThan', assertBelow);
+
+  /**
+   * ### .most(value)
+   *
+   * Asserts that the target is less than or equal to `value`.
+   *
+   *     expect(5).to.be.at.most(5);
+   *
+   * Can also be used in conjunction with `length` to
+   * assert a maximum length. The benefit being a
+   * more informative error message than if the length
+   * was supplied directly.
+   *
+   *     expect('foo').to.have.length.of.at.most(4);
+   *     expect([ 1, 2, 3 ]).to.have.length.of.at.most(3);
+   *
+   * @name most
+   * @alias lte
+   * @param {Number} value
+   * @param {String} message _optional_
+   * @namespace BDD
+   * @api public
+   */
+
+  function assertMost (n, msg) {
+    if (msg) flag(this, 'message', msg);
+    var obj = flag(this, 'object');
+    if (flag(this, 'doLength')) {
+      new Assertion(obj, msg).to.have.property('length');
+      var len = obj.length;
+      this.assert(
+          len <= n
+        , 'expected #{this} to have a length at most #{exp} but got #{act}'
+        , 'expected #{this} to have a length above #{exp}'
+        , n
+        , len
+      );
+    } else {
+      this.assert(
+          obj <= n
+        , 'expected #{this} to be at most ' + n
+        , 'expected #{this} to be above ' + n
+      );
+    }
+  }
+
+  Assertion.addMethod('most', assertMost);
+  Assertion.addMethod('lte', assertMost);
+
+  /**
+   * ### .within(start, finish)
+   *
+   * Asserts that the target is within a range.
+   *
+   *     expect(7).to.be.within(5,10);
+   *
+   * Can also be used in conjunction with `length` to
+   * assert a length range. The benefit being a
+   * more informative error message than if the length
+   * was supplied directly.
+   *
+   *     expect('foo').to.have.length.within(2,4);
+   *     expect([ 1, 2, 3 ]).to.have.length.within(2,4);
+   *
+   * @name within
+   * @param {Number} start lowerbound inclusive
+   * @param {Number} finish upperbound inclusive
+   * @param {String} message _optional_
+   * @namespace BDD
+   * @api public
+   */
+
+  Assertion.addMethod('within', function (start, finish, msg) {
+    if (msg) flag(this, 'message', msg);
+    var obj = flag(this, 'object')
+      , range = start + '..' + finish;
+    if (flag(this, 'doLength')) {
+      new Assertion(obj, msg).to.have.property('length');
+      var len = obj.length;
+      this.assert(
+          len >= start && len <= finish
+        , 'expected #{this} to have a length within ' + range
+        , 'expected #{this} to not have a length within ' + range
+      );
+    } else {
+      this.assert(
+          obj >= start && obj <= finish
+        , 'expected #{this} to be within ' + range
+        , 'expected #{this} to not be within ' + range
+      );
+    }
+  });
+
+  /**
+   * ### .instanceof(constructor)
+   *
+   * Asserts that the target is an instance of `constructor`.
+   *
+   *     var Tea = function (name) { this.name = name; }
+   *       , Chai = new Tea('chai');
+   *
+   *     expect(Chai).to.be.an.instanceof(Tea);
+   *     expect([ 1, 2, 3 ]).to.be.instanceof(Array);
+   *
+   * @name instanceof
+   * @param {Constructor} constructor
+   * @param {String} message _optional_
+   * @alias instanceOf
+   * @namespace BDD
+   * @api public
+   */
+
+  function assertInstanceOf (constructor, msg) {
+    if (msg) flag(this, 'message', msg);
+    var name = _.getName(constructor);
+    this.assert(
+        flag(this, 'object') instanceof constructor
+      , 'expected #{this} to be an instance of ' + name
+      , 'expected #{this} to not be an instance of ' + name
+    );
+  };
+
+  Assertion.addMethod('instanceof', assertInstanceOf);
+  Assertion.addMethod('instanceOf', assertInstanceOf);
+
+  /**
+   * ### .property(name, [value])
+   *
+   * Asserts that the target has a property `name`, optionally asserting that
+   * the value of that property is strictly equal to  `value`.
+   * If the `deep` flag is set, you can use dot- and bracket-notation for deep
+   * references into objects and arrays.
+   *
+   *     // simple referencing
+   *     var obj = { foo: 'bar' };
+   *     expect(obj).to.have.property('foo');
+   *     expect(obj).to.have.property('foo', 'bar');
+   *
+   *     // deep referencing
+   *     var deepObj = {
+   *         green: { tea: 'matcha' }
+   *       , teas: [ 'chai', 'matcha', { tea: 'konacha' } ]
+   *     };
+   *
+   *     expect(deepObj).to.have.deep.property('green.tea', 'matcha');
+   *     expect(deepObj).to.have.deep.property('teas[1]', 'matcha');
+   *     expect(deepObj).to.have.deep.property('teas[2].tea', 'konacha');
+   *
+   * You can also use an array as the starting point of a `deep.property`
+   * assertion, or traverse nested arrays.
+   *
+   *     var arr = [
+   *         [ 'chai', 'matcha', 'konacha' ]
+   *       , [ { tea: 'chai' }
+   *         , { tea: 'matcha' }
+   *         , { tea: 'konacha' } ]
+   *     ];
+   *
+   *     expect(arr).to.have.deep.property('[0][1]', 'matcha');
+   *     expect(arr).to.have.deep.property('[1][2].tea', 'konacha');
+   *
+   * Furthermore, `property` changes the subject of the assertion
+   * to be the value of that property from the original object. This
+   * permits for further chainable assertions on that property.
+   *
+   *     expect(obj).to.have.property('foo')
+   *       .that.is.a('string');
+   *     expect(deepObj).to.have.property('green')
+   *       .that.is.an('object')
+   *       .that.deep.equals({ tea: 'matcha' });
+   *     expect(deepObj).to.have.property('teas')
+   *       .that.is.an('array')
+   *       .with.deep.property('[2]')
+   *         .that.deep.equals({ tea: 'konacha' });
+   *
+   * Note that dots and bracket in `name` must be backslash-escaped when
+   * the `deep` flag is set, while they must NOT be escaped when the `deep`
+   * flag is not set.
+   *
+   *     // simple referencing
+   *     var css = { '.link[target]': 42 };
+   *     expect(css).to.have.property('.link[target]', 42);
+   *
+   *     // deep referencing
+   *     var deepCss = { '.link': { '[target]': 42 }};
+   *     expect(deepCss).to.have.deep.property('\\.link.\\[target\\]', 42);
+   *
+   * @name property
+   * @alias deep.property
+   * @param {String} name
+   * @param {Mixed} value (optional)
+   * @param {String} message _optional_
+   * @returns value of property for chaining
+   * @namespace BDD
+   * @api public
+   */
+
+  Assertion.addMethod('property', function (name, val, msg) {
+    if (msg) flag(this, 'message', msg);
+
+    var isDeep = !!flag(this, 'deep')
+      , descriptor = isDeep ? 'deep property ' : 'property '
+      , negate = flag(this, 'negate')
+      , obj = flag(this, 'object')
+      , pathInfo = isDeep ? _.getPathInfo(name, obj) : null
+      , hasProperty = isDeep
+        ? pathInfo.exists
+        : _.hasProperty(name, obj)
+      , value = isDeep
+        ? pathInfo.value
+        : obj[name];
+
+    if (negate && arguments.length > 1) {
+      if (undefined === value) {
+        msg = (msg != null) ? msg + ': ' : '';
+        throw new Error(msg + _.inspect(obj) + ' has no ' + descriptor + _.inspect(name));
+      }
+    } else {
+      this.assert(
+          hasProperty
+        , 'expected #{this} to have a ' + descriptor + _.inspect(name)
+        , 'expected #{this} to not have ' + descriptor + _.inspect(name));
+    }
+
+    if (arguments.length > 1) {
+      this.assert(
+          val === value
+        , 'expected #{this} to have a ' + descriptor + _.inspect(name) + ' of #{exp}, but got #{act}'
+        , 'expected #{this} to not have a ' + descriptor + _.inspect(name) + ' of #{act}'
+        , val
+        , value
+      );
+    }
+
+    flag(this, 'object', value);
+  });
+
+
+  /**
+   * ### .ownProperty(name)
+   *
+   * Asserts that the target has an own property `name`.
+   *
+   *     expect('test').to.have.ownProperty('length');
+   *
+   * @name ownProperty
+   * @alias haveOwnProperty
+   * @param {String} name
+   * @param {String} message _optional_
+   * @namespace BDD
+   * @api public
+   */
+
+  function assertOwnProperty (name, msg) {
+    if (msg) flag(this, 'message', msg);
+    var obj = flag(this, 'object');
+    this.assert(
+        obj.hasOwnProperty(name)
+      , 'expected #{this} to have own property ' + _.inspect(name)
+      , 'expected #{this} to not have own property ' + _.inspect(name)
+    );
+  }
+
+  Assertion.addMethod('ownProperty', assertOwnProperty);
+  Assertion.addMethod('haveOwnProperty', assertOwnProperty);
+
+  /**
+   * ### .ownPropertyDescriptor(name[, descriptor[, message]])
+   *
+   * Asserts that the target has an own property descriptor `name`, that optionally matches `descriptor`.
+   *
+   *     expect('test').to.have.ownPropertyDescriptor('length');
+   *     expect('test').to.have.ownPropertyDescriptor('length', { enumerable: false, configurable: false, writable: false, value: 4 });
+   *     expect('test').not.to.have.ownPropertyDescriptor('length', { enumerable: false, configurable: false, writable: false, value: 3 });
+   *     expect('test').ownPropertyDescriptor('length').to.have.property('enumerable', false);
+   *     expect('test').ownPropertyDescriptor('length').to.have.keys('value');
+   *
+   * @name ownPropertyDescriptor
+   * @alias haveOwnPropertyDescriptor
+   * @param {String} name
+   * @param {Object} descriptor _optional_
+   * @param {String} message _optional_
+   * @namespace BDD
+   * @api public
+   */
+
+  function assertOwnPropertyDescriptor (name, descriptor, msg) {
+    if (typeof descriptor === 'string') {
+      msg = descriptor;
+      descriptor = null;
+    }
+    if (msg) flag(this, 'message', msg);
+    var obj = flag(this, 'object');
+    var actualDescriptor = Object.getOwnPropertyDescriptor(Object(obj), name);
+    if (actualDescriptor && descriptor) {
+      this.assert(
+          _.eql(descriptor, actualDescriptor)
+        , 'expected the own property descriptor for ' + _.inspect(name) + ' on #{this} to match ' + _.inspect(descriptor) + ', got ' + _.inspect(actualDescriptor)
+        , 'expected the own property descriptor for ' + _.inspect(name) + ' on #{this} to not match ' + _.inspect(descriptor)
+        , descriptor
+        , actualDescriptor
+        , true
+      );
+    } else {
+      this.assert(
+          actualDescriptor
+        , 'expected #{this} to have an own property descriptor for ' + _.inspect(name)
+        , 'expected #{this} to not have an own property descriptor for ' + _.inspect(name)
+      );
+    }
+    flag(this, 'object', actualDescriptor);
+  }
+
+  Assertion.addMethod('ownPropertyDescriptor', assertOwnPropertyDescriptor);
+  Assertion.addMethod('haveOwnPropertyDescriptor', assertOwnPropertyDescriptor);
+
+  /**
+   * ### .length
+   *
+   * Sets the `doLength` flag later used as a chain precursor to a value
+   * comparison for the `length` property.
+   *
+   *     expect('foo').to.have.length.above(2);
+   *     expect([ 1, 2, 3 ]).to.have.length.above(2);
+   *     expect('foo').to.have.length.below(4);
+   *     expect([ 1, 2, 3 ]).to.have.length.below(4);
+   *     expect('foo').to.have.length.within(2,4);
+   *     expect([ 1, 2, 3 ]).to.have.length.within(2,4);
+   *
+   * *Deprecation notice:* Using `length` as an assertion will be deprecated
+   * in version 2.4.0 and removed in 3.0.0. Code using the old style of
+   * asserting for `length` property value using `length(value)` should be
+   * switched to use `lengthOf(value)` instead.
+   *
+   * @name length
+   * @namespace BDD
+   * @api public
+   */
+
+  /**
+   * ### .lengthOf(value[, message])
+   *
+   * Asserts that the target's `length` property has
+   * the expected value.
+   *
+   *     expect([ 1, 2, 3]).to.have.lengthOf(3);
+   *     expect('foobar').to.have.lengthOf(6);
+   *
+   * @name lengthOf
+   * @param {Number} length
+   * @param {String} message _optional_
+   * @namespace BDD
+   * @api public
+   */
+
+  function assertLengthChain () {
+    flag(this, 'doLength', true);
+  }
+
+  function assertLength (n, msg) {
+    if (msg) flag(this, 'message', msg);
+    var obj = flag(this, 'object');
+    new Assertion(obj, msg).to.have.property('length');
+    var len = obj.length;
+
+    this.assert(
+        len == n
+      , 'expected #{this} to have a length of #{exp} but got #{act}'
+      , 'expected #{this} to not have a length of #{act}'
+      , n
+      , len
+    );
+  }
+
+  Assertion.addChainableMethod('length', assertLength, assertLengthChain);
+  Assertion.addMethod('lengthOf', assertLength);
+
+  /**
+   * ### .match(regexp)
+   *
+   * Asserts that the target matches a regular expression.
+   *
+   *     expect('foobar').to.match(/^foo/);
+   *
+   * @name match
+   * @alias matches
+   * @param {RegExp} RegularExpression
+   * @param {String} message _optional_
+   * @namespace BDD
+   * @api public
+   */
+  function assertMatch(re, msg) {
+    if (msg) flag(this, 'message', msg);
+    var obj = flag(this, 'object');
+    this.assert(
+        re.exec(obj)
+      , 'expected #{this} to match ' + re
+      , 'expected #{this} not to match ' + re
+    );
+  }
+
+  Assertion.addMethod('match', assertMatch);
+  Assertion.addMethod('matches', assertMatch);
+
+  /**
+   * ### .string(string)
+   *
+   * Asserts that the string target contains another string.
+   *
+   *     expect('foobar').to.have.string('bar');
+   *
+   * @name string
+   * @param {String} string
+   * @param {String} message _optional_
+   * @namespace BDD
+   * @api public
+   */
+
+  Assertion.addMethod('string', function (str, msg) {
+    if (msg) flag(this, 'message', msg);
+    var obj = flag(this, 'object');
+    new Assertion(obj, msg).is.a('string');
+
+    this.assert(
+        ~obj.indexOf(str)
+      , 'expected #{this} to contain ' + _.inspect(str)
+      , 'expected #{this} to not contain ' + _.inspect(str)
+    );
+  });
+
+
+  /**
+   * ### .keys(key1, [key2], [...])
+   *
+   * Asserts that the target contains any or all of the passed-in keys.
+   * Use in combination with `any`, `all`, `contains`, or `have` will affect
+   * what will pass.
+   *
+   * When used in conjunction with `any`, at least one key that is passed
+   * in must exist in the target object. This is regardless whether or not
+   * the `have` or `contain` qualifiers are used. Note, either `any` or `all`
+   * should be used in the assertion. If neither are used, the assertion is
+   * defaulted to `all`.
+   *
+   * When both `all` and `contain` are used, the target object must have at
+   * least all of the passed-in keys but may have more keys not listed.
+   *
+   * When both `all` and `have` are used, the target object must both contain
+   * all of the passed-in keys AND the number of keys in the target object must
+   * match the number of keys passed in (in other words, a target object must
+   * have all and only all of the passed-in keys).
+   *
+   *     expect({ foo: 1, bar: 2 }).to.have.any.keys('foo', 'baz');
+   *     expect({ foo: 1, bar: 2 }).to.have.any.keys('foo');
+   *     expect({ foo: 1, bar: 2 }).to.contain.any.keys('bar', 'baz');
+   *     expect({ foo: 1, bar: 2 }).to.contain.any.keys(['foo']);
+   *     expect({ foo: 1, bar: 2 }).to.contain.any.keys({'foo': 6});
+   *     expect({ foo: 1, bar: 2 }).to.have.all.keys(['bar', 'foo']);
+   *     expect({ foo: 1, bar: 2 }).to.have.all.keys({'bar': 6, 'foo': 7});
+   *     expect({ foo: 1, bar: 2, baz: 3 }).to.contain.all.keys(['bar', 'foo']);
+   *     expect({ foo: 1, bar: 2, baz: 3 }).to.contain.all.keys({'bar': 6});
+   *
+   *
+   * @name keys
+   * @alias key
+   * @param {...String|Array|Object} keys
+   * @namespace BDD
+   * @api public
+   */
+
+  function assertKeys (keys) {
+    var obj = flag(this, 'object')
+      , str
+      , ok = true
+      , mixedArgsMsg = 'keys must be given single argument of Array|Object|String, or multiple String arguments';
+
+    switch (_.type(keys)) {
+      case "array":
+        if (arguments.length > 1) throw (new Error(mixedArgsMsg));
+        break;
+      case "object":
+        if (arguments.length > 1) throw (new Error(mixedArgsMsg));
+        keys = Object.keys(keys);
+        break;
+      default:
+        keys = Array.prototype.slice.call(arguments);
+    }
+
+    if (!keys.length) throw new Error('keys required');
+
+    var actual = Object.keys(obj)
+      , expected = keys
+      , len = keys.length
+      , any = flag(this, 'any')
+      , all = flag(this, 'all');
+
+    if (!any && !all) {
+      all = true;
+    }
+
+    // Has any
+    if (any) {
+      var intersection = expected.filter(function(key) {
+        return ~actual.indexOf(key);
+      });
+      ok = intersection.length > 0;
+    }
+
+    // Has all
+    if (all) {
+      ok = keys.every(function(key){
+        return ~actual.indexOf(key);
+      });
+      if (!flag(this, 'negate') && !flag(this, 'contains')) {
+        ok = ok && keys.length == actual.length;
+      }
+    }
+
+    // Key string
+    if (len > 1) {
+      keys = keys.map(function(key){
+        return _.inspect(key);
+      });
+      var last = keys.pop();
+      if (all) {
+        str = keys.join(', ') + ', and ' + last;
+      }
+      if (any) {
+        str = keys.join(', ') + ', or ' + last;
+      }
+    } else {
+      str = _.inspect(keys[0]);
+    }
+
+    // Form
+    str = (len > 1 ? 'keys ' : 'key ') + str;
+
+    // Have / include
+    str = (flag(this, 'contains') ? 'contain ' : 'have ') + str;
+
+    // Assertion
+    this.assert(
+        ok
+      , 'expected #{this} to ' + str
+      , 'expected #{this} to not ' + str
+      , expected.slice(0).sort()
+      , actual.sort()
+      , true
+    );
+  }
+
+  Assertion.addMethod('keys', assertKeys);
+  Assertion.addMethod('key', assertKeys);
+
+  /**
+   * ### .throw(constructor)
+   *
+   * Asserts that the function target will throw a specific error, or specific type of error
+   * (as determined using `instanceof`), optionally with a RegExp or string inclusion test
+   * for the error's message.
+   *
+   *     var err = new ReferenceError('This is a bad function.');
+   *     var fn = function () { throw err; }
+   *     expect(fn).to.throw(ReferenceError);
+   *     expect(fn).to.throw(Error);
+   *     expect(fn).to.throw(/bad function/);
+   *     expect(fn).to.not.throw('good function');
+   *     expect(fn).to.throw(ReferenceError, /bad function/);
+   *     expect(fn).to.throw(err);
+   *
+   * Please note that when a throw expectation is negated, it will check each
+   * parameter independently, starting with error constructor type. The appropriate way
+   * to check for the existence of a type of error but for a message that does not match
+   * is to use `and`.
+   *
+   *     expect(fn).to.throw(ReferenceError)
+   *        .and.not.throw(/good function/);
+   *
+   * @name throw
+   * @alias throws
+   * @alias Throw
+   * @param {ErrorConstructor} constructor
+   * @param {String|RegExp} expected error message
+   * @param {String} message _optional_
+   * @see https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error#Error_types
+   * @returns error for chaining (null if no error)
+   * @namespace BDD
+   * @api public
+   */
+
+  function assertThrows (constructor, errMsg, msg) {
+    if (msg) flag(this, 'message', msg);
+    var obj = flag(this, 'object');
+    new Assertion(obj, msg).is.a('function');
+
+    var thrown = false
+      , desiredError = null
+      , name = null
+      , thrownError = null;
+
+    if (arguments.length === 0) {
+      errMsg = null;
+      constructor = null;
+    } else if (constructor && (constructor instanceof RegExp || 'string' === typeof constructor)) {
+      errMsg = constructor;
+      constructor = null;
+    } else if (constructor && constructor instanceof Error) {
+      desiredError = constructor;
+      constructor = null;
+      errMsg = null;
+    } else if (typeof constructor === 'function') {
+      name = constructor.prototype.name;
+      if (!name || (name === 'Error' && constructor !== Error)) {
+        name = constructor.name || (new constructor()).name;
+      }
+    } else {
+      constructor = null;
+    }
+
+    try {
+      obj();
+    } catch (err) {
+      // first, check desired error
+      if (desiredError) {
+        this.assert(
+            err === desiredError
+          , 'expected #{this} to throw #{exp} but #{act} was thrown'
+          , 'expected #{this} to not throw #{exp}'
+          , (desiredError instanceof Error ? desiredError.toString() : desiredError)
+          , (err instanceof Error ? err.toString() : err)
+        );
+
+        flag(this, 'object', err);
+        return this;
+      }
+
+      // next, check constructor
+      if (constructor) {
+        this.assert(
+            err instanceof constructor
+          , 'expected #{this} to throw #{exp} but #{act} was thrown'
+          , 'expected #{this} to not throw #{exp} but #{act} was thrown'
+          , name
+          , (err instanceof Error ? err.toString() : err)
+        );
+
+        if (!errMsg) {
+          flag(this, 'object', err);
+          return this;
+        }
+      }
+
+      // next, check message
+      var message = 'error' === _.type(err) && "message" in err
+        ? err.message
+        : '' + err;
+
+      if ((message != null) && errMsg && errMsg instanceof RegExp) {
+        this.assert(
+            errMsg.exec(message)
+          , 'expected #{this} to throw error matching #{exp} but got #{act}'
+          , 'expected #{this} to throw error not matching #{exp}'
+          , errMsg
+          , message
+        );
+
+        flag(this, 'object', err);
+        return this;
+      } else if ((message != null) && errMsg && 'string' === typeof errMsg) {
+        this.assert(
+            ~message.indexOf(errMsg)
+          , 'expected #{this} to throw error including #{exp} but got #{act}'
+          , 'expected #{this} to throw error not including #{act}'
+          , errMsg
+          , message
+        );
+
+        flag(this, 'object', err);
+        return this;
+      } else {
+        thrown = true;
+        thrownError = err;
+      }
+    }
+
+    var actuallyGot = ''
+      , expectedThrown = name !== null
+        ? name
+        : desiredError
+          ? '#{exp}' //_.inspect(desiredError)
+          : 'an error';
+
+    if (thrown) {
+      actuallyGot = ' but #{act} was thrown'
+    }
+
+    this.assert(
+        thrown === true
+      , 'expected #{this} to throw ' + expectedThrown + actuallyGot
+      , 'expected #{this} to not throw ' + expectedThrown + actuallyGot
+      , (desiredError instanceof Error ? desiredError.toString() : desiredError)
+      , (thrownError instanceof Error ? thrownError.toString() : thrownError)
+    );
+
+    flag(this, 'object', thrownError);
+  };
+
+  Assertion.addMethod('throw', assertThrows);
+  Assertion.addMethod('throws', assertThrows);
+  Assertion.addMethod('Throw', assertThrows);
+
+  /**
+   * ### .respondTo(method)
+   *
+   * Asserts that the object or class target will respond to a method.
+   *
+   *     Klass.prototype.bar = function(){};
+   *     expect(Klass).to.respondTo('bar');
+   *     expect(obj).to.respondTo('bar');
+   *
+   * To check if a constructor will respond to a static function,
+   * set the `itself` flag.
+   *
+   *     Klass.baz = function(){};
+   *     expect(Klass).itself.to.respondTo('baz');
+   *
+   * @name respondTo
+   * @alias respondsTo
+   * @param {String} method
+   * @param {String} message _optional_
+   * @namespace BDD
+   * @api public
+   */
+
+  function respondTo (method, msg) {
+    if (msg) flag(this, 'message', msg);
+    var obj = flag(this, 'object')
+      , itself = flag(this, 'itself')
+      , context = ('function' === _.type(obj) && !itself)
+        ? obj.prototype[method]
+        : obj[method];
+
+    this.assert(
+        'function' === typeof context
+      , 'expected #{this} to respond to ' + _.inspect(method)
+      , 'expected #{this} to not respond to ' + _.inspect(method)
+    );
+  }
+
+  Assertion.addMethod('respondTo', respondTo);
+  Assertion.addMethod('respondsTo', respondTo);
+
+  /**
+   * ### .itself
+   *
+   * Sets the `itself` flag, later used by the `respondTo` assertion.
+   *
+   *     function Foo() {}
+   *     Foo.bar = function() {}
+   *     Foo.prototype.baz = function() {}
+   *
+   *     expect(Foo).itself.to.respondTo('bar');
+   *     expect(Foo).itself.not.to.respondTo('baz');
+   *
+   * @name itself
+   * @namespace BDD
+   * @api public
+   */
+
+  Assertion.addProperty('itself', function () {
+    flag(this, 'itself', true);
+  });
+
+  /**
+   * ### .satisfy(method)
+   *
+   * Asserts that the target passes a given truth test.
+   *
+   *     expect(1).to.satisfy(function(num) { return num > 0; });
+   *
+   * @name satisfy
+   * @alias satisfies
+   * @param {Function} matcher
+   * @param {String} message _optional_
+   * @namespace BDD
+   * @api public
+   */
+
+  function satisfy (matcher, msg) {
+    if (msg) flag(this, 'message', msg);
+    var obj = flag(this, 'object');
+    var result = matcher(obj);
+    this.assert(
+        result
+      , 'expected #{this} to satisfy ' + _.objDisplay(matcher)
+      , 'expected #{this} to not satisfy' + _.objDisplay(matcher)
+      , this.negate ? false : true
+      , result
+    );
+  }
+
+  Assertion.addMethod('satisfy', satisfy);
+  Assertion.addMethod('satisfies', satisfy);
+
+  /**
+   * ### .closeTo(expected, delta)
+   *
+   * Asserts that the target is equal `expected`, to within a +/- `delta` range.
+   *
+   *     expect(1.5).to.be.closeTo(1, 0.5);
+   *
+   * @name closeTo
+   * @alias approximately
+   * @param {Number} expected
+   * @param {Number} delta
+   * @param {String} message _optional_
+   * @namespace BDD
+   * @api public
+   */
+
+  function closeTo(expected, delta, msg) {
+    if (msg) flag(this, 'message', msg);
+    var obj = flag(this, 'object');
+
+    new Assertion(obj, msg).is.a('number');
+    if (_.type(expected) !== 'number' || _.type(delta) !== 'number') {
+      throw new Error('the arguments to closeTo or approximately must be numbers');
+    }
+
+    this.assert(
+        Math.abs(obj - expected) <= delta
+      , 'expected #{this} to be close to ' + expected + ' +/- ' + delta
+      , 'expected #{this} not to be close to ' + expected + ' +/- ' + delta
+    );
+  }
+
+  Assertion.addMethod('closeTo', closeTo);
+  Assertion.addMethod('approximately', closeTo);
+
+  function isSubsetOf(subset, superset, cmp) {
+    return subset.every(function(elem) {
+      if (!cmp) return superset.indexOf(elem) !== -1;
+
+      return superset.some(function(elem2) {
+        return cmp(elem, elem2);
+      });
+    })
+  }
+
+  /**
+   * ### .members(set)
+   *
+   * Asserts that the target is a superset of `set`,
+   * or that the target and `set` have the same strictly-equal (===) members.
+   * Alternately, if the `deep` flag is set, set members are compared for deep
+   * equality.
+   *
+   *     expect([1, 2, 3]).to.include.members([3, 2]);
+   *     expect([1, 2, 3]).to.not.include.members([3, 2, 8]);
+   *
+   *     expect([4, 2]).to.have.members([2, 4]);
+   *     expect([5, 2]).to.not.have.members([5, 2, 1]);
+   *
+   *     expect([{ id: 1 }]).to.deep.include.members([{ id: 1 }]);
+   *
+   * @name members
+   * @param {Array} set
+   * @param {String} message _optional_
+   * @namespace BDD
+   * @api public
+   */
+
+  Assertion.addMethod('members', function (subset, msg) {
+    if (msg) flag(this, 'message', msg);
+    var obj = flag(this, 'object');
+
+    new Assertion(obj).to.be.an('array');
+    new Assertion(subset).to.be.an('array');
+
+    var cmp = flag(this, 'deep') ? _.eql : undefined;
+
+    if (flag(this, 'contains')) {
+      return this.assert(
+          isSubsetOf(subset, obj, cmp)
+        , 'expected #{this} to be a superset of #{act}'
+        , 'expected #{this} to not be a superset of #{act}'
+        , obj
+        , subset
+      );
+    }
+
+    this.assert(
+        isSubsetOf(obj, subset, cmp) && isSubsetOf(subset, obj, cmp)
+        , 'expected #{this} to have the same members as #{act}'
+        , 'expected #{this} to not have the same members as #{act}'
+        , obj
+        , subset
+    );
+  });
+
+  /**
+   * ### .oneOf(list)
+   *
+   * Assert that a value appears somewhere in the top level of array `list`.
+   *
+   *     expect('a').to.be.oneOf(['a', 'b', 'c']);
+   *     expect(9).to.not.be.oneOf(['z']);
+   *     expect([3]).to.not.be.oneOf([1, 2, [3]]);
+   *
+   *     var three = [3];
+   *     // for object-types, contents are not compared
+   *     expect(three).to.not.be.oneOf([1, 2, [3]]);
+   *     // comparing references works
+   *     expect(three).to.be.oneOf([1, 2, three]);
+   *
+   * @name oneOf
+   * @param {Array<*>} list
+   * @param {String} message _optional_
+   * @namespace BDD
+   * @api public
+   */
+
+  function oneOf (list, msg) {
+    if (msg) flag(this, 'message', msg);
+    var expected = flag(this, 'object');
+    new Assertion(list).to.be.an('array');
+
+    this.assert(
+        list.indexOf(expected) > -1
+      , 'expected #{this} to be one of #{exp}'
+      , 'expected #{this} to not be one of #{exp}'
+      , list
+      , expected
+    );
+  }
+
+  Assertion.addMethod('oneOf', oneOf);
+
+
+  /**
+   * ### .change(function)
+   *
+   * Asserts that a function changes an object property
+   *
+   *     var obj = { val: 10 };
+   *     var fn = function() { obj.val += 3 };
+   *     var noChangeFn = function() { return 'foo' + 'bar'; }
+   *     expect(fn).to.change(obj, 'val');
+   *     expect(noChangeFn).to.not.change(obj, 'val')
+   *
+   * @name change
+   * @alias changes
+   * @alias Change
+   * @param {String} object
+   * @param {String} property name
+   * @param {String} message _optional_
+   * @namespace BDD
+   * @api public
+   */
+
+  function assertChanges (object, prop, msg) {
+    if (msg) flag(this, 'message', msg);
+    var fn = flag(this, 'object');
+    new Assertion(object, msg).to.have.property(prop);
+    new Assertion(fn).is.a('function');
+
+    var initial = object[prop];
+    fn();
+
+    this.assert(
+      initial !== object[prop]
+      , 'expected .' + prop + ' to change'
+      , 'expected .' + prop + ' to not change'
+    );
+  }
+
+  Assertion.addChainableMethod('change', assertChanges);
+  Assertion.addChainableMethod('changes', assertChanges);
+
+  /**
+   * ### .increase(function)
+   *
+   * Asserts that a function increases an object property
+   *
+   *     var obj = { val: 10 };
+   *     var fn = function() { obj.val = 15 };
+   *     expect(fn).to.increase(obj, 'val');
+   *
+   * @name increase
+   * @alias increases
+   * @alias Increase
+   * @param {String} object
+   * @param {String} property name
+   * @param {String} message _optional_
+   * @namespace BDD
+   * @api public
+   */
+
+  function assertIncreases (object, prop, msg) {
+    if (msg) flag(this, 'message', msg);
+    var fn = flag(this, 'object');
+    new Assertion(object, msg).to.have.property(prop);
+    new Assertion(fn).is.a('function');
+
+    var initial = object[prop];
+    fn();
+
+    this.assert(
+      object[prop] - initial > 0
+      , 'expected .' + prop + ' to increase'
+      , 'expected .' + prop + ' to not increase'
+    );
+  }
+
+  Assertion.addChainableMethod('increase', assertIncreases);
+  Assertion.addChainableMethod('increases', assertIncreases);
+
+  /**
+   * ### .decrease(function)
+   *
+   * Asserts that a function decreases an object property
+   *
+   *     var obj = { val: 10 };
+   *     var fn = function() { obj.val = 5 };
+   *     expect(fn).to.decrease(obj, 'val');
+   *
+   * @name decrease
+   * @alias decreases
+   * @alias Decrease
+   * @param {String} object
+   * @param {String} property name
+   * @param {String} message _optional_
+   * @namespace BDD
+   * @api public
+   */
+
+  function assertDecreases (object, prop, msg) {
+    if (msg) flag(this, 'message', msg);
+    var fn = flag(this, 'object');
+    new Assertion(object, msg).to.have.property(prop);
+    new Assertion(fn).is.a('function');
+
+    var initial = object[prop];
+    fn();
+
+    this.assert(
+      object[prop] - initial < 0
+      , 'expected .' + prop + ' to decrease'
+      , 'expected .' + prop + ' to not decrease'
+    );
+  }
+
+  Assertion.addChainableMethod('decrease', assertDecreases);
+  Assertion.addChainableMethod('decreases', assertDecreases);
+
+  /**
+   * ### .extensible
+   *
+   * Asserts that the target is extensible (can have new properties added to
+   * it).
+   *
+   *     var nonExtensibleObject = Object.preventExtensions({});
+   *     var sealedObject = Object.seal({});
+   *     var frozenObject = Object.freeze({});
+   *
+   *     expect({}).to.be.extensible;
+   *     expect(nonExtensibleObject).to.not.be.extensible;
+   *     expect(sealedObject).to.not.be.extensible;
+   *     expect(frozenObject).to.not.be.extensible;
+   *
+   * @name extensible
+   * @namespace BDD
+   * @api public
+   */
+
+  Assertion.addProperty('extensible', function() {
+    var obj = flag(this, 'object');
+
+    // In ES5, if the argument to this method is not an object (a primitive), then it will cause a TypeError.
+    // In ES6, a non-object argument will be treated as if it was a non-extensible ordinary object, simply return false.
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/isExtensible
+    // The following provides ES6 behavior when a TypeError is thrown under ES5.
+
+    var isExtensible;
+
+    try {
+      isExtensible = Object.isExtensible(obj);
+    } catch (err) {
+      if (err instanceof TypeError) isExtensible = false;
+      else throw err;
+    }
+
+    this.assert(
+      isExtensible
+      , 'expected #{this} to be extensible'
+      , 'expected #{this} to not be extensible'
+    );
+  });
+
+  /**
+   * ### .sealed
+   *
+   * Asserts that the target is sealed (cannot have new properties added to it
+   * and its existing properties cannot be removed).
+   *
+   *     var sealedObject = Object.seal({});
+   *     var frozenObject = Object.freeze({});
+   *
+   *     expect(sealedObject).to.be.sealed;
+   *     expect(frozenObject).to.be.sealed;
+   *     expect({}).to.not.be.sealed;
+   *
+   * @name sealed
+   * @namespace BDD
+   * @api public
+   */
+
+  Assertion.addProperty('sealed', function() {
+    var obj = flag(this, 'object');
+
+    // In ES5, if the argument to this method is not an object (a primitive), then it will cause a TypeError.
+    // In ES6, a non-object argument will be treated as if it was a sealed ordinary object, simply return true.
+    // See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/isSealed
+    // The following provides ES6 behavior when a TypeError is thrown under ES5.
+
+    var isSealed;
+
+    try {
+      isSealed = Object.isSealed(obj);
+    } catch (err) {
+      if (err instanceof TypeError) isSealed = true;
+      else throw err;
+    }
+
+    this.assert(
+      isSealed
+      , 'expected #{this} to be sealed'
+      , 'expected #{this} to not be sealed'
+    );
+  });
+
+  /**
+   * ### .frozen
+   *
+   * Asserts that the target is frozen (cannot have new properties added to it
+   * and its existing properties cannot be modified).
+   *
+   *     var frozenObject = Object.freeze({});
+   *
+   *     expect(frozenObject).to.be.frozen;
+   *     expect({}).to.not.be.frozen;
+   *
+   * @name frozen
+   * @namespace BDD
+   * @api public
+   */
+
+  Assertion.addProperty('frozen', function() {
+    var obj = flag(this, 'object');
+
+    // In ES5, if the argument to this method is not an object (a primitive), then it will cause a TypeError.
+    // In ES6, a non-object argument will be treated as if it was a frozen ordinary object, simply return true.
+    // See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/isFrozen
+    // The following provides ES6 behavior when a TypeError is thrown under ES5.
+
+    var isFrozen;
+
+    try {
+      isFrozen = Object.isFrozen(obj);
+    } catch (err) {
+      if (err instanceof TypeError) isFrozen = true;
+      else throw err;
+    }
+
+    this.assert(
+      isFrozen
+      , 'expected #{this} to be frozen'
+      , 'expected #{this} to not be frozen'
+    );
+  });
+};
+
+},{}],6:[function(require,module,exports){
+/*!
+ * chai
+ * Copyright(c) 2011-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+
+module.exports = function (chai, util) {
+
+  /*!
+   * Chai dependencies.
+   */
+
+  var Assertion = chai.Assertion
+    , flag = util.flag;
+
+  /*!
+   * Module export.
+   */
+
+  /**
+   * ### assert(expression, message)
+   *
+   * Write your own test expressions.
+   *
+   *     assert('foo' !== 'bar', 'foo is not bar');
+   *     assert(Array.isArray([]), 'empty arrays are arrays');
+   *
+   * @param {Mixed} expression to test for truthiness
+   * @param {String} message to display on error
+   * @name assert
+   * @namespace Assert
+   * @api public
+   */
+
+  var assert = chai.assert = function (express, errmsg) {
+    var test = new Assertion(null, null, chai.assert);
+    test.assert(
+        express
+      , errmsg
+      , '[ negation message unavailable ]'
+    );
+  };
+
+  /**
+   * ### .fail(actual, expected, [message], [operator])
+   *
+   * Throw a failure. Node.js `assert` module-compatible.
+   *
+   * @name fail
+   * @param {Mixed} actual
+   * @param {Mixed} expected
+   * @param {String} message
+   * @param {String} operator
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.fail = function (actual, expected, message, operator) {
+    message = message || 'assert.fail()';
+    throw new chai.AssertionError(message, {
+        actual: actual
+      , expected: expected
+      , operator: operator
+    }, assert.fail);
+  };
+
+  /**
+   * ### .isOk(object, [message])
+   *
+   * Asserts that `object` is truthy.
+   *
+   *     assert.isOk('everything', 'everything is ok');
+   *     assert.isOk(false, 'this will fail');
+   *
+   * @name isOk
+   * @alias ok
+   * @param {Mixed} object to test
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isOk = function (val, msg) {
+    new Assertion(val, msg).is.ok;
+  };
+
+  /**
+   * ### .isNotOk(object, [message])
+   *
+   * Asserts that `object` is falsy.
+   *
+   *     assert.isNotOk('everything', 'this will fail');
+   *     assert.isNotOk(false, 'this will pass');
+   *
+   * @name isNotOk
+   * @alias notOk
+   * @param {Mixed} object to test
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isNotOk = function (val, msg) {
+    new Assertion(val, msg).is.not.ok;
+  };
+
+  /**
+   * ### .equal(actual, expected, [message])
+   *
+   * Asserts non-strict equality (`==`) of `actual` and `expected`.
+   *
+   *     assert.equal(3, '3', '== coerces values to strings');
+   *
+   * @name equal
+   * @param {Mixed} actual
+   * @param {Mixed} expected
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.equal = function (act, exp, msg) {
+    var test = new Assertion(act, msg, assert.equal);
+
+    test.assert(
+        exp == flag(test, 'object')
+      , 'expected #{this} to equal #{exp}'
+      , 'expected #{this} to not equal #{act}'
+      , exp
+      , act
+    );
+  };
+
+  /**
+   * ### .notEqual(actual, expected, [message])
+   *
+   * Asserts non-strict inequality (`!=`) of `actual` and `expected`.
+   *
+   *     assert.notEqual(3, 4, 'these numbers are not equal');
+   *
+   * @name notEqual
+   * @param {Mixed} actual
+   * @param {Mixed} expected
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.notEqual = function (act, exp, msg) {
+    var test = new Assertion(act, msg, assert.notEqual);
+
+    test.assert(
+        exp != flag(test, 'object')
+      , 'expected #{this} to not equal #{exp}'
+      , 'expected #{this} to equal #{act}'
+      , exp
+      , act
+    );
+  };
+
+  /**
+   * ### .strictEqual(actual, expected, [message])
+   *
+   * Asserts strict equality (`===`) of `actual` and `expected`.
+   *
+   *     assert.strictEqual(true, true, 'these booleans are strictly equal');
+   *
+   * @name strictEqual
+   * @param {Mixed} actual
+   * @param {Mixed} expected
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.strictEqual = function (act, exp, msg) {
+    new Assertion(act, msg).to.equal(exp);
+  };
+
+  /**
+   * ### .notStrictEqual(actual, expected, [message])
+   *
+   * Asserts strict inequality (`!==`) of `actual` and `expected`.
+   *
+   *     assert.notStrictEqual(3, '3', 'no coercion for strict equality');
+   *
+   * @name notStrictEqual
+   * @param {Mixed} actual
+   * @param {Mixed} expected
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.notStrictEqual = function (act, exp, msg) {
+    new Assertion(act, msg).to.not.equal(exp);
+  };
+
+  /**
+   * ### .deepEqual(actual, expected, [message])
+   *
+   * Asserts that `actual` is deeply equal to `expected`.
+   *
+   *     assert.deepEqual({ tea: 'green' }, { tea: 'green' });
+   *
+   * @name deepEqual
+   * @param {Mixed} actual
+   * @param {Mixed} expected
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.deepEqual = function (act, exp, msg) {
+    new Assertion(act, msg).to.eql(exp);
+  };
+
+  /**
+   * ### .notDeepEqual(actual, expected, [message])
+   *
+   * Assert that `actual` is not deeply equal to `expected`.
+   *
+   *     assert.notDeepEqual({ tea: 'green' }, { tea: 'jasmine' });
+   *
+   * @name notDeepEqual
+   * @param {Mixed} actual
+   * @param {Mixed} expected
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.notDeepEqual = function (act, exp, msg) {
+    new Assertion(act, msg).to.not.eql(exp);
+  };
+
+   /**
+   * ### .isAbove(valueToCheck, valueToBeAbove, [message])
+   *
+   * Asserts `valueToCheck` is strictly greater than (>) `valueToBeAbove`
+   *
+   *     assert.isAbove(5, 2, '5 is strictly greater than 2');
+   *
+   * @name isAbove
+   * @param {Mixed} valueToCheck
+   * @param {Mixed} valueToBeAbove
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isAbove = function (val, abv, msg) {
+    new Assertion(val, msg).to.be.above(abv);
+  };
+
+   /**
+   * ### .isAtLeast(valueToCheck, valueToBeAtLeast, [message])
+   *
+   * Asserts `valueToCheck` is greater than or equal to (>=) `valueToBeAtLeast`
+   *
+   *     assert.isAtLeast(5, 2, '5 is greater or equal to 2');
+   *     assert.isAtLeast(3, 3, '3 is greater or equal to 3');
+   *
+   * @name isAtLeast
+   * @param {Mixed} valueToCheck
+   * @param {Mixed} valueToBeAtLeast
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isAtLeast = function (val, atlst, msg) {
+    new Assertion(val, msg).to.be.least(atlst);
+  };
+
+   /**
+   * ### .isBelow(valueToCheck, valueToBeBelow, [message])
+   *
+   * Asserts `valueToCheck` is strictly less than (<) `valueToBeBelow`
+   *
+   *     assert.isBelow(3, 6, '3 is strictly less than 6');
+   *
+   * @name isBelow
+   * @param {Mixed} valueToCheck
+   * @param {Mixed} valueToBeBelow
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isBelow = function (val, blw, msg) {
+    new Assertion(val, msg).to.be.below(blw);
+  };
+
+   /**
+   * ### .isAtMost(valueToCheck, valueToBeAtMost, [message])
+   *
+   * Asserts `valueToCheck` is less than or equal to (<=) `valueToBeAtMost`
+   *
+   *     assert.isAtMost(3, 6, '3 is less than or equal to 6');
+   *     assert.isAtMost(4, 4, '4 is less than or equal to 4');
+   *
+   * @name isAtMost
+   * @param {Mixed} valueToCheck
+   * @param {Mixed} valueToBeAtMost
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isAtMost = function (val, atmst, msg) {
+    new Assertion(val, msg).to.be.most(atmst);
+  };
+
+  /**
+   * ### .isTrue(value, [message])
+   *
+   * Asserts that `value` is true.
+   *
+   *     var teaServed = true;
+   *     assert.isTrue(teaServed, 'the tea has been served');
+   *
+   * @name isTrue
+   * @param {Mixed} value
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isTrue = function (val, msg) {
+    new Assertion(val, msg).is['true'];
+  };
+
+  /**
+   * ### .isNotTrue(value, [message])
+   *
+   * Asserts that `value` is not true.
+   *
+   *     var tea = 'tasty chai';
+   *     assert.isNotTrue(tea, 'great, time for tea!');
+   *
+   * @name isNotTrue
+   * @param {Mixed} value
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isNotTrue = function (val, msg) {
+    new Assertion(val, msg).to.not.equal(true);
+  };
+
+  /**
+   * ### .isFalse(value, [message])
+   *
+   * Asserts that `value` is false.
+   *
+   *     var teaServed = false;
+   *     assert.isFalse(teaServed, 'no tea yet? hmm...');
+   *
+   * @name isFalse
+   * @param {Mixed} value
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isFalse = function (val, msg) {
+    new Assertion(val, msg).is['false'];
+  };
+
+  /**
+   * ### .isNotFalse(value, [message])
+   *
+   * Asserts that `value` is not false.
+   *
+   *     var tea = 'tasty chai';
+   *     assert.isNotFalse(tea, 'great, time for tea!');
+   *
+   * @name isNotFalse
+   * @param {Mixed} value
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isNotFalse = function (val, msg) {
+    new Assertion(val, msg).to.not.equal(false);
+  };
+
+  /**
+   * ### .isNull(value, [message])
+   *
+   * Asserts that `value` is null.
+   *
+   *     assert.isNull(err, 'there was no error');
+   *
+   * @name isNull
+   * @param {Mixed} value
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isNull = function (val, msg) {
+    new Assertion(val, msg).to.equal(null);
+  };
+
+  /**
+   * ### .isNotNull(value, [message])
+   *
+   * Asserts that `value` is not null.
+   *
+   *     var tea = 'tasty chai';
+   *     assert.isNotNull(tea, 'great, time for tea!');
+   *
+   * @name isNotNull
+   * @param {Mixed} value
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isNotNull = function (val, msg) {
+    new Assertion(val, msg).to.not.equal(null);
+  };
+
+  /**
+   * ### .isNaN
+   * Asserts that value is NaN
+   *
+   *    assert.isNaN('foo', 'foo is NaN');
+   *
+   * @name isNaN
+   * @param {Mixed} value
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isNaN = function (val, msg) {
+    new Assertion(val, msg).to.be.NaN;
+  };
+
+  /**
+   * ### .isNotNaN
+   * Asserts that value is not NaN
+   *
+   *    assert.isNotNaN(4, '4 is not NaN');
+   *
+   * @name isNotNaN
+   * @param {Mixed} value
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+  assert.isNotNaN = function (val, msg) {
+    new Assertion(val, msg).not.to.be.NaN;
+  };
+
+  /**
+   * ### .isUndefined(value, [message])
+   *
+   * Asserts that `value` is `undefined`.
+   *
+   *     var tea;
+   *     assert.isUndefined(tea, 'no tea defined');
+   *
+   * @name isUndefined
+   * @param {Mixed} value
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isUndefined = function (val, msg) {
+    new Assertion(val, msg).to.equal(undefined);
+  };
+
+  /**
+   * ### .isDefined(value, [message])
+   *
+   * Asserts that `value` is not `undefined`.
+   *
+   *     var tea = 'cup of chai';
+   *     assert.isDefined(tea, 'tea has been defined');
+   *
+   * @name isDefined
+   * @param {Mixed} value
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isDefined = function (val, msg) {
+    new Assertion(val, msg).to.not.equal(undefined);
+  };
+
+  /**
+   * ### .isFunction(value, [message])
+   *
+   * Asserts that `value` is a function.
+   *
+   *     function serveTea() { return 'cup of tea'; };
+   *     assert.isFunction(serveTea, 'great, we can have tea now');
+   *
+   * @name isFunction
+   * @param {Mixed} value
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isFunction = function (val, msg) {
+    new Assertion(val, msg).to.be.a('function');
+  };
+
+  /**
+   * ### .isNotFunction(value, [message])
+   *
+   * Asserts that `value` is _not_ a function.
+   *
+   *     var serveTea = [ 'heat', 'pour', 'sip' ];
+   *     assert.isNotFunction(serveTea, 'great, we have listed the steps');
+   *
+   * @name isNotFunction
+   * @param {Mixed} value
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isNotFunction = function (val, msg) {
+    new Assertion(val, msg).to.not.be.a('function');
+  };
+
+  /**
+   * ### .isObject(value, [message])
+   *
+   * Asserts that `value` is an object of type 'Object' (as revealed by `Object.prototype.toString`).
+   * _The assertion does not match subclassed objects._
+   *
+   *     var selection = { name: 'Chai', serve: 'with spices' };
+   *     assert.isObject(selection, 'tea selection is an object');
+   *
+   * @name isObject
+   * @param {Mixed} value
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isObject = function (val, msg) {
+    new Assertion(val, msg).to.be.a('object');
+  };
+
+  /**
+   * ### .isNotObject(value, [message])
+   *
+   * Asserts that `value` is _not_ an object of type 'Object' (as revealed by `Object.prototype.toString`).
+   *
+   *     var selection = 'chai'
+   *     assert.isNotObject(selection, 'tea selection is not an object');
+   *     assert.isNotObject(null, 'null is not an object');
+   *
+   * @name isNotObject
+   * @param {Mixed} value
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isNotObject = function (val, msg) {
+    new Assertion(val, msg).to.not.be.a('object');
+  };
+
+  /**
+   * ### .isArray(value, [message])
+   *
+   * Asserts that `value` is an array.
+   *
+   *     var menu = [ 'green', 'chai', 'oolong' ];
+   *     assert.isArray(menu, 'what kind of tea do we want?');
+   *
+   * @name isArray
+   * @param {Mixed} value
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isArray = function (val, msg) {
+    new Assertion(val, msg).to.be.an('array');
+  };
+
+  /**
+   * ### .isNotArray(value, [message])
+   *
+   * Asserts that `value` is _not_ an array.
+   *
+   *     var menu = 'green|chai|oolong';
+   *     assert.isNotArray(menu, 'what kind of tea do we want?');
+   *
+   * @name isNotArray
+   * @param {Mixed} value
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isNotArray = function (val, msg) {
+    new Assertion(val, msg).to.not.be.an('array');
+  };
+
+  /**
+   * ### .isString(value, [message])
+   *
+   * Asserts that `value` is a string.
+   *
+   *     var teaOrder = 'chai';
+   *     assert.isString(teaOrder, 'order placed');
+   *
+   * @name isString
+   * @param {Mixed} value
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isString = function (val, msg) {
+    new Assertion(val, msg).to.be.a('string');
+  };
+
+  /**
+   * ### .isNotString(value, [message])
+   *
+   * Asserts that `value` is _not_ a string.
+   *
+   *     var teaOrder = 4;
+   *     assert.isNotString(teaOrder, 'order placed');
+   *
+   * @name isNotString
+   * @param {Mixed} value
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isNotString = function (val, msg) {
+    new Assertion(val, msg).to.not.be.a('string');
+  };
+
+  /**
+   * ### .isNumber(value, [message])
+   *
+   * Asserts that `value` is a number.
+   *
+   *     var cups = 2;
+   *     assert.isNumber(cups, 'how many cups');
+   *
+   * @name isNumber
+   * @param {Number} value
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isNumber = function (val, msg) {
+    new Assertion(val, msg).to.be.a('number');
+  };
+
+  /**
+   * ### .isNotNumber(value, [message])
+   *
+   * Asserts that `value` is _not_ a number.
+   *
+   *     var cups = '2 cups please';
+   *     assert.isNotNumber(cups, 'how many cups');
+   *
+   * @name isNotNumber
+   * @param {Mixed} value
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isNotNumber = function (val, msg) {
+    new Assertion(val, msg).to.not.be.a('number');
+  };
+
+  /**
+   * ### .isBoolean(value, [message])
+   *
+   * Asserts that `value` is a boolean.
+   *
+   *     var teaReady = true
+   *       , teaServed = false;
+   *
+   *     assert.isBoolean(teaReady, 'is the tea ready');
+   *     assert.isBoolean(teaServed, 'has tea been served');
+   *
+   * @name isBoolean
+   * @param {Mixed} value
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isBoolean = function (val, msg) {
+    new Assertion(val, msg).to.be.a('boolean');
+  };
+
+  /**
+   * ### .isNotBoolean(value, [message])
+   *
+   * Asserts that `value` is _not_ a boolean.
+   *
+   *     var teaReady = 'yep'
+   *       , teaServed = 'nope';
+   *
+   *     assert.isNotBoolean(teaReady, 'is the tea ready');
+   *     assert.isNotBoolean(teaServed, 'has tea been served');
+   *
+   * @name isNotBoolean
+   * @param {Mixed} value
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isNotBoolean = function (val, msg) {
+    new Assertion(val, msg).to.not.be.a('boolean');
+  };
+
+  /**
+   * ### .typeOf(value, name, [message])
+   *
+   * Asserts that `value`'s type is `name`, as determined by
+   * `Object.prototype.toString`.
+   *
+   *     assert.typeOf({ tea: 'chai' }, 'object', 'we have an object');
+   *     assert.typeOf(['chai', 'jasmine'], 'array', 'we have an array');
+   *     assert.typeOf('tea', 'string', 'we have a string');
+   *     assert.typeOf(/tea/, 'regexp', 'we have a regular expression');
+   *     assert.typeOf(null, 'null', 'we have a null');
+   *     assert.typeOf(undefined, 'undefined', 'we have an undefined');
+   *
+   * @name typeOf
+   * @param {Mixed} value
+   * @param {String} name
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.typeOf = function (val, type, msg) {
+    new Assertion(val, msg).to.be.a(type);
+  };
+
+  /**
+   * ### .notTypeOf(value, name, [message])
+   *
+   * Asserts that `value`'s type is _not_ `name`, as determined by
+   * `Object.prototype.toString`.
+   *
+   *     assert.notTypeOf('tea', 'number', 'strings are not numbers');
+   *
+   * @name notTypeOf
+   * @param {Mixed} value
+   * @param {String} typeof name
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.notTypeOf = function (val, type, msg) {
+    new Assertion(val, msg).to.not.be.a(type);
+  };
+
+  /**
+   * ### .instanceOf(object, constructor, [message])
+   *
+   * Asserts that `value` is an instance of `constructor`.
+   *
+   *     var Tea = function (name) { this.name = name; }
+   *       , chai = new Tea('chai');
+   *
+   *     assert.instanceOf(chai, Tea, 'chai is an instance of tea');
+   *
+   * @name instanceOf
+   * @param {Object} object
+   * @param {Constructor} constructor
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.instanceOf = function (val, type, msg) {
+    new Assertion(val, msg).to.be.instanceOf(type);
+  };
+
+  /**
+   * ### .notInstanceOf(object, constructor, [message])
+   *
+   * Asserts `value` is not an instance of `constructor`.
+   *
+   *     var Tea = function (name) { this.name = name; }
+   *       , chai = new String('chai');
+   *
+   *     assert.notInstanceOf(chai, Tea, 'chai is not an instance of tea');
+   *
+   * @name notInstanceOf
+   * @param {Object} object
+   * @param {Constructor} constructor
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.notInstanceOf = function (val, type, msg) {
+    new Assertion(val, msg).to.not.be.instanceOf(type);
+  };
+
+  /**
+   * ### .include(haystack, needle, [message])
+   *
+   * Asserts that `haystack` includes `needle`. Works
+   * for strings and arrays.
+   *
+   *     assert.include('foobar', 'bar', 'foobar contains string "bar"');
+   *     assert.include([ 1, 2, 3 ], 3, 'array contains value');
+   *
+   * @name include
+   * @param {Array|String} haystack
+   * @param {Mixed} needle
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.include = function (exp, inc, msg) {
+    new Assertion(exp, msg, assert.include).include(inc);
+  };
+
+  /**
+   * ### .notInclude(haystack, needle, [message])
+   *
+   * Asserts that `haystack` does not include `needle`. Works
+   * for strings and arrays.
+   *
+   *     assert.notInclude('foobar', 'baz', 'string not include substring');
+   *     assert.notInclude([ 1, 2, 3 ], 4, 'array not include contain value');
+   *
+   * @name notInclude
+   * @param {Array|String} haystack
+   * @param {Mixed} needle
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.notInclude = function (exp, inc, msg) {
+    new Assertion(exp, msg, assert.notInclude).not.include(inc);
+  };
+
+  /**
+   * ### .match(value, regexp, [message])
+   *
+   * Asserts that `value` matches the regular expression `regexp`.
+   *
+   *     assert.match('foobar', /^foo/, 'regexp matches');
+   *
+   * @name match
+   * @param {Mixed} value
+   * @param {RegExp} regexp
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.match = function (exp, re, msg) {
+    new Assertion(exp, msg).to.match(re);
+  };
+
+  /**
+   * ### .notMatch(value, regexp, [message])
+   *
+   * Asserts that `value` does not match the regular expression `regexp`.
+   *
+   *     assert.notMatch('foobar', /^foo/, 'regexp does not match');
+   *
+   * @name notMatch
+   * @param {Mixed} value
+   * @param {RegExp} regexp
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.notMatch = function (exp, re, msg) {
+    new Assertion(exp, msg).to.not.match(re);
+  };
+
+  /**
+   * ### .property(object, property, [message])
+   *
+   * Asserts that `object` has a property named by `property`.
+   *
+   *     assert.property({ tea: { green: 'matcha' }}, 'tea');
+   *
+   * @name property
+   * @param {Object} object
+   * @param {String} property
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.property = function (obj, prop, msg) {
+    new Assertion(obj, msg).to.have.property(prop);
+  };
+
+  /**
+   * ### .notProperty(object, property, [message])
+   *
+   * Asserts that `object` does _not_ have a property named by `property`.
+   *
+   *     assert.notProperty({ tea: { green: 'matcha' }}, 'coffee');
+   *
+   * @name notProperty
+   * @param {Object} object
+   * @param {String} property
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.notProperty = function (obj, prop, msg) {
+    new Assertion(obj, msg).to.not.have.property(prop);
+  };
+
+  /**
+   * ### .deepProperty(object, property, [message])
+   *
+   * Asserts that `object` has a property named by `property`, which can be a
+   * string using dot- and bracket-notation for deep reference.
+   *
+   *     assert.deepProperty({ tea: { green: 'matcha' }}, 'tea.green');
+   *
+   * @name deepProperty
+   * @param {Object} object
+   * @param {String} property
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.deepProperty = function (obj, prop, msg) {
+    new Assertion(obj, msg).to.have.deep.property(prop);
+  };
+
+  /**
+   * ### .notDeepProperty(object, property, [message])
+   *
+   * Asserts that `object` does _not_ have a property named by `property`, which
+   * can be a string using dot- and bracket-notation for deep reference.
+   *
+   *     assert.notDeepProperty({ tea: { green: 'matcha' }}, 'tea.oolong');
+   *
+   * @name notDeepProperty
+   * @param {Object} object
+   * @param {String} property
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.notDeepProperty = function (obj, prop, msg) {
+    new Assertion(obj, msg).to.not.have.deep.property(prop);
+  };
+
+  /**
+   * ### .propertyVal(object, property, value, [message])
+   *
+   * Asserts that `object` has a property named by `property` with value given
+   * by `value`.
+   *
+   *     assert.propertyVal({ tea: 'is good' }, 'tea', 'is good');
+   *
+   * @name propertyVal
+   * @param {Object} object
+   * @param {String} property
+   * @param {Mixed} value
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.propertyVal = function (obj, prop, val, msg) {
+    new Assertion(obj, msg).to.have.property(prop, val);
+  };
+
+  /**
+   * ### .propertyNotVal(object, property, value, [message])
+   *
+   * Asserts that `object` has a property named by `property`, but with a value
+   * different from that given by `value`.
+   *
+   *     assert.propertyNotVal({ tea: 'is good' }, 'tea', 'is bad');
+   *
+   * @name propertyNotVal
+   * @param {Object} object
+   * @param {String} property
+   * @param {Mixed} value
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.propertyNotVal = function (obj, prop, val, msg) {
+    new Assertion(obj, msg).to.not.have.property(prop, val);
+  };
+
+  /**
+   * ### .deepPropertyVal(object, property, value, [message])
+   *
+   * Asserts that `object` has a property named by `property` with value given
+   * by `value`. `property` can use dot- and bracket-notation for deep
+   * reference.
+   *
+   *     assert.deepPropertyVal({ tea: { green: 'matcha' }}, 'tea.green', 'matcha');
+   *
+   * @name deepPropertyVal
+   * @param {Object} object
+   * @param {String} property
+   * @param {Mixed} value
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.deepPropertyVal = function (obj, prop, val, msg) {
+    new Assertion(obj, msg).to.have.deep.property(prop, val);
+  };
+
+  /**
+   * ### .deepPropertyNotVal(object, property, value, [message])
+   *
+   * Asserts that `object` has a property named by `property`, but with a value
+   * different from that given by `value`. `property` can use dot- and
+   * bracket-notation for deep reference.
+   *
+   *     assert.deepPropertyNotVal({ tea: { green: 'matcha' }}, 'tea.green', 'konacha');
+   *
+   * @name deepPropertyNotVal
+   * @param {Object} object
+   * @param {String} property
+   * @param {Mixed} value
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.deepPropertyNotVal = function (obj, prop, val, msg) {
+    new Assertion(obj, msg).to.not.have.deep.property(prop, val);
+  };
+
+  /**
+   * ### .lengthOf(object, length, [message])
+   *
+   * Asserts that `object` has a `length` property with the expected value.
+   *
+   *     assert.lengthOf([1,2,3], 3, 'array has length of 3');
+   *     assert.lengthOf('foobar', 6, 'string has length of 6');
+   *
+   * @name lengthOf
+   * @param {Mixed} object
+   * @param {Number} length
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.lengthOf = function (exp, len, msg) {
+    new Assertion(exp, msg).to.have.length(len);
+  };
+
+  /**
+   * ### .throws(function, [constructor/string/regexp], [string/regexp], [message])
+   *
+   * Asserts that `function` will throw an error that is an instance of
+   * `constructor`, or alternately that it will throw an error with message
+   * matching `regexp`.
+   *
+   *     assert.throws(fn, 'function throws a reference error');
+   *     assert.throws(fn, /function throws a reference error/);
+   *     assert.throws(fn, ReferenceError);
+   *     assert.throws(fn, ReferenceError, 'function throws a reference error');
+   *     assert.throws(fn, ReferenceError, /function throws a reference error/);
+   *
+   * @name throws
+   * @alias throw
+   * @alias Throw
+   * @param {Function} function
+   * @param {ErrorConstructor} constructor
+   * @param {RegExp} regexp
+   * @param {String} message
+   * @see https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error#Error_types
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.throws = function (fn, errt, errs, msg) {
+    if ('string' === typeof errt || errt instanceof RegExp) {
+      errs = errt;
+      errt = null;
+    }
+
+    var assertErr = new Assertion(fn, msg).to.throw(errt, errs);
+    return flag(assertErr, 'object');
+  };
+
+  /**
+   * ### .doesNotThrow(function, [constructor/regexp], [message])
+   *
+   * Asserts that `function` will _not_ throw an error that is an instance of
+   * `constructor`, or alternately that it will not throw an error with message
+   * matching `regexp`.
+   *
+   *     assert.doesNotThrow(fn, Error, 'function does not throw');
+   *
+   * @name doesNotThrow
+   * @param {Function} function
+   * @param {ErrorConstructor} constructor
+   * @param {RegExp} regexp
+   * @param {String} message
+   * @see https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error#Error_types
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.doesNotThrow = function (fn, type, msg) {
+    if ('string' === typeof type) {
+      msg = type;
+      type = null;
+    }
+
+    new Assertion(fn, msg).to.not.Throw(type);
+  };
+
+  /**
+   * ### .operator(val1, operator, val2, [message])
+   *
+   * Compares two values using `operator`.
+   *
+   *     assert.operator(1, '<', 2, 'everything is ok');
+   *     assert.operator(1, '>', 2, 'this will fail');
+   *
+   * @name operator
+   * @param {Mixed} val1
+   * @param {String} operator
+   * @param {Mixed} val2
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.operator = function (val, operator, val2, msg) {
+    var ok;
+    switch(operator) {
+      case '==':
+        ok = val == val2;
+        break;
+      case '===':
+        ok = val === val2;
+        break;
+      case '>':
+        ok = val > val2;
+        break;
+      case '>=':
+        ok = val >= val2;
+        break;
+      case '<':
+        ok = val < val2;
+        break;
+      case '<=':
+        ok = val <= val2;
+        break;
+      case '!=':
+        ok = val != val2;
+        break;
+      case '!==':
+        ok = val !== val2;
+        break;
+      default:
+        throw new Error('Invalid operator "' + operator + '"');
+    }
+    var test = new Assertion(ok, msg);
+    test.assert(
+        true === flag(test, 'object')
+      , 'expected ' + util.inspect(val) + ' to be ' + operator + ' ' + util.inspect(val2)
+      , 'expected ' + util.inspect(val) + ' to not be ' + operator + ' ' + util.inspect(val2) );
+  };
+
+  /**
+   * ### .closeTo(actual, expected, delta, [message])
+   *
+   * Asserts that the target is equal `expected`, to within a +/- `delta` range.
+   *
+   *     assert.closeTo(1.5, 1, 0.5, 'numbers are close');
+   *
+   * @name closeTo
+   * @param {Number} actual
+   * @param {Number} expected
+   * @param {Number} delta
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.closeTo = function (act, exp, delta, msg) {
+    new Assertion(act, msg).to.be.closeTo(exp, delta);
+  };
+
+  /**
+   * ### .approximately(actual, expected, delta, [message])
+   *
+   * Asserts that the target is equal `expected`, to within a +/- `delta` range.
+   *
+   *     assert.approximately(1.5, 1, 0.5, 'numbers are close');
+   *
+   * @name approximately
+   * @param {Number} actual
+   * @param {Number} expected
+   * @param {Number} delta
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.approximately = function (act, exp, delta, msg) {
+    new Assertion(act, msg).to.be.approximately(exp, delta);
+  };
+
+  /**
+   * ### .sameMembers(set1, set2, [message])
+   *
+   * Asserts that `set1` and `set2` have the same members.
+   * Order is not taken into account.
+   *
+   *     assert.sameMembers([ 1, 2, 3 ], [ 2, 1, 3 ], 'same members');
+   *
+   * @name sameMembers
+   * @param {Array} set1
+   * @param {Array} set2
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.sameMembers = function (set1, set2, msg) {
+    new Assertion(set1, msg).to.have.same.members(set2);
+  }
+
+  /**
+   * ### .sameDeepMembers(set1, set2, [message])
+   *
+   * Asserts that `set1` and `set2` have the same members - using a deep equality checking.
+   * Order is not taken into account.
+   *
+   *     assert.sameDeepMembers([ {b: 3}, {a: 2}, {c: 5} ], [ {c: 5}, {b: 3}, {a: 2} ], 'same deep members');
+   *
+   * @name sameDeepMembers
+   * @param {Array} set1
+   * @param {Array} set2
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.sameDeepMembers = function (set1, set2, msg) {
+    new Assertion(set1, msg).to.have.same.deep.members(set2);
+  }
+
+  /**
+   * ### .includeMembers(superset, subset, [message])
+   *
+   * Asserts that `subset` is included in `superset`.
+   * Order is not taken into account.
+   *
+   *     assert.includeMembers([ 1, 2, 3 ], [ 2, 1 ], 'include members');
+   *
+   * @name includeMembers
+   * @param {Array} superset
+   * @param {Array} subset
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.includeMembers = function (superset, subset, msg) {
+    new Assertion(superset, msg).to.include.members(subset);
+  }
+
+  /**
+   * ### .includeDeepMembers(superset, subset, [message])
+   *
+   * Asserts that `subset` is included in `superset` - using deep equality checking.
+   * Order is not taken into account.
+   * Duplicates are ignored.
+   *
+   *     assert.includeDeepMembers([ {a: 1}, {b: 2}, {c: 3} ], [ {b: 2}, {a: 1}, {b: 2} ], 'include deep members');
+   *
+   * @name includeDeepMembers
+   * @param {Array} superset
+   * @param {Array} subset
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.includeDeepMembers = function (superset, subset, msg) {
+    new Assertion(superset, msg).to.include.deep.members(subset);
+  }
+
+  /**
+   * ### .oneOf(inList, list, [message])
+   *
+   * Asserts that non-object, non-array value `inList` appears in the flat array `list`.
+   *
+   *     assert.oneOf(1, [ 2, 1 ], 'Not found in list');
+   *
+   * @name oneOf
+   * @param {*} inList
+   * @param {Array<*>} list
+   * @param {String} message
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.oneOf = function (inList, list, msg) {
+    new Assertion(inList, msg).to.be.oneOf(list);
+  }
+
+   /**
+   * ### .changes(function, object, property)
+   *
+   * Asserts that a function changes the value of a property
+   *
+   *     var obj = { val: 10 };
+   *     var fn = function() { obj.val = 22 };
+   *     assert.changes(fn, obj, 'val');
+   *
+   * @name changes
+   * @param {Function} modifier function
+   * @param {Object} object
+   * @param {String} property name
+   * @param {String} message _optional_
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.changes = function (fn, obj, prop) {
+    new Assertion(fn).to.change(obj, prop);
+  }
+
+   /**
+   * ### .doesNotChange(function, object, property)
+   *
+   * Asserts that a function does not changes the value of a property
+   *
+   *     var obj = { val: 10 };
+   *     var fn = function() { console.log('foo'); };
+   *     assert.doesNotChange(fn, obj, 'val');
+   *
+   * @name doesNotChange
+   * @param {Function} modifier function
+   * @param {Object} object
+   * @param {String} property name
+   * @param {String} message _optional_
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.doesNotChange = function (fn, obj, prop) {
+    new Assertion(fn).to.not.change(obj, prop);
+  }
+
+   /**
+   * ### .increases(function, object, property)
+   *
+   * Asserts that a function increases an object property
+   *
+   *     var obj = { val: 10 };
+   *     var fn = function() { obj.val = 13 };
+   *     assert.increases(fn, obj, 'val');
+   *
+   * @name increases
+   * @param {Function} modifier function
+   * @param {Object} object
+   * @param {String} property name
+   * @param {String} message _optional_
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.increases = function (fn, obj, prop) {
+    new Assertion(fn).to.increase(obj, prop);
+  }
+
+   /**
+   * ### .doesNotIncrease(function, object, property)
+   *
+   * Asserts that a function does not increase object property
+   *
+   *     var obj = { val: 10 };
+   *     var fn = function() { obj.val = 8 };
+   *     assert.doesNotIncrease(fn, obj, 'val');
+   *
+   * @name doesNotIncrease
+   * @param {Function} modifier function
+   * @param {Object} object
+   * @param {String} property name
+   * @param {String} message _optional_
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.doesNotIncrease = function (fn, obj, prop) {
+    new Assertion(fn).to.not.increase(obj, prop);
+  }
+
+   /**
+   * ### .decreases(function, object, property)
+   *
+   * Asserts that a function decreases an object property
+   *
+   *     var obj = { val: 10 };
+   *     var fn = function() { obj.val = 5 };
+   *     assert.decreases(fn, obj, 'val');
+   *
+   * @name decreases
+   * @param {Function} modifier function
+   * @param {Object} object
+   * @param {String} property name
+   * @param {String} message _optional_
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.decreases = function (fn, obj, prop) {
+    new Assertion(fn).to.decrease(obj, prop);
+  }
+
+   /**
+   * ### .doesNotDecrease(function, object, property)
+   *
+   * Asserts that a function does not decreases an object property
+   *
+   *     var obj = { val: 10 };
+   *     var fn = function() { obj.val = 15 };
+   *     assert.doesNotDecrease(fn, obj, 'val');
+   *
+   * @name doesNotDecrease
+   * @param {Function} modifier function
+   * @param {Object} object
+   * @param {String} property name
+   * @param {String} message _optional_
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.doesNotDecrease = function (fn, obj, prop) {
+    new Assertion(fn).to.not.decrease(obj, prop);
+  }
+
+  /*!
+   * ### .ifError(object)
+   *
+   * Asserts if value is not a false value, and throws if it is a true value.
+   * This is added to allow for chai to be a drop-in replacement for Node's
+   * assert class.
+   *
+   *     var err = new Error('I am a custom error');
+   *     assert.ifError(err); // Rethrows err!
+   *
+   * @name ifError
+   * @param {Object} object
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.ifError = function (val) {
+    if (val) {
+      throw(val);
+    }
+  };
+
+  /**
+   * ### .isExtensible(object)
+   *
+   * Asserts that `object` is extensible (can have new properties added to it).
+   *
+   *     assert.isExtensible({});
+   *
+   * @name isExtensible
+   * @alias extensible
+   * @param {Object} object
+   * @param {String} message _optional_
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isExtensible = function (obj, msg) {
+    new Assertion(obj, msg).to.be.extensible;
+  };
+
+  /**
+   * ### .isNotExtensible(object)
+   *
+   * Asserts that `object` is _not_ extensible.
+   *
+   *     var nonExtensibleObject = Object.preventExtensions({});
+   *     var sealedObject = Object.seal({});
+   *     var frozenObject = Object.freese({});
+   *
+   *     assert.isNotExtensible(nonExtensibleObject);
+   *     assert.isNotExtensible(sealedObject);
+   *     assert.isNotExtensible(frozenObject);
+   *
+   * @name isNotExtensible
+   * @alias notExtensible
+   * @param {Object} object
+   * @param {String} message _optional_
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isNotExtensible = function (obj, msg) {
+    new Assertion(obj, msg).to.not.be.extensible;
+  };
+
+  /**
+   * ### .isSealed(object)
+   *
+   * Asserts that `object` is sealed (cannot have new properties added to it
+   * and its existing properties cannot be removed).
+   *
+   *     var sealedObject = Object.seal({});
+   *     var frozenObject = Object.seal({});
+   *
+   *     assert.isSealed(sealedObject);
+   *     assert.isSealed(frozenObject);
+   *
+   * @name isSealed
+   * @alias sealed
+   * @param {Object} object
+   * @param {String} message _optional_
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isSealed = function (obj, msg) {
+    new Assertion(obj, msg).to.be.sealed;
+  };
+
+  /**
+   * ### .isNotSealed(object)
+   *
+   * Asserts that `object` is _not_ sealed.
+   *
+   *     assert.isNotSealed({});
+   *
+   * @name isNotSealed
+   * @alias notSealed
+   * @param {Object} object
+   * @param {String} message _optional_
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isNotSealed = function (obj, msg) {
+    new Assertion(obj, msg).to.not.be.sealed;
+  };
+
+  /**
+   * ### .isFrozen(object)
+   *
+   * Asserts that `object` is frozen (cannot have new properties added to it
+   * and its existing properties cannot be modified).
+   *
+   *     var frozenObject = Object.freeze({});
+   *     assert.frozen(frozenObject);
+   *
+   * @name isFrozen
+   * @alias frozen
+   * @param {Object} object
+   * @param {String} message _optional_
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isFrozen = function (obj, msg) {
+    new Assertion(obj, msg).to.be.frozen;
+  };
+
+  /**
+   * ### .isNotFrozen(object)
+   *
+   * Asserts that `object` is _not_ frozen.
+   *
+   *     assert.isNotFrozen({});
+   *
+   * @name isNotFrozen
+   * @alias notFrozen
+   * @param {Object} object
+   * @param {String} message _optional_
+   * @namespace Assert
+   * @api public
+   */
+
+  assert.isNotFrozen = function (obj, msg) {
+    new Assertion(obj, msg).to.not.be.frozen;
+  };
+
+  /*!
+   * Aliases.
+   */
+
+  (function alias(name, as){
+    assert[as] = assert[name];
+    return alias;
+  })
+  ('isOk', 'ok')
+  ('isNotOk', 'notOk')
+  ('throws', 'throw')
+  ('throws', 'Throw')
+  ('isExtensible', 'extensible')
+  ('isNotExtensible', 'notExtensible')
+  ('isSealed', 'sealed')
+  ('isNotSealed', 'notSealed')
+  ('isFrozen', 'frozen')
+  ('isNotFrozen', 'notFrozen');
+};
+
+},{}],7:[function(require,module,exports){
+/*!
+ * chai
+ * Copyright(c) 2011-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+module.exports = function (chai, util) {
+  chai.expect = function (val, message) {
+    return new chai.Assertion(val, message);
+  };
+
+  /**
+   * ### .fail(actual, expected, [message], [operator])
+   *
+   * Throw a failure.
+   *
+   * @name fail
+   * @param {Mixed} actual
+   * @param {Mixed} expected
+   * @param {String} message
+   * @param {String} operator
+   * @namespace Expect
+   * @api public
+   */
+
+  chai.expect.fail = function (actual, expected, message, operator) {
+    message = message || 'expect.fail()';
+    throw new chai.AssertionError(message, {
+        actual: actual
+      , expected: expected
+      , operator: operator
+    }, chai.expect.fail);
+  };
+};
+
+},{}],8:[function(require,module,exports){
+/*!
+ * chai
+ * Copyright(c) 2011-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+module.exports = function (chai, util) {
+  var Assertion = chai.Assertion;
+
+  function loadShould () {
+    // explicitly define this method as function as to have it's name to include as `ssfi`
+    function shouldGetter() {
+      if (this instanceof String || this instanceof Number || this instanceof Boolean ) {
+        return new Assertion(this.valueOf(), null, shouldGetter);
+      }
+      return new Assertion(this, null, shouldGetter);
+    }
+    function shouldSetter(value) {
+      // See https://github.com/chaijs/chai/issues/86: this makes
+      // `whatever.should = someValue` actually set `someValue`, which is
+      // especially useful for `global.should = require('chai').should()`.
+      //
+      // Note that we have to use [[DefineProperty]] instead of [[Put]]
+      // since otherwise we would trigger this very setter!
+      Object.defineProperty(this, 'should', {
+        value: value,
+        enumerable: true,
+        configurable: true,
+        writable: true
+      });
+    }
+    // modify Object.prototype to have `should`
+    Object.defineProperty(Object.prototype, 'should', {
+      set: shouldSetter
+      , get: shouldGetter
+      , configurable: true
+    });
+
+    var should = {};
+
+    /**
+     * ### .fail(actual, expected, [message], [operator])
+     *
+     * Throw a failure.
+     *
+     * @name fail
+     * @param {Mixed} actual
+     * @param {Mixed} expected
+     * @param {String} message
+     * @param {String} operator
+     * @namespace Should
+     * @api public
+     */
+
+    should.fail = function (actual, expected, message, operator) {
+      message = message || 'should.fail()';
+      throw new chai.AssertionError(message, {
+          actual: actual
+        , expected: expected
+        , operator: operator
+      }, should.fail);
+    };
+
+    /**
+     * ### .equal(actual, expected, [message])
+     *
+     * Asserts non-strict equality (`==`) of `actual` and `expected`.
+     *
+     *     should.equal(3, '3', '== coerces values to strings');
+     *
+     * @name equal
+     * @param {Mixed} actual
+     * @param {Mixed} expected
+     * @param {String} message
+     * @namespace Should
+     * @api public
+     */
+
+    should.equal = function (val1, val2, msg) {
+      new Assertion(val1, msg).to.equal(val2);
+    };
+
+    /**
+     * ### .throw(function, [constructor/string/regexp], [string/regexp], [message])
+     *
+     * Asserts that `function` will throw an error that is an instance of
+     * `constructor`, or alternately that it will throw an error with message
+     * matching `regexp`.
+     *
+     *     should.throw(fn, 'function throws a reference error');
+     *     should.throw(fn, /function throws a reference error/);
+     *     should.throw(fn, ReferenceError);
+     *     should.throw(fn, ReferenceError, 'function throws a reference error');
+     *     should.throw(fn, ReferenceError, /function throws a reference error/);
+     *
+     * @name throw
+     * @alias Throw
+     * @param {Function} function
+     * @param {ErrorConstructor} constructor
+     * @param {RegExp} regexp
+     * @param {String} message
+     * @see https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error#Error_types
+     * @namespace Should
+     * @api public
+     */
+
+    should.Throw = function (fn, errt, errs, msg) {
+      new Assertion(fn, msg).to.Throw(errt, errs);
+    };
+
+    /**
+     * ### .exist
+     *
+     * Asserts that the target is neither `null` nor `undefined`.
+     *
+     *     var foo = 'hi';
+     *
+     *     should.exist(foo, 'foo exists');
+     *
+     * @name exist
+     * @namespace Should
+     * @api public
+     */
+
+    should.exist = function (val, msg) {
+      new Assertion(val, msg).to.exist;
+    }
+
+    // negation
+    should.not = {}
+
+    /**
+     * ### .not.equal(actual, expected, [message])
+     *
+     * Asserts non-strict inequality (`!=`) of `actual` and `expected`.
+     *
+     *     should.not.equal(3, 4, 'these numbers are not equal');
+     *
+     * @name not.equal
+     * @param {Mixed} actual
+     * @param {Mixed} expected
+     * @param {String} message
+     * @namespace Should
+     * @api public
+     */
+
+    should.not.equal = function (val1, val2, msg) {
+      new Assertion(val1, msg).to.not.equal(val2);
+    };
+
+    /**
+     * ### .throw(function, [constructor/regexp], [message])
+     *
+     * Asserts that `function` will _not_ throw an error that is an instance of
+     * `constructor`, or alternately that it will not throw an error with message
+     * matching `regexp`.
+     *
+     *     should.not.throw(fn, Error, 'function does not throw');
+     *
+     * @name not.throw
+     * @alias not.Throw
+     * @param {Function} function
+     * @param {ErrorConstructor} constructor
+     * @param {RegExp} regexp
+     * @param {String} message
+     * @see https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error#Error_types
+     * @namespace Should
+     * @api public
+     */
+
+    should.not.Throw = function (fn, errt, errs, msg) {
+      new Assertion(fn, msg).to.not.Throw(errt, errs);
+    };
+
+    /**
+     * ### .not.exist
+     *
+     * Asserts that the target is neither `null` nor `undefined`.
+     *
+     *     var bar = null;
+     *
+     *     should.not.exist(bar, 'bar does not exist');
+     *
+     * @name not.exist
+     * @namespace Should
+     * @api public
+     */
+
+    should.not.exist = function (val, msg) {
+      new Assertion(val, msg).to.not.exist;
+    }
+
+    should['throw'] = should['Throw'];
+    should.not['throw'] = should.not['Throw'];
+
+    return should;
+  };
+
+  chai.should = loadShould;
+  chai.Should = loadShould;
+};
+
+},{}],9:[function(require,module,exports){
+/*!
+ * Chai - addChainingMethod utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+/*!
+ * Module dependencies
+ */
+
+var transferFlags = require('./transferFlags');
+var flag = require('./flag');
+var config = require('../config');
+
+/*!
+ * Module variables
+ */
+
+// Check whether `__proto__` is supported
+var hasProtoSupport = '__proto__' in Object;
+
+// Without `__proto__` support, this module will need to add properties to a function.
+// However, some Function.prototype methods cannot be overwritten,
+// and there seems no easy cross-platform way to detect them (@see chaijs/chai/issues/69).
+var excludeNames = /^(?:length|name|arguments|caller)$/;
+
+// Cache `Function` properties
+var call  = Function.prototype.call,
+    apply = Function.prototype.apply;
+
+/**
+ * ### addChainableMethod (ctx, name, method, chainingBehavior)
+ *
+ * Adds a method to an object, such that the method can also be chained.
+ *
+ *     utils.addChainableMethod(chai.Assertion.prototype, 'foo', function (str) {
+ *       var obj = utils.flag(this, 'object');
+ *       new chai.Assertion(obj).to.be.equal(str);
+ *     });
+ *
+ * Can also be accessed directly from `chai.Assertion`.
+ *
+ *     chai.Assertion.addChainableMethod('foo', fn, chainingBehavior);
+ *
+ * The result can then be used as both a method assertion, executing both `method` and
+ * `chainingBehavior`, or as a language chain, which only executes `chainingBehavior`.
+ *
+ *     expect(fooStr).to.be.foo('bar');
+ *     expect(fooStr).to.be.foo.equal('foo');
+ *
+ * @param {Object} ctx object to which the method is added
+ * @param {String} name of method to add
+ * @param {Function} method function to be used for `name`, when called
+ * @param {Function} chainingBehavior function to be called every time the property is accessed
+ * @namespace Utils
+ * @name addChainableMethod
+ * @api public
+ */
+
+module.exports = function (ctx, name, method, chainingBehavior) {
+  if (typeof chainingBehavior !== 'function') {
+    chainingBehavior = function () { };
+  }
+
+  var chainableBehavior = {
+      method: method
+    , chainingBehavior: chainingBehavior
+  };
+
+  // save the methods so we can overwrite them later, if we need to.
+  if (!ctx.__methods) {
+    ctx.__methods = {};
+  }
+  ctx.__methods[name] = chainableBehavior;
+
+  Object.defineProperty(ctx, name,
+    { get: function () {
+        chainableBehavior.chainingBehavior.call(this);
+
+        var assert = function assert() {
+          var old_ssfi = flag(this, 'ssfi');
+          if (old_ssfi && config.includeStack === false)
+            flag(this, 'ssfi', assert);
+          var result = chainableBehavior.method.apply(this, arguments);
+          return result === undefined ? this : result;
+        };
+
+        // Use `__proto__` if available
+        if (hasProtoSupport) {
+          // Inherit all properties from the object by replacing the `Function` prototype
+          var prototype = assert.__proto__ = Object.create(this);
+          // Restore the `call` and `apply` methods from `Function`
+          prototype.call = call;
+          prototype.apply = apply;
+        }
+        // Otherwise, redefine all properties (slow!)
+        else {
+          var asserterNames = Object.getOwnPropertyNames(ctx);
+          asserterNames.forEach(function (asserterName) {
+            if (!excludeNames.test(asserterName)) {
+              var pd = Object.getOwnPropertyDescriptor(ctx, asserterName);
+              Object.defineProperty(assert, asserterName, pd);
+            }
+          });
+        }
+
+        transferFlags(this, assert);
+        return assert;
+      }
+    , configurable: true
+  });
+};
+
+},{"../config":4,"./flag":13,"./transferFlags":29}],10:[function(require,module,exports){
+/*!
+ * Chai - addMethod utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+var config = require('../config');
+
+/**
+ * ### .addMethod (ctx, name, method)
+ *
+ * Adds a method to the prototype of an object.
+ *
+ *     utils.addMethod(chai.Assertion.prototype, 'foo', function (str) {
+ *       var obj = utils.flag(this, 'object');
+ *       new chai.Assertion(obj).to.be.equal(str);
+ *     });
+ *
+ * Can also be accessed directly from `chai.Assertion`.
+ *
+ *     chai.Assertion.addMethod('foo', fn);
+ *
+ * Then can be used as any other assertion.
+ *
+ *     expect(fooStr).to.be.foo('bar');
+ *
+ * @param {Object} ctx object to which the method is added
+ * @param {String} name of method to add
+ * @param {Function} method function to be used for name
+ * @namespace Utils
+ * @name addMethod
+ * @api public
+ */
+var flag = require('./flag');
+
+module.exports = function (ctx, name, method) {
+  ctx[name] = function () {
+    var old_ssfi = flag(this, 'ssfi');
+    if (old_ssfi && config.includeStack === false)
+      flag(this, 'ssfi', ctx[name]);
+    var result = method.apply(this, arguments);
+    return result === undefined ? this : result;
+  };
+};
+
+},{"../config":4,"./flag":13}],11:[function(require,module,exports){
+/*!
+ * Chai - addProperty utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+var config = require('../config');
+var flag = require('./flag');
+
+/**
+ * ### addProperty (ctx, name, getter)
+ *
+ * Adds a property to the prototype of an object.
+ *
+ *     utils.addProperty(chai.Assertion.prototype, 'foo', function () {
+ *       var obj = utils.flag(this, 'object');
+ *       new chai.Assertion(obj).to.be.instanceof(Foo);
+ *     });
+ *
+ * Can also be accessed directly from `chai.Assertion`.
+ *
+ *     chai.Assertion.addProperty('foo', fn);
+ *
+ * Then can be used as any other assertion.
+ *
+ *     expect(myFoo).to.be.foo;
+ *
+ * @param {Object} ctx object to which the property is added
+ * @param {String} name of property to add
+ * @param {Function} getter function to be used for name
+ * @namespace Utils
+ * @name addProperty
+ * @api public
+ */
+
+module.exports = function (ctx, name, getter) {
+  Object.defineProperty(ctx, name,
+    { get: function addProperty() {
+        var old_ssfi = flag(this, 'ssfi');
+        if (old_ssfi && config.includeStack === false)
+          flag(this, 'ssfi', addProperty);
+
+        var result = getter.call(this);
+        return result === undefined ? this : result;
+      }
+    , configurable: true
+  });
+};
+
+},{"../config":4,"./flag":13}],12:[function(require,module,exports){
+/*!
+ * Chai - expectTypes utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+/**
+ * ### expectTypes(obj, types)
+ *
+ * Ensures that the object being tested against is of a valid type.
+ *
+ *     utils.expectTypes(this, ['array', 'object', 'string']);
+ *
+ * @param {Mixed} obj constructed Assertion
+ * @param {Array} type A list of allowed types for this assertion
+ * @namespace Utils
+ * @name expectTypes
+ * @api public
+ */
+
+var AssertionError = require('assertion-error');
+var flag = require('./flag');
+var type = require('type-detect');
+
+module.exports = function (obj, types) {
+  var obj = flag(obj, 'object');
+  types = types.map(function (t) { return t.toLowerCase(); });
+  types.sort();
+
+  // Transforms ['lorem', 'ipsum'] into 'a lirum, or an ipsum'
+  var str = types.map(function (t, index) {
+    var art = ~[ 'a', 'e', 'i', 'o', 'u' ].indexOf(t.charAt(0)) ? 'an' : 'a';
+    var or = types.length > 1 && index === types.length - 1 ? 'or ' : '';
+    return or + art + ' ' + t;
+  }).join(', ');
+
+  if (!types.some(function (expected) { return type(obj) === expected; })) {
+    throw new AssertionError(
+      'object tested must be ' + str + ', but ' + type(obj) + ' given'
+    );
+  }
+};
+
+},{"./flag":13,"assertion-error":30,"type-detect":35}],13:[function(require,module,exports){
+/*!
+ * Chai - flag utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+/**
+ * ### flag(object, key, [value])
+ *
+ * Get or set a flag value on an object. If a
+ * value is provided it will be set, else it will
+ * return the currently set value or `undefined` if
+ * the value is not set.
+ *
+ *     utils.flag(this, 'foo', 'bar'); // setter
+ *     utils.flag(this, 'foo'); // getter, returns `bar`
+ *
+ * @param {Object} object constructed Assertion
+ * @param {String} key
+ * @param {Mixed} value (optional)
+ * @namespace Utils
+ * @name flag
+ * @api private
+ */
+
+module.exports = function (obj, key, value) {
+  var flags = obj.__flags || (obj.__flags = Object.create(null));
+  if (arguments.length === 3) {
+    flags[key] = value;
+  } else {
+    return flags[key];
+  }
+};
+
+},{}],14:[function(require,module,exports){
+/*!
+ * Chai - getActual utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+/**
+ * # getActual(object, [actual])
+ *
+ * Returns the `actual` value for an Assertion
+ *
+ * @param {Object} object (constructed Assertion)
+ * @param {Arguments} chai.Assertion.prototype.assert arguments
+ * @namespace Utils
+ * @name getActual
+ */
+
+module.exports = function (obj, args) {
+  return args.length > 4 ? args[4] : obj._obj;
+};
+
+},{}],15:[function(require,module,exports){
+/*!
+ * Chai - getEnumerableProperties utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+/**
+ * ### .getEnumerableProperties(object)
+ *
+ * This allows the retrieval of enumerable property names of an object,
+ * inherited or not.
+ *
+ * @param {Object} object
+ * @returns {Array}
+ * @namespace Utils
+ * @name getEnumerableProperties
+ * @api public
+ */
+
+module.exports = function getEnumerableProperties(object) {
+  var result = [];
+  for (var name in object) {
+    result.push(name);
+  }
+  return result;
+};
+
+},{}],16:[function(require,module,exports){
+/*!
+ * Chai - message composition utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+/*!
+ * Module dependancies
+ */
+
+var flag = require('./flag')
+  , getActual = require('./getActual')
+  , inspect = require('./inspect')
+  , objDisplay = require('./objDisplay');
+
+/**
+ * ### .getMessage(object, message, negateMessage)
+ *
+ * Construct the error message based on flags
+ * and template tags. Template tags will return
+ * a stringified inspection of the object referenced.
+ *
+ * Message template tags:
+ * - `#{this}` current asserted object
+ * - `#{act}` actual value
+ * - `#{exp}` expected value
+ *
+ * @param {Object} object (constructed Assertion)
+ * @param {Arguments} chai.Assertion.prototype.assert arguments
+ * @namespace Utils
+ * @name getMessage
+ * @api public
+ */
+
+module.exports = function (obj, args) {
+  var negate = flag(obj, 'negate')
+    , val = flag(obj, 'object')
+    , expected = args[3]
+    , actual = getActual(obj, args)
+    , msg = negate ? args[2] : args[1]
+    , flagMsg = flag(obj, 'message');
+
+  if(typeof msg === "function") msg = msg();
+  msg = msg || '';
+  msg = msg
+    .replace(/#\{this\}/g, function () { return objDisplay(val); })
+    .replace(/#\{act\}/g, function () { return objDisplay(actual); })
+    .replace(/#\{exp\}/g, function () { return objDisplay(expected); });
+
+  return flagMsg ? flagMsg + ': ' + msg : msg;
+};
+
+},{"./flag":13,"./getActual":14,"./inspect":23,"./objDisplay":24}],17:[function(require,module,exports){
+/*!
+ * Chai - getName utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+/**
+ * # getName(func)
+ *
+ * Gets the name of a function, in a cross-browser way.
+ *
+ * @param {Function} a function (usually a constructor)
+ * @namespace Utils
+ * @name getName
+ */
+
+module.exports = function (func) {
+  if (func.name) return func.name;
+
+  var match = /^\s?function ([^(]*)\(/.exec(func);
+  return match && match[1] ? match[1] : "";
+};
+
+},{}],18:[function(require,module,exports){
+/*!
+ * Chai - getPathInfo utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+var hasProperty = require('./hasProperty');
+
+/**
+ * ### .getPathInfo(path, object)
+ *
+ * This allows the retrieval of property info in an
+ * object given a string path.
+ *
+ * The path info consists of an object with the
+ * following properties:
+ *
+ * * parent - The parent object of the property referenced by `path`
+ * * name - The name of the final property, a number if it was an array indexer
+ * * value - The value of the property, if it exists, otherwise `undefined`
+ * * exists - Whether the property exists or not
+ *
+ * @param {String} path
+ * @param {Object} object
+ * @returns {Object} info
+ * @namespace Utils
+ * @name getPathInfo
+ * @api public
+ */
+
+module.exports = function getPathInfo(path, obj) {
+  var parsed = parsePath(path),
+      last = parsed[parsed.length - 1];
+
+  var info = {
+    parent: parsed.length > 1 ? _getPathValue(parsed, obj, parsed.length - 1) : obj,
+    name: last.p || last.i,
+    value: _getPathValue(parsed, obj)
+  };
+  info.exists = hasProperty(info.name, info.parent);
+
+  return info;
+};
+
+
+/*!
+ * ## parsePath(path)
+ *
+ * Helper function used to parse string object
+ * paths. Use in conjunction with `_getPathValue`.
+ *
+ *      var parsed = parsePath('myobject.property.subprop');
+ *
+ * ### Paths:
+ *
+ * * Can be as near infinitely deep and nested
+ * * Arrays are also valid using the formal `myobject.document[3].property`.
+ * * Literal dots and brackets (not delimiter) must be backslash-escaped.
+ *
+ * @param {String} path
+ * @returns {Object} parsed
+ * @api private
+ */
+
+function parsePath (path) {
+  var str = path.replace(/([^\\])\[/g, '$1.[')
+    , parts = str.match(/(\\\.|[^.]+?)+/g);
+  return parts.map(function (value) {
+    var re = /^\[(\d+)\]$/
+      , mArr = re.exec(value);
+    if (mArr) return { i: parseFloat(mArr[1]) };
+    else return { p: value.replace(/\\([.\[\]])/g, '$1') };
+  });
+}
+
+
+/*!
+ * ## _getPathValue(parsed, obj)
+ *
+ * Helper companion function for `.parsePath` that returns
+ * the value located at the parsed address.
+ *
+ *      var value = getPathValue(parsed, obj);
+ *
+ * @param {Object} parsed definition from `parsePath`.
+ * @param {Object} object to search against
+ * @param {Number} object to search against
+ * @returns {Object|Undefined} value
+ * @api private
+ */
+
+function _getPathValue (parsed, obj, index) {
+  var tmp = obj
+    , res;
+
+  index = (index === undefined ? parsed.length : index);
+
+  for (var i = 0, l = index; i < l; i++) {
+    var part = parsed[i];
+    if (tmp) {
+      if ('undefined' !== typeof part.p)
+        tmp = tmp[part.p];
+      else if ('undefined' !== typeof part.i)
+        tmp = tmp[part.i];
+      if (i == (l - 1)) res = tmp;
+    } else {
+      res = undefined;
+    }
+  }
+  return res;
+}
+
+},{"./hasProperty":21}],19:[function(require,module,exports){
+/*!
+ * Chai - getPathValue utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * @see https://github.com/logicalparadox/filtr
+ * MIT Licensed
+ */
+
+var getPathInfo = require('./getPathInfo');
+
+/**
+ * ### .getPathValue(path, object)
+ *
+ * This allows the retrieval of values in an
+ * object given a string path.
+ *
+ *     var obj = {
+ *         prop1: {
+ *             arr: ['a', 'b', 'c']
+ *           , str: 'Hello'
+ *         }
+ *       , prop2: {
+ *             arr: [ { nested: 'Universe' } ]
+ *           , str: 'Hello again!'
+ *         }
+ *     }
+ *
+ * The following would be the results.
+ *
+ *     getPathValue('prop1.str', obj); // Hello
+ *     getPathValue('prop1.att[2]', obj); // b
+ *     getPathValue('prop2.arr[0].nested', obj); // Universe
+ *
+ * @param {String} path
+ * @param {Object} object
+ * @returns {Object} value or `undefined`
+ * @namespace Utils
+ * @name getPathValue
+ * @api public
+ */
+module.exports = function(path, obj) {
+  var info = getPathInfo(path, obj);
+  return info.value;
+};
+
+},{"./getPathInfo":18}],20:[function(require,module,exports){
+/*!
+ * Chai - getProperties utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+/**
+ * ### .getProperties(object)
+ *
+ * This allows the retrieval of property names of an object, enumerable or not,
+ * inherited or not.
+ *
+ * @param {Object} object
+ * @returns {Array}
+ * @namespace Utils
+ * @name getProperties
+ * @api public
+ */
+
+module.exports = function getProperties(object) {
+  var result = Object.getOwnPropertyNames(object);
+
+  function addProperty(property) {
+    if (result.indexOf(property) === -1) {
+      result.push(property);
+    }
+  }
+
+  var proto = Object.getPrototypeOf(object);
+  while (proto !== null) {
+    Object.getOwnPropertyNames(proto).forEach(addProperty);
+    proto = Object.getPrototypeOf(proto);
+  }
+
+  return result;
+};
+
+},{}],21:[function(require,module,exports){
+/*!
+ * Chai - hasProperty utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+var type = require('type-detect');
+
+/**
+ * ### .hasProperty(object, name)
+ *
+ * This allows checking whether an object has
+ * named property or numeric array index.
+ *
+ * Basically does the same thing as the `in`
+ * operator but works properly with natives
+ * and null/undefined values.
+ *
+ *     var obj = {
+ *         arr: ['a', 'b', 'c']
+ *       , str: 'Hello'
+ *     }
+ *
+ * The following would be the results.
+ *
+ *     hasProperty('str', obj);  // true
+ *     hasProperty('constructor', obj);  // true
+ *     hasProperty('bar', obj);  // false
+ *
+ *     hasProperty('length', obj.str); // true
+ *     hasProperty(1, obj.str);  // true
+ *     hasProperty(5, obj.str);  // false
+ *
+ *     hasProperty('length', obj.arr);  // true
+ *     hasProperty(2, obj.arr);  // true
+ *     hasProperty(3, obj.arr);  // false
+ *
+ * @param {Objuect} object
+ * @param {String|Number} name
+ * @returns {Boolean} whether it exists
+ * @namespace Utils
+ * @name getPathInfo
+ * @api public
+ */
+
+var literals = {
+    'number': Number
+  , 'string': String
+};
+
+module.exports = function hasProperty(name, obj) {
+  var ot = type(obj);
+
+  // Bad Object, obviously no props at all
+  if(ot === 'null' || ot === 'undefined')
+    return false;
+
+  // The `in` operator does not work with certain literals
+  // box these before the check
+  if(literals[ot] && typeof obj !== 'object')
+    obj = new literals[ot](obj);
+
+  return name in obj;
+};
+
+},{"type-detect":35}],22:[function(require,module,exports){
+/*!
+ * chai
+ * Copyright(c) 2011 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+/*!
+ * Main exports
+ */
+
+var exports = module.exports = {};
+
+/*!
+ * test utility
+ */
+
+exports.test = require('./test');
+
+/*!
+ * type utility
+ */
+
+exports.type = require('type-detect');
+
+/*!
+ * expectTypes utility
+ */
+exports.expectTypes = require('./expectTypes');
+
+/*!
+ * message utility
+ */
+
+exports.getMessage = require('./getMessage');
+
+/*!
+ * actual utility
+ */
+
+exports.getActual = require('./getActual');
+
+/*!
+ * Inspect util
+ */
+
+exports.inspect = require('./inspect');
+
+/*!
+ * Object Display util
+ */
+
+exports.objDisplay = require('./objDisplay');
+
+/*!
+ * Flag utility
+ */
+
+exports.flag = require('./flag');
+
+/*!
+ * Flag transferring utility
+ */
+
+exports.transferFlags = require('./transferFlags');
+
+/*!
+ * Deep equal utility
+ */
+
+exports.eql = require('deep-eql');
+
+/*!
+ * Deep path value
+ */
+
+exports.getPathValue = require('./getPathValue');
+
+/*!
+ * Deep path info
+ */
+
+exports.getPathInfo = require('./getPathInfo');
+
+/*!
+ * Check if a property exists
+ */
+
+exports.hasProperty = require('./hasProperty');
+
+/*!
+ * Function name
+ */
+
+exports.getName = require('./getName');
+
+/*!
+ * add Property
+ */
+
+exports.addProperty = require('./addProperty');
+
+/*!
+ * add Method
+ */
+
+exports.addMethod = require('./addMethod');
+
+/*!
+ * overwrite Property
+ */
+
+exports.overwriteProperty = require('./overwriteProperty');
+
+/*!
+ * overwrite Method
+ */
+
+exports.overwriteMethod = require('./overwriteMethod');
+
+/*!
+ * Add a chainable method
+ */
+
+exports.addChainableMethod = require('./addChainableMethod');
+
+/*!
+ * Overwrite chainable method
+ */
+
+exports.overwriteChainableMethod = require('./overwriteChainableMethod');
+
+},{"./addChainableMethod":9,"./addMethod":10,"./addProperty":11,"./expectTypes":12,"./flag":13,"./getActual":14,"./getMessage":16,"./getName":17,"./getPathInfo":18,"./getPathValue":19,"./hasProperty":21,"./inspect":23,"./objDisplay":24,"./overwriteChainableMethod":25,"./overwriteMethod":26,"./overwriteProperty":27,"./test":28,"./transferFlags":29,"deep-eql":31,"type-detect":35}],23:[function(require,module,exports){
+// This is (almost) directly from Node.js utils
+// https://github.com/joyent/node/blob/f8c335d0caf47f16d31413f89aa28eda3878e3aa/lib/util.js
+
+var getName = require('./getName');
+var getProperties = require('./getProperties');
+var getEnumerableProperties = require('./getEnumerableProperties');
+
+module.exports = inspect;
+
+/**
+ * Echos the value of a value. Trys to print the value out
+ * in the best way possible given the different types.
+ *
+ * @param {Object} obj The object to print out.
+ * @param {Boolean} showHidden Flag that shows hidden (not enumerable)
+ *    properties of objects.
+ * @param {Number} depth Depth in which to descend in object. Default is 2.
+ * @param {Boolean} colors Flag to turn on ANSI escape codes to color the
+ *    output. Default is false (no coloring).
+ * @namespace Utils
+ * @name inspect
+ */
+function inspect(obj, showHidden, depth, colors) {
+  var ctx = {
+    showHidden: showHidden,
+    seen: [],
+    stylize: function (str) { return str; }
+  };
+  return formatValue(ctx, obj, (typeof depth === 'undefined' ? 2 : depth));
+}
+
+// Returns true if object is a DOM element.
+var isDOMElement = function (object) {
+  if (typeof HTMLElement === 'object') {
+    return object instanceof HTMLElement;
+  } else {
+    return object &&
+      typeof object === 'object' &&
+      object.nodeType === 1 &&
+      typeof object.nodeName === 'string';
+  }
+};
+
+function formatValue(ctx, value, recurseTimes) {
+  // Provide a hook for user-specified inspect functions.
+  // Check that value is an object with an inspect function on it
+  if (value && typeof value.inspect === 'function' &&
+      // Filter out the util module, it's inspect function is special
+      value.inspect !== exports.inspect &&
+      // Also filter out any prototype objects using the circular check.
+      !(value.constructor && value.constructor.prototype === value)) {
+    var ret = value.inspect(recurseTimes);
+    if (typeof ret !== 'string') {
+      ret = formatValue(ctx, ret, recurseTimes);
+    }
+    return ret;
+  }
+
+  // Primitive types cannot have properties
+  var primitive = formatPrimitive(ctx, value);
+  if (primitive) {
+    return primitive;
+  }
+
+  // If this is a DOM element, try to get the outer HTML.
+  if (isDOMElement(value)) {
+    if ('outerHTML' in value) {
+      return value.outerHTML;
+      // This value does not have an outerHTML attribute,
+      //   it could still be an XML element
+    } else {
+      // Attempt to serialize it
+      try {
+        if (document.xmlVersion) {
+          var xmlSerializer = new XMLSerializer();
+          return xmlSerializer.serializeToString(value);
+        } else {
+          // Firefox 11- do not support outerHTML
+          //   It does, however, support innerHTML
+          //   Use the following to render the element
+          var ns = "http://www.w3.org/1999/xhtml";
+          var container = document.createElementNS(ns, '_');
+
+          container.appendChild(value.cloneNode(false));
+          html = container.innerHTML
+            .replace('><', '>' + value.innerHTML + '<');
+          container.innerHTML = '';
+          return html;
+        }
+      } catch (err) {
+        // This could be a non-native DOM implementation,
+        //   continue with the normal flow:
+        //   printing the element as if it is an object.
+      }
+    }
+  }
+
+  // Look up the keys of the object.
+  var visibleKeys = getEnumerableProperties(value);
+  var keys = ctx.showHidden ? getProperties(value) : visibleKeys;
+
+  // Some type of object without properties can be shortcutted.
+  // In IE, errors have a single `stack` property, or if they are vanilla `Error`,
+  // a `stack` plus `description` property; ignore those for consistency.
+  if (keys.length === 0 || (isError(value) && (
+      (keys.length === 1 && keys[0] === 'stack') ||
+      (keys.length === 2 && keys[0] === 'description' && keys[1] === 'stack')
+     ))) {
+    if (typeof value === 'function') {
+      var name = getName(value);
+      var nameSuffix = name ? ': ' + name : '';
+      return ctx.stylize('[Function' + nameSuffix + ']', 'special');
+    }
+    if (isRegExp(value)) {
+      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
+    }
+    if (isDate(value)) {
+      return ctx.stylize(Date.prototype.toUTCString.call(value), 'date');
+    }
+    if (isError(value)) {
+      return formatError(value);
+    }
+  }
+
+  var base = '', array = false, braces = ['{', '}'];
+
+  // Make Array say that they are Array
+  if (isArray(value)) {
+    array = true;
+    braces = ['[', ']'];
+  }
+
+  // Make functions say that they are functions
+  if (typeof value === 'function') {
+    var name = getName(value);
+    var nameSuffix = name ? ': ' + name : '';
+    base = ' [Function' + nameSuffix + ']';
+  }
+
+  // Make RegExps say that they are RegExps
+  if (isRegExp(value)) {
+    base = ' ' + RegExp.prototype.toString.call(value);
+  }
+
+  // Make dates with properties first say the date
+  if (isDate(value)) {
+    base = ' ' + Date.prototype.toUTCString.call(value);
+  }
+
+  // Make error with message first say the error
+  if (isError(value)) {
+    return formatError(value);
+  }
+
+  if (keys.length === 0 && (!array || value.length == 0)) {
+    return braces[0] + base + braces[1];
+  }
+
+  if (recurseTimes < 0) {
+    if (isRegExp(value)) {
+      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
+    } else {
+      return ctx.stylize('[Object]', 'special');
+    }
+  }
+
+  ctx.seen.push(value);
+
+  var output;
+  if (array) {
+    output = formatArray(ctx, value, recurseTimes, visibleKeys, keys);
+  } else {
+    output = keys.map(function(key) {
+      return formatProperty(ctx, value, recurseTimes, visibleKeys, key, array);
+    });
+  }
+
+  ctx.seen.pop();
+
+  return reduceToSingleString(output, base, braces);
+}
+
+
+function formatPrimitive(ctx, value) {
+  switch (typeof value) {
+    case 'undefined':
+      return ctx.stylize('undefined', 'undefined');
+
+    case 'string':
+      var simple = '\'' + JSON.stringify(value).replace(/^"|"$/g, '')
+                                               .replace(/'/g, "\\'")
+                                               .replace(/\\"/g, '"') + '\'';
+      return ctx.stylize(simple, 'string');
+
+    case 'number':
+      if (value === 0 && (1/value) === -Infinity) {
+        return ctx.stylize('-0', 'number');
+      }
+      return ctx.stylize('' + value, 'number');
+
+    case 'boolean':
+      return ctx.stylize('' + value, 'boolean');
+  }
+  // For some reason typeof null is "object", so special case here.
+  if (value === null) {
+    return ctx.stylize('null', 'null');
+  }
+}
+
+
+function formatError(value) {
+  return '[' + Error.prototype.toString.call(value) + ']';
+}
+
+
+function formatArray(ctx, value, recurseTimes, visibleKeys, keys) {
+  var output = [];
+  for (var i = 0, l = value.length; i < l; ++i) {
+    if (Object.prototype.hasOwnProperty.call(value, String(i))) {
+      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
+          String(i), true));
+    } else {
+      output.push('');
+    }
+  }
+  keys.forEach(function(key) {
+    if (!key.match(/^\d+$/)) {
+      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
+          key, true));
+    }
+  });
+  return output;
+}
+
+
+function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
+  var name, str;
+  if (value.__lookupGetter__) {
+    if (value.__lookupGetter__(key)) {
+      if (value.__lookupSetter__(key)) {
+        str = ctx.stylize('[Getter/Setter]', 'special');
+      } else {
+        str = ctx.stylize('[Getter]', 'special');
+      }
+    } else {
+      if (value.__lookupSetter__(key)) {
+        str = ctx.stylize('[Setter]', 'special');
+      }
+    }
+  }
+  if (visibleKeys.indexOf(key) < 0) {
+    name = '[' + key + ']';
+  }
+  if (!str) {
+    if (ctx.seen.indexOf(value[key]) < 0) {
+      if (recurseTimes === null) {
+        str = formatValue(ctx, value[key], null);
+      } else {
+        str = formatValue(ctx, value[key], recurseTimes - 1);
+      }
+      if (str.indexOf('\n') > -1) {
+        if (array) {
+          str = str.split('\n').map(function(line) {
+            return '  ' + line;
+          }).join('\n').substr(2);
+        } else {
+          str = '\n' + str.split('\n').map(function(line) {
+            return '   ' + line;
+          }).join('\n');
+        }
+      }
+    } else {
+      str = ctx.stylize('[Circular]', 'special');
+    }
+  }
+  if (typeof name === 'undefined') {
+    if (array && key.match(/^\d+$/)) {
+      return str;
+    }
+    name = JSON.stringify('' + key);
+    if (name.match(/^"([a-zA-Z_][a-zA-Z_0-9]*)"$/)) {
+      name = name.substr(1, name.length - 2);
+      name = ctx.stylize(name, 'name');
+    } else {
+      name = name.replace(/'/g, "\\'")
+                 .replace(/\\"/g, '"')
+                 .replace(/(^"|"$)/g, "'");
+      name = ctx.stylize(name, 'string');
+    }
+  }
+
+  return name + ': ' + str;
+}
+
+
+function reduceToSingleString(output, base, braces) {
+  var numLinesEst = 0;
+  var length = output.reduce(function(prev, cur) {
+    numLinesEst++;
+    if (cur.indexOf('\n') >= 0) numLinesEst++;
+    return prev + cur.length + 1;
+  }, 0);
+
+  if (length > 60) {
+    return braces[0] +
+           (base === '' ? '' : base + '\n ') +
+           ' ' +
+           output.join(',\n  ') +
+           ' ' +
+           braces[1];
+  }
+
+  return braces[0] + base + ' ' + output.join(', ') + ' ' + braces[1];
+}
+
+function isArray(ar) {
+  return Array.isArray(ar) ||
+         (typeof ar === 'object' && objectToString(ar) === '[object Array]');
+}
+
+function isRegExp(re) {
+  return typeof re === 'object' && objectToString(re) === '[object RegExp]';
+}
+
+function isDate(d) {
+  return typeof d === 'object' && objectToString(d) === '[object Date]';
+}
+
+function isError(e) {
+  return typeof e === 'object' && objectToString(e) === '[object Error]';
+}
+
+function objectToString(o) {
+  return Object.prototype.toString.call(o);
+}
+
+},{"./getEnumerableProperties":15,"./getName":17,"./getProperties":20}],24:[function(require,module,exports){
+/*!
+ * Chai - flag utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+/*!
+ * Module dependancies
+ */
+
+var inspect = require('./inspect');
+var config = require('../config');
+
+/**
+ * ### .objDisplay (object)
+ *
+ * Determines if an object or an array matches
+ * criteria to be inspected in-line for error
+ * messages or should be truncated.
+ *
+ * @param {Mixed} javascript object to inspect
+ * @name objDisplay
+ * @namespace Utils
+ * @api public
+ */
+
+module.exports = function (obj) {
+  var str = inspect(obj)
+    , type = Object.prototype.toString.call(obj);
+
+  if (config.truncateThreshold && str.length >= config.truncateThreshold) {
+    if (type === '[object Function]') {
+      return !obj.name || obj.name === ''
+        ? '[Function]'
+        : '[Function: ' + obj.name + ']';
+    } else if (type === '[object Array]') {
+      return '[ Array(' + obj.length + ') ]';
+    } else if (type === '[object Object]') {
+      var keys = Object.keys(obj)
+        , kstr = keys.length > 2
+          ? keys.splice(0, 2).join(', ') + ', ...'
+          : keys.join(', ');
+      return '{ Object (' + kstr + ') }';
+    } else {
+      return str;
+    }
+  } else {
+    return str;
+  }
+};
+
+},{"../config":4,"./inspect":23}],25:[function(require,module,exports){
+/*!
+ * Chai - overwriteChainableMethod utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+/**
+ * ### overwriteChainableMethod (ctx, name, method, chainingBehavior)
+ *
+ * Overwites an already existing chainable method
+ * and provides access to the previous function or
+ * property.  Must return functions to be used for
+ * name.
+ *
+ *     utils.overwriteChainableMethod(chai.Assertion.prototype, 'length',
+ *       function (_super) {
+ *       }
+ *     , function (_super) {
+ *       }
+ *     );
+ *
+ * Can also be accessed directly from `chai.Assertion`.
+ *
+ *     chai.Assertion.overwriteChainableMethod('foo', fn, fn);
+ *
+ * Then can be used as any other assertion.
+ *
+ *     expect(myFoo).to.have.length(3);
+ *     expect(myFoo).to.have.length.above(3);
+ *
+ * @param {Object} ctx object whose method / property is to be overwritten
+ * @param {String} name of method / property to overwrite
+ * @param {Function} method function that returns a function to be used for name
+ * @param {Function} chainingBehavior function that returns a function to be used for property
+ * @namespace Utils
+ * @name overwriteChainableMethod
+ * @api public
+ */
+
+module.exports = function (ctx, name, method, chainingBehavior) {
+  var chainableBehavior = ctx.__methods[name];
+
+  var _chainingBehavior = chainableBehavior.chainingBehavior;
+  chainableBehavior.chainingBehavior = function () {
+    var result = chainingBehavior(_chainingBehavior).call(this);
+    return result === undefined ? this : result;
+  };
+
+  var _method = chainableBehavior.method;
+  chainableBehavior.method = function () {
+    var result = method(_method).apply(this, arguments);
+    return result === undefined ? this : result;
+  };
+};
+
+},{}],26:[function(require,module,exports){
+/*!
+ * Chai - overwriteMethod utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+/**
+ * ### overwriteMethod (ctx, name, fn)
+ *
+ * Overwites an already existing method and provides
+ * access to previous function. Must return function
+ * to be used for name.
+ *
+ *     utils.overwriteMethod(chai.Assertion.prototype, 'equal', function (_super) {
+ *       return function (str) {
+ *         var obj = utils.flag(this, 'object');
+ *         if (obj instanceof Foo) {
+ *           new chai.Assertion(obj.value).to.equal(str);
+ *         } else {
+ *           _super.apply(this, arguments);
+ *         }
+ *       }
+ *     });
+ *
+ * Can also be accessed directly from `chai.Assertion`.
+ *
+ *     chai.Assertion.overwriteMethod('foo', fn);
+ *
+ * Then can be used as any other assertion.
+ *
+ *     expect(myFoo).to.equal('bar');
+ *
+ * @param {Object} ctx object whose method is to be overwritten
+ * @param {String} name of method to overwrite
+ * @param {Function} method function that returns a function to be used for name
+ * @namespace Utils
+ * @name overwriteMethod
+ * @api public
+ */
+
+module.exports = function (ctx, name, method) {
+  var _method = ctx[name]
+    , _super = function () { return this; };
+
+  if (_method && 'function' === typeof _method)
+    _super = _method;
+
+  ctx[name] = function () {
+    var result = method(_super).apply(this, arguments);
+    return result === undefined ? this : result;
+  }
+};
+
+},{}],27:[function(require,module,exports){
+/*!
+ * Chai - overwriteProperty utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+/**
+ * ### overwriteProperty (ctx, name, fn)
+ *
+ * Overwites an already existing property getter and provides
+ * access to previous value. Must return function to use as getter.
+ *
+ *     utils.overwriteProperty(chai.Assertion.prototype, 'ok', function (_super) {
+ *       return function () {
+ *         var obj = utils.flag(this, 'object');
+ *         if (obj instanceof Foo) {
+ *           new chai.Assertion(obj.name).to.equal('bar');
+ *         } else {
+ *           _super.call(this);
+ *         }
+ *       }
+ *     });
+ *
+ *
+ * Can also be accessed directly from `chai.Assertion`.
+ *
+ *     chai.Assertion.overwriteProperty('foo', fn);
+ *
+ * Then can be used as any other assertion.
+ *
+ *     expect(myFoo).to.be.ok;
+ *
+ * @param {Object} ctx object whose property is to be overwritten
+ * @param {String} name of property to overwrite
+ * @param {Function} getter function that returns a getter function to be used for name
+ * @namespace Utils
+ * @name overwriteProperty
+ * @api public
+ */
+
+module.exports = function (ctx, name, getter) {
+  var _get = Object.getOwnPropertyDescriptor(ctx, name)
+    , _super = function () {};
+
+  if (_get && 'function' === typeof _get.get)
+    _super = _get.get
+
+  Object.defineProperty(ctx, name,
+    { get: function () {
+        var result = getter(_super).call(this);
+        return result === undefined ? this : result;
+      }
+    , configurable: true
+  });
+};
+
+},{}],28:[function(require,module,exports){
+/*!
+ * Chai - test utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+/*!
+ * Module dependancies
+ */
+
+var flag = require('./flag');
+
+/**
+ * # test(object, expression)
+ *
+ * Test and object for expression.
+ *
+ * @param {Object} object (constructed Assertion)
+ * @param {Arguments} chai.Assertion.prototype.assert arguments
+ * @namespace Utils
+ * @name test
+ */
+
+module.exports = function (obj, args) {
+  var negate = flag(obj, 'negate')
+    , expr = args[0];
+  return negate ? !expr : expr;
+};
+
+},{"./flag":13}],29:[function(require,module,exports){
+/*!
+ * Chai - transferFlags utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+/**
+ * ### transferFlags(assertion, object, includeAll = true)
+ *
+ * Transfer all the flags for `assertion` to `object`. If
+ * `includeAll` is set to `false`, then the base Chai
+ * assertion flags (namely `object`, `ssfi`, and `message`)
+ * will not be transferred.
+ *
+ *
+ *     var newAssertion = new Assertion();
+ *     utils.transferFlags(assertion, newAssertion);
+ *
+ *     var anotherAsseriton = new Assertion(myObj);
+ *     utils.transferFlags(assertion, anotherAssertion, false);
+ *
+ * @param {Assertion} assertion the assertion to transfer the flags from
+ * @param {Object} object the object to transfer the flags to; usually a new assertion
+ * @param {Boolean} includeAll
+ * @namespace Utils
+ * @name transferFlags
+ * @api private
+ */
+
+module.exports = function (assertion, object, includeAll) {
+  var flags = assertion.__flags || (assertion.__flags = Object.create(null));
+
+  if (!object.__flags) {
+    object.__flags = Object.create(null);
+  }
+
+  includeAll = arguments.length === 3 ? includeAll : true;
+
+  for (var flag in flags) {
+    if (includeAll ||
+        (flag !== 'object' && flag !== 'ssfi' && flag != 'message')) {
+      object.__flags[flag] = flags[flag];
+    }
+  }
+};
+
+},{}],30:[function(require,module,exports){
+/*!
+ * assertion-error
+ * Copyright(c) 2013 Jake Luer <jake@qualiancy.com>
+ * MIT Licensed
+ */
+
+/*!
+ * Return a function that will copy properties from
+ * one object to another excluding any originally
+ * listed. Returned function will create a new `{}`.
+ *
+ * @param {String} excluded properties ...
+ * @return {Function}
+ */
+
+function exclude () {
+  var excludes = [].slice.call(arguments);
+
+  function excludeProps (res, obj) {
+    Object.keys(obj).forEach(function (key) {
+      if (!~excludes.indexOf(key)) res[key] = obj[key];
+    });
+  }
+
+  return function extendExclude () {
+    var args = [].slice.call(arguments)
+      , i = 0
+      , res = {};
+
+    for (; i < args.length; i++) {
+      excludeProps(res, args[i]);
+    }
+
+    return res;
+  };
+};
+
+/*!
+ * Primary Exports
+ */
+
+module.exports = AssertionError;
+
+/**
+ * ### AssertionError
+ *
+ * An extension of the JavaScript `Error` constructor for
+ * assertion and validation scenarios.
+ *
+ * @param {String} message
+ * @param {Object} properties to include (optional)
+ * @param {callee} start stack function (optional)
+ */
+
+function AssertionError (message, _props, ssf) {
+  var extend = exclude('name', 'message', 'stack', 'constructor', 'toJSON')
+    , props = extend(_props || {});
+
+  // default values
+  this.message = message || 'Unspecified AssertionError';
+  this.showDiff = false;
+
+  // copy from properties
+  for (var key in props) {
+    this[key] = props[key];
+  }
+
+  // capture stack trace
+  ssf = ssf || arguments.callee;
+  if (ssf && Error.captureStackTrace) {
+    Error.captureStackTrace(this, ssf);
+  } else {
+    this.stack = new Error().stack;
+  }
+}
+
+/*!
+ * Inherit from Error.prototype
+ */
+
+AssertionError.prototype = Object.create(Error.prototype);
+
+/*!
+ * Statically set name
+ */
+
+AssertionError.prototype.name = 'AssertionError';
+
+/*!
+ * Ensure correct constructor
+ */
+
+AssertionError.prototype.constructor = AssertionError;
+
+/**
+ * Allow errors to be converted to JSON for static transfer.
+ *
+ * @param {Boolean} include stack (default: `true`)
+ * @return {Object} object that can be `JSON.stringify`
+ */
+
+AssertionError.prototype.toJSON = function (stack) {
+  var extend = exclude('constructor', 'toJSON', 'stack')
+    , props = extend({ name: this.name }, this);
+
+  // include stack if exists and not turned off
+  if (false !== stack && this.stack) {
+    props.stack = this.stack;
+  }
+
+  return props;
+};
+
+},{}],31:[function(require,module,exports){
+module.exports = require('./lib/eql');
+
+},{"./lib/eql":32}],32:[function(require,module,exports){
+/*!
+ * deep-eql
+ * Copyright(c) 2013 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+/*!
+ * Module dependencies
+ */
+
+var type = require('type-detect');
+
+/*!
+ * Buffer.isBuffer browser shim
+ */
+
+var Buffer;
+try { Buffer = require('buffer').Buffer; }
+catch(ex) {
+  Buffer = {};
+  Buffer.isBuffer = function() { return false; }
+}
+
+/*!
+ * Primary Export
+ */
+
+module.exports = deepEqual;
+
+/**
+ * Assert super-strict (egal) equality between
+ * two objects of any type.
+ *
+ * @param {Mixed} a
+ * @param {Mixed} b
+ * @param {Array} memoised (optional)
+ * @return {Boolean} equal match
+ */
+
+function deepEqual(a, b, m) {
+  if (sameValue(a, b)) {
+    return true;
+  } else if ('date' === type(a)) {
+    return dateEqual(a, b);
+  } else if ('regexp' === type(a)) {
+    return regexpEqual(a, b);
+  } else if (Buffer.isBuffer(a)) {
+    return bufferEqual(a, b);
+  } else if ('arguments' === type(a)) {
+    return argumentsEqual(a, b, m);
+  } else if (!typeEqual(a, b)) {
+    return false;
+  } else if (('object' !== type(a) && 'object' !== type(b))
+  && ('array' !== type(a) && 'array' !== type(b))) {
+    return sameValue(a, b);
+  } else {
+    return objectEqual(a, b, m);
+  }
+}
+
+/*!
+ * Strict (egal) equality test. Ensures that NaN always
+ * equals NaN and `-0` does not equal `+0`.
+ *
+ * @param {Mixed} a
+ * @param {Mixed} b
+ * @return {Boolean} equal match
+ */
+
+function sameValue(a, b) {
+  if (a === b) return a !== 0 || 1 / a === 1 / b;
+  return a !== a && b !== b;
+}
+
+/*!
+ * Compare the types of two given objects and
+ * return if they are equal. Note that an Array
+ * has a type of `array` (not `object`) and arguments
+ * have a type of `arguments` (not `array`/`object`).
+ *
+ * @param {Mixed} a
+ * @param {Mixed} b
+ * @return {Boolean} result
+ */
+
+function typeEqual(a, b) {
+  return type(a) === type(b);
+}
+
+/*!
+ * Compare two Date objects by asserting that
+ * the time values are equal using `saveValue`.
+ *
+ * @param {Date} a
+ * @param {Date} b
+ * @return {Boolean} result
+ */
+
+function dateEqual(a, b) {
+  if ('date' !== type(b)) return false;
+  return sameValue(a.getTime(), b.getTime());
+}
+
+/*!
+ * Compare two regular expressions by converting them
+ * to string and checking for `sameValue`.
+ *
+ * @param {RegExp} a
+ * @param {RegExp} b
+ * @return {Boolean} result
+ */
+
+function regexpEqual(a, b) {
+  if ('regexp' !== type(b)) return false;
+  return sameValue(a.toString(), b.toString());
+}
+
+/*!
+ * Assert deep equality of two `arguments` objects.
+ * Unfortunately, these must be sliced to arrays
+ * prior to test to ensure no bad behavior.
+ *
+ * @param {Arguments} a
+ * @param {Arguments} b
+ * @param {Array} memoize (optional)
+ * @return {Boolean} result
+ */
+
+function argumentsEqual(a, b, m) {
+  if ('arguments' !== type(b)) return false;
+  a = [].slice.call(a);
+  b = [].slice.call(b);
+  return deepEqual(a, b, m);
+}
+
+/*!
+ * Get enumerable properties of a given object.
+ *
+ * @param {Object} a
+ * @return {Array} property names
+ */
+
+function enumerable(a) {
+  var res = [];
+  for (var key in a) res.push(key);
+  return res;
+}
+
+/*!
+ * Simple equality for flat iterable objects
+ * such as Arrays or Node.js buffers.
+ *
+ * @param {Iterable} a
+ * @param {Iterable} b
+ * @return {Boolean} result
+ */
+
+function iterableEqual(a, b) {
+  if (a.length !==  b.length) return false;
+
+  var i = 0;
+  var match = true;
+
+  for (; i < a.length; i++) {
+    if (a[i] !== b[i]) {
+      match = false;
+      break;
+    }
+  }
+
+  return match;
+}
+
+/*!
+ * Extension to `iterableEqual` specifically
+ * for Node.js Buffers.
+ *
+ * @param {Buffer} a
+ * @param {Mixed} b
+ * @return {Boolean} result
+ */
+
+function bufferEqual(a, b) {
+  if (!Buffer.isBuffer(b)) return false;
+  return iterableEqual(a, b);
+}
+
+/*!
+ * Block for `objectEqual` ensuring non-existing
+ * values don't get in.
+ *
+ * @param {Mixed} object
+ * @return {Boolean} result
+ */
+
+function isValue(a) {
+  return a !== null && a !== undefined;
+}
+
+/*!
+ * Recursively check the equality of two objects.
+ * Once basic sameness has been established it will
+ * defer to `deepEqual` for each enumerable key
+ * in the object.
+ *
+ * @param {Mixed} a
+ * @param {Mixed} b
+ * @return {Boolean} result
+ */
+
+function objectEqual(a, b, m) {
+  if (!isValue(a) || !isValue(b)) {
+    return false;
+  }
+
+  if (a.prototype !== b.prototype) {
+    return false;
+  }
+
+  var i;
+  if (m) {
+    for (i = 0; i < m.length; i++) {
+      if ((m[i][0] === a && m[i][1] === b)
+      ||  (m[i][0] === b && m[i][1] === a)) {
+        return true;
+      }
+    }
+  } else {
+    m = [];
+  }
+
+  try {
+    var ka = enumerable(a);
+    var kb = enumerable(b);
+  } catch (ex) {
+    return false;
+  }
+
+  ka.sort();
+  kb.sort();
+
+  if (!iterableEqual(ka, kb)) {
+    return false;
+  }
+
+  m.push([ a, b ]);
+
+  var key;
+  for (i = ka.length - 1; i >= 0; i--) {
+    key = ka[i];
+    if (!deepEqual(a[key], b[key], m)) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+},{"buffer":undefined,"type-detect":33}],33:[function(require,module,exports){
+module.exports = require('./lib/type');
+
+},{"./lib/type":34}],34:[function(require,module,exports){
+/*!
+ * type-detect
+ * Copyright(c) 2013 jake luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+/*!
+ * Primary Exports
+ */
+
+var exports = module.exports = getType;
+
+/*!
+ * Detectable javascript natives
+ */
+
+var natives = {
+    '[object Array]': 'array'
+  , '[object RegExp]': 'regexp'
+  , '[object Function]': 'function'
+  , '[object Arguments]': 'arguments'
+  , '[object Date]': 'date'
+};
+
+/**
+ * ### typeOf (obj)
+ *
+ * Use several different techniques to determine
+ * the type of object being tested.
+ *
+ *
+ * @param {Mixed} object
+ * @return {String} object type
+ * @api public
+ */
+
+function getType (obj) {
+  var str = Object.prototype.toString.call(obj);
+  if (natives[str]) return natives[str];
+  if (obj === null) return 'null';
+  if (obj === undefined) return 'undefined';
+  if (obj === Object(obj)) return 'object';
+  return typeof obj;
+}
+
+exports.Library = Library;
+
+/**
+ * ### Library
+ *
+ * Create a repository for custom type detection.
+ *
+ * ```js
+ * var lib = new type.Library;
+ * ```
+ *
+ */
+
+function Library () {
+  this.tests = {};
+}
+
+/**
+ * #### .of (obj)
+ *
+ * Expose replacement `typeof` detection to the library.
+ *
+ * ```js
+ * if ('string' === lib.of('hello world')) {
+ *   // ...
+ * }
+ * ```
+ *
+ * @param {Mixed} object to test
+ * @return {String} type
+ */
+
+Library.prototype.of = getType;
+
+/**
+ * #### .define (type, test)
+ *
+ * Add a test to for the `.test()` assertion.
+ *
+ * Can be defined as a regular expression:
+ *
+ * ```js
+ * lib.define('int', /^[0-9]+$/);
+ * ```
+ *
+ * ... or as a function:
+ *
+ * ```js
+ * lib.define('bln', function (obj) {
+ *   if ('boolean' === lib.of(obj)) return true;
+ *   var blns = [ 'yes', 'no', 'true', 'false', 1, 0 ];
+ *   if ('string' === lib.of(obj)) obj = obj.toLowerCase();
+ *   return !! ~blns.indexOf(obj);
+ * });
+ * ```
+ *
+ * @param {String} type
+ * @param {RegExp|Function} test
+ * @api public
+ */
+
+Library.prototype.define = function (type, test) {
+  if (arguments.length === 1) return this.tests[type];
+  this.tests[type] = test;
+  return this;
+};
+
+/**
+ * #### .test (obj, test)
+ *
+ * Assert that an object is of type. Will first
+ * check natives, and if that does not pass it will
+ * use the user defined custom tests.
+ *
+ * ```js
+ * assert(lib.test('1', 'int'));
+ * assert(lib.test('yes', 'bln'));
+ * ```
+ *
+ * @param {Mixed} object
+ * @param {String} type
+ * @return {Boolean} result
+ * @api public
+ */
+
+Library.prototype.test = function (obj, type) {
+  if (type === getType(obj)) return true;
+  var test = this.tests[type];
+
+  if (test && 'regexp' === getType(test)) {
+    return test.test(obj);
+  } else if (test && 'function' === getType(test)) {
+    return test(obj);
+  } else {
+    throw new ReferenceError('Type test "' + type + '" not defined or invalid.');
+  }
+};
+
+},{}],35:[function(require,module,exports){
+arguments[4][33][0].apply(exports,arguments)
+},{"./lib/type":36,"dup":33}],36:[function(require,module,exports){
+/*!
+ * type-detect
+ * Copyright(c) 2013 jake luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+/*!
+ * Primary Exports
+ */
+
+var exports = module.exports = getType;
+
+/**
+ * ### typeOf (obj)
+ *
+ * Use several different techniques to determine
+ * the type of object being tested.
+ *
+ *
+ * @param {Mixed} object
+ * @return {String} object type
+ * @api public
+ */
+var objectTypeRegexp = /^\[object (.*)\]$/;
+
+function getType(obj) {
+  var type = Object.prototype.toString.call(obj).match(objectTypeRegexp)[1].toLowerCase();
+  // Let "new String('')" return 'object'
+  if (typeof Promise === 'function' && obj instanceof Promise) return 'promise';
+  // PhantomJS has type "DOMWindow" for null
+  if (obj === null) return 'null';
+  // PhantomJS has type "DOMWindow" for undefined
+  if (obj === undefined) return 'undefined';
+  return type;
+}
+
+exports.Library = Library;
+
+/**
+ * ### Library
+ *
+ * Create a repository for custom type detection.
+ *
+ * ```js
+ * var lib = new type.Library;
+ * ```
+ *
+ */
+
+function Library() {
+  if (!(this instanceof Library)) return new Library();
+  this.tests = {};
+}
+
+/**
+ * #### .of (obj)
+ *
+ * Expose replacement `typeof` detection to the library.
+ *
+ * ```js
+ * if ('string' === lib.of('hello world')) {
+ *   // ...
+ * }
+ * ```
+ *
+ * @param {Mixed} object to test
+ * @return {String} type
+ */
+
+Library.prototype.of = getType;
+
+/**
+ * #### .define (type, test)
+ *
+ * Add a test to for the `.test()` assertion.
+ *
+ * Can be defined as a regular expression:
+ *
+ * ```js
+ * lib.define('int', /^[0-9]+$/);
+ * ```
+ *
+ * ... or as a function:
+ *
+ * ```js
+ * lib.define('bln', function (obj) {
+ *   if ('boolean' === lib.of(obj)) return true;
+ *   var blns = [ 'yes', 'no', 'true', 'false', 1, 0 ];
+ *   if ('string' === lib.of(obj)) obj = obj.toLowerCase();
+ *   return !! ~blns.indexOf(obj);
+ * });
+ * ```
+ *
+ * @param {String} type
+ * @param {RegExp|Function} test
+ * @api public
+ */
+
+Library.prototype.define = function(type, test) {
+  if (arguments.length === 1) return this.tests[type];
+  this.tests[type] = test;
+  return this;
+};
+
+/**
+ * #### .test (obj, test)
+ *
+ * Assert that an object is of type. Will first
+ * check natives, and if that does not pass it will
+ * use the user defined custom tests.
+ *
+ * ```js
+ * assert(lib.test('1', 'int'));
+ * assert(lib.test('yes', 'bln'));
+ * ```
+ *
+ * @param {Mixed} object
+ * @param {String} type
+ * @return {Boolean} result
+ * @api public
+ */
+
+Library.prototype.test = function(obj, type) {
+  if (type === getType(obj)) return true;
+  var test = this.tests[type];
+
+  if (test && 'regexp' === getType(test)) {
+    return test.test(obj);
+  } else if (test && 'function' === getType(test)) {
+    return test(obj);
+  } else {
+    throw new ReferenceError('Type test "' + type + '" not defined or invalid.');
+  }
+};
+
+},{}]},{},[1])(1)
+});
 /*!
  * @overview RSVP - a tiny implementation of Promises/A+.
  * @copyright Copyright (c) 2014 Yehuda Katz, Tom Dale, Stefan Penner and contributors
@@ -5963,6 +12105,17 @@ var wdFrp;
     wdFrp.TestStream = TestStream;
 })(wdFrp || (wdFrp = {}));
 
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
 var wd;
 (function (wd) {
     wd.DebugConfig = {
@@ -6040,6 +12193,20 @@ var wd;
         wd.Log.error(!cond, message);
     }
     wd.assert = assert;
+    function it(message, func, context) {
+        try {
+            if (arguments.length === 3) {
+                func.call(context, null);
+            }
+            else {
+                func();
+            }
+        }
+        catch (e) {
+            assert(false, message + ": " + e.message);
+        }
+    }
+    wd.it = it;
     function require(inFunc) {
         return function (target, name, descriptor) {
             if (wd.CompileConfig.isTest) {
@@ -6194,6 +12361,34 @@ var wd;
 })(wd || (wd = {}));
 var wd;
 (function (wd) {
+    function singleton(isInitWhenCreate) {
+        if (isInitWhenCreate === void 0) { isInitWhenCreate = false; }
+        return function (target) {
+            target._instance = null;
+            if (isInitWhenCreate) {
+                target.getInstance = function () {
+                    if (target._instance === null) {
+                        var instance = new target();
+                        target._instance = instance;
+                        instance.initWhenCreate();
+                    }
+                    return target._instance;
+                };
+            }
+            else {
+                target.getInstance = function () {
+                    if (target._instance === null) {
+                        target._instance = new target();
+                    }
+                    return target._instance;
+                };
+            }
+        };
+    }
+    wd.singleton = singleton;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
     function cacheGetter(judgeFunc, returnCacheValueFunc, setCacheFunc) {
         return function (target, name, descriptor) {
             var getter = descriptor.get;
@@ -6319,12 +12514,8 @@ var wd;
 var wd;
 (function (wd) {
     wd.ABSTRACT_ATTRIBUTE = null;
+    wd.expect = chai.expect;
 })(wd || (wd = {}));
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wd;
 (function (wd) {
     var JudgeUtils = (function (_super) {
@@ -6411,12 +12602,6 @@ var wd;
     }(wdCb.ArrayUtils));
     wd.ArrayUtils = ArrayUtils;
 })(wd || (wd = {}));
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var ClassUtils = (function () {
@@ -6567,23 +12752,23 @@ var wd;
             var view = wd.DeviceManager.getInstance().view;
             return wd.Vector3.create(position.x - view.width / 2, view.height / 2 - position.y, 0);
         };
-        CoordinateUtils.convertLeftCornerPositionToCenterPosition = function (position, width, height) {
-            return wd.Vector2.create(this.convertLeftCornerPositionXToCenterPositionX(position.x, width), this.convertLeftCornerPositionYToCenterPositionY(position.y, height));
+        CoordinateUtils.convertLeftCornerPositionToCenterPositionInWebGL = function (position, width, height) {
+            return wd.Vector2.create(this.convertLeftCornerPositionXToCenterPositionXInWebGL(position.x, width), this.convertLeftCornerPositionYToCenterPositionYInWebGL(position.y, height));
         };
-        CoordinateUtils.convertLeftCornerPositionXToCenterPositionX = function (positionX, width) {
-            return positionX + width / 2;
-        };
-        CoordinateUtils.convertLeftCornerPositionYToCenterPositionY = function (positionY, height) {
-            return positionY + height / 2;
-        };
-        CoordinateUtils.convertCenterPositionToLeftCornerPosition = function (position, width, height) {
-            return wd.Vector2.create(this.convertCenterPositionXToLeftCornerPositionX(position.x, width), this.convertCenterPositionYToLeftCornerPositionY(position.y, height));
-        };
-        CoordinateUtils.convertCenterPositionXToLeftCornerPositionX = function (positionX, width) {
+        CoordinateUtils.convertLeftCornerPositionXToCenterPositionXInWebGL = function (positionX, width) {
             return positionX - width / 2;
         };
-        CoordinateUtils.convertCenterPositionYToLeftCornerPositionY = function (positionY, height) {
+        CoordinateUtils.convertLeftCornerPositionYToCenterPositionYInWebGL = function (positionY, height) {
             return positionY - height / 2;
+        };
+        CoordinateUtils.convertLeftCornerPositionToCenterPositionInCanvas = function (position, width, height) {
+            return wd.Vector2.create(this.convertLeftCornerPositionXToCenterPositionXInCanvas(position.x, width), this.convertLeftCornerPositionYToCenterPositionYInCanvas(position.y, height));
+        };
+        CoordinateUtils.convertLeftCornerPositionXToCenterPositionXInCanvas = function (positionX, width) {
+            return positionX + width / 2;
+        };
+        CoordinateUtils.convertLeftCornerPositionYToCenterPositionYInCanvas = function (positionY, height) {
+            return positionY + height / 2;
         };
         __decorate([
             wd.require(function () {
@@ -9145,13 +15330,8 @@ var wd;
             this._gameState = EGameState.NORMAL;
             this._timeController = wd.DirectorTimeController.create();
         }
-        Director.getInstance = function () {
-            if (this._instance === null) {
-                this._instance = new this();
-                this._instance.initWhenCreate();
-            }
-            return this._instance;
-        };
+        Director.getInstance = function () { };
+        ;
         Object.defineProperty(Director.prototype, "gameTime", {
             get: function () {
                 return this._timeController.gameTime;
@@ -9324,13 +15504,15 @@ var wd;
         Director.prototype._initDomEvent = function () {
             this._eventSubscription = this.domEventManager.initDomEvent();
         };
-        Director._instance = null;
         __decorate([
             wd.execOnlyOnce("_isInitUIScene")
         ], Director.prototype, "initUIObjectScene", null);
         __decorate([
             wd.execOnlyOnce("_isInitDomEvent")
         ], Director.prototype, "_initDomEvent", null);
+        Director = __decorate([
+            wd.singleton(true)
+        ], Director);
         return Director;
     }());
     wd.Director = Director;
@@ -10368,8 +16550,8 @@ var wd;
         };
         __decorate([
             wd.require(function (component) {
-                if (component instanceof wd.UI) {
-                    wd.assert(!!!this.getComponent(wd.UI), wd.Log.info.FUNC_SHOULD("only has one UI component"));
+                if (component instanceof wd.TwoDUI) {
+                    wd.assert(!!!this.getComponent(wd.TwoDUI), wd.Log.info.FUNC_SHOULD("only has one TwoDUI component"));
                 }
             })
         ], UIObject.prototype, "addComponent", null);
@@ -10739,7 +16921,7 @@ var wd;
         };
         UIObjectScene.prototype.update = function (elapsed) {
             _super.prototype.update.call(this, elapsed);
-            wd.UIEngine.getInstance().update(elapsed);
+            wd.TwoDUIEngine.getInstance().update(elapsed);
         };
         UIObjectScene.prototype.onDispose = function () {
             _super.prototype.onDispose.call(this);
@@ -10764,7 +16946,7 @@ var wd;
                     }
                 }
             });
-            wd.UIEngine.getInstance().render();
+            wd.TwoDUIEngine.getInstance().render();
         };
         UIObjectScene.prototype.createTransform = function () {
             return null;
@@ -10801,7 +16983,7 @@ var wd;
             wd.require(function () {
                 this.forEach(function (child) {
                     wd.assert(child instanceof wd.UIObject, wd.Log.info.FUNC_MUST_BE("child", "UIObject"));
-                    wd.assert(child.hasComponent(wd.UI), wd.Log.info.FUNC_SHOULD("UIObject", "contain ui component"));
+                    wd.assert(child.hasComponent(wd.TwoDUI), wd.Log.info.FUNC_SHOULD("UIObject", "contain ui component"));
                 });
             })
         ], UIObjectScene.prototype, "render", null);
@@ -11064,6 +17246,7 @@ var wd;
             wd.SpacePartitionEngine.getInstance().update(elapsed);
             wd.AnimationEngine.getInstance().update(elapsed);
             wd.CollisionEngine.getInstance().update(elapsed);
+            wd.ThreeDUIEngine.getInstance().update(elapsed);
             _super.prototype.update.call(this, elapsed);
             wd.CollisionEngine.getInstance().detect(elapsed);
         };
@@ -12976,12 +19159,7 @@ var wd;
         function MouseEventHandler() {
             _super.apply(this, arguments);
         }
-        MouseEventHandler.getInstance = function () {
-            if (this._instance === null) {
-                this._instance = new this();
-            }
-            return this._instance;
-        };
+        MouseEventHandler.getInstance = function () { };
         MouseEventHandler.prototype.on = function () {
             var args = [];
             for (var _i = 0; _i < arguments.length; _i++) {
@@ -13049,7 +19227,6 @@ var wd;
             eventData.addChild("lastX", location.x);
             eventData.addChild("lastY", location.y);
         };
-        MouseEventHandler._instance = null;
         __decorate([
             wd.require(function () {
                 var args = [];
@@ -13062,6 +19239,9 @@ var wd;
                 }
             })
         ], MouseEventHandler.prototype, "on", null);
+        MouseEventHandler = __decorate([
+            wd.singleton()
+        ], MouseEventHandler);
         return MouseEventHandler;
     }(wd.DomEventHandler));
     wd.MouseEventHandler = MouseEventHandler;
@@ -13073,12 +19253,7 @@ var wd;
         function KeyboardEventHandler() {
             _super.apply(this, arguments);
         }
-        KeyboardEventHandler.getInstance = function () {
-            if (this._instance === null) {
-                this._instance = new this();
-            }
-            return this._instance;
-        };
+        KeyboardEventHandler.getInstance = function () { };
         KeyboardEventHandler.prototype.on = function () {
             var args = [];
             for (var _i = 0; _i < arguments.length; _i++) {
@@ -13158,7 +19333,9 @@ var wd;
             obj.target = dom;
             return obj;
         };
-        KeyboardEventHandler._instance = null;
+        KeyboardEventHandler = __decorate([
+            wd.singleton()
+        ], KeyboardEventHandler);
         return KeyboardEventHandler;
     }(wd.DomEventHandler));
     wd.KeyboardEventHandler = KeyboardEventHandler;
@@ -13170,12 +19347,7 @@ var wd;
         function CustomEventHandler() {
             _super.apply(this, arguments);
         }
-        CustomEventHandler.getInstance = function () {
-            if (this._instance === null) {
-                this._instance = new this();
-            }
-            return this._instance;
-        };
+        CustomEventHandler.getInstance = function () { };
         CustomEventHandler.prototype.on = function () {
             var args = [];
             for (var _i = 0; _i < arguments.length; _i++) {
@@ -13269,7 +19441,9 @@ var wd;
                 event.userData = userData;
             }
         };
-        CustomEventHandler._instance = null;
+        CustomEventHandler = __decorate([
+            wd.singleton()
+        ], CustomEventHandler);
         return CustomEventHandler;
     }(wd.EventHandler));
     wd.CustomEventHandler = CustomEventHandler;
@@ -13290,12 +19464,7 @@ var wd;
         function CustomEventDispatcher() {
             _super.apply(this, arguments);
         }
-        CustomEventDispatcher.getInstance = function () {
-            if (this._instance === null) {
-                this._instance = new this();
-            }
-            return this._instance;
-        };
+        CustomEventDispatcher.getInstance = function () { };
         CustomEventDispatcher.prototype.trigger = function () {
             var args = [];
             for (var _i = 0; _i < arguments.length; _i++) {
@@ -13362,7 +19531,9 @@ var wd;
             return userData ? this.trigger(target, event, userData, notSetTarget)
                 : this.trigger(target, event, notSetTarget);
         };
-        CustomEventDispatcher._instance = null;
+        CustomEventDispatcher = __decorate([
+            wd.singleton()
+        ], CustomEventDispatcher);
         return CustomEventDispatcher;
     }(wd.EventDispatcher));
     wd.CustomEventDispatcher = CustomEventDispatcher;
@@ -13374,12 +19545,7 @@ var wd;
         function DomEventDispatcher() {
             _super.apply(this, arguments);
         }
-        DomEventDispatcher.getInstance = function () {
-            if (this._instance === null) {
-                this._instance = new this();
-            }
-            return this._instance;
-        };
+        DomEventDispatcher.getInstance = function () { };
         DomEventDispatcher.prototype.trigger = function () {
             var args = [];
             for (var _i = 0; _i < arguments.length; _i++) {
@@ -13396,7 +19562,9 @@ var wd;
                     .trigger(dom, event_6);
             }
         };
-        DomEventDispatcher._instance = null;
+        DomEventDispatcher = __decorate([
+            wd.singleton()
+        ], DomEventDispatcher);
         return DomEventDispatcher;
     }(wd.EventDispatcher));
     wd.DomEventDispatcher = DomEventDispatcher;
@@ -13448,12 +19616,7 @@ var wd;
             _super.apply(this, arguments);
             this.listenerMap = wd.CustomEventListenerMap.create();
         }
-        CustomEventRegister.getInstance = function () {
-            if (this._instance === null) {
-                this._instance = new this();
-            }
-            return this._instance;
-        };
+        CustomEventRegister.getInstance = function () { };
         CustomEventRegister.prototype.register = function (target, eventName, handler, originHandler, domHandler, priority) {
             this.listenerMap.appendChild(target, eventName, {
                 target: target,
@@ -13510,7 +19673,9 @@ var wd;
         CustomEventRegister.prototype._handleAfterAllEventHandlerRemoved = function (target) {
             this.setBubbleParent(target, null);
         };
-        CustomEventRegister._instance = null;
+        CustomEventRegister = __decorate([
+            wd.singleton()
+        ], CustomEventRegister);
         return CustomEventRegister;
     }(wd.EventRegister));
     wd.CustomEventRegister = CustomEventRegister;
@@ -13523,12 +19688,7 @@ var wd;
             _super.apply(this, arguments);
             this.listenerMap = wd.DomEventListenerMap.create();
         }
-        DomEventRegister.getInstance = function () {
-            if (this._instance === null) {
-                this._instance = new this();
-            }
-            return this._instance;
-        };
+        DomEventRegister.getInstance = function () { };
         DomEventRegister.prototype.register = function (dom, eventName, eventData, handler, originHandler, domHandler, priority) {
             this.listenerMap.appendChild(dom, eventName, {
                 dom: dom,
@@ -13571,7 +19731,9 @@ var wd;
                 return list.getChild(0).domHandler;
             }
         };
-        DomEventRegister._instance = null;
+        DomEventRegister = __decorate([
+            wd.singleton()
+        ], DomEventRegister);
         return DomEventRegister;
     }(wd.EventRegister));
     wd.DomEventRegister = DomEventRegister;
@@ -13592,12 +19754,7 @@ var wd;
         function CustomEventBinder() {
             _super.apply(this, arguments);
         }
-        CustomEventBinder.getInstance = function () {
-            if (this._instance === null) {
-                this._instance = new this();
-            }
-            return this._instance;
-        };
+        CustomEventBinder.getInstance = function () { };
         CustomEventBinder.prototype.on = function () {
             var args = [];
             for (var _i = 0; _i < arguments.length; _i++) {
@@ -13678,7 +19835,6 @@ var wd;
                     .off(target, eventName, handler);
             }
         };
-        CustomEventBinder._instance = null;
         __decorate([
             wd.require(function () {
                 var args = [];
@@ -13708,6 +19864,9 @@ var wd;
                 }
             })
         ], CustomEventBinder.prototype, "on", null);
+        CustomEventBinder = __decorate([
+            wd.singleton()
+        ], CustomEventBinder);
         return CustomEventBinder;
     }(wd.EventBinder));
     wd.CustomEventBinder = CustomEventBinder;
@@ -13719,12 +19878,7 @@ var wd;
         function DomEventBinder() {
             _super.apply(this, arguments);
         }
-        DomEventBinder.getInstance = function () {
-            if (this._instance === null) {
-                this._instance = new this();
-            }
-            return this._instance;
-        };
+        DomEventBinder.getInstance = function () { };
         DomEventBinder.prototype.on = function () {
             var args = [];
             for (var _i = 0; _i < arguments.length; _i++) {
@@ -13814,7 +19968,6 @@ var wd;
                     .off(dom, eventName, handler);
             }
         };
-        DomEventBinder._instance = null;
         __decorate([
             wd.require(function () {
                 var args = [];
@@ -13842,6 +19995,9 @@ var wd;
                 }
             })
         ], DomEventBinder.prototype, "on", null);
+        DomEventBinder = __decorate([
+            wd.singleton()
+        ], DomEventBinder);
         return DomEventBinder;
     }(wd.EventBinder));
     wd.DomEventBinder = DomEventBinder;
@@ -14251,10 +20407,13 @@ var wd;
             if (component instanceof wd.Shadow) {
                 return 2;
             }
-            if (component instanceof wd.Geometry) {
+            if (component instanceof wd.ThreeDBitmapFont) {
                 return 3;
             }
-            return 4;
+            if (component instanceof wd.Geometry) {
+                return 4;
+            }
+            return 5;
         };
         return ComponentInitOrderTable;
     }());
@@ -16715,7 +22874,7 @@ var wd;
             configurable: true
         });
         Geometry.prototype.init = function () {
-            var geometryData = null, _a = this.computeData(), vertices = _a.vertices, faces = _a.faces, texCoords = _a.texCoords, colors = _a.colors, morphTargets = _a.morphTargets;
+            var geometryData = null, _a = this.computeData(), vertices = _a.vertices, _b = _a.faces, faces = _b === void 0 ? [] : _b, texCoords = _a.texCoords, colors = _a.colors, morphTargets = _a.morphTargets;
             this.buffers = this.createBufferContainer();
             geometryData = this.createGeometryData(vertices, faces, texCoords, colors, morphTargets);
             this.buffers.geometryData = geometryData;
@@ -16881,6 +23040,253 @@ var wd;
 })(wd || (wd = {}));
 var wd;
 (function (wd) {
+    var BitmapFontGeometry = (function (_super) {
+        __extends(BitmapFontGeometry, _super);
+        function BitmapFontGeometry() {
+            _super.apply(this, arguments);
+        }
+        BitmapFontGeometry.create = function () {
+            var geom = new this();
+            return geom;
+        };
+        BitmapFontGeometry.prototype.computeData = function () {
+            var bitmapFont = this.entityObject.getComponent(wd.ThreeDBitmapFont), layoutDataList = bitmapFont.layoutDataList, vertices = null, texCoords = null, indices = null, fntData = wd.LoaderManager.getInstance().get(bitmapFont.fntId);
+            if (layoutDataList) {
+                vertices = this._generateVertices(layoutDataList, bitmapFont.width, bitmapFont.height);
+                texCoords = this._generateTexCoords(layoutDataList, fntData.scaleW, fntData.scaleH, this.material.mapList.getChild(0).flipY);
+                indices = this._generateIndices(layoutDataList);
+            }
+            else {
+                vertices = [];
+                texCoords = [];
+                indices = [];
+            }
+            return {
+                vertices: vertices,
+                faces: wd.GeometryUtils.convertToFaces(indices, null),
+                texCoords: texCoords
+            };
+        };
+        BitmapFontGeometry.prototype.updateBuffers = function () {
+            if (this.buffers === null) {
+                return;
+            }
+            var geometryData = null, _a = this.computeData(), vertices = _a.vertices, faces = _a.faces, texCoords = _a.texCoords;
+            this.buffers.geometryData.vertices = vertices;
+            this.buffers.geometryData.faces = faces;
+            this.buffers.geometryData.texCoords = texCoords;
+        };
+        BitmapFontGeometry.prototype._generateVertices = function (layoutDataList, bitmapFontWidth, bitmapFontHeight) {
+            var vertices = [], i = 0;
+            layoutDataList.forEach(function (layoutCharData) {
+                var rect = layoutCharData.data.rect, z = 0, w = rect.width, h = rect.height, position = wd.CoordinateUtils.convertLeftCornerPositionToCenterPositionInWebGL(wd.Vector2.create(layoutCharData.position[0], layoutCharData.position[1]), bitmapFontWidth, bitmapFontHeight), x = position.x, y = position.y;
+                vertices[i++] = x;
+                vertices[i++] = -y;
+                vertices[i++] = z;
+                vertices[i++] = x;
+                vertices[i++] = -(y + h);
+                vertices[i++] = z;
+                vertices[i++] = x + w;
+                vertices[i++] = -(y + h);
+                vertices[i++] = z;
+                vertices[i++] = x + w;
+                vertices[i++] = -y;
+                vertices[i++] = z;
+            });
+            return vertices;
+        };
+        BitmapFontGeometry.prototype._generateTexCoords = function (layoutDataList, textureWidth, textureHeight, flipY) {
+            var texCoords = [], i = 0;
+            layoutDataList.forEach(function (layoutDataList) {
+                var rect = layoutDataList.data.rect, bw = (rect.x + rect.width), bh = (rect.y + rect.height), u0 = rect.x / textureWidth, v0 = rect.y / textureHeight, u1 = bw / textureWidth, v1 = bh / textureHeight;
+                if (flipY) {
+                    v0 = (textureHeight - rect.y) / textureHeight;
+                    v1 = (textureHeight - bh) / textureHeight;
+                }
+                texCoords[i++] = u0;
+                texCoords[i++] = v0;
+                texCoords[i++] = u0;
+                texCoords[i++] = v1;
+                texCoords[i++] = u1;
+                texCoords[i++] = v1;
+                texCoords[i++] = u1;
+                texCoords[i++] = v0;
+            });
+            return texCoords;
+        };
+        BitmapFontGeometry.prototype._generateIndices = function (layoutDataList) {
+            var numIndices = layoutDataList.getCount() * 6, indices = [];
+            for (var i = 0, j = 0; i < numIndices; i += 6, j += 4) {
+                indices[i] = j;
+                indices[i + 1] = j + 1;
+                indices[i + 2] = j + 2;
+                indices[i + 3] = j;
+                indices[i + 4] = j + 2;
+                indices[i + 5] = j + 3;
+            }
+            return indices;
+        };
+        __decorate([
+            wd.require(function () {
+                wd.it("now only support BasicMaterial", function () {
+                    wd.expect(this.material).instanceOf(wd.BasicMaterial);
+                }, this);
+                wd.it("should add only one bitmap texture to material", function () {
+                    wd.expect(this.material.mapList.getCount()).to.equal(1);
+                    wd.expect(this.material.mapList.getChild(0)).instanceOf(wd.BasicTexture);
+                }, this);
+            })
+        ], BitmapFontGeometry.prototype, "computeData", null);
+        return BitmapFontGeometry;
+    }(wd.Geometry));
+    wd.BitmapFontGeometry = BitmapFontGeometry;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var LineGeometry = (function (_super) {
+        __extends(LineGeometry, _super);
+        function LineGeometry() {
+            _super.apply(this, arguments);
+            this._customGeometry = wd.CustomGeometry.create();
+        }
+        LineGeometry.create = function () {
+            var geom = new this();
+            geom.initWhenCreate();
+            return geom;
+        };
+        Object.defineProperty(LineGeometry.prototype, "vertices", {
+            get: function () {
+                return this._customGeometry.vertices;
+            },
+            set: function (vertices) {
+                this._customGeometry.vertices = vertices;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        LineGeometry.prototype.initWhenCreate = function () {
+            this.drawMode = wd.EDrawMode.LINE_STRIP;
+        };
+        LineGeometry.prototype.computeData = function () {
+            return {
+                vertices: this.vertices
+            };
+        };
+        __decorate([
+            wd.cloneAttributeAsCustomType(function (source, target, memberName) {
+                target[memberName] = wd.CloneUtils.cloneArray(source[memberName]);
+            })
+        ], LineGeometry.prototype, "vertices", null);
+        return LineGeometry;
+    }(wd.Geometry));
+    wd.LineGeometry = LineGeometry;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var ConvexPolygonGeometry = (function (_super) {
+        __extends(ConvexPolygonGeometry, _super);
+        function ConvexPolygonGeometry() {
+            _super.apply(this, arguments);
+            this._customGeometry = wd.CustomGeometry.create();
+        }
+        ConvexPolygonGeometry.create = function () {
+            var geom = new this();
+            return geom;
+        };
+        Object.defineProperty(ConvexPolygonGeometry.prototype, "vertices", {
+            get: function () {
+                return this._customGeometry.vertices;
+            },
+            set: function (vertices) {
+                this._customGeometry.vertices = vertices;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(ConvexPolygonGeometry.prototype, "texCoords", {
+            get: function () {
+                return this._customGeometry.texCoords;
+            },
+            set: function (texCoords) {
+                this._customGeometry.texCoords = texCoords;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(ConvexPolygonGeometry.prototype, "colors", {
+            get: function () {
+                return this._customGeometry.colors;
+            },
+            set: function (colors) {
+                this._customGeometry.colors = colors;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(ConvexPolygonGeometry.prototype, "indices", {
+            get: function () {
+                return this._customGeometry.indices;
+            },
+            set: function (indices) {
+                this._customGeometry.indices = indices;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(ConvexPolygonGeometry.prototype, "normals", {
+            get: function () {
+                return this._customGeometry.normals;
+            },
+            set: function (normals) {
+                this._customGeometry.normals = normals;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        ConvexPolygonGeometry.prototype.computeData = function () {
+            var indices = [];
+            for (var i = 1, len = this.vertices.length / 3 - 1; i < len; i++) {
+                indices.push(0, i + 1, i);
+            }
+            this.indices = indices;
+            return {
+                vertices: this.vertices,
+                faces: wd.GeometryUtils.convertToFaces(this.indices, this.normals),
+                texCoords: this.texCoords,
+                colors: this.colors
+            };
+        };
+        __decorate([
+            wd.cloneAttributeAsCustomType(function (source, target, memberName) {
+                target[memberName] = wd.CloneUtils.cloneArray(source[memberName]);
+            })
+        ], ConvexPolygonGeometry.prototype, "vertices", null);
+        __decorate([
+            wd.cloneAttributeAsCustomType(function (source, target, memberName) {
+                target[memberName] = wd.CloneUtils.cloneArray(source[memberName]);
+            })
+        ], ConvexPolygonGeometry.prototype, "texCoords", null);
+        __decorate([
+            wd.cloneAttributeAsCustomType(function (source, target, memberName) {
+                target[memberName] = wd.CloneUtils.cloneArray(source[memberName]);
+            })
+        ], ConvexPolygonGeometry.prototype, "colors", null);
+        __decorate([
+            wd.cloneAttributeAsCustomType(function (source, target, memberName) {
+                target[memberName] = wd.CloneUtils.cloneArray(source[memberName]);
+            })
+        ], ConvexPolygonGeometry.prototype, "indices", null);
+        __decorate([
+            wd.cloneAttributeAsCustomType(function (source, target, memberName) {
+                target[memberName] = wd.CloneUtils.cloneArray(source[memberName]);
+            })
+        ], ConvexPolygonGeometry.prototype, "normals", null);
+        return ConvexPolygonGeometry;
+    }(wd.Geometry));
+    wd.ConvexPolygonGeometry = ConvexPolygonGeometry;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
     var GeometryUtils = (function () {
         function GeometryUtils() {
         }
@@ -16964,7 +23370,6 @@ var wd;
                 this._vertices = vertices;
                 if (this.buffers) {
                     this.buffers.geometryData.vertices = vertices;
-                    this.buffers.removeCache(wd.EBufferDataType.VERTICE);
                 }
             },
             enumerable: true,
@@ -16978,7 +23383,6 @@ var wd;
                 this._texCoords = texCoords;
                 if (this.buffers) {
                     this.buffers.geometryData.texCoords = texCoords;
-                    this.buffers.removeCache(wd.EBufferDataType.TEXCOORD);
                 }
             },
             enumerable: true,
@@ -16992,7 +23396,6 @@ var wd;
                 this._colors = colors;
                 if (this.buffers) {
                     this.buffers.geometryData.colors = colors;
-                    this.buffers.removeCache(wd.EBufferDataType.COLOR);
                 }
             },
             enumerable: true,
@@ -17006,7 +23409,6 @@ var wd;
                 this._indices = indices;
                 if (this.buffers) {
                     this.buffers.geometryData.faces = wd.GeometryUtils.convertToFaces(indices, this.normals);
-                    this.buffers.removeCache(wd.EBufferDataType.INDICE);
                 }
             },
             enumerable: true,
@@ -17020,7 +23422,6 @@ var wd;
                 this._normals = normals;
                 if (this.buffers) {
                     this.buffers.geometryData.faces = wd.GeometryUtils.convertToFaces(this.indices, normals);
-                    this.buffers.removeCache(wd.EBufferDataType.NORMAL);
                 }
             },
             enumerable: true,
@@ -19569,6 +25970,9 @@ var wd;
             var dataArr = Array.prototype.slice.call(arguments, 2), action = new this(func, context, dataArr);
             return action;
         };
+        CallFunc.prototype.clone = function () {
+            return wd.CloneUtils.clone(this, null, [this._callFunc, this._context, this._dataArr.clone(true).toArray()]);
+        };
         CallFunc.prototype.reverse = function () {
             return this;
         };
@@ -19578,17 +25982,6 @@ var wd;
             }
             this.finish();
         };
-        __decorate([
-            wd.cloneAttributeAsBasicType()
-        ], CallFunc.prototype, "_context", void 0);
-        __decorate([
-            wd.cloneAttributeAsBasicType()
-        ], CallFunc.prototype, "_callFunc", void 0);
-        __decorate([
-            wd.cloneAttributeAsCustomType(function (source, target, memberName, cloneData) {
-                target[memberName] = source[memberName].clone(true);
-            })
-        ], CallFunc.prototype, "_dataArr", void 0);
         return CallFunc;
     }(wd.ActionInstant));
     wd.CallFunc = CallFunc;
@@ -19724,6 +26117,9 @@ var wd;
         Sequence.prototype.initWhenCreate = function () {
             this._currentAction = this._actions.getChild(0);
         };
+        Sequence.prototype.clone = function () {
+            return wd.CloneUtils.clone(this, null, this._actions.clone(true).toArray());
+        };
         Sequence.prototype.update = function (elapsed) {
             if (this._actionIndex === this._actions.getCount()) {
                 this.finish();
@@ -19783,17 +26179,14 @@ var wd;
             this._actions.getChild(this._actionIndex).start();
         };
         __decorate([
-            wd.cloneAttributeAsCustomType(function (source, target, memberName, cloneData) {
-                target[memberName] = source[memberName].clone(true);
-            })
-        ], Sequence.prototype, "_actions", void 0);
-        __decorate([
             wd.require(function () {
                 var args = [];
                 for (var _i = 0; _i < arguments.length; _i++) {
                     args[_i - 0] = arguments[_i];
                 }
-                wd.Log.assert(args.length >= 2, "Sequence should has two actions at least");
+                wd.it("action's count should > 1", function () {
+                    wd.expect(args.length).to.greaterThan(1);
+                });
             })
         ], Sequence, "create", null);
         return Sequence;
@@ -19815,9 +26208,11 @@ var wd;
                 args[_i - 0] = arguments[_i];
             }
             var spawn = null;
-            wd.Log.assert(args.length >= 2, "Sequence should has two actions at least");
             spawn = new this(args);
             return spawn;
+        };
+        Spawn.prototype.clone = function () {
+            return wd.CloneUtils.clone(this, null, this._actions.clone(true).toArray());
         };
         Spawn.prototype.update = function (elapsed) {
             if (this._isFinish()) {
@@ -19878,10 +26273,16 @@ var wd;
             return isFinish;
         };
         __decorate([
-            wd.cloneAttributeAsCustomType(function (source, target, memberName, cloneData) {
-                target[memberName] = source[memberName].clone(true);
+            wd.require(function () {
+                var args = [];
+                for (var _i = 0; _i < arguments.length; _i++) {
+                    args[_i - 0] = arguments[_i];
+                }
+                wd.it("action's count should > 1", function () {
+                    wd.expect(args.length).to.greaterThan(1);
+                });
             })
-        ], Spawn.prototype, "_actions", void 0);
+        ], Spawn, "create", null);
         return Spawn;
     }(wd.Control));
     wd.Spawn = Spawn;
@@ -19898,12 +26299,12 @@ var wd;
             var action = new this(delayTime);
             return action;
         };
+        DelayTime.prototype.clone = function () {
+            return wd.CloneUtils.clone(this, null, [this.duration]);
+        };
         DelayTime.prototype.reverse = function () {
             return this;
         };
-        __decorate([
-            wd.cloneAttributeAsBasicType()
-        ], DelayTime.prototype, "duration", void 0);
         return DelayTime;
     }(wd.ActionInterval));
     wd.DelayTime = DelayTime;
@@ -19924,6 +26325,9 @@ var wd;
             var repeat = new this(action, times);
             repeat.initWhenCreate();
             return repeat;
+        };
+        Repeat.prototype.clone = function () {
+            return wd.CloneUtils.clone(this, null, [this._innerAction.clone(), this._times]);
         };
         Repeat.prototype.initWhenCreate = function () {
             this._originTimes = this._times;
@@ -19968,12 +26372,6 @@ var wd;
         Repeat.prototype.getInnerActions = function () {
             return wdCb.Collection.create([this._innerAction]);
         };
-        __decorate([
-            wd.cloneAttributeAsCloneable()
-        ], Repeat.prototype, "_innerAction", void 0);
-        __decorate([
-            wd.cloneAttributeAsBasicType()
-        ], Repeat.prototype, "_times", void 0);
         return Repeat;
     }(wd.Control));
     wd.Repeat = Repeat;
@@ -19990,6 +26388,9 @@ var wd;
         RepeatForever.create = function (action) {
             var repeat = new this(action);
             return repeat;
+        };
+        RepeatForever.prototype.clone = function () {
+            return wd.CloneUtils.clone(this, null, [this._innerAction.clone()]);
         };
         RepeatForever.prototype.update = function (elapsed) {
             this._innerAction.update(elapsed);
@@ -20017,9 +26418,6 @@ var wd;
         RepeatForever.prototype.getInnerActions = function () {
             return wdCb.Collection.create([this._innerAction]);
         };
-        __decorate([
-            wd.cloneAttributeAsCloneable()
-        ], RepeatForever.prototype, "_innerAction", void 0);
         return RepeatForever;
     }(wd.Control));
     wd.RepeatForever = RepeatForever;
@@ -23690,13 +30088,460 @@ var wd;
 })(wd || (wd = {}));
 var wd;
 (function (wd) {
-    var UI = (function (_super) {
-        __extends(UI, _super);
-        function UI() {
+    var BitmapFontLayout = (function () {
+        function BitmapFontLayout() {
+            this._layoutList = wdCb.Collection.create();
+            this._searchGlyph = wd.BitmapFontSearchGlyph.create();
+        }
+        BitmapFontLayout.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        BitmapFontLayout.prototype.getLayoutData = function (text, fntId, _a) {
+            var _b = _a.width, width = _b === void 0 ? 0 : _b, _c = _a.tabSize, tabSize = _c === void 0 ? 4 : _c, _d = _a.letterSpacing, letterSpacing = _d === void 0 ? 0 : _d, _e = _a.align, align = _e === void 0 ? wd.EFontXAlignment.LEFT : _e;
+            var fntData = this._getFntObj(fntId);
+            if (!fntData) {
+                wd.Log.log("impossible to create font: not find fnt file");
+                return;
+            }
+            this._searchGlyph.setupSpaceGlyphs(fntData, tabSize);
+            var lines = wd.BitmapFontWordWrapper.getLines(fntData, text, this._searchGlyph, {
+                width: width,
+                letterSpacing: letterSpacing,
+            }), minWidth = width, maxLineWidth = null, x = 0, y = 0, lineHeight = fntData.commonHeight, baseline = fntData.commonBase;
+            this._layoutList.removeAllChildren();
+            maxLineWidth = lines.reduce(function (prev, line) {
+                return Math.max(prev, line.width, minWidth);
+            }, 0);
+            for (var lineIndex = 0, len = lines.length; lineIndex < len; lineIndex++) {
+                var line = lines[lineIndex], start = line.start, end = line.end, lineWidth = line.width, lastGlyph = null;
+                for (var i = start; i < end; i++) {
+                    var id = text.charCodeAt(i), glyph = this._searchGlyph.getGlyph(fntData, id), tx = null;
+                    if (glyph) {
+                        if (lastGlyph) {
+                            x += wd.BitmapFontParser.getKerning(fntData, lastGlyph.id, glyph.id);
+                        }
+                        tx = x;
+                        if (align === wd.EFontXAlignment.CENTER) {
+                            tx += (maxLineWidth - lineWidth) / 2;
+                        }
+                        else if (align === wd.EFontXAlignment.RIGHT) {
+                            tx += (maxLineWidth - lineWidth);
+                        }
+                        this._layoutList.addChild({
+                            position: [tx + glyph.xOffset, y + glyph.yOffset],
+                            data: glyph,
+                            index: i,
+                            line: lineIndex
+                        });
+                        x += glyph.xAdvance + letterSpacing;
+                        lastGlyph = glyph;
+                    }
+                }
+                y += lineHeight;
+                x = 0;
+            }
+            return this._layoutList;
+        };
+        BitmapFontLayout.prototype._getFntObj = function (fntId) {
+            return wd.LoaderManager.getInstance().get(fntId);
+        };
+        return BitmapFontLayout;
+    }());
+    wd.BitmapFontLayout = BitmapFontLayout;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var BitmapFontParser = (function () {
+        function BitmapFontParser() {
+        }
+        BitmapFontParser.getKerning = function (fntObj, left, right) {
+            if (!fntObj.kerningArray || fntObj.kerningArray.length === 0) {
+                return 0;
+            }
+            var table = fntObj.kerningArray;
+            for (var i = 0; i < table.length; i++) {
+                var kern = table[i];
+                if (kern.first === left && kern.second === right) {
+                    return kern.amount;
+                }
+            }
+            return 0;
+        };
+        return BitmapFontParser;
+    }());
+    wd.BitmapFontParser = BitmapFontParser;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var M_WIDTHS = ['m', 'w'], TAB_ID = '\t'.charCodeAt(0), SPACE_ID = ' '.charCodeAt(0);
+    var BitmapFontSearchGlyph = (function () {
+        function BitmapFontSearchGlyph() {
+            this._fallbackSpaceGlyph = null;
+            this._fallbackTabGlyph = null;
+        }
+        BitmapFontSearchGlyph.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        BitmapFontSearchGlyph.prototype.getGlyph = function (fntObj, id) {
+            var glyph = this.getGlyphById(fntObj, id);
+            if (glyph) {
+                return glyph;
+            }
+            else if (id === TAB_ID) {
+                return this._fallbackTabGlyph;
+            }
+            else if (id === SPACE_ID) {
+                return this._fallbackSpaceGlyph;
+            }
+            return null;
+        };
+        BitmapFontSearchGlyph.prototype.getGlyphById = function (fntObj, id) {
+            var dict = this._getFontDefDictionary(fntObj);
+            if (!dict) {
+                return null;
+            }
+            return dict[String(id)];
+        };
+        BitmapFontSearchGlyph.prototype.setupSpaceGlyphs = function (fntObj, tabSize) {
+            if (!this._getFontDefDictionary(fntObj)) {
+                return;
+            }
+            var space = this.getGlyphById(fntObj, SPACE_ID)
+                || this._getMGlyph(fntObj)
+                || this._getFirstGlyph(fntObj), tabWidth = tabSize * space.xAdvance;
+            this._fallbackSpaceGlyph = space;
+            this._fallbackTabGlyph = {
+                id: String(TAB_ID),
+                rect: {
+                    x: 0, y: 0, width: 0, height: 0
+                },
+                xOffset: 0,
+                yOffset: 0,
+                xAdvance: tabWidth
+            };
+        };
+        BitmapFontSearchGlyph.prototype._getMGlyph = function (fntObj) {
+            var glyph = null;
+            for (var i = 0; i < M_WIDTHS.length; i++) {
+                var id = M_WIDTHS[i].charCodeAt(0), glyph_1 = this.getGlyphById(fntObj, id);
+                if (glyph_1) {
+                    break;
+                }
+            }
+            return glyph;
+        };
+        BitmapFontSearchGlyph.prototype._getFirstGlyph = function (fntObj) {
+            var fontDefDictionary = this._getFontDefDictionary(fntObj), result = null;
+            for (var charData in fontDefDictionary) {
+                result = fontDefDictionary[charData];
+                break;
+            }
+            return result;
+        };
+        BitmapFontSearchGlyph.prototype._getFontDefDictionary = function (fntObj) {
+            return fntObj.fontDefDictionary;
+        };
+        return BitmapFontSearchGlyph;
+    }());
+    wd.BitmapFontSearchGlyph = BitmapFontSearchGlyph;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var NEWLINE_CHAR = '\n', WHITESPACE = /\s/;
+    var BitmapFontWordWrapper = (function () {
+        function BitmapFontWordWrapper() {
+        }
+        BitmapFontWordWrapper.getLines = function (fntObj, text, searchGlyph, _a) {
+            var letterSpacing = _a.letterSpacing, _b = _a.width, width = _b === void 0 ? Number.MAX_VALUE : _b, _c = _a.start, start = _c === void 0 ? 0 : _c, _d = _a.end, end = _d === void 0 ? text.length : _d;
+            return this._greedy(fntObj, text, letterSpacing, searchGlyph, start, end, width);
+        };
+        BitmapFontWordWrapper._greedy = function (fntObj, text, letterSpacing, searchGlyph, start, end, width) {
+            var lines = [], testWidth = width;
+            while (start < end && start < text.length) {
+                var newLine = this._findNewLineIndex(text, NEWLINE_CHAR, start, end);
+                while (start < newLine) {
+                    if (!this._isWhitespace(text.charAt(start))) {
+                        break;
+                    }
+                    start++;
+                }
+                var measured = this._computeMetrics(fntObj, text, letterSpacing, searchGlyph, start, newLine, testWidth), lineEnd = start + (measured.end - measured.start), nextStart = lineEnd + NEWLINE_CHAR.length;
+                if (lineEnd < newLine) {
+                    while (lineEnd > start) {
+                        if (this._isWhitespace(text.charAt(lineEnd))) {
+                            break;
+                        }
+                        lineEnd--;
+                    }
+                    if (lineEnd === start) {
+                        if (nextStart > start + NEWLINE_CHAR.length) {
+                            nextStart--;
+                        }
+                        lineEnd = nextStart;
+                    }
+                    else {
+                        nextStart = lineEnd;
+                        while (lineEnd > start) {
+                            if (!this._isWhitespace(text.charAt(lineEnd - NEWLINE_CHAR.length))) {
+                                break;
+                            }
+                            lineEnd--;
+                        }
+                    }
+                }
+                if (lineEnd >= start) {
+                    lines.push(this._computeMetrics(fntObj, text, letterSpacing, searchGlyph, start, lineEnd, testWidth));
+                }
+                start = nextStart;
+            }
+            return lines;
+        };
+        BitmapFontWordWrapper._computeMetrics = function (fntObj, text, letterSpacing, searchGlyph, start, end, width) {
+            var curPen = 0, curWidth = 0, count = 0, lastGlyph = null;
+            if (!fntObj.fontDefDictionary) {
+                return {
+                    start: start,
+                    end: start,
+                    width: 0
+                };
+            }
+            end = Math.min(text.length, end);
+            for (var i = start; i < end; i++) {
+                var id = text.charCodeAt(i), glyph = searchGlyph.getGlyph(fntObj, id);
+                if (glyph) {
+                    var kern = lastGlyph ? wd.BitmapFontParser.getKerning(fntObj, lastGlyph.id, glyph.id) : 0, nextPen = null, nextWidth = null;
+                    curPen += kern;
+                    nextPen = curPen + glyph.xAdvance + letterSpacing;
+                    nextWidth = curPen + glyph.rect.width;
+                    if (nextWidth > width || nextPen > width) {
+                        if (count === 0) {
+                            count = 1;
+                            curWidth = nextWidth;
+                        }
+                        break;
+                    }
+                    curPen = nextPen;
+                    curWidth = nextWidth;
+                    lastGlyph = glyph;
+                }
+                count++;
+            }
+            if (lastGlyph) {
+                curWidth += lastGlyph.xOffset;
+            }
+            return {
+                start: start,
+                end: start + count,
+                width: curWidth
+            };
+        };
+        BitmapFontWordWrapper._findNewLineIndex = function (text, chr, start, end) {
+            var idx = text.indexOf(chr, start);
+            if (idx === -1 || idx > end) {
+                return end;
+            }
+            return idx;
+        };
+        BitmapFontWordWrapper._isWhitespace = function (chr) {
+            return WHITESPACE.test(chr);
+        };
+        return BitmapFontWordWrapper;
+    }());
+    wd.BitmapFontWordWrapper = BitmapFontWordWrapper;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var ThreeDUI = (function (_super) {
+        __extends(ThreeDUI, _super);
+        function ThreeDUI() {
+            _super.apply(this, arguments);
+        }
+        ThreeDUI.prototype.update = function (elapsed) {
+        };
+        ThreeDUI.prototype.addToObject = function (entityObject, isShareComponent) {
+            if (isShareComponent === void 0) { isShareComponent = false; }
+            var engine = wd.ThreeDUIEngine.getInstance();
+            _super.prototype.addToObject.call(this, entityObject, isShareComponent);
+            if (!engine.hasChild(this)) {
+                engine.addChild(this);
+            }
+        };
+        ThreeDUI.prototype.removeFromObject = function (entityObject) {
+            _super.prototype.removeFromObject.call(this, entityObject);
+            wd.ThreeDUIEngine.getInstance().removeChild(this);
+        };
+        __decorate([
+            wd.virtual
+        ], ThreeDUI.prototype, "update", null);
+        __decorate([
+            wd.require(function (entityObject) {
+                wd.expect(entityObject).instanceOf(wd.GameObject);
+            })
+        ], ThreeDUI.prototype, "addToObject", null);
+        return ThreeDUI;
+    }(wd.Component));
+    wd.ThreeDUI = ThreeDUI;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var Line = (function (_super) {
+        __extends(Line, _super);
+        function Line() {
+            _super.apply(this, arguments);
+        }
+        Line.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        return Line;
+    }(wd.ThreeDUI));
+    wd.Line = Line;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var Arrow = (function (_super) {
+        __extends(Arrow, _super);
+        function Arrow() {
+            _super.apply(this, arguments);
+        }
+        Arrow.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        return Arrow;
+    }(wd.ThreeDUI));
+    wd.Arrow = Arrow;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var ThreeDFont = (function (_super) {
+        __extends(ThreeDFont, _super);
+        function ThreeDFont() {
+            _super.apply(this, arguments);
+            this.needFormat = false;
+            this._isFirstUpdate = true;
+        }
+        ThreeDFont.prototype.update = function (elapsed) {
+            if (!this._isFirstUpdate) {
+                if (this.needFormat) {
+                    this.reFormat();
+                }
+            }
+            else {
+                this._isFirstUpdate = false;
+            }
+            this.needFormat = false;
+        };
+        ThreeDFont.prototype.reFormat = function () {
+        };
+        __decorate([
+            wd.virtual
+        ], ThreeDFont.prototype, "reFormat", null);
+        return ThreeDFont;
+    }(wd.ThreeDUI));
+    wd.ThreeDFont = ThreeDFont;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var ThreeDBitmapFont = (function (_super) {
+        __extends(ThreeDBitmapFont, _super);
+        function ThreeDBitmapFont() {
+            _super.apply(this, arguments);
+            this._text = "";
+            this._xAlignment = wd.EFontXAlignment.LEFT;
+            this.fntId = null;
+            this._width = null;
+            this.height = 0;
+            this.layoutDataList = null;
+            this._layout = wd.BitmapFontLayout.create();
+        }
+        ThreeDBitmapFont.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        Object.defineProperty(ThreeDBitmapFont.prototype, "text", {
+            get: function () {
+                return this._text;
+            },
+            set: function (text) {
+                if (this._text !== text) {
+                    this._text = text;
+                    this.needFormat = true;
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(ThreeDBitmapFont.prototype, "xAlignment", {
+            get: function () {
+                return this._xAlignment;
+            },
+            set: function (xAlignment) {
+                if (this._xAlignment !== xAlignment) {
+                    this._xAlignment = xAlignment;
+                    this.needFormat = true;
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(ThreeDBitmapFont.prototype, "width", {
+            get: function () {
+                return this._width;
+            },
+            set: function (width) {
+                if (this._width !== width) {
+                    this._width = width;
+                    this.needFormat = true;
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        ThreeDBitmapFont.prototype.init = function () {
+            _super.prototype.init.call(this);
+            this.layoutDataList = this._layout.getLayoutData(this.text, this.fntId, {
+                width: this.width,
+                align: this.xAlignment
+            });
+        };
+        ThreeDBitmapFont.prototype.reFormat = function () {
+            this.layoutDataList = this._layout.getLayoutData(this.text, this.fntId, {
+                width: this.width,
+                align: this.xAlignment
+            });
+            this.entityObject.getComponent(wd.BitmapFontGeometry).updateBuffers();
+        };
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], ThreeDBitmapFont.prototype, "text", null);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], ThreeDBitmapFont.prototype, "xAlignment", null);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], ThreeDBitmapFont.prototype, "fntId", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], ThreeDBitmapFont.prototype, "_width", void 0);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], ThreeDBitmapFont.prototype, "height", void 0);
+        return ThreeDBitmapFont;
+    }(wd.ThreeDFont));
+    wd.ThreeDBitmapFont = ThreeDBitmapFont;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var TwoDUI = (function (_super) {
+        __extends(TwoDUI, _super);
+        function TwoDUI() {
             _super.apply(this, arguments);
             this.context = null;
         }
-        Object.defineProperty(UI.prototype, "dirty", {
+        Object.defineProperty(TwoDUI.prototype, "dirty", {
             get: function () {
                 var renderer = this.getUIRenderer();
                 if (!renderer) {
@@ -23716,38 +30561,38 @@ var wd;
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(UI.prototype, "width", {
+        Object.defineProperty(TwoDUI.prototype, "width", {
             get: function () {
                 return this.entityObject ? this.entityObject.transform.width : null;
             },
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(UI.prototype, "height", {
+        Object.defineProperty(TwoDUI.prototype, "height", {
             get: function () {
                 return this.entityObject ? this.entityObject.transform.height : null;
             },
             enumerable: true,
             configurable: true
         });
-        UI.prototype.update = function (elapsed) {
+        TwoDUI.prototype.update = function (elapsed) {
         };
-        UI.prototype.init = function () {
+        TwoDUI.prototype.init = function () {
             this.context = this.getContext();
         };
-        UI.prototype.addToObject = function (entityObject, isShareComponent) {
+        TwoDUI.prototype.addToObject = function (entityObject, isShareComponent) {
             if (isShareComponent === void 0) { isShareComponent = false; }
-            var engine = wd.UIEngine.getInstance();
+            var engine = wd.TwoDUIEngine.getInstance();
             _super.prototype.addToObject.call(this, entityObject, isShareComponent);
             if (!engine.hasChild(this)) {
                 engine.addChild(this);
             }
         };
-        UI.prototype.removeFromObject = function (entityObject) {
+        TwoDUI.prototype.removeFromObject = function (entityObject) {
             _super.prototype.removeFromObject.call(this, entityObject);
-            wd.UIEngine.getInstance().removeChild(this);
+            wd.TwoDUIEngine.getInstance().removeChild(this);
         };
-        UI.prototype.render = function () {
+        TwoDUI.prototype.render = function () {
             var context = this.context;
             if (this.shouldNotRender()) {
                 return;
@@ -23757,24 +30602,24 @@ var wd;
             this.draw();
             context.restore();
         };
-        UI.prototype.draw = function () {
+        TwoDUI.prototype.draw = function () {
         };
-        UI.prototype.shouldNotRender = function () {
+        TwoDUI.prototype.shouldNotRender = function () {
             return false;
         };
-        UI.prototype.getContext = function () {
+        TwoDUI.prototype.getContext = function () {
             return this.getUIRenderer().context;
         };
-        UI.prototype.getCanvas = function () {
+        TwoDUI.prototype.getCanvas = function () {
             return this.getUIRenderer().canvas;
         };
-        UI.prototype.getUIRenderer = function () {
+        TwoDUI.prototype.getUIRenderer = function () {
             if (!this.entityObject) {
                 return null;
             }
             return this.entityObject.getComponent(wd.UIRenderer);
         };
-        UI.prototype.drawInCenterPoint = function () {
+        TwoDUI.prototype.drawInCenterPoint = function () {
             var args = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 args[_i - 0] = arguments[_i];
@@ -23789,35 +30634,35 @@ var wd;
                 context.drawImage(source, sx, sy, sw, sh, position.x - width / 2, position.y - height / 2, width, height);
             }
         };
-        UI.prototype._setCanvasTransformForRotation = function () {
+        TwoDUI.prototype._setCanvasTransformForRotation = function () {
             var matrix = this.entityObject.transform.rotationMatrix;
             this.context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
         };
         __decorate([
             wd.virtual
-        ], UI.prototype, "dirty", null);
+        ], TwoDUI.prototype, "dirty", null);
         __decorate([
             wd.virtual
-        ], UI.prototype, "update", null);
+        ], TwoDUI.prototype, "update", null);
         __decorate([
             wd.require(function (entityObject) {
-                wd.assert(entityObject instanceof wd.UIObject, wd.Log.info.FUNC_SHOULD("Octree component", "add to GameObject"));
+                wd.expect(entityObject).instanceOf(wd.UIObject);
             })
-        ], UI.prototype, "addToObject", null);
+        ], TwoDUI.prototype, "addToObject", null);
         __decorate([
             wd.require(function () {
                 wd.assert(this.context !== null, wd.Log.info.FUNC_SHOULD("set context"));
             })
-        ], UI.prototype, "render", null);
+        ], TwoDUI.prototype, "render", null);
         __decorate([
             wd.virtual
-        ], UI.prototype, "draw", null);
+        ], TwoDUI.prototype, "draw", null);
         __decorate([
             wd.virtual
-        ], UI.prototype, "shouldNotRender", null);
-        return UI;
+        ], TwoDUI.prototype, "shouldNotRender", null);
+        return TwoDUI;
     }(wd.Component));
-    wd.UI = UI;
+    wd.TwoDUI = TwoDUI;
 })(wd || (wd = {}));
 var wd;
 (function (wd) {
@@ -23846,15 +30691,15 @@ var wd;
 })(wd || (wd = {}));
 var wd;
 (function (wd) {
-    var Font = (function (_super) {
-        __extends(Font, _super);
-        function Font() {
+    var TwoDFont = (function (_super) {
+        __extends(TwoDFont, _super);
+        function TwoDFont() {
             _super.apply(this, arguments);
             this.needFormat = false;
             this._isFirstUpdate = true;
             this._sizeChangeEventSubscription = null;
         }
-        Font.prototype.init = function () {
+        TwoDFont.prototype.init = function () {
             var self = this;
             _super.prototype.init.call(this);
             this._sizeChangeEventSubscription = wd.EventManager.fromEvent(this.entityObject, wd.EEngineEvent.UI_WIDTH_CHANGE)
@@ -23864,12 +30709,12 @@ var wd;
                 self.needFormat = true;
             });
         };
-        Font.prototype.dispose = function () {
+        TwoDFont.prototype.dispose = function () {
             if (this._sizeChangeEventSubscription) {
                 this._sizeChangeEventSubscription.dispose();
             }
         };
-        Font.prototype.update = function (elapsed) {
+        TwoDFont.prototype.update = function (elapsed) {
             if (!this._isFirstUpdate) {
                 if (this.needFormat) {
                     this.reFormat();
@@ -23880,18 +30725,18 @@ var wd;
             }
             this.needFormat = false;
         };
-        Font.prototype.reFormat = function () {
+        TwoDFont.prototype.reFormat = function () {
         };
-        Font.prototype.getLeftCornerPosition = function () {
+        TwoDFont.prototype.getLeftCornerPosition = function () {
             var transform = this.entityObject.transform, position = transform.position;
             return wd.Vector2.create(position.x - transform.width / 2, position.y - transform.height / 2);
         };
         __decorate([
             wd.virtual
-        ], Font.prototype, "reFormat", null);
-        return Font;
-    }(wd.UI));
-    wd.Font = Font;
+        ], TwoDFont.prototype, "reFormat", null);
+        return TwoDFont;
+    }(wd.TwoDUI));
+    wd.TwoDFont = TwoDFont;
 })(wd || (wd = {}));
 var wd;
 (function (wd) {
@@ -24208,26 +31053,27 @@ var wd;
             wd.cloneAttributeAsBasicType()
         ], PlainFont.prototype, "_lineHeight", void 0);
         return PlainFont;
-    }(wd.Font));
+    }(wd.TwoDFont));
     wd.PlainFont = PlainFont;
 })(wd || (wd = {}));
 var wd;
 (function (wd) {
-    var BitmapFont = (function (_super) {
-        __extends(BitmapFont, _super);
-        function BitmapFont() {
+    var TwoDBitmapFont = (function (_super) {
+        __extends(TwoDBitmapFont, _super);
+        function TwoDBitmapFont() {
             _super.apply(this, arguments);
             this._text = "";
             this._xAlignment = wd.EFontXAlignment.LEFT;
             this.fntId = null;
             this.bitmapId = null;
             this._charFontList = wdCb.Collection.create();
+            this._layout = wd.BitmapFontLayout.create();
         }
-        BitmapFont.create = function () {
+        TwoDBitmapFont.create = function () {
             var obj = new this();
             return obj;
         };
-        Object.defineProperty(BitmapFont.prototype, "text", {
+        Object.defineProperty(TwoDBitmapFont.prototype, "text", {
             get: function () {
                 return this._text;
             },
@@ -24241,7 +31087,7 @@ var wd;
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(BitmapFont.prototype, "xAlignment", {
+        Object.defineProperty(TwoDBitmapFont.prototype, "xAlignment", {
             get: function () {
                 return this._xAlignment;
             },
@@ -24255,170 +31101,59 @@ var wd;
             enumerable: true,
             configurable: true
         });
-        BitmapFont.prototype.init = function () {
-            var fntObj = this._getFntObj(), imageAsset = this._getImageAsset();
-            if (!fntObj) {
-                wd.Log.log("impossible to create font: not find fnt file");
-                return false;
-            }
+        TwoDBitmapFont.prototype.init = function () {
+            var imageAsset = this._getImageAsset();
             if (!imageAsset) {
                 wd.Log.log("impossible to create font: not find bitmap file");
                 return false;
             }
             _super.prototype.init.call(this);
-            this._createAndAddFontCharUIObjects(fntObj, imageAsset.source);
-            this._formatText(fntObj);
+            var layoutDataList = this._layout.getLayoutData(this.text, this.fntId, {
+                width: this.width,
+                align: this.xAlignment
+            });
+            if (layoutDataList) {
+                this._createAndAddFontCharUIObjects(layoutDataList, imageAsset);
+            }
         };
-        BitmapFont.prototype.dispose = function () {
+        TwoDBitmapFont.prototype.dispose = function () {
             _super.prototype.dispose.call(this);
             this._removeAllCharFont();
         };
-        BitmapFont.prototype.reFormat = function () {
-            var fntObj = this._getFntObj(), imageAsset = this._getImageAsset();
+        TwoDBitmapFont.prototype.reFormat = function () {
+            var imageAsset = this._getImageAsset();
             this._removeAllCharFont();
-            if (!fntObj) {
-                wd.Log.log("impossible to create font: not find fnt file");
-                return false;
-            }
             if (!imageAsset) {
                 wd.Log.log("impossible to create font: not find bitmap file");
                 return false;
             }
-            this._createAndAddFontCharUIObjects(fntObj, imageAsset.source);
-            this._formatText(fntObj);
+            var layoutDataList = this._layout.getLayoutData(this.text, this.fntId, {
+                width: this.width,
+                align: this.xAlignment
+            });
+            if (layoutDataList) {
+                this._createAndAddFontCharUIObjects(layoutDataList, imageAsset);
+            }
         };
-        BitmapFont.prototype._getFntObj = function () {
-            return wd.LoaderManager.getInstance().get(this.fntId);
-        };
-        BitmapFont.prototype._getImageAsset = function () {
+        TwoDBitmapFont.prototype._getImageAsset = function () {
             return wd.LoaderManager.getInstance().get(this.bitmapId);
         };
-        BitmapFont.prototype._createAndAddFontCharUIObjects = function (fntObj, image) {
-            var locStr = this.text, locFontDict = fntObj.fontDefDictionary, nextFontPositionX = 0, nextFontPositionY = 0, position = this.getLeftCornerPosition(), uiRenderer = this.getUIRenderer(), charFontUIObject = null, charFont = null;
-            for (var i = 0, stringLen = locStr.length; i < stringLen; i++) {
-                var key = String(locStr.charCodeAt(i)), char = locStr[i];
-                if (this._isNewLine(char)) {
-                    var charFontData_1 = this._createAndAddFontCharObjectOfNewLineChar(i, char, uiRenderer);
-                    charFontUIObject = charFontData_1.charFontUIObject;
-                    charFont = charFontData_1.charFont;
-                    this._setCharFontUIObjectPosition(charFontUIObject, position.x + nextFontPositionX, position.y + nextFontPositionY);
-                    charFont.startPosX = nextFontPositionX;
-                    charFont.xAdvance = 0;
-                    nextFontPositionX = 0;
-                    nextFontPositionY = nextFontPositionY + fntObj.commonHeight;
-                    continue;
-                }
-                var fontDef = this._getFontDef(locFontDict, key), charFontData = null;
-                if (!fontDef) {
-                    wd.Log.log("character not found " + char);
-                    continue;
-                }
-                charFontData = this._createAndAddFontCharObjectOfCommonChar(fontDef, image, i, char, uiRenderer);
-                charFontUIObject = charFontData.charFontUIObject;
-                charFont = charFontData.charFont;
-                this._setCharFontUIObjectPosition(charFontUIObject, position.x + nextFontPositionX + fontDef.xOffset, position.y + nextFontPositionY + fontDef.yOffset);
-                charFont.startPosX = nextFontPositionX;
-                charFont.xAdvance = fontDef.xAdvance;
-                nextFontPositionX = nextFontPositionX + fontDef.xAdvance;
-            }
-        };
-        BitmapFont.prototype._createAndAddFontCharObjectOfNewLineChar = function (index, char, uiRenderer) {
-            var charFontUIObject = this._findCharFontUIObject(index), charFont = null;
-            if (!charFontUIObject) {
-                var charFontData = this._createCharFont(index, uiRenderer);
-                charFontUIObject = charFontData.charFontUIObject;
-                charFont = charFontData.charFont;
-                this._addCharFontUIObject(charFontUIObject);
-            }
-            else {
-                charFont = charFontUIObject.getComponent(wd.CharFont);
-            }
-            charFont.char = char;
-            return {
-                charFontUIObject: charFontUIObject,
-                charFont: charFont
-            };
-        };
-        BitmapFont.prototype._createAndAddFontCharObjectOfCommonChar = function (fontDef, image, index, char, uiRenderer) {
-            var rect = wd.RectRegion.create(fontDef.rect.x, fontDef.rect.y, fontDef.rect.width, fontDef.rect.height), charFontUIObject = this._findCharFontUIObject(index), charFont = null;
-            if (!charFontUIObject) {
-                var charFontData = this._createCharFont(index, uiRenderer), transform = null;
-                charFontUIObject = charFontData.charFontUIObject;
-                transform = charFontUIObject.transform,
-                    charFont = charFontData.charFont;
+        TwoDBitmapFont.prototype._createAndAddFontCharUIObjects = function (layoutDataList, imageAsset) {
+            var _this = this;
+            var image = imageAsset.source, uiRenderer = this.getUIRenderer(), text = this.text, position = this.getLeftCornerPosition();
+            layoutDataList.forEach(function (layoutData) {
+                var glyphData = layoutData.data, rect = wd.RectRegion.create(glyphData.rect.x, glyphData.rect.y, glyphData.rect.width, glyphData.rect.height), _a = _this._createCharFont(layoutData.index, uiRenderer), charFontUIObject = _a.charFontUIObject, charFont = _a.charFont, transform = null;
+                transform = charFontUIObject.transform;
                 charFont.image = image;
                 charFont.rectRegion = rect;
                 transform.width = rect.width;
                 transform.height = rect.height;
-                this._addCharFontUIObject(charFontUIObject);
-            }
-            else {
-                charFont = charFontUIObject.getComponent(wd.CharFont);
-            }
-            charFont.char = char;
-            return {
-                charFontUIObject: charFontUIObject,
-                charFont: charFont
-            };
+                charFont.char = text[layoutData.index];
+                _this._addCharFontUIObject(charFontUIObject);
+                _this._setCharFontUIObjectPosition(charFontUIObject, position.x + layoutData.position[0], position.y + layoutData.position[1]);
+            });
         };
-        BitmapFont.prototype._formatText = function (fntObj) {
-            if (this.width > 0) {
-                this._formatMultiLine(fntObj);
-            }
-            this._formatAlign();
-        };
-        BitmapFont.prototype._formatMultiLine = function (fntObj) {
-            var entityObject = this.entityObject, characterUIObject = null, charFont = null, position = this.getLeftCornerPosition(), x = 0, y = 0, lineHeight = fntObj.commonHeight;
-            for (var i = 1, stringLen = this.text.length; i < stringLen; i++) {
-                characterUIObject = this._findCharFontUIObject(i);
-                charFont = characterUIObject.getComponent(wd.CharFont);
-                if (this._isNewLine(charFont.char)) {
-                    charFont.isNewLine = true;
-                    charFont.isFullLine = false;
-                    this._translateCharFontUIObject(characterUIObject, -x, y);
-                    x = 0;
-                }
-                if (this._isExceedWidth(position, charFont, x)) {
-                    var prevCharUIObject = this._findCharFontUIObject(i - 1);
-                    if (prevCharUIObject) {
-                        var prevCharFont = prevCharUIObject.getComponent(wd.CharFont);
-                        prevCharFont.isNewLine = true;
-                        if (!this._isSpaceUnicode(prevCharFont.char)) {
-                            prevCharFont.isFullLine = true;
-                        }
-                    }
-                    x = this._getLetterPosXLeft(charFont);
-                    y = y + lineHeight;
-                    this._translateCharFontUIObject(characterUIObject, -x, y);
-                }
-                else {
-                    this._translateCharFontUIObject(characterUIObject, -x, y);
-                }
-            }
-        };
-        BitmapFont.prototype._formatAlign = function () {
-            var position = this.getLeftCornerPosition(), self = this;
-            if (this._xAlignment != wd.EFontXAlignment.LEFT) {
-                var line_1 = [];
-                this._charFontList.forEach(function (charFontUIObject) {
-                    var charFont = charFontUIObject.getComponent(wd.CharFont);
-                    if (!charFont.isNewLine) {
-                        line_1.push(charFont);
-                        return;
-                    }
-                    if (charFont.isNewLine && charFont.isFullLine) {
-                        line_1 = [];
-                        return;
-                    }
-                    self._alignLine(position, line_1, line_1[line_1.length - 1]);
-                    line_1 = [];
-                });
-                if (line_1.length > 0) {
-                    self._alignLine(position, line_1, line_1[line_1.length - 1]);
-                }
-            }
-        };
-        BitmapFont.prototype._createCharFont = function (index, uiRenderer) {
+        TwoDBitmapFont.prototype._createCharFont = function (index, uiRenderer) {
             var charFontUIObject = wd.UIObject.create(), charFont = wd.CharFont.create();
             charFontUIObject.addComponent(charFont);
             charFontUIObject.addComponent(uiRenderer);
@@ -24429,70 +31164,15 @@ var wd;
                 charFont: charFont
             };
         };
-        BitmapFont.prototype._addCharFontUIObject = function (charFontUIObject) {
+        TwoDBitmapFont.prototype._addCharFontUIObject = function (charFontUIObject) {
             this._charFontList.addChild(charFontUIObject);
             this.entityObject.addChild(charFontUIObject);
         };
-        BitmapFont.prototype._findCharFontUIObject = function (index) {
-            return this.entityObject.findChildByTag(String(index));
-        };
-        BitmapFont.prototype._isSpaceUnicode = function (char) {
-            var charCode = char.charCodeAt(0);
-            return charCode == 32 || charCode == 133 || charCode == 160 || charCode == 5760 || (charCode >= 8192 && charCode <= 8202) || charCode == 8232 || charCode == 8233 || charCode == 8239 || charCode == 8287 || charCode == 12288;
-        };
-        BitmapFont.prototype._isNewLine = function (char) {
-            return char.charCodeAt(0) == 10;
-        };
-        BitmapFont.prototype._getLetterPosXLeft = function (sp) {
-            return sp.startPosX;
-        };
-        BitmapFont.prototype._getLetterPosXRight = function (leftCornerPosition, sp) {
-            return wd.CoordinateUtils.convertCenterPositionXToLeftCornerPositionX(sp.x, sp.width) - leftCornerPosition.x + sp.xAdvance;
-        };
-        BitmapFont.prototype._getFontDef = function (fontDict, key) {
-            return fontDict[key];
-        };
-        BitmapFont.prototype._isExceedWidth = function (leftCornerPosition, charFont, x) {
-            return this._getLetterPosXRight(leftCornerPosition, charFont) - x > this.width;
-        };
-        BitmapFont.prototype._alignLine = function (leftCornerPosition, line, lastCharFont) {
-            var self = this;
-            line = this._trimBottomSpaceChar(line);
-            lastCharFont = line[line.length - 1];
-            line.forEach(function (cp) {
-                var shift = null, lineWidth = self._getLetterPosXRight(leftCornerPosition, lastCharFont);
-                switch (self._xAlignment) {
-                    case wd.EFontXAlignment.CENTER:
-                        shift = (self.width - lineWidth) / 2;
-                        break;
-                    case wd.EFontXAlignment.RIGHT:
-                        shift = self.width - lineWidth;
-                        break;
-                    default:
-                        break;
-                }
-                cp.x = cp.x + shift;
-            });
-        };
-        BitmapFont.prototype._trimBottomSpaceChar = function (line) {
-            var i = line.length - 1;
-            if (this._isNewLine(line[i].char)) {
-                i = i - 1;
-            }
-            while (i >= 0 && this._isSpaceUnicode(line[i].char)) {
-                i = i - 1;
-            }
-            line = line.splice(0, i + 1);
-            return line;
-        };
-        BitmapFont.prototype._setCharFontUIObjectPosition = function (charFontUIObject, x, y) {
+        TwoDBitmapFont.prototype._setCharFontUIObjectPosition = function (charFontUIObject, x, y) {
             var transform = charFontUIObject.transform;
-            charFontUIObject.transform.position = wd.CoordinateUtils.convertLeftCornerPositionToCenterPosition(wd.Vector2.create(x, y), transform.width, transform.height);
+            charFontUIObject.transform.position = wd.CoordinateUtils.convertLeftCornerPositionToCenterPositionInCanvas(wd.Vector2.create(x, y), transform.width, transform.height);
         };
-        BitmapFont.prototype._translateCharFontUIObject = function (charFontUIObject, x, y) {
-            charFontUIObject.transform.translate(x, y);
-        };
-        BitmapFont.prototype._removeAllCharFont = function () {
+        TwoDBitmapFont.prototype._removeAllCharFont = function () {
             this._charFontList.forEach(function (charFont) {
                 charFont.dispose();
             });
@@ -24500,30 +31180,19 @@ var wd;
         };
         __decorate([
             wd.cloneAttributeAsBasicType()
-        ], BitmapFont.prototype, "text", null);
+        ], TwoDBitmapFont.prototype, "text", null);
         __decorate([
             wd.cloneAttributeAsBasicType()
-        ], BitmapFont.prototype, "xAlignment", null);
+        ], TwoDBitmapFont.prototype, "xAlignment", null);
         __decorate([
             wd.cloneAttributeAsBasicType()
-        ], BitmapFont.prototype, "fntId", void 0);
+        ], TwoDBitmapFont.prototype, "fntId", void 0);
         __decorate([
             wd.cloneAttributeAsBasicType()
-        ], BitmapFont.prototype, "bitmapId", void 0);
-        __decorate([
-            wd.require(function (fntObj) {
-                if (this.width > 0) {
-                    for (var i = 1, stringLen = this.text.length; i < stringLen; i++) {
-                        var characterUIObject = this.entityObject.findChildByTag(String(i));
-                        wd.assert(!!characterUIObject, "char not has corresponding entityObject");
-                        wd.assert(characterUIObject.hasComponent(wd.CharFont), wd.Log.info.FUNC_SHOULD("char entityObject", "contain CharFont component"));
-                    }
-                }
-            })
-        ], BitmapFont.prototype, "_formatText", null);
-        return BitmapFont;
-    }(wd.Font));
-    wd.BitmapFont = BitmapFont;
+        ], TwoDBitmapFont.prototype, "bitmapId", void 0);
+        return TwoDBitmapFont;
+    }(wd.TwoDFont));
+    wd.TwoDBitmapFont = TwoDBitmapFont;
 })(wd || (wd = {}));
 var wd;
 (function (wd) {
@@ -24536,8 +31205,6 @@ var wd;
             this.xAdvance = null;
             this.image = null;
             this.rectRegion = null;
-            this.isNewLine = false;
-            this.isFullLine = false;
             this._subscription = null;
         }
         CharFont.create = function () {
@@ -24608,7 +31275,7 @@ var wd;
             wd.execOnlyOnce("_isInit")
         ], CharFont.prototype, "init", null);
         return CharFont;
-    }(wd.Font));
+    }(wd.TwoDFont));
     wd.CharFont = CharFont;
 })(wd || (wd = {}));
 var wd;
@@ -24690,7 +31357,7 @@ var wd;
             })
         ], ProgressBar.prototype, "draw", null);
         return ProgressBar;
-    }(wd.UI));
+    }(wd.TwoDUI));
     wd.ProgressBar = ProgressBar;
 })(wd || (wd = {}));
 var wd;
@@ -24828,7 +31495,7 @@ var wd;
             })
         ], Image.prototype, "_blendByPerPixel", null);
         return Image;
-    }(wd.UI));
+    }(wd.TwoDUI));
     wd.Image = Image;
 })(wd || (wd = {}));
 var wd;
@@ -24859,7 +31526,7 @@ var wd;
             })
         ], InteractionUI.prototype, "transitionManager", void 0);
         return InteractionUI;
-    }(wd.UI));
+    }(wd.TwoDUI));
     wd.InteractionUI = InteractionUI;
 })(wd || (wd = {}));
 var wd;
@@ -27506,12 +34173,7 @@ var wd;
         function ModelMatrixHardwareInstanceDrawer() {
             _super.apply(this, arguments);
         }
-        ModelMatrixHardwareInstanceDrawer.getInstance = function () {
-            if (this._instance === null) {
-                this._instance = new this();
-            }
-            return this._instance;
-        };
+        ModelMatrixHardwareInstanceDrawer.getInstance = function () { };
         ModelMatrixHardwareInstanceDrawer.prototype.getOffsetLocationArray = function (program) {
             return [program.getAttribLocation("a_mVec4_0"), program.getAttribLocation("a_mVec4_1"), program.getAttribLocation("a_mVec4_2"), program.getAttribLocation("a_mVec4_3")];
         };
@@ -27533,7 +34195,9 @@ var wd;
                 extension.vertexAttribDivisorANGLE(offsetLocation, 1);
             }
         };
-        ModelMatrixHardwareInstanceDrawer._instance = null;
+        ModelMatrixHardwareInstanceDrawer = __decorate([
+            wd.singleton()
+        ], ModelMatrixHardwareInstanceDrawer);
         return ModelMatrixHardwareInstanceDrawer;
     }(wd.HardwareInstanceDrawer));
     wd.ModelMatrixHardwareInstanceDrawer = ModelMatrixHardwareInstanceDrawer;
@@ -27545,12 +34209,7 @@ var wd;
         function NormalMatrixModelMatrixHardwareInstanceDrawer() {
             _super.apply(this, arguments);
         }
-        NormalMatrixModelMatrixHardwareInstanceDrawer.getInstance = function () {
-            if (this._instance === null) {
-                this._instance = new this();
-            }
-            return this._instance;
-        };
+        NormalMatrixModelMatrixHardwareInstanceDrawer.getInstance = function () { };
         NormalMatrixModelMatrixHardwareInstanceDrawer.prototype.getOffsetLocationArray = function (program) {
             return [
                 program.getAttribLocation("a_mVec4_0"), program.getAttribLocation("a_mVec4_1"), program.getAttribLocation("a_mVec4_2"), program.getAttribLocation("a_mVec4_3"),
@@ -27583,7 +34242,9 @@ var wd;
                 extension.vertexAttribDivisorANGLE(offsetLocation, 1);
             }
         };
-        NormalMatrixModelMatrixHardwareInstanceDrawer._instance = null;
+        NormalMatrixModelMatrixHardwareInstanceDrawer = __decorate([
+            wd.singleton()
+        ], NormalMatrixModelMatrixHardwareInstanceDrawer);
         return NormalMatrixModelMatrixHardwareInstanceDrawer;
     }(wd.HardwareInstanceDrawer));
     wd.NormalMatrixModelMatrixHardwareInstanceDrawer = NormalMatrixModelMatrixHardwareInstanceDrawer;
@@ -27677,12 +34338,7 @@ var wd;
         function ModelMatrixBatchInstanceDrawer() {
             _super.apply(this, arguments);
         }
-        ModelMatrixBatchInstanceDrawer.getInstance = function () {
-            if (this._instance === null) {
-                this._instance = new this();
-            }
-            return this._instance;
-        };
+        ModelMatrixBatchInstanceDrawer.getInstance = function () { };
         ModelMatrixBatchInstanceDrawer.prototype.getUniformDataNameArray = function (program) {
             return ["u_mMatrix"];
         };
@@ -27690,7 +34346,9 @@ var wd;
             var modelMatrixUniformDataName = _a[0];
             program.sendUniformData(modelMatrixUniformDataName, wd.EVariableType.FLOAT_MAT4, instance.transform.localToWorldMatrix);
         };
-        ModelMatrixBatchInstanceDrawer._instance = null;
+        ModelMatrixBatchInstanceDrawer = __decorate([
+            wd.singleton()
+        ], ModelMatrixBatchInstanceDrawer);
         return ModelMatrixBatchInstanceDrawer;
     }(wd.BatchInstanceDrawer));
     wd.ModelMatrixBatchInstanceDrawer = ModelMatrixBatchInstanceDrawer;
@@ -27702,12 +34360,7 @@ var wd;
         function NormalMatrixModelMatrixBatchInstanceDrawer() {
             _super.apply(this, arguments);
         }
-        NormalMatrixModelMatrixBatchInstanceDrawer.getInstance = function () {
-            if (this._instance === null) {
-                this._instance = new this();
-            }
-            return this._instance;
-        };
+        NormalMatrixModelMatrixBatchInstanceDrawer.getInstance = function () { };
         NormalMatrixModelMatrixBatchInstanceDrawer.prototype.getUniformDataNameArray = function (program) {
             return ["u_mMatrix", "u_normalMatrix"];
         };
@@ -27716,7 +34369,9 @@ var wd;
             program.sendUniformData(modelMatrixUniformDataName, wd.EVariableType.FLOAT_MAT4, instance.transform.localToWorldMatrix);
             program.sendUniformData(normalMatrixUniformDataName, wd.EVariableType.FLOAT_MAT3, instance.transform.normalMatrix);
         };
-        NormalMatrixModelMatrixBatchInstanceDrawer._instance = null;
+        NormalMatrixModelMatrixBatchInstanceDrawer = __decorate([
+            wd.singleton()
+        ], NormalMatrixModelMatrixBatchInstanceDrawer);
         return NormalMatrixModelMatrixBatchInstanceDrawer;
     }(wd.BatchInstanceDrawer));
     wd.NormalMatrixModelMatrixBatchInstanceDrawer = NormalMatrixModelMatrixBatchInstanceDrawer;
@@ -27841,7 +34496,7 @@ var wd;
         ], FrameBuffer.prototype, "unBindAll", null);
         __decorate([
             wd.ensure(function (renderBuffer) {
-                wd.Log.assert(!!renderBuffer, wd.Log.info.FUNC_NOT_EXIST("renderbuffer object"));
+                wd.assert(!!renderBuffer, wd.Log.info.FUNC_NOT_EXIST("renderbuffer object"));
             })
         ], FrameBuffer.prototype, "createRenderBuffer", null);
         return FrameBuffer;
@@ -29783,7 +36438,7 @@ var wd;
         };
         EngineShaderLib.prototype._addVariable = function (target, variableArr) {
             variableArr.forEach(function (variable) {
-                wd.Log.assert(wd.VariableLib[variable], wd.Log.info.FUNC_SHOULD(variable, "exist in VariableLib"));
+                wd.assert(wd.VariableLib[variable], wd.Log.info.FUNC_SHOULD(variable, "exist in VariableLib"));
                 target.addChild(variable, wd.VariableLib[variable]);
             });
         };
@@ -31550,6 +38205,115 @@ var wd;
 })(wd || (wd = {}));
 var wd;
 (function (wd) {
+    var ShaderChunk = (function () {
+        function ShaderChunk() {
+        }
+        ShaderChunk.empty = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "" };
+        ShaderChunk.NULL = -1.0;
+        ShaderChunk.normal_morph_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "vec3 a_normal = a_currentFrameNormal + (a_nextFrameNormal - a_currentFrameNormal) * u_interpolation;\n", };
+        ShaderChunk.vertice_morph_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "vec3 a_position = a_currentFramePosition + (a_nextFramePosition - a_currentFramePosition) * u_interpolation;\n", };
+        ShaderChunk.basic_fragment = { top: "", define: "", varDeclare: "varying vec3 v_color;\n", funcDeclare: "", funcDefine: "", body: "vec4 totalColor = vec4(v_color, 1.0);\n", };
+        ShaderChunk.basic_vertex = { top: "", define: "", varDeclare: "varying vec3 v_color;\n", funcDeclare: "", funcDefine: "", body: "v_color = a_color;\n", };
+        ShaderChunk.end_basic_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "gl_FragColor = vec4(totalColor.rgb, totalColor.a * u_opacity);\n", };
+        ShaderChunk.common_define = { top: "", define: "#define NULL -1.0\n", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
+        ShaderChunk.common_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
+        ShaderChunk.common_function = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "mat2 transpose(mat2 m) {\n  return mat2(  m[0][0], m[1][0],   // new col 0\n                m[0][1], m[1][1]    // new col 1\n             );\n  }\nmat3 transpose(mat3 m) {\n  return mat3(  m[0][0], m[1][0], m[2][0],  // new col 0\n                m[0][1], m[1][1], m[2][1],  // new col 1\n                m[0][2], m[1][2], m[2][2]   // new col 1\n             );\n  }\n\nbool isRenderListEmpty(int isRenderListEmpty){\n  return isRenderListEmpty == 1;\n}\n", body: "", };
+        ShaderChunk.common_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
+        ShaderChunk.highp_fragment = { top: "precision highp float;\nprecision highp int;\n", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
+        ShaderChunk.lowp_fragment = { top: "precision lowp float;\nprecision lowp int;\n", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
+        ShaderChunk.mediump_fragment = { top: "precision mediump float;\nprecision mediump int;\n", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
+        ShaderChunk.common_envMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec3 flipNormal(vec3 normal){\n    vec3 normalForRefraction = normal;\n    normalForRefraction.y = -normalForRefraction.y;\n    normalForRefraction.z = -normalForRefraction.z;\n\n    return normalForRefraction;\n}\n", body: "", };
+        ShaderChunk.lightCommon_fragment = { top: "", define: "", varDeclare: "varying vec3 v_worldPosition;\n#if POINT_LIGHTS_COUNT > 0\nstruct PointLight {\n    vec3 position;\n    vec4 color;\n    float intensity;\n\n    float range;\n    float constant;\n    float linear;\n    float quadratic;\n};\nuniform PointLight u_pointLights[POINT_LIGHTS_COUNT];\n\n#endif\n\n\n#if DIRECTION_LIGHTS_COUNT > 0\nstruct DirectionLight {\n    vec3 position;\n\n    float intensity;\n\n    vec4 color;\n};\nuniform DirectionLight u_directionLights[DIRECTION_LIGHTS_COUNT];\n#endif\n", funcDeclare: "", funcDefine: "", body: "", };
+        ShaderChunk.lightCommon_vertex = { top: "", define: "", varDeclare: "varying vec3 v_worldPosition;\n#if POINT_LIGHTS_COUNT > 0\nstruct PointLight {\n    vec3 position;\n    vec4 color;\n    float intensity;\n\n    float range;\n    float constant;\n    float linear;\n    float quadratic;\n};\nuniform PointLight u_pointLights[POINT_LIGHTS_COUNT];\n\n#endif\n\n\n#if DIRECTION_LIGHTS_COUNT > 0\nstruct DirectionLight {\n    vec3 position;\n\n    float intensity;\n\n    vec4 color;\n};\nuniform DirectionLight u_directionLights[DIRECTION_LIGHTS_COUNT];\n#endif\n", funcDeclare: "", funcDefine: "", body: "v_worldPosition = vec3(mMatrix * vec4(a_position, 1.0));\n", };
+        ShaderChunk.lightEnd_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "gl_FragColor = vec4(totalColor.rgb, totalColor.a * u_opacity);\n", };
+        ShaderChunk.light_common = { top: "", define: "", varDeclare: "", funcDeclare: "vec3 getDirectionLightDirByLightPos(vec3 lightPos);\nvec3 getPointLightDirByLightPos(vec3 lightPos);\nvec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition);\n", funcDefine: "vec3 getDirectionLightDirByLightPos(vec3 lightPos){\n    return lightPos - vec3(0.0);\n    //return vec3(0.0) - lightPos;\n}\nvec3 getPointLightDirByLightPos(vec3 lightPos){\n    return lightPos - v_worldPosition;\n}\nvec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition){\n    return lightPos - worldPosition;\n}\n", body: "", };
+        ShaderChunk.light_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "float getBlinnShininess(float shininess, vec3 normal, vec3 lightDir, vec3 viewDir, float dotResultBetweenNormAndLight){\n        vec3 halfAngle = normalize(lightDir + viewDir);\n        float blinnTerm = dot(normal, halfAngle);\n\n        blinnTerm = clamp(blinnTerm, 0.0, 1.0);\n        blinnTerm = dotResultBetweenNormAndLight != 0.0 ? blinnTerm : 0.0;\n        blinnTerm = pow(blinnTerm, shininess);\n\n        return blinnTerm;\n}\n\nfloat getPhongShininess(float shininess, vec3 normal, vec3 lightDir, vec3 viewDir, float dotResultBetweenNormAndLight){\n        vec3 reflectDir = reflect(-lightDir, normal);\n        float phongTerm = dot(viewDir, reflectDir);\n\n        phongTerm = clamp(phongTerm, 0.0, 1.0);\n        phongTerm = dotResultBetweenNormAndLight != 0.0 ? phongTerm : 0.0;\n        phongTerm = pow(phongTerm, shininess);\n\n        return phongTerm;\n}\n\nvec4 calcLight(vec3 lightDir, vec4 color, float intensity, float attenuation, vec3 normal, vec3 viewDir)\n{\n        vec4 materialLight = getMaterialLight();\n        vec4 materialDiffuse = getMaterialDiffuse();\n        vec4 materialSpecular = getMaterialSpecular();\n        vec4 materialEmission = getMaterialEmission();\n\n        float dotResultBetweenNormAndLight = dot(normal, lightDir);\n        float diff = max(dotResultBetweenNormAndLight, 0.0);\n\n        vec4 emissionColor = materialEmission;\n\n        vec4 ambientColor = (u_ambient + materialLight) * materialDiffuse;\n\n\n        if(u_lightModel == 3){\n            return emissionColor + ambientColor;\n        }\n\n\n        vec4 diffuseColor = color * materialDiffuse;\n\n        //not affect alpha data\n        diffuseColor = vec4(diff * vec3(diffuseColor) * intensity, diffuseColor.a);\n\n\n        float spec = 0.0;\n\n        if(u_lightModel == 2){\n                spec = getPhongShininess(u_shininess, normal, lightDir, viewDir, diff);\n        }\n        else if(u_lightModel == 1){\n                spec = getBlinnShininess(u_shininess, normal, lightDir, viewDir, diff);\n        }\n\n        //not affect alpha data\n        vec4 specularColor = vec4(spec * vec3(materialSpecular) * intensity, materialSpecular.a);\n\n        vec4 tColor = diffuseColor + specularColor;\n\n        //not affect alpha data\n        return emissionColor + ambientColor + vec4(attenuation * vec3(tColor), tColor.a);\n}\n\n\n\n\n#if POINT_LIGHTS_COUNT > 0\n        vec4 calcPointLight(vec3 lightDir, PointLight light, vec3 normal, vec3 viewDir)\n{\n        //lightDir is not normalize computing distance\n        float distance = length(lightDir);\n\n        float attenuation = 0.0;\n\n        if(light.range == NULL || distance < light.range)\n        {\n            attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));\n        }\n\n        lightDir = normalize(lightDir);\n\n        return calcLight(lightDir, light.color, light.intensity, attenuation, normal, viewDir);\n}\n#endif\n\n\n\n#if DIRECTION_LIGHTS_COUNT > 0\n        vec4 calcDirectionLight(vec3 lightDir, DirectionLight light, vec3 normal, vec3 viewDir)\n{\n        float attenuation = 1.0;\n\n        lightDir = normalize(lightDir);\n\n        return calcLight(lightDir, light.color, light.intensity, attenuation, normal, viewDir);\n}\n#endif\n\n\n\nvec4 calcTotalLight(vec3 norm, vec3 viewDir){\n    vec4 totalLight = vec4(0.0);\n\n    #if POINT_LIGHTS_COUNT > 0\n                for(int i = 0; i < POINT_LIGHTS_COUNT; i++){\n                totalLight += calcPointLight(getPointLightDir(i), u_pointLights[i], norm, viewDir);\n        }\n    #endif\n\n    #if DIRECTION_LIGHTS_COUNT > 0\n                for(int i = 0; i < DIRECTION_LIGHTS_COUNT; i++){\n                totalLight += calcDirectionLight(getDirectionLightDir(i), u_directionLights[i], norm, viewDir);\n        }\n    #endif\n\n        return totalLight;\n}\n", body: "vec3 normal = normalize(getNormal());\n\n#ifdef BOTH_SIDE\nnormal = normal * (-1.0 + 2.0 * float(gl_FrontFacing));\n#endif\n\nvec3 viewDir = normalize(getViewDir());\n\nvec4 totalColor = calcTotalLight(normal, viewDir);\n\ntotalColor *= vec4(getShadowVisibility(), 1.0);\n", };
+        ShaderChunk.light_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "gl_Position = u_pMatrix * u_vMatrix * vec4(v_worldPosition, 1.0);\n", };
+        ShaderChunk.map_forBasic_fragment = { top: "", define: "", varDeclare: "varying vec2 v_mapCoord0;\n", funcDeclare: "", funcDefine: "", body: "totalColor *= texture2D(u_sampler2D0, v_mapCoord0);\n", };
+        ShaderChunk.map_forBasic_vertex = { top: "", define: "", varDeclare: "varying vec2 v_mapCoord0;\n", funcDeclare: "", funcDefine: "", body: "vec2 sourceTexCoord0 = a_texCoord * u_map0SourceRegion.zw + u_map0SourceRegion.xy;\n\n    v_mapCoord0 = sourceTexCoord0 * u_map0RepeatRegion.zw + u_map0RepeatRegion.xy;\n", };
+        ShaderChunk.multi_map_forBasic_fragment = { top: "", define: "", varDeclare: "varying vec2 v_mapCoord0;\nvarying vec2 v_mapCoord1;\n", funcDeclare: "", funcDefine: "vec4 getMapColor(){\n            vec4 color0 = texture2D(u_sampler2D0, v_mapCoord0);\n            vec4 color1 = texture2D(u_sampler2D1, v_mapCoord1);\n\n            if(u_combineMode == 0){\n                return mix(color0, color1, u_mixRatio);\n            }\n            else if(u_combineMode == 1){\n                return color0 * color1;\n            }\n            else if(u_combineMode == 2){\n                return color0 + color1;\n            }\n\n            /*!\n            solve error in window7 chrome/firefox:\n            not all control paths return a value.\n            failed to create d3d shaders\n            */\n            return vec4(1.0);\n		}\n", body: "totalColor *= getMapColor();\n", };
+        ShaderChunk.multi_map_forBasic_vertex = { top: "", define: "", varDeclare: "varying vec2 v_mapCoord1;\n", funcDeclare: "", funcDefine: "", body: "vec2 sourceTexCoord1 = a_texCoord * u_map1SourceRegion.zw + u_map1SourceRegion.xy;\n\n    v_mapCoord1 = sourceTexCoord1 * u_map1RepeatRegion.zw + u_map1RepeatRegion.xy;\n", };
+        ShaderChunk.skybox_fragment = { top: "", define: "", varDeclare: "varying vec3 v_dir;\n", funcDeclare: "", funcDefine: "", body: "gl_FragColor = textureCube(u_samplerCube0, v_dir);\n", };
+        ShaderChunk.skybox_vertex = { top: "", define: "", varDeclare: "varying vec3 v_dir;\n", funcDeclare: "", funcDefine: "", body: "vec4 pos = u_pMatrix * mat4(mat3(u_vMatrix)) * mMatrix * vec4(a_position, 1.0);\n\n    gl_Position = pos.xyww;\n\n    v_dir = a_position;\n", };
+        ShaderChunk.basic_forBasic_envMap_fragment = { top: "", define: "", varDeclare: "varying vec3 v_dir;\n", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, v_dir);\n", };
+        ShaderChunk.basic_forBasic_envMap_vertex = { top: "", define: "", varDeclare: "varying vec3 v_dir;\n", funcDeclare: "", funcDefine: "", body: "v_dir = a_position;\n", };
+        ShaderChunk.forBasic_envMap_fragment = { top: "", define: "", varDeclare: "varying vec3 v_normal;\nvarying vec3 v_position;\n", funcDeclare: "", funcDefine: "", body: "vec3 inDir = normalize(v_position - u_cameraPos);\n", };
+        ShaderChunk.forBasic_envMap_vertex = { top: "", define: "", varDeclare: "varying vec3 v_normal;\nvarying vec3 v_position;\n", funcDeclare: "", funcDefine: "", body: "v_normal = normalize( normalMatrix * a_normal);\n    v_position = vec3(mMatrix * vec4(a_position, 1.0));\n", };
+        ShaderChunk.fresnel_forBasic_envMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "float computeFresnelRatio(vec3 inDir, vec3 normal, float refractionRatio){\n    float f = pow(1.0 - refractionRatio, 2.0) / pow(1.0 + refractionRatio, 2.0);\n    float fresnelPower = 5.0;\n    float ratio = f + (1.0 - f) * pow((1.0 - dot(inDir, normal)), fresnelPower);\n\n    return ratio / 100.0;\n}\nvec4 getEnvMapTotalColor(vec3 inDir, vec3 normal){\n    vec3 reflectDir = reflect(inDir, normal);\n    vec3 refractDir = refract(inDir, flipNormal(normal), u_refractionRatio);\n\n    vec4 reflectColor = textureCube(u_samplerCube0, reflectDir);\n    vec4 refractColor = textureCube(u_samplerCube0, refractDir);\n\n    vec4 totalColor = vec4(0.0);\n\n	if(u_reflectivity != NULL){\n        totalColor = mix(reflectColor, refractColor, u_reflectivity);\n	}\n	else{\n        totalColor = mix(reflectColor, refractColor, computeFresnelRatio(inDir, normal, u_refractionRatio));\n	}\n\n	return totalColor;\n}\n", body: "if(!isRenderListEmpty(u_isRenderListEmpty)){\n    totalColor *= getEnvMapTotalColor(inDir, normalize(v_normal));\n}\n", };
+        ShaderChunk.reflection_forBasic_envMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "if(!isRenderListEmpty(u_isRenderListEmpty)){\n    totalColor *= textureCube(u_samplerCube0, reflect(inDir, normalize(v_normal)));\n}\n", };
+        ShaderChunk.refraction_forBasic_envMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "if(!isRenderListEmpty(u_isRenderListEmpty)){\n    totalColor *= textureCube(u_samplerCube0, refract(inDir, v_normal, u_refractionRatio));\n}\n", };
+        ShaderChunk.basic_forLight_envMap_fragment = { top: "", define: "", varDeclare: "varying vec3 v_basicEnvMap_dir;\n", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, v_basicEnvMap_dir);\n", };
+        ShaderChunk.basic_forLight_envMap_vertex = { top: "", define: "", varDeclare: "varying vec3 v_basicEnvMap_dir;\n", funcDeclare: "", funcDefine: "", body: "v_basicEnvMap_dir = a_position;\n", };
+        ShaderChunk.forLight_envMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "vec3 inDir = normalize(v_worldPosition - u_cameraPos);\n", };
+        ShaderChunk.forLight_envMap_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
+        ShaderChunk.fresnel_forLight_envMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "float computeFresnelRatio(vec3 inDir, vec3 normal, float refractionRatio){\n    float f = pow(1.0 - refractionRatio, 2.0) / pow(1.0 + refractionRatio, 2.0);\n    float fresnelPower = 5.0;\n    float ratio = f + (1.0 - f) * pow((1.0 - dot(inDir, normal)), fresnelPower);\n\n    return ratio / 100.0;\n}\n\nvec4 getEnvMapTotalColor(vec3 inDir, vec3 normal){\n    vec3 reflectDir = reflect(inDir, normal);\n\n/*!\n//todo why only fresnel->refraction need flip normal, but refraction don't need?\n*/\n    vec3 refractDir = refract(inDir, flipNormal(normal), u_refractionRatio);\n\n    vec4 reflectColor = textureCube(u_samplerCube0, reflectDir);\n    vec4 refractColor = textureCube(u_samplerCube0, refractDir);\n\n\n    vec4 totalColor = vec4(0.0);\n\n	if(u_reflectivity != NULL){\n        totalColor = mix(reflectColor, refractColor, u_reflectivity);\n	}\n	else{\n        totalColor = mix(reflectColor, refractColor, computeFresnelRatio(inDir, normal, u_refractionRatio));\n	}\n\n	return totalColor;\n}\n", body: "if(!isRenderListEmpty(u_isRenderListEmpty)){\n	totalColor *= getEnvMapTotalColor(inDir, normalize(getNormal()));\n}\n", };
+        ShaderChunk.reflection_forLight_envMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "if(!isRenderListEmpty(u_isRenderListEmpty)){\n    totalColor *= textureCube(u_samplerCube0, reflect(inDir, normalize(getNormal())));\n}\n", };
+        ShaderChunk.refraction_forLight_envMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "if(!isRenderListEmpty(u_isRenderListEmpty)){\n//    totalColor *= textureCube(u_samplerCube0, refract(inDir, flipNormalWhenRefraction(normal), u_refractionRatio));\n    totalColor *= textureCube(u_samplerCube0, refract(inDir, normal, u_refractionRatio));\n}\n", };
+        ShaderChunk.diffuseMap_fragment = { top: "", define: "", varDeclare: "varying vec2 v_diffuseMapTexCoord;\n", funcDeclare: "", funcDefine: "vec4 getMaterialDiffuse() {\n        return texture2D(u_diffuseMapSampler, v_diffuseMapTexCoord);\n    }\n", body: "", };
+        ShaderChunk.diffuseMap_vertex = { top: "", define: "", varDeclare: "varying vec2 v_diffuseMapTexCoord;\n", funcDeclare: "", funcDefine: "", body: "//todo optimize(combine, reduce compute numbers)\n    //todo BasicTexture extract textureMatrix\n    vec2 sourceTexCoord = a_texCoord * u_diffuseSourceRegion.zw + u_diffuseSourceRegion.xy;\n    v_diffuseMapTexCoord = sourceTexCoord * u_diffuseRepeatRegion.zw + u_diffuseRepeatRegion.xy;\n", };
+        ShaderChunk.emissionMap_fragment = { top: "", define: "", varDeclare: "varying vec2 v_emissionMapTexCoord;\n", funcDeclare: "", funcDefine: "vec4 getMaterialEmission() {\n        return texture2D(u_emissionMapSampler, v_emissionMapTexCoord);\n    }\n", body: "", };
+        ShaderChunk.emissionMap_vertex = { top: "", define: "", varDeclare: "varying vec2 v_emissionMapTexCoord;\n", funcDeclare: "", funcDefine: "", body: "v_emissionMapTexCoord = a_texCoord;\n", };
+        ShaderChunk.lightMap_fragment = { top: "", define: "", varDeclare: "varying vec2 v_lightMapTexCoord;\n", funcDeclare: "", funcDefine: "vec4 getMaterialLight() {\n        return texture2D(u_lightMapSampler, v_lightMapTexCoord) * u_lightMapIntensity;\n    }\n", body: "", };
+        ShaderChunk.lightMap_vertex = { top: "", define: "", varDeclare: "varying vec2 v_lightMapTexCoord;\n", funcDeclare: "", funcDefine: "", body: "v_lightMapTexCoord = a_texCoord;\n", };
+        ShaderChunk.noDiffuseMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec4 getMaterialDiffuse() {\n        return u_diffuse;\n    }\n", body: "", };
+        ShaderChunk.noEmissionMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec4 getMaterialEmission() {\n        return u_emission;\n    }\n", body: "", };
+        ShaderChunk.noLightMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec4 getMaterialLight() {\n        return vec4(0.0);\n    }\n", body: "", };
+        ShaderChunk.noNormalMap_fragment = { top: "", define: "", varDeclare: "varying vec3 v_normal;\n", funcDeclare: "vec3 getNormal();\n\n", funcDefine: "#if POINT_LIGHTS_COUNT > 0\nvec3 getPointLightDir(int index){\n    //workaround '[] : Index expression must be constant' error\n    for (int x = 0; x <= POINT_LIGHTS_COUNT; x++) {\n        if(x == index){\n            return getPointLightDirByLightPos(u_pointLights[x].position);\n        }\n    }\n    /*!\n    solve error in window7 chrome/firefox:\n    not all control paths return a value.\n    failed to create d3d shaders\n    */\n    return vec3(0.0);\n}\n#endif\n\n#if DIRECTION_LIGHTS_COUNT > 0\nvec3 getDirectionLightDir(int index){\n    //workaround '[] : Index expression must be constant' error\n    for (int x = 0; x <= DIRECTION_LIGHTS_COUNT; x++) {\n        if(x == index){\n            return getDirectionLightDirByLightPos(u_directionLights[x].position);\n        }\n    }\n\n    /*!\n    solve error in window7 chrome/firefox:\n    not all control paths return a value.\n    failed to create d3d shaders\n    */\n    return vec3(0.0);\n}\n#endif\n\n\nvec3 getViewDir(){\n    return normalize(u_cameraPos - v_worldPosition);\n}\nvec3 getNormal(){\n    return v_normal;\n}\n\n", body: "", };
+        ShaderChunk.noNormalMap_vertex = { top: "", define: "", varDeclare: "varying vec3 v_normal;\n", funcDeclare: "", funcDefine: "", body: "v_normal = normalize(normalMatrix * a_normal);\n", };
+        ShaderChunk.noSpecularMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec4 getMaterialSpecular() {\n        return u_specular;\n    }\n", body: "", };
+        ShaderChunk.normalMap_fragment = { top: "", define: "", varDeclare: "varying vec2 v_normalMapTexCoord;\nvarying vec3 v_viewDir;\n#if POINT_LIGHTS_COUNT > 0\nvarying vec3 v_pointLightDir[POINT_LIGHTS_COUNT];\n#endif\n\n#if DIRECTION_LIGHTS_COUNT > 0\nvarying vec3 v_directionLightDir[DIRECTION_LIGHTS_COUNT];\n#endif\n\n", funcDeclare: "vec3 getNormal();\n\nvec3 getLightDir(vec3 lightPos);\n\n", funcDefine: "#if POINT_LIGHTS_COUNT > 0\nvec3 getPointLightDir(int index){\n    //workaround '[] : Index expression must be constant' error\n    for (int x = 0; x <= POINT_LIGHTS_COUNT; x++) {\n        if(x == index){\n            return v_pointLightDir[x];\n        }\n    }\n    /*!\n    solve error in window7 chrome/firefox:\n    not all control paths return a value.\n    failed to create d3d shaders\n    */\n    return vec3(0.0);\n}\n#endif\n\n#if DIRECTION_LIGHTS_COUNT > 0\n\nvec3 getDirectionLightDir(int index){\n    //workaround '[] : Index expression must be constant' error\n    for (int x = 0; x <= DIRECTION_LIGHTS_COUNT; x++) {\n        if(x == index){\n            return v_directionLightDir[x];\n        }\n    }\n\n    /*!\n    solve error in window7 chrome/firefox:\n    not all control paths return a value.\n    failed to create d3d shaders\n    */\n    return vec3(0.0);\n}\n#endif\n\n\nvec3 getViewDir(){\n    return v_viewDir;\n}\nvec3 getNormal(){\n        // Obtain normal from normal map in range [0,1]\n        vec3 normal = texture2D(u_normalMapSampler, v_normalMapTexCoord).rgb;\n\n        // Transform normal vector to range [-1,1]\n        return normalize(normal * 2.0 - 1.0);  // this normal is in tangent space\n}\n", body: "", };
+        ShaderChunk.normalMap_vertex = { top: "", define: "", varDeclare: "varying vec2 v_normalMapTexCoord;\n	varying vec3 v_viewDir;\n\n\n#if POINT_LIGHTS_COUNT > 0\nvarying vec3 v_pointLightDir[POINT_LIGHTS_COUNT];\n#endif\n\n#if DIRECTION_LIGHTS_COUNT > 0\nvarying vec3 v_directionLightDir[DIRECTION_LIGHTS_COUNT];\n#endif\n\n", funcDeclare: "", funcDefine: "mat3 computeTBN(mat3 normalMatrix){\n            vec3 T = normalize(normalMatrix * a_tangent);\n            vec3 N = normalize(normalMatrix * a_normal);\n            // re-orthogonalize T with respect to N\n            T = normalize(T - dot(T, N) * N);\n            // then retrieve perpendicular vector B with the cross product of T and N\n            vec3 B = cross(T, N);\n\n\n            return transpose(mat3(T, B, N));\n        }\n", body: "mat3 TBN = computeTBN(normalMatrix);\n\n    //v_tangentLightPos = TBN * light.position;\n    //v_tangentCameraPos  = TBN * u_cameraPos;\n    //v_tangentPos  = TBN * v_position;\n\n\n    vec3 tangentPosition = TBN * vec3(mMatrix * vec4(a_position, 1.0));\n\n    v_normalMapTexCoord = a_texCoord;\n\n    v_viewDir = normalize(TBN * u_cameraPos - tangentPosition);\n\n\n#if POINT_LIGHTS_COUNT > 0\n       for(int i = 0; i < POINT_LIGHTS_COUNT; i++){\n            //not normalize for computing distance\n            v_pointLightDir[i] = TBN * getPointLightDirByLightPos(u_pointLights[i].position, tangentPosition);\n       }\n#endif\n\n#if DIRECTION_LIGHTS_COUNT > 0\n       for(int i = 0; i < DIRECTION_LIGHTS_COUNT; i++){\n            v_directionLightDir[i] = normalize(- TBN * getDirectionLightDirByLightPos(u_directionLights[i].position));\n       }\n#endif\n\n", };
+        ShaderChunk.specularMap_fragment = { top: "", define: "", varDeclare: "varying vec2 v_specularMapTexCoord;\n", funcDeclare: "", funcDefine: "vec4 getMaterialSpecular() {\n        return texture2D(u_specularMapSampler, v_specularMapTexCoord);\n    }\n", body: "", };
+        ShaderChunk.specularMap_vertex = { top: "", define: "", varDeclare: "varying vec2 v_specularMapTexCoord;\n", funcDeclare: "", funcDefine: "", body: "v_specularMapTexCoord = a_texCoord;\n", };
+        ShaderChunk.buildCubemapShadowMap_fragment = { top: "", define: "", varDeclare: "varying vec3 v_worldPosition;\n", funcDeclare: "", funcDefine: "", body: "\n// get distance between fragment and light source\n    float lightDistance = length(v_worldPosition - u_lightPos);\n\n    // map to [0,1] range by dividing by farPlane\n    lightDistance = lightDistance / u_farPlane;\n\n\ngl_FragData[0] = packDepth(lightDistance);\n\n\n//gl_FragColor = vec4(0.5, 0.0, 1.0, 1.0);\n//gl_FragData[0] = vec4(lightDistance, 1.0, 1.0, 1.0);\n", };
+        ShaderChunk.buildCubemapShadowMap_vertex = { top: "", define: "", varDeclare: "varying vec3 v_worldPosition;\n", funcDeclare: "", funcDefine: "", body: "v_worldPosition = vec3(mMatrix * vec4(a_position, 1.0));\n    gl_Position = u_pMatrix * u_vMatrix * vec4(v_worldPosition, 1.0);\n", };
+        ShaderChunk.buildTwoDShadowMap_depthMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
+        ShaderChunk.buildTwoDShadowMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
+        ShaderChunk.buildTwoDShadowMap_packDepth_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "gl_FragData[0] = packDepth(gl_FragCoord.z);\n", };
+        ShaderChunk.buildTwoDShadowMap_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "gl_Position = u_vpMatrixFromLight * mMatrix * vec4(a_position, 1.0);\n", };
+        ShaderChunk.commonBuildShadowMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "// Packing a float in GLSL with multiplication and mod\nvec4 packDepth(in float depth) {\n    const vec4 bit_shift = vec4(256.0 * 256.0 * 256.0, 256.0 * 256.0, 256.0, 1.0);\n    const vec4 bit_mask = vec4(0.0, 1.0 / 256.0, 1.0 / 256.0, 1.0 / 256.0);\n    // combination of mod and multiplication and division works better\n    vec4 res = mod(depth * bit_shift * vec4(255), vec4(256) ) / vec4(255);\n    res -= res.xxyz * bit_mask;\n\n    return res;\n}\n", body: "", };
+        ShaderChunk.cubemapShadowMap_fragment = { top: "", define: "", varDeclare: "uniform samplerCube u_cubemapShadowMapSampler[ CUBEMAP_SHADOWMAP_COUNT ];\n\n    uniform int u_isCubemapRenderListEmpty[ CUBEMAP_SHADOWMAP_COUNT ];\n	uniform float u_cubemapShadowDarkness[ CUBEMAP_SHADOWMAP_COUNT ];\n	uniform float u_cubemapShadowBias[ CUBEMAP_SHADOWMAP_COUNT ];\n	uniform float u_farPlane[ CUBEMAP_SHADOWMAP_COUNT ];\n	uniform vec3 u_cubemapLightPos[ CUBEMAP_SHADOWMAP_COUNT ];\n", funcDeclare: "", funcDefine: "// PCF\nfloat getCubemapShadowVisibilityByPCF(float currentDepth, vec3 fragToLight, samplerCube cubemapShadowMapSampler, float shadowBias, float farPlane, float shadowDarkness){\n    //only support in opengl es 3.0+\n    //vec3 sampleOffsetDirections[20] = vec3[]\n    //(\n       //vec3( 1,  1,  1), vec3( 1, -1,  1), vec3(-1, -1,  1), vec3(-1,  1,  1),\n       //vec3( 1,  1, -1), vec3( 1, -1, -1), vec3(-1, -1, -1), vec3(-1,  1, -1),\n       //vec3( 1,  1,  0), vec3( 1, -1,  0), vec3(-1, -1,  0), vec3(-1,  1,  0),\n       //vec3( 1,  0,  1), vec3(-1,  0,  1), vec3( 1,  0, -1), vec3(-1,  0, -1),\n       //vec3( 0,  1,  1), vec3( 0, -1,  1), vec3( 0, -1, -1), vec3( 0,  1, -1)\n    //);\n\n    vec3 sampleOffsetDirections[20];\n\n    sampleOffsetDirections[0] = vec3( 1,  1,  1);\n    sampleOffsetDirections[1] = vec3( 1,  -1,  1);\n    sampleOffsetDirections[2] = vec3( -1,  -1,  1);\n    sampleOffsetDirections[3] = vec3( -1,  1,  1);\n\n    sampleOffsetDirections[4] = vec3( 1,  1,  -1);\n    sampleOffsetDirections[5] = vec3( 1,  -1,  -1);\n    sampleOffsetDirections[6] = vec3( -1,  -1,  -1);\n    sampleOffsetDirections[7] = vec3( -1,  1,  -1);\n\n    sampleOffsetDirections[8] = vec3( 1,  1,  0);\n    sampleOffsetDirections[9] = vec3( 1,  -1,  0);\n    sampleOffsetDirections[10] = vec3( -1,  -1,  0);\n    sampleOffsetDirections[11] = vec3( -1,  1,  0);\n\n    sampleOffsetDirections[12] = vec3( 1,  0,  1);\n    sampleOffsetDirections[13] = vec3( -1,  0,  1);\n    sampleOffsetDirections[14] = vec3( 1,  0,  -1);\n    sampleOffsetDirections[15] = vec3( -1,  0,  -1);\n\n    sampleOffsetDirections[16] = vec3( 0,  1,  1);\n    sampleOffsetDirections[17] = vec3( 0,  -1,  1);\n    sampleOffsetDirections[18] = vec3( 0,  -1,  -1);\n    sampleOffsetDirections[19] = vec3( 0,  1,  -1);\n\n    float shadow = 0.0;\n    int samples = 20;\n\n    //float diskRadius = 0.00000;\n    //Another interesting trick we can apply here is that we can change the diskRadius based on how far the viewer is away from a fragment; this way we can increase the offset radius by the distance to the viewer, making the shadows softer when far away and sharper when close by.\n    float viewDistance = length(u_cameraPos - v_worldPosition);\n    float diskRadius = (1.0 + (viewDistance / farPlane)) / 25.0;\n\n    //for(int i = 0; i < samples; ++i)\n    for(int i = 0; i < 20; ++i)\n    {\n        float pcfDepth = unpackDepth(textureCube(cubemapShadowMapSampler, fragToLight + sampleOffsetDirections[i] * diskRadius));\n        pcfDepth *= farPlane;   // Undo mapping [0;1]\n        shadow += currentDepth - shadowBias > pcfDepth  ? shadowDarkness : 1.0;\n    }\n    shadow /= float(samples);\n\n    return shadow;\n}\n\n\nfloat getCubemapShadowVisibility(vec3 lightDir, samplerCube cubemapShadowMapSampler, vec3 lightPos, float farPlane, float shadowBias, float  shadowDarkness) {\n// Get vector between fragment position and light position\n    vec3 fragToLight= v_worldPosition - lightPos;\n    // Use the light to fragment vector to sample from the depth map\n    // Now get current linear depth as the length between the fragment and light position\n    float currentDepth = length(fragToLight);\n\n    #if defined(SHADOWMAP_TYPE_PCF)\n    return getCubemapShadowVisibilityByPCF(currentDepth, fragToLight, cubemapShadowMapSampler, getShadowBias(lightDir, shadowBias), farPlane, shadowDarkness);\n    #endif\n\n    float closestDepth = unpackDepth(textureCube(cubemapShadowMapSampler, fragToLight));\n\n    // It is currently in linear range between [0,1]. Re-transform back to original value\n    closestDepth *= farPlane;\n\n\n    return float(currentDepth > closestDepth + getShadowBias(lightDir, shadowBias) ? shadowDarkness : 1.0);\n}\n", body: "", };
+        ShaderChunk.noShadowMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec3 getShadowVisibility() {\n        return vec3(1.0);\n    }\n", body: "", };
+        ShaderChunk.totalShadowMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "float getShadowBias(vec3 lightDir, float shadowBias);\nfloat unpackDepth(vec4 rgbaDepth);\n", funcDefine: "float getShadowBias(vec3 lightDir, float shadowBias){\n    float bias = shadowBias;\n\n    if(shadowBias == NULL){\n        bias = 0.005;\n    }\n\n\n     /*!\n     A shadow bias of 0.005 solves the issues of our scene by a large extent, but some surfaces that have a steep angle to the light source might still produce shadow acne. A more solid approach would be to change the amount of bias based on the surface angle towards the light: something we can solve with the dot product:\n     */\n\n     return max(bias * (1.0 - dot(normalize(getNormal()), lightDir)), bias);\n\n    //return bias;\n}\n\nvec3 getShadowVisibility() {\n    vec3 shadowColor = vec3(1.0);\n    vec3 twoDLightDir = vec3(0.0);\n    vec3 cubemapLightDir = vec3(0.0);\n\n\n\n    //to normalMap, the lightDir use the origin one instead of normalMap's lightDir here(the lightDir is used for computing shadowBias, the origin one is enough for it)\n\n    #if TWOD_SHADOWMAP_COUNT > 0\n	for( int i = 0; i < TWOD_SHADOWMAP_COUNT; i ++ ) {\n        if(isRenderListEmpty(u_isTwoDRenderListEmpty[i])){\n            continue;\n        }\n\n        twoDLightDir = getDirectionLightDirByLightPos(u_twoDLightPos[i]);\n\n	////if is opposite to direction of light rays, no shadow\n\n        shadowColor *= getTwoDShadowVisibility(twoDLightDir, u_twoDShadowMapSampler[i], v_positionFromLight[i], u_twoDShadowBias[i], u_twoDShadowDarkness[i], u_twoDShadowSize[i]);\n	}\n	#endif\n\n\n	#if CUBEMAP_SHADOWMAP_COUNT > 0\n\n	for( int i = 0; i < CUBEMAP_SHADOWMAP_COUNT; i ++ ) {\n        if(isRenderListEmpty(u_isCubemapRenderListEmpty[i])){\n            continue;\n        }\n\n	////if is opposite to direction of light rays, no shadow\n\n        shadowColor *= getCubemapShadowVisibility(cubemapLightDir, u_cubemapShadowMapSampler[i], u_cubemapLightPos[i], u_farPlane[i], u_cubemapShadowBias[i], u_cubemapShadowDarkness[i]);\n	}\n	#endif\n\n	return shadowColor;\n}\n\nfloat unpackDepth(vec4 rgbaDepth) {\n    /*! make sure that the visibility from the shadow map which is not builded is always be 1.0 */\n    if(rgbaDepth == vec4(0.0)){\n        return 100000.0;\n    }\n\n    const vec4 bitShift = vec4(1.0 / (256.0 * 256.0 * 256.0), 1.0 / (256.0 * 256.0), 1.0 / 256.0, 1.0);\n    return dot(rgbaDepth, bitShift);\n}\n\n", body: "", };
+        ShaderChunk.twoDShadowMap_depthMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "float handleDepthMap(vec4 rgbaDepth);\n", funcDefine: "float handleDepthMap(vec4 rgbaDepth) {\n    return rgbaDepth.r;\n}\n", body: "", };
+        ShaderChunk.twoDShadowMap_fragment = { top: "", define: "", varDeclare: "varying vec4 v_positionFromLight[ TWOD_SHADOWMAP_COUNT ];\n    uniform int u_isTwoDRenderListEmpty[ TWOD_SHADOWMAP_COUNT ];\n	uniform sampler2D u_twoDShadowMapSampler[ TWOD_SHADOWMAP_COUNT ];\n	uniform float u_twoDShadowDarkness[ TWOD_SHADOWMAP_COUNT ];\n	uniform float u_twoDShadowBias[ TWOD_SHADOWMAP_COUNT ];\n	uniform vec2 u_twoDShadowSize[ TWOD_SHADOWMAP_COUNT ];\n	uniform vec3 u_twoDLightPos[ TWOD_SHADOWMAP_COUNT ];\n", funcDeclare: "", funcDefine: "// PCF\nfloat getTwoDShadowVisibilityByPCF(float currentDepth, vec2 shadowCoord, sampler2D twoDShadowMapSampler, float shadowBias, float shadowDarkness, vec2 shadowMapSize){\n\n    float shadow = 0.0;\n    vec2 texelSize = vec2(1.0 / shadowMapSize[0], 1.0 / shadowMapSize[1]);\n\n    for(int x = -1; x <= 1; ++x)\n    {\n        for(int y = -1; y <= 1; ++y)\n        {\n            float pcfDepth = handleDepthMap(texture2D(twoDShadowMapSampler, shadowCoord + vec2(x, y) * texelSize));\n            shadow += currentDepth - shadowBias > pcfDepth  ? shadowDarkness : 1.0;\n        }\n    }\n    shadow /= 9.0;\n\n    return shadow;\n}\n\n\n\nfloat getTwoDShadowVisibility(vec3 lightDir, sampler2D twoDShadowMapSampler, vec4 v_positionFromLight, float shadowBias, float shadowDarkness, vec2 shadowSize) {\n    //project texture\n    vec3 shadowCoord = (v_positionFromLight.xyz / v_positionFromLight.w) / 2.0 + 0.5;\n    //vec3 shadowCoord = vec3(0.5, 0.5, 0.5);\n\n    #ifdef SHADOWMAP_TYPE_PCF\n    // Percentage-close filtering\n    // (9 pixel kernel)\n    return getTwoDShadowVisibilityByPCF(shadowCoord.z, shadowCoord.xy, twoDShadowMapSampler, getShadowBias(lightDir, shadowBias), shadowDarkness, shadowSize);\n\n    #else\n    return shadowCoord.z > handleDepthMap(texture2D(twoDShadowMapSampler, shadowCoord.xy)) + getShadowBias(lightDir, shadowBias) ? shadowDarkness : 1.0;\n    #endif\n}\n", body: "", };
+        ShaderChunk.twoDShadowMap_unpackDepth_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "float handleDepthMap(vec4 rgbaDepth);\n", funcDefine: "float handleDepthMap(vec4 rgbaDepth) {\n    return unpackDepth(rgbaDepth);\n}\n", body: "", };
+        ShaderChunk.twoDShadowMap_vertex = { top: "", define: "", varDeclare: "varying vec4 v_positionFromLight[ TWOD_SHADOWMAP_COUNT ];\nuniform mat4 u_vpMatrixFromLight[ TWOD_SHADOWMAP_COUNT ];\n", funcDeclare: "", funcDefine: "", body: "for( int i = 0; i < TWOD_SHADOWMAP_COUNT; i ++ ) {\n    v_positionFromLight[i] = u_vpMatrixFromLight[i] * vec4(v_worldPosition, 1.0);\n	}\n", };
+        ShaderChunk.modelMatrix_batch_instance_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "mat4 mMatrix = u_mMatrix;\n", };
+        ShaderChunk.normalMatrix_batch_instance_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "mat3 normalMatrix = u_normalMatrix;\n", };
+        ShaderChunk.modelMatrix_noInstance_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "mat4 mMatrix = u_mMatrix;\n", };
+        ShaderChunk.normalMatrix_noInstance_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "mat3 normalMatrix = u_normalMatrix;\n", };
+        ShaderChunk.modelMatrix_hardware_instance_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "mat4 mMatrix = mat4(a_mVec4_0, a_mVec4_1, a_mVec4_2, a_mVec4_3);\n", };
+        ShaderChunk.normalMatrix_hardware_instance_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "mat3 normalMatrix = mat3(a_normalVec4_0, a_normalVec4_1, a_normalVec4_2);\n", };
+        ShaderChunk.mirror_fragment = { top: "", define: "", varDeclare: "varying vec4 v_reflectionMapCoord;\n", funcDeclare: "", funcDefine: "//todo add more blend way to mix reflectionMap color and textureColor\n		float blendOverlay(float base, float blend) {\n			return( base < 0.5 ? ( 2.0 * base * blend ) : (1.0 - 2.0 * ( 1.0 - base ) * ( 1.0 - blend ) ) );\n		}\n		vec4 getReflectionMapColor(in vec4 materialColor){\n			vec4 color = texture2DProj(u_reflectionMapSampler, v_reflectionMapCoord);\n\n			color = vec4(blendOverlay(materialColor.r, color.r), blendOverlay(materialColor.g, color.g), blendOverlay(materialColor.b, color.b), 1.0);\n\n			return color;\n		}\n", body: "if(!isRenderListEmpty(u_isRenderListEmpty)){\n    totalColor *= getReflectionMapColor(totalColor);\n}\n", };
+        ShaderChunk.mirror_vertex = { top: "", define: "", varDeclare: "varying vec4 v_reflectionMapCoord;\n", funcDeclare: "", funcDefine: "", body: "mat4 textureMatrix = mat4(\n                        0.5, 0.0, 0.0, 0.0,\n                        0.0, 0.5, 0.0, 0.0,\n                        0.0, 0.0, 0.5, 0.0,\n                        0.5, 0.5, 0.5, 1.0\n);\n\nv_reflectionMapCoord = textureMatrix * gl_Position;\n", };
+        ShaderChunk.terrainLayer_fragment = { top: "", define: "", varDeclare: "struct LayerHeightData {\n    float minHeight;\n    float maxHeight;\n};\nuniform LayerHeightData u_layerHeightDatas[LAYER_COUNT];\n//sampler2D can't be contained in struct\nuniform sampler2D u_layerSampler2Ds[LAYER_COUNT];\n\n\nvarying vec2 v_layerTexCoord;\n", funcDeclare: "", funcDefine: "vec4 getLayerTextureColor(in sampler2D layerSampler2Ds[LAYER_COUNT], in LayerHeightData layerHeightDatas[LAYER_COUNT]){\n    vec4 color = vec4(0.0);\n    bool isInLayer = false;\n\n    float height = v_worldPosition.y;\n\n    for(int i = 0; i < LAYER_COUNT; i++){\n        if(height >= layerHeightDatas[i].minHeight && height <= layerHeightDatas[i].maxHeight){\n            //todo blend color\n            color += texture2D(layerSampler2Ds[i], v_layerTexCoord);\n\n            isInLayer = true;\n\n            break;\n        }\n    }\n\n    return isInLayer ? color : vec4(1.0);\n}\n", body: "\ntotalColor *= getLayerTextureColor(u_layerSampler2Ds, u_layerHeightDatas);\n", };
+        ShaderChunk.terrainLayer_vertex = { top: "", define: "", varDeclare: "varying vec2 v_layerTexCoord;\n", funcDeclare: "", funcDefine: "", body: "v_layerTexCoord = a_texCoord;\n", };
+        ShaderChunk.water_bump_fragment = { top: "", define: "", varDeclare: "varying vec2 v_bumpTexCoord;\n", funcDeclare: "", funcDefine: "", body: "// fetch bump texture, unpack from [0..1] to [-1..1]\n	vec3 bumpNormal = 2.0 * texture2D(u_bumpMapSampler, v_bumpTexCoord).rgb - 1.0;\n	vec2 perturbation = u_waveData.height * bumpNormal.rg;\n", };
+        ShaderChunk.water_bump_vertex = { top: "", define: "", varDeclare: "struct WaveData {\n    float length;\n    float height;\n};\nuniform WaveData u_waveData;\nvarying vec2 v_bumpTexCoord;\n", funcDeclare: "", funcDefine: "", body: "vec2 bumpTexCoord = vec2(u_windMatrix * vec4(a_texCoord, 0.0, 1.0));\n	v_bumpTexCoord = bumpTexCoord / u_waveData.length;\n", };
+        ShaderChunk.water_fragment = { top: "", define: "", varDeclare: "struct WaveData {\n    float length;\n    float height;\n};\nuniform WaveData u_waveData;\nstruct LevelData {\n    float fresnelLevel;\n    float reflectionLevel;\n    float refractionLevel;\n};\nuniform LevelData u_levelData;\n\nvarying vec4 v_reflectionAndRefractionMapCoord;\n", funcDeclare: "", funcDefine: "", body: "vec2 projectedTexCoords = v_reflectionAndRefractionMapCoord.xy / v_reflectionAndRefractionMapCoord.w + perturbation;\n\n\n\n\n//totalColor = vec4(1.0 - fresnelTerm);\n//totalColor *= vec4(refractionColor, 1.0);\n//totalColor *= vec4(mix(reflectionColor, refractionColor, fresnelTerm), 1.0);\n//totalColor += vec4(reflectionColor * fresnelTerm * u_levelData.reflectionLevel + (1.0 - fresnelTerm) * refractionColor * u_levelData.refractionLevel, 1.0);\n\n//totalColor += vec4(reflectionColor * fresnelTerm * u_levelData.reflectionLevel + (1.0 - fresnelTerm) * refractionColor * u_levelData.refractionLevel, 1.0);\n\ntotalColor += vec4(getLightEffectColor(projectedTexCoords), 1.0);\n\n\n//totalColor *= vec4(mix(reflectionColor, refractionColor, 0.5), 1.0);\n", };
+        ShaderChunk.water_fresnel_fragment = { top: "", define: "", varDeclare: "varying vec3 v_position;\n", funcDeclare: "", funcDefine: "vec3 getLightEffectColor(vec2 projectedTexCoords){\n	vec3 reflectionColor;\n	vec3 refractionColor;\n\n    vec3 inDir = normalize(v_position - u_cameraPos);\n\n	float fresnelTerm = max(dot(inDir, v_normal), 0.0);\n	fresnelTerm = clamp((1.0 - fresnelTerm) * u_levelData.fresnelLevel, 0., 1.);\n\n    if(!isRenderListEmpty(u_isReflectionRenderListEmpty)){\n        reflectionColor = texture2D(u_reflectionMapSampler, projectedTexCoords).rgb;\n        reflectionColor = reflectionColor * fresnelTerm * u_levelData.reflectionLevel;\n	}\n	else{\n        reflectionColor = vec3(0.0);\n	}\n\n    if(!isRenderListEmpty(u_isRefractionRenderListEmpty)){\n        refractionColor = texture2D(u_refractionMapSampler, projectedTexCoords).rgb;\n        refractionColor = (1.0 - fresnelTerm) * refractionColor * u_levelData.refractionLevel;\n	}\n	else{\n        refractionColor = vec3(0.0);\n	}\n\n	return reflectionColor + refractionColor;\n}\n", body: "", };
+        ShaderChunk.water_fresnel_vertex = { top: "", define: "", varDeclare: "varying vec3 v_position;\n", funcDeclare: "", funcDefine: "", body: "v_position = a_position;\n", };
+        ShaderChunk.water_noBump_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "vec2 perturbation = vec2(0.0);\n", };
+        ShaderChunk.water_noLightEffect_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec4 getLightEffectColor(vec2 projectedTexCoords){\n    return vec4(1.0);\n}\n", body: "", };
+        ShaderChunk.water_reflection_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec3 getLightEffectColor(vec2 projectedTexCoords){\n    if(!isRenderListEmpty(u_isReflectionRenderListEmpty)){\n        return texture2D(u_reflectionMapSampler, projectedTexCoords).rgb * u_levelData.reflectionLevel;\n    }\n    return vec3(0.0);\n}\n", body: "", };
+        ShaderChunk.water_refraction_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec3 getLightEffectColor(vec2 projectedTexCoords){\n    if(!isRenderListEmpty(u_isRefractionRenderListEmpty)){\n        return texture2D(u_refractionMapSampler, projectedTexCoords).rgb * u_levelData.refractionLevel;\n    }\n    return vec3(0.0);\n}\n", body: "", };
+        ShaderChunk.water_vertex = { top: "", define: "", varDeclare: "varying vec4 v_reflectionAndRefractionMapCoord;\n", funcDeclare: "", funcDefine: "", body: "mat4 textureMatrix = mat4(\n                        0.5, 0.0, 0.0, 0.0,\n                        0.0, 0.5, 0.0, 0.0,\n                        0.0, 0.0, 0.5, 0.0,\n                        0.5, 0.5, 0.5, 1.0\n);\n\nv_reflectionAndRefractionMapCoord = textureMatrix * gl_Position;\n", };
+        ShaderChunk.brick_proceduralTexture_fragment = { top: "", define: "", varDeclare: "varying vec2 v_texCoord;\n", funcDeclare: "", funcDefine: "", body: "float brickW = 1.0 / u_tilesWidthNumber;\n	float brickH = 1.0 / u_tilesWidthNumber;\n	float jointWPercentage = 0.01;\n	float jointHPercentage = 0.05;\n	vec3 color = u_brickColor;\n	float yi = v_texCoord.y / brickH;\n	float nyi = round(yi);\n	float xi = v_texCoord.x / brickW;\n\n	if (mod(floor(yi), 2.0) == 0.0){\n		xi = xi - 0.5;\n	}\n\n	float nxi = round(xi);\n	vec2 brickv_texCoord = vec2((xi - floor(xi)) / brickH, (yi - floor(yi)) /  brickW);\n\n	if (yi < nyi + jointHPercentage && yi > nyi - jointHPercentage){\n		color = mix(u_jointColor, vec3(0.37, 0.25, 0.25), (yi - nyi) / jointHPercentage + 0.2);\n	}\n	else if (xi < nxi + jointWPercentage && xi > nxi - jointWPercentage){\n		color = mix(u_jointColor, vec3(0.44, 0.44, 0.44), (xi - nxi) / jointWPercentage + 0.2);\n	}\n	else {\n		float u_brickColorSwitch = mod(floor(yi) + floor(xi), 3.0);\n\n		if (u_brickColorSwitch == 0.0)\n			color = mix(color, vec3(0.33, 0.33, 0.33), 0.3);\n		else if (u_brickColorSwitch == 2.0)\n			color = mix(color, vec3(0.11, 0.11, 0.11), 0.3);\n	}\n\n	gl_FragColor = vec4(color, 1.0);\n", };
+        ShaderChunk.cloud_proceduralTexture_fragment = { top: "", define: "", varDeclare: "varying vec2 v_texCoord;\n", funcDeclare: "", funcDefine: "", body: "gl_FragColor = mix(u_skyColor, u_cloudColor, fbm(v_texCoord * 12.0));\n", };
+        ShaderChunk.common_proceduralTexture_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "float rand(vec2 n) {\n	return fract(cos(dot(n, vec2(12.9898, 4.1414))) * 43758.5453);\n}\nfloat noise(vec2 n) {\n	const vec2 d = vec2(0.0, 1.0);\n	vec2 b = floor(n), f = smoothstep(vec2(0.0), vec2(1.0), fract(n));\n	return mix(mix(rand(b), rand(b + d.yx), f.x), mix(rand(b + d.xy), rand(b + d.yy), f.x), f.y);\n}\n\nfloat turbulence(vec2 P)\n{\n	float val = 0.0;\n	float freq = 1.0;\n	for (int i = 0; i < 4; i++)\n	{\n		val += abs(noise(P*freq) / freq);\n		freq *= 2.07;\n	}\n	return val;\n}\n\nfloat fbm(vec2 n) {\n	float total = 0.0, amplitude = 1.0;\n	for (int i = 0; i < 4; i++) {\n		total += noise(n) * amplitude;\n		n += n;\n		amplitude *= 0.5;\n	}\n	return total;\n}\n\nfloat round(float number){\n	return sign(number)*floor(abs(number) + 0.5);\n}\n", body: "", };
+        ShaderChunk.common_proceduralTexture_vertex = { top: "", define: "", varDeclare: "varying vec2 v_texCoord;\nconst vec2 MADD=vec2(0.5,0.5);\n", funcDeclare: "", funcDefine: "", body: "v_texCoord=a_positionVec2*MADD+MADD;\n\n    gl_Position=vec4(a_positionVec2, 0.0 ,1.0);\n", };
+        ShaderChunk.fire_proceduralTexture_fragment = { top: "", define: "", varDeclare: "varying vec2 v_texCoord;\nstruct FireColor {\n    vec3 c1;\n    vec3 c2;\n    vec3 c3;\n    vec3 c4;\n    vec3 c5;\n    vec3 c6;\n};\nuniform FireColor u_fireColor;\n", funcDeclare: "", funcDefine: "", body: "vec2 p = v_texCoord * 8.0;\n	float q = fbm(p - u_time * 0.1);\n	vec2 r = vec2(fbm(p + q + u_time * u_speed.x - p.x - p.y), fbm(p + q - u_time * u_speed.y));\n	vec3 c = mix(u_fireColor.c1, u_fireColor.c2, fbm(p + r)) + mix(u_fireColor.c3, u_fireColor.c4, r.x) - mix(u_fireColor.c5, u_fireColor.c6, r.y);\n	vec3 color = c * cos(u_shift * v_texCoord.y);\n	float luminance = dot(color.rgb, vec3(0.3, 0.59, 0.11));\n\n	gl_FragColor = vec4(color, luminance * u_alphaThreshold + (1.0 - u_alphaThreshold));\n", };
+        ShaderChunk.grass_proceduralTexture_fragment = { top: "", define: "", varDeclare: "varying vec2 v_texCoord;\n", funcDeclare: "", funcDefine: "", body: "vec3 color = mix(u_groundColor, u_herb1Color, rand(gl_FragCoord.xy * 4.0));\n	color = mix(color, u_herb2Color, rand(gl_FragCoord.xy * 8.0));\n	color = mix(color, u_herb3Color, rand(gl_FragCoord.xy));\n	color = mix(color, u_herb1Color, fbm(gl_FragCoord.xy * 16.0));\n\n	gl_FragColor = vec4(color, 1.0);\n", };
+        ShaderChunk.marble_proceduralTexture_fragment = { top: "", define: "", varDeclare: "varying vec2 v_texCoord;\nconst vec3 TILE_SIZE = vec3(1.1, 1.0, 1.1);\n//const vec3 TILE_PCT = vec3(0.98, 1.0, 0.98);\n", funcDeclare: "", funcDefine: "vec3 marble_color(float x)\n{\n	vec3 col;\n	x = 0.5*(x + 1.);\n	x = sqrt(x);\n	x = sqrt(x);\n	x = sqrt(x);\n	col = vec3(.2 + .75*x);\n	col.b *= 0.95;\n	return col;\n}\n", body: "vec3 color;\n	float brickW = 1.0 / u_tilesHeightNumber;\n	float brickH = 1.0 / u_tilesWidthNumber;\n	float jointWPercentage = 0.01;\n	float jointHPercentage = 0.01;\n	float yi = v_texCoord.y / brickH;\n	float nyi = round(yi);\n	float xi = v_texCoord.x / brickW;\n\n	if (mod(floor(yi), 2.0) == 0.0){\n		xi = xi - 0.5;\n	}\n\n	float nxi = round(xi);\n	vec2 brickv_texCoord = vec2((xi - floor(xi)) / brickH, (yi - floor(yi)) / brickW);\n\n	if (yi < nyi + jointHPercentage && yi > nyi - jointHPercentage){\n		color = mix(u_jointColor, vec3(0.37, 0.25, 0.25), (yi - nyi) / jointHPercentage + 0.2);\n	}\n	else if (xi < nxi + jointWPercentage && xi > nxi - jointWPercentage){\n		color = mix(u_jointColor, vec3(0.44, 0.44, 0.44), (xi - nxi) / jointWPercentage + 0.2);\n	}\n	else {\n		float t = 6.28 * brickv_texCoord.x / (TILE_SIZE.x + noise(vec2(v_texCoord)*6.0));\n		t += u_amplitude * turbulence(brickv_texCoord.xy);\n		t = sin(t);\n		color = marble_color(t);\n	}\n\n	gl_FragColor = vec4(color, 1.0);\n", };
+        ShaderChunk.road_proceduralTexture_fragment = { top: "", define: "", varDeclare: "varying vec2 v_texCoord;\n", funcDeclare: "", funcDefine: "", body: "float ratioy = mod(gl_FragCoord.y * 100.0 , fbm(v_texCoord * 2.0));\n	vec3 color = u_roadColor * ratioy;\n\n	gl_FragColor = vec4(color, 1.0);\n", };
+        ShaderChunk.wood_proceduralTexture_fragment = { top: "", define: "", varDeclare: "varying vec2 v_texCoord;\n", funcDeclare: "", funcDefine: "", body: "float ratioy = mod(v_texCoord.x * u_ampScale, 2.0 + fbm(v_texCoord * 0.8));\n	vec3 wood = u_woodColor * ratioy;\n\n	gl_FragColor = vec4(wood, 1.0);\n", };
+        return ShaderChunk;
+    }());
+    wd.ShaderChunk = ShaderChunk;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
     var ShaderSnippet = (function () {
         function ShaderSnippet() {
         }
@@ -31565,8 +38329,8 @@ var wd;
     var Material = (function () {
         function Material() {
             this._blendType = null;
-            this._blendSrc = wd.EBlendFunc.ONE;
-            this._blendDst = wd.EBlendFunc.ZERO;
+            this._blendSrc = wd.EBlendFunc.SRC_ALPHA;
+            this._blendDst = wd.EBlendFunc.ONE_MINUS_SRC_ALPHA;
             this._blendEquation = wd.EBlendEquation.ADD;
             this._color = wd.Color.create("#ffffff");
             this.redWrite = true;
@@ -32268,6 +39032,46 @@ var wd;
 })(wd || (wd = {}));
 var wd;
 (function (wd) {
+    var LineMaterial = (function (_super) {
+        __extends(LineMaterial, _super);
+        function LineMaterial() {
+            _super.apply(this, arguments);
+            this._lineWidth = 1.0;
+        }
+        LineMaterial.create = function () {
+            var obj = new this();
+            obj.initWhenCreate();
+            return obj;
+        };
+        Object.defineProperty(LineMaterial.prototype, "lineWidth", {
+            get: function () {
+                return this._lineWidth;
+            },
+            set: function (lineWidth) {
+                this._lineWidth = lineWidth;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        __decorate([
+            wd.cloneAttributeAsBasicType(),
+            wd.requireSetter(function (lineWidth) {
+                wd.it("lineWidth should <= 1", function () {
+                    wd.expect(lineWidth).not.to.greaterThan(1);
+                });
+            }),
+            wd.ensureGetter(function (lineWidth) {
+                wd.it("lineWidth should <= 1", function () {
+                    wd.expect(lineWidth).not.to.greaterThan(1);
+                });
+            })
+        ], LineMaterial.prototype, "lineWidth", null);
+        return LineMaterial;
+    }(wd.StandardBasicMaterial));
+    wd.LineMaterial = LineMaterial;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
     var BasicMaterial = (function (_super) {
         __extends(BasicMaterial, _super);
         function BasicMaterial() {
@@ -32520,12 +39324,7 @@ var wd;
         function GLSLLoader() {
             _super.apply(this, arguments);
         }
-        GLSLLoader.getInstance = function () {
-            if (this._instance === null) {
-                this._instance = new this();
-            }
-            return this._instance;
-        };
+        GLSLLoader.getInstance = function () { };
         GLSLLoader.prototype.loadAsset = function () {
             var args = [];
             for (var _i = 0; _i < arguments.length; _i++) {
@@ -32534,7 +39333,6 @@ var wd;
             var url = args[0];
             return wd.AjaxLoader.load(url, "text");
         };
-        GLSLLoader._instance = null;
         __decorate([
             wd.require(function () {
                 var args = [];
@@ -32544,6 +39342,9 @@ var wd;
                 wd.assert(!wd.JudgeUtils.isArrayExactly(args[0]), wd.Log.info.FUNC_MUST_BE("url", "string"));
             })
         ], GLSLLoader.prototype, "loadAsset", null);
+        GLSLLoader = __decorate([
+            wd.singleton()
+        ], GLSLLoader);
         return GLSLLoader;
     }(wd.Loader));
     wd.GLSLLoader = GLSLLoader;
@@ -32555,12 +39356,7 @@ var wd;
         function JsLoader() {
             _super.apply(this, arguments);
         }
-        JsLoader.getInstance = function () {
-            if (this._instance === null) {
-                this._instance = new this();
-            }
-            return this._instance;
-        };
+        JsLoader.getInstance = function () { };
         JsLoader.prototype.loadAsset = function () {
             var _this = this;
             var args = [];
@@ -32599,7 +39395,6 @@ var wd;
         JsLoader.prototype._appendScript = function (script) {
             document.getElementsByTagName("head")[0].appendChild(script);
         };
-        JsLoader._instance = null;
         __decorate([
             wd.require(function () {
                 var args = [];
@@ -32609,6 +39404,9 @@ var wd;
                 wd.assert(!wd.JudgeUtils.isArrayExactly(args[0]), wd.Log.info.FUNC_MUST_BE("url", "string"));
             })
         ], JsLoader.prototype, "loadAsset", null);
+        JsLoader = __decorate([
+            wd.singleton()
+        ], JsLoader);
         return JsLoader;
     }(wd.Loader));
     wd.JsLoader = JsLoader;
@@ -32620,12 +39418,7 @@ var wd;
         function JSONLoader() {
             _super.apply(this, arguments);
         }
-        JSONLoader.getInstance = function () {
-            if (this._instance === null) {
-                this._instance = new this();
-            }
-            return this._instance;
-        };
+        JSONLoader.getInstance = function () { };
         JSONLoader.prototype.loadAsset = function () {
             var args = [];
             for (var _i = 0; _i < arguments.length; _i++) {
@@ -32634,7 +39427,6 @@ var wd;
             var url = args[0];
             return wd.AjaxLoader.load(url, "json");
         };
-        JSONLoader._instance = null;
         __decorate([
             wd.require(function () {
                 var args = [];
@@ -32644,6 +39436,9 @@ var wd;
                 wd.assert(!wd.JudgeUtils.isArrayExactly(args[0]), wd.Log.info.FUNC_MUST_BE("url", "string"));
             })
         ], JSONLoader.prototype, "loadAsset", null);
+        JSONLoader = __decorate([
+            wd.singleton()
+        ], JSONLoader);
         return JSONLoader;
     }(wd.Loader));
     wd.JSONLoader = JSONLoader;
@@ -32655,12 +39450,7 @@ var wd;
         function VideoLoader() {
             _super.apply(this, arguments);
         }
-        VideoLoader.getInstance = function () {
-            if (this._instance === null) {
-                this._instance = new this();
-            }
-            return this._instance;
-        };
+        VideoLoader.getInstance = function () { };
         VideoLoader.prototype.loadAsset = function () {
             var args = [];
             for (var _i = 0; _i < arguments.length; _i++) {
@@ -32685,7 +39475,9 @@ var wd;
                 });
             }));
         };
-        VideoLoader._instance = null;
+        VideoLoader = __decorate([
+            wd.singleton()
+        ], VideoLoader);
         return VideoLoader;
     }(wd.Loader));
     wd.VideoLoader = VideoLoader;
@@ -32697,12 +39489,7 @@ var wd;
         function TextureLoader() {
             _super.apply(this, arguments);
         }
-        TextureLoader.getInstance = function () {
-            if (this._instance === null) {
-                this._instance = new this();
-            }
-            return this._instance;
-        };
+        TextureLoader.getInstance = function () { };
         TextureLoader.prototype.loadAsset = function () {
             var args = [];
             for (var _i = 0; _i < arguments.length; _i++) {
@@ -32737,7 +39524,6 @@ var wd;
             }
             return stream;
         };
-        TextureLoader._instance = null;
         __decorate([
             wd.require(function () {
                 var args = [];
@@ -32747,6 +39533,9 @@ var wd;
                 wd.assert(!wd.JudgeUtils.isArrayExactly(args[0]), wd.Log.info.FUNC_MUST_BE("url", "string"));
             })
         ], TextureLoader.prototype, "loadAsset", null);
+        TextureLoader = __decorate([
+            wd.singleton()
+        ], TextureLoader);
         return TextureLoader;
     }(wd.Loader));
     wd.TextureLoader = TextureLoader;
@@ -33289,12 +40078,7 @@ var wd;
             this.currentLoadedCount = 0;
             this._assetTable = wdCb.Hash.create();
         }
-        LoaderManager.getInstance = function () {
-            if (this._instance === null) {
-                this._instance = new this();
-            }
-            return this._instance;
-        };
+        LoaderManager.getInstance = function () { };
         LoaderManager.prototype.load = function () {
             var args = [];
             for (var _i = 0; _i < arguments.length; _i++) {
@@ -33365,7 +40149,9 @@ var wd;
             }
             return wd.LoaderFactory.create(type, extname.toLowerCase());
         };
-        LoaderManager._instance = null;
+        LoaderManager = __decorate([
+            wd.singleton()
+        ], LoaderManager);
         return LoaderManager;
     }());
     wd.LoaderManager = LoaderManager;
@@ -33452,12 +40238,7 @@ var wd;
             this._arrayBufferMap = wdCb.Hash.create();
             this._imageMap = wdCb.Hash.create();
         }
-        GLTFLoader.getInstance = function () {
-            if (this._instance === null) {
-                this._instance = new this();
-            }
-            return this._instance;
-        };
+        GLTFLoader.getInstance = function () { };
         GLTFLoader.prototype.loadAsset = function () {
             var args = [];
             for (var _i = 0; _i < arguments.length; _i++) {
@@ -33520,7 +40301,6 @@ var wd;
             }
             return wdFrp.fromArray(streamArr).mergeAll();
         };
-        GLTFLoader._instance = null;
         __decorate([
             wd.require(function () {
                 var args = [];
@@ -33530,6 +40310,9 @@ var wd;
                 wd.assert(!wd.JudgeUtils.isArrayExactly(args[0]), wd.Log.info.FUNC_MUST_BE("url", "string"));
             })
         ], GLTFLoader.prototype, "loadAsset", null);
+        GLTFLoader = __decorate([
+            wd.singleton()
+        ], GLTFLoader);
         return GLTFLoader;
     }(wd.Loader));
     wd.GLTFLoader = GLTFLoader;
@@ -34610,12 +41393,7 @@ var wd;
             _super.apply(this, arguments);
             this._parseData = null;
         }
-        WDLoader.getInstance = function () {
-            if (this._instance === null) {
-                this._instance = new this();
-            }
-            return this._instance;
-        };
+        WDLoader.getInstance = function () { };
         WDLoader.prototype.loadAsset = function () {
             var args = [];
             for (var _i = 0; _i < arguments.length; _i++) {
@@ -34656,7 +41434,6 @@ var wd;
                 });
             });
         };
-        WDLoader._instance = null;
         __decorate([
             wd.require(function () {
                 var args = [];
@@ -34666,6 +41443,9 @@ var wd;
                 wd.assert(!wd.JudgeUtils.isArrayExactly(args[0]), wd.Log.info.FUNC_MUST_BE("url", "string"));
             })
         ], WDLoader.prototype, "loadAsset", null);
+        WDLoader = __decorate([
+            wd.singleton()
+        ], WDLoader);
         return WDLoader;
     }(wd.Loader));
     wd.WDLoader = WDLoader;
@@ -35116,12 +41896,7 @@ var wd;
             _super.apply(this, arguments);
             this._familyName = null;
         }
-        FontLoader.getInstance = function () {
-            if (this._instance === null) {
-                this._instance = new this();
-            }
-            return this._instance;
-        };
+        FontLoader.getInstance = function () { };
         FontLoader.prototype.dispose = function () {
             _super.prototype.dispose.call(this);
             wdCb.DomQuery.create("#" + this._familyName).remove();
@@ -35169,20 +41944,22 @@ var wd;
             }
             fontStyleEle.get(0).textContent += fontStr + "};";
         };
-        FontLoader._instance = null;
         __decorate([
             wd.require(function (url) {
                 var extname = wdCb.PathUtils.extname(url).toLowerCase();
                 wd.assert(!!TYPE[extname], wd.Log.info.FUNC_UNKNOW("type:" + extname));
             })
         ], FontLoader.prototype, "_getType", null);
+        FontLoader = __decorate([
+            wd.singleton()
+        ], FontLoader);
         return FontLoader;
     }(wd.Loader));
     wd.FontLoader = FontLoader;
 })(wd || (wd = {}));
 var wd;
 (function (wd) {
-    var COMMON_EXP = /common [^\n]*(\n|$)/gi, PAGE_EXP = /page [^\n]*(\n|$)/gi, CHAR_EXP = /char [^\n]*(\n|$)/gi, ITEM_EXP = /\w+=[^ \r\n]+/gi, INT_EXP = /^[\-]?\d+$/;
+    var COMMON_EXP = /common [^\n]*(\n|$)/gi, PAGE_EXP = /page [^\n]*(\n|$)/gi, CHAR_EXP = /char [^\n]*(\n|$)/gi, KERNING_EXP = /kerning [^\n]*(\n|$)/gi, ITEM_EXP = /\w+=[^ \r\n]+/gi, INT_EXP = /^[\-]?\d+$/;
     var FntParser = (function () {
         function FntParser() {
         }
@@ -35194,6 +41971,9 @@ var wd;
             var fnt = {}, commonObj = null, pageObj = null;
             commonObj = this._parseStrToObj(fntStr.match(COMMON_EXP)[0]);
             fnt.commonHeight = commonObj["lineHeight"];
+            fnt.commonBase = commonObj["base"];
+            fnt.scaleW = commonObj["scaleW"];
+            fnt.scaleH = commonObj["scaleH"];
             if (commonObj["pages"] !== 1) {
                 wd.Log.log("only supports 1 page");
             }
@@ -35203,6 +41983,7 @@ var wd;
             }
             fnt.atlasName = wdCb.PathUtils.changeBasename(url, pageObj["file"]);
             this._parseChar(fntStr, fnt);
+            this._parseKerning(fntStr, fnt);
             return fnt;
         };
         FntParser.prototype._parseStrToObj = function (str) {
@@ -35228,6 +42009,7 @@ var wd;
                 var char = charLines_1[_i];
                 var charObj = this._parseStrToObj(char), charId = charObj["id"];
                 fontDefDictionary[charId] = {
+                    id: charId,
                     rect: { x: charObj["x"], y: charObj["y"], width: charObj["width"], height: charObj["height"] },
                     xOffset: charObj["xoffset"],
                     yOffset: charObj["yoffset"],
@@ -35235,6 +42017,19 @@ var wd;
                 };
             }
             fnt.fontDefDictionary = fontDefDictionary;
+        };
+        FntParser.prototype._parseKerning = function (fntStr, fnt) {
+            var kerningLines = fntStr.match(KERNING_EXP), kerningArray = [];
+            for (var _i = 0, kerningLines_1 = kerningLines; _i < kerningLines_1.length; _i++) {
+                var kerning = kerningLines_1[_i];
+                var kerningObj = this._parseStrToObj(kerning);
+                kerningArray.push({
+                    first: kerningObj["first"],
+                    second: kerningObj["second"],
+                    amount: kerningObj["amount"]
+                });
+            }
+            fnt.kerningArray = kerningArray;
         };
         return FntParser;
     }());
@@ -35248,12 +42043,7 @@ var wd;
             _super.apply(this, arguments);
             this._parser = wd.FntParser.create();
         }
-        FntLoader.getInstance = function () {
-            if (this._instance === null) {
-                this._instance = new this();
-            }
-            return this._instance;
-        };
+        FntLoader.getInstance = function () { };
         FntLoader.prototype.loadAsset = function () {
             var args = [];
             for (var _i = 0; _i < arguments.length; _i++) {
@@ -35265,7 +42055,6 @@ var wd;
                 return self._parser.parseFnt(fntStr, url);
             });
         };
-        FntLoader._instance = null;
         __decorate([
             wd.require(function () {
                 var args = [];
@@ -35275,6 +42064,9 @@ var wd;
                 wd.assert(!wd.JudgeUtils.isArrayExactly(args[0]), wd.Log.info.FUNC_MUST_BE("url", "string"));
             })
         ], FntLoader.prototype, "loadAsset", null);
+        FntLoader = __decorate([
+            wd.singleton()
+        ], FntLoader);
         return FntLoader;
     }(wd.Loader));
     wd.FntLoader = FntLoader;
@@ -35306,12 +42098,7 @@ var wd;
             this._viewport = wd.RectRegion.create();
             this._clearColor = null;
         }
-        DeviceManager.getInstance = function () {
-            if (this._instance === null) {
-                this._instance = new this();
-            }
-            return this._instance;
-        };
+        DeviceManager.getInstance = function () { };
         Object.defineProperty(DeviceManager.prototype, "scissorTest", {
             get: function () {
                 return this._scissorTest;
@@ -35579,7 +42366,6 @@ var wd;
             this.gl.clearColor(color.r, color.g, color.b, color.a);
             this._clearColor = color;
         };
-        DeviceManager._instance = null;
         __decorate([
             wd.require(function () {
                 wd.assert(wd.Main.screenSize !== null, wd.Log.info.FUNC_NOT_EXIST("Main.screenSize"));
@@ -35590,6 +42376,9 @@ var wd;
                 wd.assert(level > 0, wd.Log.info.FUNC_SHOULD("level", "> 0, but actual is " + level));
             })
         ], DeviceManager.prototype, "setHardwareScaling", null);
+        DeviceManager = __decorate([
+            wd.singleton()
+        ], DeviceManager);
         return DeviceManager;
     }());
     wd.DeviceManager = DeviceManager;
@@ -35648,7 +42437,7 @@ var wd;
     })(wd.EBlendType || (wd.EBlendType = {}));
     var EBlendType = wd.EBlendType;
     (function (ECanvasType) {
-        ECanvasType[ECanvasType["UI"] = "UI"] = "UI";
+        ECanvasType[ECanvasType["TwoDUI"] = "TwoDUI"] = "TwoDUI";
     })(wd.ECanvasType || (wd.ECanvasType = {}));
     var ECanvasType = wd.ECanvasType;
 })(wd || (wd = {}));
@@ -35669,12 +42458,7 @@ var wd;
             this.precision = null;
             this._isDetected = false;
         }
-        GPUDetector.getInstance = function () {
-            if (this._instance === null) {
-                this._instance = new this();
-            }
-            return this._instance;
-        };
+        GPUDetector.getInstance = function () { };
         Object.defineProperty(GPUDetector.prototype, "gl", {
             get: function () {
                 return wd.DeviceManager.getInstance().gl;
@@ -35752,7 +42536,9 @@ var wd;
                 this.precision = EGPUPrecision.HIGHP;
             }
         };
-        GPUDetector._instance = null;
+        GPUDetector = __decorate([
+            wd.singleton()
+        ], GPUDetector);
         return GPUDetector;
     }());
     wd.GPUDetector = GPUDetector;
@@ -36433,7 +43219,7 @@ var wd;
         };
         __decorate([
             wd.require(function (texture) {
-                wd.Log.assert(!!texture, wd.Log.info.FUNC_NOT_EXIST("texture object"));
+                wd.assert(!!texture, wd.Log.info.FUNC_NOT_EXIST("texture object"));
             })
         ], RenderTargetTexture.prototype, "setEmptyTexture", null);
         return RenderTargetTexture;
@@ -37371,8 +44157,10 @@ var wd;
         };
         Object.defineProperty(CompressedTexture.prototype, "sourceRegionMethod", {
             get: function () {
-                wd.Log.assert(this.p_sourceRegionMethod === wd.ETextureSourceRegionMethod.DRAW_IN_CANVAS, "compressed texture not support ETextureSourceRegionMethod.DRAW_IN_CANVAS, will use ETextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL instead");
                 return wd.ETextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL;
+            },
+            set: function (sourceRegionMethod) {
+                this.p_sourceRegionMethod = sourceRegionMethod;
             },
             enumerable: true,
             configurable: true
@@ -37393,6 +44181,14 @@ var wd;
         CompressedTexture.prototype.needClampMaxSize = function () {
             return false;
         };
+        __decorate([
+            wd.ensureGetter(function (sourceRegionMethod) {
+                wd.it("compressed texture not support ETextureSourceRegionMethod.DRAW_IN_CANVAS, will use ETextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL instead", function () {
+                    wd.expect(this.p_sourceRegionMethod).not.to.equal(wd.ETextureSourceRegionMethod.DRAW_IN_CANVAS);
+                    wd.expect(sourceRegionMethod).to.equal(wd.ETextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL);
+                }, this);
+            })
+        ], CompressedTexture.prototype, "sourceRegionMethod", null);
         return CompressedTexture;
     }(wd.TwoDTexture));
     wd.CompressedTexture = CompressedTexture;
@@ -37590,19 +44386,16 @@ var wd;
     var VideoManager = (function () {
         function VideoManager() {
         }
-        VideoManager.getInstance = function () {
-            if (this._instance === null) {
-                this._instance = new this();
-            }
-            return this._instance;
-        };
+        VideoManager.getInstance = function () { };
         VideoManager.prototype.play = function (id) {
             var asset = wd.VideoLoader.getInstance().get(id), video = null;
             wd.Log.error(!asset, wd.Log.info.FUNC_NOT_EXIST("video asset which id is " + id));
             video = asset.video;
             video.play();
         };
-        VideoManager._instance = null;
+        VideoManager = __decorate([
+            wd.singleton()
+        ], VideoManager);
         return VideoManager;
     }());
     wd.VideoManager = VideoManager;
@@ -39121,12 +45914,7 @@ var wd;
         function ActionEngine() {
             _super.apply(this, arguments);
         }
-        ActionEngine.getInstance = function () {
-            if (this._instance === null) {
-                this._instance = new this();
-            }
-            return this._instance;
-        };
+        ActionEngine.getInstance = function () { };
         ActionEngine.prototype.update = function (elapsed) {
             var removeQueue = [];
             this.list.forEach(function (child) {
@@ -39144,7 +45932,9 @@ var wd;
                 child.entityObject.removeComponent(child);
             }
         };
-        ActionEngine._instance = null;
+        ActionEngine = __decorate([
+            wd.singleton()
+        ], ActionEngine);
         return ActionEngine;
     }(wd.ComponentContainer));
     wd.ActionEngine = ActionEngine;
@@ -39155,12 +45945,7 @@ var wd;
         function ScriptEngine() {
             this._scriptList = wdCb.Collection.create();
         }
-        ScriptEngine.getInstance = function () {
-            if (this._instance === null) {
-                this._instance = new this();
-            }
-            return this._instance;
-        };
+        ScriptEngine.getInstance = function () { };
         ScriptEngine.prototype.addChild = function (entityObject, scriptName, classInstance) {
             entityObject.scriptManager.addChild(scriptName, classInstance);
             this._scriptList.addChild(classInstance);
@@ -39201,7 +45986,9 @@ var wd;
         ScriptEngine.prototype.execEntityObjectEventScriptWithData = function (entityObject, method, data) {
             entityObject.scriptManager.execEventScriptWithData(method, data);
         };
-        ScriptEngine._instance = null;
+        ScriptEngine = __decorate([
+            wd.singleton()
+        ], ScriptEngine);
         return ScriptEngine;
     }());
     wd.ScriptEngine = ScriptEngine;
@@ -39213,18 +46000,15 @@ var wd;
         function LODEngine() {
             _super.apply(this, arguments);
         }
-        LODEngine.getInstance = function () {
-            if (this._instance === null) {
-                this._instance = new this();
-            }
-            return this._instance;
-        };
+        LODEngine.getInstance = function () { };
         LODEngine.prototype.update = function (elapsed) {
             this.list.forEach(function (child) {
                 child.update(elapsed);
             });
         };
-        LODEngine._instance = null;
+        LODEngine = __decorate([
+            wd.singleton()
+        ], LODEngine);
         return LODEngine;
     }(wd.ComponentContainer));
     wd.LODEngine = LODEngine;
@@ -39236,18 +46020,15 @@ var wd;
         function SpacePartitionEngine() {
             _super.apply(this, arguments);
         }
-        SpacePartitionEngine.getInstance = function () {
-            if (this._instance === null) {
-                this._instance = new this();
-            }
-            return this._instance;
-        };
+        SpacePartitionEngine.getInstance = function () { };
         SpacePartitionEngine.prototype.update = function (elapsed) {
             this.list.forEach(function (child) {
                 child.update(elapsed);
             });
         };
-        SpacePartitionEngine._instance = null;
+        SpacePartitionEngine = __decorate([
+            wd.singleton()
+        ], SpacePartitionEngine);
         return SpacePartitionEngine;
     }(wd.ComponentContainer));
     wd.SpacePartitionEngine = SpacePartitionEngine;
@@ -39259,18 +46040,15 @@ var wd;
         function AnimationEngine() {
             _super.apply(this, arguments);
         }
-        AnimationEngine.getInstance = function () {
-            if (this._instance === null) {
-                this._instance = new this();
-            }
-            return this._instance;
-        };
+        AnimationEngine.getInstance = function () { };
         AnimationEngine.prototype.update = function (elapsed) {
             this.list.forEach(function (child) {
                 child.update(elapsed);
             });
         };
-        AnimationEngine._instance = null;
+        AnimationEngine = __decorate([
+            wd.singleton()
+        ], AnimationEngine);
         return AnimationEngine;
     }(wd.ComponentContainer));
     wd.AnimationEngine = AnimationEngine;
@@ -39283,12 +46061,7 @@ var wd;
             _super.apply(this, arguments);
             this._collisionDetector = wd.CollisionDetector.create();
         }
-        CollisionEngine.getInstance = function () {
-            if (this._instance === null) {
-                this._instance = new this();
-            }
-            return this._instance;
-        };
+        CollisionEngine.getInstance = function () { };
         CollisionEngine.prototype.update = function (elapsed) {
             this.list.forEach(function (child) {
                 child.update(elapsed);
@@ -39297,7 +46070,9 @@ var wd;
         CollisionEngine.prototype.detect = function (elapsed) {
             this._collisionDetector.update(elapsed);
         };
-        CollisionEngine._instance = null;
+        CollisionEngine = __decorate([
+            wd.singleton()
+        ], CollisionEngine);
         return CollisionEngine;
     }(wd.ComponentContainer));
     wd.CollisionEngine = CollisionEngine;
@@ -39310,12 +46085,7 @@ var wd;
             _super.apply(this, arguments);
             this.physicsEngineAdapter = wd.PhysicsEngineFactory.createNullAdapter();
         }
-        PhysicsEngine.getInstance = function () {
-            if (this._instance === null) {
-                this._instance = new this();
-            }
-            return this._instance;
-        };
+        PhysicsEngine.getInstance = function () { };
         PhysicsEngine.prototype.removeChild = function (body) {
             var physicsEngineAdapter = this.physicsEngineAdapter;
             _super.prototype.removeChild.call(this, body);
@@ -39346,7 +46116,9 @@ var wd;
                 this.physicsEngineAdapter.update(elapsed);
             }
         };
-        PhysicsEngine._instance = null;
+        PhysicsEngine = __decorate([
+            wd.singleton()
+        ], PhysicsEngine);
         return PhysicsEngine;
     }(wd.ComponentContainer));
     wd.PhysicsEngine = PhysicsEngine;
@@ -39358,138 +46130,55 @@ var wd;
         function UIEngine() {
             _super.apply(this, arguments);
         }
-        UIEngine.getInstance = function () {
-            if (this._instance === null) {
-                this._instance = new this();
-            }
-            return this._instance;
-        };
         UIEngine.prototype.update = function (elapsed) {
             this.list.forEach(function (child) {
                 child.update(elapsed);
             });
         };
-        UIEngine.prototype.render = function () {
-            var _this = this;
-            this.list.forEach(function (ui) {
-                if (_this._isDirty(ui.entityObject))
-                    ui.render();
-            }, this);
-        };
-        UIEngine.prototype._isDirty = function (uiObject) {
-            return uiObject.getComponent(wd.UIRenderer).state === wd.EUIRendererState.DIRTY;
-        };
-        UIEngine._instance = null;
+        UIEngine = __decorate([
+            wd.singleton()
+        ], UIEngine);
         return UIEngine;
     }(wd.ComponentContainer));
     wd.UIEngine = UIEngine;
 })(wd || (wd = {}));
 var wd;
 (function (wd) {
-    var ShaderChunk = (function () {
-        function ShaderChunk() {
+    var ThreeDUIEngine = (function (_super) {
+        __extends(ThreeDUIEngine, _super);
+        function ThreeDUIEngine() {
+            _super.apply(this, arguments);
         }
-        ShaderChunk.empty = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "" };
-        ShaderChunk.NULL = -1.0;
-        ShaderChunk.basic_fragment = { top: "", define: "", varDeclare: "varying vec3 v_color;\n", funcDeclare: "", funcDefine: "", body: "vec4 totalColor = vec4(v_color, 1.0);\n", };
-        ShaderChunk.basic_vertex = { top: "", define: "", varDeclare: "varying vec3 v_color;\n", funcDeclare: "", funcDefine: "", body: "v_color = a_color;\n", };
-        ShaderChunk.end_basic_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "gl_FragColor = vec4(totalColor.rgb, totalColor.a * u_opacity);\n", };
-        ShaderChunk.normal_morph_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "vec3 a_normal = a_currentFrameNormal + (a_nextFrameNormal - a_currentFrameNormal) * u_interpolation;\n", };
-        ShaderChunk.vertice_morph_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "vec3 a_position = a_currentFramePosition + (a_nextFramePosition - a_currentFramePosition) * u_interpolation;\n", };
-        ShaderChunk.common_define = { top: "", define: "#define NULL -1.0\n", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
-        ShaderChunk.common_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
-        ShaderChunk.common_function = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "mat2 transpose(mat2 m) {\n  return mat2(  m[0][0], m[1][0],   // new col 0\n                m[0][1], m[1][1]    // new col 1\n             );\n  }\nmat3 transpose(mat3 m) {\n  return mat3(  m[0][0], m[1][0], m[2][0],  // new col 0\n                m[0][1], m[1][1], m[2][1],  // new col 1\n                m[0][2], m[1][2], m[2][2]   // new col 1\n             );\n  }\n\nbool isRenderListEmpty(int isRenderListEmpty){\n  return isRenderListEmpty == 1;\n}\n", body: "", };
-        ShaderChunk.common_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
-        ShaderChunk.highp_fragment = { top: "precision highp float;\nprecision highp int;\n", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
-        ShaderChunk.lowp_fragment = { top: "precision lowp float;\nprecision lowp int;\n", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
-        ShaderChunk.mediump_fragment = { top: "precision mediump float;\nprecision mediump int;\n", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
-        ShaderChunk.common_envMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec3 flipNormal(vec3 normal){\n    vec3 normalForRefraction = normal;\n    normalForRefraction.y = -normalForRefraction.y;\n    normalForRefraction.z = -normalForRefraction.z;\n\n    return normalForRefraction;\n}\n", body: "", };
-        ShaderChunk.lightCommon_fragment = { top: "", define: "", varDeclare: "varying vec3 v_worldPosition;\n#if POINT_LIGHTS_COUNT > 0\nstruct PointLight {\n    vec3 position;\n    vec4 color;\n    float intensity;\n\n    float range;\n    float constant;\n    float linear;\n    float quadratic;\n};\nuniform PointLight u_pointLights[POINT_LIGHTS_COUNT];\n\n#endif\n\n\n#if DIRECTION_LIGHTS_COUNT > 0\nstruct DirectionLight {\n    vec3 position;\n\n    float intensity;\n\n    vec4 color;\n};\nuniform DirectionLight u_directionLights[DIRECTION_LIGHTS_COUNT];\n#endif\n", funcDeclare: "", funcDefine: "", body: "", };
-        ShaderChunk.lightCommon_vertex = { top: "", define: "", varDeclare: "varying vec3 v_worldPosition;\n#if POINT_LIGHTS_COUNT > 0\nstruct PointLight {\n    vec3 position;\n    vec4 color;\n    float intensity;\n\n    float range;\n    float constant;\n    float linear;\n    float quadratic;\n};\nuniform PointLight u_pointLights[POINT_LIGHTS_COUNT];\n\n#endif\n\n\n#if DIRECTION_LIGHTS_COUNT > 0\nstruct DirectionLight {\n    vec3 position;\n\n    float intensity;\n\n    vec4 color;\n};\nuniform DirectionLight u_directionLights[DIRECTION_LIGHTS_COUNT];\n#endif\n", funcDeclare: "", funcDefine: "", body: "v_worldPosition = vec3(mMatrix * vec4(a_position, 1.0));\n", };
-        ShaderChunk.lightEnd_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "gl_FragColor = vec4(totalColor.rgb, totalColor.a * u_opacity);\n", };
-        ShaderChunk.light_common = { top: "", define: "", varDeclare: "", funcDeclare: "vec3 getDirectionLightDirByLightPos(vec3 lightPos);\nvec3 getPointLightDirByLightPos(vec3 lightPos);\nvec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition);\n", funcDefine: "vec3 getDirectionLightDirByLightPos(vec3 lightPos){\n    return lightPos - vec3(0.0);\n    //return vec3(0.0) - lightPos;\n}\nvec3 getPointLightDirByLightPos(vec3 lightPos){\n    return lightPos - v_worldPosition;\n}\nvec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition){\n    return lightPos - worldPosition;\n}\n", body: "", };
-        ShaderChunk.light_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "float getBlinnShininess(float shininess, vec3 normal, vec3 lightDir, vec3 viewDir, float dotResultBetweenNormAndLight){\n        vec3 halfAngle = normalize(lightDir + viewDir);\n        float blinnTerm = dot(normal, halfAngle);\n\n        blinnTerm = clamp(blinnTerm, 0.0, 1.0);\n        blinnTerm = dotResultBetweenNormAndLight != 0.0 ? blinnTerm : 0.0;\n        blinnTerm = pow(blinnTerm, shininess);\n\n        return blinnTerm;\n}\n\nfloat getPhongShininess(float shininess, vec3 normal, vec3 lightDir, vec3 viewDir, float dotResultBetweenNormAndLight){\n        vec3 reflectDir = reflect(-lightDir, normal);\n        float phongTerm = dot(viewDir, reflectDir);\n\n        phongTerm = clamp(phongTerm, 0.0, 1.0);\n        phongTerm = dotResultBetweenNormAndLight != 0.0 ? phongTerm : 0.0;\n        phongTerm = pow(phongTerm, shininess);\n\n        return phongTerm;\n}\n\nvec4 calcLight(vec3 lightDir, vec4 color, float intensity, float attenuation, vec3 normal, vec3 viewDir)\n{\n        vec4 materialLight = getMaterialLight();\n        vec4 materialDiffuse = getMaterialDiffuse();\n        vec4 materialSpecular = getMaterialSpecular();\n        vec4 materialEmission = getMaterialEmission();\n\n        float dotResultBetweenNormAndLight = dot(normal, lightDir);\n        float diff = max(dotResultBetweenNormAndLight, 0.0);\n\n        vec4 emissionColor = materialEmission;\n\n        vec4 ambientColor = (u_ambient + materialLight) * materialDiffuse;\n\n\n        if(u_lightModel == 3){\n            return emissionColor + ambientColor;\n        }\n\n\n        vec4 diffuseColor = color * materialDiffuse;\n\n        //not affect alpha data\n        diffuseColor = vec4(diff * vec3(diffuseColor) * intensity, diffuseColor.a);\n\n\n        float spec = 0.0;\n\n        if(u_lightModel == 2){\n                spec = getPhongShininess(u_shininess, normal, lightDir, viewDir, diff);\n        }\n        else if(u_lightModel == 1){\n                spec = getBlinnShininess(u_shininess, normal, lightDir, viewDir, diff);\n        }\n\n        //not affect alpha data\n        vec4 specularColor = vec4(spec * vec3(materialSpecular) * intensity, materialSpecular.a);\n\n        vec4 tColor = diffuseColor + specularColor;\n\n        //not affect alpha data\n        return emissionColor + ambientColor + vec4(attenuation * vec3(tColor), tColor.a);\n}\n\n\n\n\n#if POINT_LIGHTS_COUNT > 0\n        vec4 calcPointLight(vec3 lightDir, PointLight light, vec3 normal, vec3 viewDir)\n{\n        //lightDir is not normalize computing distance\n        float distance = length(lightDir);\n\n        float attenuation = 0.0;\n\n        if(light.range == NULL || distance < light.range)\n        {\n            attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));\n        }\n\n        lightDir = normalize(lightDir);\n\n        return calcLight(lightDir, light.color, light.intensity, attenuation, normal, viewDir);\n}\n#endif\n\n\n\n#if DIRECTION_LIGHTS_COUNT > 0\n        vec4 calcDirectionLight(vec3 lightDir, DirectionLight light, vec3 normal, vec3 viewDir)\n{\n        float attenuation = 1.0;\n\n        lightDir = normalize(lightDir);\n\n        return calcLight(lightDir, light.color, light.intensity, attenuation, normal, viewDir);\n}\n#endif\n\n\n\nvec4 calcTotalLight(vec3 norm, vec3 viewDir){\n    vec4 totalLight = vec4(0.0);\n\n    #if POINT_LIGHTS_COUNT > 0\n                for(int i = 0; i < POINT_LIGHTS_COUNT; i++){\n                totalLight += calcPointLight(getPointLightDir(i), u_pointLights[i], norm, viewDir);\n        }\n    #endif\n\n    #if DIRECTION_LIGHTS_COUNT > 0\n                for(int i = 0; i < DIRECTION_LIGHTS_COUNT; i++){\n                totalLight += calcDirectionLight(getDirectionLightDir(i), u_directionLights[i], norm, viewDir);\n        }\n    #endif\n\n        return totalLight;\n}\n", body: "vec3 normal = normalize(getNormal());\n\n#ifdef BOTH_SIDE\nnormal = normal * (-1.0 + 2.0 * float(gl_FrontFacing));\n#endif\n\nvec3 viewDir = normalize(getViewDir());\n\nvec4 totalColor = calcTotalLight(normal, viewDir);\n\ntotalColor *= vec4(getShadowVisibility(), 1.0);\n", };
-        ShaderChunk.light_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "gl_Position = u_pMatrix * u_vMatrix * vec4(v_worldPosition, 1.0);\n", };
-        ShaderChunk.map_forBasic_fragment = { top: "", define: "", varDeclare: "varying vec2 v_mapCoord0;\n", funcDeclare: "", funcDefine: "", body: "totalColor *= vec4(texture2D(u_sampler2D0, v_mapCoord0).xyz, 1.0);\n", };
-        ShaderChunk.map_forBasic_vertex = { top: "", define: "", varDeclare: "varying vec2 v_mapCoord0;\n", funcDeclare: "", funcDefine: "", body: "vec2 sourceTexCoord0 = a_texCoord * u_map0SourceRegion.zw + u_map0SourceRegion.xy;\n\n    v_mapCoord0 = sourceTexCoord0 * u_map0RepeatRegion.zw + u_map0RepeatRegion.xy;\n", };
-        ShaderChunk.multi_map_forBasic_fragment = { top: "", define: "", varDeclare: "varying vec2 v_mapCoord0;\nvarying vec2 v_mapCoord1;\n", funcDeclare: "", funcDefine: "vec4 getMapColor(){\n            vec4 color0 = vec4(texture2D(u_sampler2D0, v_mapCoord0).xyz, 1.0);\n            vec4 color1 = vec4(texture2D(u_sampler2D1, v_mapCoord1).xyz, 1.0);\n\n            if(u_combineMode == 0){\n                return mix(color0, color1, u_mixRatio);\n            }\n            else if(u_combineMode == 1){\n                return color0 * color1;\n            }\n            else if(u_combineMode == 2){\n                return color0 + color1;\n            }\n\n            /*!\n            solve error in window7 chrome/firefox:\n            not all control paths return a value.\n            failed to create d3d shaders\n            */\n            return vec4(1.0);\n		}\n", body: "totalColor *= getMapColor();\n", };
-        ShaderChunk.multi_map_forBasic_vertex = { top: "", define: "", varDeclare: "varying vec2 v_mapCoord1;\n", funcDeclare: "", funcDefine: "", body: "vec2 sourceTexCoord1 = a_texCoord * u_map1SourceRegion.zw + u_map1SourceRegion.xy;\n\n    v_mapCoord1 = sourceTexCoord1 * u_map1RepeatRegion.zw + u_map1RepeatRegion.xy;\n", };
-        ShaderChunk.skybox_fragment = { top: "", define: "", varDeclare: "varying vec3 v_dir;\n", funcDeclare: "", funcDefine: "", body: "gl_FragColor = textureCube(u_samplerCube0, v_dir);\n", };
-        ShaderChunk.skybox_vertex = { top: "", define: "", varDeclare: "varying vec3 v_dir;\n", funcDeclare: "", funcDefine: "", body: "vec4 pos = u_pMatrix * mat4(mat3(u_vMatrix)) * mMatrix * vec4(a_position, 1.0);\n\n    gl_Position = pos.xyww;\n\n    v_dir = a_position;\n", };
-        ShaderChunk.modelMatrix_batch_instance_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "mat4 mMatrix = u_mMatrix;\n", };
-        ShaderChunk.normalMatrix_batch_instance_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "mat3 normalMatrix = u_normalMatrix;\n", };
-        ShaderChunk.modelMatrix_hardware_instance_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "mat4 mMatrix = mat4(a_mVec4_0, a_mVec4_1, a_mVec4_2, a_mVec4_3);\n", };
-        ShaderChunk.normalMatrix_hardware_instance_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "mat3 normalMatrix = mat3(a_normalVec4_0, a_normalVec4_1, a_normalVec4_2);\n", };
-        ShaderChunk.modelMatrix_noInstance_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "mat4 mMatrix = u_mMatrix;\n", };
-        ShaderChunk.normalMatrix_noInstance_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "mat3 normalMatrix = u_normalMatrix;\n", };
-        ShaderChunk.basic_forBasic_envMap_fragment = { top: "", define: "", varDeclare: "varying vec3 v_dir;\n", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, v_dir);\n", };
-        ShaderChunk.basic_forBasic_envMap_vertex = { top: "", define: "", varDeclare: "varying vec3 v_dir;\n", funcDeclare: "", funcDefine: "", body: "v_dir = a_position;\n", };
-        ShaderChunk.forBasic_envMap_fragment = { top: "", define: "", varDeclare: "varying vec3 v_normal;\nvarying vec3 v_position;\n", funcDeclare: "", funcDefine: "", body: "vec3 inDir = normalize(v_position - u_cameraPos);\n", };
-        ShaderChunk.forBasic_envMap_vertex = { top: "", define: "", varDeclare: "varying vec3 v_normal;\nvarying vec3 v_position;\n", funcDeclare: "", funcDefine: "", body: "v_normal = normalize( normalMatrix * a_normal);\n    v_position = vec3(mMatrix * vec4(a_position, 1.0));\n", };
-        ShaderChunk.fresnel_forBasic_envMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "float computeFresnelRatio(vec3 inDir, vec3 normal, float refractionRatio){\n    float f = pow(1.0 - refractionRatio, 2.0) / pow(1.0 + refractionRatio, 2.0);\n    float fresnelPower = 5.0;\n    float ratio = f + (1.0 - f) * pow((1.0 - dot(inDir, normal)), fresnelPower);\n\n    return ratio / 100.0;\n}\nvec4 getEnvMapTotalColor(vec3 inDir, vec3 normal){\n    vec3 reflectDir = reflect(inDir, normal);\n    vec3 refractDir = refract(inDir, flipNormal(normal), u_refractionRatio);\n\n    vec4 reflectColor = textureCube(u_samplerCube0, reflectDir);\n    vec4 refractColor = textureCube(u_samplerCube0, refractDir);\n\n    vec4 totalColor = vec4(0.0);\n\n	if(u_reflectivity != NULL){\n        totalColor = mix(reflectColor, refractColor, u_reflectivity);\n	}\n	else{\n        totalColor = mix(reflectColor, refractColor, computeFresnelRatio(inDir, normal, u_refractionRatio));\n	}\n\n	return totalColor;\n}\n", body: "if(!isRenderListEmpty(u_isRenderListEmpty)){\n    totalColor *= getEnvMapTotalColor(inDir, normalize(v_normal));\n}\n", };
-        ShaderChunk.reflection_forBasic_envMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "if(!isRenderListEmpty(u_isRenderListEmpty)){\n    totalColor *= textureCube(u_samplerCube0, reflect(inDir, normalize(v_normal)));\n}\n", };
-        ShaderChunk.refraction_forBasic_envMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "if(!isRenderListEmpty(u_isRenderListEmpty)){\n    totalColor *= textureCube(u_samplerCube0, refract(inDir, v_normal, u_refractionRatio));\n}\n", };
-        ShaderChunk.basic_forLight_envMap_fragment = { top: "", define: "", varDeclare: "varying vec3 v_basicEnvMap_dir;\n", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, v_basicEnvMap_dir);\n", };
-        ShaderChunk.basic_forLight_envMap_vertex = { top: "", define: "", varDeclare: "varying vec3 v_basicEnvMap_dir;\n", funcDeclare: "", funcDefine: "", body: "v_basicEnvMap_dir = a_position;\n", };
-        ShaderChunk.forLight_envMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "vec3 inDir = normalize(v_worldPosition - u_cameraPos);\n", };
-        ShaderChunk.forLight_envMap_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
-        ShaderChunk.fresnel_forLight_envMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "float computeFresnelRatio(vec3 inDir, vec3 normal, float refractionRatio){\n    float f = pow(1.0 - refractionRatio, 2.0) / pow(1.0 + refractionRatio, 2.0);\n    float fresnelPower = 5.0;\n    float ratio = f + (1.0 - f) * pow((1.0 - dot(inDir, normal)), fresnelPower);\n\n    return ratio / 100.0;\n}\n\nvec4 getEnvMapTotalColor(vec3 inDir, vec3 normal){\n    vec3 reflectDir = reflect(inDir, normal);\n\n/*!\n//todo why only fresnel->refraction need flip normal, but refraction don't need?\n*/\n    vec3 refractDir = refract(inDir, flipNormal(normal), u_refractionRatio);\n\n    vec4 reflectColor = textureCube(u_samplerCube0, reflectDir);\n    vec4 refractColor = textureCube(u_samplerCube0, refractDir);\n\n\n    vec4 totalColor = vec4(0.0);\n\n	if(u_reflectivity != NULL){\n        totalColor = mix(reflectColor, refractColor, u_reflectivity);\n	}\n	else{\n        totalColor = mix(reflectColor, refractColor, computeFresnelRatio(inDir, normal, u_refractionRatio));\n	}\n\n	return totalColor;\n}\n", body: "if(!isRenderListEmpty(u_isRenderListEmpty)){\n	totalColor *= getEnvMapTotalColor(inDir, normalize(getNormal()));\n}\n", };
-        ShaderChunk.reflection_forLight_envMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "if(!isRenderListEmpty(u_isRenderListEmpty)){\n    totalColor *= textureCube(u_samplerCube0, reflect(inDir, normalize(getNormal())));\n}\n", };
-        ShaderChunk.refraction_forLight_envMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "if(!isRenderListEmpty(u_isRenderListEmpty)){\n//    totalColor *= textureCube(u_samplerCube0, refract(inDir, flipNormalWhenRefraction(normal), u_refractionRatio));\n    totalColor *= textureCube(u_samplerCube0, refract(inDir, normal, u_refractionRatio));\n}\n", };
-        ShaderChunk.diffuseMap_fragment = { top: "", define: "", varDeclare: "varying vec2 v_diffuseMapTexCoord;\n", funcDeclare: "", funcDefine: "vec4 getMaterialDiffuse() {\n        return texture2D(u_diffuseMapSampler, v_diffuseMapTexCoord);\n    }\n", body: "", };
-        ShaderChunk.diffuseMap_vertex = { top: "", define: "", varDeclare: "varying vec2 v_diffuseMapTexCoord;\n", funcDeclare: "", funcDefine: "", body: "//todo optimize(combine, reduce compute numbers)\n    //todo BasicTexture extract textureMatrix\n    vec2 sourceTexCoord = a_texCoord * u_diffuseSourceRegion.zw + u_diffuseSourceRegion.xy;\n    v_diffuseMapTexCoord = sourceTexCoord * u_diffuseRepeatRegion.zw + u_diffuseRepeatRegion.xy;\n", };
-        ShaderChunk.emissionMap_fragment = { top: "", define: "", varDeclare: "varying vec2 v_emissionMapTexCoord;\n", funcDeclare: "", funcDefine: "vec4 getMaterialEmission() {\n        return texture2D(u_emissionMapSampler, v_emissionMapTexCoord);\n    }\n", body: "", };
-        ShaderChunk.emissionMap_vertex = { top: "", define: "", varDeclare: "varying vec2 v_emissionMapTexCoord;\n", funcDeclare: "", funcDefine: "", body: "v_emissionMapTexCoord = a_texCoord;\n", };
-        ShaderChunk.lightMap_fragment = { top: "", define: "", varDeclare: "varying vec2 v_lightMapTexCoord;\n", funcDeclare: "", funcDefine: "vec4 getMaterialLight() {\n        return texture2D(u_lightMapSampler, v_lightMapTexCoord) * u_lightMapIntensity;\n    }\n", body: "", };
-        ShaderChunk.lightMap_vertex = { top: "", define: "", varDeclare: "varying vec2 v_lightMapTexCoord;\n", funcDeclare: "", funcDefine: "", body: "v_lightMapTexCoord = a_texCoord;\n", };
-        ShaderChunk.noDiffuseMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec4 getMaterialDiffuse() {\n        return u_diffuse;\n    }\n", body: "", };
-        ShaderChunk.noEmissionMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec4 getMaterialEmission() {\n        return u_emission;\n    }\n", body: "", };
-        ShaderChunk.noLightMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec4 getMaterialLight() {\n        return vec4(0.0);\n    }\n", body: "", };
-        ShaderChunk.noNormalMap_fragment = { top: "", define: "", varDeclare: "varying vec3 v_normal;\n", funcDeclare: "vec3 getNormal();\n\n", funcDefine: "#if POINT_LIGHTS_COUNT > 0\nvec3 getPointLightDir(int index){\n    //workaround '[] : Index expression must be constant' error\n    for (int x = 0; x <= POINT_LIGHTS_COUNT; x++) {\n        if(x == index){\n            return getPointLightDirByLightPos(u_pointLights[x].position);\n        }\n    }\n    /*!\n    solve error in window7 chrome/firefox:\n    not all control paths return a value.\n    failed to create d3d shaders\n    */\n    return vec3(0.0);\n}\n#endif\n\n#if DIRECTION_LIGHTS_COUNT > 0\nvec3 getDirectionLightDir(int index){\n    //workaround '[] : Index expression must be constant' error\n    for (int x = 0; x <= DIRECTION_LIGHTS_COUNT; x++) {\n        if(x == index){\n            return getDirectionLightDirByLightPos(u_directionLights[x].position);\n        }\n    }\n\n    /*!\n    solve error in window7 chrome/firefox:\n    not all control paths return a value.\n    failed to create d3d shaders\n    */\n    return vec3(0.0);\n}\n#endif\n\n\nvec3 getViewDir(){\n    return normalize(u_cameraPos - v_worldPosition);\n}\nvec3 getNormal(){\n    return v_normal;\n}\n\n", body: "", };
-        ShaderChunk.noNormalMap_vertex = { top: "", define: "", varDeclare: "varying vec3 v_normal;\n", funcDeclare: "", funcDefine: "", body: "v_normal = normalize(normalMatrix * a_normal);\n", };
-        ShaderChunk.noSpecularMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec4 getMaterialSpecular() {\n        return u_specular;\n    }\n", body: "", };
-        ShaderChunk.normalMap_fragment = { top: "", define: "", varDeclare: "varying vec2 v_normalMapTexCoord;\nvarying vec3 v_viewDir;\n#if POINT_LIGHTS_COUNT > 0\nvarying vec3 v_pointLightDir[POINT_LIGHTS_COUNT];\n#endif\n\n#if DIRECTION_LIGHTS_COUNT > 0\nvarying vec3 v_directionLightDir[DIRECTION_LIGHTS_COUNT];\n#endif\n\n", funcDeclare: "vec3 getNormal();\n\nvec3 getLightDir(vec3 lightPos);\n\n", funcDefine: "#if POINT_LIGHTS_COUNT > 0\nvec3 getPointLightDir(int index){\n    //workaround '[] : Index expression must be constant' error\n    for (int x = 0; x <= POINT_LIGHTS_COUNT; x++) {\n        if(x == index){\n            return v_pointLightDir[x];\n        }\n    }\n    /*!\n    solve error in window7 chrome/firefox:\n    not all control paths return a value.\n    failed to create d3d shaders\n    */\n    return vec3(0.0);\n}\n#endif\n\n#if DIRECTION_LIGHTS_COUNT > 0\n\nvec3 getDirectionLightDir(int index){\n    //workaround '[] : Index expression must be constant' error\n    for (int x = 0; x <= DIRECTION_LIGHTS_COUNT; x++) {\n        if(x == index){\n            return v_directionLightDir[x];\n        }\n    }\n\n    /*!\n    solve error in window7 chrome/firefox:\n    not all control paths return a value.\n    failed to create d3d shaders\n    */\n    return vec3(0.0);\n}\n#endif\n\n\nvec3 getViewDir(){\n    return v_viewDir;\n}\nvec3 getNormal(){\n        // Obtain normal from normal map in range [0,1]\n        vec3 normal = texture2D(u_normalMapSampler, v_normalMapTexCoord).rgb;\n\n        // Transform normal vector to range [-1,1]\n        return normalize(normal * 2.0 - 1.0);  // this normal is in tangent space\n}\n", body: "", };
-        ShaderChunk.normalMap_vertex = { top: "", define: "", varDeclare: "varying vec2 v_normalMapTexCoord;\n	varying vec3 v_viewDir;\n\n\n#if POINT_LIGHTS_COUNT > 0\nvarying vec3 v_pointLightDir[POINT_LIGHTS_COUNT];\n#endif\n\n#if DIRECTION_LIGHTS_COUNT > 0\nvarying vec3 v_directionLightDir[DIRECTION_LIGHTS_COUNT];\n#endif\n\n", funcDeclare: "", funcDefine: "mat3 computeTBN(mat3 normalMatrix){\n            vec3 T = normalize(normalMatrix * a_tangent);\n            vec3 N = normalize(normalMatrix * a_normal);\n            // re-orthogonalize T with respect to N\n            T = normalize(T - dot(T, N) * N);\n            // then retrieve perpendicular vector B with the cross product of T and N\n            vec3 B = cross(T, N);\n\n\n            return transpose(mat3(T, B, N));\n        }\n", body: "mat3 TBN = computeTBN(normalMatrix);\n\n    //v_tangentLightPos = TBN * light.position;\n    //v_tangentCameraPos  = TBN * u_cameraPos;\n    //v_tangentPos  = TBN * v_position;\n\n\n    vec3 tangentPosition = TBN * vec3(mMatrix * vec4(a_position, 1.0));\n\n    v_normalMapTexCoord = a_texCoord;\n\n    v_viewDir = normalize(TBN * u_cameraPos - tangentPosition);\n\n\n#if POINT_LIGHTS_COUNT > 0\n       for(int i = 0; i < POINT_LIGHTS_COUNT; i++){\n            //not normalize for computing distance\n            v_pointLightDir[i] = TBN * getPointLightDirByLightPos(u_pointLights[i].position, tangentPosition);\n       }\n#endif\n\n#if DIRECTION_LIGHTS_COUNT > 0\n       for(int i = 0; i < DIRECTION_LIGHTS_COUNT; i++){\n            v_directionLightDir[i] = normalize(- TBN * getDirectionLightDirByLightPos(u_directionLights[i].position));\n       }\n#endif\n\n", };
-        ShaderChunk.specularMap_fragment = { top: "", define: "", varDeclare: "varying vec2 v_specularMapTexCoord;\n", funcDeclare: "", funcDefine: "vec4 getMaterialSpecular() {\n        return texture2D(u_specularMapSampler, v_specularMapTexCoord);\n    }\n", body: "", };
-        ShaderChunk.specularMap_vertex = { top: "", define: "", varDeclare: "varying vec2 v_specularMapTexCoord;\n", funcDeclare: "", funcDefine: "", body: "v_specularMapTexCoord = a_texCoord;\n", };
-        ShaderChunk.buildCubemapShadowMap_fragment = { top: "", define: "", varDeclare: "varying vec3 v_worldPosition;\n", funcDeclare: "", funcDefine: "", body: "\n// get distance between fragment and light source\n    float lightDistance = length(v_worldPosition - u_lightPos);\n\n    // map to [0,1] range by dividing by farPlane\n    lightDistance = lightDistance / u_farPlane;\n\n\ngl_FragData[0] = packDepth(lightDistance);\n\n\n//gl_FragColor = vec4(0.5, 0.0, 1.0, 1.0);\n//gl_FragData[0] = vec4(lightDistance, 1.0, 1.0, 1.0);\n", };
-        ShaderChunk.buildCubemapShadowMap_vertex = { top: "", define: "", varDeclare: "varying vec3 v_worldPosition;\n", funcDeclare: "", funcDefine: "", body: "v_worldPosition = vec3(mMatrix * vec4(a_position, 1.0));\n    gl_Position = u_pMatrix * u_vMatrix * vec4(v_worldPosition, 1.0);\n", };
-        ShaderChunk.buildTwoDShadowMap_depthMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
-        ShaderChunk.buildTwoDShadowMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
-        ShaderChunk.buildTwoDShadowMap_packDepth_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "gl_FragData[0] = packDepth(gl_FragCoord.z);\n", };
-        ShaderChunk.buildTwoDShadowMap_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "gl_Position = u_vpMatrixFromLight * mMatrix * vec4(a_position, 1.0);\n", };
-        ShaderChunk.commonBuildShadowMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "// Packing a float in GLSL with multiplication and mod\nvec4 packDepth(in float depth) {\n    const vec4 bit_shift = vec4(256.0 * 256.0 * 256.0, 256.0 * 256.0, 256.0, 1.0);\n    const vec4 bit_mask = vec4(0.0, 1.0 / 256.0, 1.0 / 256.0, 1.0 / 256.0);\n    // combination of mod and multiplication and division works better\n    vec4 res = mod(depth * bit_shift * vec4(255), vec4(256) ) / vec4(255);\n    res -= res.xxyz * bit_mask;\n\n    return res;\n}\n", body: "", };
-        ShaderChunk.cubemapShadowMap_fragment = { top: "", define: "", varDeclare: "uniform samplerCube u_cubemapShadowMapSampler[ CUBEMAP_SHADOWMAP_COUNT ];\n\n    uniform int u_isCubemapRenderListEmpty[ CUBEMAP_SHADOWMAP_COUNT ];\n	uniform float u_cubemapShadowDarkness[ CUBEMAP_SHADOWMAP_COUNT ];\n	uniform float u_cubemapShadowBias[ CUBEMAP_SHADOWMAP_COUNT ];\n	uniform float u_farPlane[ CUBEMAP_SHADOWMAP_COUNT ];\n	uniform vec3 u_cubemapLightPos[ CUBEMAP_SHADOWMAP_COUNT ];\n", funcDeclare: "", funcDefine: "// PCF\nfloat getCubemapShadowVisibilityByPCF(float currentDepth, vec3 fragToLight, samplerCube cubemapShadowMapSampler, float shadowBias, float farPlane, float shadowDarkness){\n    //only support in opengl es 3.0+\n    //vec3 sampleOffsetDirections[20] = vec3[]\n    //(\n       //vec3( 1,  1,  1), vec3( 1, -1,  1), vec3(-1, -1,  1), vec3(-1,  1,  1),\n       //vec3( 1,  1, -1), vec3( 1, -1, -1), vec3(-1, -1, -1), vec3(-1,  1, -1),\n       //vec3( 1,  1,  0), vec3( 1, -1,  0), vec3(-1, -1,  0), vec3(-1,  1,  0),\n       //vec3( 1,  0,  1), vec3(-1,  0,  1), vec3( 1,  0, -1), vec3(-1,  0, -1),\n       //vec3( 0,  1,  1), vec3( 0, -1,  1), vec3( 0, -1, -1), vec3( 0,  1, -1)\n    //);\n\n    vec3 sampleOffsetDirections[20];\n\n    sampleOffsetDirections[0] = vec3( 1,  1,  1);\n    sampleOffsetDirections[1] = vec3( 1,  -1,  1);\n    sampleOffsetDirections[2] = vec3( -1,  -1,  1);\n    sampleOffsetDirections[3] = vec3( -1,  1,  1);\n\n    sampleOffsetDirections[4] = vec3( 1,  1,  -1);\n    sampleOffsetDirections[5] = vec3( 1,  -1,  -1);\n    sampleOffsetDirections[6] = vec3( -1,  -1,  -1);\n    sampleOffsetDirections[7] = vec3( -1,  1,  -1);\n\n    sampleOffsetDirections[8] = vec3( 1,  1,  0);\n    sampleOffsetDirections[9] = vec3( 1,  -1,  0);\n    sampleOffsetDirections[10] = vec3( -1,  -1,  0);\n    sampleOffsetDirections[11] = vec3( -1,  1,  0);\n\n    sampleOffsetDirections[12] = vec3( 1,  0,  1);\n    sampleOffsetDirections[13] = vec3( -1,  0,  1);\n    sampleOffsetDirections[14] = vec3( 1,  0,  -1);\n    sampleOffsetDirections[15] = vec3( -1,  0,  -1);\n\n    sampleOffsetDirections[16] = vec3( 0,  1,  1);\n    sampleOffsetDirections[17] = vec3( 0,  -1,  1);\n    sampleOffsetDirections[18] = vec3( 0,  -1,  -1);\n    sampleOffsetDirections[19] = vec3( 0,  1,  -1);\n\n    float shadow = 0.0;\n    int samples = 20;\n\n    //float diskRadius = 0.00000;\n    //Another interesting trick we can apply here is that we can change the diskRadius based on how far the viewer is away from a fragment; this way we can increase the offset radius by the distance to the viewer, making the shadows softer when far away and sharper when close by.\n    float viewDistance = length(u_cameraPos - v_worldPosition);\n    float diskRadius = (1.0 + (viewDistance / farPlane)) / 25.0;\n\n    //for(int i = 0; i < samples; ++i)\n    for(int i = 0; i < 20; ++i)\n    {\n        float pcfDepth = unpackDepth(textureCube(cubemapShadowMapSampler, fragToLight + sampleOffsetDirections[i] * diskRadius));\n        pcfDepth *= farPlane;   // Undo mapping [0;1]\n        shadow += currentDepth - shadowBias > pcfDepth  ? shadowDarkness : 1.0;\n    }\n    shadow /= float(samples);\n\n    return shadow;\n}\n\n\nfloat getCubemapShadowVisibility(vec3 lightDir, samplerCube cubemapShadowMapSampler, vec3 lightPos, float farPlane, float shadowBias, float  shadowDarkness) {\n// Get vector between fragment position and light position\n    vec3 fragToLight= v_worldPosition - lightPos;\n    // Use the light to fragment vector to sample from the depth map\n    // Now get current linear depth as the length between the fragment and light position\n    float currentDepth = length(fragToLight);\n\n    #if defined(SHADOWMAP_TYPE_PCF)\n    return getCubemapShadowVisibilityByPCF(currentDepth, fragToLight, cubemapShadowMapSampler, getShadowBias(lightDir, shadowBias), farPlane, shadowDarkness);\n    #endif\n\n    float closestDepth = unpackDepth(textureCube(cubemapShadowMapSampler, fragToLight));\n\n    // It is currently in linear range between [0,1]. Re-transform back to original value\n    closestDepth *= farPlane;\n\n\n    return float(currentDepth > closestDepth + getShadowBias(lightDir, shadowBias) ? shadowDarkness : 1.0);\n}\n", body: "", };
-        ShaderChunk.noShadowMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec3 getShadowVisibility() {\n        return vec3(1.0);\n    }\n", body: "", };
-        ShaderChunk.totalShadowMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "float getShadowBias(vec3 lightDir, float shadowBias);\nfloat unpackDepth(vec4 rgbaDepth);\n", funcDefine: "float getShadowBias(vec3 lightDir, float shadowBias){\n    float bias = shadowBias;\n\n    if(shadowBias == NULL){\n        bias = 0.005;\n    }\n\n\n     /*!\n     A shadow bias of 0.005 solves the issues of our scene by a large extent, but some surfaces that have a steep angle to the light source might still produce shadow acne. A more solid approach would be to change the amount of bias based on the surface angle towards the light: something we can solve with the dot product:\n     */\n\n     return max(bias * (1.0 - dot(normalize(getNormal()), lightDir)), bias);\n\n    //return bias;\n}\n\nvec3 getShadowVisibility() {\n    vec3 shadowColor = vec3(1.0);\n    vec3 twoDLightDir = vec3(0.0);\n    vec3 cubemapLightDir = vec3(0.0);\n\n\n\n    //to normalMap, the lightDir use the origin one instead of normalMap's lightDir here(the lightDir is used for computing shadowBias, the origin one is enough for it)\n\n    #if TWOD_SHADOWMAP_COUNT > 0\n	for( int i = 0; i < TWOD_SHADOWMAP_COUNT; i ++ ) {\n        if(isRenderListEmpty(u_isTwoDRenderListEmpty[i])){\n            continue;\n        }\n\n        twoDLightDir = getDirectionLightDirByLightPos(u_twoDLightPos[i]);\n\n	////if is opposite to direction of light rays, no shadow\n\n        shadowColor *= getTwoDShadowVisibility(twoDLightDir, u_twoDShadowMapSampler[i], v_positionFromLight[i], u_twoDShadowBias[i], u_twoDShadowDarkness[i], u_twoDShadowSize[i]);\n	}\n	#endif\n\n\n	#if CUBEMAP_SHADOWMAP_COUNT > 0\n\n	for( int i = 0; i < CUBEMAP_SHADOWMAP_COUNT; i ++ ) {\n        if(isRenderListEmpty(u_isCubemapRenderListEmpty[i])){\n            continue;\n        }\n\n	////if is opposite to direction of light rays, no shadow\n\n        shadowColor *= getCubemapShadowVisibility(cubemapLightDir, u_cubemapShadowMapSampler[i], u_cubemapLightPos[i], u_farPlane[i], u_cubemapShadowBias[i], u_cubemapShadowDarkness[i]);\n	}\n	#endif\n\n	return shadowColor;\n}\n\nfloat unpackDepth(vec4 rgbaDepth) {\n    /*! make sure that the visibility from the shadow map which is not builded is always be 1.0 */\n    if(rgbaDepth == vec4(0.0)){\n        return 100000.0;\n    }\n\n    const vec4 bitShift = vec4(1.0 / (256.0 * 256.0 * 256.0), 1.0 / (256.0 * 256.0), 1.0 / 256.0, 1.0);\n    return dot(rgbaDepth, bitShift);\n}\n\n", body: "", };
-        ShaderChunk.twoDShadowMap_depthMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "float handleDepthMap(vec4 rgbaDepth);\n", funcDefine: "float handleDepthMap(vec4 rgbaDepth) {\n    return rgbaDepth.r;\n}\n", body: "", };
-        ShaderChunk.twoDShadowMap_fragment = { top: "", define: "", varDeclare: "varying vec4 v_positionFromLight[ TWOD_SHADOWMAP_COUNT ];\n    uniform int u_isTwoDRenderListEmpty[ TWOD_SHADOWMAP_COUNT ];\n	uniform sampler2D u_twoDShadowMapSampler[ TWOD_SHADOWMAP_COUNT ];\n	uniform float u_twoDShadowDarkness[ TWOD_SHADOWMAP_COUNT ];\n	uniform float u_twoDShadowBias[ TWOD_SHADOWMAP_COUNT ];\n	uniform vec2 u_twoDShadowSize[ TWOD_SHADOWMAP_COUNT ];\n	uniform vec3 u_twoDLightPos[ TWOD_SHADOWMAP_COUNT ];\n", funcDeclare: "", funcDefine: "// PCF\nfloat getTwoDShadowVisibilityByPCF(float currentDepth, vec2 shadowCoord, sampler2D twoDShadowMapSampler, float shadowBias, float shadowDarkness, vec2 shadowMapSize){\n\n    float shadow = 0.0;\n    vec2 texelSize = vec2(1.0 / shadowMapSize[0], 1.0 / shadowMapSize[1]);\n\n    for(int x = -1; x <= 1; ++x)\n    {\n        for(int y = -1; y <= 1; ++y)\n        {\n            float pcfDepth = handleDepthMap(texture2D(twoDShadowMapSampler, shadowCoord + vec2(x, y) * texelSize));\n            shadow += currentDepth - shadowBias > pcfDepth  ? shadowDarkness : 1.0;\n        }\n    }\n    shadow /= 9.0;\n\n    return shadow;\n}\n\n\n\nfloat getTwoDShadowVisibility(vec3 lightDir, sampler2D twoDShadowMapSampler, vec4 v_positionFromLight, float shadowBias, float shadowDarkness, vec2 shadowSize) {\n    //project texture\n    vec3 shadowCoord = (v_positionFromLight.xyz / v_positionFromLight.w) / 2.0 + 0.5;\n    //vec3 shadowCoord = vec3(0.5, 0.5, 0.5);\n\n    #ifdef SHADOWMAP_TYPE_PCF\n    // Percentage-close filtering\n    // (9 pixel kernel)\n    return getTwoDShadowVisibilityByPCF(shadowCoord.z, shadowCoord.xy, twoDShadowMapSampler, getShadowBias(lightDir, shadowBias), shadowDarkness, shadowSize);\n\n    #else\n    return shadowCoord.z > handleDepthMap(texture2D(twoDShadowMapSampler, shadowCoord.xy)) + getShadowBias(lightDir, shadowBias) ? shadowDarkness : 1.0;\n    #endif\n}\n", body: "", };
-        ShaderChunk.twoDShadowMap_unpackDepth_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "float handleDepthMap(vec4 rgbaDepth);\n", funcDefine: "float handleDepthMap(vec4 rgbaDepth) {\n    return unpackDepth(rgbaDepth);\n}\n", body: "", };
-        ShaderChunk.twoDShadowMap_vertex = { top: "", define: "", varDeclare: "varying vec4 v_positionFromLight[ TWOD_SHADOWMAP_COUNT ];\nuniform mat4 u_vpMatrixFromLight[ TWOD_SHADOWMAP_COUNT ];\n", funcDeclare: "", funcDefine: "", body: "for( int i = 0; i < TWOD_SHADOWMAP_COUNT; i ++ ) {\n    v_positionFromLight[i] = u_vpMatrixFromLight[i] * vec4(v_worldPosition, 1.0);\n	}\n", };
-        ShaderChunk.mirror_fragment = { top: "", define: "", varDeclare: "varying vec4 v_reflectionMapCoord;\n", funcDeclare: "", funcDefine: "//todo add more blend way to mix reflectionMap color and textureColor\n		float blendOverlay(float base, float blend) {\n			return( base < 0.5 ? ( 2.0 * base * blend ) : (1.0 - 2.0 * ( 1.0 - base ) * ( 1.0 - blend ) ) );\n		}\n		vec4 getReflectionMapColor(in vec4 materialColor){\n			vec4 color = texture2DProj(u_reflectionMapSampler, v_reflectionMapCoord);\n\n			color = vec4(blendOverlay(materialColor.r, color.r), blendOverlay(materialColor.g, color.g), blendOverlay(materialColor.b, color.b), 1.0);\n\n			return color;\n		}\n", body: "if(!isRenderListEmpty(u_isRenderListEmpty)){\n    totalColor *= getReflectionMapColor(totalColor);\n}\n", };
-        ShaderChunk.mirror_vertex = { top: "", define: "", varDeclare: "varying vec4 v_reflectionMapCoord;\n", funcDeclare: "", funcDefine: "", body: "mat4 textureMatrix = mat4(\n                        0.5, 0.0, 0.0, 0.0,\n                        0.0, 0.5, 0.0, 0.0,\n                        0.0, 0.0, 0.5, 0.0,\n                        0.5, 0.5, 0.5, 1.0\n);\n\nv_reflectionMapCoord = textureMatrix * gl_Position;\n", };
-        ShaderChunk.terrainLayer_fragment = { top: "", define: "", varDeclare: "struct LayerHeightData {\n    float minHeight;\n    float maxHeight;\n};\nuniform LayerHeightData u_layerHeightDatas[LAYER_COUNT];\n//sampler2D can't be contained in struct\nuniform sampler2D u_layerSampler2Ds[LAYER_COUNT];\n\n\nvarying vec2 v_layerTexCoord;\n", funcDeclare: "", funcDefine: "vec4 getLayerTextureColor(in sampler2D layerSampler2Ds[LAYER_COUNT], in LayerHeightData layerHeightDatas[LAYER_COUNT]){\n    vec4 color = vec4(0.0);\n    bool isInLayer = false;\n\n    float height = v_worldPosition.y;\n\n    for(int i = 0; i < LAYER_COUNT; i++){\n        if(height >= layerHeightDatas[i].minHeight && height <= layerHeightDatas[i].maxHeight){\n            //todo blend color\n            color += texture2D(layerSampler2Ds[i], v_layerTexCoord);\n\n            isInLayer = true;\n\n            break;\n        }\n    }\n\n    return isInLayer ? color : vec4(1.0);\n}\n", body: "\ntotalColor *= getLayerTextureColor(u_layerSampler2Ds, u_layerHeightDatas);\n", };
-        ShaderChunk.terrainLayer_vertex = { top: "", define: "", varDeclare: "varying vec2 v_layerTexCoord;\n", funcDeclare: "", funcDefine: "", body: "v_layerTexCoord = a_texCoord;\n", };
-        ShaderChunk.water_bump_fragment = { top: "", define: "", varDeclare: "varying vec2 v_bumpTexCoord;\n", funcDeclare: "", funcDefine: "", body: "// fetch bump texture, unpack from [0..1] to [-1..1]\n	vec3 bumpNormal = 2.0 * texture2D(u_bumpMapSampler, v_bumpTexCoord).rgb - 1.0;\n	vec2 perturbation = u_waveData.height * bumpNormal.rg;\n", };
-        ShaderChunk.water_bump_vertex = { top: "", define: "", varDeclare: "struct WaveData {\n    float length;\n    float height;\n};\nuniform WaveData u_waveData;\nvarying vec2 v_bumpTexCoord;\n", funcDeclare: "", funcDefine: "", body: "vec2 bumpTexCoord = vec2(u_windMatrix * vec4(a_texCoord, 0.0, 1.0));\n	v_bumpTexCoord = bumpTexCoord / u_waveData.length;\n", };
-        ShaderChunk.water_fragment = { top: "", define: "", varDeclare: "struct WaveData {\n    float length;\n    float height;\n};\nuniform WaveData u_waveData;\nstruct LevelData {\n    float fresnelLevel;\n    float reflectionLevel;\n    float refractionLevel;\n};\nuniform LevelData u_levelData;\n\nvarying vec4 v_reflectionAndRefractionMapCoord;\n", funcDeclare: "", funcDefine: "", body: "vec2 projectedTexCoords = v_reflectionAndRefractionMapCoord.xy / v_reflectionAndRefractionMapCoord.w + perturbation;\n\n\n\n\n//totalColor = vec4(1.0 - fresnelTerm);\n//totalColor *= vec4(refractionColor, 1.0);\n//totalColor *= vec4(mix(reflectionColor, refractionColor, fresnelTerm), 1.0);\n//totalColor += vec4(reflectionColor * fresnelTerm * u_levelData.reflectionLevel + (1.0 - fresnelTerm) * refractionColor * u_levelData.refractionLevel, 1.0);\n\n//totalColor += vec4(reflectionColor * fresnelTerm * u_levelData.reflectionLevel + (1.0 - fresnelTerm) * refractionColor * u_levelData.refractionLevel, 1.0);\n\ntotalColor += vec4(getLightEffectColor(projectedTexCoords), 1.0);\n\n\n//totalColor *= vec4(mix(reflectionColor, refractionColor, 0.5), 1.0);\n", };
-        ShaderChunk.water_fresnel_fragment = { top: "", define: "", varDeclare: "varying vec3 v_position;\n", funcDeclare: "", funcDefine: "vec3 getLightEffectColor(vec2 projectedTexCoords){\n	vec3 reflectionColor;\n	vec3 refractionColor;\n\n    vec3 inDir = normalize(v_position - u_cameraPos);\n\n	float fresnelTerm = max(dot(inDir, v_normal), 0.0);\n	fresnelTerm = clamp((1.0 - fresnelTerm) * u_levelData.fresnelLevel, 0., 1.);\n\n    if(!isRenderListEmpty(u_isReflectionRenderListEmpty)){\n        reflectionColor = texture2D(u_reflectionMapSampler, projectedTexCoords).rgb;\n        reflectionColor = reflectionColor * fresnelTerm * u_levelData.reflectionLevel;\n	}\n	else{\n        reflectionColor = vec3(0.0);\n	}\n\n    if(!isRenderListEmpty(u_isRefractionRenderListEmpty)){\n        refractionColor = texture2D(u_refractionMapSampler, projectedTexCoords).rgb;\n        refractionColor = (1.0 - fresnelTerm) * refractionColor * u_levelData.refractionLevel;\n	}\n	else{\n        refractionColor = vec3(0.0);\n	}\n\n	return reflectionColor + refractionColor;\n}\n", body: "", };
-        ShaderChunk.water_fresnel_vertex = { top: "", define: "", varDeclare: "varying vec3 v_position;\n", funcDeclare: "", funcDefine: "", body: "v_position = a_position;\n", };
-        ShaderChunk.water_noBump_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "vec2 perturbation = vec2(0.0);\n", };
-        ShaderChunk.water_noLightEffect_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec4 getLightEffectColor(vec2 projectedTexCoords){\n    return vec4(1.0);\n}\n", body: "", };
-        ShaderChunk.water_reflection_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec3 getLightEffectColor(vec2 projectedTexCoords){\n    if(!isRenderListEmpty(u_isReflectionRenderListEmpty)){\n        return texture2D(u_reflectionMapSampler, projectedTexCoords).rgb * u_levelData.reflectionLevel;\n    }\n    return vec3(0.0);\n}\n", body: "", };
-        ShaderChunk.water_refraction_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec3 getLightEffectColor(vec2 projectedTexCoords){\n    if(!isRenderListEmpty(u_isRefractionRenderListEmpty)){\n        return texture2D(u_refractionMapSampler, projectedTexCoords).rgb * u_levelData.refractionLevel;\n    }\n    return vec3(0.0);\n}\n", body: "", };
-        ShaderChunk.water_vertex = { top: "", define: "", varDeclare: "varying vec4 v_reflectionAndRefractionMapCoord;\n", funcDeclare: "", funcDefine: "", body: "mat4 textureMatrix = mat4(\n                        0.5, 0.0, 0.0, 0.0,\n                        0.0, 0.5, 0.0, 0.0,\n                        0.0, 0.0, 0.5, 0.0,\n                        0.5, 0.5, 0.5, 1.0\n);\n\nv_reflectionAndRefractionMapCoord = textureMatrix * gl_Position;\n", };
-        ShaderChunk.brick_proceduralTexture_fragment = { top: "", define: "", varDeclare: "varying vec2 v_texCoord;\n", funcDeclare: "", funcDefine: "", body: "float brickW = 1.0 / u_tilesWidthNumber;\n	float brickH = 1.0 / u_tilesWidthNumber;\n	float jointWPercentage = 0.01;\n	float jointHPercentage = 0.05;\n	vec3 color = u_brickColor;\n	float yi = v_texCoord.y / brickH;\n	float nyi = round(yi);\n	float xi = v_texCoord.x / brickW;\n\n	if (mod(floor(yi), 2.0) == 0.0){\n		xi = xi - 0.5;\n	}\n\n	float nxi = round(xi);\n	vec2 brickv_texCoord = vec2((xi - floor(xi)) / brickH, (yi - floor(yi)) /  brickW);\n\n	if (yi < nyi + jointHPercentage && yi > nyi - jointHPercentage){\n		color = mix(u_jointColor, vec3(0.37, 0.25, 0.25), (yi - nyi) / jointHPercentage + 0.2);\n	}\n	else if (xi < nxi + jointWPercentage && xi > nxi - jointWPercentage){\n		color = mix(u_jointColor, vec3(0.44, 0.44, 0.44), (xi - nxi) / jointWPercentage + 0.2);\n	}\n	else {\n		float u_brickColorSwitch = mod(floor(yi) + floor(xi), 3.0);\n\n		if (u_brickColorSwitch == 0.0)\n			color = mix(color, vec3(0.33, 0.33, 0.33), 0.3);\n		else if (u_brickColorSwitch == 2.0)\n			color = mix(color, vec3(0.11, 0.11, 0.11), 0.3);\n	}\n\n	gl_FragColor = vec4(color, 1.0);\n", };
-        ShaderChunk.common_proceduralTexture_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "float rand(vec2 n) {\n	return fract(cos(dot(n, vec2(12.9898, 4.1414))) * 43758.5453);\n}\nfloat noise(vec2 n) {\n	const vec2 d = vec2(0.0, 1.0);\n	vec2 b = floor(n), f = smoothstep(vec2(0.0), vec2(1.0), fract(n));\n	return mix(mix(rand(b), rand(b + d.yx), f.x), mix(rand(b + d.xy), rand(b + d.yy), f.x), f.y);\n}\n\nfloat turbulence(vec2 P)\n{\n	float val = 0.0;\n	float freq = 1.0;\n	for (int i = 0; i < 4; i++)\n	{\n		val += abs(noise(P*freq) / freq);\n		freq *= 2.07;\n	}\n	return val;\n}\n\nfloat fbm(vec2 n) {\n	float total = 0.0, amplitude = 1.0;\n	for (int i = 0; i < 4; i++) {\n		total += noise(n) * amplitude;\n		n += n;\n		amplitude *= 0.5;\n	}\n	return total;\n}\n\nfloat round(float number){\n	return sign(number)*floor(abs(number) + 0.5);\n}\n", body: "", };
-        ShaderChunk.common_proceduralTexture_vertex = { top: "", define: "", varDeclare: "varying vec2 v_texCoord;\nconst vec2 MADD=vec2(0.5,0.5);\n", funcDeclare: "", funcDefine: "", body: "v_texCoord=a_positionVec2*MADD+MADD;\n\n    gl_Position=vec4(a_positionVec2, 0.0 ,1.0);\n", };
-        ShaderChunk.cloud_proceduralTexture_fragment = { top: "", define: "", varDeclare: "varying vec2 v_texCoord;\n", funcDeclare: "", funcDefine: "", body: "gl_FragColor = mix(u_skyColor, u_cloudColor, fbm(v_texCoord * 12.0));\n", };
-        ShaderChunk.fire_proceduralTexture_fragment = { top: "", define: "", varDeclare: "varying vec2 v_texCoord;\nstruct FireColor {\n    vec3 c1;\n    vec3 c2;\n    vec3 c3;\n    vec3 c4;\n    vec3 c5;\n    vec3 c6;\n};\nuniform FireColor u_fireColor;\n", funcDeclare: "", funcDefine: "", body: "vec2 p = v_texCoord * 8.0;\n	float q = fbm(p - u_time * 0.1);\n	vec2 r = vec2(fbm(p + q + u_time * u_speed.x - p.x - p.y), fbm(p + q - u_time * u_speed.y));\n	vec3 c = mix(u_fireColor.c1, u_fireColor.c2, fbm(p + r)) + mix(u_fireColor.c3, u_fireColor.c4, r.x) - mix(u_fireColor.c5, u_fireColor.c6, r.y);\n	vec3 color = c * cos(u_shift * v_texCoord.y);\n	float luminance = dot(color.rgb, vec3(0.3, 0.59, 0.11));\n\n	gl_FragColor = vec4(color, luminance * u_alphaThreshold + (1.0 - u_alphaThreshold));\n", };
-        ShaderChunk.grass_proceduralTexture_fragment = { top: "", define: "", varDeclare: "varying vec2 v_texCoord;\n", funcDeclare: "", funcDefine: "", body: "vec3 color = mix(u_groundColor, u_herb1Color, rand(gl_FragCoord.xy * 4.0));\n	color = mix(color, u_herb2Color, rand(gl_FragCoord.xy * 8.0));\n	color = mix(color, u_herb3Color, rand(gl_FragCoord.xy));\n	color = mix(color, u_herb1Color, fbm(gl_FragCoord.xy * 16.0));\n\n	gl_FragColor = vec4(color, 1.0);\n", };
-        ShaderChunk.marble_proceduralTexture_fragment = { top: "", define: "", varDeclare: "varying vec2 v_texCoord;\nconst vec3 TILE_SIZE = vec3(1.1, 1.0, 1.1);\n//const vec3 TILE_PCT = vec3(0.98, 1.0, 0.98);\n", funcDeclare: "", funcDefine: "vec3 marble_color(float x)\n{\n	vec3 col;\n	x = 0.5*(x + 1.);\n	x = sqrt(x);\n	x = sqrt(x);\n	x = sqrt(x);\n	col = vec3(.2 + .75*x);\n	col.b *= 0.95;\n	return col;\n}\n", body: "vec3 color;\n	float brickW = 1.0 / u_tilesHeightNumber;\n	float brickH = 1.0 / u_tilesWidthNumber;\n	float jointWPercentage = 0.01;\n	float jointHPercentage = 0.01;\n	float yi = v_texCoord.y / brickH;\n	float nyi = round(yi);\n	float xi = v_texCoord.x / brickW;\n\n	if (mod(floor(yi), 2.0) == 0.0){\n		xi = xi - 0.5;\n	}\n\n	float nxi = round(xi);\n	vec2 brickv_texCoord = vec2((xi - floor(xi)) / brickH, (yi - floor(yi)) / brickW);\n\n	if (yi < nyi + jointHPercentage && yi > nyi - jointHPercentage){\n		color = mix(u_jointColor, vec3(0.37, 0.25, 0.25), (yi - nyi) / jointHPercentage + 0.2);\n	}\n	else if (xi < nxi + jointWPercentage && xi > nxi - jointWPercentage){\n		color = mix(u_jointColor, vec3(0.44, 0.44, 0.44), (xi - nxi) / jointWPercentage + 0.2);\n	}\n	else {\n		float t = 6.28 * brickv_texCoord.x / (TILE_SIZE.x + noise(vec2(v_texCoord)*6.0));\n		t += u_amplitude * turbulence(brickv_texCoord.xy);\n		t = sin(t);\n		color = marble_color(t);\n	}\n\n	gl_FragColor = vec4(color, 1.0);\n", };
-        ShaderChunk.road_proceduralTexture_fragment = { top: "", define: "", varDeclare: "varying vec2 v_texCoord;\n", funcDeclare: "", funcDefine: "", body: "float ratioy = mod(gl_FragCoord.y * 100.0 , fbm(v_texCoord * 2.0));\n	vec3 color = u_roadColor * ratioy;\n\n	gl_FragColor = vec4(color, 1.0);\n", };
-        ShaderChunk.wood_proceduralTexture_fragment = { top: "", define: "", varDeclare: "varying vec2 v_texCoord;\n", funcDeclare: "", funcDefine: "", body: "float ratioy = mod(v_texCoord.x * u_ampScale, 2.0 + fbm(v_texCoord * 0.8));\n	vec3 wood = u_woodColor * ratioy;\n\n	gl_FragColor = vec4(wood, 1.0);\n", };
-        return ShaderChunk;
-    }());
-    wd.ShaderChunk = ShaderChunk;
+        ThreeDUIEngine.getInstance = function () { };
+        ThreeDUIEngine = __decorate([
+            wd.singleton()
+        ], ThreeDUIEngine);
+        return ThreeDUIEngine;
+    }(wd.UIEngine));
+    wd.ThreeDUIEngine = ThreeDUIEngine;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var TwoDUIEngine = (function (_super) {
+        __extends(TwoDUIEngine, _super);
+        function TwoDUIEngine() {
+            _super.apply(this, arguments);
+        }
+        TwoDUIEngine.getInstance = function () { };
+        TwoDUIEngine.prototype.render = function () {
+            var _this = this;
+            this.list.forEach(function (ui) {
+                if (_this._isDirty(ui.entityObject))
+                    ui.render();
+            }, this);
+        };
+        TwoDUIEngine.prototype._isDirty = function (uiObject) {
+            return uiObject.getComponent(wd.UIRenderer).state === wd.EUIRendererState.DIRTY;
+        };
+        TwoDUIEngine = __decorate([
+            wd.singleton()
+        ], TwoDUIEngine);
+        return TwoDUIEngine;
+    }(wd.UIEngine));
+    wd.TwoDUIEngine = TwoDUIEngine;
 })(wd || (wd = {}));

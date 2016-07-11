@@ -29,14 +29,10 @@ Please learn samples in examples/samples/ to get more info.
 * Contributing
 Join us, We can create the amazing 3D world together!
 * Feature
-- Extension
-  - VAO
-  - Depth Texture
-- Batch
+- Batch Draw
   - Instance
   - Render Queue Sort By RenderGroup,RenderPriority,Shader,Texture,VBO
   - Merge GameObject
-  - Batch Update Component
 - Water
 - Procedural
   - Procedural Texture
@@ -49,7 +45,11 @@ Join us, We can create the amazing 3D world together!
   - Octree
 - Event System
   - EventTriggerDetector
-- UI
+- ThreeD UI
+  - Bitmap Font
+  - Line
+  - Arrow
+- TwoD UI
   - Ttf Font, Bitmap Font
   - ProgressBar
   - Image
@@ -102,7 +102,7 @@ Here shows a spinning cube sample:
       window.onload = function () {
           //set full screen and init engine
           wd.Main.setConfig({
-              screenSize: wd.EScreenSize.FULL
+              screenSize: wd.ScreenSize.FULL
           }).init();
 
           initSample();
