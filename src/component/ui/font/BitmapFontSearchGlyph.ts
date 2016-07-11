@@ -1,6 +1,6 @@
 module wd{
     const M_WIDTHS = ['m', 'w'],
-    TAB_ID = '\t'.charCodeAt(0),
+        TAB_ID = '\t'.charCodeAt(0),
         SPACE_ID = ' '.charCodeAt(0);
 
     export class BitmapFontSearchGlyph{
@@ -10,20 +10,22 @@ module wd{
         	return obj;
         }
 
-        //These are fallbacks, when the font doesn't include
-        //' ' or '\t' glyphs
         private _fallbackSpaceGlyph:FntCharData = null;
         private _fallbackTabGlyph:FntCharData = null;
 
         public getGlyph(fntObj:FntData, id:number) {
             var glyph = this.getGlyphById(fntObj, id);
 
-            if (glyph)
+            if (glyph){
                 return glyph
-            else if (id === TAB_ID)
+            }
+            else if (id === TAB_ID){
                 return this._fallbackTabGlyph;
-            else if (id === SPACE_ID)
+            }
+            else if (id === SPACE_ID){
                 return this._fallbackSpaceGlyph;
+            }
+
             return null
         }
 
@@ -38,25 +40,17 @@ module wd{
         }
 
         public setupSpaceGlyphs(fntObj:FntData, tabSize:number) {
-            //These are fallbacks, when the font doesn't include
-            //' ' or '\t' glyphs
-            //this._fallbackSpaceGlyph = null
-            //this._fallbackTabGlyph = null
-
             if (!this._getFontDefDictionary(fntObj)) {
                 return
             }
 
-
             //try to get space glyph
             //then fall back to the 'm' or 'w' glyphs
             //then fall back to the first glyph available
-            var space:FntCharData = this.getGlyphById(fntObj, SPACE_ID)
+            let space:FntCharData = this.getGlyphById(fntObj, SPACE_ID)
                 || this._getMGlyph(fntObj)
-                || this._getFirstGlyph(fntObj);
-
-            //and create a fallback for tab
-            var tabWidth = tabSize * space.xAdvance;
+                || this._getFirstGlyph(fntObj),
+             tabWidth = tabSize * space.xAdvance;
 
             this._fallbackSpaceGlyph = space;
 
@@ -76,9 +70,10 @@ module wd{
         private _getMGlyph(fntObj:FntData) {
             var glyph = null;
 
-            for (var i = 0; i < M_WIDTHS.length; i++) {
-                var id = M_WIDTHS[i].charCodeAt(0)
+            for (let i = 0; i < M_WIDTHS.length; i++) {
+                let id = M_WIDTHS[i].charCodeAt(0),
                 glyph = this.getGlyphById(fntObj, id);
+
                 if (glyph) {
                     break;
                 }

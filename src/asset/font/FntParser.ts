@@ -28,7 +28,6 @@ module wd {
 
             fnt.commonHeight = commonObj["lineHeight"];
 
-            //todo test
             fnt.commonBase = commonObj["base"];
             fnt.scaleW = commonObj["scaleW"];
             fnt.scaleH = commonObj["scaleH"];
@@ -48,12 +47,6 @@ module wd {
 
             this._parseChar(fntStr, fnt);
 
-            /*!
-             ////todo support kerning
-             http://www.blueidea.com/design/doc/2007/5160.asp
-             */
-
-            //todo test
             this._parseKerning(fntStr, fnt);
 
 

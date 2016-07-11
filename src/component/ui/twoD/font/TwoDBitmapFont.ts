@@ -55,7 +55,7 @@ module wd {
 
             super.init();
 
-            var layoutDataList:wdCb.Collection<LayoutCharData> = this._layout.getLayoutData(this.text, this.fntId, {
+            let layoutDataList:wdCb.Collection<LayoutCharData> = this._layout.getLayoutData(this.text, this.fntId, {
                 width:this.width,
                 align: this.xAlignment
             });
@@ -82,7 +82,7 @@ module wd {
                 return false;
             }
 
-            var layoutDataList:wdCb.Collection<LayoutCharData> = this._layout.getLayoutData(this.text, this.fntId, {
+            let layoutDataList:wdCb.Collection<LayoutCharData> = this._layout.getLayoutData(this.text, this.fntId, {
                 width:this.width,
                 align: this.xAlignment
             });
@@ -99,14 +99,13 @@ module wd {
         private _createAndAddFontCharUIObjects(layoutDataList:wdCb.Collection<LayoutCharData>, imageAsset:ImageTextureAsset) {
             var image = imageAsset.source,
                 uiRenderer = this.getUIRenderer(),
-                text = this.text;
-
-            var position = this.getLeftCornerPosition();
+                text = this.text,
+                position = this.getLeftCornerPosition();
 
             layoutDataList.forEach((layoutData:LayoutCharData) => {
                 var glyphData:FntCharData = layoutData.data,
                     rect = RectRegion.create(glyphData.rect.x, glyphData.rect.y, glyphData.rect.width, glyphData.rect.height),
-                {
+                    {
                         charFontUIObject,
                         charFont
                         } = this._createCharFont(layoutData.index, uiRenderer),

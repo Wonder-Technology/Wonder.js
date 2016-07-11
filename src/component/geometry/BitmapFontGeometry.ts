@@ -22,9 +22,8 @@ module wd{
                 layoutDataList = bitmapFont.layoutDataList,
                 vertices = null,
                 texCoords = null,
-                indices = null;
-
-            var fntData:FntData = LoaderManager.getInstance().get(bitmapFont.fntId);
+                indices = null,
+                fntData:FntData = LoaderManager.getInstance().get(bitmapFont.fntId);
 
             //todo get visible glyphs?
 
@@ -47,109 +46,97 @@ module wd{
         }
 
         public updateBuffers(){
-            if(this.buffers){
-                var geometryData = null,
-                    {
-                        vertices,
-                        faces,
-                        texCoords
-                        //colors,
-                        //morphTargets
-                        } = this.computeData();
-
-                this.buffers.geometryData.vertices = vertices;
-                //this.buffers.removeCache(EBufferDataType.VERTICE);
-
-                this.buffers.geometryData.faces = faces;
-                //this.buffers.removeCache(EBufferDataType.INDICE);
-
-                this.buffers.geometryData.texCoords = texCoords;
-                //this.buffers.removeCache(EBufferDataType.TEXCOORD);
+            if(this.buffers === null) {
+                return;
             }
+
+            let geometryData = null,
+                {
+                    vertices,
+                    faces,
+                    texCoords
+                    } = this.computeData();
+
+            this.buffers.geometryData.vertices = vertices;
+            this.buffers.geometryData.faces = faces;
+            this.buffers.geometryData.texCoords = texCoords;
         }
 
         private _generateVertices(layoutDataList:wdCb.Collection<LayoutCharData>){
-            //var vertices = new Float32Array(glyphs.length * 4 * 2)
-            var vertices = [];
-            var i = 0
+            var vertices = [],
+                i = 0;
 
             layoutDataList.forEach(function (layoutCharData:LayoutCharData) {
-                var rect = layoutCharData.data.rect;
-
-                // bottom left position
-                var x = layoutCharData.position[0];
-                var y = layoutCharData.position[1];
-                //todo remove z?
-                var z = 0;
-
+                var rect = layoutCharData.data.rect,
+                    x = layoutCharData.position[0],
+                    y = layoutCharData.position[1],
+                    z = 0,
                 // quad size
-                var w = rect.width;
-                var h = rect.height;
+                    w = rect.width,
+                    h = rect.height;
 
                 // BL
-                vertices[i++] = x
-                vertices[i++] = -y
+                vertices[i++] = x;
+                vertices[i++] = -y;
                 vertices[i++] = z;
 
                 // TL
-                vertices[i++] = x
-                vertices[i++] = -(y + h)
+                vertices[i++] = x;
+                vertices[i++] = -(y + h);
                 vertices[i++] = z;
                 // TR
-                vertices[i++] = x + w
-                vertices[i++] = -(y + h)
+                vertices[i++] = x + w;
+                vertices[i++] = -(y + h);
                 vertices[i++] = z;
                 // BR
-                vertices[i++] = x + w
-                vertices[i++] = -y
+                vertices[i++] = x + w;
+                vertices[i++] = -y;
                 vertices[i++] = z;
-            })
+            });
+
             return vertices;
         }
 
         private _generateTexCoords(layoutDataList:wdCb.Collection<LayoutCharData>, textureWidth:number, textureHeight:number, flipY:boolean){
-            var texCoords = [];
-            var i = 0
+            var texCoords = [],
+                i = 0;
+
             layoutDataList.forEach((layoutDataList:LayoutCharData) => {
-                var rect = layoutDataList.data.rect;
-                var bw = (rect.x + rect.width)
-                var bh = (rect.y + rect.height)
-
-
-                var u0 = rect.x / textureWidth;
-                var v1 = rect.y / textureHeight;
-                var u1 = bw / textureWidth;
-                var v0 = bh / textureHeight;
+                var rect = layoutDataList.data.rect,
+                    bw = (rect.x + rect.width),
+                    bh = (rect.y + rect.height),
+                    u0 = rect.x / textureWidth,
+                    v0 = rect.y / textureHeight,
+                    u1 = bw / textureWidth,
+                    v1 = bh / textureHeight;
 
                 if (flipY) {
-                    v1 = (textureHeight - rect.y) / textureHeight;
-                    v0 = (textureHeight - bh) / textureHeight;
+                    v0= (textureHeight - rect.y) / textureHeight;
+                    v1 = (textureHeight - bh) / textureHeight;
                 }
 
                 // BL
-                texCoords[i++] = u0
-                texCoords[i++] = v1
+                texCoords[i++] = u0;
+                texCoords[i++] = v0;
                 // TL
-                texCoords[i++] = u0
-                texCoords[i++] = v0
+                texCoords[i++] = u0;
+                texCoords[i++] = v1;
                 // TR
-                texCoords[i++] = u1
-                texCoords[i++] = v0
+                texCoords[i++] = u1;
+                texCoords[i++] = v1;
                 // BR
-                texCoords[i++] = u1
-                texCoords[i++] = v1
-            })
+                texCoords[i++] = u1;
+                texCoords[i++] = v0;
+            });
+
             return texCoords;
         }
 
         private _generateIndices(layoutDataList:wdCb.Collection<LayoutCharData>){
-            var count = layoutDataList.getCount();
-            var numIndices = count * 6
+            var numIndices = layoutDataList.getCount() * 6,
+                indices = [];
 
-            //var indices = array || new (dtype(type))(numIndices)
-            var indices = [];
-
-            for (var i = 0, j = 0; i < numIndices; i += 6, j += 4) {
+            for (let i = 0, j = 0; i < numIndices; i += 6, j += 4) {
                 indices[i] = j;
                 indices[i + 1] = j + 1;
                 indices[i + 2] = j + 2;

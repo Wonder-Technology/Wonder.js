@@ -1,12 +1,4 @@
 module wd {
-    //const X_HEIGHTS = ['x', 'e', 'a', 'o', 'n', 's', 'r', 'c', 'u', 'm', 'v', 'w', 'z']
-    //const CAP_HEIGHTS = ['H', 'I', 'N', 'E', 'F', 'K', 'L', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
-
-
-    //const ALIGN_LEFT = 0,
-    //    ALIGN_CENTER = 1,
-    //    ALIGN_RIGHT = 2
-
     export class BitmapFontLayout {
         public static create() {
             var obj = new this();
@@ -24,7 +16,6 @@ module wd {
             align = EFontXAlignment.LEFT
             }) {
             var fntData:FntData = this._getFntObj(fntId);
-                //imageAsset:ImageTextureAsset = this._getImageAsset(bitmapId);
 
             if (!fntData) {
                 Log.log("impossible to create font: not find fnt file");
@@ -32,102 +23,66 @@ module wd {
                 return ;
             }
 
-            //if (!imageAsset) {
-            //    Log.log("impossible to create font: not find bitmap file");
-            //
-            //    return false;
-            //}
-
-            //var tabSize = 4;
-
             this._searchGlyph.setupSpaceGlyphs(fntData, tabSize);
 
+            let lines = BitmapFontWordWrapper.getLines(fntData, text, this._searchGlyph, {
+                    width:width,
+                    letterSpacing:letterSpacing,
+                }),
+                minWidth = width,
+                maxLineWidth = null,
+                x = 0,
+                y = 0,
+                lineHeight = fntData.commonHeight,
+                baseline = fntData.commonBase;
 
-            //var lines = BitmapFontWordWrapper.getLines(text, fntData, {
-            var lines = BitmapFontWordWrapper.getLines(fntData, text, this._searchGlyph, {
-                width:width,
-                letterSpacing:letterSpacing,
-                //tabSize: tabSize
-            });
-            var minWidth = width;
-
-            //clear glyphs
-            //glyphs.length = 0
             this._layoutList.removeAllChildren();
 
-            //get max line width
-            var maxLineWidth = lines.reduce(function (prev, line) {
+            maxLineWidth = lines.reduce(function (prev, line) {
                 return Math.max(prev, line.width, minWidth)
-            }, 0)
-
-            //the pen position
-            var x = 0
-            var y = 0
-            //var lineHeight = number(opt.lineHeight, fntData.commonHeight)
-            var lineHeight = fntData.commonHeight;
-            var baseline = fntData.commonBase;
-            var descender = lineHeight - baseline
-            var letterSpacing = letterSpacing;
-            //var height = lineHeight * lines.length - descender
-            //var align = this._getAlignType(align)
-
-            //draw text along baseline
-            //y -= height
-
-            //the metrics for this text layout
-            //this._width = maxLineWidth
-            //this._height = height
-            //this._descender = lineHeight - baseline
-            //this._baseline = baseline
-            //this._xHeight = getXHeight(font)
-            //this._capHeight = getCapHeight(font)
-            //this._lineHeight = lineHeight
-            //this._ascender = lineHeight - descender - this._xHeight
-
-            //layout each glyph
-            //var self = this
+            }, 0);
 
             for (let lineIndex = 0, len = lines.length; lineIndex < len; lineIndex++) {
-                let line = lines[lineIndex];
-                var start = line.start
-                var end = line.end
-                var lineWidth = line.width
-                var lastGlyph
+                let line = lines[lineIndex],
+                    start = line.start,
+                    end = line.end,
+                    lineWidth = line.width,
+                    lastGlyph = null;
 
-                //for each glyph in that line...
-                for (var i = start; i < end; i++) {
-                    var id:number = text.charCodeAt(i);
-                    var glyph:FntCharData = this._searchGlyph.getGlyph(fntData, id);
+                for (let i = start; i < end; i++) {
+                    let id:number = text.charCodeAt(i),
+                        glyph:FntCharData = this._searchGlyph.getGlyph(fntData, id),
+                        tx:number = null;
+
                     if (glyph) {
-                        if (lastGlyph)
-                            x += BitmapFontParser.getKerning(fntData, lastGlyph.id, glyph.id)
+                        if (lastGlyph){
+                            x += BitmapFontParser.getKerning(fntData, lastGlyph.id, glyph.id);
+                        }
 
-                        var tx = x
-                        if (align === EFontXAlignment.CENTER)
-                            tx += (maxLineWidth - lineWidth) / 2
-                else if (align === EFontXAlignment.RIGHT)
-                            tx += (maxLineWidth - lineWidth)
+                        tx = x
+
+                        if (align === EFontXAlignment.CENTER){
+                            tx += (maxLineWidth - lineWidth) / 2;
+                        }
+                        else if (align === EFontXAlignment.RIGHT){
+                            tx += (maxLineWidth - lineWidth);
+                        }
 
                         this._layoutList.addChild({
-                            //position: [tx, y],
                             position: [tx + glyph.xOffset, y + glyph.yOffset],
                             data: glyph,
                             index: i,
                             line: lineIndex
-                        })
+                        });
 
-                        //move pen forward
-                        x += glyph.xAdvance + letterSpacing
-                        lastGlyph = glyph
+                        x += glyph.xAdvance + letterSpacing;
+                        lastGlyph = glyph;
                     }
                 }
 
-                //next line down
-                y += lineHeight
+                y += lineHeight;
                 x = 0
             }
-
-            //this._linesTotal = lines.length;
 
             return this._layoutList;
         }
@@ -135,43 +90,13 @@ module wd {
         private _getFntObj(fntId:string) {
             return LoaderManager.getInstance().get(fntId);
         }
-
-        //private _getImageAsset(bitmapId:string) {
-        //    return LoaderManager.getInstance().get(bitmapId);
-        //}
-
-        //private _getAlignType(align) {
-        //    if (align === 'center')
-        //        return ALIGN_CENTER
-        //    else if (align === 'right')
-        //        return ALIGN_RIGHT
-        //    return ALIGN_LEFT
-        //}
     }
 
     export type LayoutCharData = {
-        //x:number;
-        //y:number;
-        //width:number;
-        //height:number;
-        //index:number;
-        //
-        ////todo add lineIndex?
-        //
-        //data:LayoutGlyphData;
-        //
-
         position: Array<number>;
         data: FntCharData;
         index: number;
         line: number;
     };
-    //
-    //export type Fn = {
-    //    startPosX:number;
-    //    xAdvance:number;
-    //    isNewLine:boolean;
-    //    isFullLine:boolean;
-    //}
 }
 

@@ -15,7 +15,6 @@ module wd {
             if(this._text !== text){
                 this._text = text;
 
-                //this.dirty = true;
                 this.needFormat = true;
             }
         }
@@ -29,7 +28,6 @@ module wd {
             if(this._xAlignment !== xAlignment){
                 this._xAlignment = xAlignment;
 
-                //this.dirty = true;
                 this.needFormat = true;
             }
         }
