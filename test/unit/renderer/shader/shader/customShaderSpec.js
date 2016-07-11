@@ -161,7 +161,7 @@ describe("custom shader", function () {
 
                     rendererTool.triggerMaterialAddShaderLib(material);
 
-                    program = shaderTool.getAndStubProgram(sandbox, material);
+                    program = shaderTool.getAndSpyProgram(sandbox, material);
                 });
 
                 it("build definition data", function () {
@@ -244,21 +244,11 @@ describe("custom shader", function () {
 
 
                 it("send attribute data", function () {
-                    var pos1 = 1;
-                    gl.getAttribLocation.withArgs(sinon.match.any, "a_position").returns(pos1);
-
-                    var pos2 = 2;
-                    gl.getAttribLocation.withArgs(sinon.match.any, "a_texCoord").returns(pos2);
-
-                    var pos3 = 3;
-                    gl.getAttribLocation.withArgs(sinon.match.any, "a_color").returns(pos3);
-
                     material.updateShader(quadCmd);
 
-
-                    expect(gl.vertexAttribPointer.withArgs(pos1)).toCalledOnce();
-                    expect(gl.vertexAttribPointer.withArgs(pos2)).toCalledOnce();
-                    expect(gl.vertexAttribPointer.withArgs(pos3)).toCalledOnce();
+                    expect(program.sendAttributeBuffer.withArgs("a_position")).toCalledOnce();
+                    expect(program.sendAttributeBuffer.withArgs("a_texCoord")).toCalledOnce();
+                    expect(program.sendAttributeBuffer.withArgs("a_color")).toCalledOnce();
                 });
                 it("send uniforms data", function () {
                     material.updateShader(quadCmd);

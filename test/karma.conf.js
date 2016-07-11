@@ -27,8 +27,7 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        //'test/unit/**',
-
+        'test/unit/**',
 
 
         //'test/unit/**/procedural_texture_lib/**',
@@ -146,7 +145,7 @@
         //'test/unit/**/envMap*',
         //
         //'test/unit/texture/**',
-        //'test/unit/**/compress*',
+        'test/unit/**/compress*',
         //'test/unit/**/*ProceduralTexture*',
 
         //
@@ -238,7 +237,7 @@
 
         //'test/unit/**/*Asset*',
         //
-        //'test/unit/**/FontSpec*',
+        'test/unit/**/TwoDFontSpec*',
         //'test/unit/**/PlainFontSpec*',
         //'test/unit/**/UIRendererSpec*',
         'test/unit/**/TwoDBitmapFontSpec*',

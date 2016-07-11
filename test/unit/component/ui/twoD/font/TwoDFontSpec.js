@@ -1,13 +1,13 @@
-describe("Font", function () {
+describe("TwoDFont", function () {
     var sandbox = null;
-    var Font = null;
+    var TwoDFont = null;
     var font;
     var uiObject;
     var director;
     var renderer;
 
     function createFont() {
-        font = new Font();
+        font = new TwoDFont();
 
 
         var uiObject = wd.UIObject.create();
@@ -29,7 +29,7 @@ describe("Font", function () {
     //}
     //
     //function createFont() {
-    //    font = Font.create();
+    //    font = TwoDFont.create();
     //
     //    font.gameObject = {};
     //
@@ -52,7 +52,7 @@ describe("Font", function () {
 
         testTool.openContractCheck(sandbox);
 
-        Font = wd.Font;
+        TwoDFont = wd.TwoDFont;
 
         director = wd.Director.getInstance();
 
