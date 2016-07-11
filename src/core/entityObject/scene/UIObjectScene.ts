@@ -32,7 +32,7 @@ module wd {
         public update(elapsed:number){
             super.update(elapsed);
 
-            UIEngine.getInstance().update(elapsed);
+            TwoDEngine.getInstance().update(elapsed);
         }
 
         public onDispose(){
@@ -72,7 +72,7 @@ module wd {
                 }
             });
 
-            UIEngine.getInstance().render();
+            TwoDEngine.getInstance().render();
         }
 
         protected createTransform(){

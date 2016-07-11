@@ -553,7 +553,8 @@
 		"engine/AnimationEngine.ts",
 		"engine/CollisionEngine.ts",
 		"engine/PhysicsEngine.ts",
+		"engine/UIEngine.ts",
 		"engine/ThreeDUIEngine.ts",
-		"engine/UIEngine.ts"
+		"engine/TwoDEngine.ts"
 	]
 }
