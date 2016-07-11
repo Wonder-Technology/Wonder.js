@@ -5,7 +5,6 @@ varying vec2 v_mapCoord1;
 
 @funcDefine
 		vec4 getMapColor(){
-		//todo test
             vec4 color0 = texture2D(u_sampler2D0, v_mapCoord0);
             vec4 color1 = texture2D(u_sampler2D1, v_mapCoord1);
 
