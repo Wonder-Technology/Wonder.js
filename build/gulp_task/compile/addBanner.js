@@ -5,7 +5,7 @@ var path = require("path");
 var bowerConfig = require("../../../bower.json");
 var author = bowerConfig.authors[0];
 
-var banner = ['/**',
+var banner = ['/*!',
         ' * <%= bowerConfig.name %> - <%= bowerConfig.description %>',
         ' * @version v<%= bowerConfig.version %>',
         ' * @author ' + author,
