@@ -1,5 +1,5 @@
 module wd {
-    export abstract class UIThreeD extends Component{
+    export abstract class ThreeDUI extends Component{
         @virtual
         public update(elapsed:number){
         }

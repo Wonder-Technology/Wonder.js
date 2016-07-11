@@ -1,5 +1,5 @@
 module wd {
-    export abstract class ThreeDFont extends UIThreeD {
+    export abstract class ThreeDFont extends ThreeDUI {
         protected needFormat:boolean = false;
 
         private _isFirstUpdate:boolean = true;

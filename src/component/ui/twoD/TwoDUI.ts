@@ -1,5 +1,5 @@
 module wd {
-    export abstract class UITwoD extends Component{
+    export abstract class TwoDUI extends Component{
         @virtual
         get dirty(){
             var renderer = this.getUIRenderer();
@@ -42,7 +42,7 @@ module wd {
         }
 
         @require(function(entityObject:UIObject){
-            assert(entityObject instanceof UIObject, Log.info.FUNC_SHOULD("Octree component", "add to GameObject"));
+            expect(entityObject).instanceOf(UIObject);
         })
         public addToObject(entityObject:UIObject, isShareComponent:boolean = false){
             var engine:UIEngine = UIEngine.getInstance();

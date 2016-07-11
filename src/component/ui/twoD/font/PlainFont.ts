@@ -5,7 +5,7 @@ module wd {
         LAST_INVALID_CHAR = /\s+$/;
 
     //todo now only support English, need support more languages like French,German
-    export class PlainFont extends Font {
+    export class PlainFont extends TwoDFont {
         public static create() {
             var obj = new this();
 

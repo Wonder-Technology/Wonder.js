@@ -25,8 +25,8 @@ module wd {
         }
 
         @require(function(component:Component){
-            if(component instanceof UITwoD){
-                assert(!!!this.getComponent(UITwoD), Log.info.FUNC_SHOULD("only has one UITwoD component"));
+            if(component instanceof TwoDUI){
+                assert(!!!this.getComponent(TwoDUI), Log.info.FUNC_SHOULD("only has one TwoDUI component"));
             }
         })
         public addComponent(component:Component){

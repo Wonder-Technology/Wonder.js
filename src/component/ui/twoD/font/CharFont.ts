@@ -1,5 +1,5 @@
 module wd {
-    export class CharFont extends Font {
+    export class CharFont extends TwoDFont {
         public static create() {
             var obj = new this();
 

@@ -1,5 +1,5 @@
 module wd {
-    export class ProgressBar extends UITwoD {
+    export class ProgressBar extends TwoDUI {
         public static create() {
             var obj = new this();
 

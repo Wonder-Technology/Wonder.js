@@ -3,16 +3,16 @@ module wd{
     export class UIEngine extends ComponentContainer{
         public static getInstance():any {}
 
-        protected list:wdCb.Collection<UITwoD>;
+        protected list:wdCb.Collection<TwoDUI>;
 
         public update(elapsed:number){
-            this.list.forEach(function(child:UITwoD){
+            this.list.forEach(function(child:TwoDUI){
                 child.update(elapsed);
             });
         }
 
         public render(){
-            this.list.forEach((ui:UITwoD) => {
+            this.list.forEach((ui:TwoDUI) => {
                 if(this._isDirty(ui.entityObject))
                     ui.render();
             }, this);

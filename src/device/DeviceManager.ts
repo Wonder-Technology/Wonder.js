@@ -514,7 +514,7 @@ module wd {
     }
 
     export enum ECanvasType{
-        UITwoD = <any>"UITwoD"
+        TwoDUI = <any>"TwoDUI"
     }
 
     export type CanvasMapData = {

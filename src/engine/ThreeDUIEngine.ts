@@ -3,17 +3,16 @@ module wd{
     export class ThreeDUIEngine extends ComponentContainer{
         public static getInstance():any {}
 
-        protected list:wdCb.Collection<UIThreeD>;
+        protected list:wdCb.Collection<ThreeDUI>;
 
-        //todo test
         public update(elapsed:number){
-            this.list.forEach(function(child:UIThreeD){
+            this.list.forEach(function(child:ThreeDUI){
                 child.update(elapsed);
             });
         }
 
         //public render(){
-        //    this.list.forEach((ui:UIThreeD) => {
+        //    this.list.forEach((ui:ThreeDUI) => {
         //        if(this._isDirty(ui.entityObject))
         //            ui.render();
         //    }, this);

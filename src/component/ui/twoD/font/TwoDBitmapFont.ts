@@ -1,7 +1,7 @@
 module wd {
     //todo support yAlign
     //todo support rotate BitmapFont.entityObject(it should rotate all its CharFont UIObject around pivot)(refer to Button->text, should setChildrenTransform when init)
-    export class TwoDBitmapFont extends Font{
+    export class TwoDBitmapFont extends TwoDFont{
         public static create() {
             var obj = new this();
 
