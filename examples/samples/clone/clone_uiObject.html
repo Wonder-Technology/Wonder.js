@@ -70,7 +70,7 @@
 
 
 
-            var bitmapFont1 = createBitmapFont(renderer);
+            var bitmapFont1 = createTwoDBitmapFont(renderer);
             bitmapFont1.name = "bitmapFont1";
 
             bitmapFont1.transform.translate(wd.Vector2.create(800, 100));
@@ -217,8 +217,8 @@
             return uiObject;
         }
 
-        function createBitmapFont(renderer) {
-            var font = wd.BitmapFont.create();
+        function createTwoDBitmapFont(renderer) {
+            var font = wd.TwoDBitmapFont.create();
 
             font.text = "bitmap";
             font.fntId = "myFont_fnt";

@@ -27,7 +27,7 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        'test/unit/**',
+        //'test/unit/**',
 
 
         //'test/unit/**/procedural_texture_lib/**',
@@ -66,11 +66,11 @@
         //'test/unit/**/LineMaterial*',
         //'test/unit/**/BasicMaterial*',
         //'test/unit/**/LightMaterial*',
-        //'test/unit/**/Material*',
-        //'test/unit/**/*Material*',
+        'test/unit/**/Material*',
+        'test/unit/**/*Material*',
         //'test/unit/**/mirrorMaterial*',
 
-        //'test/unit/**/material_lib/**',
+        'test/unit/**/material_lib/**',
 
         //'test/unit/**/ConvexPolygonGeometrySpec*',
         //'test/unit/**/LineGeometrySpec*',

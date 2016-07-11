@@ -105,7 +105,7 @@ var loadingUI = (function(){
     }
 
     function createBitmapFont(renderer) {
-        bitmapFont = wd.BitmapFont.create();
+        bitmapFont = wd.TwoDBitmapFont.create();
 
         bitmapFont.text = "loading:";
         bitmapFont.fntId = "myFont_fnt";

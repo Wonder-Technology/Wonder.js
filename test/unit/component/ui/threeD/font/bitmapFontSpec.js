@@ -51,6 +51,10 @@ describe("threeD bitmapFont test", function () {
             font.width = width;
         }
 
+        function setHeight(height){
+            font.height = height;
+        }
+
         function judgeVertices(vertices, callIndex){
             expect(testTool.getValues(
                 program.sendAttributeBuffer.withArgs("a_position").getCall(callIndex || 0).args[2].data
@@ -118,6 +122,25 @@ describe("threeD bitmapFont test", function () {
             sandbox.stub(wd.BufferTable, "bindIndexBuffer");
         });
 
+        it("convert font anchor from left top to center", function () {
+            font.text = "正";
+            setWidth(1000);
+            setHeight(500);
+
+            initDirector();
+
+            director._loopBody(1);
+
+            judgeVertices(
+                [
+                    1 - 1000 / 2, -2 + 500 / 2, 0,
+                    1 - 1000 / 2, -202 + 500 / 2, 0,
+                    101 - 1000 / 2, -202 + 500 / 2, 0,
+                    101 - 1000 / 2, -2 + 500 / 2, 0
+                ]
+            )
+        });
+
         it("only one gameObject and its geometry contains the whole text data", function () {
             font.text = "正a";
             setWidth(1000);
@@ -128,15 +151,7 @@ describe("threeD bitmapFont test", function () {
 
             judgeVertices(
                 [
-                    1, -2, 0,
-                    1, -202, 0,
-                    101, -202, 0,
-                    101, -2, 0,
-
-                    4, -2, 0,
-                    4, -202, 0,
-                    104, -202, 0,
-                    104, -2, 0
+                    -499, -2, 0, -499, -202, 0, -399, -202, 0, -399, -2, 0, -496, -2, 0, -496, -202, 0, -396, -202, 0, -396, -2, 0
                 ]
             )
             judgeTexCoords(
@@ -223,15 +238,7 @@ describe("threeD bitmapFont test", function () {
 
                 judgeVertices(
                     [
-                        1, -2, 0,
-                        1, -202, 0,
-                        101, -202, 0,
-                        101, -2, 0,
-
-                        4, -2, 0,
-                        4, -202, 0,
-                        104, -202, 0,
-                        104, -2, 0
+                        -499, -2, 0, -499, -202, 0, -399, -202, 0, -399, -2, 0, -496, -2, 0, -496, -202, 0, -396, -202, 0, -396, -2, 0
                     ]
                 )
                 judgeTexCoords(
@@ -250,10 +257,7 @@ describe("threeD bitmapFont test", function () {
 
                 judgeVertices(
                     [
-                        1, -2, 0,
-                        1, -202, 0,
-                        101, -202, 0,
-                        101, -2, 0
+                        -499, -2, 0, -499, -202, 0, -399, -202, 0, -399, -2, 0
                     ]
                 )
                 judgeTexCoords(
@@ -283,15 +287,7 @@ describe("threeD bitmapFont test", function () {
 
                 judgeVertices(
                     [
-                        1, -2, 0,
-                        1, -202, 0,
-                        101, -202, 0,
-                        101, -2, 0,
-
-                        4, -2, 0,
-                        4, -202, 0,
-                        104, -202, 0,
-                        104, -2, 0
+                        -499, -2, 0, -499, -202, 0, -399, -202, 0, -399, -2, 0, -496, -2, 0, -496, -202, 0, -396, -202, 0, -396, -2, 0
                     ]
                 )
                 judgeTexCoords(

@@ -48,6 +48,9 @@ module wd {
             }
         }
 
+        @cloneAttributeAsBasicType()
+        public height:number = 0;
+
         public layoutDataList:wdCb.Collection<LayoutCharData> = null;
 
         private _layout:BitmapFontLayout = BitmapFontLayout.create();

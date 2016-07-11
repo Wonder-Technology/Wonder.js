@@ -20,14 +20,16 @@ describe("ThreeDBitmapFont", function () {
             var text = "A",
                 xAlignment = wd.EFontXAlignment.CENTER,
                 fntId = "b",
-                width = 100;
+                width = 100,
+                height = 200;
 
             cloneTool.extend(font, {
 
                 text: text,
                 xAlignment: xAlignment,
                 fntId: fntId,
-                width: width
+                width: width,
+                height: height
             });
 
             var result = font.clone();
@@ -36,6 +38,7 @@ describe("ThreeDBitmapFont", function () {
             expect(result.xAlignment).toEqual(xAlignment);
             expect(result.fntId).toEqual(fntId);
             expect(result.width).toEqual(width);
+            expect(result.height).toEqual(height);
         });
     });
 });

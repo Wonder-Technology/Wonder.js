@@ -18,28 +18,40 @@ module wd {
             return Vector3.create(position.x - view.width / 2 , view.height / 2 - position.y, 0);
         }
 
-        public static convertLeftCornerPositionToCenterPosition(position:Vector2, width:number, height:number){
-            return Vector2.create(this.convertLeftCornerPositionXToCenterPositionX(position.x, width), this.convertLeftCornerPositionYToCenterPositionY(position.y, height));
+        public static convertLeftCornerPositionToCenterPositionInWebGL(position:Vector2, width:number, height:number){
+            return Vector2.create(this.convertLeftCornerPositionXToCenterPositionXInWebGL(position.x, width), this.convertLeftCornerPositionYToCenterPositionYInWebGL(position.y, height));
         }
 
-        public static convertLeftCornerPositionXToCenterPositionX(positionX:number, width:number){
-            return positionX + width / 2;
-        }
-
-        public static convertLeftCornerPositionYToCenterPositionY(positionY:number, height:number){
-            return positionY + height / 2;
-        }
-
-        public static convertCenterPositionToLeftCornerPosition(position:Vector2, width:number, height:number){
-            return Vector2.create(this.convertCenterPositionXToLeftCornerPositionX(position.x, width), this.convertCenterPositionYToLeftCornerPositionY(position.y, height));
-        }
-
-        public static convertCenterPositionXToLeftCornerPositionX(positionX:number, width:number){
+        public static convertLeftCornerPositionXToCenterPositionXInWebGL(positionX:number, width:number){
             return positionX - width / 2;
         }
 
-        public static convertCenterPositionYToLeftCornerPositionY(positionY:number, height:number){
+        public static convertLeftCornerPositionYToCenterPositionYInWebGL(positionY:number, height:number){
             return positionY - height / 2;
         }
+
+        public static convertLeftCornerPositionToCenterPositionInCanvas(position:Vector2, width:number, height:number){
+            return Vector2.create(this.convertLeftCornerPositionXToCenterPositionXInCanvas(position.x, width), this.convertLeftCornerPositionYToCenterPositionYInCanvas(position.y, height));
+        }
+
+        public static convertLeftCornerPositionXToCenterPositionXInCanvas(positionX:number, width:number){
+            return positionX + width / 2;
+        }
+
+        public static convertLeftCornerPositionYToCenterPositionYInCanvas(positionY:number, height:number){
+            return positionY + height / 2;
+        }
+
+        //public static convertCenterPositionToLeftCornerPosition(position:Vector2, width:number, height:number){
+        //    return Vector2.create(this.convertCenterPositionXToLeftCornerPositionX(position.x, width), this.convertCenterPositionYToLeftCornerPositionY(position.y, height));
+        //}
+        //
+        //public static convertCenterPositionXToLeftCornerPositionX(positionX:number, width:number){
+        //    return positionX - width / 2;
+        //}
+        //
+        //public static convertCenterPositionYToLeftCornerPositionY(positionY:number, height:number){
+        //    return positionY - height / 2;
+        //}
     }
 }

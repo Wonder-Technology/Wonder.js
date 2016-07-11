@@ -28,7 +28,7 @@ module wd{
             //todo get visible glyphs?
 
             if(layoutDataList){
-                vertices = this._generateVertices(layoutDataList);
+                vertices = this._generateVertices(layoutDataList, bitmapFont.width, bitmapFont.height);
                 texCoords = this._generateTexCoords(layoutDataList, fntData.scaleW, fntData.scaleH, (<BasicTexture>this.material.mapList.getChild(0)).flipY);
                 indices = this._generateIndices(layoutDataList);
             }
@@ -62,18 +62,18 @@ module wd{
             this.buffers.geometryData.texCoords = texCoords;
         }
 
-        private _generateVertices(layoutDataList:wdCb.Collection<LayoutCharData>){
+        private _generateVertices(layoutDataList:wdCb.Collection<LayoutCharData>, bitmapFontWidth:number, bitmapFontHeight:number){
             var vertices = [],
                 i = 0;
 
             layoutDataList.forEach(function (layoutCharData:LayoutCharData) {
                 var rect = layoutCharData.data.rect,
-                    x = layoutCharData.position[0],
-                    y = layoutCharData.position[1],
                     z = 0,
-                // quad size
                     w = rect.width,
-                    h = rect.height;
+                    h = rect.height,
+                    position = CoordinateUtils.convertLeftCornerPositionToCenterPositionInWebGL(Vector2.create(layoutCharData.position[0], layoutCharData.position[1]), bitmapFontWidth, bitmapFontHeight),
+                    x = position.x,
+                    y = position.y;
 
                 // BL
                 vertices[i++] = x;

@@ -155,7 +155,7 @@ module wd {
         private _setCharFontUIObjectPosition(charFontUIObject:UIObject, x:number, y:number){
             var transform = charFontUIObject.transform;
 
-            charFontUIObject.transform.position = CoordinateUtils.convertLeftCornerPositionToCenterPosition(Vector2.create(x, y), transform.width, transform.height);
+            charFontUIObject.transform.position = CoordinateUtils.convertLeftCornerPositionToCenterPositionInCanvas(Vector2.create(x, y), transform.width, transform.height);
         }
 
         private _removeAllCharFont(){
