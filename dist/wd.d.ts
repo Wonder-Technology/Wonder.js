@@ -8041,10 +8041,10 @@ declare module wd {
         static twoDShadowMap_fragment: GLSLChunk;
         static twoDShadowMap_unpackDepth_fragment: GLSLChunk;
         static twoDShadowMap_vertex: GLSLChunk;
-        static mirror_fragment: GLSLChunk;
-        static mirror_vertex: GLSLChunk;
         static terrainLayer_fragment: GLSLChunk;
         static terrainLayer_vertex: GLSLChunk;
+        static mirror_fragment: GLSLChunk;
+        static mirror_vertex: GLSLChunk;
         static water_bump_fragment: GLSLChunk;
         static water_bump_vertex: GLSLChunk;
         static water_fragment: GLSLChunk;
@@ -8056,9 +8056,9 @@ declare module wd {
         static water_refraction_fragment: GLSLChunk;
         static water_vertex: GLSLChunk;
         static brick_proceduralTexture_fragment: GLSLChunk;
+        static cloud_proceduralTexture_fragment: GLSLChunk;
         static common_proceduralTexture_fragment: GLSLChunk;
         static common_proceduralTexture_vertex: GLSLChunk;
-        static cloud_proceduralTexture_fragment: GLSLChunk;
         static fire_proceduralTexture_fragment: GLSLChunk;
         static grass_proceduralTexture_fragment: GLSLChunk;
         static marble_proceduralTexture_fragment: GLSLChunk;
