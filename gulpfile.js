@@ -14,7 +14,7 @@ require("./build/gulp_task/createInnerFile/index");
 
 require("./build/gulp_task/test/test");
 
-gulp.task("build", gulpSync.sync(["clean",  "parseTsconfigFilesGlob", "compileDTS", "compileTs", "compileTsDebug", "createInnerFile", "combineInnerLib", "compress", "addBanner", "removeTsconfigFiles"]));
+gulp.task("build", gulpSync.sync(["clean", "createInnerFile", "parseTsconfigFilesGlob", "compileDTS", "compileTs", "compileTsDebug", "combineInnerLib", "compress", "addBanner", "removeTsconfigFiles"]));
 
 var tsFilePaths = ["src/*.ts", "src/**/*.ts"];
 var glslFilePaths = ["src/renderer/shader/chunk/glsl/**/*.glsl", "src/lib/**/*.glsl"];
