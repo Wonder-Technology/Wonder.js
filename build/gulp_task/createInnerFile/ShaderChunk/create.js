@@ -73,8 +73,6 @@ gulp.task("createShaderChunk", function(){
             result += 'export type GLSLChunk = {top?:string;define?:string;varDeclare?:string;funcDeclare?:string;funcDefine?:string;body?:string;}\n';
             result += '}';
 
-            fs.unlinkSync(destFilePath);
-
             fs.writeFileSync(destFilePath, result);
 
         callback();
