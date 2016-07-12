@@ -11,6 +11,7 @@ var PLUGIN_NAME = "ShaderChunk";
 var glslPathArr = ["src/renderer/shader/chunk/glsl/**/*.glsl", "src/lib/**/*.glsl"];
 var destFilePath = "src/renderer/shader/chunk/ShaderChunk.ts";
 
+
 gulp.task("createShaderChunk", function(){
     var result = "";
 
