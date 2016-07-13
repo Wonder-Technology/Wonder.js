@@ -23,6 +23,8 @@ module wd{
         public fsSource:string = null;
         public vsSourceDefineList:wdCb.Collection<any> = wdCb.Collection.create<any>();
         public fsSourceDefineList:wdCb.Collection<any> = wdCb.Collection.create<any>();
+        public vsSourceExtensionList:wdCb.Collection<string> = wdCb.Collection.create<string>();
+        public fsSourceExtensionList:wdCb.Collection<string> = wdCb.Collection.create<string>();
 
         @virtual
         public setShaderDefinition(cmd:RenderCommand, material:Material){
@@ -112,6 +114,8 @@ module wd{
             this.uniforms.removeAllChildren();
             this.vsSourceDefineList.removeAllChildren();
             this.fsSourceDefineList.removeAllChildren();
+            this.vsSourceExtensionList.removeAllChildren();
+            this.fsSourceExtensionList.removeAllChildren();
 
             this.vsSourceTop = "";
             this.vsSourceDefine = "";

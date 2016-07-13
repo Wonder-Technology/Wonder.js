@@ -53,6 +53,11 @@ module wd{
             return this.mapList.getChild(0);
         }
 
+        //todo test
+        @virtual
+        protected addExtendShaderLib(){
+        }
+
         protected addShaderLib(){
             var envMap = null;
 
@@ -66,6 +71,8 @@ module wd{
 
                 this._setEnvMapShaderLib(envMap);
             }
+
+            this.addExtendShaderLib();
 
             this.shader.addLib(EndBasicShaderLib.create());
         }

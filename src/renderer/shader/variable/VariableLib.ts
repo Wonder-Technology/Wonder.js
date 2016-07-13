@@ -427,6 +427,11 @@ module wd{
             type:EVariableType.NUMBER_1,
             value:EVariableCategory.ENGINE
         };
+
+        public static u_alphaTest :ShaderVariable = {
+            type:EVariableType.FLOAT_1,
+            value:EVariableCategory.ENGINE
+        };
     }
 
     export type ShaderVariable = {

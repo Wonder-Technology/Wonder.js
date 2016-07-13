@@ -24,6 +24,9 @@ module wd{
         public vsSourceDefineList:wdCb.Collection<SourceDefine> = wdCb.Collection.create<SourceDefine>();
         public fsSourceDefineList:wdCb.Collection<SourceDefine> = wdCb.Collection.create<SourceDefine>();
 
+        public vsSourceExtensionList:wdCb.Collection<string> = wdCb.Collection.create<string>();
+        public fsSourceExtensionList:wdCb.Collection<string> = wdCb.Collection.create<string>();
+
         @require(function(libs:wdCb.Collection<EngineShaderLib>){
             assert(this.vsSource === null, Log.info.FUNC_SHOULD("vsSource", "be null"));
             assert(this.fsSource === null, Log.info.FUNC_SHOULD("fsSource", "be null"));
@@ -102,6 +105,8 @@ module wd{
                 uniforms = this.uniforms,
                 vsSourceDefineList = this.vsSourceDefineList,
                 fsSourceDefineList = this.fsSourceDefineList,
+                vsSourceExtensionList = this.vsSourceExtensionList,
+                fsSourceExtensionList = this.fsSourceExtensionList,
                 vsSourceTop = "",
                 vsSourceDefine = "",
                 vsSourceVarDeclare = "",
@@ -114,7 +119,6 @@ module wd{
                 fsSourceFuncDeclare = "",
                 fsSourceFuncDefine = "",
                 fsSourceBody = "";
-
 
             libs.forEach((lib:EngineShaderLib) => {
                 attributes.addChildren(lib.attributes);
@@ -129,6 +133,7 @@ module wd{
                     vsSourceBody += lib.vsSourceBody;
 
                     vsSourceDefineList.addChildren(lib.vsSourceDefineList);
+                    vsSourceExtensionList.addChildren(lib.vsSourceExtensionList);
                 }
 
                 if(fsSource === null){
@@ -140,6 +145,7 @@ module wd{
                     fsSourceBody += lib.fsSourceBody;
 
                     fsSourceDefineList.addChildren(lib.fsSourceDefineList);
+                    fsSourceExtensionList.addChildren(lib.fsSourceExtensionList);
                 }
             });
 
@@ -170,12 +176,17 @@ module wd{
             this.fsSource = this._buildFsSourceTop() + this._buildFsSourceDefine() + this._buildFsSourceVarDeclare() + this._buildFsSourceFuncDeclare() + this._buildFsSourceFuncDefine() + this._buildFsSourceBody();
         }
 
+        //todo test
         private _buildVsSourceTop(){
-            return this._getPrecisionSource() + this.vsSourceTop;
+            return this._buildVsSourceExtension() + this._getPrecisionSource() + this.vsSourceTop;
         }
 
         private _buildVsSourceDefine(){
             return this._buildSourceDefine(this.vsSourceDefineList) + this.vsSourceDefine;
+        }
+
+        private _buildVsSourceExtension(){
+            return this._buildSourceExtension(this.vsSourceExtensionList);
         }
 
         private _buildVsSourceVarDeclare(){
@@ -194,12 +205,17 @@ module wd{
             return ShaderSnippet.main_begin + this.vsSourceBody + ShaderSnippet.main_end;
         }
 
+        //todo test
         private _buildFsSourceTop(){
-            return this._getPrecisionSource() + this.fsSourceTop;
+            return this._buildFsSourceExtension() + this._getPrecisionSource() + this.fsSourceTop;
         }
 
         private _buildFsSourceDefine(){
             return this._buildSourceDefine(this.fsSourceDefineList) + this.fsSourceDefine;
+        }
+
+        private _buildFsSourceExtension(){
+            return this._buildSourceExtension(this.fsSourceExtensionList);
         }
 
         private _buildFsSourceVarDeclare(){
@@ -228,6 +244,18 @@ module wd{
                 else{
                     result += `#define ${define.name} ${define.value}\n`;
                 }
+            });
+
+            return result;
+        }
+
+
+        //todo test
+        private _buildSourceExtension(extensionList:wdCb.Collection<string>){
+            var result = "";
+
+            extensionList.forEach((name:string) => {
+                result += `#extension ${name} : enable\n`;
             });
 
             return result;

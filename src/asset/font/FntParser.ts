@@ -3,7 +3,7 @@ module wd {
     const COMMON_EXP = /common [^\n]*(\n|$)/gi,
         PAGE_EXP = /page [^\n]*(\n|$)/gi,
         CHAR_EXP = /char [^\n]*(\n|$)/gi,
-    KERNING_EXP = /kerning [^\n]*(\n|$)/gi,
+        KERNING_EXP = /kerning [^\n]*(\n|$)/gi,
         ITEM_EXP = /\w+=[^ \r\n]+/gi,
         INT_EXP = /^[\-]?\d+$/;       //"-"?
 
@@ -104,6 +104,12 @@ module wd {
             var kerningLines = fntStr.match(KERNING_EXP),
                 kerningArray = [];
 
+            //todo test
+            if(kerningLines === null){
+                fnt.kerningArray = [];
+
+                return;
+            }
 
             for (let kerning of kerningLines) {
                 let kerningObj = this._parseStrToObj(kerning);
