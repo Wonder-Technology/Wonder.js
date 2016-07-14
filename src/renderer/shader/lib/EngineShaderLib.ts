@@ -101,6 +101,13 @@ module wd{
             this._addVariable(this.uniforms, variableArr);
         }
 
+        @require(function(target:wdCb.Hash<ShaderVariable>, variableArr:Array<string>){
+            variableArr.forEach((variable:string) => {
+                it("should exist in VariableLib", function () {
+                    expect(VariableLib[variable]).exist();
+                });
+            });
+        })
         private _addVariable(target:wdCb.Hash<ShaderVariable>, variableArr:Array<string>){
             variableArr.forEach((variable:string) => {
                 assert(VariableLib[variable], Log.info.FUNC_SHOULD(variable, "exist in VariableLib"));
