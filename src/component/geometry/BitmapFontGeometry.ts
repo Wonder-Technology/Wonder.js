@@ -6,18 +6,9 @@ module wd{
             return geom;
         }
 
-        public material:BasicMaterial;
+        public material:BasicBitmapFontMaterial;
+        //public material:any;
 
-        //todo remove
-        //@require(function(){
-        //    it("now only support EngineMaterial", function () {
-        //        expect(this.material).instanceOf(EngineMaterial);
-        //    }, this);
-        //    it("should add only one bitmap texture to material", function () {
-        //        expect(this.material.mapList.getCount()).to.equal(1);
-        //        expect(this.material.mapList.getChild(0)).instanceOf(ImageTexture);
-        //    }, this);
-        //})
         public computeData(){
             var bitmapFont = this.entityObject.getComponent<ThreeDBitmapFont>(ThreeDBitmapFont),
                 layoutDataList = bitmapFont.layoutDataList,
@@ -30,9 +21,9 @@ module wd{
 
             if(layoutDataList){
                 vertices = this._generateVertices(layoutDataList, bitmapFont.width, bitmapFont.height);
-                //texCoords = this._generateTexCoords(layoutDataList, fntData.scaleW, fntData.scaleH, (<BasicTexture>this.material.bitmap).flipY);
                 //todo refactor
-                texCoords = this._generateTexCoords(layoutDataList, fntData.scaleW, fntData.scaleH, (<BasicTexture>(<any>this.material).bitmap).flipY);
+                texCoords = this._generateTexCoords(layoutDataList, fntData.scaleW, fntData.scaleH, (<any>this.material.bitmap).flipY);
+                //texCoords = this._generateTexCoords(layoutDataList, fntData.scaleW, fntData.scaleH, (<any>this.material.mapList.getChild(0)).flipY);
                 indices = this._generateIndices(layoutDataList);
             }
             else {
