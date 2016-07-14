@@ -73,7 +73,6 @@ module wd{
             super.updateShader(quadCmd);
         }
 
-        //todo test
         public getTextureForRenderSort():Texture{
             return this.reflectionMap;
         }

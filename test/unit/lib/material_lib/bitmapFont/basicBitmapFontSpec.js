@@ -8,7 +8,7 @@ describe("basic bitmapFont test", function () {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
-        testTool.openContractCheck(sandbox);
+        testTool.closeContractCheck(sandbox);
 
         sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
 
@@ -49,7 +49,7 @@ describe("basic bitmapFont test", function () {
             director._init();
 
             program = material.program;
-            shaderTool.getAndStubProgram(sandbox, material, "programA");
+            shaderTool.getAndSpyProgram(sandbox, material, "programA");
         }
 
         function setWidth(width){

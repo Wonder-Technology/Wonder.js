@@ -17,7 +17,6 @@ module wd{
             super.init();
         }
 
-        //todo test
         public getTextureForRenderSort():Texture{
             return this.layer.mapArray[0];
         }

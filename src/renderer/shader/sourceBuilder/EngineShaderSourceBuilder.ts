@@ -176,7 +176,6 @@ module wd{
             this.fsSource = this._buildFsSourceTop() + this._buildFsSourceDefine() + this._buildFsSourceVarDeclare() + this._buildFsSourceFuncDeclare() + this._buildFsSourceFuncDefine() + this._buildFsSourceBody();
         }
 
-        //todo test
         private _buildVsSourceTop(){
             return this._buildVsSourceExtension() + this._getPrecisionSource() + this.vsSourceTop;
         }
@@ -205,7 +204,6 @@ module wd{
             return ShaderSnippet.main_begin + this.vsSourceBody + ShaderSnippet.main_end;
         }
 
-        //todo test
         private _buildFsSourceTop(){
             return this._buildFsSourceExtension() + this._getPrecisionSource() + this.fsSourceTop;
         }
@@ -249,8 +247,6 @@ module wd{
             return result;
         }
 
-
-        //todo test
         private _buildSourceExtension(extensionList:wdCb.Collection<string>){
             var result = "";
 

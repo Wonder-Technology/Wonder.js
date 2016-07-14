@@ -8,7 +8,7 @@ module wd{
 
         public type:string = "common_bitmapFont";
 
-        public setShaderDefinition(cmd:QuadCommand, material:MirrorMaterial){
+        public setShaderDefinition(cmd:QuadCommand, material:BitmapFontMaterial){
             super.setShaderDefinition(cmd, material);
 
             this.addUniformVariable(["u_bitmapSampler"]);

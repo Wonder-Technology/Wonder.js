@@ -104,7 +104,6 @@ module wd {
             var kerningLines = fntStr.match(KERNING_EXP),
                 kerningArray = [];
 
-            //todo test
             if(kerningLines === null){
                 fnt.kerningArray = [];
 

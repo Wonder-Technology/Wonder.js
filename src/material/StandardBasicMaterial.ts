@@ -53,7 +53,6 @@ module wd{
             return this.mapList.getChild(0);
         }
 
-        //todo test
         @virtual
         protected addExtendShaderLib(){
         }

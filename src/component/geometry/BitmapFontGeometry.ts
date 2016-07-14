@@ -7,7 +7,6 @@ module wd{
         }
 
         public material:BasicBitmapFontMaterial;
-        //public material:any;
 
         public computeData(){
             var bitmapFont = this.entityObject.getComponent<ThreeDBitmapFont>(ThreeDBitmapFont),
@@ -21,9 +20,7 @@ module wd{
 
             if(layoutDataList){
                 vertices = this._generateVertices(layoutDataList, bitmapFont.width, bitmapFont.height);
-                //todo refactor
-                texCoords = this._generateTexCoords(layoutDataList, fntData.scaleW, fntData.scaleH, (<any>this.material.bitmap).flipY);
-                //texCoords = this._generateTexCoords(layoutDataList, fntData.scaleW, fntData.scaleH, (<any>this.material.mapList.getChild(0)).flipY);
+                texCoords = this._generateTexCoords(layoutDataList, fntData.scaleW, fntData.scaleH, this.material.bitmap.flipY);
                 indices = this._generateIndices(layoutDataList);
             }
             else {

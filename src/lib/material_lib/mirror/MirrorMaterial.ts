@@ -21,7 +21,6 @@ module wd{
             this._reflectionMap = reflectionMap;
         }
 
-        //todo test
         public getTextureForRenderSort():Texture{
             return this.reflectionMap;
         }
