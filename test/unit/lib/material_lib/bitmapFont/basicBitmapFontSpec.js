@@ -1,4 +1,4 @@
-describe("threeD bitmapFont test", function () {
+describe("basic bitmapFont test", function () {
     var sandbox = null;
     var font;
     var material, geometry;
@@ -30,6 +30,11 @@ describe("threeD bitmapFont test", function () {
 
 
         director.scene.addChild(gameObject);
+
+
+
+
+
     });
     afterEach(function () {
         testTool.clearInstance(sandbox);
@@ -37,8 +42,8 @@ describe("threeD bitmapFont test", function () {
     });
 
     describe("test render", function(){
-        var texture;
         var program;
+        var map;
 
         function initDirector(){
             director._init();
@@ -109,12 +114,12 @@ describe("threeD bitmapFont test", function () {
             sandbox.stub(font._layout._searchGlyph, "getGlyphById").returns(charData);
 
 
-            texture = wd.ImageTexture.create();
-            texture.flipY = false;
+            map = wd.ImageTexture.create();
+            map.flipY = false;
 
 
-            material = wd.BasicMaterial.create();
-            material.map = texture;
+            material = wd.BasicBitmapFontMaterial.create();
+            material.bitmap = map;
 
             geometry.material = material;
 
@@ -199,12 +204,12 @@ describe("threeD bitmapFont test", function () {
             });
         });
 
-        describe("texture", function(){
+        describe("map", function(){
             beforeEach(function(){
             });
             
-            it("if texture is flipY, corresponding modify geometry->texCoords", function(){
-                texture.flipY = true;
+            it("if map is flipY, corresponding modify geometry->texCoords", function(){
+                map.flipY = true;
 
                 font.text = "正a";
 
@@ -317,6 +322,54 @@ describe("threeD bitmapFont test", function () {
                         101, -52, 0
                     ]
                 )
+            });
+        });
+    });
+
+    describe("test more", function(){
+        var material,map,quadCmd;
+
+        beforeEach(function(){
+
+            material = wd.BasicBitmapFontMaterial.create();
+
+            quadCmd = rendererTool.createSingleDrawCommand(sandbox);
+
+            quadCmd.material = material;
+
+            geometry.material = material;
+        });
+
+        describe("test bitmap", function(){
+            it("test bind and send map data", function () {
+                var map = wd.ImageTexture.create();
+
+
+                sandbox.stub(map, "bindToUnit");
+
+                sandbox.stub(map, "update");
+
+
+                material.bitmap = map;
+
+
+                material.init();
+                shaderTool.stubProgram(sandbox, material);
+
+
+
+
+                material.updateShader(quadCmd);
+
+
+                expect(map.bindToUnit).toCalledWith(0);
+
+                expect(map.update).toCalledOnce();
+
+
+
+
+                expect(material.program.sendUniformData).toCalledWith("u_bitmapSampler", wd.EVariableType.SAMPLER_2D, 0);
             });
         });
     });

@@ -8,6 +8,7 @@ module wd{
     _table.addChild("normalMap", "u_normalMapSampler");
     _table.addChild("reflectionMap", "u_reflectionMapSampler");
     _table.addChild("refractionMap", "u_refractionMapSampler");
+    _table.addChild("bitmap", "u_bitmapSampler");
 
     _table.addChild("bumpMap", "u_bumpMapSampler");
 

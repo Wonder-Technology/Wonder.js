@@ -10,8 +10,11 @@ module wd{
             });
         })
         set bitmap(map:ImageTexture){
+            this.mapManager.addMap(map, {
+                samplerVariableName: VariableNameTable.getVariableName("bitmap")
+            });
+
             this._bitmap = map;
-            this.mapManager.addMap(map);
         }
 
         public initWhenCreate(){
