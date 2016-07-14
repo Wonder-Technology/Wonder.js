@@ -104,7 +104,7 @@ module wd{
         @require(function(target:wdCb.Hash<ShaderVariable>, variableArr:Array<string>){
             variableArr.forEach((variable:string) => {
                 it("should exist in VariableLib", function () {
-                    expect(VariableLib[variable]).exist();
+                    expect(VariableLib[variable]).exist;
                 });
             });
         })
