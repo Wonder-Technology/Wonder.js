@@ -83,6 +83,9 @@ var shaderTool = (function(){
         judgeGLSLDefine: function(shaderSource, defineStr, defineData){
                 expect(shaderSource.indexOf("#define " + defineStr + " " + defineData) > -1).toBeTruthy();
         },
+        judgeGLSLExtension: function(shaderSource, name){
+            expect(shaderSource.indexOf("#extension " + name + " : enable\n") > -1).toBeTruthy();
+        },
         judgeGLSLUniformData: function(shaderSource, uniformDataStr){
             expect(shaderSource.indexOf(uniformDataStr) > -1).toBeTruthy();
         },

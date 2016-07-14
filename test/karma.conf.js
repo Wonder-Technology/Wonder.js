@@ -27,7 +27,7 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        'test/unit/**',
+        //'test/unit/**',
 
 
         //'test/unit/**/procedural_texture_lib/**',
@@ -240,9 +240,10 @@
         //'test/unit/**/TwoDFontSpec*',
         //'test/unit/**/PlainFontSpec*',
         //'test/unit/**/UIRendererSpec*',
-        //'test/unit/**/TwoDBitmapFontSpec*',
-        //'test/unit/**/ThreeDBitmapFontSpec*',
-        //'test/unit/**/bitmapFontSpec*',
+        'test/unit/**/TwoDBitmapFontSpec*',
+        'test/unit/**/ThreeDBitmapFontSpec*',
+        'test/unit/**/basicBitmapFontSpec*',
+        'test/unit/**/sdfBitmapFontSpec*',
         //
         //'test/unit/**/DirectorSpec*',
         //
@@ -304,7 +305,7 @@
         //'test/unit/asset/wd/WDParserSpec.js',
         //'test/unit/asset/wd/WDBuilderSpec.js',
         //'test/unit/math/*.js',
-        //'test/unit/component/**/GeometrySpec.js',
+        'test/unit/component/**/GeometrySpec.js',
         //'test/unit/component/**/TerrainGeometrySpec.js',
         //'test/unit/component/**/ModelGeometrySpec.js',
         //'test/unit/**/CommonBufferContainerSpec.js',
