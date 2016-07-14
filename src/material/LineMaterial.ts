@@ -26,6 +26,10 @@ module wd{
         set lineWidth(lineWidth:number){
             this._lineWidth = lineWidth;
         }
+
+        public getTextureForRenderSort():Texture{
+            return this.mapList.getChild(0);
+        }
     }
 }
 

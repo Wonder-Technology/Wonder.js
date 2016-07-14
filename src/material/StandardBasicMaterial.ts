@@ -49,10 +49,6 @@ module wd{
             this._opacity = opacity;
         }
 
-        public getTextureForRenderSort():Texture{
-            return this.mapList.getChild(0);
-        }
-
         @virtual
         protected addExtendShaderLib(){
         }

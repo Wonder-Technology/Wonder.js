@@ -7,6 +7,10 @@ module wd{
 
             return obj;
         }
+
+        public getTextureForRenderSort():Texture{
+            return this.diffuseMap;
+        }
     }
 }
 
