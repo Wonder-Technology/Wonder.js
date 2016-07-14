@@ -21,6 +21,11 @@ module wd{
             this._reflectionMap = reflectionMap;
         }
 
+        //todo test
+        public getTextureForRenderSort():Texture{
+            return this.reflectionMap;
+        }
+
         protected addExtendShaderLib(){
             if(this.reflectionMap){
                 this.shader.addLib(MirrorShaderLib.create());

@@ -17,6 +17,11 @@ module wd{
             super.init();
         }
 
+        //todo test
+        public getTextureForRenderSort():Texture{
+            return this.layer.mapArray[0];
+        }
+
         protected addExtendShaderLib(){
             if(this.layer.mapDataList.getCount() > 0){
                 this.shader.addLib(TerrainLayerShaderLib.create());

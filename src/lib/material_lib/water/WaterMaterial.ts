@@ -73,6 +73,11 @@ module wd{
             super.updateShader(quadCmd);
         }
 
+        //todo test
+        public getTextureForRenderSort():Texture{
+            return this.reflectionMap;
+        }
+
         protected addExtendShaderLib(){
             if(this.bumpMap){
                 this.shader.addLib(WaterBumpMapShaderLib.create());
