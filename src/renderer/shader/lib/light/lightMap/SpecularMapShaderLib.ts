@@ -8,8 +8,8 @@ module wd{
 
         public type:string = "specularMap";
 
-        public setShaderDefinition(quadCmd:QuadCommand, material:EngineMaterial){
-            super.setShaderDefinition(quadCmd, material);
+        public setShaderDefinition(cmd:QuadCommand, material:EngineMaterial){
+            super.setShaderDefinition(cmd, material);
 
             this.addUniformVariable([
                 VariableNameTable.getVariableName("specularMap")

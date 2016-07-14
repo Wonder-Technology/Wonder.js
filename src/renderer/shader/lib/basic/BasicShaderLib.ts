@@ -8,8 +8,8 @@ module wd{
 
         public type:string = "basic";
 
-        public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:BasicMaterial){
-            var colorBuffer:ArrayBuffer = quadCmd.buffers.getChild(EBufferDataType.COLOR);
+        public sendShaderVariables(program: Program, cmd:QuadCommand, material:BasicMaterial){
+            var colorBuffer:ArrayBuffer = cmd.buffers.getChild(EBufferDataType.COLOR);
 
             if(!colorBuffer){
                 return;
@@ -24,8 +24,8 @@ module wd{
             this.sendUniformData(program, "u_opacity", material.opacity);
         }
 
-        public setShaderDefinition(quadCmd:QuadCommand, material:BasicMaterial){
-            super.setShaderDefinition(quadCmd, material);
+        public setShaderDefinition(cmd:QuadCommand, material:BasicMaterial){
+            super.setShaderDefinition(cmd, material);
 
             this.addAttributeVariable(["a_color"]);
             this.addUniformVariable(["u_opacity"]);

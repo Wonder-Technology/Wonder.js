@@ -8,7 +8,7 @@ module wd{
 
         public type:string = "light";
 
-        public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
+        public sendShaderVariables(program: Program, cmd:QuadCommand, material:LightMaterial){
             this.sendUniformData(program, "u_cameraPos", Director.getInstance().scene.currentCamera.transform.position);
 
             this.sendUniformData(program, "u_shininess", material.shininess);
@@ -19,8 +19,8 @@ module wd{
             this._sendLightVariables(program);
         }
 
-        public setShaderDefinition(quadCmd:QuadCommand, material:EngineMaterial){
-            super.setShaderDefinition(quadCmd, material);
+        public setShaderDefinition(cmd:QuadCommand, material:EngineMaterial){
+            super.setShaderDefinition(cmd, material);
 
             this.addUniformVariable(["u_normalMatrix", "u_cameraPos", "u_shininess", "u_ambient", "u_opacity", "u_isBothSide", "u_lightModel"]);
 

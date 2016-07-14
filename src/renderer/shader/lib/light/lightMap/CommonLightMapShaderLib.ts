@@ -6,8 +6,8 @@ module wd{
         	return obj;
         }
 
-        public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
-            var texCoordBuffer:ArrayBuffer = quadCmd.buffers.getChild(EBufferDataType.TEXCOORD);
+        public sendShaderVariables(program: Program, cmd:QuadCommand, material:LightMaterial){
+            var texCoordBuffer:ArrayBuffer = cmd.buffers.getChild(EBufferDataType.TEXCOORD);
 
             if(!texCoordBuffer){
                 return;
@@ -16,8 +16,8 @@ module wd{
             this.sendAttributeBuffer(program, "a_texCoord", texCoordBuffer);
         }
 
-        public setShaderDefinition(quadCmd:QuadCommand, material:EngineMaterial){
-            super.setShaderDefinition(quadCmd, material);
+        public setShaderDefinition(cmd:QuadCommand, material:EngineMaterial){
+            super.setShaderDefinition(cmd, material);
 
             this.addAttributeVariable(["a_texCoord"]);
         }

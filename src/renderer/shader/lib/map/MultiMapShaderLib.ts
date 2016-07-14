@@ -11,7 +11,7 @@ module wd{
         public type:string = "multi_map_forBasic";
 
 
-        protected sendMapShaderVariables(program:Program, quadCmd:QuadCommand, material:BasicMaterial){
+        protected sendMapShaderVariables(program:Program, cmd:QuadCommand, material:BasicMaterial){
             var mapList:wdCb.Collection<BasicTexture|ProceduralTexture> = material.mapList,
                 map1 = mapList.getChild(1);
 
@@ -22,8 +22,8 @@ module wd{
             this.sendUniformData(program, "u_map1RepeatRegion", map1.repeatRegion);
         }
 
-        public setShaderDefinition(quadCmd:QuadCommand, material:BasicMaterial){
-            super.setShaderDefinition(quadCmd, material);
+        public setShaderDefinition(cmd:QuadCommand, material:BasicMaterial){
+            super.setShaderDefinition(cmd, material);
 
             this.addUniformVariable([
                 "u_sampler2D1", "u_combineMode", "u_mixRatio",

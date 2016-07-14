@@ -327,15 +327,15 @@ describe("basic bitmapFont test", function () {
     });
 
     describe("test more", function(){
-        var material,map,quadCmd;
+        var material,map,cmd;
 
         beforeEach(function(){
 
             material = wd.BasicBitmapFontMaterial.create();
 
-            quadCmd = rendererTool.createSingleDrawCommand(sandbox);
+            cmd = rendererTool.createSingleDrawCommand(sandbox);
 
-            quadCmd.material = material;
+            cmd.material = material;
 
             geometry.material = material;
         });
@@ -359,7 +359,7 @@ describe("basic bitmapFont test", function () {
 
 
 
-                material.updateShader(quadCmd);
+                material.updateShader(cmd);
 
 
                 expect(map.bindToUnit).toCalledWith(0);

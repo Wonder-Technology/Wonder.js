@@ -8,18 +8,18 @@ module wd{
 
         public type:string = "vertice_common";
 
-        public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:EngineMaterial){
-            this._sendAttributeVariables(program, quadCmd);
+        public sendShaderVariables(program:Program, cmd:QuadCommand, material:EngineMaterial){
+            this._sendAttributeVariables(program, cmd);
         }
 
-        public setShaderDefinition(quadCmd:QuadCommand, material:EngineMaterial){
-            super.setShaderDefinition(quadCmd, material);
+        public setShaderDefinition(cmd:QuadCommand, material:EngineMaterial){
+            super.setShaderDefinition(cmd, material);
 
             this.addAttributeVariable(["a_position"]);
         }
 
-        private _sendAttributeVariables(program: Program, quadCmd:QuadCommand){
-            var verticeBuffer = <ArrayBuffer>quadCmd.buffers.getChild(EBufferDataType.VERTICE);
+        private _sendAttributeVariables(program: Program, cmd:QuadCommand){
+            var verticeBuffer = <ArrayBuffer>cmd.buffers.getChild(EBufferDataType.VERTICE);
 
             if(!verticeBuffer){
                 return;

@@ -8,12 +8,12 @@ module wd{
 
         public type:string = "lightMap";
 
-        public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
+        public sendShaderVariables(program: Program, cmd:QuadCommand, material:LightMaterial){
             this.sendUniformData(program, "u_lightMapIntensity", material.lightMapIntensity);
         }
 
-        public setShaderDefinition(quadCmd:QuadCommand, material:EngineMaterial){
-            super.setShaderDefinition(quadCmd, material);
+        public setShaderDefinition(cmd:QuadCommand, material:EngineMaterial){
+            super.setShaderDefinition(cmd, material);
 
             this.addUniformVariable([
                 VariableNameTable.getVariableName("lightMap"), "u_lightMapIntensity"

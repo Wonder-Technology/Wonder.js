@@ -141,20 +141,20 @@ describe("custom shader", function () {
             });
 
             describe("update shader", function () {
-                var quadCmd;
+                var cmd;
                 var vertices,texCoords;
 
                 beforeEach(function () {
                     sandbox.spy(material.mapManager, "sendData");
 
-                    quadCmd = rendererTool.createSingleDrawCommand(sandbox);
+                    cmd = rendererTool.createSingleDrawCommand(sandbox);
 
 
                     vertices = [1,2,3];
                     texCoords = [0.1,0.2];
 
-                    quadCmd.buffers.getChild.withArgs(wd.EBufferDataType.VERTICE).returns(vertices);
-                    quadCmd.buffers.getChild.withArgs(wd.EBufferDataType.TEXCOORD).returns(texCoords);
+                    cmd.buffers.getChild.withArgs(wd.EBufferDataType.VERTICE).returns(vertices);
+                    cmd.buffers.getChild.withArgs(wd.EBufferDataType.TEXCOORD).returns(texCoords);
 
 
                     material.read("definitionDataId");
@@ -165,7 +165,7 @@ describe("custom shader", function () {
                 });
 
                 it("build definition data", function () {
-                    material.updateShader(quadCmd);
+                    material.updateShader(cmd);
 
 
                     var attributes = shaderDefinitionData.attributes;
@@ -202,7 +202,7 @@ describe("custom shader", function () {
                     expect(shader.fsSource).toEqual(fsSource);
                 });
                 it("if definition data change, program will reset shader", function () {
-                    material.updateShader(quadCmd);
+                    material.updateShader(cmd);
 
                     expect(gl.attachShader).toCalledTwice();
                 });
@@ -223,7 +223,7 @@ describe("custom shader", function () {
 
 
 
-                        material.updateShader(quadCmd);
+                        material.updateShader(cmd);
 
 
                         expect(newProgram !== oldProgram).toBeTruthy();
@@ -235,7 +235,7 @@ describe("custom shader", function () {
                         expect(newProgram.use).toCalledAfter(gl.attachShader);
                     });
                     it("else, use old program", function () {
-                        material.updateShader(quadCmd);
+                        material.updateShader(cmd);
 
                         expect(oldProgram.use).toCalledOnce();
                         expect(oldProgram.use).toCalledAfter(gl.attachShader);
@@ -244,18 +244,18 @@ describe("custom shader", function () {
 
 
                 it("send attribute data", function () {
-                    material.updateShader(quadCmd);
+                    material.updateShader(cmd);
 
                     expect(program.sendAttributeBuffer.withArgs("a_position")).toCalledOnce();
                     expect(program.sendAttributeBuffer.withArgs("a_texCoord")).toCalledOnce();
                     expect(program.sendAttributeBuffer.withArgs("a_color")).toCalledOnce();
                 });
                 it("send uniforms data", function () {
-                    material.updateShader(quadCmd);
+                    material.updateShader(cmd);
 
                     expect(program.sendUniformData).toCalledAfter(program.use);
 
-                    expect(program.sendUniformData).toCalledWith("u_mvpMatrix", wd.EVariableType.FLOAT_MAT4, quadCmd.mMatrix.applyMatrix(quadCmd.vMatrix, true).applyMatrix(quadCmd.pMatrix, false));
+                    expect(program.sendUniformData).toCalledWith("u_mvpMatrix", wd.EVariableType.FLOAT_MAT4, cmd.mMatrix.applyMatrix(cmd.vMatrix, true).applyMatrix(cmd.pMatrix, false));
 
 
                     expect(program.sendUniformData).toCalledWith("u_test1", wd.EVariableType.FLOAT_1, 1.1);
@@ -265,12 +265,12 @@ describe("custom shader", function () {
                     expect(program.sendUniformData).toCalledWith("u_test3.b", wd.EVariableType.FLOAT_1, 3.3);
                 });
                 it("ShaderMaterial should add the correspond twoD maps of uniformData->sampler2D ", function () {
-                    material.updateShader(quadCmd);
+                    material.updateShader(cmd);
 
                     expect(material.mapManager.hasMap(map)).toBeTruthy();
                 });
                 it("send map data", function () {
-                    material.updateShader(quadCmd);
+                    material.updateShader(cmd);
 
                     expect(material.mapManager.sendData).toCalledOnce();
                 });

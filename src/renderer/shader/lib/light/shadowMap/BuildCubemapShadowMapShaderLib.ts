@@ -8,7 +8,7 @@ module wd{
 
         public type:string = "buildCubemapShadowMap";
 
-        public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
+        public sendShaderVariables(program: Program, cmd:QuadCommand, material:LightMaterial){
             Director.getInstance().scene.glslData.getChild(<any>EShaderGLSLData.BUILD_CUBEMAP_SHADOWMAP).forEach((data:CubemapShadowMapShaderLibData, index:number) => {
                 var light = data.light;
 
@@ -17,8 +17,8 @@ module wd{
             });
         }
 
-        public setShaderDefinition(quadCmd:QuadCommand, material:EngineMaterial){
-            super.setShaderDefinition(quadCmd, material);
+        public setShaderDefinition(cmd:QuadCommand, material:EngineMaterial){
+            super.setShaderDefinition(cmd, material);
 
             this.addUniformVariable([
                 "u_lightPos", "u_farPlane"

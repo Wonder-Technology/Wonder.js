@@ -6,17 +6,17 @@ module wd{
         	return obj;
         }
 
-        public update(quadCmd:QuadCommand, material:Material){
+        public update(cmd:QuadCommand, material:Material){
             var program = null;
 
-            this.judgeRefreshShader(quadCmd, material);
+            this.judgeRefreshShader(cmd, material);
 
             program = this.program;
 
             program.use();
 
             this.libs.forEach((lib:EngineShaderLib) => {
-                lib.sendShaderVariables(program, quadCmd, material);
+                lib.sendShaderVariables(program, cmd, material);
             });
 
             this.mapManager.bindAndUpdate();

@@ -19,15 +19,15 @@ describe("water bumpMap", function () {
     });
 
     describe("integration test", function () {
-        var quadCmd;
+        var cmd;
 
         beforeEach(function () {
             wd.Director.getInstance().scene.currentCamera = wd.GameObject.create();
 
 
-            quadCmd = rendererTool.createSingleDrawCommand(sandbox);
+            cmd = rendererTool.createSingleDrawCommand(sandbox);
 
-            quadCmd.material = material;
+            cmd.material = material;
         });
 
         describe("send glsl data", function(){
@@ -55,7 +55,7 @@ describe("water bumpMap", function () {
 
 
 
-                    material.updateShader(quadCmd);
+                    material.updateShader(cmd);
 
                     time += 0.0001;
                     expect(material.program.sendUniformData).toCalledWith("u_windMatrix", wd.EVariableType.FLOAT_MAT4,
@@ -71,7 +71,7 @@ describe("water bumpMap", function () {
                 it("test uniform data", function(){
                     material.init();
 
-                    material.updateShader(quadCmd);
+                    material.updateShader(cmd);
 
                     shaderTool.judgeGLSLUniformData(material.shader.vsSource, "u_windMatrix");
                 });

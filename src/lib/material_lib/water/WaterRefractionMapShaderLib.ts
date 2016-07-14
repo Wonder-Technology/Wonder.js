@@ -14,8 +14,8 @@ module wd{
             program.sendStructureData("u_levelData.refractionLevel", EVariableType.FLOAT_1, material.refractionLevel);
         }
 
-        public setShaderDefinition(quadCmd:QuadCommand, material:WaterMaterial){
-            super.setShaderDefinition(quadCmd, material);
+        public setShaderDefinition(cmd:QuadCommand, material:WaterMaterial){
+            super.setShaderDefinition(cmd, material);
 
             this.addUniformVariable([
                 "u_levelData",

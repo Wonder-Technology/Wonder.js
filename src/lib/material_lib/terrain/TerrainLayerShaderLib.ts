@@ -15,12 +15,12 @@ module wd{
             });
         }
 
-        @require(function(quadCmd:QuadCommand, material:TerrainMaterial){
+        @require(function(cmd:QuadCommand, material:TerrainMaterial){
             assert(!!material, Log.info.FUNC_NOT_EXIST("param:material"));
             assert(material.layer.mapDataList.getCount() >= 0, Log.info.FUNC_SHOULD("TerrainMaterial->layer->mapDataList->count", ">= 0"));
         })
-        public setShaderDefinition(quadCmd:QuadCommand, material:TerrainMaterial){
-            super.setShaderDefinition(quadCmd, material);
+        public setShaderDefinition(cmd:QuadCommand, material:TerrainMaterial){
+            super.setShaderDefinition(cmd, material);
 
             this.addUniformVariable(["u_layerHeightDatas", "u_layerSampler2Ds"]);
 

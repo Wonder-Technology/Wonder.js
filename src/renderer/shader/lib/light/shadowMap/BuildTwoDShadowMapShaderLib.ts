@@ -9,14 +9,14 @@ module wd{
 
         public type:string = "buildTwoDShadowMap";
 
-        public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
-            program.sendMatrix4("u_vpMatrixFromLight", quadCmd.vMatrix.applyMatrix(quadCmd.pMatrix, true));
+        public sendShaderVariables(program: Program, cmd:QuadCommand, material:LightMaterial){
+            program.sendMatrix4("u_vpMatrixFromLight", cmd.vMatrix.applyMatrix(cmd.pMatrix, true));
         }
 
-        public setShaderDefinition(quadCmd:QuadCommand, material:EngineMaterial){
+        public setShaderDefinition(cmd:QuadCommand, material:EngineMaterial){
             var fs:GLSLChunk = null;
 
-            super.setShaderDefinition(quadCmd, material);
+            super.setShaderDefinition(cmd, material);
 
             this.addUniformVariable([
                 "u_vpMatrixFromLight"

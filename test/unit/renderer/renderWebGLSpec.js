@@ -58,21 +58,21 @@ describe("renderWebGL", function() {
         var gl, program;
 
         function addCommand(commandClass){
-            var quadCmd;
+            var cmd;
 
             if(commandClass){
-                quadCmd = new commandClass();
+                cmd = new commandClass();
             }
             else{
-                quadCmd = new wd.RenderCommand();
+                cmd = new wd.RenderCommand();
             }
 
-            quadCmd.execute = sandbox.stub();
+            cmd.execute = sandbox.stub();
 
-            renderer.addCommand(quadCmd);
+            renderer.addCommand(cmd);
 
             return {
-                quadCmd:quadCmd
+                cmd:cmd
             }
         }
 
@@ -114,9 +114,9 @@ describe("renderWebGL", function() {
                     var result2 = addCommand(wd.QuadCommand);
                     var result3 = addCommand(wd.QuadCommand);
 
-                    quad1 = result1.quadCmd;
-                    quad2 = result2.quadCmd;
-                    quad3 = result3.quadCmd;
+                    quad1 = result1.cmd;
+                    quad2 = result2.cmd;
+                    quad3 = result3.cmd;
 
 
                     quad1.blend = false;
@@ -394,8 +394,8 @@ describe("renderWebGL", function() {
             it("execute command", function(){
                     var result1 = addCommand(wd.ProceduralCommand);
                     var result2 = addCommand(wd.ProceduralCommand);
-                    var quad1 = result1.quadCmd,
-                        quad2 = result2.quadCmd;
+                    var quad1 = result1.cmd,
+                        quad2 = result2.cmd;
 
                     renderer.render();
 
@@ -414,10 +414,10 @@ describe("renderWebGL", function() {
                     var result2 = addCommand();
                     var result3 = addCommand();
                     var result4 = addCommand();
-                    var quad1 = result1.quadCmd,
-                        quad2 = result2.quadCmd,
-                        quad3 = result3.quadCmd,
-                        quad4 = result4.quadCmd;
+                    var quad1 = result1.cmd,
+                        quad2 = result2.cmd,
+                        quad3 = result3.cmd,
+                        quad4 = result4.cmd;
 
                     quad1.blend = true;
                     quad2.blend = true;
@@ -475,11 +475,11 @@ describe("renderWebGL", function() {
         describe("clear command", function(){
             it("dispose command", function () {
                 var result = addCommand();
-                sandbox.stub(result.quadCmd, "dispose");
+                sandbox.stub(result.cmd, "dispose");
 
                 renderer.render();
 
-                expect(result.quadCmd.dispose).toCalledOnce();
+                expect(result.cmd.dispose).toCalledOnce();
             });
             it("clear command queue", function () {
                 var result = addCommand();

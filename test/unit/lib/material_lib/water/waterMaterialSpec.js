@@ -118,7 +118,7 @@ describe("water material", function () {
     });
 
     describe("integration test", function () {
-        var quadCmd;
+        var cmd;
         var bumpMap, reflectionMap, refractionMap;
 
         beforeEach(function () {
@@ -127,9 +127,9 @@ describe("water material", function () {
             wd.Director.getInstance().scene.currentCamera = wd.GameObject.create();
 
 
-            quadCmd = rendererTool.createSingleDrawCommand(sandbox);
+            cmd = rendererTool.createSingleDrawCommand(sandbox);
 
-            quadCmd.material = material;
+            cmd.material = material;
         });
 
         describe("test map", function () {
@@ -163,7 +163,7 @@ describe("water material", function () {
 
 
 
-                material.updateShader(quadCmd);
+                material.updateShader(cmd);
 
 
                 expect(refractionMap.bindToUnit).toCalledWith(0);
@@ -197,7 +197,7 @@ describe("water material", function () {
                 material.init();
                 shaderTool.spyProgram(sandbox, material);
 
-                material.updateShader(quadCmd);
+                material.updateShader(cmd);
 
 
 
@@ -213,7 +213,7 @@ describe("water material", function () {
                 it("test uniform data", function(){
                     material.init();
 
-                    material.updateShader(quadCmd);
+                    material.updateShader(cmd);
 
                     shaderTool.judgeGLSLUniformData(material.shader.fsSource, "u_waveData");
                 });

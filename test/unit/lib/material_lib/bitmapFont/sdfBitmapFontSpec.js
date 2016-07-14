@@ -1,7 +1,7 @@
 describe("sdf bitmapFont test", function () {
     var sandbox = null;
     var director;
-    var material,quadCmd;
+    var material,cmd;
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
@@ -23,9 +23,9 @@ describe("sdf bitmapFont test", function () {
 
         material = wd.SdfBitmapFontMaterial.create();
 
-        quadCmd = rendererTool.createSingleDrawCommand(sandbox);
+        cmd = rendererTool.createSingleDrawCommand(sandbox);
 
-        quadCmd.material = material;
+        cmd.material = material;
 
         material.geometry = {
             entityObject:wd.GameObject.create()
@@ -46,14 +46,14 @@ describe("sdf bitmapFont test", function () {
                     material.init();
 
 
-                    material.updateShader(quadCmd);
+                    material.updateShader(cmd);
 
                     expect(glslTool.contain(material.shader.fsSource, "gl_FragColor.a < 0.1")).toBeTruthy();
                 });
                 it("else, use 0.0001", function () {
                     material.init();
 
-                    material.updateShader(quadCmd);
+                    material.updateShader(cmd);
 
                     expect(glslTool.contain(material.shader.fsSource, "gl_FragColor.a < 0.0001")).toBeTruthy();
                 });
@@ -62,7 +62,7 @@ describe("sdf bitmapFont test", function () {
                 wd.GPUDetector.getInstance().extensionStandardDerivatives = true;
                 material.init();
 
-                material.updateShader(quadCmd);
+                material.updateShader(cmd);
 
                 var fsSource = material.shader.fsSource;
                 shaderTool.judgeGLSLExtension(fsSource, "GL_OES_standard_derivatives");
@@ -72,7 +72,7 @@ describe("sdf bitmapFont test", function () {
                 wd.GPUDetector.getInstance().extensionStandardDerivatives = false;
                 material.init();
 
-                material.updateShader(quadCmd);
+                material.updateShader(cmd);
 
                 var fsSource = material.shader.fsSource;
                 expect(glslTool.contain(fsSource, "GL_OES_standard_derivatives")).toBeFalsy();

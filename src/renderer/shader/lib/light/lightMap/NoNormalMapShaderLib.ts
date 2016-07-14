@@ -8,7 +8,7 @@ module wd{
 
         public type:string = "noNormalMap";
 
-        public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
+        public sendShaderVariables(program: Program, cmd:QuadCommand, material:LightMaterial){
         }
     }
 }

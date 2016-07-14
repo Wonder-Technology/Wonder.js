@@ -8,8 +8,8 @@ module wd{
 
         public type:string = "end";
 
-        public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:EngineMaterial){
-            program.sendAllBufferData(quadCmd.vaoManager);
+        public sendShaderVariables(program:Program, cmd:QuadCommand, material:EngineMaterial){
+            program.sendAllBufferData(cmd.vaoManager);
         }
     }
 }

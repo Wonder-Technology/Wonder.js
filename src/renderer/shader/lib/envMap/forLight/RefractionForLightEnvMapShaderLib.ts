@@ -8,14 +8,14 @@ module wd{
 
         public type:string = "refraction_forLight_envMap";
 
-        public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:EngineMaterial) {
-            super.sendShaderVariables(program, quadCmd, material);
+        public sendShaderVariables(program:Program, cmd:QuadCommand, material:EngineMaterial) {
+            super.sendShaderVariables(program, cmd, material);
 
             this.sendUniformData(program, "u_refractionRatio", material.refractionRatio);
         }
 
-        public setShaderDefinition(quadCmd:QuadCommand, material:EngineMaterial){
-            super.setShaderDefinition(quadCmd, material);
+        public setShaderDefinition(cmd:QuadCommand, material:EngineMaterial){
+            super.setShaderDefinition(cmd, material);
 
             this.addUniformVariable(["u_refractionRatio"]);
 

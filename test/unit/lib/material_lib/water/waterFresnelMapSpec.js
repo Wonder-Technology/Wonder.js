@@ -19,15 +19,15 @@ describe("water fresnel", function () {
     });
 
     describe("integration test1", function () {
-        var quadCmd;
+        var cmd;
 
         beforeEach(function () {
             wd.Director.getInstance().scene.currentCamera = wd.GameObject.create();
 
 
-            quadCmd = rendererTool.createSingleDrawCommand(sandbox);
+            cmd = rendererTool.createSingleDrawCommand(sandbox);
 
-            quadCmd.material = material;
+            cmd.material = material;
         });
 
         describe("send glsl data", function () {
@@ -50,7 +50,7 @@ describe("water fresnel", function () {
 
 
 
-                material.updateShader(quadCmd);
+                material.updateShader(cmd);
 
                 expect(material.program.sendStructureData).toCalledWith("u_levelData.fresnelLevel", wd.EVariableType.FLOAT_1, 0.1);
                 expect(material.program.sendStructureData).toCalledWith("u_levelData.reflectionLevel", wd.EVariableType.FLOAT_1, 0.2);
@@ -64,7 +64,7 @@ describe("water fresnel", function () {
                 it("test uniform data", function () {
                     material.init();
 
-                    material.updateShader(quadCmd);
+                    material.updateShader(cmd);
 
                     shaderTool.judgeGLSLUniformData(material.shader.fsSource, "u_levelData");
                 });

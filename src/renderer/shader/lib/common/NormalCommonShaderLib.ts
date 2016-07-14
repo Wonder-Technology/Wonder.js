@@ -8,18 +8,18 @@ module wd{
 
         public type:string = "normal_common";
 
-        public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:EngineMaterial){
-            this._sendAttributeVariables(program, quadCmd);
+        public sendShaderVariables(program:Program, cmd:QuadCommand, material:EngineMaterial){
+            this._sendAttributeVariables(program, cmd);
         }
 
-        public setShaderDefinition(quadCmd:QuadCommand, material:EngineMaterial){
-            super.setShaderDefinition(quadCmd, material);
+        public setShaderDefinition(cmd:QuadCommand, material:EngineMaterial){
+            super.setShaderDefinition(cmd, material);
 
             this.addAttributeVariable(["a_normal"]);
         }
 
-        private _sendAttributeVariables(program: Program, quadCmd:QuadCommand){
-            var normalBuffer:ArrayBuffer = quadCmd.buffers.getChild(EBufferDataType.NORMAL);
+        private _sendAttributeVariables(program: Program, cmd:QuadCommand){
+            var normalBuffer:ArrayBuffer = cmd.buffers.getChild(EBufferDataType.NORMAL);
 
             if(!normalBuffer){
                 return;

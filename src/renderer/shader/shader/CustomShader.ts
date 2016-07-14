@@ -10,17 +10,17 @@ module wd{
         protected libs:wdCb.Collection<CustomShaderLib>;
 
 
-        public update(quadCmd:QuadCommand, material:ShaderMaterial){
+        public update(cmd:QuadCommand, material:ShaderMaterial){
             var program = null;
 
-            this.judgeRefreshShader(quadCmd, material);
+            this.judgeRefreshShader(cmd, material);
 
             program = this.program;
 
             program.use();
 
             this.libs.forEach((lib:CustomShaderLib) => {
-                lib.sendShaderVariables(program, quadCmd, material);
+                lib.sendShaderVariables(program, cmd, material);
             });
 
             this.mapManager.bindAndUpdate();

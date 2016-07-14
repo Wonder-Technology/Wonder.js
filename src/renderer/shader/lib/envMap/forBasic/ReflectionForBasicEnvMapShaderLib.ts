@@ -8,8 +8,8 @@ module wd{
 
         public type:string = "reflection_forBasic_envMap";
 
-        public setShaderDefinition(quadCmd:QuadCommand, material:EngineMaterial){
-            super.setShaderDefinition(quadCmd, material);
+        public setShaderDefinition(cmd:QuadCommand, material:EngineMaterial){
+            super.setShaderDefinition(cmd, material);
 
             this.setEnvMapSource();
             this.setFsSource(this.getFsChunk(), "+");

@@ -2,7 +2,7 @@ describe("LightShaderLib", function () {
     var sandbox = null;
     var Lib = null;
     var lib = null;
-    var quadCmd,program,material;
+    var cmd,program,material;
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
@@ -10,7 +10,7 @@ describe("LightShaderLib", function () {
         lib = new Lib();
 
         material = new wd.LightMaterial();
-        quadCmd = new wd.QuadCommand();
+        cmd = new wd.QuadCommand();
         program = new wd.Program();
     });
     afterEach(function () {
@@ -47,14 +47,14 @@ describe("LightShaderLib", function () {
             camera = wd.GameObject.create();
             sandbox.stub(scene, "currentCamera", camera);
 
-            sandbox.stub(quadCmd, "buffers", {
+            sandbox.stub(cmd, "buffers", {
                 hasChild:sandbox.stub().returns(false),
                 getChild:sandbox.stub()
             });
 
             mMatrix = wd.Matrix4.create().translate(1, 2, 3);
 
-            sandbox.stub(quadCmd, "mMatrix", mMatrix);
+            sandbox.stub(cmd, "mMatrix", mMatrix);
 
             shaderTool.stubProgram(sandbox, program);
         });
@@ -69,7 +69,7 @@ describe("LightShaderLib", function () {
                 scene.addChild(light1);
 
 
-                lib.sendShaderVariables(program, quadCmd, material);
+                lib.sendShaderVariables(program, cmd, material);
 
                 expect(program.sendVector3.withArgs("u_pointLights[0].position", light1.transform.position)).toCalledOnce();
             });
@@ -86,7 +86,7 @@ describe("LightShaderLib", function () {
                         scene.addChild(light2);
 
 
-                        lib.sendShaderVariables(program, quadCmd, material);
+                        lib.sendShaderVariables(program, cmd, material);
 
                         expect(program.sendFloat1.withArgs("u_pointLights[0].range", wd.ShaderChunk.NULL)).toCalledOnce();
                         expect(program.sendFloat1.withArgs("u_pointLights[1].range", 1)).toCalledOnce();
@@ -112,7 +112,7 @@ describe("LightShaderLib", function () {
                     scene.addChild(light2);
 
 
-                    lib.sendShaderVariables(program, quadCmd, material);
+                    lib.sendShaderVariables(program, cmd, material);
 
                     expect(program.sendVector3.withArgs("u_directionLights[0].position", wd.DirectionLight.defaultPosition)).toCalledOnce();
                     expect(program.sendVector3.withArgs("u_directionLights[1].position", wd.Vector3.create(1, 0, 0))).toCalledOnce();
@@ -128,7 +128,7 @@ describe("LightShaderLib", function () {
                 scene.addChild(light1);
 
 
-                lib.sendShaderVariables(program, quadCmd, material);
+                lib.sendShaderVariables(program, cmd, material);
 
                 expect(program.sendColor4.withArgs("u_directionLights[0].color", color)).toCalledOnce();
             });
@@ -137,7 +137,7 @@ describe("LightShaderLib", function () {
         it("send u_opacity", function(){
             material.opacity = 0.1;
 
-            lib.sendShaderVariables(program, quadCmd, material);
+            lib.sendShaderVariables(program, cmd, material);
 
             expect(program.sendUniformData).toCalledWith("u_opacity", wd.EVariableType.FLOAT_1, 0.1);
         });
@@ -150,7 +150,7 @@ describe("LightShaderLib", function () {
             it("convert string to glsl variable", function(){
                 material.lightModel = wd.ELightModel.BLINN;
 
-                lib.sendShaderVariables(program, quadCmd, material);
+                lib.sendShaderVariables(program, cmd, material);
 
                 expect(program.sendUniformData).toCalledWith("u_lightModel", wd.EVariableType.NUMBER_1, 1);
 
@@ -158,7 +158,7 @@ describe("LightShaderLib", function () {
 
                 material.lightModel = wd.ELightModel.PHONG;
 
-                lib.sendShaderVariables(program, quadCmd, material);
+                lib.sendShaderVariables(program, cmd, material);
 
                 expect(program.sendUniformData).toCalledWith("u_lightModel", wd.EVariableType.NUMBER_1, 2);
 
@@ -166,7 +166,7 @@ describe("LightShaderLib", function () {
 
                 material.lightModel = wd.ELightModel.CONSTANT;
 
-                lib.sendShaderVariables(program, quadCmd, material);
+                lib.sendShaderVariables(program, cmd, material);
 
                 expect(program.sendUniformData).toCalledWith("u_lightModel", wd.EVariableType.NUMBER_1, 3);
             });
@@ -174,7 +174,7 @@ describe("LightShaderLib", function () {
                 material.lightModel = wd.ELightModel.LAMBERT;
 
                 expect(function(){
-                    lib.sendShaderVariables(program, quadCmd, material);
+                    lib.sendShaderVariables(program, cmd, material);
                 }).toThrow();
             });
         });
@@ -187,7 +187,7 @@ describe("LightShaderLib", function () {
         });
 
         it("send u_lightModel", function(){
-            lib.setShaderDefinition(quadCmd, material);
+            lib.setShaderDefinition(cmd, material);
 
             var uniformVariableArr = lib.addUniformVariable.args[0][0];
             expect(uniformVariableArr.indexOf("u_lightModel") > -1).toBeTruthy();

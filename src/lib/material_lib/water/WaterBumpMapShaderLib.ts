@@ -12,8 +12,8 @@ module wd{
             program.sendUniformData("u_windMatrix", EVariableType.FLOAT_MAT4, material.wind.matrix);
         }
 
-        public setShaderDefinition(quadCmd:QuadCommand, material:WaterMaterial){
-            super.setShaderDefinition(quadCmd, material);
+        public setShaderDefinition(cmd:QuadCommand, material:WaterMaterial){
+            super.setShaderDefinition(cmd, material);
 
             this.addUniformVariable([
                 VariableNameTable.getVariableName("bumpMap"),

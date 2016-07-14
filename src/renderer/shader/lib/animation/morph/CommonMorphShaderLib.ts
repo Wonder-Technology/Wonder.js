@@ -8,17 +8,17 @@ module wd{
 
         public type:string = "common_morph";
 
-        @require(function(program:Program, quadCmd:QuadCommand, material:EngineMaterial){
-            assert(quadCmd.target.hasComponent(MorphAnimation), Log.info.FUNC_SHOULD("entityObject", "has MorphAnimation component"));
+        @require(function(program:Program, cmd:QuadCommand, material:EngineMaterial){
+            assert(cmd.target.hasComponent(MorphAnimation), Log.info.FUNC_SHOULD("entityObject", "has MorphAnimation component"));
         })
-        public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:EngineMaterial){
-            var anim = quadCmd.target.getComponent<MorphAnimation>(MorphAnimation);
+        public sendShaderVariables(program:Program, cmd:QuadCommand, material:EngineMaterial){
+            var anim = cmd.target.getComponent<MorphAnimation>(MorphAnimation);
 
             this.sendUniformData(program, "u_interpolation", anim.interpolation);
         }
 
-        public setShaderDefinition(quadCmd:QuadCommand, material:EngineMaterial){
-            super.setShaderDefinition(quadCmd, material);
+        public setShaderDefinition(cmd:QuadCommand, material:EngineMaterial){
+            super.setShaderDefinition(cmd, material);
 
             this.addUniformVariable(["u_interpolation"]);
         }

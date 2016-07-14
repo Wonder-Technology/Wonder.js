@@ -8,12 +8,12 @@ module wd{
 
         public type:string = "common_envMap";
 
-        public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:EngineMaterial) {
+        public sendShaderVariables(program:Program, cmd:QuadCommand, material:EngineMaterial) {
             RenderTargerRendererShaderLibUtils.judgeAndSendIsRenderListEmptyVariable(program, EShaderGLSLData.DYNAMIC_CUBEMAP);
         }
 
-        public setShaderDefinition(quadCmd:QuadCommand, material:EngineMaterial){
-            super.setShaderDefinition(quadCmd, material);
+        public setShaderDefinition(cmd:QuadCommand, material:EngineMaterial){
+            super.setShaderDefinition(cmd, material);
 
             this.addUniformVariable([
                 "u_isRenderListEmpty"

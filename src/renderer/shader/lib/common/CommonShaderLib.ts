@@ -8,13 +8,13 @@ module wd{
 
         public type:string = "common";
 
-        public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:EngineMaterial){
-            this.sendUniformData(program, "u_vMatrix", quadCmd.vMatrix);
-            this.sendUniformData(program, "u_pMatrix", quadCmd.pMatrix);
+        public sendShaderVariables(program:Program, cmd:QuadCommand, material:EngineMaterial){
+            this.sendUniformData(program, "u_vMatrix", cmd.vMatrix);
+            this.sendUniformData(program, "u_pMatrix", cmd.pMatrix);
         }
 
-        public setShaderDefinition(quadCmd:QuadCommand, material:EngineMaterial){
-            super.setShaderDefinition(quadCmd, material);
+        public setShaderDefinition(cmd:QuadCommand, material:EngineMaterial){
+            super.setShaderDefinition(cmd, material);
 
             //todo use VariableLib.xxx?
             this.addUniformVariable(["u_vMatrix", "u_pMatrix"]);

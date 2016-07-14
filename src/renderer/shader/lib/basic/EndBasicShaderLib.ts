@@ -8,7 +8,7 @@ module wd{
 
         public type:string = "end_basic";
 
-        public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:EngineMaterial){
+        public sendShaderVariables(program: Program, cmd:QuadCommand, material:EngineMaterial){
         }
     }
 }

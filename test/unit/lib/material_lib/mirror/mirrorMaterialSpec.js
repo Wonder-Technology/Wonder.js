@@ -44,16 +44,16 @@ describe("mirror material", function () {
     });
 
     describe("integration test", function () {
-        var quadCmd;
+        var cmd;
         var reflectionMap;
 
         beforeEach(function () {
             wd.Director.getInstance().scene.currentCamera = wd.GameObject.create();
 
 
-            quadCmd = rendererTool.createSingleDrawCommand(sandbox);
+            cmd = rendererTool.createSingleDrawCommand(sandbox);
 
-            quadCmd.material = material;
+            cmd.material = material;
 
             material.geometry = {
                 entityObject:wd.GameObject.create()
@@ -82,7 +82,7 @@ describe("mirror material", function () {
 
 
 
-                material.updateShader(quadCmd);
+                material.updateShader(cmd);
 
 
                 expect(reflectionMap.bindToUnit).toCalledWith(0);

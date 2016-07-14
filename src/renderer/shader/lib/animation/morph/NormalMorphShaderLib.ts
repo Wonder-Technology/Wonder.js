@@ -8,8 +8,8 @@ module wd{
 
         public type:string = "normal_morph";
 
-        public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:EngineMaterial){
-            var morphNormalData = quadCmd.buffers.getChild(EBufferDataType.NORMAL);
+        public sendShaderVariables(program:Program, cmd:QuadCommand, material:EngineMaterial){
+            var morphNormalData = cmd.buffers.getChild(EBufferDataType.NORMAL);
 
             if(!morphNormalData){
                 return;
@@ -19,8 +19,8 @@ module wd{
             this.sendAttributeBuffer(program, "a_nextFrameNormal", morphNormalData[1]);
         }
 
-        public setShaderDefinition(quadCmd:QuadCommand, material:EngineMaterial){
-            super.setShaderDefinition(quadCmd, material);
+        public setShaderDefinition(cmd:QuadCommand, material:EngineMaterial){
+            super.setShaderDefinition(cmd, material);
 
             this.addAttributeVariable(["a_currentFrameNormal", "a_nextFrameNormal"]);
         }

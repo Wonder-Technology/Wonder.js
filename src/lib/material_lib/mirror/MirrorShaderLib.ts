@@ -12,8 +12,8 @@ module wd{
             RenderTargerRendererShaderLibUtils.judgeAndSendIsRenderListEmptyVariable(program, EShaderGLSLData.MIRROR);
         }
 
-        public setShaderDefinition(quadCmd:QuadCommand, material:MirrorMaterial){
-            super.setShaderDefinition(quadCmd, material);
+        public setShaderDefinition(cmd:QuadCommand, material:MirrorMaterial){
+            super.setShaderDefinition(cmd, material);
 
             this.addUniformVariable([
                 "u_isRenderListEmpty",

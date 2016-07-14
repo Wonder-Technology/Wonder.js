@@ -18,7 +18,7 @@ describe("shaderLibSpec", function () {
 
         describe("use shadowMap->pcf as example", function () {
             var scene;
-            var quadCmd, program, material;
+            var cmd, program, material;
             var shader;
 
             beforeEach(function () {
@@ -26,7 +26,7 @@ describe("shaderLibSpec", function () {
 
                 material = new wd.LightMaterial();
 
-                quadCmd = new wd.QuadCommand();
+                cmd = new wd.QuadCommand();
 
                 program = {
                     use: sandbox.stub(),
@@ -52,27 +52,27 @@ describe("shaderLibSpec", function () {
             });
 
             it("if SceneDispatcher.shadowMap.softType === PCF, glsl add 'define SHADOWMAP_TYPE_PCF'", function () {
-                shader.update(quadCmd, material);
+                shader.update(cmd, material);
 
                 expect(shader.fsSource).toContain("define SHADOWMAP_TYPE_PCF");
             });
             it("pcf can be opened or closed at runtime", function () {
-                shader.update(quadCmd, material);
+                shader.update(cmd, material);
 
                 scene.shadowMap.softType = wd.EShadowMapSoftType.NONE;
 
-                shader.update(quadCmd, material);
+                shader.update(cmd, material);
 
                 expect(shader.fsSource).not.toContain("define SHADOWMAP_TYPE_PCF");
             });
             //it("optimize:only when definition data change that program will reset shader", function(){
-            //    shader.update(quadCmd, material);
+            //    shader.update(cmd, material);
             //
-            //    shader.update(quadCmd, material);
+            //    shader.update(cmd, material);
             //
             //    scene.shadowMap.softType = wd.EShadowMapSoftType.NONE;
             //
-            //    shader.update(quadCmd, material);
+            //    shader.update(cmd, material);
             //
             //    expect(program.initWithShader).toCalledTwice();
             //});
@@ -100,14 +100,14 @@ describe("shaderLibSpec", function () {
         };
 
 
-        var quadCmd = new wd.QuadCommand();
-        sandbox.stub(quadCmd, "buffers", {
+        var cmd = new wd.QuadCommand();
+        sandbox.stub(cmd, "buffers", {
             hasChild:sandbox.stub().returns(true),
             getChild:sandbox.stub()
         });
-        //quadCmd.mMatrix = wd.Matrix4.create();
-        //quadCmd.vMatrix = wd.Matrix4.create();
-        //quadCmd.pMatrix = wd.Matrix4.create();
+        //cmd.mMatrix = wd.Matrix4.create();
+        //cmd.vMatrix = wd.Matrix4.create();
+        //cmd.pMatrix = wd.Matrix4.create();
 
 
 
@@ -117,7 +117,7 @@ describe("shaderLibSpec", function () {
         sandbox.stub(material1.program, "sendUniformData");
         sandbox.stub(material1.program, "sendAttributeBuffer");
 
-        material1.updateShader(quadCmd);
+        material1.updateShader(cmd);
 
 
 
@@ -129,7 +129,7 @@ describe("shaderLibSpec", function () {
         sandbox.stub(material2.program, "sendUniformData");
         sandbox.stub(material2.program, "sendAttributeBuffer");
 
-        material2.updateShader(quadCmd);
+        material2.updateShader(cmd);
 
 
 

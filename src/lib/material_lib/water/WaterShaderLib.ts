@@ -13,8 +13,8 @@ module wd{
             program.sendStructureData("u_waveData.height", EVariableType.FLOAT_1, material.wave.height);
         }
 
-        public setShaderDefinition(quadCmd:QuadCommand, material:WaterMaterial){
-            super.setShaderDefinition(quadCmd, material);
+        public setShaderDefinition(cmd:QuadCommand, material:WaterMaterial){
+            super.setShaderDefinition(cmd, material);
 
             this.addUniformVariable([
                 "u_waveData"

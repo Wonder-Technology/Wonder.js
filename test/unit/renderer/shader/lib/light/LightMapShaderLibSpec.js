@@ -2,7 +2,7 @@ describe("LightMapShaderLib", function () {
     var sandbox = null;
     var Lib = null;
     var lib = null;
-    var quadCmd,program,material;
+    var cmd,program,material;
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
@@ -10,7 +10,7 @@ describe("LightMapShaderLib", function () {
         lib = new Lib();
 
         material = wd.LightMaterial.create();
-        quadCmd = new wd.QuadCommand();
+        cmd = new wd.QuadCommand();
         program = new wd.Program();
 
         sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
@@ -22,7 +22,7 @@ describe("LightMapShaderLib", function () {
 
     describe("sendShaderVariables", function() {
         beforeEach(function () {
-            sandbox.stub(quadCmd, "buffers", {
+            sandbox.stub(cmd, "buffers", {
                 getChild: sandbox.stub().returns([])
             });
 
@@ -35,7 +35,7 @@ describe("LightMapShaderLib", function () {
             material.lightMapIntensity = 0.5;
 
 
-            lib.sendShaderVariables(program, quadCmd, material);
+            lib.sendShaderVariables(program, cmd, material);
 
             expect(program.sendUniformData).toCalledWith("u_lightMapIntensity", wd.EVariableType.FLOAT_1, 0.5);
         });
@@ -48,7 +48,7 @@ describe("LightMapShaderLib", function () {
         beforeEach(function(){
             sandbox.stub(lib, "addUniformVariable");
 
-            lib.setShaderDefinition(quadCmd, material);
+            lib.setShaderDefinition(cmd, material);
 
             uniformVariableArr = lib.addUniformVariable.args[0][0];
         });

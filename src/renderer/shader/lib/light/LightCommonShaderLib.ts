@@ -9,12 +9,12 @@ module wd{
 
         public type:string = "lightCommon";
 
-        public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
+        public sendShaderVariables(program: Program, cmd:QuadCommand, material:LightMaterial){
 
         }
 
-        public setShaderDefinition(quadCmd:QuadCommand, material:EngineMaterial){
-            super.setShaderDefinition(quadCmd, material);
+        public setShaderDefinition(cmd:QuadCommand, material:EngineMaterial){
+            super.setShaderDefinition(cmd, material);
 
             this.setVsSource(this.getVsChunk("light_common.glsl"));
             this.setVsSource(this.getVsChunk(), "+");

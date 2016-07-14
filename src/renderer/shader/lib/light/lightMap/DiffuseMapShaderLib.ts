@@ -8,14 +8,14 @@ module wd{
 
         public type:string = "diffuseMap";
 
-        @require(function(program: Program, quadCmd:QuadCommand, material:LightMaterial){
+        @require(function(program: Program, cmd:QuadCommand, material:LightMaterial){
             var diffuseMap:any = material.diffuseMap;
 
             assert(!!diffuseMap, Log.info.FUNC_MUST_DEFINE("diffuseMap"));
 
             assert(!!diffuseMap.sourceRegionForGLSL && !!diffuseMap.repeatRegion, Log.info.FUNC_SHOULD("material.diffuseMap", "has sourceRegionForGLSL,repeatRegion data"));
         })
-        public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
+        public sendShaderVariables(program: Program, cmd:QuadCommand, material:LightMaterial){
             var diffuseMap:ImageTexture|ProceduralTexture = <ImageTexture|ProceduralTexture>material.diffuseMap;
 
             this.sendUniformData(program, "u_diffuseSourceRegion", diffuseMap.sourceRegionForGLSL);
@@ -24,8 +24,8 @@ module wd{
             return this;
         }
 
-        public setShaderDefinition(quadCmd:QuadCommand, material:EngineMaterial){
-            super.setShaderDefinition(quadCmd, material);
+        public setShaderDefinition(cmd:QuadCommand, material:EngineMaterial){
+            super.setShaderDefinition(cmd, material);
 
             this.addUniformVariable([
                 VariableNameTable.getVariableName("diffuseMap"),

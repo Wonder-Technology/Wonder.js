@@ -15,8 +15,8 @@ module wd{
             this._softTypeChangeSubscription && this._softTypeChangeSubscription.dispose();
         }
 
-        public setShaderDefinition(quadCmd:QuadCommand, material:EngineMaterial){
-            super.setShaderDefinition(quadCmd, material);
+        public setShaderDefinition(cmd:QuadCommand, material:EngineMaterial){
+            super.setShaderDefinition(cmd, material);
 
             this._setShadowMapSource();
         }

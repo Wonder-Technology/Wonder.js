@@ -95,7 +95,7 @@ describe("terrain material", function() {
     });
 
     describe("integration test", function(){
-        var quadCmd;
+        var cmd;
         var map1,map2,map3;
 
         beforeEach(function(){
@@ -104,9 +104,9 @@ describe("terrain material", function() {
             wd.Director.getInstance().scene.currentCamera = wd.GameObject.create()
 
 
-            quadCmd = rendererTool.createSingleDrawCommand(sandbox);
+            cmd = rendererTool.createSingleDrawCommand(sandbox);
 
-            quadCmd.material = material;
+            cmd.material = material;
         });
 
         describe("test map", function(){
@@ -164,7 +164,7 @@ describe("terrain material", function() {
 
 
 
-                material.updateShader(quadCmd);
+                material.updateShader(cmd);
 
 
 
@@ -255,7 +255,7 @@ describe("terrain material", function() {
 
 
 
-                material.updateShader(quadCmd);
+                material.updateShader(cmd);
 
 
 
@@ -289,13 +289,13 @@ describe("terrain material", function() {
 
 
 
-                    quadCmd.buffers.getChild.withArgs(wd.EBufferDataType.TEXCOORD).returns([0.1,0.2]);
+                    cmd.buffers.getChild.withArgs(wd.EBufferDataType.TEXCOORD).returns([0.1,0.2]);
 
 
 
 
 
-                    material.updateShader(quadCmd);
+                    material.updateShader(cmd);
 
 
                     expect(material.program.sendAttributeBuffer.withArgs("a_texCoord")).toCalledOnce();
@@ -324,7 +324,7 @@ describe("terrain material", function() {
 
                     material.init();
 
-                    material.updateShader(quadCmd);
+                    material.updateShader(cmd);
 
 
                     expect(shaderTool.judgeGLSLDefine(material.shader.fsSource, "LAYER_COUNT", 2));

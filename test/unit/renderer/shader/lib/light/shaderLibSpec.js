@@ -23,12 +23,12 @@ describe("shaderLibSpec", function () {
 
 
 
-        var quadCmd = rendererTool.createQuadCommand(sandbox);
+        var cmd = rendererTool.createQuadCommand(sandbox);
 
-        quadCmd.material = material;
+        cmd.material = material;
 
 
-        quadCmd.buffers.getChild.withArgs(wd.EBufferDataType.TEXCOORD).returns([0.1,0.2]);
+        cmd.buffers.getChild.withArgs(wd.EBufferDataType.TEXCOORD).returns([0.1,0.2]);
 
 
         var map1 = wd.ImageTexture.create();
@@ -63,7 +63,7 @@ describe("shaderLibSpec", function () {
 
         wd.Director.getInstance().scene.currentCamera = wd.GameObject.create()
 
-        material.updateShader(quadCmd);
+        material.updateShader(cmd);
 
 
         expect(material.program.sendAttributeBuffer.withArgs("a_texCoord")).toCalledOnce();

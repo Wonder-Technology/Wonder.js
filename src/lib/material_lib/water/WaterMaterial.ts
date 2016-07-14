@@ -67,10 +67,10 @@ module wd{
         public refractionLevel:number = 0.8;
 
 
-        public updateShader(quadCmd:QuadCommand){
+        public updateShader(cmd:QuadCommand){
             this._computeTime();
 
-            super.updateShader(quadCmd);
+            super.updateShader(cmd);
         }
 
         public getTextureForRenderSort():Texture{

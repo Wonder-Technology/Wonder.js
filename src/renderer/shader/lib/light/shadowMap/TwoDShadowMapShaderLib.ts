@@ -9,7 +9,7 @@ module wd{
 
         public type:string = "twoDShadowMap";
 
-        public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
+        public sendShaderVariables(program: Program, cmd:QuadCommand, material:LightMaterial){
             var glslData = null;
 
             glslData = Director.getInstance().scene.glslData.getChild(<any>EShaderGLSLData.TWOD_SHADOWMAP);
@@ -38,10 +38,10 @@ module wd{
             });
         }
 
-        public setShaderDefinition(quadCmd:QuadCommand, material:EngineMaterial){
+        public setShaderDefinition(cmd:QuadCommand, material:EngineMaterial){
             var fs:GLSLChunk = null;
 
-            super.setShaderDefinition(quadCmd, material);
+            super.setShaderDefinition(cmd, material);
 
             if(GPUDetector.getInstance().extensionDepthTexture) {
                 fs = this.getFsChunk("twoDShadowMap_depthMap");

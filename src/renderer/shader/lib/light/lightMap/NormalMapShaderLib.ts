@@ -8,12 +8,12 @@ module wd{
 
         public type:string = "normalMap";
 
-        public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
+        public sendShaderVariables(program: Program, cmd:QuadCommand, material:LightMaterial){
             var tangentBuffer:ArrayBuffer = null;
 
-            super.sendShaderVariables(program, quadCmd, material);
+            super.sendShaderVariables(program, cmd, material);
 
-            tangentBuffer = quadCmd.buffers.getChild(EBufferDataType.TANGENT);
+            tangentBuffer = cmd.buffers.getChild(EBufferDataType.TANGENT);
 
             if(!tangentBuffer){
                 return;
@@ -22,8 +22,8 @@ module wd{
             this.sendAttributeBuffer(program, "a_tangent", tangentBuffer);
         }
 
-        public setShaderDefinition(quadCmd:QuadCommand, material:EngineMaterial){
-            super.setShaderDefinition(quadCmd, material);
+        public setShaderDefinition(cmd:QuadCommand, material:EngineMaterial){
+            super.setShaderDefinition(cmd, material);
 
             this.addAttributeVariable(["a_tangent"]);
 

@@ -1,7 +1,7 @@
 module wd{
     export abstract class MapShaderLib extends EngineShaderLib{
-        public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:BasicMaterial) {
-            var texCoordBuffer:ArrayBuffer = quadCmd.buffers.getChild(EBufferDataType.TEXCOORD),
+        public sendShaderVariables(program:Program, cmd:QuadCommand, material:BasicMaterial) {
+            var texCoordBuffer:ArrayBuffer = cmd.buffers.getChild(EBufferDataType.TEXCOORD),
                 mapList:wdCb.Collection<BasicTexture|ProceduralTexture> = null,
                 map0:BasicTexture|ProceduralTexture = null;
 
@@ -18,11 +18,11 @@ module wd{
             this.sendUniformData(program, "u_map0SourceRegion", map0.sourceRegionForGLSL);
             this.sendUniformData(program, "u_map0RepeatRegion", map0.repeatRegion);
 
-            this.sendMapShaderVariables(program, quadCmd, material);
+            this.sendMapShaderVariables(program, cmd, material);
         }
 
-        public setShaderDefinition(quadCmd:QuadCommand, material:BasicMaterial){
-            super.setShaderDefinition(quadCmd, material);
+        public setShaderDefinition(cmd:QuadCommand, material:BasicMaterial){
+            super.setShaderDefinition(cmd, material);
 
             this.addAttributeVariable(["a_texCoord"]);
 
@@ -32,7 +32,7 @@ module wd{
         }
 
         @virtual
-        protected sendMapShaderVariables(program:Program, quadCmd:QuadCommand, material:BasicMaterial){
+        protected sendMapShaderVariables(program:Program, cmd:QuadCommand, material:BasicMaterial){
         }
 
         private _setMapSource(){
