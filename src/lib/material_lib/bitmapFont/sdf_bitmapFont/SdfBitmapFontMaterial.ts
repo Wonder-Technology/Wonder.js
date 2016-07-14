@@ -1,6 +1,6 @@
 //todo test
 module wd{
-    export class SdfFontMaterial extends BitmapFontMaterial{
+    export class SdfBitmapFontMaterial extends BitmapFontMaterial{
         public static create() {
             var obj = new this();
 
@@ -10,7 +10,7 @@ module wd{
         }
 
         @cloneAttributeAsBasicType()
-        public type:SdfFontType = SdfFontType.SMOOTH;
+        public type:SdfBitmapFontType = SdfBitmapFontType.SMOOTH;
         @cloneAttributeAsBasicType()
         public alphaTest:number = 0.0001;
 
@@ -18,8 +18,8 @@ module wd{
             super.addEndShaderLib();
 
             switch (this.type){
-                case SdfFontType.SMOOTH:
-                    this.shader.addLib(SdfFontSmoothShaderLib.create());
+                case SdfBitmapFontType.SMOOTH:
+                    this.shader.addLib(SdfBitmapFontSmoothShaderLib.create());
                     break;
                 default:
                     Log.error(true, Log.info.FUNC_UNKNOW(`type:${this.type}`));

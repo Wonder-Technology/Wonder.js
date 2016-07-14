@@ -8,9 +8,6 @@ module wd{
 
         public type:string = "common_bitmapFont";
 
-        public sendShaderVariables(program: Program, cmd:QuadCommand, material:SdfFontMaterial){
-        }
-
         public setShaderDefinition(cmd:QuadCommand, material:MirrorMaterial){
             super.setShaderDefinition(cmd, material);
 

@@ -53,10 +53,10 @@
             var texture = wd.LoaderManager.getInstance().get("bitmap_image").toTexture();
 //            texture.flipY = false;
 
-            var material = wd.SdfFontMaterial.create();
+            var material = wd.SdfBitmapFontMaterial.create();
             material.color = wd.Color.create("rgb(255,0,255)");
             material.bitmap = texture;
-            material.type = wd.SdfFontType.SMOOTH;
+            material.type = wd.SdfBitmapFontType.SMOOTH;
             material.alphaTest = 0.0001;
             material.blendFuncSeparate = [wd.EBlendFunc.SRC_ALPHA, wd.EBlendFunc.ONE_MINUS_SRC_ALPHA, wd.EBlendFunc.ONE, wd.EBlendFunc.ONE_MINUS_SRC_ALPHA];
 //            material.blendFuncSeparate = [wd.EBlendFunc.ONE, wd.EBlendFunc.ONE, wd.EBlendFunc.ONE, wd.EBlendFunc.ZERO];
