@@ -428,6 +428,11 @@ module wd{
             value:EVariableCategory.ENGINE
         };
 
+        public static u_bitmapSampler:ShaderVariable = {
+            type:EVariableType.SAMPLER_2D,
+            value:EVariableCategory.ENGINE
+        };
+
         public static u_alphaTest :ShaderVariable = {
             type:EVariableType.FLOAT_1,
             value:EVariableCategory.ENGINE

@@ -122,6 +122,10 @@ module wd{
         protected addExtendShaderLib(){
         }
 
+        @virtual
+        protected addEndShaderLib(){
+        }
+
         protected addShaderLib(){
             var envMap = null;
 
@@ -141,6 +145,8 @@ module wd{
             this.addExtendShaderLib();
 
             this.shader.addLib(LightEndShaderLib.create());
+
+            this.addEndShaderLib();
         }
 
         private _setLightMapShaderLib(){

@@ -1,6 +1,6 @@
 //todo test
 module wd{
-    export class SdfFontMaterial extends StandardBasicMaterial{
+    export class SdfFontMaterial extends StandardLightMaterial{
         public static create() {
             var obj = new this();
 
@@ -23,8 +23,6 @@ module wd{
             this.mapManager.addMap(map);
         }
 
-        //@cloneAttributeAsBasicType()
-        //public opacity:number = 1.0;
         @cloneAttributeAsBasicType()
         public type:SdfFontType = SdfFontType.SMOOTH;
         @cloneAttributeAsBasicType()
@@ -40,7 +38,7 @@ module wd{
             return this.bitmap;
         }
 
-        protected addExtendShaderLib(){
+        protected addEndShaderLib(){
             switch (this.type){
                 case SdfFontType.SMOOTH:
                     this.shader.addLib(SdfFontSmoothShaderLib.create());
@@ -51,4 +49,3 @@ module wd{
         }
     }
 }
-
