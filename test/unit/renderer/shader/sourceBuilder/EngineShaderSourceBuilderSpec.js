@@ -56,7 +56,9 @@ describe("EngineShaderSourceBuilder", function () {
 
 
             vsSourceDefineList: wdCb.Collection.create(),
-            fsSourceDefineList: wdCb.Collection.create()
+            vsSourceExtensionList: wdCb.Collection.create(),
+            fsSourceDefineList: wdCb.Collection.create(),
+            fsSourceExtensionList: wdCb.Collection.create()
         };
         lib2 = {
             attributes: {
@@ -128,7 +130,9 @@ describe("EngineShaderSourceBuilder", function () {
 
 
             vsSourceDefineList: wdCb.Collection.create(),
-            fsSourceDefineList: wdCb.Collection.create()
+            vsSourceExtensionList: wdCb.Collection.create(),
+            fsSourceDefineList: wdCb.Collection.create(),
+            fsSourceExtensionList: wdCb.Collection.create()
         };
 
         libs = wdCb.Collection.create([
@@ -292,7 +296,9 @@ describe("EngineShaderSourceBuilder", function () {
 
 
                 vsSourceDefineList: wdCb.Collection.create(),
-                fsSourceDefineList: wdCb.Collection.create()
+                vsSourceExtensionList: wdCb.Collection.create(),
+                fsSourceDefineList: wdCb.Collection.create(),
+                fsSourceExtensionList: wdCb.Collection.create()
             };
 
             libs = wdCb.Collection.create([
@@ -350,7 +356,9 @@ describe("EngineShaderSourceBuilder", function () {
                 ].join("\n"),
 
                 vsSourceDefineList: wdCb.Collection.create(),
-                fsSourceDefineList: wdCb.Collection.create()
+                vsSourceExtensionList: wdCb.Collection.create(),
+                fsSourceDefineList: wdCb.Collection.create(),
+                fsSourceExtensionList: wdCb.Collection.create()
             };
 
             libs = wdCb.Collection.create([

@@ -27,7 +27,7 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        //'test/unit/**',
+        'test/unit/**',
 
 
         //'test/unit/**/procedural_texture_lib/**',
@@ -240,10 +240,10 @@
         //'test/unit/**/TwoDFontSpec*',
         //'test/unit/**/PlainFontSpec*',
         //'test/unit/**/UIRendererSpec*',
-        'test/unit/**/TwoDBitmapFontSpec*',
-        'test/unit/**/ThreeDBitmapFontSpec*',
-        'test/unit/**/basicBitmapFontSpec*',
-        'test/unit/**/sdfBitmapFontSpec*',
+        //'test/unit/**/TwoDBitmapFontSpec*',
+        //'test/unit/**/ThreeDBitmapFontSpec*',
+        //'test/unit/**/basicBitmapFontSpec*',
+        //'test/unit/**/sdfBitmapFontSpec*',
         //
         //'test/unit/**/DirectorSpec*',
         //
