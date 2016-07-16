@@ -17,6 +17,16 @@ module wd {
 
         public abstract getBufferForRenderSort():Buffer;
 
+        @virtual
+        public createBuffersFromGeometryData(){
+            this.getChild(EBufferDataType.VERTICE);
+            this.getChild(EBufferDataType.NORMAL);
+            this.getChild(EBufferDataType.TANGENT);
+            this.getChild(EBufferDataType.COLOR);
+            this.getChild(EBufferDataType.INDICE);
+            this.getChild(EBufferDataType.TEXCOORD);
+        }
+
         public init(){
             var self = this;
 
@@ -29,12 +39,31 @@ module wd {
             this.geometryData.init();
         }
 
-        public removeCache(type:EBufferDataType){
-            this.container.removeChild(type);
+
+        public removeCache(type:EBufferDataType);
+        public removeCache(name:string);
+
+        public removeCache(...args){
+            this.container.removeChild(args[0]);
         }
 
-        public getChild(type:EBufferDataType) {
-            var result:any = null;
+
+        public getChild(type:EBufferDataType);
+        public getChild(type:EBufferDataType, dataName:string);
+
+        @require(function(...args){
+            it("test arguments", function () {
+                if(args.length === 2){
+                    let dataName = args[1];
+
+                    expect(dataName).exist;
+                    expect(dataName).be.a("string");
+                }
+            });
+        })
+        public getChild(...args) {
+            var type = args[0],
+                result:any = null;
 
             switch (type) {
                 case EBufferDataType.VERTICE:
@@ -55,6 +84,9 @@ module wd {
                 case EBufferDataType.TEXCOORD:
                     result = this._getTexCoord(type);
                     break;
+                case EBufferDataType.CUSTOM:
+                    result = this.getCustomData(args[1]);
+                    break;
                 default:
                     wdCb.Log.error(true, wdCb.Log.info.FUNC_UNKNOW(`EBufferDataType: ${type}`));
                     break;
@@ -74,17 +106,13 @@ module wd {
             this._materialChangeSubscription && this._materialChangeSubscription.dispose();
         }
 
-        public createBuffersFromGeometryData(){
-            this.getChild(EBufferDataType.VERTICE);
-            this.getChild(EBufferDataType.NORMAL);
-            this.getChild(EBufferDataType.TANGENT);
-            this.getChild(EBufferDataType.COLOR);
-            this.getChild(EBufferDataType.INDICE);
-            this.getChild(EBufferDataType.TEXCOORD);
-        }
+        protected abstract getVertice(type:EBufferDataType);
+        protected abstract getNormal(type:EBufferDataType);
 
-        protected abstract getVertice(type);
-        protected abstract getNormal(type);
+        @virtual
+        protected getCustomData(dataName:string){
+            return null;
+        }
 
         protected createOnlyOnceAndUpdateArrayBuffer(bufferAttriName:string, data:Array<number>, size:number, type:EBufferType = EBufferType.FLOAT, offset:number = 0, usage:EBufferUsage = EBufferUsage.STATIC_DRAW){
             var buffer:ArrayBuffer = this[bufferAttriName];

@@ -32,9 +32,12 @@ module wd {
             fnt.scaleW = commonObj["scaleW"];
             fnt.scaleH = commonObj["scaleH"];
 
-            //todo support pages
+            //todo test
             if (commonObj["pages"] !== 1) {
-                Log.log("only supports 1 page");
+                fnt.isMultiPages = true;
+            }
+            else{
+                fnt.isMultiPages = false;
             }
 
             pageObj = this._parseStrToObj(fntStr.match(PAGE_EXP)[0]);
@@ -93,7 +96,8 @@ module wd {
                     yOffset: charObj["yoffset"],
 
                     //xAdvance equal width of char texture
-                    xAdvance: charObj["xadvance"]
+                    xAdvance: charObj["xadvance"],
+                    page:charObj["page"]
                 };
             }
 

@@ -8,6 +8,8 @@ module wd{
 
         public material:BasicBitmapFontMaterial;
 
+        private _pages:Array<number> = null;
+
         public computeData(){
             var bitmapFont = this.entityObject.getComponent<ThreeDBitmapFont>(ThreeDBitmapFont),
                 layoutDataList = bitmapFont.layoutDataList,
@@ -20,13 +22,19 @@ module wd{
 
             if(layoutDataList){
                 vertices = this._generateVertices(layoutDataList, bitmapFont.width, bitmapFont.height);
-                texCoords = this._generateTexCoords(layoutDataList, fntData.scaleW, fntData.scaleH, this.material.bitmap.flipY);
+                texCoords = this._generateTexCoords(layoutDataList, fntData.scaleW, fntData.scaleH, this.material.isMapFlipY());
                 indices = this._generateIndices(layoutDataList);
+
+                if(fntData.isMultiPages){
+                    this._pages = this._generatePages(layoutDataList);
+                }
             }
             else {
                 vertices = [];
                 texCoords = [];
                 indices = [];
+
+                this._pages = [];
             }
 
             return {
@@ -51,6 +59,55 @@ module wd{
             this.buffers.geometryData.vertices = vertices;
             this.buffers.geometryData.faces = faces;
             this.buffers.geometryData.texCoords = texCoords;
+
+            //todo test
+            if(this.hasMultiPages()){
+                (<BitmapFontBufferContainer>this.buffers).geometryData.pages = this._pages;
+            }
+        }
+
+        public hasMultiPages(){
+            return this._pages.length > 0;
+        }
+
+        protected createBufferContainer():BufferContainer{
+            if(this.hasMultiPages()){
+                return BitmapFontBufferContainer.create(this.entityObject);
+            }
+
+            return CommonBufferContainer.create(this.entityObject);
+        }
+
+        protected createGeometryData(vertices:Array<number>, faces:Array<Face3>, texCoords:Array<number>, colors:Array<number>, morphTargets:wdCb.Hash<MorphTargetsData>):GeometryData{
+            if(this.hasMultiPages()){
+                let geometryData = BitmapFontGeometryData.create(this);
+
+                geometryData.vertices = vertices;
+                geometryData.faces = faces;
+                geometryData.texCoords = texCoords;
+                geometryData.colors = colors;
+                geometryData.pages = this._pages;
+
+                return geometryData;
+            }
+
+            return this.createCommonGeometryData(vertices, faces, texCoords, colors);
+        }
+
+        private _generatePages(layoutDataList:wdCb.Collection<LayoutCharData>){
+            var pages = [],
+                i = 0;
+
+            layoutDataList.forEach(function (layoutCharData:LayoutCharData) {
+                let page = layoutCharData.data.page || 0;
+
+                pages[i++] = page;
+                pages[i++] = page;
+                pages[i++] = page;
+                pages[i++] = page;
+            });
+
+            return pages;
         }
 
         private _generateVertices(layoutDataList:wdCb.Collection<LayoutCharData>, bitmapFontWidth:number, bitmapFontHeight:number){

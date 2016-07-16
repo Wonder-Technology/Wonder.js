@@ -35,7 +35,8 @@ module wd {
             first:string;
             second:string;
             amount:number;
-        }>
+        }>;
+        isMultiPages:boolean;
     }
 
     export type FntCharData = {
@@ -44,7 +45,7 @@ module wd {
         xOffset: number;
         yOffset: number;
         xAdvance: number;
-
+        page:number;
     }
 }
 

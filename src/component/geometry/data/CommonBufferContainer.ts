@@ -1,4 +1,6 @@
 module wd {
+    //todo change to abstract class
+    //todo add BasicBufferContainer
     export class CommonBufferContainer extends BufferContainer{
         public static create(entityObject:GameObject) {
         	var obj = new this(entityObject);

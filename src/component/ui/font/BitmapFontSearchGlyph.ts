@@ -57,6 +57,7 @@ module wd{
 
             this._fallbackTabGlyph = {
                 id:String(TAB_ID),
+                page:0,
 
                 rect: {
                     x: 0, y: 0, width: 0, height: 0

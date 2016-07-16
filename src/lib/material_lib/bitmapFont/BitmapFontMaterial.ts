@@ -1,5 +1,7 @@
 module wd{
     export abstract class BitmapFontMaterial extends StandardLightMaterial{
+        public geometry:BitmapFontGeometry;
+
         private _bitmap:ImageTexture = null;
         get bitmap(){
             return this._bitmap;
@@ -15,6 +17,11 @@ module wd{
             });
 
             this._bitmap = map;
+        }
+
+        @virtual
+        public isMapFlipY():boolean{
+            return this.bitmap.flipY;
         }
 
         public initWhenCreate(){

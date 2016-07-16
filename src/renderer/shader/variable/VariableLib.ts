@@ -432,6 +432,16 @@ module wd{
             type:EVariableType.SAMPLER_2D,
             value:EVariableCategory.ENGINE
         };
+
+        public static a_page:ShaderVariable = {
+            type:EVariableType.FLOAT_1,
+            value:EVariableCategory.ENGINE
+        };
+
+        public static u_pageSampler2Ds:ShaderVariable = {
+            type:EVariableType.SAMPLER_ARRAY,
+            value:EVariableCategory.ENGINE
+        };
     }
 
     export type ShaderVariable = {
