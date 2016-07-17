@@ -21,8 +21,11 @@ module wd {
             this._customGeometry.vertices = vertices;
         }
 
+        @cloneAttributeAsBasicType()
         public dashSize:number = 3;
+        @cloneAttributeAsBasicType()
         public gapSize:number = 1;
+        @cloneAttributeAsBasicType()
         public dashCount:number = 200;
 
         public initWhenCreate() {

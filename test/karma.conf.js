@@ -27,7 +27,7 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        'test/unit/**',
+        //'test/unit/**',
 
 
         //'test/unit/**/procedural_texture/**',
@@ -74,6 +74,7 @@
 
         //'test/unit/**/ConvexPolygonGeometrySpec*',
         //'test/unit/**/LineGeometrySpec*',
+        'test/unit/**/DashLineGeometrySpec*',
         //'test/unit/**/SphereGeometrySpec*',
         //'test/unit/**/*GeometrySpec*',
         //'test/unit/**/geometry/**',
