@@ -30,7 +30,7 @@
         'test/unit/**',
 
 
-        //'test/unit/**/procedural_texture_lib/**',
+        //'test/unit/**/procedural_texture/**',
 
 
 
@@ -70,7 +70,7 @@
         //'test/unit/**/*Material*',
         //'test/unit/**/mirrorMaterial*',
 
-        //'test/unit/**/material_lib/**',
+        //'test/unit/**/material/**',
 
         //'test/unit/**/ConvexPolygonGeometrySpec*',
         //'test/unit/**/LineGeometrySpec*',
