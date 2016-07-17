@@ -10,7 +10,6 @@ module wd {
 
         private _pageBuffer:ArrayBuffer = null;
 
-        //todo test
         public createBuffersFromGeometryData(){
             super.createBuffersFromGeometryData();
 
@@ -27,7 +26,6 @@ module wd {
             return buffer;
         }
 
-        //todo test
         @cache(function(dataName:string){
             return this.container.hasChild(dataName);
         }, function(dataName:string){

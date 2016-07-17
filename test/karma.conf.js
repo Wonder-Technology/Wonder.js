@@ -27,7 +27,7 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        'test/unit/**',
+        //'test/unit/**',
 
 
         //'test/unit/**/procedural_texture_lib/**',
@@ -67,7 +67,7 @@
         //'test/unit/**/BasicMaterial*',
         //'test/unit/**/LightMaterial*',
         //'test/unit/**/Material*',
-        //'test/unit/**/*Material*',
+        'test/unit/**/*Material*',
         //'test/unit/**/mirrorMaterial*',
 
         //'test/unit/**/material_lib/**',
@@ -76,6 +76,7 @@
         //'test/unit/**/LineGeometrySpec*',
         //'test/unit/**/SphereGeometrySpec*',
         //'test/unit/**/*GeometrySpec*',
+        'test/unit/**/geometry/**',
 
         //'test/unit/**/VAOManager*',
         //
@@ -240,10 +241,9 @@
         //'test/unit/**/TwoDFontSpec*',
         //'test/unit/**/PlainFontSpec*',
         //'test/unit/**/UIRendererSpec*',
-        //'test/unit/**/TwoDBitmapFontSpec*',
-        //'test/unit/**/ThreeDBitmapFontSpec*',
-        //'test/unit/**/basicBitmapFontSpec*',
-        //'test/unit/**/sdfBitmapFontSpec*',
+        'test/unit/**/TwoDBitmapFontSpec*',
+        'test/unit/**/ThreeDBitmapFontSpec*',
+        'test/unit/**/bitmapFont/**',
         //
         //'test/unit/**/DirectorSpec*',
         //
@@ -305,7 +305,7 @@
         //'test/unit/asset/wd/WDParserSpec.js',
         //'test/unit/asset/wd/WDBuilderSpec.js',
         //'test/unit/math/*.js',
-        'test/unit/component/**/GeometrySpec.js',
+        //'test/unit/component/**/GeometrySpec.js',
         //'test/unit/component/**/TerrainGeometrySpec.js',
         //'test/unit/component/**/ModelGeometrySpec.js',
         //'test/unit/**/CommonBufferContainerSpec.js',

@@ -7,6 +7,8 @@ module wd {
         ITEM_EXP = /\w+=[^ \r\n]+/gi,
         INT_EXP = /^[\-]?\d+$/;       //"-"?
 
+    //todo directly parse and load bitmap image?
+
     export class FntParser {
         public static create() {
             var obj = new this();
@@ -32,7 +34,6 @@ module wd {
             fnt.scaleW = commonObj["scaleW"];
             fnt.scaleH = commonObj["scaleH"];
 
-            //todo test
             if (commonObj["pages"] !== 1) {
                 fnt.isMultiPages = true;
             }

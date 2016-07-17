@@ -21,14 +21,17 @@ describe("sdf bitmapFont test", function () {
 
     beforeEach(function(){
 
-        material = wd.SdfBitmapFontMaterial.create();
+        material = wd.BitmapFontMaterial.create();
+
+        material.enableSdf = true;
 
         cmd = rendererTool.createSingleDrawCommand(sandbox);
 
         cmd.material = material;
 
         material.geometry = {
-            entityObject:wd.GameObject.create()
+            entityObject:wd.GameObject.create(),
+            hasMultiPages:sandbox.stub().returns(false)
         }
     });
 

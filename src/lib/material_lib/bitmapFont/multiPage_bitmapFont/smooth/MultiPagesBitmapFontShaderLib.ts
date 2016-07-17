@@ -1,4 +1,3 @@
-//todo refactor: not send u_bitmapSampler
 module wd{
     export class MultiPagesBitmapFontShaderLib extends EngineShaderLib{
         public static create() {
@@ -16,6 +15,10 @@ module wd{
         })
         public sendShaderVariables(program:Program, cmd:QuadCommand, material:BitmapFontMaterial){
             var pageBuffer = <ArrayBuffer>cmd.buffers.getChild(EBufferDataType.CUSTOM, "pages");
+
+            if(!pageBuffer){
+                return;
+            }
 
             this.sendAttributeBuffer(program, "a_page", pageBuffer);
         }

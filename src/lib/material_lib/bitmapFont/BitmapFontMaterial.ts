@@ -18,14 +18,15 @@ module wd{
         public alphaTest:number = 0.0001;
 
         private _bitmap:ImageTexture = null;
-        get bitmap(){
-            return this._bitmap;
-        }
         @requireSetter(function(map:ImageTexture){
             it("should add ImageTexture", function () {
                 expect(map).instanceOf(ImageTexture);
             });
         })
+        @cloneAttributeAsCloneable()
+        get bitmap(){
+            return this._bitmap;
+        }
         set bitmap(map:ImageTexture){
             this.mapManager.addMap(map, {
                 samplerVariableName: VariableNameTable.getVariableName("bitmap")
@@ -57,7 +58,6 @@ module wd{
                 ).true;
             }, this);
 
-            //todo test describe
             describe("if has multi pages", function(){
                 it("each map in pageMapList should be all flipY or all not", function () {
                     var count = this.pageMapList.filter((map:ImageTexture) => {

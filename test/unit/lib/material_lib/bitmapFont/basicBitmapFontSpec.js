@@ -118,7 +118,7 @@ describe("basic bitmapFont test", function () {
             map.flipY = false;
 
 
-            material = wd.BasicBitmapFontMaterial.create();
+            material = wd.BitmapFontMaterial.create();
             material.bitmap = map;
 
             geometry.material = material;
@@ -331,7 +331,7 @@ describe("basic bitmapFont test", function () {
 
         beforeEach(function(){
 
-            material = wd.BasicBitmapFontMaterial.create();
+            material = wd.BitmapFontMaterial.create();
 
             cmd = rendererTool.createSingleDrawCommand(sandbox);
 

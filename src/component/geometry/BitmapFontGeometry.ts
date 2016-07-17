@@ -60,7 +60,6 @@ module wd{
             this.buffers.geometryData.faces = faces;
             this.buffers.geometryData.texCoords = texCoords;
 
-            //todo test
             if(this.hasMultiPages()){
                 (<BitmapFontBufferContainer>this.buffers).geometryData.pages = this._pages;
             }

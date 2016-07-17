@@ -618,6 +618,24 @@ describe("loader", function () {
                     done();
                 });
             });
+            it("test multi pages", function (done) {
+                wd.LoaderManager.getInstance().load([
+                    {url: testTool.resPath + "test/res/font/Norwester-Multi-64.fnt", id: "myFont_fnt"}
+                ]).subscribe(function(data){
+                }, null, function(){
+                    var fnt = wd.LoaderManager.getInstance().get("myFont_fnt");
+
+                    expect(fnt.isMultiPages).toBeTruthy();
+
+                    var dict = fnt.fontDefDictionary;
+                    expect(dict).toBeDefined();
+                    expect(dict["10"].page).toEqual(1);
+                    expect(dict["32"].page).toEqual(0);
+
+                    done();
+                });
+            });
+
         });
     });
 });

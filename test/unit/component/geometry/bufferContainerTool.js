@@ -2,8 +2,26 @@ var bufferContainerTool = {
     judgeUpdateBufferData: function (container, gl, bufferDataType, createBufferCount, testBufferDataFunc) {
         var createBufferCount = createBufferCount || 1;
 
+        var getChildFunc = null;
 
-        var result1 = container.getChild(bufferDataType);
+        var cacheName;
+
+        if(bufferDataType.type && bufferDataType.name){
+            cacheName = bufferDataType.name;
+
+            getChildFunc = function(){
+                return container.getChild(bufferDataType.type, bufferDataType.name);
+            }
+        }
+        else{
+            cacheName = bufferDataType;
+
+            getChildFunc = function(){
+                return container.getChild(bufferDataType);
+            }
+        }
+
+        var result1 = getChildFunc();
 
 
         expect(gl.createBuffer.callCount).toEqual(createBufferCount);
@@ -11,9 +29,9 @@ var bufferContainerTool = {
 
 
 
-        container.removeCache(bufferDataType);
+        container.removeCache(cacheName);
 
-        var result2 = container.getChild(bufferDataType);
+        var result2 = getChildFunc();
 
 
         expect(gl.createBuffer.callCount).toEqual(createBufferCount);
