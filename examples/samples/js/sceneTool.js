@@ -39,7 +39,11 @@ var sceneTool = (function(){
             cameraComponent.far = 1000;
 
             var controller = wd.ArcballCameraController.create(cameraComponent);
-            controller.distance = distance;
+
+            if(distance){
+                controller.distance = distance;
+
+            }
 
             if(target){
                 controller.target = target;

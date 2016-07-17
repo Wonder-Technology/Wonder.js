@@ -111,6 +111,8 @@
 		"event/EventManager.ts",
 		"event/EEngineEvent.ts",
 		"component/data/ComponentInitOrderTable.ts",
+		"component/billboard/Billboard.ts",
+		"component/billboard/EBillboardMode.ts",
 		"component/lod/LOD.ts",
 		"component/lod/ELODGeometryState.ts",
 		"component/instance/Instance.ts",
@@ -554,6 +556,7 @@
 		"engine/AnimationEngine.ts",
 		"engine/CollisionEngine.ts",
 		"engine/PhysicsEngine.ts",
+		"engine/BillboardEngine.ts",
 		"engine/UIEngine.ts",
 		"engine/ThreeDUIEngine.ts",
 		"engine/TwoDUIEngine.ts"

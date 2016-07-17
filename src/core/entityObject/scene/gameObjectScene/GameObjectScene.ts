@@ -99,6 +99,7 @@ module wd {
             var currentCamera= this._getCurrentCameraComponent(),
                 shadowManager:ShadowManager = this.shadowManager;
 
+
             PhysicsEngine.getInstance().update(elapsed);
 
             if(currentCamera){
@@ -118,6 +119,9 @@ module wd {
             super.update(elapsed);
 
             CollisionEngine.getInstance().detect(elapsed);
+
+            //todo test
+            BillboardEngine.getInstance().update(elapsed);
         }
 
         public render(renderer:Renderer) {

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>billboard</title>
+
+    <script src="../../../dist/wd.innerLib.js" type="text/javascript"></script>
+    <script src="../../../dist/wd.debug.js" type="text/javascript"></script>
+    <script src="../js/sceneTool.js" type="text/javascript"></script>
+</head>
+<body>
+
+<script>
+    window.onload = function () {
+        wd.Main.setConfig({
+            isTest: true,
+            screenSize: wd.EScreenSize.FULL
+        }).init();
+
+        wd.LoaderManager.getInstance().load([
+            {url: "../../asset/texture/1.jpg", id: "texture"}
+        ]).subscribe(null, null, function () {
+            initSample();
+        });
+
+        function initSample() {
+            var director = wd.Director.getInstance();
+
+            director.scene.addChild(createNoBillboardPlane());
+            director.scene.addChild(createBillboardPlane());
+            director.scene.addChild(sceneTool.createCamera(30));
+
+            director.start();
+        }
+
+        function createNoBillboardPlane() {
+            var material = wd.BasicMaterial.create();
+            material.map = wd.LoaderManager.getInstance().get("texture").toTexture();
+            material.side = wd.ESide.BOTH;
+
+
+            var geometry = wd.RectGeometry.create();
+            geometry.material = material;
+            geometry.width = 5;
+            geometry.height = 5;
+
+
+
+            var gameObject = wd.GameObject.create();
+            gameObject.addComponent(geometry);
+
+            gameObject.addComponent(wd.MeshRenderer.create());
+
+            gameObject.transform.translate(0, 10, 0);
+
+            return gameObject;
+        }
+
+        function createBillboardPlane() {
+            var material = wd.BasicMaterial.create();
+            material.map = wd.LoaderManager.getInstance().get("texture").toTexture();
+
+
+            var geometry = wd.RectGeometry.create();
+            geometry.material = material;
+            geometry.width = 5;
+            geometry.height = 5;
+
+
+            var billboard = wd.Billboard.create();
+            billboard.mode = wd.EBillboardMode.Y;
+
+
+            var gameObject = wd.GameObject.create();
+            gameObject.addComponent(geometry);
+            gameObject.addComponent(billboard);
+
+            gameObject.addComponent(wd.MeshRenderer.create());
+
+            return gameObject;
+        }
+    };
+</script>
+</body>
+</html>

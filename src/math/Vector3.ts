@@ -301,6 +301,16 @@ module wd{
             return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
         }
 
+        public calAngleCos(v1:Vector3){
+            var l = this.length() * v1.length();
+
+            if(l === 0){
+                return NaN;
+            }
+
+            return this.dot(v1) / l;
+        }
+
         public min(v:Vector3) {
             if (this.x > v.x) {
                 this.x = v.x;
