@@ -90,7 +90,7 @@ module wd{
                 return geometryData;
             }
 
-            return this.createCommonGeometryData(vertices, faces, texCoords, colors);
+            return this.createBasicGeometryData(vertices, faces, texCoords, colors);
         }
 
         private _generatePages(layoutDataList:wdCb.Collection<LayoutCharData>){

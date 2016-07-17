@@ -155,7 +155,7 @@
 		"component/geometry/TriangleGeometry.ts",
 		"component/geometry/TerrainGeometry.ts",
 		"component/geometry/data/GeometryData.ts",
-		"component/geometry/data/CommonGeometryData.ts",
+		"component/geometry/data/BasicGeometryData.ts",
 		"component/geometry/data/MorphGeometryData.ts",
 		"component/geometry/data/BitmapFontGeometryData.ts",
 		"component/geometry/data/BufferContainer.ts",

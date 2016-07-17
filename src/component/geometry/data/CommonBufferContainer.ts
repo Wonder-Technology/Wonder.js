@@ -8,7 +8,7 @@ module wd {
         	return obj;
         }
 
-        public geometryData:CommonGeometryData;
+        public geometryData:BasicGeometryData;
 
         private _verticeBuffer:ArrayBuffer = null;
         private _normalBuffer:ArrayBuffer = null;

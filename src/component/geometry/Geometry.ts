@@ -129,11 +129,11 @@ module wd{
 
         @virtual
         protected createGeometryData(vertices:Array<number>, faces:Array<Face3>, texCoords:Array<number>, colors:Array<number>, morphTargets:wdCb.Hash<MorphTargetsData>):GeometryData{
-            return this.createCommonGeometryData(vertices, faces, texCoords, colors);
+            return this.createBasicGeometryData(vertices, faces, texCoords, colors);
         }
 
-        protected createCommonGeometryData(vertices:Array<number>, faces:Array<Face3>, texCoords:Array<number>, colors:Array<number>){
-            var geometryData = CommonGeometryData.create(this);
+        protected createBasicGeometryData(vertices:Array<number>, faces:Array<Face3>, texCoords:Array<number>, colors:Array<number>){
+            var geometryData = BasicGeometryData.create(this);
 
             geometryData.vertices = vertices;
             geometryData.faces = faces;
