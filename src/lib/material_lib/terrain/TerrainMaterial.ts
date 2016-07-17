@@ -37,17 +37,23 @@ module wd{
 
         private _mapDataList:wdCb.Collection<TerrainLayerMapData> = wdCb.Collection.create<TerrainLayerMapData>();
         @requireSetter(function(mapDataList:wdCb.Collection<TerrainLayerMapData>){
-            mapDataList.forEach((mapData:TerrainLayerMapData) => {
-                assert(mapData.minHeight < mapData.maxHeight, Log.info.FUNC_SHOULD("minHeight", "< maxHeight"));
+            it("mapDataList should be Collection type", function () {
+                expect(mapDataList).instanceOf(wdCb.Collection);
             });
-
-            mapDataList.forEach((mapData:TerrainLayerMapData) => {
-                mapDataList
-                    .filter((data:TerrainLayerMapData) => {
-                        return data.minHeight !== mapData.minHeight || data.maxHeight !== mapData.maxHeight;
-                    })
-                    .forEach((data:TerrainLayerMapData) => {
-                        assert(mapData.minHeight >= data.maxHeight || mapData.maxHeight <= data.minHeight, Log.info.FUNC_SHOULD_NOT("height range", "overlap"));
+            it("minHeight should < maxHeight", function () {
+                mapDataList.forEach((mapData:TerrainLayerMapData) => {
+                    expect(mapData.minHeight).lessThan(mapData.maxHeight);
+                });
+            });
+            it("height range should not overlap", function () {
+                mapDataList.forEach((mapData:TerrainLayerMapData) => {
+                    mapDataList
+                        .filter((data:TerrainLayerMapData) => {
+                            return data.minHeight !== mapData.minHeight || data.maxHeight !== mapData.maxHeight;
+                        })
+                        .forEach((data:TerrainLayerMapData) => {
+                            expect(mapData.minHeight >= data.maxHeight || mapData.maxHeight <= data.minHeight).true;
+                        });
                 });
             });
         })
