@@ -160,6 +160,7 @@
 		"component/geometry/data/BitmapFontGeometryData.ts",
 		"component/geometry/data/BufferContainer.ts",
 		"component/geometry/data/CommonBufferContainer.ts",
+		"component/geometry/data/BasicBufferContainer.ts",
 		"component/geometry/data/MorphBufferContainer.ts",
 		"component/geometry/data/BitmapFontBufferContainer.ts",
 		"component/camera/Camera.ts",

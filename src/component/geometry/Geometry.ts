@@ -124,7 +124,7 @@ module wd{
 
         @virtual
         protected createBufferContainer():BufferContainer{
-            return CommonBufferContainer.create(this.entityObject);
+            return BasicBufferContainer.create(this.entityObject);
         }
 
         @virtual

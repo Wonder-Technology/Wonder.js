@@ -1,13 +1,5 @@
 module wd {
-    //todo change to abstract class
-    //todo add BasicBufferContainer
-    export class CommonBufferContainer extends BufferContainer{
-        public static create(entityObject:GameObject) {
-        	var obj = new this(entityObject);
-
-        	return obj;
-        }
-
+    export abstract class CommonBufferContainer extends BufferContainer{
         public geometryData:BasicGeometryData;
 
         private _verticeBuffer:ArrayBuffer = null;

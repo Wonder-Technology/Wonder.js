@@ -74,7 +74,7 @@ module wd{
                 return BitmapFontBufferContainer.create(this.entityObject);
             }
 
-            return CommonBufferContainer.create(this.entityObject);
+            return BasicBufferContainer.create(this.entityObject);
         }
 
         protected createGeometryData(vertices:Array<number>, faces:Array<Face3>, texCoords:Array<number>, colors:Array<number>, morphTargets:wdCb.Hash<MorphTargetsData>):GeometryData{

@@ -1,11 +1,11 @@
-describe("CommonBufferContainer", function() {
+describe("BasicBufferContainer", function() {
     var sandbox = null;
     var container = null;
     var gl;
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        container= new wd.CommonBufferContainer();
+        container= new wd.BasicBufferContainer();
     });
     afterEach(function () {
         sandbox.restore();
@@ -56,7 +56,7 @@ describe("CommonBufferContainer", function() {
 
             gl = wd.DeviceManager.getInstance().gl;
 
-            geometryData = wd.CommonGeometryData.create(geo);
+            geometryData = wd.BasicGeometryData.create(geo);
 
 
             container.geometryData = geometryData;
