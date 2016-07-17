@@ -9,18 +9,18 @@ module wd{
 
         public type:string = "multiPages_bitmapFont";
 
-        @require(function(program:Program, cmd:QuadCommand, material:MultiPagesBitmapFontMaterial){
+        @require(function(program:Program, cmd:QuadCommand, material:BitmapFontMaterial){
             it("should exist page buffer", function () {
                 expect(cmd.buffers.getChild(EBufferDataType.CUSTOM, "pages")).exist;
             });
         })
-        public sendShaderVariables(program:Program, cmd:QuadCommand, material:MultiPagesBitmapFontMaterial){
+        public sendShaderVariables(program:Program, cmd:QuadCommand, material:BitmapFontMaterial){
             var pageBuffer = <ArrayBuffer>cmd.buffers.getChild(EBufferDataType.CUSTOM, "pages");
 
             this.sendAttributeBuffer(program, "a_page", pageBuffer);
         }
 
-        public setShaderDefinition(cmd:QuadCommand, material:MultiPagesBitmapFontMaterial){
+        public setShaderDefinition(cmd:QuadCommand, material:BitmapFontMaterial){
             super.setShaderDefinition(cmd, material);
 
             this.addAttributeVariable(["a_page"]);
@@ -42,4 +42,3 @@ module wd{
         }
     }
 }
-

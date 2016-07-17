@@ -6,7 +6,7 @@ module wd{
             return geom;
         }
 
-        public material:BasicBitmapFontMaterial;
+        public material:BitmapFontMaterial;
 
         private _pages:Array<number> = null;
 
@@ -67,7 +67,7 @@ module wd{
         }
 
         public hasMultiPages(){
-            return this._pages.length > 0;
+            return this._pages !== null && this._pages.length > 0;
         }
 
         protected createBufferContainer():BufferContainer{

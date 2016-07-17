@@ -1,6 +1,24 @@
 module wd{
+    var _describeContext = null;
+
     export function assert(cond:boolean, message:string="contract error"){
         Log.error(!cond, message);
+    }
+
+    export function describe(message:string,  func:Function, preCondition:Function = () => true, context:any = this){
+        if(preCondition.call(context, null)){
+            _describeContext = context;
+
+            try{
+                func.call(context, null);
+            }
+            catch(e){
+                assert(false, `${message}->${e.message}`);
+            }
+            finally {
+                _describeContext = null;
+            }
+        }
     }
 
     export function it(message:string, func:Function, context?:any){
@@ -9,11 +27,16 @@ module wd{
                 func.call(context, null);
             }
             else{
-                func();
+                if(_describeContext){
+                    func.call(_describeContext, null);
+                }
+                else{
+                    func();
+                }
             }
         }
         catch(e){
-            assert(false, `${message}: ${e.message}`);
+            assert(false, `${message}->${e.message}`);
         }
     }
 

@@ -55,7 +55,7 @@
             var texture2 = wd.LoaderManager.getInstance().get("2_image").toTexture();
             var texture3 = wd.LoaderManager.getInstance().get("3_image").toTexture();
 
-            var material = wd.MultiPagesBitmapFontMaterial.create();
+            var material = wd.BitmapFontMaterial.create();
             material.color = wd.Color.create("rgb(255,0,255)");
             material.pageMapList = wdCb.Collection.create([
                     texture0,

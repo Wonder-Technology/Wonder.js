@@ -8,7 +8,7 @@ module wd{
 
         public type:string = "sdf_bitmapFont_smooth";
 
-        public setShaderDefinition(cmd:QuadCommand, material:SdfBitmapFontMaterial){
+        public setShaderDefinition(cmd:QuadCommand, material:BitmapFontMaterial){
             super.setShaderDefinition(cmd, material);
 
             if(GPUDetector.getInstance().extensionStandardDerivatives){
@@ -19,11 +19,9 @@ module wd{
                 this.fsSourceFuncDefine = ShaderChunk.sdf_bitmapFont_smoothStep_fallback.funcDefine;
             }
 
-            this.fsSourceBody += `
-                if (gl_FragColor.a < ${material.alphaTest}){
-                    discard;
-                }
-            `;
+            this.fsSourceBody += `if (gl_FragColor.a < ${material.alphaTest}){
+    discard;
+}`;
         }
     }
 }
