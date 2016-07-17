@@ -27,6 +27,27 @@ var sceneTool = (function(){
             directionLight.transform.position = position;
 
             return directionLight;
+        },
+        createCamera: function (distance, target) {
+            var camera = wd.GameObject.create(),
+                view = wd.Director.getInstance().view,
+                cameraComponent = wd.PerspectiveCamera.create();
+
+            cameraComponent.fovy = 60;
+            cameraComponent.aspect = view.width / view.height;
+            cameraComponent.near = 0.1;
+            cameraComponent.far = 1000;
+
+            var controller = wd.ArcballCameraController.create(cameraComponent);
+            controller.distance = distance;
+
+            if(target){
+                controller.target = target;
+            }
+
+            camera.addComponent(controller);
+
+            return camera;
         }
     }
 })();

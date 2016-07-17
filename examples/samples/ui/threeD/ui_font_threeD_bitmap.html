@@ -30,7 +30,7 @@
 
             director.scene.addChild(sceneTool.createAmbientLight());
             director.scene.addChild(sceneTool.createDirectionLight(wd.Vector3.create(0, 0, 100)));
-            director.scene.addChild(createCamera());
+            director.scene.addChild(sceneTool.createCamera(300));
 
             director.start();
         }
@@ -79,24 +79,6 @@
             gameObject.addComponent(renderer);
 
             return gameObject;
-        }
-
-        function createCamera() {
-            var camera = wd.GameObject.create(),
-                    view = wd.Director.getInstance().view,
-                    cameraComponent = wd.PerspectiveCamera.create();
-
-            cameraComponent.fovy = 60;
-            cameraComponent.aspect = view.width / view.height;
-            cameraComponent.near = 0.1;
-            cameraComponent.far = 1000;
-
-            var controller = wd.ArcballCameraController.create(cameraComponent);
-            controller.distance = 300;
-
-            camera.addComponent(controller);
-
-            return camera;
         }
     };
 </script>

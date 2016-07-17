@@ -30,7 +30,7 @@
 
             director.scene.addChild(sceneTool.createAmbientLight());
             director.scene.addChild(sceneTool.createDirectionLight(wd.Vector3.create(0, 0, 100)));
-            director.scene.addChild(createCamera());
+            director.scene.addChild(sceneTool.createCamera(20, wd.Vector3.create(0,50,0)));
 
             director.start();
         }
