@@ -1,10 +1,10 @@
-describe("LineGeometry", function() {
+describe("SolidLineGeometry", function() {
     var sandbox = null;
     var geo = null;
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        geo = new wd.LineGeometry();
+        geo = new wd.SolidLineGeometry();
     });
     afterEach(function () {
         testTool.clearInstance(sandbox);
@@ -17,7 +17,7 @@ describe("LineGeometry", function() {
         });
 
         it("set drawMode to be LINE_STRIP", function () {
-            geo = wd.LineGeometry.create();
+            geo = wd.SolidLineGeometry.create();
             expect(geo.drawMode).toEqual(wd.EDrawMode.LINE_STRIP);
         });
     });

@@ -73,7 +73,7 @@
         //'test/unit/**/material/**',
 
         //'test/unit/**/ConvexPolygonGeometrySpec*',
-        //'test/unit/**/LineGeometrySpec*',
+        'test/unit/**/SolidLineGeometrySpec*',
         'test/unit/**/DashLineGeometrySpec*',
         //'test/unit/**/SphereGeometrySpec*',
         //'test/unit/**/*GeometrySpec*',

@@ -19,17 +19,17 @@
         wd.LoaderManager.getInstance().load([]).subscribe(null, null, function () {
             var director = wd.Director.getInstance();
 
-            director.scene.addChild(createLine());
+            director.scene.addChild(createSolidLine());
             director.scene.addChild(createCamera());
 
             director.start();
         });
 
-        function createLine() {
-            var line = wd.Line.create();
+        function createSolidLine() {
+            var line = wd.SolidLine.create();
 
 
-            var geometry = wd.LineGeometry.create();
+            var geometry = wd.SolidLineGeometry.create();
             geometry.vertices.push(-10, -10, 0);
             geometry.vertices.push(-10, 10, 0);
             geometry.vertices.push(10, 10, 0);

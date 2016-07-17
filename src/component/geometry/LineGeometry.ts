@@ -1,13 +1,5 @@
 module wd{
-    export class LineGeometry extends Geometry{
-        public static create(){
-            var geom = new this();
-
-            geom.initWhenCreate();
-
-            return geom;
-        }
-
+    export abstract class LineGeometry extends Geometry{
         private _customGeometry:CustomGeometry = CustomGeometry.create();
 
         @cloneAttributeAsCustomType(function(source:ModelGeometry, target:ModelGeometry, memberName:string){
@@ -20,15 +12,13 @@ module wd{
             this._customGeometry.vertices = vertices;
         }
 
-        public initWhenCreate(){
-            this.drawMode = wd.EDrawMode.LINE_STRIP;
-        }
-
         public computeData(){
             return {
-                vertices: this.vertices
+                vertices: this.computeVertices()
             };
         }
+
+        protected abstract computeVertices():Array<number>;
     }
 }
 

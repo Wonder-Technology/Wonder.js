@@ -1,24 +1,11 @@
 module wd {
-    export class DashLineGeometry extends Geometry {
+    export class DashLineGeometry extends LineGeometry {
         public static create() {
-            var geom = new this();
+            var geo = new this();
 
-            geom.initWhenCreate();
+            geo.initWhenCreate();
 
-            return geom;
-        }
-
-        private _customGeometry:CustomGeometry = CustomGeometry.create();
-
-        @cloneAttributeAsCustomType(function (source:ModelGeometry, target:ModelGeometry, memberName:string) {
-            target[memberName] = CloneUtils.cloneArray(source[memberName]);
-        })
-        get vertices() {
-            return this._customGeometry.vertices;
-        }
-
-        set vertices(vertices:Array<number>) {
-            this._customGeometry.vertices = vertices;
+            return geo;
         }
 
         @cloneAttributeAsBasicType()
@@ -32,7 +19,7 @@ module wd {
             this.drawMode = wd.EDrawMode.LINES;
         }
 
-        public computeData() {
+        protected computeVertices() {
             var dashSize = this.dashSize,
                 gapSize = this.gapSize,
                 dashCount = this.dashCount,
@@ -71,9 +58,7 @@ module wd {
                 }
             }
 
-            return {
-                vertices: vertices
-            };
+            return vertices;
         }
     }
 }

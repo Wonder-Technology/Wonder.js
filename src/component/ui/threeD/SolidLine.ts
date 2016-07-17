@@ -1,5 +1,5 @@
 module wd{
-    export class DashLine extends Line{
+    export class SolidLine extends Line{
         public static create() {
         	var obj = new this();
 
