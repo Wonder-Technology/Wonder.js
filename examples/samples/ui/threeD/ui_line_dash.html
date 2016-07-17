@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>line+dash</title>
+
+    <script src="../../../../dist/wd.innerLib.js" type="text/javascript"></script>
+    <script src="../../../../dist/wd.debug.js" type="text/javascript"></script>
+    <script src="../../js/sceneTool.js" type="text/javascript"></script>
+</head>
+<body>
+<script>
+    window.onload = function () {
+        wd.Main.setConfig({
+            isTest: true,
+            screenSize: wd.EScreenSize.FULL
+        }).init();
+
+        wd.LoaderManager.getInstance().load([]).subscribe(null, null, function () {
+            var director = wd.Director.getInstance();
+
+            director.scene.addChild(createLine());
+            director.scene.addChild(sceneTool.createCamera(20));
+
+            director.start();
+        });
+
+        function createLine() {
+            var line = wd.DashLine.create();
+
+
+            var geometry = wd.DashLineGeometry.create();
+            geometry.vertices.push(-10, -10, 0);
+            geometry.vertices.push(-10, 10, 0);
+            geometry.vertices.push(10, 10, 0);
+
+            geometry.dashSize = 3;
+            geometry.gapSize = 2;
+            geometry.dashCount = 20;
+
+            var material = wd.LineMaterial.create();
+            material.color = wd.Color.create("rgb(1.0,0.0,1.0)");
+
+            geometry.material = material;
+
+
+            var lineObject = wd.GameObject.create();
+
+            lineObject.addComponent(line);
+
+            lineObject.addComponent(geometry);
+
+            lineObject.addComponent(wd.MeshRenderer.create());
+
+            return lineObject;
+        }
+    }
+</script>
+</body>
+</html>
