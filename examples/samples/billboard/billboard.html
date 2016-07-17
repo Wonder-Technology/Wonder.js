@@ -27,7 +27,8 @@
             var director = wd.Director.getInstance();
 
             director.scene.addChild(createNoBillboardPlane());
-            director.scene.addChild(createBillboardPlane());
+            director.scene.addChild(createBillboardAllPlane());
+            director.scene.addChild(createBillboardYPlane());
             director.scene.addChild(sceneTool.createCamera(30));
 
             director.start();
@@ -56,7 +57,15 @@
             return gameObject;
         }
 
-        function createBillboardPlane() {
+        function createBillboardYPlane() {
+            return createBillboardPlane(wd.EBillboardMode.Y);
+        }
+
+        function createBillboardAllPlane() {
+            return createBillboardPlane(wd.EBillboardMode.ALL, wd.Vector3.create(0, -10, 0));
+        }
+
+        function createBillboardPlane(mode, pos) {
             var material = wd.BasicMaterial.create();
             material.map = wd.LoaderManager.getInstance().get("texture").toTexture();
 
@@ -68,7 +77,7 @@
 
 
             var billboard = wd.Billboard.create();
-            billboard.mode = wd.EBillboardMode.Y;
+            billboard.mode = mode;
 
 
             var gameObject = wd.GameObject.create();
@@ -76,6 +85,10 @@
             gameObject.addComponent(billboard);
 
             gameObject.addComponent(wd.MeshRenderer.create());
+
+            if(pos){
+                gameObject.transform.position = pos;
+            }
 
             return gameObject;
         }
