@@ -147,6 +147,9 @@ var testTool = (function () {
                 else if(values.values){
                     return mathTestUtils.getValues(values.values, digit);
                 }
+                else if(values instanceof wd.Quaternion){
+                    return mathTestUtils.getValues([values.x, values.y, values.z, values.w], digit);
+                }
                 else {
                     return mathTestUtils.toFixed(values, digit);
                 }

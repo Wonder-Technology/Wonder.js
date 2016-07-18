@@ -120,7 +120,6 @@ module wd {
 
             CollisionEngine.getInstance().detect(elapsed);
 
-            //todo test
             BillboardEngine.getInstance().update(elapsed);
         }
 

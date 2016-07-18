@@ -34,6 +34,7 @@
 
 
 
+        'test/unit/**/Billboard*',
 
         //'test/unit/**/BufferTable*',
         //'test/unit/**/ProgramTable*',
@@ -73,8 +74,8 @@
         //'test/unit/**/material/**',
 
         //'test/unit/**/ConvexPolygonGeometrySpec*',
-        'test/unit/**/SolidLineGeometrySpec*',
-        'test/unit/**/DashLineGeometrySpec*',
+        //'test/unit/**/SolidLineGeometrySpec*',
+        //'test/unit/**/DashLineGeometrySpec*',
         //'test/unit/**/SphereGeometrySpec*',
         //'test/unit/**/*GeometrySpec*',
         //'test/unit/**/geometry/**',
