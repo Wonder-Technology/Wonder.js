@@ -18,7 +18,9 @@
         }).init();
 
         wd.LoaderManager.getInstance().load([
-            {url: "../../asset/texture/1.jpg", id: "texture"}
+            {url: "../../asset/texture/1.jpg", id: "texture"},
+            {url: "../../asset/font/bitmap/Lato-Regular-64.fnt", id: "bitmap_fnt"},
+            {url: "../../asset/font/bitmap/lato.png", id: "bitmap_image"}
         ]).subscribe(null, null, function () {
             initSample();
         });
@@ -29,7 +31,12 @@
             director.scene.addChild(createNoBillboardPlane());
             director.scene.addChild(createBillboardAllPlane());
             director.scene.addChild(createBillboardYPlane());
-            director.scene.addChild(sceneTool.createCamera(30));
+            director.scene.addChild(createBillboardAllText());
+
+            director.scene.addChild(sceneTool.createAmbientLight());
+            director.scene.addChild(sceneTool.createDirectionLight(wd.Vector3.create(0, 0, 100)));
+
+            director.scene.addChild(sceneTool.createCamera(100));
 
             director.start();
         }
@@ -63,6 +70,63 @@
 
         function createBillboardAllPlane() {
             return createBillboardPlane(wd.EBillboardMode.ALL, wd.Vector3.create(0, -10, 0));
+        }
+
+        function createBillboardAllText(){
+            var font = wd.ThreeDBitmapFont.create();
+
+            font.text = "b";
+            font.fntId = "bitmap_fnt";
+            font.xAlignment = wd.EFontXAlignment.CENTER;
+            font.width = 50;
+            font.height = 50;
+
+
+
+
+
+
+
+            var texture = wd.LoaderManager.getInstance().get("bitmap_image").toTexture();
+//            texture.flipY = false;
+
+            var material = wd.BitmapFontMaterial.create();
+            material.color = wd.Color.create("rgb(255,0,255)");
+            material.bitmap = texture;
+            material.blend = false;
+
+
+
+            var geometry = wd.BitmapFontGeometry.create();
+
+            geometry.material = material;
+
+
+
+            var billboard = wd.Billboard.create();
+            billboard.mode = wd.EBillboardMode.ALL;
+
+
+
+
+            var gameObject = wd.GameObject.create();
+
+            gameObject.addComponent(font);
+
+            gameObject.addComponent(geometry);
+
+            gameObject.addComponent(billboard);
+
+
+
+            var renderer = wd.MeshRenderer.create();
+
+
+            gameObject.addComponent(renderer);
+
+            gameObject.transform.translate(20,0,-10);
+
+            return gameObject;
         }
 
         function createBillboardPlane(mode, pos) {

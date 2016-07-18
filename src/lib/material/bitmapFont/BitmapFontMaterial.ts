@@ -93,7 +93,15 @@ module wd{
         }
 
         public getTextureForRenderSort():Texture{
-            return this.bitmap === null ? this.bitmap : this.pageMapList.getChild(0);
+            if(this.bitmap){
+                return this.bitmap;
+            }
+
+            if(this.pageMapList){
+                return this.pageMapList.getChild(0);
+            }
+
+            return null;
         }
 
         protected addExtendShaderLib(){

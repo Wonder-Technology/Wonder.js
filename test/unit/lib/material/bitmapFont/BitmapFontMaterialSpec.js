@@ -11,6 +11,29 @@ describe("BitmapFontMaterial", function () {
         testTool.clearInstance(sandbox);
         sandbox.restore();
     });
+    
+    describe("getTextureForRenderSort", function(){
+        beforeEach(function(){
+        });
+        
+        it("if bitmap exist, return it", function(){
+            material.bitmap = wd.ImageTexture.create({});
+
+            expect(material.getTextureForRenderSort()).toEqual(material.bitmap);
+        });
+        it("else if page map exist, return first page map", function () {
+            var map1 = {},
+                map2 = {a:1};
+            material.pageMapList = wdCb.Collection.create([
+                map1, map2
+            ]);
+
+            expect(material.getTextureForRenderSort()).toEqual(map1);
+        });
+        it("else, return null", function () {
+            expect(material.getTextureForRenderSort()).toBeNull();
+        });
+    });
 
     describe("clone", function () {
         beforeEach(function () {

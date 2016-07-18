@@ -77,7 +77,9 @@ module wd{
             upAux.cross(lookAt, objToCamProj);
 
 // compute the angle
-            angleCosine = lookAt.calAngleCos(objToCamProj);
+            //because lookAt,objToCamProj is unit vector, no need to divide |lookAt| * |objToCamProj|
+//            angleCosine = lookAt.calAngleCos(objToCamProj);
+            angleCosine = lookAt.dot(objToCamProj);
 
 // perform the rotation. The if statement is used for stability reasons
 // if the lookAt and objToCamProj vectors are too close together then
@@ -111,7 +113,8 @@ module wd{
 // Compute the angle between objToCamProj and objToCam,
 //i.e. compute the required angle for the lookup vector
 
-            angleCosine = objToCamProj.calAngleCos(objToCam);
+            //because objToCam,objToCamProj is unit vector, no need to divide |objToCam| * |objToCamProj|
+            angleCosine = objToCamProj.dot(objToCam);
 
 // Tilt the object. The test is done to prevent instability
 // when objToCam and objToCamProj have a very small
