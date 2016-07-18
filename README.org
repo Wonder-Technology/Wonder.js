@@ -29,6 +29,7 @@ Please learn samples in examples/samples/ to get more info.
 * Contributing
 Join us, We can create the amazing 3D world together!
 * Feature
+- Billboard
 - Batch Draw
   - Instance
   - Render Queue Sort By RenderGroup,RenderPriority,Shader,Texture,VBO
@@ -47,7 +48,7 @@ Join us, We can create the amazing 3D world together!
   - EventTriggerDetector
 - ThreeD UI
   - Bitmap Font
-  - Line
+  - Solid Line, Dash Line
   - Arrow
 - TwoD UI
   - Ttf Font, Bitmap Font
