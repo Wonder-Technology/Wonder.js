@@ -69,7 +69,7 @@ module wd {
             this.mapManager.setEnvMap(envMap);
         }
 
-        private _blendSrc:EBlendFunc= EBlendFunc.SRC_ALPHA;
+        private _blendSrc:EBlendFunc= EBlendFunc.ONE;
         @cloneAttributeAsBasicType()
         get blendSrc(){
             return this._blendSrc;
@@ -83,7 +83,7 @@ module wd {
             this.blendFuncSeparate = null;
         }
 
-        private _blendDst:EBlendFunc= EBlendFunc.ONE_MINUS_SRC_ALPHA;
+        private _blendDst:EBlendFunc= EBlendFunc.ZERO;
         @cloneAttributeAsBasicType()
         get blendDst(){
             return this._blendDst;

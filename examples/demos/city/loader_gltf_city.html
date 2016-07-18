@@ -40,6 +40,17 @@
             var models = wd.LoaderManager.getInstance().get("model").getChild("models");
 
             models.getChild(0).forEach(function(model){
+                var geo = model.getComponent(wd.Geometry);
+
+                if(geo){
+//                    geo.material.blendType = wd.EBlendType.NORMAL;
+//                    geo.material.blendFuncSeparate = [wd.EBlendFunc.SRC_ALPHA, wd.EBlendFunc.ONE_MINUS_SRC_ALPHA, wd.EBlendFunc.ONE, wd.EBlendFunc.ONE_MINUS_SRC_ALPHA];
+//                    console.log(geo.material.blendFuncSeparate)
+//                    geo.material.blendSrc = wd.EBlendFunc.ONE;
+//                    geo.material.blendDst  = wd.EBlendFunc.ZERO;
+//                    geo.material.blend = true;
+                }
+
                 if(model.name.indexOf("cam01-box") > -1){
                     /*!
                     .gltf camera data is wrong!?

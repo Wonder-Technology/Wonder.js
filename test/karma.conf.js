@@ -27,14 +27,14 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        //'test/unit/**',
+        'test/unit/**',
 
 
         //'test/unit/**/procedural_texture/**',
 
 
 
-        'test/unit/**/Billboard*',
+        //'test/unit/**/Billboard*',
 
         //'test/unit/**/BufferTable*',
         //'test/unit/**/ProgramTable*',
