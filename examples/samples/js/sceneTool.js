@@ -52,6 +52,28 @@ var sceneTool = (function(){
             camera.addComponent(controller);
 
             return camera;
+        },
+        createFlyCamera: function (pos) {
+            var camera = wd.GameObject.create(),
+                    view = wd.Director.getInstance().view,
+                    cameraComponent = wd.PerspectiveCamera.create();
+
+            cameraComponent.fovy = 60;
+            cameraComponent.aspect = view.width / view.height;
+            cameraComponent.near = 0.1;
+            cameraComponent.far = 1000;
+
+            var controller = wd.FlyCameraController.create(cameraComponent);
+
+            controller.zoomSpeed = 1;
+
+            camera.addComponent(controller);
+
+            if(pos){
+                camera.transform.position = pos;
+            }
+
+            return camera;
         }
     }
 })();
