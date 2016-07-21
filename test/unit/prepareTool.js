@@ -26,6 +26,31 @@ var prepareTool = (function () {
 
             return box;
         },
+        createRect: function(size, materialClass){
+            var size = size || 5;
+
+            var material;
+
+            if(materialClass){
+                material = materialClass.create();
+            }
+            else{
+                material = wd.BasicMaterial.create();
+            }
+
+            var geo = wd.RectGeometry.create();
+            geo.width = size;
+            geo.height = size;
+
+            geo.material = material;
+
+            var rect = wd.GameObject.create();
+
+            rect.addComponent(geo);
+            rect.addComponent(wd.MeshRenderer.create());
+
+            return rect;
+        },
         createSphere: function(radius, materialClass){
             var radius = radius || 5;
 
