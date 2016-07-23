@@ -3,12 +3,10 @@ var PixelMatcher = YYC.Class({
         comparePixel: function(gl, position, targetPixelDataArr, strategy){
             var matcher = new Matcher(gl);
 
-            var pixels = new Uint8Array(4);
-            gl.readPixels(position.x, position.y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+            var pixelArr = new Uint8Array(4);
+            gl.readPixels(position.x, position.y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixelArr);
 
-            matcher.record(pixels, targetPixelDataArr);
-
-            //matcher.region(getMaxRegion(aImage), getMaxRegion(bImage));
+            matcher.record(pixelArr, targetPixelDataArr);
 
             return matcher.run(strategy);
         },

@@ -1,22 +1,7 @@
-<!DOCTYPE html>
-<html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title>z fighting</title>
+describe("generate correct image tool", function () {
+    var tester;
 
-    <script src="../../../dist/wd.innerLib.js" type="text/javascript"></script>
-    <script src="../../../dist/wd.debug.js" type="text/javascript"></script>
-</head>
-<body>
-
-<script>
-    window.onload = function () {
-        wd.Main.setConfig({
-            //open contract check
-            isTest: true,
-            screenSize: wd.EScreenSize.FULL
-        }).init();
-
+    function body(){
         initSample();
 
         function initSample() {
@@ -26,7 +11,7 @@
             director.scene.addChild(createTriangle2());
             director.scene.addChild(createCamera());
 
-            director.start();
+            //director.start();
         }
 
         function createTriangle1() {
@@ -86,8 +71,8 @@
 
         function createCamera() {
             var camera = wd.GameObject.create(),
-                    view = wd.Director.getInstance().view,
-                    cameraComponent = wd.PerspectiveCamera.create();
+                view = wd.Director.getInstance().view,
+                cameraComponent = wd.PerspectiveCamera.create();
 
             cameraComponent.fovy = 60;
             cameraComponent.aspect = view.width / view.height;
@@ -102,7 +87,22 @@
 
             return camera;
         }
-    };
-</script>
-</body>
-</html>
+    }
+
+    beforeEach(function () {
+        tester = SceneTester.create();
+
+        renderTestTool.prepareContext();
+
+        body();
+    });
+    afterEach(function () {
+    });
+
+    it("generate correct image", function () {
+        tester.init();
+
+        tester.generateAt(1, "zFighting.png");
+    });
+});
+

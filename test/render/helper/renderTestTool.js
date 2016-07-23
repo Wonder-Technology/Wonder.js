@@ -6,15 +6,17 @@ var renderTestTool = (function(){
                 y:250
             }
         },
-        prepareContext: function(){
-            wd.Main.setConfig({
+        prepareContext: function(config){
+            var c = wdCb.ExtendUtils.extend({
                     screenSize:{
                         x:0,
                         y:0,
-                        width:1000,
-                        height:500
+                        width:500,
+                        height:300
                     }
-                })
+                }, config);
+
+            wd.Main.setConfig(c)
                 .init();
         },
         destoryContext: function () {
