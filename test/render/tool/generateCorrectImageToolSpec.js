@@ -5,34 +5,31 @@ describe("generate correct image tool", function () {
         initSample();
 
         function initSample() {
+            wd.DeviceManager.getInstance().setScissor(0, 0, 1000, 200);
+
             var director = wd.Director.getInstance();
 
             director.scene.addChild(createTriangle());
             director.scene.addChild(createCamera());
-
-
-
-            wd.DeviceManager.getInstance().setHardwareScaling(20);
-
 
             //director.start();
         }
 
         function createTriangle() {
             var material = wd.BasicMaterial.create();
+            material.color= wd.Color.create("rgb(255, 0, 0)");
 
 
             var geometry = wd.TriangleGeometry.create();
             geometry.material = material;
-            geometry.width = 5;
-            geometry.height = 5;
+            geometry.width = 20;
+            geometry.height = 20;
 
 
             var gameObject = wd.GameObject.create();
             gameObject.addComponent(geometry);
 
             gameObject.addComponent(wd.MeshRenderer.create());
-
 
             return gameObject;
         }
@@ -50,11 +47,11 @@ describe("generate correct image tool", function () {
             var controller = wd.BasicCameraController.create(cameraComponent);
             camera.addComponent(controller);
 
-            camera.transform.translate(wd.Vector3.create(0, 0, 5));
+            camera.transform.translate(wd.Vector3.create(0, 0, 30));
+
 
             return camera;
         }
-
     }
 
     beforeEach(function () {
@@ -70,7 +67,7 @@ describe("generate correct image tool", function () {
     it("generate correct image", function () {
         tester.init();
 
-        tester.generateAt(1, "hardwareScaling.png");
+        tester.generateAt(1, "scissor.png");
     });
 });
 
