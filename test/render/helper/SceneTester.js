@@ -24,11 +24,36 @@ var SceneTester = YYC.Class({
          * @param frameIndex
          * @param partialCorrectImagePath
          */
-        compareAt:function(frameIndex, partialCorrectImagePath, done){
+        compareAt:function(args){
             var self = this,
                 director = this._getDirector();
 
+
+            var frameIndex = null,
+                partialCorrectImagePath = null,
+                handle = null,
+                done = null;
+
+            if(arguments.length === 3){
+                frameIndex = arguments[0];
+                    partialCorrectImagePath = arguments[1];
+                    done = arguments[2];
+            }
+            else{
+                frameIndex = arguments[0];
+                partialCorrectImagePath = arguments[1];
+                handle = arguments[2];
+                done = arguments[3];
+            }
+
+
+
             for(var i = 1; i <= frameIndex; i++){
+                if(i === frameIndex
+                    && handle){
+                    handle();
+                }
+
                 director._loopBody(i);
             }
 
@@ -66,10 +91,15 @@ var SceneTester = YYC.Class({
          * @param frameIndex
          * @param imageName
          */
-        generateAt:function(frameIndex, imageName){
+        generateAt:function(frameIndex, imageName, handle){
             var director = this._getDirector();
 
             for(var i = 1; i <= frameIndex; i++){
+                if(i === frameIndex
+                    && handle){
+                    handle();
+                }
+
                 director._loopBody(i);
             }
 
@@ -81,6 +111,11 @@ var SceneTester = YYC.Class({
 
             dataArr.forEach(function(data, index){
                 for(var i = index + 1; i <= data.frameIndex; i++){
+                    if(i === data.frameIndex
+                        && data.handle){
+                        data.handle();
+                    }
+
                     director._loopBody(i);
                 }
 

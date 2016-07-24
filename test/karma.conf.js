@@ -33,7 +33,7 @@
         'test/render/*Tool.js',
         'test/render/helper/*.js',
 
-        'test/render/**',
+        //'test/render/**',
 
 
         //'test/unit/**/procedural_texture/**',
@@ -191,7 +191,7 @@
         //'test/unit/**/lod/*',
 
         //'test/unit/**/CameraController*',
-        //'test/unit/**/camera/**',
+        'test/unit/**/camera/**',
 
 
         //'test/unit/**/*GeometryData*',

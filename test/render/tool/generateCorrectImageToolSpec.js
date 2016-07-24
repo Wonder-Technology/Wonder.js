@@ -4,13 +4,7 @@ describe("generate correct image tool", function () {
     function body(assetParentDirPath, done){
 
         wd.LoaderManager.getInstance().load([
-            {url: assetParentDirPath + "asset/texture/1.jpg", id: "texture"},
-            {url: assetParentDirPath + "asset/texture/skybox/px.jpg", id: "px"},
-            {url: assetParentDirPath + "asset/texture/skybox/nx.jpg", id: "nx"},
-            {url: assetParentDirPath + "asset/texture/skybox/py.jpg", id: "py"},
-            {url: assetParentDirPath + "asset/texture/skybox/ny.jpg", id: "ny"},
-            {url: assetParentDirPath + "asset/texture/skybox/pz.jpg", id: "pz"},
-            {url: assetParentDirPath + "asset/texture/skybox/nz.jpg", id: "nz"}
+            {url: assetParentDirPath + "asset/texture/1.jpg", id: "texture"}
         ]).subscribe(null, null, function () {
             initSample();
 
@@ -25,99 +19,63 @@ describe("generate correct image tool", function () {
         function initSample() {
             var director = wd.Director.getInstance();
 
-            director.scene.addChild(createSkybox());
             director.scene.addChild(createSphere());
             director.scene.addChild(createCamera());
 
             //director.start();
         }
 
-        function createSkybox() {
-            var cubemap = wd.CubemapTexture.create(
-                [
-                    {
-                        asset: wd.LoaderManager.getInstance().get("px")
-                    },
-                    {
-                        asset: wd.LoaderManager.getInstance().get("nx")
-                    },
-                    {
-                        asset: wd.LoaderManager.getInstance().get("py")
-                    },
-                    {
-                        asset: wd.LoaderManager.getInstance().get("ny")
-                    },
-                    {
-                        asset: wd.LoaderManager.getInstance().get("pz")
-                    },
-                    {
-                        asset: wd.LoaderManager.getInstance().get("nz")
-                    }
-                ]
-            );
-
-            var material = wd.SkyboxMaterial.create();
-            material.envMap = cubemap;
-
-
-            var geometry = wd.BoxGeometry.create();
-            geometry.material = material;
-            geometry.width = 5;
-            geometry.height = 5;
-            geometry.depth = 5;
-
-
-            var gameObject = wd.GameObject.create();
-
-            gameObject.addComponent(wd.SkyboxRenderer.create());
-            gameObject.addComponent(geometry);
-
-            return gameObject;
-        }
-
         function createSphere() {
-            var cubemap = wd.CubemapTexture.create(
-                [
-                    {
-                        asset: wd.LoaderManager.getInstance().get("px")
-                    },
-                    {
-                        asset: wd.LoaderManager.getInstance().get("nx")
-                    },
-                    {
-                        asset: wd.LoaderManager.getInstance().get("py")
-                    },
-                    {
-                        asset: wd.LoaderManager.getInstance().get("ny")
-                    },
-                    {
-                        asset: wd.LoaderManager.getInstance().get("pz")
-                    },
-                    {
-                        asset: wd.LoaderManager.getInstance().get("nz")
-                    }
-                ]
-            );
-            cubemap.mode = wd.EEnvMapMode.FRESNEL;
+            var canvas = mipmap(128, '#f00');
+            var textureCanvas = wd.ImageTexture.create(canvas);
+            textureCanvas.wrapS = wd.ETextureWrapMode.REPEAT;
+            textureCanvas.wrapT = wd.ETextureWrapMode.REPEAT;
+            textureCanvas.repeatRegion = wd.Vector4.create(0, 0, 10, 10);
+            textureCanvas.mipmaps.addChild(canvas);
+            textureCanvas.mipmaps.addChild(mipmap(64, '#0f0'));
+            textureCanvas.mipmaps.addChild(mipmap(32, '#00f'));
+            textureCanvas.mipmaps.addChild(mipmap(16, '#400'));
+            textureCanvas.mipmaps.addChild(mipmap(8, '#040'));
+            textureCanvas.mipmaps.addChild(mipmap(4, '#004'));
+            textureCanvas.mipmaps.addChild(mipmap(2, '#044'));
+            textureCanvas.mipmaps.addChild(mipmap(1, '#404'));
+            textureCanvas.needsUpdate = true;
 
 
             var material = wd.BasicMaterial.create();
-            material.envMap = cubemap;
-            material.shading = wd.EShading.SMOOTH;
-            material.reflectivity = 0.5;
+            material.map = textureCanvas;
+
 
             var geometry = wd.SphereGeometry.create();
             geometry.material = material;
-            geometry.radius = 5;
+            geometry.radius = 2;
+            geometry.segments = 30;
+
 
             var gameObject = wd.GameObject.create();
             gameObject.addComponent(geometry);
 
             gameObject.addComponent(wd.MeshRenderer.create());
 
+
             return gameObject;
         }
 
+        function mipmap(size, color) {
+            var imageCanvas = document.createElement("canvas"),
+                context = imageCanvas.getContext("2d");
+
+            imageCanvas.width = imageCanvas.height = size;
+
+            context.fillStyle = "#444";
+            context.fillRect(0, 0, size, size);
+
+            context.fillStyle = color;
+            context.fillRect(0, 0, size / 2, size / 2);
+            context.fillRect(size / 2, size / 2, size / 2, size / 2);
+
+            return imageCanvas;
+        }
 
         function createCamera() {
             var camera = wd.GameObject.create(),
@@ -129,10 +87,11 @@ describe("generate correct image tool", function () {
             cameraComponent.near = 0.1;
             cameraComponent.far = 1000;
 
-            var controller = wd.FlyCameraController.create(cameraComponent);
-            camera.addComponent(controller);
+            var controller = wd.ArcballCameraController.create(cameraComponent);
 
-            camera.transform.translate(0, 0, 20);
+            controller.distance = 10;
+
+            camera.addComponent(controller);
 
             return camera;
         }
@@ -155,7 +114,16 @@ describe("generate correct image tool", function () {
             [
                 {
                     frameIndex:1,
-                    imageName:"texture_fresnel.png"
+                    imageName:"texture_mipmap_manual_distance10.png"
+                },
+                {
+                    frameIndex:2,
+                    handle:function(){
+                        var camera = wd.Director.getInstance().scene.currentCamera;
+
+                        camera.getComponent(wd.CameraController).distance = 30;
+                    },
+                    imageName:"texture_mipmap_manual_distance30.png"
                 }
             ]
         );
