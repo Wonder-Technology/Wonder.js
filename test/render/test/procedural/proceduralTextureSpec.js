@@ -404,10 +404,10 @@ describe("procedural texture", function () {
             });
 
             it("test at frame 1", function (done) {
-                tester.compareAt(1, "procedural/procedural_texture_animate_1.png", done);
+                tester.compareAt(1, "procedural/procedural_texture_animate_frame1.png", done);
             });
             it("test at frame 10", function (done) {
-                tester.compareAt(10, "procedural/procedural_texture_animate_2.png", done);
+                tester.compareAt(10, "procedural/procedural_texture_animate_frame10.png", done);
             });
         });
 
