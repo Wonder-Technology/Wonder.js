@@ -54,9 +54,9 @@ gulp.task("renderTestByKarma", function (done) {
 
 gulp.task("renderTestTool", function (done) {
     karma.start({
-        configFile: renderTestToolkarmaConfPath,
-        singleRun:true,
-        autoWatch:false
+        configFile: renderTestToolkarmaConfPath
+        //singleRun:true,
+        //autoWatch:false
     }, done);
 });
 

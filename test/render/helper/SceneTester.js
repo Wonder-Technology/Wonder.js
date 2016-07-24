@@ -16,14 +16,17 @@ var SceneTester = YYC.Class({
                 this._debuger.init();
             }
         },
+        execBody: function(bodyFunc, done){
+            bodyFunc(pathTool.join(pathTool.getPathData().rootPath, "base/examples/"), done);
+        },
         /**
          * compare the snapshot image at the end of the frameIndex frame to the correct image
          * @param frameIndex
          * @param partialCorrectImagePath
          */
         compareAt:function(frameIndex, partialCorrectImagePath, done){
-            var self = this;
-            var director = this._getDirector();
+            var self = this,
+                director = this._getDirector();
 
             for(var i = 1; i <= frameIndex; i++){
                 director._loopBody(i);
@@ -71,6 +74,18 @@ var SceneTester = YYC.Class({
             }
 
             this._download(this._createImageDataURL(imageName), imageName);
+        },
+        generateBatchAt:function(dataArr){
+            var director = this._getDirector(),
+                self = this;
+
+            dataArr.forEach(function(data, index){
+                for(var i = index + 1; i <= data.frameIndex; i++){
+                    director._loopBody(i);
+                }
+
+                self._download(self._createImageDataURL(data.imageName), data.imageName);
+            });
         }
     },
     Private:{

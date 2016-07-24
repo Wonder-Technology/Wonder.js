@@ -33,7 +33,9 @@
             'test/render/tool/*.js',
 
             //{pattern: 'test/res/*', watched: false, included: false, served: true},
-            {pattern: 'test/render/res/**', watched: false, included: false, served: true}
+            {pattern: 'test/render/res/**', watched: false, included: false, served: true},
+
+            {pattern: 'examples/asset/**', watched: false, included: false, served: true}
         ],
 
 
