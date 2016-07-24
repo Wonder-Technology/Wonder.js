@@ -3,8 +3,13 @@ describe("generate correct image tool", function () {
 
     function body(assetParentDirPath, done){
         wd.LoaderManager.getInstance().load([
-            {url: assetParentDirPath + "asset/texture/compressed/disturb_dxt1_nomip.dds", id: "texture1"},
-            {url: assetParentDirPath + "asset/texture/compressed/disturb_dxt1_mip.dds", id: "texture2"}
+            {url: assetParentDirPath + "asset/texture/1.jpg", id: "texture"},
+            {url: assetParentDirPath + "asset/texture/skybox/px.jpg", id: "px"},
+            {url: assetParentDirPath + "asset/texture/skybox/nx.jpg", id: "nx"},
+            {url: assetParentDirPath + "asset/texture/skybox/py.jpg", id: "py"},
+            {url: assetParentDirPath + "asset/texture/skybox/ny.jpg", id: "ny"},
+            {url: assetParentDirPath + "asset/texture/skybox/pz.jpg", id: "pz"},
+            {url: assetParentDirPath + "asset/texture/skybox/nz.jpg", id: "nz"}
         ]).subscribe(null, null, function () {
             initSample();
 
@@ -20,6 +25,7 @@ describe("generate correct image tool", function () {
             var director = wd.Director.getInstance();
 
             director.scene.addChild(createSkybox());
+            director.scene.addChild(createSphere());
             director.scene.addChild(createCamera());
 
             //director.start();
@@ -29,25 +35,33 @@ describe("generate correct image tool", function () {
             var cubemap = wd.CubemapTexture.create(
                 [
                     {
-                        asset: wd.LoaderManager.getInstance().get("texture1")
+                        asset: wd.LoaderManager.getInstance().get("px"),
+                        sourceRegion:wd.RectRegion.create(0, 0, 256, 256),
+                        type:wd.ETextureType.UNSIGNED_BYTE
                     },
                     {
-                        asset: wd.LoaderManager.getInstance().get("texture1")
+                        asset: wd.LoaderManager.getInstance().get("nx"),
+                        sourceRegion:wd.RectRegion.create(0, 0, 256, 256)
                     },
                     {
-                        asset: wd.LoaderManager.getInstance().get("texture2")
+                        asset: wd.LoaderManager.getInstance().get("py"),
+                        sourceRegion:wd.RectRegion.create(0, 0, 256, 256)
                     },
                     {
-                        asset: wd.LoaderManager.getInstance().get("texture1")
+                        asset: wd.LoaderManager.getInstance().get("ny"),
+                        sourceRegion:wd.RectRegion.create(0, 0, 256, 256)
                     },
                     {
-                        asset: wd.LoaderManager.getInstance().get("texture1")
+                        asset: wd.LoaderManager.getInstance().get("pz"),
+                        sourceRegion:wd.RectRegion.create(0, 0, 256, 256)
                     },
                     {
-                        asset: wd.LoaderManager.getInstance().get("texture1")
+                        asset: wd.LoaderManager.getInstance().get("nz"),
+                        sourceRegion:wd.RectRegion.create(0, 0, 256, 256)
                     }
                 ]
             );
+            cubemap.textures.getChild(5).sourceRegion = wd.RectRegion.create(128, 128, 256, 256);
 
             var material = wd.SkyboxMaterial.create();
             material.envMap = cubemap;
@@ -68,6 +82,23 @@ describe("generate correct image tool", function () {
             return gameObject;
         }
 
+        function createSphere() {
+            var material = wd.BasicMaterial.create();
+            material.map = wd.LoaderManager.getInstance().get("texture");
+
+            var geometry = wd.SphereGeometry.create();
+            geometry.material = material;
+            geometry.radius = 5;
+
+            var gameObject = wd.GameObject.create();
+            gameObject.addComponent(geometry);
+
+            gameObject.addComponent(wd.MeshRenderer.create());
+
+            return gameObject;
+        }
+
+
         function createCamera() {
             var camera = wd.GameObject.create(),
                 view = wd.Director.getInstance().view,
@@ -81,9 +112,8 @@ describe("generate correct image tool", function () {
             var controller = wd.FlyCameraController.create(cameraComponent);
             camera.addComponent(controller);
 
-
             camera.transform.translate(0, 0, 20);
-            camera.transform.lookAt(-10,20,0);
+            camera.transform.lookAt(5, 5, 0);
 
             return camera;
         }
@@ -104,7 +134,7 @@ describe("generate correct image tool", function () {
             [
                 {
                     frameIndex:1,
-                    imageName:"skybox_texture_compressed.png"
+                    imageName:"skybox_texture_part.png"
                 }
             ]
         );
