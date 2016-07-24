@@ -1130,10 +1130,10 @@ describe("texture", function () {
         });
 
         function initSample() {
-            tool.addSkybox();
-            tool.addBox();
-            tool.addSphere(wd.EEnvMapMode.REFLECTION);
-            tool.addCamera();
+            textureTool.addSkybox();
+            textureTool.addBox();
+            textureTool.addSphere(wd.EEnvMapMode.REFLECTION);
+            textureTool.addCamera();
 
             var director = wd.Director.getInstance();
 
@@ -1178,12 +1178,12 @@ describe("texture", function () {
         });
 
         function initSample() {
-            tool.addSkybox();
-            tool.addBox();
-            tool.addSphere(wd.EEnvMapMode.REFRACTION, function(material){
+            textureTool.addSkybox();
+            textureTool.addBox();
+            textureTool.addSphere(wd.EEnvMapMode.REFRACTION, function(material){
                 material.refractionRatio = 1.68;
             });
-            tool.addCamera();
+            textureTool.addCamera();
 
             var director = wd.Director.getInstance();
 
@@ -1229,12 +1229,12 @@ describe("texture", function () {
         });
 
         function initSample() {
-            tool.addSkybox();
-            tool.addBox();
-            tool.addSphere(wd.EEnvMapMode.FRESNEL, function(material){
+            textureTool.addSkybox();
+            textureTool.addBox();
+            textureTool.addSphere(wd.EEnvMapMode.FRESNEL, function(material){
                 material.reflectivity = 0.5;
             });
-            tool.addCamera();
+            textureTool.addCamera();
 
             var director = wd.Director.getInstance();
 

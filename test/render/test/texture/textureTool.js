@@ -1,4 +1,4 @@
-var tool = {
+var textureTool = {
     skybox: null,
     box: null,
     box2: null,
