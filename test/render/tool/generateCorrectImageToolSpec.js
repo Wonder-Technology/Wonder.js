@@ -7,31 +7,25 @@ describe("generate correct image tool", function () {
         function initSample() {
             var director = wd.Director.getInstance();
 
-            director.scene.addChild(createTriangle1());
-            director.scene.addChild(createTriangle2());
+            director.scene.addChild(createTriangle());
             director.scene.addChild(createCamera());
+
+
+
+            wd.DeviceManager.getInstance().setHardwareScaling(20);
+
 
             //director.start();
         }
 
-        function createTriangle1() {
+        function createTriangle() {
             var material = wd.BasicMaterial.create();
-            material.color = wd.Color.create("rgb(255, 0, 0)");
-            /*!annotate this line to see z fighting*/
-            material.polygonOffsetMode = wd.EPolygonOffsetMode.OUT;
 
 
-            var geometry = wd.CustomGeometry.create();
+            var geometry = wd.TriangleGeometry.create();
             geometry.material = material;
-
-            geometry.vertices = [
-                0.0, 2.5, -5.0,
-                -2.5, -2.5, -5.0,
-                2.5, -2.5, -5.0
-            ];
-            geometry.indices = [
-                0, 1, 2
-            ];
+            geometry.width = 5;
+            geometry.height = 5;
 
 
             var gameObject = wd.GameObject.create();
@@ -39,32 +33,6 @@ describe("generate correct image tool", function () {
 
             gameObject.addComponent(wd.MeshRenderer.create());
 
-
-            return gameObject;
-        }
-
-
-        function createTriangle2() {
-            var material = wd.BasicMaterial.create();
-            material.color = wd.Color.create("#ffffff");
-
-
-            var geometry = wd.CustomGeometry.create();
-            geometry.material = material;
-            geometry.vertices = [
-                0.0, 3.0, -5.0,
-                -3.0, -3.0, -5.0,
-                3.0, -3.0, -5.0
-            ];
-            geometry.indices = [
-                0, 1, 2
-            ];
-
-
-            var gameObject = wd.GameObject.create();
-            gameObject.addComponent(geometry);
-
-            gameObject.addComponent(wd.MeshRenderer.create());
 
             return gameObject;
         }
@@ -79,14 +47,14 @@ describe("generate correct image tool", function () {
             cameraComponent.near = 0.1;
             cameraComponent.far = 80;
 
-            var controller = wd.FlyCameraController.create(cameraComponent);
+            var controller = wd.BasicCameraController.create(cameraComponent);
             camera.addComponent(controller);
 
-            camera.transform.rotate(0, 20, 0);
             camera.transform.translate(wd.Vector3.create(0, 0, 5));
 
             return camera;
         }
+
     }
 
     beforeEach(function () {
@@ -102,7 +70,7 @@ describe("generate correct image tool", function () {
     it("generate correct image", function () {
         tester.init();
 
-        tester.generateAt(1, "zFighting.png");
+        tester.generateAt(1, "hardwareScaling.png");
     });
 });
 
