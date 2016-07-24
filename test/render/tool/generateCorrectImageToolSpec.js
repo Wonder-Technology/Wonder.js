@@ -4,7 +4,8 @@ describe("generate correct image tool", function () {
     function body(assetParentDirPath, done){
         wd.LoaderManager.getInstance().load([
             {url: assetParentDirPath + "asset/texture/terrain/heightMap.png", id: "heightMap"},
-            {url: assetParentDirPath + "asset/texture/terrain/ground.jpg", id: "ground"}
+            {url: assetParentDirPath + "asset/texture/terrain/ground.jpg", id: "ground"},
+            {url: assetParentDirPath + "asset/texture/1.jpg", id: "texture1"}
         ]).subscribe(null, null, function () {
             initSample();
 
@@ -29,18 +30,30 @@ describe("generate correct image tool", function () {
 
         function createTerrain() {
             var groundMap = wd.LoaderManager.getInstance().get("ground").toTexture();
-//            groundMap.repeatRegion = wd.RectRegion.create(0, 0, 2, 2);
-//            groundMap.wrapS = wd.ETextureWrapMode.REPEAT;
-//            groundMap.wrapT = wd.ETextureWrapMode.REPEAT;
 
-            var fireTexture = wd.FireProceduralTexture.create();
-            var marbleTexture = wd.MarbleProceduralTexture.create();
 
-            var material = wd.LightMaterial.create();
+            var material = wd.TerrainMaterial.create();
+
+            material.layer.mapDataList = wdCb.Collection.create([
+                {
+                    minHeight:10,
+                    maxHeight:20,
+                    diffuseMap:wd.LoaderManager.getInstance().get("texture1").toTexture()
+                },
+                {
+                    minHeight:20,
+                    maxHeight:50,
+                    diffuseMap:wd.FireProceduralTexture.create()
+                }
+            ]);
+
+
+
+//            material.layer.blendMethod = wd.ETerrainLayerBlendMethod.CUT;
+
             material.diffuseMap = groundMap;
+
             material.shading = wd.EShading.SMOOTH;
-            material.specularMap = fireTexture;
-            material.lightMap = marbleTexture;
 
 
             var geometry = wd.TerrainGeometry.create();
@@ -50,6 +63,8 @@ describe("generate correct image tool", function () {
                 width:100,
                 height:100
             };
+            geometry.minHeight = 0;
+            geometry.maxHeight = 50;
             geometry.heightMapAsset = wd.LoaderManager.getInstance().get("heightMap");
 //            geometry.drawMode = wd.EDrawMode.LINE_STRIP;
 
@@ -98,15 +113,13 @@ describe("generate correct image tool", function () {
             cameraComponent.far = 1000;
 
             var controller = wd.ArcballCameraController.create(cameraComponent);
-            controller.theta = Math.PI / 4;
-            controller.phi = Math.PI;
-            controller.distance = 50;
+            controller.theta = Math.PI / 5;
+            controller.distance = 100;
 
             camera.addComponent(controller);
 
             return camera;
         }
-
     }
 
     beforeEach(function (done) {
@@ -124,7 +137,7 @@ describe("generate correct image tool", function () {
             [
                 {
                     frameIndex:1,
-                    imageName:"terrain_heightMap.png"
+                    imageName:"terrain_layerTexture.png"
                 }
             ]
         );

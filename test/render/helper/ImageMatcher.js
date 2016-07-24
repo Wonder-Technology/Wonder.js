@@ -1,4 +1,4 @@
-var CORRECT_RATE = 1;
+var CORRECT_RATE = 0.98;
 
 var ImageMatcher = YYC.Class({
     Public:{
