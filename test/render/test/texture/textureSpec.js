@@ -1203,5 +1203,56 @@ describe("texture", function () {
                 tester.compareAt(1, "texture/texture_dynamic_refraction.png", done);
             });
         });
+
+        describe("test dynamic fresnel texture", function () {
+            var tester;
+
+            function body(assetParentDirPath, done){
+
+        wd.LoaderManager.getInstance().load([
+            {url: assetParentDirPath + "asset/texture/1.jpg", id: "diffuseMap"},
+            {url: assetParentDirPath + "asset/texture/skybox/px.jpg", id: "px"},
+            {url: assetParentDirPath + "asset/texture/skybox/nx.jpg", id: "nx"},
+            {url: assetParentDirPath + "asset/texture/skybox/py.jpg", id: "py"},
+            {url: assetParentDirPath + "asset/texture/skybox/ny.jpg", id: "ny"},
+            {url: assetParentDirPath + "asset/texture/skybox/pz.jpg", id: "pz"},
+            {url: assetParentDirPath + "asset/texture/skybox/nz.jpg", id: "nz"}
+        ]).subscribe(null, null, function () {
+            initSample();
+
+
+            tester.init();
+
+            if(done){
+                done();
+            }
+        });
+
+        function initSample() {
+            tool.addSkybox();
+            tool.addBox();
+            tool.addSphere(wd.EEnvMapMode.FRESNEL, function(material){
+                material.reflectivity = 0.5;
+            });
+            tool.addCamera();
+
+            var director = wd.Director.getInstance();
+
+            //director.start();
+        }
+            }
+
+            beforeEach(function (done) {
+                tester = SceneTester.create();
+
+                renderTestTool.prepareContext();
+
+                tester.execBody(body, done);
+            });
+
+            it("test", function (done) {
+                tester.compareAt(1, "texture/texture_dynamic_fresnel.png", done);
+            });
+        });
     });
 });

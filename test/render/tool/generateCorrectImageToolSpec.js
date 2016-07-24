@@ -265,6 +265,7 @@ describe("generate correct image tool", function () {
     var tester;
 
     function body(assetParentDirPath, done){
+
         wd.LoaderManager.getInstance().load([
             {url: assetParentDirPath + "asset/texture/1.jpg", id: "diffuseMap"},
             {url: assetParentDirPath + "asset/texture/skybox/px.jpg", id: "px"},
@@ -287,8 +288,8 @@ describe("generate correct image tool", function () {
         function initSample() {
             tool.addSkybox();
             tool.addBox();
-            tool.addSphere(wd.EEnvMapMode.REFRACTION, function(material){
-                material.refractionRatio = 1.68;
+            tool.addSphere(wd.EEnvMapMode.FRESNEL, function(material){
+                material.reflectivity = 0.5;
             });
             tool.addCamera();
 
@@ -296,8 +297,6 @@ describe("generate correct image tool", function () {
 
             //director.start();
         }
-
-
     }
 
     beforeEach(function (done) {
@@ -315,7 +314,7 @@ describe("generate correct image tool", function () {
             [
                 {
                     frameIndex:1,
-                    imageName:"texture_dynamic_refraction.png"
+                    imageName:"texture_dynamic_fresnel.png"
                 }
             ]
         );
