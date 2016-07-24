@@ -4,7 +4,7 @@ describe("generate correct image tool", function () {
     function body(assetParentDirPath, done){
 
         wd.LoaderManager.getInstance().load([
-            {url: assetParentDirPath + "asset/texture/crate.gif", id: "texture"}
+            {url: assetParentDirPath + "asset/texture/compressed/disturb_dxt1_mip.dds", id: "texture"}
         ]).subscribe(null, null, function () {
             initSample();
 
@@ -19,35 +19,29 @@ describe("generate correct image tool", function () {
         function initSample() {
             var director = wd.Director.getInstance();
 
-            director.scene.addChild(createPlane());
+            director.scene.addChild(createTriangle());
             director.scene.addChild(createCamera());
 
             //director.start();
         }
 
-        function createPlane() {
-            var map = wd.LoaderManager.getInstance().get("texture").toTexture();
-            map.wrapS = map.wrapT = wd.ETextureWrapMode.REPEAT;
-            map.repeatRegion = wd.RectRegion.create(0, 0, 512, 512);
-            /*!annotate this line to see the difference*/
-            map.anisotropy = wd.GPUDetector.getInstance().maxAnisotropy;
-
+        function createTriangle() {
             var material = wd.BasicMaterial.create();
-            material.map = map;
+
+            material.map = wd.LoaderManager.getInstance().get("texture").toTexture();
 
 
-            var geometry = wd.PlaneGeometry.create();
+            var geometry = wd.RectGeometry.create();
             geometry.material = material;
-            geometry.width = 100;
-            geometry.height = 100;
+            geometry.width = 5;
+            geometry.height = 5;
+
 
             var gameObject = wd.GameObject.create();
             gameObject.addComponent(geometry);
 
             gameObject.addComponent(wd.MeshRenderer.create());
 
-            gameObject.transform.rotate(wd.Vector3.create(30, 0, 0));
-            gameObject.transform.scale = wd.Vector3.create(100, 100, 100);
 
             return gameObject;
         }
@@ -60,12 +54,12 @@ describe("generate correct image tool", function () {
             cameraComponent.fovy = 60;
             cameraComponent.aspect = view.width / view.height;
             cameraComponent.near = 0.1;
-            cameraComponent.far = 1000;
+            cameraComponent.far = 80;
 
-            var controller = wd.FlyCameraController.create(cameraComponent);
+            var controller = wd.BasicCameraController.create(cameraComponent);
             camera.addComponent(controller);
 
-            camera.transform.translate(wd.Vector3.create(0, 0, 100));
+            camera.transform.translate(0, 0, 5);
 
             return camera;
         }
@@ -87,7 +81,7 @@ describe("generate correct image tool", function () {
             [
                 {
                     frameIndex:1,
-                    imageName:"texture_anisotropic.png"
+                    imageName:"texture_compressed.png"
                 }
             ]
         );
