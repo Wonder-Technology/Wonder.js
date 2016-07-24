@@ -2,8 +2,8 @@ var renderTestTool = (function(){
     return {
         getCenterPoint:function(){
             return {
-                x:500,
-                y:250
+                x:250,
+                y:150
             }
         },
         prepareContext: function(config){

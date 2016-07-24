@@ -7,6 +7,8 @@ var mathTestUtils = (function () {
                 i = 0,
                 result = [];
 
+            len = values.length;
+
             if(digit <= 0){
                 for (i = 0; i < len; i++) {
                     result[i] = Math.round(values[i]);
@@ -18,8 +20,6 @@ var mathTestUtils = (function () {
 
                 return result;
             }
-
-            len = values.length;
 
             for (i = 0; i < len; i++) {
                 result[i] = YYC.Tool.math.toFixed(values[i], digit === undefined ? 7 : digit);

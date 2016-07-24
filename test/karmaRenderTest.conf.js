@@ -33,6 +33,9 @@
 
             'test/render/test/**',
 
+
+            //'test/render/test/**/colorMask*',
+
             {pattern: 'test/render/res/**', watched: false, included: false, served: true}
         ],
 

@@ -85,7 +85,6 @@ describe("blend", function () {
             var material2 = rect2.getComponent(wd.Geometry).material;
             material2.color = wd.Color.create("rgb(100,100,100)");
             material2.blend = true;
-            material2.opacity = 0.9;
 
             director.scene.addChild(rect1);
             director.scene.addChild(rect2);
