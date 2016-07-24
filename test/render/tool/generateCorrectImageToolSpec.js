@@ -98,12 +98,13 @@ describe("generate correct image tool", function () {
                     }
                 ]
             );
-            cubemap.mode = wd.EEnvMapMode.REFLECTION;
+            cubemap.mode = wd.EEnvMapMode.FRESNEL;
 
 
             var material = wd.BasicMaterial.create();
             material.envMap = cubemap;
             material.shading = wd.EShading.SMOOTH;
+            material.reflectivity = 0.5;
 
             var geometry = wd.SphereGeometry.create();
             geometry.material = material;
@@ -154,7 +155,7 @@ describe("generate correct image tool", function () {
             [
                 {
                     frameIndex:1,
-                    imageName:"texture_reflection.png"
+                    imageName:"texture_fresnel.png"
                 }
             ]
         );
