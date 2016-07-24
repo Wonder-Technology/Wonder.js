@@ -260,64 +260,9 @@ var tool = {
 
         director.scene.addChild(camera);
     }
-}
-describe("generate correct image tool", function () {
-    var tester;
-
-    function body(assetParentDirPath, done){
-
-        wd.LoaderManager.getInstance().load([
-            {url: assetParentDirPath + "asset/texture/1.jpg", id: "diffuseMap"},
-            {url: assetParentDirPath + "asset/texture/skybox/px.jpg", id: "px"},
-            {url: assetParentDirPath + "asset/texture/skybox/nx.jpg", id: "nx"},
-            {url: assetParentDirPath + "asset/texture/skybox/py.jpg", id: "py"},
-            {url: assetParentDirPath + "asset/texture/skybox/ny.jpg", id: "ny"},
-            {url: assetParentDirPath + "asset/texture/skybox/pz.jpg", id: "pz"},
-            {url: assetParentDirPath + "asset/texture/skybox/nz.jpg", id: "nz"}
-        ]).subscribe(null, null, function () {
-            initSample();
+};
 
 
-            tester.init();
-
-            if(done){
-                done();
-            }
-        });
-
-        function initSample() {
-            tool.addSkybox();
-            tool.addBox();
-            tool.addSphere(wd.EEnvMapMode.REFLECTION);
-            tool.addCamera();
-
-            var director = wd.Director.getInstance();
-
-            //director.start();
-        }
 
 
-    }
-
-    beforeEach(function (done) {
-        tester = SceneTester.create();
-
-        renderTestTool.prepareContext();
-
-        tester.execBody(body, done);
-    });
-    afterEach(function () {
-    });
-
-    it("generate correct image", function () {
-        tester.generateBatchAt(
-            [
-                {
-                    frameIndex:1,
-                    imageName:"texture_dynamic_reflection.png"
-                }
-            ]
-        );
-    });
-});
 
