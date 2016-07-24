@@ -3,6 +3,9 @@ var instanceTool = (function(){
         getInstancePosition:function(index, range, count){
             return wd.Vector3.create(range / 2 - this._getVal(index, count) * range, range / 2 - this._getVal(index + 1, count) * range, range / 2 - this._getVal(index+ 2, count) * range);
         },
+        getShadowInstancePosition:function(index, range, count){
+            return wd.Vector3.create(range / 2 - this._getVal(index, count) * range, 60, 0);
+        },
         getInstanceRotation:function(index, count){
             var val = this._getVal(index, count);
 
