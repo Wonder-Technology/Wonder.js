@@ -23,6 +23,7 @@
             'test/helper/jasmine/**',
             'test/helper/sinonJs/*.js',
             'test/helper/yoop/yOOP.js',
+            'test/helper/YYCToolBox/**/js/fileOperator.js',
 
             'test/unit/**/*Tool.js',
             'test/unit/*Tool.js',

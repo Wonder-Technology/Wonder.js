@@ -9,6 +9,12 @@ var SceneTester = YYC.Class({
 
         init:function(){
             this._getDirector()._init();
+
+            if(this.isDebug){
+                this._debuger = SceneTestDebuger.create();
+
+                this._debuger.init();
+            }
         },
         /**
          * compare the snapshot image at the end of the frameIndex frame to the correct image
@@ -16,6 +22,7 @@ var SceneTester = YYC.Class({
          * @param partialCorrectImagePath
          */
         compareAt:function(frameIndex, partialCorrectImagePath, done){
+            var self = this;
             var director = this._getDirector();
 
             for(var i = 1; i <= frameIndex; i++){
@@ -23,7 +30,8 @@ var SceneTester = YYC.Class({
             }
 
 
-            var pixelArr = this._readScenePixelArr();
+            var data = this._readScenePixelArr();
+            var pixelArr = data.data;
 
 
 
@@ -38,6 +46,10 @@ var SceneTester = YYC.Class({
 
 
                 matcher.compareImage(this, pixelArr);
+
+                if(self.isDebug){
+                    self._debuger.insertTestResult(partialCorrectImagePath, this, data.canvas);
+                }
 
                 done();
             }
@@ -62,6 +74,7 @@ var SceneTester = YYC.Class({
         }
     },
     Private:{
+        _debuger:null,
         _getDirector: function(){
             return wd.Director.getInstance();
         },
@@ -92,15 +105,20 @@ var SceneTester = YYC.Class({
             var gl = wd.DeviceManager.getInstance().gl;
             var c = gl.canvas;
 
-            var canvas = document.createElement("canvas");
-            canvas.width = c.width;
-            canvas.height = c.height;
+            //var canvas = document.createElement("canvas");
+            //canvas.width = c.width;
+            //canvas.height = c.height;
+            //
+            //var context = canvas.getContext("2d");
+            //
+            //context.drawImage(c, 0, 0);
 
-            var context = canvas.getContext("2d");
+            var data = fileTool.convertImageToCanvas(c);
 
-            context.drawImage(c, 0, 0);
-
-            return context.getImageData(0, 0, canvas.width, canvas.height).data;
+            return {
+                canvas:data.canvas,
+                data:data.context.getImageData(0, 0, data.canvas.width, data.canvas.height).data
+            }
         }
     }
 });
