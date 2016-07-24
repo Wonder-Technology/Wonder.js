@@ -9,7 +9,6 @@ describe("generate correct image tool", function () {
             initSample();
 
 
-
             tester.init();
 
             if(done){
@@ -21,56 +20,40 @@ describe("generate correct image tool", function () {
             var director = wd.Director.getInstance();
 
             var sphere = createSphere();
-            sphere.name = "sphere";
-
             sphere.transform.translate(wd.Vector3.create(-30, 20, 0));
-
-            var layer1 = "layer1";
-
-            sphere.getComponent(wd.Shadow).layer = layer1;
-
-//            director.scene.shadowLayerList.addChildren([layer1, wd.EShadowLayer.DEFAULT]);
-
 
             var sphere2 = createSphere();
             sphere2.transform.translate(wd.Vector3.create(-70, 20, 0));
 
+//            var sphere3 = createSphere();
+//            sphere3.transform.translate(wd.Vector3.create(-100, 20, 0));
 
 
             var ground = createGround();
-            ground.name = "ground";
 
             director.scene.addChild(sphere);
-            director.scene.addChild(sphere2);
             director.scene.addChild(ground);
 
 
             wd.Director.getInstance().scheduler.scheduleFrame(function(){
-                ground.getComponent(wd.Shadow).receive = false;
+                director.scene.addChild(sphere2);
+
+                sphere2.init();
+
+
+
+//                director.scene.addChild(sphere3);
+
+//                sphere3.getComponent(wd.Shadow).cast = false;
+
+
+//                sphere3.init();
             }, 1);
 
 
-            wd.Director.getInstance().scheduler.scheduleFrame(function(){
-                sphere.getComponent(wd.Shadow).cast = false;
-
-
-                ground.getComponent(wd.Shadow).receive = true;
-            }, 2);
-
-
-            wd.Director.getInstance().scheduler.scheduleFrame(function(){
-                sphere.getComponent(wd.Shadow).cast = true;
-//                director.scene.shadowLayerList.addChild(layer1);
-
-
-                ground.getComponent(wd.Shadow).receive = true;
-            }, 3);
-
 
             director.scene.addChild(createAmbientLight());
-            director.scene.addChild(createDirectionLight(wd.Vector3.create(0, 100, 100)));
-            director.scene.addChild(createDirectionLight(wd.Vector3.create(100, 100, 0)));
-//            director.scene.addChild(createPointLight(wd.Vector3.create(50, 50, -50)));
+            director.scene.addChild(createDirectionLight());
             director.scene.addChild(createCamera());
 
             //director.start();
@@ -108,19 +91,19 @@ describe("generate correct image tool", function () {
 
 
             var boxChild1 = createBox();
-            //var boxChild2 = createBox();
-            //var boxChild21 = createBox();
+            var boxChild2 = createBox();
+            var boxChild21 = createBox();
 
             gameObject.addChild(boxChild1);
-//            gameObject.addChild(boxChild2);
-//
-//            boxChild2.addChild(boxChild21);
+            gameObject.addChild(boxChild2);
+
+            boxChild2.addChild(boxChild21);
 
 
             boxChild1.transform.translateLocal(50, 0, 0);
-            //boxChild2.transform.translateLocal(-50, 0, 0);
+            boxChild2.transform.translateLocal(-50, 0, 0);
 
-            //boxChild21.transform.translateLocal(-60, 0, 0);
+            boxChild21.transform.translateLocal(-60, 0, 0);
 
 
 
@@ -154,11 +137,11 @@ describe("generate correct image tool", function () {
             gameObject.transform.eulerAngles = wd.Vector3.create(0, 45, 0);
 
 
-            //var action = wd.RepeatForever.create(wd.CallFunc.create(function(){
-            //    gameObject.transform.rotate(0, 1, 0);
-            //}));
-            //
-            //gameObject.addComponent(action);
+//            var action = wd.RepeatForever.create(wd.CallFunc.create(function(){
+//                gameObject.transform.rotate(0, 1, 0);
+//            }));
+//
+//            gameObject.addComponent(action);
 
 
             var shadow = wd.Shadow.create();
@@ -214,7 +197,7 @@ describe("generate correct image tool", function () {
             return ambientLight;
         }
 
-        function createDirectionLight(pos) {
+        function createDirectionLight() {
             var SHADOW_MAP_WIDTH = 1024,
                 SHADOW_MAP_HEIGHT = 1024;
 
@@ -222,10 +205,10 @@ describe("generate correct image tool", function () {
             directionLightComponent.color = wd.Color.create("#ffffff");
             directionLightComponent.intensity = 1;
             directionLightComponent.castShadow = true;
-            directionLightComponent.shadowCameraLeft = -200;
-            directionLightComponent.shadowCameraRight = 200;
-            directionLightComponent.shadowCameraTop = 200;
-            directionLightComponent.shadowCameraBottom = -200;
+            directionLightComponent.shadowCameraLeft = -500;
+            directionLightComponent.shadowCameraRight = 500;
+            directionLightComponent.shadowCameraTop = 500;
+            directionLightComponent.shadowCameraBottom = -500;
             directionLightComponent.shadowCameraNear = 0.1;
             directionLightComponent.shadowCameraFar = 1000;
             directionLightComponent.shadowBias = 0.002;
@@ -233,58 +216,13 @@ describe("generate correct image tool", function () {
             directionLightComponent.shadowMapWidth = SHADOW_MAP_WIDTH;
             directionLightComponent.shadowMapHeight = SHADOW_MAP_HEIGHT;
 
+
             var directionLight = wd.GameObject.create();
             directionLight.addComponent(directionLightComponent);
 
-            directionLight.transform.position = pos;
+            directionLight.transform.translate(wd.Vector3.create(0, 200, 200));
 
             return directionLight;
-        }
-
-        function createPointLight(pos) {
-            var SHADOW_MAP_WIDTH = 1024,
-                SHADOW_MAP_HEIGHT = 1024;
-
-            var pointLightComponent = wd.PointLight.create();
-            pointLightComponent.color = wd.Color.create("#ffffff");
-            pointLightComponent.intensity = 2;
-            pointLightComponent.rangeLevel = 11;
-            pointLightComponent.castShadow = true;
-            pointLightComponent.shadowCameraNear = 0.1;
-            pointLightComponent.shadowCameraFar = 1000;
-            pointLightComponent.shadowBias = 0.01;
-            pointLightComponent.shadowDarkness = 0.2;
-            pointLightComponent.shadowMapWidth = SHADOW_MAP_WIDTH;
-            pointLightComponent.shadowMapHeight = SHADOW_MAP_HEIGHT;
-
-//            pointLightComponent.shadowRenderList = {
-//                px:listArr,
-//                nx:listArr,
-//                py:listArr,
-//                ny:listArr,
-//                pz:listArr,
-//                nz:listArr
-//            };
-
-            var pointSphereMaterial = wd.BasicMaterial.create();
-            pointSphereMaterial.color = wd.Color.create("#ffffff");
-
-            var geometry = wd.SphereGeometry.create();
-            geometry.material = pointSphereMaterial;
-            geometry.radius = 1;
-            geometry.segment = 20;
-
-
-            var pointLight = wd.GameObject.create();
-            pointLight.addComponent(pointLightComponent);
-            pointLight.addComponent(geometry);
-            pointLight.addComponent(wd.MeshRenderer.create());
-
-
-
-            pointLight.transform.position = pos;
-
-            return pointLight;
         }
 
         function createCamera() {
@@ -298,14 +236,13 @@ describe("generate correct image tool", function () {
             cameraComponent.far = 1000;
 
             var controller = wd.ArcballCameraController.create(cameraComponent);
-            controller.theta = Math.PI / 4;
-            controller.distance = 200;
+            controller.theta = Math.PI / 8;
+            controller.distance = 350;
 
             camera.addComponent(controller);
 
             return camera;
         }
-
     }
 
     beforeEach(function (done) {
@@ -323,15 +260,7 @@ describe("generate correct image tool", function () {
             [
                 {
                     frameIndex:1,
-                    imageName:"shadowMap_changReceiveAndCast_1.png"
-                },
-                {
-                    frameIndex:2,
-                    imageName:"shadowMap_changReceiveAndCast_2.png"
-                },
-                {
-                    frameIndex:3,
-                    imageName:"shadowMap_changReceiveAndCast_3.png"
+                    imageName:"shadowMap_add.png"
                 }
             ]
         );
