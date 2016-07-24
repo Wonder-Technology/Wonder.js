@@ -11,10 +11,11 @@ describe("generate correct image tool", function () {
             done();
         }
 
+
         function initSample() {
             var director = wd.Director.getInstance();
 
-            director.scene.addChildren([createPlane1(), createPlane2(), createPlane3(), createPlane4(), createPlane5()]);
+            director.scene.addChildren(createPlane());
             director.scene.addChild(createAmbientLight());
             director.scene.addChild(createDirectionLight());
             director.scene.addChild(createCamera());
@@ -22,29 +23,12 @@ describe("generate correct image tool", function () {
             //director.start();
         }
 
-        function createPlane1() {
-            return createPlane(wd.GrassProceduralTexture.create(), wd.Vector3.create(-100, 0, 0))
-        }
+        function createPlane() {
+            var fireTexture = wd.FireProceduralTexture.create();
 
-        function createPlane2() {
-            return createPlane(wd.WoodProceduralTexture.create(), wd.Vector3.create(-50, 0, 0))
-        }
 
-        function createPlane3() {
-            return createPlane(wd.RoadProceduralTexture.create(), wd.Vector3.create(0, 0, 0))
-        }
-
-        function createPlane4() {
-            return createPlane(wd.CloudProceduralTexture.create(), wd.Vector3.create(50, 0, 0))
-        }
-
-        function createPlane5() {
-            return createPlane(wd.BrickProceduralTexture.create(), wd.Vector3.create(100, 0, 0))
-        }
-
-        function createPlane(proceduralTexture, position) {
             var material = wd.LightMaterial.create();
-            material.diffuseMap = proceduralTexture;
+            material.diffuseMap = fireTexture;
 
 
             var geometry = wd.PlaneGeometry.create();
@@ -59,7 +43,6 @@ describe("generate correct image tool", function () {
 
             gameObject.transform.rotate(wd.Vector3.create(90,0,0));
 
-            gameObject.transform.position = position;
 
             return gameObject;
         }
@@ -99,12 +82,13 @@ describe("generate correct image tool", function () {
             cameraComponent.far = 1000;
 
             var controller = wd.ArcballCameraController.create(cameraComponent);
-            controller.distance = 150;
+            controller.distance = 100;
 
             camera.addComponent(controller);
 
             return camera;
         }
+
     }
 
     beforeEach(function (done) {
@@ -122,7 +106,11 @@ describe("generate correct image tool", function () {
             [
                 {
                     frameIndex:1,
-                    imageName:"procedural_texture_more.png"
+                    imageName:"procedural_texture_animate_1.png"
+                },
+                {
+                    frameIndex:10,
+                    imageName:"procedural_texture_animate_2.png"
                 }
             ]
         );
