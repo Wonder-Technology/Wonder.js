@@ -265,7 +265,6 @@ describe("generate correct image tool", function () {
     var tester;
 
     function body(assetParentDirPath, done){
-
         wd.LoaderManager.getInstance().load([
             {url: assetParentDirPath + "asset/texture/1.jpg", id: "diffuseMap"},
             {url: assetParentDirPath + "asset/texture/skybox/px.jpg", id: "px"},
@@ -288,7 +287,9 @@ describe("generate correct image tool", function () {
         function initSample() {
             tool.addSkybox();
             tool.addBox();
-            tool.addSphere(wd.EEnvMapMode.REFLECTION);
+            tool.addSphere(wd.EEnvMapMode.REFRACTION, function(material){
+                material.refractionRatio = 1.68;
+            });
             tool.addCamera();
 
             var director = wd.Director.getInstance();
@@ -314,7 +315,7 @@ describe("generate correct image tool", function () {
             [
                 {
                     frameIndex:1,
-                    imageName:"texture_dynamic_reflection.png"
+                    imageName:"texture_dynamic_refraction.png"
                 }
             ]
         );
