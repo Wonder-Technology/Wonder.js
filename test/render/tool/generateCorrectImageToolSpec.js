@@ -3,10 +3,8 @@ describe("generate correct image tool", function () {
 
     function body(assetParentDirPath, done){
         wd.LoaderManager.getInstance().load([
-            {url: "./base/test/render/res/procedural/texture/dirt.jpg", id: "dirt"},
-            {url: "./base/test/render/res/procedural/texture/grass.png", id: "grass"},
-            {url: "./base/test/render/res/procedural/glsl/shaderConfig.json", id: "shaderConfig"},
-            {url: "./base/test/render/res/procedural/glsl/custom_fragment.glsl", id: "fs"}
+            {url: assetParentDirPath + "asset/texture/terrain/heightMap.png", id: "heightMap"},
+            {url: assetParentDirPath + "asset/texture/terrain/ground.jpg", id: "ground"}
         ]).subscribe(null, null, function () {
             initSample();
 
@@ -16,13 +14,12 @@ describe("generate correct image tool", function () {
             if(done){
                 done();
             }
-
         });
 
         function initSample() {
             var director = wd.Director.getInstance();
 
-            director.scene.addChild(createPlane());
+            director.scene.addChild(createTerrain());
             director.scene.addChild(createAmbientLight());
             director.scene.addChild(createDirectionLight());
             director.scene.addChild(createCamera());
@@ -30,27 +27,38 @@ describe("generate correct image tool", function () {
             //director.start();
         }
 
-        function createPlane() {
-            var customTexture = wd.CustomProceduralTexture.create();
+        function createTerrain() {
+            var groundMap = wd.LoaderManager.getInstance().get("ground").toTexture();
+//            groundMap.repeatRegion = wd.RectRegion.create(0, 0, 2, 2);
+//            groundMap.wrapS = wd.ETextureWrapMode.REPEAT;
+//            groundMap.wrapT = wd.ETextureWrapMode.REPEAT;
 
-            customTexture.read("shaderConfig");
-
+            var fireTexture = wd.FireProceduralTexture.create();
+            var marbleTexture = wd.MarbleProceduralTexture.create();
 
             var material = wd.LightMaterial.create();
-            material.diffuseMap = customTexture;
+            material.diffuseMap = groundMap;
+            material.shading = wd.EShading.SMOOTH;
+            material.specularMap = fireTexture;
+            material.lightMap = marbleTexture;
 
 
-            var geometry = wd.PlaneGeometry.create();
+            var geometry = wd.TerrainGeometry.create();
             geometry.material = material;
-            geometry.width = 20;
-            geometry.height = 20;
+            geometry.subdivisions = 100;
+            geometry.range = {
+                width:100,
+                height:100
+            };
+            geometry.heightMapAsset = wd.LoaderManager.getInstance().get("heightMap");
+//            geometry.drawMode = wd.EDrawMode.LINE_STRIP;
+
 
             var gameObject = wd.GameObject.create();
             gameObject.addComponent(geometry);
 
             gameObject.addComponent(wd.MeshRenderer.create());
 
-            gameObject.transform.rotate(wd.Vector3.create(90,0,0));
 
             return gameObject;
         }
@@ -74,7 +82,7 @@ describe("generate correct image tool", function () {
             var directionLight = wd.GameObject.create();
             directionLight.addComponent(directionLightComponent);
 
-            directionLight.transform.translate(wd.Vector3.create(10, 10, 10));
+            directionLight.transform.translate(wd.Vector3.create(10, 20, 30));
 
             return directionLight;
         }
@@ -90,15 +98,15 @@ describe("generate correct image tool", function () {
             cameraComponent.far = 1000;
 
             var controller = wd.ArcballCameraController.create(cameraComponent);
+            controller.theta = Math.PI / 4;
+            controller.phi = Math.PI;
             controller.distance = 50;
-
-            controller.theta = Math.PI /1.5;
-            controller.phi = Math.PI /1.5;
 
             camera.addComponent(controller);
 
             return camera;
         }
+
     }
 
     beforeEach(function (done) {
@@ -116,7 +124,7 @@ describe("generate correct image tool", function () {
             [
                 {
                     frameIndex:1,
-                    imageName:"procedural_texture_custom.png"
+                    imageName:"terrain_heightMap.png"
                 }
             ]
         );
