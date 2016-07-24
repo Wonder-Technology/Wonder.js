@@ -5,7 +5,7 @@ describe("generate correct image tool", function () {
         initSample();
 
         function initSample() {
-            wd.DeviceManager.getInstance().setScissor(0, 0, 1000, 200);
+            wd.DeviceManager.getInstance().setViewport(0, 0, 300, 300);
 
             var director = wd.Director.getInstance();
 
@@ -67,7 +67,7 @@ describe("generate correct image tool", function () {
     it("generate correct image", function () {
         tester.init();
 
-        tester.generateAt(1, "scissor.png");
+        tester.generateAt(1, "viewport.png");
     });
 });
 
