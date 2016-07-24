@@ -1,5 +1,5 @@
 @funcDefine
-vec4 getLightEffectColor(vec2 projectedTexCoords){
-    return vec4(1.0);
+vec3 getLightEffectColor(vec2 projectedTexCoords){
+    return vec3(0.0);
 }
 @end
