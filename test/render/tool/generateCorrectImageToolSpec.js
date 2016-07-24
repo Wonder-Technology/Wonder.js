@@ -2,20 +2,27 @@ describe("generate correct image tool", function () {
     var tester;
 
     function body(assetParentDirPath, done){
-        initSample();
+        wd.LoaderManager.getInstance().load([
+            {url: "./base/test/render/res/procedural/texture/dirt.jpg", id: "dirt"},
+            {url: "./base/test/render/res/procedural/texture/grass.png", id: "grass"},
+            {url: "./base/test/render/res/procedural/glsl/shaderConfig.json", id: "shaderConfig"},
+            {url: "./base/test/render/res/procedural/glsl/custom_fragment.glsl", id: "fs"}
+        ]).subscribe(null, null, function () {
+            initSample();
 
 
-        tester.init();
+            tester.init();
 
-        if(done){
-            done();
-        }
+            if(done){
+                done();
+            }
 
+        });
 
         function initSample() {
             var director = wd.Director.getInstance();
 
-            director.scene.addChildren(createPlane());
+            director.scene.addChild(createPlane());
             director.scene.addChild(createAmbientLight());
             director.scene.addChild(createDirectionLight());
             director.scene.addChild(createCamera());
@@ -24,11 +31,13 @@ describe("generate correct image tool", function () {
         }
 
         function createPlane() {
-            var fireTexture = wd.FireProceduralTexture.create();
+            var customTexture = wd.CustomProceduralTexture.create();
+
+            customTexture.read("shaderConfig");
 
 
             var material = wd.LightMaterial.create();
-            material.diffuseMap = fireTexture;
+            material.diffuseMap = customTexture;
 
 
             var geometry = wd.PlaneGeometry.create();
@@ -42,7 +51,6 @@ describe("generate correct image tool", function () {
             gameObject.addComponent(wd.MeshRenderer.create());
 
             gameObject.transform.rotate(wd.Vector3.create(90,0,0));
-
 
             return gameObject;
         }
@@ -82,13 +90,15 @@ describe("generate correct image tool", function () {
             cameraComponent.far = 1000;
 
             var controller = wd.ArcballCameraController.create(cameraComponent);
-            controller.distance = 100;
+            controller.distance = 50;
+
+            controller.theta = Math.PI /1.5;
+            controller.phi = Math.PI /1.5;
 
             camera.addComponent(controller);
 
             return camera;
         }
-
     }
 
     beforeEach(function (done) {
@@ -106,11 +116,7 @@ describe("generate correct image tool", function () {
             [
                 {
                     frameIndex:1,
-                    imageName:"procedural_texture_animate_1.png"
-                },
-                {
-                    frameIndex:10,
-                    imageName:"procedural_texture_animate_2.png"
+                    imageName:"procedural_texture_custom.png"
                 }
             ]
         );
