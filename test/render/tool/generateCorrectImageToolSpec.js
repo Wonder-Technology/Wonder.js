@@ -3,13 +3,7 @@ describe("generate correct image tool", function () {
 
     function body(assetParentDirPath, done){
         wd.LoaderManager.getInstance().load([
-            {url: assetParentDirPath + "asset/texture/1.jpg", id: "texture"},
-            {url: assetParentDirPath + "asset/texture/skybox/px.jpg", id: "px"},
-            {url: assetParentDirPath + "asset/texture/skybox/nx.jpg", id: "nx"},
-            {url: assetParentDirPath + "asset/texture/skybox/py.jpg", id: "py"},
-            {url: assetParentDirPath + "asset/texture/skybox/ny.jpg", id: "ny"},
-            {url: assetParentDirPath + "asset/texture/skybox/pz.jpg", id: "pz"},
-            {url: assetParentDirPath + "asset/texture/skybox/nz.jpg", id: "nz"}
+            {url: assetParentDirPath + "asset/texture/1.jpg", id: "texture1"}
         ]).subscribe(null, null, function () {
             initSample();
 
@@ -24,80 +18,123 @@ describe("generate correct image tool", function () {
         function initSample() {
             var director = wd.Director.getInstance();
 
-            director.scene.addChild(createSkybox());
-            director.scene.addChild(createSphere());
+            director.scene.addChildren([createPlane1(), createPlane2(), createPlane3()]);
+            director.scene.addChild(createAmbientLight());
+            director.scene.addChild(createDirectionLight());
             director.scene.addChild(createCamera());
 
             //director.start();
         }
 
-        function createSkybox() {
-            var cubemap = wd.CubemapTexture.create(
-                [
-                    {
-                        asset: wd.LoaderManager.getInstance().get("px"),
-                        sourceRegion:wd.RectRegion.create(0, 0, 256, 256),
-                        type:wd.ETextureType.UNSIGNED_BYTE
-                    },
-                    {
-                        asset: wd.LoaderManager.getInstance().get("nx"),
-                        sourceRegion:wd.RectRegion.create(0, 0, 256, 256)
-                    },
-                    {
-                        asset: wd.LoaderManager.getInstance().get("py"),
-                        sourceRegion:wd.RectRegion.create(0, 0, 256, 256)
-                    },
-                    {
-                        asset: wd.LoaderManager.getInstance().get("ny"),
-                        sourceRegion:wd.RectRegion.create(0, 0, 256, 256)
-                    },
-                    {
-                        asset: wd.LoaderManager.getInstance().get("pz"),
-                        sourceRegion:wd.RectRegion.create(0, 0, 256, 256)
-                    },
-                    {
-                        asset: wd.LoaderManager.getInstance().get("nz"),
-                        sourceRegion:wd.RectRegion.create(0, 0, 256, 256)
-                    }
-                ]
-            );
-            cubemap.textures.getChild(5).sourceRegion = wd.RectRegion.create(128, 128, 256, 256);
-
-            var material = wd.SkyboxMaterial.create();
-            material.envMap = cubemap;
+        function createPlane1() {
+            var marbleTexture = wd.MarbleProceduralTexture.create();
+            marbleTexture.tilesHeightNumber = 3;
+            marbleTexture.tilesWidthNumber = 4;
+            marbleTexture.amplitude = 10;
+            marbleTexture.jointColor = wd.Color.create("rgb(0.9, 0.1, 0.1)");
 
 
-            var geometry = wd.BoxGeometry.create();
+            var material = wd.LightMaterial.create();
+            material.specularMap = wd.LoaderManager.getInstance().get("texture1").toTexture();
+            material.diffuseMap = marbleTexture;
+
+
+            var geometry = wd.PlaneGeometry.create();
             geometry.material = material;
-            geometry.width = 5;
-            geometry.height = 5;
-            geometry.depth = 5;
-
-
-            var gameObject = wd.GameObject.create();
-
-            gameObject.addComponent(wd.SkyboxRenderer.create());
-            gameObject.addComponent(geometry);
-
-            return gameObject;
-        }
-
-        function createSphere() {
-            var material = wd.BasicMaterial.create();
-            material.map = wd.LoaderManager.getInstance().get("texture");
-
-            var geometry = wd.SphereGeometry.create();
-            geometry.material = material;
-            geometry.radius = 5;
+            geometry.width = 20;
+            geometry.height = 20;
 
             var gameObject = wd.GameObject.create();
             gameObject.addComponent(geometry);
 
             gameObject.addComponent(wd.MeshRenderer.create());
 
+            gameObject.transform.rotate(wd.Vector3.create(90,0,0));
+
+            gameObject.transform.translate(50,0,0);
+
             return gameObject;
         }
 
+        function createPlane2() {
+            var marbleTexture = wd.MarbleProceduralTexture.create();
+            marbleTexture.tilesHeightNumber = 2;
+            marbleTexture.tilesWidthNumber = 2;
+            marbleTexture.amplitude = 10;
+
+
+            var material = wd.BasicMaterial.create();
+            material.map = marbleTexture;
+
+
+            var geometry = wd.PlaneGeometry.create();
+            geometry.material = material;
+            geometry.width = 20;
+            geometry.height = 20;
+
+            var gameObject = wd.GameObject.create();
+            gameObject.addComponent(geometry);
+
+            gameObject.addComponent(wd.MeshRenderer.create());
+
+            gameObject.transform.rotate(wd.Vector3.create(90,0,0));
+
+            gameObject.transform.translate(-50,0,0);
+
+            return gameObject;
+        }
+
+        function createPlane3() {
+            var marbleTexture = wd.MarbleProceduralTexture.create();
+            marbleTexture.tilesHeightNumber = 5;
+            marbleTexture.tilesWidthNumber = 5;
+            marbleTexture.amplitude = 5;
+
+
+            var material = wd.BasicMaterial.create();
+            material.map = [wd.LoaderManager.getInstance().get("texture1").toTexture(), marbleTexture];
+
+
+            var geometry = wd.PlaneGeometry.create();
+            geometry.material = material;
+            geometry.width = 20;
+            geometry.height = 20;
+
+            var gameObject = wd.GameObject.create();
+            gameObject.addComponent(geometry);
+
+            gameObject.addComponent(wd.MeshRenderer.create());
+
+            gameObject.transform.rotate(wd.Vector3.create(90,0,0));
+
+            gameObject.transform.translate(0,0,0);
+
+            return gameObject;
+        }
+
+        function createAmbientLight() {
+            var ambientLightComponent = wd.AmbientLight.create();
+            ambientLightComponent.color = wd.Color.create("rgb(30, 30, 30)");
+
+            var ambientLight = wd.GameObject.create();
+            ambientLight.addComponent(ambientLightComponent);
+
+            return ambientLight;
+        }
+
+        function createDirectionLight() {
+            var directionLightComponent = wd.DirectionLight.create();
+            directionLightComponent.color = wd.Color.create("#ffffff");
+            directionLightComponent.intensity = 1;
+
+
+            var directionLight = wd.GameObject.create();
+            directionLight.addComponent(directionLightComponent);
+
+            directionLight.transform.translate(wd.Vector3.create(10, 10, 10));
+
+            return directionLight;
+        }
 
         function createCamera() {
             var camera = wd.GameObject.create(),
@@ -109,14 +146,14 @@ describe("generate correct image tool", function () {
             cameraComponent.near = 0.1;
             cameraComponent.far = 1000;
 
-            var controller = wd.FlyCameraController.create(cameraComponent);
-            camera.addComponent(controller);
+            var controller = wd.ArcballCameraController.create(cameraComponent);
+            controller.distance = 100;
 
-            camera.transform.translate(0, 0, 20);
-            camera.transform.lookAt(5, 5, 0);
+            camera.addComponent(controller);
 
             return camera;
         }
+
     }
 
     beforeEach(function (done) {
@@ -134,7 +171,7 @@ describe("generate correct image tool", function () {
             [
                 {
                     frameIndex:1,
-                    imageName:"skybox_texture_part.png"
+                    imageName:"procedural_texture_marble.png"
                 }
             ]
         );

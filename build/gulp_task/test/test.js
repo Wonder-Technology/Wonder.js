@@ -40,7 +40,8 @@ gulp.task("watchForTest", function(){
 gulp.task("test", gulpSync.sync(["compileForTest", "watchForTest", "testByKarma"]));
 
 
-gulp.task("renderTest", gulpSync.sync(["compileForTest", "watchForTest", "renderTestByKarma"]));
+//gulp.task("renderTest", gulpSync.sync(["compileForTest", "watchForTest", "renderTestByKarma"]));
+gulp.task("renderTest", gulpSync.sync(["renderTestByKarma"]));
 
 
 gulp.task("renderTestByKarma", function (done) {
