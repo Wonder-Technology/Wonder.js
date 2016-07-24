@@ -2,23 +2,19 @@ describe("generate correct image tool", function () {
     var tester;
 
     function body(assetParentDirPath, done){
-        wd.LoaderManager.getInstance().load([
-            {url: assetParentDirPath + "asset/texture/1.jpg", id: "texture1"}
-        ]).subscribe(null, null, function () {
-            initSample();
+        initSample();
 
 
-            tester.init();
+        tester.init();
 
-            if(done){
-                done();
-            }
-        });
+        if(done){
+            done();
+        }
 
         function initSample() {
             var director = wd.Director.getInstance();
 
-            director.scene.addChildren([createPlane1(), createPlane2(), createPlane3()]);
+            director.scene.addChildren([createPlane1(), createPlane2(), createPlane3(), createPlane4(), createPlane5()]);
             director.scene.addChild(createAmbientLight());
             director.scene.addChild(createDirectionLight());
             director.scene.addChild(createCamera());
@@ -27,72 +23,28 @@ describe("generate correct image tool", function () {
         }
 
         function createPlane1() {
-            var marbleTexture = wd.MarbleProceduralTexture.create();
-            marbleTexture.tilesHeightNumber = 3;
-            marbleTexture.tilesWidthNumber = 4;
-            marbleTexture.amplitude = 10;
-            marbleTexture.jointColor = wd.Color.create("rgb(0.9, 0.1, 0.1)");
-
-
-            var material = wd.LightMaterial.create();
-            material.specularMap = wd.LoaderManager.getInstance().get("texture1").toTexture();
-            material.diffuseMap = marbleTexture;
-
-
-            var geometry = wd.PlaneGeometry.create();
-            geometry.material = material;
-            geometry.width = 20;
-            geometry.height = 20;
-
-            var gameObject = wd.GameObject.create();
-            gameObject.addComponent(geometry);
-
-            gameObject.addComponent(wd.MeshRenderer.create());
-
-            gameObject.transform.rotate(wd.Vector3.create(90,0,0));
-
-            gameObject.transform.translate(50,0,0);
-
-            return gameObject;
+            return createPlane(wd.GrassProceduralTexture.create(), wd.Vector3.create(-100, 0, 0))
         }
 
         function createPlane2() {
-            var marbleTexture = wd.MarbleProceduralTexture.create();
-            marbleTexture.tilesHeightNumber = 2;
-            marbleTexture.tilesWidthNumber = 2;
-            marbleTexture.amplitude = 10;
-
-
-            var material = wd.BasicMaterial.create();
-            material.map = marbleTexture;
-
-
-            var geometry = wd.PlaneGeometry.create();
-            geometry.material = material;
-            geometry.width = 20;
-            geometry.height = 20;
-
-            var gameObject = wd.GameObject.create();
-            gameObject.addComponent(geometry);
-
-            gameObject.addComponent(wd.MeshRenderer.create());
-
-            gameObject.transform.rotate(wd.Vector3.create(90,0,0));
-
-            gameObject.transform.translate(-50,0,0);
-
-            return gameObject;
+            return createPlane(wd.WoodProceduralTexture.create(), wd.Vector3.create(-50, 0, 0))
         }
 
         function createPlane3() {
-            var marbleTexture = wd.MarbleProceduralTexture.create();
-            marbleTexture.tilesHeightNumber = 5;
-            marbleTexture.tilesWidthNumber = 5;
-            marbleTexture.amplitude = 5;
+            return createPlane(wd.RoadProceduralTexture.create(), wd.Vector3.create(0, 0, 0))
+        }
 
+        function createPlane4() {
+            return createPlane(wd.CloudProceduralTexture.create(), wd.Vector3.create(50, 0, 0))
+        }
 
-            var material = wd.BasicMaterial.create();
-            material.map = [wd.LoaderManager.getInstance().get("texture1").toTexture(), marbleTexture];
+        function createPlane5() {
+            return createPlane(wd.BrickProceduralTexture.create(), wd.Vector3.create(100, 0, 0))
+        }
+
+        function createPlane(proceduralTexture, position) {
+            var material = wd.LightMaterial.create();
+            material.diffuseMap = proceduralTexture;
 
 
             var geometry = wd.PlaneGeometry.create();
@@ -107,7 +59,7 @@ describe("generate correct image tool", function () {
 
             gameObject.transform.rotate(wd.Vector3.create(90,0,0));
 
-            gameObject.transform.translate(0,0,0);
+            gameObject.transform.position = position;
 
             return gameObject;
         }
@@ -147,13 +99,12 @@ describe("generate correct image tool", function () {
             cameraComponent.far = 1000;
 
             var controller = wd.ArcballCameraController.create(cameraComponent);
-            controller.distance = 100;
+            controller.distance = 150;
 
             camera.addComponent(controller);
 
             return camera;
         }
-
     }
 
     beforeEach(function (done) {
@@ -171,7 +122,7 @@ describe("generate correct image tool", function () {
             [
                 {
                     frameIndex:1,
-                    imageName:"procedural_texture_marble.png"
+                    imageName:"procedural_texture_more.png"
                 }
             ]
         );
