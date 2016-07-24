@@ -30,10 +30,11 @@ describe("generate correct image tool", function () {
             var sphere = createSphere();
             var ground = createGround();
 
+            var water = createWater(skybox, sphere, ground);
             director.scene.addChild(skybox);
             director.scene.addChild(sphere);
             director.scene.addChild(ground);
-            director.scene.addChild(createWater(skybox, sphere, ground));
+            director.scene.addChild(water);
 
             director.scene.addChild(createAmbientLight());
             director.scene.addChild(createDirectionLight());
@@ -41,6 +42,20 @@ describe("generate correct image tool", function () {
             director.scene.addChild(createCamera());
 
             //director.start();
+
+
+
+            var renderList = [skybox, sphere, ground];
+
+            wd.Director.getInstance().scheduler.scheduleFrame(function(){
+                water.getComponent(wd.Geometry).material.reflectionMap.renderList = [];
+                water.getComponent(wd.Geometry).material.refractionMap.renderList = [];
+            }, 1);
+
+            wd.Director.getInstance().scheduler.scheduleFrame(function(){
+                water.getComponent(wd.Geometry).material.reflectionMap.renderList = renderList;
+                water.getComponent(wd.Geometry).material.refractionMap.renderList = renderList;
+            }, 2);
         }
 
         function createSkybox() {
@@ -221,7 +236,11 @@ describe("generate correct image tool", function () {
             [
                 {
                     frameIndex:1,
-                    imageName:"water_reflection.png"
+                    imageName:"water_remove_reflectionAndRefraction.png"
+                },
+                {
+                    frameIndex:2,
+                    imageName:"water_add_reflectionAndRefraction.png"
                 }
             ]
         );
