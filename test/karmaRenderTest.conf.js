@@ -31,10 +31,10 @@
 
             'test/render/helper/*.js',
 
-            'test/render/test/**',
+            //'test/render/test/**',
 
 
-            //'test/render/test/**/colorMask*',
+            'test/render/test/**/instance*',
 
             {pattern: 'test/render/res/**', watched: false, included: false, served: true},
 

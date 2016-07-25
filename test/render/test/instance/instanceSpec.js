@@ -16,15 +16,10 @@ describe("instance", function () {
         describe("test basic render instance gameObjects", function () {
             var tester;
 
-            function body(initFunc){
-                if(initFunc){
-                    initFunc();
-                }
+            function body(wrapper){
+                wrapper.load([])
+                    .do(initSample);
 
-                initSample();
-
-
-                tester.init();
 
                 function initSample() {
                     var director = wd.Director.getInstance();
@@ -147,13 +142,16 @@ describe("instance", function () {
             });
 
             it("test", function (done) {
-                body();
+                tester.execBody(body);
 
                 tester.compareAt(1, "instance/instance_render.png", done);
             });
             it("if hardware not support instance, the render result should be the same", function (done) {
-                body(function () {
+                tester.execBody({
+                    body:body,
+                    init:function () {
                     wd.GPUDetector.getInstance().extensionInstancedArrays = null;
+                }
                 });
 
                 tester.compareAt({
@@ -168,15 +166,9 @@ describe("instance", function () {
         describe("test render point light shadow instance gameObjects", function () {
             var tester;
 
-            function body(initFunc){
-                if(initFunc){
-                    initFunc();
-                }
-
-                initSample();
-
-
-                tester.init();
+            function body(wrapper){
+                wrapper.load([])
+                    .do(initSample);
 
                 function initSample() {
                     var director = wd.Director.getInstance();
@@ -457,13 +449,16 @@ describe("instance", function () {
             });
 
             it("test", function (done) {
-                body();
+                tester.execBody(body);
 
                 tester.compareAt(1, "instance/instance_shadow_pointLight.png", done);
             });
             it("if hardware not support instance, the render result should be the same", function (done) {
-                body(function(){
+                tester.execBody({
+                    body:body,
+                    inif:function(){
                     wd.GPUDetector.getInstance().extensionInstancedArrays = null;
+                }
                 });
 
                 tester.compareAt({
@@ -478,15 +473,9 @@ describe("instance", function () {
         describe("test add and remove instance gameObjects", function () {
             var tester;
 
-            function body(initFunc){
-                if(initFunc){
-                    initFunc();
-                }
-
-                initSample();
-
-
-                tester.init();
+            function body(wrapper){
+                wrapper.load([])
+                    .do(initSample);
 
                 function initSample() {
                     var director = wd.Director.getInstance();
@@ -663,12 +652,12 @@ describe("instance", function () {
             });
 
             it("test remove", function (done) {
-                body();
+                tester.execBody(body);
 
                 tester.compareAt(1, "instance/instance_remove.png", done);
             });
             it("test add", function (done) {
-                body();
+                tester.execBody(body);
 
                 tester.compareAt(2, "instance/instance_add.png", done);
             });
@@ -677,24 +666,16 @@ describe("instance", function () {
         describe("test instance articulated animation", function () {
             var tester;
 
-            function body(assetParentDirPath, initFunc, done){
-                wd.LoaderManager.getInstance().load([
-                    {url: assetParentDirPath + "asset/texture/crate.gif", id: "ground"},
-                    {url: assetParentDirPath + "asset/model/gltf/boxAnimated/glTF-MaterialsCommon/glTF-MaterialsCommon.gltf", id: "model"}
-                ]).subscribe(null, null, function () {
-                    if(initFunc){
-                        initFunc();
-                    }
+            function body(wrapper){
+                wrapper.load([
+                        {url: "../../asset/texture/crate.gif", id: "ground"},
+                        {
+                            url: "../../asset/model/gltf/boxAnimated/glTF-MaterialsCommon/glTF-MaterialsCommon.gltf",
+                            id: "model"
+                        }
+                    ])
+                    .do(initSample);
 
-                    initSample();
-
-
-                    tester.init();
-
-                    if(done){
-                        done();
-                    }
-                });
 
                 function initSample() {
                     var director = wd.Director.getInstance();

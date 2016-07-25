@@ -19,17 +19,9 @@ var SceneTester = YYC.Class({
             }
         },
         execBody: function (args){
-                var bodyFunc = arguments[0],
-                    done = arguments[1],
-                    initFunc = null;
+            var wrapper = SceneBodyWrapper.create(this);
 
-                if(arguments.length === 2){
-                }
-                else{
-                    initFunc = arguments[2];
-                }
-
-            bodyFunc(pathTool.join(pathTool.getPathData().rootPath, "base/examples/"), initFunc, done);
+            wrapper.execBody.apply(wrapper, arguments);
         },
         /**
          * compare the snapshot image at the end of the frameIndex frame to the correct image
