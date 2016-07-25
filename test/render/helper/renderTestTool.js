@@ -21,6 +21,13 @@ var renderTestTool = (function(){
         },
         destoryContext: function () {
             $("canvas").remove();
+        },
+        setStartTime: function(startTime){
+            var time = startTime || 0;
+
+            window.performance.now = function(){
+                return time;
+            }
         }
     }
 })();

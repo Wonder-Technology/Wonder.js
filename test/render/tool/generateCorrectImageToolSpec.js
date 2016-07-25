@@ -6,6 +6,13 @@ var instanceTool = (function(){
         getShadowInstancePosition:function(index, range, count){
             return wd.Vector3.create(range / 2 - this._getVal(index, count) * range, 60, 0);
         },
+        getSpecificInstancePosition:function(index, range, count, x,y,z){
+            var x = x !== null ? x : (range / 2 - this._getVal(index, count) * range);
+            var y = y !== null ? y : (range / 2 - this._getVal(index + 1, count) * range);
+            var z = z !== null ? z :(range / 2 - this._getVal(index + 2, count) * range);
+
+            return wd.Vector3.create(x, y, z);
+        },
         getInstanceRotation:function(index, count){
             var val = this._getVal(index, count);
 
@@ -15,20 +22,6 @@ var instanceTool = (function(){
             return wd.Vector3.create(3,3,3);
         },
         _getVal:function(index, count){
-            //if(index % 2 === 0){
-            //    if(isRevert){
-            //        return mathTestUtils.toFixed(1 - (index) / count, 3);
-            //    }
-            //
-            //    return mathTestUtils.toFixed((index) / count, 3);
-            //}
-            //else{
-            //    if(isRevert){
-            //        return mathTestUtils.toFixed((index) / count, 3);
-            //    }
-            //
-            //    return mathTestUtils.toFixed(1 - (index) / count, 3);
-            //}
             return randomTool.getFixedRandomNum(index);
         }
     }
@@ -40,134 +33,145 @@ describe("generate correct image tool", function () {
     //function body(assetParentDirPath, done){
     //}
 
-    function body(initFunc){
-        if(initFunc){
-            initFunc();
-        }
+    function body(assetParentDirPath, initFunc, done){
+        wd.LoaderManager.getInstance().load([
+            {url: assetParentDirPath + "asset/texture/crate.gif", id: "ground"},
+            {url: assetParentDirPath + "asset/model/gltf/boxAnimated/glTF-MaterialsCommon/glTF-MaterialsCommon.gltf", id: "model"}
+        ]).subscribe(null, null, function () {
+            if(initFunc){
+                initFunc();
+            }
 
-        initSample();
+            initSample();
 
 
-        tester.init();
+            tester.init();
+
+            if(done){
+                done();
+            }
+        });
 
         function initSample() {
             var director = wd.Director.getInstance();
 
+            director.renderer.setClearColor(wd.Color.create("#aaaaff"));
 
-            var models = createModels();
-            var source = models[0];
-            var instance = models[1];
+            var ground = createGround();
 
-            wd.Director.getInstance().scheduler.scheduleFrame(function(){
-                director.scene.removeChild(instance);
-            }, 1);
-
-            wd.Director.getInstance().scheduler.scheduleFrame(function(){
-                director.scene.addChild(instance);
-
-                instance.init();
-
-
-                var instance2 = source.getComponent(wd.SourceInstance).cloneInstance("instance2");
-
-                instance2.transform.position = wd.Vector3.create(30,30,30);
-
-                director.scene.addChild(instance2);
-
-                instance2.init();
-
-            }, 2);
-
-
-
-
-            director.scene.addChildren(models);
+            director.scene.addChild(ground);
+            director.scene.addChildren(createGLTFs());
             director.scene.addChild(createAmbientLight());
-            director.scene.addChild(createDirectionLight());
+            director.scene.addChild(createDirectionLight(wd.Vector3.create(0, 500, 500)));
+            director.scene.addChild(createDirectionLight(wd.Vector3.create(500, 500, 0)));
             director.scene.addChild(createCamera());
 
             //director.start();
         }
 
-        function createModels(){
+        function createGLTFs(){
             var arr = [],
-                model = createSphere(),
-                range = 100,
-                count = 1;
+                model = setGLTF(),
+                range = 300,
+                count = 10;
 
-            var sourceInstanceComponent = wd.SourceInstance.create();
-            model.addComponent(sourceInstanceComponent);
+            model.transform.position = wd.Vector3.create(60, 24, -40);
 
             arr.push(model);
-            model.transform.position = wd.Vector3.create(0, -10, 0);
+
+            var sourceInstanceComponent = model.getComponent(wd.SourceInstance);
+
+            for(var i = 0; i < count; i++){
+                var instance = sourceInstanceComponent.cloneInstance("index" + String(i));
+
+                instance.transform.position = instanceTool.getSpecificInstancePosition(i, range, count, null, 24, null);
 
 
-            var i = 0;
 
-            var instance = sourceInstanceComponent.cloneInstance("instance1");
 
-            instance.transform.position = instanceTool.getInstancePosition(i, range, count);
-            instance.transform.rotate(instanceTool.getInstanceRotation(i, count));
-            instance.transform.scale = instanceTool.getInstanceScale(i, count);
+                var anim = instance.getChild(1).getComponent(wd.ArticulatedAnimation);
 
-            arr.push(instance);
+                anim.play("animation_0");
+
+
+
+                arr.push(instance);
+            }
 
             return arr;
         }
 
+        function setGLTF() {
+            var models = wd.LoaderManager.getInstance().get("model").getChild("models");
 
-        function createSphere(){
-            var material = wd.LightMaterial.create();
-            material.color = wd.Color.create("rgb(0, 255, 255)");
+            var box1 = models.getChild(1);
+            var box2 = models.getChild(2);
 
+            var boxContainer = wd.GameObject.create();
+            boxContainer.addChildren([box1, box2]);
 
-            var geometry = wd.SphereGeometry.create();
-            geometry.material = material;
-            geometry.radius = 5;
-            geometry.segment = 5;
-
-
-            var gameObject = wd.GameObject.create();
-
-            gameObject.addComponent(wd.MeshRenderer.create());
-            gameObject.addComponent(geometry);
+            boxContainer.addComponent(wd.SourceInstance.create());
 
 
-            var boxChild1 = createBox();
-            var boxChild2 = createBox();
-            var boxChild21 = createBox();
 
-            gameObject.addChild(boxChild1);
-            gameObject.addChild(boxChild2);
+            box1.transform.scale = wd.Vector3.create(20,20,20);
+            box2.transform.scale = wd.Vector3.create(20,20,20);
 
-            boxChild2.addChild(boxChild21);
+            var anim = box2.getComponent(wd.ArticulatedAnimation);
 
-
-            boxChild1.transform.translate(20, 0, 0);
-            boxChild2.transform.translate(-20, 0, 0);
-
-            boxChild21.transform.translate(-25, 0, 0);
+            anim.play("animation_1");
 
 
-            return gameObject;
+
+
+
+            wd.Director.getInstance().scheduler.scheduleTime(function(){
+                anim.pause();
+//                anim.stop();
+            }, 1000);
+
+            wd.Director.getInstance().scheduler.scheduleTime(function(){
+                anim.resume();
+//                anim.play("animation_1");
+            }, 2000);
+
+//            return models;
+            return boxContainer;
         }
 
-        function createBox(){
+        function createGround(){
+            var map = wd.LoaderManager.getInstance().get("ground").toTexture();
+            map.name = "groundMap";
+            map.wrapS = wd.ETextureWrapMode.REPEAT;
+            map.wrapT = wd.ETextureWrapMode.REPEAT;
+            map.repeatRegion = wd.RectRegion.create(0.5, 0, 5, 5);
+
+
             var material = wd.LightMaterial.create();
-            material.color = wd.Color.create("rgb(255, 0, 255)");
+            material.specularColor = wd.Color.create("#ffdd99");
+            material.shininess = 32;
+            material.diffuseMap = map;
 
 
-            var geometry = wd.BoxGeometry.create();
-            geometry.material = material;
-            geometry.width = 5;
-            geometry.height = 5;
-            geometry.depth = 5;
+            var plane = wd.PlaneGeometry.create();
+            plane.width = 400;
+            plane.height = 400;
+            plane.material = material;
 
 
             var gameObject = wd.GameObject.create();
-
             gameObject.addComponent(wd.MeshRenderer.create());
-            gameObject.addComponent(geometry);
+            gameObject.addComponent(plane);
+
+            gameObject.name = "ground";
+
+            var shadow = wd.Shadow.create();
+            shadow.cast = false;
+            shadow.receive = true;
+
+            gameObject.addComponent(shadow);
+
+
 
 
             return gameObject;
@@ -183,16 +187,29 @@ describe("generate correct image tool", function () {
             return ambientLight;
         }
 
-        function createDirectionLight() {
+        function createDirectionLight(pos) {
+            var SHADOW_MAP_WIDTH = 1024,
+                SHADOW_MAP_HEIGHT = 1024;
+
             var directionLightComponent = wd.DirectionLight.create();
             directionLightComponent.color = wd.Color.create("#ffffff");
-            directionLightComponent.intensity = 2;
-
+            directionLightComponent.intensity = 1;
+            directionLightComponent.castShadow = true;
+            directionLightComponent.shadowCameraLeft = -200;
+            directionLightComponent.shadowCameraRight = 200;
+            directionLightComponent.shadowCameraTop = 200;
+            directionLightComponent.shadowCameraBottom = -200;
+            directionLightComponent.shadowCameraNear = 0.1;
+            directionLightComponent.shadowCameraFar = 1000;
+            directionLightComponent.shadowBias = 0.005;
+            directionLightComponent.shadowDarkness = 0.2;
+            directionLightComponent.shadowMapWidth = SHADOW_MAP_WIDTH;
+            directionLightComponent.shadowMapHeight = SHADOW_MAP_HEIGHT;
 
             var directionLight = wd.GameObject.create();
             directionLight.addComponent(directionLightComponent);
 
-            directionLight.transform.translate(wd.Vector3.create(0, 1000, 0));
+            directionLight.transform.position = pos;
 
             return directionLight;
         }
@@ -208,7 +225,8 @@ describe("generate correct image tool", function () {
             cameraComponent.far = 1000;
 
             var controller = wd.ArcballCameraController.create(cameraComponent);
-            controller.distance = 100;
+            controller.theta = Math.PI / 4;
+            controller.distance = 200;
 
             camera.addComponent(controller);
 
@@ -219,14 +237,15 @@ describe("generate correct image tool", function () {
     }
 
 
-    //beforeEach(function (done) {
-    beforeEach(function () {
+    beforeEach(function (done) {
+    //beforeEach(function () {
         tester = SceneTester.create();
 
         renderTestTool.prepareContext();
 
-        //tester.execBody(body, done);
-        body();
+
+        tester.execBody(body, done);
+        //body();
     });
     afterEach(function () {
     });
@@ -236,11 +255,12 @@ describe("generate correct image tool", function () {
             [
                 {
                     frameIndex:1,
-                    imageName:"instance_remove.png"
+                    imageName:"instance_animation_articulated_frame1.png"
                 },
                 {
-                    frameIndex:2,
-                    imageName:"instance_add.png"
+                    frameIndex:3000,
+                    step:3000,
+                    imageName:"instance_animation_articulated_frame3000.png"
                 }
             ]
         );

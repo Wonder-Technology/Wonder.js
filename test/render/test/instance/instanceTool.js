@@ -6,6 +6,13 @@ var instanceTool = (function(){
         getShadowInstancePosition:function(index, range, count){
             return wd.Vector3.create(range / 2 - this._getVal(index, count) * range, 60, 0);
         },
+        getSpecificInstancePosition:function(index, range, count, x,y,z){
+            var x = x !== null ? x : (range / 2 - this._getVal(index, count) * range);
+            var y = y !== null ? y : (range / 2 - this._getVal(index + 1, count) * range);
+            var z = z !== null ? z :(range / 2 - this._getVal(index + 2, count) * range);
+
+            return wd.Vector3.create(x, y, z);
+        },
         getInstanceRotation:function(index, count){
             var val = this._getVal(index, count);
 

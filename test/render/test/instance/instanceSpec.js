@@ -152,11 +152,16 @@ describe("instance", function () {
                 tester.compareAt(1, "instance/instance_render.png", done);
             });
             it("if hardware not support instance, the render result should be the same", function (done) {
-                body(function(){
+                body(function () {
                     wd.GPUDetector.getInstance().extensionInstancedArrays = null;
                 });
 
-                tester.compareAt(1, "instance/instance_render.png", done);
+                tester.compareAt({
+                    frameIndex: 1,
+                    partialCorrectImagePath: "instance/instance_render.png",
+                    description: "if hardware not support instance, the render result should be the same",
+                    done: done
+                });
             });
         });
 
@@ -461,7 +466,12 @@ describe("instance", function () {
                     wd.GPUDetector.getInstance().extensionInstancedArrays = null;
                 });
 
-                tester.compareAt(1, "instance/instance_shadow_pointLight.png", done);
+                tester.compareAt({
+                    frameIndex: 1,
+                    partialCorrectImagePath: "instance/instance_shadow_pointLight.png",
+                    description: "if hardware not support instance, the render result should be the same",
+                    done: done
+                });
             });
         });
 
@@ -661,6 +671,236 @@ describe("instance", function () {
                 body();
 
                 tester.compareAt(2, "instance/instance_add.png", done);
+            });
+        });
+
+        describe("test instance articulated animation", function () {
+            var tester;
+
+            function body(assetParentDirPath, initFunc, done){
+                wd.LoaderManager.getInstance().load([
+                    {url: assetParentDirPath + "asset/texture/crate.gif", id: "ground"},
+                    {url: assetParentDirPath + "asset/model/gltf/boxAnimated/glTF-MaterialsCommon/glTF-MaterialsCommon.gltf", id: "model"}
+                ]).subscribe(null, null, function () {
+                    if(initFunc){
+                        initFunc();
+                    }
+
+                    initSample();
+
+
+                    tester.init();
+
+                    if(done){
+                        done();
+                    }
+                });
+
+                function initSample() {
+                    var director = wd.Director.getInstance();
+
+                    director.renderer.setClearColor(wd.Color.create("#aaaaff"));
+
+                    var ground = createGround();
+
+                    director.scene.addChild(ground);
+                    director.scene.addChildren(createGLTFs());
+                    director.scene.addChild(createAmbientLight());
+                    director.scene.addChild(createDirectionLight(wd.Vector3.create(0, 500, 500)));
+                    director.scene.addChild(createDirectionLight(wd.Vector3.create(500, 500, 0)));
+                    director.scene.addChild(createCamera());
+
+                    //director.start();
+                }
+
+                function createGLTFs(){
+                    var arr = [],
+                        model = setGLTF(),
+                        range = 300,
+                        count = 10;
+
+                    model.transform.position = wd.Vector3.create(60, 24, -40);
+
+                    arr.push(model);
+
+                    var sourceInstanceComponent = model.getComponent(wd.SourceInstance);
+
+                    for(var i = 0; i < count; i++){
+                        var instance = sourceInstanceComponent.cloneInstance("index" + String(i));
+
+                        instance.transform.position = instanceTool.getSpecificInstancePosition(i, range, count, null, 24, null);
+
+
+
+
+                        var anim = instance.getChild(1).getComponent(wd.ArticulatedAnimation);
+
+                        anim.play("animation_0");
+
+
+
+                        arr.push(instance);
+                    }
+
+                    return arr;
+                }
+
+                function setGLTF() {
+                    var models = wd.LoaderManager.getInstance().get("model").getChild("models");
+
+                    var box1 = models.getChild(1);
+                    var box2 = models.getChild(2);
+
+                    var boxContainer = wd.GameObject.create();
+                    boxContainer.addChildren([box1, box2]);
+
+                    boxContainer.addComponent(wd.SourceInstance.create());
+
+
+
+                    box1.transform.scale = wd.Vector3.create(20,20,20);
+                    box2.transform.scale = wd.Vector3.create(20,20,20);
+
+                    var anim = box2.getComponent(wd.ArticulatedAnimation);
+
+                    anim.play("animation_1");
+
+
+
+
+
+                    wd.Director.getInstance().scheduler.scheduleTime(function(){
+                        anim.pause();
+//                anim.stop();
+                    }, 1000);
+
+                    wd.Director.getInstance().scheduler.scheduleTime(function(){
+                        anim.resume();
+//                anim.play("animation_1");
+                    }, 2000);
+
+//            return models;
+                    return boxContainer;
+                }
+
+                function createGround(){
+                    var map = wd.LoaderManager.getInstance().get("ground").toTexture();
+                    map.name = "groundMap";
+                    map.wrapS = wd.ETextureWrapMode.REPEAT;
+                    map.wrapT = wd.ETextureWrapMode.REPEAT;
+                    map.repeatRegion = wd.RectRegion.create(0.5, 0, 5, 5);
+
+
+                    var material = wd.LightMaterial.create();
+                    material.specularColor = wd.Color.create("#ffdd99");
+                    material.shininess = 32;
+                    material.diffuseMap = map;
+
+
+                    var plane = wd.PlaneGeometry.create();
+                    plane.width = 400;
+                    plane.height = 400;
+                    plane.material = material;
+
+
+                    var gameObject = wd.GameObject.create();
+                    gameObject.addComponent(wd.MeshRenderer.create());
+                    gameObject.addComponent(plane);
+
+                    gameObject.name = "ground";
+
+                    var shadow = wd.Shadow.create();
+                    shadow.cast = false;
+                    shadow.receive = true;
+
+                    gameObject.addComponent(shadow);
+
+
+
+
+                    return gameObject;
+                }
+
+                function createAmbientLight() {
+                    var ambientLightComponent = wd.AmbientLight.create();
+                    ambientLightComponent.color = wd.Color.create("rgb(30, 30, 30)");
+
+                    var ambientLight = wd.GameObject.create();
+                    ambientLight.addComponent(ambientLightComponent);
+
+                    return ambientLight;
+                }
+
+                function createDirectionLight(pos) {
+                    var SHADOW_MAP_WIDTH = 1024,
+                        SHADOW_MAP_HEIGHT = 1024;
+
+                    var directionLightComponent = wd.DirectionLight.create();
+                    directionLightComponent.color = wd.Color.create("#ffffff");
+                    directionLightComponent.intensity = 1;
+                    directionLightComponent.castShadow = true;
+                    directionLightComponent.shadowCameraLeft = -200;
+                    directionLightComponent.shadowCameraRight = 200;
+                    directionLightComponent.shadowCameraTop = 200;
+                    directionLightComponent.shadowCameraBottom = -200;
+                    directionLightComponent.shadowCameraNear = 0.1;
+                    directionLightComponent.shadowCameraFar = 1000;
+                    directionLightComponent.shadowBias = 0.005;
+                    directionLightComponent.shadowDarkness = 0.2;
+                    directionLightComponent.shadowMapWidth = SHADOW_MAP_WIDTH;
+                    directionLightComponent.shadowMapHeight = SHADOW_MAP_HEIGHT;
+
+                    var directionLight = wd.GameObject.create();
+                    directionLight.addComponent(directionLightComponent);
+
+                    directionLight.transform.position = pos;
+
+                    return directionLight;
+                }
+
+                function createCamera() {
+                    var camera = wd.GameObject.create(),
+                        view = wd.Director.getInstance().view,
+                        cameraComponent = wd.PerspectiveCamera.create();
+
+                    cameraComponent.fovy = 60;
+                    cameraComponent.aspect = view.width / view.height;
+                    cameraComponent.near = 0.1;
+                    cameraComponent.far = 1000;
+
+                    var controller = wd.ArcballCameraController.create(cameraComponent);
+                    controller.theta = Math.PI / 4;
+                    controller.distance = 200;
+
+                    camera.addComponent(controller);
+
+                    return camera;
+                }
+
+
+            }
+
+            beforeEach(function (done) {
+                tester = SceneTester.create();
+
+                renderTestTool.prepareContext();
+
+
+                tester.execBody(body, done);
+            });
+
+            it("test frame1", function (done) {
+                tester.compareAt(1, "instance/instance_animation_articulated_frame1.png", done);
+            });
+            it("test frame3000", function (done) {
+                tester.compareAt(
+                    {
+                        frameIndex:3000,
+                        step:3000,
+                        partialCorrectImagePath:"instance/instance_animation_articulated_frame3000.png",
+                        done:done
+                    }
+                );
             });
         });
     });

@@ -9,8 +9,8 @@ var SceneTestDebuger = YYC.Class({
     Public:{
         init:function(){
         },
-        insertTestResult: function(partialCorrectImagePath, correctImage, testSceneCanvas){
-            var testDescription = this._getTestDescription(partialCorrectImagePath);
+        insertTestResult: function(partialCorrectImagePath, description, correctImage, testSceneCanvas){
+            var testDescription = this._getTestDescription(partialCorrectImagePath, description);
 
             var imageEleData = this._getCorrectImageAndTestSceneImage(correctImage, testSceneCanvas);
             $("body").append($("<h1>").text(testDescription));
@@ -27,8 +27,10 @@ var SceneTestDebuger = YYC.Class({
         }
     },
     Private:{
-        _getTestDescription: function(partialCorrectImagePath){
-            return partialCorrectImagePath.match(/\/([^\.]+)/)[1];
+        _getTestDescription: function(partialCorrectImagePath, description){
+            var d = description === null ? "" : (": " + description);
+
+            return partialCorrectImagePath.match(/\/([^\.]+)/)[1] + d;
         },
         _getCorrectImageAndTestSceneImage: function(correctImage, testSceneCanvas){
             var ITEM_HEIGHT = 300;

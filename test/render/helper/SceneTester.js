@@ -8,6 +8,8 @@ var SceneTester = YYC.Class({
         isDebug:true,
 
         init:function(){
+            renderTestTool.setStartTime(0);
+
             this._getDirector()._init();
 
             if(this.isDebug){
@@ -16,8 +18,18 @@ var SceneTester = YYC.Class({
                 this._debuger.init();
             }
         },
-        execBody: function(bodyFunc, done){
-            bodyFunc(pathTool.join(pathTool.getPathData().rootPath, "base/examples/"), done);
+        execBody: function (args){
+                var bodyFunc = arguments[0],
+                    done = arguments[1],
+                    initFunc = null;
+
+                if(arguments.length === 2){
+                }
+                else{
+                    initFunc = arguments[2];
+                }
+
+            bodyFunc(pathTool.join(pathTool.getPathData().rootPath, "base/examples/"), initFunc, done);
         },
         /**
          * compare the snapshot image at the end of the frameIndex frame to the correct image
@@ -26,36 +38,49 @@ var SceneTester = YYC.Class({
          */
         compareAt:function(args){
             var self = this,
-                director = this._getDirector();
-
-
-            var frameIndex = null,
+                frameIndex = null,
                 partialCorrectImagePath = null,
                 handle = null,
+                step = null,
+                description = null,
                 done = null;
 
-            if(arguments.length === 3){
+            if(arguments.length === 1){
+                var data = arguments[0];
+
+                frameIndex = data.frameIndex;
+  partialCorrectImagePath = data.partialCorrectImagePath;
+                handle = data.handle;
+                done = data.done;
+                step = data.step;
+                description = data.description;
+            }
+            else if(arguments.length === 3){
                 frameIndex = arguments[0];
                     partialCorrectImagePath = arguments[1];
                     done = arguments[2];
+                step = 1;
+                description = null;
             }
             else{
                 frameIndex = arguments[0];
                 partialCorrectImagePath = arguments[1];
                 handle = arguments[2];
                 done = arguments[3];
+                step = 1;
+                description = null;
             }
 
+            step = step || 1;
+            handle = handle || null;
+            description = description || null;
 
-
-            for(var i = 1; i <= frameIndex; i++){
-                if(i === frameIndex
-                    && handle){
-                    handle();
-                }
-
-                director._loopBody(i);
-            }
+            this._loopBody({
+                startIndex:1,
+                frameIndex:frameIndex,
+                step:step,
+                handle:handle
+            });
 
 
             var data = this._readScenePixelArr();
@@ -76,7 +101,7 @@ var SceneTester = YYC.Class({
                 matcher.compareImage(this, pixelArr);
 
                 if(self.isDebug){
-                    self._debuger.insertTestResult(partialCorrectImagePath, this, data.canvas);
+                    self._debuger.insertTestResult(partialCorrectImagePath, description, this, data.canvas);
                 }
 
                 done();
@@ -91,40 +116,57 @@ var SceneTester = YYC.Class({
          * @param frameIndex
          * @param imageName
          */
-        generateAt:function(frameIndex, imageName, handle){
-            var director = this._getDirector();
-
-            for(var i = 1; i <= frameIndex; i++){
-                if(i === frameIndex
-                    && handle){
-                    handle();
-                }
-
-                director._loopBody(i);
-            }
-
-            this._download(this._createImageDataURL(imageName), imageName);
+        generateAt:function(frameIndex, imageName, handle, step){
+            this._generateAt({
+                startIndex:1,
+                frameIndex:frameIndex,
+                step:step || 1,
+                handle:handle,
+                imageName:imageName
+            });
         },
         generateBatchAt:function(dataArr){
-            var director = this._getDirector(),
-                self = this;
+            var self = this;
 
             dataArr.forEach(function(data, index){
-                for(var i = index + 1; i <= data.frameIndex; i++){
-                    if(i === data.frameIndex
-                        && data.handle){
-                        data.handle();
-                    }
-
-                    director._loopBody(i);
-                }
-
-                self._download(self._createImageDataURL(data.imageName), data.imageName);
+                self._generateAt({
+                    startIndex:index + 1,
+                    frameIndex:data.frameIndex,
+                    step:data.step || 1,
+                    handle:data.handle,
+                    imageName:data.imageName
+                });
             });
         }
     },
     Private:{
         _debuger:null,
+
+        _generateAt:function(data){
+            this._loopBody(data);
+
+            this._download(this._createImageDataURL(data.imageName), data.imageName);
+        },
+        _loopBody:function(data){
+            var director = this._getDirector(),
+                i = data.startIndex;
+
+            while(true){
+                if(i >= data.frameIndex){
+                    if(data.handle) {
+                        data.handle();
+                    }
+
+                    director._loopBody(data.frameIndex);
+
+                    break;
+                }
+
+                director._loopBody(i);
+
+                i+=data.step;
+            }
+        },
         _getDirector: function(){
             return wd.Director.getInstance();
         },
