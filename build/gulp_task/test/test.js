@@ -41,7 +41,9 @@ gulp.task("test", gulpSync.sync(["compileForTest", "watchForTest", "testByKarma"
 
 
 //gulp.task("renderTest", gulpSync.sync(["compileForTest", "watchForTest", "renderTestByKarma"]));
-gulp.task("renderTest", gulpSync.sync(["renderTestByKarma"]));
+gulp.task("renderTest", gulpSync.sync(["compileForTest", "renderTestByKarma"]));
+
+gulp.task("renderTestTool", gulpSync.sync(["compileForTest", "renderTestToolByKarma"]));
 
 
 gulp.task("renderTestByKarma", function (done) {
@@ -53,7 +55,7 @@ gulp.task("renderTestByKarma", function (done) {
 });
 
 
-gulp.task("renderTestTool", function (done) {
+gulp.task("renderTestToolByKarma", function (done) {
     karma.start({
         configFile: renderTestToolkarmaConfPath
         //singleRun:true,
