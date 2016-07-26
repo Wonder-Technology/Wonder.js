@@ -27,7 +27,7 @@ describe("instance", function () {
                     director.scene.addChildren(createModels());
                     director.scene.addChild(createCamera());
 
-                    //director.start();
+                    director.start();
                 }
 
                 function createModels(){
@@ -136,7 +136,7 @@ describe("instance", function () {
             }
 
             beforeEach(function () {
-                tester = SceneTester.create();
+                tester = SceneTester.create(sandbox);
 
                 renderTestTool.prepareContext();
             });
@@ -182,7 +182,7 @@ describe("instance", function () {
                     director.scene.addChild(createPointLight());
                     director.scene.addChild(createCamera());
 
-                    //director.start();
+                    director.start();
                 }
 
                 function createModels(){
@@ -443,7 +443,7 @@ describe("instance", function () {
             }
 
             beforeEach(function () {
-                tester = SceneTester.create();
+                tester = SceneTester.create(sandbox);
 
                 renderTestTool.prepareContext();
             });
@@ -513,7 +513,7 @@ describe("instance", function () {
                     director.scene.addChild(createDirectionLight());
                     director.scene.addChild(createCamera());
 
-                    //director.start();
+                    director.start();
                 }
 
                 function createModels(){
@@ -646,7 +646,7 @@ describe("instance", function () {
             }
 
             beforeEach(function () {
-                tester = SceneTester.create();
+                tester = SceneTester.create(sandbox);
 
                 renderTestTool.prepareContext();
             });
@@ -691,7 +691,7 @@ describe("instance", function () {
                     director.scene.addChild(createDirectionLight(wd.Vector3.create(500, 500, 0)));
                     director.scene.addChild(createCamera());
 
-                    //director.start();
+                    director.start();
                 }
 
                 function createGLTFs(){
@@ -862,7 +862,7 @@ describe("instance", function () {
             }
 
             beforeEach(function (done) {
-                tester = SceneTester.create();
+                tester = SceneTester.create(sandbox);
 
                 renderTestTool.prepareContext();
 

@@ -1,11 +1,15 @@
 var SceneTester = YYC.Class({
     Static:{
-        create:function(){
-            return new this();
+        create:function(sandbox){
+            return new this(sandbox);
         }
+    },
+    Init:function(sandbox){
+        this.sandbox = sandbox;
     },
     Public:{
         isDebug:true,
+        sandbox:null,
 
         init:function(){
             renderTestTool.setStartTime(0);

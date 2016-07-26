@@ -67,6 +67,8 @@ var SceneBodyWrapper = YYC.Class({
                     self._initFunc();
                 }
 
+                self._tester.sandbox.stub(wd.Director.getInstance(), "start");
+
                 initSampleFunc();
 
                 self._tester.init();
