@@ -29,7 +29,11 @@ var ImageMatcher = YYC.Class({
                 }
             }
 
-            expect(hitCount).not.toBeLessThan(pixelCount / 4 * CORRECT_RATE)
+            var isTestSuccessed = hitCount >= pixelCount / 4 * CORRECT_RATE;
+
+            expect(isTestSuccessed).toBeTruthy();
+
+            return isTestSuccessed;
         }
     },
     Private:{

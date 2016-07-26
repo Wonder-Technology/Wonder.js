@@ -94,10 +94,10 @@ var SceneTester = YYC.Class({
                 var matcher = ImageMatcher.create(pixelArr);
 
 
-                matcher.compareImage(this, pixelArr);
+                var isTestSuccessed = matcher.compareImage(this, pixelArr);
 
                 if(self.isDebug){
-                    self._debuger.insertTestResult(partialCorrectImagePath, description, this, data.canvas);
+                    self._debuger.insertTestResult(isTestSuccessed, partialCorrectImagePath, description, this, data.canvas);
                 }
 
                 done();

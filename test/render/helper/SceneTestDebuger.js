@@ -9,11 +9,12 @@ var SceneTestDebuger = YYC.Class({
     Public:{
         init:function(){
         },
-        insertTestResult: function(partialCorrectImagePath, description, correctImage, testSceneCanvas){
+        insertTestResult: function(isTestSuccessed, partialCorrectImagePath, description, correctImage, testSceneCanvas){
             var testDescription = this._getTestDescription(partialCorrectImagePath, description);
 
             var imageEleData = this._getCorrectImageAndTestSceneImage(correctImage, testSceneCanvas);
-            $("body").append($("<h1>").text(testDescription));
+
+            this._insertTestDescription(isTestSuccessed, testDescription);
             $("body").append($(imageEleData.correctImageDom));
             $("body").append($(imageEleData.testSceneImageDom));
 
@@ -27,6 +28,18 @@ var SceneTestDebuger = YYC.Class({
         }
     },
     Private:{
+        _insertTestDescription: function(isTestSuccessed, testDescription){
+            var backgroundColor = null;
+
+            if(isTestSuccessed){
+                backgroundColor = "green";
+            }
+            else{
+                backgroundColor = "red";
+            }
+
+            $("body").append($("<h1 style='background-color: " + backgroundColor + ";'>").text(testDescription));
+        },
         _getTestDescription: function(partialCorrectImagePath, description){
             var d = description === null ? "" : (": " + description);
 
