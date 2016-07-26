@@ -16,19 +16,11 @@ describe("procedural texture", function () {
         var tester;
 
         describe("test marble procedural texture", function () {
-            function body(assetParentDirPath, done){
-                wd.LoaderManager.getInstance().load([
-                    {url: assetParentDirPath + "asset/texture/1.jpg", id: "texture1"}
-                ]).subscribe(null, null, function () {
-                    initSample();
-
-
-                    tester.init();
-
-                    if(done){
-                        done();
-                    }
-                });
+            function body(wrapper){
+                wrapper.load([
+                    {url: "../../asset/texture/1.jpg", id: "texture1"}
+                ])
+                    .do(initSample);
 
                 function initSample() {
                     var director = wd.Director.getInstance();
@@ -38,7 +30,7 @@ describe("procedural texture", function () {
                     director.scene.addChild(createDirectionLight());
                     director.scene.addChild(createCamera());
 
-                    //director.start();
+                    director.start();
                 }
 
                 function createPlane1() {
@@ -172,7 +164,7 @@ describe("procedural texture", function () {
             }
 
             beforeEach(function (done) {
-                tester = SceneTester.create();
+                tester = SceneTester.create(sandbox);
 
                 renderTestTool.prepareContext();
 
@@ -185,15 +177,9 @@ describe("procedural texture", function () {
         });
 
         describe("test more procedural texture", function () {
-            function body(assetParentDirPath, done){
-                initSample();
-
-
-                tester.init();
-
-                if(done){
-                    done();
-                }
+            function body(wrapper){
+                wrapper.load([])
+                    .do(initSample);
 
                 function initSample() {
                     var director = wd.Director.getInstance();
@@ -203,7 +189,7 @@ describe("procedural texture", function () {
                     director.scene.addChild(createDirectionLight());
                     director.scene.addChild(createCamera());
 
-                    //director.start();
+                    director.start();
                 }
 
                 function createPlane1() {
@@ -292,7 +278,7 @@ describe("procedural texture", function () {
             }
 
             beforeEach(function (done) {
-                tester = SceneTester.create();
+                tester = SceneTester.create(sandbox);
 
                 renderTestTool.prepareContext();
 
@@ -305,15 +291,9 @@ describe("procedural texture", function () {
         });
 
         describe("test animate procedural texture", function () {
-            function body(assetParentDirPath, done){
-                initSample();
-
-
-                tester.init();
-
-                if(done){
-                    done();
-                }
+            function body(wrapper){
+                wrapper.load([])
+                    .do(initSample);
 
 
                 function initSample() {
@@ -324,7 +304,7 @@ describe("procedural texture", function () {
                     director.scene.addChild(createDirectionLight());
                     director.scene.addChild(createCamera());
 
-                    //director.start();
+                    director.start();
                 }
 
                 function createPlane() {
@@ -396,7 +376,7 @@ describe("procedural texture", function () {
             }
 
             beforeEach(function (done) {
-                tester = SceneTester.create();
+                tester = SceneTester.create(sandbox);
 
                 renderTestTool.prepareContext();
 
@@ -412,23 +392,14 @@ describe("procedural texture", function () {
         });
 
         describe("test custom procedural texture", function () {
-            function body(assetParentDirPath, done){
-                wd.LoaderManager.getInstance().load([
+            function body(wrapper){
+                wrapper.load([
                     {url: "./base/test/render/res/procedural/texture/dirt.jpg", id: "dirt"},
                     {url: "./base/test/render/res/procedural/texture/grass.png", id: "grass"},
                     {url: "./base/test/render/res/procedural/glsl/shaderConfig.json", id: "shaderConfig"},
                     {url: "./base/test/render/res/procedural/glsl/custom_fragment.glsl", id: "fs"}
-                ]).subscribe(null, null, function () {
-                    initSample();
-
-
-                    tester.init();
-
-                    if(done){
-                        done();
-                    }
-
-                });
+                ])
+                    .do(initSample);
 
                 function initSample() {
                     var director = wd.Director.getInstance();
@@ -438,7 +409,7 @@ describe("procedural texture", function () {
                     director.scene.addChild(createDirectionLight());
                     director.scene.addChild(createCamera());
 
-                    //director.start();
+                    director.start();
                 }
 
                 function createPlane() {
@@ -513,7 +484,7 @@ describe("procedural texture", function () {
             }
 
             beforeEach(function (done) {
-                tester = SceneTester.create();
+                tester = SceneTester.create(sandbox);
 
                 renderTestTool.prepareContext();
 

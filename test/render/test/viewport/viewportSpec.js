@@ -15,8 +15,9 @@ describe("viewport", function () {
     describe("scene test", function(){
         var tester;
 
-        function body(){
-            initSample();
+        function body(wrapper){
+            wrapper.load([])
+                .do(initSample);
 
             function initSample() {
                 wd.DeviceManager.getInstance().setViewport(0, 0, 300, 300);
@@ -26,7 +27,7 @@ describe("viewport", function () {
                 director.scene.addChild(createTriangle());
                 director.scene.addChild(createCamera());
 
-                //director.start();
+                director.start();
             }
 
             function createTriangle() {
@@ -69,13 +70,11 @@ describe("viewport", function () {
         }
 
         beforeEach(function(){
-            tester = SceneTester.create();
+            tester = SceneTester.create(sandbox);
 
             renderTestTool.prepareContext();
 
-            body();
-
-            tester.init();
+            tester.execBody(body);
         });
 
         it("test viewport", function(done){

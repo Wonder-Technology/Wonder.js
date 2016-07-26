@@ -16,20 +16,12 @@ describe("terrain", function () {
         describe("test height map", function () {
             var tester;
 
-            function body(assetParentDirPath, done){
-                wd.LoaderManager.getInstance().load([
-                    {url: assetParentDirPath + "asset/texture/terrain/heightMap.png", id: "heightMap"},
-                    {url: assetParentDirPath + "asset/texture/terrain/ground.jpg", id: "ground"}
-                ]).subscribe(null, null, function () {
-                    initSample();
-
-
-                    tester.init();
-
-                    if(done){
-                        done();
-                    }
-                });
+            function body(wrapper){
+                wrapper.load([
+                    {url: "../../asset/texture/terrain/heightMap.png", id: "heightMap"},
+                    {url: "../../asset/texture/terrain/ground.jpg", id: "ground"}
+                ])
+                    .do(initSample);
 
                 function initSample() {
                     var director = wd.Director.getInstance();
@@ -39,7 +31,7 @@ describe("terrain", function () {
                     director.scene.addChild(createDirectionLight());
                     director.scene.addChild(createCamera());
 
-                    //director.start();
+                    director.start();
                 }
 
                 function createTerrain() {
@@ -125,7 +117,7 @@ describe("terrain", function () {
             }
 
             beforeEach(function (done) {
-                tester = SceneTester.create();
+                tester = SceneTester.create(sandbox);
 
                 renderTestTool.prepareContext();
 
@@ -140,21 +132,13 @@ describe("terrain", function () {
         describe("test layer texture", function () {
             var tester;
 
-            function body(assetParentDirPath, done){
-                wd.LoaderManager.getInstance().load([
-                    {url: assetParentDirPath + "asset/texture/terrain/heightMap.png", id: "heightMap"},
-                    {url: assetParentDirPath + "asset/texture/terrain/ground.jpg", id: "ground"},
-                    {url: assetParentDirPath + "asset/texture/1.jpg", id: "texture1"}
-                ]).subscribe(null, null, function () {
-                    initSample();
-
-
-                    tester.init();
-
-                    if(done){
-                        done();
-                    }
-                });
+            function body(wrapper){
+                wrapper.load([
+                    {url: "../../asset/texture/terrain/heightMap.png", id: "heightMap"},
+                    {url: "../../asset/texture/terrain/ground.jpg", id: "ground"},
+                    {url: "../../asset/texture/1.jpg", id: "texture1"}
+                ])
+                    .do(initSample);
 
                 function initSample() {
                     var director = wd.Director.getInstance();
@@ -164,7 +148,7 @@ describe("terrain", function () {
                     director.scene.addChild(createDirectionLight());
                     director.scene.addChild(createCamera());
 
-                    //director.start();
+                    director.start();
                 }
 
                 function createTerrain() {
@@ -262,7 +246,7 @@ describe("terrain", function () {
             }
 
             beforeEach(function (done) {
-                tester = SceneTester.create();
+                tester = SceneTester.create(sandbox);
 
                 renderTestTool.prepareContext();
 

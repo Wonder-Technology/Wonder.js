@@ -16,27 +16,19 @@ describe("water", function () {
         describe("test bump", function(){
             var tester;
 
-            function body(assetParentDirPath, done){
-                wd.LoaderManager.getInstance().load([
-                    {url: assetParentDirPath + "asset/texture/water/bump.png", id: "bump"},
-                    {url: assetParentDirPath + "asset/texture/terrain/ground.jpg", id: "ground"},
-                    {url: assetParentDirPath + "asset/texture/1.jpg", id: "sphere"},
-                    {url: assetParentDirPath + "asset/texture/skybox/px.jpg", id: "px"},
-                    {url: assetParentDirPath + "asset/texture/skybox/nx.jpg", id: "nx"},
-                    {url: assetParentDirPath + "asset/texture/skybox/py.jpg", id: "py"},
-                    {url: assetParentDirPath + "asset/texture/skybox/ny.jpg", id: "ny"},
-                    {url: assetParentDirPath + "asset/texture/skybox/pz.jpg", id: "pz"},
-                    {url: assetParentDirPath + "asset/texture/skybox/nz.jpg", id: "nz"}
-                ]).subscribe(null, null, function () {
-                    initSample();
-
-
-                    tester.init();
-
-                    if(done){
-                        done();
-                    }
-                });
+            function body(wrapper){
+                wrapper.load([
+                    {url: "../../asset/texture/water/bump.png", id: "bump"},
+                    {url: "../../asset/texture/terrain/ground.jpg", id: "ground"},
+                    {url: "../../asset/texture/1.jpg", id: "sphere"},
+                    {url: "../../asset/texture/skybox/px.jpg", id: "px"},
+                    {url: "../../asset/texture/skybox/nx.jpg", id: "nx"},
+                    {url: "../../asset/texture/skybox/py.jpg", id: "py"},
+                    {url: "../../asset/texture/skybox/ny.jpg", id: "ny"},
+                    {url: "../../asset/texture/skybox/pz.jpg", id: "pz"},
+                    {url: "../../asset/texture/skybox/nz.jpg", id: "nz"}
+                ])
+                    .do(initSample);
 
                 function initSample() {
                     var director = wd.Director.getInstance();
@@ -55,7 +47,7 @@ describe("water", function () {
 
                     director.scene.addChild(createCamera());
 
-                    //director.start();
+                    director.start();
                 }
 
                 function createSkybox() {
@@ -222,7 +214,7 @@ describe("water", function () {
             }
 
             beforeEach(function (done) {
-                tester = SceneTester.create();
+                tester = SceneTester.create(sandbox);
 
                 renderTestTool.prepareContext();
 
@@ -237,27 +229,19 @@ describe("water", function () {
         describe("test refraction", function(){
             var tester;
 
-            function body(assetParentDirPath, done){
-                wd.LoaderManager.getInstance().load([
-                    {url: assetParentDirPath + "asset/texture/water/bump.png", id: "bump"},
-                    {url: assetParentDirPath + "asset/texture/terrain/ground.jpg", id: "ground"},
-                    {url: assetParentDirPath + "asset/texture/1.jpg", id: "sphere"},
-                    {url: assetParentDirPath + "asset/texture/skybox/px.jpg", id: "px"},
-                    {url: assetParentDirPath + "asset/texture/skybox/nx.jpg", id: "nx"},
-                    {url: assetParentDirPath + "asset/texture/skybox/py.jpg", id: "py"},
-                    {url: assetParentDirPath + "asset/texture/skybox/ny.jpg", id: "ny"},
-                    {url: assetParentDirPath + "asset/texture/skybox/pz.jpg", id: "pz"},
-                    {url: assetParentDirPath + "asset/texture/skybox/nz.jpg", id: "nz"}
-                ]).subscribe(null, null, function () {
-                    initSample();
-
-
-                    tester.init();
-
-                    if(done){
-                        done();
-                    }
-                });
+            function body(wrapper){
+                wrapper.load([
+                    {url: "../../asset/texture/water/bump.png", id: "bump"},
+                    {url: "../../asset/texture/terrain/ground.jpg", id: "ground"},
+                    {url: "../../asset/texture/1.jpg", id: "sphere"},
+                    {url: "../../asset/texture/skybox/px.jpg", id: "px"},
+                    {url: "../../asset/texture/skybox/nx.jpg", id: "nx"},
+                    {url: "../../asset/texture/skybox/py.jpg", id: "py"},
+                    {url: "../../asset/texture/skybox/ny.jpg", id: "ny"},
+                    {url: "../../asset/texture/skybox/pz.jpg", id: "pz"},
+                    {url: "../../asset/texture/skybox/nz.jpg", id: "nz"}
+                ])
+                    .do(initSample);
 
                 function initSample() {
                     var director = wd.Director.getInstance();
@@ -276,7 +260,7 @@ describe("water", function () {
 
                     director.scene.addChild(createCamera());
 
-                    //director.start();
+                    director.start();
                 }
 
                 function createSkybox() {
@@ -443,7 +427,7 @@ describe("water", function () {
             }
 
             beforeEach(function (done) {
-                tester = SceneTester.create();
+                tester = SceneTester.create(sandbox);
 
                 renderTestTool.prepareContext();
 
@@ -458,27 +442,19 @@ describe("water", function () {
         describe("test reflection", function(){
             var tester;
 
-            function body(assetParentDirPath, done){
-                wd.LoaderManager.getInstance().load([
-                    {url: assetParentDirPath + "asset/texture/water/bump.png", id: "bump"},
-                    {url: assetParentDirPath + "asset/texture/terrain/ground.jpg", id: "ground"},
-                    {url: assetParentDirPath + "asset/texture/1.jpg", id: "sphere"},
-                    {url: assetParentDirPath + "asset/texture/skybox/px.jpg", id: "px"},
-                    {url: assetParentDirPath + "asset/texture/skybox/nx.jpg", id: "nx"},
-                    {url: assetParentDirPath + "asset/texture/skybox/py.jpg", id: "py"},
-                    {url: assetParentDirPath + "asset/texture/skybox/ny.jpg", id: "ny"},
-                    {url: assetParentDirPath + "asset/texture/skybox/pz.jpg", id: "pz"},
-                    {url: assetParentDirPath + "asset/texture/skybox/nz.jpg", id: "nz"}
-                ]).subscribe(null, null, function () {
-                    initSample();
-
-
-                    tester.init();
-
-                    if(done){
-                        done();
-                    }
-                });
+            function body(wrapper){
+                wrapper.load([
+                    {url: "../../asset/texture/water/bump.png", id: "bump"},
+                    {url: "../../asset/texture/terrain/ground.jpg", id: "ground"},
+                    {url: "../../asset/texture/1.jpg", id: "sphere"},
+                    {url: "../../asset/texture/skybox/px.jpg", id: "px"},
+                    {url: "../../asset/texture/skybox/nx.jpg", id: "nx"},
+                    {url: "../../asset/texture/skybox/py.jpg", id: "py"},
+                    {url: "../../asset/texture/skybox/ny.jpg", id: "ny"},
+                    {url: "../../asset/texture/skybox/pz.jpg", id: "pz"},
+                    {url: "../../asset/texture/skybox/nz.jpg", id: "nz"}
+                ])
+                    .do(initSample);
 
                 function initSample() {
                     var director = wd.Director.getInstance();
@@ -497,7 +473,7 @@ describe("water", function () {
 
                     director.scene.addChild(createCamera());
 
-                    //director.start();
+                    director.start();
                 }
 
                 function createSkybox() {
@@ -664,7 +640,7 @@ describe("water", function () {
             }
 
             beforeEach(function (done) {
-                tester = SceneTester.create();
+                tester = SceneTester.create(sandbox);
 
                 renderTestTool.prepareContext();
 
@@ -679,27 +655,19 @@ describe("water", function () {
         describe("test fresnel", function(){
             var tester;
 
-            function body(assetParentDirPath, done){
-                wd.LoaderManager.getInstance().load([
-                    {url: assetParentDirPath + "asset/texture/water/bump.png", id: "bump"},
-                    {url: assetParentDirPath + "asset/texture/terrain/ground.jpg", id: "ground"},
-                    {url: assetParentDirPath + "asset/texture/1.jpg", id: "sphere"},
-                    {url: assetParentDirPath + "asset/texture/skybox/px.jpg", id: "px"},
-                    {url: assetParentDirPath + "asset/texture/skybox/nx.jpg", id: "nx"},
-                    {url: assetParentDirPath + "asset/texture/skybox/py.jpg", id: "py"},
-                    {url: assetParentDirPath + "asset/texture/skybox/ny.jpg", id: "ny"},
-                    {url: assetParentDirPath + "asset/texture/skybox/pz.jpg", id: "pz"},
-                    {url: assetParentDirPath + "asset/texture/skybox/nz.jpg", id: "nz"}
-                ]).subscribe(null, null, function () {
-                    initSample();
-
-
-                    tester.init();
-
-                    if(done){
-                        done();
-                    }
-                });
+            function body(wrapper){
+                wrapper.load([
+                    {url: "../../asset/texture/water/bump.png", id: "bump"},
+                    {url: "../../asset/texture/terrain/ground.jpg", id: "ground"},
+                    {url: "../../asset/texture/1.jpg", id: "sphere"},
+                    {url: "../../asset/texture/skybox/px.jpg", id: "px"},
+                    {url: "../../asset/texture/skybox/nx.jpg", id: "nx"},
+                    {url: "../../asset/texture/skybox/py.jpg", id: "py"},
+                    {url: "../../asset/texture/skybox/ny.jpg", id: "ny"},
+                    {url: "../../asset/texture/skybox/pz.jpg", id: "pz"},
+                    {url: "../../asset/texture/skybox/nz.jpg", id: "nz"}
+                ])
+                    .do(initSample);
 
                 function initSample() {
                     var director = wd.Director.getInstance();
@@ -718,7 +686,7 @@ describe("water", function () {
 
                     director.scene.addChild(createCamera());
 
-                    //director.start();
+                    director.start();
                 }
 
                 function createSkybox() {
@@ -885,7 +853,7 @@ describe("water", function () {
             }
 
             beforeEach(function (done) {
-                tester = SceneTester.create();
+                tester = SceneTester.create(sandbox);
 
                 renderTestTool.prepareContext();
 
@@ -900,27 +868,19 @@ describe("water", function () {
         describe("test change reflection,refraction texture", function(){
             var tester;
 
-            function body(assetParentDirPath, done){
-                wd.LoaderManager.getInstance().load([
-                    {url: assetParentDirPath + "asset/texture/water/bump.png", id: "bump"},
-                    {url: assetParentDirPath + "asset/texture/terrain/ground.jpg", id: "ground"},
-                    {url: assetParentDirPath + "asset/texture/1.jpg", id: "sphere"},
-                    {url: assetParentDirPath + "asset/texture/skybox/px.jpg", id: "px"},
-                    {url: assetParentDirPath + "asset/texture/skybox/nx.jpg", id: "nx"},
-                    {url: assetParentDirPath + "asset/texture/skybox/py.jpg", id: "py"},
-                    {url: assetParentDirPath + "asset/texture/skybox/ny.jpg", id: "ny"},
-                    {url: assetParentDirPath + "asset/texture/skybox/pz.jpg", id: "pz"},
-                    {url: assetParentDirPath + "asset/texture/skybox/nz.jpg", id: "nz"}
-                ]).subscribe(null, null, function () {
-                    initSample();
-
-
-                    tester.init();
-
-                    if(done){
-                        done();
-                    }
-                });
+            function body(wrapper){
+                wrapper.load([
+                    {url: "../../asset/texture/water/bump.png", id: "bump"},
+                    {url: "../../asset/texture/terrain/ground.jpg", id: "ground"},
+                    {url: "../../asset/texture/1.jpg", id: "sphere"},
+                    {url: "../../asset/texture/skybox/px.jpg", id: "px"},
+                    {url: "../../asset/texture/skybox/nx.jpg", id: "nx"},
+                    {url: "../../asset/texture/skybox/py.jpg", id: "py"},
+                    {url: "../../asset/texture/skybox/ny.jpg", id: "ny"},
+                    {url: "../../asset/texture/skybox/pz.jpg", id: "pz"},
+                    {url: "../../asset/texture/skybox/nz.jpg", id: "nz"}
+                ])
+                    .do(initSample);
 
                 function initSample() {
                     var director = wd.Director.getInstance();
@@ -940,7 +900,7 @@ describe("water", function () {
 
                     director.scene.addChild(createCamera());
 
-                    //director.start();
+                    director.start();
 
 
 
@@ -1121,7 +1081,7 @@ describe("water", function () {
             }
 
             beforeEach(function (done) {
-                tester = SceneTester.create();
+                tester = SceneTester.create(sandbox);
 
                 renderTestTool.prepareContext();
 

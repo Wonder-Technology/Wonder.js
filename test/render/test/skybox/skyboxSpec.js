@@ -16,25 +16,17 @@ describe("skybox", function () {
         describe("test skybox", function () {
             var tester;
 
-            function body(assetParentDirPath, done) {
-                wd.LoaderManager.getInstance().load([
-                    {url: assetParentDirPath + "asset/texture/1.jpg", id: "texture"},
-                    {url: assetParentDirPath + "asset/texture/skybox/px.jpg", id: "px"},
-                    {url: assetParentDirPath + "asset/texture/skybox/nx.jpg", id: "nx"},
-                    {url: assetParentDirPath + "asset/texture/skybox/py.jpg", id: "py"},
-                    {url: assetParentDirPath + "asset/texture/skybox/ny.jpg", id: "ny"},
-                    {url: assetParentDirPath + "asset/texture/skybox/pz.jpg", id: "pz"},
-                    {url: assetParentDirPath + "asset/texture/skybox/nz.jpg", id: "nz"}
-                ]).subscribe(null, null, function () {
-                    initSample();
-
-
-                    tester.init();
-
-                    if (done) {
-                        done();
-                    }
-                });
+            function body(wrapper){
+                wrapper.load([
+                    {url: "../../asset/texture/1.jpg", id: "texture"},
+                    {url: "../../asset/texture/skybox/px.jpg", id: "px"},
+                    {url: "../../asset/texture/skybox/nx.jpg", id: "nx"},
+                    {url: "../../asset/texture/skybox/py.jpg", id: "py"},
+                    {url: "../../asset/texture/skybox/ny.jpg", id: "ny"},
+                    {url: "../../asset/texture/skybox/pz.jpg", id: "pz"},
+                    {url: "../../asset/texture/skybox/nz.jpg", id: "nz"}
+                ])
+                    .do(initSample);
 
                 function initSample() {
                     var director = wd.Director.getInstance();
@@ -43,7 +35,7 @@ describe("skybox", function () {
                     director.scene.addChild(createSphere());
                     director.scene.addChild(createCamera());
 
-                    //director.start();
+                    director.start();
                 }
 
                 function createSkybox() {
@@ -127,7 +119,7 @@ describe("skybox", function () {
             }
 
             beforeEach(function (done) {
-                tester = SceneTester.create();
+                tester = SceneTester.create(sandbox);
 
                 renderTestTool.prepareContext();
 
@@ -142,20 +134,12 @@ describe("skybox", function () {
         describe("test skybox with compressed texture", function () {
             var tester;
 
-            function body(assetParentDirPath, done){
-                wd.LoaderManager.getInstance().load([
-                    {url: assetParentDirPath + "asset/texture/compressed/disturb_dxt1_nomip.dds", id: "texture1"},
-                    {url: assetParentDirPath + "asset/texture/compressed/disturb_dxt1_mip.dds", id: "texture2"}
-                ]).subscribe(null, null, function () {
-                    initSample();
-
-
-                    tester.init();
-
-                    if(done){
-                        done();
-                    }
-                });
+            function body(wrapper){
+                wrapper.load([
+                    {url: "../../asset/texture/compressed/disturb_dxt1_nomip.dds", id: "texture1"},
+                    {url: "../../asset/texture/compressed/disturb_dxt1_mip.dds", id: "texture2"}
+                ])
+                    .do(initSample);
 
                 function initSample() {
                     var director = wd.Director.getInstance();
@@ -163,7 +147,7 @@ describe("skybox", function () {
                     director.scene.addChild(createSkybox());
                     director.scene.addChild(createCamera());
 
-                    //director.start();
+                    director.start();
                 }
 
                 function createSkybox() {
@@ -231,7 +215,7 @@ describe("skybox", function () {
             }
 
             beforeEach(function (done) {
-                tester = SceneTester.create();
+                tester = SceneTester.create(sandbox);
 
                 renderTestTool.prepareContext();
 
@@ -246,25 +230,17 @@ describe("skybox", function () {
         describe("test skybox with part texture", function () {
             var tester;
 
-            function body(assetParentDirPath, done){
-                wd.LoaderManager.getInstance().load([
-                    {url: assetParentDirPath + "asset/texture/1.jpg", id: "texture"},
-                    {url: assetParentDirPath + "asset/texture/skybox/px.jpg", id: "px"},
-                    {url: assetParentDirPath + "asset/texture/skybox/nx.jpg", id: "nx"},
-                    {url: assetParentDirPath + "asset/texture/skybox/py.jpg", id: "py"},
-                    {url: assetParentDirPath + "asset/texture/skybox/ny.jpg", id: "ny"},
-                    {url: assetParentDirPath + "asset/texture/skybox/pz.jpg", id: "pz"},
-                    {url: assetParentDirPath + "asset/texture/skybox/nz.jpg", id: "nz"}
-                ]).subscribe(null, null, function () {
-                    initSample();
-
-
-                    tester.init();
-
-                    if(done){
-                        done();
-                    }
-                });
+            function body(wrapper){
+                wrapper.load([
+                    {url: "../../asset/texture/1.jpg", id: "texture"},
+                    {url: "../../asset/texture/skybox/px.jpg", id: "px"},
+                    {url: "../../asset/texture/skybox/nx.jpg", id: "nx"},
+                    {url: "../../asset/texture/skybox/py.jpg", id: "py"},
+                    {url: "../../asset/texture/skybox/ny.jpg", id: "ny"},
+                    {url: "../../asset/texture/skybox/pz.jpg", id: "pz"},
+                    {url: "../../asset/texture/skybox/nz.jpg", id: "nz"}
+                ])
+                    .do(initSample);
 
                 function initSample() {
                     var director = wd.Director.getInstance();
@@ -273,7 +249,7 @@ describe("skybox", function () {
                     director.scene.addChild(createSphere());
                     director.scene.addChild(createCamera());
 
-                    //director.start();
+                    director.start();
                 }
 
                 function createSkybox() {
@@ -365,7 +341,7 @@ describe("skybox", function () {
             }
 
             beforeEach(function (done) {
-                tester = SceneTester.create();
+                tester = SceneTester.create(sandbox);
 
                 renderTestTool.prepareContext();
 

@@ -15,8 +15,9 @@ describe("hardwareScaling", function () {
     describe("scene test", function(){
         var tester;
 
-        function body(){
-            initSample();
+        function body(wrapper){
+            wrapper.load([])
+                .do(initSample);
 
             function initSample() {
                 var director = wd.Director.getInstance();
@@ -29,7 +30,7 @@ describe("hardwareScaling", function () {
                 wd.DeviceManager.getInstance().setHardwareScaling(20);
 
 
-                //director.start();
+                director.start();
             }
 
             function createTriangle() {
@@ -72,13 +73,11 @@ describe("hardwareScaling", function () {
         }
 
         beforeEach(function(){
-            tester = SceneTester.create();
+            tester = SceneTester.create(sandbox);
 
             renderTestTool.prepareContext();
 
-            body();
-
-            tester.init();
+            tester.execBody(body);
         });
 
         it("test hardwareScaling", function(done){

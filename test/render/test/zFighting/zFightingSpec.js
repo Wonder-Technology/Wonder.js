@@ -15,8 +15,9 @@ describe("zFighting", function () {
     describe("scene test", function(){
         var tester;
 
-        function body(){
-            initSample();
+        function body(wrapper){
+            wrapper.load([])
+                .do(initSample);
 
             function initSample() {
                 var director = wd.Director.getInstance();
@@ -25,7 +26,7 @@ describe("zFighting", function () {
                 director.scene.addChild(createTriangle2());
                 director.scene.addChild(createCamera());
 
-                //director.start();
+                director.start();
             }
 
             function createTriangle1() {
@@ -104,13 +105,11 @@ describe("zFighting", function () {
         }
 
         beforeEach(function(){
-            tester = SceneTester.create();
+            tester = SceneTester.create(sandbox);
 
             renderTestTool.prepareContext();
 
-            body();
-
-            tester.init();
+            tester.execBody(body);
         });
 
         it("test z fighting", function(done){

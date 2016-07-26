@@ -16,21 +16,12 @@ describe("shadowMap", function () {
         var tester;
 
         describe("test change shadow->receive and receive", function(){
-            function body(assetParentDirPath, done){
-                wd.LoaderManager.getInstance().load([
-                    {url: assetParentDirPath + "asset/texture/1.jpg", id: "texture"},
-                    {url: assetParentDirPath + "asset/texture/crate.gif", id: "ground"}
-                ]).subscribe(null, null, function () {
-                    initSample();
-
-
-
-                    tester.init();
-
-                    if(done){
-                        done();
-                    }
-                });
+            function body(wrapper){
+                wrapper.load([
+                    {url: "../../asset/texture/1.jpg", id: "texture"},
+                    {url: "../../asset/texture/crate.gif", id: "ground"}
+                ])
+                    .do(initSample);
 
                 function initSample() {
                     var director = wd.Director.getInstance();
@@ -88,7 +79,7 @@ describe("shadowMap", function () {
 //            director.scene.addChild(createPointLight(wd.Vector3.create(50, 50, -50)));
                     director.scene.addChild(createCamera());
 
-                    //director.start();
+                    director.start();
                 }
 
                 function createSphere() {
@@ -324,7 +315,7 @@ describe("shadowMap", function () {
             }
 
             beforeEach(function(done){
-                tester = SceneTester.create();
+                tester = SceneTester.create(sandbox);
 
                 renderTestTool.prepareContext();
 
@@ -343,20 +334,12 @@ describe("shadowMap", function () {
         });
 
         describe("test add shadow gameObject", function(){
-            function body(assetParentDirPath, done){
-                wd.LoaderManager.getInstance().load([
-                    {url: assetParentDirPath + "asset/texture/1.jpg", id: "texture"},
-                    {url: assetParentDirPath + "asset/texture/crate.gif", id: "ground"}
-                ]).subscribe(null, null, function () {
-                    initSample();
-
-
-                    tester.init();
-
-                    if(done){
-                        done();
-                    }
-                });
+            function body(wrapper){
+                wrapper.load([
+                        {url: "../../asset/texture/1.jpg", id: "texture"},
+                        {url: "../../asset/texture/crate.gif", id: "ground"}
+                    ])
+                    .do(initSample);
 
                 function initSample() {
                     var director = wd.Director.getInstance();
@@ -398,7 +381,7 @@ describe("shadowMap", function () {
                     director.scene.addChild(createDirectionLight());
                     director.scene.addChild(createCamera());
 
-                    //director.start();
+                    director.start();
                 }
 
                 function createSphere() {
@@ -588,7 +571,7 @@ describe("shadowMap", function () {
             }
 
             beforeEach(function(done){
-                tester = SceneTester.create();
+                tester = SceneTester.create(sandbox);
 
                 renderTestTool.prepareContext();
 
@@ -602,20 +585,12 @@ describe("shadowMap", function () {
 
 
         describe("test remove shadow gameObject", function(){
-            function body(assetParentDirPath, done){
-                wd.LoaderManager.getInstance().load([
-                    {url: assetParentDirPath + "asset/texture/1.jpg", id: "texture"},
-                    {url: assetParentDirPath + "asset/texture/crate.gif", id: "ground"}
-                ]).subscribe(null, null, function () {
-                    initSample();
-
-
-                    tester.init();
-
-                    if(done){
-                        done();
-                    }
-                });
+            function body(wrapper){
+                wrapper.load([
+                        {url: "../../asset/texture/1.jpg", id: "texture"},
+                        {url: "../../asset/texture/crate.gif", id: "ground"}
+                    ])
+                    .do(initSample);
 
                 function initSample() {
                     var director = wd.Director.getInstance();
@@ -643,7 +618,7 @@ describe("shadowMap", function () {
                     director.scene.addChild(createPointLight(wd.Vector3.create(100, 100, 100)));
                     director.scene.addChild(createCamera());
 
-                    //director.start();
+                    director.start();
                 }
 
                 function createSphere() {
@@ -869,7 +844,7 @@ describe("shadowMap", function () {
             }
 
             beforeEach(function(done){
-                tester = SceneTester.create();
+                tester = SceneTester.create(sandbox);
 
                 renderTestTool.prepareContext();
 
@@ -882,20 +857,12 @@ describe("shadowMap", function () {
         });
 
         describe("test change shadow layer", function(){
-            function body(assetParentDirPath, done){
-                wd.LoaderManager.getInstance().load([
-                    {url: assetParentDirPath + "asset/texture/1.jpg", id: "texture"},
-                    {url: assetParentDirPath + "asset/texture/crate.gif", id: "ground"}
-                ]).subscribe(null, null, function () {
-                    initSample();
-
-
-                    tester.init();
-
-                    if(done){
-                        done();
-                    }
-                });
+            function body(wrapper){
+                wrapper.load([
+                        {url: "../../asset/texture/1.jpg", id: "texture"},
+                        {url: "../../asset/texture/crate.gif", id: "ground"}
+                    ])
+                    .do(initSample);
 
                 function initSample() {
                     var director = wd.Director.getInstance();
@@ -966,7 +933,7 @@ describe("shadowMap", function () {
 //            director.scene.addChild(createPointLight(wd.Vector3.create(50, 50, -50)));
                     director.scene.addChild(createCamera());
 
-                    //director.start();
+                    director.start();
                 }
 
                 function createSphere() {
@@ -1091,7 +1058,7 @@ describe("shadowMap", function () {
             }
 
             beforeEach(function(done){
-                tester = SceneTester.create();
+                tester = SceneTester.create(sandbox);
 
                 renderTestTool.prepareContext();
 
@@ -1110,20 +1077,12 @@ describe("shadowMap", function () {
         });
 
         describe("test disable shadow", function(){
-            function body(assetParentDirPath, done){
-                wd.LoaderManager.getInstance().load([
-                    {url: assetParentDirPath + "asset/texture/1.jpg", id: "texture"},
-                    {url: assetParentDirPath + "asset/texture/crate.gif", id: "ground"}
-                ]).subscribe(null, null, function () {
-                    initSample();
-
-
-                    tester.init();
-
-                    if(done){
-                        done();
-                    }
-                });
+            function body(wrapper){
+                wrapper.load([
+                        {url: "../../asset/texture/1.jpg", id: "texture"},
+                        {url: "../../asset/texture/crate.gif", id: "ground"}
+                    ])
+                    .do(initSample);
 
                 function initSample() {
                     var director = wd.Director.getInstance();
@@ -1146,7 +1105,7 @@ describe("shadowMap", function () {
                     director.scene.addChild(createPointLight(wd.Vector3.create(50, 50, -50)));
                     director.scene.addChild(createCamera());
 
-                    //director.start();
+                    director.start();
                 }
 
                 function createSphere() {
@@ -1381,7 +1340,7 @@ describe("shadowMap", function () {
             }
 
             beforeEach(function(done){
-                tester = SceneTester.create();
+                tester = SceneTester.create(sandbox);
 
                 renderTestTool.prepareContext();
 
@@ -1395,20 +1354,12 @@ describe("shadowMap", function () {
 
         describe("test soft shadow", function(){
             describe("test pcf shadow", function(){
-                function body(assetParentDirPath, done){
-                    wd.LoaderManager.getInstance().load([
-                        {url: assetParentDirPath + "asset/texture/1.jpg", id: "texture"},
-                        {url: assetParentDirPath + "asset/texture/crate.gif", id: "ground"}
-                    ]).subscribe(null, null, function () {
-                        initSample();
-
-
-                        tester.init();
-
-                        if(done){
-                            done();
-                        }
-                    });
+                function body(wrapper){
+                    wrapper.load([
+                            {url: "../../asset/texture/1.jpg", id: "texture"},
+                            {url: "../../asset/texture/crate.gif", id: "ground"}
+                        ])
+                        .do(initSample);
 
                     function initSample() {
                         var director = wd.Director.getInstance();
@@ -1426,7 +1377,7 @@ describe("shadowMap", function () {
 
                         director.scene.shadowMap.softType = wd.EShadowMapSoftType.PCF;
 
-                        //director.start();
+                        director.start();
                     }
 
                     function createSphere() {
@@ -1593,7 +1544,7 @@ describe("shadowMap", function () {
                 }
 
                 beforeEach(function(done){
-                    tester = SceneTester.create();
+                    tester = SceneTester.create(sandbox);
 
                     renderTestTool.prepareContext();
 
