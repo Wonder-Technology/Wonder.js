@@ -28,29 +28,16 @@ var instanceTool = (function(){
 })();
 
 describe("generate correct image tool", function () {
+    var sandbox;
     var tester;
 
-    //function body(assetParentDirPath, done){
-    //}
-
-    function body(assetParentDirPath, initFunc, done){
-        wd.LoaderManager.getInstance().load([
-            {url: assetParentDirPath + "asset/texture/crate.gif", id: "ground"},
-            {url: assetParentDirPath + "asset/model/gltf/boxAnimated/glTF-MaterialsCommon/glTF-MaterialsCommon.gltf", id: "model"}
-        ]).subscribe(null, null, function () {
-            if(initFunc){
-                initFunc();
-            }
-
-            initSample();
-
-
-            tester.init();
-
-            if(done){
-                done();
-            }
-        });
+    function body(wrapper){
+            wrapper.load([
+                    {url: "../../asset/texture/crate.gif", id: "ground"},
+                    {url: "../../asset/model/wd/ratamahatta/ratamahatta.wd", id: "md2"},
+                    {url: "../../asset/model/wd/ratamahatta/ratamahatta.png", id: "skin"}
+            ])
+                .do(initSample);
 
         function initSample() {
             var director = wd.Director.getInstance();
@@ -60,20 +47,27 @@ describe("generate correct image tool", function () {
             var ground = createGround();
 
             director.scene.addChild(ground);
-            director.scene.addChildren(createGLTFs());
+            director.scene.addChildren(createMd2s());
             director.scene.addChild(createAmbientLight());
             director.scene.addChild(createDirectionLight(wd.Vector3.create(0, 500, 500)));
             director.scene.addChild(createDirectionLight(wd.Vector3.create(500, 500, 0)));
             director.scene.addChild(createCamera());
 
-            //director.start();
+            director.start();
         }
 
-        function createGLTFs(){
+        function createMd2s(){
             var arr = [],
-                model = setGLTF(),
+                model = setMd2(),
                 range = 300,
                 count = 10;
+//            var animLisit = [
+//                ["run", 10],
+//                ["attack", 10],
+//                ["death", 5],
+//                ["wave", 10],
+//                ["jump", 10]
+//            ];
 
             model.transform.position = wd.Vector3.create(60, 24, -40);
 
@@ -89,9 +83,12 @@ describe("generate correct image tool", function () {
 
 
 
-                var anim = instance.getChild(1).getComponent(wd.ArticulatedAnimation);
 
-                anim.play("animation_0");
+//                var animData = animLisit[wd.MathUtils.generateInteger(0, 5)];
+//
+//                var anim = instance.getComponent(wd.Animation);
+//                anim.play(animData[0], animData[1]);
+
 
 
 
@@ -101,42 +98,48 @@ describe("generate correct image tool", function () {
             return arr;
         }
 
-        function setGLTF() {
-            var models = wd.LoaderManager.getInstance().get("model").getChild("models");
-
-            var box1 = models.getChild(1);
-            var box2 = models.getChild(2);
-
-            var boxContainer = wd.GameObject.create();
-            boxContainer.addChildren([box1, box2]);
-
-            boxContainer.addComponent(wd.SourceInstance.create());
+        function setMd2() {
+            var model = wd.LoaderManager.getInstance().get("md2").getChild("models").getChild(0);
 
 
-
-            box1.transform.scale = wd.Vector3.create(20,20,20);
-            box2.transform.scale = wd.Vector3.create(20,20,20);
-
-            var anim = box2.getComponent(wd.ArticulatedAnimation);
-
-            anim.play("animation_1");
+            var material = wd.LightMaterial.create();
+            material.diffuseMap = wd.LoaderManager.getInstance().get("skin").toTexture();
+            material.specularColor = wd.Color.create("rgb(0, 0, 0)");
+            material.shininess = 32;
 
 
+            var geo = model.getComponent(wd.Geometry);
+            geo.material = material;
+
+
+            var shadow = wd.Shadow.create();
+            shadow.cast = true;
+            shadow.receive = true;
+
+            model.addComponent(shadow);
+
+
+            model.addComponent(wd.SourceInstance.create());
 
 
 
-            wd.Director.getInstance().scheduler.scheduleTime(function(){
-                anim.pause();
-//                anim.stop();
-            }, 1000);
+            var anim = model.getComponent(wd.Animation);
+            anim.play("stand", 15);
 
-            wd.Director.getInstance().scheduler.scheduleTime(function(){
-                anim.resume();
-//                anim.play("animation_1");
-            }, 2000);
 
-//            return models;
-            return boxContainer;
+//            wd.Director.getInstance().scheduler.scheduleTime(function(){
+//                anim.pause();
+////                anim.stop();
+//            }, 1000);
+//
+//            wd.Director.getInstance().scheduler.scheduleTime(function(){
+//                anim.resume();
+////                anim.play("stand", 10);
+//            }, 2000);
+
+
+
+            return model;
         }
 
         function createGround(){
@@ -233,21 +236,21 @@ describe("generate correct image tool", function () {
             return camera;
         }
 
-
     }
 
 
     beforeEach(function (done) {
-    //beforeEach(function () {
-        tester = SceneTester.create();
+        sandbox = sinon.sandbox.create();
+
+        tester = SceneTester.create(sandbox);
 
         renderTestTool.prepareContext();
 
 
         tester.execBody(body, done);
-        //body();
     });
     afterEach(function () {
+        sandbox.restore();
     });
 
     it("generate correct image", function () {
@@ -255,12 +258,12 @@ describe("generate correct image tool", function () {
             [
                 {
                     frameIndex:1,
-                    imageName:"instance_animation_articulated_frame1.png"
+                    imageName:"instance_animation_morph_frame1.png"
                 },
                 {
                     frameIndex:3000,
-                    step:3000,
-                    imageName:"instance_animation_articulated_frame3000.png"
+                    step:200,
+                    imageName:"instance_animation_morph_frame3000.png"
                 }
             ]
         );
