@@ -7,7 +7,7 @@ var randomTool = (function(){
                 0.23, 0.55, 0.12, 0.88, 0.72
             ];
 
-            expect(index).toBeLessThan(seedArr.length);
+            expect(index).not.toBeGreaterThan(seedArr.length);
 
             return seedArr[index];
         }

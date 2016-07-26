@@ -1549,5 +1549,165 @@ describe("instance", function () {
                 tester.compareAt(1, "instance/instance_envMap_light.png", done);
             });
         });
+
+        describe("test instance light gameObjects", function () {
+            var tester;
+
+            function body(wrapper){
+                wrapper.load([])
+                    .do(initSample);
+
+                function initSample() {
+                    var director = wd.Director.getInstance();
+
+                    director.scene.addChildren(createModels());
+                    director.scene.addChild(createAmbientLight());
+                    director.scene.addChild(createDirectionLight());
+                    director.scene.addChild(createCamera());
+
+                    director.start();
+                }
+
+                function createModels(){
+                    var arr = [],
+                        model = createSphere(),
+                        range = 500,
+                        count = 10;
+
+                    var sourceInstanceComponent = wd.SourceInstance.create();
+                    model.addComponent(sourceInstanceComponent);
+
+                    arr.push(model);
+                    model.transform.position = wd.Vector3.create(0, -10, 0);
+
+                    for(var i = 0; i < count; i++){
+                        var instance = sourceInstanceComponent.cloneInstance("index" + String(i));
+
+                        instance.transform.position = instanceTool.getInstancePosition(i, range, count);
+                        instance.transform.rotate(instanceTool.getInstanceRotation(i, count));
+                        instance.transform.scale = instanceTool.getInstanceScale(i, count);
+
+                        arr.push(instance);
+                    }
+
+                    return arr;
+                }
+
+
+                function createSphere(){
+                    var material = wd.LightMaterial.create();
+                    material.color = wd.Color.create("rgb(0, 255, 255)");
+
+
+                    var geometry = wd.SphereGeometry.create();
+                    geometry.material = material;
+                    geometry.radius = 5;
+                    geometry.segment = 5;
+
+
+                    var gameObject = wd.GameObject.create();
+
+                    gameObject.addComponent(wd.MeshRenderer.create());
+                    gameObject.addComponent(geometry);
+
+
+                    var boxChild1 = createBox();
+                    var boxChild2 = createBox();
+                    var boxChild21 = createBox();
+
+                    gameObject.addChild(boxChild1);
+                    gameObject.addChild(boxChild2);
+
+                    boxChild2.addChild(boxChild21);
+
+
+                    boxChild1.transform.translate(20, 0, 0);
+                    boxChild2.transform.translate(-20, 0, 0);
+
+                    boxChild21.transform.translate(-25, 0, 0);
+
+
+                    return gameObject;
+                }
+
+                function createBox(){
+                    var material = wd.LightMaterial.create();
+                    material.color = wd.Color.create("rgb(255, 0, 255)");
+
+
+                    var geometry = wd.BoxGeometry.create();
+                    geometry.material = material;
+                    geometry.width = 5;
+                    geometry.height = 5;
+                    geometry.depth = 5;
+
+
+                    var gameObject = wd.GameObject.create();
+
+                    gameObject.addComponent(wd.MeshRenderer.create());
+                    gameObject.addComponent(geometry);
+
+
+                    return gameObject;
+                }
+
+                function createAmbientLight() {
+                    var ambientLightComponent = wd.AmbientLight.create();
+                    ambientLightComponent.color = wd.Color.create("rgb(30, 30, 30)");
+
+                    var ambientLight = wd.GameObject.create();
+                    ambientLight.addComponent(ambientLightComponent);
+
+                    return ambientLight;
+                }
+
+                function createDirectionLight() {
+                    var directionLightComponent = wd.DirectionLight.create();
+                    directionLightComponent.color = wd.Color.create("#ffffff");
+                    directionLightComponent.intensity = 2;
+
+
+                    var directionLight = wd.GameObject.create();
+                    directionLight.addComponent(directionLightComponent);
+
+                    directionLight.transform.translate(wd.Vector3.create(0, 1000, 0));
+
+                    return directionLight;
+                }
+
+                function createCamera() {
+                    var camera = wd.GameObject.create(),
+                        view = wd.Director.getInstance().view,
+                        cameraComponent = wd.PerspectiveCamera.create();
+
+                    cameraComponent.fovy = 60;
+                    cameraComponent.aspect = view.width / view.height;
+                    cameraComponent.near = 0.1;
+                    cameraComponent.far = 1000;
+
+                    var controller = wd.ArcballCameraController.create(cameraComponent);
+                    controller.distance = 500;
+
+                    camera.addComponent(controller);
+
+                    return camera;
+                }
+
+
+            }
+
+            beforeEach(function (done) {
+                tester = SceneTester.create(sandbox);
+
+                renderTestTool.prepareContext();
+
+
+                tester.execBody(body, done);
+            });
+
+            it("test", function (done) {
+                tester.compareAt(1, "instance/instance_light.png", done);
+            });
+        });
     });
 });
