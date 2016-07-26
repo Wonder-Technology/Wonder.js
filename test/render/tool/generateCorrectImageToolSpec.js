@@ -31,185 +31,216 @@ describe("generate correct image tool", function () {
     var sandbox;
     var tester;
 
-        function body(wrapper){
-            wrapper.load([
-                    {url: "../../asset/texture/1.jpg", id: "texture"},
-                    {url: "../../asset/texture/skybox/px.jpg", id: "px"},
-                    {url: "../../asset/texture/skybox/nx.jpg", id: "nx"},
-                    {url: "../../asset/texture/skybox/py.jpg", id: "py"},
-                    {url: "../../asset/texture/skybox/ny.jpg", id: "ny"},
-                    {url: "../../asset/texture/skybox/pz.jpg", id: "pz"},
-                    {url: "../../asset/texture/skybox/nz.jpg", id: "nz"}
+    function body(wrapper){
+        wrapper.load([
+                {url: "../../asset/texture/1.jpg", id: "texture"},
+                {url: "../../asset/texture/skybox/px.jpg", id: "px"},
+                {url: "../../asset/texture/skybox/nx.jpg", id: "nx"},
+                {url: "../../asset/texture/skybox/py.jpg", id: "py"},
+                {url: "../../asset/texture/skybox/ny.jpg", id: "ny"},
+                {url: "../../asset/texture/skybox/pz.jpg", id: "pz"},
+                {url: "../../asset/texture/skybox/nz.jpg", id: "nz"}
             ])
-                .do(initSample);
+            .do(initSample);
 
-        function initSample() {
-            var director = wd.Director.getInstance();
+            function initSample() {
+                var director = wd.Director.getInstance();
 
-            director.scene.addChildren(createReflectionModels());
-            director.scene.addChildren(createRefractionModels());
-            director.scene.addChild(createSkybox());
-            director.scene.addChild(createCamera());
+                var skybox = createSkybox();
+                var box = createBox();
 
-            director.start();
-        }
+                box.transform.position = wd.Vector3.create(60, 0, 0);
 
-        function createSkybox() {
-            var cubemap = wd.CubemapTexture.create(
-                [
-                    {
-                        asset: wd.LoaderManager.getInstance().get("px")
-                    },
-                    {
-                        asset: wd.LoaderManager.getInstance().get("nx")
-                    },
-                    {
-                        asset: wd.LoaderManager.getInstance().get("py")
-                    },
-                    {
-                        asset: wd.LoaderManager.getInstance().get("ny")
-                    },
-                    {
-                        asset: wd.LoaderManager.getInstance().get("pz")
-                    },
-                    {
-                        asset: wd.LoaderManager.getInstance().get("nz")
-                    }
-                ]
-            );
+                director.scene.addChild(skybox);
+                director.scene.addChild(box);
+                director.scene.addChildren(createReflectionModels(skybox, box));
+//            director.scene.addChildren(createRefractionModels());
 
-            var material = wd.SkyboxMaterial.create();
-            material.envMap = cubemap;
+                director.scene.addChild(createAmbientLight());
+                director.scene.addChild(createDirectionLight());
 
+                director.scene.addChild(createCamera());
 
-            var geometry = wd.BoxGeometry.create();
-            geometry.material = material;
-            geometry.width = 5;
-            geometry.height = 5;
-            geometry.depth = 5;
-
-
-            var gameObject = wd.GameObject.create();
-
-            gameObject.addComponent(wd.SkyboxRenderer.create());
-            gameObject.addComponent(geometry);
-
-            return gameObject;
-        }
-
-        function createReflectionModels(){
-            var arr = [],
-                model = createSphere(wd.EEnvMapMode.REFLECTION),
-                range = 500,
-                count = 2;
-
-            var sourceInstanceComponent = wd.SourceInstance.create();
-            model.addComponent(sourceInstanceComponent);
-
-            arr.push(model);
-            model.transform.position = wd.Vector3.create(0, -10, 0);
-
-            for(var i = 0; i < count; i++){
-                var instance = sourceInstanceComponent.cloneInstance("index" + String(i));
-
-                instance.transform.position = wd.Vector3.create(range / 2 - Math.random() * range, range / 2 - Math.random() * range, range / 2 - Math.random() * range);
-                instance.transform.rotate(90 * Math.random(), 90 * Math.random(),0);
-                instance.transform.scale = wd.Vector3.create(2,2,2);
-
-                arr.push(instance);
+                director.start();
             }
 
-            return arr;
-        }
+            function createSkybox() {
+                var cubemap = wd.CubemapTexture.create(
+                    [
+                        {
+                            asset: wd.LoaderManager.getInstance().get("px")
+                        },
+                        {
+                            asset: wd.LoaderManager.getInstance().get("nx")
+                        },
+                        {
+                            asset: wd.LoaderManager.getInstance().get("py")
+                        },
+                        {
+                            asset: wd.LoaderManager.getInstance().get("ny")
+                        },
+                        {
+                            asset: wd.LoaderManager.getInstance().get("pz")
+                        },
+                        {
+                            asset: wd.LoaderManager.getInstance().get("nz")
+                        }
+                    ]
+                );
 
-        function createRefractionModels(){
-            var arr = [],
-                model = createSphere(wd.EEnvMapMode.REFRACTION),
-                range = 500,
-                count = 2;
+                var material = wd.SkyboxMaterial.create();
+                material.envMap = cubemap;
 
-            var sourceInstanceComponent = wd.SourceInstance.create();
-            model.addComponent(sourceInstanceComponent);
 
-            arr.push(model);
-            model.transform.position = wd.Vector3.create(0, 10, 0);
+                var geometry = wd.BoxGeometry.create();
+                geometry.material = material;
+                geometry.width = 5;
+                geometry.height = 5;
+                geometry.depth = 5;
 
-            for(var i = 0; i < count; i++){
-                var instance = sourceInstanceComponent.cloneInstance("index" + String(i));
 
-                instance.transform.position = wd.Vector3.create(range / 2 - Math.random() * range, range / 2 - Math.random() * range, range / 2 - Math.random() * range);
-                instance.transform.rotate(90 * Math.random(), 90 * Math.random(),0);
-                instance.transform.scale = wd.Vector3.create(2,2,2);
+                var gameObject = wd.GameObject.create();
 
-                arr.push(instance);
+                gameObject.addComponent(wd.SkyboxRenderer.create());
+                gameObject.addComponent(geometry);
+
+                return gameObject;
             }
 
-            return arr;
-        }
+            function createReflectionModels(skybox, box){
+                var arr = [],
+                    model = createSphere(skybox, box, wd.EEnvMapMode.REFLECTION),
+                    range = 50,
+                    count = 2;
 
-        function createSphere(mode){
-            var cubemap = wd.CubemapTexture.create(
-                [
-                    {
-                        asset: wd.LoaderManager.getInstance().get("px")
-                    },
-                    {
-                        asset: wd.LoaderManager.getInstance().get("nx")
-                    },
-                    {
-                        asset: wd.LoaderManager.getInstance().get("py")
-                    },
-                    {
-                        asset: wd.LoaderManager.getInstance().get("ny")
-                    },
-                    {
-                        asset: wd.LoaderManager.getInstance().get("pz")
-                    },
-                    {
-                        asset: wd.LoaderManager.getInstance().get("nz")
-                    }
-                ]
-            );
-            cubemap.mode = mode;
+                var sourceInstanceComponent = wd.SourceInstance.create();
+                model.addComponent(sourceInstanceComponent);
+
+                arr.push(model);
+//            model.transform.position = wd.Vector3.create(0, -10, 0);
+
+                for(var i = 0; i < count; i++){
+                    var instance = sourceInstanceComponent.cloneInstance("index" + String(i));
+
+                    instance.transform.position = instanceTool.getInstancePosition(i, range, count);
+                    instance.transform.rotate(instanceTool.getInstanceRotation(i, count));
+                    instance.transform.scale = instanceTool.getInstanceScale(i, count);
+
+                    arr.push(instance);
+                }
+
+                return arr;
+            }
+
+            function createSphere(skybox, box, mode){
+                var texture = wd.DynamicCubemapTexture.create();
+
+                var list = [skybox, box];
+
+                texture.renderList = {
+                    px: list,
+                    nx: list,
+                    py: list,
+                    ny: list,
+                    pz: list,
+                    nz: list
+                };
+
+                texture.near = 0.1;
+                texture.far = 1000;
+                texture.size = 256;
+                texture.mode = mode;
+
+                var material = wd.LightMaterial.create();
+                material.envMap = texture;
+                material.shading = wd.EShading.SMOOTH;
 
 
-            var material = wd.BasicMaterial.create();
-            material.envMap = cubemap;
-            material.shading = wd.EShading.SMOOTH;
+                var geometry = wd.SphereGeometry.create();
+                geometry.material = material;
+                geometry.radius = 5;
+                geometry.segment = 5;
 
 
-            var geometry = wd.SphereGeometry.create();
-            geometry.material = material;
-            geometry.radius = 5;
-            geometry.segment = 5;
+                var gameObject = wd.GameObject.create();
+
+                gameObject.addComponent(wd.MeshRenderer.create());
+                gameObject.addComponent(geometry);
 
 
-            var gameObject = wd.GameObject.create();
+                return gameObject;
+            }
 
-            gameObject.addComponent(wd.MeshRenderer.create());
-            gameObject.addComponent(geometry);
+            function createBox(){
+                var material = wd.LightMaterial.create();
+                material.color = wd.Color.create("rgb(255, 0, 255)");
 
 
-            return gameObject;
-        }
+                var geometry = wd.BoxGeometry.create();
+                geometry.material = material;
+                geometry.width = 20;
+                geometry.height = 20;
+                geometry.depth = 20;
 
-        function createCamera() {
-            var camera = wd.GameObject.create(),
-                view = wd.Director.getInstance().view,
-                cameraComponent = wd.PerspectiveCamera.create();
 
-            cameraComponent.fovy = 60;
-            cameraComponent.aspect = view.width / view.height;
-            cameraComponent.near = 0.1;
-            cameraComponent.far = 1000;
+                var gameObject = wd.GameObject.create();
 
-            var controller = wd.ArcballCameraController.create(cameraComponent);
-            controller.distance = 500;
+                gameObject.addComponent(wd.MeshRenderer.create());
+                gameObject.addComponent(geometry);
 
-            camera.addComponent(controller);
 
-            return camera;
-        }
+                var action = wd.RepeatForever.create(wd.CallFunc.create(function () {
+                    gameObject.transform.rotateLocal(0, 1,0);
+                }));
+
+                gameObject.addComponent(action);
+
+
+
+                return gameObject;
+            }
+
+            function createAmbientLight() {
+                var ambientLightComponent = wd.AmbientLight.create();
+                ambientLightComponent.color = wd.Color.create("rgb(30, 30, 30)");
+
+                var ambientLight = wd.GameObject.create();
+                ambientLight.addComponent(ambientLightComponent);
+
+                return ambientLight;
+            }
+
+            function createDirectionLight() {
+                var directionLightComponent = wd.DirectionLight.create();
+                directionLightComponent.color = wd.Color.create("#ffffff");
+                directionLightComponent.intensity = 2;
+
+
+                var directionLight = wd.GameObject.create();
+                directionLight.addComponent(directionLightComponent);
+
+                directionLight.transform.translate(wd.Vector3.create(100, 1000, 1000));
+
+                return directionLight;
+            }
+
+            function createCamera() {
+                var camera = wd.GameObject.create(),
+                    view = wd.Director.getInstance().view,
+                    cameraComponent = wd.PerspectiveCamera.create();
+
+                cameraComponent.fovy = 60;
+                cameraComponent.aspect = view.width / view.height;
+                cameraComponent.near = 0.1;
+                cameraComponent.far = 1000;
+
+                var controller = wd.ArcballCameraController.create(cameraComponent);
+                controller.distance = 50;
+
+                camera.addComponent(controller);
+
+                return camera;
+            }
 
 
     }
@@ -234,7 +265,7 @@ describe("generate correct image tool", function () {
             [
                 {
                     frameIndex:1,
-                    imageName:"instance_envMap_basic.png"
+                    imageName:"instance_envMap_light.png"
                 }
             ]
         );

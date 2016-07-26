@@ -31,7 +31,7 @@ var ImageMatcher = YYC.Class({
 
             var isTestSuccessed = hitCount >= pixelCount / 4 * CORRECT_RATE;
 
-            expect(isTestSuccessed).toBeTruthy();
+            expect(hitCount).not.toBeLessThan(pixelCount / 4 * CORRECT_RATE);
 
             return isTestSuccessed;
         }
