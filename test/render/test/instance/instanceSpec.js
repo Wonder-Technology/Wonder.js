@@ -1709,5 +1709,197 @@ describe("instance", function () {
                 tester.compareAt(1, "instance/instance_light.png", done);
             });
         });
+
+        describe("test instance lod gameObjects", function () {
+            var tester;
+
+            function body(wrapper){
+                wrapper.load([])
+                    .do(initSample);
+
+                function initSample(){
+                    wd.DebugConfig.showDebugPanel = true;
+
+
+                    var director = wd.Director.getInstance();
+
+
+
+                    director.scene.addChildren(createModels());
+
+                    director.scene.addChild(createCamera());
+
+
+                    director.start();
+                }
+
+
+                function createModels(){
+                    var arr = [],
+                        model = createSphere(),
+//                    range = 10000,
+//                    count = 1000;
+                        range = 1000,
+                        count = 20;
+
+
+                    var sourceInstanceComponent = wd.SourceInstance.create();
+                    model.addComponent(sourceInstanceComponent);
+
+                    arr.push(model);
+
+                    for(var i = 0; i < count; i++){
+                        var instance = sourceInstanceComponent.cloneInstance("index" + String(i));
+
+                        instance.transform.position = instanceTool.getInstancePosition(i, range, count);
+                        instance.transform.rotate(instanceTool.getInstanceRotation(i, count));
+                        instance.transform.scale = instanceTool.getInstanceScale(i, count);
+
+                        arr.push(instance);
+                    }
+
+//            return model;
+                    return arr;
+                }
+
+
+                function createSphere(){
+                    var geometry = createSphereGeometry(wd.Color.create("rgb(1.0, 0.0, 0.0)"), 20);
+
+                    var gameObject = wd.GameObject.create();
+                    gameObject.addComponent(geometry);
+
+                    gameObject.addComponent(wd.MeshRenderer.create());
+
+
+
+
+                    var geometryLevel1 = createSphereGeometry(wd.Color.create("rgb(0.0, 1.0, 0.0)"), 5);
+                    var geometryLevel2 = createSphereGeometry(wd.Color.create("#ffffff"), 2);
+
+                    var lod = wd.LOD.create();
+
+                    lod.addGeometryLevel(100, geometryLevel1);
+                    lod.addGeometryLevel(300, geometryLevel2);
+                    lod.addGeometryLevel(500, wd.ELODGeometryState.INVISIBLE);
+
+
+                    gameObject.addComponent(lod);
+
+                    return gameObject;
+                }
+
+                function createSphereGeometry(color, segments){
+                    var material = wd.BasicMaterial.create();
+                    material.color = color;
+
+                    var geometry = wd.SphereGeometry.create();
+                    geometry.material = material;
+                    geometry.radius = 1;
+                    geometry.segments = segments;
+
+
+                    return geometry;
+                }
+
+//        function createBox(){
+//            var material = wd.BasicMaterial.create();
+//            material.color = wd.Color.create("rgb(255, 0, 255)");
+//
+//
+//            var geometry = wd.BoxGeometry.create();
+//            geometry.material = material;
+//            geometry.width = 5;
+//            geometry.height = 5;
+//            geometry.depth = 5;
+//
+//
+//            var gameObject = wd.GameObject.create();
+//
+//            gameObject.addComponent(wd.MeshRenderer.create());
+//            gameObject.addComponent(geometry);
+//
+//
+//            return gameObject;
+//        }
+
+                function createCamera() {
+                    var camera = wd.GameObject.create(),
+                        view = wd.Director.getInstance().view,
+                        cameraComponent = wd.PerspectiveCamera.create();
+
+                    cameraComponent.fovy = 60;
+                    cameraComponent.aspect = view.width / view.height;
+                    cameraComponent.near = 0.1;
+                    cameraComponent.far = 100000;
+
+                    var controller = wd.ArcballCameraController.create(cameraComponent);
+
+                    controller.distance = 800;
+                    controller.wheelSpeed = 10;
+
+
+                    camera.addComponent(controller);
+
+
+                    return camera;
+                }
+
+
+            }
+
+            beforeEach(function (done) {
+                tester = SceneTester.create(sandbox);
+
+                renderTestTool.prepareContext();
+
+
+                tester.execBody(body, done);
+            });
+
+            it("test invisible", function (done) {
+                tester.compareAt({
+                    frameIndex: 1,
+                    partialCorrectImagePath: "instance/instance_lod_invisible.png",
+                    done: done
+                });
+            });
+            it("test level2", function (done) {
+                tester.compareAt({
+                    frameIndex: 1,
+                    partialCorrectImagePath: "instance/instance_lod_level2.png",
+                    handle:function(){
+                        var camera = wd.Director.getInstance().scene.currentCamera;
+
+                        camera.getComponent(wd.CameraController).distance = 400;
+                    },
+                    done: done
+                });
+            });
+            it("test level1", function (done) {
+                tester.compareAt({
+                    frameIndex: 1,
+                    partialCorrectImagePath: "instance/instance_lod_level1.png",
+                    handle:function(){
+                        var camera = wd.Director.getInstance().scene.currentCamera;
+
+                        camera.getComponent(wd.CameraController).distance = 100;
+                    },
+                    done: done
+                });
+            });
+            it("test level0", function (done) {
+                tester.compareAt({
+                    frameIndex: 1,
+                    partialCorrectImagePath: "instance/instance_lod_level0.png",
+                    handle:function(){
+                        var camera = wd.Director.getInstance().scene.currentCamera;
+
+                        camera.getComponent(wd.CameraController).distance = 99;
+                    },
+                    done: done
+                });
+            });
+        });
     });
 });
