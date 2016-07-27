@@ -1,63 +1,218 @@
+var instanceTool = (function(){
+    return {
+        getInstancePosition:function(index, range, count){
+            return wd.Vector3.create(range / 2 - this._getVal(index, count) * range, range / 2 - this._getVal(index + 1, count) * range, range / 2 - this._getVal(index+ 2, count) * range);
+        },
+        getShadowInstancePosition:function(index, range, count){
+            return wd.Vector3.create(range / 2 - this._getVal(index, count) * range, 60, 0);
+        },
+        getSpecificInstancePosition:function(index, range, count, x,y,z){
+            var x = x !== null ? x : (range / 2 - this._getVal(index, count) * range);
+            var y = y !== null ? y : (range / 2 - this._getVal(index + 1, count) * range);
+            var z = z !== null ? z :(range / 2 - this._getVal(index + 2, count) * range);
+
+            return wd.Vector3.create(x, y, z);
+        },
+        getInstanceRotation:function(index, count){
+            var val = this._getVal(index, count);
+
+            return wd.Vector3.create(90 * val, 90 * val,0);
+        },
+        getInstanceScale:function(index, count){
+            return wd.Vector3.create(3,3,3);
+        },
+        _getVal:function(index, count){
+            return randomTool.getFixedRandomNum(index);
+        }
+    }
+})();
 describe("generate correct image tool", function () {
     var sandbox;
     var tester;
 
     function body(wrapper){
         wrapper.load([
+                {url: "../../asset/texture/crate.gif", id: "ground"},
+                {url: "../../asset/model/wd/ratamahatta/ratamahatta.wd", id: "md2"},
+                {url: "../../asset/model/wd/ratamahatta/ratamahatta.png", id: "skin"}
             ])
             .do(initSample);
 
         function initSample() {
             var director = wd.Director.getInstance();
 
-            director.scene.addChild(createTriangle1());
-            director.scene.addChild(createTriangle2());
+            director.renderer.setClearColor(wd.Color.create("#aaaaff"));
+
+            var ground = createGround();
+
+            director.scene.addChild(ground);
+            director.scene.addChildren(createMd2s());
+            director.scene.addChild(createAmbientLight());
+            director.scene.addChild(createDirectionLight(wd.Vector3.create(0, 500, 500)));
+            director.scene.addChild(createDirectionLight(wd.Vector3.create(500, 500, 0)));
             director.scene.addChild(createCamera());
 
             director.start();
         }
 
-        function createTriangle1() {
-            var material = wd.BasicMaterial.create();
-            material.color= wd.Color.create("rgb(255, 0, 0)");
-            material.side = wd.ESide.BOTH;
+        function createMd2s(){
+            var arr = [],
+                model = setMd2(),
+                range = 300,
+                count = 1;
+            var animLisit = [
+                ["run", 10],
+                ["attack", 10],
+                ["death", 5],
+                ["wave", 10],
+                ["jump", 10]
+            ];
+
+            model.transform.position = wd.Vector3.create(60, 24, -40);
+
+            arr.push(model);
 
 
-            var geometry = wd.TriangleGeometry.create();
-            geometry.material = material;
-            geometry.width = 20;
-            geometry.height = 20;
+            for(var i = 0; i < count; i++){
+                var cloneObject = model.clone();
+
+                cloneObject.transform.position = instanceTool.getSpecificInstancePosition(i, range, count, null, 24, null);
+
+
+
+
+
+                var animData = animLisit[wd.MathUtils.generateInteger(0, 4)];
+
+                var anim = cloneObject.getComponent(wd.Animation);
+                anim.play(animData[0], animData[1]);
+
+
+
+
+                arr.push(cloneObject);
+            }
+
+            return arr;
+        }
+
+        function setMd2() {
+            var model = wd.LoaderManager.getInstance().get("md2").getChild("models").getChild(0);
+
+
+            var material = wd.LightMaterial.create();
+            material.diffuseMap = wd.LoaderManager.getInstance().get("skin").toTexture();
+            material.specularColor = wd.Color.create("rgb(0, 0, 0)");
+            material.shininess = 32;
+
+
+            var geo = model.getComponent(wd.Geometry);
+            geo.material = material;
+
+
+            var shadow = wd.Shadow.create();
+            shadow.cast = true;
+            shadow.receive = true;
+
+            model.addComponent(shadow);
+
+
+            model.addComponent(wd.SourceInstance.create());
+
+
+
+            var anim = model.getComponent(wd.Animation);
+            anim.play("stand", 15);
+
+
+//            wd.Director.getInstance().scheduler.scheduleTime(function(){
+//                anim.pause();
+////                anim.stop();
+//            }, 1000);
+//
+//            wd.Director.getInstance().scheduler.scheduleTime(function(){
+//                anim.resume();
+////                anim.play("stand", 10);
+//            }, 2000);
+
+
+
+            return model;
+        }
+
+        function createGround(){
+            var map = wd.LoaderManager.getInstance().get("ground").toTexture();
+            map.name = "groundMap";
+            map.wrapS = wd.ETextureWrapMode.REPEAT;
+            map.wrapT = wd.ETextureWrapMode.REPEAT;
+            map.repeatRegion = wd.RectRegion.create(0.5, 0, 5, 5);
+
+
+            var material = wd.LightMaterial.create();
+            material.specularColor = wd.Color.create("#ffdd99");
+            material.shininess = 32;
+            material.diffuseMap = map;
+
+
+            var plane = wd.PlaneGeometry.create();
+            plane.width = 400;
+            plane.height = 400;
+            plane.material = material;
 
 
             var gameObject = wd.GameObject.create();
-            gameObject.addComponent(geometry);
-
             gameObject.addComponent(wd.MeshRenderer.create());
+            gameObject.addComponent(plane);
+
+            gameObject.name = "ground";
+
+            var shadow = wd.Shadow.create();
+            shadow.cast = false;
+            shadow.receive = true;
+
+            gameObject.addComponent(shadow);
+
+
+
 
             return gameObject;
         }
 
+        function createAmbientLight() {
+            var ambientLightComponent = wd.AmbientLight.create();
+            ambientLightComponent.color = wd.Color.create("rgb(30, 30, 30)");
 
-        function createTriangle2() {
-            var material = wd.BasicMaterial.create();
-            material.color= wd.Color.create("rgb(255, 255, 0)");
-            material.side = wd.ESide.BOTH;
+            var ambientLight = wd.GameObject.create();
+            ambientLight.addComponent(ambientLightComponent);
 
+            return ambientLight;
+        }
 
-            var geometry = wd.TriangleGeometry.create();
-            geometry.material = material;
-            geometry.width = 20;
-            geometry.height = 20;
+        function createDirectionLight(pos) {
+            var SHADOW_MAP_WIDTH = 1024,
+                SHADOW_MAP_HEIGHT = 1024;
 
+            var directionLightComponent = wd.DirectionLight.create();
+            directionLightComponent.color = wd.Color.create("#ffffff");
+            directionLightComponent.intensity = 1;
+            directionLightComponent.castShadow = true;
+            directionLightComponent.shadowCameraLeft = -200;
+            directionLightComponent.shadowCameraRight = 200;
+            directionLightComponent.shadowCameraTop = 200;
+            directionLightComponent.shadowCameraBottom = -200;
+            directionLightComponent.shadowCameraNear = 0.1;
+            directionLightComponent.shadowCameraFar = 1000;
+            directionLightComponent.shadowBias = 0.005;
+            directionLightComponent.shadowDarkness = 0.2;
+            directionLightComponent.shadowMapWidth = SHADOW_MAP_WIDTH;
+            directionLightComponent.shadowMapHeight = SHADOW_MAP_HEIGHT;
 
-            var gameObject = wd.GameObject.create();
-            gameObject.addComponent(geometry);
+            var directionLight = wd.GameObject.create();
+            directionLight.addComponent(directionLightComponent);
 
-            gameObject.addComponent(wd.MeshRenderer.create());
+            directionLight.transform.position = pos;
 
-            gameObject.transform.translate(0, 0, 30);
-
-            return gameObject;
+            return directionLight;
         }
 
         function createCamera() {
@@ -68,11 +223,11 @@ describe("generate correct image tool", function () {
             cameraComponent.fovy = 60;
             cameraComponent.aspect = view.width / view.height;
             cameraComponent.near = 0.1;
-            cameraComponent.far = 100;
+            cameraComponent.far = 1000;
 
             var controller = wd.ArcballCameraController.create(cameraComponent);
-            controller.distance = 50;
-            controller.phi = Math.PI / 2.5;
+            controller.theta = Math.PI / 4;
+            controller.distance = 200;
 
             camera.addComponent(controller);
 
@@ -101,8 +256,9 @@ describe("generate correct image tool", function () {
         tester.generateBatchAt(
             [
                 {
-                    frameIndex:1,
-                    imageName:"camera_perspective.png"
+                    frameIndex:1000,
+                    step:200,
+                    imageName:"clone_animation_morph_frame1000.png"
                 }
             ]
         );
