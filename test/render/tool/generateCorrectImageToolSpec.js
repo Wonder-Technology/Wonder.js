@@ -20,7 +20,8 @@ describe("generate correct image tool", function () {
             director.scene.addChild(box);
             director.scene.addChild(ground);
             director.scene.addChild(createAmbientLight());
-            director.scene.addChild(createDirectionLight());
+            director.scene.addChild(createDirectionLight(wd.Vector3.create(0, 100, 100)));
+            director.scene.addChild(createDirectionLight(wd.Vector3.create(100, 100, 0)));
             director.scene.addChild(createCamera());
 
             director.start();
@@ -118,7 +119,7 @@ describe("generate correct image tool", function () {
 
 
             var shadow = wd.Shadow.create();
-            shadow.cast = false;
+            shadow.cast = true;
             shadow.receive = true;
 
             gameObject.addComponent(shadow);
@@ -137,7 +138,7 @@ describe("generate correct image tool", function () {
             return ambientLight;
         }
 
-        function createDirectionLight() {
+        function createDirectionLight(pos) {
             var SHADOW_MAP_WIDTH = 1024,
                 SHADOW_MAP_HEIGHT = 1024;
 
@@ -156,11 +157,10 @@ describe("generate correct image tool", function () {
             directionLightComponent.shadowMapWidth = SHADOW_MAP_WIDTH;
             directionLightComponent.shadowMapHeight = SHADOW_MAP_HEIGHT;
 
-
             var directionLight = wd.GameObject.create();
             directionLight.addComponent(directionLightComponent);
 
-            directionLight.transform.translate(wd.Vector3.create(0, 50, 50));
+            directionLight.transform.position = pos;
 
             return directionLight;
         }
@@ -208,7 +208,7 @@ describe("generate correct image tool", function () {
             [
                 {
                     frameIndex:1,
-                    imageName:"shadow_direction_shadowMap.png"
+                    imageName:"shadow_multiDirection_shadowMaps.png"
                 }
             ]
         );
