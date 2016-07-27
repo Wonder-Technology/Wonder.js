@@ -46,8 +46,8 @@ describe("generate correct image tool", function () {
             director.scene.addChild(ground);
             director.scene.addChildren(models);
             director.scene.addChild(createAmbientLight());
-            director.scene.addChild(createDirectionLight(wd.Vector3.create(0, 500, 500)));
-            director.scene.addChild(createDirectionLight(wd.Vector3.create(100, 500, 100)));
+            director.scene.addChild(createPointLight(wd.Vector3.create(0, 50, 50)));
+            director.scene.addChild(createPointLight(wd.Vector3.create(50, 50, -50)));
             director.scene.addChild(createCamera());
 
             director.start();
@@ -218,31 +218,51 @@ describe("generate correct image tool", function () {
             return ambientLight;
         }
 
-        function createDirectionLight(pos) {
+        function createPointLight(pos) {
             var SHADOW_MAP_WIDTH = 1024,
                 SHADOW_MAP_HEIGHT = 1024;
+//            var listArr = boxArr.concat(groundArr);
 
-            var directionLightComponent = wd.DirectionLight.create();
-            directionLightComponent.color = wd.Color.create("#ffffff");
-            directionLightComponent.intensity = 1;
-            directionLightComponent.castShadow = true;
-            directionLightComponent.shadowCameraLeft = -500;
-            directionLightComponent.shadowCameraRight = 500;
-            directionLightComponent.shadowCameraTop = 500;
-            directionLightComponent.shadowCameraBottom = -500;
-            directionLightComponent.shadowCameraNear = 0.1;
-            directionLightComponent.shadowCameraFar = 1000;
-            directionLightComponent.shadowBias = 0.002;
-            directionLightComponent.shadowDarkness = 0.2;
-            directionLightComponent.shadowMapWidth = SHADOW_MAP_WIDTH;
-            directionLightComponent.shadowMapHeight = SHADOW_MAP_HEIGHT;
+            var pointLightComponent = wd.PointLight.create();
+            pointLightComponent.color = wd.Color.create("#ffffff");
+            pointLightComponent.intensity = 2;
+            pointLightComponent.rangeLevel = 11;
+            pointLightComponent.castShadow = true;
+            pointLightComponent.shadowCameraNear = 0.1;
+            pointLightComponent.shadowCameraFar = 1000;
+            pointLightComponent.shadowBias = 0.01;
+            pointLightComponent.shadowDarkness = 0.2;
+            pointLightComponent.shadowMapWidth = SHADOW_MAP_WIDTH;
+            pointLightComponent.shadowMapHeight = SHADOW_MAP_HEIGHT;
 
-            var directionLight = wd.GameObject.create();
-            directionLight.addComponent(directionLightComponent);
+//            pointLightComponent.shadowRenderList = {
+//                px:listArr,
+//                nx:listArr,
+//                py:listArr,
+//                ny:listArr,
+//                pz:listArr,
+//                nz:listArr
+//            };
 
-            directionLight.transform.position = pos;
+            var pointSphereMaterial = wd.BasicMaterial.create();
+            pointSphereMaterial.color = wd.Color.create("#ffffff");
 
-            return directionLight;
+            var geometry = wd.SphereGeometry.create();
+            geometry.material = pointSphereMaterial;
+            geometry.radius = 1;
+            geometry.segment = 20;
+
+
+            var pointLight = wd.GameObject.create();
+            pointLight.addComponent(pointLightComponent);
+            pointLight.addComponent(geometry);
+            pointLight.addComponent(wd.MeshRenderer.create());
+
+
+
+            pointLight.transform.position = pos;
+
+            return pointLight;
         }
 
         function createCamera() {
@@ -287,7 +307,7 @@ describe("generate correct image tool", function () {
             [
                 {
                     frameIndex:1,
-                    imageName:"instance_shadow_multiDirectionLights.png"
+                    imageName:"instance_shadow_multiPointLights.png"
                 }
             ]
         );
