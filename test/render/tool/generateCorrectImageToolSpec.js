@@ -4,78 +4,77 @@ describe("generate correct image tool", function () {
 
     function body(wrapper){
         wrapper.load([
-            {url: "../../asset/texture/1.jpg", id: "texture"}
-        ])
+            {url: "../../asset/model/wd/male02/male02.wd", id: "model"}
+            ])
             .do(initSample);
 
         function initSample() {
             var director = wd.Director.getInstance();
 
-            director.scene.addChild(createNoBillboardPlane());
-            director.scene.addChild(createBillboardAllPlane());
-            director.scene.addChild(createBillboardYPlane());
-            director.scene.addChild(sceneTool.createCamera(30));
+            director.renderer.setClearColor(wd.Color.create("#aaaaff"));
+
+            director.scene.addChild(setModel());
+            director.scene.addChild(createAmbientLight());
+            director.scene.addChild(createDirectionLight());
+            director.scene.addChild(createCamera());
 
             director.start();
         }
 
-        function createNoBillboardPlane() {
-            var material = wd.BasicMaterial.create();
-            material.map = wd.LoaderManager.getInstance().get("texture").toTexture();
-            material.side = wd.ESide.BOTH;
+        function setModel() {
+            var model = wd.LoaderManager.getInstance().get("model").getChild("models").getChild(0);
+
+            model.transform.translate(0, -80, 0);
+
+            model.getChildren()
+                .forEach(function (child) {
+                    var material = child.getComponent(wd.Geometry).material;
+                    material.shading = wd.EShading.SMOOTH;
+                });
 
 
-            var geometry = wd.RectGeometry.create();
-            geometry.material = material;
-            geometry.width = 5;
-            geometry.height = 5;
-
-
-
-            var gameObject = wd.GameObject.create();
-            gameObject.addComponent(geometry);
-
-            gameObject.addComponent(wd.MeshRenderer.create());
-
-            gameObject.transform.translate(0, 10, 0);
-
-            return gameObject;
+            return model;
         }
 
-        function createBillboardYPlane() {
-            return createBillboardPlane(wd.EBillboardMode.Y);
+        function createAmbientLight() {
+            var ambientLightComponent = wd.AmbientLight.create();
+            ambientLightComponent.color = wd.Color.create("rgb(30, 30, 30)");
+
+            var ambientLight = wd.GameObject.create();
+            ambientLight.addComponent(ambientLightComponent);
+
+            return ambientLight;
         }
 
-        function createBillboardAllPlane() {
-            return createBillboardPlane(wd.EBillboardMode.ALL, wd.Vector3.create(0, -10, 0));
+        function createDirectionLight() {
+            var directionLightComponent = wd.DirectionLight.create();
+            directionLightComponent.color = wd.Color.create("#ffffff");
+            directionLightComponent.intensity = 2;
+
+
+            var directionLight = wd.GameObject.create();
+            directionLight.addComponent(directionLightComponent);
+
+
+            return directionLight;
         }
 
-        function createBillboardPlane(mode, pos) {
-            var material = wd.BasicMaterial.create();
-            material.map = wd.LoaderManager.getInstance().get("texture").toTexture();
+        function createCamera() {
+            var camera = wd.GameObject.create(),
+                view = wd.Director.getInstance().view,
+                cameraComponent = wd.PerspectiveCamera.create();
 
+            cameraComponent.fovy = 60;
+            cameraComponent.aspect = view.width / view.height;
+            cameraComponent.near = 0.1;
+            cameraComponent.far = 1000;
 
-            var geometry = wd.RectGeometry.create();
-            geometry.material = material;
-            geometry.width = 5;
-            geometry.height = 5;
+            var controller = wd.ArcballCameraController.create(cameraComponent);
+            controller.distance = 200;
 
+            camera.addComponent(controller);
 
-            var billboard = wd.Billboard.create();
-            billboard.mode = mode;
-
-
-            var gameObject = wd.GameObject.create();
-            gameObject.addComponent(geometry);
-            gameObject.addComponent(billboard);
-
-            gameObject.addComponent(wd.MeshRenderer.create());
-
-            if(pos){
-                gameObject.transform.position = pos;
-            }
-
-            return gameObject;
+            return camera;
         }
 
 
@@ -101,7 +100,7 @@ describe("generate correct image tool", function () {
             [
                 {
                     frameIndex:1,
-                    imageName:"billboard_viewFromFront.png"
+                    imageName:"camera_arcball_control_viewfromFront.png"
                 },
                 {
                     frameIndex:1,
@@ -113,7 +112,7 @@ describe("generate correct image tool", function () {
                         controller.phi = Math.PI / 8
                         controller.theta = 0
                     },
-                    imageName:"billboard_viewFromTop.png"
+                    imageName:"camera_arcball_control_viewfromTop.png"
                 }
             ]
         );
