@@ -1,133 +1,82 @@
-var instanceTool = (function(){
-    return {
-        getInstancePosition:function(index, range, count){
-            return wd.Vector3.create(range / 2 - this._getVal(index, count) * range, range / 2 - this._getVal(index + 1, count) * range, range / 2 - this._getVal(index+ 2, count) * range);
-        },
-        getShadowInstancePosition:function(index, range, count){
-            return wd.Vector3.create(range / 2 - this._getVal(index, count) * range, 60, 0);
-        },
-        getSpecificInstancePosition:function(index, range, count, x,y,z){
-            var x = x !== null ? x : (range / 2 - this._getVal(index, count) * range);
-            var y = y !== null ? y : (range / 2 - this._getVal(index + 1, count) * range);
-            var z = z !== null ? z :(range / 2 - this._getVal(index + 2, count) * range);
-
-            return wd.Vector3.create(x, y, z);
-        },
-        getInstanceRotation:function(index, count){
-            var val = this._getVal(index, count);
-
-            return wd.Vector3.create(90 * val, 90 * val,0);
-        },
-        getInstanceScale:function(index, count){
-            return wd.Vector3.create(3,3,3);
-        },
-        _getVal:function(index, count){
-            return randomTool.getFixedRandomNum(index);
-        }
-    }
-})();
 describe("generate correct image tool", function () {
     var sandbox;
     var tester;
 
     function body(wrapper){
         wrapper.load([
-                {url: "../../asset/texture/terrain/heightMap.png", id: "heightMap"},
-                {url: "../../asset/texture/terrain/ground.jpg", id: "ground"},
-                {url: "../../asset/texture/1.jpg", id: "texture1"}
+                {url: "../../../asset/texture/1.jpg", id: "texture"}
             ])
-            .do(initSample);
-
-        function initSample() {
-            var director = wd.Director.getInstance();
-
-            var terrain = createTerrain();
-            terrain.transform.translate(wd.Vector3.create(-100, 0, 0));
+            .do(function(){
+                var director = wd.Director.getInstance();
 
 
-            var terrain2 = terrain.clone();
-            terrain2.transform.translate(wd.Vector3.create(200, 0, 0));
-
-            director.scene.addChildren([terrain, terrain2]);
-            director.scene.addChild(createAmbientLight());
-            director.scene.addChild(createDirectionLight());
-            director.scene.addChild(createCamera());
-
-            director.start();
-        }
-
-        function createTerrain() {
-            var groundMap = wd.LoaderManager.getInstance().get("ground").toTexture();
+                var arrow = wd.GameObject.create();
+                arrow.addChild(createArrow());
+                arrow.addChild(createLine());
 
 
-            var material = wd.TerrainMaterial.create();
+                director.scene.addChild(arrow);
+                director.scene.addChild(createCamera());
 
-            material.layer.mapDataList = wdCb.Collection.create([
-                {
-                    minHeight:10,
-                    maxHeight:20,
-                    diffuseMap:wd.LoaderManager.getInstance().get("texture1").toTexture()
-                },
-                {
-                    minHeight:20,
-                    maxHeight:50,
-                    diffuseMap:wd.FireProceduralTexture.create()
-                }
-            ]);
+                director.start();
+            });
+
+        function createArrow() {
+            var arrow = wd.Arrow.create();
 
 
+            var geometry = wd.ConvexPolygonGeometry.create();
+            geometry.vertices.push(-10, 0, 0);
+            geometry.vertices.push(0, 10, 0);
+            geometry.vertices.push(10, 0, 0);
+//            geometry.vertices.push(0, -10, 0);
+//            geometry.vertices.push(0, -10, 10);
 
-//            material.layer.blendMethod = wd.ETerrainLayerBlendMethod.CUT;
+            geometry.texCoords.push(0, 0);
+            geometry.texCoords.push(1, 0);
+            geometry.texCoords.push(0, 1);
 
-            material.diffuseMap = groundMap;
+            var material = wd.BasicMaterial.create();
+            material.color = wd.Color.create("rgb(1.0,0.0,1.0)");
+            material.map = wd.LoaderManager.getInstance().get("texture").toTexture();
+//            material.side = wd.ESide.BOTH;
 
-            material.shading = wd.EShading.SMOOTH;
-
-
-            var geometry = wd.TerrainGeometry.create();
             geometry.material = material;
-            geometry.subdivisions = 100;
-            geometry.range = {
-                width:100,
-                height:100
-            };
-            geometry.minHeight = 0;
-            geometry.maxHeight = 50;
-            geometry.heightMapAsset = wd.LoaderManager.getInstance().get("heightMap");
-//            geometry.drawMode = wd.EDrawMode.LINE_STRIP;
 
 
-            var gameObject = wd.GameObject.create();
-            gameObject.addComponent(geometry);
+            var arrowObject = wd.GameObject.create();
 
-            gameObject.addComponent(wd.MeshRenderer.create());
+            arrowObject.addComponent(arrow);
 
+            arrowObject.addComponent(geometry);
 
-            return gameObject;
+            arrowObject.addComponent(wd.MeshRenderer.create());
+
+            return arrowObject;
         }
 
-        function createAmbientLight() {
-            var ambientLightComponent = wd.AmbientLight.create();
-            ambientLightComponent.color = wd.Color.create("rgb(30, 30, 30)");
+        function createLine() {
+            var line = wd.SolidLine.create();
 
-            var ambientLight = wd.GameObject.create();
-            ambientLight.addComponent(ambientLightComponent);
+            var geometry = wd.SolidLineGeometry.create();
+            geometry.vertices.push(0, -10, 0);
+            geometry.vertices.push(0, 0, 0);
 
-            return ambientLight;
-        }
+            var material = wd.LineMaterial.create();
+            material.color = wd.Color.create("rgb(1.0,0.0,1.0)");
 
-        function createDirectionLight() {
-            var directionLightComponent = wd.DirectionLight.create();
-            directionLightComponent.color = wd.Color.create("#ffffff");
-            directionLightComponent.intensity = 1;
+            geometry.material = material;
 
 
-            var directionLight = wd.GameObject.create();
-            directionLight.addComponent(directionLightComponent);
+            var lineObject = wd.GameObject.create();
 
-            directionLight.transform.translate(wd.Vector3.create(10, 20, 30));
+            lineObject.addComponent(line);
 
-            return directionLight;
+            lineObject.addComponent(geometry);
+
+            lineObject.addComponent(wd.MeshRenderer.create());
+
+            return lineObject;
         }
 
         function createCamera() {
@@ -141,8 +90,7 @@ describe("generate correct image tool", function () {
             cameraComponent.far = 1000;
 
             var controller = wd.ArcballCameraController.create(cameraComponent);
-            controller.theta = Math.PI / 2.2;
-            controller.distance = 300;
+            controller.distance = 20;
 
             camera.addComponent(controller);
 
@@ -172,7 +120,7 @@ describe("generate correct image tool", function () {
             [
                 {
                     frameIndex:1,
-                    imageName:"clone_terrain.png"
+                    imageName:"ui_arrow.png"
                 }
             ]
         );

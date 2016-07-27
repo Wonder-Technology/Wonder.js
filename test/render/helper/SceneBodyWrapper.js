@@ -50,8 +50,8 @@ var SceneBodyWrapper = YYC.Class({
             assetDataArr.forEach(function(assetData){
                 var url = assetData.url;
 
-                if(url.match("../../asset/") !== null){
-                    assetData.url = url.replace("../../asset/", pathTool.join(pathTool.getPathData().rootPath, "base/examples/asset/"));
+                if(url.match(/\.\.\/asset\//) !== null){
+                    assetData.url = url.replace(/[^a]+\.\.\/asset\//, pathTool.join(pathTool.getPathData().rootPath, "base/examples/asset/"));
                 }
             });
 

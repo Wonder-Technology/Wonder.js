@@ -191,7 +191,7 @@
         //'test/unit/**/lod/*',
 
         //'test/unit/**/CameraController*',
-        'test/unit/**/camera/**',
+        //'test/unit/**/camera/**',
 
 
         //'test/unit/**/*GeometryData*',
@@ -248,7 +248,7 @@
         //
         //'test/unit/**/TwoDFontSpec*',
         //'test/unit/**/PlainFontSpec*',
-        //'test/unit/**/UIRendererSpec*',
+        'test/unit/**/UIRendererSpec*',
         //'test/unit/**/TwoDBitmapFontSpec*',
         //'test/unit/**/ThreeDBitmapFontSpec*',
         //'test/unit/**/bitmapFont/**',

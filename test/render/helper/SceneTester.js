@@ -45,7 +45,7 @@ var SceneTester = YYC.Class({
                 var data = arguments[0];
 
                 frameIndex = data.frameIndex;
-  partialCorrectImagePath = data.partialCorrectImagePath;
+                partialCorrectImagePath = data.partialCorrectImagePath;
                 handle = data.handle;
                 done = data.done;
                 step = data.step;
@@ -53,8 +53,8 @@ var SceneTester = YYC.Class({
             }
             else if(arguments.length === 3){
                 frameIndex = arguments[0];
-                    partialCorrectImagePath = arguments[1];
-                    done = arguments[2];
+                partialCorrectImagePath = arguments[1];
+                done = arguments[2];
                 step = 1;
                 description = null;
             }
@@ -167,11 +167,14 @@ var SceneTester = YYC.Class({
             return wd.Director.getInstance();
         },
         _createImageDataURL: function(imageName){
-            var canvas = wd.DeviceManager.getInstance().gl.canvas;
+            var canvas = this._getCanvas();
 
             var extname = wdCb.PathUtils.extname(imageName);
 
             return canvas.toDataURL("image/" + extname);
+        },
+        _getCanvas:function(){
+            return wd.DeviceManager.getInstance().gl.canvas;
         },
         _download: function(imageDataURL, imageName){
             var blob = fileOperator.dataURLToBlob(imageDataURL);
@@ -179,7 +182,7 @@ var SceneTester = YYC.Class({
             fileOperator.createFileAndDownload(blob, imageName);
         },
         _buildImagePath: function(partialImagePath){
-         return pathTool.join(pathTool.getPathData().rootPath, pathTool.join("base/test/render/res/correct_image", partialImagePath));
+            return pathTool.join(pathTool.getPathData().rootPath, pathTool.join("base/test/render/res/correct_image", partialImagePath));
         },
         _readScenePixelArr: function(){
             //var gl = wd.DeviceManager.getInstance().gl;
@@ -190,8 +193,7 @@ var SceneTester = YYC.Class({
             //
             //return pixelArr;
 
-            var gl = wd.DeviceManager.getInstance().gl;
-            var c = gl.canvas;
+            var c = this._getCanvas();
 
             //var canvas = document.createElement("canvas");
             //canvas.width = c.width;
@@ -210,3 +212,4 @@ var SceneTester = YYC.Class({
         }
     }
 });
+
