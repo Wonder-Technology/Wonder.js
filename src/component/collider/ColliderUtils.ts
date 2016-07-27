@@ -12,6 +12,7 @@ module wd{
         })
         public static getVertices(entityObject:EntityObject){
             if(!entityObject.hasComponent(Geometry)){
+                //todo refactor: if entityObject not has geometry data, compute boundRegion from its first child which has geometry data?
                 if(entityObject.hasTag(<any>EWDTag.CONTAINER)){
                     return entityObject.getChild(0).getComponent(Geometry).vertices;
                 }
