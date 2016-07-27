@@ -62,14 +62,13 @@ describe("generate correct image tool", function () {
 
         function createCamera() {
             var camera = wd.GameObject.create(),
-                cameraComponent = wd.OrthographicCamera.create();
+                view = wd.Director.getInstance().view,
+                cameraComponent = wd.PerspectiveCamera.create();
 
-            cameraComponent.left = -100;
-            cameraComponent.right = 100;
-            cameraComponent.top = 100;
-            cameraComponent.bottom = -100;
+            cameraComponent.fovy = 60;
+            cameraComponent.aspect = view.width / view.height;
             cameraComponent.near = 0.1;
-            cameraComponent.far = 1000;
+            cameraComponent.far = 100;
 
             var controller = wd.ArcballCameraController.create(cameraComponent);
             controller.distance = 50;
@@ -103,7 +102,7 @@ describe("generate correct image tool", function () {
             [
                 {
                     frameIndex:1,
-                    imageName:"camera_orthographic.png"
+                    imageName:"camera_perspective.png"
                 }
             ]
         );
