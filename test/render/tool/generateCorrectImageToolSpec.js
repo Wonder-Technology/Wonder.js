@@ -34,8 +34,7 @@ describe("generate correct image tool", function () {
     function body(wrapper){
         wrapper.load([
             {url: "../../asset/texture/1.jpg", id: "texture"},
-            {url: "../../asset/texture/crate.gif", id: "ground"}
-        ])
+            {url: "../../asset/texture/crate.gif", id: "ground"}        ])
             .do(initSample);
 
         function initSample() {
@@ -47,7 +46,8 @@ describe("generate correct image tool", function () {
             director.scene.addChild(ground);
             director.scene.addChildren(models);
             director.scene.addChild(createAmbientLight());
-            director.scene.addChild(createDirectionLight());
+            director.scene.addChild(createDirectionLight(wd.Vector3.create(0, 500, 500)));
+            director.scene.addChild(createDirectionLight(wd.Vector3.create(100, 500, 100)));
             director.scene.addChild(createCamera());
 
             director.start();
@@ -57,7 +57,7 @@ describe("generate correct image tool", function () {
             var arr = [],
                 model = createSphere(),
                 range = 300,
-                count = 1;
+                count = 2;
 
             model.transform.position = wd.Vector3.create(60, 20, 0);
 
@@ -114,8 +114,6 @@ describe("generate correct image tool", function () {
 
 
 
-
-
             var boxChild1 = createBox();
             var boxChild2 = createBox();
             var boxChild21 = createBox();
@@ -167,11 +165,6 @@ describe("generate correct image tool", function () {
 
 
 
-            //var action = wd.RepeatForever.create(wd.CallFunc.create(function(gameObject){
-            //    gameObject.transform.rotate(0, 1, 0);
-            //}));
-            //
-            //gameObject.addComponent(action);
 
             return gameObject;
         }
@@ -191,8 +184,8 @@ describe("generate correct image tool", function () {
 
 
             var plane = wd.PlaneGeometry.create();
-            plane.width = 300;
-            plane.height = 300;
+            plane.width = 200;
+            plane.height = 200;
             plane.material = material;
 
 
@@ -202,16 +195,11 @@ describe("generate correct image tool", function () {
 
             gameObject.name = "ground";
 
-
-
-
             var shadow = wd.Shadow.create();
             shadow.cast = false;
             shadow.receive = true;
 
             gameObject.addComponent(shadow);
-
-
 
 
             gameObject.transform.translate(wd.Vector3.create(1,1,1));
@@ -230,7 +218,7 @@ describe("generate correct image tool", function () {
             return ambientLight;
         }
 
-        function createDirectionLight() {
+        function createDirectionLight(pos) {
             var SHADOW_MAP_WIDTH = 1024,
                 SHADOW_MAP_HEIGHT = 1024;
 
@@ -249,11 +237,10 @@ describe("generate correct image tool", function () {
             directionLightComponent.shadowMapWidth = SHADOW_MAP_WIDTH;
             directionLightComponent.shadowMapHeight = SHADOW_MAP_HEIGHT;
 
-
             var directionLight = wd.GameObject.create();
             directionLight.addComponent(directionLightComponent);
 
-            directionLight.transform.translate(wd.Vector3.create(0, 500, 500));
+            directionLight.transform.position = pos;
 
             return directionLight;
         }
@@ -300,7 +287,7 @@ describe("generate correct image tool", function () {
             [
                 {
                     frameIndex:1,
-                    imageName:"instance_shadow_directionLight.png"
+                    imageName:"instance_shadow_multiDirectionLights.png"
                 }
             ]
         );
