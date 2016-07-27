@@ -4,47 +4,80 @@ describe("generate correct image tool", function () {
 
     function body(wrapper){
         wrapper.load([
-            {url: "../../asset/model/gltf/CesiumMilkTruck/glTF-MaterialsCommon/CesiumMilkTruck.gltf", id: "model"}
+                {url: "../../asset/model/wd/ratamahatta/ratamahatta.wd", id: "model"},
+                {url: "../../asset/model/wd/ratamahatta/ratamahatta.png", id: "skin"}
             ])
             .do(initSample);
 
         function initSample() {
             var director = wd.Director.getInstance();
 
-            director.scene.addChildren(setModelAndReturn());
-            director.scene.addChild(createCamera());
+            director.renderer.setClearColor(wd.Color.create("#aaaaff"));
+
+            director.scene.addChild(setModel());
+            director.scene.addChild(createAmbientLight());
             director.scene.addChild(createDirectionLight());
+            director.scene.addChild(createCamera());
 
             director.start();
+        }
+
+        function setModel() {
+            var model = wd.LoaderManager.getInstance().get("model").getChild("models").getChild(0);
+
+
+            var material = wd.LightMaterial.create();
+            material.diffuseMap = wd.LoaderManager.getInstance().get("skin").toTexture();
+            material.specularColor = wd.Color.create("rgb(0, 0, 0)");
+            material.shininess = 32;
+
+
+            var geo = model.getComponent(wd.Geometry);
+            geo.material = material;
+
+
+            var anim = model.getComponent(wd.Animation);
+            anim.play("stand", 10);
+
+
+//            wd.Director.getInstance().scheduler.scheduleTime(function(){
+//                anim.pause();
+////                anim.stop();
+//            }, 1000);
+//
+//            wd.Director.getInstance().scheduler.scheduleTime(function(){
+//                anim.resume();
+////                anim.play("stand", 10);
+//            }, 2000);
+
+
+
+            model.transform.rotate(0, -90, 0);
+
+            return model;
+        }
+
+        function createAmbientLight() {
+            var ambientLightComponent = wd.AmbientLight.create();
+            ambientLightComponent.color = wd.Color.create("rgb(30, 30, 30)");
+
+            var ambientLight = wd.GameObject.create();
+            ambientLight.addComponent(ambientLightComponent);
+
+            return ambientLight;
         }
 
         function createDirectionLight() {
             var directionLightComponent = wd.DirectionLight.create();
             directionLightComponent.color = wd.Color.create("#ffffff");
-            directionLightComponent.intensity = 1;
+            directionLightComponent.intensity = 2;
 
 
             var directionLight = wd.GameObject.create();
             directionLight.addComponent(directionLightComponent);
 
-            directionLight.transform.translate(wd.Vector3.create(0, 100, 100));
 
             return directionLight;
-        }
-
-        function setModelAndReturn() {
-            var models = wd.LoaderManager.getInstance().get("model").getChild("models");
-
-            var frontWheels = models.getChild(1).getChild(3);
-            var backWheels = models.getChild(1).getChild(4);
-
-            var frontWheelsAnim = frontWheels.getComponent(wd.ArticulatedAnimation);
-            var backWheelsAnim = backWheels.getComponent(wd.ArticulatedAnimation);
-
-            frontWheelsAnim.play("animation_0");
-            backWheelsAnim.play("animation_1");
-
-            return models;
         }
 
         function createCamera() {
@@ -58,8 +91,7 @@ describe("generate correct image tool", function () {
             cameraComponent.far = 1000;
 
             var controller = wd.ArcballCameraController.create(cameraComponent);
-            controller.distance = 5;
-            controller.theta = Math.PI / 4;
+            controller.distance = 70;
 
             camera.addComponent(controller);
 
@@ -89,7 +121,12 @@ describe("generate correct image tool", function () {
             [
                 {
                     frameIndex:1,
-                    imageName:"animation_articulated.png"
+                    imageName:"animation_morph_frame1.png"
+                },
+                {
+                    frameIndex:1000,
+                    step:200,
+                    imageName:"animation_morph_frame1000.png"
                 }
             ]
         );
