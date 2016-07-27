@@ -16,6 +16,10 @@
 
             'lib/outer/cannon/cannon.js',
 
+
+            'examples/samples/js/*',
+
+
             'test/helper/jquery.js',
             'test/helper/yTool.js',
 
