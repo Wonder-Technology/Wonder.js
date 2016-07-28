@@ -4,7 +4,7 @@ describe("generate correct image lightTool", function () {
 
     function body(wrapper){
         wrapper.load([
-                {url: "../../asset/model/gltf/boxAnimated/glTF-MaterialsCommon/glTF-MaterialsCommon.gltf", id: "model"}
+                {url: "../../asset/model/gltf/monster/glTF-MaterialsCommon/monster.gltf", id: "model"}
             ])
             .do(initSample);
 
@@ -12,40 +12,39 @@ describe("generate correct image lightTool", function () {
             var director = wd.Director.getInstance();
 
             director.scene.addChildren(setModelAndReturn());
+            director.scene.addChild(createAmbientLight());
+            director.scene.addChild(createDirectionLight());
             director.scene.addChild(createCamera());
 
             director.start();
         }
 
         function setModelAndReturn() {
-            var models = wd.LoaderManager.getInstance().get("model").getChild("models");
+            return wd.LoaderManager.getInstance().get("model").getChild("models");
+        }
 
-            var box1 = models.getChild(1);
-            var box2 = models.getChild(2);
+        function createAmbientLight () {
+            var ambientLightComponent = wd.AmbientLight.create();
+            ambientLightComponent.color = wd.Color.create("rgb(255,255,255)");
 
-            box1.transform.scale = wd.Vector3.create(5,5,5);
-            box2.transform.scale = wd.Vector3.create(5,5,5);
+            var ambientLight = wd.GameObject.create();
+            ambientLight.addComponent(ambientLightComponent);
 
-            var anim = box2.getComponent(wd.ArticulatedAnimation);
+            return ambientLight;
+        }
 
-//            anim.play("animation_0");
-            anim.play("animation_1");
+        function createDirectionLight() {
+            var directionLightComponent = wd.DirectionLight.create();
+            directionLightComponent.color = wd.Color.create("#ffffff");
+            directionLightComponent.intensity = 5;
 
 
+            var directionLight = wd.GameObject.create();
+            directionLight.addComponent(directionLightComponent);
 
+            directionLight.transform.translate(wd.Vector3.create(0, 0, 1000));
 
-
-            wd.Director.getInstance().scheduler.scheduleTime(function(){
-                anim.pause();
-//                anim.stop();
-            }, 1000);
-
-            wd.Director.getInstance().scheduler.scheduleTime(function(){
-                anim.resume();
-//                anim.play("animation_1");
-            }, 2000);
-
-            return models;
+            return directionLight;
         }
 
         function createCamera() {
@@ -59,7 +58,8 @@ describe("generate correct image lightTool", function () {
             cameraComponent.far = 1000;
 
             var controller = wd.ArcballCameraController.create(cameraComponent);
-            controller.distance = 10;
+            controller.distance = 80;
+            controller.phi = Math.PI / 4;
             controller.theta = Math.PI / 4;
 
             camera.addComponent(controller);
@@ -90,12 +90,7 @@ describe("generate correct image lightTool", function () {
             [
                 {
                     frameIndex:1,
-                    imageName:"loader_gltf_light_articulated_frame1.png"
-                },
-                {
-                    frameIndex:3000,
-                    step:1000,
-                    imageName:"loader_gltf_light_articulated_frame3000.png"
+                    imageName:"loader_gltf_texture.png"
                 },
             ]
         );
