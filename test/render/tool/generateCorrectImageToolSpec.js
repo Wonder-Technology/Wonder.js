@@ -17,9 +17,11 @@ describe("generate correct image tool", function () {
 
             var pointLight = createPointLight();
 
+            var mirror = createMirror1(sphere1, sphere2, box);
+
             director.scene.addChildren([sphere1, sphere2]);
             director.scene.addChild(box);
-            director.scene.addChild(createMirror1(sphere1, sphere2, box));
+            director.scene.addChild(mirror);
             director.scene.addChild(createAmbientLight());
 
             director.scene.addChild(pointLight);
@@ -27,6 +29,17 @@ describe("generate correct image tool", function () {
             director.scene.addChild(createCamera());
 
             director.start();
+
+
+
+            wd.Director.getInstance().scheduler.scheduleFrame(function(){
+                mirror.getComponent(wd.Geometry).material.reflectionMap.renderList = [];
+            }, 1);
+
+
+            wd.Director.getInstance().scheduler.scheduleFrame(function(){
+                mirror.getComponent(wd.Geometry).material.reflectionMap.renderList = [sphere1, sphere2];
+            }, 2);
         }
 
         function createSphere1() {
@@ -192,7 +205,7 @@ describe("generate correct image tool", function () {
             var controller = wd.FlyCameraController.create(cameraComponent);
             camera.addComponent(controller);
 
-            camera.transform.translate(wd.Vector3.create(-20, 10, 30));
+            camera.transform.translate(wd.Vector3.create(10, 10, 30));
             camera.transform.lookAt(wd.Vector3.create(0, 0, 0));
 
             return camera;
@@ -221,7 +234,11 @@ describe("generate correct image tool", function () {
             [
                 {
                     frameIndex:1,
-                    imageName:"light_mirror.png"
+                    imageName:"light_mirror_change_noMirror.png"
+                },
+                {
+                    frameIndex:2,
+                    imageName:"light_mirror_change_hasMirror.png"
                 },
             ]
         );
