@@ -4,13 +4,14 @@ describe("generate correct image lightTool", function () {
 
     function body(wrapper){
         wrapper.load([
-                {url: "../../asset/model/wd/ratamahatta/ratamahatta.wd", id: "model"},
-                {url: "../../asset/model/wd/ratamahatta/ratamahatta.png", id: "skin"}
+                {url: "../../asset/model/wd/butterfly/butterfly.wd", id: "model"}
             ])
             .do(initSample);
 
         function initSample() {
             var director = wd.Director.getInstance();
+
+            wd.DebugConfig.debugCollision = true;
 
             director.renderer.setClearColor(wd.Color.create("#aaaaff"));
 
@@ -25,18 +26,22 @@ describe("generate correct image lightTool", function () {
         function setModel() {
             var model = wd.LoaderManager.getInstance().get("model").getChild("models").getChild(0);
 
+            model.transform.scale = wd.Vector3.create(140, 140, 140);
 
-            var material = wd.LightMaterial.create();
-            material.diffuseMap = wd.LoaderManager.getInstance().get("skin").toTexture();
-            material.specularColor = wd.Color.create("rgb(0, 0, 0)");
-            material.shininess = 32;
+            model.findChildrenByName("wing")
+                .forEach(function (wing) {
+                    var wingMaterial = wing.getComponent(wd.Geometry).material;
+                    wingMaterial.side = wd.ESide.BOTH;
+                    wingMaterial.blendFuncSeparate = [wd.EBlendFunc.SRC_ALPHA, wd.EBlendFunc.ONE_MINUS_SRC_ALPHA, wd.EBlendFunc.ONE, wd.EBlendFunc.ONE_MINUS_SRC_ALPHA];
+                });
 
+            model.getChildren()
+                .forEach(function (child) {
+                    var material = child.getComponent(wd.Geometry).material;
+                    material.shading = wd.EShading.SMOOTH;
+                });
 
-            var geo = model.getComponent(wd.Geometry);
-            geo.material = material;
-
-
-            model.transform.rotate(0, -90, 0);
+            //model.addComponent(wd.BoxCollider.create());
 
             return model;
         }
@@ -75,7 +80,7 @@ describe("generate correct image lightTool", function () {
             cameraComponent.far = 1000;
 
             var controller = wd.ArcballCameraController.create(cameraComponent);
-            controller.distance = 70;
+            controller.distance = 60;
 
             camera.addComponent(controller);
 
@@ -105,7 +110,7 @@ describe("generate correct image lightTool", function () {
             [
                 {
                     frameIndex:1,
-                    imageName:"model_converter_md2"
+                    imageName:"model_converter_obj"
                 },
             ]
         );
