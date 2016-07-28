@@ -28,6 +28,7 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
+
         'test/unit/**',
 
         {pattern: 'test/res/**', watched: false, included: false, served: true}
