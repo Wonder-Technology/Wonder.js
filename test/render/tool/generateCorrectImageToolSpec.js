@@ -4,7 +4,6 @@ describe("generate correct image tool", function () {
 
     function body(wrapper){
         wrapper.load([
-                {url: "../../asset/texture/light/soil_specular.jpg", id: "specularMap"}
             ])
             .do(initSample);
 
@@ -12,6 +11,8 @@ describe("generate correct image tool", function () {
             var director = wd.Director.getInstance();
 
             director.scene.addChild(createSphere());
+            director.scene.addChild(createAmbientLight());
+            director.scene.addChild(createPointLight());
             director.scene.addChild(createDirectionLight());
             director.scene.addChild(createCamera());
 
@@ -20,10 +21,11 @@ describe("generate correct image tool", function () {
 
         function createSphere() {
             var material = wd.LightMaterial.create();
-            material.color = wd.Color.create("#ffffff");
+            material.specularColor = wd.Color.create("rgb(0, 255, 0)");
             material.shininess = 32;
-            material.emissionColor = wd.Color.create("rgb(0, 100, 0)");
+            material.emissionMap = wd.FireProceduralTexture.create();
             material.shading = wd.EShading.SMOOTH;
+            material.lightModel = wd.ELightModel.PHONG;
 
 
             var geometry = wd.SphereGeometry.create();
@@ -40,9 +42,50 @@ describe("generate correct image tool", function () {
             return gameObject;
         }
 
+        function createAmbientLight() {
+            var ambientLightComponent = wd.AmbientLight.create();
+            ambientLightComponent.color = wd.Color.create("rgb(30, 30, 30)");
+
+            var ambientLight = wd.GameObject.create();
+            ambientLight.addComponent(ambientLightComponent);
+
+            return ambientLight;
+        }
+
+        function createPointLight() {
+            var pointLightComponent = wd.PointLight.create();
+            pointLightComponent.color = wd.Color.create("#222222");
+            pointLightComponent.intensity = 0.5;
+            pointLightComponent.rangeLevel = 10;
+
+            var pointLight = wd.GameObject.create();
+            pointLight.addComponent(pointLightComponent);
+
+            var pointSphereMaterial = wd.BasicMaterial.create();
+            pointSphereMaterial.color = wd.Color.create("#222222");
+
+            var geometry = wd.SphereGeometry.create();
+            geometry.material = pointSphereMaterial;
+            geometry.radius = 1;
+            geometry.segment = 20;
+
+            pointLight.addComponent(geometry);
+            pointLight.addComponent(wd.MeshRenderer.create());
+
+            var action = wd.RepeatForever.create(wd.CallFunc.create(function () {
+                pointLight.transform.rotateAround(0.5, wd.Vector3.create(0, 0, 0), wd.Vector3.up);
+            }));
+
+            pointLight.addComponent(action);
+
+            pointLight.transform.translate(wd.Vector3.create(0, 0, 10));
+
+            return pointLight;
+        }
+
         function createDirectionLight() {
             var directionLightComponent = wd.DirectionLight.create();
-            directionLightComponent.color = wd.Color.create("#ffffff");
+            directionLightComponent.color = wd.Color.create("#1f8888");
             directionLightComponent.intensity = 1;
 
 
@@ -95,7 +138,7 @@ describe("generate correct image tool", function () {
             [
                 {
                     frameIndex:1,
-                    imageName:"light_emission.png"
+                    imageName:"light_emissionMap.png"
                 },
             ]
         );
