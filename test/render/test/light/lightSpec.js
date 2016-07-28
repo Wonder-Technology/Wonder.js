@@ -832,7 +832,7 @@ describe("light", function () {
                 tester.compareAt(1, "light/light_mirror_change_noMirror.png", done);
             });
             it("test has mirror", function (done) {
-                tester.compareAt(1, "light/light_mirror_change_hasMirror.png", done);
+                tester.compareAt(2, "light/light_mirror_change_hasMirror.png", done);
             });
         });
 

@@ -236,6 +236,7 @@ describe("clone", function () {
                                         frameIndex:1000,
                     step:200,
                     partialCorrectImagePath:"clone/clone_animation_morph_frame1000.png",
+                    correctRate:0.95,
                     done:done
                 });
             });
