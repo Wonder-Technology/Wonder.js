@@ -37,23 +37,27 @@ describe("generate correct image tool", function () {
     function body(wrapper){
         wrapper.load([
             ])
-            .do(function() {
-                    var director = wd.Director.getInstance();
+            .do(function(){
+                var director = wd.Director.getInstance();
 
-                    director.scene.addChild(createSolidLine());
-                    director.scene.addChild(createCamera());
+                director.scene.addChild(createLine());
+                director.scene.addChild(sceneTool.createCamera(20));
 
-                    director.start();
-                });
+                director.start();
+            });
 
-        function createSolidLine() {
-            var line = wd.SolidLine.create();
+        function createLine() {
+            var line = wd.DashLine.create();
 
 
-            var geometry = wd.SolidLineGeometry.create();
+            var geometry = wd.DashLineGeometry.create();
             geometry.vertices.push(-10, -10, 0);
             geometry.vertices.push(-10, 10, 0);
             geometry.vertices.push(10, 10, 0);
+
+            geometry.dashSize = 3;
+            geometry.gapSize = 2;
+            geometry.dashCount = 20;
 
             var material = wd.LineMaterial.create();
             material.color = wd.Color.create("rgb(1.0,0.0,1.0)");
@@ -70,24 +74,6 @@ describe("generate correct image tool", function () {
             lineObject.addComponent(wd.MeshRenderer.create());
 
             return lineObject;
-        }
-
-        function createCamera() {
-            var camera = wd.GameObject.create(),
-                view = wd.Director.getInstance().view,
-                cameraComponent = wd.PerspectiveCamera.create();
-
-            cameraComponent.fovy = 60;
-            cameraComponent.aspect = view.width / view.height;
-            cameraComponent.near = 0.1;
-            cameraComponent.far = 80;
-
-            var controller = wd.ArcballCameraController.create(cameraComponent);
-            controller.distance = 20;
-
-            camera.addComponent(controller);
-
-            return camera;
         }
 
 
@@ -113,7 +99,7 @@ describe("generate correct image tool", function () {
             [
                 {
                                         frameIndex:1,
-                    imageName:"ui_line.png"
+                    imageName:"ui_line_dash.png"
                 },
             ]
         );

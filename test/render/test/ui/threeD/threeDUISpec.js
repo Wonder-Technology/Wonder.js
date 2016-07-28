@@ -541,6 +541,74 @@ describe("threeD ui", function () {
                 );
             });
         });
+
+        describe("test dash line", function () {
+            var tester;
+
+            function body(wrapper){
+                wrapper.load([
+                    ])
+                    .do(function(){
+                        var director = wd.Director.getInstance();
+
+                        director.scene.addChild(createLine());
+                        director.scene.addChild(sceneTool.createCamera(20));
+
+                        director.start();
+                    });
+
+                function createLine() {
+                    var line = wd.DashLine.create();
+
+
+                    var geometry = wd.DashLineGeometry.create();
+                    geometry.vertices.push(-10, -10, 0);
+                    geometry.vertices.push(-10, 10, 0);
+                    geometry.vertices.push(10, 10, 0);
+
+                    geometry.dashSize = 3;
+                    geometry.gapSize = 2;
+                    geometry.dashCount = 20;
+
+                    var material = wd.LineMaterial.create();
+                    material.color = wd.Color.create("rgb(1.0,0.0,1.0)");
+
+                    geometry.material = material;
+
+
+                    var lineObject = wd.GameObject.create();
+
+                    lineObject.addComponent(line);
+
+                    lineObject.addComponent(geometry);
+
+                    lineObject.addComponent(wd.MeshRenderer.create());
+
+                    return lineObject;
+                }
+
+
+            }
+
+            beforeEach(function (done) {
+                tester = SceneTester.create(sandbox);
+
+                renderTestTool.prepareContext();
+
+                tester.execBody(body, done);
+            });
+
+            it("test", function (done) {
+                tester.compareAt(
+                    {
+                        frameIndex:1,
+                        partialCorrectImagePath:"ui/threeD/ui_line_dash.png",
+                        done:done,
+                        correctRate:0.95
+                    }
+                );
+            });
+        });
     });
 });
 
