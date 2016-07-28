@@ -1,6 +1,6 @@
 /*!
  * wonder - 3d html5 game engine
- * @version v0.6.0
+ * @version v0.6.2
  * @author Yuanchao Yang <395976266@qq.com>
  * @link https://github.com/yyc-git/Wonder.js
  * @license MIT
@@ -3628,8 +3628,7 @@ declare module wd {
     enum EBillboardMode {
         NONE = 0,
         Y = 1,
-        Z = 2,
-        ALL = 3,
+        ALL = 2,
     }
 }
 
@@ -4723,16 +4722,22 @@ declare module wd {
 declare module wd {
     class ArcballCameraController extends CameraController {
         static create(cameraComponent: Camera): ArcballCameraController;
+        private _distance;
+        distance: number;
+        private _minDistance;
+        minDistance: number;
+        private _phi;
+        phi: number;
+        private _theta;
+        theta: number;
+        private _thetaMargin;
+        thetaMargin: number;
+        private _target;
+        target: Vector3;
         moveSpeedX: number;
         moveSpeedY: number;
         rotateSpeed: number;
         wheelSpeed: number;
-        distance: number;
-        phi: number;
-        theta: number;
-        target: Vector3;
-        thetaMargin: number;
-        minDistance: number;
         private _isChange;
         private _mouseDragSubscription;
         private _mouseWheelSubscription;
@@ -4742,10 +4747,14 @@ declare module wd {
         dispose(): void;
         private _bindCanvasEvent();
         private _changeOrbit(e);
+        private _changePhi(phi);
+        private _changeTheta(theta);
         private _changeTarget(e);
+        private _changeTarget(target);
         private _changeDistance(e);
-        private _contrainDistance();
-        private _contrainTheta();
+        private _changeDistance(distance);
+        private _constrainDistance();
+        private _constrainTheta();
         private _removeEvent();
     }
 }
@@ -8089,13 +8098,6 @@ declare module wd {
         static multi_map_forBasic_vertex: GLSLChunk;
         static skybox_fragment: GLSLChunk;
         static skybox_vertex: GLSLChunk;
-        static basic_forLight_envMap_fragment: GLSLChunk;
-        static basic_forLight_envMap_vertex: GLSLChunk;
-        static forLight_envMap_fragment: GLSLChunk;
-        static forLight_envMap_vertex: GLSLChunk;
-        static fresnel_forLight_envMap_fragment: GLSLChunk;
-        static reflection_forLight_envMap_fragment: GLSLChunk;
-        static refraction_forLight_envMap_fragment: GLSLChunk;
         static basic_forBasic_envMap_fragment: GLSLChunk;
         static basic_forBasic_envMap_vertex: GLSLChunk;
         static forBasic_envMap_fragment: GLSLChunk;
@@ -8103,6 +8105,13 @@ declare module wd {
         static fresnel_forBasic_envMap_fragment: GLSLChunk;
         static reflection_forBasic_envMap_fragment: GLSLChunk;
         static refraction_forBasic_envMap_fragment: GLSLChunk;
+        static basic_forLight_envMap_fragment: GLSLChunk;
+        static basic_forLight_envMap_vertex: GLSLChunk;
+        static forLight_envMap_fragment: GLSLChunk;
+        static forLight_envMap_vertex: GLSLChunk;
+        static fresnel_forLight_envMap_fragment: GLSLChunk;
+        static reflection_forLight_envMap_fragment: GLSLChunk;
+        static refraction_forLight_envMap_fragment: GLSLChunk;
         static modelMatrix_batch_instance_vertex: GLSLChunk;
         static normalMatrix_batch_instance_vertex: GLSLChunk;
         static modelMatrix_hardware_instance_vertex: GLSLChunk;
@@ -8146,15 +8155,6 @@ declare module wd {
         static sdf_bitmapFont_smoothStep_fallback: GLSLChunk;
         static sdf_bitmapFont_smoothStep_standardDerivatives: GLSLChunk;
         static sdf_bitmapFont_smooth_fragment: GLSLChunk;
-        static brick_proceduralTexture_fragment: GLSLChunk;
-        static cloud_proceduralTexture_fragment: GLSLChunk;
-        static common_proceduralTexture_fragment: GLSLChunk;
-        static common_proceduralTexture_vertex: GLSLChunk;
-        static fire_proceduralTexture_fragment: GLSLChunk;
-        static grass_proceduralTexture_fragment: GLSLChunk;
-        static road_proceduralTexture_fragment: GLSLChunk;
-        static marble_proceduralTexture_fragment: GLSLChunk;
-        static wood_proceduralTexture_fragment: GLSLChunk;
         static mirror_fragment: GLSLChunk;
         static mirror_vertex: GLSLChunk;
         static terrainLayer_fragment: GLSLChunk;
@@ -8169,6 +8169,15 @@ declare module wd {
         static water_reflection_fragment: GLSLChunk;
         static water_refraction_fragment: GLSLChunk;
         static water_vertex: GLSLChunk;
+        static brick_proceduralTexture_fragment: GLSLChunk;
+        static cloud_proceduralTexture_fragment: GLSLChunk;
+        static common_proceduralTexture_fragment: GLSLChunk;
+        static common_proceduralTexture_vertex: GLSLChunk;
+        static fire_proceduralTexture_fragment: GLSLChunk;
+        static grass_proceduralTexture_fragment: GLSLChunk;
+        static marble_proceduralTexture_fragment: GLSLChunk;
+        static road_proceduralTexture_fragment: GLSLChunk;
+        static wood_proceduralTexture_fragment: GLSLChunk;
     }
     type GLSLChunk = {
         top?: string;
