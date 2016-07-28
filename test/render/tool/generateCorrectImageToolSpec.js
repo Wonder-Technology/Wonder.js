@@ -309,7 +309,9 @@ describe("generate correct image lightTool", function () {
         function _initScene() {
             lightTool.addSkybox();
             lightTool.addBox();
-            lightTool.addSphere(wd.EEnvMapMode.REFLECTION);
+            lightTool.addSphere(wd.EEnvMapMode.REFRACTION, function(material){
+                material.refractionRatio = 0.5;
+            });
             lightTool.addLight();
             lightTool.addCamera();
 
@@ -317,6 +319,8 @@ describe("generate correct image lightTool", function () {
 
             director.start();
         }
+
+
     }
 
 
@@ -339,7 +343,7 @@ describe("generate correct image lightTool", function () {
             [
                 {
                     frameIndex:1,
-                    imageName:"light_reflection.png"
+                    imageName:"light_refraction.png"
                 },
             ]
         );

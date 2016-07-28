@@ -1360,5 +1360,52 @@ describe("light", function () {
                 tester.compareAt(1, "light/light_reflection.png", done);
             });
         });
+
+        describe("test refraction", function () {
+            function body(wrapper){
+                wrapper.load([
+                        {url: "../../../asset/texture/1.jpg", id: "diffuseMap"},
+                        {url: "../../../asset/texture/skybox/px.jpg", id: "px"},
+                        {url: "../../../asset/texture/skybox/nx.jpg", id: "nx"},
+                        {url: "../../../asset/texture/skybox/py.jpg", id: "py"},
+                        {url: "../../../asset/texture/skybox/ny.jpg", id: "ny"},
+                        {url: "../../../asset/texture/skybox/pz.jpg", id: "pz"},
+                        {url: "../../../asset/texture/skybox/nz.jpg", id: "nz"}
+                    ])
+                    .do(initSample);
+
+                function initSample() {
+                    _initScene();
+                }
+
+                function _initScene() {
+                    lightTool.addSkybox();
+                    lightTool.addBox();
+                    lightTool.addSphere(wd.EEnvMapMode.REFRACTION, function(material){
+                        material.refractionRatio = 0.5;
+                    });
+                    lightTool.addLight();
+                    lightTool.addCamera();
+
+                    var director = wd.Director.getInstance();
+
+                    director.start();
+                }
+
+
+            }
+
+            beforeEach(function (done) {
+                tester = SceneTester.create(sandbox);
+
+                renderTestTool.prepareContext();
+
+                tester.execBody(body, done);
+            });
+
+            it("test", function (done) {
+                tester.compareAt(1, "light/light_refraction.png", done);
+            });
+        });
     });
 });
