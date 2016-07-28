@@ -42,7 +42,7 @@
             //'test/render/test/**/animation*',
             //'test/render/test/**/shadow*',
             //'test/render/test/**/threeDUI*',
-            'test/render/test/**/light*',
+            'test/render/test/**/loader*',
 
             {pattern: 'test/render/res/**', watched: false, included: false, served: true},
 
