@@ -33,10 +33,10 @@
 
             'test/render/helper/*.js',
 
-            'test/render/test/**',
+            //'test/render/test/**',
 
 
-            //'test/render/test/**/instance*',
+            'test/render/test/**/instance*',
             //'test/render/test/**/hard*',
             //'test/render/test/**/proce*',
             //'test/render/test/**/animation*',
