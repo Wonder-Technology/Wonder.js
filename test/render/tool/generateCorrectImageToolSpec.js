@@ -36,76 +36,40 @@ describe("generate correct image tool", function () {
 
     function body(wrapper){
         wrapper.load([
-                {url: "../../../asset/font/bitmap/sdf/DejaVu-sdf.fnt", id: "bitmap_fnt"},
-                {url: "../../../asset/font/bitmap/sdf/DejaVu-sdf.png", id: "bitmap_image"}
             ])
-            .do(initSample);
+            .do(function() {
+                    var director = wd.Director.getInstance();
 
-        function initSample() {
-            var director = wd.Director.getInstance();
+                    director.scene.addChild(createSolidLine());
+                    director.scene.addChild(createCamera());
 
-            director.scene.addChild(createFont());
+                    director.start();
+                });
 
-            director.scene.addChild(sceneTool.createAmbientLight());
-            director.scene.addChild(sceneTool.createDirectionLight(wd.Vector3.create(0, 0, 100)));
-            director.scene.addChild(sceneTool.createCamera(20, wd.Vector3.create(0,50,0)));
-
-            director.start();
-        }
-
-        function createFont() {
-            var font = wd.ThreeDBitmapFont.create();
-
-            font.text = "This is a BitmapFont example!";
-            font.fntId = "bitmap_fnt";
-            font.xAlignment = wd.EFontXAlignment.CENTER;
-            font.width = 500;
-            font.height = 200;
+        function createSolidLine() {
+            var line = wd.SolidLine.create();
 
 
+            var geometry = wd.SolidLineGeometry.create();
+            geometry.vertices.push(-10, -10, 0);
+            geometry.vertices.push(-10, 10, 0);
+            geometry.vertices.push(10, 10, 0);
 
-
-
-
-
-            var texture = wd.LoaderManager.getInstance().get("bitmap_image").toTexture();
-//            texture.flipY = false;
-
-            var material = wd.BitmapFontMaterial.create();
-            material.color = wd.Color.create("rgb(255,0,255)");
-            material.bitmap = texture;
-            material.enableSdf = true;
-            material.sdfType = wd.SdfBitmapFontType.SMOOTH;
-            material.alphaTest = 0.0001;
-            material.blendFuncSeparate = [wd.EBlendFunc.SRC_ALPHA, wd.EBlendFunc.ONE_MINUS_SRC_ALPHA, wd.EBlendFunc.ONE, wd.EBlendFunc.ONE_MINUS_SRC_ALPHA];
-//            material.blendFuncSeparate = [wd.EBlendFunc.ONE, wd.EBlendFunc.ONE, wd.EBlendFunc.ONE, wd.EBlendFunc.ZERO];
-//            material.blendType = wd.EBlendType.NORMAL;
-
-
-
-            var geometry = wd.BitmapFontGeometry.create();
+            var material = wd.LineMaterial.create();
+            material.color = wd.Color.create("rgb(1.0,0.0,1.0)");
 
             geometry.material = material;
 
 
+            var lineObject = wd.GameObject.create();
 
-            var gameObject = wd.GameObject.create();
+            lineObject.addComponent(line);
 
-            gameObject.addComponent(font);
+            lineObject.addComponent(geometry);
 
-            gameObject.addComponent(geometry);
+            lineObject.addComponent(wd.MeshRenderer.create());
 
-
-
-            var renderer = wd.MeshRenderer.create();
-
-
-            gameObject.addComponent(renderer);
-
-
-            gameObject.transform.translate(00, 00, 0);
-
-            return gameObject;
+            return lineObject;
         }
 
         function createCamera() {
@@ -116,11 +80,10 @@ describe("generate correct image tool", function () {
             cameraComponent.fovy = 60;
             cameraComponent.aspect = view.width / view.height;
             cameraComponent.near = 0.1;
-            cameraComponent.far = 1000;
+            cameraComponent.far = 80;
 
             var controller = wd.ArcballCameraController.create(cameraComponent);
             controller.distance = 20;
-            controller.target = wd.Vector3.create(0,50,0);
 
             camera.addComponent(controller);
 
@@ -150,7 +113,7 @@ describe("generate correct image tool", function () {
             [
                 {
                                         frameIndex:1,
-                    imageName:"ui_font_threeD_sdf_bitmap.png"
+                    imageName:"ui_line.png"
                 },
             ]
         );

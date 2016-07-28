@@ -459,6 +459,88 @@ describe("threeD ui", function () {
                 );
             });
         });
+
+        describe("test line", function () {
+            var tester;
+
+            function body(wrapper){
+                wrapper.load([
+                    ])
+                    .do(function() {
+                        var director = wd.Director.getInstance();
+
+                        director.scene.addChild(createSolidLine());
+                        director.scene.addChild(createCamera());
+
+                        director.start();
+                    });
+
+                function createSolidLine() {
+                    var line = wd.SolidLine.create();
+
+
+                    var geometry = wd.SolidLineGeometry.create();
+                    geometry.vertices.push(-10, -10, 0);
+                    geometry.vertices.push(-10, 10, 0);
+                    geometry.vertices.push(10, 10, 0);
+
+                    var material = wd.LineMaterial.create();
+                    material.color = wd.Color.create("rgb(1.0,0.0,1.0)");
+
+                    geometry.material = material;
+
+
+                    var lineObject = wd.GameObject.create();
+
+                    lineObject.addComponent(line);
+
+                    lineObject.addComponent(geometry);
+
+                    lineObject.addComponent(wd.MeshRenderer.create());
+
+                    return lineObject;
+                }
+
+                function createCamera() {
+                    var camera = wd.GameObject.create(),
+                        view = wd.Director.getInstance().view,
+                        cameraComponent = wd.PerspectiveCamera.create();
+
+                    cameraComponent.fovy = 60;
+                    cameraComponent.aspect = view.width / view.height;
+                    cameraComponent.near = 0.1;
+                    cameraComponent.far = 80;
+
+                    var controller = wd.ArcballCameraController.create(cameraComponent);
+                    controller.distance = 20;
+
+                    camera.addComponent(controller);
+
+                    return camera;
+                }
+
+
+            }
+
+            beforeEach(function (done) {
+                tester = SceneTester.create(sandbox);
+
+                renderTestTool.prepareContext();
+
+                tester.execBody(body, done);
+            });
+
+            it("test", function (done) {
+                tester.compareAt(
+                    {
+                        frameIndex:1,
+                        partialCorrectImagePath:"ui/threeD/ui_line.png",
+                        done:done,
+                        correctRate:0.95
+                    }
+                );
+            });
+        });
     });
 });
 
