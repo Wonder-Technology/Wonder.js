@@ -4,39 +4,58 @@ describe("generate correct image tool", function () {
 
     function body(wrapper){
         wrapper.load([
+                {url: "../../asset/texture/lightMap/ground.png", id: "ground"},
+                {url: "../../asset/texture/lightMap/lightMap.gif", id: "lightMap"}
             ])
             .do(initSample);
 
         function initSample() {
             var director = wd.Director.getInstance();
 
-            director.scene.addChild(createSphere());
-            director.scene.addChild(createAmbientLight());
-            director.scene.addChild(createPointLight());
+            director.scene.addChild(createPlane());
+//            director.scene.addChild(createAmbientLight());
+//            director.scene.addChild(createPointLight());
             director.scene.addChild(createDirectionLight());
             director.scene.addChild(createCamera());
 
             director.start();
         }
 
-        function createSphere() {
+        function createPlane() {
             var material = wd.LightMaterial.create();
             material.specularColor = wd.Color.create("rgb(0, 255, 0)");
             material.shininess = 32;
-            material.emissionMap = wd.FireProceduralTexture.create();
-            material.shading = wd.EShading.SMOOTH;
-            material.lightModel = wd.ELightModel.PHONG;
 
 
-            var geometry = wd.SphereGeometry.create();
-            geometry.material = material;
-            geometry.radius = 5;
+            material.diffuseMap = wd.LoaderManager.getInstance().get("ground").toTexture();
+
+            material.diffuseMap.repeatRegion = wd.RectRegion.create(0, 0, 5, 5);
+            material.diffuseMap.wrapS = wd.ETextureWrapMode.REPEAT;
+            material.diffuseMap.wrapT = wd.ETextureWrapMode.REPEAT;
+
+
+            material.lightMap = wd.LoaderManager.getInstance().get("lightMap").toTexture();
+
+            material.lightMapIntensity = 1;
+
+
+            var plane = wd.PlaneGeometry.create();
+
+            plane.width = 10;
+            plane.height = 10;
+            plane.material = material;
+
+
+
 
 
             var gameObject = wd.GameObject.create();
-            gameObject.addComponent(geometry);
+            gameObject.addComponent(plane);
 
             gameObject.addComponent(wd.MeshRenderer.create());
+
+
+            gameObject.transform.rotate(90, 0, 0)
 
 
             return gameObject;
@@ -52,47 +71,16 @@ describe("generate correct image tool", function () {
             return ambientLight;
         }
 
-        function createPointLight() {
-            var pointLightComponent = wd.PointLight.create();
-            pointLightComponent.color = wd.Color.create("#222222");
-            pointLightComponent.intensity = 0.5;
-            pointLightComponent.rangeLevel = 10;
-
-            var pointLight = wd.GameObject.create();
-            pointLight.addComponent(pointLightComponent);
-
-            var pointSphereMaterial = wd.BasicMaterial.create();
-            pointSphereMaterial.color = wd.Color.create("#222222");
-
-            var geometry = wd.SphereGeometry.create();
-            geometry.material = pointSphereMaterial;
-            geometry.radius = 1;
-            geometry.segment = 20;
-
-            pointLight.addComponent(geometry);
-            pointLight.addComponent(wd.MeshRenderer.create());
-
-            var action = wd.RepeatForever.create(wd.CallFunc.create(function () {
-                pointLight.transform.rotateAround(0.5, wd.Vector3.create(0, 0, 0), wd.Vector3.up);
-            }));
-
-            pointLight.addComponent(action);
-
-            pointLight.transform.translate(wd.Vector3.create(0, 0, 10));
-
-            return pointLight;
-        }
-
         function createDirectionLight() {
             var directionLightComponent = wd.DirectionLight.create();
-            directionLightComponent.color = wd.Color.create("#1f8888");
+            directionLightComponent.color = wd.Color.create("#ffffff");
             directionLightComponent.intensity = 1;
 
 
             var directionLight = wd.GameObject.create();
             directionLight.addComponent(directionLightComponent);
 
-            directionLight.transform.translate(wd.Vector3.create(10, 0, 0));
+            directionLight.transform.translate(wd.Vector3.create(10, 10, 10));
 
             return directionLight;
         }
@@ -105,7 +93,7 @@ describe("generate correct image tool", function () {
             cameraComponent.fovy = 60;
             cameraComponent.aspect = view.width / view.height;
             cameraComponent.near = 0.1;
-            cameraComponent.far = 80;
+            cameraComponent.far = 1000;
 
             var controller = wd.ArcballCameraController.create(cameraComponent);
             controller.distance = 20;
@@ -138,7 +126,7 @@ describe("generate correct image tool", function () {
             [
                 {
                     frameIndex:1,
-                    imageName:"light_emissionMap.png"
+                    imageName:"light_lightMap.png"
                 },
             ]
         );
