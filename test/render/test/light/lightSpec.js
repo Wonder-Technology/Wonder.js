@@ -1451,7 +1451,12 @@ describe("light", function () {
             });
 
             it("test", function (done) {
-                tester.compareAt(1, "light/light_fresnel.png", done);
+                tester.compareAt({
+                    frameIndex:3000,
+                    step:200,
+                    partialCorrectImagePath:"loader/loader_gltf_light_articulated_frame3000.png",
+                    done:done);
+            }
             });
         });
     });

@@ -4,32 +4,15 @@ describe("generate correct image lightTool", function () {
 
     function body(wrapper){
         wrapper.load([
-                {url: "../../asset/model/gltf/duck/glTF-MaterialsCommon/duck.gltf", id: "model"}
+                {url: "../../asset/model/gltf/boxAnimated/glTF-MaterialsCommon/glTF-MaterialsCommon.gltf", id: "model"}
             ])
             .do(initSample);
 
         function initSample() {
             var director = wd.Director.getInstance();
 
-            director.scene.addChild(createDefaultCamera());
             director.scene.addChildren(setModelAndReturn());
-
-
-            /*!
-             can switch camera:
-             0: default camera
-             1: gltf camera
-             */
-            director.scene.currentCamera = 0;
-
-            wd.Director.getInstance().scheduler.scheduleFrame(function () {
-                director.scene.currentCamera = 0;
-            }, 1);
-
-            wd.Director.getInstance().scheduler.scheduleFrame(function () {
-                director.scene.currentCamera = 1;
-            }, 2);
-
+            director.scene.addChild(createCamera());
 
             director.start();
         }
@@ -37,29 +20,49 @@ describe("generate correct image lightTool", function () {
         function setModelAndReturn() {
             var models = wd.LoaderManager.getInstance().get("model").getChild("models");
 
-            var model = models.getChild(0);
+            var box1 = models.getChild(1);
+            var box2 = models.getChild(2);
 
-            model.transform.scale = wd.Vector3.create(0.015,0.015,0.015);
+            box1.transform.scale = wd.Vector3.create(5,5,5);
+            box2.transform.scale = wd.Vector3.create(5,5,5);
+
+            var anim = box2.getComponent(wd.ArticulatedAnimation);
+
+//            anim.play("animation_0");
+            anim.play("animation_1");
+
+
+
+
+
+            wd.Director.getInstance().scheduler.scheduleTime(function(){
+                anim.pause();
+//                anim.stop();
+            }, 1000);
+
+            wd.Director.getInstance().scheduler.scheduleTime(function(){
+                anim.resume();
+//                anim.play("animation_1");
+            }, 2000);
 
             return models;
         }
 
-        function createDefaultCamera() {
+        function createCamera() {
             var camera = wd.GameObject.create(),
                 view = wd.Director.getInstance().view,
                 cameraComponent = wd.PerspectiveCamera.create();
 
             cameraComponent.fovy = 60;
             cameraComponent.aspect = view.width / view.height;
-            cameraComponent.near = 0.01;
+            cameraComponent.near = 0.1;
             cameraComponent.far = 1000;
 
-            var controller = wd.BasicCameraController.create(cameraComponent);
+            var controller = wd.ArcballCameraController.create(cameraComponent);
+            controller.distance = 10;
+            controller.theta = Math.PI / 4;
 
             camera.addComponent(controller);
-
-            camera.transform.translate(0, 0.03, -0.05);
-            camera.transform.lookAt(0, 0, 0);
 
             return camera;
         }
@@ -87,11 +90,12 @@ describe("generate correct image lightTool", function () {
             [
                 {
                     frameIndex:1,
-                    imageName:"loader_gltf_camera_defaultCamera.png"
+                    imageName:"loader_gltf_light_articulated_frame1.png"
                 },
                 {
-                    frameIndex:2,
-                    imageName:"loader_gltf_camera_gltfCamera.png"
+                    frameIndex:3000,
+                    step:1000,
+                    imageName:"loader_gltf_light_articulated_frame3000.png"
                 },
             ]
         );
