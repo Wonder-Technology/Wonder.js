@@ -5,6 +5,8 @@ var karma = require("karma").server;
 
 var karmaConfPath = path.join(process.cwd(), "test/karma.conf.js");
 var ciKarmaConfPath = path.join(process.cwd(), "karma.conf.js");
+var renderTestkarmaConfPath = path.join(process.cwd(), "test/karmaRenderTest.conf.js");
+var renderTestToolkarmaConfPath = path.join(process.cwd(), "test/karmaRenderTool.conf.js");
 
 
 require("../compile/parseTsconfigFilesGlob");
@@ -36,6 +38,32 @@ gulp.task("watchForTest", function(){
 
 
 gulp.task("test", gulpSync.sync(["compileForTest", "watchForTest", "testByKarma"]));
+
+gulp.task("testAll", gulpSync.sync(["compileForTest", "testInCI", "renderTest"]));
+
+
+//gulp.task("renderTest", gulpSync.sync(["compileForTest", "watchForTest", "renderTestByKarma"]));
+gulp.task("renderTest", gulpSync.sync(["renderTestByKarma"]));
+
+gulp.task("renderTestTool", gulpSync.sync(["renderTestToolByKarma"]));
+
+
+gulp.task("renderTestByKarma", function (done) {
+    karma.start({
+        configFile: renderTestkarmaConfPath
+        //singleRun:true,
+        //autoWatch:false
+    }, done);
+});
+
+
+gulp.task("renderTestToolByKarma", function (done) {
+    karma.start({
+        configFile: renderTestToolkarmaConfPath
+        //singleRun:true,
+        //autoWatch:false
+    }, done);
+});
 
 
 gulp.task("testInCI", function (done) {

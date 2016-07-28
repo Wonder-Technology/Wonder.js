@@ -182,6 +182,160 @@ describe("ArcballCameraController", function () {
 
             expect(controller._changeOrbit).toCalledTwice();
         });
+
+        describe("test change attr directly", function(){
+            var director;
+
+            beforeEach(function(){
+                prepare(sandbox);
+
+                director = wd.Director.getInstance();
+
+                director.scene.addChild(camera);
+
+                director._init();
+            });
+
+            describe("test change distance attr", function(){
+                it("should update when change the distance attr", function(){
+                    var distance = 110;
+
+                    director._loopBody(1);
+
+                    expect(controller.entityObject.transform.position.z).not.toEqual(distance);
+
+
+
+
+                    controller.distance = distance;
+
+                    director._loopBody(2);
+
+                    expect(controller.entityObject.transform.position.z).toEqual(distance);
+                });
+                it("distance shouldn't < minDistance", function(){
+                    controller.minDistance = 120;
+                    var distance = 110;
+
+                    director._loopBody(1);
+
+
+
+
+
+                    controller.distance = distance;
+
+                    director._loopBody(2);
+
+                    expect(controller.entityObject.transform.position.z).toEqual(120);
+                });
+            });
+
+            describe("test change minDistance attr", function(){
+                it("if distance > minDistance, change distance", function(){
+                    var distance = 110;
+
+                    controller.distance = distance;
+
+                    director._loopBody(1);
+
+
+
+
+                    controller.minDistance = 120;
+
+                    director._loopBody(2);
+
+                    expect(controller.entityObject.transform.position.z).toEqual(120);
+                });
+            });
+
+            describe("test change phi attr", function(){
+                it("should update when change the phi attr", function(){
+                    controller.phi = Math.PI / 2;
+
+                    director._loopBody(1);
+
+                    var pos = controller.entityObject.transform.position;
+
+
+
+
+
+                    controller.phi = Math.PI / 4;
+
+                    director._loopBody(2);
+
+                    expect(testTool.getValues(controller.entityObject.transform.position)).not.toEqual(testTool.getValues(pos));
+                });
+            });
+
+            describe("test change theta attr", function(){
+                it("should update when change the theta attr", function(){
+                    controller.theta = Math.PI / 2;
+
+                    director._loopBody(1);
+
+                    var pos = controller.entityObject.transform.position;
+
+
+
+
+
+                    controller.theta = Math.PI / 4;
+
+                    director._loopBody(2);
+
+                    expect(testTool.getValues(controller.entityObject.transform.position)).not.toEqual(testTool.getValues(pos));
+                });
+                it("should constrain theta", function(){
+                    controller.theta = Math.PI / 2;
+
+                    //director._loopBody(1);
+
+                    //var pos = controller.entityObject.transform.position;
+
+
+
+
+                    controller.thetaMargin = Math.PI / 3;
+
+                    controller.theta = Math.PI / 4;
+
+                    expect(controller.theta).toEqual(controller.thetaMargin);
+                });
+            });
+
+            describe("test change thetaMargin attr", function(){
+                it("should constrain theta", function(){
+                    controller.theta = Math.PI / 2;
+
+                    controller.thetaMargin = Math.PI;
+
+                    expect(controller.theta).toEqual(controller.thetaMargin);
+                });
+            });
+
+            describe("test change target attr", function(){
+                it("should update when change the target attr", function(){
+                    controller.target = wd.Vector3.create(0,0,1);
+
+                    director._loopBody(1);
+
+                    var pos = controller.entityObject.transform.position;
+
+
+
+
+
+                    controller.target = wd.Vector3.create(1,0,1);
+
+                    director._loopBody(2);
+
+                    expect(testTool.getValues(controller.entityObject.transform.position)).not.toEqual(testTool.getValues(pos));
+                });
+            });
+        });
     });
 
     //describe("optimize", function() {

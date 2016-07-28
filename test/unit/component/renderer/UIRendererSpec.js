@@ -209,5 +209,18 @@ describe("UIRenderer", function () {
             expect(result === renderer).toBeFalsy();
             expect(result.zIndex).toEqual(zIndex);
         });
+        it("the cloned one has new canvas", function () {
+            renderer.zIndex = 10;
+
+            var clonedUIObject = uiObject.clone();
+
+            director.scene.addChild(clonedUIObject);
+            director.scene.addChild(uiObject);
+
+            director._init();
+
+            //webgl has one canvas, the two UIRenderer has two canvas
+            expect($("canvas").toArray().length).toEqual(1 + 2);
+        });
     });
 });

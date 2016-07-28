@@ -1,0 +1,1155 @@
+describe("texture", function () {
+    var sandbox = null;
+
+    beforeEach(function () {
+        sandbox = sinon.sandbox.create();
+    });
+    afterEach(function () {
+        testTool.clearInstance(sandbox);
+
+        renderTestTool.destoryContext();
+
+        sandbox.restore();
+    });
+
+    describe("scene test", function() {
+        describe("test anisotropic", function () {
+            var tester;
+
+            function body(wrapper){
+                wrapper.load([
+                        {url: "../../asset/texture/crate.gif", id: "texture"}
+                    ])
+                    .do(initSample);
+
+                function initSample() {
+                    var director = wd.Director.getInstance();
+
+                    director.scene.addChild(createPlane());
+                    director.scene.addChild(createCamera());
+
+                    director.start();
+                }
+
+                function createPlane() {
+                    var map = wd.LoaderManager.getInstance().get("texture").toTexture();
+                    map.wrapS = map.wrapT = wd.ETextureWrapMode.REPEAT;
+                    map.repeatRegion = wd.RectRegion.create(0, 0, 512, 512);
+                    /*!annotate this line to see the difference*/
+                    map.anisotropy = wd.GPUDetector.getInstance().maxAnisotropy;
+
+                    var material = wd.BasicMaterial.create();
+                    material.map = map;
+
+
+                    var geometry = wd.PlaneGeometry.create();
+                    geometry.material = material;
+                    geometry.width = 100;
+                    geometry.height = 100;
+
+                    var gameObject = wd.GameObject.create();
+                    gameObject.addComponent(geometry);
+
+                    gameObject.addComponent(wd.MeshRenderer.create());
+
+                    gameObject.transform.rotate(wd.Vector3.create(30, 0, 0));
+                    gameObject.transform.scale = wd.Vector3.create(100, 100, 100);
+
+                    return gameObject;
+                }
+
+                function createCamera() {
+                    var camera = wd.GameObject.create(),
+                        view = wd.Director.getInstance().view,
+                        cameraComponent = wd.PerspectiveCamera.create();
+
+                    cameraComponent.fovy = 60;
+                    cameraComponent.aspect = view.width / view.height;
+                    cameraComponent.near = 0.1;
+                    cameraComponent.far = 1000;
+
+                    var controller = wd.FlyCameraController.create(cameraComponent);
+                    camera.addComponent(controller);
+
+                    camera.transform.translate(wd.Vector3.create(0, 0, 100));
+
+                    return camera;
+                }
+
+            }
+
+            beforeEach(function (done) {
+                tester = SceneTester.create(sandbox);
+
+                renderTestTool.prepareContext();
+
+                tester.execBody(body, done);
+            });
+
+            it("test", function (done) {
+                tester.compareAt(1, "texture/texture_anisotropic.png", done);
+            });
+        });
+
+        describe("test draw canvas to texture", function () {
+            var tester;
+
+            function body(wrapper){
+                wrapper.load([])
+                    .do(initSample);
+
+                function initSample() {
+                    var director = wd.Director.getInstance();
+
+                    director.scene.addChild(createPlane());
+                    director.scene.addChild(createCamera());
+
+                    director.start();
+                }
+
+                function createPlane() {
+                    var canvas = document.createElement( "canvas" );
+                    canvas.width = 10;
+                    canvas.height = 10;
+
+                    var ctx = canvas.getContext("2d");
+
+                    ctx.fillStyle = "rgba(0, 255, 0, 1)";
+                    ctx.fillRect(0,0, 5, 10);
+                    ctx.fillStyle = "rgba(255, 0, 0, 1)";
+                    ctx.fillRect(5,0, 5, 10);
+
+                    var material = wd.BasicMaterial.create();
+                    material.map = wd.ImageTexture.create(canvas);
+
+
+                    var geometry = wd.BoxGeometry.create();
+                    geometry.material = material;
+                    geometry.width = 10;
+                    geometry.height = 10;
+                    geometry.depth = 10;
+
+                    var gameObject = wd.GameObject.create();
+                    gameObject.addComponent(geometry);
+
+                    gameObject.addComponent(wd.MeshRenderer.create());
+
+                    return gameObject;
+                }
+
+                function createCamera() {
+                    var camera = wd.GameObject.create(),
+                        view = wd.Director.getInstance().view,
+                        cameraComponent = wd.PerspectiveCamera.create();
+
+                    cameraComponent.fovy = 60;
+                    cameraComponent.aspect = view.width / view.height;
+                    cameraComponent.near = 0.1;
+                    cameraComponent.far = 1000;
+
+                    var controller = wd.ArcballCameraController.create(cameraComponent);
+                    controller.distance = 40;
+
+                    camera.addComponent(controller);
+
+                    return camera;
+                }
+            }
+
+            beforeEach(function (done) {
+                tester = SceneTester.create(sandbox);
+
+                renderTestTool.prepareContext();
+
+                tester.execBody(body, done);
+            });
+
+            it("test", function (done) {
+                tester.compareAt(1, "texture/texture_canvas.png", done);
+            });
+        });
+
+        describe("test compressed texture", function () {
+            var tester;
+
+            function body(wrapper){
+                wrapper.load([
+                        {url: "../../asset/texture/compressed/disturb_dxt1_mip.dds", id: "texture"}
+                    ])
+                    .do(initSample);
+
+                function initSample() {
+                    var director = wd.Director.getInstance();
+
+                    director.scene.addChild(createTriangle());
+                    director.scene.addChild(createCamera());
+
+                    director.start();
+                }
+
+                function createTriangle() {
+                    var material = wd.BasicMaterial.create();
+
+                    material.map = wd.LoaderManager.getInstance().get("texture").toTexture();
+
+
+                    var geometry = wd.RectGeometry.create();
+                    geometry.material = material;
+                    geometry.width = 5;
+                    geometry.height = 5;
+
+
+                    var gameObject = wd.GameObject.create();
+                    gameObject.addComponent(geometry);
+
+                    gameObject.addComponent(wd.MeshRenderer.create());
+
+
+                    return gameObject;
+                }
+
+                function createCamera() {
+                    var camera = wd.GameObject.create(),
+                        view = wd.Director.getInstance().view,
+                        cameraComponent = wd.PerspectiveCamera.create();
+
+                    cameraComponent.fovy = 60;
+                    cameraComponent.aspect = view.width / view.height;
+                    cameraComponent.near = 0.1;
+                    cameraComponent.far = 80;
+
+                    var controller = wd.BasicCameraController.create(cameraComponent);
+                    camera.addComponent(controller);
+
+                    camera.transform.translate(0, 0, 5);
+
+                    return camera;
+                }
+            }
+
+            beforeEach(function (done) {
+                tester = SceneTester.create(sandbox);
+
+                renderTestTool.prepareContext();
+
+                tester.execBody(body, done);
+            });
+
+            it("test", function (done) {
+                tester.compareAt(1, "texture/texture_compressed.png", done);
+            });
+        });
+
+        describe("test reflection texture", function () {
+            var tester;
+
+            function body(wrapper){
+                wrapper.load([
+                        {url: "../../asset/texture/1.jpg", id: "texture"},
+                        {url: "../../asset/texture/skybox/px.jpg", id: "px"},
+                        {url: "../../asset/texture/skybox/nx.jpg", id: "nx"},
+                        {url: "../../asset/texture/skybox/py.jpg", id: "py"},
+                        {url: "../../asset/texture/skybox/ny.jpg", id: "ny"},
+                        {url: "../../asset/texture/skybox/pz.jpg", id: "pz"},
+                        {url: "../../asset/texture/skybox/nz.jpg", id: "nz"}
+                    ])
+                    .do(initSample);
+
+                function initSample() {
+                    var director = wd.Director.getInstance();
+
+                    director.scene.addChild(createSkybox());
+                    director.scene.addChild(createSphere());
+                    director.scene.addChild(createCamera());
+
+                    director.start();
+                }
+
+                function createSkybox() {
+                    var cubemap = wd.CubemapTexture.create(
+                        [
+                            {
+                                asset: wd.LoaderManager.getInstance().get("px")
+                            },
+                            {
+                                asset: wd.LoaderManager.getInstance().get("nx")
+                            },
+                            {
+                                asset: wd.LoaderManager.getInstance().get("py")
+                            },
+                            {
+                                asset: wd.LoaderManager.getInstance().get("ny")
+                            },
+                            {
+                                asset: wd.LoaderManager.getInstance().get("pz")
+                            },
+                            {
+                                asset: wd.LoaderManager.getInstance().get("nz")
+                            }
+                        ]
+                    );
+
+                    var material = wd.SkyboxMaterial.create();
+                    material.envMap = cubemap;
+
+
+                    var geometry = wd.BoxGeometry.create();
+                    geometry.material = material;
+                    geometry.width = 5;
+                    geometry.height = 5;
+                    geometry.depth = 5;
+
+
+                    var gameObject = wd.GameObject.create();
+
+                    gameObject.addComponent(wd.SkyboxRenderer.create());
+                    gameObject.addComponent(geometry);
+
+                    return gameObject;
+                }
+
+                function createSphere() {
+                    var cubemap = wd.CubemapTexture.create(
+                        [
+                            {
+                                asset: wd.LoaderManager.getInstance().get("px")
+                            },
+                            {
+                                asset: wd.LoaderManager.getInstance().get("nx")
+                            },
+                            {
+                                asset: wd.LoaderManager.getInstance().get("py")
+                            },
+                            {
+                                asset: wd.LoaderManager.getInstance().get("ny")
+                            },
+                            {
+                                asset: wd.LoaderManager.getInstance().get("pz")
+                            },
+                            {
+                                asset: wd.LoaderManager.getInstance().get("nz")
+                            }
+                        ]
+                    );
+                    cubemap.mode = wd.EEnvMapMode.REFLECTION;
+
+
+                    var material = wd.BasicMaterial.create();
+                    material.envMap = cubemap;
+                    material.shading = wd.EShading.SMOOTH;
+
+                    var geometry = wd.SphereGeometry.create();
+                    geometry.material = material;
+                    geometry.radius = 5;
+
+                    var gameObject = wd.GameObject.create();
+                    gameObject.addComponent(geometry);
+
+                    gameObject.addComponent(wd.MeshRenderer.create());
+
+                    return gameObject;
+                }
+
+
+                function createCamera() {
+                    var camera = wd.GameObject.create(),
+                        view = wd.Director.getInstance().view,
+                        cameraComponent = wd.PerspectiveCamera.create();
+
+                    cameraComponent.fovy = 60;
+                    cameraComponent.aspect = view.width / view.height;
+                    cameraComponent.near = 0.1;
+                    cameraComponent.far = 1000;
+
+                    var controller = wd.FlyCameraController.create(cameraComponent);
+                    camera.addComponent(controller);
+
+                    camera.transform.translate(0, 0, 20);
+
+                    return camera;
+                }
+            }
+
+            beforeEach(function (done) {
+                tester = SceneTester.create(sandbox);
+
+                renderTestTool.prepareContext();
+
+                tester.execBody(body, done);
+            });
+
+            it("test", function (done) {
+                tester.compareAt(1, "texture/texture_reflection.png", done);
+            });
+        });
+
+        describe("test refraction texture", function () {
+            var tester;
+
+            function body(wrapper){
+                wrapper.load([
+                        {url: "../../asset/texture/1.jpg", id: "texture"},
+                        {url: "../../asset/texture/skybox/px.jpg", id: "px"},
+                        {url: "../../asset/texture/skybox/nx.jpg", id: "nx"},
+                        {url: "../../asset/texture/skybox/py.jpg", id: "py"},
+                        {url: "../../asset/texture/skybox/ny.jpg", id: "ny"},
+                        {url: "../../asset/texture/skybox/pz.jpg", id: "pz"},
+                        {url: "../../asset/texture/skybox/nz.jpg", id: "nz"}
+                    ])
+                    .do(initSample);
+
+                function initSample() {
+                    var director = wd.Director.getInstance();
+
+                    director.scene.addChild(createSkybox());
+                    director.scene.addChild(createSphere());
+                    director.scene.addChild(createCamera());
+
+                    director.start();
+                }
+
+                function createSkybox() {
+                    var cubemap = wd.CubemapTexture.create(
+                        [
+                            {
+                                asset: wd.LoaderManager.getInstance().get("px")
+                            },
+                            {
+                                asset: wd.LoaderManager.getInstance().get("nx")
+                            },
+                            {
+                                asset: wd.LoaderManager.getInstance().get("py")
+                            },
+                            {
+                                asset: wd.LoaderManager.getInstance().get("ny")
+                            },
+                            {
+                                asset: wd.LoaderManager.getInstance().get("pz")
+                            },
+                            {
+                                asset: wd.LoaderManager.getInstance().get("nz")
+                            }
+                        ]
+                    );
+
+                    var material = wd.SkyboxMaterial.create();
+                    material.envMap = cubemap;
+
+
+                    var geometry = wd.BoxGeometry.create();
+                    geometry.material = material;
+                    geometry.width = 5;
+                    geometry.height = 5;
+                    geometry.depth = 5;
+
+
+                    var gameObject = wd.GameObject.create();
+
+                    gameObject.addComponent(wd.SkyboxRenderer.create());
+                    gameObject.addComponent(geometry);
+
+                    return gameObject;
+                }
+
+                function createSphere() {
+                    var cubemap = wd.CubemapTexture.create(
+                        [
+                            {
+                                asset: wd.LoaderManager.getInstance().get("px")
+                            },
+                            {
+                                asset: wd.LoaderManager.getInstance().get("nx")
+                            },
+                            {
+                                asset: wd.LoaderManager.getInstance().get("py")
+                            },
+                            {
+                                asset: wd.LoaderManager.getInstance().get("ny")
+                            },
+                            {
+                                asset: wd.LoaderManager.getInstance().get("pz")
+                            },
+                            {
+                                asset: wd.LoaderManager.getInstance().get("nz")
+                            }
+                        ]
+                    );
+                    cubemap.mode = wd.EEnvMapMode.REFRACTION;
+
+
+                    var material = wd.BasicMaterial.create();
+                    material.envMap = cubemap;
+                    material.shading = wd.EShading.SMOOTH;
+                    material.refractionRatio = 1.52;
+
+                    var geometry = wd.SphereGeometry.create();
+                    geometry.material = material;
+                    geometry.radius = 5;
+
+                    var gameObject = wd.GameObject.create();
+                    gameObject.addComponent(geometry);
+
+                    gameObject.addComponent(wd.MeshRenderer.create());
+
+                    return gameObject;
+                }
+
+
+                function createCamera() {
+                    var camera = wd.GameObject.create(),
+                        view = wd.Director.getInstance().view,
+                        cameraComponent = wd.PerspectiveCamera.create();
+
+                    cameraComponent.fovy = 60;
+                    cameraComponent.aspect = view.width / view.height;
+                    cameraComponent.near = 0.1;
+                    cameraComponent.far = 1000;
+
+                    var controller = wd.FlyCameraController.create(cameraComponent);
+                    camera.addComponent(controller);
+
+                    camera.transform.translate(0, 0, 20);
+
+                    return camera;
+                }
+            }
+
+            beforeEach(function (done) {
+                tester = SceneTester.create(sandbox);
+
+                renderTestTool.prepareContext();
+
+                tester.execBody(body, done);
+            });
+
+            it("test", function (done) {
+                tester.compareAt(1, "texture/texture_refraction.png", done);
+            });
+        });
+
+        describe("test fresnel texture", function () {
+            var tester;
+
+            function body(wrapper){
+                wrapper.load([
+                        {url: "../../asset/texture/1.jpg", id: "texture"},
+                        {url: "../../asset/texture/skybox/px.jpg", id: "px"},
+                        {url: "../../asset/texture/skybox/nx.jpg", id: "nx"},
+                        {url: "../../asset/texture/skybox/py.jpg", id: "py"},
+                        {url: "../../asset/texture/skybox/ny.jpg", id: "ny"},
+                        {url: "../../asset/texture/skybox/pz.jpg", id: "pz"},
+                        {url: "../../asset/texture/skybox/nz.jpg", id: "nz"}
+                    ])
+                    .do(initSample);
+
+                function initSample() {
+                    var director = wd.Director.getInstance();
+
+                    director.scene.addChild(createSkybox());
+                    director.scene.addChild(createSphere());
+                    director.scene.addChild(createCamera());
+
+                    director.start();
+                }
+
+                function createSkybox() {
+                    var cubemap = wd.CubemapTexture.create(
+                        [
+                            {
+                                asset: wd.LoaderManager.getInstance().get("px")
+                            },
+                            {
+                                asset: wd.LoaderManager.getInstance().get("nx")
+                            },
+                            {
+                                asset: wd.LoaderManager.getInstance().get("py")
+                            },
+                            {
+                                asset: wd.LoaderManager.getInstance().get("ny")
+                            },
+                            {
+                                asset: wd.LoaderManager.getInstance().get("pz")
+                            },
+                            {
+                                asset: wd.LoaderManager.getInstance().get("nz")
+                            }
+                        ]
+                    );
+
+                    var material = wd.SkyboxMaterial.create();
+                    material.envMap = cubemap;
+
+
+                    var geometry = wd.BoxGeometry.create();
+                    geometry.material = material;
+                    geometry.width = 5;
+                    geometry.height = 5;
+                    geometry.depth = 5;
+
+
+                    var gameObject = wd.GameObject.create();
+
+                    gameObject.addComponent(wd.SkyboxRenderer.create());
+                    gameObject.addComponent(geometry);
+
+                    return gameObject;
+                }
+
+                function createSphere() {
+                    var cubemap = wd.CubemapTexture.create(
+                        [
+                            {
+                                asset: wd.LoaderManager.getInstance().get("px")
+                            },
+                            {
+                                asset: wd.LoaderManager.getInstance().get("nx")
+                            },
+                            {
+                                asset: wd.LoaderManager.getInstance().get("py")
+                            },
+                            {
+                                asset: wd.LoaderManager.getInstance().get("ny")
+                            },
+                            {
+                                asset: wd.LoaderManager.getInstance().get("pz")
+                            },
+                            {
+                                asset: wd.LoaderManager.getInstance().get("nz")
+                            }
+                        ]
+                    );
+                    cubemap.mode = wd.EEnvMapMode.FRESNEL;
+
+
+                    var material = wd.BasicMaterial.create();
+                    material.envMap = cubemap;
+                    material.shading = wd.EShading.SMOOTH;
+                    material.reflectivity = 0.5;
+
+                    var geometry = wd.SphereGeometry.create();
+                    geometry.material = material;
+                    geometry.radius = 5;
+
+                    var gameObject = wd.GameObject.create();
+                    gameObject.addComponent(geometry);
+
+                    gameObject.addComponent(wd.MeshRenderer.create());
+
+                    return gameObject;
+                }
+
+
+                function createCamera() {
+                    var camera = wd.GameObject.create(),
+                        view = wd.Director.getInstance().view,
+                        cameraComponent = wd.PerspectiveCamera.create();
+
+                    cameraComponent.fovy = 60;
+                    cameraComponent.aspect = view.width / view.height;
+                    cameraComponent.near = 0.1;
+                    cameraComponent.far = 1000;
+
+                    var controller = wd.FlyCameraController.create(cameraComponent);
+                    camera.addComponent(controller);
+
+                    camera.transform.translate(0, 0, 20);
+
+                    return camera;
+                }
+            }
+
+            beforeEach(function (done) {
+                tester = SceneTester.create(sandbox);
+
+                renderTestTool.prepareContext();
+
+                tester.execBody(body, done);
+            });
+
+            it("test", function (done) {
+                tester.compareAt(1, "texture/texture_fresnel.png", done);
+            });
+        });
+
+        describe("test manual mipmap texture", function () {
+            var tester;
+
+            function body(wrapper){
+                wrapper.load([
+                        {url: "../../asset/texture/1.jpg", id: "texture"}
+                    ])
+                    .do(initSample);
+
+                function initSample() {
+                    var director = wd.Director.getInstance();
+
+                    director.scene.addChild(createSphere());
+                    director.scene.addChild(createCamera());
+
+                    director.start();
+                }
+
+                function createSphere() {
+                    var canvas = mipmap(128, '#f00');
+                    var textureCanvas = wd.ImageTexture.create(canvas);
+                    textureCanvas.wrapS = wd.ETextureWrapMode.REPEAT;
+                    textureCanvas.wrapT = wd.ETextureWrapMode.REPEAT;
+                    textureCanvas.repeatRegion = wd.Vector4.create(0, 0, 10, 10);
+                    textureCanvas.mipmaps.addChild(canvas);
+                    textureCanvas.mipmaps.addChild(mipmap(64, '#0f0'));
+                    textureCanvas.mipmaps.addChild(mipmap(32, '#00f'));
+                    textureCanvas.mipmaps.addChild(mipmap(16, '#400'));
+                    textureCanvas.mipmaps.addChild(mipmap(8, '#040'));
+                    textureCanvas.mipmaps.addChild(mipmap(4, '#004'));
+                    textureCanvas.mipmaps.addChild(mipmap(2, '#044'));
+                    textureCanvas.mipmaps.addChild(mipmap(1, '#404'));
+                    textureCanvas.needsUpdate = true;
+
+
+                    var material = wd.BasicMaterial.create();
+                    material.map = textureCanvas;
+
+
+                    var geometry = wd.SphereGeometry.create();
+                    geometry.material = material;
+                    geometry.radius = 2;
+                    geometry.segments = 30;
+
+
+                    var gameObject = wd.GameObject.create();
+                    gameObject.addComponent(geometry);
+
+                    gameObject.addComponent(wd.MeshRenderer.create());
+
+
+                    return gameObject;
+                }
+
+                function mipmap(size, color) {
+                    var imageCanvas = document.createElement("canvas"),
+                        context = imageCanvas.getContext("2d");
+
+                    imageCanvas.width = imageCanvas.height = size;
+
+                    context.fillStyle = "#444";
+                    context.fillRect(0, 0, size, size);
+
+                    context.fillStyle = color;
+                    context.fillRect(0, 0, size / 2, size / 2);
+                    context.fillRect(size / 2, size / 2, size / 2, size / 2);
+
+                    return imageCanvas;
+                }
+
+                function createCamera() {
+                    var camera = wd.GameObject.create(),
+                        view = wd.Director.getInstance().view,
+                        cameraComponent = wd.PerspectiveCamera.create();
+
+                    cameraComponent.fovy = 60;
+                    cameraComponent.aspect = view.width / view.height;
+                    cameraComponent.near = 0.1;
+                    cameraComponent.far = 1000;
+
+                    var controller = wd.ArcballCameraController.create(cameraComponent);
+
+
+                    controller.distance = 10;
+
+                    camera.addComponent(controller);
+
+                    return camera;
+                }
+            }
+
+            beforeEach(function (done) {
+                tester = SceneTester.create(sandbox);
+
+                renderTestTool.prepareContext();
+
+                tester.execBody(body, done);
+            });
+
+            describe("texture should change when distance between camera and texture change", function () {
+                it("test distance = 10", function (done) {
+                    tester.compareAt(1, "texture/texture_mipmap_manual_distance10.png", done);
+                });
+                it("test distance = 30", function (done) {
+                    tester.compareAt(1, "texture/texture_mipmap_manual_distance30.png", function(){
+                        var camera = wd.Director.getInstance().scene.currentCamera;
+                        camera.getComponent(wd.CameraController).distance = 30;
+                    }, done);
+                });
+            });
+        });
+
+        describe("test multi texture", function () {
+            var tester;
+
+            function body(wrapper){
+                wrapper.load([
+                        {url: "../../asset/texture/1.jpg", id: "texture1"},
+                        {url: "../../asset/texture/2.jpg", id: "texture2"}
+                    ])
+                    .do(initSample);
+
+                function initSample() {
+                    var director = wd.Director.getInstance();
+
+                    director.scene.addChild(createTriangle());
+                    director.scene.addChild(createCamera());
+
+                    director.start();
+                }
+
+                function createTriangle() {
+                    var material = wd.BasicMaterial.create();
+                    material.map = [wd.LoaderManager.getInstance().get("texture1").toTexture(), wd.LoaderManager.getInstance().get("texture2").toTexture()];
+                    material.side = wd.ESide.BOTH;
+
+
+                    var geometry = wd.TriangleGeometry.create();
+                    geometry.material = material;
+                    geometry.width = 5;
+                    geometry.height = 5;
+
+
+                    var gameObject = wd.GameObject.create();
+                    gameObject.addComponent(geometry);
+                    gameObject.addComponent(wd.MeshRenderer.create());
+
+                    return gameObject;
+                }
+
+                function createCamera() {
+                    var camera = wd.GameObject.create(),
+                        view = wd.Director.getInstance().view,
+                        cameraComponent = wd.PerspectiveCamera.create();
+
+                    cameraComponent.fovy = 60;
+                    cameraComponent.aspect = view.width / view.height;
+                    cameraComponent.near = 0.1;
+                    cameraComponent.far = 80;
+
+                    var controller = wd.BasicCameraController.create(cameraComponent);
+                    camera.addComponent(controller);
+
+                    camera.transform.translate(wd.Vector3.create(0, 0, 5));
+
+                    return camera;
+                }
+            }
+
+            beforeEach(function (done) {
+                tester = SceneTester.create(sandbox);
+
+                renderTestTool.prepareContext();
+
+                tester.execBody(body, done);
+            });
+
+            it("test", function (done) {
+                tester.compareAt(1, "texture/texture_multi.png", done);
+            });
+        });
+
+        describe("test part texture", function () {
+            var tester;
+
+            function body(wrapper){
+                wrapper.load([
+                        {url: "../../asset/texture/multi.png", id: "multiTexture"},
+                        {url: "../../asset/texture/compressed/disturb_dxt1_nomip.dds", id:"compressedTexture"},
+                        {url: "../../asset/texture/1.jpg", id: "texture1"},
+                        {url: "../../asset/texture/2.jpg", id: "texture2"}
+                    ])
+                    .do(initSample);
+
+                function initSample() {
+                    var director = wd.Director.getInstance();
+
+                    director.scene.addChild(createRect1());
+                    director.scene.addChild(createRect2());
+                    director.scene.addChild(createRect3());
+                    director.scene.addChild(createMultiTexturesTriangle());
+
+                    director.scene.addChild(createCamera());
+
+                    director.start();
+                }
+
+                function createRect1() {
+                    var map = wd.LoaderManager.getInstance().get("multiTexture").toTexture();
+                    /*!
+                     the default sourceRegionMethod is CHANGE_TEXCOORDS_IN_GLSL.
+                     in this case, it can't repeat
+                     */
+                    map.sourceRegion = wd.RectRegion.create(0, 0, 64, 64);
+
+
+                    var material = wd.BasicMaterial.create();
+                    material.map = map;
+
+
+                    var geometry = wd.RectGeometry.create();
+                    geometry.material = material;
+                    geometry.width = 5;
+                    geometry.height = 5;
+
+
+                    var gameObject = wd.GameObject.create();
+                    gameObject.addComponent(geometry);
+                    gameObject.addComponent(wd.MeshRenderer.create());
+
+                    gameObject.transform.translate(-8, 0, 0);
+
+                    return gameObject;
+                }
+
+                function createRect2() {
+                    var map = wd.LoaderManager.getInstance().get("multiTexture").toTexture();
+                    /*!
+                     when sourceRegionMethod is DRAW_IN_CANVAS, it can repeat
+                     */
+                    map.sourceRegion = wd.RectRegion.create(0, 0, 64, 64);
+                    map.sourceRegionMethod = wd.ETextureSourceRegionMethod.DRAW_IN_CANVAS;
+//            map.sourceRegionMethod = wd.ETextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL;
+                    map.repeatRegion = wd.RectRegion.create(0, 0, 2, 2);
+                    map.wrapS = wd.ETextureWrapMode.REPEAT;
+                    map.wrapT = wd.ETextureWrapMode.REPEAT;
+
+
+                    var material = wd.BasicMaterial.create();
+                    material.map = map;
+
+
+                    var geometry = wd.RectGeometry.create();
+                    geometry.material = material;
+                    geometry.width = 5;
+                    geometry.height = 5;
+
+
+                    var gameObject = wd.GameObject.create();
+                    gameObject.addComponent(geometry);
+                    gameObject.addComponent(wd.MeshRenderer.create());
+
+                    gameObject.transform.translate(0, 2, 0);
+
+                    return gameObject;
+                }
+
+                function createRect3() {
+                    var map = wd.LoaderManager.getInstance().get("compressedTexture").toTexture();
+                    /*!
+                     compressed texture not support DRAW_IN_CANVAS
+                     */
+                    map.sourceRegion = wd.RectRegion.create(0, 0, 256, 256);
+
+
+                    var material = wd.BasicMaterial.create();
+                    material.map = map;
+
+
+                    var geometry = wd.RectGeometry.create();
+                    geometry.material = material;
+                    geometry.width = 5;
+                    geometry.height = 5;
+
+
+                    var gameObject = wd.GameObject.create();
+                    gameObject.addComponent(geometry);
+                    gameObject.addComponent(wd.MeshRenderer.create());
+
+                    gameObject.transform.translate(8, 0, 0);
+
+                    return gameObject;
+                }
+
+                function createMultiTexturesTriangle() {
+                    var material = wd.BasicMaterial.create();
+                    material.map = [wd.LoaderManager.getInstance().get("texture1").toTexture(), wd.LoaderManager.getInstance().get("texture2").toTexture()];
+
+                    var map0 = material.mapList.getChild(0);
+                    map0.sourceRegion = wd.RectRegion.create(0, 64, 128,128);
+//            map0.repeatRegion = wd.RectRegion.create(0, 0, 2, 2);
+//            map0.wrapS = wd.ETextureWrapMode.REPEAT;
+//            map0.wrapT = wd.ETextureWrapMode.REPEAT;
+
+
+                    material.side = wd.ESide.BOTH;
+
+
+                    var geometry = wd.TriangleGeometry.create();
+                    geometry.material = material;
+                    geometry.width = 5;
+                    geometry.height = 5;
+
+
+                    var gameObject = wd.GameObject.create();
+                    gameObject.addComponent(geometry);
+                    gameObject.addComponent(wd.MeshRenderer.create());
+
+
+                    gameObject.transform.translate(0, -3, 0);
+
+
+                    return gameObject;
+                }
+
+                function createCamera() {
+                    var camera = wd.GameObject.create(),
+                        view = wd.Director.getInstance().view,
+                        cameraComponent = wd.PerspectiveCamera.create();
+
+                    cameraComponent.fovy = 60;
+                    cameraComponent.aspect = view.width / view.height;
+                    cameraComponent.near = 0.1;
+                    cameraComponent.far = 80;
+
+                    var controller = wd.BasicCameraController.create(cameraComponent);
+                    camera.addComponent(controller);
+
+                    camera.transform.translate(wd.Vector3.create(0, 0, 10));
+
+                    return camera;
+                }
+            }
+
+            beforeEach(function (done) {
+                tester = SceneTester.create(sandbox);
+
+                renderTestTool.prepareContext();
+
+                tester.execBody(body, done);
+            });
+
+            it("test", function (done) {
+                tester.compareAt(1, "texture/texture_part.png", done);
+            });
+        });
+
+        describe("test dynamic reflection texture", function () {
+            var tester;
+
+            function body(wrapper){
+                wrapper.load([
+                        {url: "../../asset/texture/1.jpg", id: "diffuseMap"},
+                        {url: "../../asset/texture/skybox/px.jpg", id: "px"},
+                        {url: "../../asset/texture/skybox/nx.jpg", id: "nx"},
+                        {url: "../../asset/texture/skybox/py.jpg", id: "py"},
+                        {url: "../../asset/texture/skybox/ny.jpg", id: "ny"},
+                        {url: "../../asset/texture/skybox/pz.jpg", id: "pz"},
+                        {url: "../../asset/texture/skybox/nz.jpg", id: "nz"}
+                    ])
+                    .do(initSample);
+
+                function initSample() {
+                    textureTool.addSkybox();
+                    textureTool.addBox();
+                    textureTool.addSphere(wd.EEnvMapMode.REFLECTION);
+                    textureTool.addCamera();
+
+                    var director = wd.Director.getInstance();
+
+                    director.start();
+                }
+            }
+
+            beforeEach(function (done) {
+                tester = SceneTester.create(sandbox);
+
+                renderTestTool.prepareContext();
+
+                tester.execBody(body, done);
+            });
+
+            it("test", function (done) {
+                tester.compareAt(1, "texture/texture_dynamic_reflection.png", done);
+            });
+        });
+
+        describe("test dynamic refraction texture", function () {
+            var tester;
+
+            function body(wrapper){
+                wrapper.load([
+                        {url: "../../asset/texture/1.jpg", id: "diffuseMap"},
+                        {url: "../../asset/texture/skybox/px.jpg", id: "px"},
+                        {url: "../../asset/texture/skybox/nx.jpg", id: "nx"},
+                        {url: "../../asset/texture/skybox/py.jpg", id: "py"},
+                        {url: "../../asset/texture/skybox/ny.jpg", id: "ny"},
+                        {url: "../../asset/texture/skybox/pz.jpg", id: "pz"},
+                        {url: "../../asset/texture/skybox/nz.jpg", id: "nz"}
+                    ])
+                    .do(initSample);
+
+                function initSample() {
+                    textureTool.addSkybox();
+                    textureTool.addBox();
+                    textureTool.addSphere(wd.EEnvMapMode.REFRACTION, function(material){
+                        material.refractionRatio = 1.68;
+                    });
+                    textureTool.addCamera();
+
+                    var director = wd.Director.getInstance();
+
+                    director.start();
+                }
+            }
+
+            beforeEach(function (done) {
+                tester = SceneTester.create(sandbox);
+
+                renderTestTool.prepareContext();
+
+                tester.execBody(body, done);
+            });
+
+            it("test", function (done) {
+                tester.compareAt(1, "texture/texture_dynamic_refraction.png", done);
+            });
+        });
+
+        describe("test dynamic fresnel texture", function () {
+            var tester;
+
+            function body(wrapper){
+                wrapper.load([
+                        {url: "../../asset/texture/1.jpg", id: "diffuseMap"},
+                        {url: "../../asset/texture/skybox/px.jpg", id: "px"},
+                        {url: "../../asset/texture/skybox/nx.jpg", id: "nx"},
+                        {url: "../../asset/texture/skybox/py.jpg", id: "py"},
+                        {url: "../../asset/texture/skybox/ny.jpg", id: "ny"},
+                        {url: "../../asset/texture/skybox/pz.jpg", id: "pz"},
+                        {url: "../../asset/texture/skybox/nz.jpg", id: "nz"}
+                    ])
+                    .do(initSample);
+
+                function initSample() {
+                    textureTool.addSkybox();
+                    textureTool.addBox();
+                    textureTool.addSphere(wd.EEnvMapMode.FRESNEL, function(material){
+                        material.reflectivity = 0.5;
+                    });
+                    textureTool.addCamera();
+
+                    var director = wd.Director.getInstance();
+
+                    director.start();
+                }
+            }
+
+            beforeEach(function (done) {
+                tester = SceneTester.create(sandbox);
+
+                renderTestTool.prepareContext();
+
+                tester.execBody(body, done);
+            });
+
+            it("test", function (done) {
+                tester.compareAt(1, "texture/texture_dynamic_fresnel.png", done);
+            });
+        });
+    });
+});
