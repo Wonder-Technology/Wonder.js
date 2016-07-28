@@ -4,13 +4,14 @@ describe("generate correct image tool", function () {
 
     function body(wrapper){
         wrapper.load([
-            ])
+                {url: "../../asset/texture/light/soil_specular.jpg", id: "specularMap"}
+        ])
             .do(initSample);
 
         function initSample() {
             var director = wd.Director.getInstance();
 
-            director.scene.addChild(createBox());
+            director.scene.addChild(createSphere());
             director.scene.addChild(createAmbientLight());
             director.scene.addChild(createPointLight());
             director.scene.addChild(createDirectionLight());
@@ -19,18 +20,17 @@ describe("generate correct image tool", function () {
             director.start();
         }
 
-        function createBox() {
+        function createSphere() {
             var material = wd.LightMaterial.create();
             material.color = wd.Color.create("rgb(100, 255, 100)");
-            material.specularColor = wd.Color.create("rgb(0, 255, 0)");
             material.shininess = 32;
+            material.specularMap = wd.LoaderManager.getInstance().get("specularMap").toTexture();
+            material.shading = wd.EShading.SMOOTH;
 
 
-            var geometry = wd.BoxGeometry.create();
+            var geometry = wd.SphereGeometry.create();
             geometry.material = material;
-            geometry.width = 5;
-            geometry.height = 5;
-            geometry.depth = 5;
+            geometry.radius = 5;
 
 
             var gameObject = wd.GameObject.create();
@@ -93,7 +93,6 @@ describe("generate correct image tool", function () {
             directionLight.addComponent(directionLightComponent);
 
             directionLight.transform.translate(wd.Vector3.create(10, 0, 0));
-            directionLight.transform.rotateLocal(wd.Vector3.create(0, 90, 0));
 
             return directionLight;
         }
@@ -110,7 +109,6 @@ describe("generate correct image tool", function () {
 
             var controller = wd.ArcballCameraController.create(cameraComponent);
             controller.distance = 20;
-            controller.phi = Math.PI / 4;
 
             camera.addComponent(controller);
 
@@ -140,7 +138,7 @@ describe("generate correct image tool", function () {
             [
                 {
                     frameIndex:1,
-                    imageName:"light_point_direction.png"
+                    imageName:"light_specularMap.png"
                 },
             ]
         );
