@@ -30,8 +30,7 @@
 
         'test/unit/**',
 
-        {pattern: 'test/res/*', watched: false, included: false, served: true},
-    {pattern: 'test/res/**', watched: false, included: false, served: true}
+        {pattern: 'test/res/**', watched: false, included: false, served: true}
     ],
 
 

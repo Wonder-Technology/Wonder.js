@@ -27,11 +27,11 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        //'test/unit/**',
+        'test/unit/**',
 
 
-        'test/render/*Tool.js',
-        'test/render/helper/*.js',
+        //'test/render/*Tool.js',
+        //'test/render/helper/*.js',
 
         //'test/render/**',
 
@@ -248,7 +248,7 @@
         //
         //'test/unit/**/TwoDFontSpec*',
         //'test/unit/**/PlainFontSpec*',
-        'test/unit/**/UIRendererSpec*',
+        //'test/unit/**/UIRendererSpec*',
         //'test/unit/**/TwoDBitmapFontSpec*',
         //'test/unit/**/ThreeDBitmapFontSpec*',
         //'test/unit/**/bitmapFont/**',
