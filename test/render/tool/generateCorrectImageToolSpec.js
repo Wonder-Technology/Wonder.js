@@ -36,11 +36,8 @@ describe("generate correct image tool", function () {
 
     function body(wrapper){
         wrapper.load([
-                {url: "../../../asset/font/bitmap/multiPages/Norwester-Multi-64.fnt", id: "multiPages_fnt"},
-                {url: "../../../asset/font/bitmap/multiPages/Norwester-Multi_0.png", id: "0_image"},
-                {url: "../../../asset/font/bitmap/multiPages/Norwester-Multi_1.png", id: "1_image"},
-                {url: "../../../asset/font/bitmap/multiPages/Norwester-Multi_2.png", id: "2_image"},
-                {url: "../../../asset/font/bitmap/multiPages/Norwester-Multi_3.png", id: "3_image"}
+                {url: "../../../asset/font/bitmap/sdf/DejaVu-sdf.fnt", id: "bitmap_fnt"},
+                {url: "../../../asset/font/bitmap/sdf/DejaVu-sdf.png", id: "bitmap_image"}
             ])
             .do(initSample);
 
@@ -51,7 +48,7 @@ describe("generate correct image tool", function () {
 
             director.scene.addChild(sceneTool.createAmbientLight());
             director.scene.addChild(sceneTool.createDirectionLight(wd.Vector3.create(0, 0, 100)));
-            director.scene.addChild(sceneTool.createCamera(300));
+            director.scene.addChild(sceneTool.createCamera(20, wd.Vector3.create(0,50,0)));
 
             director.start();
         }
@@ -60,7 +57,7 @@ describe("generate correct image tool", function () {
             var font = wd.ThreeDBitmapFont.create();
 
             font.text = "This is a BitmapFont example!";
-            font.fntId = "multiPages_fnt";
+            font.fntId = "bitmap_fnt";
             font.xAlignment = wd.EFontXAlignment.CENTER;
             font.width = 500;
             font.height = 200;
@@ -68,20 +65,21 @@ describe("generate correct image tool", function () {
 
 
 
-            var texture0 = wd.LoaderManager.getInstance().get("0_image").toTexture();
-            var texture1 = wd.LoaderManager.getInstance().get("1_image").toTexture();
-            var texture2 = wd.LoaderManager.getInstance().get("2_image").toTexture();
-            var texture3 = wd.LoaderManager.getInstance().get("3_image").toTexture();
+
+
+
+            var texture = wd.LoaderManager.getInstance().get("bitmap_image").toTexture();
+//            texture.flipY = false;
 
             var material = wd.BitmapFontMaterial.create();
             material.color = wd.Color.create("rgb(255,0,255)");
-            material.pageMapList = wdCb.Collection.create([
-                texture0,
-                texture1,
-                texture2,
-                texture3
-            ]);
-            material.blendType = wd.EBlendType.NORMAL;
+            material.bitmap = texture;
+            material.enableSdf = true;
+            material.sdfType = wd.SdfBitmapFontType.SMOOTH;
+            material.alphaTest = 0.0001;
+            material.blendFuncSeparate = [wd.EBlendFunc.SRC_ALPHA, wd.EBlendFunc.ONE_MINUS_SRC_ALPHA, wd.EBlendFunc.ONE, wd.EBlendFunc.ONE_MINUS_SRC_ALPHA];
+//            material.blendFuncSeparate = [wd.EBlendFunc.ONE, wd.EBlendFunc.ONE, wd.EBlendFunc.ONE, wd.EBlendFunc.ZERO];
+//            material.blendType = wd.EBlendType.NORMAL;
 
 
 
@@ -121,9 +119,8 @@ describe("generate correct image tool", function () {
             cameraComponent.far = 1000;
 
             var controller = wd.ArcballCameraController.create(cameraComponent);
-//            controller.distance = 20;
-//            controller.target = wd.Vector3.create(0,50,0);
-            controller.distance = 300;
+            controller.distance = 20;
+            controller.target = wd.Vector3.create(0,50,0);
 
             camera.addComponent(controller);
 
@@ -153,7 +150,7 @@ describe("generate correct image tool", function () {
             [
                 {
                                         frameIndex:1,
-                    imageName:"ui_font_threeD_multiPage_bitmap.png"
+                    imageName:"ui_font_threeD_sdf_bitmap.png"
                 },
             ]
         );
