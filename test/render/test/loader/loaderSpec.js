@@ -265,7 +265,12 @@ describe("loader", function () {
                 tester.compareAt(1, "loader/loader_gltf_light_articulated_frame1.png", done);
             });
             it("test frame3000", function (done) {
-                tester.compareAt(3000, "loader/loader_gltf_light_articulated_frame3000.png", done);
+                tester.compareAt({
+                    frameIndex: 3000,
+                    step: 200,
+                    partialCorrectImagePath: "loader/loader_gltf_light_articulated_frame3000.png",
+                    done: done
+                });
             });
         });
     });
