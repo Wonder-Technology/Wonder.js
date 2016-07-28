@@ -33,7 +33,7 @@
 
             'test/render/helper/*.js',
 
-            //'test/render/test/**',
+            'test/render/test/**',
 
 
             //'test/render/test/**/instance*',
@@ -42,7 +42,7 @@
             //'test/render/test/**/animation*',
             //'test/render/test/**/shadow*',
             //'test/render/test/**/threeDUI*',
-            'test/render/test/**/geometry*',
+            //'test/render/test/**/geometry*',
 
             {pattern: 'test/render/res/**', watched: false, included: false, served: true},
 
