@@ -187,6 +187,11 @@ describe("ArcballCameraController", function () {
             var director;
 
             beforeEach(function(){
+                if(bowser.firefox){
+                    expect().toPass();
+                    return;
+                }
+
                 prepare(sandbox);
 
                 director = wd.Director.getInstance();
