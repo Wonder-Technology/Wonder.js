@@ -1,0 +1,139 @@
+@charset "utf-8";
+/* CSS Document */
+
+/* ------------------------------------------------- Menu ------------------------------- */
+.DOTA_Menu {
+    position: relative;
+    /*font-size: 12px;*/
+    /*line-height: 22px;*/
+    /*border: 1px solid red;*/
+    /*width:100px;*/
+    /*height: 32px;*/
+    /*line-height: 32px;*/
+    width: 80px;
+    color: #008cba;
+    text-align: center;
+    cursor: pointer;
+    /*padding-left: 4px;*/
+    /*padding-right: 4px;*/
+    font-size: 15px;
+    height: 32px;
+    line-height: 32px;
+}
+
+.DOTA_Menu *, .DOTA_Menu div {
+    z-index: 3000;
+}
+
+.DOTA_MainMenu {
+    /*height: 32px;*/
+    overflow: hidden;
+    border: 0px solid red;
+}
+
+.DOTA_MainMenu .DOTA_MenuItem {
+    /*float: left;*/
+    /*width: 60px;*/
+    width: 100%;
+    height: 32px;
+    color: #008cba;
+    text-align: center;
+    border: 0px solid #597FBE;
+}
+
+.DOTA_MainMenu .hover {
+    color: #0044cc;
+    text-decoration: underline;
+    /*background: url(../../Image/dota/menubg.gif) no-repeat;*/
+}
+
+/*.DOTA_MainMenu .click {*/
+/*color: #004E74;*/
+/*background: url(../../Image/dota/menubg.gif) no-repeat;*/
+/*}*/
+
+.DOTA_MainMenu .down {
+    border: 1px solid #d4d5d6;
+    background-color: ghostwhite;
+}
+
+.DOTA_SubMenu {
+    display: none;
+    position: absolute;
+    top: 20px;
+    left: 0px;
+    background-color: rgba(0, 0, 0, 0);
+    width: 158px;
+    overflow: hidden;
+    border: 1px solid #2980BE;
+    font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    /*border-left: 1px solid #D8EFFB;*/
+    /*border-top: 1px solid #D8EFFB;*/
+    border: 1px solid rgba(0, 0, 0, 0.15);
+
+    /*background-color: rgba(0, 0, 0, 0);*/
+    /*color: rgb(85, 85, 85);*/
+    /*cursor: auto;*/
+    /*display: block;*/
+    /*font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;*/
+    /*font-size: 12px;*/
+    /*font-weight: normal;*/
+    /*height: 41px;*/
+    /*line-height: 17.142858505249023px;*/
+    /*list-style-image: none;*/
+    /*list-style-position: outside;*/
+    /*list-style-type: none;*/
+    /*padding-bottom: 12px;*/
+    /*padding-left: 15px;*/
+    /*padding-right: 15px;*/
+    /*padding-top: 12px;*/
+    /*text-align: left;*/
+    /*text-decoration: none solid rgb(85, 85, 85);*/
+    /*white-space: nowrap;*/
+    /*width: 158px;*/
+}
+
+.DOTA_SubMenu .DOTA_MenuItem {
+    /*float: none;*/
+    color: rgb(90, 90, 90);
+    background-color: #ffffff;
+    /*margin: 1px;*/
+}
+
+.DOTA_SubMenu .hover {
+    background-color: #eeeeee;
+    color: #000000;
+    /*margin: 1px;*/
+}
+
+.DOTA_SubMenu .DOTA_MenuSeparator {
+    height: 0px;
+    line-height: 0px;
+    font-size: 0px;
+    margin-top: 6px;
+    margin-bottom: 6px;
+    margin-left: 2px;
+    margin-right: 2px;
+    border-top: 1px solid #004E74;
+    border-bottom: 1px solid #E4F4FD;
+}
+
+.DOTA_SubMenu .DOTA_MenuItem span {
+    display: inline-block;
+}
+
+.DOTA_SubMenu .DOTA_MenuItem_Check {
+    width: 0px;
+    /*font-family: "����";*/
+    text-align: center;
+}
+
+.DOTA_SubMenu .DOTA_MenuItem_Text {
+    width: 132px;
+}
+
+.DOTA_SubMenu .DOTA_MenuItem_More {
+    width: 15px;
+    text-align: center;
+}

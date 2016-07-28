@@ -1,0 +1,386 @@
+@charset "utf-8";
+/* CSS Document */
+
+
+.inline_block
+{
+    display: -moz-inline-stack;
+    display: inline-block;
+    *display: inline;
+    zoom: 1;
+    vertical-align:top;
+}
+
+
+
+/* ------------------------------------------------- Menu ------------------------------- */
+.DOTA_Menu{
+	position:relative; font-size:12px; line-height:22px;
+}
+.DOTA_Menu *, .DOTA_Menu div{
+	z-index:3000;
+}
+.DOTA_MainMenu{
+	height:24px; overflow:hidden; 
+}
+.DOTA_MainMenu .DOTA_MenuItem{
+	float:left; width:60px; color:#DEE07C; text-align:center; border:0px solid #597FBE; 
+}
+.DOTA_MainMenu .hover{
+	color:#004E74; background:url(../../Image/dota/menubg.gif) no-repeat;
+}
+.DOTA_MainMenu .click{
+	color:#004E74; background:url(../../Image/dota/menubg.gif) no-repeat;
+}
+.DOTA_SubMenu{
+	display:none; position:absolute; top:20px; left:0px; background:#A5D7FF; width:172px; overflow:hidden;
+	border:1px solid #2980BE; color:#004E74; border-left:1px solid #D8EFFB; border-top:1px solid #D8EFFB;
+}
+.DOTA_SubMenu .DOTA_MenuItem{
+	float:none; color:#004E74; margin:1px;
+}
+.DOTA_SubMenu .hover{
+	background:#004E74; color:#eee; margin:1px;
+}
+.DOTA_SubMenu .DOTA_MenuSeparator{
+	height:0px; line-height:0px; font-size:0px; margin-top:6px; margin-bottom:6px; margin-left:2px; margin-right:2px;
+	border-top:1px solid #004E74; border-bottom:1px solid #E4F4FD;
+}
+.DOTA_SubMenu .DOTA_MenuItem span{
+	display:inline-block;
+}
+.DOTA_SubMenu .DOTA_MenuItem_Check{
+	width:20px; font-family:"����"; text-align:center;
+}
+.DOTA_SubMenu .DOTA_MenuItem_Text{
+	width:135px;
+}
+.DOTA_SubMenu .DOTA_MenuItem_More{
+	width:15px; text-align:center;
+}
+
+/* ------------------------------------------------- Button ------------------------------- */
+
+/* ��1�װ�ť */
+
+.DOTA_Button1
+{
+    background:url(../../Image/dota/button1.png) no-repeat; 
+    color:white; 
+    text-align:center; font-size:12px;
+	padding:0px; margin:0px; width:57px; height:24px; line-height:24px;
+	
+	    display: -moz-inline-stack;
+    display: inline-block;
+    *display: inline;
+    zoom: 1;
+    vertical-align:top;
+    
+    cursor:pointer;
+}
+.DOTA_Button_Hover1
+{
+        /*background:url(../../Image/dota/button_hover.png) no-repeat; */
+        background: url(../../Image/dota/button1.png) no-repeat 0 center;
+        color:white; text-align:center; font-size:12px;
+	padding:0px; margin:0px; width:57px; height:24px; line-height:24px;
+	
+	    display: -moz-inline-stack;
+    display: inline-block;
+    *display: inline;
+    zoom: 1;
+    vertical-align:top;
+    
+    cursor:pointer;
+}
+.DOTA_Button_Down1{
+	/*background:url(../../Image/dota/button_click.png) no-repeat; */
+	background: url(../../Image/dota/button1.png) no-repeat 0 bottom;
+	color:white; text-align:center; font-size:12px;
+	padding:0px; margin:0px; width:57px; height:24px; line-height:24px;
+	
+	    display: -moz-inline-stack;
+    display: inline-block;
+    *display: inline;
+    zoom: 1;
+    vertical-align:top;
+    
+    cursor:pointer;
+}
+/*
+.DOTA_Button_Hover{
+	background:url(../../Image/dota/btn_bg.bmp) -57px 0px no-repeat;
+}
+.DOTA_Button_Down{
+	background:url(../../Image/dota/btn_bg.bmp) -114px 0px no-repeat;
+}
+*/
+
+/* ��2�װ�ť */
+
+.DOTA_Button2
+{
+    background:url(../../Image/dota/button2.png) no-repeat; 
+    color:white; 
+    text-align:center; font-size:12px;
+	padding:0px; margin:0px; width:57px; height:24px; line-height:24px;
+	
+	    display: -moz-inline-stack;
+    display: inline-block;
+    *display: inline;
+    zoom: 1;
+    vertical-align:top;
+    
+    cursor:pointer;
+}
+.DOTA_Button_Hover2
+{ 
+       /* background:url(../../Image/dota/button2_hover.png) no-repeat; */
+       
+        background: url(../../Image/dota/button2.png) no-repeat 0 center;
+         color:white; text-align:center; font-size:12px;
+	padding:0px; margin:0px; width:57px; height:24px; line-height:24px;
+	
+	    display: -moz-inline-stack;
+    display: inline-block;
+    * display: inline;
+    zoom: 1;
+    vertical-align:top;
+    
+    cursor:pointer;
+     }
+
+.DOTA_Button_Down2
+{ 
+	/*background:url(../../Image/dota/button2_click.png) no-repeat; */
+	
+	 background: url(../../Image/dota/button2.png) no-repeat 0 bottom;
+	color:white; text-align:center; font-size:12px;
+	padding:0px; margin:0px; width:57px; height:24px; line-height:24px;
+	
+	    display: -moz-inline-stack;
+    display: inline-block;
+    *display: inline;
+    zoom: 1;
+    vertical-align:top;
+    
+    cursor:pointer;
+ }
+
+
+/* ------------------------------------------------- Tab ------------------------------- */
+.DOTA_Tab{
+	overflow:hidden;
+}
+.DOTA_Tab_Title{
+	height:22px; line-height:22px; padding-left:10px;
+}
+.DOTA_Tab_Title a, .DOTA_Tab_Title a:hover{
+	display:inline-block; margin-right:1px; padding-left:8px; padding-right:8px;
+	background:#FFF;
+}
+.DOTA_Tab_Title a:hover{
+	background:#EEE;
+}
+.DOTA_Tab_Title .click, .DOTA_Tab_Title a.click:hover{
+	background:#888; color:#FFF;
+}
+.DOTA_Tab_Content{
+	background:#FFF; border:1px solid #888;
+}
+
+
+/* ------------------------------------------------- Slider ------------------------------- */
+.DOTA_Slider{
+	height:22px; line-height:20px; overflow:hidden; position:relative;
+}
+.DOTA_Slider_Line{
+	float:left; border-top:1px solid #243558; border-bottom:1px solid #698CD0; 
+	height:0px; line-height:0px; font-size:0px; margin-top:10px;
+}
+.DOTA_Slider_Text{
+	float:right; color:#EEE; -moz-user-select:none;
+}
+.DOTA_Slider_Box{
+	position:absolute; clear:both; top:0px; width:8px; height:20px; background:#354D72;
+	border-top:1px solid #4B73B9;  border-left:1px solid #4B73B9;
+	border-right:1px solid #223354; border-bottom:1px solid #223354; 
+}
+
+
+/* ------------------------------------------------- Tooltip ------------------------------- */
+.DOTA_Tooltip{
+	position:absolute; border:1px solid #999; background:#444; color:#00AA00;
+}
+
+/* --------------------------------------------- CheckBox Radio ----------------------------- */
+.DOTA_CheckBox, .DOTA_Radio{
+	height:22px; line-height:22px; padding-left:24px; 
+	/* cursor:url(../../Image/dota/link.cur), auto; */
+}
+.DOTA_CheckBox input, .DOTA_Radio input{
+	position:absolute; left:-9999px; height:10px;
+}
+/* �˴�Ҫ�����м�Ԫ��label��width��height��
+    ����ת��Ϊ�鼶Ԫ�أ�display:block;��
+*/
+.DOTA_Switch
+{
+    display:block;
+    height:20px;width:50px;
+}
+.DOTA_Switch input
+{
+    position:absolute; left:-9999px; height:30px;width:30px;
+}
+.DOTA_Switch_On
+{
+    background: url(../../Image/dota/switch.png) no-repeat 0px top;
+}
+.DOTA_Switch_Off
+{
+    background:url(../../Image/dota/switch.png) no-repeat 0px bottom;
+}
+
+.DOTA_CheckBox_On{
+	background:url(../../Image/dota/checkbox_on.png) no-repeat 0px 0px;
+}
+.DOTA_CheckBox_Off{
+	background:url(../../Image/dota/checkbox_off.png) no-repeat 0px 0px;
+}
+.DOTA_Radio_On{
+	background:url(../../Image/dota/radio_on.png) no-repeat 0px 0px;
+}
+.DOTA_Radio_Off
+{
+    background: url(../../Image/dota/radio_off.png) no-repeat 0px 0px;
+}
+
+
+
+/* ------------------------------------------------- Paging ------------------------------- */
+
+
+
+.yyc_paging{
+	margin-top:4px; border:1px solid blue;
+	font-size: 12px;
+	position:relative;
+	top:0px;
+	left:0px;
+	margin:0 auto;  /* ˮƽ���� */
+}
+/* ѡ��Ч���� */
+.yyc_paging .selected
+{
+    position:absolute;
+    top:-4000px;
+    left:0px;
+    border:1px solid #EED435;
+}
+
+/* �б���ʽ */
+
+.yyc_paging .list
+{
+    margin:0 auto;
+    overflow:hidden;
+}
+.yyc_paging .list ul
+{
+   /* border:1px solid red;*/
+    padding:0;
+    
+    
+
+	    /* ͼƬˮƽ����ֱ���� */
+    display: table-cell;  
+    vertical-align:middle;  
+    text-align:center;  
+    
+    
+    /*  margin-left:0px;��Ϊ����ie7�±�������
+        margin-bottom:0px;��Ϊ������ul��div.page֮��ļ��
+    
+    margin-top:0px;
+    margin-bottom:0px;
+    margin-left:0px;
+    */
+      margin:5px;
+    
+}
+.yyc_paging .list li{
+	/* width:103px; height:62px; */
+	/*background:#506DA9;
+	border:1px solid #506DA9; */
+	padding:1px;
+	list-style:none;
+	
+	
+	
+	    display: -moz-inline-stack;
+    display: inline-block;
+    *display: inline;
+    zoom: 1;
+    vertical-align:top;
+}
+.yyc_paging .list img{
+	margin-left:3px; margin-top:1px;
+}
+.yyc_paging .list span{
+	text-align:center;
+}
+
+/* ҳ����ʽ */
+
+.yyc_paging .paging
+{
+    border:0px solid red;
+	/*
+������height������ҳ���������һ��ʱ�������Ĳ��֣����У��Ͳ���.paging���ˣ���ʽҲ�Ͳ���.paging�е���ʽ�ˣ���
+height:22px*/
+	line-height:22px;
+	 text-align:center;
+	/*display:block;*/
+	clear:both;
+}
+.yyc_paging .paging span{
+	 padding:2px; padding-left:4px; padding-right:4px; margin-right:5px;
+	 border:0px solid red;
+}
+.yyc_paging .paging a
+{
+    text-decoration:none;
+	 cursor:pointer;
+	 margin-left:0px;
+	 padding-left:4px; 
+	 padding-right:4px;
+	 
+	 border:0px solid red;
+}
+.yyc_paging .paging span b{
+	/*color:#F8E070;*/
+	color:Black;
+}
+.yyc_paging .paging a:hover{
+	background:#eee; color:#506DA9;
+}
+.yyc_paging .paging .current{
+	font-weight:bold; 
+	/*color:#F8E070;*/
+	color:Black;
+}
+.yyc_paging .paging .gray{
+	color:#aaa;
+}
+.yyc_paging .paging a.gray:hover{
+	background:#506DA9; color:#aaa;
+}
+
+/* ��ť���ӵ���ʽ
+    ����ת��ť����ʽ��
+ */
+.button_add
+{
+    margin-left:10px;
+}

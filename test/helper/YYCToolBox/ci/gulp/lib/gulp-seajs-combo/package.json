@@ -1,0 +1,67 @@
+{
+  "name": "gulp-seajs-combo",
+  "version": "1.2.3",
+  "description": "seajs(CMD) Module combo pulgin for gulp",
+  "homepage": "http://github.com/chenmnkken/gulp-seajs-combo",
+  "author": {
+    "name": "YiguoChan",
+    "email": "chenmnkken@gmail.com",
+    "url": "http://stylechen.com/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/chenmnkken/gulp-seajs-combo.git"
+  },
+  "main": "index.js",
+  "keywords": [
+    "gulpplugin",
+    "seajs",
+    "cmd",
+    "combo"
+  ],
+  "scripts": {
+    "test": "mocha"
+  },
+  "dependencies": {
+    "glob-stream": "^4.1.1",
+    "graceful-fs": "^3.0.6",
+    "gulp-util": "^3.0.0",
+    "promise": "^6.1.0",
+    "strip-bom": "^1.0.0",
+    "through2": "^0.6.0",
+    "vinyl": "^0.4.6"
+  },
+  "devDependencies": {
+    "gulp": "^3.8.11",
+    "gulp-handlebars": "^4.0.0",
+    "gulp-wrap": "^0.11.0",
+    "should": "^4.6.5",
+    "stream-assert": "^2.0.2"
+  },
+  "license": "MIT",
+  "gitHead": "730eeb8651f591bdb66db0bd00af22229257b1c3",
+  "bugs": {
+    "url": "https://github.com/chenmnkken/gulp-seajs-combo/issues"
+  },
+  "_id": "gulp-seajs-combo@1.2.3",
+  "_shasum": "abaf592542d458123e1aeba66582a4be1faaa81c",
+  "_from": "gulp-seajs-combo@*",
+  "_npmVersion": "2.5.1",
+  "_nodeVersion": "0.12.0",
+  "_npmUser": {
+    "name": "chenmnkken",
+    "email": "chenmnkken@gmail.com"
+  },
+  "maintainers": [
+    {
+      "name": "chenmnkken",
+      "email": "chenmnkken@gmail.com"
+    }
+  ],
+  "dist": {
+    "shasum": "abaf592542d458123e1aeba66582a4be1faaa81c",
+    "tarball": "http://registry.npmjs.org/gulp-seajs-combo/-/gulp-seajs-combo-1.2.3.tgz"
+  },
+  "directories": {},
+  "_resolved": "https://registry.npmjs.org/gulp-seajs-combo/-/gulp-seajs-combo-1.2.3.tgz"
+}

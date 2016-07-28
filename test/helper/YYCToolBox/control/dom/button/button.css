@@ -1,0 +1,181 @@
+@charset "utf-8";
+/* CSS Document */
+
+
+
+/* 
+    样式1
+
+    蓝色风格
+*/
+
+.button1
+{
+    background:url(image/button1.png) no-repeat; 
+    color:white; 
+    text-align:center; font-size:12px;
+	padding:0px; margin:0px; 
+    /*width:57px; height:24px; line-height:24px;*/
+	
+	    display: -moz-inline-stack;
+    display: inline-block;
+    *display: inline;
+    zoom: 1;
+    vertical-align:middle;
+    
+    cursor:pointer;
+}
+.button1_hover
+{
+        /*background:url(image/button_hover.png) no-repeat; */
+        background: url(image/button1.png) no-repeat 0 center;
+        color:white; text-align:center; font-size:12px;
+	padding:0px; margin:0px; 
+    /*width:57px; height:24px; line-height:24px;*/
+	
+	    display: -moz-inline-stack;
+    display: inline-block;
+    *display: inline;
+    zoom: 1;
+    vertical-align:middle;
+    
+    cursor:pointer;
+}
+.button1_down{
+	/*background:url(image/button_click.png) no-repeat; */
+	background: url(image/button1.png) no-repeat 0 bottom;
+	color:white; text-align:center; font-size:12px;
+	padding:0px; margin:0px; 
+    /*width:57px; height:24px; line-height:24px;*/
+	
+	    display: -moz-inline-stack;
+    display: inline-block;
+    *display: inline;
+    zoom: 1;
+    vertical-align:middle;
+    
+    cursor:pointer;
+}
+/*
+.button_hover{
+	background:url(image/btn_bg.bmp) -57px 0px no-repeat;
+}
+.button_down{
+	background:url(image/btn_bg.bmp) -114px 0px no-repeat;
+}
+*/
+
+/* 
+    样式2
+
+    银色风格
+*/
+
+.button2
+{
+    background:url(image/button2.png) no-repeat; 
+    color:white; 
+    text-align:center; font-size:12px;
+	padding:0px; margin:0px; 
+    /*width:57px; height:24px; line-height:24px;*/
+	
+	    display: -moz-inline-stack;
+    display: inline-block;
+    *display: inline;
+    zoom: 1;
+    vertical-align:middle;
+
+    cursor:pointer;
+}
+.button2_hover {
+    /* background:url(image/button2_hover.png) no-repeat; */
+    background: url(image/button2.png) no-repeat 0 center;
+    color: white;
+    text-align: center;
+    font-size: 12px;
+    padding: 0px;
+    margin: 0px;
+    /*width: 57px;
+    height: 24px;
+    line-height: 24px;*/
+    display: -moz-inline-stack;
+    display: inline-block;
+    * display: inline;
+    zoom: 1;
+    vertical-align: middle;
+    cursor: pointer;
+}
+
+.button2_down
+{ 
+	/*background:url(image/button2_click.png) no-repeat; */
+	
+	 background: url(image/button2.png) no-repeat 0 bottom;
+	color:white; text-align:center; font-size:12px;
+	padding:0px; margin:0px; width:57px; height:24px; line-height:24px;
+	
+	    display: -moz-inline-stack;
+    display: inline-block;
+    *display: inline;
+    zoom: 1;
+    vertical-align:middle;
+    
+    cursor:pointer;
+ }
+
+
+
+/*
+   样式3
+
+   木纹风格
+*/
+.button3
+{
+    background:url(image/woodenButton.png) no-repeat 0 center;   /*hover与默认都为同一图片*/
+    color:white;
+    text-align:center; font-size:12px;
+    padding:0px; margin:0px;
+
+    /*不需要为inline-block样式！*/
+
+    /*display: -moz-inline-stack;*/
+    /*display: inline-block;*/
+    /**display: inline;*/
+    /*zoom: 1;*/
+    /*vertical-align:middle;*/
+
+    cursor:pointer;
+}
+.button3_hover {
+    background: url(image/woodenButton.png) no-repeat 0 center;   /*hover与默认都为同一图片*/
+    color: white;
+    text-align: center;
+    font-size: 12px;
+    padding: 0px;
+    margin: 0px;
+    /*width: 57px;
+    height: 24px;
+    line-height: 24px;*/
+    /*display: -moz-inline-stack;*/
+    /*display: inline-block;*/
+    /** display: inline;*/
+    /*zoom: 1;*/
+    /*vertical-align: middle;*/
+    cursor: pointer;
+}
+
+.button3_down
+{
+    background: url(image/woodenButton.png) no-repeat 0 bottom;
+    color:white; text-align:center; font-size:12px;
+    padding:0px; margin:0px; width:57px; height:24px; line-height:24px;
+
+    /*display: -moz-inline-stack;*/
+    /*display: inline-block;*/
+    /**display: inline;*/
+    /*zoom: 1;*/
+    /*vertical-align:middle;*/
+
+    cursor:pointer;
+}

@@ -1,0 +1,145 @@
+@charset "utf-8";
+/* CSS Document */
+
+
+/*.inline_block
+{
+    display: -moz-inline-stack;
+    display: inline-block;
+    *display: inline;
+    zoom: 1;
+    vertical-align:top;
+}*/
+
+
+/*
+.html {
+    -webkit-user-select:none; 解决“在chrome下，按住鼠标左键移动时，鼠标形状变成I”的问题。
+}
+*/
+
+/*
+    样式1
+
+   蓝色风格
+    
+*/
+
+.window1 {
+	position:relative; background:#506DA9; border:1px solid #698CD0; width:400px; height:300px;
+}
+.window1 .titleContainer{
+	height:25px; line-height:25px; background:url(Image/win_title_bg.gif) repeat-x; color:#EED435; overflow:hidden; 
+	padding:2px;
+}
+.window1 .titleContainer .title{
+	font-weight:bold; padding-left:5px;
+}
+.window1 .titleContainer .button, .window1 .titleContainer .hover {
+	display:block; position:absolute; top:2px; right:5px; width:23px; height:23px;
+	background:url(Image/close.bmp) no-repeat;
+}
+.window1 .titleContainer .hover{
+	background:url(Image/close.bmp) -23px 0px no-repeat;
+}
+.window1 .toolbar {
+}
+.window1 .content{
+	height:260px; 
+	overflow:auto; 
+	color:#FFF; 
+}
+.window1_overLayer{
+    position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	z-index: 99;
+	display:none; 
+    background:#506DA9;
+}
+
+
+
+
+/*
+    样式2
+    
+    银色风格
+    
+*/
+
+
+.window2 {
+    border: 1px solid #AAA;
+	position: absolute;
+	z-index: 999;
+	box-shadow: 0 3px 8px 0 rgba(0, 0, 0, .4);
+	border-radius: 5px;
+}
+.window2 .titleContainer{
+    position: relative;
+    height: 34px;
+	border-bottom: 1px solid #AAA;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	background: #DDD;
+	background: -moz-linear-gradient(top, #F9F9F9 0, #DDD 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #F9F9F9),
+		color-stop(100%, #DDD) );
+	background: -webkit-linear-gradient(top, #F9F9F9 0, #DDD 100%);
+	background: -o-linear-gradient(top, #F9F9F9 0, #DDD 100%);
+	background: -ms-linear-gradient(top, #F9F9F9 0, #DDD 100%);
+	background: linear-gradient(top, #F9F9F9 0, #DDD 100%);
+	filter: progid : DXImageTransform.Microsoft.gradient ( startColorstr =
+		'#F9F9F9', endColorstr = '#DDDDDD', GradientType = 0 )
+}
+.window2 .titleContainer .title{
+	height: 34px;
+	color: #3b3b3b;
+	font-size: 14px;
+	line-height: 34px;
+	overflow: hidden;
+	margin: 0;
+	padding-left: 10px;
+	font-weight: 100;
+	text-shadow: 0 1px 1px #FFF
+}
+.window2 .titleContainer .button, .window2 .titleContainer .hover {
+    background-image: url(Image/cloud_monitor.png?max_age=19830211&d=20121121165626);
+	background-position: -61px -202px;
+	border-top-right-radius: 5px;
+	cursor: pointer;
+	height: 34px;
+	line-height: 100px;
+	width: 32px;
+    position:absolute; 
+    top:0px; 
+    right:0px; 
+}
+.window2 .toolbar {
+    background: #F9F9F9
+}
+.window2 .content {
+    background: #F9F9F9;
+
+    /*兼容ie7下边框问题*/
+    border-style: solid;
+    border-width: 0px 0px 1px 0px;
+    border-color: #AAA;
+}
+.window2_overLayer{
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	z-index: 99;
+	background-color: #000;
+	background-color: rgba(0, 0, 0, .5);
+	background: transparent\0;
+	filter: progid : DXImageTransform.Microsoft.gradient ( startColorstr =
+		#B2000000, endColorstr = #B2000000 );
+	zoom: 1
+}

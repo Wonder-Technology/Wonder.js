@@ -1,0 +1,49 @@
+.page_nav
+{
+    clear:both; padding:15px 0; color:#666; font:normal 12px/24px Arial; text-align:center;
+}
+.page_nav a
+{
+    display: -moz-inline-stack;
+    display: inline-block;
+    *display: inline;
+    zoom: 1;
+    vertical-align:top;
+    height:22px; margin:0 2px; padding:0 8px; border:solid 1px #dbe5ee; -moz-border-radius:2px; -webkit-border-radius:2px; -khtml-border-radius:2px; border-radius:2px; background:#fff; color:#333; font:normal 12px/22px Arial, Helvetica, sans-serif; cursor:pointer;
+}
+.page_nav a.current
+{
+    display: -moz-inline-stack;
+    display: inline-block;
+    *display: inline;
+    zoom: 1;
+    vertical-align:top;
+    
+     height:24px; margin:0 3px; padding:0 8px; border:none; -moz-border-radius:2px; -webkit-border-radius:2px; -khtml-border-radius:2px; border-radius:2px;
+      
+      
+      background:#07519a; color:#fff; 
+    font-weight: bold !important;
+    font-size:12px !important;
+    line-height:24px; text-decoration:none;
+    
+}
+.page_nav a:hover
+{
+    height:24px; margin:0 3px; border:none; background:#07519a; color:#fff; line-height:24px; text-decoration:none;
+}
+.page_nav a.select
+{
+    cursor:default;
+}
+
+/*·ÖÒ³Ò³Âë*/
+
+.info_paging_right
+{
+            text-align:right;
+}
+        .info_paging_right .info_paging
+        {
+            margin:10px 20px 0px 0px;border:0px solid red;display: -moz-inline-stack;display: inline-block;*display: inline;zoom: 1;vertical-align:top;
+        }
