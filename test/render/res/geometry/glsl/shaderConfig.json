@@ -1,0 +1,33 @@
+{
+  "attributes": {
+    "a_position":{
+      "type":"FLOAT_3",
+      "value": "POSITION"
+    },
+    "a_texCoord":{
+      "type":"FLOAT_2",
+      "value": "TEXCOORD"
+    },
+    "a_color": {
+      "type":"FLOAT_3",
+      "value": [
+        1, 0, 0,
+        1, 0, 0,
+        0, 1, 0,
+        0, 0, 1
+      ]
+    }
+  },
+  "uniforms": {
+    "u_mvpMatrix": {
+      "type": "FLOAT_MAT4",
+      "value": "MODEL_VIEW_PROJECTION"
+    },
+    "u_sampler2D": {
+      "type": "SAMPLER_2D",
+      "textureId": "texture"
+    }
+  },
+  "vsSourceId": "vs",
+  "fsSourceId": "fs"
+}

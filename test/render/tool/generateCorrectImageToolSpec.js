@@ -1,79 +1,114 @@
-var instanceTool = (function(){
-    return {
-        getInstancePosition:function(index, range, count){
-            return wd.Vector3.create(range / 2 - this._getVal(index, count) * range, range / 2 - this._getVal(index + 1, count) * range, range / 2 - this._getVal(index+ 2, count) * range);
-        },
-        getShadowInstancePosition:function(index, range, count){
-            return wd.Vector3.create(range / 2 - this._getVal(index, count) * range, 60, 0);
-        },
-        getSpecificInstancePosition:function(index, range, count, x,y,z){
-            var x = x !== null ? x : (range / 2 - this._getVal(index, count) * range);
-            var y = y !== null ? y : (range / 2 - this._getVal(index + 1, count) * range);
-            var z = z !== null ? z :(range / 2 - this._getVal(index + 2, count) * range);
-
-            return wd.Vector3.create(x, y, z);
-        },
-        getInstanceRotation:function(index, count){
-            var val = this._getVal(index, count);
-
-            return wd.Vector3.create(90 * val, 90 * val,0);
-        },
-        getInstanceScale:function(index, count){
-            return wd.Vector3.create(3,3,3);
-        },
-        _getVal:function(index, count){
-            return randomTool.getFixedRandomNum(index);
-        }
-    }
-})();
-
-
-
-
 describe("generate correct image tool", function () {
     var sandbox;
     var tester;
 
     function body(wrapper){
         wrapper.load([
+                {url: "./base/test/render/res/geometry/glsl/shaderConfig.json", id: "shaderConfig"},
+                {url: "../../asset/texture/1.jpg", id: "texture"},
+                {url: "./base/test/render/res/geometry/glsl/vertex.glsl", id: "vs"},
+                {url: "./base/test/render/res/geometry/glsl/fragment.glsl", id: "fs"}
             ])
-            .do(function(){
-                var director = wd.Director.getInstance();
+            .do(initSample);
 
-                director.scene.addChild(createLine());
-                director.scene.addChild(sceneTool.createCamera(20));
+        function initSample() {
+            var director = wd.Director.getInstance();
 
-                director.start();
+
+            var rect = createRect();
+
+            changeColor(rect);
+            changeTexCoord(rect);
+
+
+            director.scene.addChild(rect);
+            director.scene.addChild(createCamera());
+
+            director.start();
+        }
+
+        function changeColor(gameObject) {
+            wd.Director.getInstance().scheduler.scheduleFrame(function () {
+                var data = [
+                    0, 0, 1,
+                    0, 0, 0,
+                    0, 0, 0,
+                    0, 0, 0
+                ];
+
+                gameObject.getComponent(wd.Geometry).material.shader.attributes.getChild("a_color").value.resetData(data);
+            }, 1);
+
+
+            wd.Director.getInstance().scheduler.scheduleFrame(function () {
+                var data = [
+                    1, 0, 0,
+                    0, 0, 0,
+                    0, 0, 0,
+                    1, 0, 0
+                ];
+
+                gameObject.getComponent(wd.Geometry).material.shader.attributes.getChild("a_color").value.resetData(data);
+            }, 2);
+        }
+
+        function changeTexCoord(gameObject) {
+            var a = 0;
+
+            wd.Director.getInstance().scheduler.scheduleLoop(function () {
+                var data = a % 2 === 1 ? [
+                    1, 1,
+                    0, 1,
+                    0, 0,
+                    1, 0
+                ] : [
+                    0, 0,
+                    1, 1,
+                    0, 1,
+                    1, 0
+                ];
+
+                ++a;
+
+                gameObject.getComponent(wd.Geometry).geometryData.texCoords = data;
             });
+        }
 
-        function createLine() {
-            var line = wd.DashLine.create();
+        function createRect() {
+            var material = wd.ShaderMaterial.create();
+            material.read("shaderConfig");
 
 
-            var geometry = wd.DashLineGeometry.create();
-            geometry.vertices.push(-10, -10, 0);
-            geometry.vertices.push(-10, 10, 0);
-            geometry.vertices.push(10, 10, 0);
-
-            geometry.dashSize = 3;
-            geometry.gapSize = 2;
-            geometry.dashCount = 20;
-
-            var material = wd.LineMaterial.create();
-            material.color = wd.Color.create("rgb(1.0,0.0,1.0)");
-
+            var geometry = wd.RectGeometry.create();
             geometry.material = material;
+            geometry.width = 5;
+            geometry.height = 5;
 
 
-            var lineObject = wd.GameObject.create();
+            var gameObject = wd.GameObject.create();
+            gameObject.addComponent(geometry);
 
-            lineObject.addComponent(line);
+            gameObject.addComponent(wd.MeshRenderer.create());
 
-            lineObject.addComponent(geometry);
+            return gameObject;
+        }
 
-            lineObject.addComponent(wd.MeshRenderer.create());
+        function createCamera() {
+            var camera = wd.GameObject.create(),
+                view = wd.Director.getInstance().view,
+                cameraComponent = wd.PerspectiveCamera.create();
 
-            return lineObject;
+            cameraComponent.fovy = 60;
+            cameraComponent.aspect = view.width / view.height;
+            cameraComponent.near = 0.1;
+            cameraComponent.far = 80;
+
+            var controller = wd.BasicCameraController.create(cameraComponent);
+            camera.addComponent(controller);
+
+            camera.transform.translate(wd.Vector3.create(0, 0, 5));
+
+            return camera;
         }
 
 
@@ -98,8 +133,12 @@ describe("generate correct image tool", function () {
         tester.generateBatchAt(
             [
                 {
-                                        frameIndex:1,
-                    imageName:"ui_line_dash.png"
+                    frameIndex:1,
+                    imageName:"geometry_data_change_data1.png"
+                },
+                {
+                    frameIndex:2,
+                    imageName:"geometry_data_change_data2.png"
                 },
             ]
         );

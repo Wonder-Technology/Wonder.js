@@ -32,6 +32,8 @@
             'test/helper/YYCToolBox/fileOperator/js/fileOperator.js',
 
 
+
+
             'test/render/helper/*.js',
 
             'test/render/tool/*.js',
