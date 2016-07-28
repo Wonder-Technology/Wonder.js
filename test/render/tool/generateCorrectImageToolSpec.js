@@ -4,14 +4,13 @@ describe("generate correct image tool", function () {
 
     function body(wrapper){
         wrapper.load([
-                {url: "../../asset/texture/light/soil_normal.jpg", id: "normalMap"}
             ])
             .do(initSample);
 
         function initSample() {
             var director = wd.Director.getInstance();
 
-            director.scene.addChild(createSphere());
+            director.scene.addChild(createBox());
             director.scene.addChild(createAmbientLight());
             director.scene.addChild(createPointLight());
             director.scene.addChild(createDirectionLight());
@@ -20,26 +19,24 @@ describe("generate correct image tool", function () {
             director.start();
         }
 
-        function createSphere() {
+        function createBox() {
             var material = wd.LightMaterial.create();
             material.color = wd.Color.create("rgb(100, 255, 100)");
             material.specularColor = wd.Color.create("rgb(0, 255, 0)");
             material.shininess = 32;
-            material.normalMap = wd.LoaderManager.getInstance().get("normalMap").toTexture();
-            material.shading = wd.EShading.SMOOTH;
 
 
-            var geometry = wd.SphereGeometry.create();
+            var geometry = wd.BoxGeometry.create();
             geometry.material = material;
-            geometry.radius = 5;
+            geometry.width = 5;
+            geometry.height = 5;
+            geometry.depth = 5;
 
 
             var gameObject = wd.GameObject.create();
             gameObject.addComponent(geometry);
 
             gameObject.addComponent(wd.MeshRenderer.create());
-
-            gameObject.name = "sphere";
 
 
             return gameObject;
@@ -96,6 +93,7 @@ describe("generate correct image tool", function () {
             directionLight.addComponent(directionLightComponent);
 
             directionLight.transform.translate(wd.Vector3.create(10, 0, 0));
+            directionLight.transform.rotateLocal(wd.Vector3.create(0, 90, 0));
 
             return directionLight;
         }
@@ -112,6 +110,7 @@ describe("generate correct image tool", function () {
 
             var controller = wd.ArcballCameraController.create(cameraComponent);
             controller.distance = 20;
+            controller.phi = Math.PI / 4;
 
             camera.addComponent(controller);
 
@@ -141,7 +140,7 @@ describe("generate correct image tool", function () {
             [
                 {
                     frameIndex:1,
-                    imageName:"light_normalMap.png"
+                    imageName:"light_point_direction.png"
                 },
             ]
         );
