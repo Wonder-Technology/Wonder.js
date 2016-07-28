@@ -4,17 +4,32 @@ describe("generate correct image lightTool", function () {
 
     function body(wrapper){
         wrapper.load([
-                {url: "../../asset/model/gltf/box/glTF-MaterialsCommon/box.gltf", id: "model"}
+                {url: "../../asset/model/gltf/duck/glTF-MaterialsCommon/duck.gltf", id: "model"}
             ])
             .do(initSample);
 
         function initSample() {
             var director = wd.Director.getInstance();
 
+            director.scene.addChild(createDefaultCamera());
             director.scene.addChildren(setModelAndReturn());
-            director.scene.addChild(createAmbientLight());
-            director.scene.addChild(createDirectionLight());
-            director.scene.addChild(createCamera());
+
+
+            /*!
+             can switch camera:
+             0: default camera
+             1: gltf camera
+             */
+            director.scene.currentCamera = 0;
+
+            wd.Director.getInstance().scheduler.scheduleFrame(function () {
+                director.scene.currentCamera = 0;
+            }, 1);
+
+            wd.Director.getInstance().scheduler.scheduleFrame(function () {
+                director.scene.currentCamera = 1;
+            }, 2);
+
 
             director.start();
         }
@@ -24,50 +39,27 @@ describe("generate correct image lightTool", function () {
 
             var model = models.getChild(0);
 
-            model.transform.position = wd.Vector3.create(5, 0, 0);
-            model.transform.scale = wd.Vector3.create(10,10,10);
+            model.transform.scale = wd.Vector3.create(0.015,0.015,0.015);
 
             return models;
         }
 
-        function createAmbientLight () {
-            var ambientLightComponent = wd.AmbientLight.create();
-            ambientLightComponent.color = wd.Color.create("rgb(100, 30, 30)");
-
-            var ambientLight = wd.GameObject.create();
-            ambientLight.addComponent(ambientLightComponent);
-
-            return ambientLight;
-        }
-
-        function createDirectionLight() {
-            var directionLightComponent = wd.DirectionLight.create();
-            directionLightComponent.color = wd.Color.create("#1f8888");
-            directionLightComponent.intensity = 5;
-
-
-            var directionLight = wd.GameObject.create();
-            directionLight.addComponent(directionLightComponent);
-
-            directionLight.transform.translate(wd.Vector3.create(0, 0, 1000));
-
-            return directionLight;
-        }
-
-        function createCamera() {
+        function createDefaultCamera() {
             var camera = wd.GameObject.create(),
                 view = wd.Director.getInstance().view,
                 cameraComponent = wd.PerspectiveCamera.create();
 
             cameraComponent.fovy = 60;
             cameraComponent.aspect = view.width / view.height;
-            cameraComponent.near = 0.1;
+            cameraComponent.near = 0.01;
             cameraComponent.far = 1000;
 
-            var controller = wd.ArcballCameraController.create(cameraComponent);
-            controller.distance = 15;
+            var controller = wd.BasicCameraController.create(cameraComponent);
 
             camera.addComponent(controller);
+
+            camera.transform.translate(0, 0.03, -0.05);
+            camera.transform.lookAt(0, 0, 0);
 
             return camera;
         }
@@ -95,7 +87,11 @@ describe("generate correct image lightTool", function () {
             [
                 {
                     frameIndex:1,
-                    imageName:"loader_gltf_basic.png"
+                    imageName:"loader_gltf_camera_defaultCamera.png"
+                },
+                {
+                    frameIndex:2,
+                    imageName:"loader_gltf_camera_gltfCamera.png"
                 },
             ]
         );
