@@ -39,8 +39,9 @@
             //'test/render/test/**/instance*',
             //'test/render/test/**/hard*',
             //'test/render/test/**/proce*',
+            //'test/render/test/**/animation*',
             //'test/render/test/**/shadow*',
-            //'test/render/test/**/skybox*',
+            //'test/render/test/**/threeDUI*',
 
             {pattern: 'test/render/res/**', watched: false, included: false, served: true},
 

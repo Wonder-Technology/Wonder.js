@@ -208,7 +208,14 @@ describe("threeD ui", function () {
             });
 
             it("test", function (done) {
-                tester.compareAt(1, "ui/threeD/ui_font_threeD_bitmap.png", done);
+                tester.compareAt(
+                    {
+                        frameIndex:1,
+                        partialCorrectImagePath:"ui/threeD/ui_font_threeD_bitmap.png",
+                        done:done,
+                        correctRate:0.95
+                    }
+                );
             });
         });
     });

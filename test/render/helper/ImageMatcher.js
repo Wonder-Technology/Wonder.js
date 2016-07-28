@@ -2,7 +2,8 @@ var CORRECT_RATE = 0.98;
 
 var ImageMatcher = YYC.Class({
     Public:{
-        compareImage:function(correctImage, testScenePixelArr){
+        compareImage:function(correctImage, testScenePixelArr, correctRate){
+            var correctRate = correctRate || CORRECT_RATE;
             var correctImagePixelArr = this._getCorrectImagePixelArr(correctImage);
 
             expect(testScenePixelArr.length).toEqual(correctImagePixelArr.length);
@@ -18,20 +19,21 @@ var ImageMatcher = YYC.Class({
 
             var hitCount = 0;
 
+
             for(var i = 0, len = pixelCount; i < len; i+=4){
                 if(
-    this._isPixelEqual(correctImagePixelArr[i], testScenePixelArr[i])
-                && this._isPixelEqual(correctImagePixelArr[i + 1], testScenePixelArr[i + 1])
-    && this._isPixelEqual(correctImagePixelArr[i + 2], testScenePixelArr[i + 2])
-    && this._isPixelEqual(correctImagePixelArr[i + 3], testScenePixelArr[i + 3])
+                    this._isPixelEqual(correctImagePixelArr[i], testScenePixelArr[i])
+                    && this._isPixelEqual(correctImagePixelArr[i + 1], testScenePixelArr[i + 1])
+                    && this._isPixelEqual(correctImagePixelArr[i + 2], testScenePixelArr[i + 2])
+                    && this._isPixelEqual(correctImagePixelArr[i + 3], testScenePixelArr[i + 3])
                 ){
                     hitCount++;
                 }
             }
 
-            var isTestSuccessed = hitCount >= pixelCount / 4 * CORRECT_RATE;
+            var isTestSuccessed = hitCount >= pixelCount / 4 * correctRate;
 
-            expect(hitCount).not.toBeLessThan(pixelCount / 4 * CORRECT_RATE);
+            expect(hitCount).not.toBeLessThan(pixelCount / 4 * correctRate);
 
             return isTestSuccessed;
         }

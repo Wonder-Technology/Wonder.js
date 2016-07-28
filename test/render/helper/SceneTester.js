@@ -39,6 +39,7 @@ var SceneTester = YYC.Class({
                 handle = null,
                 step = null,
                 description = null,
+                correctRate = null,
                 done = null;
 
             if(arguments.length === 1){
@@ -50,6 +51,7 @@ var SceneTester = YYC.Class({
                 done = data.done;
                 step = data.step;
                 description = data.description;
+                correctRate = data.correctRate;
             }
             else if(arguments.length === 3){
                 frameIndex = arguments[0];
@@ -70,6 +72,7 @@ var SceneTester = YYC.Class({
             step = step || 1;
             handle = handle || null;
             description = description || null;
+            correctRate = correctRate || null;
 
             this._loopBody({
                 startIndex:1,
@@ -94,7 +97,7 @@ var SceneTester = YYC.Class({
                 var matcher = ImageMatcher.create(pixelArr);
 
 
-                var isTestSuccessed = matcher.compareImage(this, pixelArr);
+                var isTestSuccessed = matcher.compareImage(this, pixelArr, correctRate);
 
                 if(self.isDebug){
                     self._debuger.insertTestResult(isTestSuccessed, partialCorrectImagePath, description, this, data.canvas);
