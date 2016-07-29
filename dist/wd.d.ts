@@ -8114,10 +8114,10 @@ declare module wd {
         static refraction_forLight_envMap_fragment: GLSLChunk;
         static modelMatrix_batch_instance_vertex: GLSLChunk;
         static normalMatrix_batch_instance_vertex: GLSLChunk;
-        static modelMatrix_hardware_instance_vertex: GLSLChunk;
-        static normalMatrix_hardware_instance_vertex: GLSLChunk;
         static modelMatrix_noInstance_vertex: GLSLChunk;
         static normalMatrix_noInstance_vertex: GLSLChunk;
+        static modelMatrix_hardware_instance_vertex: GLSLChunk;
+        static normalMatrix_hardware_instance_vertex: GLSLChunk;
         static diffuseMap_fragment: GLSLChunk;
         static diffuseMap_vertex: GLSLChunk;
         static emissionMap_fragment: GLSLChunk;
