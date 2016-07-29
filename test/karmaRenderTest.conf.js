@@ -33,16 +33,19 @@
 
             'test/render/helper/*.js',
 
-            //'test/render/test/**',
+            'test/render/test/**',
 
 
-            'test/render/test/**/instance*',
+            //'test/render/test/**/instance*',
             //'test/render/test/**/hard*',
             //'test/render/test/**/proce*',
             //'test/render/test/**/animation*',
             //'test/render/test/**/shadow*',
             //'test/render/test/**/threeDUI*',
             //'test/render/test/**/model*',
+            //'test/render/test/**/light*',
+            //'test/render/test/**/texture*',
+            //'test/render/test/**/water*',
 
             {pattern: 'test/render/res/**', watched: false, included: false, served: true},
 

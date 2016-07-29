@@ -32,65 +32,87 @@ describe("generate correct image lightTool", function () {
 
     function body(wrapper){
         wrapper.load([
-                {url: "../../asset/texture/1.jpg", id: "texture"}
+                {url: "../../asset/texture/1.jpg", id: "texture"},
+                {url: "../../asset/texture/skybox/px.jpg", id: "px"},
+                {url: "../../asset/texture/skybox/nx.jpg", id: "nx"},
+                {url: "../../asset/texture/skybox/py.jpg", id: "py"},
+                {url: "../../asset/texture/skybox/ny.jpg", id: "ny"},
+                {url: "../../asset/texture/skybox/pz.jpg", id: "pz"},
+                {url: "../../asset/texture/skybox/nz.jpg", id: "nz"}
             ])
             .do(initSample);
 
         function initSample() {
             var director = wd.Director.getInstance();
 
-            director.scene.addChildren(createInstances());
-//            director.scene.addChild(createAmbientLight());
-//            director.scene.addChild(createDirectionLight());
-            director.scene.addChild(sceneTool.createCamera(300));
+            director.scene.addChild(createSkybox());
+            director.scene.addChild(createSphere());
+            director.scene.addChild(createCamera());
 
             director.start();
         }
 
-        function createInstances(){
-            var arr = [],
-                model = createBillboardAllPlane(),
-                range = 300,
-                count = 10;
+        function createSkybox() {
+            var cubemap = wd.CubemapTexture.create(
+                [
+                    {
+                        asset: wd.LoaderManager.getInstance().get("px"),
+                        sourceRegion:wd.RectRegion.create(0, 0, 256, 256),
+                        type:wd.ETextureType.UNSIGNED_BYTE
+                    },
+                    {
+                        asset: wd.LoaderManager.getInstance().get("nx"),
+                        sourceRegion:wd.RectRegion.create(0, 0, 256, 256)
+                    },
+                    {
+                        asset: wd.LoaderManager.getInstance().get("py"),
+                        sourceRegion:wd.RectRegion.create(0, 0, 256, 256)
+                    },
+                    {
+                        asset: wd.LoaderManager.getInstance().get("ny"),
+                        sourceRegion:wd.RectRegion.create(0, 0, 256, 256)
+                    },
+                    {
+                        asset: wd.LoaderManager.getInstance().get("pz"),
+                        sourceRegion:wd.RectRegion.create(0, 0, 256, 256)
+                    },
+                    {
+                        asset: wd.LoaderManager.getInstance().get("nz"),
+                        sourceRegion:wd.RectRegion.create(0, 0, 256, 256)
+                    }
+                ]
+            );
+            cubemap.textures.getChild(5).sourceRegion = wd.RectRegion.create(128, 128, 256, 256);
 
-            var sourceInstanceComponent = wd.SourceInstance.create();
-            model.addComponent(sourceInstanceComponent);
-
-            arr.push(model);
-
-            for(var i = 0; i < count; i++){
-                var instance = sourceInstanceComponent.cloneInstance("index" + String(i));
-
-                instance.transform.position = instanceTool.getSpecificInstancePosition(i, range, count, null, null, null);
-                instance.transform.rotate(instanceTool.getInstanceRotation(i, count));
-                instance.transform.scale = instanceTool.getInstanceScale(i, count);
-
-                arr.push(instance);
-            }
-
-//            return model;
-            return arr;
-        }
+            var material = wd.SkyboxMaterial.create();
+            material.envMap = cubemap;
 
 
-        function createBillboardAllPlane(){
-            var material = wd.BasicMaterial.create();
-            material.map = wd.LoaderManager.getInstance().get("texture").toTexture();
-
-
-            var geometry = wd.RectGeometry.create();
+            var geometry = wd.BoxGeometry.create();
             geometry.material = material;
             geometry.width = 5;
             geometry.height = 5;
-
-
-            var billboard = wd.Billboard.create();
-            billboard.mode = wd.EBillboardMode.ALL;
+            geometry.depth = 5;
 
 
             var gameObject = wd.GameObject.create();
+
+            gameObject.addComponent(wd.SkyboxRenderer.create());
             gameObject.addComponent(geometry);
-            gameObject.addComponent(billboard);
+
+            return gameObject;
+        }
+
+        function createSphere() {
+            var material = wd.BasicMaterial.create();
+            material.map = wd.LoaderManager.getInstance().get("texture");
+
+            var geometry = wd.SphereGeometry.create();
+            geometry.material = material;
+            geometry.radius = 5;
+
+            var gameObject = wd.GameObject.create();
+            gameObject.addComponent(geometry);
 
             gameObject.addComponent(wd.MeshRenderer.create());
 
@@ -98,6 +120,24 @@ describe("generate correct image lightTool", function () {
         }
 
 
+        function createCamera() {
+            var camera = wd.GameObject.create(),
+                view = wd.Director.getInstance().view,
+                cameraComponent = wd.PerspectiveCamera.create();
+
+            cameraComponent.fovy = 60;
+            cameraComponent.aspect = view.width / view.height;
+            cameraComponent.near = 0.1;
+            cameraComponent.far = 1000;
+
+            var controller = wd.FlyCameraController.create(cameraComponent);
+            camera.addComponent(controller);
+
+            camera.transform.translate(0, 0, 20);
+            camera.transform.lookAt(5, 5, 0);
+
+            return camera;
+        }
     }
 
 
@@ -120,7 +160,7 @@ describe("generate correct image lightTool", function () {
             [
                 {
                     frameIndex:1,
-                    imageName:"instance_billboard"
+                    imageName:"skybox_texture_part"
                 },
             ]
         );

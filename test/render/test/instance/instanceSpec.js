@@ -1761,11 +1761,11 @@ describe("instance", function () {
                     geo.material = material;
 
 
-                    var shadow = wd.Shadow.create();
-                    shadow.cast = true;
-                    shadow.receive = true;
-
-                    model.addComponent(shadow);
+                    //var shadow = wd.Shadow.create();
+                    //shadow.cast = true;
+                    //shadow.receive = true;
+                    //
+                    //model.addComponent(shadow);
 
 
                     model.addComponent(wd.SourceInstance.create());
@@ -1817,11 +1817,11 @@ describe("instance", function () {
 
                     gameObject.name = "ground";
 
-                    var shadow = wd.Shadow.create();
-                    shadow.cast = false;
-                    shadow.receive = true;
-
-                    gameObject.addComponent(shadow);
+                    //var shadow = wd.Shadow.create();
+                    //shadow.cast = false;
+                    //shadow.receive = true;
+                    //
+                    //gameObject.addComponent(shadow);
 
 
 
@@ -1995,9 +1995,9 @@ describe("instance", function () {
                     for(var i = 0; i < count; i++){
                         var instance = sourceInstanceComponent.cloneInstance("index" + String(i));
 
-                        instance.transform.position = wd.Vector3.create(range / 2 - Math.random() * range, range / 2 - Math.random() * range, range / 2 - Math.random() * range);
-                        instance.transform.rotate(90 * Math.random(), 90 * Math.random(),0);
-                        instance.transform.scale = wd.Vector3.create(2,2,2);
+                        instance.transform.position = instanceTool.getInstancePosition(i, range, count);
+                        instance.transform.rotate(instanceTool.getInstanceRotation(i, count));
+                        instance.transform.scale = instanceTool.getInstanceScale(i, count);
 
                         arr.push(instance);
                     }
@@ -2020,9 +2020,9 @@ describe("instance", function () {
                     for(var i = 0; i < count; i++){
                         var instance = sourceInstanceComponent.cloneInstance("index" + String(i));
 
-                        instance.transform.position = wd.Vector3.create(range / 2 - Math.random() * range, range / 2 - Math.random() * range, range / 2 - Math.random() * range);
-                        instance.transform.rotate(90 * Math.random(), 90 * Math.random(),0);
-                        instance.transform.scale = wd.Vector3.create(2,2,2);
+                        instance.transform.position = instanceTool.getInstancePosition(i, range, count);
+                        instance.transform.rotate(instanceTool.getInstanceRotation(i, count));
+                        instance.transform.scale = instanceTool.getInstanceScale(i, count);
 
                         arr.push(instance);
                     }
@@ -2272,11 +2272,11 @@ describe("instance", function () {
                     gameObject.addComponent(geometry);
 
 
-                    var action = wd.RepeatForever.create(wd.CallFunc.create(function () {
-                        gameObject.transform.rotateLocal(0, 1,0);
-                    }));
-
-                    gameObject.addComponent(action);
+                    //var action = wd.RepeatForever.create(wd.CallFunc.create(function () {
+                    //    gameObject.transform.rotateLocal(0, 1,0);
+                    //}));
+                    //
+                    //gameObject.addComponent(action);
 
 
 
@@ -2816,11 +2816,11 @@ describe("instance", function () {
 
 
 
-                    var shadow = wd.Shadow.create();
-                    shadow.cast = true;
-                    shadow.receive = true;
-
-                    model.addComponent(shadow);
+                    //var shadow = wd.Shadow.create();
+                    //shadow.cast = true;
+                    //shadow.receive = true;
+                    //
+                    //model.addComponent(shadow);
 
 
                     model.addComponent(wd.SourceInstance.create());
@@ -2843,11 +2843,11 @@ describe("instance", function () {
                     geo.material = material;
 
 
-                    var shadow = wd.Shadow.create();
-                    shadow.cast = true;
-                    shadow.receive = true;
-
-                    model.addComponent(shadow);
+                    //var shadow = wd.Shadow.create();
+                    //shadow.cast = true;
+                    //shadow.receive = true;
+                    //
+                    //model.addComponent(shadow);
 
 
                     model.addComponent(wd.SourceInstance.create());
@@ -2861,11 +2861,11 @@ describe("instance", function () {
                     var model = wd.LoaderManager.getInstance().get("gltf").getChild("models").getChild(0);
 
 
-                    var shadow = wd.Shadow.create();
-                    shadow.cast = true;
-                    shadow.receive = true;
-
-                    model.addComponent(shadow);
+                    //var shadow = wd.Shadow.create();
+                    //shadow.cast = true;
+                    //shadow.receive = true;
+                    //
+                    //model.addComponent(shadow);
 
 
                     model.addComponent(wd.SourceInstance.create());
@@ -2899,11 +2899,11 @@ describe("instance", function () {
 
                     gameObject.name = "ground";
 
-                    var shadow = wd.Shadow.create();
-                    shadow.cast = false;
-                    shadow.receive = true;
-
-                    gameObject.addComponent(shadow);
+                    //var shadow = wd.Shadow.create();
+                    //shadow.cast = false;
+                    //shadow.receive = true;
+                    //
+                    //gameObject.addComponent(shadow);
 
 
                     gameObject.transform.translate(wd.Vector3.create(1,1,1));
@@ -2981,7 +2981,7 @@ describe("instance", function () {
             });
 
             it("test", function (done) {
-                tester.compareAt(1, "instance/instance_shadow_obj_md2_gltf.png", done);
+                tester.compareAt(1, "instance/instance_obj_md2_gltf.png", done);
             });
         });
 
