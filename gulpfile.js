@@ -16,6 +16,10 @@ require("./build/gulp_task/test/test");
 
 gulp.task("build", gulpSync.sync(["clean", "createInnerFile", "parseTsconfigFilesGlob", "compileDTS", "compileTs", "compileTsDebug", "combineInnerLib", "compress", "addBanner", "removeTsconfigFiles"]));
 
+
+gulp.task("testAll", gulpSync.sync(["build", "testSingleRunByKarma", "renderTest"]));
+
+
 var tsFilePaths = ["src/*.ts", "src/**/*.ts"];
 var glslFilePaths = ["src/renderer/shader/chunk/glsl/**/*.glsl", "src/lib/**/*.glsl"];
 

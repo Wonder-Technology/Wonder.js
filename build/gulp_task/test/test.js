@@ -23,6 +23,14 @@ gulp.task("testByKarma", function (done) {
     }, done);
 });
 
+gulp.task("testSingleRunByKarma", function (done) {
+    karma.start({
+        configFile: karmaConfPath,
+        singleRun:true,
+        autoWatch:false
+    }, done);
+});
+
 
 var tsFilePaths = ["src/*.ts", "src/**/*.ts"];
 var glslFilePaths = ["src/renderer/shader/chunk/glsl/**/*.glsl", "src/lib/**/*.glsl"];
@@ -38,8 +46,6 @@ gulp.task("watchForTest", function(){
 
 
 gulp.task("test", gulpSync.sync(["compileForTest", "watchForTest", "testByKarma"]));
-
-gulp.task("testAll", gulpSync.sync(["compileForTest", "testInCI", "renderTest"]));
 
 
 //gulp.task("renderTest", gulpSync.sync(["compileForTest", "watchForTest", "renderTestByKarma"]));
