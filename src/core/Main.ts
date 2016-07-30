@@ -14,11 +14,13 @@ module wd{
 
         private static _canvasId:string = null;
         private static _contextConfig:ContextConfigData = null;
+        private static _useDevicePixelRatio:boolean = null;
 
         public static setConfig({
             canvasId = null,
             isTest = DebugConfig.isTest,
             screenSize = EScreenSize.FULL,
+            useDevicePixelRatio = false,
             contextConfig = {
                 options:{
                     alpha:true,
@@ -33,6 +35,7 @@ module wd{
             this.isTest = isTest;
             this.screenSize = screenSize;
             this._canvasId = canvasId;
+            this._useDevicePixelRatio = useDevicePixelRatio;
             this._contextConfig = {
                 options:wdCb.ExtendUtils.extend({
                         alpha:true,
@@ -48,7 +51,7 @@ module wd{
         }
 
         private static init(){
-            wd.DeviceManager.getInstance().createGL(this._canvasId, this._contextConfig);
+            wd.DeviceManager.getInstance().createGL(this._canvasId, this._contextConfig, this._useDevicePixelRatio);
             wd.DeviceManager.getInstance().setScreen();
             GPUDetector.getInstance().detect();
 

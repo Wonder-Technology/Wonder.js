@@ -332,8 +332,7 @@
         //{pattern: 'src/**/*.ts', watched: false, included: false, served: true}
         //{pattern: 'dist/wd.debug.js.map', watched: false, included: false, served: true, nocache:true},
 
-        {pattern: 'test/res/*', watched: false, included: false, served: true},
-    {pattern: 'test/res/**', watched: false, included: false, served: true}
+        {pattern: 'test/res/**', watched: false, included: false, served: true}
     ],
 
 

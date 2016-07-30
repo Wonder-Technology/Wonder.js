@@ -216,4 +216,22 @@ describe("deviceManager", function() {
             });
         });
     });
+
+    describe("setPixelRatio", function(){
+        beforeEach(function(){
+        });
+
+        it("set view->width, height by pixelRatio", function(){
+            device.view = {
+                width:5,
+                height:6
+            };
+
+            device.setPixelRatio(2.1);
+
+            expect(device.view.width).toEqual(Math.round(5 * 2.1));
+            expect(device.view.height).toEqual(Math.round(6 * 2.1));
+            expect(device.getPixelRatio()).toEqual(2.1);
+        });
+    });
 });

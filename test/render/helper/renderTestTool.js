@@ -8,13 +8,14 @@ var renderTestTool = (function(){
         },
         prepareContext: function(config){
             var c = wdCb.ExtendUtils.extend({
-                    screenSize:{
-                        x:0,
-                        y:0,
-                        width:500,
-                        height:300
-                    }
-                }, config);
+                screenSize:{
+                    x:0,
+                    y:0,
+                    width:500,
+                    height:300
+                },
+                useDevicePixelRatio:true
+            }, config);
 
             wd.Main.setConfig(c)
                 .init();

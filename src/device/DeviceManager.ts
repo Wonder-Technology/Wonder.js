@@ -2,6 +2,8 @@
  DeviceManager is responsible for global setting of gl
  */
 module wd {
+    declare var window:any;
+
     @singleton()
     export class DeviceManager {
         public static getInstance():any {}
@@ -268,6 +270,7 @@ module wd {
         private _scissorRegion:RectRegion = RectRegion.create();
         private _viewport:RectRegion = RectRegion.create();
         private _clearColor:Color = null;
+        private _pixelRatio:number = null;
 
         /**
          * @function
@@ -376,7 +379,7 @@ module wd {
         }
 
 
-        public createGL(canvasId:string, contextConfig:ContextConfigData){
+        public createGL(canvasId:string, contextConfig:ContextConfigData, useDevicePixelRatio:boolean){
             var canvas = null;
 
             if(canvasId){
@@ -387,6 +390,11 @@ module wd {
             }
 
             this.view = ViewWebGL.create(canvas);
+
+            if(useDevicePixelRatio){
+                this.setPixelRatio(window.devicePixelRatio);
+            }
+
             this.gl = this.view.getContext(contextConfig);
         }
 
@@ -444,6 +452,17 @@ module wd {
             this.view.height = height;
 
             this.setViewport(0, 0, width, height);
+        }
+
+        public setPixelRatio(pixelRatio:number){
+            this.view.width = Math.round(this.view.width * pixelRatio);
+            this.view.height = Math.round(this.view.height * pixelRatio);
+
+            this._pixelRatio = pixelRatio;
+        }
+
+        public getPixelRatio(){
+            return this._pixelRatio;
         }
 
         private _setClearColor(color:Color){

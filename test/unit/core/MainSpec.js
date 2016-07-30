@@ -34,82 +34,88 @@ describe("Main", function () {
         });
     });
 
-    describe("set context config data", function(){
-        beforeEach(function(){
+    describe("test set config data", function(){
+        var gl;
+        var device;
+        var canvasDom;
 
+        beforeEach(function(){
+            sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+
+            gl = wd.DeviceManager.getInstance().gl;
+
+            device = wd.DeviceManager.getInstance();
+            canvasDom = {
+                getContext:sandbox.stub().returns({})
+            };
+            sandbox.stub(wdCb.DomQuery, "create").returns({
+                get:sandbox.stub().returns(canvasDom)
+            });
+
+            sandbox.stub(device, "setScreen");
+            sandbox.stub(wd.GPUDetector.getInstance(), "detect");
         });
 
-        describe("set webgl context options", function(){
-            var gl;
+        describe("set context config data", function(){
+            describe("set webgl context options", function(){
+                it("test default value", function(){
+                    Main.setConfig({
+                        canvasId:"a"
+                    });
+                    Main.init();
 
-            beforeEach(function(){
-                sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
 
-                gl = wd.DeviceManager.getInstance().gl;
+                    expect(canvasDom.getContext).toCalledWith("webgl", {
+                        alpha:true,
+                        depth:true,
+                        stencil:false,
+                        antialias:true,
+                        premultipliedAlpha:true,
+                        preserveDrawingBuffer:false
+                    });
+                });
+
+                it("can set webgl context options", function(){
+                    Main.setConfig({
+                        canvasId:"a",
+                        contextConfig:{
+                            options:{
+                                stencil:true,
+                                antialias:false,
+                                premultipliedAlpha:true,
+                                preserveDrawingBuffer:false
+                            }
+                        }
+                    });
+                    Main.init();
+
+
+                    expect(canvasDom.getContext).toCalledWith("webgl", {
+                        alpha:true,
+                        depth:true,
+                        stencil:true,
+                        antialias:false,
+                        premultipliedAlpha:true,
+                        preserveDrawingBuffer:false
+                    });
+                });
             });
+        });
 
-            it("test default value", function(){
-                var device = wd.DeviceManager.getInstance();
-                var canvasDom = {
-                    getContext:sandbox.stub().returns({})
-                };
-                sandbox.stub(wdCb.DomQuery, "create").returns({
-                    get:sandbox.stub().returns(canvasDom)
-                });
+        describe("set useDevicePixelRatio", function(){
 
-                sandbox.stub(device, "setScreen");
-                sandbox.stub(wd.GPUDetector.getInstance(), "detect");
-
-                Main.setConfig({
-                    canvasId:"a"
-                });
-                Main.init();
-
-
-                expect(canvasDom.getContext).toCalledWith("webgl", {
-                    alpha:true,
-                    depth:true,
-                    stencil:false,
-                    antialias:true,
-                    premultipliedAlpha:true,
-                    preserveDrawingBuffer:false
-                });
-            });
-
-            it("can set webgl context options", function(){
-                var device = wd.DeviceManager.getInstance();
-                var canvasDom = {
-                    getContext:sandbox.stub().returns({})
-                };
-                sandbox.stub(wdCb.DomQuery, "create").returns({
-                    get:sandbox.stub().returns(canvasDom)
-                });
-
-                sandbox.stub(device, "setScreen");
-                sandbox.stub(wd.GPUDetector.getInstance(), "detect");
+            it("if true, set pixelRatio", function(){
+                var devicePixelRatio = 2;
+                sandbox.stub(window, "devicePixelRatio", devicePixelRatio)
+                sandbox.stub(device, "setPixelRatio");
 
                 Main.setConfig({
                     canvasId:"a",
-                    contextConfig:{
-                        options:{
-                            stencil:true,
-                            antialias:false,
-                            premultipliedAlpha:true,
-                            preserveDrawingBuffer:false
-                        }
-                    }
+                    useDevicePixelRatio:true
                 });
                 Main.init();
 
-
-                expect(canvasDom.getContext).toCalledWith("webgl", {
-                    alpha:true,
-                    depth:true,
-                    stencil:true,
-                    antialias:false,
-                    premultipliedAlpha:true,
-                    preserveDrawingBuffer:false
-                });
+                expect(device.setPixelRatio).toCalledWith(devicePixelRatio);
             });
         });
     });
