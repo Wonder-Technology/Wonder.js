@@ -103,10 +103,14 @@ describe("Main", function () {
         });
 
         describe("set useDevicePixelRatio", function(){
-
             it("if true, set pixelRatio", function(){
+                if(bowser.firefox){
+                    expect().toPass();
+                    return;
+                }
+
                 var devicePixelRatio = 2;
-                window.devicePixelRatio = devicePixelRatio;
+                sandbox.stub(window, "devicePixelRatio", devicePixelRatio)
                 sandbox.stub(device, "setPixelRatio");
 
                 Main.setConfig({
