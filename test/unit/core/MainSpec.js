@@ -106,7 +106,7 @@ describe("Main", function () {
 
             it("if true, set pixelRatio", function(){
                 var devicePixelRatio = 2;
-                sandbox.stub(window, "devicePixelRatio", devicePixelRatio)
+                window.devicePixelRatio = devicePixelRatio;
                 sandbox.stub(device, "setPixelRatio");
 
                 Main.setConfig({
