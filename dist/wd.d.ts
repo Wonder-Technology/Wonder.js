@@ -2487,10 +2487,12 @@ declare module wd {
         static screenSize: any;
         private static _canvasId;
         private static _contextConfig;
-        static setConfig({canvasId, isTest, screenSize, contextConfig}: {
+        private static _useDevicePixelRatio;
+        static setConfig({canvasId, isTest, screenSize, useDevicePixelRatio, contextConfig}: {
             canvasId?: any;
             isTest?: boolean;
             screenSize?: EScreenSize;
+            useDevicePixelRatio?: boolean;
             contextConfig?: {
                 options: {
                     alpha: boolean;
@@ -8075,10 +8077,6 @@ declare module wd {
         static NULL: number;
         static normal_morph_vertex: GLSLChunk;
         static vertice_morph_vertex: GLSLChunk;
-        static basic_fragment: GLSLChunk;
-        static basic_vertex: GLSLChunk;
-        static end_basic_fragment: GLSLChunk;
-        static common_envMap_fragment: GLSLChunk;
         static common_define: GLSLChunk;
         static common_fragment: GLSLChunk;
         static common_function: GLSLChunk;
@@ -8086,18 +8084,22 @@ declare module wd {
         static highp_fragment: GLSLChunk;
         static lowp_fragment: GLSLChunk;
         static mediump_fragment: GLSLChunk;
+        static basic_fragment: GLSLChunk;
+        static basic_vertex: GLSLChunk;
+        static end_basic_fragment: GLSLChunk;
+        static common_envMap_fragment: GLSLChunk;
         static lightCommon_fragment: GLSLChunk;
         static lightCommon_vertex: GLSLChunk;
         static lightEnd_fragment: GLSLChunk;
         static light_common: GLSLChunk;
         static light_fragment: GLSLChunk;
         static light_vertex: GLSLChunk;
-        static skybox_fragment: GLSLChunk;
-        static skybox_vertex: GLSLChunk;
         static map_forBasic_fragment: GLSLChunk;
         static map_forBasic_vertex: GLSLChunk;
         static multi_map_forBasic_fragment: GLSLChunk;
         static multi_map_forBasic_vertex: GLSLChunk;
+        static skybox_fragment: GLSLChunk;
+        static skybox_vertex: GLSLChunk;
         static basic_forBasic_envMap_fragment: GLSLChunk;
         static basic_forBasic_envMap_vertex: GLSLChunk;
         static forBasic_envMap_fragment: GLSLChunk;
@@ -8170,11 +8172,11 @@ declare module wd {
         static water_refraction_fragment: GLSLChunk;
         static water_vertex: GLSLChunk;
         static brick_proceduralTexture_fragment: GLSLChunk;
-        static cloud_proceduralTexture_fragment: GLSLChunk;
         static common_proceduralTexture_fragment: GLSLChunk;
         static common_proceduralTexture_vertex: GLSLChunk;
-        static grass_proceduralTexture_fragment: GLSLChunk;
+        static cloud_proceduralTexture_fragment: GLSLChunk;
         static fire_proceduralTexture_fragment: GLSLChunk;
+        static grass_proceduralTexture_fragment: GLSLChunk;
         static marble_proceduralTexture_fragment: GLSLChunk;
         static road_proceduralTexture_fragment: GLSLChunk;
         static wood_proceduralTexture_fragment: GLSLChunk;
@@ -9395,15 +9397,18 @@ declare module wd {
         private _scissorRegion;
         private _viewport;
         private _clearColor;
+        private _pixelRatio;
         setBlendFunc(blendSrc: EBlendFunc, blendDst: EBlendFunc): void;
         setBlendEquation(blendEquation: EBlendEquation): void;
         setBlendFuncSeparate(blendFuncSeparate: Array<EBlendFunc>): void;
         setBlendEquationSeparate(blendEquationSeparate: Array<EBlendEquation>): void;
         setColorWrite(writeRed: any, writeGreen: any, writeBlue: any, writeAlpha: any): void;
         clear(options: any): void;
-        createGL(canvasId: string, contextConfig: ContextConfigData): void;
+        createGL(canvasId: string, contextConfig: ContextConfigData, useDevicePixelRatio: boolean): void;
         setScreen(): void;
         setHardwareScaling(level: number): void;
+        setPixelRatio(pixelRatio: number): void;
+        getPixelRatio(): number;
         private _setClearColor(color);
     }
     enum EDepthFunction {
