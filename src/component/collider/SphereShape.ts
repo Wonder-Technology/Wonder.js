@@ -17,6 +17,8 @@ module wd {
         public setFromPoints(points:Array<number>) {
             var aabb = AABBShape.create();
 
+            //todo optimize: use <<计算几何>>->4.7 algorithm
+
             this.center = aabb.setFromPoints(points).center;
             this.radius = this._findMaxDistanceOfPointsToCenter(points);
         }
