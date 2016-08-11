@@ -27,6 +27,10 @@ module wd{
         })
         public heightMapAsset:ImageTextureAsset = null;
 
+        //public getHeightAtCoordinates(x: number, z: number): number {
+        //    todo finish
+        //}
+
         public computeData(): GeometryDataType{
             var image:HTMLImageElement = this.heightMapAsset.source,
                 bufferWidth = image.width,
@@ -78,9 +82,12 @@ module wd{
                 heightMapX = (((x + width / 2) / width) * (bufferWidth - 1)) | 0,
                 heightMapY = ((1.0 - (z + height / 2) / height) * (bufferHeight - 1)) | 0,
                 pos = (heightMapX + heightMapY * bufferWidth) * 4,
-                r = buffer[pos] / 255.0,
-                g = buffer[pos + 1] / 255.0,
-                b = buffer[pos + 2] / 255.0,
+                /*!
+                 compute gradient from rgb heightMap->r,g,b components
+                 */
+                r = buffer[pos] / 256.0,
+                g = buffer[pos + 1] / 256.0,
+                b = buffer[pos + 2] / 256.0,
                 gradient = r * 0.3 + g * 0.59 + b * 0.11,
                 minHeight = this.minHeight,
                 maxHeight = this.maxHeight;
