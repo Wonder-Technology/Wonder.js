@@ -6,6 +6,28 @@ module wd{
             return obj;
         }
 
+        private _heightMapAsset:ImageTextureAsset = null;
+        @cloneAttributeAsCustomType(function(source:Geometry, target:Geometry, memberName:string){
+            if(source[memberName]){
+                target[memberName] = ImageTextureAsset.create(source[memberName].source);
+            }
+        })
+        @requireSetter(function(heightMapAsset:ImageTextureAsset){
+            it("heightMapAsset should be ImageTextureAsset", function () {
+                expect(heightMapAsset).instanceOf(ImageTextureAsset);
+            });
+        })
+        get heightMapAsset(){
+            return this._heightMapAsset;
+        }
+        set heightMapAsset(heightMapAsset:ImageTextureAsset){
+            if(!JudgeUtils.isEqual(this._heightMapAsset, heightMapAsset)){
+                this._heightMapAsset = heightMapAsset;
+
+                this._clearCache();
+            }
+        }
+
         @cloneAttributeAsBasicType()
         public subdivisions:number = 1;
         @cloneAttributeAsCustomType(function(source:Geometry, target:Geometry, memberName:string){
@@ -20,18 +42,11 @@ module wd{
         public minHeight:number = 0;
         @cloneAttributeAsBasicType()
         public maxHeight:number = 10;
-        @cloneAttributeAsCustomType(function(source:Geometry, target:Geometry, memberName:string){
-            if(source[memberName]){
-                target[memberName] = ImageTextureAsset.create(source[memberName].source);
-            }
-        })
-        public heightMapAsset:ImageTextureAsset = null;
 
         private _heightMapImageDataCache:Uint8Array = null;
         private _heightMapImageDataCacheWidth:number = null;
         private _heightMapImageDataCacheHeight:number = null;
         private _heightCache:Array<number> = [];
-
 
         public getHeightAtCoordinates(x:number, z:number):number {
             var transform = this.entityObject.transform,
@@ -165,6 +180,14 @@ module wd{
             }
 
             return indices;
+        }
+
+        private _clearCache(){
+            this._heightCache = [];
+
+            this._heightMapImageDataCache = null;
+            this._heightMapImageDataCacheWidth = null;
+            this._heightMapImageDataCacheHeight = null;
         }
     }
 
