@@ -67,6 +67,98 @@ describe("TerrainGeometry", function() {
         });
     });
 
+    describe("getHeightAtCoordinates", function(){
+        var entityObject;
+
+        function judge1(done, isInit){
+            wd.LoaderManager.getInstance().load([
+                {url: testTool.resPath + "test/res/terrain/heightMap.png", id: "heightMap"}
+            ]).subscribe(function(data){
+            }, function(err){
+            }, function() {
+                geo.heightMapAsset = wd.LoaderManager.getInstance().get("heightMap");
+
+                if(isInit){
+                    geo.init();
+                }
+
+
+                var height = geo.getHeightAtCoordinates(1, 2);
+
+                expect(Math.floor(height)).toEqual(Math.floor(30.9));
+
+                done();
+            });
+        }
+
+        function judge2(done, isInit){
+            wd.LoaderManager.getInstance().load([
+                {url: testTool.resPath + "test/res/terrain/heightMap.png", id: "heightMap"}
+            ]).subscribe(function(data){
+            }, function(err){
+            }, function() {
+                geo.heightMapAsset = wd.LoaderManager.getInstance().get("heightMap");
+
+                if(isInit){
+                    geo.init();
+                }
+
+                entityObject.transform.scale = wd.Vector3.create(2,3,4);
+                entityObject.transform.position = wd.Vector3.create(10,20,30);
+
+
+                var height = geo.getHeightAtCoordinates(1, 2);
+
+                expect(Math.floor(height)).toEqual(Math.floor(30.9 * 3 + 20));
+
+                done();
+            });
+        }
+
+        beforeEach(function(){
+            entityObject = {
+                transform:{
+                    scale:wd.Vector3.create(1,1,1),
+                    position:wd.Vector3.create()
+                }
+            }
+
+            geo.entityObject = entityObject;
+
+            geo.material = {
+                init: sandbox.stub(),
+                shading: wd.EShading.FLAT
+            }
+
+            geo.subdivisions = 100;
+            geo.range = {
+                width: 100,
+                height: 100
+            };
+            geo.minHeight = 0;
+            geo.maxHeight = 50;
+        });
+
+        describe("support get height before geo.computeData()", function () {
+            it("get height from heightMap data", function (done) {
+                judge1(done, false);
+            });
+            it("consider transform->scale.y and position.y", function (done) {
+                judge2(done, false);
+            });
+        });
+
+
+        describe("support get height after geo.computeData()", function () {
+            it("get height from heightMap data", function (done) {
+                judge1(done, true);
+            });
+            it("consider transform->scale.y and position.y", function (done) {
+                judge2(done, true);
+            });
+        });
+    });
+
     describe("clone", function(){
         beforeEach(function(){
         });

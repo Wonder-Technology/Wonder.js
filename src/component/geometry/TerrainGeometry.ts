@@ -27,31 +27,50 @@ module wd{
         })
         public heightMapAsset:ImageTextureAsset = null;
 
-        //public getHeightAtCoordinates(x: number, z: number): number {
-        //    todo finish
-        //}
+        private _heightMapImageDataCache:Uint8Array = null;
+        private _heightMapImageDataCacheWidth:number = null;
+        private _heightMapImageDataCacheHeight:number = null;
 
-        public computeData(): GeometryDataType{
-            var image:HTMLImageElement = this.heightMapAsset.source,
-                bufferWidth = image.width,
-                bufferHeight = image.height;
+        public getHeightAtCoordinates(x:number, z:number):number {
+            var transform = this.entityObject.transform;
 
-            return this._createGroundFromHeightMap(this._readHeightMapData(image, bufferWidth, bufferHeight), bufferWidth, bufferHeight);
+            if(!this._isReadHeightMapData()){
+                this._readHeightMapData();
+            }
+
+            return this._getHeight(x, z) * transform.scale.y + transform.position.y;
         }
 
-        private _readHeightMapData(image:HTMLImageElement, bufferWidth:number, bufferHeight:number){
-            var canvas = document.createElement("canvas"),
+        public computeData(): GeometryDataType{
+            if(!this._isReadHeightMapData()){
+                this._readHeightMapData();
+            }
+
+            return this._createGroundFromHeightMap();
+        }
+
+        private _isReadHeightMapData(){
+            return this._heightMapImageDataCache !== null;
+        }
+
+        private _readHeightMapData(){
+            var image:HTMLImageElement = this.heightMapAsset.source,
+                heightMapImageDataWidth = image.width,
+                heightMapImageDataHeight = image.height,
+                canvas = document.createElement("canvas"),
                 context = canvas.getContext("2d");
 
-            canvas.width = bufferWidth;
-            canvas.height = bufferHeight;
+            canvas.width = heightMapImageDataWidth;
+            canvas.height = heightMapImageDataHeight;
 
             context.drawImage(image, 0, 0);
 
-            return <Uint8Array>(<any>context.getImageData(0, 0, bufferWidth, bufferHeight).data);
+            this._heightMapImageDataCache = <Uint8Array>(<any>context.getImageData(0, 0, heightMapImageDataWidth, heightMapImageDataHeight).data);
+            this._heightMapImageDataCacheWidth = heightMapImageDataWidth;
+            this._heightMapImageDataCacheHeight = heightMapImageDataHeight;
         }
 
-        private _createGroundFromHeightMap(buffer: Uint8Array, bufferWidth: number, bufferHeight: number ){
+        private _createGroundFromHeightMap(){
             var vertices = [],
                 normals = [],
                 texCoords = [],
@@ -64,7 +83,7 @@ module wd{
                     let x = (col * width) / subdivisions - (width / 2.0),
                         z = ((subdivisions - row) * height) / subdivisions - (height / 2.0);
 
-                    vertices.push(x, this._getHeight(x, z, buffer, bufferWidth, bufferHeight), z);
+                    vertices.push(x, this._getHeight(x, z), z);
                     texCoords.push(col / subdivisions, 1.0 - row / subdivisions);
                 }
             }
@@ -76,18 +95,21 @@ module wd{
             };
         }
 
-        private _getHeight(x:number, z:number, buffer: Uint8Array, bufferWidth: number, bufferHeight: number){
-            var width = this.range.width,
+        private _getHeight(x:number, z:number){
+            var heightMapImageData = this._heightMapImageDataCache,
+                heightMapImageDataWidth = this._heightMapImageDataCacheWidth,
+                heightMapImageDataHeight = this._heightMapImageDataCacheHeight,
+                width = this.range.width,
                 height = this.range.height,
-                heightMapX = (((x + width / 2) / width) * (bufferWidth - 1)) | 0,
-                heightMapY = ((1.0 - (z + height / 2) / height) * (bufferHeight - 1)) | 0,
-                pos = (heightMapX + heightMapY * bufferWidth) * 4,
-                /*!
-                 compute gradient from rgb heightMap->r,g,b components
-                 */
-                r = buffer[pos] / 256.0,
-                g = buffer[pos + 1] / 256.0,
-                b = buffer[pos + 2] / 256.0,
+                heightMapX = (((x + width / 2) / width) * (heightMapImageDataWidth - 1)) | 0,
+                heightMapY = ((1.0 - (z + height / 2) / height) * (heightMapImageDataHeight - 1)) | 0,
+                pos = (heightMapX + heightMapY * heightMapImageDataWidth) * 4,
+            /*!
+             compute gradient from rgb heightMap->r,g,b components
+             */
+                r = heightMapImageData[pos] / 256.0,
+                g = heightMapImageData[pos + 1] / 256.0,
+                b = heightMapImageData[pos + 2] / 256.0,
                 gradient = r * 0.3 + g * 0.59 + b * 0.11,
                 minHeight = this.minHeight,
                 maxHeight = this.maxHeight;
