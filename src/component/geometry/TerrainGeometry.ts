@@ -30,15 +30,25 @@ module wd{
         private _heightMapImageDataCache:Uint8Array = null;
         private _heightMapImageDataCacheWidth:number = null;
         private _heightMapImageDataCacheHeight:number = null;
+        private _heightCache:Array<number> = [];
+
 
         public getHeightAtCoordinates(x:number, z:number):number {
-            var transform = this.entityObject.transform;
+            var transform = this.entityObject.transform,
+                heightFromHeightMapData:number = null;
 
             if(!this._isReadHeightMapData()){
                 this._readHeightMapData();
             }
 
-            return this._getHeight(x, z) * transform.scale.y + transform.position.y;
+            if(this._heightCache.length > 0){
+                heightFromHeightMapData = this._heightCache[this._buildHeightCacheKey(this.subdivisions, this._computeHeightMapRow(z), this._computeHeightMapCol(x))];
+            }
+            else{
+                heightFromHeightMapData = this._getHeightByReadHeightMapData(this._computeHeightMapRow(z), this._computeHeightMapCol(x));
+            }
+
+            return heightFromHeightMapData * transform.scale.y + transform.position.y;
         }
 
         public computeData(): GeometryDataType{
@@ -65,7 +75,7 @@ module wd{
 
             context.drawImage(image, 0, 0);
 
-            this._heightMapImageDataCache = <Uint8Array>(<any>context.getImageData(0, 0, heightMapImageDataWidth, heightMapImageDataHeight).data);
+            this._heightMapImageDataCache = <Uint8Array>context.getImageData(0, 0, heightMapImageDataWidth, heightMapImageDataHeight).data;
             this._heightMapImageDataCacheWidth = heightMapImageDataWidth;
             this._heightMapImageDataCacheHeight = heightMapImageDataHeight;
         }
@@ -76,14 +86,22 @@ module wd{
                 texCoords = [],
                 subdivisions = this.subdivisions,
                 width = this.range.width,
-                height = this.range.height;
+                height = this.range.height,
+                heightCache = this._heightCache;
 
             for (let row = 0; row <= subdivisions; row++) {
                 for (let col = 0; col <= subdivisions; col++) {
                     let x = (col * width) / subdivisions - (width / 2.0),
-                        z = ((subdivisions - row) * height) / subdivisions - (height / 2.0);
+                        z = ((subdivisions - row) * height) / subdivisions - (height / 2.0),
+                        heightMapRow = this._computeHeightMapRow(z),
+                        heightMapCol = this._computeHeightMapCol(x),
+                        y:number = null;
 
-                    vertices.push(x, this._getHeight(x, z), z);
+                    y = this._getHeightByReadHeightMapData(heightMapRow, heightMapCol);
+
+                    heightCache[this._buildHeightCacheKey(subdivisions, heightMapRow, heightMapCol)] = y;
+
+                    vertices.push(x, y, z);
                     texCoords.push(col / subdivisions, 1.0 - row / subdivisions);
                 }
             }
@@ -95,15 +113,28 @@ module wd{
             };
         }
 
-        private _getHeight(x:number, z:number){
+        private _buildHeightCacheKey(subdivisions:number, heightMapRow:number, heightMapCol:number){
+            return heightMapRow * subdivisions + heightMapCol;
+        }
+
+        private _computeHeightMapCol(x:number){
+            var heightMapImageDataWidth = this._heightMapImageDataCacheWidth,
+                width = this.range.width;
+
+            return Math.floor((((x + width / 2) / width) * (heightMapImageDataWidth - 1)));
+        }
+
+        private _computeHeightMapRow(z:number){
+            var heightMapImageDataHeight = this._heightMapImageDataCacheHeight,
+                height = this.range.height;
+
+            return Math.floor(((1.0 - (z + height / 2) / height) * (heightMapImageDataHeight - 1)));
+        }
+
+        private _getHeightByReadHeightMapData(heightMapRow:number, heightMapCol:number){
             var heightMapImageData = this._heightMapImageDataCache,
                 heightMapImageDataWidth = this._heightMapImageDataCacheWidth,
-                heightMapImageDataHeight = this._heightMapImageDataCacheHeight,
-                width = this.range.width,
-                height = this.range.height,
-                heightMapX = (((x + width / 2) / width) * (heightMapImageDataWidth - 1)) | 0,
-                heightMapY = ((1.0 - (z + height / 2) / height) * (heightMapImageDataHeight - 1)) | 0,
-                pos = (heightMapX + heightMapY * heightMapImageDataWidth) * 4,
+                pos = (heightMapCol + heightMapRow * heightMapImageDataWidth) * 4,
             /*!
              compute gradient from rgb heightMap->r,g,b components
              */
