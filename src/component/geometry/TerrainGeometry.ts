@@ -6,28 +6,12 @@ module wd{
             return obj;
         }
 
-        private _heightMapAsset:ImageTextureAsset = null;
         @cloneAttributeAsCustomType(function(source:Geometry, target:Geometry, memberName:string){
             if(source[memberName]){
                 target[memberName] = ImageTextureAsset.create(source[memberName].source);
             }
         })
-        @requireSetter(function(heightMapAsset:ImageTextureAsset){
-            it("heightMapAsset should be ImageTextureAsset", function () {
-                expect(heightMapAsset).instanceOf(ImageTextureAsset);
-            });
-        })
-        get heightMapAsset(){
-            return this._heightMapAsset;
-        }
-        set heightMapAsset(heightMapAsset:ImageTextureAsset){
-            if(!JudgeUtils.isEqual(this._heightMapAsset, heightMapAsset)){
-                this._heightMapAsset = heightMapAsset;
-
-                this._clearCache();
-            }
-        }
-
+        public heightMapAsset:ImageTextureAsset = null;
         @cloneAttributeAsBasicType()
         public subdivisions:number = 1;
         @cloneAttributeAsCustomType(function(source:Geometry, target:Geometry, memberName:string){
@@ -57,7 +41,7 @@ module wd{
             }
 
             if(this._heightCache.length > 0){
-                heightFromHeightMapData = this._heightCache[this._buildHeightCacheKey(this.subdivisions, this._computeHeightMapRow(z), this._computeHeightMapCol(x))];
+                heightFromHeightMapData = this._heightCache[this._buildHeightCacheIndex(this.subdivisions, this._computeHeightMapRow(z), this._computeHeightMapCol(x))];
             }
             else{
                 heightFromHeightMapData = this._getHeightByReadHeightMapData(this._computeHeightMapRow(z), this._computeHeightMapCol(x));
@@ -114,7 +98,7 @@ module wd{
 
                     y = this._getHeightByReadHeightMapData(heightMapRow, heightMapCol);
 
-                    heightCache[this._buildHeightCacheKey(subdivisions, heightMapRow, heightMapCol)] = y;
+                    heightCache[this._buildHeightCacheIndex(subdivisions, heightMapRow, heightMapCol)] = y;
 
                     vertices.push(x, y, z);
                     texCoords.push(col / subdivisions, 1.0 - row / subdivisions);
@@ -128,7 +112,7 @@ module wd{
             };
         }
 
-        private _buildHeightCacheKey(subdivisions:number, heightMapRow:number, heightMapCol:number){
+        private _buildHeightCacheIndex(subdivisions:number, heightMapRow:number, heightMapCol:number){
             return heightMapRow * subdivisions + heightMapCol;
         }
 
@@ -180,14 +164,6 @@ module wd{
             }
 
             return indices;
-        }
-
-        private _clearCache(){
-            this._heightCache = [];
-
-            this._heightMapImageDataCache = null;
-            this._heightMapImageDataCacheWidth = null;
-            this._heightMapImageDataCacheHeight = null;
         }
     }
 

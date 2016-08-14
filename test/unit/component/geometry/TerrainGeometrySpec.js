@@ -220,50 +220,6 @@ describe("TerrainGeometry", function() {
                     done();
                 });
             });
-
-            it("if change heightMapAsset, height map data cache and height cache miss", function (done) {
-                wd.LoaderManager.getInstance().load([
-                    {url: testTool.resPath + "test/res/terrain/heightMap.png", id: "heightMap"},
-                    {url: testTool.resPath + "test/res/terrain/heightMap2.png", id: "heightMap2"}
-                ]).subscribe(function(data){
-                }, function(err){
-                }, function() {
-                    sandbox.spy(geo, "_getHeightByReadHeightMapData");
-                    sandbox.spy(geo, "_readHeightMapData");
-
-
-                    geo.subdivisions = 100;
-                    geo.range = {
-                        width:100,
-                        height:100
-                    };
-
-                    geo.heightMapAsset = wd.LoaderManager.getInstance().get("heightMap");
-
-
-                    geo.init();
-
-                    var getHeightByReadHeightMapDataCallCount = geo._getHeightByReadHeightMapData.callCount;
-                    var readHeightMapDataCallCount = geo._readHeightMapData.callCount;
-
-                    var height1 = geo.getHeightAtCoordinates(1,2);
-
-
-                    geo.heightMapAsset = wd.LoaderManager.getInstance().get("heightMap2");
-
-
-                    var height2 = geo.getHeightAtCoordinates(1,2);
-
-                    //heightMap2.png is the copy one of heightMap.png
-                    expect(height2).toEqual(height1);
-
-                    expect(geo._getHeightByReadHeightMapData.callCount).toEqual(getHeightByReadHeightMapDataCallCount + 1);
-                    expect(geo._readHeightMapData.callCount).toEqual(readHeightMapDataCallCount + 1);
-
-
-                    done();
-                });
-            });
         });
     });
 
