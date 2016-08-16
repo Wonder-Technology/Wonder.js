@@ -45,18 +45,43 @@ describe("Main", function () {
             gl = wd.DeviceManager.getInstance().gl;
 
             device = wd.DeviceManager.getInstance();
-            canvasDom = {
-                getContext:sandbox.stub().returns({})
-            };
-            sandbox.stub(wdCb.DomQuery, "create").returns({
-                get:sandbox.stub().returns(canvasDom)
-            });
 
             sandbox.stub(device, "setScreen");
             sandbox.stub(wd.GPUDetector.getInstance(), "detect");
         });
 
+        describe("test set canvas id", function(){
+            var canvas;
+
+            beforeEach(function(){
+                canvas = $("<canvas id='a'></canvas>");
+
+                $("body").append(canvas);
+            });
+            afterEach(function(){
+                canvas.remove();
+            });
+
+            it("support pass canvas id", function(){
+                Main.setConfig({
+                    canvasId:"a"
+                });
+                Main.init();
+
+                expect(device.gl).toBeDefined();
+            });
+        });
+
         describe("set context config data", function(){
+            beforeEach(function(){
+                canvasDom = {
+                    getContext:sandbox.stub().returns({})
+                };
+                sandbox.stub(wdCb.DomQuery, "create").returns({
+                    get:sandbox.stub().returns(canvasDom)
+                });
+            });
+
             describe("set webgl context options", function(){
                 it("test default value", function(){
                     Main.setConfig({
@@ -103,6 +128,15 @@ describe("Main", function () {
         });
 
         describe("set useDevicePixelRatio", function(){
+            beforeEach(function(){
+                canvasDom = {
+                    getContext:sandbox.stub().returns({})
+                };
+                sandbox.stub(wdCb.DomQuery, "create").returns({
+                    get:sandbox.stub().returns(canvasDom)
+                });
+            });
+
             it("if true, set pixelRatio", function(){
                 if(bowser.firefox){
                     expect().toPass();
@@ -124,3 +158,4 @@ describe("Main", function () {
         });
     });
 });
+
