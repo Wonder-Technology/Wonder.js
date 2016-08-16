@@ -365,15 +365,15 @@ module wd {
             this.setColorWrite(true, true, true, true);
 
             /*! optimize in ANGLE:
-            (need more verify:set color mask all false before clear?
+             (need more verify:set color mask all false before clear?
              so here not do the recommendation)
 
 
-            Recommendation: Do Not Perform Clears with Scissors or Masks Enabled
-            (<<WebGL Insights>> -> chapter 1)
+             Recommendation: Do Not Perform Clears with Scissors or Masks Enabled
+             (<<WebGL Insights>> -> chapter 1)
 
-            One of the subtle differences between the Direct3D APIs and the GL APIs is that in the former, clear calls ignore scissors and masks, while the latter applies both to clears [Koch 12]. This means that if a clear is performed with the scissors test enabled, or with a color or stencil mask in use, ANGLE must draw a quad with the requested clear values, rather than using clear. This introduces some state management overhead, as ANGLE must switch out all the cached state such as shaders, sampler and texture bindings, and vertex data related to the draw call stream. It then must set up all the appropriate state for the clear, perform the clear itself, and then reset all of the affected state back to its prior settings once the clear is complete. If multiple draw buffers are currently in use, using WEBGL_draw_ buffers, then the performance implications of this emulated clear are com- pounded, as the draw must be performed once for each target. Clearing buffers without scissors or masks enabled avoids this overhead.
-            */
+             One of the subtle differences between the Direct3D APIs and the GL APIs is that in the former, clear calls ignore scissors and masks, while the latter applies both to clears [Koch 12]. This means that if a clear is performed with the scissors test enabled, or with a color or stencil mask in use, ANGLE must draw a quad with the requested clear values, rather than using clear. This introduces some state management overhead, as ANGLE must switch out all the cached state such as shaders, sampler and texture bindings, and vertex data related to the draw call stream. It then must set up all the appropriate state for the clear, perform the clear itself, and then reset all of the affected state back to its prior settings once the clear is complete. If multiple draw buffers are currently in use, using WEBGL_draw_ buffers, then the performance implications of this emulated clear are com- pounded, as the draw must be performed once for each target. Clearing buffers without scissors or masks enabled avoids this overhead.
+             */
 
             gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
         }
@@ -383,7 +383,7 @@ module wd {
             var canvas = null;
 
             if(canvasId){
-                canvas = wdCb.DomQuery.create(canvasId).get(0);
+                canvas = wdCb.DomQuery.create(`#${canvasId}`).get(0);
             }
             else{
                 canvas = wdCb.DomQuery.create("<canvas></canvas>").prependTo("body").get(0);
@@ -541,3 +541,4 @@ module wd {
         context:CanvasRenderingContext2D
     }
 }
+

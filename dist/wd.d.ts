@@ -8077,6 +8077,9 @@ declare module wd {
         static NULL: number;
         static normal_morph_vertex: GLSLChunk;
         static vertice_morph_vertex: GLSLChunk;
+        static basic_fragment: GLSLChunk;
+        static basic_vertex: GLSLChunk;
+        static end_basic_fragment: GLSLChunk;
         static common_define: GLSLChunk;
         static common_fragment: GLSLChunk;
         static common_function: GLSLChunk;
@@ -8084,9 +8087,6 @@ declare module wd {
         static highp_fragment: GLSLChunk;
         static lowp_fragment: GLSLChunk;
         static mediump_fragment: GLSLChunk;
-        static basic_fragment: GLSLChunk;
-        static basic_vertex: GLSLChunk;
-        static end_basic_fragment: GLSLChunk;
         static common_envMap_fragment: GLSLChunk;
         static lightCommon_fragment: GLSLChunk;
         static lightCommon_vertex: GLSLChunk;
@@ -8152,15 +8152,13 @@ declare module wd {
         static twoDShadowMap_vertex: GLSLChunk;
         static basic_bitmapFont_fragment: GLSLChunk;
         static common_bitmapFont_vertex: GLSLChunk;
-        static multiPages_bitmapFont_fragment: GLSLChunk;
-        static multiPages_bitmapFont_vertex: GLSLChunk;
         static sdf_bitmapFont_smoothStep_fallback: GLSLChunk;
         static sdf_bitmapFont_smoothStep_standardDerivatives: GLSLChunk;
         static sdf_bitmapFont_smooth_fragment: GLSLChunk;
+        static multiPages_bitmapFont_fragment: GLSLChunk;
+        static multiPages_bitmapFont_vertex: GLSLChunk;
         static mirror_fragment: GLSLChunk;
         static mirror_vertex: GLSLChunk;
-        static terrainLayer_fragment: GLSLChunk;
-        static terrainLayer_vertex: GLSLChunk;
         static water_bump_fragment: GLSLChunk;
         static water_bump_vertex: GLSLChunk;
         static water_fragment: GLSLChunk;
@@ -8171,6 +8169,8 @@ declare module wd {
         static water_reflection_fragment: GLSLChunk;
         static water_refraction_fragment: GLSLChunk;
         static water_vertex: GLSLChunk;
+        static terrainLayer_fragment: GLSLChunk;
+        static terrainLayer_vertex: GLSLChunk;
         static brick_proceduralTexture_fragment: GLSLChunk;
         static common_proceduralTexture_fragment: GLSLChunk;
         static common_proceduralTexture_vertex: GLSLChunk;
