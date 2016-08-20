@@ -3,13 +3,25 @@ var uglify = require("gulp-uglify");
 var rename = require("gulp-rename");
 var distFilePath = "dist/wd.js";
 var destDirPath = "dist/";
+var pump = require("pump");
 
-gulp.task("compress", function () {
-    return gulp.src(distFilePath)
-        .pipe(uglify())
-        .pipe(rename({
+gulp.task("compress", function (cb) {
+    pump([
+            gulp.src(distFilePath),
+            uglify({
+                /*!
+                because clone.ts use ClassUtils.getClassName to find class name(exactly find the function name of the class), so the name shouldn't be mangle
+
+                //todo use closure compiler to compress!
+                 */
+                mangle:false
+            }),
+        rename({
             extname: '.min.js'
-        }))
-        .pipe(gulp.dest(destDirPath));
+        }),
+            gulp.dest(destDirPath)
+        ],
+        cb
+    );
 });
 
