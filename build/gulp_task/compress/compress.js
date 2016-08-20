@@ -14,7 +14,8 @@ gulp.task("compress", function (cb) {
 
                 //todo use closure compiler to compress!
                  */
-                mangle:false
+
+                mangle:{keep_fnames: true}
             }),
         rename({
             extname: '.min.js'
