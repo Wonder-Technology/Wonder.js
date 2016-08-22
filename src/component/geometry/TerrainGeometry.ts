@@ -6,6 +6,40 @@ module wd{
             return obj;
         }
 
+        private _rangeWidth:number = null;
+        @cloneAttributeAsBasicType()
+        get rangeWidth(){
+            if(this._rangeWidth !== null){
+                return this._rangeWidth;
+            }
+
+            if(this._heightMapImageDataCacheWidth !== null){
+                return this._heightMapImageDataCacheWidth * 4;
+            }
+
+            return 256;
+        }
+        set rangeWidth(rangeWidth:number){
+            this._rangeWidth = rangeWidth;
+        }
+
+        private _rangeHeight:number = null;
+        @cloneAttributeAsBasicType()
+        get rangeHeight(){
+            if(this._rangeHeight !== null){
+                return this._rangeHeight;
+            }
+
+            if(this._heightMapImageDataCacheHeight !== null){
+                return this._heightMapImageDataCacheHeight;
+            }
+
+            return 256;
+        }
+        set rangeHeight(rangeHeight:number){
+            this._rangeHeight = rangeHeight;
+        }
+
         @cloneAttributeAsCustomType(function(source:Geometry, target:Geometry, memberName:string){
             if(source[memberName]){
                 target[memberName] = ImageTextureAsset.create(source[memberName].source);
@@ -14,14 +48,6 @@ module wd{
         public heightMapAsset:ImageTextureAsset = null;
         @cloneAttributeAsBasicType()
         public subdivisions:number = 1;
-        @cloneAttributeAsCustomType(function(source:Geometry, target:Geometry, memberName:string){
-            target[memberName].width = source[memberName].width;
-            target[memberName].height = source[memberName].height;
-        })
-        public range:Range = {
-            width: 10,
-            height: 10
-        };
         @cloneAttributeAsBasicType()
         public minHeight:number = 0;
         @cloneAttributeAsBasicType()
@@ -84,8 +110,8 @@ module wd{
                 normals = [],
                 texCoords = [],
                 subdivisions = this.subdivisions,
-                width = this.range.width,
-                height = this.range.height,
+                width = this.rangeWidth,
+                height = this.rangeHeight,
                 heightCache = this._heightCache;
 
             for (let row = 0; row <= subdivisions; row++) {
@@ -118,14 +144,14 @@ module wd{
 
         private _computeHeightMapCol(x:number){
             var heightMapImageDataWidth = this._heightMapImageDataCacheWidth,
-                width = this.range.width;
+                width = this.rangeWidth;
 
             return Math.floor((((x + width / 2) / width) * (heightMapImageDataWidth - 1)));
         }
 
         private _computeHeightMapRow(z:number){
             var heightMapImageDataHeight = this._heightMapImageDataCacheHeight,
-                height = this.range.height;
+                height = this.rangeHeight;
 
             return Math.floor(((1.0 - (z + height / 2) / height) * (heightMapImageDataHeight - 1)));
         }
@@ -165,10 +191,5 @@ module wd{
 
             return indices;
         }
-    }
-
-    export type Range = {
-        width:number;
-        height:number;
     }
 }

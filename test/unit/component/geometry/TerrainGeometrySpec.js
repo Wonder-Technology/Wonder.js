@@ -44,10 +44,8 @@ describe("TerrainGeometry", function() {
                 }, function(){
 
                     geo.subdivisions = 3;
-                    geo.range = {
-                        width:100,
-                        height:100
-                    };
+                    geo.rangeWidth = 100;
+                    geo.rangeHeight = 100;
                     geo.heightMapAsset = wd.LoaderManager.getInstance().get("heightMap");
 
 
@@ -129,10 +127,8 @@ describe("TerrainGeometry", function() {
 
             beforeEach(function(){
                 geo.subdivisions = 100;
-                geo.range = {
-                    width: 100,
-                    height: 100
-                };
+                geo.rangeWidth = 100;
+                geo.rangeHeight = 100;
                 geo.minHeight = 0;
                 geo.maxHeight = 50;
             });
@@ -242,17 +238,19 @@ describe("TerrainGeometry", function() {
             expect(result.heightMapAsset.source === source).toBeTruthy();
         });
         it("clone range", function () {
-            var range = {width: 20, height: 50};
+            var rangeWidth = 20,
+                rangeHeight = 50;
 
 
             cloneTool.extend(geo, {
-                range: range
+                rangeWidth:rangeWidth,
+                rangeHeight:rangeHeight
             })
 
             var result = geo.clone();
 
-            expect(result.range === geo.range).toBeFalsy();
-            expect(result.range).toEqual(range);
+            expect(result.rangeWidth).toEqual(rangeWidth);
+            expect(result.rangeHeight).toEqual(rangeHeight);
         });
         it("clone data", function(){
             var subdivisions = 10,
