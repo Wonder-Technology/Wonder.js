@@ -1,4 +1,3 @@
-/// <reference path="../../../node_modules/wdcb/dist/wdCb.node.d.ts"/>
 import wdCb = require("wdcb");
 import Log = require("../common/Log");
 import Vector2 = require("../common/Vector2");
@@ -51,8 +50,7 @@ export = class MD2ObjectsConverter {
         uvs = this._convertUVs(header, reader);
 
         //todo get texture name?
-        //// texture name
-        //var textureName = null;
+                //var textureName = null;
         //reader.seek(header.offset_skins);
         //
         //textureName = reader.readString(header.num_skins);

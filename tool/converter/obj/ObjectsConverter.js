@@ -1,4 +1,3 @@
-/// <reference path="../../../node_modules/wdcb/dist/wdCb.node.d.ts"/>
 var wdCb = require("wdcb");
 var Vector2 = require("../common/Vector2");
 var Vector3 = require("../common/Vector3");

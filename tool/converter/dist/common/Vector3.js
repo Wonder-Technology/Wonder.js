@@ -159,4 +159,4 @@ module.exports = (function () {
     Vector3.forward = Vector3.create(0, 0, 1);
     Vector3.right = Vector3.create(1, 0, 0);
     return Vector3;
-})();
+}());

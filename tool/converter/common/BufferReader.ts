@@ -107,8 +107,7 @@ export = class BufferReader {
     }
     //
     //
-    ///* Private */
-    //
+        //
     //private _decodeFloat(precisionBits, exponentBits) {
     //
     //    return this._decodeFloat2(precisionBits, exponentBits);
@@ -146,8 +145,7 @@ export = class BufferReader {
     //        : Math.pow(2, exponent - bias) * (1 + significand) : 0);
     //}
     //
-    //// I added this because _decodeFloat gave me some real inaccuarate results? -Terry Butler
-    //private _decodeFloat2(precisionBits, exponentBits) {
+        //private _decodeFloat2(precisionBits, exponentBits) {
     //    var length = precisionBits + exponentBits + 1;
     //    var value = this._decodeInt(length);
     //
@@ -206,8 +204,7 @@ export = class BufferReader {
     //    return result;
     //}
     //
-    ////shl fix: Henri Torgemane ~1996 (compressed by Jonas Raoni)
-    //private _shl(a, b) {
+        //private _shl(a, b) {
     //    for (++b; --b; a = ((a %= 0x7fffffff + 1) & 0x40000000) == 0x40000000 ? a * 2 : (a - 0x40000000) * 2 + 0x7fffffff + 1);
     //    return a;
     //}

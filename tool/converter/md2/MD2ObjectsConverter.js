@@ -1,4 +1,3 @@
-/// <reference path="../../../node_modules/wdcb/dist/wdCb.node.d.ts"/>
 var wdCb = require("wdcb");
 var Vector3 = require("../common/Vector3");
 var BufferReader = require("../common/BufferReader");
@@ -38,8 +37,7 @@ module.exports = (function () {
         }
         uvs = this._convertUVs(header, reader);
         //todo get texture name?
-        //// texture name
-        //var textureName = null;
+                //var textureName = null;
         //reader.seek(header.offset_skins);
         //
         //textureName = reader.readString(header.num_skins);

@@ -1,4 +1,3 @@
-/// <reference path="../../../node_modules/wdcb/dist/wdCb.node.d.ts"/>
 import wdCb = require("wdcb");
 import path = require("path");
 

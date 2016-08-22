@@ -55,4 +55,4 @@ module.exports = (function () {
         return path.join(destDir, path.relative(sourceDir, sourceFilePath));
     };
     return Converter;
-})();
+}());

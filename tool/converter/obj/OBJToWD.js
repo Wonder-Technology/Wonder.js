@@ -1,4 +1,3 @@
-/// <reference path="../../../node_modules/wdfrp/dist/wdFrp.node.d.ts"/>
 var fs = require("fs");
 var through = require("through2");
 var gutil = require("gulp-util");

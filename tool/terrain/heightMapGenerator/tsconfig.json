@@ -14,7 +14,8 @@
 		"../../../node_modules/wdcb/dist/wdCb.node.d.ts",
 		"../../../node_modules/wdfrp/dist/wdFrp.node.d.ts",
 
-		"./dts/node.d.ts",
+		"../../dts/node.d.ts",
+
 		"./dts/node-canvas.d.ts",
 
 		"./src/Fault.ts",

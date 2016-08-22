@@ -33,4 +33,4 @@ module.exports = (function () {
         return this._objectsConverter.convert(fileBuffer, filePath);
     };
     return MD2ToWD;
-})();
+}());

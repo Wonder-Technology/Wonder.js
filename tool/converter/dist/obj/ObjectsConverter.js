@@ -20,7 +20,7 @@ var ObjectModel = (function () {
         return obj;
     };
     return ObjectModel;
-})();
+}());
 module.exports = (function () {
     function ObjectsConverter() {
         this.objects = wdCb.Collection.create();
@@ -161,4 +161,4 @@ module.exports = (function () {
         getTriangles(1);
     };
     return ObjectsConverter;
-})();
+}());

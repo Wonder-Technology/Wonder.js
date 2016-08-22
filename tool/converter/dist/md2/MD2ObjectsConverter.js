@@ -90,4 +90,4 @@ module.exports = (function () {
         return morphTargets[0].vertices;
     };
     return MD2ObjectsConverter;
-})();
+}());

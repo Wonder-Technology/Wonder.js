@@ -5,7 +5,6 @@
 
 // Imported from: https://github.com/soywiz/typescript-node-definitions/fs-extra.d.ts
 
-/// <reference path="node.d.ts" />
 
 declare module "fs-extra" {
     import stream = require("stream");

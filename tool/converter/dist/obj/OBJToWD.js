@@ -71,4 +71,4 @@ module.exports = (function () {
         return this._materialsConverter.convert(mtlFileContent);
     };
     return OBJToWD;
-})();
+}());

@@ -1,0 +1,41 @@
+{
+	"compilerOptions": {
+		"target": "es5",
+		"module": "commonjs",
+		"noImplicitAny": false,
+		"sourceMap": false,
+		"declaration": false,
+		"noEmitOnError": true,
+		"removeComments": true,
+		"rootDir":"./",
+		"experimentalDecorators": true
+	},
+	"files": [
+		"../../node_modules/wdcb/dist/wdCb.node.d.ts",
+		"../../node_modules/wdfrp/dist/wdFrp.node.d.ts",
+
+		"../dts/node.d.ts",
+
+		"./dts/chalk.d.ts",
+		"./dts/fs-extra.d.ts",
+		"./dts/gulp-util.d.ts",
+		"./dts/through2.d.ts",
+		"./dts/vinyl.d.ts",
+
+		"./common/BufferReader.ts",
+		"./common/Config.ts",
+		"./common/Log.ts",
+		"./common/ModelLoaderUtils.ts",
+		"./common/Vector2.ts",
+		"./common/Vector3.ts",
+
+		"./md2/MD2ToWD.ts",
+		"./md2/MD2ObjectsConverter.ts",
+
+		"./obj/MaterialsConverter.ts",
+		"./obj/ObjectsConverter.ts",
+		"./obj/OBJToWD.ts",
+
+		"./Converter.ts"
+	]
+}

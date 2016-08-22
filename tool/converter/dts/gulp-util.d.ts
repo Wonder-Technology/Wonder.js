@@ -3,10 +3,6 @@
 // Definitions by: jedmao <https://github.com/jedmao>
 // Definitions: https://github.com/borisyankov/DefinitelyTyped
 
-/// <reference path="node.d.ts" />
-/// <reference path="vinyl.d.ts" />
-/// <reference path="chalk.d.ts" />
-/// <reference path="through2.d.ts" />
 
 declare module 'gulp-util' {
 

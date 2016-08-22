@@ -1,5 +1,3 @@
-/// <reference path="../../node_modules/wdfrp/dist/wdFrp.node.d.ts"/>
-/// <reference path="../../node_modules/wdcb/dist/wdCb.node.d.ts"/>
 import fs = require("fs-extra");
 import path = require("path");
 import through = require("through2");

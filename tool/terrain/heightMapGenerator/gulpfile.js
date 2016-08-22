@@ -78,13 +78,10 @@ function parseOption(name) {
 }
 
 
-var distDir = "./dist/";
+var distDir = path.join(__dirname, "./dist/");
 
 var tsconfigFile = [
     "./tsconfig.json"
-];
-var tsFilePaths = [
-    "**/*.ts"
 ];
 
 gulp.task("compileTs", function () {
@@ -94,7 +91,7 @@ gulp.task("compileTs", function () {
 
     var tsResult = tsProject.src()
         .pipe(gulpTs(tsProject))
-        .pipe(gulp.dest(path.join(__dirname, distDir)));
+        .pipe(gulp.dest(distDir));
 
     return tsResult;
 });
@@ -107,10 +104,7 @@ gulp.task("clean", function () {
 });
 
 
-gulp.task("build", gulpSync.sync(["clean", "compileTs"]));
+require("../../gulp_task/common");
 
 
-gulp.task("watch", function () {
-    gulp.watch(tsFilePaths, ["build"]);
-});
 

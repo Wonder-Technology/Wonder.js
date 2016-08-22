@@ -11,4 +11,4 @@ module.exports = (function () {
         return wdCb.PathUtils.basename(filePath, wdCb.PathUtils.extname(filePath));
     };
     return ModelLoaderUtils;
-})();
+}());

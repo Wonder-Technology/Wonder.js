@@ -1,4 +1,3 @@
-/// <reference path="../../../node_modules/wdcb/dist/wdCb.node.d.ts"/>
 var wdCb = require("wdcb");
 var path = require("path");
 module.exports = (function () {

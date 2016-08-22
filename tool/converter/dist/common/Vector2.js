@@ -42,4 +42,4 @@ module.exports = (function () {
         this.y = y;
     };
     return Vector2;
-})();
+}());

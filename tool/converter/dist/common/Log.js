@@ -18,4 +18,4 @@ module.exports = (function (_super) {
         console.log.apply(console, messages);
     };
     return Log;
-})(wdCb.Log);
+}(wdCb.Log));

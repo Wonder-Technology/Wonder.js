@@ -52,41 +52,30 @@ function parseOption(name) {
 }
 
 
-var tsFilePaths = [
-    "*.ts",
-    "**/*.ts"
+var distDir = path.join(__dirname, "./dist/");
+
+var tsconfigFile = [
+    "./tsconfig.json"
 ];
-var distPath = "./dist/";
 
 gulp.task("compileTs", function () {
-    return gulp.src(tsFilePaths)
-        .pipe(gulpTs({
-            "experimentalDecorators": true,
-            "emitDecoratorMetadata": true,
-            "declaration": false,
-            "removeComments": true,
-            "preserveConstEnums": true,
-            "suppressImplicitAnyIndexErrors": true,
-            target: "ES5",
-            module: "commonjs",
-            noEmitOnError: true,
-            typescript: require("typescript")
-        }))
-        .pipe(gulp.dest("./dist"));
+    var tsProject = gulpTs.createProject(path.join(process.cwd(), tsconfigFile[0]), {
+        typescript: require('typescript')
+    });
+
+    var tsResult = tsProject.src()
+        .pipe(gulpTs(tsProject))
+        .pipe(gulp.dest(distDir));
+
+    return tsResult;
 });
 
 
 gulp.task("clean", function () {
-    return del.sync([distPath], {
+    return del.sync([distDir], {
         force: true
     });
 });
 
-
-gulp.task("build", gulpSync.sync(["clean", "compileTs"]));
-
-
-gulp.task("watch", function () {
-    gulp.watch(tsFilePaths, ["build"]);
-});
+require("../gulp_task/common");
 

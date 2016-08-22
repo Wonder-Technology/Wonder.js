@@ -1,9 +1,4 @@
 "use strict";
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var Log = require("../common/Log");
 var wdCb = require("wdcb");
 var MaterialModel = (function () {
@@ -22,7 +17,7 @@ var MaterialModel = (function () {
         return obj;
     };
     return MaterialModel;
-})();
+}());
 module.exports = (function () {
     function MaterialsConverter() {
         this.materials = wdCb.Collection.create();
@@ -112,4 +107,4 @@ module.exports = (function () {
         this._currentMaterial[colorType] = colorStrArr;
     };
     return MaterialsConverter;
-})();
+}());

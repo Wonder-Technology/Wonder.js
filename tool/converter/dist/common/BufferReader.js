@@ -55,4 +55,4 @@ module.exports = (function () {
         return this._buffer.length;
     };
     return BufferReader;
-})();
+}());
