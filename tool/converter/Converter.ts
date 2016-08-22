@@ -21,7 +21,7 @@ export = class Converter {
     public extname:string = ".wd";
 
     public initWhenCreate(){
-        this.version = fs.readJsonSync(path.join(__dirname, "../../../package.json")).version;
+        this.version = fs.readJsonSync(path.join(__dirname, "../../../../package.json")).version;
     }
 
     public convert(fileBuffer:Buffer, filePath:string):wdFrp.Stream {

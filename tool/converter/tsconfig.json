@@ -5,9 +5,9 @@
 		"noImplicitAny": false,
 		"sourceMap": false,
 		"declaration": false,
-		"noEmitOnError": true,
+		"noEmitOnError": false,
 		"removeComments": true,
-		"rootDir":"./",
+		"rootDir":"../",
 		"experimentalDecorators": true
 	},
 	"files": [
@@ -15,6 +15,10 @@
 		"../../node_modules/wdfrp/dist/wdFrp.node.d.ts",
 
 		"../dts/node.d.ts",
+
+		"../ts/Vector2.ts",
+		"../ts/Vector3.ts",
+
 
 		"./dts/chalk.d.ts",
 		"./dts/fs-extra.d.ts",
@@ -26,8 +30,6 @@
 		"./common/Config.ts",
 		"./common/Log.ts",
 		"./common/ModelLoaderUtils.ts",
-		"./common/Vector2.ts",
-		"./common/Vector3.ts",
 
 		"./md2/MD2ToWD.ts",
 		"./md2/MD2ObjectsConverter.ts",

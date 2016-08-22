@@ -7,7 +7,7 @@
 		"declaration": false,
 		"noEmitOnError": true,
 		"removeComments": true,
-		"rootDir":"./",
+		"rootDir":"../../",
 		"experimentalDecorators": true
 	},
 	"files": [
@@ -15,6 +15,10 @@
 		"../../../node_modules/wdfrp/dist/wdFrp.node.d.ts",
 
 		"../../dts/node.d.ts",
+
+		"../../ts/Vector2.ts",
+		"../../ts/Vector3.ts",
+
 
 		"./dts/node-canvas.d.ts",
 

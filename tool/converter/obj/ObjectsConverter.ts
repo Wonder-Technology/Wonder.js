@@ -1,7 +1,7 @@
 import wdCb = require("wdcb");
 import Log = require("../common/Log");
-import Vector2 = require("../common/Vector2");
-import Vector3 = require("../common/Vector3");
+import Vector2 = require("../../ts/Vector2");
+import Vector3 = require("../../ts/Vector3");
 import ModelLoaderUtils = require("../common/ModelLoaderUtils");
 
 //todo handle x,y,z,w case?

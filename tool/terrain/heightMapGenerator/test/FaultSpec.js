@@ -1,4 +1,4 @@
-var Fault = require("../dist/src/Fault").Fault,
+var Fault = require("../dist/terrain/heightMapGenerator/src/Fault").Fault,
     sinon = require("sinon");
 
 describe("Fault", function () {
