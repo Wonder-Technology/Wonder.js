@@ -16,7 +16,14 @@ export = class Generator{
     }
 
     public generateHeightMap(method:string, iterationCount:number, width:number, height:number, smoothLevel:number, destDir:string){
-        var generator:IHeightComputer = null;
+        var generator:IHeightComputer = null,
+            canvasSize = this._computeCanvasSize(width, height),
+            canvas:any = new Canvas(canvasSize.width, canvasSize.height),
+            ctx = canvas.getContext('2d'),
+            imageData = ctx.createImageData(canvasSize.width, canvasSize.height),
+            pixels = imageData.data,
+            heightData:Array<number> = null,
+            outStream:any = null;
 
         switch (method){
             case "fault":
@@ -26,80 +33,26 @@ export = class Generator{
                 throw new Error(`unknow method:${method}`);
         }
 
-        //var Image = Canvas.Image,
-        //    canvas = new Canvas(width, height);
-
-        //var buffer = canvas.toBuffer();
-        //
-        //console.log(buffer);
-        //
-        //var heightData = generator.generateHeightData(width, height, iterationCount, smoothLevel)
-
-        //todo finish!
-
-
-
-
-        var canvasSize = this._computeCanvasSize(width, height);
-
-
-        var canvas:any = new Canvas(canvasSize.width, canvasSize.height);
-        var ctx = canvas.getContext('2d');
-
-
-        var imageData = ctx.createImageData(canvasSize.width, canvasSize.height);
-
-        var pixels = imageData.data;
-
-
-
-
-
-
-        //var heightComputer = HeightComputer.create();
-
-        var heightData = generator.generateHeightData(width, height, iterationCount, smoothLevel);
-
-        heightData = this._convertHeightToRGBAValue(heightData);
-
+        heightData = this._convertHeightToRGBAValue(
+            generator.generateHeightData(width, height, iterationCount, smoothLevel)
+        );
 
         if (heightData.length !== pixels.length) {
             throw new Error("error:  pixels.length:" + pixels.length + " !== " + "heightData.length:" + heightData.length);
         }
 
-        for (var i = 0, len = pixels.length; i < len; i++) {
+        for (let i = 0, len = pixels.length; i < len; i++) {
             pixels[i] = heightData[i];
         }
 
         ctx.putImageData(imageData, 0, 0);
 
-        //return canvas.createPNGStream().pipe(fs.createWriteStream(path.join(destDir, "heightMap_" + method + "_" + iterationCount + "_" + canvasSize.width + "_" + canvasSize.height + "_" + smoothLevel + ".png")));
-
-
-
-        var out = fs.createWriteStream(path.join(destDir, "heightMap_" + method + "_" + iterationCount + "_" + canvasSize.width + "_" + canvasSize.height + "_" + smoothLevel + ".png"));
-            //stream = canvas.pngStream();
-
+        outStream = fs.createWriteStream(path.join(destDir, "heightMap_" + method + "_" + iterationCount + "_" + canvasSize.width + "_" + canvasSize.height + "_" + smoothLevel + ".png"));
 
         return wdFrp.fromStream(canvas.pngStream())
         .do((chunk) => {
-            console.log("write");
-            out.write(chunk);
-        })
-
-
-
-        //stream.on('data', function(chunk){
-        //    console.log("write");
-        //    out.write(chunk);
-        //});
-
-
-        //stream.on('end', function(){
-        //    console.log('saved png');
-        //});
-
-        //return stream;
+            outStream.write(chunk);
+        });
     }
 
     private _computeCanvasSize(width:number, height:number){
@@ -117,8 +70,6 @@ export = class Generator{
         var maxHeight = -Infinity,
             minHeight = Infinity;
 
-        //console.log(heightData)
-
         for (var i = 0, len = heightData.length; i < len; i++) {
             var height = heightData[i];
 
@@ -129,8 +80,6 @@ export = class Generator{
                 minHeight = height;
             }
         }
-
-        //console.log(minHeight, maxHeight)
 
         var val = maxHeight - minHeight;
 

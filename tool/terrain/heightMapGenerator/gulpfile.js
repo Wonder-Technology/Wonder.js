@@ -51,13 +51,12 @@ gulp.task("generateHeightMap", function (done) {
     wdFrp.fromArray([
        fs.removeSync(destDir),
        fs.mkdirsSync(destDir)
-            //generator.generateHeightMap(method, iterationCount, width, height, smoothLevel, destDir)
     ])
         .concat(
     generator.generateHeightMap(method, iterationCount, width, height, smoothLevel, destDir)
         )
         .subscribe(function (data) {
-            console.log("data", data);
+            //console.log("data", data);
         }, function (e) {
             console.log("error:", e);
             done();
@@ -65,48 +64,6 @@ gulp.task("generateHeightMap", function (done) {
             console.log("completed");
             done();
         });
-
-
-    //wdFrp.fromArray([
-    //    //wdFrp.fromNodeCallback(fs.remove)(destDir),
-    //    //wdFrp.fromNodeCallback(fs.mkdirs)(destDir)
-    //    //1,
-    //    //2
-    //])
-    //    .concat(
-    //        wdFrp.fromReadableStream(
-    //            generator.generateHeightMap(method, iterationCount, width, height, smoothLevel, destDir)
-    //        )
-    //    )
-    //    .subscribe(function (data) {
-    //        console.log("data", data);
-    //    }, function (e) {
-    //        console.log("error:", e);
-    //        done();
-    //    }, function () {
-    //        console.log("completed");
-    //        done();
-    //    });
-
-
-    //wdFrp.fromNodeCallback(fs.remove)(destDir)
-    //    .concat(
-    //        //wdFrp.fromNodeCallback(fs.mkdirs)(destDir),
-    //        wdFrp.fromReadableStream(
-    //            generator.generateHeightMap(method, iterationCount, width, height, smoothLevel, destDir)
-    //        )
-    //    )
-    //    .concatAll()
-    //    .subscribe(function (data) {
-    //        console.log("data", data);
-    //    }, function (e) {
-    //        console.log("error:", e);
-    //        done();
-    //    }, function () {
-    //        console.log("completed");
-    //        done();
-    //    });
-
 });
 
 function parseOption(name) {
@@ -127,9 +84,7 @@ var tsconfigFile = [
     "./tsconfig.json"
 ];
 var tsFilePaths = [
-    //"**/*.ts"
-    "src/*.ts",
-    "*.ts"
+    "**/*.ts"
 ];
 
 gulp.task("compileTs", function () {
