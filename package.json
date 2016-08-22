@@ -7,6 +7,7 @@
     "codecov": "cat test/coverage/*/lcov.info | codecov"
   },
   "devDependencies": {
+    "canvas": "^1.4.0",
     "codecov.io": "^0.1.6",
     "del": "^1.2.0",
     "express": "^4.13.3",
@@ -41,6 +42,6 @@
     "vinyl": "^0.4.6",
     "vinyl-bufferstream": "^1.0.1",
     "wdcb": "^0.1.1",
-    "wdfrp": "^0.1.2"
+    "wdfrp": "^0.1.3"
   }
 }

@@ -1,0 +1,26 @@
+{
+	"compilerOptions": {
+		"target": "es5",
+		"module": "commonjs",
+		"noImplicitAny": false,
+		"sourceMap": false,
+		"declaration": false,
+		"noEmitOnError": true,
+		"removeComments": true,
+		"moduleResolution":"node",
+		"rootDir":"./",
+		"experimentalDecorators": true
+	},
+	"files": [
+		"./dts/node.d.ts",
+		"./dts/node-canvas.d.ts",
+
+		"../../../test/wdCb.node.d.ts",
+		"../../../test/wdFrp.node.d.ts",
+
+
+		"./src/Fault.ts",
+
+		"./Generator.ts"
+	]
+}
