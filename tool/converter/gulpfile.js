@@ -20,6 +20,7 @@ gulp.task("convert", function (done) {
     wdFrp.fromNodeCallback(fs.remove)(destDir)
         .concat(
             wdFrp.fromStream(gs.create([path.join(sourceDir, "*"), path.join(sourceDir, "**")], {nodir: true}))
+                //todo use concatMap?
                 .flatMap(function (data) {
                     return wdFrp.fromNodeCallback(fs.readFile)(data.path)
                         .flatMap(function (fileBuffer) {

@@ -1,5 +1,5 @@
-/// <reference path="../../node_modules/wdfrp/dist/wdFrp.node.d.ts"/>
-/// <reference path="../../node_modules/wdcb/dist/wdCb.node.d.ts"/>
+/// <reference path="../../../node_modules/wdfrp/dist/wdFrp.node.d.ts"/>
+/// <reference path="../../../node_modules/wdcb/dist/wdCb.node.d.ts"/>
 import fs = require("fs");
 import path = require("path");
 import wdFrp = require("wdfrp");

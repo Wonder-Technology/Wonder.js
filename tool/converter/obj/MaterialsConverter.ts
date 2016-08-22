@@ -1,4 +1,4 @@
-/// <reference path="../../node_modules/wdcb/dist/wdCb.node.d.ts"/>
+/// <reference path="../../../node_modules/wdcb/dist/wdCb.node.d.ts"/>
 import Log = require("../common/Log");
 import wdCb = require("wdcb");
 

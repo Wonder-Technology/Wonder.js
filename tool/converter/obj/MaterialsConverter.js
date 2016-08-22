@@ -1,4 +1,4 @@
-/// <reference path="../../node_modules/wdcb/dist/wdCb.node.d.ts"/>
+/// <reference path="../../../node_modules/wdcb/dist/wdCb.node.d.ts"/>
 var wdCb = require("wdcb");
 var MaterialModel = (function () {
     function MaterialModel() {
