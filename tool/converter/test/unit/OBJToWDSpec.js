@@ -20,8 +20,8 @@ describe("OBJToWD", function () {
         sandbox.restore();
     });
     beforeAll(function () {
-        filePath1 = path.join(process.cwd(), "converter/test/res/test.obj");
-        filePath2 = path.join(process.cwd(), "converter/test/res/test2.obj");
+        filePath1 = path.join(process.cwd(), "tool/converter/test/res/test.obj");
+        filePath2 = path.join(process.cwd(), "tool/converter/test/res/test2.obj");
 
         testFile = fs.readFileSync(filePath1);
         testFile2 = fs.readFileSync(filePath2);
@@ -144,7 +144,7 @@ describe("OBJToWD", function () {
                     }
                 }
             );
-            filePath1 = path.join(process.cwd(), "converter/test/res/test.obj");
+            filePath1 = path.join(process.cwd(), "tool/converter/test/res/test.obj");
 
             expect(resourceUrlArr).toEqual(
                 [

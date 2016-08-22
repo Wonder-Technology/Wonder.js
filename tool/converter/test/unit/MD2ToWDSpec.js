@@ -21,8 +21,8 @@ describe("MD2ToWD", function () {
         sandbox.restore();
     });
     beforeAll(function () {
-        filePath1 = path.join(process.cwd(), "converter/test/res/md2/cube.md2");
-        //filePath2 = path.join(process.cwd(), "converter/test/res/test2.obj");
+        filePath1 = path.join(process.cwd(), "tool/converter/test/res/md2/cube.md2");
+        //filePath2 = path.join(process.cwd(), "tool/converter/test/res/test2.obj");
 
         testFile = fs.readFileSync(filePath1);
         //testFile2 = fs.readFileSync(filePath2);

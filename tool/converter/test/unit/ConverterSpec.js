@@ -23,9 +23,9 @@ describe("Converter", function () {
         var sourceDir;
 
         beforeEach(function () {
-            sourceDir = path.join(process.cwd(), "converter/test/");
-            testPath1 = path.join(process.cwd(), "converter/test/res/test.obj");
-            testPath2 = path.join(process.cwd(), "converter/test/res/test2.obj");
+            sourceDir = path.join(process.cwd(), "tool/converter/test/");
+            testPath1 = path.join(process.cwd(), "tool/converter/test/res/test.obj");
+            testPath2 = path.join(process.cwd(), "tool/converter/test/res/test2.obj");
         });
         beforeAll(function () {
             testFile = fs.readFileSync(testPath1);
@@ -44,7 +44,7 @@ describe("Converter", function () {
         }
 
         it("convert one file, get the .wd file and relative resource files", function (done) {
-            var destDir = path.join(process.cwd(), "converter/test/dest_forTest");
+            var destDir = path.join(process.cwd(), "tool/converter/test/dest_forTest");
             converter.write(converter.convert(testFile, testPath1), sourceDir, destDir, testPath1)
                 .subscribe(function (data) {
                     console.log(data)
@@ -53,7 +53,7 @@ describe("Converter", function () {
                     var resultJson = readJSON(resultFilePath);
 
                     expect(resultJson.metadata).toEqual({
-                        formatVersion: "0.1.0",
+                        formatVersion: jasmine.any(String),
                         description: '',
                         sourceFile: testPath1,
                         generatedBy: "OBJToWD"
@@ -69,7 +69,7 @@ describe("Converter", function () {
         });
 
         it("convert multi files, get the .wd file and relative resource files", function (done) {
-            var destDir = path.join(process.cwd(), "converter/test/dest_forTest");
+            var destDir = path.join(process.cwd(), "tool/converter/test/dest_forTest");
             converter.write(converter.convert(testFile, testPath1), sourceDir, destDir, testPath1)
                 .merge(
                     converter.write(converter.convert(testFile2, testPath2), sourceDir, destDir, testPath2)

@@ -15,7 +15,7 @@ module.exports = (function () {
         return obj;
     };
     Converter.prototype.initWhenCreate = function () {
-        this.version = fs.readJsonSync(path.join(__dirname, "../../package.json")).version;
+        this.version = fs.readJsonSync(path.join(__dirname, "../../../package.json")).version;
     };
     Converter.prototype.convert = function (fileBuffer, filePath) {
         var fileExtname = path.extname(filePath), result = null;
