@@ -77,32 +77,6 @@ function parseOption(name) {
 }
 
 
-var distDir = path.join(__dirname, "./dist/");
-
-var tsconfigFile = [
-    "./tsconfig.json"
-];
-
-gulp.task("compileTs", function () {
-    var tsProject = gulpTs.createProject(path.join(process.cwd(), tsconfigFile[0]), {
-        typescript: require('typescript')
-    });
-
-    var tsResult = tsProject.src()
-        .pipe(gulpTs(tsProject))
-        .pipe(gulp.dest(distDir));
-
-    return tsResult;
-});
-
-
-gulp.task("clean", function () {
-    return del.sync([distDir], {
-        force: true
-    });
-});
-
-
 require("../../gulp_task/common");
 
 
