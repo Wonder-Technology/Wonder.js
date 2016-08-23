@@ -4,7 +4,6 @@ var fs = require("fs-extra");
 var gulpTs = require("gulp-typescript");
 var merge = require("merge2");
 var del = require("del");
-var gulpSync = require("gulp-sync")(gulp);
 var wdFrp = require("wdfrp");
 var path = require("path");
 
@@ -27,7 +26,7 @@ gulp.task("generateHeightMap", function (done) {
     destDir = path.join(__dirname, destDir);
 
     /*!
-    why
+    //todo why
     wdFrp.fromArray([
        wdFrp.fromNodeCallback(fs.remove)(destDir),
        wdFrp.fromNodeCallback(fs.mkdirs)(destDir),

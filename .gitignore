@@ -8,6 +8,8 @@ src/*.js.map
 src/*.js
 src/**/*.js.map
 src/**/*.js
+test/**/*.js.map
+test/**/*.js
 converter/*.js.map
 converter/*.js
 converter/**/*.js.map
