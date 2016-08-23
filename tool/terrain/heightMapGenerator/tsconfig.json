@@ -15,6 +15,7 @@
 		"../../../node_modules/wdfrp/dist/wdFrp.node.d.ts",
 
 		"../../dts/node.d.ts",
+		"../../dts/commonTs.d.ts",
 
 		"../../ts/Vector2.ts",
 		"../../ts/Vector3.ts",
@@ -23,6 +24,7 @@
 		"./dts/node-canvas.d.ts",
 
 		"./src/Fault.ts",
+		"./src/MDP.ts",
 
 		"./Generator.ts"
 	]

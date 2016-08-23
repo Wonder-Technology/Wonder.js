@@ -1,3 +1,3 @@
 export interface IHeightComputer{
-    generateHeightData(width:number, height:number, iterationCount:number, smoothLevel:number):Array<number>;
+    generateHeightData(width:number, height:number, ...args):Array<number>;
 }

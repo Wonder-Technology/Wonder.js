@@ -47,4 +47,8 @@ export = class Vector2 {
         this.x = x;
         this.y = y;
     }
+
+    public clone(){
+        return Vector2.create(this.x, this.y);
+    }
 }
