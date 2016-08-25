@@ -2,6 +2,7 @@ import {IHeightComputer} from "./src/IHeightComputer";
 
 import Canvas = require("canvas");
 import Fault = require("./src/Fault");
+import MDP = require("./src/MDP");
 import fs = require("fs");
 import path = require("path");
 import wdFrp = require("wdfrp");
@@ -28,6 +29,9 @@ export = class Generator{
         switch (method){
             case "fault":
                 generator = Fault.Fault.create();
+                break;
+            case "mdp":
+                generator = MDP.MDP.create();
                 break;
             default:
                 throw new Error(`unknow method:${method}`);

@@ -19,6 +19,9 @@
 
 		"../../ts/Vector2.ts",
 		"../../ts/Vector3.ts",
+		"../../ts/JudgeUtils.ts",
+
+		"../../ts/test/TestTool.ts",
 
 
 		"./dts/node-canvas.d.ts",

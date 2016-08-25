@@ -2,6 +2,7 @@ import {IHeightComputer} from "./IHeightComputer";
 
 import Vector2 = require("../../../ts/Vector2");
 
+//todo why width,height must be a power of two?(now i don't limit it!)
 export class MDP implements IHeightComputer{
     public static create() {
     	var obj = new this();
@@ -14,18 +15,16 @@ export class MDP implements IHeightComputer{
     private _width:number = null;
     private _height:number = null;
 
-    public generateHeightData(width:number, height:number,displacement:number, roughness:number, isWrap:boolean):Array<number>{
+    /*!
+    refer to http://www.lighthouse3d.com/opengl/terrain/index.php?mpd2:
+    1. not consider wrap case
+    2. when compute mid points' height, only consider the center of its grid, not consider the center of its right grid!
+     */
+    public generateHeightData(width:number, height:number,displacement:number = 5, roughness:number = 1):Array<number>{
         var inital_height:number = null,
             heightDataArr = this._heightDataArr;
 
-        if(isWrap){
-            inital_height = 0;
-        }
-        else{
-            //todo set different value in different point when not wrap?
-
-            inital_height = 0;
-        }
+        inital_height = 0;
 
         this._displacement = displacement;
         this._width = width;
@@ -53,21 +52,18 @@ export class MDP implements IHeightComputer{
             centerPoint = this._findCenterPoint(cornerPointData);
 
             if(centerPoint === null){
-                break;
+                continue;
             }
 
             heightDataArr[this._buildHeightDataIndex(centerPoint.y, centerPoint.x)] = this._computeCenterPointHeight(cornerPointData);
 
             midPointData = this._findMidPoints(cornerPointData, centerPoint);
 
-            if(isWrap){
-                this._computeAndSetWrapMidPointsHeight(cornerPointData, centerPoint, midPointData);
-            }
-            else{
-                this._computeAndSetNoWrapMidPointsHeight(cornerPointData, centerPoint, midPointData);
-            }
+            this._computeAndSetNoWrapMidPointsHeight(cornerPointData, centerPoint, midPointData);
 
             cornerPointDataArr = cornerPointDataArr.concat(this._buildCornerPointData(cornerPointData, centerPoint, midPointData));
+
+            this._displacement *= 2 ** -roughness;
         }
 
         return heightDataArr;
@@ -90,10 +86,6 @@ export class MDP implements IHeightComputer{
         }
     }
 
-    private _findCornerPoints(){
-
-    }
-
     //todo assert CornerPointData
     private _findCenterPoint({
         leftUpPoint,
@@ -101,10 +93,13 @@ export class MDP implements IHeightComputer{
         rightBottomPoint,
         leftBottomPoint
         }):Vector2{
-        var x = (rightUpPoint.x - leftUpPoint.x) / 2 + leftUpPoint.x,
-            y = (leftUpPoint.y - leftBottomPoint.y) / 2 + leftBottomPoint.y;
+        var x:number = null,
+            y:number = null;
 
-        if(x <= leftUpPoint.x || y <= leftBottomPoint.y){
+        x = Math.floor((rightUpPoint.x - leftUpPoint.x) / 2) + leftUpPoint.x;
+        y = Math.floor((leftUpPoint.y - leftBottomPoint.y) / 2) + leftBottomPoint.y;
+
+        if(x === leftUpPoint.x && y === leftBottomPoint.y){
             return null;
         }
 
@@ -117,7 +112,7 @@ export class MDP implements IHeightComputer{
         rightBottomPoint,
         leftBottomPoint
         }){
-        var heightDataArr = this._heightDataArr;
+        //var heightDataArr = this._heightDataArr;
 
         //return (
         //heightDataArr[this._buildHeightDataIndex(
@@ -156,51 +151,13 @@ export class MDP implements IHeightComputer{
         }
     }
 
+    //todo assert result should be number
     private _getHeight(point:Vector2){
         return this._heightDataArr[this._buildHeightDataIndex(point.y, point.x)];
     }
 
     private _setHeight(point:Vector2, height:number){
         this._heightDataArr[this._buildHeightDataIndex(point.y, point.x)] = height;
-    }
-
-    private _computeAndSetWrapMidPointsHeight({
-        leftUpPoint,
-        rightUpPoint,
-        rightBottomPoint,
-        leftBottomPoint
-        }, centerPoint:Vector2, {
-        upPoint,
-        bottomPoint,
-        leftPoint,
-        rightPoint
-        }){
-        var upHeight:number = null,
-            bottomHeight:number = null,
-            leftHeight:number = null,
-            rightHeight:number = null;
-
-        upHeight = (
-                this._getHeight(leftUpPoint)
-                + this._getHeight(rightUpPoint)
-                + this._getHeight(centerPoint)
-                + this._getHeight(centerPoint)
-            ) / 4 + this._buildRandomDisplacement();
-
-        leftHeight  = (
-                this._getHeight(leftUpPoint)
-                + this._getHeight(leftBottomPoint)
-                + this._getHeight(centerPoint)
-                + this._getHeight(centerPoint)
-            ) / 4 + this._buildRandomDisplacement();
-
-        bottomHeight = upHeight;
-        rightHeight = leftBottomPoint;
-
-        this._setHeight(upPoint, upHeight);
-        this._setHeight(bottomPoint, bottomHeight);
-        this._setHeight(leftPoint, leftHeight);
-        this._setHeight(rightPoint, rightHeight);
     }
 
     private _computeAndSetNoWrapMidPointsHeight({

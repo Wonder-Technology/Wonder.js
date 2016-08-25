@@ -9,7 +9,7 @@ var path = require("path");
 
 
 gulp.task("generateHeightMap", function (done) {
-    var Generator = require("./dist/Generator");
+    var Generator = require("./dist/terrain/heightMapGenerator/Generator");
     var method = parseOption("--method") || "fault",
         iterationCount = Number(parseOption("--iterationCount")) || 100,
         width = Number(parseOption("--width")) || 256,

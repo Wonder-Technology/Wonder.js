@@ -42,3 +42,7 @@ declare class Vector3 {
     lerp(lhs: Vector3, rhs: Vector3, alpha: number): this;
     dot(rhs: any): number;
 }
+
+declare class JudgeUtils {
+    static isArray(arr:any):boolean;
+}
