@@ -16,6 +16,11 @@ export = class Generator{
     	return obj;
     }
 
+    private _imageData:any = null;
+    get imageData(){
+        return this._imageData;
+    }
+
     public generateHeightMap(method:string, iterationCount:number, width:number, height:number, smoothLevel:number, destDir:string){
         var generator:IHeightComputer = null,
             canvasSize = this._computeCanvasSize(width, height),
@@ -51,11 +56,14 @@ export = class Generator{
 
         ctx.putImageData(imageData, 0, 0);
 
+        this._imageData = imageData;
+
         outStream = fs.createWriteStream(path.join(destDir, "heightMap_" + method + "_" + iterationCount + "_" + canvasSize.width + "_" + canvasSize.height + "_" + smoothLevel + ".png"));
 
         return wdFrp.fromStream(canvas.pngStream())
         .do((chunk) => {
             outStream.write(chunk);
+            //console.log("write");
         });
     }
 
