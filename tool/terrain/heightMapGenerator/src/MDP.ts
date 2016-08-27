@@ -52,15 +52,12 @@ export class MDP implements IHeightComputer{
             }
         }
 
-        let cornerPointDataArr:Array<CornerPointData> = [];
-
-        let cornerPointData = this._findInitalCornerPoints();
+        let cornerPointDataArr:Array<CornerPointData> = [],
+            cornerPointData = this._findInitalCornerPoints(),
+            centerPoint:Vector2 = null,
+            midPointData:MidPointData = null;
 
         cornerPointDataArr.push(cornerPointData);
-
-        let centerPoint:Vector2 = null;
-
-        let midPointData:MidPointData = null;
 
         while(cornerPointDataArr.length > 0){
             cornerPointData = cornerPointDataArr.shift();

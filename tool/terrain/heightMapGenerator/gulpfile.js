@@ -1,9 +1,6 @@
 var gulp = require("gulp");
 var gs = require("glob-stream");
 var fs = require("fs-extra");
-var gulpTs = require("gulp-typescript");
-var merge = require("merge2");
-var del = require("del");
 var wdFrp = require("wdfrp");
 var path = require("path");
 
