@@ -14,7 +14,7 @@ describe("OBJToWD", function () {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        converter = Converter.create("0.1.0");
+        converter = Converter.OBJToWD.create("0.1.0");
     });
     afterEach(function () {
         sandbox.restore();

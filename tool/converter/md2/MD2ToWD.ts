@@ -5,9 +5,24 @@ import wdCb = require("wdcb");
 import Log = require("../../ts/Log");
 import ModelLoaderUtils = require("../common/ModelLoaderUtils");
 import ObjectsConverter = require("./MD2ObjectsConverter");
+import contract = require("../../ts/definition/typescript/decorator/contract");
+import chai = require("chai");
 
+var describe = contract.describe,
+    it = contract.it,
+    requireInNodejs = contract.requireInNodejs,
+    requireGetter = contract.requireGetter,
+    requireSetter = contract.requireSetter,
+    requireGetterAndSetter = contract.requireGetterAndSetter,
+    ensure = contract.ensure,
+    ensureGetter = contract.ensureGetter,
+    ensureSetter = contract.ensureSetter,
+    ensureGetterAndSetter = contract.ensureGetterAndSetter,
+    invariant = contract.invariant;
 
-export = class MD2ToWD {
+var expect = chai.expect;
+
+export class MD2ToWD {
     public static create(version:string) {
         var obj = null;
 
@@ -25,6 +40,11 @@ export = class MD2ToWD {
 
     private _objectsConverter:any = ObjectsConverter.create();
 
+    @ensure(function(stream:wdFrp.Stream){
+        it("should return stream", () => {
+            expect(stream).instanceOf(wdFrp.Stream);
+        });
+    })
     public convert(fileBuffer:Buffer, filePath:string):wdFrp.Stream {
         var self = this,
             resultJson:any = {};

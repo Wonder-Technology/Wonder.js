@@ -7,8 +7,6 @@ import fs = require("fs");
 import path = require("path");
 import wdFrp = require("wdfrp");
 
-declare var __dirname:any;
-
 export = class Generator{
     public static create() {
     	var obj = new this();

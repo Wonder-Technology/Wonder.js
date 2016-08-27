@@ -30,10 +30,10 @@ export = class Converter {
 
         switch (fileExtname) {
             case ".obj":
-                result = OBJToWD.create(this.version).convert(fileBuffer.toString(), filePath);
+                result = OBJToWD.OBJToWD.create(this.version).convert(fileBuffer.toString(), filePath);
                 break;
             case ".md2":
-                result = MD2ToWD.create(this.version).convert(fileBuffer, filePath);
+                result = MD2ToWD.MD2ToWD.create(this.version).convert(fileBuffer, filePath);
                 break;
             default:
                 result = wdFrp.empty();

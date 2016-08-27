@@ -15,7 +15,7 @@ describe("MD2ToWD", function () {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        converter = Converter.create("0.1.0");
+        converter = Converter.MD2ToWD.create("0.1.0");
     });
     afterEach(function () {
         sandbox.restore();

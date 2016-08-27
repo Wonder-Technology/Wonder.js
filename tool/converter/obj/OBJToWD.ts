@@ -7,7 +7,7 @@ import ObjectsConverter = require("./ObjectsConverter");
 import ModelLoaderUtils = require("../common/ModelLoaderUtils");
 import Log = require("../../ts/Log");
 
-export = class OBJToWD {
+export class OBJToWD {
     public static create(version:string) {
         var obj = null;
 
