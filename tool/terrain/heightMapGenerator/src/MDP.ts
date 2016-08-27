@@ -1,6 +1,22 @@
 import {IHeightComputer} from "./IHeightComputer";
 
 import Vector2 = require("../../../ts/Vector2");
+import contract = require("../../../ts/definition/typescript/decorator/contract");
+import chai = require("chai");
+
+var describe = contract.describe,
+    it = contract.it,
+    requireInNodejs = contract.requireInNodejs,
+    requireGetter = contract.requireGetter,
+    requireSetter = contract.requireSetter,
+    requireGetterAndSetter = contract.requireGetterAndSetter,
+    ensure = contract.ensure,
+    ensureGetter = contract.ensureGetter,
+    ensureSetter = contract.ensureSetter,
+    ensureGetterAndSetter = contract.ensureGetterAndSetter,
+    invariant = contract.invariant;
+
+var expect = chai.expect;
 
 //todo why width,height must be a power of two?(now i don't limit it!)
 export class MDP implements IHeightComputer{
@@ -73,7 +89,14 @@ export class MDP implements IHeightComputer{
         return row * this._width + col;
     }
 
-    //todo assert width,height >= 1
+    @requireInNodejs(function(){
+        it("width should >= 1", () => {
+            expect(this._width).greaterThan(0);
+        });
+        it("height should >= 1", () => {
+            expect(this._height).greaterThan(0);
+        });
+    })
     private _findInitalCornerPoints(){
         var maxX = this._width - 1,
             maxY = this._height - 1;
@@ -86,7 +109,20 @@ export class MDP implements IHeightComputer{
         }
     }
 
-    //todo assert CornerPointData
+    @requireInNodejs(function({
+        leftUpPoint,
+        rightUpPoint,
+        rightBottomPoint,
+        leftBottomPoint
+        }){
+        it("should find center point in rect grid", () => {
+            expect(leftUpPoint.y).equal(rightUpPoint.y);
+            expect(leftBottomPoint.y).equal(rightBottomPoint.y);
+
+            expect(leftUpPoint.x).equal(leftBottomPoint.x);
+            expect(rightUpPoint.x).equal(rightBottomPoint.x);
+        });
+    })
     private _findCenterPoint({
         leftUpPoint,
         rightUpPoint,
@@ -112,22 +148,6 @@ export class MDP implements IHeightComputer{
         rightBottomPoint,
         leftBottomPoint
         }){
-        //var heightDataArr = this._heightDataArr;
-
-        //return (
-        //heightDataArr[this._buildHeightDataIndex(
-        //    leftUpPoint.y, leftUpPoint.x
-        //)]
-        //+ heightDataArr[this._buildHeightDataIndex(
-        //    rightUpPoint.y, rightUpPoint.x
-        //)]
-        //+ heightDataArr[this._buildHeightDataIndex(
-        //    leftBottomPoint.y, leftBottomPoint.x
-        //)]
-        //+ heightDataArr[this._buildHeightDataIndex(
-        //    rightBottomPoint.y, rightBottomPoint.x
-        //)]
-        //) / 4 + this._buildRandomDisplacement();
         return (
                 this._getHeight(leftUpPoint)
                 + this._getHeight(rightUpPoint)
@@ -136,7 +156,20 @@ export class MDP implements IHeightComputer{
             ) / 4 + this._buildRandomDisplacement();
     }
 
-    //todo assert leftUpPoint.y === rightUpPoint.y, ...
+    @requireInNodejs(function({
+        leftUpPoint,
+        rightUpPoint,
+        rightBottomPoint,
+        leftBottomPoint
+        }, centerPoint:Vector2){
+        it("should find mid points in rect grid", () => {
+            expect(leftUpPoint.y).equal(rightUpPoint.y);
+            expect(leftBottomPoint.y).equal(rightBottomPoint.y);
+
+            expect(leftUpPoint.x).equal(leftBottomPoint.x);
+            expect(rightUpPoint.x).equal(rightBottomPoint.x);
+        });
+    })
     private _findMidPoints({
         leftUpPoint,
         rightUpPoint,
@@ -151,7 +184,11 @@ export class MDP implements IHeightComputer{
         }
     }
 
-    //todo assert result should be number
+    @ensure(function(height:number, point:Vector2){
+        it("height should be number", () => {
+            expect(height).be.a("number");
+        });
+    })
     private _getHeight(point:Vector2){
         return this._heightDataArr[this._buildHeightDataIndex(point.y, point.x)];
     }

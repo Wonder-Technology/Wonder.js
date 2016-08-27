@@ -4,7 +4,7 @@ import through = require("through2");
 import gutil = require("gulp-util");
 import wdFrp = require("wdfrp");
 import wdCb = require("wdcb");
-import Log = require("./common/Log");
+import Log = require("../ts/Log");
 import OBJToWD = require("./obj/OBJToWD");
 import MD2ToWD = require("./md2/MD2ToWD");
 

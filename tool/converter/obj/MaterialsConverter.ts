@@ -1,4 +1,4 @@
-import Log = require("../common/Log");
+import Log = require("../../ts/Log");
 import wdCb = require("wdcb");
 
 export = class MaterialsConverter {

@@ -13,13 +13,16 @@
 	"files": [
 		"../../../node_modules/wdcb/dist/wdCb.node.d.ts",
 		"../../../node_modules/wdfrp/dist/wdFrp.node.d.ts",
+		"../../../lib/inner/chai/chai.d.ts",
 
 		"../../dts/node.d.ts",
 		"../../dts/commonTs.d.ts",
 
+		"../../ts/definition/typescript/decorator/contract.ts",
 		"../../ts/Vector2.ts",
 		"../../ts/Vector3.ts",
 		"../../ts/JudgeUtils.ts",
+		"../../ts/Log.ts",
 
 		"../../ts/test/TestTool.ts",
 

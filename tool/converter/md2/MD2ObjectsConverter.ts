@@ -1,5 +1,5 @@
 import wdCb = require("wdcb");
-import Log = require("../common/Log");
+import Log = require("../../ts/Log");
 import Vector3 = require("../../ts/Vector3");
 import BufferReader = require("../common/BufferReader");
 import ModelLoaderUtils = require("../common/ModelLoaderUtils");

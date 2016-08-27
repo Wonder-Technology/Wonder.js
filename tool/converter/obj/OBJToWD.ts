@@ -5,7 +5,7 @@ import wdCb = require("wdcb");
 import MaterialsConverter = require("./MaterialsConverter");
 import ObjectsConverter = require("./ObjectsConverter");
 import ModelLoaderUtils = require("../common/ModelLoaderUtils");
-import Log = require("../common/Log");
+import Log = require("../../ts/Log");
 
 export = class OBJToWD {
     public static create(version:string) {

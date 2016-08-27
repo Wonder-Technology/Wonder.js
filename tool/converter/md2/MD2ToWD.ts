@@ -2,7 +2,7 @@ import fs = require("fs");
 import path = require("path");
 import wdFrp = require("wdfrp");
 import wdCb = require("wdcb");
-import Log = require("../common/Log");
+import Log = require("../../ts/Log");
 import ModelLoaderUtils = require("../common/ModelLoaderUtils");
 import ObjectsConverter = require("./MD2ObjectsConverter");
 

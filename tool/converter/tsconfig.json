@@ -18,6 +18,7 @@
 
 		"../ts/Vector2.ts",
 		"../ts/Vector3.ts",
+		"../ts/Log.ts",
 
 
 		"./dts/chalk.d.ts",
@@ -28,7 +29,6 @@
 
 		"./common/BufferReader.ts",
 		"./common/Config.ts",
-		"./common/Log.ts",
 		"./common/ModelLoaderUtils.ts",
 
 		"./md2/MD2ToWD.ts",
