@@ -3,24 +3,20 @@ var gulpTs = require("gulp-typescript");
 var del = require("del");
 var gulpSync = require("gulp-sync")(gulp);
 var path = require("path");
-var getPathInfo = require("./tool/getPathInfo");
 
 var tsFilePaths = [
-    path.join(getPathInfo.getProjectDir(), "tool", "**/*.ts")
+    path.join(path.dirname(__dirname), "**/*.ts")
 ];
 
 
-
-var distDir = path.join(getPathInfo.getWorkingDir(), "./dist/");
-
-console.log(distDir);
+var distDir = path.join(process.cwd(), "./dist/");
 
 var tsconfigFile = [
     "./tsconfig.json"
 ];
 
 gulp.task("compileTs", function () {
-    var tsProject = gulpTs.createProject(path.join(getPathInfo.getWorkingDir(), tsconfigFile[0]), {
+    var tsProject = gulpTs.createProject(path.join(process.cwd(), tsconfigFile[0]), {
         typescript: require('typescript')
     });
 
