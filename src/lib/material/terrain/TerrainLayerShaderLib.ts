@@ -9,15 +9,17 @@ module wd{
         public type:string = "terrainLayer";
 
         public sendShaderVariables(program: Program, cmd:QuadCommand, material:TerrainMaterial){
-            material.layer.mapDataList.forEach((mapData:TerrainLayerMapData, index:number) => {
+            material.layer.mapData.forEach((mapData:TerrainLayerData, index:number) => {
                 program.sendStructureData(`u_layerHeightDatas[${index}].minHeight`, EVariableType.FLOAT_1, mapData.minHeight);
                 program.sendStructureData(`u_layerHeightDatas[${index}].maxHeight`, EVariableType.FLOAT_1, mapData.maxHeight);
             });
         }
 
         @require(function(cmd:QuadCommand, material:TerrainMaterial){
-            assert(!!material, Log.info.FUNC_NOT_EXIST("param:material"));
-            assert(material.layer.mapDataList.getCount() >= 0, Log.info.FUNC_SHOULD("TerrainMaterial->layer->mapDataList->count", ">= 0"));
+            it("TerrainMaterial->layer->mapData->count should > 0", () => {
+                expect(material).exist;
+                expect(material.layer.getMapCount()).greaterThan(0);
+            });
         })
         public setShaderDefinition(cmd:QuadCommand, material:TerrainMaterial){
             super.setShaderDefinition(cmd, material);
@@ -26,7 +28,7 @@ module wd{
 
             this.fsSourceDefineList.addChildren([{
                 name: "LAYER_COUNT",
-                value: material.layer.mapDataList.getCount()
+                value: material.layer.getMapCount()
             }]);
         }
     }

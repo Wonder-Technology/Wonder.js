@@ -97,6 +97,21 @@ module wd{
             value:EVariableCategory.ENGINE
         };
 
+        public static u_diffuseMap1Sampler:ShaderVariable = {
+            type:EVariableType.SAMPLER_2D,
+            value:EVariableCategory.ENGINE
+        };
+
+        public static u_diffuseMap2Sampler:ShaderVariable = {
+            type:EVariableType.SAMPLER_2D,
+            value:EVariableCategory.ENGINE
+        };
+
+        public static u_diffuseMap3Sampler:ShaderVariable = {
+            type:EVariableType.SAMPLER_2D,
+            value:EVariableCategory.ENGINE
+        };
+
         public static u_specularMapSampler:ShaderVariable = {
             type:EVariableType.SAMPLER_2D,
             value:EVariableCategory.ENGINE
@@ -440,6 +455,11 @@ module wd{
 
         public static u_pageSampler2Ds:ShaderVariable = {
             type:EVariableType.SAMPLER_ARRAY,
+            value:EVariableCategory.ENGINE
+        };
+
+        public static u_mixMapSampler:ShaderVariable = {
+            type:EVariableType.SAMPLER_2D,
             value:EVariableCategory.ENGINE
         };
     }

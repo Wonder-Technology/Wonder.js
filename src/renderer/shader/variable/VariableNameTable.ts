@@ -12,13 +12,19 @@ module wd{
 
     _table.addChild("bumpMap", "u_bumpMapSampler");
 
+    _table.addChild("mixMap", "u_mixMapSampler");
+    _table.addChild("diffuseMap1", "u_diffuseMap1Sampler");
+    _table.addChild("diffuseMap2", "u_diffuseMap2Sampler");
+    _table.addChild("diffuseMap3", "u_diffuseMap3Sampler");
+
     export class VariableNameTable{
+        @ensure(function(variableName:string){
+            it("variableName should in VariableNameTable", () => {
+                expect(variableName).exist;
+            });
+        })
         public static getVariableName(name: string){
-            var result = _table.getChild(name);
-
-            Log.error(result === void 0, Log.info.FUNC_NOT_EXIST(name, "in VariableNameTable"));
-
-            return result;
+            return _table.getChild(name);
         }
     }
 }
