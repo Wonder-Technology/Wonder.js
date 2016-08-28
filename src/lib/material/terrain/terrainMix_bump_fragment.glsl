@@ -1,7 +1,5 @@
 @varDeclare
 varying vec3 v_normal;
-
-vec4 baseColor;
 @end
 
 @funcDeclare
@@ -68,8 +66,4 @@ vec3 getNormal(){
 
     return normalize(TBN*map);
 }
-@end
-
-@body
-baseColor = texture2D(u_mixMapSampler,v_mixTexCoord);
 @end

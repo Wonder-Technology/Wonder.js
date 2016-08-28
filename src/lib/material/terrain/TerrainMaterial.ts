@@ -45,14 +45,18 @@ module wd{
             }
         }
 
+        protected addTopExtendShaderLib(){
+            if(this.mix.hasData()){
+                this.shader.addLib(TerrainMixCommonShaderLib.create());
+            }
+        }
+
         protected addNormalRelatedShaderLib(){
             if(this.mix.hasBumpMap()){
                 this.shader.addLib(TerrainBumpShaderLib.create());
             }
             else{
                 super.addNormalRelatedShaderLib();
-
-                this.shader.addLib(TerrainNoBumpShaderLib.create());
             }
         }
     }

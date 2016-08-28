@@ -115,6 +115,10 @@ module wd{
         public lightMapIntensity:number = 1;
 
         @virtual
+        protected addTopExtendShaderLib(){
+        }
+
+        @virtual
         protected addExtendShaderLib(){
         }
 
@@ -134,6 +138,8 @@ module wd{
 
         protected addShaderLib(){
             var envMap = null;
+
+            this.addTopExtendShaderLib();
 
             InstanceUtils.addNormalModelMatrixShaderLib(this.shader, this.geometry.entityObject);
 

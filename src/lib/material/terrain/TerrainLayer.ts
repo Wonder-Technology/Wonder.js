@@ -1,4 +1,5 @@
 module wd{
+    //todo support normal map
     export class TerrainLayer{
         public static create() {
             var obj = new this();
@@ -76,7 +77,7 @@ module wd{
     export type TerrainLayerData = {
         minHeight:number;
         maxHeight:number;
-        diffuseMap:Texture;
+        diffuseMap:ImageTexture|ProceduralTexture;
     }
 
 }
