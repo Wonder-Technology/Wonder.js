@@ -37,6 +37,7 @@ module wd{
 
         //todo assert bump->repeatRegion should equal corresponding diffuse map
         //todo assert bump maps' length should be 3
+        //todo assert has 3 diffuse maps
         public addMap(mapManager:MapManager){
             mapManager.addMap(this.mapData.mixMap, {
                 samplerVariableName: VariableNameTable.getVariableName("mixMap")

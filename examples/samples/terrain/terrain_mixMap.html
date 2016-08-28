@@ -47,8 +47,9 @@
             var material = wd.TerrainMaterial.create();
 
 
-            var grass = wd.LoaderManager.getInstance().get("grass").toTexture();
-            grass.repeatRegion = wd.RectRegion.create(0.8, 0.2, 10, 10);
+//            var grass = wd.LoaderManager.getInstance().get("grass").toTexture();
+            var grass = wd.GrassProceduralTexture.create();
+//            grass.repeatRegion = wd.RectRegion.create(0.8, 0.2, 10, 10);
             grass.wrapS = wd.ETextureWrapMode.REPEAT;
             grass.wrapT = wd.ETextureWrapMode.REPEAT;
 //
@@ -59,31 +60,31 @@
             floor.wrapS = wd.ETextureWrapMode.REPEAT;
             floor.wrapT = wd.ETextureWrapMode.REPEAT;
 
-//            material.mix.mapData = {
-//                mixMap:wd.LoaderManager.getInstance().get("mixMap").toTexture(),
-//                diffuseMap1:floor,
-//                diffuseMap2:wd.LoaderManager.getInstance().get("rock").toTexture(),
-//                diffuseMap3:grass,
-//
-//                bumpMap1:wd.LoaderManager.getInstance().get("floorn").toTexture(),
-//                bumpMap2:wd.LoaderManager.getInstance().get("rockn").toTexture(),
-//                bumpMap3:wd.LoaderManager.getInstance().get("grassn").toTexture()
-//            };
+            material.mix.mapData = {
+                mixMap:wd.LoaderManager.getInstance().get("mixMap").toTexture(),
+                diffuseMap1:floor,
+                diffuseMap2:wd.LoaderManager.getInstance().get("rock").toTexture(),
+                diffuseMap3:grass,
+
+                bumpMap1:wd.LoaderManager.getInstance().get("floorn").toTexture(),
+                bumpMap2:wd.LoaderManager.getInstance().get("rockn").toTexture(),
+                bumpMap3:wd.LoaderManager.getInstance().get("grassn").toTexture()
+            };
 
 
             material.layer.mapData = [
                 {
-                    minHeight:0,
-                    maxHeight:20,
-                    diffuseMap:grass
-                },
-                {
-                    minHeight:20,
-                    maxHeight:30,
-                    diffuseMap:floor,
-                },
-                {
                     minHeight:30,
+                    maxHeight:40,
+                    diffuseMap:wd.GrassProceduralTexture.create()
+                },
+//                {
+//                    minHeight:20,
+//                    maxHeight:30,
+//                    diffuseMap:floor,
+//                },
+                {
+                    minHeight:40,
                     maxHeight:50,
                     diffuseMap:wd.FireProceduralTexture.create()
                 }
