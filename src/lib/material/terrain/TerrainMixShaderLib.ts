@@ -8,12 +8,15 @@ module wd{
 
         public type:string = "terrainMix";
 
-        //public sendShaderVariables(program: Program, cmd:QuadCommand, material:TerrainMaterial){
-        //    //material.mix.mapData.forEach((mapData:TerrainMixData, index:number) => {
-        //    //    program.sendStructureData(`u_mixHeightDatas[${index}].minHeight`, EVariableType.FLOAT_1, mapData.minHeight);
-        //    //    program.sendStructureData(`u_mixHeightDatas[${index}].maxHeight`, EVariableType.FLOAT_1, mapData.maxHeight);
-        //    //});
-        //}
+        public sendShaderVariables(program: Program, cmd:QuadCommand, material:TerrainMaterial){
+            var mapData:TerrainMixData = material.mix.mapData;
+
+            //todo test:only send repeat region, not send source region
+
+            this.sendUniformData(program, "u_diffuse1RepeatRegion", mapData.diffuseMap1.repeatRegion);
+            this.sendUniformData(program, "u_diffuse2RepeatRegion", mapData.diffuseMap2.repeatRegion);
+            this.sendUniformData(program, "u_diffuse3RepeatRegion", mapData.diffuseMap3.repeatRegion);
+        }
 
         public setShaderDefinition(cmd:QuadCommand, material:TerrainMaterial){
             super.setShaderDefinition(cmd, material);
@@ -24,6 +27,10 @@ module wd{
                     VariableNameTable.getVariableName("diffuseMap1"),
                     VariableNameTable.getVariableName("diffuseMap2"),
                     VariableNameTable.getVariableName("diffuseMap3"),
+
+                    "u_diffuse1RepeatRegion",
+                    "u_diffuse2RepeatRegion",
+                    "u_diffuse3RepeatRegion"
                 ]
             );
         }

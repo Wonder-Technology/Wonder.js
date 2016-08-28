@@ -462,6 +462,21 @@ module wd{
             type:EVariableType.SAMPLER_2D,
             value:EVariableCategory.ENGINE
         };
+
+        public static u_diffuse1RepeatRegion:ShaderVariable = {
+            type:EVariableType.VECTOR_4,
+            value:EVariableCategory.ENGINE
+        };
+
+        public static u_diffuse2RepeatRegion:ShaderVariable = {
+            type:EVariableType.VECTOR_4,
+            value:EVariableCategory.ENGINE
+        };
+
+        public static u_diffuse3RepeatRegion:ShaderVariable = {
+            type:EVariableType.VECTOR_4,
+            value:EVariableCategory.ENGINE
+        };
     }
 
     export type ShaderVariable = {

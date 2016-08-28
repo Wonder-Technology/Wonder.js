@@ -71,9 +71,9 @@ module wd{
     }
 
     export type TerrainMixData = {
-        mixMap:Texture;
-        diffuseMap1:Texture;
-        diffuseMap2:Texture;
-        diffuseMap3:Texture;
+        mixMap:ImageTexture|ProceduralTexture;
+        diffuseMap1:ImageTexture|ProceduralTexture;
+        diffuseMap2:ImageTexture|ProceduralTexture;
+        diffuseMap3:ImageTexture|ProceduralTexture;
     }
 }

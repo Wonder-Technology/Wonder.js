@@ -41,11 +41,17 @@
         function createTerrain() {
             var material = wd.TerrainMaterial.create();
 
+
+            var grass = wd.LoaderManager.getInstance().get("grass").toTexture();
+            grass.repeatRegion = wd.RectRegion.create(0.8, 0.2, 10, 10);
+            grass.wrapS = wd.ETextureWrapMode.REPEAT;
+            grass.wrapT = wd.ETextureWrapMode.REPEAT;
+
             material.mix.mapData = {
                 mixMap:wd.LoaderManager.getInstance().get("mixMap").toTexture(),
                 diffuseMap1:wd.LoaderManager.getInstance().get("floor").toTexture(),
                 diffuseMap2:wd.LoaderManager.getInstance().get("rock").toTexture(),
-                diffuseMap3:wd.LoaderManager.getInstance().get("grass").toTexture()
+                diffuseMap3:grass
             };
 
 
