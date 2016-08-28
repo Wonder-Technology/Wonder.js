@@ -44,6 +44,17 @@ module wd{
                 this.shader.addLib(TerrainMixShaderLib.create());
             }
         }
+
+        protected addNormalRelatedShaderLib(){
+            if(this.mix.hasBumpMap()){
+                this.shader.addLib(TerrainBumpShaderLib.create());
+            }
+            else{
+                super.addNormalRelatedShaderLib();
+
+                this.shader.addLib(TerrainNoBumpShaderLib.create());
+            }
+        }
     }
 }
 

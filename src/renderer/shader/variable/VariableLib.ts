@@ -387,6 +387,21 @@ module wd{
             value:EVariableCategory.ENGINE
         };
 
+        public static u_bumpMap1Sampler:ShaderVariable = {
+            type:EVariableType.SAMPLER_2D,
+            value:EVariableCategory.ENGINE
+        };
+
+        public static u_bumpMap2Sampler:ShaderVariable = {
+            type:EVariableType.SAMPLER_2D,
+            value:EVariableCategory.ENGINE
+        };
+
+        public static u_bumpMap3Sampler:ShaderVariable = {
+            type:EVariableType.SAMPLER_2D,
+            value:EVariableCategory.ENGINE
+        };
+
         public static u_levelData:ShaderVariable = {
             type:EVariableType.STRUCTURE,
             value:EVariableCategory.ENGINE

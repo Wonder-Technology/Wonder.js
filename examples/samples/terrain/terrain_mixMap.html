@@ -22,7 +22,12 @@
             {url: "../../asset/texture/terrain/mixMap.png", id: "mixMap"},
             {url: "../../asset/texture/terrain/floor.png", id: "floor"},
             {url: "../../asset/texture/terrain/grass.png", id: "grass"},
-            {url: "../../asset/texture/terrain/rock.png", id: "rock"}
+            {url: "../../asset/texture/terrain/rock.png", id: "rock"},
+
+
+            {url: "../../asset/texture/terrain/floorn.png", id: "floorn"},
+            {url: "../../asset/texture/terrain/grassn.png", id: "grassn"},
+            {url: "../../asset/texture/terrain/rockn.png", id: "rockn"}
         ]).subscribe(null, null, function () {
             initSample();
         });
@@ -43,15 +48,26 @@
 
 
             var grass = wd.LoaderManager.getInstance().get("grass").toTexture();
-            grass.repeatRegion = wd.RectRegion.create(0.8, 0.2, 10, 10);
+            grass.repeatRegion = wd.RectRegion.create(0.8, 0.2, 1, 2);
             grass.wrapS = wd.ETextureWrapMode.REPEAT;
             grass.wrapT = wd.ETextureWrapMode.REPEAT;
 
+
+
+            var floor = wd.LoaderManager.getInstance().get("floor").toTexture();
+            floor.repeatRegion = wd.RectRegion.create(0.8, 0.2, 10, 10);
+            floor.wrapS = wd.ETextureWrapMode.REPEAT;
+            floor.wrapT = wd.ETextureWrapMode.REPEAT;
+
             material.mix.mapData = {
                 mixMap:wd.LoaderManager.getInstance().get("mixMap").toTexture(),
-                diffuseMap1:wd.LoaderManager.getInstance().get("floor").toTexture(),
+                diffuseMap1:floor,
                 diffuseMap2:wd.LoaderManager.getInstance().get("rock").toTexture(),
-                diffuseMap3:grass
+                diffuseMap3:grass,
+
+                bumpMap1:wd.LoaderManager.getInstance().get("floorn").toTexture(),
+                bumpMap2:wd.LoaderManager.getInstance().get("rockn").toTexture(),
+                bumpMap3:wd.LoaderManager.getInstance().get("grassn").toTexture()
             };
 
 
@@ -99,7 +115,8 @@
             var directionLight = wd.GameObject.create();
             directionLight.addComponent(directionLightComponent);
 
-            directionLight.transform.translate(wd.Vector3.create(10, 20, 30));
+//            directionLight.transform.translate(wd.Vector3.create(10, 20, 30));
+            directionLight.transform.translate(wd.Vector3.create(10, 20, 0));
 
             return directionLight;
         }

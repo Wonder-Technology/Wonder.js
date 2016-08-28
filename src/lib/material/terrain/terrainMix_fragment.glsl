@@ -7,8 +7,6 @@ varying vec2 v_diffuse3TexCoord;
 
 @funcDefine
 vec4 getMixTextureColor(){
-    vec4 baseColor=texture2D(u_mixMapSampler,v_mixTexCoord);
-
     if (baseColor.a<0.4){
         discard;
     }

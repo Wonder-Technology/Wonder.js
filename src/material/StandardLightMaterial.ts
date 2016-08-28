@@ -122,6 +122,16 @@ module wd{
         protected addEndShaderLib(){
         }
 
+        @virtual
+        protected addNormalRelatedShaderLib(){
+            if(this._normalMap){
+                this.shader.addLib(NormalMapShaderLib.create());
+            }
+            else{
+                this.shader.addLib(NoNormalMapShaderLib.create());
+            }
+        }
+
         protected addShaderLib(){
             var envMap = null;
 
@@ -178,12 +188,7 @@ module wd{
                 this.shader.addLib(NoEmissionMapShaderLib.create());
             }
 
-            if(this._normalMap){
-                this.shader.addLib(NormalMapShaderLib.create());
-            }
-            else{
-                this.shader.addLib(NoNormalMapShaderLib.create());
-            }
+            this.addNormalRelatedShaderLib();
 
             if(scene.shadowMap.enable){
                 let hasTwoD = false,
