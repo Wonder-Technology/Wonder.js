@@ -544,7 +544,7 @@
 		"lib/procedural_texture/custom/CustomProceduralTexture.ts",
 		"lib/procedural_texture/custom/CustomProceduralShaderLib.ts",
 		"lib/material/mirror/*.ts",
-		"lib/material/terrain/*.ts",
+		"lib/material/terrain/**/*.ts",
 		"lib/material/water/*.ts",
 		"lib/material/bitmapFont/BitmapFontMaterial.ts",
 		"lib/material/bitmapFont/**/*ShaderLib.ts",
