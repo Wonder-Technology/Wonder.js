@@ -14,7 +14,13 @@ module wd{
             }
 
             if(this._heightMapImageDataCacheWidth !== null){
-                return this._heightMapImageDataCacheWidth * 4;
+                //todo test
+                if(this.isHeightMapStoreHeightInEachPixel){
+                    return this._heightMapImageDataCacheWidth * 4;
+                }
+                else{
+                    return this._heightMapImageDataCacheWidth;
+                }
             }
 
             return 256;
@@ -52,6 +58,9 @@ module wd{
         public minHeight:number = 0;
         @cloneAttributeAsBasicType()
         public maxHeight:number = 10;
+        //todo test
+        @cloneAttributeAsBasicType()
+        public isHeightMapStoreHeightInEachPixel:boolean = true;
 
         private _heightMapImageDataCache:Uint8Array = null;
         private _heightMapImageDataCacheWidth:number = null;
