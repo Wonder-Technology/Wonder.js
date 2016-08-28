@@ -53,7 +53,7 @@ module wd{
 
         protected addNormalRelatedShaderLib(){
             if(this.mix.hasBumpMap()){
-                this.shader.addLib(TerrainBumpShaderLib.create());
+                this.shader.addLib(TerrainMixBumpShaderLib.create());
             }
             else{
                 super.addNormalRelatedShaderLib();

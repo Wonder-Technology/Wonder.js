@@ -6,7 +6,7 @@ module wd{
             return obj;
         }
 
-        public type:string = "terrainLayer";
+        public type:string = "terrain_layer";
 
         public sendShaderVariables(program: Program, cmd:QuadCommand, material:TerrainMaterial){
             material.layer.mapData.forEach((mapData:TerrainLayerData, index:number) => {

@@ -6,7 +6,7 @@ module wd{
             return obj;
         }
 
-        public type:string = "terrainMix";
+        public type:string = "terrain_mix";
 
         public sendShaderVariables(program: Program, cmd:QuadCommand, material:TerrainMaterial){
             var mapData:TerrainMixData = material.mix.mapData;

@@ -6,7 +6,7 @@ module wd{
             return obj;
         }
 
-        public type:string = "terrainMix_common";
+        public type:string = "terrain_mix_common";
     }
 }
 
