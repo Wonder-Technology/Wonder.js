@@ -1,5 +1,5 @@
 module wd{
-    export class TerrainMixShaderLib extends EngineShaderLib{
+    export class TerrainMixMapShaderLib extends EngineShaderLib{
         public static create() {
             var obj = new this();
 

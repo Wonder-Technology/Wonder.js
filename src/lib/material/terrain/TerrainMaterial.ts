@@ -41,7 +41,7 @@ module wd{
             }
 
             if(this.mix.hasData()){
-                this.shader.addLib(TerrainMixShaderLib.create());
+                this.shader.addLib(TerrainMixMapShaderLib.create());
             }
         }
 
