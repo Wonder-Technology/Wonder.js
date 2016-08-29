@@ -3,6 +3,23 @@ describe("TerrainGeometry", function() {
     var geo = null;
     var entityObject = null;
 
+    function prepareGeo(){
+        geo.material = {
+            init: sandbox.stub(),
+            shading: wd.EShading.FLAT
+        }
+
+        entityObject = {
+            transform:{
+                scale:wd.Vector3.create(1,1,1),
+                position:wd.Vector3.create()
+            }
+        }
+
+        geo.entityObject = entityObject;
+
+    }
+
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
@@ -15,21 +32,64 @@ describe("TerrainGeometry", function() {
         sandbox.restore();
     });
 
+    describe("rangeWidth(getter)", function(){
+        beforeEach(function(){
+
+        });
+
+        it("if rangeWidth is setted, return it", function(){
+            geo.rangeWidth = 100;
+
+            expect(geo.rangeWidth).toEqual(100);
+        });
+
+        describe("else if have readed height map data", function(){
+           beforeEach(function(){
+               prepareGeo();
+           });
+
+            it("if isHeightMapStoreHeightInEachPixel === true, return height map width * 4", function (done) {
+                wd.LoaderManager.getInstance().load([
+                    {url: testTool.resPath + "test/res/terrain/heightMap.png", id: "heightMap"}
+                ]).subscribe(function(data){
+                }, function(err){
+                }, function(){
+                    geo.heightMapAsset = wd.LoaderManager.getInstance().get("heightMap");
+                    geo.isHeightMapStoreHeightInEachPixel = true;
+
+                    geo.init();
+
+                    expect(geo.rangeWidth).toEqual(geo.heightMapAsset.width * 4);
+
+                    done();
+                });
+            });
+            it("else, return height map width", function (done) {
+                wd.LoaderManager.getInstance().load([
+                    {url: testTool.resPath + "test/res/terrain/heightMap.png", id: "heightMap"}
+                ]).subscribe(function(data){
+                }, function(err){
+                }, function(){
+                    geo.heightMapAsset = wd.LoaderManager.getInstance().get("heightMap");
+                    geo.isHeightMapStoreHeightInEachPixel = false;
+
+                    geo.init();
+
+                    expect(geo.rangeWidth).toEqual(geo.heightMapAsset.width);
+
+                    done();
+                });
+            });
+        });
+
+        it("else, return the default value", function () {
+            expect(geo.rangeWidth).toEqual(256);
+        });
+    });
+
     describe("test heightMap", function(){
         beforeEach(function(){
-            geo.material = {
-                init: sandbox.stub(),
-                shading: wd.EShading.FLAT
-            }
-
-            entityObject = {
-                transform:{
-                    scale:wd.Vector3.create(1,1,1),
-                    position:wd.Vector3.create()
-                }
-            }
-
-            geo.entityObject = entityObject;
+            prepareGeo();
         });
 
         describe("generate terrain from heightMap", function(){
@@ -42,7 +102,6 @@ describe("TerrainGeometry", function() {
                 ]).subscribe(function(data){
                 }, function(err){
                 }, function(){
-
                     geo.subdivisions = 3;
                     geo.rangeWidth = 100;
                     geo.rangeHeight = 100;
@@ -254,13 +313,15 @@ describe("TerrainGeometry", function() {
         });
         it("clone data", function(){
             var subdivisions = 10,
+                isHeightMapStoreHeightInEachPixel = false,
                 minHeight = 11,
                 maxHeight = 50;
 
             cloneTool.extend(geo, {
-                    subdivisions: subdivisions,
-                    minHeight: minHeight,
-                maxHeight: maxHeight
+                subdivisions: subdivisions,
+                minHeight: minHeight,
+                maxHeight: maxHeight,
+                isHeightMapStoreHeightInEachPixel:isHeightMapStoreHeightInEachPixel
             })
 
             var result = geo.clone();
@@ -268,6 +329,7 @@ describe("TerrainGeometry", function() {
             expect(result.subdivisions).toEqual(subdivisions);
             expect(result.minHeight).toEqual(minHeight);
             expect(result.maxHeight).toEqual(maxHeight);
+            expect(result.isHeightMapStoreHeightInEachPixel).toEqual(isHeightMapStoreHeightInEachPixel);
         });
     });
 });

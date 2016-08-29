@@ -177,6 +177,7 @@ module wd{
             value:EVariableCategory.ENGINE
         };
 
+        //todo rename
         public static u_diffuseRepeatRegion:ShaderVariable = {
             type:EVariableType.VECTOR_4,
             value:EVariableCategory.ENGINE
@@ -478,17 +479,17 @@ module wd{
             value:EVariableCategory.ENGINE
         };
 
-        public static u_diffuse1RepeatRegion:ShaderVariable = {
+        public static u_diffuseMap1RepeatRegion:ShaderVariable = {
             type:EVariableType.VECTOR_4,
             value:EVariableCategory.ENGINE
         };
 
-        public static u_diffuse2RepeatRegion:ShaderVariable = {
+        public static u_diffuseMap2RepeatRegion:ShaderVariable = {
             type:EVariableType.VECTOR_4,
             value:EVariableCategory.ENGINE
         };
 
-        public static u_diffuse3RepeatRegion:ShaderVariable = {
+        public static u_diffuseMap3RepeatRegion:ShaderVariable = {
             type:EVariableType.VECTOR_4,
             value:EVariableCategory.ENGINE
         };

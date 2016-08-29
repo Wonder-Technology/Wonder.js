@@ -12,8 +12,6 @@ module wd{
             material.layer.mapData.forEach((mapData:TerrainLayerData, index:number) => {
                 program.sendStructureData(`u_layerHeightDatas[${index}].minHeight`, EVariableType.FLOAT_1, mapData.minHeight);
                 program.sendStructureData(`u_layerHeightDatas[${index}].maxHeight`, EVariableType.FLOAT_1, mapData.maxHeight);
-
-                //todo test
                 program.sendStructureData(`u_layerHeightDatas[${index}].repeatRegion`, EVariableType.VECTOR_4, mapData.diffuseMap.repeatRegion);
             });
         }

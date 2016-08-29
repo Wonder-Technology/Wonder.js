@@ -12,7 +12,14 @@ module wd{
                 expect(mapData).be.a("object");
             });
         })
-        @cloneAttributeAsCloneable()
+        @cloneAttributeAsCustomType(function(source:TerrainMix, target:TerrainMix, memberName:string){
+            var s = source[memberName],
+                t = target[memberName];
+
+            for(let key in s){
+                t[key] = s[key].clone();
+            }
+        })
         get mapData(){
             return this._mapData;
         }
@@ -20,24 +27,25 @@ module wd{
             this._mapData = mapData;
         }
 
-        //@ensureGetter(function(mapArray:Array<Texture>){
-        //    for(let map of mapArray){
-        //        assert(map instanceof Texture, Log.info.FUNC_SHOULD("return Array<Texture>"));
-        //    }
-        //})
-        //get mapArray(){
-        //    var arr:Array<Texture> = [];
-        //
-        //    this._mapData.forEach((data:TerrainMixData) => {
-        //        arr.push(data.diffuseMap);
-        //    });
-        //
-        //    return arr;
-        //}
+        @require(function(mapManager:MapManager){
+            it("mapData at least should has mixMap and 3 diffuseMaps", () => {
+                var mapData = this.mapData;
 
-        //todo assert bump->repeatRegion should equal corresponding diffuse map
-        //todo assert bump maps' length should be 3
-        //todo assert has 3 diffuse maps
+                expect(mapData.mixMap).exist;
+                expect(mapData.diffuseMap1).exist;
+                expect(mapData.diffuseMap2).exist;
+                expect(mapData.diffuseMap3).exist;
+            });
+            it("if has bump map, bump map should be ImageTexture", () => {
+                if(this.hasBumpMap()){
+                    let mapData = this.mapData;
+
+                    expect(mapData.bumpMap1).instanceOf(ImageTexture);
+                    expect(mapData.bumpMap2).instanceOf(ImageTexture);
+                    expect(mapData.bumpMap3).instanceOf(ImageTexture);
+                }
+            });
+        })
         public addMap(mapManager:MapManager){
             mapManager.addMap(this.mapData.mixMap, {
                 samplerVariableName: VariableNameTable.getVariableName("mixMap")
@@ -53,34 +61,10 @@ module wd{
                 samplerVariableName: VariableNameTable.getVariableName("diffuseMap3")
             });
 
-            if(this.mapData.bumpMap1){
-                let bumpMap = this.mapData.bumpMap1;
-
-                this._setBumpMapRepeatRegion(bumpMap, this.mapData.diffuseMap1);
-
-                mapManager.addMap(bumpMap, {
-                    samplerVariableName: VariableNameTable.getVariableName("bumpMap1")
-                });
-            }
-
-            if(this.mapData.bumpMap2){
-                let bumpMap = this.mapData.bumpMap2;
-
-                this._setBumpMapRepeatRegion(bumpMap, this.mapData.diffuseMap2);
-
-                mapManager.addMap(bumpMap, {
-                    samplerVariableName: VariableNameTable.getVariableName("bumpMap2")
-                });
-            }
-
-            if(this.mapData.bumpMap3){
-                let bumpMap = this.mapData.bumpMap3;
-
-                this._setBumpMapRepeatRegion(bumpMap, this.mapData.diffuseMap3);
-
-                mapManager.addMap(bumpMap, {
-                    samplerVariableName: VariableNameTable.getVariableName("bumpMap3")
-                });
+            if(this.hasBumpMap()){
+                this._addBumpMap(mapManager, this.mapData.bumpMap1, this.mapData.diffuseMap1, "bumpMap1");
+                this._addBumpMap(mapManager, this.mapData.bumpMap2, this.mapData.diffuseMap2, "bumpMap2");
+                this._addBumpMap(mapManager, this.mapData.bumpMap3, this.mapData.diffuseMap3, "bumpMap3");
             }
         }
 
@@ -94,8 +78,19 @@ module wd{
             return false;
         }
 
+        @ensure(function(hasBumpMap:boolean){
+            it("if has bump map, should has 3 bump maps", () => {
+                if(hasBumpMap){
+                    let mapData = this.mapData;
+
+                    expect(mapData.bumpMap1).exist;
+                    expect(mapData.bumpMap2).exist;
+                    expect(mapData.bumpMap3).exist;
+                }
+            });
+        })
         public hasBumpMap(){
-            return this.mapData.bumpMap1 instanceof ImageTexture;
+            return !!this.mapData.bumpMap1 || !!this.mapData.bumpMap2 || !!this.mapData.bumpMap3;
         }
 
         public getTextureForRenderSort(){
@@ -109,6 +104,14 @@ module wd{
         private _setBumpMapRepeatRegion(bumpMap:ImageTexture, diffuseMap:ImageTexture|ProceduralTexture){
             bumpMap.wrapS = diffuseMap.wrapS;
             bumpMap.wrapT = diffuseMap.wrapT;
+        }
+
+        private _addBumpMap(mapManager:MapManager, bumpMap:ImageTexture, correspondDiffuseMap:ImageTexture|ProceduralTexture, samplerVariableName:string){
+            this._setBumpMapRepeatRegion(bumpMap, correspondDiffuseMap);
+
+            mapManager.addMap(bumpMap, {
+                samplerVariableName: VariableNameTable.getVariableName(samplerVariableName)
+            });
         }
     }
 

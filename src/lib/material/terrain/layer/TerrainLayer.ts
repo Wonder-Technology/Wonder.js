@@ -28,7 +28,20 @@ module wd{
                 });
             });
         })
-        @cloneAttributeAsCloneable()
+        @cloneAttributeAsCustomType(function(source:TerrainLayer, target:TerrainLayer, memberName:string){
+            var s = source[memberName],
+                t:Array<TerrainLayerData> = [];
+
+            for(let data of s){
+                t.push({
+                    minHeight:data.minHeight,
+                    maxHeight:data.maxHeight,
+                    diffuseMap:data.diffuseMap.clone()
+                })
+            }
+
+            target[memberName] = t;
+        })
         get mapData(){
             return this._mapData;
         }
@@ -79,5 +92,4 @@ module wd{
         maxHeight:number;
         diffuseMap:ImageTexture|ProceduralTexture;
     }
-
 }

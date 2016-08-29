@@ -13,7 +13,7 @@ module wd{
 
             this.addUniformVariable(
                 [
-                VariableNameTable.getVariableName("bumpMap1"),
+                    VariableNameTable.getVariableName("bumpMap1"),
                     VariableNameTable.getVariableName("bumpMap2"),
                     VariableNameTable.getVariableName("bumpMap3")
                 ]
