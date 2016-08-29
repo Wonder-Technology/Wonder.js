@@ -1,8 +1,8 @@
 @varDeclare
-varying vec2 v_mixTexCoord;
-varying vec2 v_diffuse1TexCoord;
-varying vec2 v_diffuse2TexCoord;
-varying vec2 v_diffuse3TexCoord;
+varying vec2 v_mixMapTexCoord;
+varying vec2 v_diffuseMap1TexCoord;
+varying vec2 v_diffuseMap2TexCoord;
+varying vec2 v_diffuseMap3TexCoord;
 @end
 
 @funcDefine
@@ -11,9 +11,9 @@ vec4 getMixTextureColor(){
         discard;
     }
 
-    vec4 diffuse1Color=texture2D(u_diffuseMap1Sampler,v_diffuse1TexCoord);
-    vec4 diffuse2Color=texture2D(u_diffuseMap2Sampler,v_diffuse2TexCoord);
-    vec4 diffuse3Color=texture2D(u_diffuseMap3Sampler,v_diffuse3TexCoord);
+    vec4 diffuse1Color=texture2D(u_diffuseMap1Sampler,v_diffuseMap1TexCoord);
+    vec4 diffuse2Color=texture2D(u_diffuseMap2Sampler,v_diffuseMap2TexCoord);
+    vec4 diffuse3Color=texture2D(u_diffuseMap3Sampler,v_diffuseMap3TexCoord);
 
     diffuse1Color.rgb*=baseColor.r;
     diffuse2Color.rgb=mix(diffuse1Color.rgb,diffuse2Color.rgb,baseColor.g);

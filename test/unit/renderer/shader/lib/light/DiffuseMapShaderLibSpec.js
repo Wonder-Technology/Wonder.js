@@ -35,20 +35,20 @@ describe("DiffuseMapShaderLib", function () {
                 material.diffuseMap = wd.ImageTexture.create({});
             });
 
-            it("send diffuseSourceRegion", function () {
+            it("send diffuseMapSourceRegion", function () {
                 material.diffuseMap.sourceRegion = wd.RectRegion.create(0,64,100,200);
                 material.diffuseMap.sourceRegionMethod = wd.ETextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL;
 
                 lib.sendShaderVariables(program, cmd, material);
 
-                expect(program.sendUniformData).toCalledWith("u_diffuseSourceRegion", wd.EVariableType.VECTOR_4, material.diffuseMap.sourceRegionForGLSL);
+                expect(program.sendUniformData).toCalledWith("u_diffuseMapSourceRegion", wd.EVariableType.VECTOR_4, material.diffuseMap.sourceRegionForGLSL);
             });
-            it("send diffuseRepeatRegion", function () {
+            it("send diffuseMapRepeatRegion", function () {
                 material.diffuseMap.repeatRegion = wd.RectRegion.create(0,64,100,200);
 
                 lib.sendShaderVariables(program, cmd, material);
 
-                expect(program.sendUniformData).toCalledWith("u_diffuseRepeatRegion", wd.EVariableType.VECTOR_4, material.diffuseMap.repeatRegion);
+                expect(program.sendUniformData).toCalledWith("u_diffuseMapRepeatRegion", wd.EVariableType.VECTOR_4, material.diffuseMap.repeatRegion);
             });
         });
 
@@ -57,15 +57,15 @@ describe("DiffuseMapShaderLib", function () {
                 material.diffuseMap = wd.MarbleProceduralTexture.create();
             });
 
-            it("send diffuseSourceRegion", function () {
+            it("send diffuseMapSourceRegion", function () {
                 lib.sendShaderVariables(program, cmd, material);
 
-                expect(program.sendUniformData).toCalledWith("u_diffuseSourceRegion", wd.EVariableType.VECTOR_4, wd.RectRegion.create(0, 0, 1, 1));
+                expect(program.sendUniformData).toCalledWith("u_diffuseMapSourceRegion", wd.EVariableType.VECTOR_4, wd.RectRegion.create(0, 0, 1, 1));
             });
-            it("send diffuseRepeatRegion", function () {
+            it("send diffuseMapRepeatRegion", function () {
                 lib.sendShaderVariables(program, cmd, material);
 
-                expect(program.sendUniformData).toCalledWith("u_diffuseRepeatRegion", wd.EVariableType.VECTOR_4, wd.RectRegion.create(0, 0, 1, 1));
+                expect(program.sendUniformData).toCalledWith("u_diffuseMapRepeatRegion", wd.EVariableType.VECTOR_4, wd.RectRegion.create(0, 0, 1, 1));
             });
         });
     });
@@ -84,11 +84,11 @@ describe("DiffuseMapShaderLib", function () {
         it("send u_diffuseMapSampler", function(){
             expect(uniformVariableArr.indexOf("u_diffuseMapSampler") > -1).toBeTruthy();
         });
-        it("send u_diffuseSourceRegion", function(){
-            expect(uniformVariableArr.indexOf("u_diffuseSourceRegion") > -1).toBeTruthy();
+        it("send u_diffuseMapSourceRegion", function(){
+            expect(uniformVariableArr.indexOf("u_diffuseMapSourceRegion") > -1).toBeTruthy();
         });
-        it("send u_diffuseRepeatRegion", function(){
-            expect(uniformVariableArr.indexOf("u_diffuseRepeatRegion") > -1).toBeTruthy();
+        it("send u_diffuseMapRepeatRegion", function(){
+            expect(uniformVariableArr.indexOf("u_diffuseMapRepeatRegion") > -1).toBeTruthy();
         });
     });
 });

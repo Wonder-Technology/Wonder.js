@@ -18,8 +18,8 @@ module wd{
         public sendShaderVariables(program: Program, cmd:QuadCommand, material:LightMaterial){
             var diffuseMap:ImageTexture|ProceduralTexture = <ImageTexture|ProceduralTexture>material.diffuseMap;
 
-            this.sendUniformData(program, "u_diffuseSourceRegion", diffuseMap.sourceRegionForGLSL);
-            this.sendUniformData(program, "u_diffuseRepeatRegion", diffuseMap.repeatRegion);
+            this.sendUniformData(program, "u_diffuseMapSourceRegion", diffuseMap.sourceRegionForGLSL);
+            this.sendUniformData(program, "u_diffuseMapRepeatRegion", diffuseMap.repeatRegion);
 
             return this;
         }
@@ -29,7 +29,7 @@ module wd{
 
             this.addUniformVariable([
                 VariableNameTable.getVariableName("diffuseMap"),
-                "u_diffuseSourceRegion", "u_diffuseRepeatRegion"
+                "u_diffuseMapSourceRegion", "u_diffuseMapRepeatRegion"
             ]);
         }
     }
