@@ -177,7 +177,6 @@ module wd{
             value:EVariableCategory.ENGINE
         };
 
-        //todo rename
         public static u_diffuseMapRepeatRegion:ShaderVariable = {
             type:EVariableType.VECTOR_4,
             value:EVariableCategory.ENGINE

@@ -21,21 +21,22 @@
             'test/helper/jquery.js',
             'test/helper/yTool.js',
 
-            'test/helper/jsExtend.js',
+            //'test/helper/jsExtend.js',
             'test/helper/jasmine/**',
             'test/helper/sinonJs/*.js',
             'test/helper/yoop/yOOP.js',
             'test/helper/YYCToolBox/**/js/fileOperator.js',
 
             'test/unit/**/*Tool.js',
-            'test/unit/*Tool.js',
-
+            'test/render/**/*Tool.js',
 
             'test/render/helper/*.js',
 
-            //'test/render/test/**',
 
-            'test/render/test/**/terrain*',
+            'test/render/test/**',
+
+            //'test/render/test/**/terrain*',
+            //'test/render/test/**/clone*',
 
             //'test/render/test/**/instance*',
             //'test/render/test/**/hard*',

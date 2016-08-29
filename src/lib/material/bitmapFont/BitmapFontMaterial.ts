@@ -35,44 +35,46 @@ module wd{
             this._bitmap = map;
         }
 
-        private _pageMapList:wdCb.Collection<ImageTexture> = null;
-        @requireSetter(function(pageMapList:wdCb.Collection<ImageTexture>){
-            it("pageMapList should be Collection type", function () {
-                expect(pageMapList).instanceOf(wdCb.Collection);
+        private _pageMapData:Array<ImageTexture> = null;
+        @requireSetter(function(pageMapData:Array<ImageTexture>){
+            it("pageMapData should be Array type", function () {
+                expect(pageMapData).be.a("array");
             });
         })
-        @cloneAttributeAsCloneable()
-        get pageMapList(){
-            return this._pageMapList;
+        @cloneAttributeAsCustomType(function(source:BitmapFontMaterial, target:BitmapFontMaterial, memberName:string){
+            target[memberName] = CloneUtils.cloneArray(source[memberName], true);
+        })
+        get pageMapData(){
+            return this._pageMapData;
         }
-        set pageMapList(pageMapList:wdCb.Collection<ImageTexture>){
-            this._pageMapList = pageMapList;
+        set pageMapData(pageMapData:Array<ImageTexture>){
+            this._pageMapData = pageMapData;
         }
 
         @virtual
         @require(function(){
             it("should only set pageMap or bitmap ", function () {
                 expect(
-                    (this.pageMapList !== 0 && this.bitmap === null)
-                    || (this.pageMapList === null && this.bitmap !== null)
+                    (this.pageMapData !== null && this.bitmap === null)
+                    || (this.pageMapData === null && this.bitmap !== null)
                 ).true;
             }, this);
 
             describe("if has multi pages", function(){
-                it("each map in pageMapList should be all flipY or all not", function () {
-                    var count = this.pageMapList.filter((map:ImageTexture) => {
+                it("each map in pageMapData should be all flipY or all not", function () {
+                    var count = this.pageMapData.filter((map:ImageTexture) => {
                         return map.flipY === true;
-                    }).getCount();
+                    }).length;
 
-                    expect(count === 0 || count === this.pageMapList.getCount()).true;
+                    expect(count === 0 || count === this.pageMapData.length).true;
                 });
             }, function(){
-                return this.pageMapList !== null && this.pageMapList.getCount() > 0;
+                return this.pageMapData !== null && this.pageMapData.length > 0;
             }, this);
         })
         public isMapFlipY():boolean{
-            if(this.pageMapList !== null && this.pageMapList.getCount() > 0){
-                return this.pageMapList.getChild(0).flipY;
+            if(this.pageMapData !== null && this.pageMapData.length > 0){
+                return this.pageMapData[0].flipY;
             }
 
             return this.bitmap.flipY;
@@ -86,7 +88,7 @@ module wd{
 
         public init(){
             if(this._hasMultiPages()){
-                this.mapManager.addMapArray("u_pageSampler2Ds", this.pageMapList.toArray());
+                this.mapManager.addMapArray("u_pageSampler2Ds", this.pageMapData);
             }
 
             super.init();
@@ -97,8 +99,8 @@ module wd{
                 return this.bitmap;
             }
 
-            if(this.pageMapList){
-                return this.pageMapList.getChild(0);
+            if(this.pageMapData){
+                return this.pageMapData[0];
             }
 
             return null;
@@ -130,7 +132,7 @@ module wd{
         @ensure(function(hasMultiPages:boolean){
             if(hasMultiPages){
                 it("should has one page map at least", function () {
-                    expect(this.pageMapList.getCount()).greaterThan(0);
+                    expect(this.pageMapData.length).greaterThan(0);
                 }, this);
             }
         })

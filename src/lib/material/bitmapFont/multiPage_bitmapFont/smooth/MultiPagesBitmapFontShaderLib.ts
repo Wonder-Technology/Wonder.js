@@ -29,18 +29,18 @@ module wd{
             this.addAttributeVariable(["a_page"]);
             this.addUniformVariable(["u_pageSampler2Ds"]);
 
-            this.fsSourceBody += material.pageMapList.map((map:ImageTexture, index:number) => {
+            this.fsSourceBody += material.pageMapData.map((map:ImageTexture, index:number) => {
                     var cond = index === 0 ? 'if' : 'else if';
 
                     return `${cond}(v_page == ${index}.0) {
                     totalColor *= texture2D(u_pageSampler2Ds[${index}], v_bitmapCoord);
                     }`;
-                }).toArray().join('\n')
+                }).join('\n')
                 + "\n";
 
             this.fsSourceDefineList.addChildren([{
                 name: "PAGE_COUNT",
-                value: material.pageMapList.getCount()
+                value: material.pageMapData.length
             }]);
         }
     }

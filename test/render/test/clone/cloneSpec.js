@@ -938,7 +938,7 @@ describe("clone", function () {
 
                     var material = wd.TerrainMaterial.create();
 
-                    material.layer.mapDataList = wdCb.Collection.create([
+                    material.layer.mapData = [
                         {
                             minHeight:10,
                             maxHeight:20,
@@ -949,7 +949,7 @@ describe("clone", function () {
                             maxHeight:50,
                             diffuseMap:wd.FireProceduralTexture.create()
                         }
-                    ]);
+                    ];
 
 
 
@@ -963,10 +963,8 @@ describe("clone", function () {
                     var geometry = wd.TerrainGeometry.create();
                     geometry.material = material;
                     geometry.subdivisions = 100;
-                    geometry.range = {
-                        width:100,
-                        height:100
-                    };
+                    geometry.rangeWidth = 100;
+                    geometry.rangeHeight = 100;
                     geometry.minHeight = 0;
                     geometry.maxHeight = 50;
                     geometry.heightMapAsset = wd.LoaderManager.getInstance().get("heightMap");

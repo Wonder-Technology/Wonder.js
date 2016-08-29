@@ -32,7 +32,7 @@ describe("multi pages bitmapFont test", function () {
             hasMultiPages:sandbox.stub().returns(true)
         }
 
-        material.pageMapList = wdCb.Collection.create();
+        material.pageMapData = [];
     });
 
     describe("test pageMapSampler array", function(){
@@ -57,9 +57,9 @@ describe("multi pages bitmapFont test", function () {
 
 
 
-            material.pageMapList = wdCb.Collection.create([
+            material.pageMapData = [
                 map1, map2, map3
-            ]);
+            ];
 
 
 
@@ -125,7 +125,7 @@ describe("multi pages bitmapFont test", function () {
                     map1 = wd.ImageTexture.create();
                     map2 = wd.ImageTexture.create();
 
-                    material.pageMapList = wdCb.Collection.create([map1, map2]);
+                    material.pageMapData = [map1, map2];
                 });
 
                 it("sample the corresponding page's map", function () {

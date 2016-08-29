@@ -23,7 +23,7 @@
             'test/helper/jquery.js',
             'test/helper/yTool.js',
 
-            'test/helper/jsExtend.js',
+            //'test/helper/jsExtend.js',
             'test/helper/jasmine/**',
             'test/helper/sinonJs/*.js',
             'test/helper/yoop/yOOP.js',

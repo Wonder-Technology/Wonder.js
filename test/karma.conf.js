@@ -20,14 +20,13 @@
         'test/helper/jquery.js',
         'test/helper/yTool.js',
 
-        'test/helper/jsExtend.js',
+        //'test/helper/jsExtend.js',
         'test/helper/jasmine/**',
         'test/helper/sinonJs/*.js',
         'test/helper/yoop/yOOP.js',
         'test/unit/**/*Tool.js',
-        'test/unit/*Tool.js',
 
-        //'test/unit/**',
+        'test/unit/**',
 
 
         //'test/render/*Tool.js',
@@ -146,8 +145,8 @@
         //'test/unit/lib/**',
 
         //'test/unit/**/terrain*',
-        'test/unit/**/terrainLayer*',
-        'test/unit/**/terrainMix*',
+        //'test/unit/**/terrainLayer*',
+        //'test/unit/**/terrainMix*',
 
         //'test/unit/**/shaderLibSpec*',
         //'test/unit/**/*ShaderLib*',
@@ -254,6 +253,8 @@
         //'test/unit/**/TwoDBitmapFontSpec*',
         //'test/unit/**/ThreeDBitmapFontSpec*',
         //'test/unit/**/bitmapFont/**',
+        //'test/unit/**/multi*',
+        //'test/unit/**/Bitmap*',
         //
         //'test/unit/**/DirectorSpec*',
         //

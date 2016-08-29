@@ -24,9 +24,9 @@ describe("BitmapFontMaterial", function () {
         it("else if page map exist, return first page map", function () {
             var map1 = {},
                 map2 = {a:1};
-            material.pageMapList = wdCb.Collection.create([
+            material.pageMapData = [
                 map1, map2
-            ]);
+            ];
 
             expect(material.getTextureForRenderSort()).toEqual(map1);
         });
@@ -56,21 +56,21 @@ describe("BitmapFontMaterial", function () {
             expect(result.mapManager === material.mapManager).toBeFalsy();
             expect(result.bitmap).toEqual(resultImageTexture);
         });
-        it("shallow clone pageMapList", function () {
+        it("deep clone pageMapData", function () {
             var imageTexture = wd.ImageTexture.create({});
             var resultImageTexture = wd.ImageTexture.create({a: 1});
 
             sandbox.stub(imageTexture, "clone").returns(resultImageTexture);
 
             cloneTool.extend(material, {
-                pageMapList:wdCb.Collection.create([imageTexture])
+                pageMapData:[imageTexture]
             });
 
 
             var result = material.clone();
 
-            expect(result.pageMapList === material.pageMapList).toBeFalsy();
-            expect(result.pageMapList).toEqual(material.pageMapList);
+            expect(result.pageMapData === material.pageMapData).toBeFalsy();
+            expect(result.pageMapData).toEqual([resultImageTexture]);
         });
         it("clone enableSdf,sdfType,alphaTest", function () {
             var sdfType = wd.SdfBitmapFontType.SMOOTH,

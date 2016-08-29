@@ -263,12 +263,12 @@ describe("threeD ui", function () {
 
                     var material = wd.BitmapFontMaterial.create();
                     material.color = wd.Color.create("rgb(255,0,255)");
-                    material.pageMapList = wdCb.Collection.create([
+                    material.pageMapData = [
                         texture0,
                         texture1,
                         texture2,
                         texture3
-                    ]);
+                    ];
                     material.blendType = wd.EBlendType.NORMAL;
 
 
