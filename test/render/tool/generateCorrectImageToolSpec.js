@@ -1,124 +1,127 @@
-var instanceTool = (function(){
-    return {
-        getInstancePosition:function(index, range, count){
-            return wd.Vector3.create(range / 2 - this._getVal(index, count) * range, range / 2 - this._getVal(index + 1, count) * range, range / 2 - this._getVal(index+ 2, count) * range);
-        },
-        getShadowInstancePosition:function(index, range, count){
-            return wd.Vector3.create(range / 2 - this._getVal(index, count) * range, 60, 0);
-        },
-        getSpecificInstancePosition:function(index, range, count, x,y,z){
-            var x = x !== null ? x : (range / 2 - this._getVal(index, count) * range);
-            var y = y !== null ? y : (range / 2 - this._getVal(index + 1, count) * range);
-            var z = z !== null ? z :(range / 2 - this._getVal(index + 2, count) * range);
-
-            return wd.Vector3.create(x, y, z);
-        },
-        getInstanceRotation:function(index, count){
-            var val = this._getVal(index, count);
-
-            return wd.Vector3.create(90 * val, 90 * val,0);
-        },
-        getInstanceScale:function(index, count){
-            return wd.Vector3.create(3,3,3);
-        },
-        _getVal:function(index, count){
-            return randomTool.getFixedRandomNum(index);
-        }
-    }
-})();
 describe("generate correct image lightTool", function () {
     var sandbox;
     var tester;
 
     function body(wrapper){
         wrapper.load([
-                {url: "../../asset/texture/1.jpg", id: "texture"},
-                {url: "../../asset/texture/skybox/px.jpg", id: "px"},
-                {url: "../../asset/texture/skybox/nx.jpg", id: "nx"},
-                {url: "../../asset/texture/skybox/py.jpg", id: "py"},
-                {url: "../../asset/texture/skybox/ny.jpg", id: "ny"},
-                {url: "../../asset/texture/skybox/pz.jpg", id: "pz"},
-                {url: "../../asset/texture/skybox/nz.jpg", id: "nz"}
-            ])
-            .do(initSample);
+            {url: "../../asset/texture/terrain/heightMap.png", id: "heightMap"},
+            {url: "../../asset/texture/terrain/mixMap.png", id: "mixMap"},
+            {url: "../../asset/texture/terrain/floor.png", id: "floor"},
+            {url: "../../asset/texture/terrain/grass.png", id: "grass"},
+            {url: "../../asset/texture/terrain/rock.png", id: "rock"},
+
+
+            {url: "../../asset/texture/terrain/floorn.png", id: "floorn"},
+            {url: "../../asset/texture/terrain/grassn.png", id: "grassn"},
+            {url: "../../asset/texture/terrain/rockn.png", id: "rockn"}
+                ])
+                .do(initSample);
 
         function initSample() {
             var director = wd.Director.getInstance();
 
-            director.scene.addChild(createSkybox());
-            director.scene.addChild(createSphere());
+            director.scene.addChild(createTerrain());
+            director.scene.addChild(createAmbientLight());
+            director.scene.addChild(createDirectionLight());
             director.scene.addChild(createCamera());
 
             director.start();
         }
 
-        function createSkybox() {
-            var cubemap = wd.CubemapTexture.create(
-                [
-                    {
-                        asset: wd.LoaderManager.getInstance().get("px"),
-                        sourceRegion:wd.RectRegion.create(0, 0, 256, 256),
-                        type:wd.ETextureType.UNSIGNED_BYTE
-                    },
-                    {
-                        asset: wd.LoaderManager.getInstance().get("nx"),
-                        sourceRegion:wd.RectRegion.create(0, 0, 256, 256)
-                    },
-                    {
-                        asset: wd.LoaderManager.getInstance().get("py"),
-                        sourceRegion:wd.RectRegion.create(0, 0, 256, 256)
-                    },
-                    {
-                        asset: wd.LoaderManager.getInstance().get("ny"),
-                        sourceRegion:wd.RectRegion.create(0, 0, 256, 256)
-                    },
-                    {
-                        asset: wd.LoaderManager.getInstance().get("pz"),
-                        sourceRegion:wd.RectRegion.create(0, 0, 256, 256)
-                    },
-                    {
-                        asset: wd.LoaderManager.getInstance().get("nz"),
-                        sourceRegion:wd.RectRegion.create(0, 0, 256, 256)
-                    }
-                ]
-            );
-            cubemap.textures.getChild(5).sourceRegion = wd.RectRegion.create(128, 128, 256, 256);
-
-            var material = wd.SkyboxMaterial.create();
-            material.envMap = cubemap;
+        function createTerrain() {
+            var material = wd.TerrainMaterial.create();
 
 
-            var geometry = wd.BoxGeometry.create();
+            var grass = wd.GrassProceduralTexture.create();
+            grass.repeatRegion = wd.RectRegion.create(0.8, 0.2, 10, 10);
+            grass.wrapS = wd.ETextureWrapMode.REPEAT;
+            grass.wrapT = wd.ETextureWrapMode.REPEAT;
+//
+//
+//
+            var floor = wd.LoaderManager.getInstance().get("floor").toTexture();
+            floor.repeatRegion = wd.RectRegion.create(0.8, 0.2, 10, 10);
+            floor.wrapS = wd.ETextureWrapMode.REPEAT;
+            floor.wrapT = wd.ETextureWrapMode.REPEAT;
+
+            material.mix.mapData = {
+                mixMap:wd.LoaderManager.getInstance().get("mixMap").toTexture(),
+                diffuseMap1:floor,
+                diffuseMap2:wd.LoaderManager.getInstance().get("rock").toTexture(),
+                diffuseMap3:grass,
+
+                bumpMap1:wd.LoaderManager.getInstance().get("floorn").toTexture(),
+                bumpMap2:wd.LoaderManager.getInstance().get("rockn").toTexture(),
+                bumpMap3:wd.LoaderManager.getInstance().get("grassn").toTexture()
+            };
+
+
+            material.layer.mapData = [
+                {
+                    minHeight:30,
+                    maxHeight:40,
+                    diffuseMap:wd.CloudProceduralTexture.create()
+                },
+                {
+                    minHeight:40,
+                    maxHeight:50,
+                    diffuseMap:wd.FireProceduralTexture.create()
+                }
+            ];
+
+
+
+
+            material.shading = wd.EShading.SMOOTH;
+
+
+            var geometry = wd.TerrainGeometry.create();
             geometry.material = material;
-            geometry.width = 5;
-            geometry.height = 5;
-            geometry.depth = 5;
+            geometry.subdivisions = 50;
 
+//            geometry.rangeWidth = 50;
+//            geometry.rangeHeight = 50;
 
-            var gameObject = wd.GameObject.create();
+            geometry.minHeight = 0;
+            geometry.maxHeight = 50;
+            geometry.heightMapAsset = wd.LoaderManager.getInstance().get("heightMap");
+            geometry.isHeightMapStoreHeightInEachPixel = false;
+//            geometry.drawMode = wd.EDrawMode.LINE_STRIP;
 
-            gameObject.addComponent(wd.SkyboxRenderer.create());
-            gameObject.addComponent(geometry);
-
-            return gameObject;
-        }
-
-        function createSphere() {
-            var material = wd.BasicMaterial.create();
-            material.map = wd.LoaderManager.getInstance().get("texture");
-
-            var geometry = wd.SphereGeometry.create();
-            geometry.material = material;
-            geometry.radius = 5;
 
             var gameObject = wd.GameObject.create();
             gameObject.addComponent(geometry);
 
             gameObject.addComponent(wd.MeshRenderer.create());
 
+
             return gameObject;
         }
 
+        function createAmbientLight() {
+            var ambientLightComponent = wd.AmbientLight.create();
+            ambientLightComponent.color = wd.Color.create("rgb(30, 30, 30)");
+
+            var ambientLight = wd.GameObject.create();
+            ambientLight.addComponent(ambientLightComponent);
+
+            return ambientLight;
+        }
+
+        function createDirectionLight() {
+            var directionLightComponent = wd.DirectionLight.create();
+            directionLightComponent.color = wd.Color.create("#ffffff");
+            directionLightComponent.intensity = 1;
+
+
+            var directionLight = wd.GameObject.create();
+            directionLight.addComponent(directionLightComponent);
+
+//            directionLight.transform.translate(wd.Vector3.create(10, 20, 30));
+            directionLight.transform.translate(wd.Vector3.create(10, 20, 0));
+
+            return directionLight;
+        }
 
         function createCamera() {
             var camera = wd.GameObject.create(),
@@ -130,14 +133,15 @@ describe("generate correct image lightTool", function () {
             cameraComponent.near = 0.1;
             cameraComponent.far = 1000;
 
-            var controller = wd.FlyCameraController.create(cameraComponent);
-            camera.addComponent(controller);
+            var controller = wd.ArcballCameraController.create(cameraComponent);
+            controller.theta = Math.PI / 5;
+            controller.distance = 400;
 
-            camera.transform.translate(0, 0, 20);
-            camera.transform.lookAt(5, 5, 0);
+            camera.addComponent(controller);
 
             return camera;
         }
+
     }
 
 
@@ -160,8 +164,8 @@ describe("generate correct image lightTool", function () {
             [
                 {
                     frameIndex:1,
-                    imageName:"skybox_texture_part"
-                },
+                    imageName:"terrain_mixTexture_layerTexture"
+                }
             ]
         );
     });

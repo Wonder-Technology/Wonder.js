@@ -33,8 +33,9 @@
 
             'test/render/helper/*.js',
 
-            'test/render/test/**',
+            //'test/render/test/**',
 
+            'test/render/test/**/terrain*',
 
             //'test/render/test/**/instance*',
             //'test/render/test/**/hard*',
