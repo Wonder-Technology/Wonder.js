@@ -14,7 +14,7 @@ varying vec2 v_layerTexCoord;
 @end
 
 @funcDefine
-vec4 getLayerTextureColor(in sampler2D layerSampler2Ds[LAYER_COUNT], in LayerHeightData layerHeightDatas[LAYER_COUNT]){
+vec4 getLayerMapColor(in sampler2D layerSampler2Ds[LAYER_COUNT], in LayerHeightData layerHeightDatas[LAYER_COUNT]){
     vec4 color = vec4(0.0);
     bool isInLayer = false;
 
@@ -41,5 +41,5 @@ vec4 getLayerTextureColor(in sampler2D layerSampler2Ds[LAYER_COUNT], in LayerHei
 
 @body
 
-totalColor *= getLayerTextureColor(u_layerSampler2Ds, u_layerHeightDatas);
+totalColor *= getLayerMapColor(u_layerSampler2Ds, u_layerHeightDatas);
 @end

@@ -6,7 +6,7 @@ varying vec2 v_diffuseMap3TexCoord;
 @end
 
 @funcDefine
-vec4 getMixTextureColor(){
+vec4 getMixMapColor(){
     if (baseColor.a<0.4){
         discard;
     }
@@ -25,5 +25,5 @@ vec4 getMixTextureColor(){
 
 
 @body
-totalColor *= getMixTextureColor();
+totalColor *= getMixMapColor();
 @end
