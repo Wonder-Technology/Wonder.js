@@ -9,7 +9,7 @@ module wd{
         public type:string = "water_bump";
 
         public sendShaderVariables(program: Program, cmd:QuadCommand, material:WaterMaterial){
-            program.sendUniformData("u_windMatrix", EVariableType.FLOAT_MAT4, material.wind.matrix);
+            this.sendUniformData(program, "u_windMatrix", material.wind.matrix);
         }
 
         public setShaderDefinition(cmd:QuadCommand, material:WaterMaterial){

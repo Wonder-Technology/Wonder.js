@@ -507,6 +507,11 @@ module wd{
             type:EVariableType.SAMPLER_2D,
             value:EVariableCategory.ENGINE
         };
+
+        public static u_windData:ShaderVariable = {
+            type:EVariableType.STRUCTURES,
+            value:EVariableCategory.ENGINE
+        };
     }
 
     export type ShaderVariable = {
