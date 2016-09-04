@@ -22,7 +22,6 @@ module wd{
 
             material.mapData.forEach((mapData:GrassMapData, index:number) => {
                 program.sendStructureData(`u_grassMapDatas[${index}].sourceRegion`, EVariableType.VECTOR_4, GlobalTextureUtils.convertSourceRegionCanvasMapToUV(mapData.sourceRegion, grassMap.width, grassMap.height));
-                program.sendStructureData(`u_grassMapDatas[${index}].repeatRegion`, EVariableType.VECTOR_4, !!mapData.repeatRegion ? mapData.repeatRegion : RectRegion.create(0,0,1,1));
             });
         }
 

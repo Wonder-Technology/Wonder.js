@@ -11,6 +11,7 @@ module wd{
         @cloneAttributeAsCloneable()
         public grassMap:ImageTexture|ProceduralTexture = null;
         //todo assert
+        //todo should only has 3 data
         //todo change to getter/setter
         //todo clone
         public mapData:Array<GrassMapData> = [];
@@ -53,7 +54,6 @@ module wd{
 
     export type GrassMapData = {
         sourceRegion:RectRegion;
-        repeatRegion?:RectRegion;
     }
 }
 
