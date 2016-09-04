@@ -18,8 +18,8 @@
         }).init();
 
         wd.LoaderManager.getInstance().load([
-//            {url: "../../asset/texture/terrain/heightMap.png", id: "heightMap"},
-//            {url: "../../asset/texture/terrain/ground.jpg", id: "ground"}
+            {url: "../../asset/texture/terrain/heightMap.png", id: "heightMap"},
+            {url: "../../asset/texture/terrain/ground.jpg", id: "ground"},
             {url: "../../asset/texture/grass/grassPack.png", id: "grassPack"}
         ]).subscribe(null, null, function () {
             initSample();
@@ -28,12 +28,11 @@
         function initSample() {
             var director = wd.Director.getInstance();
 
-//            var terrain = createTerrain();
+            var terrain = createTerrain();
 //
-//            var boxes = createBoxes(terrain);
 
-            director.scene.addChildren(createGrasses());
-//            director.scene.addChildren(boxes);
+            director.scene.addChild(terrain);
+            director.scene.addChildren(createGrasses(terrain));
             director.scene.addChild(createAmbientLight());
             director.scene.addChild(createDirectionLight());
             director.scene.addChild(createCamera());
@@ -41,7 +40,40 @@
             director.start();
         }
 
-        function createGrasses(){
+        function createTerrain() {
+            var groundMap = wd.LoaderManager.getInstance().get("ground").toTexture();
+            var material = wd.LightMaterial.create();
+            material.diffuseMap = groundMap;
+            material.shading = wd.EShading.SMOOTH;
+
+
+            var geometry = wd.TerrainGeometry.create();
+            geometry.material = material;
+            geometry.subdivisions = 100;
+            geometry.range = {
+                width:100,
+                height:100
+            };
+            geometry.minHeight = 0;
+            geometry.maxHeight = 50;
+            geometry.heightMapAsset = wd.LoaderManager.getInstance().get("heightMap");
+//            geometry.drawMode = wd.EDrawMode.LINE_STRIP;
+            geometry.isHeightMapStoreHeightInEachPixel = false;
+
+
+            var gameObject = wd.GameObject.create();
+            gameObject.addComponent(geometry);
+
+            gameObject.addComponent(wd.MeshRenderer.create());
+
+            gameObject.transform.position = wd.Vector3.create(0, 10, 0);
+            gameObject.transform.scale = wd.Vector3.create(1,2,1);
+
+
+            return gameObject;
+        }
+
+        function createGrasses(terrain){
             var grassMap = wd.LoaderManager.getInstance().get("grassPack").toTexture();
             var width = grassMap.width / 4,
                     height = grassMap.height;
@@ -62,10 +94,14 @@
 
             var grassArr = [];
 
+            var y1 = terrain.getComponent(wd.TerrainGeometry).getHeightAtCoordinates(-10, 0) + 10;
+            var y2 = terrain.getComponent(wd.TerrainGeometry).getHeightAtCoordinates(0, 0) + 10;
+            var y3 = terrain.getComponent(wd.TerrainGeometry).getHeightAtCoordinates(10, 0) + 10;
 
-            grassArr.push(createGrass(grassMap, mapData.slice(1,3), wd.Vector3.create(-10,0,0)));
-            grassArr.push(createGrass(grassMap, mapData.slice(0,2), wd.Vector3.create(0,0,0)));
-            grassArr.push(createGrass(grassMap, mapData.slice(1,3), wd.Vector3.create(10,0,0)));
+
+            grassArr.push(createGrass(grassMap, mapData.slice(1,3), wd.Vector3.create(-10,y1,0)));
+            grassArr.push(createGrass(grassMap, mapData.slice(0,2), wd.Vector3.create(0,y2,0)));
+            grassArr.push(createGrass(grassMap, mapData.slice(1,3), wd.Vector3.create(10,y3,0)));
 
             return grassArr;
         }
@@ -78,7 +114,7 @@
 
 
             material.mapData = mapData;
-//            material.wind.strength = 0.002;
+            material.wind.strength = 0.02;
 
 
 
@@ -139,9 +175,9 @@
             cameraComponent.far = 1000;
 
             var controller = wd.ArcballCameraController.create(cameraComponent);
-//            controller.theta = Math.PI / 4;
-//            controller.phi = -Math.PI / 4;
-            controller.distance = 50;
+            controller.theta = Math.PI / 4;
+            controller.phi = -Math.PI / 4;
+            controller.distance = 200;
 
             camera.addComponent(controller);
 
