@@ -492,6 +492,21 @@ module wd{
             type:EVariableType.VECTOR_4,
             value:EVariableCategory.ENGINE
         };
+
+        public static u_grassMapDatas:ShaderVariable = {
+            type:EVariableType.STRUCTURES,
+            value:EVariableCategory.ENGINE
+        };
+
+        public static a_quadIndex:ShaderVariable = {
+            type:EVariableType.FLOAT_1,
+            value:EVariableCategory.ENGINE
+        };
+
+        public static u_grassMapSampler:ShaderVariable = {
+            type:EVariableType.SAMPLER_2D,
+            value:EVariableCategory.ENGINE
+        };
     }
 
     export type ShaderVariable = {

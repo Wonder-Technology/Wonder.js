@@ -20,7 +20,7 @@ gulp.task("build", gulpSync.sync(["clean", "createInnerFile", "parseTsconfigFile
 gulp.task("testAll", gulpSync.sync(["build", "testSingleRunByKarma", "renderTest"]));
 
 
-var tsFilePaths = ["src/*.ts", "src/**/*.ts"];
+var tsFilePaths = ["src/**/*.ts"];
 var glslFilePaths = ["src/renderer/shader/chunk/glsl/**/*.glsl", "src/lib/**/*.glsl"];
 
 gulp.task("watch", function(){

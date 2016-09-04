@@ -12,6 +12,7 @@ module wd{
             return this.mapManager.getMapList();
         }
 
+        //todo add map when init
         @requireSetter(function(map:any){
             if(map instanceof Texture || map instanceof TextureAsset){
             }

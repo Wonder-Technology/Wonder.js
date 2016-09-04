@@ -1,6 +1,7 @@
 module wd{
     export abstract class StandardLightMaterial extends EngineMaterial{
         private _lightMap:Texture = null;
+        //todo add map when init
         @requireSetter(function(lightMap:Texture){
             assert(lightMap instanceof ImageTexture || lightMap instanceof ProceduralTexture, Log.info.FUNC_SHOULD("lightMap", "be ImageTexture or ProceduralTexture"));
         })

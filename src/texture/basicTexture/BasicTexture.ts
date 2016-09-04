@@ -179,27 +179,10 @@ module wd{
             }
         }
 
-        private _convertSourceRegionCanvasMapToUV(sourceRegion:RectRegion){
-            var width = this.width,
-                height = this.height,
-                region:RectRegion = null;
-
-            region = RectRegion.create(
-                sourceRegion.x / width,
-                sourceRegion.y / height,
-                sourceRegion.width / width,
-                sourceRegion.height / height
-            );
-
-            region.y = 1 - region.y - region.height;
-
-            return region;
-        }
-
         //todo optimize: add dirty cache
         private _convertSourceRegionToUV(sourceRegion:RectRegion){
             if(this.sourceRegionMapping === ETextureSourceRegionMapping.CANVAS){
-                return this._convertSourceRegionCanvasMapToUV(sourceRegion);
+                return GlobalTextureUtils.convertSourceRegionCanvasMapToUV(sourceRegion, this.width, this.height);
             }
             else if(this.sourceRegionMapping === ETextureSourceRegionMapping.UV){
                 return sourceRegion;

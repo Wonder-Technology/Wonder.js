@@ -20,6 +20,8 @@ module wd{
 
     _table.addChild("mixMap", "u_mixMapSampler");
 
+    _table.addChild("grassMap", "u_grassMapSampler");
+
 
     export class VariableNameTable{
         @ensure(function(variableName:string){
