@@ -37,7 +37,7 @@ module wd{
                     minHeight:data.minHeight,
                     maxHeight:data.maxHeight,
                     diffuseMap:data.diffuseMap.clone()
-                })
+                });
             }
 
             target[memberName] = t;
