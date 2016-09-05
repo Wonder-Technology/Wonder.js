@@ -8,7 +8,6 @@ module wd{
 
         public type:string = "grass_map";
 
-        //todo assert quadIndex should >= 0 && <= 2
         public sendShaderVariables(program: Program, cmd:QuadCommand, material:GrassMaterial){
             var quadIndexBuffer = <ArrayBuffer>cmd.buffers.getChild(EBufferDataType.CUSTOM, "quadIndices");
 

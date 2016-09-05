@@ -85,7 +85,7 @@
                     sourceRegion:wd.RectRegion.create(width, 0, width, height)
                 },
                 {
-                    sourceRegion:wd.RectRegion.create(width * 1, 0, width, height)
+                    sourceRegion:wd.RectRegion.create(width * 2, 0, width, height)
                 },
                 {
                     sourceRegion:wd.RectRegion.create(width * 3, 0, width, height)
@@ -99,9 +99,9 @@
             var y3 = terrain.getComponent(wd.TerrainGeometry).getHeightAtCoordinates(10, 0) + 10;
 
 
-            grassArr.push(createGrass(grassMap, mapData.slice(1,3), wd.Vector3.create(-10,y1,0)));
-            grassArr.push(createGrass(grassMap, mapData.slice(0,2), wd.Vector3.create(0,y2,0)));
-            grassArr.push(createGrass(grassMap, mapData.slice(1,3), wd.Vector3.create(10,y3,0)));
+            grassArr.push(createGrass(grassMap, mapData.slice(1,4), wd.Vector3.create(-10,y1,0)));
+            grassArr.push(createGrass(grassMap, mapData.slice(0,3), wd.Vector3.create(0,y2,0)));
+            grassArr.push(createGrass(grassMap, mapData.slice(1,4), wd.Vector3.create(10,y3,0)));
 
             return grassArr;
         }

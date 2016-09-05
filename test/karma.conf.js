@@ -38,6 +38,7 @@
 
 
         'test/unit/**/grassMap*',
+        'test/unit/**/GrassMap*',
 
 
         //'test/unit/**/procedural_texture/**',

@@ -30,12 +30,10 @@ module wd{
             };
         }
 
-        //todo assert must has quadIndices
         protected createBufferContainer():BufferContainer{
             return GrassMapBufferContainer.create(this.entityObject);
         }
 
-        //todo assert must has quadIndices
         protected createGeometryData(vertices:Array<number>, faces:Array<Face3>, texCoords:Array<number>, colors:Array<number>, morphTargets:wdCb.Hash<MorphTargetsData>):GeometryData{
                 var geometryData = GrassMapGeometryData.create(this);
 

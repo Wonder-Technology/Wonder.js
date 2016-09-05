@@ -8,13 +8,37 @@ module wd{
             return obj;
         }
 
+        private _mapData:Array<GrassMapData> = [];
+        @requireSetter(function(mapData:Array<GrassMapData>){
+            it("should contain 3 sourceRegion data", function () {
+                expect(mapData.length).equal(3);
+
+                for(let data of mapData){
+                    expect(data.sourceRegion).exist;
+                }
+            });
+        })
+        @cloneAttributeAsCustomType(function(source:GrassMaterial, target:GrassMaterial, memberName:string){
+            var s = source[memberName],
+                t:Array<GrassMapData> = [];
+
+            for(let data of s){
+                t.push({
+                    sourceRegion:data.sourceRegion.clone()
+                });
+            }
+
+            target[memberName] = t;
+        })
+        get mapData(){
+            return this._mapData;
+        }
+        set mapData(mapData:Array<GrassMapData>){
+            this._mapData = mapData;
+        }
+
         @cloneAttributeAsCloneable()
         public grassMap:ImageTexture|ProceduralTexture = null;
-        //todo assert
-        //todo should only has 3 data
-        //todo change to getter/setter
-        //todo clone
-        public mapData:Array<GrassMapData> = [];
         @cloneAttributeAsBasicType()
         public alphaTest:number = 0.0001;
         @cloneAttributeAsCloneable()
@@ -30,9 +54,6 @@ module wd{
 
         public init(){
             if(this.grassMap !== null){
-                this.grassMap.wrapS = ETextureWrapMode.REPEAT;
-                this.grassMap.wrapT = ETextureWrapMode.REPEAT;
-
                 this.mapManager.addMap(this.grassMap, {
                     samplerVariableName: VariableNameTable.getVariableName("grassMap")
                 });
@@ -75,7 +96,7 @@ module wd{
         public time:number = 0;
         @cloneAttributeAsBasicType()
         public speed:number = 0.1;
-        @cloneAttributeAsBasicType()
+        @cloneAttributeAsCloneable()
         public direction:Vector2 = Vector2.create(1, 1);
         @cloneAttributeAsBasicType()
         public strength:number = 0.002;

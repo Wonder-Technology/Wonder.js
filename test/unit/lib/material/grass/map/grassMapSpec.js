@@ -41,7 +41,125 @@ describe("grass map", function() {
         testTool.clearInstance(sandbox);
     });
 
-    //todo assert data
+    describe("mapData(setter)", function(){
+        beforeEach(function(){
+            testTool.openContractCheck(sandbox);
+        });
+
+        it("should contain 3 sourceRegion data", function () {
+            expect(function(){
+                material.mapData = [
+                    {
+                        sourceRegion:wd.RectRegion.create(1,100, 200,300)
+                    }
+                ];
+            }).toThrow("should contain 3 sourceRegion data");
+
+            expect(function(){
+                material.mapData = [
+                    {
+                        sourceRegion:wd.RectRegion.create(1,100, 200,300)
+                    },
+                    {
+                        sourceRegion:wd.RectRegion.create(1,100, 200,300)
+                    },
+                    {
+                        sourceRegion:wd.RectRegion.create(1,100, 200,300)
+                    }
+                ];
+            }).not.toThrow();
+        });
+    });
+
+    describe("clone", function(){
+        it("clone basic data", function () {
+            var alphaTest = 0.5;
+
+            cloneTool.extend(material, {
+                alphaTest:alphaTest
+            });
+
+            var result = material.clone();
+
+            expect(result.alphaTest).toEqual(alphaTest);
+        });
+        it("clone wind data", function () {
+            var wind = wd.GrassWindModel.create();
+            wind.direction = wd.Vector2.create(2,3);
+            var cloneDirection = wd.Vector2.create(1,5);
+            sandbox.stub(wind.direction, "clone").returns(cloneDirection);
+
+            wind.time = 1;
+            wind.speed = 10;
+            wind.strength = 100;
+
+
+            cloneTool.extend(material, {
+                wind:wind
+            });
+
+            var result = material.clone();
+
+            expect(result.wind.time).toEqual(wind.time);
+            expect(result.wind.speed).toEqual(wind.speed);
+            expect(result.wind.strength).toEqual(wind.strength);
+            expect(result.wind.direction).toEqual(cloneDirection);
+        });
+        it("clone grassMap", function () {
+            var grassMap = wd.ImageTexture.create({});
+            var cloneGrassMap = wd.ImageTexture.create({});
+            sandbox.stub(grassMap, "clone").returns(cloneGrassMap);
+
+            cloneTool.extend(material, {
+                grassMap:grassMap
+            });
+
+            var result = material.clone();
+
+            expect(result.grassMap).toEqual(cloneGrassMap);
+        });
+        it("deep clone mapData", function () {
+            var mapData = [
+                    {
+                        sourceRegion:wd.RectRegion.create(1,100, 200,300)
+                    },
+                    {
+                        sourceRegion:wd.RectRegion.create(1,100, 200,300)
+                    },
+                    {
+                        sourceRegion:wd.RectRegion.create(1,100, 200,300)
+                    }
+                ];
+
+            var cloneSourceRegion1 = wd.RectRegion.create(1,100, 200,300);
+            var cloneSourceRegion2 = wd.RectRegion.create(2,100, 200,300);
+            var cloneSourceRegion3 = wd.RectRegion.create(3,100, 200,300);
+
+            sandbox.stub(mapData[0].sourceRegion, "clone").returns(cloneSourceRegion1);
+            sandbox.stub(mapData[1].sourceRegion, "clone").returns(cloneSourceRegion2);
+            sandbox.stub(mapData[2].sourceRegion, "clone").returns(cloneSourceRegion3);
+
+
+            cloneTool.extend(material, {
+                mapData:mapData
+            });
+
+
+            var result = material.clone();
+
+            expect(result.mapData).toEqual([
+                    {
+                        sourceRegion:cloneSourceRegion1
+                    },
+                    {
+                        sourceRegion:cloneSourceRegion2
+                    },
+                    {
+                        sourceRegion:cloneSourceRegion3
+                    }
+            ]);
+        });
+    });
 
     describe("use grass map to implement grass", function () {
         var geometry;
