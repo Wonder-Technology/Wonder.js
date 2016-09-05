@@ -35,12 +35,12 @@ module wd {
 
             cmd.drawMode = geometry.drawMode;
 
+            cmd.mMatrix = target.transform.localToWorldMatrix;
             cmd.vMatrix = cameraComponent.worldToCameraMatrix;
             cmd.pMatrix = cameraComponent.pMatrix;
 
             cmd.material = material;
 
-            cmd.z = position.z;
 
             cmd.blend = material.blend;
 

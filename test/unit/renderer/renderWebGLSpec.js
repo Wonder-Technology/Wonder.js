@@ -408,47 +408,93 @@ describe("renderWebGL", function() {
         });
 
         describe("3. render transparent commands", function(){
-            beforeEach(function(){
-            });
+            describe("test sorted transparent commands", function(){
+                beforeEach(function(){
+                });
 
-            it("fist, render opaque commands;then lock depth buffer and render sorted transparent commands; then unlock depth buffer", function(){
+                it("render the gameObjects from far to near in camera coordinate system", function(){
                     var result1 = addCommand();
                     var result2 = addCommand();
                     var result3 = addCommand();
-                    var result4 = addCommand();
                     var quad1 = result1.cmd,
                         quad2 = result2.cmd,
-                        quad3 = result3.cmd,
-                        quad4 = result4.cmd;
+                        quad3 = result3.cmd;
 
                     quad1.blend = true;
                     quad2.blend = true;
-                    quad3.blend = false;
-                    quad4.blend = false;
+                    quad3.blend = true;
 
-                    sandbox.stub(wd.Director.getInstance().scene, "currentCamera", testTool.createCamera(wd.Vector3.create(0, 0, 10)));
 
-                    var depthWriteArr = [];
-                    testTool.stubGetterSetter(sinon, wd.DeviceManager.prototype, "depthWrite", null, function(val){
-                        depthWriteArr.push(val);
-                    });
 
-                    quad1.z = 8;
-                    quad2.z = 7;
-                    quad3.z = 2;
-                    quad4.z = -1;
+                    quad1.mMatrix = wd.ThreeDTransform.create().localToWorldMatrix;
+                    quad2.mMatrix = wd.ThreeDTransform.create()
+                        .translate(0,0,10).localToWorldMatrix;
+                    quad3.mMatrix = wd.ThreeDTransform.create()
+                        .translate(0,0,-10).localToWorldMatrix;
+
+                    var vMatrix = wd.ThreeDTransform.create()
+                        .translate(0,0,-20).lookAt(0,0,0).localToWorldMatrix;
+
+                    quad1.vMatrix = vMatrix;
+                    quad2.vMatrix = vMatrix;
+                    quad3.vMatrix = vMatrix;
+
 
                     renderer.render();
 
-                    expect(quad3.execute).toCalledBefore(quad4.execute);
-                    expect(quad4.execute).toCalledBefore(quad2.execute);
+
                     expect(quad2.execute).toCalledBefore(quad1.execute);
-                    expect(depthWriteArr).toEqual([
-                        false, true
-                    ]);
+                    expect(quad1.execute).toCalledBefore(quad3.execute);
+                });
+            });
+
+            it("fist, render opaque commands;then lock depth buffer and render sorted transparent commands; then unlock depth buffer", function(){
+                var result1 = addCommand();
+                var result2 = addCommand();
+                var result3 = addCommand();
+                var result4 = addCommand();
+                var quad1 = result1.cmd,
+                    quad2 = result2.cmd,
+                    quad3 = result3.cmd,
+                    quad4 = result4.cmd;
+
+                quad1.blend = true;
+                quad2.blend = true;
+                quad3.blend = false;
+                quad4.blend = false;
+
+                sandbox.stub(wd.Director.getInstance().scene, "currentCamera", testTool.createCamera(wd.Vector3.create(0, 0, 10)));
+
+                var depthWriteArr = [];
+                testTool.stubGetterSetter(sinon, wd.DeviceManager.prototype, "depthWrite", null, function(val){
+                    depthWriteArr.push(val);
+                });
+
+
+                quad1.mMatrix = wd.ThreeDTransform.create().localToWorldMatrix;
+                quad2.mMatrix = wd.ThreeDTransform.create()
+                    .translate(0,0,10).localToWorldMatrix;
+
+                var vMatrix = wd.ThreeDTransform.create()
+                    .translate(0,0,20).lookAt(0,0,0).localToWorldMatrix;
+
+                quad1.vMatrix = vMatrix;
+                quad2.vMatrix = vMatrix;
+
+
+
+
+                renderer.render();
+
+                expect(quad3.execute).toCalledBefore(quad4.execute);
+                expect(quad4.execute).toCalledBefore(quad2.execute);
+                expect(quad1.execute).toCalledBefore(quad2.execute);
+
+                expect(depthWriteArr).toEqual([
+                    false, true
+                ]);
             });
         });
-
 
         describe("if skyboxCommand exist, execute skyboxCommand", function(){
             it("set depthFunc to be LEQUAL, then set skyboxCommand's state, then execute skyboxCommand, then restore depthFunc to be LESS", function(){

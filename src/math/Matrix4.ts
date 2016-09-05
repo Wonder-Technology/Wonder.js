@@ -588,6 +588,7 @@ module wd{
 
         public applyMatrix (other:Matrix4, notChangeSelf:boolean = false):Matrix4{
             var a = this,
+                //todo optimize:use temp matrix4
                 b = other.clone();
 
             /*!

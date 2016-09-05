@@ -4,11 +4,11 @@ module wd {
             return this.material.program;
         }
 
+        public mMatrix:Matrix4 = null;
         public vMatrix:Matrix4 = null;
         public pMatrix:Matrix4 = null;
         public buffers:BufferContainer = null;
         public material:Material = null;
-        public z:number = null;
         public target:GameObject = null;
 
         public sortId:number = null;

@@ -37,8 +37,8 @@
 
 
 
-        'test/unit/**/grassMap*',
-        'test/unit/**/GrassMap*',
+        //'test/unit/**/grassMap*',
+        //'test/unit/**/GrassMap*',
 
 
         //'test/unit/**/procedural_texture/**',
@@ -182,7 +182,7 @@
         //'test/unit/**/ProceduralShaderSpec*',
 
         //'test/unit/**/customShaderSpec*',
-        //'test/unit/**/renderWebGL*',
+        'test/unit/**/renderWebGL*',
         //'test/unit/**/SortUtils*',
 
         //'test/unit/**/*CommandSpec*',

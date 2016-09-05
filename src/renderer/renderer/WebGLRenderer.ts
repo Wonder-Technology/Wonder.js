@@ -125,18 +125,17 @@ module wd{
             }
         })
         private _renderSortedTransparentCommands(transparentCommandArr:Array<QuadCommand>) {
-            var self = this,
-                cameraPositionZ = Director.getInstance().scene.currentCamera.transform.position.z;
+            var self = this;
 
             for (let command of SortUtils.insertSort(transparentCommandArr, (a:QuadCommand, b:QuadCommand) => {
-                    return self._getObjectToCameraZDistance(cameraPositionZ, b) < self._getObjectToCameraZDistance(cameraPositionZ, a);
+                return self._getObjectZDistanceInCameraCoordinate(a) < self._getObjectZDistanceInCameraCoordinate(b);
                 })){
                 command.execute();
             }
         }
 
-        private _getObjectToCameraZDistance(cameraPositionZ:number, cmd:QuadCommand){
-            return cameraPositionZ - cmd.z;
+        private _getObjectZDistanceInCameraCoordinate(cmd:QuadCommand){
+            return cmd.mMatrix.applyMatrix(cmd.vMatrix, true).getTranslation().z;
         }
 
         private _clearCommand(){
