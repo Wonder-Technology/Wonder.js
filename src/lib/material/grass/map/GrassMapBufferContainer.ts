@@ -26,13 +26,7 @@ module wd {
             return buffer;
         }
 
-        @cache(function(dataName:string){
-            return this.container.hasChild(dataName);
-        }, function(dataName:string){
-            return this.container.getChild(dataName)
-        }, function(result:Buffer, dataName:string){
-            this.container.addChild(dataName, result);
-        })
+        @cacheBufferForBufferContainer()
         protected getCustomData(dataName:string){
             var geometryData = this.geometryData[dataName];
 

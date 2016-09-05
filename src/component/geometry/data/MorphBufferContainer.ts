@@ -142,13 +142,7 @@ module wd {
             return this._animation.currentAnimName === null;
         }
 
-        @cache(function(type:EBufferDataType){
-            return this.container.hasChild(this._getStaticDataCacheData(type));
-        }, function(type){
-            return this.container.getChild(this._getStaticDataCacheData(type))
-        }, function(result, type){
-            this.container.addChild(this._getStaticDataCacheData(type), result);
-        })
+        @cacheBufferForBufferContainerWithFuncParam("_getStaticDataCacheData")
         private _getStaticData(type:EBufferDataType){
             var data = null,
                 result = null;

@@ -49,5 +49,50 @@ module wd{
             return descriptor;
         }
     }
+
+    export function cacheBufferForBufferContainer() {
+        return function (target, name, descriptor) {
+            var value = descriptor.value;
+
+            descriptor.value = function(dataName:string){
+                var result = null;
+
+                if(this.container.hasChild(dataName)){
+                    return this.container.getChild(dataName)
+                }
+
+                result = value.call(this, dataName);
+
+                this.container.addChild(dataName, result);
+
+                return result;
+            };
+
+            return descriptor;
+        }
+    }
+
+    export function cacheBufferForBufferContainerWithFuncParam(setDataNameFuncName:string) {
+        return function (target, name, descriptor) {
+            var value = descriptor.value;
+
+            descriptor.value = function(dataName:string){
+                var result = null,
+                    settedDataName = this[setDataNameFuncName](dataName);
+
+                if(this.container.hasChild(settedDataName)){
+                    return this.container.getChild(settedDataName)
+                }
+
+                result = value.call(this, dataName);
+
+                this.container.addChild(settedDataName, result);
+
+                return result;
+            };
+
+            return descriptor;
+        }
+    }
 }
 

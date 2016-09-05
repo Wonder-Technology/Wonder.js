@@ -16,13 +16,7 @@ module wd {
             return buffer;
         }
 
-        @cache(function(type:EBufferDataType){
-            return this.container.hasChild(<any>type);
-        }, function(type){
-            return this.container.getChild(<any>type)
-        }, function(result, type){
-            this.container.addChild(<any>type, result);
-        })
+        @cacheBufferForBufferContainer()
         protected getVertice(type:EBufferDataType) {
             var geometryData= this.geometryData[BufferDataTable.getGeometryDataName(type)];
 
@@ -35,13 +29,7 @@ module wd {
             return this._verticeBuffer;
         }
 
-        @cache(function(type:EBufferDataType){
-            return this.container.hasChild(<any>type);
-        }, function(type){
-            return this.container.getChild(<any>type)
-        }, function(result, type){
-            this.container.addChild(<any>type, result);
-        })
+        @cacheBufferForBufferContainer()
         protected getNormal(type:EBufferDataType) {
             var geometryData= this.geometryData[BufferDataTable.getGeometryDataName(type)];
 

@@ -254,7 +254,7 @@
         //'test/unit/**/ThreeDBitmapFontSpec*',
         //'test/unit/**/bitmapFont/**',
         //'test/unit/**/multi*',
-        'test/unit/**/Bitmap*',
+        //'test/unit/**/Bitmap*',
         //
         //'test/unit/**/DirectorSpec*',
         //
@@ -321,6 +321,8 @@
         //'test/unit/component/**/ModelGeometrySpec.js',
         //'test/unit/**/CommonBufferContainerSpec.js',
         //'test/unit/**/MorphBufferContainerSpec.js',
+        'test/unit/**/*BufferContainerSpec.js',
+        'test/unit/**/morph*.js',
         //'test/unit/core/*.js',
         //'test/unit/device/*.js',
         //'test/unit/event/**',

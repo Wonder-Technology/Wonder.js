@@ -95,7 +95,7 @@ describe("BitmapFontBufferContainer", function() {
 
                 container.createBuffersFromGeometryData();
 
-                expect(container._pageBuffer).toBeDefined();
+                expect(container._pageBuffer).not.toBeNull();
                 expect(testTool.getValues(
                     container._pageBuffer.data
                 )).toEqual(pages);
