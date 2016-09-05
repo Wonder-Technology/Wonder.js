@@ -13,7 +13,7 @@ module wd {
         public createBuffersFromGeometryData(){
             super.createBuffersFromGeometryData();
 
-            this.getChild(EBufferDataType.CUSTOM, "page");
+            this.getChild(EBufferDataType.CUSTOM, "pages");
         }
 
         public getBufferForRenderSort():Buffer{

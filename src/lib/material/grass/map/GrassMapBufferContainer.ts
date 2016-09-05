@@ -13,7 +13,6 @@ module wd {
         public createBuffersFromGeometryData(){
             super.createBuffersFromGeometryData();
 
-            //todo fix BitmapFontBufferContainer->page to pages and unit test
             this.getChild(EBufferDataType.CUSTOM, "quadIndices");
         }
 

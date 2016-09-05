@@ -26,7 +26,7 @@
         'test/helper/yoop/yOOP.js',
         'test/unit/**/*Tool.js',
 
-        'test/unit/**',
+        //'test/unit/**',
 
 
         //'test/render/*Tool.js',
@@ -254,7 +254,7 @@
         //'test/unit/**/ThreeDBitmapFontSpec*',
         //'test/unit/**/bitmapFont/**',
         //'test/unit/**/multi*',
-        //'test/unit/**/Bitmap*',
+        'test/unit/**/Bitmap*',
         //
         //'test/unit/**/DirectorSpec*',
         //
