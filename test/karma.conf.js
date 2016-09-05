@@ -26,13 +26,18 @@
         'test/helper/yoop/yOOP.js',
         'test/unit/**/*Tool.js',
 
-        'test/unit/**',
+        //'test/unit/**',
 
 
         //'test/render/*Tool.js',
         //'test/render/helper/*.js',
 
         //'test/render/**',
+
+
+
+
+        'test/unit/**/grassMap*',
 
 
         //'test/unit/**/procedural_texture/**',

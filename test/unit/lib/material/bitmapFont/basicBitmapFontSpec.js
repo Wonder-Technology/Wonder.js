@@ -61,26 +61,15 @@ describe("basic bitmapFont test", function () {
         }
 
         function judgeVertices(vertices, callIndex){
-            expect(testTool.getValues(
-                program.sendAttributeBuffer.withArgs("a_position").getCall(callIndex || 0).args[2].data
-            )).toEqual(
-                vertices
-            )
+            geometryTool.judgeVertices(vertices, program, callIndex);
         }
 
         function judgeTexCoords(texCoords, callIndex){
-            expect(testTool.getValues(
-                program.sendAttributeBuffer.withArgs("a_texCoord").getCall(callIndex || 0).args[2].data
-            )).toEqual(
-                texCoords
-            )
+            geometryTool.judgeTexCoords(texCoords, program, callIndex);
         }
 
         function judgeIndices(indices, callIndex){
-            expect(testTool.getValues(
-                wd.BufferTable.bindIndexBuffer.getCall(callIndex || 0).args[0].data)).toEqual(
-                indices
-            );
+            geometryTool.judgeIndices(indices, program, callIndex);
         }
 
         beforeEach(function(){

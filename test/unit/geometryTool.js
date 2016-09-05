@@ -4,6 +4,28 @@ var geometryTool = (function(){
     }
 
     return {
+        judgeVertices: function(vertices, program, callIndex){
+            this.judgeAttributeBufferData("a_position", vertices, program, callIndex);
+        },
+        judgeTexCoords: function (texCoords, program, callIndex){
+            this.judgeAttributeBufferData("a_texCoord", texCoords, program, callIndex);
+        },
+        judgeNormals: function(normals, program, callIndex){
+            this.judgeAttributeBufferData("a_normal", normals, program, callIndex);
+        },
+        judgeIndices: function (indices, program, callIndex){
+            expect(testTool.getValues(
+                wd.BufferTable.bindIndexBuffer.getCall(callIndex || 0).args[0].data)).toEqual(
+                indices
+            );
+        },
+        judgeAttributeBufferData: function (dataName, bufferData, program, callIndex){
+            expect(testTool.getValues(
+                program.sendAttributeBuffer.withArgs(dataName).getCall(callIndex || 0).args[2].data
+            )).toEqual(
+                bufferData
+            )
+        },
         judgeFaceIndices: function (faces, indiceArr) {
             var face,
                 indices = [];
