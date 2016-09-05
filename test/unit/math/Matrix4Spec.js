@@ -1,4 +1,5 @@
 describe("Matrix4", function(){
+    var sandbox = null;
     var Matrix4 = wd.Matrix4;
     var matrix = wd.matrix;
     var Vector4 = wd.Vector4;
@@ -12,7 +13,12 @@ describe("Matrix4", function(){
     }
 
     beforeEach(function(){
+        sandbox = sinon.sandbox.create();
+
         matrix = new Matrix4();
+    });
+    afterEach(function(){
+        sandbox.restore();
     });
 
     describe("push", function(){
@@ -113,6 +119,14 @@ describe("Matrix4", function(){
         beforeEach(function(){
             cos = mathTestUtils.toFixed(Math.cos(Math.PI / 4));
             sin = mathTestUtils.toFixed(Math.sin(Math.PI / 4));
+        });
+
+        it("axis's component shouldn't all be zero", function () {
+            testTool.openContractCheck(sandbox);
+
+            expect(function(){
+                matrix.setRotate(angle, 0, 0, 0);
+            }).toThrow();
         });
 
         describe("绕坐标轴旋转", function(){

@@ -186,7 +186,7 @@ module wd{
 
         det =  m[0] * a11 + m[1] * a12 + m[2] * a13;
         if (det === 0) { // no inverse
-                Log.warn("can't invert matrix, determinant is 0");
+            Log.warn("can't invert matrix, determinant is 0");
 
             return mat3;
         }
@@ -263,6 +263,11 @@ module wd{
          * @param z The Z coordinate of vector of rotation axis.
          * @return this
          */
+        @require(function(angle: number, x: number, y: number, z:number){
+            it("axis's component shouldn't all be zero", () => {
+                expect(x === 0 && y === 0 && z === 0).false;
+            });
+        })
         public setRotate (angle: number, x: number, y: number, z:number): Matrix4 {
             var e, s, c, len, rlen, nc, xy, yz, zx, xs, ys, zs;
 
