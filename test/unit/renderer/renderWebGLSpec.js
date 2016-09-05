@@ -348,6 +348,8 @@ describe("renderWebGL", function() {
                         material1.map = [t1, t2];
                         var material2 = wd.BasicMaterial.create();
                         material2.map = t2;
+                        materialTool.init(material1);
+                        materialTool.init(material2);
 
                         expect(renderer._getTargetTexture(material1)).toEqual(t1);
                         expect(renderer._getTargetTexture(material2)).toEqual(t2);

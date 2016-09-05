@@ -277,6 +277,7 @@ describe("BasicMaterial", function () {
             var texture1 = wd.ImageTexture.create({});
             var texture2 = wd.ImageTexture.create({});
             material.map = [texture1, texture2];
+            materialTool.init(material);
 
             expect(material.getTextureForRenderSort()).toEqual(texture1);
         });
@@ -395,6 +396,9 @@ describe("BasicMaterial", function () {
                     });
 
 
+
+
+
                     var result = material.clone();
 
                     expect(result.envMap).toEqual(resultEnvMap);
@@ -496,6 +500,10 @@ describe("BasicMaterial", function () {
                 cloneTool.extend(material, {
                     map: map
                 });
+
+
+                materialTool.init(material);
+
 
 
                 var result = material.clone();

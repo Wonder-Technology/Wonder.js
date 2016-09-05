@@ -1,7 +1,6 @@
 module wd{
     export abstract class StandardLightMaterial extends EngineMaterial{
         private _lightMap:Texture = null;
-        //todo add map when init
         @requireSetter(function(lightMap:Texture){
             assert(lightMap instanceof ImageTexture || lightMap instanceof ProceduralTexture, Log.info.FUNC_SHOULD("lightMap", "be ImageTexture or ProceduralTexture"));
         })
@@ -10,10 +9,6 @@ module wd{
             return this._lightMap;
         }
         set lightMap(lightMap:Texture){
-            this.mapManager.addMap(lightMap, {
-                samplerVariableName: VariableNameTable.getVariableName("lightMap")
-            });
-
             this._lightMap = lightMap;
         }
 
@@ -26,10 +21,6 @@ module wd{
             return this._diffuseMap;
         }
         set diffuseMap(diffuseMap:Texture){
-            this.mapManager.addMap(diffuseMap, {
-                samplerVariableName: VariableNameTable.getVariableName("diffuseMap")
-            });
-
             this._diffuseMap = diffuseMap;
         }
 
@@ -42,10 +33,6 @@ module wd{
             return this._specularMap;
         }
         set specularMap(specularMap:Texture){
-            this.mapManager.addMap(specularMap, {
-                samplerVariableName: VariableNameTable.getVariableName("specularMap")
-            });
-
             this._specularMap = specularMap;
         }
 
@@ -58,10 +45,6 @@ module wd{
             return this._emissionMap;
         }
         set emissionMap(emissionMap:Texture){
-            this.mapManager.addMap(emissionMap, {
-                samplerVariableName: VariableNameTable.getVariableName("emissionMap")
-            });
-
             this._emissionMap = emissionMap;
         }
 
@@ -74,10 +57,6 @@ module wd{
             return this._normalMap;
         }
         set normalMap(normalMap:ImageTexture){
-            this.mapManager.addMap(normalMap, {
-                samplerVariableName: VariableNameTable.getVariableName("normalMap")
-            });
-
             this._normalMap = normalMap;
         }
 
@@ -114,6 +93,12 @@ module wd{
         public emissionColor:Color = Color.create("rgba(0,0,0,0)");
         @cloneAttributeAsBasicType()
         public lightMapIntensity:number = 1;
+
+        public init(){
+            this._addMap();
+
+            super.init();
+        }
 
         @virtual
         protected addTopExtendShaderLib(){
@@ -252,6 +237,38 @@ module wd{
 
         private _hasCubemapShadowMap(){
             return ShadowUtils.isReceive(this.geometry.entityObject) && this.mapManager.getCubemapShadowMapList().getCount() > 0;
+        }
+
+        private _addMap(){
+            if(this._lightMap !== null){
+                this.mapManager.addMap(this._lightMap, {
+                    samplerVariableName: VariableNameTable.getVariableName("lightMap")
+                });
+            }
+
+            if(this._diffuseMap !== null){
+                this.mapManager.addMap(this._diffuseMap, {
+                    samplerVariableName: VariableNameTable.getVariableName("diffuseMap")
+                });
+            }
+
+            if(this._specularMap !== null){
+                this.mapManager.addMap(this._specularMap, {
+                    samplerVariableName: VariableNameTable.getVariableName("specularMap")
+                });
+            }
+
+            if(this._emissionMap !== null){
+                this.mapManager.addMap(this._emissionMap, {
+                    samplerVariableName: VariableNameTable.getVariableName("emissionMap")
+                });
+            }
+
+            if(this._normalMap !== null){
+                this.mapManager.addMap(this._normalMap, {
+                    samplerVariableName: VariableNameTable.getVariableName("normalMap")
+                });
+            }
         }
     }
 }

@@ -26,7 +26,7 @@
         'test/helper/yoop/yOOP.js',
         'test/unit/**/*Tool.js',
 
-        //'test/unit/**',
+        'test/unit/**',
 
 
         //'test/render/*Tool.js',
@@ -144,9 +144,9 @@
 
         //'test/unit/lib/**',
 
-        'test/unit/**/terrain*',
-        'test/unit/**/terrainLayer*',
-        'test/unit/**/terrainMix*',
+        //'test/unit/**/terrain*',
+        //'test/unit/**/terrainLayer*',
+        //'test/unit/**/terrainMix*',
 
         //'test/unit/**/shaderLibSpec*',
         //'test/unit/**/*ShaderLib*',

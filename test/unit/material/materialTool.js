@@ -32,6 +32,12 @@ var materialTool = (function () {
 
             expect(material.blend).toBeFalsy();
             expect(material.opacity).toEqual(1.0);
+        },
+        init:function(material){
+            material.geometry = {
+                entityObject: wd.GameObject.create()
+            }
+            material.init();
         }
     }
 })();

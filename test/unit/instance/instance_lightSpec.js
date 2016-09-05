@@ -34,6 +34,10 @@ describe("instance with light material", function () {
 
 
         director.scene.addChild(camera);
+    }
+
+    function prepareWithoutChildAndInit(){
+        prepareWithoutChild();
 
         director._init();
     }
@@ -112,7 +116,7 @@ describe("instance with light material", function () {
         }
 
         beforeEach(function(){
-            prepareWithoutChild();
+            prepareWithoutChildAndInit();
         });
 
         it("send the normal matrix data by 3 vec3 attribute data and send the model matrix data by send 4 vec4 attribute data", function () {
@@ -222,25 +226,26 @@ describe("instance with light material", function () {
 
             beforeEach(function(){
                 prepareWithoutChild();
+
                 box1Material = box1.getComponent(wd.Geometry).material;
 
-                map = wd.MarbleProceduralTexture.create();
+                map = wd.ImageTexture.create();
                 sandbox.stub(map, "bindToUnit");
 
                 box1Material.diffuseMap = map;
                 box1Material.redWrite = false;
 
+                director._init();
 
                 program = box1Material.program;
                 program.name = "box1Program";
                 sandbox.spy(program, "use");
                 sandbox.spy(program, "sendUniformData");
                 sandbox.spy(program, "sendAttributeBuffer");
+
             });
 
             it("set webgl state and use program and bind texture and send glsl data(except mMatrix) only once", function () {
-                director._init();
-
                 director.scene.gameObjectScene.render(renderer);
                 renderer.render();
 
@@ -255,8 +260,6 @@ describe("instance with light material", function () {
                 expect(extensionInstancedArrays.drawElementsInstancedANGLE).not.toCalled();
             });
             it("not bind array,element buffer when draw instance", function () {
-                director._init();
-
                 director.scene.gameObjectScene.render(renderer);
                 renderer.render();
 
@@ -264,7 +267,7 @@ describe("instance with light material", function () {
                 expect(gl.bindBuffer.withArgs(gl.ELEMENT_ARRAY_BUFFER, sinon.match.object).callCount).toEqual(2);
             });
             it("draw one instance in one draw call", function(){
-                director._init();
+                //director._init();
 
                 director.scene.gameObjectScene.render(renderer);
                 renderer.render();
@@ -274,8 +277,6 @@ describe("instance with light material", function () {
                 expect(extensionInstancedArrays.drawElementsInstancedANGLE).not.toCalled();
             });
             it("send each instance's mMatrix and normalMatrix data to glsl", function () {
-                director._init();
-
                 var mMatrixPos = 1;
                 gl.getUniformLocation.withArgs(sinon.match.any, "u_mMatrix").returns(mMatrixPos);
 
@@ -293,8 +294,6 @@ describe("instance with light material", function () {
                     expect().toPass();
                     return;
                 }
-
-                director._init();
 
 
                 expect(glslTool.contain(

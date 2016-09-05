@@ -12,29 +12,23 @@ module wd{
             return this.mapManager.getMapList();
         }
 
-        //todo add map when init
-        @requireSetter(function(map:any){
+        private _map:Texture|TextureAsset|Array<Texture>|Array<TextureAsset> = null;
+        @requireSetter(function(map:Texture|TextureAsset|Array<Texture>|Array<TextureAsset>){
             if(map instanceof Texture || map instanceof TextureAsset){
             }
             else{
                 let mapArr:Array<any> = map;
 
-                assert(JudgeUtils.isArrayExactly(mapArr), Log.info.FUNC_MUST_BE("array"));
-
-                assert(mapArr.length <= 2, Log.info.FUNC_SUPPORT("only", "map.count <= 2"));
+                it("map should be array", () => {
+                    expect(mapArr).be.a("array");
+                });
+                it("map.count should < 3", () => {
+                    expect(mapArr.length).lessThan(3);
+                });
             }
         })
-        set map(map:any){
-            if(map instanceof Texture || map instanceof TextureAsset){
-                this.mapManager.addMap(map);
-            }
-            else{
-                let mapArr:Array<any> = arguments[0];
-
-                for(let m of mapArr){
-                    this.mapManager.addMap(m);
-                }
-            }
+        set map(map:Texture|TextureAsset|Array<Texture>|Array<TextureAsset>){
+            this._map = map;
         }
 
         private _opacity:number = 1.0;
@@ -48,6 +42,12 @@ module wd{
             this.setBlendByOpacity(opacity);
 
             this._opacity = opacity;
+        }
+
+        public init(){
+            this._addMap();
+
+            super.init();
         }
 
         @virtual
@@ -108,6 +108,23 @@ module wd{
                 default:
                     Log.error(true, Log.info.FUNC_INVALID("EEnvMapMode"));
                     break;
+            }
+        }
+
+        private _addMap(){
+            var map = this._map;
+
+            if(map === null){
+                return;
+            }
+
+            if(map instanceof Texture || map instanceof TextureAsset){
+                this.mapManager.addMap(<Texture&TextureAsset>map);
+            }
+            else{
+                for(let m of map){
+                    this.mapManager.addMap(<Texture&TextureAsset>m);
+                }
             }
         }
     }
