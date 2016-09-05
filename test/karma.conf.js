@@ -144,9 +144,9 @@
 
         //'test/unit/lib/**',
 
-        //'test/unit/**/terrain*',
-        //'test/unit/**/terrainLayer*',
-        //'test/unit/**/terrainMix*',
+        'test/unit/**/terrain*',
+        'test/unit/**/terrainLayer*',
+        'test/unit/**/terrainMix*',
 
         //'test/unit/**/shaderLibSpec*',
         //'test/unit/**/*ShaderLib*',
@@ -315,7 +315,7 @@
       //  'test/unit/asset/loaderSpec.js',
         //'test/unit/asset/wd/WDParserSpec.js',
         //'test/unit/asset/wd/WDBuilderSpec.js',
-        'test/unit/math/*.js',
+        //'test/unit/math/*.js',
         //'test/unit/component/**/GeometrySpec.js',
         //'test/unit/component/**/TerrainGeometrySpec.js',
         //'test/unit/component/**/ModelGeometrySpec.js',

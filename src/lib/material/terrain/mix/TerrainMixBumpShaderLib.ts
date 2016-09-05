@@ -9,6 +9,8 @@ module wd{
         public type:string = "terrain_mix_bump";
 
         public setShaderDefinition(cmd:QuadCommand, material:TerrainMaterial){
+            var noNormalMap_light_fragment:GLSLChunk = null;
+
             super.setShaderDefinition(cmd, material);
 
             this.addUniformVariable(
@@ -18,6 +20,14 @@ module wd{
                     VariableNameTable.getVariableName("bumpMap3")
                 ]
             );
+
+            this.vsSourceVarDeclare = ShaderChunk.noNormalMap_vertex.varDeclare;
+            this.vsSourceBody = ShaderChunk.noNormalMap_vertex.body;
+
+            noNormalMap_light_fragment = ShaderChunk.noNormalMap_light_fragment;
+
+            this.fsSourceVarDeclare = noNormalMap_light_fragment.varDeclare;
+            this.fsSourceFuncDefine += noNormalMap_light_fragment.funcDefine;
 
             if(GPUDetector.getInstance().extensionStandardDerivatives){
                 this.fsSourceExtensionList.addChild("GL_OES_standard_derivatives");

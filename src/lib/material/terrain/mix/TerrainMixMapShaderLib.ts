@@ -31,6 +31,11 @@ module wd{
                     "u_diffuseMap3RepeatRegion"
                 ]
             );
+
+            this.fsSourceBody = `if (baseColor.a < ${material.mix.alphaTest}){
+            discard;
+            }
+            ${this.fsSourceBody}`;
         }
     }
 }

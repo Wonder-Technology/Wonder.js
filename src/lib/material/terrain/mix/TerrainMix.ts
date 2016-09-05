@@ -10,6 +10,7 @@ module wd{
         @requireSetter(function(mapData:TerrainMixData){
             it("mapData should be Object type", function () {
                 expect(mapData).be.a("object");
+                expect(mapData.mixMap).exist;
             });
         })
         @cloneAttributeAsCustomType(function(source:TerrainMix, target:TerrainMix, memberName:string){
@@ -27,6 +28,9 @@ module wd{
             this._mapData = mapData;
         }
 
+        @cloneAttributeAsBasicType()
+        public alphaTest:number = 0.4;
+
         @require(function(mapManager:MapManager){
             it("mapData at least should has mixMap and 3 diffuseMaps", () => {
                 var mapData = this.mapData;
@@ -36,15 +40,23 @@ module wd{
                 expect(mapData.diffuseMap2).exist;
                 expect(mapData.diffuseMap3).exist;
             });
-            it("if has bump map, bump map should be ImageTexture", () => {
-                if(this.hasBumpMap()){
+
+            describe("if has bump map", function(){
+                it("should has 3 bump maps", () => {
+                    let mapData = this.mapData;
+
+                    expect(mapData.bumpMap1).exist;
+                    expect(mapData.bumpMap2).exist;
+                    expect(mapData.bumpMap3).exist;
+                });
+                it("bump map should be ImageTexture", () => {
                     let mapData = this.mapData;
 
                     expect(mapData.bumpMap1).instanceOf(ImageTexture);
                     expect(mapData.bumpMap2).instanceOf(ImageTexture);
                     expect(mapData.bumpMap3).instanceOf(ImageTexture);
-                }
-            });
+                });
+            }, () => this.hasBumpMap(), this);
         })
         public addMap(mapManager:MapManager){
             mapManager.addMap(this.mapData.mixMap, {

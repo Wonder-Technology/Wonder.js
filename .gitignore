@@ -4,14 +4,8 @@ bower_components/
 reference/
 node_modules/
 mine/
-src/*.js.map
-src/*.js
 src/**/*.js.map
 src/**/*.js
-converter/*.js.map
-converter/*.js
-converter/**/*.js.map
-converter/**/*.js
 test/coverage
-src/**/ShaderChunk.ts
 **/*forRunTest*
+tool/**/dist/
