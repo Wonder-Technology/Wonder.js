@@ -49,7 +49,6 @@ module wd{
             super.initWhenCreate();
 
             this.side = ESide.BOTH;
-            this.blend = true;
         }
 
         public init(){

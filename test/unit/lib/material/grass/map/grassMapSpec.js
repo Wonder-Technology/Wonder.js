@@ -279,11 +279,11 @@ describe("grass map", function() {
 
         expect(material.side).toEqual(wd.ESide.BOTH);
     });
-    it("enable blend", function () {
-        material = wd.GrassMaterial.create();
-
-        expect(material.blend).toBeTruthy();
-    });
+    //it("enable blend", function () {
+    //    material = wd.GrassMaterial.create();
+    //
+    //    expect(material.blend).toBeTruthy();
+    //});
 
     describe("test grass map", function () {
         beforeEach(function(){
