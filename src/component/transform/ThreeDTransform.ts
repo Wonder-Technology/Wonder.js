@@ -15,7 +15,7 @@ module wd{
             this._localToWorldMatrixCache = result;
         })
         get localToWorldMatrix(){
-            return this.getMatrix("sync", "_localToWorldMatrix");
+            return this.getMatrix<Matrix4>("sync", "_localToWorldMatrix");
         }
 
         @cacheGetter(function(){

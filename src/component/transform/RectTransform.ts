@@ -15,7 +15,7 @@ module wd{
             this._rotationMatrixCache = result;
         })
         get rotationMatrix(){
-            return this.getMatrix("syncRotation", "_rotationMatrix");
+            return this.getMatrix<Matrix3>("syncRotation", "_rotationMatrix");
         }
 
         private _localPositionAndScaleMatrix:Matrix3 = Matrix3.create();
@@ -27,7 +27,7 @@ module wd{
             this._localPositionAndScaleMatrixCache = result;
         })
         get localPositionAndScaleMatrix(){
-            return this.getMatrix("syncPositionAndScale", "_localPositionAndScaleMatrix");
+            return this.getMatrix<Matrix3>("syncPositionAndScale", "_localPositionAndScaleMatrix");
         }
 
         //todo optimize:position, rotation, ... add cache

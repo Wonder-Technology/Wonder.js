@@ -109,7 +109,7 @@ module wd{
             //todo can has multi parent?
         }
 
-        protected getMatrix(syncMethod:string, matrixAttriName:string){
+        protected getMatrix<T>(syncMethod:string, matrixAttriName:string):T{
             var syncList = wdCb.Collection.create<Transform>(),
                 current = this.p_parent;
 
