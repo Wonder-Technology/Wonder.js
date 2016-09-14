@@ -10,6 +10,7 @@ module wd{
 
         public shader:CustomShader;
 
+        @cloneAttributeAsBasicType()
         public definitionData:ShaderDefinitionData = null;
 
         @ensure(function(){
@@ -43,6 +44,14 @@ module wd{
         protected createShader(){
             return CustomShader.create();
         }
+    }
+
+    export type ShaderDefinitionData = {
+        attributes:ShaderData;
+        uniforms:ShaderData;
+
+        vsSourceId:string;
+        fsSourceId:string;
     }
 }
 

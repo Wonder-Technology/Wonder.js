@@ -85,7 +85,7 @@
         function createGrasses(){
             var arr = [],
                     grass = createGrass(),
-                    range = 300,
+                    range = 10,
                     count = 2;
 
             var sourceInstanceComponent = wd.SourceInstance.create();
@@ -93,12 +93,20 @@
 
             arr.push(grass);
 
+
+            var grass2 = grass.clone();
+
+            grass2.transform.position = wd.Vector3.create(10,0,0);
+
+            arr.push(grass2);
+
+
 //            for(var i = 0; i < count; i++){
 //                var instance = sourceInstanceComponent.cloneInstance("index" + String(i));
 //
 //                instance.transform.position = instanceTool.getInstancePosition(i, range, count);
-//                instance.transform.rotate(instanceTool.getInstanceRotation(i, count));
-//                instance.transform.scale = instanceTool.getInstanceScale(i, count);
+////                instance.transform.rotate(instanceTool.getInstanceRotation(i, count));
+////                instance.transform.scale = instanceTool.getInstanceScale(i, count);
 //
 //                arr.push(instance);
 //            }
@@ -369,7 +377,7 @@
             var controller = wd.ArcballCameraController.create(cameraComponent);
 //            controller.theta = Math.PI / 4;
 //            controller.phi = Math.PI;
-            controller.distance = 10;
+            controller.distance = 20;
 
             camera.addComponent(controller);
 

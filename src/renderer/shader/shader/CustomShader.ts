@@ -55,12 +55,4 @@ module wd{
             return CustomShaderSourceBuilder.create();
         }
     }
-
-    export type ShaderDefinitionData = {
-        attributes:wdCb.Hash<ShaderData>;
-        uniforms:wdCb.Hash<ShaderData>;
-
-        vsSourceId:string;
-        fsSourceId:string;
-    }
 }

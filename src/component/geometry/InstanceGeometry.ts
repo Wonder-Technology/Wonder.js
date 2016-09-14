@@ -70,7 +70,10 @@ module wd{
 
         // public instanceCount:number = 1;
 
-        //todo consider clone
+        //todo test clone
+        @cloneAttributeAsCustomType(function(source:InstanceGeometry, target:InstanceGeometry, memberName:string){
+            target[memberName] = source[memberName].clone(true);
+        })
         public attributeData:wdCb.Collection<wdCb.Collection<InstanceAttributeData>> = wdCb.Collection.create<wdCb.Collection<InstanceAttributeData>>();
 
         //todo it:data.length === size * instanceCount
