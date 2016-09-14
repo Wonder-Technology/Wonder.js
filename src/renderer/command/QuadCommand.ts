@@ -4,6 +4,14 @@ module wd {
             return this.material.program;
         }
 
+        //todo test
+        @requireGetter(function(){
+            assert(!!this.mMatrix && !!this.vMatrix && !!this.pMatrix, Log.info.FUNC_NOT_EXIST("mMatrix or vMatrix or pMatrix"));
+        })
+        get mvpMatrix(){
+            return this.mMatrix.applyMatrix(this.vMatrix, true).applyMatrix(this.pMatrix, false);
+        }
+
         public mMatrix:Matrix4 = null;
         public vMatrix:Matrix4 = null;
         public pMatrix:Matrix4 = null;

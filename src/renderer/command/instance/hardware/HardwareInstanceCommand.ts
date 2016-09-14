@@ -9,6 +9,7 @@ module wd{
         public instanceList:wdCb.Collection<GameObject> = null;
         public instanceBuffer:InstanceBuffer = null;
         public glslData:EInstanceGLSLData = EInstanceGLSLData.MODELMATRIX;
+        public geometry:InstanceGeometry = null;
 
         protected draw(material:Material) {
             var drawer:HardwareInstanceDrawer = null;
@@ -25,6 +26,11 @@ module wd{
                     break;
                 case EInstanceGLSLData.NORMALMATRIX_MODELMATRIX:
                     drawer = NormalMatrixModelMatrixHardwareInstanceDrawer.getInstance();
+                case EInstanceGLSLData.CUSTOM:
+                    drawer = CustomHardwareInstanceDrawer.getInstance();
+
+                    //todo refactor?
+                    drawer.geometry = this.geometry;
                     break;
             }
 

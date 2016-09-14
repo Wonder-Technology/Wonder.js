@@ -1,5 +1,7 @@
 module wd{
     export abstract class HardwareInstanceDrawer extends InstanceDrawer{
+        public geometry:InstanceGeometry = null;
+
         @require(function(){
             assert(InstanceUtils.isHardwareSupport(), Log.info.FUNC_SHOULD("hardware", "support instance"));
         })
@@ -14,7 +16,9 @@ module wd{
             indexBuffer = <ElementBuffer>buffers.getChild(EBufferDataType.INDICE);
 
             if(indexBuffer){
-                this._drawElementsInstancedANGLE(indexBuffer, instanceList.getCount(), drawMode);
+                // this._drawElementsInstancedANGLE(indexBuffer, instanceList.getCount(), drawMode);
+                //todo fix
+                this._drawElementsInstancedANGLE(indexBuffer, 100, drawMode);
             }
             else{
                 let vertexBuffer = buffers.getChild(EBufferDataType.VERTICE);

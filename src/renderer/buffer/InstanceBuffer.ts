@@ -37,7 +37,7 @@ module wd{
             }
         }
 
-        public resetData(data: Float32Array, offsetLocations: number[]): void {
+        public resetData(data: Float32Array): void {
             var gl = DeviceManager.getInstance().gl;
 
             gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);

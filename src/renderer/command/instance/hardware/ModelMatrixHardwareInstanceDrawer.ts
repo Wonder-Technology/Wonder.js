@@ -25,7 +25,7 @@ module wd {
                 offset += 16;
             });
 
-            instanceBuffer.resetData(matricesArrayForInstance, offsetLocationArr);
+            instanceBuffer.resetData(matricesArrayForInstance);
 
             for (let index = 0; index < 4; index++) {
                 let offsetLocation = offsetLocationArr[index];

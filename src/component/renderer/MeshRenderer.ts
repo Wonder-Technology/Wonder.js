@@ -1,9 +1,9 @@
 module wd {
     export class MeshRenderer extends RendererComponent {
         public static create() {
-        	var obj = new this();
+            var obj = new this();
 
-        	return obj;
+            return obj;
         }
 
         public entityObject:GameObject;
@@ -15,15 +15,18 @@ module wd {
         @require(function(geometry:Geometry, camera:GameObject){
             var controller = camera.getComponent<CameraController>(CameraController);
 
-            assert(!!controller && !!controller.camera, Log.info.FUNC_MUST("camera" , "add Camera Component"));
-            assert(!!geometry, Log.info.FUNC_MUST("Mesh", "add geometry component"));
+            it("camera must add Camera Component", () => {
+                expect(!!controller && !!controller.camera).true;
+            });
+            it("Mesh must add geometry component", () => {
+                expect(!!geometry).true;
+            });
         })
         protected createDrawCommand(geometry:Geometry, camera:GameObject){
-             var cmd:QuadCommand = null,
+            var cmd:QuadCommand = null,
                 cameraComponent = camera.getComponent<CameraController>(CameraController),
                 material:Material = geometry.material,
-                 position:Vector3 = this.entityObject.transform.position,
-                 target:GameObject = geometry.entityObject;
+                target:GameObject = geometry.entityObject;
 
             cmd = this._createCommand(target, material);
 
@@ -49,44 +52,68 @@ module wd {
 
         @require(function(target:GameObject){
             //if(InstanceUtils.isInstance(target) && InstanceUtils.isHardwareSupport()){
-                if(InstanceUtils.isInstance(target)){
-                assert(InstanceUtils.isSourceInstance(target), Log.info.FUNC_SHOULD("if use instance to batch draw, target", "be SourceInstance"));
+            if(InstanceUtils.isInstance(target)){
+                it("if use instance to batch draw, target should be SourceInstance", () => {
+                    expect(InstanceUtils.isSourceInstance(target)).true;
+                });
             }
         })
         @ensure(function(cmd:RenderCommand, target:GameObject){
             if(cmd instanceof HardwareInstanceCommand){
-                assert(InstanceUtils.isHardwareSupport(), Log.info.FUNC_SHOULD("hardware", "support instance"));
+                it("hardware should support instance", () => {
+                    expect(InstanceUtils.isHardwareSupport()).true;
+                });
             }
             else if(cmd instanceof BatchInstanceCommand){
-                assert(!InstanceUtils.isHardwareSupport(), Log.info.FUNC_SHOULD_NOT("hardware", "support instance"));
+                it("hardware shouldn't support instance", () => {
+                    expect(InstanceUtils.isHardwareSupport()).false;
+                });
             }
         })
         private _createCommand(target:GameObject, material:Material){
             var cmd:any = null,
                 glslData:EInstanceGLSLData = null;
-            var {
-                isModelMatrixInstance,
-                isNormalMatrixInstance,
-                isHardwareInstance,
-                isBatchInstance
-            } = material.shader.getInstanceState();
+            //todo finish!
+            //var {
+            //    isModelMatrixInstance,
+            //    isNormalMatrixInstance,
+            //    isHardwareInstance,
+            //    isBatchInstance
+            //    } = this._getInstanceState(material);
+            //
+            //glslData = this._getInstanceGLSLData(isModelMatrixInstance, isNormalMatrixInstance);
+            glslData = EInstanceGLSLData.CUSTOM;
 
-            glslData = this._getInstanceGLSLData(isModelMatrixInstance, isNormalMatrixInstance);
-
-            if(isHardwareInstance){
+            //if(isHardwareInstance){
                 cmd = this._createHardwareInstanceCommand(target, material, glslData);
-            }
-            else if(isBatchInstance){
-                cmd = this._createBatchInstanceCommand(target, material, glslData);
-            }
-            else{
-                cmd = SingleDrawCommand.create();
+            //}
+            //else if(isBatchInstance){
+            //    cmd = this._createBatchInstanceCommand(target, material, glslData);
+            //}
+            //else{
+            //    cmd = SingleDrawCommand.create();
+            //
+            //todo remove? duplicate with createDrawCommand->cmd.mMatrix = target.transform.localToWorldMatrix;
+            //    cmd.mMatrix = this.entityObject.transform.localToWorldMatrix;
 
-                cmd.mMatrix = this.entityObject.transform.localToWorldMatrix;
-                cmd.normalMatrix = this.entityObject.transform.normalMatrix;
-            }
+            //    cmd.normalMatrix = this.entityObject.transform.normalMatrix;
+            //}
 
             return cmd;
+        }
+
+        private _getInstanceState(material:Material){
+            if(material.geometry instanceof InstanceGeometry){
+                //todo finish
+                //return {
+                //    isModelMatrixInstance:false,
+                //    isNormalMatrixInstance:false,
+                //    isHardwareInstance:false,
+                //    isBatchInstance:false
+                //}
+            }
+
+            return material.shader.getInstanceState();
         }
 
         private _getInstanceGLSLData(isModelMatrixInstance:boolean, isNormalMatrixInstance:boolean){
@@ -103,6 +130,9 @@ module wd {
 
             cmd.instanceList = instanceComponent.toRenderInstanceListForDraw;
             cmd.instanceBuffer = instanceComponent.instanceBuffer;
+
+            //todo extract HardwareCustomInstanceCommand
+            cmd.geometry = <InstanceGeometry>material.geometry;
 
             cmd.glslData = glslData;
 

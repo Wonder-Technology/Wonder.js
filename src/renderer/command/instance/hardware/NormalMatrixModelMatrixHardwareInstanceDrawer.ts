@@ -6,12 +6,14 @@ module wd {
         protected getOffsetLocationArray(program:Program):Array<number>{
             return [
                 program.getAttribLocation("a_mVec4_0"), program.getAttribLocation("a_mVec4_1"), program.getAttribLocation("a_mVec4_2"), program.getAttribLocation("a_mVec4_3"),
+                //todo rename to Vec3?
                 program.getAttribLocation("a_normalVec4_0"), program.getAttribLocation("a_normalVec4_1"), program.getAttribLocation("a_normalVec4_2")
             ];
         }
 
         protected setCapacity(instanceList:wdCb.Collection<GameObject>, instanceBuffer:InstanceBuffer):void{
             /*! instanceCount * (modelMatrixSize:4(float size) * 4(vec count) * 4(component count) + normalMatrixSize: 4 * 3 * 3) */
+            //todo not 112 but 100?
             instanceBuffer.setCapacity(instanceList.getCount() * 112);
         }
 
@@ -33,7 +35,7 @@ module wd {
             });
 
 
-            instanceBuffer.resetData(matricesArrayForInstance, offsetLocationArr);
+            instanceBuffer.resetData(matricesArrayForInstance);
 
             for (let index = 0; index < 4; index++) {
                 let offsetLocation = offsetLocationArr[index];
