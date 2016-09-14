@@ -2,7 +2,7 @@ module wd{
     export abstract class LineGeometry extends Geometry{
         private _customGeometry:CustomGeometry = CustomGeometry.create();
 
-        @cloneAttributeAsCustomType(function(source:ModelGeometry, target:ModelGeometry, memberName:string){
+        @cloneAttributeAsCustomType(function(source:LineGeometry, target:LineGeometry, memberName:string){
             target[memberName] = CloneUtils.cloneArray(source[memberName]);
         })
         get vertices(){

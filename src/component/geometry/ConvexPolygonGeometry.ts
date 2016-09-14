@@ -8,7 +8,7 @@ module wd{
 
         private _customGeometry:CustomGeometry = CustomGeometry.create();
 
-        @cloneAttributeAsCustomType(function(source:ModelGeometry, target:ModelGeometry, memberName:string){
+        @cloneAttributeAsCustomType(function(source:ConvexPolygonGeometry, target:ConvexPolygonGeometry, memberName:string){
             target[memberName] = CloneUtils.cloneArray(source[memberName]);
         })
         get vertices(){
@@ -18,7 +18,7 @@ module wd{
             this._customGeometry.vertices = vertices;
         }
 
-        @cloneAttributeAsCustomType(function(source:ModelGeometry, target:ModelGeometry, memberName:string){
+        @cloneAttributeAsCustomType(function(source:ConvexPolygonGeometry, target:ConvexPolygonGeometry, memberName:string){
             target[memberName] = CloneUtils.cloneArray(source[memberName]);
         })
         get texCoords(){
@@ -28,7 +28,7 @@ module wd{
             this._customGeometry.texCoords = texCoords;
         }
 
-        @cloneAttributeAsCustomType(function(source:ModelGeometry, target:ModelGeometry, memberName:string){
+        @cloneAttributeAsCustomType(function(source:ConvexPolygonGeometry, target:ConvexPolygonGeometry, memberName:string){
             target[memberName] = CloneUtils.cloneArray(source[memberName]);
         })
         get colors(){
@@ -38,7 +38,7 @@ module wd{
             this._customGeometry.colors = colors;
         }
 
-        @cloneAttributeAsCustomType(function(source:ModelGeometry, target:ModelGeometry, memberName:string){
+        @cloneAttributeAsCustomType(function(source:ConvexPolygonGeometry, target:ConvexPolygonGeometry, memberName:string){
             target[memberName] = CloneUtils.cloneArray(source[memberName]);
         })
         get indices(){
@@ -48,7 +48,7 @@ module wd{
             this._customGeometry.indices = indices;
         }
 
-        @cloneAttributeAsCustomType(function(source:ModelGeometry, target:ModelGeometry, memberName:string){
+        @cloneAttributeAsCustomType(function(source:ConvexPolygonGeometry, target:ConvexPolygonGeometry, memberName:string){
             target[memberName] = CloneUtils.cloneArray(source[memberName]);
         })
         get normals(){

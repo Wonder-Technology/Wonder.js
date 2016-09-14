@@ -7,15 +7,17 @@ module wd{
         }
 
         @ensureGetter(function(toRenderInstanceListForDraw:wdCb.Collection<GameObject>){
-            var self = this;
-
-            assert(toRenderInstanceListForDraw.getCount() > 0, Log.info.FUNC_SHOULD("contain one at least"));
-
-            toRenderInstanceListForDraw.forEach((instance:GameObject) => {
-                assert(JudgeUtils.isEqual(instance, self.entityObject) || self.instanceList.hasChild(instance), Log.info.FUNC_SHOULD("render self entityObject or the entityObject in instanceList"));
+            it("should not be empty", () => {
+                expect(toRenderInstanceListForDraw.getCount()).greaterThan(0);
             });
-
-            assert(!toRenderInstanceListForDraw.hasRepeatItems(), Log.info.FUNC_SHOULD_NOT("has repeat instance which is to render"));
+            it("should render self entityObject or the entityObject in instanceList", () => {
+                toRenderInstanceListForDraw.forEach((instance:GameObject) => {
+                    expect(JudgeUtils.isEqual(instance, this.entityObject) || this.instanceList.hasChild(instance)).true;
+                });
+            }, this);
+            it("shouldn't has repeat instance which is to render", () => {
+                expect(toRenderInstanceListForDraw.hasRepeatItems()).false;
+            });
         })
         get toRenderInstanceListForDraw(){
             if(!this.hasToRenderInstance()){
@@ -50,12 +52,13 @@ module wd{
         private _exitSubscription:wdFrp.IDisposable = null;
 
         @ensure(function(){
-            this.entityObject.forEach((child:GameObject) => {
-                IterateUtils.forEachAll(child, (child:GameObject) => {
-                    assert(InstanceUtils.isSourceInstance(child), Log.info.FUNC_SHOULD("children", "contain SourceInstance component"));
+            it("children should contain SourceInstance component", () => {
+                this.entityObject.forEach((child:GameObject) => {
+                    IterateUtils.forEachAll(child, (child:GameObject) => {
+                        assert(InstanceUtils.isSourceInstance(child), Log.info.FUNC_SHOULD("children", "contain SourceInstance component"));
+                    });
                 });
-            });
-
+            }, this);
         })
         public init(){
             var self = this;
@@ -81,13 +84,12 @@ module wd{
         }
 
         @require(function(){
-            var self = this;
-            var checkInstanceIsNotOnlyInInstanceListButAlsoInLoop = () => {
+            it("instance is not only in instanceList but also in loop", () => {
                 var scene:SceneDispatcher = null,
                     children:wdCb.Collection<GameObject> = null,
                     isInLoop:boolean = true;
 
-                if(self.instanceList.getCount() === 0){
+                if(this.instanceList.getCount() === 0){
                     return;
                 }
 
@@ -98,17 +100,15 @@ module wd{
                     children.addChild(gameObject);
                 });
 
-                self.instanceList.forEach((instance:GameObject) => {
+                this.instanceList.forEach((instance:GameObject) => {
                     if(!children.hasChild(instance)){
                         isInLoop = false;
                         return wdCb.$BREAK;
                     }
                 });
 
-                assert(isInLoop, Log.info.FUNC_SHOULD("instance", "not only in instanceList, but also in the main loop"));
-            };
-
-            checkInstanceIsNotOnlyInInstanceListButAlsoInLoop();
+                expect(isInLoop).true;
+            }, this);
         })
         public dispose(){
             this._endLoopSubscription.dispose();
@@ -123,11 +123,15 @@ module wd{
         @require(function(){
             var entityObject = this.entityObject;
 
-            assert(!entityObject.getSpacePartition(), Log.info.FUNC_NOT_SUPPORT("space partition", "instance"));
+            it("space partition not support instance", () => {
+                expect(entityObject.getSpacePartition()).false;
+            });
             //todo more?
         })
         @ensure(function(instance:GameObject){
-            assert(InstanceUtils.isObjectInstance(instance));
+            it("should be object instance", () => {
+                expect(InstanceUtils.isObjectInstance(instance)).true;
+            });
         })
         public cloneInstance(name:string):GameObject{
             var self = this;
@@ -182,7 +186,9 @@ module wd{
         }
 
         @ensure(function(returnValue:any, source:GameObject, instance:GameObject){
-            assert(instance.hasComponent(ThreeDTransform), Log.info.FUNC_SHOULD("instance", "contain ThreeDTransform component"));
+            it("instance should contain ThreeDTransform component", () => {
+                expect(instance.hasComponent(ThreeDTransform)).true;
+            });
         })
         private _addComponentsFromSourceToObject(source:GameObject, instance:GameObject){
             instance.removeComponent(Transform);
@@ -204,15 +210,16 @@ module wd{
         }
 
         @ensure(function(){
-            IterateUtils.forEachAll(this.entityObject, (gameObject:GameObject) => {
-                assert(
-                    gameObject.getComponents()
-                        .filter((component:Component) =>{
-                            return component instanceof SourceInstance;
-                        })
-                        .getCount() === 1,
-                    Log.info.FUNC_SHOULD("children", "contain only one SourceInstance component")
-                )
+            it("children should contain only one SourceInstance component", () => {
+                IterateUtils.forEachAll(this.entityObject, (gameObject:GameObject) => {
+                    expect(
+                        gameObject.getComponents()
+                            .filter((component:Component) =>{
+                                return component instanceof SourceInstance;
+                            })
+                            .getCount()
+                    ).equal(1);
+                });
             });
         })
         private _addSourceInstanceToChildren(){
@@ -236,9 +243,11 @@ module wd{
         }
 
         @ensure(function(){
-            this.instanceList.forEach((instance:GameObject) => {
-                assert(!instance.hasTag(<any>EInstanceTag.isAddSourceInstance), Log.info.FUNC_SHOULD_NOT("instance", "add EInstanceTag.isAddSourceInstance tag here"));
-            });
+            it("instance shouldn't add EInstanceTag.isAddSourceInstance tag here", () => {
+                this.instanceList.forEach((instance:GameObject) => {
+                    expect(instance.hasTag(<any>EInstanceTag.isAddSourceInstance)).false;
+                });
+            }, this);
         })
         private _addAllInstances(){
             var parent = this.entityObject.parent,
@@ -252,9 +261,11 @@ module wd{
         }
 
         @ensure(function(){
-            this.instanceList.forEach((instance:GameObject) => {
-                assert(!instance.hasTag(<any>EInstanceTag.isRemoveSourceInstance), Log.info.FUNC_SHOULD_NOT("instance", "add EInstanceTag.isRemoveSourceInstance tag here"));
-            });
+            it("instance shouldn't add EInstanceTag.isRemoveSourceInstance tag here", () => {
+                this.instanceList.forEach((instance:GameObject) => {
+                    expect(instance.hasTag(<any>EInstanceTag.isRemoveSourceInstance)).false;
+                });
+            }, this);
         })
         private _removeAllInstances(){
             var tag:string = <any>(EInstanceTag.isRemoveSourceInstance);

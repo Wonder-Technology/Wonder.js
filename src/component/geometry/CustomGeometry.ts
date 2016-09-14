@@ -74,6 +74,8 @@ module wd{
         }
         set normals(normals:Array<number>){
             this._normals = normals;
+
+            //todo move to init?
             if(this.buffers) {
                 this.buffers.geometryData.faces = GeometryUtils.convertToFaces(this.indices, normals);
             }
