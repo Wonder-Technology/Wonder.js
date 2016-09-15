@@ -246,9 +246,6 @@ module wd {
             this._materialColorChangeSubscription && this._materialColorChangeSubscription.dispose();
         }
 
-        @require(function(){
-            assert(GeometryUtils.hasData(this.vertices), Log.info.FUNC_MUST("contain vertices"));
-        })
         @ensure(function(){
             for(let face of this._faces) {
                 assert(face.faceNormal instanceof Vector3, Log.info.FUNC_SHOULD_NOT("faceNormal", "be null"));
@@ -256,6 +253,11 @@ module wd {
         })
         public computeFaceNormals() {
             var vertices = this._vertices;
+
+            if(!GeometryUtils.hasData(this.vertices)){
+                Log.warn("has no vertices data, can't compute face normals");
+                return;
+            }
 
             for (let face of this._faces) {
                 face.faceNormal = this.computeFaceNormalsHelper(vertices, face.aIndex, face.bIndex, face.cIndex);

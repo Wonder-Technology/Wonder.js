@@ -60,7 +60,7 @@
 
     window.onload = function () {
         wd.Main.setConfig({
-            isTest:false,
+            isTest:true,
             screenSize: wd.EScreenSize.FULL
         }).init();
 
@@ -85,12 +85,9 @@
 
         function createGrasses(){
             var arr = [],
-                    grass = createGrass(),
-                    range = 10,
-                    count = 2;
-
-            var sourceInstanceComponent = wd.SourceInstance.create();
-            grass.addComponent(sourceInstanceComponent);
+                    grass = createGrass();
+//                    range = 10,
+//                    count = 2;
 
             arr.push(grass);
 
@@ -207,7 +204,6 @@
             var geo = wd.InstanceGeometry.create();
             geo.material = material;
 
-            geo.instanceCount = opts.numBlades;
 
 
 
@@ -254,6 +250,17 @@
 //            gameObject.transform.rotate(-90, 0, 0);
 
 
+
+
+
+
+            var sourceInstanceComponent = wd.SourceInstance.create();
+            gameObject.addComponent(sourceInstanceComponent);
+
+
+
+
+
             return gameObject;
         }
 
@@ -261,18 +268,7 @@
             initBladeIndices(buffers.indices, 0, BLADE_VERTS, 0);
             initBladeVertexIndex(buffers.vIndex, vIndexLength);
 
-
-//            vIndex: new Float32Array(vIndexLength),
-//                    // Shape properties of all blades
-//                    shape: new Float32Array(4 * opts.numBlades),
-//                    // Positon & rotation of all blades
-//                    offset: new Float32Array(4 * opts.numBlades),
-
             for (var i = 0; i < numBlades; i++) {
-//                initBladeShapeVerts(buffers.shape, vIndexLength);
-//                initBladeOffsetVerts(buffers.offset, radius, vIndexLength);
-//                initBladeVertexIndex(buffers.vIndex, vIndexLength);
-
                 initBladeShapeVerts(buffers.shape, 1);
                 initBladeOffsetVerts(buffers.offset, radius, 1);
             }

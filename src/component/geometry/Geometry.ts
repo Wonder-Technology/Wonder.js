@@ -35,8 +35,9 @@ module wd{
         @ensure(function(){
             var geometryData = this.buffers.geometryData;
 
-            assert(geometryData.vertices.length > 0, Log.info.FUNC_MUST("vertices.count", "> 0"));
-            assert(geometryData.faces.length * 3 === geometryData.indices.length, Log.info.FUNC_SHOULD("faces.count", `be ${geometryData.indices.length / 3}, but actual is ${geometryData.faces.length}`));
+            it(`faces.count should be be ${geometryData.indices.length / 3}, but actual is ${geometryData.faces.length}`, () => {
+                expect(geometryData.faces.length * 3).equals(geometryData.indices.length);
+            });
         })
         @execOnlyOnce("_isInit")
         public init(){
@@ -65,14 +66,20 @@ module wd{
         }
 
         @require(function(){
-            assert(this.buffers && this.buffers.geometryData, Log.info.FUNC_MUST_DEFINE("buffers->geometryData"));
+            it("must define buffers->geometryData", () => {
+                expect(this.buffers).exist;
+                expect(this.buffers.geometryData).exist;
+            });
         })
         public hasFaceNormals(){
             return this.buffers.geometryData.hasFaceNormals();
         }
 
         @require(function(){
-            assert(this.buffers && this.buffers.geometryData, Log.info.FUNC_MUST_DEFINE("buffers->geometryData"));
+            it("must define buffers->geometryData", () => {
+                expect(this.buffers).exist;
+                expect(this.buffers.geometryData).exist;
+            });
         })
         public hasVertexNormals(){
             return this.buffers.geometryData.hasVertexNormals();
@@ -91,7 +98,10 @@ module wd{
         }
 
         @require(function(){
-            assert(this.buffers && this.buffers.geometryData, Log.info.FUNC_MUST_DEFINE("buffers->geometryData"));
+            it("must define buffers->geometryData", () => {
+                expect(this.buffers).exist;
+                expect(this.buffers.geometryData).exist;
+            });
         })
         public computeFaceNormals() {
             this.buffers.geometryData.computeFaceNormals();
@@ -102,7 +112,9 @@ module wd{
         }
 
         @require(function(){
-            assert(!!this.buffers, Log.info.FUNC_NOT_EXIST("buffers"));
+            it("not exist buffers", () => {
+                expect(this.buffers).exist;
+            });
         })
         public createBuffersFromGeometryData(){
             this.buffers.createBuffersFromGeometryData();

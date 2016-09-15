@@ -37,8 +37,8 @@
 
 
 
-        //'test/unit/**/grassMap*',
-        //'test/unit/**/GrassMap*',
+        'test/unit/**/grassMap*',
+        'test/unit/**/GrassMap*',
 
 
         //'test/unit/**/procedural_texture/**',
@@ -129,7 +129,11 @@
         //'test/unit/renderer/shadow/directionShadowMap*',
         //'test/unit/renderer/*ShadowMap_*Spec.js',
         //
-        //'test/unit/**/instance/*',
+        // 'test/unit/**/instance/*',
+
+        'test/unit/**/instance/one*',
+
+
         //'test/unit/**/instance/*lod*',
 
         //'test/unit/**/instance/SourceInstance*',
@@ -182,7 +186,7 @@
         //'test/unit/**/ProceduralShaderSpec*',
 
         //'test/unit/**/customShaderSpec*',
-        'test/unit/**/renderWebGL*',
+        //'test/unit/**/renderWebGL*',
         //'test/unit/**/SortUtils*',
 
         //'test/unit/**/*CommandSpec*',
