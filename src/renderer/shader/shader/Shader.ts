@@ -49,7 +49,9 @@ module wd{
         }
 
         @ensureGetter(function(program:Program){
-            assert(!!program, Log.info.FUNC_NOT_EXIST(`program\nits table key is:${this._getProgramTableKey()}`))
+            it(`program should exist(its table key is ${this._getProgramTableKey()}`, () => {
+                expect(program).exist;
+            }, this);
         })
         @cacheGetter(function(){
             return this._programCache !== null;
@@ -129,13 +131,14 @@ module wd{
         }
 
         @ensure(function(){
-            var self = this;
-
-            this.libs.forEach((lib:ShaderLib) => {
-                assert(JudgeUtils.isEqual(lib.shader, self), Log.info.FUNC_SHOULD("set ShaderLib.shader to be this"));
-            });
-
-            assert(this.libDirty === true, Log.info.FUNC_SHOULD("libDirty", "be true"));
+            it("should set ShaderLib.shader to be this", () => {
+                this.libs.forEach((lib:ShaderLib) => {
+                    expect(lib.shader === this).true;
+                });
+            }, this);
+            it("libDirty should be true", () => {
+                expect(this.libDirty).true;
+            }, this);
         })
         public addLib(lib:ShaderLib){
             this.libs.addChild(lib);
@@ -146,15 +149,17 @@ module wd{
         }
 
         @ensure(function(val, lib:ShaderLib){
-            var self = this;
-
-            assert(JudgeUtils.isEqual(lib, this.libs.getChild(0)), Log.info.FUNC_SHOULD("add shader lib to the top"));
-
-            this.libs.forEach((lib:ShaderLib) => {
-                assert(JudgeUtils.isEqual(lib.shader, self), Log.info.FUNC_SHOULD("set ShaderLib.shader to be this"));
-            });
-
-            assert(this.libDirty === true, Log.info.FUNC_SHOULD("libDirty", "be true"));
+            it("should add shader lib to the top", () => {
+                expect(JudgeUtils.isEqual(lib, this.libs.getChild(0))).true;
+            }, this);
+            it("should set ShaderLib.shader to be this", () => {
+                this.libs.forEach((lib:ShaderLib) => {
+                    expect(lib.shader === this).true;
+                });
+            }, this);
+            it("libDirty should be true", () => {
+                expect(this.libDirty).true;
+            }, this);
         })
         public addShaderLibToTop(lib:ShaderLib){
             this.libs.unShiftChild(lib);
@@ -200,12 +205,16 @@ module wd{
             isNormalMatrixInstance,
             isHardwareInstance,
             isBatchInstance
-            }){
-            if(isNormalMatrixInstance){
-                assert(isModelMatrixInstance === true, Log.info.FUNC_MUST_BE("modelMatrixInstance if is normalMatrixInstance"));
+        }){
+            if(isNormalMatrixInstance) {
+                it("if is normalMatrixInstance, should also be modelMatrixInstance", () => {
+                    expect(isModelMatrixInstance).true;
+                });
             }
 
-            assert(!(isHardwareInstance && isBatchInstance), Log.info.FUNC_SHOULD_NOT("both be hardware insstance and batch instance"));
+            it("shouldn't both be hardware insstance and batch instance", () => {
+                expect(isHardwareInstance && isBatchInstance).false;
+            });
         })
         @cache(function(){
             return this._instanceStateCache;
@@ -353,3 +362,4 @@ module wd{
         isBatchInstance:boolean
     }
 }
+

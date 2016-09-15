@@ -67,7 +67,8 @@
         wd.LoaderManager.getInstance().load([
             {url: "./glsl/shaderConfig.json", id: "shaderConfig"},
             {url: "./grass.jpg", id: "grass"},
-            {url: "./glsl/vertex.glsl", id: "vs"},
+            {url: "./glsl/instance_vertex.glsl", id: "instance_vs"},
+            {url: "./glsl/batch_vertex.glsl", id: "batch_vs"},
             {url: "./glsl/fragment.glsl", id: "fs"}
         ]).subscribe(null, null, function () {
             initSample();
@@ -135,6 +136,13 @@
             material.read("shaderConfig");
             //todo more
 
+
+            if(wd.InstanceUtils.isHardwareSupport()){
+                material.definitionData.vsSourceId = "instance_vs";
+            }
+            else{
+                material.definitionData.vsSourceId = "batch_vs";
+            }
 
 
 

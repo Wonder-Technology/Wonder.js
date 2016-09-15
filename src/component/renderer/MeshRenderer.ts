@@ -73,50 +73,70 @@ module wd {
         private _createCommand(target:GameObject, material:Material){
             var cmd:any = null,
                 glslData:EInstanceGLSLData = null;
-            //todo finish!
-            //var {
-            //    isModelMatrixInstance,
-            //    isNormalMatrixInstance,
-            //    isHardwareInstance,
-            //    isBatchInstance
-            //    } = this._getInstanceState(material);
-            //
-            //glslData = this._getInstanceGLSLData(isModelMatrixInstance, isNormalMatrixInstance);
-            glslData = EInstanceGLSLData.CUSTOM;
+            //todo test!
+            var {
+               isModelMatrixInstance,
+               isNormalMatrixInstance,
+               isCustomInstance,
+               isHardwareInstance,
+               isBatchInstance
+               } = this._getInstanceState(material);
 
-            //if(isHardwareInstance){
-            //     cmd = this._createHardwareInstanceCommand(target, material, glslData);
-            //}
-            //else if(isBatchInstance){
+            glslData = this._getInstanceGLSLData(isCustomInstance, isModelMatrixInstance, isNormalMatrixInstance);
+
+            if(isHardwareInstance){
+                cmd = this._createHardwareInstanceCommand(target, material, glslData);
+            }
+            else if(isBatchInstance){
                cmd = this._createBatchInstanceCommand(target, material, glslData);
-            //}
-            //else{
-            //    cmd = SingleDrawCommand.create();
-            //
+            }
+            else{
+               cmd = SingleDrawCommand.create();
+
             //todo remove? duplicate with createDrawCommand->cmd.mMatrix = target.transform.localToWorldMatrix;
             //    cmd.mMatrix = this.entityObject.transform.localToWorldMatrix;
 
-            //    cmd.normalMatrix = this.entityObject.transform.normalMatrix;
-            //}
+               cmd.normalMatrix = this.entityObject.transform.normalMatrix;
+            }
 
             return cmd;
         }
 
         private _getInstanceState(material:Material){
             if(material.geometry instanceof InstanceGeometry){
-                //todo finish
-                //return {
-                //    isModelMatrixInstance:false,
-                //    isNormalMatrixInstance:false,
-                //    isHardwareInstance:false,
-                //    isBatchInstance:false
-                //}
+                let isHardwareInstance = InstanceUtils.isHardwareSupport(),
+                    isBatchInstance = !isHardwareInstance;
+
+                return {
+                    isModelMatrixInstance:false,
+                    isNormalMatrixInstance:false,
+                    isCustomInstance:true,
+                    isHardwareInstance:isHardwareInstance,
+                    isBatchInstance:isBatchInstance
+                }
             }
 
-            return material.shader.getInstanceState();
+            let {
+                isModelMatrixInstance,
+                isNormalMatrixInstance,
+                isHardwareInstance,
+                isBatchInstance
+            } = material.shader.getInstanceState();
+
+            return {
+                isModelMatrixInstance:isModelMatrixInstance,
+                isNormalMatrixInstance:isNormalMatrixInstance,
+                isCustomInstance:false,
+                isHardwareInstance:isHardwareInstance,
+                isBatchInstance:isBatchInstance
+            }
         }
 
-        private _getInstanceGLSLData(isModelMatrixInstance:boolean, isNormalMatrixInstance:boolean){
+        private _getInstanceGLSLData(isCustomInstance:boolean, isModelMatrixInstance:boolean, isNormalMatrixInstance:boolean){
+            if(isCustomInstance){
+                return EInstanceGLSLData.CUSTOM;
+            }
+
             if(isNormalMatrixInstance){
                 return EInstanceGLSLData.NORMALMATRIX_MODELMATRIX;
             }
