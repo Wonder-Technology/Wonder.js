@@ -1,5 +1,6 @@
 module wd{
     export abstract class HardwareInstanceDrawer extends InstanceDrawer{
+        //todo move
         public geometry:InstanceGeometry = null;
 
         @require(function(){

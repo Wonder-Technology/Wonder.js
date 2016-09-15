@@ -1,5 +1,8 @@
 module wd{
     export abstract class BatchInstanceDrawer extends InstanceDrawer{
+        //todo move
+        public geometry:InstanceGeometry = null;
+
         @require(function(){
             assert(!InstanceUtils.isHardwareSupport(), Log.info.FUNC_SHOULD("hardware", "not support instance"));
         })
@@ -14,12 +17,21 @@ module wd{
             if(indexBuffer){
                 BufferTable.bindIndexBuffer(indexBuffer);
 
+                //todo remove instanceList
                 instanceList.forEach((instance:GameObject) => {
                     var startOffset:number = 0;
 
-                    this.sendGLSLData(program, instance, uniformDataNameArr);
+                    //todo refactor: remove uniformDataNameArr
+                    this.geometry.attributeData.forEach((instanceAttributeDataList:wdCb.Collection<InstanceAttributeData>) => {
+                        this.sendGLSLData(program, instance, instanceAttributeDataList);
 
-                    GlUtils.drawElements(gl[drawMode], indexBuffer.count, gl[indexBuffer.type], indexBuffer.typeSize * startOffset);
+                        GlUtils.drawElements(gl[drawMode], indexBuffer.count, gl[indexBuffer.type], indexBuffer.typeSize * startOffset);
+                    });
+
+
+                    // this.sendGLSLData(program, instance, uniformDataNameArr);
+                    //
+                    // GlUtils.drawElements(gl[drawMode], indexBuffer.count, gl[indexBuffer.type], indexBuffer.typeSize * startOffset);
                 }, this);
             }
             else{
@@ -37,7 +49,9 @@ module wd{
 
         protected abstract getUniformDataNameArray(program:Program):Array<string>;
 
-        protected abstract sendGLSLData(program:Program, instance:GameObject, uniformDataNameArray:Array<string>):void;
+        // protected abstract sendGLSLData(program:Program, instance:GameObject, uniformDataNameArray:Array<string>):void;
+        //todo move
+        protected abstract sendGLSLData(program:Program, instance:GameObject, uniformDataNameArray:any):void;
     }
 }
 

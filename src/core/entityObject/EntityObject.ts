@@ -276,6 +276,7 @@ module wd {
             rendererComponent = this._componentManager.getRendererComponent();
 
             if(rendererComponent && geometry){
+                //todo fix bug: pass self for target!
                 rendererComponent.render(renderer, geometry,  camera);
             }
 

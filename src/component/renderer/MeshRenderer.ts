@@ -85,10 +85,10 @@ module wd {
             glslData = EInstanceGLSLData.CUSTOM;
 
             //if(isHardwareInstance){
-                cmd = this._createHardwareInstanceCommand(target, material, glslData);
+            //     cmd = this._createHardwareInstanceCommand(target, material, glslData);
             //}
             //else if(isBatchInstance){
-            //    cmd = this._createBatchInstanceCommand(target, material, glslData);
+               cmd = this._createBatchInstanceCommand(target, material, glslData);
             //}
             //else{
             //    cmd = SingleDrawCommand.create();
@@ -124,6 +124,7 @@ module wd {
             return EInstanceGLSLData.MODELMATRIX;
         }
 
+        //todo extract _createHardwareInstanceCommandForInstanceGeometry?
         private _createHardwareInstanceCommand(target:GameObject, material:Material, glslData:EInstanceGLSLData){
             var instanceComponent:SourceInstance = target.getComponent<SourceInstance>(SourceInstance),
                 cmd = HardwareInstanceCommand.create();
@@ -145,6 +146,8 @@ module wd {
 
             cmd.instanceList = instanceComponent.toRenderInstanceListForDraw;
             //cmd.instanceBuffer = instanceComponent.instanceBuffer;
+            //todo extract HardwareCustomInstanceCommand
+            cmd.geometry = <InstanceGeometry>material.geometry;
 
             cmd.glslData = glslData;
 

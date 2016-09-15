@@ -321,6 +321,7 @@
 		"renderer/command/instance/hardware/CustomHardwareInstanceDrawer.ts",
 		"renderer/command/instance/batch/BatchInstanceCommand.ts",
 		"renderer/command/instance/batch/BatchInstanceDrawer.ts",
+		"renderer/command/instance/batch/CustomBatchInstanceDrawer.ts",
 		"renderer/command/instance/batch/ModelMatrixBatchInstanceDrawer.ts",
 		"renderer/command/instance/batch/NormalMatrixModelMatrixBatchInstanceDrawer.ts",
 		"renderer/GlUtils.ts",

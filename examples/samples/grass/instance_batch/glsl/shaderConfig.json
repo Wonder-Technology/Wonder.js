@@ -1,0 +1,16 @@
+{
+  "attributes": {
+  },
+  "uniforms": {
+    "u_mvpMatrix": {
+      "type": "FLOAT_MAT4",
+      "value": "MODEL_VIEW_PROJECTION"
+    },
+    "u_sampler2D": {
+      "type": "SAMPLER_2D",
+      "textureId": "grass"
+    }
+  },
+  "vsSourceId": "vs",
+  "fsSourceId": "fs"
+}

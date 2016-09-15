@@ -1,4 +1,5 @@
 module wd{
+    //todo extract SourceInstanceForInstanceGeometry
     export class SourceInstance extends Instance{
         public static create() {
             var obj = new this();
@@ -62,6 +63,12 @@ module wd{
         })
         public init(){
             var self = this;
+
+            //todo move to SourceInstanceForInstanceGeometry
+            // if(!InstanceUtils.isHardwareSupport()){
+            //     //todo exist instance geometry
+            //     this.entityObject.addChildren(this._createChildrenByInstanceGeometryAttributeData());
+            // }
 
             if(!this._isAddSourceInstanceToChildren){
                 this._addSourceInstanceToChildren();
@@ -195,12 +202,12 @@ module wd{
 
             source.forEachComponent((component:Component) => {
                 if(component instanceof SourceInstance
-                || (component instanceof LOD)){
+                    || (component instanceof LOD)){
                     return;
                 }
 
                 if(component instanceof Geometry
-                || component instanceof Script){
+                    || component instanceof Script){
                     instance.addComponent(component, true);
                 }
                 else{
@@ -280,5 +287,20 @@ module wd{
         private _buildInstanceChildName(parentName:string, childName:string){
             return `${parentName}_${childName}`;
         }
+
+        // private _createChildrenByInstanceGeometryAttributeData(){
+        //     var children = [],
+        //         instanceCount = geometry.attributeData.getCount();
+        //
+        //     for(let i = 0; i < instanceCount; i++){
+        //         children.push(this.entityObject.clone({
+        //             cloneChildren:false,
+        //             shareGeometry:true,
+        //             cloneGeometry:true
+        //     }));
+        //     }
+        //
+        //     return children;
+        // }
     }
 }

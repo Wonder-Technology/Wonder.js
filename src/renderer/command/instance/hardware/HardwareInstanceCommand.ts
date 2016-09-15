@@ -9,6 +9,7 @@ module wd{
         public instanceList:wdCb.Collection<GameObject> = null;
         public instanceBuffer:InstanceBuffer = null;
         public glslData:EInstanceGLSLData = EInstanceGLSLData.MODELMATRIX;
+        //todo move, and move BatchInstanceCommand->geometry
         public geometry:InstanceGeometry = null;
 
         protected draw(material:Material) {
