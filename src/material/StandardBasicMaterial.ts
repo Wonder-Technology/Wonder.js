@@ -29,6 +29,8 @@ module wd{
         })
         set map(map:Texture|TextureAsset|Array<Texture>|Array<TextureAsset>){
             this._map = map;
+
+            this._addMap();
         }
 
         private _opacity:number = 1.0;
@@ -42,12 +44,6 @@ module wd{
             this.setBlendByOpacity(opacity);
 
             this._opacity = opacity;
-        }
-
-        public init(){
-            this._addMap();
-
-            super.init();
         }
 
         @virtual

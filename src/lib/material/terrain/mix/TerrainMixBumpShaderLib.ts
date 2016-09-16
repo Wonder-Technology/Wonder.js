@@ -27,7 +27,7 @@ module wd{
             noNormalMap_light_fragment = ShaderChunk.noNormalMap_light_fragment;
 
             this.fsSourceVarDeclare = noNormalMap_light_fragment.varDeclare;
-            this.fsSourceFuncDefine += noNormalMap_light_fragment.funcDefine;
+            this.fsSourceFuncDefine = noNormalMap_light_fragment.funcDefine + this.fsSourceFuncDefine;
 
             if(GPUDetector.getInstance().extensionStandardDerivatives){
                 this.fsSourceExtensionList.addChild("GL_OES_standard_derivatives");
