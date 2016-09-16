@@ -47,5 +47,9 @@ module wd{
             this.transitionManager.changeState(lastState);
             this._ui.dirty = true;
         }
+
+        public isState(state:EUIState){
+            return this.currentState === state;
+        }
     }
 }

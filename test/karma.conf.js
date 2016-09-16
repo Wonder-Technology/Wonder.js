@@ -26,7 +26,7 @@
         'test/helper/yoop/yOOP.js',
         'test/unit/**/*Tool.js',
 
-        'test/unit/**',
+        // 'test/unit/**',
 
 
         //'test/render/*Tool.js',
@@ -252,7 +252,7 @@
         //'test/unit/**/ui/**',
         //'test/unit/**/UIObjectSpec*',
 
-        //'test/unit/**/ButtonSpec*',
+        'test/unit/**/ButtonSpec*',
         //'test/unit/**/UIStateMachineSpec*',
 
 

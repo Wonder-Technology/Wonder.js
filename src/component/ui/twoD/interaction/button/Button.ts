@@ -213,7 +213,6 @@ module wd {
                     self._stateMachine.backState();
                 });
 
-
             this._mouseoverSubscription = EventManager.fromEvent(this.entityObject, <any>EEngineEvent.MOUSE_OVER)
                 .filter((e:CustomEvent) => {
                     return !self.isDisabled;
@@ -227,7 +226,13 @@ module wd {
                     return !self.isDisabled;
                 })
                 .subscribe((e:CustomEvent) => {
-                    self._stateMachine.backState();
+                    if(self._stateMachine.isState(EUIState.PRESSED)){
+                        self._stateMachine.backState();
+                        self._stateMachine.backState();
+                    }
+                    else{
+                        self._stateMachine.backState();
+                    }
                 });
         }
     }

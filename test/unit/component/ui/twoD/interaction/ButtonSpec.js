@@ -449,6 +449,17 @@ describe("Button", function() {
                     expect(button.currentState).toEqual(State.NORMAL);
                 });
             });
+
+            describe("fix bug", function(){
+                it("if mouse over-> mouse down->mouse out, the button state should back to the origin state", function () {
+                    trigger(EEngineEvent.MOUSE_OVER);
+                    trigger(EEngineEvent.MOUSE_DOWN);
+                    trigger(EEngineEvent.MOUSE_OUT);
+
+                    expect(button.currentState).toEqual(State.NORMAL);
+
+                });
+            });
         })
     });
 
