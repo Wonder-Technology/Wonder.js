@@ -137,7 +137,18 @@ describe("custom shader", function () {
                 wd.LoaderManager.getInstance().get.withArgs("definitionDataId").returns(shaderDefinitionData);
             });
 
-            //todo test can change shader data after read
+            it("support change shader json data after read the config json file", function () {
+                material.read("definitionDataId");
+                material.definitionData.uniforms.u_addData = {
+                    type: "FLOAT_1",
+                    value: 3.1
+                }
+
+                rendererTool.setFakeGeometry(material);
+                material.init();
+
+                expect(shader.uniforms.getChild("u_addData").value).toEqual(3.1);
+            });
 
             describe("init shader", function () {
             });

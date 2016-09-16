@@ -19,31 +19,16 @@ describe("ShaderMaterial", function () {
     });
 
     describe("init", function () {
-        it("add CustomShaderLib", function () {
-            material.init();
-
-            expect(material.shader.hasLib(wd.CustomShaderLib)).toBeTruthy();
-        });
-    });
-
-    describe("read", function(){
-        var definitionData;
-
-        beforeEach(function(){
-        });
-        
         it("read definitionData to shader", function(){
-            definitionData = {};
-            sandbox.stub(wd.LoaderManager.getInstance(), "get").returns(definitionData);
+            material.definitionData = {};
             sandbox.stub(material.shader, "read");
 
-            material.read("definitionDataId");
+            material.init();
 
-            expect(material.shader.read).toCalledWith(definitionData);
-            expect(wd.LoaderManager.getInstance().get).toCalledWith("definitionDataId");
+            expect(material.shader.read).toCalledWith(material.definitionData);
         });
         it("if definitionData has sampler2D data, add the correspond maps", function () {
-            definitionData = {
+            var definitionData = {
                 "uniforms": {
                     "u_sampler2D": {
                         "type": "SAMPLER_2D",
@@ -61,6 +46,7 @@ describe("ShaderMaterial", function () {
 
 
             material.read("definitionDataId");
+            material.init();
 
 
 
@@ -68,6 +54,39 @@ describe("ShaderMaterial", function () {
             expect(material.mapManager.addMap).toCalledWith(map, {
                 samplerVariableName:"u_sampler2D"
             });
+        });
+        it("add CustomShaderLib", function () {
+            sandbox.stub(material.shader, "read");
+
+            material.init();
+
+            expect(material.shader.hasLib(wd.CustomShaderLib)).toBeTruthy();
+        });
+        it("add EndShaderLib", function () {
+            sandbox.stub(material.shader, "read");
+
+            material.init();
+
+            expect(material.shader.hasLib(wd.EndShaderLib)).toBeTruthy();
+        });
+    });
+
+    describe("read", function(){
+        var definitionData;
+
+        beforeEach(function(){
+        });
+
+        it("read definitionData file", function () {
+            definitionData = {};
+            var definitionDataId = "id";
+
+            sandbox.stub(wd.LoaderManager.getInstance(), "get").withArgs(definitionDataId).returns(definitionData);
+
+
+            material.read(definitionDataId);
+
+            expect(material.definitionData).toEqual(definitionData);
         });
     });
 

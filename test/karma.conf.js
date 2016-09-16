@@ -181,11 +181,12 @@
         //'test/unit/**/ShaderSourceBuilderSpec*',
         //'test/unit/**/*ShaderSourceBuilderSpec*',
 
-        //'test/unit/**/ShaderSpec*',
-        //'test/unit/**/*ShaderSpec*',
+        'test/unit/**/ShaderSpec*',
+        'test/unit/**/*ShaderSpec*',
+        'test/unit/**/ShaderMaterialSpec*',
         //'test/unit/**/ProceduralShaderSpec*',
 
-        //'test/unit/**/customShaderSpec*',
+        'test/unit/**/customShaderSpec*',
         //'test/unit/**/renderWebGL*',
         //'test/unit/**/SortUtils*',
 
@@ -327,7 +328,7 @@
         //'test/unit/asset/wd/WDBuilderSpec.js',
         //'test/unit/math/*.js',
         //'test/unit/component/**/GeometrySpec.js',
-        'test/unit/component/**/InstanceGeometrySpec.js',
+        // 'test/unit/component/**/InstanceGeometrySpec.js',
         //'test/unit/component/**/TerrainGeometrySpec.js',
         //'test/unit/component/**/ModelGeometrySpec.js',
         //'test/unit/**/CommonBufferContainerSpec.js',

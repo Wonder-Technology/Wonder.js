@@ -14,10 +14,11 @@ module wd{
         public definitionData:ShaderDefinitionData = null;
 
         @ensure(function(){
-            assert(this.shader.getLibs().getCount() === 2 && this.shader.hasLib(CustomShaderLib), Log.info.FUNC_SHOULD("only has CustomShaderLib and EndShaderLib, not has other shader libs"));
+            it("should only has CustomShaderLib and EndShaderLib, not has other shader libs", () => {
+                expect(this.shader.getLibs().getCount() === 2 && this.shader.hasLib(CustomShaderLib)).true;
+            });
         })
         public init(){
-            //todo test
             this.shader.read(this.definitionData);
 
             this.shader.getSampler2DUniformsAfterRead().forEach((uniform:ShaderData, name:string) => {
@@ -36,7 +37,6 @@ module wd{
             return null;
         }
 
-        //todo test
         public read(definitionDataId:string){
             this.definitionData = LoaderManager.getInstance().get(definitionDataId);
         }

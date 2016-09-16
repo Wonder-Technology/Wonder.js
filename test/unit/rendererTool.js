@@ -1,12 +1,12 @@
 var rendererTool = {
     triggerMaterialAddShaderLib: function(material){
-        this.prepareForAddShaderLib(material);
+        this.setFakeGeometry(material);
 
         material.init();
 
         //wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.AFTER_GAMEOBJECT_INIT));
     },
-    prepareForAddShaderLib: function(material){
+    setFakeGeometry: function(material){
         if(!material.geometry){
             material.geometry = {
                 entityObject:wd.GameObject.create()
