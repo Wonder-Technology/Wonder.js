@@ -76,7 +76,7 @@
 
             arr.push(model);
 
-            var sourceInstanceComponent = model.getComponent(wd.SourceInstance);
+            var sourceInstanceComponent = model.getComponent(wd.OneToOneSourceInstance);
 
             for(var i = 0; i < count; i++){
                 var instance = sourceInstanceComponent.cloneInstance("index" + String(i));
@@ -113,7 +113,7 @@
             gameObject.name = "sphere";
 
 
-            var sourceInstanceComponent = wd.SourceInstance.create();
+            var sourceInstanceComponent = wd.OneToOneSourceInstance.create();
 
             gameObject.addComponent(sourceInstanceComponent);
 

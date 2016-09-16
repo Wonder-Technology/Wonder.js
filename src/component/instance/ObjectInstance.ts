@@ -44,7 +44,7 @@ module wd{
 
         private _addToSourceAndItsChildren(){
             var add = (sourceInstanceObject:GameObject, objectInstanceObject:GameObject) => {
-                sourceInstanceObject.getComponent<SourceInstance>(SourceInstance).instanceList.addChild(objectInstanceObject);
+                sourceInstanceObject.getComponent<OneToOneSourceInstance>(OneToOneSourceInstance).instanceList.addChild(objectInstanceObject);
 
                 objectInstanceObject.forEach((child:GameObject, index:number) => {
                     add(sourceInstanceObject.getChild(index), child);
@@ -56,7 +56,7 @@ module wd{
 
         private _removeFromSourceAndItsChildren(){
             var remove = (sourceInstanceObject:GameObject, objectInstanceObject:GameObject) => {
-                sourceInstanceObject.getComponent<SourceInstance>(SourceInstance).instanceList.removeChild(objectInstanceObject);
+                sourceInstanceObject.getComponent<OneToOneSourceInstance>(OneToOneSourceInstance).instanceList.removeChild(objectInstanceObject);
 
                 objectInstanceObject.forEach((child:GameObject, index:number) => {
                     remove(sourceInstanceObject.getChild(index), child);

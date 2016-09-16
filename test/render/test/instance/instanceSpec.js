@@ -36,7 +36,7 @@ describe("instance", function () {
                         range = 300,
                         count = 2;
 
-                    var sourceInstanceComponent = wd.SourceInstance.create();
+                    var sourceInstanceComponent = wd.OneToOneSourceInstance.create();
                     model.addComponent(sourceInstanceComponent);
 
                     arr.push(model);
@@ -195,7 +195,7 @@ describe("instance", function () {
 
                     arr.push(model);
 
-                    var sourceInstanceComponent = model.getComponent(wd.SourceInstance);
+                    var sourceInstanceComponent = model.getComponent(wd.OneToOneSourceInstance);
 
                     for(var i = 0; i < count; i++){
                         var instance = sourceInstanceComponent.cloneInstance("index" + String(i));
@@ -246,7 +246,7 @@ describe("instance", function () {
                     gameObject.name = "sphere";
 
 
-                    var sourceInstanceComponent = wd.SourceInstance.create();
+                    var sourceInstanceComponent = wd.OneToOneSourceInstance.create();
 
                     gameObject.addComponent(sourceInstanceComponent);
 
@@ -505,7 +505,7 @@ describe("instance", function () {
 
                     arr.push(model);
 
-                    var sourceInstanceComponent = model.getComponent(wd.SourceInstance);
+                    var sourceInstanceComponent = model.getComponent(wd.OneToOneSourceInstance);
 
                     for(var i = 0; i < count; i++){
                         var instance = sourceInstanceComponent.cloneInstance("index" + String(i));
@@ -543,7 +543,7 @@ describe("instance", function () {
                     gameObject.name = "sphere";
 
 
-                    var sourceInstanceComponent = wd.SourceInstance.create();
+                    var sourceInstanceComponent = wd.OneToOneSourceInstance.create();
 
                     gameObject.addComponent(sourceInstanceComponent);
 
@@ -771,7 +771,7 @@ describe("instance", function () {
 
                     arr.push(model);
 
-                    var sourceInstanceComponent = model.getComponent(wd.SourceInstance);
+                    var sourceInstanceComponent = model.getComponent(wd.OneToOneSourceInstance);
 
                     for(var i = 0; i < count; i++){
                         var instance = sourceInstanceComponent.cloneInstance("index" + String(i));
@@ -809,7 +809,7 @@ describe("instance", function () {
                     gameObject.name = "sphere";
 
 
-                    var sourceInstanceComponent = wd.SourceInstance.create();
+                    var sourceInstanceComponent = wd.OneToOneSourceInstance.create();
 
                     gameObject.addComponent(sourceInstanceComponent);
 
@@ -1024,7 +1024,7 @@ describe("instance", function () {
 
                     arr.push(model);
 
-                    var sourceInstanceComponent = model.getComponent(wd.SourceInstance);
+                    var sourceInstanceComponent = model.getComponent(wd.OneToOneSourceInstance);
 
                     for(var i = 0; i < count; i++){
                         var instance = sourceInstanceComponent.cloneInstance("index" + String(i));
@@ -1062,7 +1062,7 @@ describe("instance", function () {
                     gameObject.name = "sphere";
 
 
-                    var sourceInstanceComponent = wd.SourceInstance.create();
+                    var sourceInstanceComponent = wd.OneToOneSourceInstance.create();
 
                     gameObject.addComponent(sourceInstanceComponent);
 
@@ -1287,7 +1287,7 @@ describe("instance", function () {
                         instance.init();
 
 
-                        var instance2 = source.getComponent(wd.SourceInstance).cloneInstance("instance2");
+                        var instance2 = source.getComponent(wd.OneToOneSourceInstance).cloneInstance("instance2");
 
                         instance2.transform.position = wd.Vector3.create(30,30,30);
 
@@ -1314,7 +1314,7 @@ describe("instance", function () {
                         range = 100,
                         count = 1;
 
-                    var sourceInstanceComponent = wd.SourceInstance.create();
+                    var sourceInstanceComponent = wd.OneToOneSourceInstance.create();
                     model.addComponent(sourceInstanceComponent);
 
                     arr.push(model);
@@ -1496,7 +1496,7 @@ describe("instance", function () {
 
                     arr.push(model);
 
-                    var sourceInstanceComponent = model.getComponent(wd.SourceInstance);
+                    var sourceInstanceComponent = model.getComponent(wd.OneToOneSourceInstance);
 
                     for(var i = 0; i < count; i++){
                         var instance = sourceInstanceComponent.cloneInstance("index" + String(i));
@@ -1527,7 +1527,7 @@ describe("instance", function () {
                     var boxContainer = wd.GameObject.create();
                     boxContainer.addChildren([box1, box2]);
 
-                    boxContainer.addComponent(wd.SourceInstance.create());
+                    boxContainer.addComponent(wd.OneToOneSourceInstance.create());
 
 
 
@@ -1722,7 +1722,7 @@ describe("instance", function () {
 
                     arr.push(model);
 
-                    var sourceInstanceComponent = model.getComponent(wd.SourceInstance);
+                    var sourceInstanceComponent = model.getComponent(wd.OneToOneSourceInstance);
 
                     for(var i = 0; i < count; i++){
                         var instance = sourceInstanceComponent.cloneInstance("index" + String(i));
@@ -1768,7 +1768,7 @@ describe("instance", function () {
                     //model.addComponent(shadow);
 
 
-                    model.addComponent(wd.SourceInstance.create());
+                    model.addComponent(wd.OneToOneSourceInstance.create());
 
 
 
@@ -1986,7 +1986,7 @@ describe("instance", function () {
                         range = 500,
                         count = 2;
 
-                    var sourceInstanceComponent = wd.SourceInstance.create();
+                    var sourceInstanceComponent = wd.OneToOneSourceInstance.create();
                     model.addComponent(sourceInstanceComponent);
 
                     arr.push(model);
@@ -2011,7 +2011,7 @@ describe("instance", function () {
                         range = 500,
                         count = 2;
 
-                    var sourceInstanceComponent = wd.SourceInstance.create();
+                    var sourceInstanceComponent = wd.OneToOneSourceInstance.create();
                     model.addComponent(sourceInstanceComponent);
 
                     arr.push(model);
@@ -2196,7 +2196,7 @@ describe("instance", function () {
                         range = 50,
                         count = 2;
 
-                    var sourceInstanceComponent = wd.SourceInstance.create();
+                    var sourceInstanceComponent = wd.OneToOneSourceInstance.create();
                     model.addComponent(sourceInstanceComponent);
 
                     arr.push(model);
@@ -2366,7 +2366,7 @@ describe("instance", function () {
                         range = 500,
                         count = 10;
 
-                    var sourceInstanceComponent = wd.SourceInstance.create();
+                    var sourceInstanceComponent = wd.OneToOneSourceInstance.create();
                     model.addComponent(sourceInstanceComponent);
 
                     arr.push(model);
@@ -2535,7 +2535,7 @@ describe("instance", function () {
                         count = 20;
 
 
-                    var sourceInstanceComponent = wd.SourceInstance.create();
+                    var sourceInstanceComponent = wd.OneToOneSourceInstance.create();
                     model.addComponent(sourceInstanceComponent);
 
                     arr.push(model);
@@ -2736,7 +2736,7 @@ describe("instance", function () {
 
                     arr.push(model);
 
-                    var sourceInstanceComponent = model.getComponent(wd.SourceInstance);
+                    var sourceInstanceComponent = model.getComponent(wd.OneToOneSourceInstance);
 
                     for(var i = 0; i < count; i++){
                         var instance = sourceInstanceComponent.cloneInstance("index" + String(i));
@@ -2759,7 +2759,7 @@ describe("instance", function () {
 
                     arr.push(model);
 
-                    var sourceInstanceComponent = model.getComponent(wd.SourceInstance);
+                    var sourceInstanceComponent = model.getComponent(wd.OneToOneSourceInstance);
 
                     for(var i = 0; i < count; i++){
                         var instance = sourceInstanceComponent.cloneInstance("index" + String(i));
@@ -2782,7 +2782,7 @@ describe("instance", function () {
 
                     arr.push(model);
 
-                    var sourceInstanceComponent = model.getComponent(wd.SourceInstance);
+                    var sourceInstanceComponent = model.getComponent(wd.OneToOneSourceInstance);
 
                     for(var i = 0; i < count; i++){
                         var instance = sourceInstanceComponent.cloneInstance("index" + String(i));
@@ -2823,7 +2823,7 @@ describe("instance", function () {
                     //model.addComponent(shadow);
 
 
-                    model.addComponent(wd.SourceInstance.create());
+                    model.addComponent(wd.OneToOneSourceInstance.create());
 
 
                     return model;
@@ -2850,7 +2850,7 @@ describe("instance", function () {
                     //model.addComponent(shadow);
 
 
-                    model.addComponent(wd.SourceInstance.create());
+                    model.addComponent(wd.OneToOneSourceInstance.create());
 
 
 
@@ -2868,7 +2868,7 @@ describe("instance", function () {
                     //model.addComponent(shadow);
 
 
-                    model.addComponent(wd.SourceInstance.create());
+                    model.addComponent(wd.OneToOneSourceInstance.create());
 
                     return model;
                 }
@@ -3011,7 +3011,7 @@ describe("instance", function () {
                         range = 300,
                         count = 10;
 
-                    var sourceInstanceComponent = wd.SourceInstance.create();
+                    var sourceInstanceComponent = wd.OneToOneSourceInstance.create();
                     model.addComponent(sourceInstanceComponent);
 
                     arr.push(model);

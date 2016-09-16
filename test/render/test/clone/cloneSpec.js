@@ -103,7 +103,7 @@ describe("clone", function () {
                     model.addComponent(shadow);
 
 
-                    model.addComponent(wd.SourceInstance.create());
+                    model.addComponent(wd.OneToOneSourceInstance.create());
 
 
 
@@ -738,7 +738,7 @@ describe("clone", function () {
                     model.addComponent(shadow);
 
 
-                    model.addComponent(wd.SourceInstance.create());
+                    model.addComponent(wd.OneToOneSourceInstance.create());
 
 
                     return model;
@@ -765,7 +765,7 @@ describe("clone", function () {
                     model.addComponent(shadow);
 
 
-                    model.addComponent(wd.SourceInstance.create());
+                    model.addComponent(wd.OneToOneSourceInstance.create());
 
 
 
@@ -783,7 +783,7 @@ describe("clone", function () {
                     model.addComponent(shadow);
 
 
-                    model.addComponent(wd.SourceInstance.create());
+                    model.addComponent(wd.OneToOneSourceInstance.create());
 
                     return model;
                 }

@@ -1,4 +1,4 @@
-describe("one gameObject gameObject with multi instances", function(){
+describe("one to many instance test", function(){
     var gl = null;
     var device;
     var sandbox;
@@ -50,7 +50,7 @@ describe("one gameObject gameObject with multi instances", function(){
         gameObject.addComponent(geo);
 
 
-        var sourceInstanceComponent = wd.SourceInstance.create();
+        var sourceInstanceComponent = wd.OneToManySourceInstance.create();
         gameObject.addComponent(sourceInstanceComponent);
 
 

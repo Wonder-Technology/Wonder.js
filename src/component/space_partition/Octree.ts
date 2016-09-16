@@ -208,13 +208,13 @@ module wd {
             }
         }
 
-        @require(function(sourceObject:GameObject, sourceInstanceComponent:SourceInstance){
-            assert(sourceInstanceComponent.hasToRenderInstance(), Log.info.FUNC_SHOULD("top SourceInstance", "has to render instance"));
+        @require(function(sourceObject:GameObject, sourceInstanceComponent:OneToOneSourceInstance){
+            assert(sourceInstanceComponent.hasToRenderInstance(), Log.info.FUNC_SHOULD("top OneToOneSourceInstance", "has to render instance"));
         })
-        private _setToRenderInstanceListOfChildren(sourceObject:GameObject, sourceInstanceComponent:SourceInstance){
-            var set = (sourceObject:GameObject, sourceInstanceComponent:SourceInstance) => {
+        private _setToRenderInstanceListOfChildren(sourceObject:GameObject, sourceInstanceComponent:OneToOneSourceInstance){
+            var set = (sourceObject:GameObject, sourceInstanceComponent:OneToOneSourceInstance) => {
                 sourceObject.forEach((childSource:GameObject, index:number) => {
-                    var childSourceInstance:SourceInstance = childSource.getComponent<SourceInstance>(SourceInstance);
+                    var childSourceInstance:OneToOneSourceInstance = childSource.getComponent<OneToOneSourceInstance>(OneToOneSourceInstance);
 
                     sourceInstanceComponent.forEachToRenderInstanceList((toRenderInstance:GameObject) => {
                         childSourceInstance.addToRenderIntance(toRenderInstance.getChild(index));
@@ -227,14 +227,14 @@ module wd {
             set(sourceObject, sourceInstanceComponent);
         }
 
-        @require(function(self:GameObject, instanceComponent:SourceInstance){
-            assert(instanceComponent instanceof SourceInstance, Log.info.FUNC_ONLY("SourceInstance has toRenderList"));
+        @require(function(self:GameObject, instanceComponent:OneToOneSourceInstance){
+            assert(instanceComponent instanceof OneToOneSourceInstance, Log.info.FUNC_ONLY("OneToOneSourceInstance has toRenderList"));
 
             instanceComponent.forEachToRenderInstanceList((instance:GameObject) => {
                 assert(!JudgeUtils.isEqual(instance, self), Log.info.FUNC_SHOULD_NOT("toRenderInstanceList", "contain self"));
             })
         })
-        private _addSelfToToRenderInstanceList(self:GameObject, instanceComponent:SourceInstance){
+        private _addSelfToToRenderInstanceList(self:GameObject, instanceComponent:OneToOneSourceInstance){
             instanceComponent.addToRenderIntance(self);
         }
 
@@ -250,8 +250,8 @@ module wd {
                     return;
                 }
 
-                if(InstanceUtils.isSourceInstance(gameObject)){
-                    let instanceComponent:SourceInstance = gameObject.getComponent<SourceInstance>(SourceInstance);
+                if(InstanceUtils.isOneToOneSourceInstance(gameObject)){
+                    let instanceComponent:OneToOneSourceInstance = gameObject.getComponent<OneToOneSourceInstance>(OneToOneSourceInstance);
 
                     this._addSelfToToRenderInstanceList(gameObject, instanceComponent);
 
@@ -261,7 +261,7 @@ module wd {
                 }
 
                 let sourceObject:GameObject = (gameObject.getComponent<ObjectInstance>(ObjectInstance)).sourceObject,
-                    sourceInstanceComponent:SourceInstance = sourceObject.getComponent<SourceInstance>(SourceInstance);
+                    sourceInstanceComponent:OneToOneSourceInstance = sourceObject.getComponent<OneToOneSourceInstance>(OneToOneSourceInstance);
 
                 this._addSelfToToRenderInstanceList(gameObject, sourceInstanceComponent);
 
@@ -269,7 +269,7 @@ module wd {
             }, this);
 
             instanceSourceMap.forEach((sourceObject:GameObject, uid:string) => {
-                var sourceInstanceComponent:SourceInstance = sourceObject.getComponent<SourceInstance>(SourceInstance);
+                var sourceInstanceComponent:OneToOneSourceInstance = sourceObject.getComponent<OneToOneSourceInstance>(OneToOneSourceInstance);
 
                 //todo optimize: if toRenderList == defaultToRenderList, not set
 

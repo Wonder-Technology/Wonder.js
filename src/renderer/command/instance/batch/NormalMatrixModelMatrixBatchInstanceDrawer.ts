@@ -1,6 +1,6 @@
 module wd {
     @singleton()
-    export class NormalMatrixModelMatrixBatchInstanceDrawer extends BatchInstanceDrawer{
+    export class NormalMatrixModelMatrixBatchInstanceDrawer extends OneToOneBatchInstanceDrawer{
         public static getInstance():any {}
 
         protected getUniformDataNameArray(program:Program):Array<string>{

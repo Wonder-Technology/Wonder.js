@@ -23,7 +23,7 @@ describe("instance with shadow", function () {
         sphere1 = createSphere();
         sphere1.name = "sphere1";
 
-        var sourceInstance = wd.SourceInstance.create();
+        var sourceInstance = wd.OneToOneSourceInstance.create();
         sphere1.addComponent(sourceInstance);
 
 
@@ -267,7 +267,7 @@ describe("instance with shadow", function () {
             sphere1 = createSphere();
             sphere1.name = "sphere1";
 
-            var sourceInstance = wd.SourceInstance.create();
+            var sourceInstance = wd.OneToOneSourceInstance.create();
             sphere1.addComponent(sourceInstance);
 
             var child;

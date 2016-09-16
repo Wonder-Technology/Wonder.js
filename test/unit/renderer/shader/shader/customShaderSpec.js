@@ -137,6 +137,8 @@ describe("custom shader", function () {
                 wd.LoaderManager.getInstance().get.withArgs("definitionDataId").returns(shaderDefinitionData);
             });
 
+            //todo test can change shader data after read
+
             describe("init shader", function () {
             });
 

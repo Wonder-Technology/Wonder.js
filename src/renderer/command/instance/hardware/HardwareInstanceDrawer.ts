@@ -1,40 +1,10 @@
 module wd{
     export abstract class HardwareInstanceDrawer extends InstanceDrawer{
-        //todo move
-        public geometry:InstanceGeometry = null;
-
-        @require(function(){
-            assert(InstanceUtils.isHardwareSupport(), Log.info.FUNC_SHOULD("hardware", "support instance"));
-        })
-        public draw(instanceList:wdCb.Collection<GameObject>, instanceBuffer:InstanceBuffer, program:Program, buffers:BufferContainer, drawMode:EDrawMode):void{
-            var indexBuffer:ElementBuffer = null,
-                offsetLocationArr = this.getOffsetLocationArray(program);
-
-            this.setCapacity(instanceList, instanceBuffer);
-
-            this.sendGLSLData(instanceList, instanceBuffer, offsetLocationArr);
-
-            indexBuffer = <ElementBuffer>buffers.getChild(EBufferDataType.INDICE);
-
-            if(indexBuffer){
-                // this._drawElementsInstancedANGLE(indexBuffer, instanceList.getCount(), drawMode);
-                //todo fix
-                this._drawElementsInstancedANGLE(indexBuffer, 100, drawMode);
-            }
-            else{
-                let vertexBuffer = buffers.getChild(EBufferDataType.VERTICE);
-
-                this._drawArraysInstancedANGLE(vertexBuffer, instanceList.getCount(), drawMode);
-            }
-
-            this._unBind(instanceBuffer, offsetLocationArr);
-        }
-
         protected abstract getOffsetLocationArray(program:Program):Array<number>;
-        protected abstract setCapacity(instanceList:wdCb.Collection<GameObject>, instanceBuffer:InstanceBuffer):void;
-        protected abstract sendGLSLData(instanceList:wdCb.Collection<GameObject>, instanceBuffer:InstanceBuffer, offsetLocationArr: Array<number>):void;
+        protected abstract setCapacity(...args):void;
+        protected abstract sendGLSLData(...args):void;
 
-        private _unBind(instanceBuffer:InstanceBuffer, offsetLocationArr: Array<number>): void {
+        protected unBind(instanceBuffer:InstanceBuffer, offsetLocationArr: Array<number>): void {
             var gl = DeviceManager.getInstance().gl;
             var extension = GPUDetector.getInstance().extensionInstancedArrays;
 
@@ -46,20 +16,13 @@ module wd{
             }
         }
 
-        private _drawElementsInstancedANGLE(indexBuffer:ElementBuffer, instancesCount:number, drawMode:EDrawMode){
+        protected drawElementsInstancedANGLE(indexBuffer:ElementBuffer, instancesCount:number, drawMode:EDrawMode){
             var startOffset:number = 0,
                 gl = DeviceManager.getInstance().gl;
 
             BufferTable.bindIndexBuffer(indexBuffer);
 
             GlUtils.drawElementsInstancedANGLE(gl[drawMode], indexBuffer.count, gl[indexBuffer.type], indexBuffer.typeSize * startOffset, instancesCount);
-        }
-
-        private _drawArraysInstancedANGLE(vertexBuffer:ArrayBuffer, instancesCount:number, drawMode:EDrawMode){
-            var startOffset:number = 0,
-                gl = DeviceManager.getInstance().gl;
-
-            GlUtils.drawArraysInstancedANGLE(gl[drawMode], startOffset, vertexBuffer.count, instancesCount);
         }
     }
 }

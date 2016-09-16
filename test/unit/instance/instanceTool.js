@@ -2,20 +2,20 @@ var instanceTool = (function(){
     return {
         createBox: function(){
             var box1 = prepareTool.createBox(1);
-            var sourceInstance = wd.SourceInstance.create();
+            var sourceInstance = wd.OneToOneSourceInstance.create();
             box1.addComponent(sourceInstance);
 
             return box1;
         },
         createSphere: function(){
             var sphere = prepareTool.createSphere(1);
-            var sourceInstance = wd.SourceInstance.create();
+            var sourceInstance = wd.OneToOneSourceInstance.create();
             sphere.addComponent(sourceInstance);
 
             return sphere;
         },
         cloneInstance:function(source, name){
-            return source.getComponent(wd.SourceInstance).cloneInstance(name);
+            return source.getComponent(wd.OneToOneSourceInstance).cloneInstance(name);
         },
         createInstance: function(){
             var box = this.createBox();

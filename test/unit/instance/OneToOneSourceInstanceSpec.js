@@ -1,4 +1,4 @@
-describe("SourceInstance", function(){
+describe("OneToOneSourceInstance", function(){
     var sandbox;
 
     var box1,box1Instance1;
@@ -14,7 +14,7 @@ describe("SourceInstance", function(){
         sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
 
         box1 = instanceTool.createBox();
-        sourceInstance = box1.getComponent(wd.SourceInstance);
+        sourceInstance = box1.getComponent(wd.OneToOneSourceInstance);
     });
     afterEach(function () {
         testTool.clearInstance(sandbox);
@@ -29,7 +29,7 @@ describe("SourceInstance", function(){
         it("if not has to render Instance, return self entityObject and instanceList", function(){
             box1Instance1 = instanceTool.cloneInstance(box1, "instance1");
 
-            expect(box1.getComponent(wd.SourceInstance).toRenderInstanceListForDraw).toEqual(wdCb.Collection.create(
+            expect(box1.getComponent(wd.OneToOneSourceInstance).toRenderInstanceListForDraw).toEqual(wdCb.Collection.create(
                 [
                     box1, box1Instance1
                 ]
@@ -39,9 +39,9 @@ describe("SourceInstance", function(){
             testTool.closeContractCheck(sandbox);
             var toRenderIntance = prepareTool.createSphere();
 
-            box1.getComponent(wd.SourceInstance).addToRenderIntance(toRenderIntance);
+            box1.getComponent(wd.OneToOneSourceInstance).addToRenderIntance(toRenderIntance);
 
-            expect(box1.getComponent(wd.SourceInstance).toRenderInstanceListForDraw).toEqual(wdCb.Collection.create(
+            expect(box1.getComponent(wd.OneToOneSourceInstance).toRenderInstanceListForDraw).toEqual(wdCb.Collection.create(
                 [
                     toRenderIntance
                 ]
@@ -67,7 +67,7 @@ describe("SourceInstance", function(){
                 box1Instance1 = instanceTool.cloneInstance(box1, "instance1");
 
                 expect(box1Instance1.hasComponent(wd.ObjectInstance)).toBeTruthy();
-                expect(box1Instance1.hasComponent(wd.SourceInstance)).toBeFalsy();
+                expect(box1Instance1.hasComponent(wd.OneToOneSourceInstance)).toBeFalsy();
             });
 
             describe("test lod component", function(){
@@ -131,7 +131,7 @@ describe("SourceInstance", function(){
 
                     box1.getComponents()
                         .filter(function(component){
-                            return !(component instanceof wd.Geometry) && !(component instanceof wd.SourceInstance) && !(component instanceof wd.Transform);
+                            return !(component instanceof wd.Geometry) && !(component instanceof wd.OneToOneSourceInstance) && !(component instanceof wd.Transform);
                         })
                         .forEach(function(component){
                             expect(component.clone).toCalledOnce();
@@ -160,8 +160,8 @@ describe("SourceInstance", function(){
                 it("entityObject->each child should add new SourceInstance component", function(){
                     box1Instance1 = instanceTool.cloneInstance(box1, "instance1");
 
-                    expect(box1Child1.hasComponent(wd.SourceInstance)).toBeTruthy();
-                    expect(box1Child1.getComponent(wd.SourceInstance) !== box1.getComponent(wd.SourceInstance)).toBeTruthy();
+                    expect(box1Child1.hasComponent(wd.OneToOneSourceInstance)).toBeTruthy();
+                    expect(box1Child1.getComponent(wd.OneToOneSourceInstance) !== box1.getComponent(wd.OneToOneSourceInstance)).toBeTruthy();
                 });
                 it("instance object should has its independent children", function(){
                     box1Instance1 = instanceTool.cloneInstance(box1, "instance1");
@@ -216,7 +216,7 @@ describe("SourceInstance", function(){
     describe("clear toRenderInstanceList on endLoop", function(){
         beforeEach(function(){
             var toRenderIntance = prepareTool.createSphere();
-            box1.getComponent(wd.SourceInstance).addToRenderIntance(toRenderIntance);
+            box1.getComponent(wd.OneToOneSourceInstance).addToRenderIntance(toRenderIntance);
         });
 
         it("bind the event when init", function () {
@@ -225,17 +225,17 @@ describe("SourceInstance", function(){
             wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.ENDLOOP));
 
 
-            expect(box1.getComponent(wd.SourceInstance)._toRenderInstanceList.getCount()).toEqual(0);
+            expect(box1.getComponent(wd.OneToOneSourceInstance)._toRenderInstanceList.getCount()).toEqual(0);
         });
         it("unbind when dispose", function () {
             box1.init();
 
-            box1.getComponent(wd.SourceInstance).dispose();
+            box1.getComponent(wd.OneToOneSourceInstance).dispose();
 
             wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.ENDLOOP));
 
 
-            expect(box1.getComponent(wd.SourceInstance)._toRenderInstanceList.getCount()).toEqual(1);
+            expect(box1.getComponent(wd.OneToOneSourceInstance)._toRenderInstanceList.getCount()).toEqual(1);
         });
     });
 

@@ -107,7 +107,7 @@
             var model = createBox(createRandomColor(), wd.Vector3.create(-10, 0, 0));
             model.name = "box";
 
-            var sourceInstanceComponent = wd.SourceInstance.create();
+            var sourceInstanceComponent = wd.OneToOneSourceInstance.create();
             model.addComponent(sourceInstanceComponent);
 
             var instance = sourceInstanceComponent.cloneInstance("box_instance");
@@ -122,7 +122,7 @@
             var model = createSphere(createRandomColor(), wd.Vector3.create(-5, 5, 0));
             model.name = "sphere";
 
-            var sourceInstanceComponent = wd.SourceInstance.create();
+            var sourceInstanceComponent = wd.OneToOneSourceInstance.create();
             model.addComponent(sourceInstanceComponent);
 
             var instance = sourceInstanceComponent.cloneInstance("sphere_instance");

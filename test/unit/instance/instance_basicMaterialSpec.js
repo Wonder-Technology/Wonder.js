@@ -4,13 +4,14 @@ describe("instance with basic material", function(){
     var sandbox;
     var director;
 
-    var extensionInstancedArrays;
-
     var box1,box1Instance1,box1Instance2;
     var box1Child1;
 
     var renderer;
     var camera;
+
+    var extensionInstancedArrays;
+
 
     function prepareWithoutChild(){
         box1 = instanceTool.createBox();
@@ -70,8 +71,6 @@ describe("instance with basic material", function(){
 
         director = wd.Director.getInstance();
 
-        extensionInstancedArrays = instanceTool.prepareExtensionInstancedArrays(sandbox);
-
 
 
         camera = testTool.createCamera();
@@ -79,6 +78,9 @@ describe("instance with basic material", function(){
 
 
         director.scene.addChild(camera);
+
+
+        extensionInstancedArrays = instanceTool.prepareExtensionInstancedArrays(sandbox);
     });
     afterEach(function () {
         sandbox.restore();
@@ -86,420 +88,447 @@ describe("instance with basic material", function(){
         testTool.clearInstance(sandbox);
     });
 
-    describe("test render count", function(){
+
+
+    describe("if hardware support instance", function(){
         beforeEach(function(){
         });
 
-        it("test no box1Child1", function(){
-            prepareWithoutChild();
-            director._init();
+        describe("test render count", function(){
+            beforeEach(function(){
+            });
 
-            director.scene.gameObjectScene.render(renderer);
-            renderer.render();
+            it("test no box1Child1", function(){
+                prepareWithoutChild();
+                director._init();
 
-            expect(box1.render).toCalledOnce();
-            expect(box1Instance1.render).not.toCalled();
-            expect(box1Instance2.render).not.toCalled();
+                director.scene.gameObjectScene.render(renderer);
+                renderer.render();
 
-            expect(wd.DebugStatistics.count.renderGameObjects).toEqual(3);
+                expect(box1.render).toCalledOnce();
+                expect(box1Instance1.render).not.toCalled();
+                expect(box1Instance2.render).not.toCalled();
+
+                expect(wd.DebugStatistics.count.renderGameObjects).toEqual(3);
 
 
-            expect(gl.drawElements).not.toCalled();
+                expect(gl.drawElements).not.toCalled();
 
-            expect(extensionInstancedArrays.drawElementsInstancedANGLE).toCalledOnce();
-            instanceTool.judgeInstanceCount(extensionInstancedArrays, 0, 3);
+                expect(extensionInstancedArrays.drawElementsInstancedANGLE).toCalledOnce();
+                instanceTool.judgeInstanceCount(extensionInstancedArrays, 0, 3);
+            });
+            it("test with child", function(){
+                prepareWithChild();
+
+                director._init();
+
+                director.scene.gameObjectScene.render(renderer);
+                renderer.render();
+
+                expect(box1.render).toCalledOnce();
+                expect(box1Instance1.render).not.toCalled();
+                expect(box1Instance2.render).not.toCalled();
+
+                expect(box1Child1.render).toCalledOnce();
+                expect(box1Instance1.getChild(0).render).not.toCalled();
+                expect(box1Instance2.getChild(0).render).not.toCalled();
+
+                expect(wd.DebugStatistics.count.renderGameObjects).toEqual(6);
+
+
+                expect(gl.drawElements).not.toCalled();
+
+                expect(extensionInstancedArrays.drawElementsInstancedANGLE).toCalledTwice();
+
+                instanceTool.judgeInstanceCount(extensionInstancedArrays, 0, 3);
+                instanceTool.judgeInstanceCount(extensionInstancedArrays, 1, 3);
+            });
         });
-        it("test with child", function(){
-            prepareWithChild();
 
-            director._init();
+        describe("can vary instance's modelMatrix(position,rotation,scale)", function(){
+            var mMatrixPos;
 
-            director.scene.gameObjectScene.render(renderer);
-            renderer.render();
+            function judgeModelMatricesInstancesArray(){
+                expect(gl.uniformMatrix4fv.withArgs(mMatrixPos)).not.toCalled();
 
-            expect(box1.render).toCalledOnce();
-            expect(box1Instance1.render).not.toCalled();
-            expect(box1Instance2.render).not.toCalled();
+                expect(gl.bufferSubData).toCalledOnce();
 
-            expect(box1Child1.render).toCalledOnce();
-            expect(box1Instance1.getChild(0).render).not.toCalled();
-            expect(box1Instance2.getChild(0).render).not.toCalled();
-
-            expect(wd.DebugStatistics.count.renderGameObjects).toEqual(6);
+                var targetModelMatricesInstancesArray = new Float32Array(1000);
+                box1.transform.localToWorldMatrix.cloneToArray(targetModelMatricesInstancesArray, 0);
+                box1Instance1.transform.localToWorldMatrix.cloneToArray(targetModelMatricesInstancesArray, 16);
+                box1Instance2.transform.localToWorldMatrix.cloneToArray(targetModelMatricesInstancesArray, 32);
 
 
-            expect(gl.drawElements).not.toCalled();
+                var modelMatricesInstancesArray = gl.bufferSubData.firstCall.args[2];
 
-            expect(extensionInstancedArrays.drawElementsInstancedANGLE).toCalledTwice();
+                for(var i = 0, len = modelMatricesInstancesArray.length; i < len; i++){
+                    var data = modelMatricesInstancesArray[i];
 
-            instanceTool.judgeInstanceCount(extensionInstancedArrays, 0, 3);
-            instanceTool.judgeInstanceCount(extensionInstancedArrays, 1, 3);
-        });
-    });
-
-    describe("can vary instance's modelMatrix(position,rotation,scale)", function(){
-        var mMatrixPos;
-
-        function judgeModelMatricesInstancesArray(){
-            expect(gl.uniformMatrix4fv.withArgs(mMatrixPos)).not.toCalled();
-
-            expect(gl.bufferSubData).toCalledOnce();
-
-            var targetModelMatricesInstancesArray = new Float32Array(1000);
-            box1.transform.localToWorldMatrix.cloneToArray(targetModelMatricesInstancesArray, 0);
-            box1Instance1.transform.localToWorldMatrix.cloneToArray(targetModelMatricesInstancesArray, 16);
-            box1Instance2.transform.localToWorldMatrix.cloneToArray(targetModelMatricesInstancesArray, 32);
-
-
-            var modelMatricesInstancesArray = gl.bufferSubData.firstCall.args[2];
-
-            for(var i = 0, len = modelMatricesInstancesArray.length; i < len; i++){
-                var data = modelMatricesInstancesArray[i];
-
-                expect(data).toEqual(targetModelMatricesInstancesArray[i]);
+                    expect(data).toEqual(targetModelMatricesInstancesArray[i]);
+                }
             }
-        }
 
-        function judgeSendModelMatrixVecData(location, index){
-            expect(gl.enableVertexAttribArray.withArgs(location)).toCalledOnce();
-            expect(gl.vertexAttribPointer.withArgs(location, 4, gl.FLOAT, false, 64, index * 16)).toCalledOnce();
-            expect(extensionInstancedArrays.vertexAttribDivisorANGLE.withArgs(location, 1)).toCalledOnce();
-        }
+            function judgeSendModelMatrixVecData(location, index){
+                expect(gl.enableVertexAttribArray.withArgs(location)).toCalledOnce();
+                expect(gl.vertexAttribPointer.withArgs(location, 4, gl.FLOAT, false, 64, index * 16)).toCalledOnce();
+                expect(extensionInstancedArrays.vertexAttribDivisorANGLE.withArgs(location, 1)).toCalledOnce();
+            }
 
-        function judgeUnBindInstancesBuffer(location, index){
-            expect(gl.disableVertexAttribArray.withArgs(location)).toCalledOnce();
-            expect(extensionInstancedArrays.vertexAttribDivisorANGLE.withArgs(location, 0)).toCalledOnce();
-        }
+            function judgeUnBindInstancesBuffer(location, index){
+                expect(gl.disableVertexAttribArray.withArgs(location)).toCalledOnce();
+                expect(extensionInstancedArrays.vertexAttribDivisorANGLE.withArgs(location, 0)).toCalledOnce();
+            }
 
-        beforeEach(function(){
-            prepareWithoutChild();
-            director._init();
+            beforeEach(function(){
+                prepareWithoutChild();
+                director._init();
+            });
+
+            it("send the model matrix data by send 4 vec4 attribute data(because the max attribute data is vec4, not support mat)", function () {
+                box1Instance1.transform.position = wd.Vector3.create(1,1,1);
+                box1Instance1.transform.scale = wd.Vector3.create(3,3,3);
+
+                box1Instance2.transform.rotation = wd.Quaternion.create(2,2,2,1);
+
+                mMatrixPos = 1;
+                gl.getUniformLocation.withArgs(sinon.match.any, "u_mMatrix").returns(mMatrixPos);
+
+                var offsetLocation0 = 11,
+                    offsetLocation1 = 12,
+                    offsetLocation2 = 13,
+                    offsetLocation3 = 14;
+
+                gl.getAttribLocation.withArgs(sinon.match.any, "a_mVec4_0").returns(offsetLocation0);
+                gl.getAttribLocation.withArgs(sinon.match.any, "a_mVec4_1").returns(offsetLocation1);
+                gl.getAttribLocation.withArgs(sinon.match.any, "a_mVec4_2").returns(offsetLocation2);
+                gl.getAttribLocation.withArgs(sinon.match.any, "a_mVec4_3").returns(offsetLocation3);
+
+
+
+
+                director.scene.gameObjectScene.render(renderer);
+                renderer.render();
+
+
+
+
+                judgeModelMatricesInstancesArray();
+
+                expect(gl.getAttribLocation.withArgs(sinon.match.any, "a_mVec4_0")).toCalledOnce();
+                expect(gl.getAttribLocation.withArgs(sinon.match.any, "a_mVec4_1")).toCalledOnce();
+                expect(gl.getAttribLocation.withArgs(sinon.match.any, "a_mVec4_2")).toCalledOnce();
+                expect(gl.getAttribLocation.withArgs(sinon.match.any, "a_mVec4_3")).toCalledOnce();
+
+                judgeSendModelMatrixVecData(offsetLocation0, 0);
+                judgeSendModelMatrixVecData(offsetLocation1, 1);
+                judgeSendModelMatrixVecData(offsetLocation2, 2);
+                judgeSendModelMatrixVecData(offsetLocation3, 3);
+
+                judgeUnBindInstancesBuffer(offsetLocation0, 0);
+                judgeUnBindInstancesBuffer(offsetLocation1, 1);
+                judgeUnBindInstancesBuffer(offsetLocation2, 2);
+                judgeUnBindInstancesBuffer(offsetLocation3, 3);
+            });
         });
 
-        it("send the model matrix data by send 4 vec4 attribute data(because the max attribute data is vec4, not support mat)", function () {
-            box1Instance1.transform.position = wd.Vector3.create(1,1,1);
-            box1Instance1.transform.scale = wd.Vector3.create(3,3,3);
+        describe("batch draw call", function () {
+            it("test when only one instance with children", function () {
+                box1 = instanceTool.createBox(1);
 
-            box1Instance2.transform.rotation = wd.Quaternion.create(2,2,2,1);
+                box1Child1 = prepareTool.createSphere(1);
 
-            mMatrixPos = 1;
-            gl.getUniformLocation.withArgs(sinon.match.any, "u_mMatrix").returns(mMatrixPos);
+                box1.addChild(box1Child1);
 
-            var offsetLocation0 = 11,
-                offsetLocation1 = 12,
-                offsetLocation2 = 13,
-                offsetLocation3 = 14;
+                var instanceArr = [];
 
-            gl.getAttribLocation.withArgs(sinon.match.any, "a_mVec4_0").returns(offsetLocation0);
-            gl.getAttribLocation.withArgs(sinon.match.any, "a_mVec4_1").returns(offsetLocation1);
-            gl.getAttribLocation.withArgs(sinon.match.any, "a_mVec4_2").returns(offsetLocation2);
-            gl.getAttribLocation.withArgs(sinon.match.any, "a_mVec4_3").returns(offsetLocation3);
+                instanceArr.push(box1);
+
+                director.scene.addChildren(instanceArr);
+
+                director.scene.addChild(camera);
 
 
 
+                director._init();
 
-            director.scene.gameObjectScene.render(renderer);
-            renderer.render();
+                director.scene.gameObjectScene.render(renderer);
+                renderer.render();
 
+                expect(gl.drawElements).not.toCalled();
 
+                expect(wd.DebugStatistics.count.drawCalls).toEqual(2);
 
+                expect(extensionInstancedArrays.drawElementsInstancedANGLE).toCalledTwice();
+            });
+            it("test multi instances", function () {
+                prepareWithoutChild();
+                director._init();
 
-            judgeModelMatricesInstancesArray();
+                director.scene.gameObjectScene.render(renderer);
+                renderer.render();
 
-            expect(gl.getAttribLocation.withArgs(sinon.match.any, "a_mVec4_0")).toCalledOnce();
-            expect(gl.getAttribLocation.withArgs(sinon.match.any, "a_mVec4_1")).toCalledOnce();
-            expect(gl.getAttribLocation.withArgs(sinon.match.any, "a_mVec4_2")).toCalledOnce();
-            expect(gl.getAttribLocation.withArgs(sinon.match.any, "a_mVec4_3")).toCalledOnce();
+                expect(gl.drawElements).not.toCalled();
 
-            judgeSendModelMatrixVecData(offsetLocation0, 0);
-            judgeSendModelMatrixVecData(offsetLocation1, 1);
-            judgeSendModelMatrixVecData(offsetLocation2, 2);
-            judgeSendModelMatrixVecData(offsetLocation3, 3);
+                expect(wd.DebugStatistics.count.drawCalls).toEqual(1);
 
-            judgeUnBindInstancesBuffer(offsetLocation0, 0);
-            judgeUnBindInstancesBuffer(offsetLocation1, 1);
-            judgeUnBindInstancesBuffer(offsetLocation2, 2);
-            judgeUnBindInstancesBuffer(offsetLocation3, 3);
-        });
-    });
+                expect(extensionInstancedArrays.drawElementsInstancedANGLE).toCalledOnce();
 
-    describe("batch draw call", function () {
-        it("test when only one instance with children", function () {
-            box1 = instanceTool.createBox(1);
+                expect(gl.bindBuffer.withArgs(gl.ELEMENT_ARRAY_BUFFER, sinon.match.object).callCount).toEqual(2);
 
-            box1Child1 = prepareTool.createSphere(1);
+                expect(extensionInstancedArrays.drawElementsInstancedANGLE).toCalledAfter(gl.bindBuffer.withArgs(gl.ELEMENT_ARRAY_BUFFER));
+            });
 
-            box1.addChild(box1Child1);
+            it("if lastBindedElementBuffer is this element buffer, not bind it", function () {
+                prepareWithoutChild();
+                director._init();
 
-            var instanceArr = [];
+                director.scene.gameObjectScene.render(renderer);
+                renderer.render();
 
-            instanceArr.push(box1);
-
-            director.scene.addChildren(instanceArr);
-
-            director.scene.addChild(camera);
+                var callCount = gl.bindBuffer.withArgs(gl.ELEMENT_ARRAY_BUFFER).callCount;
 
 
 
-            director._init();
+                director.scene.gameObjectScene.render(renderer);
+                renderer.render();
 
-            director.scene.gameObjectScene.render(renderer);
-            renderer.render();
 
-            expect(gl.drawElements).not.toCalled();
-
-            expect(wd.DebugStatistics.count.drawCalls).toEqual(2);
-
-            expect(extensionInstancedArrays.drawElementsInstancedANGLE).toCalledTwice();
-        });
-        it("test multi instances", function () {
-            prepareWithoutChild();
-            director._init();
-
-            director.scene.gameObjectScene.render(renderer);
-            renderer.render();
-
-            expect(gl.drawElements).not.toCalled();
-
-            expect(wd.DebugStatistics.count.drawCalls).toEqual(1);
-
-            expect(extensionInstancedArrays.drawElementsInstancedANGLE).toCalledOnce();
-
-            expect(gl.bindBuffer.withArgs(gl.ELEMENT_ARRAY_BUFFER, sinon.match.object).callCount).toEqual(2);
-
-            expect(extensionInstancedArrays.drawElementsInstancedANGLE).toCalledAfter(gl.bindBuffer.withArgs(gl.ELEMENT_ARRAY_BUFFER));
+                expect(gl.bindBuffer.withArgs(gl.ELEMENT_ARRAY_BUFFER).callCount).toEqual(callCount);
+            });
         });
 
-        it("if lastBindedElementBuffer is this element buffer, not bind it", function () {
-            prepareWithoutChild();
-            director._init();
 
-            director.scene.gameObjectScene.render(renderer);
-            renderer.render();
+        describe("remove object instance", function () {
+            beforeEach(function () {
+            });
 
-            var callCount = gl.bindBuffer.withArgs(gl.ELEMENT_ARRAY_BUFFER).callCount;
+            it("not render it and its children", function () {
+                prepareWithChild();
 
-
-
-            director.scene.gameObjectScene.render(renderer);
-            renderer.render();
-
-
-            expect(gl.bindBuffer.withArgs(gl.ELEMENT_ARRAY_BUFFER).callCount).toEqual(callCount);
-        });
-    });
-
-
-    describe("remove object instance", function () {
-        beforeEach(function () {
-        });
-
-        it("not render it and its children", function () {
-            prepareWithChild();
-
-            director._init();
+                director._init();
 
 
 
-            director.scene.removeChild(box1Instance1);
+                director.scene.removeChild(box1Instance1);
 
 
 
-            director.scene.gameObjectScene.render(renderer);
-            renderer.render();
+                director.scene.gameObjectScene.render(renderer);
+                renderer.render();
 
 
 
-            expect(box1.render).toCalledOnce();
-            expect(box1Instance1.render).not.toCalled();
-            expect(box1Instance2.render).not.toCalled();
+                expect(box1.render).toCalledOnce();
+                expect(box1Instance1.render).not.toCalled();
+                expect(box1Instance2.render).not.toCalled();
 
-            expect(box1Child1.render).toCalledOnce();
-            expect(box1Instance1.getChild(0).render).not.toCalled();
-            expect(box1Instance2.getChild(0).render).not.toCalled();
+                expect(box1Child1.render).toCalledOnce();
+                expect(box1Instance1.getChild(0).render).not.toCalled();
+                expect(box1Instance2.getChild(0).render).not.toCalled();
 
-            expect(wd.DebugStatistics.count.renderGameObjects).toEqual(2 * 2);
+                expect(wd.DebugStatistics.count.renderGameObjects).toEqual(2 * 2);
 
 
-            expect(gl.drawElements).not.toCalled();
+                expect(gl.drawElements).not.toCalled();
 
-            expect(extensionInstancedArrays.drawElementsInstancedANGLE).toCalledTwice();
+                expect(extensionInstancedArrays.drawElementsInstancedANGLE).toCalledTwice();
 
-            instanceTool.judgeInstanceCount(extensionInstancedArrays, 0, 2);
-            instanceTool.judgeInstanceCount(extensionInstancedArrays, 1, 2);
-        });
-    });
-
-    describe("add object instance after remove", function () {
-        beforeEach(function () {
+                instanceTool.judgeInstanceCount(extensionInstancedArrays, 0, 2);
+                instanceTool.judgeInstanceCount(extensionInstancedArrays, 1, 2);
+            });
         });
 
-        it("render it and its children", function () {
-            prepareWithChild();
+        describe("add object instance after remove", function () {
+            beforeEach(function () {
+            });
 
-            director._init();
+            it("render it and its children", function () {
+                prepareWithChild();
 
-
-
-            director.scene.removeChild(box1Instance1);
-            director.scene.addChild(box1Instance1);
-
-
-
-            director.scene.gameObjectScene.render(renderer);
-            renderer.render();
+                director._init();
 
 
 
-            expect(wd.DebugStatistics.count.renderGameObjects).toEqual(2 * 3);
+                director.scene.removeChild(box1Instance1);
+                director.scene.addChild(box1Instance1);
 
 
-            expect(gl.drawElements).not.toCalled();
 
-            expect(extensionInstancedArrays.drawElementsInstancedANGLE).toCalledTwice();
-
-            instanceTool.judgeInstanceCount(extensionInstancedArrays, 0, 3);
-            instanceTool.judgeInstanceCount(extensionInstancedArrays, 1, 3);
-        });
-    });
-
-    describe("remove source instance", function () {
-        beforeEach(function () {
-        });
-
-        it("not render it and its children and its object instances", function () {
-            prepareWithChild();
-
-            director._init();
+                director.scene.gameObjectScene.render(renderer);
+                renderer.render();
 
 
-            director.scene.removeChild(box1);
+
+                expect(wd.DebugStatistics.count.renderGameObjects).toEqual(2 * 3);
 
 
-            director.scene.gameObjectScene.render(renderer);
-            renderer.render();
+                expect(gl.drawElements).not.toCalled();
 
+                expect(extensionInstancedArrays.drawElementsInstancedANGLE).toCalledTwice();
 
-            expect(box1.render).not.toCalled();
-            expect(box1Instance1.render).not.toCalled();
-            expect(box1Instance2.render).not.toCalled();
-
-            expect(box1Child1.render).not.toCalled();
-            expect(box1Instance1.getChild(0).render).not.toCalled();
-            expect(box1Instance2.getChild(0).render).not.toCalled();
-
-            expect(wd.DebugStatistics.count.renderGameObjects).toEqual(0);
-
-
-            expect(gl.drawElements).not.toCalled();
-
-            expect(extensionInstancedArrays.drawElementsInstancedANGLE).not.toCalled();
-        });
-    });
-
-    describe("add source instance after remove", function () {
-        beforeEach(function () {
+                instanceTool.judgeInstanceCount(extensionInstancedArrays, 0, 3);
+                instanceTool.judgeInstanceCount(extensionInstancedArrays, 1, 3);
+            });
         });
 
-        it("render it and its children and its instances", function () {
-            prepareWithChild();
+        describe("remove source instance", function () {
+            beforeEach(function () {
+            });
 
-            director._init();
+            it("not render it and its children and its object instances", function () {
+                prepareWithChild();
 
-
-
-            director.scene.removeChild(box1);
-            director.scene.addChild(box1);
-
+                director._init();
 
 
-            director.scene.gameObjectScene.render(renderer);
-            renderer.render();
+                director.scene.removeChild(box1);
 
 
-
-            expect(wd.DebugStatistics.count.renderGameObjects).toEqual(2 * 3);
-
-
-            expect(gl.drawElements).not.toCalled();
-
-            expect(extensionInstancedArrays.drawElementsInstancedANGLE).toCalledTwice();
-
-            instanceTool.judgeInstanceCount(extensionInstancedArrays, 0, 3);
-            instanceTool.judgeInstanceCount(extensionInstancedArrays, 1, 3);
-        });
-    });
-
-    describe("dispose object instance", function () {
-        beforeEach(function () {
-        });
-
-        it("not render it and its children", function () {
-            prepareWithChild();
-
-            director._init();
+                director.scene.gameObjectScene.render(renderer);
+                renderer.render();
 
 
+                expect(box1.render).not.toCalled();
+                expect(box1Instance1.render).not.toCalled();
+                expect(box1Instance2.render).not.toCalled();
 
-            box1Instance1.dispose();
+                expect(box1Child1.render).not.toCalled();
+                expect(box1Instance1.getChild(0).render).not.toCalled();
+                expect(box1Instance2.getChild(0).render).not.toCalled();
 
-
-
-            director.scene.gameObjectScene.render(renderer);
-            renderer.render();
-
-
-
-            expect(wd.DebugStatistics.count.renderGameObjects).toEqual(2 * 2);
+                expect(wd.DebugStatistics.count.renderGameObjects).toEqual(0);
 
 
-            expect(gl.drawElements).not.toCalled();
+                expect(gl.drawElements).not.toCalled();
 
-            expect(extensionInstancedArrays.drawElementsInstancedANGLE).toCalledTwice();
-
-            instanceTool.judgeInstanceCount(extensionInstancedArrays, 0, 2);
-            instanceTool.judgeInstanceCount(extensionInstancedArrays, 1, 2);
-        });
-    });
-
-    describe("dispose source instance", function () {
-        beforeEach(function () {
+                expect(extensionInstancedArrays.drawElementsInstancedANGLE).not.toCalled();
+            });
         });
 
-        it("not render it and its children and dispose its object instances", function () {
+        describe("add source instance after remove", function () {
+            beforeEach(function () {
+            });
+
+            it("render it and its children and its instances", function () {
+                prepareWithChild();
+
+                director._init();
+
+
+
+                director.scene.removeChild(box1);
+                director.scene.addChild(box1);
+
+
+
+                director.scene.gameObjectScene.render(renderer);
+                renderer.render();
+
+
+
+                expect(wd.DebugStatistics.count.renderGameObjects).toEqual(2 * 3);
+
+
+                expect(gl.drawElements).not.toCalled();
+
+                expect(extensionInstancedArrays.drawElementsInstancedANGLE).toCalledTwice();
+
+                instanceTool.judgeInstanceCount(extensionInstancedArrays, 0, 3);
+                instanceTool.judgeInstanceCount(extensionInstancedArrays, 1, 3);
+            });
+        });
+
+        describe("dispose object instance", function () {
+            beforeEach(function () {
+            });
+
+            it("not render it and its children", function () {
+                prepareWithChild();
+
+                director._init();
+
+
+
+                box1Instance1.dispose();
+
+
+
+                director.scene.gameObjectScene.render(renderer);
+                renderer.render();
+
+
+
+                expect(wd.DebugStatistics.count.renderGameObjects).toEqual(2 * 2);
+
+
+                expect(gl.drawElements).not.toCalled();
+
+                expect(extensionInstancedArrays.drawElementsInstancedANGLE).toCalledTwice();
+
+                instanceTool.judgeInstanceCount(extensionInstancedArrays, 0, 2);
+                instanceTool.judgeInstanceCount(extensionInstancedArrays, 1, 2);
+            });
+        });
+
+        describe("dispose source instance", function () {
+            beforeEach(function () {
+            });
+
+            it("not render it and its children and dispose its object instances", function () {
+                testTool.closeContractCheck(sandbox);
+                prepareWithChild();
+
+                director._init();
+
+
+                sandbox.spy(box1Instance1, "dispose");
+                var box1Instance1Child = box1Instance1.getChild(0);
+                sandbox.spy(box1Instance1Child, "dispose");
+
+                sandbox.spy(box1Instance2, "dispose");
+
+
+                box1.dispose();
+
+                expect(box1Instance1.dispose).toCalledOnce();
+                expect(box1Instance1Child.dispose).toCalledOnce();
+
+                expect(box1Instance2.dispose).toCalledOnce();
+
+
+
+                director.scene.gameObjectScene.render(renderer);
+                renderer.render();
+
+
+
+                expect(wd.DebugStatistics.count.renderGameObjects).toEqual(0);
+
+
+                expect(gl.drawElements).not.toCalled();
+
+                expect(extensionInstancedArrays.drawElementsInstancedANGLE).not.toCalled();
+            });
+        });
+
+
+        it("if no indices, drawArraysInstancedANGLE", function () {
             testTool.closeContractCheck(sandbox);
-            prepareWithChild();
-
+            prepareWithoutChild();
             director._init();
 
-
-            sandbox.spy(box1Instance1, "dispose");
-            var box1Instance1Child = box1Instance1.getChild(0);
-            sandbox.spy(box1Instance1Child, "dispose");
-
-            sandbox.spy(box1Instance2, "dispose");
-
-
-            box1.dispose();
-
-            expect(box1Instance1.dispose).toCalledOnce();
-            expect(box1Instance1Child.dispose).toCalledOnce();
-
-            expect(box1Instance2.dispose).toCalledOnce();
-
-
+            sandbox.stub(box1.getComponent(wd.Geometry).buffers, "getChild").withArgs(wd.EBufferDataType.INDICE).returns(null);
+            var vertexBuffer = {
+                count:100
+            };
+            box1.getComponent(wd.Geometry).buffers.getChild.withArgs(wd.EBufferDataType.VERTICE).returns(vertexBuffer);
 
             director.scene.gameObjectScene.render(renderer);
             renderer.render();
 
-
-
-            expect(wd.DebugStatistics.count.renderGameObjects).toEqual(0);
-
-
-            expect(gl.drawElements).not.toCalled();
-
             expect(extensionInstancedArrays.drawElementsInstancedANGLE).not.toCalled();
+            expect(extensionInstancedArrays.drawArraysInstancedANGLE).toCalledOnce();
+            expect(extensionInstancedArrays.drawArraysInstancedANGLE).toCalledWith(gl.TRIANGLES, 0, 100, 3);
         });
     });
 
@@ -538,6 +567,8 @@ describe("instance with basic material", function(){
 
             function judge2_1(){
                 initDirector();
+
+                expect(gl.bindBuffer.withArgs(gl.ARRAY_BUFFER, sinon.match.object).callCount).toEqual(0);
 
                 director.scene.gameObjectScene.render(renderer);
                 renderer.render();
@@ -891,25 +922,6 @@ describe("instance with basic material", function(){
                 expect(extensionInstancedArrays.drawElementsInstancedANGLE).not.toCalled();
             });
         });
-    });
-
-    it("if no indices, drawArraysInstancedANGLE", function () {
-        testTool.closeContractCheck(sandbox);
-        prepareWithoutChild();
-        director._init();
-
-        sandbox.stub(box1.getComponent(wd.Geometry).buffers, "getChild").withArgs(wd.EBufferDataType.INDICE).returns(null);
-        var vertexBuffer = {
-            count:100
-        };
-        box1.getComponent(wd.Geometry).buffers.getChild.withArgs(wd.EBufferDataType.VERTICE).returns(vertexBuffer);
-
-        director.scene.gameObjectScene.render(renderer);
-        renderer.render();
-
-        expect(extensionInstancedArrays.drawElementsInstancedANGLE).not.toCalled();
-        expect(extensionInstancedArrays.drawArraysInstancedANGLE).toCalledOnce();
-        expect(extensionInstancedArrays.drawArraysInstancedANGLE).toCalledWith(gl.TRIANGLES, 0, 100, 3);
     });
 
     describe("test instance buffer", function(){

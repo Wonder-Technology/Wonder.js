@@ -35,7 +35,7 @@
                     range = 300,
                     count = 30;
 
-            var sourceInstanceComponent = wd.SourceInstance.create();
+            var sourceInstanceComponent = wd.OneToOneSourceInstance.create();
             model.addComponent(sourceInstanceComponent);
 
             model.addComponent(wd.Script.create("./js/sphere.js"));

@@ -1,6 +1,6 @@
 module wd {
     @singleton()
-    export class ModelMatrixHardwareInstanceDrawer extends HardwareInstanceDrawer{
+    export class ModelMatrixHardwareInstanceDrawer extends OneToOneHardwareInstanceDrawer{
         public static getInstance():any {}
 
         protected getOffsetLocationArray(program:Program):Array<number>{

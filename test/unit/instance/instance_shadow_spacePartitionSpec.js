@@ -25,7 +25,7 @@ describe("instance with shadow and octree", function () {
     function prepareWithChild() {
         sphere1 = createSphere();
         sphere1.name = "sphere1";
-        var sourceInstance = wd.SourceInstance.create();
+        var sourceInstance = wd.OneToOneSourceInstance.create();
         sphere1.addComponent(sourceInstance);
 
 

@@ -119,7 +119,7 @@ describe("HardwareInstanceCommand", function() {
 
                     data = instanceTool.createInstance();
 
-                    sourceInstance = data.source.getComponent(wd.SourceInstance);
+                    sourceInstance = data.source.getComponent(wd.OneToOneSourceInstance);
 
                     sourceInstance.init();
 

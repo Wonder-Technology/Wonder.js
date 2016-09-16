@@ -52,7 +52,7 @@ describe("instance+articulated animation", function () {
 
 
 
-        model.addComponent(wd.SourceInstance.create());
+        model.addComponent(wd.OneToOneSourceInstance.create());
 
 
         return model;

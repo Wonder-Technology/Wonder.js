@@ -51,7 +51,6 @@ module wd {
         }
 
         @require(function(target:GameObject){
-            //if(InstanceUtils.isInstance(target) && InstanceUtils.isHardwareSupport()){
             if(InstanceUtils.isInstance(target)){
                 it("if use instance to batch draw, target should be SourceInstance", () => {
                     expect(InstanceUtils.isSourceInstance(target)).true;
@@ -73,28 +72,34 @@ module wd {
         private _createCommand(target:GameObject, material:Material){
             var cmd:any = null,
                 glslData:EInstanceGLSLData = null;
-            //todo test!
             var {
                isModelMatrixInstance,
                isNormalMatrixInstance,
-               isCustomInstance,
+               isOneToManyInstance,
                isHardwareInstance,
                isBatchInstance
                } = this._getInstanceState(material);
 
-            glslData = this._getInstanceGLSLData(isCustomInstance, isModelMatrixInstance, isNormalMatrixInstance);
+            glslData = this._getInstanceGLSLData(isOneToManyInstance, isModelMatrixInstance, isNormalMatrixInstance);
 
             if(isHardwareInstance){
-                cmd = this._createHardwareInstanceCommand(target, material, glslData);
+                if(isOneToManyInstance){
+                    cmd = this._createOneToManyHardwareInstanceCommand(target, material, glslData);
+                }
+                else{
+                    cmd = this._createOneToOneHardwareInstanceCommand(target, material, glslData);
+                }
             }
             else if(isBatchInstance){
-               cmd = this._createBatchInstanceCommand(target, material, glslData);
+                if(isOneToManyInstance){
+                    cmd = this._createOneToManyBatchInstanceCommand(target, material, glslData);
+                }
+                else{
+                    cmd = this._createOneToOneBatchInstanceCommand(target, material, glslData);
+                }
             }
             else{
                cmd = SingleDrawCommand.create();
-
-            //todo remove? duplicate with createDrawCommand->cmd.mMatrix = target.transform.localToWorldMatrix;
-            //    cmd.mMatrix = this.entityObject.transform.localToWorldMatrix;
 
                cmd.normalMatrix = this.entityObject.transform.normalMatrix;
             }
@@ -110,7 +115,7 @@ module wd {
                 return {
                     isModelMatrixInstance:false,
                     isNormalMatrixInstance:false,
-                    isCustomInstance:true,
+                    isOneToManyInstance:true,
                     isHardwareInstance:isHardwareInstance,
                     isBatchInstance:isBatchInstance
                 }
@@ -126,15 +131,15 @@ module wd {
             return {
                 isModelMatrixInstance:isModelMatrixInstance,
                 isNormalMatrixInstance:isNormalMatrixInstance,
-                isCustomInstance:false,
+                isOneToManyInstance:false,
                 isHardwareInstance:isHardwareInstance,
                 isBatchInstance:isBatchInstance
             }
         }
 
-        private _getInstanceGLSLData(isCustomInstance:boolean, isModelMatrixInstance:boolean, isNormalMatrixInstance:boolean){
-            if(isCustomInstance){
-                return EInstanceGLSLData.CUSTOM;
+        private _getInstanceGLSLData(isOneToManyInstance:boolean, isModelMatrixInstance:boolean, isNormalMatrixInstance:boolean){
+            if(isOneToManyInstance){
+                return EInstanceGLSLData.ONE_MANY;
             }
 
             if(isNormalMatrixInstance){
@@ -144,31 +149,43 @@ module wd {
             return EInstanceGLSLData.MODELMATRIX;
         }
 
-        //todo extract _createHardwareInstanceCommandForInstanceGeometry?
-        private _createHardwareInstanceCommand(target:GameObject, material:Material, glslData:EInstanceGLSLData){
-            var instanceComponent:SourceInstance = target.getComponent<SourceInstance>(SourceInstance),
-                cmd = HardwareInstanceCommand.create();
+        private _createOneToOneHardwareInstanceCommand(target:GameObject, material:Material, glslData:EInstanceGLSLData){
+            var instanceComponent:OneToOneSourceInstance = target.getComponent<OneToOneSourceInstance>(OneToOneSourceInstance),
+                cmd = OneToOneHardwareInstanceCommand.create();
 
             cmd.instanceList = instanceComponent.toRenderInstanceListForDraw;
             cmd.instanceBuffer = instanceComponent.instanceBuffer;
-
-            //todo extract HardwareCustomInstanceCommand
-            cmd.geometry = <InstanceGeometry>material.geometry;
-
             cmd.glslData = glslData;
 
             return cmd;
         }
 
-        private _createBatchInstanceCommand(target:GameObject, material:Material, glslData:EInstanceGLSLData){
-            var instanceComponent:SourceInstance = target.getComponent<SourceInstance>(SourceInstance),
-                cmd = BatchInstanceCommand.create();
+        private _createOneToManyHardwareInstanceCommand(target:GameObject, material:Material, glslData:EInstanceGLSLData){
+            var instanceComponent:OneToManySourceInstance= target.getComponent<OneToManySourceInstance>(OneToManySourceInstance),
+                cmd = OneToManyHardwareInstanceCommand.create();
+
+            cmd.instanceBuffer = instanceComponent.instanceBuffer;
+            cmd.geometry = <InstanceGeometry>material.geometry;
+            cmd.glslData = glslData;
+
+            return cmd;
+        }
+
+        private _createOneToOneBatchInstanceCommand(target:GameObject, material:Material, glslData:EInstanceGLSLData){
+            var instanceComponent:OneToOneSourceInstance = target.getComponent<OneToOneSourceInstance>(OneToOneSourceInstance),
+                cmd = OneToOneBatchInstanceCommand.create();
 
             cmd.instanceList = instanceComponent.toRenderInstanceListForDraw;
-            //cmd.instanceBuffer = instanceComponent.instanceBuffer;
-            //todo extract HardwareCustomInstanceCommand
-            cmd.geometry = <InstanceGeometry>material.geometry;
+            cmd.glslData = glslData;
 
+            return cmd;
+        }
+
+        private _createOneToManyBatchInstanceCommand(target:GameObject, material:Material, glslData:EInstanceGLSLData){
+            var instanceComponent:OneToManySourceInstance = target.getComponent<OneToManySourceInstance>(OneToManySourceInstance),
+                cmd = OneToManyBatchInstanceCommand.create();
+
+            cmd.geometry = <InstanceGeometry>material.geometry;
             cmd.glslData = glslData;
 
             return cmd;

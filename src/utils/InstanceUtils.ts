@@ -12,6 +12,10 @@ module wd {
             return gameObject.hasComponent(SourceInstance);
         }
 
+        public static isOneToOneSourceInstance(gameObject:GameObject) {
+            return gameObject.hasComponent(OneToOneSourceInstance);
+        }
+
         public static isObjectInstance(gameObject:GameObject) {
             return gameObject.hasComponent(ObjectInstance);
         }

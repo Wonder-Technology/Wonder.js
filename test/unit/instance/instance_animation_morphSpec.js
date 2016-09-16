@@ -67,7 +67,7 @@ describe("instance+morph animation", function () {
 
 
 
-        model.addComponent(wd.SourceInstance.create());
+        model.addComponent(wd.OneToOneSourceInstance.create());
 
 
         fps = 10;

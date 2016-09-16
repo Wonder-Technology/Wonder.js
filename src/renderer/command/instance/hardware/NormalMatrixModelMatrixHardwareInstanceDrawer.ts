@@ -1,6 +1,6 @@
 module wd {
     @singleton()
-    export class NormalMatrixModelMatrixHardwareInstanceDrawer extends HardwareInstanceDrawer{
+    export class NormalMatrixModelMatrixHardwareInstanceDrawer extends OneToOneHardwareInstanceDrawer{
         public static getInstance():any {}
 
         protected getOffsetLocationArray(program:Program):Array<number>{

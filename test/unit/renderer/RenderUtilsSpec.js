@@ -59,25 +59,25 @@ describe("RenderUtils", function() {
         //            expect(list.hasChild(box1)).toBeTruthy();
         //
         //
-        //            var box1SourceInstance = box1.getComponent(wd.SourceInstance);
+        //            var box1SourceInstance = box1.getComponent(wd.OneToOneSourceInstance);
         //            expect(box1SourceInstance._toRenderInstanceList.getCount()).toEqual(2);
         //            expect(box1SourceInstance._toRenderInstanceList.hasChild(boxInstance1)).toBeTruthy();
         //            expect(box1SourceInstance._toRenderInstanceList.hasChild(boxInstance2)).toBeTruthy();
         //
-        //            var box1Child1SourceInstance = child1.getComponent(wd.SourceInstance);
+        //            var box1Child1SourceInstance = child1.getComponent(wd.OneToOneSourceInstance);
         //            expect(box1Child1SourceInstance._toRenderInstanceList.getCount()).toEqual(2);
         //            expect(box1Child1SourceInstance._toRenderInstanceList.hasChild(boxInstance1.getChild(0))).toBeTruthy();
         //            expect(box1Child1SourceInstance._toRenderInstanceList.hasChild(boxInstance2.getChild(0))).toBeTruthy();
         //
         //
         //
-        //            var box1Child11SourceInstance = child11.getComponent(wd.SourceInstance);
+        //            var box1Child11SourceInstance = child11.getComponent(wd.OneToOneSourceInstance);
         //            expect(box1Child11SourceInstance._toRenderInstanceList.getCount()).toEqual(2);
         //            expect(box1Child11SourceInstance._toRenderInstanceList.hasChild(boxInstance1.getChild(0).getChild(0))).toBeTruthy();
         //            expect(box1Child11SourceInstance._toRenderInstanceList.hasChild(boxInstance2.getChild(0).getChild(0))).toBeTruthy();
         //
         //
-        //            var box1Child2SourceInstance = child2.getComponent(wd.SourceInstance);
+        //            var box1Child2SourceInstance = child2.getComponent(wd.OneToOneSourceInstance);
         //            expect(box1Child2SourceInstance._toRenderInstanceList.getCount()).toEqual(2);
         //            expect(box1Child2SourceInstance._toRenderInstanceList.hasChild(boxInstance1.getChild(1))).toBeTruthy();
         //            expect(box1Child2SourceInstance._toRenderInstanceList.hasChild(boxInstance2.getChild(1))).toBeTruthy();

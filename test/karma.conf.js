@@ -129,15 +129,15 @@
         //'test/unit/renderer/shadow/directionShadowMap*',
         //'test/unit/renderer/*ShadowMap_*Spec.js',
         //
-        // 'test/unit/**/instance/*',
+        'test/unit/**/instance/*',
 
-        'test/unit/**/instance/one*',
+        // 'test/unit/**/instance/one*',
 
 
         //'test/unit/**/instance/*lod*',
 
         //'test/unit/**/instance/SourceInstance*',
-        //'test/unit/**/instance/instance_basic*',
+        // 'test/unit/**/instance/instance_basic*',
         //'test/unit/**/instance/instance_light*',
 
         //'test/unit/**/instance_script*',
