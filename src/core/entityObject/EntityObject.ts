@@ -265,19 +265,16 @@ module wd {
         }
 
         public render(renderer:Renderer, camera:GameObject):void {
-            var geometry = null,
-                rendererComponent = null;
+            var rendererComponent = null;
 
             if(!this.isVisible){
                 return;
             }
 
-            geometry = this.getGeometry();
             rendererComponent = this._componentManager.getRendererComponent();
 
-            if(rendererComponent && geometry){
-                //todo fix bug: pass self for target!
-                rendererComponent.render(renderer, geometry,  camera);
+            if(rendererComponent){
+                rendererComponent.render(renderer, this, camera);
             }
 
             this.getRenderList().forEach((child:EntityObject) => {
@@ -295,6 +292,11 @@ module wd {
             return this._componentManager.getComponentCount(_class);
         }
 
+        @virtual
+        public getGeometry(){
+            return this._componentManager.getGeometry();
+        }
+
         protected abstract createTransform():Transform;
 
         @virtual
@@ -308,11 +310,6 @@ module wd {
             }
 
             return this._entityObjectManager.getChildren();
-        }
-
-        @virtual
-        protected getGeometry(){
-            return this._componentManager.getGeometry();
         }
 
         protected getAllChildren(){

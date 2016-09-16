@@ -37,6 +37,7 @@
 
             //'test/render/test/**/terrain*',
             //'test/render/test/**/clone*',
+            // 'test/render/test/**/lod*',
 
             //'test/render/test/**/instance*',
             //'test/render/test/**/hard*',

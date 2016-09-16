@@ -8,11 +8,17 @@ module wd {
 
         public entityObject:GameObject;
 
-        public render(renderer:Renderer, geometry:Geometry, camera:GameObject){
-            renderer.addCommand(this.createDrawCommand(geometry, camera));
+        public render(renderer:Renderer, target:GameObject, camera:GameObject){
+            var geometry = target.getGeometry();
+
+            if(!geometry){
+                return;
+            }
+
+            renderer.addCommand(this.createDrawCommand(target, geometry, camera));
         }
 
-        @require(function(geometry:Geometry, camera:GameObject){
+        @require(function(target:GameObject, geometry:Geometry, camera:GameObject){
             var controller = camera.getComponent<CameraController>(CameraController);
 
             it("camera must add Camera Component", () => {
@@ -22,11 +28,10 @@ module wd {
                 expect(!!geometry).true;
             });
         })
-        protected createDrawCommand(geometry:Geometry, camera:GameObject){
+        protected createDrawCommand(target:GameObject, geometry:Geometry, camera:GameObject){
             var cmd:QuadCommand = null,
                 cameraComponent = camera.getComponent<CameraController>(CameraController),
-                material:Material = geometry.material,
-                target:GameObject = geometry.entityObject;
+                material:Material = geometry.material;
 
             cmd = this._createCommand(target, material);
 

@@ -451,7 +451,7 @@ describe("GameObjectScene", function() {
 
             scene.render(renderer);
 
-            expect(rendererComponent.render).toCalledWith(renderer, geometry, camera);
+            expect(rendererComponent.render).toCalledWith(renderer, scene, camera);
         });
         it("render children", function(){
             var renderTargetRenderer = createCommonRenderTargetRenderer();

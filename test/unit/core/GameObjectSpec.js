@@ -12,6 +12,7 @@ describe("GameObject", function() {
     });
     afterEach(function () {
         sandbox.restore();
+        testTool.clearInstance(sandbox);
     });
 
     describe("static method", function(){
@@ -360,6 +361,57 @@ describe("GameObject", function() {
 
                 expect(result.name).toEqual(name);
                 expect(result.isVisible).toEqual(isVisible);
+            });
+        });
+
+        describe("fix bug", function(){
+            beforeEach(function(){
+
+            });
+
+            it("if cloned with share geometry, the cloned one can send its u_mMatrix data independent", function(){
+                gameObject = prepareTool.createBox();
+
+                var clonedGameObject = gameObject.clone({
+                    cloneChildren:false,
+                    shareGeometry:true,
+                    cloneGeometry:true
+                });
+
+
+                var device = wd.DeviceManager.getInstance();
+
+                sandbox.stub(device, "gl", testTool.buildFakeGl(sandbox));
+
+
+                var director;
+
+                director = wd.Director.getInstance();
+
+
+                director.scene.addChild(gameObject);
+                director.scene.addChild(clonedGameObject);
+
+                director.scene.addChild(testTool.createCamera());
+
+
+                gameObject.transform.position = wd.Vector3.create(0,0,0);
+                clonedGameObject.transform.position = wd.Vector3.create(10,0,0);
+
+
+                director._init();
+
+                var gameObjectProgram = shaderTool.getAndSpyProgram(sandbox, gameObject.getComponent(wd.Geometry).material, "gameObjectProgram");
+                var clonedGameObjectProgram = shaderTool.getAndSpyProgram(sandbox, clonedGameObject.getComponent(wd.Geometry).material, "clonedGameObjectProgram");
+
+                expect(gameObjectProgram === clonedGameObjectProgram).toBeTruthy();
+
+
+                director._loopBody(1);
+
+                expect(gameObjectProgram.sendUniformData).toCalledWith("u_mMatrix", sinon.match.any, wd.Matrix4.create());
+
+                expect(gameObjectProgram.sendUniformData).toCalledWith("u_mMatrix", sinon.match.any, wd.Matrix4.create().translate(10,0,0));
             });
         });
     });

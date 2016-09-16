@@ -6,8 +6,13 @@ module wd {
             return obj;
         }
 
-        public render(renderer:Renderer, geometry:Geometry, camera:GameObject):void {
-            renderer.skyboxCommand = this.createDrawCommand(geometry, camera);
+        @require(function(renderer:Renderer, target:GameObject, camera:GameObject){
+            it("target should has geometry", () => {
+                expect(target.hasComponent(Geometry)).true;
+            });
+        })
+        public render(renderer:Renderer, target:GameObject, camera:GameObject):void {
+            renderer.skyboxCommand = this.createDrawCommand(target, target.getComponent<Geometry>(Geometry), camera);
         }
     }
 }

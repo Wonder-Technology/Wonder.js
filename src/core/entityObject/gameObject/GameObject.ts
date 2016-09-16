@@ -75,7 +75,7 @@ module wd {
             return this.getComponent<SpacePartition>(SpacePartition);
         }
 
-        protected getGeometry():Geometry{
+        public getGeometry():Geometry{
             var lod:LOD = this.getComponent<LOD>(LOD);
 
             if(lod && lod.activeGeometry) {

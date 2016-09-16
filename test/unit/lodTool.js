@@ -33,7 +33,7 @@ var lodTool = (function () {
         judgeSelectGeometry: function (callCount, geo, renderer) {
             var r = renderer || rendererComponent;
 
-            expect(r.render.getCall(callCount).args[1].uid).toEqual(geo.uid);
+            expect(r.render.getCall(callCount).args[1].getGeometry().uid).toEqual(geo.uid);
         },
         setCameraPos: function (camera, pos) {
             camera.transform.position = pos;

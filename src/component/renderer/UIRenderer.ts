@@ -82,7 +82,7 @@ module wd {
             wdCb.DomQuery.create(this.canvas).remove();
         }
 
-        public render(renderer:Renderer, geometry:Geometry, camera:GameObject){
+        public render(renderer:Renderer, target:UIObject, camera:GameObject){
         }
 
         public clearCanvas(){
