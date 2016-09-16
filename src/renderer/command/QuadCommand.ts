@@ -4,7 +4,6 @@ module wd {
             return this.material.program;
         }
 
-        //todo test
         @requireGetter(function(){
             assert(!!this.mMatrix && !!this.vMatrix && !!this.pMatrix, Log.info.FUNC_NOT_EXIST("mMatrix or vMatrix or pMatrix"));
         })

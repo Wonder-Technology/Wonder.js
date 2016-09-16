@@ -21,22 +21,6 @@ module wd{
                 }
             });
         }
-
-        //todo test
-        // public setShaderDefinition(cmd:QuadCommand, material:ShaderMaterial){
-        //     var geometry:Geometry = material.geometry,
-        //         attributeVariableArr = [];
-        //
-        //     super.setShaderDefinition(cmd, material);
-        //
-        //     if(geometry instanceof InstanceGeometry){
-        //         geometry.attributeData.forEach((attributeData:InstanceAttributeData) => {
-        //             attributeVariableArr.push(attributeData.attributeName);
-        //         });
-        //
-        //         this.addAttributeVariable(attributeVariableArr);
-        //     }
-        // }
     }
 }
 

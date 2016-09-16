@@ -26,7 +26,7 @@
         'test/helper/yoop/yOOP.js',
         'test/unit/**/*Tool.js',
 
-        //'test/unit/**',
+        'test/unit/**',
 
 
         //'test/render/*Tool.js',
@@ -181,12 +181,12 @@
         //'test/unit/**/ShaderSourceBuilderSpec*',
         //'test/unit/**/*ShaderSourceBuilderSpec*',
 
-        'test/unit/**/ShaderSpec*',
-        'test/unit/**/*ShaderSpec*',
-        'test/unit/**/ShaderMaterialSpec*',
+        // 'test/unit/**/ShaderSpec*',
+        // 'test/unit/**/*ShaderSpec*',
+        // 'test/unit/**/ShaderMaterialSpec*',
         //'test/unit/**/ProceduralShaderSpec*',
 
-        'test/unit/**/customShaderSpec*',
+        // 'test/unit/**/customShaderSpec*',
         //'test/unit/**/renderWebGL*',
         //'test/unit/**/SortUtils*',
 

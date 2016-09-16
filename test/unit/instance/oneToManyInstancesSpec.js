@@ -262,7 +262,7 @@ describe("one to many instance test", function(){
 
             it("the gameObjects can't use drawElementsInstancedANGLE to draw, instead draw one in one draw call", function () {
                 var gameObject1 = createGameObject();
-                var gameObject2 = createGameObject();
+                var gameObject2 = gameObject1.clone();
 
                 sandbox.spy(gameObject1, "render");
                 sandbox.spy(gameObject2, "render");

@@ -1,4 +1,4 @@
-describe("HardwareInstanceCommand", function() {
+describe("OneToOneHardwareInstanceCommand", function() {
     var sandbox = null;
     var deviceManager = null;
     var cmd;
@@ -8,7 +8,7 @@ describe("HardwareInstanceCommand", function() {
         deviceManager = wd.DeviceManager.getInstance();
         sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
 
-        cmd = wd.HardwareInstanceCommand.create();
+        cmd = wd.OneToOneHardwareInstanceCommand.create();
     });
     afterEach(function () {
         testTool.clearInstance(sandbox);
@@ -21,7 +21,7 @@ describe("HardwareInstanceCommand", function() {
         function addCommand(isNoIndexBuffer){
             var cmd,shader,material,geometry;
 
-            cmd = wd.HardwareInstanceCommand.create();
+            cmd = wd.OneToOneHardwareInstanceCommand.create();
             var vsSource = "",
                 fsSource = "";
             shader = wd.CommonShader.create( vsSource, fsSource );
@@ -127,6 +127,9 @@ describe("HardwareInstanceCommand", function() {
 
                     cmd.instanceList = sourceInstance.toRenderInstanceListForDraw;
                     cmd.instanceBuffer = sourceInstance.instanceBuffer;
+
+
+                    cmd.glslData = wd.EInstanceGLSLData.MODELMATRIX;
 
                     sandbox.stub(cmd.program, "getAttribLocation");
                 });

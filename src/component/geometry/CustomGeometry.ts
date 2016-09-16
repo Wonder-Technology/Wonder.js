@@ -46,6 +46,7 @@ module wd{
         }
         set colors(colors:Array<number>){
             this._colors = colors;
+
             if(this.buffers) {
                 this.buffers.geometryData.colors = colors;
             }
@@ -60,6 +61,7 @@ module wd{
         }
         set indices(indices:Array<number>){
             this._indices = indices;
+
             if(this.buffers) {
                 this.buffers.geometryData.faces = GeometryUtils.convertToFaces(indices, this.normals);
             }
@@ -75,7 +77,6 @@ module wd{
         set normals(normals:Array<number>){
             this._normals = normals;
 
-            //todo move to init?
             if(this.buffers) {
                 this.buffers.geometryData.faces = GeometryUtils.convertToFaces(this.indices, normals);
             }

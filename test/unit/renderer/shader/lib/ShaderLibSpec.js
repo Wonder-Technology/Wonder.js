@@ -1,4 +1,4 @@
-describe("shaderLibSpec", function () {
+describe("ShaderLibSpec", function () {
     var sandbox = null;
     var Lib = null;
     var lib = null;
@@ -111,7 +111,7 @@ describe("shaderLibSpec", function () {
 
 
 
-        material1.shader.read(shaderDefinitionData);
+        material1.definitionData = shaderDefinitionData;
         material1.init();
 
         sandbox.stub(material1.program, "sendUniformData");
@@ -123,7 +123,7 @@ describe("shaderLibSpec", function () {
 
 
 
-        material2.shader.read(shaderDefinitionData);
+        material2.definitionData = shaderDefinitionData;
         material2.init();
 
         sandbox.stub(material2.program, "sendUniformData");
