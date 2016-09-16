@@ -59,7 +59,22 @@ module wd{
             this._customGeometry.normals = normals;
         }
 
-        //todo assert attributeData.length > 0 && different instance's attribute data only data different!
+        @requireGetter(function(){
+            it("attributeData.length should > 0", () => {
+                expect(this.attributeData.getCount()).greaterThan(0);
+            }, this);
+        })
+        @ensureGetter(function(instanceAttributeData){
+            it("each data of all instance datas should be the same except the data", () => {
+                this.attributeData.forEach((dataList:wdCb.Collection<InstanceAttributeData>) => {
+                    dataList.forEach((data:InstanceAttributeData, index:number) => {
+                        expect(data.attributeName).equals(instanceAttributeData.getChild(index).attributeName);
+                        expect(data.size).equals(instanceAttributeData.getChild(index).size);
+                        expect(data.meshPerAttribute).equals(instanceAttributeData.getChild(index).meshPerAttribute);
+                    });
+                });
+            }, this);
+        })
         get instanceAttributeData(){
             return this.attributeData.getChild((0));
         }
@@ -68,20 +83,37 @@ module wd{
             return this.attributeData.getCount();
         }
 
-        // public instanceCount:number = 1;
-
-        //todo test clone
         @cloneAttributeAsCustomType(function(source:InstanceGeometry, target:InstanceGeometry, memberName:string){
-            target[memberName] = source[memberName].clone(true);
+            var sourceData:wdCb.Collection<wdCb.Collection<InstanceAttributeData>> = source[memberName],
+                targetData:wdCb.Collection<wdCb.Collection<InstanceAttributeData>> = target[memberName];
+
+            sourceData.forEach((dataList:wdCb.Collection<InstanceAttributeData>) => {
+                targetData.addChild(dataList.clone(true));
+            });
         })
         public attributeData:wdCb.Collection<wdCb.Collection<InstanceAttributeData>> = wdCb.Collection.create<wdCb.Collection<InstanceAttributeData>>();
 
-        //todo it:data.length === size * instanceCount
-        //todo it:attributeName !== vertices,normals,...
-        //todo it:check data type
+        @require(function(attributes:Array<InstanceAttributeData>){
+            it("attributeName shouldn't equal vertices|normals|indices|texCoords|colors", () => {
+                for(let data of attributes){
+                    let name = data.attributeName;
+
+                    expect(name).not.equals("vertices");
+                    expect(name).not.equals("normals");
+                    expect(name).not.equals("indices");
+                    expect(name).not.equals("texCoords");
+                    expect(name).not.equals("colors");
+                }
+            });
+            it("data should be Array<number> or Float32Array", () => {
+                for(let data of attributes){
+                    let d = data.data;
+
+                    expect(JudgeUtils.isArrayExactly(d) || Object.prototype.toString.call(d) === "[object Float32Array]").true;
+                }
+            });
+        })
         public addInstanceAttributes(attributes:Array<InstanceAttributeData>
-            // attributeName:string, data:Array<number>|Float32Array, size:number, instanceIndex:number,  meshPerAttribute:number = 1
-        // }>
 ){
             var attributeListWithDefaultValue = wdCb.Collection.create<InstanceAttributeData>();
 
@@ -93,13 +125,6 @@ module wd{
 
 
             this.attributeData.addChild(attributeListWithDefaultValue);
-
-            // this.attributeData.addChild({
-            //     attributeName:attributeName,
-            //     data:data,
-            //     size:size,
-            //     meshPerAttribute:meshPerAttribute
-            // });
         }
 
         public computeData(){

@@ -37,8 +37,8 @@
 
 
 
-        'test/unit/**/grassMap*',
-        'test/unit/**/GrassMap*',
+        // 'test/unit/**/grassMap*',
+        // 'test/unit/**/GrassMap*',
 
 
         //'test/unit/**/procedural_texture/**',
@@ -129,7 +129,7 @@
         //'test/unit/renderer/shadow/directionShadowMap*',
         //'test/unit/renderer/*ShadowMap_*Spec.js',
         //
-        'test/unit/**/instance/*',
+        // 'test/unit/**/instance/*',
 
         // 'test/unit/**/instance/one*',
 
@@ -327,6 +327,7 @@
         //'test/unit/asset/wd/WDBuilderSpec.js',
         //'test/unit/math/*.js',
         //'test/unit/component/**/GeometrySpec.js',
+        'test/unit/component/**/InstanceGeometrySpec.js',
         //'test/unit/component/**/TerrainGeometrySpec.js',
         //'test/unit/component/**/ModelGeometrySpec.js',
         //'test/unit/**/CommonBufferContainerSpec.js',
