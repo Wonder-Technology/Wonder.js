@@ -105,8 +105,7 @@ module wd {
 
     export function cloneAttributeAsCloneable(configData?:CloneAttributeAsCloneableConfigData) {
         return generateCloneableMember(CloneType.CLONEABLE, wdCb.ExtendUtils.extend({
-            order:0,
-            isInjectTarget:false
+            order:0
         }, configData));
     }
 
@@ -122,19 +121,20 @@ module wd {
                 assert(JudgeUtils.isArrayExactly(createDataArr), Log.info.FUNC_MUST_BE("param:createDataArr", "be arr"));
             }
         })
-        public static clone<T>(source:T, cloneData:any = null, createDataArr:Array<any> = null):T{
+        public static clone<T>(source:T, cloneData:any = null, createDataArr:Array<any> = null, target:any = null):T{
             var cloneAttributeMembers:wdCb.Collection<CloneMemberData> = getAllCloneAttributeMembers(source)
-                .sort((memberDataA:any, memberDataB:any) => {
-                    return memberDataA.configData.order - memberDataB.configData.order;
-                }),
-                className = ClassUtils.getClassName(source),
-                target = null;
+                    .sort((memberDataA:any, memberDataB:any) => {
+                        return memberDataA.configData.order - memberDataB.configData.order;
+                    }),
+                className = ClassUtils.getClassName(source);
 
-            if(createDataArr){
-                target = wd[className].create.apply(wd[className], createDataArr);
-            }
-            else{
-                target = wd[className].create();
+            if(target === null){
+                if(createDataArr){
+                    target = wd[className].create.apply(wd[className], createDataArr);
+                }
+                else{
+                    target = wd[className].create();
+                }
             }
 
             if(!cloneAttributeMembers){
@@ -147,11 +147,9 @@ module wd {
 
                 switch (cloneType){
                     case CloneType.CLONEABLE:
-                        let configData:CloneAttributeAsCloneableConfigData = memberData.configData;
-
                         if(source[memberName] !== null && source[memberName] !== void 0){
-                            if(configData.isInjectTarget === true){
-                                target[memberName] = source[memberName].clone(target);
+                            if(target[memberName] !== null){
+                                target[memberName] = source[memberName].clone(target[memberName]);
                             }
                             else{
                                 target[memberName] = source[memberName].clone();
@@ -203,7 +201,6 @@ module wd {
 
     export type CloneAttributeAsCloneableConfigData = {
         order?:number;
-        isInjectTarget?:boolean;
     }
 
     export type CloneAttributeAsCustomTypeConfigData = {

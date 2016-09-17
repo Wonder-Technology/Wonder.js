@@ -54,8 +54,8 @@ module wd{
             this._material.side = ESide.BOTH;
         }
 
-        public clone(material:GrassMaterial){
-            return CloneUtils.clone(this, null, [material]);
+        public clone(map:this){
+            return CloneUtils.clone(this, null, null, map);
         }
 
         public addMap(mapManager:MapManager){

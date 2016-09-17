@@ -22,8 +22,8 @@ module wd{
         @cloneAttributeAsCloneable()
         private _stateHistory:wdCb.Stack<EUIState> = wdCb.Stack.create<EUIState>();
 
-        public clone(ui:InteractionUI){
-            return CloneUtils.clone(this, null, [ui]);
+        public clone(machine:this){
+            return CloneUtils.clone(this, null, null, machine);
         }
 
         public changeState(state:EUIState){

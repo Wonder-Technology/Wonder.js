@@ -20,8 +20,8 @@ module wd {
         })
         private _colorTransitionMap:wdCb.Hash<Transition> = wdCb.Hash.create<Transition>();
 
-        public clone(interactionUI:InteractionUI){
-            return CloneUtils.clone(this, null, [interactionUI]);
+        public clone(manager:this){
+            return CloneUtils.clone(this, null, null, manager);
         }
 
         public getObjectTransition(objectName:EButtonObjectName) {

@@ -82,8 +82,8 @@ module wd{
         //todo support blend
         //public blendMethod:ETerrainLayerBlendMethod = ETerrainLayerBlendMethod.CUT;
 
-        public clone(){
-            return CloneUtils.clone(this);
+        public clone(layer:this){
+            return CloneUtils.clone(this, null, null, layer);
         }
     }
 

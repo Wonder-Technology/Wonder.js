@@ -9,8 +9,8 @@ module wd{
 
         protected rigidBody:RigidBody = null;
 
-        public clone(rigidBody:RigidBody){
-            return CloneUtils.clone(this, null, [rigidBody]);
+        public clone(constraint:this){
+            return CloneUtils.clone(this, null, null, constraint);
         }
     }
 

@@ -44,21 +44,13 @@ module wd {
 
         public entityObject:GameObject;
 
-        @cloneAttributeAsCloneable({
-            isInjectTarget:true
-        })
+        @cloneAttributeAsCloneable()
         public lockConstraint:LockConstraint = LockConstraint.create(this);
-        @cloneAttributeAsCloneable({
-            isInjectTarget:true
-        })
+        @cloneAttributeAsCloneable()
         public distanceConstraint:DistanceConstraint = DistanceConstraint.create(this);
-        @cloneAttributeAsCloneable({
-            isInjectTarget:true
-        })
+        @cloneAttributeAsCloneable()
         public hingeConstraint:HingeConstraint = HingeConstraint.create(this);
-        @cloneAttributeAsCloneable({
-            isInjectTarget:true
-        })
+        @cloneAttributeAsCloneable()
         public pointToPointConstraintList:PointToPointConstraintList = PointToPointConstraintList.create(this);
 
         public addToObject(entityObject:EntityObject, isShareComponent:boolean = false){

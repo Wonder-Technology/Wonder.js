@@ -109,8 +109,8 @@ module wd{
             return this.mapData.mixMap;
         }
 
-        public clone(){
-            return CloneUtils.clone(this);
+        public clone(mix:this){
+            return CloneUtils.clone(this, null, null, mix);
         }
 
         private _setBumpMapRepeatRegion(bumpMap:ImageTexture, diffuseMap:ImageTexture|ProceduralTexture){

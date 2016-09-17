@@ -123,8 +123,8 @@ module wd{
         @cloneAttributeAsBasicType()
         public direction:Vector2 = Vector2.create(0, 1);
 
-        public clone(){
-            return CloneUtils.clone(this);
+        public clone(model:this){
+            return CloneUtils.clone(this, null, null, model);
         }
     }
 
@@ -140,8 +140,8 @@ module wd{
         @cloneAttributeAsBasicType()
         public length:number = 0.1;
 
-        public clone(){
-            return CloneUtils.clone(this);
+        public clone(model:this){
+            return CloneUtils.clone(this, null, null, model);
         }
     }
 }

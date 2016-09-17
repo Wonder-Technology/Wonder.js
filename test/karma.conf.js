@@ -26,7 +26,7 @@
         'test/helper/yoop/yOOP.js',
         'test/unit/**/*Tool.js',
 
-        // 'test/unit/**',
+        'test/unit/**',
 
 
         //'test/render/*Tool.js',
@@ -35,10 +35,10 @@
         //'test/render/**',
 
 
+        // 'test/unit/**/cloneSpec*',
 
-
-        'test/unit/**/grassMap*',
-        'test/unit/**/GrassMap*',
+        // 'test/unit/**/grassMap*',
+        // 'test/unit/**/GrassMap*',
 
 
         //'test/unit/**/procedural_texture/**',
@@ -101,7 +101,7 @@
 
         //'test/unit/**/light/**',
 
-        //'test/unit/**/*RigidBodySpec*',
+        // 'test/unit/**/*RigidBodySpec*',
 
         //'test/unit/**/ScriptComponentSpec.js',
 
@@ -136,7 +136,7 @@
 
         //'test/unit/**/instance/*lod*',
 
-        //'test/unit/**/instance/SourceInstance*',
+        // 'test/unit/**/instance/*SourceInstance*',
         // 'test/unit/**/instance/instance_basic*',
         //'test/unit/**/instance/instance_light*',
 
@@ -154,9 +154,9 @@
 
         //'test/unit/lib/**',
 
-        //'test/unit/**/terrain*',
-        //'test/unit/**/terrainLayer*',
-        //'test/unit/**/terrainMix*',
+        // 'test/unit/**/terrain*',
+        // 'test/unit/**/terrainLayer*',
+        // 'test/unit/**/terrainMix*',
 
         //'test/unit/**/shaderLibSpec*',
         //'test/unit/**/*ShaderLib*',
@@ -232,7 +232,7 @@
 
         //'test/unit/**/SourceLightSpec*',
 
-        //'test/unit/**/RigidBodySpec*',
+        // 'test/unit/**/RigidBodySpec*',
 
         //'test/unit/**/Mirror*',
 
@@ -240,9 +240,9 @@
         //'test/unit/**/ColorSpec*',
 
         //'test/unit/**/interactionUISpec*',
-        //'test/unit/**/TransitionSpec*',
+        // 'test/unit/**/TransitionSpec*',
         //'test/unit/**/SpriteTransitionSpec*',
-        //'test/unit/**/TransitionManagerSpec*',
+        // 'test/unit/**/TransitionManagerSpec*',
 
 
         //'test/unit/**/MainSpec*',

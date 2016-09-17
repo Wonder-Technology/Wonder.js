@@ -8,9 +8,7 @@ module wd{
             return obj;
         }
 
-        @cloneAttributeAsCloneable({
-            isInjectTarget:true
-        })
+        @cloneAttributeAsCloneable()
         public map:GrassMap = GrassMap.create(this);
 
         public init(){
