@@ -15,15 +15,16 @@ module wd{
                 return;
             }
 
-            let grassMap = material.grassMap;
+            let map:GrassMap = material.map,
+                grassMap = map.grassMap;
 
             this.sendAttributeBuffer(program, "a_quadIndex", quadIndexBuffer);
 
-            program.sendStructureData("u_windData.direction", EVariableType.VECTOR_2, material.wind.direction);
-            program.sendStructureData("u_windData.time", EVariableType.FLOAT_1, material.wind.time);
-            program.sendStructureData("u_windData.strength", EVariableType.FLOAT_1, material.wind.strength);
+            program.sendStructureData("u_windData.direction", EVariableType.VECTOR_2, map.wind.direction);
+            program.sendStructureData("u_windData.time", EVariableType.FLOAT_1, map.wind.time);
+            program.sendStructureData("u_windData.strength", EVariableType.FLOAT_1, map.wind.strength);
 
-            material.mapData.forEach((mapData:GrassMapData, index:number) => {
+            map.mapData.forEach((mapData:GrassMapData, index:number) => {
                 program.sendStructureData(`u_grassMapDatas[${index}].sourceRegion`, EVariableType.VECTOR_4, GlobalTextureUtils.convertSourceRegionCanvasMapToUV(mapData.sourceRegion, grassMap.width, grassMap.height));
             });
         }
@@ -38,7 +39,7 @@ module wd{
                 "u_windData"
             ]);
 
-            this.fsSourceBody += `if (totalColor.a < ${material.alphaTest}){
+            this.fsSourceBody += `if (totalColor.a < ${material.map.alphaTest}){
     discard;
 }\n`;
         }

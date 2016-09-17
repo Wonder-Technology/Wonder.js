@@ -33,7 +33,7 @@ describe("grass map", function() {
 
         grassMap = wd.ImageTexture.create();
 
-        material.grassMap = grassMap;
+        material.map.grassMap = grassMap;
 
     });
     afterEach(function () {
@@ -48,7 +48,7 @@ describe("grass map", function() {
 
         it("should contain 3 sourceRegion data", function () {
             expect(function(){
-                material.mapData = [
+                material.map.mapData = [
                     {
                         sourceRegion:wd.RectRegion.create(1,100, 200,300)
                     }
@@ -56,7 +56,7 @@ describe("grass map", function() {
             }).toThrow("should contain 3 sourceRegion data");
 
             expect(function(){
-                material.mapData = [
+                material.map.mapData = [
                     {
                         sourceRegion:wd.RectRegion.create(1,100, 200,300)
                     },
@@ -75,11 +75,11 @@ describe("grass map", function() {
         it("clone basic data", function () {
             var alphaTest = 0.5;
 
-            cloneTool.extend(material, {
+            cloneTool.extend(material.map, {
                 alphaTest:alphaTest
             });
 
-            var result = material.clone();
+            var result = material.clone().map;
 
             expect(result.alphaTest).toEqual(alphaTest);
         });
@@ -94,11 +94,11 @@ describe("grass map", function() {
             wind.strength = 100;
 
 
-            cloneTool.extend(material, {
+            cloneTool.extend(material.map, {
                 wind:wind
             });
 
-            var result = material.clone();
+            var result = material.clone().map;
 
             expect(result.wind.time).toEqual(wind.time);
             expect(result.wind.speed).toEqual(wind.speed);
@@ -110,11 +110,11 @@ describe("grass map", function() {
             var cloneGrassMap = wd.ImageTexture.create({});
             sandbox.stub(grassMap, "clone").returns(cloneGrassMap);
 
-            cloneTool.extend(material, {
+            cloneTool.extend(material.map, {
                 grassMap:grassMap
             });
 
-            var result = material.clone();
+            var result = material.clone().map;
 
             expect(result.grassMap).toEqual(cloneGrassMap);
         });
@@ -140,12 +140,12 @@ describe("grass map", function() {
             sandbox.stub(mapData[2].sourceRegion, "clone").returns(cloneSourceRegion3);
 
 
-            cloneTool.extend(material, {
+            cloneTool.extend(material.map, {
                 mapData:mapData
             });
 
 
-            var result = material.clone();
+            var result = material.clone().map;
 
             expect(result.mapData).toEqual([
                     {
@@ -293,23 +293,6 @@ describe("grass map", function() {
 
         describe("test bind and send grass map", function(){
             beforeEach(function(){
-                //var cmd = rendererTool.createSingleDrawCommand(sandbox);
-                //
-                //cmd.material = material;
-                //
-                //
-                //
-                //grassMap = wd.ImageTexture.create();
-                //
-                //
-                //sandbox.stub(grassMap, "bindToUnit");
-                //
-                //sandbox.stub(grassMap, "update");
-                //
-                //
-                //material.grassMap = grassMap;
-
-
                 sandbox.stub(grassMap, "bindToUnit");
 
                 sandbox.stub(grassMap, "update");
@@ -355,7 +338,7 @@ describe("grass map", function() {
                     }
                 ];
 
-                material.mapData = mapData;
+                material.map.mapData = mapData;
             });
 
             it("send 3 sourceRegion data which are converted to uv coordinate for the corresponding part of grass map on the rect", function () {
@@ -383,7 +366,7 @@ describe("grass map", function() {
     });
 
     it("enable alpha test", function () {
-        material.alphaTest = 0.2;
+        material.map.alphaTest = 0.2;
 
         materialTool.init(material);
         material.updateShader(cmd);
@@ -398,7 +381,7 @@ describe("grass map", function() {
         });
 
         it("test time increase at each frame", function(){
-            material.wind.speed = 0.1;
+            material.map.wind.speed = 0.1;
 
             materialTool.init(material);
             shaderTool.spyProgram(sandbox, material);
@@ -410,16 +393,16 @@ describe("grass map", function() {
             expect(material.program.sendStructureData).toCalledWith("u_windData.time", wd.EVariableType.FLOAT_1, 0.2);
         });
         it("send wind direction,strength", function(){
-            material.wind.direction = wd.Vector2.create(2,0.5);
-            material.wind.strength = 5;
+            material.map.wind.direction = wd.Vector2.create(2,0.5);
+            material.map.wind.strength = 5;
 
             materialTool.init(material);
             shaderTool.spyProgram(sandbox, material);
 
             material.updateShader(cmd);
 
-            expect(material.program.sendStructureData).toCalledWith("u_windData.direction", wd.EVariableType.VECTOR_2, material.wind.direction);
-            expect(material.program.sendStructureData).toCalledWith("u_windData.strength", wd.EVariableType.FLOAT_1, material.wind.strength);
+            expect(material.program.sendStructureData).toCalledWith("u_windData.direction", wd.EVariableType.VECTOR_2, material.map.wind.direction);
+            expect(material.program.sendStructureData).toCalledWith("u_windData.strength", wd.EVariableType.FLOAT_1, material.map.wind.strength);
         });
 
         describe("test fs glsl source", function () {

@@ -37,8 +37,8 @@
 
 
 
-        // 'test/unit/**/grassMap*',
-        // 'test/unit/**/GrassMap*',
+        'test/unit/**/grassMap*',
+        'test/unit/**/GrassMap*',
 
 
         //'test/unit/**/procedural_texture/**',
@@ -252,7 +252,7 @@
         //'test/unit/**/ui/**',
         //'test/unit/**/UIObjectSpec*',
 
-        'test/unit/**/ButtonSpec*',
+        // 'test/unit/**/ButtonSpec*',
         //'test/unit/**/UIStateMachineSpec*',
 
 
