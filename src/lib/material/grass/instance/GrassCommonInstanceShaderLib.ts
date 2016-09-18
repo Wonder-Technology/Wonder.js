@@ -19,7 +19,6 @@ module wd{
 
             this.sendUniformData(program, "u_mvpMatrix", cmd.mvpMatrix);
             this.sendUniformData(program, "u_size", material.size);
-            this.sendUniformData(program, "u_drawPos", material.drawPos);
             this.sendUniformData(program, "u_time", material.time);
         }
 
@@ -35,7 +34,6 @@ module wd{
                 "u_grassMapSampler",
                 "u_mvpMatrix",
                 "u_size",
-                "u_drawPos",
                 "u_time"
             ]);
 

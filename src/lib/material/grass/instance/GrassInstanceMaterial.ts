@@ -14,8 +14,6 @@ module wd{
         public map:ImageTexture|ProceduralTexture = null;
         @cloneAttributeAsBasicType()
         public size:number = 5;
-        @cloneAttributeAsCloneable()
-        public drawPos:Vector2 = Vector2.create(0, 0);
         @cloneAttributeAsBasicType()
         public time:number = 0;
 

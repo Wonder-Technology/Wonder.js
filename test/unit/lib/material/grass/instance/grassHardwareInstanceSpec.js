@@ -44,19 +44,16 @@ describe("test grass hardware instance", function() {
     describe("clone", function(){
         it("clone basic data", function () {
             var size = 2,
-                drawPos = wd.Vector2.create(1,2),
                 time = 1;
 
             cloneTool.extend(material, {
                 size:size,
-                drawPos:drawPos,
                 time:time
             });
 
             var result = material.clone();
 
             expect(result.size).toEqual(size);
-            expect(result.drawPos).toEqual(drawPos);
             expect(result.time).toEqual(time);
         });
         it("clone grassMap", function () {
@@ -187,13 +184,6 @@ describe("test grass hardware instance", function() {
 
                     expect(program.sendUniformData).toCalledWith("u_size", wd.EVariableType.FLOAT_1, 2);
                 });
-                it("send u_drawPos", function () {
-                    material.drawPos = wd.Vector2.create(3,4);
-
-                    rendererTool.renderGameObjectScene();
-
-                    expect(program.sendUniformData).toCalledWith("u_drawPos", wd.EVariableType.VECTOR_2, material.drawPos);
-                });
                 it("send u_time", function () {
                     material.time = 2;
 
@@ -286,10 +276,6 @@ describe("test grass hardware instance", function() {
                     expect(glslTool.contain(
                         source,
                         "uniform float u_size;"
-                    )).toBeTruthy();
-                    expect(glslTool.contain(
-                        source,
-                        "uniform vec2 u_drawPos;"
                     )).toBeTruthy();
                     expect(glslTool.contain(
                         source,

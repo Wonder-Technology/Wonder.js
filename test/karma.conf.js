@@ -39,10 +39,10 @@
 
         'test/unit/**/grassMap*',
         'test/unit/**/GrassMap*',
-        // 'test/unit/**/grassHardware*',
-        // 'test/unit/**/grassBatch*',
+        'test/unit/**/grassHardware*',
+        'test/unit/**/grassBatch*',
 
-        // 'test/unit/**/GrassInstanceGeometry*',
+        'test/unit/**/GrassInstanceGeometry*',
 
 
         //'test/unit/**/procedural_texture/**',

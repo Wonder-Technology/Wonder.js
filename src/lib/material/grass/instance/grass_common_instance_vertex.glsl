@@ -28,8 +28,8 @@ vec2 rotate (float x, float y, float r) {
 		// based on centre of view cone position, what grid tile should
 		// this piece of grass be drawn at?
 		vec2 gridOffset = vec2(
-			floor((u_drawPos.x - a_offset.x) / u_size) * u_size + u_size / 2.0,
-			floor((u_drawPos.y - a_offset.y) / u_size) * u_size + u_size / 2.0
+			floor(-a_offset.x / u_size) * u_size + u_size / 2.0,
+			floor(-a_offset.y / u_size) * u_size + u_size / 2.0
 		);
 
 		// rotate this blade vertex by this blade's rotation
@@ -61,8 +61,6 @@ vec2 rotate (float x, float y, float r) {
 			1.0
 		);
 		v_texCoord = uv;
-
-//        vec4 pos = vec4(1.0);
 
 		gl_Position = u_mvpMatrix * pos;
 @end
