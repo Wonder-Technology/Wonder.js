@@ -13,13 +13,13 @@ describe("clone", function(){
         });
 
         it("cloneAttributeAsCloneable should only create the attribute once", function(){
-            var material = wd.GrassMaterial.create();
+            var material = wd.TerrainMaterial.create();
 
-            sandbox.spy(wd.GrassMap, "create");
+            sandbox.spy(wd.TerrainMix, "create");
 
             var result = material.clone();
 
-            expect(wd.GrassMap.create).toCalledOnce();
+            expect(wd.TerrainMix.create).toCalledOnce();
         });
     });
 });

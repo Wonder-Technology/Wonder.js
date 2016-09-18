@@ -4,7 +4,7 @@ describe("InstanceGeometry", function() {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        geo = new wd.InstanceGeometry();
+        geo = new wd.BasicInstanceGeometry();
 
         sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
     });
