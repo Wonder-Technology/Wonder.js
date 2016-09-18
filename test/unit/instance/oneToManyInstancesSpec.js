@@ -167,35 +167,25 @@ describe("one to many instance test", function(){
         
         describe("test send instance data", function(){
             function judgeMatricesInstancesArray(){
-                expect(gl.bufferSubData).toCalledOnce();
-
                 var targetMatricesInstancesArray = new Float32Array(1000);
 
 
-   targetMatricesInstancesArray.set(buffers.instanceAttribute0[0], 0);
+                targetMatricesInstancesArray.set(buffers.instanceAttribute0[0], 0);
                 targetMatricesInstancesArray.set(buffers.instanceAttribute1[0], 1);
 
                 targetMatricesInstancesArray.set(buffers.instanceAttribute0[1], 1 + 2);
                 targetMatricesInstancesArray.set(buffers.instanceAttribute1[1], 1 + 2 + 1);
 
 
-                var matricesInstancesArray = gl.bufferSubData.firstCall.args[2];
-
-                for(var i = 0, len = matricesInstancesArray.length; i < len; i++){
-                    var data = matricesInstancesArray[i];
-
-                    expect(data).toEqual(targetMatricesInstancesArray[i]);
-                }
+                instanceTool.judgeMatricesInstancesArray(targetMatricesInstancesArray)
             }
 
             function judgeSendMatrixVecData(location, index){
-                expect(gl.enableVertexAttribArray.withArgs(location)).toCalledOnce();
-                expect(extensionInstancedArrays.vertexAttribDivisorANGLE.withArgs(location, 1)).toCalledOnce();
+                instanceTool.judgeSendMatrixVecData(location, index);
             }
 
             function judgeUnBindInstancesBuffer(location, index){
-                expect(gl.disableVertexAttribArray.withArgs(location)).toCalledOnce();
-                expect(extensionInstancedArrays.vertexAttribDivisorANGLE.withArgs(location, 0)).toCalledOnce();
+                instanceTool.judgeUnBindInstancesBuffer(location, index);
             }
 
             beforeEach(function(){

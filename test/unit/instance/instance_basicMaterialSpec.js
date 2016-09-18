@@ -151,7 +151,7 @@ describe("instance with basic material", function(){
             function judgeModelMatricesInstancesArray(){
                 expect(gl.uniformMatrix4fv.withArgs(mMatrixPos)).not.toCalled();
 
-                expect(gl.bufferSubData).toCalledOnce();
+                // expect(gl.bufferSubData).toCalledOnce();
 
                 var targetModelMatricesInstancesArray = new Float32Array(1000);
                 box1.transform.localToWorldMatrix.cloneToArray(targetModelMatricesInstancesArray, 0);
@@ -159,24 +159,26 @@ describe("instance with basic material", function(){
                 box1Instance2.transform.localToWorldMatrix.cloneToArray(targetModelMatricesInstancesArray, 32);
 
 
-                var modelMatricesInstancesArray = gl.bufferSubData.firstCall.args[2];
+                instanceTool.judgeMatricesInstancesArray(targetModelMatricesInstancesArray)
 
-                for(var i = 0, len = modelMatricesInstancesArray.length; i < len; i++){
-                    var data = modelMatricesInstancesArray[i];
 
-                    expect(data).toEqual(targetModelMatricesInstancesArray[i]);
-                }
+                // var modelMatricesInstancesArray = gl.bufferSubData.firstCall.args[2];
+                //
+                // for(var i = 0, len = modelMatricesInstancesArray.length; i < len; i++){
+                //     var data = modelMatricesInstancesArray[i];
+                //
+                //     expect(data).toEqual(targetModelMatricesInstancesArray[i]);
+                // }
             }
 
             function judgeSendModelMatrixVecData(location, index){
-                expect(gl.enableVertexAttribArray.withArgs(location)).toCalledOnce();
                 expect(gl.vertexAttribPointer.withArgs(location, 4, gl.FLOAT, false, 64, index * 16)).toCalledOnce();
-                expect(extensionInstancedArrays.vertexAttribDivisorANGLE.withArgs(location, 1)).toCalledOnce();
+
+                instanceTool.judgeSendMatrixVecData(location, index);
             }
 
             function judgeUnBindInstancesBuffer(location, index){
-                expect(gl.disableVertexAttribArray.withArgs(location)).toCalledOnce();
-                expect(extensionInstancedArrays.vertexAttribDivisorANGLE.withArgs(location, 0)).toCalledOnce();
+                instanceTool.judgeUnBindInstancesBuffer(location, index);
             }
 
             beforeEach(function(){

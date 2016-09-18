@@ -67,6 +67,10 @@ module wd{
             value:EVariableCategory.ENGINE
         };
 
+        public static u_mvpMatrix:ShaderVariable = {
+            type:EVariableType.FLOAT_MAT4,
+            value:EVariableCategory.ENGINE
+        };
         public static u_normalMatrix:ShaderVariable = {
             type:EVariableType.FLOAT_MAT3,
             value:EVariableCategory.ENGINE
@@ -510,6 +514,21 @@ module wd{
 
         public static u_windData:ShaderVariable = {
             type:EVariableType.STRUCTURES,
+            value:EVariableCategory.ENGINE
+        };
+
+        public static a_vertexIndex:ShaderVariable = {
+            type:EVariableType.FLOAT_1,
+            value:EVariableCategory.ENGINE
+        };
+
+        public static u_size:ShaderVariable = {
+            type:EVariableType.FLOAT_1,
+            value:EVariableCategory.ENGINE
+        };
+
+        public static u_drawPos:ShaderVariable = {
+            type:EVariableType.VECTOR_2,
             value:EVariableCategory.ENGINE
         };
     }

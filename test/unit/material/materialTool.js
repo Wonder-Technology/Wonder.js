@@ -34,9 +34,12 @@ var materialTool = (function () {
             expect(material.opacity).toEqual(1.0);
         },
         init:function(material){
-            material.geometry = {
-                entityObject: wd.GameObject.create()
+            if(!material.geometry){
+                material.geometry = {
+                    entityObject: wd.GameObject.create()
+                }
             }
+
             material.init();
         }
     }

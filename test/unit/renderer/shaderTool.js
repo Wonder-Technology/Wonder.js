@@ -89,6 +89,19 @@ var shaderTool = (function(){
         judgeGLSLUniformData: function(shaderSource, uniformDataStr){
             expect(shaderSource.indexOf(uniformDataStr) > -1).toBeTruthy();
         },
+        judgeGLSLContainSpecifyCount: function(source, target, targetCount){
+            var result = source.match(new RegExp(target, "g")),
+                sourceCount = null;
+
+            if(result === null){
+                sourceCount = 0;
+            }
+            else{
+                sourceCount = result.length;
+            }
+
+            expect(sourceCount).toEqual(targetCount);
+        },
         getShaderLibCount: function(shader, libClass){
             return shader.getLibs().filter(function(lib){
                 return lib instanceof libClass;

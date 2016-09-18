@@ -1,22 +1,16 @@
-precision highp float;
-
-//todo enable fog
-
-	uniform sampler2D u_sampler2D;
+@varDeclare
 //	uniform vec3 fogColor;
 //	uniform float fogNear;
 //	uniform float fogFar;
 //	uniform vec3 grassFogColor;
 //	uniform float grassFogFar;
 
-//	varying vec3 vPosition;
-	varying vec4 v_color;
-	varying vec2 v_texCoord;
+varying vec4 v_color;
+varying vec2 v_texCoord;
+@end
 
-	void main() {
-		vec4 color = vec4(v_color) * texture2D(u_sampler2D, vec2(v_texCoord.s, v_texCoord.t));
-//		vec4 color = texture2D(u_sampler2D, vec2(v_texCoord.s, v_texCoord.t));
-//vec4 color = vec4(1.0,0.0,1.0,1.0);
+@body
+		vec4 color = vec4(v_color) * texture2D(u_grassMapSampler, vec2(v_texCoord.s, v_texCoord.t));
 
 
 //		float depth = gl_FragCoord.z / gl_FragCoord.w;
@@ -28,4 +22,4 @@ precision highp float;
 //		color.rgb = mix(color.rgb, fogColor, fogFactor);
 		// output
 		gl_FragColor = color;
-	}
+@end

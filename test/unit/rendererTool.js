@@ -1,4 +1,11 @@
 var rendererTool = {
+    renderGameObjectScene: function(){
+        var renderer = wd.WebGLRenderer.create(),
+            director = wd.Director.getInstance();
+
+        director.scene.gameObjectScene.render(renderer);
+        renderer.render();
+    },
     triggerMaterialAddShaderLib: function(material){
         this.setFakeGeometry(material);
 
@@ -52,7 +59,7 @@ var rendererTool = {
 
 
 
-        //quadCmd.mMatrix = wd.Matrix4.create();
+        quadCmd.mMatrix = wd.Matrix4.create();
         quadCmd.vMatrix = wd.Matrix4.create();
         quadCmd.pMatrix = wd.Matrix4.create();
 

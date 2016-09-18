@@ -8,56 +8,6 @@
 </head>
 <body>
 <script>
-    var instanceTool = (function(){
-        return {
-            getInstancePosition(index, range, count){
-                return wd.Vector3.create(range / 2 - this._getVal(index, count) * range, range / 2 - this._getVal(index + 1, count) * range, range / 2 - this._getVal(index+ 2, count) * range);
-            },
-            getShadowInstancePosition(index, range, count){
-                return wd.Vector3.create(range / 2 - this._getVal(index, count) * range, 60, 0);
-            },
-            getSpecificInstancePosition(index, range, count, x,y,z){
-                var x = x !== null ? x : (range / 2 - this._getVal(index, count) * range);
-                var y = y !== null ? y : (range / 2 - this._getVal(index + 1, count) * range);
-                var z = z !== null ? z :(range / 2 - this._getVal(index + 2, count) * range);
-
-                return wd.Vector3.create(x, y, z);
-            },
-            getInstanceRotation(index, count){
-                var val = this._getVal(index, count);
-
-                return wd.Vector3.create(90 * val, 90 * val,0);
-            },
-            getInstanceScale(index, count){
-                return wd.Vector3.create(3,3,3);
-            },
-            _getVal(index, count){
-                return randomTool.getFixedRandomNum(index);
-            }
-        }
-    })();
-
-
-    var randomTool = (function(){
-        return {
-            getFixedRandomNum(index){
-                var seedArr = [
-                    0.1, 0.8, 0.7, 0.3, 0.2,
-                    0.9, 0.95, 0.4, 0.6,0.35,
-                    0.23, 0.55, 0.12, 0.88, 0.72,
-
-                    0.13, 0.05, 0.08, 0.33, 0.35,
-                    0.54, 0.71, 0.69, 0.36, 0.98
-                ];
-
-//                expect(index).not.toBeGreaterThan(seedArr.length);
-
-                return seedArr[index];
-            }
-        }
-    })();
-
-
     window.onload = function () {
         wd.Main.setConfig({
             isTest:true,
@@ -65,11 +15,7 @@
         }).init();
 
         wd.LoaderManager.getInstance().load([
-            {url: "./glsl/shaderConfig.json", id: "shaderConfig"},
-            {url: "./grass.jpg", id: "grass"},
-            {url: "./glsl/instance_vertex.glsl", id: "instance_vs"},
-            {url: "./glsl/batch_vertex.glsl", id: "batch_vs"},
-            {url: "./glsl/fragment.glsl", id: "fs"}
+            {url: "./grass.jpg", id: "grass"}
         ]).subscribe(null, null, function () {
             initSample();
         });
@@ -86,172 +32,45 @@
         function createGrasses(){
             var arr = [],
                     grass = createGrass();
-//                    range = 10,
-//                    count = 2;
 
             arr.push(grass);
 
 
-            var grass2 = grass.clone();
+            var grass2 = grass.clone({
+                cloneChildren:false,
+                shareGeometry:true,
+                cloneGeometry:true
+            });
+//            var grass2 = grass.clone();
 
             grass2.transform.position = wd.Vector3.create(10,0,0);
 
             arr.push(grass2);
 
-
-//            for(var i = 0; i < count; i++){
-//                var instance = sourceInstanceComponent.cloneInstance("index" + String(i));
-//
-//                instance.transform.position = instanceTool.getInstancePosition(i, range, count);
-////                instance.transform.rotate(instanceTool.getInstanceRotation(i, count));
-////                instance.transform.scale = instanceTool.getInstanceScale(i, count);
-//
-//                arr.push(instance);
-//            }
-
-//            return grass;
             return arr;
         }
 
 
-
-        var BLADE_SEGS = 4 // # of blade segments
-        var BLADE_VERTS = (BLADE_SEGS + 1) * 2 // # of vertices per blade (1 side)
-//        var BLADE_INDICES = BLADE_SEGS * 12
-        var BLADE_WIDTH = 0.15
-        var BLADE_HEIGHT_MIN = 2.0
-        var BLADE_HEIGHT_MAX = 4.0
-
-
         function createGrass(){
-//            var material = wd.BasicMaterial.create();
-//            material.color = wd.Color.create("rgb(0, 255, 255)");
-//            var material = wd.ShaderMaterial.create();
-//            material.read("shaderConfig");
-//            var material = wd.GrassMaterial;
-            var material = wd.ShaderMaterial.create();
-            material.read("shaderConfig");
-            //todo more
+            var material = wd.GrassInstanceMaterial.create();
 
-
-            if(wd.InstanceUtils.isHardwareSupport()){
-                material.definitionData.vsSourceId = "instance_vs";
-            }
-            else{
-                material.definitionData.vsSourceId = "batch_vs";
-            }
+            material.map = wd.LoaderManager.getInstance().get("grass").toTexture();
 
 
 
-
-
-            var opts = {
-                numBlades: 100,
-                radius: 3
-//                texture.textures['grass'],
-//                fogColor,
-//                fogFar,
-//                grassFogColor,
-//                grassFogFar
-            };
-
-
-
-            var definitionData = material.definitionData;
-
-            definitionData.uniforms.u_time = {
-                "type": "FLOAT_1",
-                "value": "0.0"
-            };
-            definitionData.uniforms.u_patchSize = {
-                "type": "FLOAT_1",
-                "value": opts.radius * 2.0
-            };
-            definitionData.uniforms.u_drawPos = {
-                "type": "FLOAT_2",
-                "value": [0.0, 0.0]
-            };
-
-
-
-
-            var vIndexLength = BLADE_VERTS * 2 * 1;
-
-            // Buffers to use for instances of blade mesh
-            var buffers = {
-                // Tells the shader which vertex of the blade its working on.
-                // Rather than supplying positions, they are computed from this a_vIndex.
-                vIndex: [],
-                // Shape properties of all blades
-                shape: [],
-                // Positon & rotation of all blades
-                offset: [],
-
-
-
-
-                // Indices for a blade
-//                index: new Uint16Array(BLADE_INDICES)
-                indices: []
-            };
-
-            initBladeData(buffers, opts.numBlades, vIndexLength, opts.radius);
-
-
-
-
-
-            var geo = wd.InstanceGeometry.create();
-            geo.material = material;
-
-
-
-
-
-
-            definitionData.attributes.a_vIndex = {
-                "type": "FLOAT_1",
-                "value": buffers.vIndex
-            };
-
-
-
-            for (var i = 0; i < opts.numBlades; i++) {
-//                geo.addInstanceAttribute("a_vIndex", buffers.vIndex[i], 1, i);
-//                geo.addInstanceAttribute("a_shape", buffers.shape[i], 4, i);
-//                geo.addInstanceAttribute("a_offset", buffers.offset[i], 4, i);
-
-
-                //todo refactor?
-                geo.addInstanceAttributes([
-//                    {attributeName: "a_vIndex", data: buffers.vIndex[i], size: 1, meshPerAttribute:0},
-                    {attributeName: "a_shape", data: buffers.shape[i], size: 4, meshPerAttribute:1},
-                    {attributeName: "a_offset", data: buffers.offset[i], size: 4, meshPerAttribute:1}
-                ]);
-            }
-
-//            geo.addInstanceAttribute("a_vIndex", buffers.vIndex, 1);
-//            geo.addInstanceAttribute("a_shape", buffers.shape, 4);
-//            geo.addInstanceAttribute("a_offset", buffers.offset, 4);
-
-            geo.indices = buffers.indices;
-
-
-
+            var geometry = wd.GrassInstanceGeometry.create();
+            geometry.material = material;
+            geometry.bladeCount = 100;
+            geometry.radius = 5;
+//            geometry.width = 10;
+//            geometry.height = 20;
 
 
 
             var gameObject = wd.GameObject.create();
+            gameObject.addComponent(geometry);
 
             gameObject.addComponent(wd.MeshRenderer.create());
-            gameObject.addComponent(geo);
-
-
-//            gameObject.transform.rotate(-90, 0, 0);
-
-
-
-
 
 
             var sourceInstanceComponent = wd.OneToManySourceInstance.create();
@@ -259,114 +78,8 @@
 
 
 
-
-
             return gameObject;
         }
-
-        function initBladeData(buffers, numBlades, vIndexLength, radius) {
-            initBladeIndices(buffers.indices, 0, BLADE_VERTS, 0);
-            initBladeVertexIndex(buffers.vIndex, vIndexLength);
-
-            for (var i = 0; i < numBlades; i++) {
-                initBladeShapeVerts(buffers.shape, 1);
-                initBladeOffsetVerts(buffers.offset, radius, 1);
-            }
-        }
-
-        /**
-         * Sets up indices for single blade mesh.
-         * @param id array of indices
-         * @param vc1 vertex start a_offset for front side of blade
-         * @param vc2 vertex start a_offset for back side of blade
-         * @param i index a_offset
-         */
-        function initBladeIndices(id, vc1, vc2, i) {
-            var seg;
-            // blade front side
-            for (seg = 0; seg < BLADE_SEGS; seg++) {
-                id[i++] = vc1 + 0 // tri 1
-                id[i++] = vc1 + 1
-                id[i++] = vc1 + 2
-                id[i++] = vc1 + 2 // tri 2
-                id[i++] = vc1 + 1
-                id[i++] = vc1 + 3
-                vc1 += 2
-            }
-            // blade back side
-            for (seg = 0; seg < BLADE_SEGS; seg++) {
-                id[i++] = vc2 + 2 // tri 1
-                id[i++] = vc2 + 1
-                id[i++] = vc2 + 0
-                id[i++] = vc2 + 3 // tri 2
-                id[i++] = vc2 + 1
-                id[i++] = vc2 + 2
-                vc2 += 2
-            }
-        }
-
-        /** Set up shape variations for each blade of grass */
-        function initBladeShapeVerts(bufferShape, vIndexLength) {
-            var shape = [],
-                    width = BLADE_WIDTH + Math.random() * BLADE_WIDTH * 0.5, // width,
-                    height = BLADE_HEIGHT_MIN + Math.pow(Math.random(), 4.0) * (BLADE_HEIGHT_MAX - BLADE_HEIGHT_MIN), // height
-                    lean = 0.0 + Math.random() * 0.7, // lean
-                    curve = 0.2 + Math.random() * 0.8; // curve
-
-            for(var i = 0; i < vIndexLength; i++){
-                shape[i*4+0] = width;
-                shape[i*4+1] = height;
-                shape[i*4+2] = lean;
-                shape[i*4+3] = curve;
-            }
-
-            bufferShape.push(shape);
-        }
-
-        /** Set up positons & rotation for each blade of grass */
-        function initBladeOffsetVerts(bufferOffset, patchRadius, vIndexLength) {
-            var offset = [],
-                    x = nrand() * patchRadius,
-                    y = nrand() * patchRadius,
-                    z = 0.0,
-                    rot = Math.PI * 2.0 * Math.random();
-
-            for(var i = 0; i < vIndexLength; i++){
-                offset[i*4+0] = x;
-                offset[i*4+1] = y;
-                offset[i*4+2] = z;
-                offset[i*4+3] = rot;
-            }
-
-            bufferOffset.push(offset);
-        }
-
-        /** Set up indices for 1 blade */
-        function initBladeVertexIndex(bufferVIndex, vIndexLength) {
-            for (var i = 0; i < vIndexLength; i++) {
-                bufferVIndex[i] = i
-            }
-        }
-
-
-        /** A random number from -1.0 to 1.0 */
-        function nrand() {
-            return Math.random() * 2.0 - 1.0
-        }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         function createCamera() {
             var camera = wd.GameObject.create(),

@@ -47,11 +47,13 @@ describe("envMap for light", function () {
 
     it("fix envMap shader lib bug: vertex glsl should only set gl_Position once", function () {
         prepare();
-
         director._init();
 
         var box1Shader = box1.getComponent(wd.Geometry).material.shader;
-        expect(glslTool.containSpecifyCount(box1Shader.vsSource, "gl_Position", 1)).toBeTruthy();
+
+        shaderTool.judgeGLSLContainSpecifyCount(
+            box1Shader.vsSource, "gl_Position", 1
+        );
     });
 });
 

@@ -15,28 +15,25 @@ module wd {
             return num < below ? below : num;
         }
 
-
-        /**
-         * generate num in (0,1)
-         * @returns {number}
-         */
         public static generateZeroToOne() {
             return Math.random();
         }
 
-        /**
-         * generate integer in [min,max]
-         * @param min
-         * @param max
-         * @returns {number}
-         */
+        //todo test
+        @require(function(min:number, max:number){
+            assert(min < max, Log.info.FUNC_SHOULD("min", "< max"));
+        })
+        public static generateMinToMax(min:number, max:number){
+            var max = max + 1;
+
+            return Math.random() * (max - min) + min;
+        }
+
         @require(function(min:number, max:number){
             assert(min < max, Log.info.FUNC_SHOULD("min", "< max"));
         })
         public static generateInteger(min:number, max:number) {
-            var max = max + 1;
-
-            return Math.floor(Math.random() * (max - min) + min);
+            return Math.floor(this.generateMinToMax(min, max));
         }
 
         @ensure(function(val){

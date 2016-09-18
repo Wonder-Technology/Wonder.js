@@ -53,6 +53,45 @@ var instanceTool = (function(){
             wd.GPUDetector.getInstance().extensionInstancedArrays = extensionInstancedArrays;
 
             return extensionInstancedArrays;
+        },
+        judgeMatricesInstancesArray: function (targetMatricesInstancesArray){
+            var gl = wd.DeviceManager.getInstance().gl;
+            var extensionInstancedArrays = wd.GPUDetector.getInstance().extensionInstancedArrays;
+
+            expect(gl.bufferSubData).toCalledOnce();
+
+            var matricesInstancesArray = gl.bufferSubData.firstCall.args[2];
+
+            var len = Math.min(matricesInstancesArray.length, targetMatricesInstancesArray.length);
+
+            for(var i = 0; i < len; i++){
+                var data = matricesInstancesArray[i];
+
+                expect(
+                    testTool.getValues(
+                        data,
+                        1)
+                ).toEqual(
+                    testTool.getValues(
+                        targetMatricesInstancesArray[i],
+                        1
+                    )
+                );
+            }
+        },
+        judgeSendMatrixVecData: function (location, index){
+            var gl = wd.DeviceManager.getInstance().gl;
+            var extensionInstancedArrays = wd.GPUDetector.getInstance().extensionInstancedArrays;
+
+            expect(gl.enableVertexAttribArray.withArgs(location)).toCalledOnce();
+            expect(extensionInstancedArrays.vertexAttribDivisorANGLE.withArgs(location, 1)).toCalledOnce();
+        },
+        judgeUnBindInstancesBuffer: function(location, index){
+            var gl = wd.DeviceManager.getInstance().gl;
+            var extensionInstancedArrays = wd.GPUDetector.getInstance().extensionInstancedArrays;
+
+            expect(gl.disableVertexAttribArray.withArgs(location)).toCalledOnce();
+            expect(extensionInstancedArrays.vertexAttribDivisorANGLE.withArgs(location, 0)).toCalledOnce();
         }
     }
 })();
