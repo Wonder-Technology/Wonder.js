@@ -8,28 +8,27 @@ module wd{
 
         public type:string = "grass_map";
 
-        public sendShaderVariables(program: Program, cmd:QuadCommand, material:GrassMaterial){
+        public sendShaderVariables(program: Program, cmd:QuadCommand, material:GrassMapMaterial){
             var quadIndexBuffer = <ArrayBuffer>cmd.buffers.getChild(EBufferDataType.CUSTOM, "quadIndices");
 
             if(!quadIndexBuffer){
                 return;
             }
 
-            let map:GrassMap = material.map,
-                grassMap = map.grassMap;
+            let grassMap = material.grassMap;
 
             this.sendAttributeBuffer(program, "a_quadIndex", quadIndexBuffer);
 
-            program.sendStructureData("u_windData.direction", EVariableType.VECTOR_2, map.wind.direction);
-            program.sendStructureData("u_windData.time", EVariableType.FLOAT_1, map.wind.time);
-            program.sendStructureData("u_windData.strength", EVariableType.FLOAT_1, map.wind.strength);
+            program.sendStructureData("u_windData.direction", EVariableType.VECTOR_2, material.wind.direction);
+            program.sendStructureData("u_windData.time", EVariableType.FLOAT_1, material.wind.time);
+            program.sendStructureData("u_windData.strength", EVariableType.FLOAT_1, material.wind.strength);
 
-            map.mapData.forEach((mapData:GrassMapData, index:number) => {
+            material.mapData.forEach((mapData:GrassMapData, index:number) => {
                 program.sendStructureData(`u_grassMapDatas[${index}].sourceRegion`, EVariableType.VECTOR_4, GlobalTextureUtils.convertSourceRegionCanvasMapToUV(mapData.sourceRegion, grassMap.width, grassMap.height));
             });
         }
 
-        public setShaderDefinition(cmd:QuadCommand, material:GrassMaterial){
+        public setShaderDefinition(cmd:QuadCommand, material:GrassMapMaterial){
             super.setShaderDefinition(cmd, material);
 
             this.addAttributeVariable(["a_quadIndex"]);
@@ -39,7 +38,7 @@ module wd{
                 "u_windData"
             ]);
 
-            this.fsSourceBody += `if (totalColor.a < ${material.map.alphaTest}){
+            this.fsSourceBody += `if (totalColor.a < ${material.alphaTest}){
     discard;
 }\n`;
         }

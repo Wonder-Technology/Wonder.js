@@ -555,7 +555,6 @@
 		"lib/procedural_texture/custom/CustomProceduralShaderLib.ts",
 		"lib/material/mirror/*.ts",
 		"lib/material/terrain/**/*.ts",
-		"lib/material/grass/GrassMaterial.ts",
 		"lib/material/grass/map/*.ts",
 		"lib/material/grass/instance/GrassInstanceGeometry.ts",
 		"lib/material/grass/instance/GrassInstanceMaterial.ts",

@@ -107,13 +107,12 @@
         }
 
         function createGrass(grassMap, mapData, position) {
-            var material = wd.GrassMaterial.create();
+            var material = wd.GrassMapMaterial.create();
 
-            var map = material.map;
-            map.grassMap = grassMap;
-            map.alphaTest = 0.1;
-            map.mapData = mapData;
-            map.wind.strength = 0.02;
+            material.grassMap = grassMap;
+            material.alphaTest = 0.1;
+            material.mapData = mapData;
+            material.wind.strength = 0.02;
 
             material.blend = true;
             material.blendFuncSeparate = [wd.EBlendFunc.SRC_ALPHA, wd.EBlendFunc.ONE_MINUS_SRC_ALPHA, wd.EBlendFunc.ONE, wd.EBlendFunc.ONE_MINUS_SRC_ALPHA];

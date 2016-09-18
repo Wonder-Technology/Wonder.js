@@ -9,7 +9,7 @@ module wd{
 
         public type:string = "grass_common_instance";
 
-        @require(function(program: Program, cmd:InstanceCommand, material:GrassMaterial){
+        @require(function(program: Program, cmd:InstanceCommand, material:GrassMapMaterial){
             it("geometry should be GrassInstanceGeometry", () => {
                 expect(material.geometry).instanceOf(GrassInstanceGeometry);
             });
@@ -23,7 +23,7 @@ module wd{
             this.sendUniformData(program, "u_time", material.time);
         }
 
-        public setShaderDefinition(cmd:InstanceCommand, material:GrassMaterial){
+        public setShaderDefinition(cmd:InstanceCommand, material:GrassMapMaterial){
             const BLADE_SEGS = 4.0,
                 BLADE_DIVS = BLADE_SEGS + 1.0,
                 BLADE_VERTS = BLADE_DIVS * 2.0;

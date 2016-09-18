@@ -46,7 +46,7 @@ describe("GrassMapBufferContainer", function() {
 
         beforeEach(function(){
             geo = new wd.GrassMapGeometry();
-            geo.material = wd.GrassMaterial.create();
+            geo.material = wd.GrassMapMaterial.create();
 
             sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
 

@@ -1,15 +1,11 @@
 module wd{
-    export class GrassMap{
-        public static create(material:GrassMaterial) {
-        	var obj = new this(material);
+    export class GrassMapMaterial extends StandardLightMaterial{
+        public static create() {
+            var obj = new this();
 
             obj.initWhenCreate();
 
-        	return obj;
-        }
-
-        constructor(material:GrassMaterial){
-            this._material = material;
+            return obj;
         }
 
         private _mapData:Array<GrassMapData> = [];
@@ -22,7 +18,7 @@ module wd{
                 }
             });
         })
-        @cloneAttributeAsCustomType(function(source:GrassMaterial, target:GrassMaterial, memberName:string){
+        @cloneAttributeAsCustomType(function(source:GrassMapMaterial, target:GrassMapMaterial, memberName:string){
             var s = source[memberName],
                 t:Array<GrassMapData> = [];
 
@@ -48,24 +44,18 @@ module wd{
         @cloneAttributeAsCloneable()
         public wind:GrassWindModel = GrassWindModel.create();
 
-        private _material:GrassMaterial = null;
-
         public initWhenCreate(){
-            this._material.side = ESide.BOTH;
+            super.initWhenCreate();
+
+            this.side = ESide.BOTH;
         }
 
-        public clone(map:this){
-            return CloneUtils.clone(this, null, null, map);
-        }
-
-        public addMap(mapManager:MapManager){
-            mapManager.addMap(this.grassMap, {
+        public init(){
+            this.mapManager.addMap(this.grassMap, {
                 samplerVariableName: VariableNameTable.getVariableName("grassMap")
             });
-        }
 
-        public hasData(){
-            return this.grassMap !== null;
+            super.init();
         }
 
         public getTextureForRenderSort():Texture{
@@ -74,6 +64,12 @@ module wd{
 
         public updateShader(cmd:QuadCommand){
             this._computeTime();
+
+            super.updateShader(cmd);
+        }
+
+        protected addExtendShaderLib(){
+            this.shader.addLib(GrassMapShaderLib.create());
         }
 
         private _computeTime(){
@@ -106,3 +102,4 @@ module wd{
         sourceRegion:RectRegion;
     }
 }
+
