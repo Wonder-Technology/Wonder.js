@@ -36,7 +36,7 @@ var tsFilePaths = ["src/*.ts", "src/**/*.ts"];
 var glslFilePaths = ["src/renderer/shader/chunk/glsl/**/*.glsl", "src/lib/**/*.glsl"];
 
 
-gulp.task("compileForTest", gulpSync.sync(["createShaderChunk", "parseTsconfigFilesGlob", "compileTsDebugForTest", "removeTsconfigFiles"]));
+gulp.task("compileForTest", gulpSync.sync(["createInnerFile", "parseTsconfigFilesGlob", "compileTsDebugForTest", "removeTsconfigFiles"]));
 
 gulp.task("watchForTest", function(){
     var totalPaths = tsFilePaths.concat(glslFilePaths);
