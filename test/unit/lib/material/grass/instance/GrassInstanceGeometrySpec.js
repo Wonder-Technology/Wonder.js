@@ -21,17 +21,17 @@ describe("GrassInstanceGeometry", function() {
 
         it("clone data", function(){
             var bladeCount = 33,
-                radius = 11;
+                offsetRadius = 11;
 
             cloneTool.extend(geo, {
                 bladeCount:bladeCount,
-                radius:radius
+                offsetRadius:offsetRadius
             })
 
             var result = geo.clone();
 
             expect(result.bladeCount).toEqual(bladeCount);
-            expect(result.radius).toEqual(radius);
+            expect(result.offsetRadius).toEqual(offsetRadius);
         });
     });
 });

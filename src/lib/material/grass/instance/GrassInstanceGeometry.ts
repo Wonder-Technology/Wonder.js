@@ -15,14 +15,9 @@ module wd{
         @cloneAttributeAsBasicType()
         public bladeCount:number = 10;
         @cloneAttributeAsBasicType()
-        public radius:number = 3;
+        public offsetRadius:number = 3;
 
         public vertexIndexBuffer:ArrayBuffer = null;
-
-        // @cloneAttributeAsBasicType()
-        // public width:number = null;
-        // @cloneAttributeAsBasicType()
-        // public height:number = null;
 
         public computeData(){
             for (let i = 0; i < this.bladeCount; i++) {
@@ -32,7 +27,7 @@ module wd{
                 ]);
             }
 
-            this.vertexIndexBuffer = BufferUtils.convertArrayToArrayBuffer(EVariableType.FLOAT_1, this._generateVertices())
+            this.vertexIndexBuffer = BufferUtils.convertArrayToArrayBuffer(EVariableType.FLOAT_1, this._generateVertices());
 
             this.indices = this._generateIndices();
 
@@ -67,9 +62,9 @@ module wd{
 
         private _generateOffsets(){
             var offset:Array<number> = [],
-                radius = this.radius,
-                x = MathUtils.generateMinToMax(-1, 1) * radius,
-                y = MathUtils.generateMinToMax(-1, 1) * radius,
+                offsetRadius = this.offsetRadius,
+                x = MathUtils.generateMinToMax(-1, 1) * offsetRadius,
+                y = MathUtils.generateMinToMax(-1, 1) * offsetRadius,
                 z = 0.0,
                 rot = Math.PI * 2.0 * Math.random();
 

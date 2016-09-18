@@ -27,33 +27,7 @@
             director.scene.addChild(createCamera());
 
 
-            director.scene.addChildren(createRect());
-
             director.start();
-        }
-
-        function createRect() {
-            var material = wd.BasicMaterial.create();
-            material.color = wd.Color.create("rgb(255,0,0)");
-
-
-            var geometry = wd.RectGeometry.create();
-            geometry.material = material;
-//            geometry.bladeCount = 100;
-//            geometry.radius = 1000;
-            geometry.width = 10;
-            geometry.height = 10;
-
-
-
-            var gameObject = wd.GameObject.create();
-            gameObject.addComponent(geometry);
-
-            gameObject.addComponent(wd.MeshRenderer.create());
-
-
-
-            return gameObject;
         }
 
         function createGrasses(){
@@ -63,16 +37,16 @@
             arr.push(grass);
 
 
-//            var grass2 = grass.clone({
-//                cloneChildren:false,
-//                shareGeometry:true,
-//                cloneGeometry:true
-//            });
-////            var grass2 = grass.clone();
-//
-//            grass2.transform.position = wd.Vector3.create(10,0,0);
-//
-//            arr.push(grass2);
+            var grass2 = grass.clone({
+                cloneChildren:false,
+                shareGeometry:true,
+                cloneGeometry:true
+            });
+//            var grass2 = grass.clone();
+
+            grass2.transform.position = wd.Vector3.create(10,0,0);
+
+            arr.push(grass2);
 
             return arr;
         }
@@ -82,16 +56,14 @@
             var material = wd.GrassInstanceMaterial.create();
 
             material.map = wd.LoaderManager.getInstance().get("grass").toTexture();
-            material.size = 10;
+            material.size = 5;
 
 
 
             var geometry = wd.GrassInstanceGeometry.create();
             geometry.material = material;
             geometry.bladeCount = 100;
-            geometry.radius = 5;
-//            geometry.width = 10;
-//            geometry.height = 20;
+            geometry.offsetRadius = 2;
 
 
 

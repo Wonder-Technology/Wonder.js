@@ -10,7 +10,7 @@ var grassInstanceTool = (function(){
             var geometry = wd.GrassInstanceGeometry.create();
             geometry.material = material;
             geometry.bladeCount = 10;
-            geometry.radius = 3;
+            geometry.offsetRadius = 3;
 
 
 
