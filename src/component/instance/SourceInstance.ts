@@ -1,11 +1,5 @@
 module wd{
-    export class SourceInstance extends Instance{
-        public static create() {
-            var obj = new this();
-
-            return obj;
-        }
-
+    export abstract class SourceInstance extends Instance{
         private _instanceBuffer:InstanceBuffer = null;
         get instanceBuffer(){
             if(this._instanceBuffer === null){
