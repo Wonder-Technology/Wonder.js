@@ -364,6 +364,27 @@ describe("GameObject", function() {
             });
         });
 
+        describe("contract check", function(){
+            beforeEach(function(){
+                testTool.openContractCheck(sandbox);
+            });
+            afterEach(function(){
+                testTool.closeContractCheck();
+            });
+
+            it("if has OneToManySourceInstance component, not support share geometry", function(){
+                gameObject.addComponent(wd.OneToManySourceInstance.create());
+
+                expect(function(){
+                    var clonedGameObject = gameObject.clone({
+                        cloneChildren:false,
+                        shareGeometry:true,
+                        cloneGeometry:true
+                    });
+                }).toThrow("if has OneToManySourceInstance component, not support share geometry");
+            });
+        });
+
         describe("fix bug", function(){
             beforeEach(function(){
 

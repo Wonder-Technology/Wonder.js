@@ -99,7 +99,9 @@ module wd{
                 return;
             }
 
-            assert(!this.hasComponent(component), Log.info.FUNC_EXIST("the component", ", please judge whether it hasComponent(component) before addComponent(component)"));
+            it("should not add the component which is already added", () => {
+                expect(this.hasComponent(component)).false;
+            });
         })
         public addComponent(component:Component, isShareComponent:boolean = false){
             if(!component){
@@ -161,21 +163,27 @@ module wd{
         }
 
         @require(function(){
-            assert(this.getComponentCount(Geometry) <= 1, Log.info.FUNC_SHOULD_NOT("entityObject", "contain more than 1 geometry component"));
+            it("entityObject shouldn't contain more than 1 geometry component", () => {
+                expect(this.getComponentCount(Geometry)).lessThan(2);
+            });
         })
         public getGeometry():Geometry{
             return this._geometry;
         }
 
         @require(function(){
-            assert(this.getComponentCount(RendererComponent) <= 1, Log.info.FUNC_SHOULD_NOT("entityObject", "contain more than 1 rendererComponent"));
+            it("entityObject shouldn't contain more than 1 rendererComponent", () => {
+                expect(this.getComponentCount(RendererComponent)).lessThan(2);
+            });
         })
         public getRendererComponent():RendererComponent{
             return this._rendererComponent;
         }
 
         @require(function(){
-            assert(this.getComponentCount(Collider) <= 1, Log.info.FUNC_SHOULD_NOT("entityObject", "contain more than 1 collider component"));
+            it("entityObject shouldn't contain more than 1 collider", () => {
+                expect(this.getComponentCount(Collider)).lessThan(2);
+            });
         })
         public getCollider():Collider{
             return this._collider;

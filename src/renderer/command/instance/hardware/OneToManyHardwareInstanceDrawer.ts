@@ -30,6 +30,10 @@ module wd {
             this.drawElementsInstancedANGLE(indexBuffer, this._geometry.instanceCount, drawMode);
 
             this.unBind(instanceBuffer, offsetLocationArr);
+
+            if(this._geometry.dirty) {
+                this._geometry.dirty = false;
+            }
         }
 
         //todo optimize:add cache?
@@ -52,8 +56,6 @@ module wd {
                 extension = GPUDetector.getInstance().extensionInstancedArrays;
 
             if(this._geometry.dirty){
-                this._geometry.dirty = false;
-
                 attributeData.forEach((instanceAttributeDataList:wdCb.Collection<InstanceAttributeData>) => {
                     instanceAttributeDataList.forEach((data:InstanceAttributeData) => {
                         attributeArrayForInstance.set(data.data, offset);

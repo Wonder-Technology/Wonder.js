@@ -3,6 +3,7 @@ module wd {
     export class ModelMatrixHardwareInstanceDrawer extends OneToOneHardwareInstanceDrawer{
         public static getInstance():any {}
 
+        //todo add cache
         protected getOffsetLocationArray(program:Program):Array<number>{
             return [program.getAttribLocation("a_mVec4_0"), program.getAttribLocation("a_mVec4_1"), program.getAttribLocation("a_mVec4_2"), program.getAttribLocation("a_mVec4_3")];
         }
@@ -12,6 +13,7 @@ module wd {
             instanceBuffer.setCapacity(instanceList.getCount() * 64);
         }
 
+        //todo add cache
         protected sendGLSLData(instanceList:wdCb.Collection<GameObject>, instanceBuffer:InstanceBuffer, offsetLocationArr: Array<number>):void{
             var matricesArrayForInstance = new Float32Array(instanceBuffer.float32InstanceArraySize),
             offset = 0,

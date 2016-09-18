@@ -39,6 +39,13 @@ module wd {
             this.addComponent(this.createTransform());
         }
 
+        @require(function(config:CloneEntityObjectConfigData = <any>{}){
+            it("if has OneToManySourceInstance component, not support share geometry", () => {
+                if(config.shareGeometry){
+                    expect(this.hasComponent(OneToManySourceInstance)).false;
+                }
+            });
+        })
         public clone(config:CloneEntityObjectConfigData = <any>{}){
             var result = null;
 
@@ -322,7 +329,9 @@ module wd {
         }
 
         @ensure(function(key:string){
-            assert(JudgeUtils.isString(key), Log.info.FUNC_SHOULD(`key:${key}`, "be string"));
+            it(`key:${key} be string`, () => {
+                expect(JudgeUtils.isString(key)).true;
+            });
         })
         private _getHasComponentCacheKey(...args){
             if(JudgeUtils.isComponenet(args[0])){
