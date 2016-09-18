@@ -147,6 +147,7 @@
 		"component/animation/EArticulatedAnimationTarget.ts",
 		"component/geometry/Geometry.ts",
 		"component/geometry/InstanceGeometry.ts",
+		"component/geometry/BasicInstanceGeometry.ts",
 		"component/geometry/VAOManager.ts",
 		"component/geometry/LineGeometry.ts",
 		"component/geometry/SolidLineGeometry.ts",

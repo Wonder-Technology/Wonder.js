@@ -1,12 +1,5 @@
 module wd{
-    export class InstanceGeometry extends Geometry{
-        public static create() {
-        	var obj = new this();
-
-        	return obj;
-        }
-
-
+    export abstract class InstanceGeometry extends Geometry{
         private _customGeometry:CustomGeometry = CustomGeometry.create();
 
         @cloneAttributeAsCustomType(function(source:InstanceGeometry, target:InstanceGeometry, memberName:string){

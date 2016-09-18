@@ -23,7 +23,7 @@ describe("one to many instance test", function(){
 
 
 
-        var geo = wd.InstanceGeometry.create();
+        var geo = wd.BasicInstanceGeometry.create();
         geo.material = material;
 
 
