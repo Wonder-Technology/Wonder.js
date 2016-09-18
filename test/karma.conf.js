@@ -26,7 +26,7 @@
         'test/helper/yoop/yOOP.js',
         'test/unit/**/*Tool.js',
 
-        // 'test/unit/**',
+        'test/unit/**',
 
 
         //'test/render/*Tool.js',
@@ -37,13 +37,13 @@
 
         // 'test/unit/**/cloneSpec*',
 
-        'test/unit/**/grassMap*',
-        'test/unit/**/GrassMap*',
-        'test/unit/**/grassHardware*',
-        'test/unit/**/grassBatch*',
-        'test/unit/**/grassInstance*',
+        // 'test/unit/**/grassMap*',
+        // 'test/unit/**/GrassMap*',
+        // 'test/unit/**/grassHardware*',
+        // 'test/unit/**/grassBatch*',
+        // 'test/unit/**/grassInstance*',
 
-        'test/unit/**/GrassInstanceGeometry*',
+        // 'test/unit/**/GrassInstanceGeometry*',
 
 
         //'test/unit/**/procedural_texture/**',
@@ -116,7 +116,7 @@
         // 'test/unit/**/waterReflection*',
         // 'test/unit/**/waterRefraction*',
         // 'test/unit/**/waterFresnel*',
-        'test/unit/**/water*',
+        // 'test/unit/**/water*',
 
 
         //'test/unit/**/scene/**',
