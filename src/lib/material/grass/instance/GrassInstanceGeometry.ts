@@ -12,7 +12,6 @@ module wd{
             return geom;
         }
 
-        //todo test clone
         @cloneAttributeAsBasicType()
         public bladeCount:number = 10;
         @cloneAttributeAsBasicType()
