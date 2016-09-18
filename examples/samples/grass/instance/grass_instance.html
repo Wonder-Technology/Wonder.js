@@ -10,7 +10,7 @@
 <script>
     window.onload = function () {
         wd.Main.setConfig({
-            isTest:true,
+            isTest:false,
             screenSize: wd.EScreenSize.FULL
         }).init();
 
@@ -34,19 +34,32 @@
             var arr = [],
                     grass = createGrass();
 
+            function getVal(){
+                return Math.random();
+            }
+
             arr.push(grass);
 
 
-            var grass2 = grass.clone({
-                cloneChildren:false,
-                shareGeometry:true,
-                cloneGeometry:true
-            });
+
+
+            var count = 1000,
+                    range = 50;
+
+            for (var index = 0; index < count; index++){
+                var item = grass.clone({
+                    cloneChildren:false,
+                    shareGeometry:false,
+                    cloneGeometry:true
+                });
 //            var grass2 = grass.clone();
 
-            grass2.transform.position = wd.Vector3.create(10,0,0);
 
-            arr.push(grass2);
+
+                item.transform.position = wd.Vector3.create(range / 2 - getVal() * range, range / 2 - getVal() * range, 0);
+
+                arr.push(item);
+            }
 
             return arr;
         }

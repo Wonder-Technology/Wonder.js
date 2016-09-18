@@ -162,6 +162,16 @@ describe("InstanceGeometry", function() {
         beforeEach(function(){
         });
 
+        it("mark dirty", function () {
+            geo.dirty = false;
+
+            geo.addInstanceAttributes([
+                {attributeName: "normals", data: [1,2,3,4], size: 4, meshPerAttribute:1}
+            ]);
+
+            expect(geo.dirty).toBeTruthy();
+        });
+
         describe("contract check", function(){
             beforeEach(function(){
                 testTool.openContractCheck(sandbox);
@@ -223,6 +233,28 @@ describe("InstanceGeometry", function() {
                     ]);
                 }).toThrow();
             });
+        });
+    });
+
+    describe("clearInstanceAttributeData", function(){
+        beforeEach(function(){
+        });
+
+        it("mark dirty", function () {
+            geo.dirty = false;
+
+            geo.clearInstanceAttributeData();
+
+            expect(geo.dirty).toBeTruthy();
+        });
+        it("clear attributeData", function () {
+            geo.addInstanceAttributes([
+                {attributeName: "normals", data: [1,2,3,4], size: 4, meshPerAttribute:1}
+            ]);
+
+            geo.clearInstanceAttributeData();
+
+            expect(geo.instanceCount).toEqual(0);
         });
     });
 });

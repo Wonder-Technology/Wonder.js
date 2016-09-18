@@ -26,7 +26,7 @@
         'test/helper/yoop/yOOP.js',
         'test/unit/**/*Tool.js',
 
-        'test/unit/**',
+        // 'test/unit/**',
 
 
         //'test/render/*Tool.js',
@@ -39,7 +39,7 @@
 
         // 'test/unit/**/grassMap*',
         // 'test/unit/**/GrassMap*',
-        // 'test/unit/**/grassHardware*',
+        'test/unit/**/grassHardware*',
         // 'test/unit/**/grassBatch*',
         // 'test/unit/**/grassInstance*',
 
@@ -334,7 +334,7 @@
         //'test/unit/asset/wd/WDBuilderSpec.js',
         //'test/unit/math/*.js',
         //'test/unit/component/**/GeometrySpec.js',
-        // 'test/unit/component/**/InstanceGeometrySpec.js',
+        'test/unit/component/**/InstanceGeometrySpec.js',
         //'test/unit/component/**/TerrainGeometrySpec.js',
         //'test/unit/component/**/ModelGeometrySpec.js',
         //'test/unit/**/CommonBufferContainerSpec.js',

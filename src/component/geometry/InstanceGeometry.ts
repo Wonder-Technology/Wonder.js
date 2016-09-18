@@ -76,6 +76,7 @@ module wd{
             return this.attributeData.getCount();
         }
 
+        private _attributeData:wdCb.Collection<wdCb.Collection<InstanceAttributeData>> = wdCb.Collection.create<wdCb.Collection<InstanceAttributeData>>();
         @cloneAttributeAsCustomType(function(source:InstanceGeometry, target:InstanceGeometry, memberName:string){
             var sourceData:wdCb.Collection<wdCb.Collection<InstanceAttributeData>> = source[memberName],
                 targetData:wdCb.Collection<wdCb.Collection<InstanceAttributeData>> = target[memberName];
@@ -84,7 +85,11 @@ module wd{
                 targetData.addChild(dataList.clone(true));
             });
         })
-        public attributeData:wdCb.Collection<wdCb.Collection<InstanceAttributeData>> = wdCb.Collection.create<wdCb.Collection<InstanceAttributeData>>();
+        get attributeData(){
+            return this._attributeData;
+        }
+
+        public dirty:boolean = false;
 
         @require(function(attributes:Array<InstanceAttributeData>){
             it("attributeName shouldn't equal vertices|normals|indices|texCoords|colors", () => {
@@ -110,6 +115,8 @@ module wd{
 ){
             var attributeListWithDefaultValue = wdCb.Collection.create<InstanceAttributeData>();
 
+            this.dirty = true;
+
             for(let attributeData of attributes){
                 attributeListWithDefaultValue.addChild(wdCb.ExtendUtils.extend({
                     meshPerAttribute:1
@@ -117,7 +124,13 @@ module wd{
             }
 
 
-            this.attributeData.addChild(attributeListWithDefaultValue);
+            this._attributeData.addChild(attributeListWithDefaultValue);
+        }
+
+        public clearInstanceAttributeData(){
+            this.dirty = true;
+
+            this._attributeData.removeAllChildren();
         }
 
         public computeData(){

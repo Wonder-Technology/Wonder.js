@@ -43,7 +43,6 @@ module wd {
             instanceBuffer.setCapacity(this._geometry.instanceCount * this._getStride());
         }
 
-        //todo optimize:add cache?
         protected sendGLSLData(instanceBuffer:InstanceBuffer, offsetLocationArr: Array<number>):void{
             var attributeArrayForInstance = new Float32Array(instanceBuffer.float32InstanceArraySize),
                 offset = 0,
@@ -52,17 +51,19 @@ module wd {
                 gl = DeviceManager.getInstance().gl,
                 extension = GPUDetector.getInstance().extensionInstancedArrays;
 
-            //todo optimize: attributeArrayForInstance add cache?
-            attributeData.forEach((instanceAttributeDataList:wdCb.Collection<InstanceAttributeData>) => {
-                instanceAttributeDataList.forEach((data:InstanceAttributeData) => {
-                    attributeArrayForInstance.set(data.data, offset);
+            if(this._geometry.dirty){
+                this._geometry.dirty = false;
 
-                    offset += data.data.length;
+                attributeData.forEach((instanceAttributeDataList:wdCb.Collection<InstanceAttributeData>) => {
+                    instanceAttributeDataList.forEach((data:InstanceAttributeData) => {
+                        attributeArrayForInstance.set(data.data, offset);
+
+                        offset += data.data.length;
+                    });
                 });
-            });
 
-            //todo optimize: if instanceBuffer not dirty, not reset data again
-            instanceBuffer.resetData(attributeArrayForInstance);
+                instanceBuffer.resetData(attributeArrayForInstance);
+            }
 
             let stride = this._getStride();
 
@@ -74,7 +75,6 @@ module wd {
                 gl.enableVertexAttribArray(offsetLocation);
 
                 gl.vertexAttribPointer(offsetLocation, attributeData.size, gl.FLOAT, false, stride, offset);
-                //todo test
                 extension.vertexAttribDivisorANGLE(offsetLocation, attributeData.meshPerAttribute);
 
                 offset += 4 * attributeData.data.length;

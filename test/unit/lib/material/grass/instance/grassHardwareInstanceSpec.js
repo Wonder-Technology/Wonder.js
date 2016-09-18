@@ -256,6 +256,55 @@ describe("test grass hardware instance", function() {
 
                     expect(extensionInstancedArrays.drawElementsInstancedANGLE).toCalledOnce();
                 });
+                
+                describe("optimize", function(){
+                    beforeEach(function(){
+                        
+                    });
+
+                    describe("if geometry not dirty", function(){
+                        beforeEach(function(){
+                        });
+
+                        it("not reset instance buffer data", function(){
+                            var sourceInstance = gameObject.getComponent(wd.SourceInstance);
+                            sandbox.spy(sourceInstance.instanceBuffer, "resetData");
+
+
+
+
+
+                            rendererTool.renderGameObjectScene();
+
+
+                            expect(sourceInstance.instanceBuffer.resetData).toCalledOnce();
+
+
+                            rendererTool.renderGameObjectScene();
+
+
+                            expect(sourceInstance.instanceBuffer.resetData).toCalledOnce();
+                        });
+                    });
+
+                    describe("else", function(){
+                        beforeEach(function(){
+                        });
+
+                        it("mark geometry not dirty", function () {
+                            var geometry = gameObject.getComponent(wd.InstanceGeometry);
+
+
+                            expect(geometry.dirty).toBeTruthy();
+
+
+                            rendererTool.renderGameObjectScene();
+
+
+                            expect(geometry.dirty).toBeFalsy();
+                        });
+                    });
+                });
             });
         });
         
