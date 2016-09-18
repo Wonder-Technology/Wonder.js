@@ -63,7 +63,7 @@ module wd{
         }
 
         public updateShader(cmd:QuadCommand){
-            this._computeTime();
+            this.wind.computeTime();
 
             super.updateShader(cmd);
         }
@@ -95,6 +95,10 @@ module wd{
 
         public clone(){
             return CloneUtils.clone(this);
+        }
+
+        public computeTime(){
+            this.time += this.speed;
         }
     }
 

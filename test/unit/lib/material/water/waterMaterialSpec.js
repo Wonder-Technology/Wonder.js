@@ -77,6 +77,7 @@ describe("water material", function () {
         it("clone wind,wave", function () {
             var wind = wd.WaterWindModel.create();
             wind.time = 10;
+            wind.speed = 20;
             wind.direction = wd.Vector2.create(1,1);
 
 

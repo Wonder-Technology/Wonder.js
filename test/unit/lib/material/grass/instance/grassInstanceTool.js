@@ -27,6 +27,11 @@ var grassInstanceTool = (function(){
 
 
             return gameObject;
+        },
+        setFakeGeoemtry:function(material){
+            material.geometry = {
+                vertexIndexBuffer:wd.ArrayBuffer.create()
+            }
         }
     }
 })();

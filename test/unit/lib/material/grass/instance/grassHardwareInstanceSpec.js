@@ -44,17 +44,20 @@ describe("test grass hardware instance", function() {
     describe("clone", function(){
         it("clone basic data", function () {
             var size = 2,
-                time = 1;
+                time = 1,
+                speed = 10;
 
             cloneTool.extend(material, {
                 size:size,
-                time:time
+                time:time,
+                speed:speed
             });
 
             var result = material.clone();
 
             expect(result.size).toEqual(size);
             expect(result.time).toEqual(time);
+            expect(result.speed).toEqual(speed);
         });
         it("clone grassMap", function () {
             var grassMap = wd.ImageTexture.create({});
@@ -79,9 +82,7 @@ describe("test grass hardware instance", function() {
             beforeEach(function(){
                 prepareCmd();
 
-                material.geometry = {
-                    vertexIndexBuffer:wd.ArrayBuffer.create()
-                }
+                grassInstanceTool.setFakeGeoemtry(material);
 
                 sandbox.stub(grassMap, "bindToUnit");
 
@@ -90,7 +91,6 @@ describe("test grass hardware instance", function() {
 
                 materialTool.init(material);
                 shaderTool.spyProgram(sandbox, material);
-
 
 
 

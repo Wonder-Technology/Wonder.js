@@ -41,6 +41,7 @@
         'test/unit/**/GrassMap*',
         'test/unit/**/grassHardware*',
         'test/unit/**/grassBatch*',
+        'test/unit/**/grassInstance*',
 
         'test/unit/**/GrassInstanceGeometry*',
 
@@ -112,9 +113,10 @@
         //'test/unit/renderer/mirror/**',
         //'test/unit/renderer/dynamicCubemap/**',
 
-        //'test/unit/**/waterReflection*',
-        //'test/unit/**/waterRefraction*',
-        //'test/unit/**/waterFresnel*',
+        // 'test/unit/**/waterReflection*',
+        // 'test/unit/**/waterRefraction*',
+        // 'test/unit/**/waterFresnel*',
+        'test/unit/**/water*',
 
 
         //'test/unit/**/scene/**',

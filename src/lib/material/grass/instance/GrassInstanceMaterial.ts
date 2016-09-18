@@ -16,6 +16,8 @@ module wd{
         public size:number = 5;
         @cloneAttributeAsBasicType()
         public time:number = 0;
+        @cloneAttributeAsBasicType()
+        public speed:number = 0.01;
 
         public init(){
             this.mapManager.addMap(this.map, {
@@ -29,6 +31,12 @@ module wd{
 
         public getTextureForRenderSort():Texture{
             return this.map;
+        }
+
+        public updateShader(cmd:InstanceCommand){
+            this._computeTime();
+
+            super.updateShader(cmd);
         }
 
         protected createShader():Shader{
@@ -46,6 +54,10 @@ module wd{
             }
 
             this.shader.addLib(EndShaderLib.create());
+        }
+
+        private _computeTime(){
+            this.time += this.speed;
         }
     }
 }

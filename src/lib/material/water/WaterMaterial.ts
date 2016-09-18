@@ -54,7 +54,6 @@ module wd{
             this._refractionMap = refractionMap;
         }
 
-
         @cloneAttributeAsCloneable()
         public wind:WaterWindModel = WaterWindModel.create();
         @cloneAttributeAsCloneable()
@@ -66,9 +65,8 @@ module wd{
         @cloneAttributeAsBasicType()
         public refractionLevel:number = 0.8;
 
-
         public updateShader(cmd:QuadCommand){
-            this._computeTime();
+            this.wind.computeTime();
 
             super.updateShader(cmd);
         }
@@ -100,10 +98,6 @@ module wd{
                 this.shader.addLib(WaterNoLightEffectShaderLib.create());
             }
         }
-
-        private _computeTime(){
-            this.wind.time += 0.0001;
-        }
     }
 
     export class WaterWindModel{
@@ -122,9 +116,15 @@ module wd{
         public time:number = 0;
         @cloneAttributeAsBasicType()
         public direction:Vector2 = Vector2.create(0, 1);
+        @cloneAttributeAsBasicType()
+        public speed:number = 0.0001;
 
         public clone(model:this){
             return CloneUtils.clone(this, null, null, model);
+        }
+
+        public computeTime(){
+            this.time += this.speed;
         }
     }
 
