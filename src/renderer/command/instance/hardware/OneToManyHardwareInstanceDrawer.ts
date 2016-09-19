@@ -19,7 +19,7 @@ module wd {
 
             this._geometry = geometry;
 
-            offsetLocationArr = this.getOffsetLocationArray(program);
+            offsetLocationArr = this.getOffsetLocationArray(program, instanceBuffer);
 
             this.setCapacity(instanceBuffer);
 
@@ -36,15 +36,28 @@ module wd {
             }
         }
 
-        //todo optimize:add cache?
-        protected getOffsetLocationArray(program:Program):Array<number> {
+        @require(function(program:Program, instanceBuffer:InstanceBuffer){
+            it("if cached, should geometry.dirty === false && has cache data", () => {
+                if(!this._geometry.dirty){
+                    expect(instanceBuffer.getCache("offsetLocationArray")).exist;
+                }
+            });
+        })
+        @cache(function(program:Program, instanceBuffer:InstanceBuffer){
+            return !this._geometry.dirty;
+        }, function(program:Program, instanceBuffer:InstanceBuffer){
+            return instanceBuffer.getCache("offsetLocationArray");
+        }, function(result, program:Program, instanceBuffer:InstanceBuffer){
+            instanceBuffer.addCache("offsetLocationArray", result);
+        })
+        protected getOffsetLocationArray(program:Program, instanceBuffer:InstanceBuffer):Array<number> {
             return this._geometry.instanceAttributeData.map((attributeData: InstanceAttributeData) => {
                 return program.getAttribLocation(attributeData.attributeName);
             }).toArray();
         }
 
         protected setCapacity(instanceBuffer:InstanceBuffer):void{
-            instanceBuffer.setCapacity(this._geometry.instanceCount * this._getStride());
+            instanceBuffer.setCapacity(this._geometry.instanceCount * this._getStride(instanceBuffer));
         }
 
         protected sendGLSLData(instanceBuffer:InstanceBuffer, offsetLocationArr: Array<number>):void{
@@ -67,7 +80,7 @@ module wd {
                 instanceBuffer.resetData(attributeArrayForInstance);
             }
 
-            let stride = this._getStride();
+            let stride = this._getStride(instanceBuffer);
 
             offset = 0;
 
@@ -83,8 +96,21 @@ module wd {
             });
         }
 
-        //todo optimize:add cache?
-        private _getStride(){
+        @require(function(program:Program, instanceBuffer:InstanceBuffer){
+            it("if cached, should geometry.dirty === false && has cache data", () => {
+                if(!this._geometry.dirty){
+                    expect(instanceBuffer.getCache("stride")).exist;
+                }
+            });
+        })
+        @cache(function(instanceBuffer:InstanceBuffer){
+            return !this._geometry.dirty;
+        }, function(instanceBuffer:InstanceBuffer){
+            return instanceBuffer.getCache("stride");
+        }, function(result, instanceBuffer:InstanceBuffer){
+            instanceBuffer.addCache("stride", result);
+        })
+        private _getStride(instanceBuffer:InstanceBuffer){
             var stride = 0;
 
             this._geometry.instanceAttributeData.forEach((attributeData:InstanceAttributeData) => {

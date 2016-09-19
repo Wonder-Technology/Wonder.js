@@ -68,6 +68,15 @@ describe("InstanceGeometry", function() {
                 expect(result.texCoords).toEqual(texCoords);
                 expect(result.texCoords === texCoords).toBeFalsy();
             });
+            it("clone dirty flag", function () {
+                cloneTool.extend(geo, {
+                    dirty: true
+                })
+
+                var result = geo.clone();
+
+                expect(result.dirty).toBeTruthy();
+            });
         });
     });
 

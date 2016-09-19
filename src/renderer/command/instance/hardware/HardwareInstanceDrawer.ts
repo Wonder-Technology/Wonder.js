@@ -1,6 +1,6 @@
 module wd{
     export abstract class HardwareInstanceDrawer extends InstanceDrawer{
-        protected abstract getOffsetLocationArray(program:Program):Array<number>;
+        protected abstract getOffsetLocationArray(...args):Array<number>;
         protected abstract setCapacity(...args):void;
         protected abstract sendGLSLData(...args):void;
 

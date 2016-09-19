@@ -3,6 +3,7 @@ module wd {
     export class NormalMatrixModelMatrixHardwareInstanceDrawer extends OneToOneHardwareInstanceDrawer{
         public static getInstance():any {}
 
+        //todo add cache
         protected getOffsetLocationArray(program:Program):Array<number>{
             return [
                 program.getAttribLocation("a_mVec4_0"), program.getAttribLocation("a_mVec4_1"), program.getAttribLocation("a_mVec4_2"), program.getAttribLocation("a_mVec4_3"),
@@ -22,6 +23,8 @@ module wd {
                 offset = 0,
                 gl = DeviceManager.getInstance().gl,
                 extension = GPUDetector.getInstance().extensionInstancedArrays;
+
+            //todo if all instanceList not transform, not reset data
 
             instanceList.forEach((instance:GameObject) => {
                 var mMatrix:Matrix4 = instance.transform.localToWorldMatrix,

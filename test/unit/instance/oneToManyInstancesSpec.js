@@ -226,8 +226,6 @@ describe("one to many instance test", function(){
                 judgeUnBindInstancesBuffer(offsetLocation0, 0);
                 judgeUnBindInstancesBuffer(offsetLocation1, 1);
             });
-
-            //todo test cache
         });
 
         it("test use drawElementsInstancedANGLE to draw", function () {
@@ -245,7 +243,7 @@ describe("one to many instance test", function(){
 
             expect(extensionInstancedArrays.drawElementsInstancedANGLE).toCalledOnce();
         });
-        
+
         describe("test multi gameObjects", function(){
             beforeEach(function(){
             });
@@ -275,6 +273,84 @@ describe("one to many instance test", function(){
                 expect(wd.DebugStatistics.count.drawCalls).toEqual(2);
 
                 expect(extensionInstancedArrays.drawElementsInstancedANGLE).toCalledTwice();
+            });
+        });
+
+        describe("optimize", function(){
+            beforeEach(function(){
+                gameObject = createGameObject();
+                director.scene.addChild(gameObject);
+            });
+
+            describe("if geometry not dirty", function(){
+                beforeEach(function(){
+                });
+
+                it("getOffsetLocationArray from cache", function () {
+                    director._init();
+                    program = shaderTool.getAndSpyProgram(sandbox, gameObject.getComponent(wd.Geometry).material, "gameObjectProgram");
+                    sandbox.spy(program, "getAttribLocation");
+
+                    rendererTool.renderGameObjectScene();
+
+
+                    expect(program.getAttribLocation).toCalled();
+                    var callCount = program.getAttribLocation.callCount;
+
+
+                    rendererTool.renderGameObjectScene();
+
+                    expect(program.getAttribLocation.callCount).not.toEqual(callCount * 2);
+                });
+
+                /*! can't test
+                it("get stride from cache", function () {
+
+                    expect().toPass();
+                });
+                */
+
+                it("not reset instance buffer data", function(){
+                    var sourceInstance = gameObject.getComponent(wd.SourceInstance);
+                    sandbox.spy(sourceInstance.instanceBuffer, "resetData");
+
+                    var geometry = gameObject.getComponent(wd.InstanceGeometry);
+                    geometry.dirty = true;
+
+
+                    director._init();
+                    rendererTool.renderGameObjectScene();
+
+
+                    expect(sourceInstance.instanceBuffer.resetData).toCalledOnce();
+
+
+                    rendererTool.renderGameObjectScene();
+
+
+                    expect(sourceInstance.instanceBuffer.resetData).toCalledOnce();
+                });
+            });
+
+            describe("else", function(){
+                beforeEach(function(){
+                });
+
+                it("mark geometry not dirty", function () {
+                    var geometry = gameObject.getComponent(wd.InstanceGeometry);
+
+
+                    director._init();
+
+
+                    expect(geometry.dirty).toBeTruthy();
+
+
+                    rendererTool.renderGameObjectScene();
+
+
+                    expect(geometry.dirty).toBeFalsy();
+                });
             });
         });
     });

@@ -14,6 +14,7 @@ module wd{
 
         /*! start with a maximum of 32 instances */
         private _capacity:number = 32 * 16 * 4;
+        private _cacheMap: wdCb.Hash<any> = wdCb.Hash.create<any>();
 
         public initWhenCreate() {
             this.buffer = this._createBuffer();
@@ -42,6 +43,14 @@ module wd{
 
             gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
             gl.bufferSubData(gl.ARRAY_BUFFER, 0, data);
+        }
+
+        public addCache(key:string, value:any){
+            this._cacheMap.addChild(key, value);
+        }
+
+        public getCache(key:string){
+            return this._cacheMap.getChild(key);
         }
 
         private _createBuffer(): WebGLBuffer {

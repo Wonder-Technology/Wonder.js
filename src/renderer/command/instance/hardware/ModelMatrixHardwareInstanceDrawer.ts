@@ -13,12 +13,13 @@ module wd {
             instanceBuffer.setCapacity(instanceList.getCount() * 64);
         }
 
-        //todo add cache
         protected sendGLSLData(instanceList:wdCb.Collection<GameObject>, instanceBuffer:InstanceBuffer, offsetLocationArr: Array<number>):void{
             var matricesArrayForInstance = new Float32Array(instanceBuffer.float32InstanceArraySize),
             offset = 0,
             gl = DeviceManager.getInstance().gl,
             extension = GPUDetector.getInstance().extensionInstancedArrays;
+
+            //todo if all instanceList not transform, not reset data
 
             instanceList.forEach((instance:GameObject) => {
                 var mMatrix:Matrix4 = instance.transform.localToWorldMatrix;

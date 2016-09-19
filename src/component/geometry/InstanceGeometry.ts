@@ -89,6 +89,7 @@ module wd{
             return this._attributeData;
         }
 
+        @cloneAttributeAsBasicType()
         public dirty:boolean = false;
 
         @require(function(attributes:Array<InstanceAttributeData>){
