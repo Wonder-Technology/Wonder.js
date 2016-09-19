@@ -10,7 +10,7 @@ var path = require("path");
 
 
 gulp.task("convert", function (done) {
-    var Converter = require("./dist/Converter");
+    var Converter = require("./dist/converter/Converter");
 //todo support combine multi wd files to one file(according to command line param)
 
     var sourceDir = parseOption("--sourceDir") || "./source/",
