@@ -35,7 +35,9 @@ module wd {
 
         protected sendGLSLData(program:Program, instanceAttributeDataList:wdCb.Collection<InstanceAttributeData>):void{
             instanceAttributeDataList.forEach((data:InstanceAttributeData) => {
-                program.sendUniformData(data.attributeName, this._getVariableType(data.size), data.data);
+                let d = data.data;
+
+                program.sendUniformData(data.attributeName, this._getVariableType(d.length), d);
             });
         }
 

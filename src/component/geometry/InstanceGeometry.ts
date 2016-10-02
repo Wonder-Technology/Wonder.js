@@ -62,7 +62,7 @@ module wd{
                 this.attributeData.forEach((dataList:wdCb.Collection<InstanceAttributeData>) => {
                     dataList.forEach((data:InstanceAttributeData, index:number) => {
                         expect(data.attributeName).equals(instanceAttributeData.getChild(index).attributeName);
-                        expect(data.size).equals(instanceAttributeData.getChild(index).size);
+                        // expect(data.size).equals(instanceAttributeData.getChild(index).size);
                         expect(data.meshPerAttribute).equals(instanceAttributeData.getChild(index).meshPerAttribute);
                     });
                 });
@@ -147,7 +147,6 @@ module wd{
     export type InstanceAttributeData = {
         attributeName:string;
         data:Array<number>|Float32Array;
-        size:number;
         meshPerAttribute:number;
     }
 }

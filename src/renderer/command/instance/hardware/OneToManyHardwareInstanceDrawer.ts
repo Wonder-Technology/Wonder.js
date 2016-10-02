@@ -85,14 +85,15 @@ module wd {
             offset = 0;
 
             instanceAttributeData.forEach((attributeData:InstanceAttributeData, index:number) => {
-                let offsetLocation = offsetLocationArr[index];
+                let offsetLocation = offsetLocationArr[index],
+                    attributeDataLength = attributeData.data.length;
 
                 gl.enableVertexAttribArray(offsetLocation);
 
-                gl.vertexAttribPointer(offsetLocation, attributeData.size, gl.FLOAT, false, stride, offset);
+                gl.vertexAttribPointer(offsetLocation, attributeDataLength, gl.FLOAT, false, stride, offset);
                 extension.vertexAttribDivisorANGLE(offsetLocation, attributeData.meshPerAttribute);
 
-                offset += 4 * attributeData.data.length;
+                offset += 4 * attributeDataLength;
             });
         }
 

@@ -22,8 +22,8 @@ module wd{
         public computeData(){
             for (let i = 0; i < this.bladeCount; i++) {
                 this.addInstanceAttributes([
-                    {attributeName: "a_shape", data: this._generateShapes(), size: 4, meshPerAttribute: 1},
-                    {attributeName: "a_offset", data: this._generateOffsets(), size: 4, meshPerAttribute: 1}
+                    {attributeName: "a_shape", data: this._generateShapes(), meshPerAttribute: 1},
+                    {attributeName: "a_offset", data: this._generateOffsets(), meshPerAttribute: 1}
                 ]);
             }
 
