@@ -210,6 +210,12 @@ describe("TerrainGeometry", function() {
                     judge2(done, true);
                 });
             });
+
+            it("if the height getted from heightCache is undefined, get the height from height map data", function(done){
+                geo.subdivisions = 2;
+
+                judge1(done, true);
+            });
         });
 
         describe("test cache", function(){
@@ -254,6 +260,12 @@ describe("TerrainGeometry", function() {
             });
 
             it("computeData should cache height data", function (done) {
+                geo.subdivisions = 100;
+                geo.rangeWidth = 100;
+                geo.rangeHeight = 100;
+                geo.minHeight = 0;
+                geo.maxHeight = 50;
+
                 wd.LoaderManager.getInstance().load([
                     {url: testTool.resPath + "test/res/terrain/heightMap.png", id: "heightMap"}
                 ]).subscribe(function(data){

@@ -75,6 +75,10 @@ module wd{
 
             if(this._heightCache.length > 0){
                 heightFromHeightMapData = this._heightCache[this._buildHeightCacheIndex(this.subdivisions, this._computeHeightMapRow(z), this._computeHeightMapCol(x))];
+
+                if(heightFromHeightMapData === void 0){
+                    heightFromHeightMapData = this._getHeightByReadHeightMapData(this._computeHeightMapRow(z), this._computeHeightMapCol(x));
+                }
             }
             else{
                 heightFromHeightMapData = this._getHeightByReadHeightMapData(this._computeHeightMapRow(z), this._computeHeightMapCol(x));
