@@ -51,7 +51,7 @@ module wd{
                 var lightComponent:PointLight = pointLight.getComponent<PointLight>(PointLight),
                     structureMemberNameData:any = POINT_LIGHT_GLSLDATA_STRUCTURE_MEMBER_NAME[index];
 
-                program.sendVector3(structureMemberNameData.position, lightComponent.position);
+                program.sendVector3(structureMemberNameData.position, LightUtils.getPointLightPosition(lightComponent));
 
                 program.sendColor4(structureMemberNameData.color, lightComponent.color);
 
@@ -77,23 +77,12 @@ module wd{
                 var lightComponent:DirectionLight = directionLight.getComponent<DirectionLight>(DirectionLight),
                     structureMemberNameData = DIRECTION_LIGHT_GLSLDATA_STRUCTURE_MEMBER_NAME[index];
 
-                if(self._isZero(lightComponent.position)){
-                    program.sendVector3(structureMemberNameData.position, DirectionLight.defaultPosition);
-                }
-                else{
-                    program.sendVector3(structureMemberNameData.position, lightComponent.position);
-                }
+                program.sendVector3(structureMemberNameData.position, LightUtils.getDirectionLightPosition(lightComponent));
 
                 program.sendColor4(structureMemberNameData.color, lightComponent.color);
 
                 program.sendFloat1(structureMemberNameData.intensity, lightComponent.intensity);
             });
-        }
-
-        private _isZero(position:Vector3){
-            var val = position.values;
-
-            return val[0] === 0 && val[1] === 0 && val[2] === 0;
         }
 
         private _setLightDefinition(material:EngineMaterial){

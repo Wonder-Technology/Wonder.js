@@ -567,6 +567,11 @@ module wd{
             type:EVariableType.SAMPLER_2D,
             value:EVariableCategory.ENGINE
         };
+
+        public static u_lightColor:ShaderVariable = {
+            type:EVariableType.VECTOR_3,
+            value:EVariableCategory.ENGINE
+        };
     }
 
     export type ShaderVariable = {

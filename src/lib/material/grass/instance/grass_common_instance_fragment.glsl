@@ -10,7 +10,7 @@ varying vec2 v_texCoord;
 @end
 
 @body
-		vec4 color = vec4(v_color) * texture2D(u_grassMapSampler, vec2(v_texCoord.s, v_texCoord.t));
+		vec4 color = v_color * texture2D(u_grassMapSampler, vec2(v_texCoord.s, v_texCoord.t));
 
 
 //		float depth = gl_FragCoord.z / gl_FragCoord.w;

@@ -47,7 +47,7 @@
         function createTerrain() {
             var groundMap = wd.LoaderManager.getInstance().get("ground").toTexture();
             var material = wd.LightMaterial.create();
-            material.diffuseMap = groundMap;
+//            material.diffuseMap = groundMap;
             material.shading = wd.EShading.SMOOTH;
 
 
@@ -59,7 +59,7 @@
             geometry.minHeight = 0;
             geometry.maxHeight = 10;
             geometry.heightMapAsset = wd.LoaderManager.getInstance().get("heightMap");
-//            geometry.drawMode = wd.EDrawMode.LINE_STRIP;
+            geometry.drawMode = wd.EDrawMode.LINE_STRIP;
             geometry.isHeightMapStoreHeightInEachPixel = false;
 
 
@@ -147,9 +147,9 @@
 
 
 
-            wd.Director.getInstance().scheduler.scheduleInterval(function(){
-                gameObject.transform.rotateLocal(0,1,0);
-            }, 20);
+//            wd.Director.getInstance().scheduler.scheduleInterval(function(){
+//                gameObject.transform.rotateLocal(0,1,0);
+//            }, 20);
 
 
 
@@ -168,7 +168,8 @@
 
         function createDirectionLight() {
             var directionLightComponent = wd.DirectionLight.create();
-            directionLightComponent.color = wd.Color.create("#ffffff");
+//            directionLightComponent.color = wd.Color.create("#ffffff");
+            directionLightComponent.color = wd.Color.create("rgb(255,0,255)");
             directionLightComponent.intensity = 1;
 
 

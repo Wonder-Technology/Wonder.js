@@ -49,6 +49,30 @@ module wd{
             this.sendUniformData(program, "u_heightMapImageDataHeight", terrainGeo.heightMapImageDataHeight);
             this.sendUniformData(program, "u_terrainMinHeight", terrainGeo.minHeight);
             this.sendUniformData(program, "u_terrainMaxHeight", terrainGeo.maxHeight);
+
+            this._sendLightData(program);
+        }
+
+        //todo test
+        //todo check if lights exist, should not empty
+        //todo check lights should exist at least one
+        private _sendLightData(program:Program){
+            var scene:SceneDispatcher = wd.Director.getInstance().scene,
+                directionLights:wdCb.Collection<GameObject> = scene.directionLights,
+                pointLights:wdCb.Collection<GameObject> = scene.pointLights;
+
+            if(directionLights){
+                let lightComponent:DirectionLight = directionLights.getChild(0).getComponent<DirectionLight>(DirectionLight);
+
+                this.sendUniformData(program, "u_lightPos", LightUtils.getDirectionLightPosition(lightComponent));
+                this.sendUniformData(program, "u_lightColor", lightComponent.color.toVector3());
+            }
+            else if(pointLights){
+                let lightComponent:PointLight = pointLights.getChild(0).getComponent<PointLight>(PointLight);
+
+                this.sendUniformData(program, "u_lightPos", LightUtils.getPointLightPosition(lightComponent))
+                this.sendUniformData(program, "u_lightColor", lightComponent.color.toVector3());
+            }
         }
 
         public setShaderDefinition(cmd:InstanceCommand, material:GrassMapMaterial){
@@ -71,7 +95,9 @@ module wd{
                 "u_heightMapImageDataHeight",
                 "u_terrainMinHeight",
                 "u_terrainMaxHeight",
-                "u_heightMapSampler"
+                "u_heightMapSampler",
+                "u_lightPos",
+                "u_lightColor"
             ]);
 
             this.vsSourceDefineList.addChildren([

@@ -53,6 +53,37 @@ vec4 data = texture2D(u_heightMapSampler, heightMapSampleTexCoord);
 
 //return data.r;
 }
+
+vec3 _getLightDir(){
+/*!
+regard any light as direction light
+*/
+    return normalize(u_lightPos - vec3(0.0));
+}
+
+vec4 computeLightColor(vec3 normal, float hpct){
+/*!
+only consider one light
+
+not consider ambient light
+*/
+    float c = max(dot(normal, _getLightDir()), 0.0);
+
+    c = max(c - (1.0 - hpct) * 0.75, 0.0);
+    c = 0.3 + 0.7 * c;
+
+    vec4 color = vec4(
+        c * 0.85 + cos(a_offset.x * 80.0) * 0.05,
+        c * 0.95 + sin(a_offset.z * 140.0) * 0.05,
+        c * 0.95 + sin(a_offset.x * 99.0) * 0.05,
+        1.0
+    );
+
+    color.rgb = color.rgb * u_lightColor;
+
+    return color;
+}
+
 @end
 
 @body
@@ -73,6 +104,15 @@ vec4 data = texture2D(u_heightMapSampler, heightMapSampleTexCoord);
     // Start computing a normal for this vertex
 //    vec3 normal = vec3(rotate(0.0, bside * 2.0 - 1.0, a_offset.w), 0.0);
 
+vec3 normal = vec3(0.0);
+
+if(bside == 0.0){
+normal.x = -1.0;
+}
+else{
+normal.x = 1.0;
+}
+
     // Apply blade's natural curve amount
     float curve = a_shape.w;
     // Then add animated curve amount by u_time using this blade's
@@ -82,11 +122,13 @@ vec4 data = texture2D(u_heightMapSampler, heightMapSampleTexCoord);
     float rot = a_shape.z + curve * hpct;
     vec2 rotv = vec2(cos(rot), sin(rot));
     pos.zy = rotate(pos.z, pos.y, rotv);
-//    normal.yz = rotate(normal.y, normal.z, rotv);
+    normal.zy = rotate(normal.z, normal.y, rotv);
+//    normal.yx = rotate(normal.y, normal.x, rotv);
 
     // rotation of this blade as a vector
     rotv = vec2(cos(a_offset.w), sin(a_offset.w));
     pos.xz = rotate(pos.x, pos.z, rotv);
+    normal.xz = rotate(normal.x, normal.z, rotv);
 
     // Based on centre of view cone position, what grid tile should
     // this piece of grass be drawn at?
@@ -143,17 +185,9 @@ vec4 data = texture2D(u_heightMapSampler, heightMapSampleTexCoord);
 //    pos.z += altitude;
 
     // Compute light for this vertex
-//    float c = max(-dot(normal, lightDir), 0.0);
-//    c = max(c - (1.0 - hpct) * 0.75, 0.0);
-//    c = 0.3 + 0.7 * c;
-//    v_color = vec4(
-//        c * 0.85 + cos(a_offset.x * 80.0) * 0.05,
-//        c * 0.95 + sin(a_offset.y * 140.0) * 0.05,
-//        c * 0.95 + sin(a_offset.x * 99.0) * 0.05,
-//        1.0
-//    );
+
+    v_color = computeLightColor(normal, hpct);
 //    v_color.rgb = v_color.rgb * LIGHT_COLOR * grassColor;
-        v_color = vec4(1.0);
 
 
     // grass texture coordinate for this vertex
