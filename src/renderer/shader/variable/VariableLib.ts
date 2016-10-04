@@ -526,11 +526,6 @@ module wd{
             type:EVariableType.FLOAT_1,
             value:EVariableCategory.ENGINE
         };
-
-        public static u_drawPos:ShaderVariable = {
-            type:EVariableType.VECTOR_2,
-            value:EVariableCategory.ENGINE
-        };
     }
 
     export type ShaderVariable = {
