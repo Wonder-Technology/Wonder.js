@@ -22,6 +22,8 @@ module wd{
 
     _table.addChild("grassMap", "u_grassMapSampler");
 
+    _table.addChild("heightMap", "u_heightMapSampler");
+
 
     export class VariableNameTable{
         @ensure(function(variableName:string){

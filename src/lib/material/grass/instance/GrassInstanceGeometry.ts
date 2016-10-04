@@ -19,6 +19,10 @@ module wd{
 
         public vertexIndexBuffer:ArrayBuffer = null;
 
+        /*!
+         can't compute vertices,colors,texCoords and add them as instance attribute data!
+         because it will exceed 256 max size limit.
+         */
         public computeData(){
             for (let i = 0; i < this.bladeCount; i++) {
                 this.addInstanceAttributes([

@@ -15,6 +15,9 @@
         }).init();
 
         wd.LoaderManager.getInstance().load([
+            {url: "../../../asset/texture/terrain/heightMap.png", id: "heightMap"},
+//            {url: "./heightMap2.png", id: "heightMap"},
+            {url: "../../../asset/texture/terrain/ground.jpg", id: "ground"},
             {url: "./grass.jpg", id: "grass"}
         ]).subscribe(null, null, function () {
             initSample();
@@ -23,16 +26,58 @@
         function initSample() {
             var director = wd.Director.getInstance();
 
-            director.scene.addChildren(createGrasses());
+
+            var terrain = createTerrain();
+
+            director.scene.addChild(terrain);
+
+            director.scene.addChildren(createGrasses(terrain));
+
+
+            director.scene.addChild(createAmbientLight());
+            director.scene.addChild(createDirectionLight());
+
             director.scene.addChild(createCamera());
+
 
 
             director.start();
         }
 
-        function createGrasses(){
+        function createTerrain() {
+            var groundMap = wd.LoaderManager.getInstance().get("ground").toTexture();
+            var material = wd.LightMaterial.create();
+            material.diffuseMap = groundMap;
+            material.shading = wd.EShading.SMOOTH;
+
+
+            var geometry = wd.TerrainGeometry.create();
+            geometry.material = material;
+            geometry.subdivisions = 100;
+            geometry.rangeWidth = 100;
+            geometry.rangeHeight = 100;
+            geometry.minHeight = 0;
+            geometry.maxHeight = 10;
+            geometry.heightMapAsset = wd.LoaderManager.getInstance().get("heightMap");
+//            geometry.drawMode = wd.EDrawMode.LINE_STRIP;
+            geometry.isHeightMapStoreHeightInEachPixel = false;
+
+
+            var gameObject = wd.GameObject.create();
+            gameObject.addComponent(geometry);
+
+            gameObject.addComponent(wd.MeshRenderer.create());
+
+//            gameObject.transform.position = wd.Vector3.create(0, -20, 0);
+//            gameObject.transform.scale = wd.Vector3.create(1,2,1);
+
+
+            return gameObject;
+        }
+
+        function createGrasses(terrain){
             var arr = [],
-                    grass = createGrass();
+                    grass = createGrass(terrain);
 
             function getVal(){
                 return Math.random();
@@ -43,34 +88,39 @@
 
 
 
-            var count = 1000,
-                    range = 50;
-
-            for (var index = 0; index < count; index++){
-                var item = grass.clone({
-                    cloneChildren:false,
-                    shareGeometry:false,
-                    cloneGeometry:true
-                });
-//            var grass2 = grass.clone();
-
-
-
-                item.transform.position = wd.Vector3.create(range / 2 - getVal() * range, range / 2 - getVal() * range, 0);
-
-                arr.push(item);
-            }
+//            var count = 10,
+//                   range = 50;
+//
+//            for (var index = 0; index < count; index++){
+//                var item = grass.clone({
+//                    cloneChildren:false,
+//                    shareGeometry:false,
+//                    cloneGeometry:true
+//                });
+//
+//
+//
+//                item.transform.position = wd.Vector3.create(range / 2 - getVal() * range, item.transform.position.y, range / 2 - getVal() * range);
+//
+//                arr.push(item);
+//            }
 
             return arr;
         }
 
 
-        function createGrass(){
+        function createGrass(terrain){
             var material = wd.GrassInstanceMaterial.create();
 
             material.map = wd.LoaderManager.getInstance().get("grass").toTexture();
             material.size = 5;
+//            material.getTerrainData(terrain);
+            material.terrainGeometry = terrain.getComponent(wd.TerrainGeometry);
 
+
+//            var y = terrain.getComponent(wd.TerrainGeometry).getHeightAtCoordinates(0,0);
+
+//            console.log(y);
 
 
             var geometry = wd.GrassInstanceGeometry.create();
@@ -91,7 +141,37 @@
 
 
 
+
+//            gameObject.transform.position = wd.Vector3.create(20,0,0);
+
+            gameObject.transform.rotate(-90,0,0);
+
+
             return gameObject;
+        }
+
+        function createAmbientLight() {
+            var ambientLightComponent = wd.AmbientLight.create();
+            ambientLightComponent.color = wd.Color.create("rgb(30, 30, 30)");
+
+            var ambientLight = wd.GameObject.create();
+            ambientLight.addComponent(ambientLightComponent);
+
+            return ambientLight;
+        }
+
+        function createDirectionLight() {
+            var directionLightComponent = wd.DirectionLight.create();
+            directionLightComponent.color = wd.Color.create("#ffffff");
+            directionLightComponent.intensity = 1;
+
+
+            var directionLight = wd.GameObject.create();
+            directionLight.addComponent(directionLightComponent);
+
+            directionLight.transform.translate(wd.Vector3.create(10, 20, 30));
+
+            return directionLight;
         }
 
         function createCamera() {
@@ -105,9 +185,9 @@
             cameraComponent.far = 1000;
 
             var controller = wd.ArcballCameraController.create(cameraComponent);
-//            controller.theta = Math.PI / 4;
+            controller.theta = Math.PI / 4;
 //            controller.phi = Math.PI;
-            controller.distance = 20;
+            controller.distance = 50;
 
             camera.addComponent(controller);
 

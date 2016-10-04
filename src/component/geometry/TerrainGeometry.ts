@@ -45,6 +45,14 @@ module wd{
             this._rangeHeight = rangeHeight;
         }
 
+        get heightMapImageDataWidth(){
+            return this._heightMapImageDataCacheWidth;
+        }
+
+        get heightMapImageDataHeight(){
+            return this._heightMapImageDataCacheHeight;
+        }
+
         @cloneAttributeAsCustomType(function(source:Geometry, target:Geometry, memberName:string){
             if(source[memberName]){
                 target[memberName] = ImageTextureAsset.create(source[memberName].source);
