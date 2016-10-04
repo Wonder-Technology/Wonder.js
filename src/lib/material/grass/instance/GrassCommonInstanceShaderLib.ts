@@ -18,7 +18,9 @@ module wd{
         public sendShaderVariables(program: Program, cmd: InstanceCommand, material: GrassInstanceMaterial) {
             this.sendAttributeBuffer(program, "a_vertexIndex", material.geometry.vertexIndexBuffer);
 
-            this.sendUniformData(program, "u_mvpMatrix", cmd.mvpMatrix);
+            //todo pass test
+            this.sendUniformData(program, "u_mMatrix", cmd.mMatrix);
+            this.sendUniformData(program, "u_vpMatrix", cmd.vpMatrix);
             this.sendUniformData(program, "u_size", material.size);
             this.sendUniformData(program, "u_time", material.time);
 
@@ -59,7 +61,8 @@ module wd{
             this.addAttributeVariable(["a_vertexIndex"]);
             this.addUniformVariable([
                 "u_grassMapSampler",
-                "u_mvpMatrix",
+                "u_mMatrix",
+                "u_vpMatrix",
                 "u_size",
                 "u_time",
                 "u_terrainRangeWidth",

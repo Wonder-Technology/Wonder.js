@@ -142,9 +142,15 @@
 
 
 
-//            gameObject.transform.position = wd.Vector3.create(20,0,0);
 
-            gameObject.transform.rotate(-90,0,0);
+            gameObject.transform.translate(20,0,0);
+
+
+
+            wd.Director.getInstance().scheduler.scheduleInterval(function(){
+                gameObject.transform.rotateLocal(0,1,0);
+            }, 20);
+
 
 
             return gameObject;

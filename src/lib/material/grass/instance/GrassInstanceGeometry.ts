@@ -53,8 +53,8 @@ module wd{
             var shape:Array<number> = [],
                 width = BLADE_WIDTH + Math.random() * BLADE_WIDTH * 0.5,
                 height = BLADE_HEIGHT_MIN + Math.pow(Math.random(), 4.0) * (BLADE_HEIGHT_MAX - BLADE_HEIGHT_MIN),
-                lean = 0.0 + Math.random() * 0.7,
-                curve = 0.2 + Math.random() * 0.8;
+                lean = 0.0 + Math.random() * 0.2,
+                curve = 0.2 + Math.random() * 0.2;
 
             shape[0] = width;
             shape[1] = height;
@@ -68,8 +68,8 @@ module wd{
             var offset:Array<number> = [],
                 offsetRadius = this.offsetRadius,
                 x = MathUtils.generateMinToMax(-1, 1) * offsetRadius,
-                y = MathUtils.generateMinToMax(-1, 1) * offsetRadius,
-                z = 0.0,
+                y = 0.0,
+                z = MathUtils.generateMinToMax(-1, 1) * offsetRadius,
                 rot = Math.PI * 2.0 * Math.random();
 
             offset[0] = x;

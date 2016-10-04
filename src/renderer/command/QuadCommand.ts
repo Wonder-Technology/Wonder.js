@@ -11,6 +11,13 @@ module wd {
             return this.mMatrix.applyMatrix(this.vMatrix, true).applyMatrix(this.pMatrix, false);
         }
 
+        @requireGetter(function(){
+            assert(!!this.vMatrix && !!this.pMatrix, Log.info.FUNC_NOT_EXIST("vMatrix or pMatrix"));
+        })
+        get vpMatrix(){
+            return this.vMatrix.applyMatrix(this.pMatrix, true);
+        }
+
         public mMatrix:Matrix4 = null;
         public vMatrix:Matrix4 = null;
         public pMatrix:Matrix4 = null;

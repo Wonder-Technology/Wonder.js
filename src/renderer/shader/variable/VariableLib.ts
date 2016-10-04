@@ -71,6 +71,12 @@ module wd{
             type:EVariableType.FLOAT_MAT4,
             value:EVariableCategory.ENGINE
         };
+
+        public static u_vpMatrix:ShaderVariable = {
+            type:EVariableType.FLOAT_MAT4,
+            value:EVariableCategory.ENGINE
+        };
+
         public static u_normalMatrix:ShaderVariable = {
             type:EVariableType.FLOAT_MAT3,
             value:EVariableCategory.ENGINE
