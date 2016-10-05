@@ -1,7 +1,6 @@
 @varDeclare
     varying vec4 v_color;
     varying vec2 v_texCoord;
-//    varying vec2 v_heightMapSampleTexCoord;
 @end
 
 @funcDefine
@@ -17,48 +16,11 @@ vec2 rotate (float x, float y, vec2 r) {
     return vec2(x * r.x - y * r.y, x * r.y + y * r.x);
 }
 
-
-//todo refactor:move
-float _computeHeightMapCol(float x){
-//    return floor((((x + u_terrainRangeWidth / 2.0) / u_terrainRangeWidth) * (u_heightMapImageDataWidth - 1.0)));
-    return (x + u_terrainRangeWidth / 2.0) / u_terrainRangeWidth;
-}
-
-float _computeHeightMapRow(float z){
-//    return floor(((1.0 - (z + u_terrainRangeHeight / 2.0) / u_terrainRangeHeight) * (u_heightMapImageDataHeight - 1.0)));
-    return (z + u_terrainRangeHeight / 2.0) / u_terrainRangeHeight;
-}
-
-vec2 getHeightMapSampleTexCoord(float x, float z){
-float heightMapRow = _computeHeightMapRow(z),
-heightMapCol = _computeHeightMapCol(x);
-
-return vec2(heightMapCol, heightMapRow);
-}
-
-float getHeightFromHeightMap(vec2 heightMapSampleTexCoord){
-vec4 data = texture2D(u_heightMapSampler, heightMapSampleTexCoord);
-            /*!
-             compute gradient from rgb heightMap->r,g,b components
-             */
-                float r = data.r,
-                g = data.g,
-                b = data.b,
-                gradient = r * 0.3 + g * 0.59 + b * 0.11;
-
-            return u_terrainMinHeight + (u_terrainMaxHeight - u_terrainMinHeight) * gradient;
-//return 5.7;
-//return z;
-//return heightMapSampleTexCoord.x;
-
-//return data.r;
-}
-
 vec3 _getLightDir(){
 /*!
 regard any light as direction light
 */
-    return normalize(u_lightPos - vec3(0.0));
+    return getDirectionLightDir(u_lightPos);
 }
 
 vec4 computeLightColor(vec3 normal, float hpct){
@@ -133,10 +95,7 @@ normal.x = 1.0;
     // Based on centre of view cone position, what grid tile should
     // this piece of grass be drawn at?
     vec2 gridOffset = vec2(
-//        floor((drawPos.x - a_offset.x) / u_size) * u_size + u_size / 2.0,
-//        floor((drawPos.y - a_offset.y) / u_size) * u_size + u_size / 2.0
         floor((- a_offset.x) / u_size) * u_size + u_size / 2.0,
-//        floor((- a_offset.y) / u_size) * u_size + u_size / 2.0
         floor((- a_offset.z) / u_size) * u_size + u_size / 2.0
     );
 
@@ -152,8 +111,6 @@ normal.x = 1.0;
     vec2 heightMapSampleTexCoord = getHeightMapSampleTexCoord(pos.x, pos.z);
 
     pos.y += getHeightFromHeightMap(heightMapSampleTexCoord);
-
-//    heightMapSampleTexCoord = bladePos.xy * heightMapScale.xy + vec2(0.5, 0.5);
 
     //todo add wind
     //todo pass wind direction uniform
@@ -178,11 +135,6 @@ normal.x = 1.0;
     // Vertex color must be brighter because it is multiplied with blade texture
 //    grassColor = min(vec3(grassColor.r * 1.5, grassColor.g * 1.5, grassColor.b * 0.95), 1.0);
 //    altitude *= heightMapScale.z;
-
-    // Translate to world coordinates
-//    pos.z += altitude;
-
-    // Compute light for this vertex
 
     v_color = computeLightColor(normal, hpct);
 //    v_color.rgb = v_color.rgb * LIGHT_COLOR * grassColor;

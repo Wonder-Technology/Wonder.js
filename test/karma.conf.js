@@ -33,7 +33,8 @@
         //'test/render/helper/*.js',
 
 
-        'test/unit/**/oneToManyInstance*',
+        // 'test/unit/**/OneToOneSourceInstance*',
+        // 'test/unit/**/oneToManyInstance*',
 
 
         //'test/render/**',
@@ -41,13 +42,13 @@
 
         // 'test/unit/**/cloneSpec*',
 
-        // 'test/unit/**/grassMap*',
-        // 'test/unit/**/GrassMap*',
-        // 'test/unit/**/grassHardware*',
-        // 'test/unit/**/grassBatch*',
-        // 'test/unit/**/grassInstance*',
+        'test/unit/**/grassMap*',
+        'test/unit/**/GrassMap*',
+        'test/unit/**/grassHardware*',
+        'test/unit/**/grassBatch*',
+        'test/unit/**/grassInstance*',
 
-        // 'test/unit/**/GrassInstanceGeometry*',
+        'test/unit/**/GrassInstanceGeometry*',
 
 
         //'test/unit/**/procedural_texture/**',
@@ -139,7 +140,7 @@
         //'test/unit/renderer/shadow/directionShadowMap*',
         //'test/unit/renderer/*ShadowMap_*Spec.js',
         //
-        // 'test/unit/**/instance/*',
+        // 'test/unit/**/instance/**',
 
         // 'test/unit/**/instance/one*',
 
@@ -339,7 +340,7 @@
         //'test/unit/math/*.js',
         //'test/unit/component/**/GeometrySpec.js',
         // 'test/unit/component/**/InstanceGeometrySpec.js',
-        //'test/unit/component/**/TerrainGeometrySpec.js',
+        // 'test/unit/component/**/TerrainGeometrySpec.js',
         //'test/unit/component/**/ModelGeometrySpec.js',
         //'test/unit/**/CommonBufferContainerSpec.js',
         //'test/unit/**/MorphBufferContainerSpec.js',

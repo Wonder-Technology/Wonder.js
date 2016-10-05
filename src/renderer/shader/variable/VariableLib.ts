@@ -543,16 +543,6 @@ module wd{
             value:EVariableCategory.ENGINE
         };
 
-        public static u_heightMapImageDataWidth:ShaderVariable = {
-            type:EVariableType.FLOAT_1,
-            value:EVariableCategory.ENGINE
-        };
-
-        public static u_heightMapImageDataHeight:ShaderVariable = {
-            type:EVariableType.FLOAT_1,
-            value:EVariableCategory.ENGINE
-        };
-
         public static u_terrainMinHeight:ShaderVariable = {
             type:EVariableType.FLOAT_1,
             value:EVariableCategory.ENGINE

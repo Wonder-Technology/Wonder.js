@@ -89,6 +89,8 @@ describe("test grass instance", function() {
     });
 
     describe("support height map", function(){
+        var program;
+
         beforeEach(function(){
             director._init();
             program = shaderTool.getAndSpyProgram(sandbox, gameObject.getComponent(wd.Geometry).material, "grassProgram");
@@ -105,17 +107,6 @@ describe("test grass instance", function() {
 
                 expect(program.sendUniformData).toCalledWith("u_terrainRangeWidth", wd.EVariableType.FLOAT_1, material.terrainGeometry.rangeWidth);
                 expect(program.sendUniformData).toCalledWith("u_terrainRangeHeight", wd.EVariableType.FLOAT_1, material.terrainGeometry.rangeHeight);
-            });
-            it("send height map  size", function () {
-                material.terrainGeometry = {
-                    heightMapImageDataWidth: 10,
-                    heightMapImageDataHeight: 20
-                }
-
-                rendererTool.renderGameObjectScene();
-
-                expect(program.sendUniformData).toCalledWith("u_heightMapImageDataWidth", wd.EVariableType.FLOAT_1, material.terrainGeometry.heightMapImageDataWidth);
-                expect(program.sendUniformData).toCalledWith("u_heightMapImageDataHeight", wd.EVariableType.FLOAT_1, material.terrainGeometry.heightMapImageDataHeight);
             });
             it("send min and max height", function () {
                 material.terrainGeometry = {
@@ -136,8 +127,6 @@ describe("test grass instance", function() {
 
             describe("should contain uniform variables", function(){
                 it("test vs source", function () {
-                    materialTool.init(material);
-
                     var source = material.shader.vsSource;
 
                     expect(glslTool.containMultiLine(
@@ -145,8 +134,6 @@ describe("test grass instance", function() {
                         [
                             "uniform float u_terrainRangeWidth;",
                             "uniform float u_terrainRangeHeight;",
-                            "uniform float u_heightMapImageDataWidth;",
-                            "uniform float u_heightMapImageDataHeight;",
                             "uniform float u_terrainMinHeight;",
                             "uniform float u_terrainMaxHeight;",
                             "uniform sampler2D u_heightMapSampler;"

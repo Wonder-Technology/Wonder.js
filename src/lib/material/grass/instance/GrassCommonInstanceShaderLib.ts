@@ -13,7 +13,6 @@ module wd{
             it("geometry should be GrassInstanceGeometry", () => {
                 expect(material.geometry).instanceOf(GrassInstanceGeometry);
             });
-            //todo should exist terrainGeometry
         })
         public sendShaderVariables(program: Program, cmd: InstanceCommand, material: GrassInstanceMaterial) {
             this.sendAttributeBuffer(program, "a_vertexIndex", material.geometry.vertexIndexBuffer);
@@ -44,14 +43,14 @@ module wd{
                 "u_time",
                 "u_terrainRangeWidth",
                 "u_terrainRangeHeight",
-                "u_heightMapImageDataWidth",
-                "u_heightMapImageDataHeight",
                 "u_terrainMinHeight",
                 "u_terrainMaxHeight",
                 "u_heightMapSampler",
                 "u_lightPos",
                 "u_lightColor"
             ]);
+
+            this.vsSourceFuncDefine = ShaderChunk.common_heightMap.funcDefine + ShaderChunk.common_light.funcDefine + this.vsSourceFuncDefine;
 
             this.vsSourceDefineList.addChildren([
                 {
@@ -69,13 +68,16 @@ module wd{
             ]);
         }
 
+        @require(function(material:GrassInstanceMaterial, program:Program){
+            it("material.terrainGeometry should exist ", () => {
+                expect(material.terrainGeometry).exist;
+            });
+        })
         private _sendTerrainData(material:GrassInstanceMaterial, program:Program){
             let terrainGeo:TerrainGeometry = material.terrainGeometry;
 
             this.sendUniformData(program, "u_terrainRangeWidth", terrainGeo.rangeWidth);
             this.sendUniformData(program, "u_terrainRangeHeight", terrainGeo.rangeHeight);
-            this.sendUniformData(program, "u_heightMapImageDataWidth", terrainGeo.heightMapImageDataWidth);
-            this.sendUniformData(program, "u_heightMapImageDataHeight", terrainGeo.heightMapImageDataHeight);
             this.sendUniformData(program, "u_terrainMinHeight", terrainGeo.minHeight);
             this.sendUniformData(program, "u_terrainMaxHeight", terrainGeo.maxHeight);
         }
