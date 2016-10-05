@@ -18,61 +18,14 @@ module wd{
         public sendShaderVariables(program: Program, cmd: InstanceCommand, material: GrassInstanceMaterial) {
             this.sendAttributeBuffer(program, "a_vertexIndex", material.geometry.vertexIndexBuffer);
 
-            //todo pass test
             this.sendUniformData(program, "u_mMatrix", cmd.mMatrix);
             this.sendUniformData(program, "u_vpMatrix", cmd.vpMatrix);
             this.sendUniformData(program, "u_size", material.size);
             this.sendUniformData(program, "u_time", material.time);
 
-
-            let terrainGeo:TerrainGeometry = material.terrainGeometry;
-            //
-            // this.terrainRangeWidth = terrainGeo.rangeWidth;
-            // this.terrainRangeHeight = terrainGeo.rangeHeight;
-            // this.heightMapImageDataWidth = terrainGeo.heightMapImageDataWidth;
-            // this.heightMapImageDataHeight = terrainGeo.heightMapImageDataHeight;
-            // this.minTerrainHeight = terrainGeo.minHeight;
-            // this.maxTerrainHeight = terrainGeo.maxHeight;
-            //
-            // this.heightMap = terrainGeo.heightMapAsset.toTexture();
-
-            //todo test
-            // this.sendUniformData(program, "u_terrainRangeWidth", material.terrainRangeWidth);
-            // this.sendUniformData(program, "u_terrainRangeHeight", material.terrainRangeHeight);
-            // this.sendUniformData(program, "u_heightMapImageDataWidth", material.heightMapImageDataWidth);
-            // this.sendUniformData(program, "u_heightMapImageDataHeight", material.heightMapImageDataHeight);
-            // this.sendUniformData(program, "u_minTerrainHeight", material.minTerrainHeight);
-            // this.sendUniformData(program, "u_maxTerrainHeight", material.maxTerrainHeight);
-            this.sendUniformData(program, "u_terrainRangeWidth", terrainGeo.rangeWidth);
-            this.sendUniformData(program, "u_terrainRangeHeight", terrainGeo.rangeHeight);
-            this.sendUniformData(program, "u_heightMapImageDataWidth", terrainGeo.heightMapImageDataWidth);
-            this.sendUniformData(program, "u_heightMapImageDataHeight", terrainGeo.heightMapImageDataHeight);
-            this.sendUniformData(program, "u_terrainMinHeight", terrainGeo.minHeight);
-            this.sendUniformData(program, "u_terrainMaxHeight", terrainGeo.maxHeight);
+            this._sendTerrainData(material, program);
 
             this._sendLightData(program);
-        }
-
-        //todo test
-        //todo check if lights exist, should not empty
-        //todo check lights should exist at least one
-        private _sendLightData(program:Program){
-            var scene:SceneDispatcher = wd.Director.getInstance().scene,
-                directionLights:wdCb.Collection<GameObject> = scene.directionLights,
-                pointLights:wdCb.Collection<GameObject> = scene.pointLights;
-
-            if(directionLights){
-                let lightComponent:DirectionLight = directionLights.getChild(0).getComponent<DirectionLight>(DirectionLight);
-
-                this.sendUniformData(program, "u_lightPos", LightUtils.getDirectionLightPosition(lightComponent));
-                this.sendUniformData(program, "u_lightColor", lightComponent.color.toVector3());
-            }
-            else if(pointLights){
-                let lightComponent:PointLight = pointLights.getChild(0).getComponent<PointLight>(PointLight);
-
-                this.sendUniformData(program, "u_lightPos", LightUtils.getPointLightPosition(lightComponent))
-                this.sendUniformData(program, "u_lightColor", lightComponent.color.toVector3());
-            }
         }
 
         public setShaderDefinition(cmd:InstanceCommand, material:GrassMapMaterial){
@@ -114,6 +67,51 @@ module wd{
                     value:`${BLADE_VERTS}.0`
                 }
             ]);
+        }
+
+        private _sendTerrainData(material:GrassInstanceMaterial, program:Program){
+            let terrainGeo:TerrainGeometry = material.terrainGeometry;
+
+            this.sendUniformData(program, "u_terrainRangeWidth", terrainGeo.rangeWidth);
+            this.sendUniformData(program, "u_terrainRangeHeight", terrainGeo.rangeHeight);
+            this.sendUniformData(program, "u_heightMapImageDataWidth", terrainGeo.heightMapImageDataWidth);
+            this.sendUniformData(program, "u_heightMapImageDataHeight", terrainGeo.heightMapImageDataHeight);
+            this.sendUniformData(program, "u_terrainMinHeight", terrainGeo.minHeight);
+            this.sendUniformData(program, "u_terrainMaxHeight", terrainGeo.maxHeight);
+        }
+
+        @require(function(){
+            var scene:SceneDispatcher = wd.Director.getInstance().scene,
+                directionLights:wdCb.Collection<GameObject> = scene.directionLights,
+                pointLights:wdCb.Collection<GameObject> = scene.pointLights;
+
+            it("should exist light", () => {
+                expect(!directionLights && !pointLights).false;
+
+                if(directionLights){
+                    expect(directionLights).not.empty;
+                }
+
+                expect(pointLights).not.empty;
+            });
+        })
+        private _sendLightData(program:Program){
+            var scene:SceneDispatcher = wd.Director.getInstance().scene,
+                directionLights:wdCb.Collection<GameObject> = scene.directionLights,
+                pointLights:wdCb.Collection<GameObject> = scene.pointLights;
+
+            if(directionLights){
+                let lightComponent:DirectionLight = directionLights.getChild(0).getComponent<DirectionLight>(DirectionLight);
+
+                this.sendUniformData(program, "u_lightPos", LightUtils.getDirectionLightPosition(lightComponent));
+                this.sendUniformData(program, "u_lightColor", lightComponent.color.toVector3());
+            }
+            else if(pointLights){
+                let lightComponent:PointLight = pointLights.getChild(0).getComponent<PointLight>(PointLight);
+
+                this.sendUniformData(program, "u_lightPos", LightUtils.getPointLightPosition(lightComponent))
+                this.sendUniformData(program, "u_lightColor", lightComponent.color.toVector3());
+            }
         }
     }
 }

@@ -155,16 +155,14 @@ normal.x = 1.0;
 
 //    heightMapSampleTexCoord = bladePos.xy * heightMapScale.xy + vec2(0.5, 0.5);
 
+    //todo add wind
+    //todo pass wind direction uniform
+
     // Compute wind effect
 //    float wind = getHeightFromHeightMap(vec2(heightMapSampleTexCoord.x - u_time / 100.0, heightMapSampleTexCoord.y - u_time / 50.0));
 
-
-
-
 //    wind = (clamp(wind, 0.35, 0.85) - 0.35) * 2.0;
 //    wind = wind * wind * 1.5;
-
-    //todo pass wind direction uniform
 
 //    wind *= hpct; // min(hpct * a_shape.y / BLADE_HEIGHT_TALL, 1.0); // scale wind by height of blade
 //    wind = -wind;

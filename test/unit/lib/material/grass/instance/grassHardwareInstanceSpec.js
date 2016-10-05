@@ -72,6 +72,17 @@ describe("test grass hardware instance", function() {
 
             expect(result.map).toEqual(cloneGrassMap);
         });
+        it("clone terrainGeometry", function () {
+            var geo = wd.TerrainGeometry.create();
+
+            cloneTool.extend(material, {
+                terrainGeometry:geo
+            });
+
+            var result = material.clone();
+
+            expect(result.terrainGeometry === geo).toBeTruthy();
+        });
     });
 
     describe("test shader", function () {
@@ -83,6 +94,8 @@ describe("test grass hardware instance", function() {
                 prepareCmd();
 
                 grassInstanceTool.setFakeGeoemtry(material);
+
+                material.terrainGeometry = {};
 
                 sandbox.stub(grassMap, "bindToUnit");
 
@@ -134,6 +147,8 @@ describe("test grass hardware instance", function() {
                 gameObject = grassInstanceTool.createGrass();
                 material = gameObject.getComponent(wd.Geometry).material;
 
+                material.terrainGeometry = {};
+
                 director.scene.addChild(gameObject);
             });
 
@@ -161,35 +176,52 @@ describe("test grass hardware instance", function() {
 
             describe("test send uniform data", function () {
                 beforeEach(function(){
-                    director._init();
-                    program = shaderTool.getAndSpyProgram(sandbox, gameObject.getComponent(wd.Geometry).material, "grassProgram");
                 });
 
-                it("send u_mvpMatrix", function () {
-                    gameObject.transform.position = wd.Vector3.create(10, 0, 0);
+                describe("send basic data", function(){
+                    beforeEach(function(){
+                        director._init();
+                        program = shaderTool.getAndSpyProgram(sandbox, gameObject.getComponent(wd.Geometry).material, "grassProgram");
+                    });
 
-                    rendererTool.renderGameObjectScene();
+                    it("send u_mMatrix", function () {
+                        gameObject.transform.position = wd.Vector3.create(10, 0, 0);
 
-                    expect(testTool.getValues(
-                        program.sendUniformData.withArgs("u_mvpMatrix").firstCall.args[2],
-                        1
-                    )).toEqual([
-                        1.7, 0, 0, 0, 0, 1.7, 0, 0, 0, 0, -1, -1, 17.3, 0, 19.8, 20
-                    ]);
-                });
-                it("send u_size", function () {
-                    material.size = 2;
+                        rendererTool.renderGameObjectScene();
 
-                    rendererTool.renderGameObjectScene();
+                        expect(testTool.getValues(
+                            program.sendUniformData.withArgs("u_mMatrix").firstCall.args[2],
+                            1
+                        )).toEqual([
+                            1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 10, 0, 0, 1
+                        ]);
+                    });
+                    it("send u_vpMatrix", function () {
+                        gameObject.transform.position = wd.Vector3.create(10, 0, 0);
 
-                    expect(program.sendUniformData).toCalledWith("u_size", wd.EVariableType.FLOAT_1, 2);
-                });
-                it("send u_time", function () {
-                    material.time = 2;
+                        rendererTool.renderGameObjectScene();
 
-                    rendererTool.renderGameObjectScene();
+                        expect(testTool.getValues(
+                            program.sendUniformData.withArgs("u_vpMatrix").firstCall.args[2],
+                            1
+                        )).toEqual([
+                            1.7, 0, 0, 0, 0, 1.7, 0, 0, 0, 0, -1, -1, 0, 0, 19.8, 20
+                        ]);
+                    });
+                    it("send u_size", function () {
+                        material.size = 2;
 
-                    expect(program.sendUniformData).toCalledWith("u_time", wd.EVariableType.FLOAT_1, material.time);
+                        rendererTool.renderGameObjectScene();
+
+                        expect(program.sendUniformData).toCalledWith("u_size", wd.EVariableType.FLOAT_1, 2);
+                    });
+                    it("send u_time", function () {
+                        material.time = 2;
+
+                        rendererTool.renderGameObjectScene();
+
+                        expect(program.sendUniformData).toCalledWith("u_time", wd.EVariableType.FLOAT_1, material.time);
+                    });
                 });
             });
 
@@ -225,7 +257,7 @@ describe("test grass hardware instance", function() {
 
                     judgeMatricesInstancesArray(
                         [
-                            0.2, 2.1, 0.3, 0.6, 1.5, 1.5, 0, 3.1, 0.2, 2.1, 0.3, 0.6, 1.5, 1.5, 0, 3.1, 0.2, 2.1, 0.3, 0.6, 1.5, 1.5, 0, 3.1, 0.2, 2.1, 0.3, 0.6, 1.5, 1.5, 0, 3.1, 0.2, 2.1, 0.3, 0.6, 1.5, 1.5, 0, 3.1, 0.2, 2.1, 0.3, 0.6, 1.5, 1.5, 0, 3.1, 0.2, 2.1, 0.3, 0.6, 1.5, 1.5, 0, 3.1, 0.2, 2.1, 0.3, 0.6, 1.5, 1.5, 0, 3.1, 0.2, 2.1, 0.3, 0.6, 1.5, 1.5, 0, 3.1, 0.2, 2.1, 0.3, 0.6, 1.5, 1.5, 0, 3.1
+                            0.2, 2.1, 0.1, 0.3, 1.5, 0, 1.5, 3.1, 0.2, 2.1, 0.1, 0.3, 1.5, 0, 1.5, 3.1, 0.2, 2.1, 0.1, 0.3, 1.5, 0, 1.5, 3.1, 0.2, 2.1, 0.1, 0.3, 1.5, 0, 1.5, 3.1, 0.2, 2.1, 0.1, 0.3, 1.5, 0, 1.5, 3.1, 0.2, 2.1, 0.1, 0.3, 1.5, 0, 1.5, 3.1, 0.2, 2.1, 0.1, 0.3, 1.5, 0, 1.5, 3.1, 0.2, 2.1, 0.1, 0.3, 1.5, 0, 1.5, 3.1, 0.2, 2.1, 0.1, 0.3, 1.5, 0, 1.5, 3.1, 0.2, 2.1, 0.1, 0.3, 1.5, 0, 1.5, 3.1
                         ]
                     );
 
@@ -269,17 +301,14 @@ describe("test grass hardware instance", function() {
 
                     var source = material.shader.vsSource;
 
-                    expect(glslTool.contain(
+                    expect(glslTool.containMultiLine(
                         source,
-                        "uniform mat4 u_mvpMatrix;"
-                    )).toBeTruthy();
-                    expect(glslTool.contain(
-                        source,
-                        "uniform float u_size;"
-                    )).toBeTruthy();
-                    expect(glslTool.contain(
-                        source,
-                        "uniform float u_time;"
+                        [
+                            "uniform mat4 u_mMatrix;",
+                            "uniform mat4 u_vpMatrix;",
+                            "uniform float u_size;",
+                            "uniform float u_time;"
+                            ]
                     )).toBeTruthy();
                 });
                 it("test fs source", function () {

@@ -64,6 +64,8 @@ describe("test grass batch instance", function() {
                 gameObject = grassInstanceTool.createGrass();
                 material = gameObject.getComponent(wd.Geometry).material;
 
+                material.terrainGeometry = {};
+
                 director.scene.addChild(gameObject);
             });
 
@@ -83,7 +85,7 @@ describe("test grass batch instance", function() {
                         program.sendUniformData.withArgs("a_offset").firstCall.args[2],
                         1
                     )).toEqual([
-                        1.5, 1.5, 0, 3.1
+                        1.5, 0, 1.5, 3.1
                     ]);
                 });
                 it("send a_shape;", function () {
@@ -91,7 +93,7 @@ describe("test grass batch instance", function() {
                         program.sendUniformData.withArgs("a_shape").firstCall.args[2],
                         1
                     )).toEqual([
-                        0.2, 2.1, 0.4, 0.6
+                        0.2, 2.1, 0.1, 0.3
                     ]);
                 });
             });

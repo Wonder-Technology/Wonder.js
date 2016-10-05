@@ -64,20 +64,15 @@ var instanceTool = (function(){
 
             var len = Math.min(matricesInstancesArray.length, targetMatricesInstancesArray.length);
 
-            for(var i = 0; i < len; i++){
-                var data = matricesInstancesArray[i];
-
-                expect(
-                    testTool.getValues(
-                        data,
-                        1)
-                ).toEqual(
-                    testTool.getValues(
-                        targetMatricesInstancesArray[i],
-                        1
-                    )
-                );
-            }
+            expect(testTool.getValues(
+                matricesInstancesArray.slice(0, len),
+                1)
+            ).toEqual(
+                testTool.getValues(
+                    targetMatricesInstancesArray.slice(0, len),
+                    1
+                )
+            )
         },
         judgeSendMatrixVecData: function (location, index){
             var gl = wd.DeviceManager.getInstance().gl;
