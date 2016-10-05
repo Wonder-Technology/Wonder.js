@@ -19,7 +19,6 @@ module wd {
             return Math.random();
         }
 
-        //todo test
         @require(function(min:number, max:number){
             assert(min < max, Log.info.FUNC_SHOULD("min", "< max"));
         })

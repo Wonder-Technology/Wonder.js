@@ -15,8 +15,8 @@
         }).init();
 
         wd.LoaderManager.getInstance().load([
-            {url: "../../../asset/texture/terrain/heightMap.png", id: "heightMap"},
-//            {url: "./heightMap2.png", id: "heightMap"},
+//            {url: "../../../asset/texture/terrain/heightMap.png", id: "heightMap"},
+            {url: "./heightMap.png", id: "heightMap"},
             {url: "../../../asset/texture/terrain/ground.jpg", id: "ground"},
             {url: "./grass.jpg", id: "grass"}
         ]).subscribe(null, null, function () {
@@ -47,7 +47,7 @@
         function createTerrain() {
             var groundMap = wd.LoaderManager.getInstance().get("ground").toTexture();
             var material = wd.LightMaterial.create();
-//            material.diffuseMap = groundMap;
+            material.diffuseMap = groundMap;
             material.shading = wd.EShading.SMOOTH;
 
 
@@ -57,10 +57,10 @@
             geometry.rangeWidth = 100;
             geometry.rangeHeight = 100;
             geometry.minHeight = 0;
-            geometry.maxHeight = 10;
+            geometry.maxHeight = 50;
             geometry.heightMapAsset = wd.LoaderManager.getInstance().get("heightMap");
-            geometry.drawMode = wd.EDrawMode.LINE_STRIP;
-            geometry.isHeightMapStoreHeightInEachPixel = false;
+//            geometry.drawMode = wd.EDrawMode.LINE_STRIP;
+//            geometry.isHeightMapStoreHeightInEachPixel = false;
 
 
             var gameObject = wd.GameObject.create();
@@ -88,22 +88,22 @@
 
 
 
-//            var count = 10,
-//                   range = 50;
-//
-//            for (var index = 0; index < count; index++){
-//                var item = grass.clone({
-//                    cloneChildren:false,
-//                    shareGeometry:false,
-//                    cloneGeometry:true
-//                });
-//
-//
-//
-//                item.transform.position = wd.Vector3.create(range / 2 - getVal() * range, item.transform.position.y, range / 2 - getVal() * range);
-//
-//                arr.push(item);
-//            }
+            var count = 10,
+                   range = 50;
+
+            for (var index = 0; index < count; index++){
+                var item = grass.clone({
+                    cloneChildren:false,
+                    shareGeometry:false,
+                    cloneGeometry:true
+                });
+
+
+
+                item.transform.position = wd.Vector3.create(range / 2 - getVal() * range, item.transform.position.y, range / 2 - getVal() * range);
+
+                arr.push(item);
+            }
 
             return arr;
         }
@@ -168,8 +168,8 @@
 
         function createDirectionLight() {
             var directionLightComponent = wd.DirectionLight.create();
-//            directionLightComponent.color = wd.Color.create("#ffffff");
-            directionLightComponent.color = wd.Color.create("rgb(255,0,255)");
+            directionLightComponent.color = wd.Color.create("#ffffff");
+//            directionLightComponent.color = wd.Color.create("rgb(255,0,255)");
             directionLightComponent.intensity = 1;
 
 
