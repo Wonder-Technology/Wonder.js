@@ -21,9 +21,9 @@ module wd{
         @cloneAttributeAsBasicType()
         public bladeWidth = 0.15;
         @cloneAttributeAsBasicType()
-        public bladeMinHeight = 2.0;
+        public bladeMinHeight = 2;
         @cloneAttributeAsBasicType()
-        public bladeMaxHeight = 4.0;
+        public bladeMaxHeight = 4;
         @cloneAttributeAsBasicType()
         public rangeWidth:number = 5;
         @cloneAttributeAsBasicType()
@@ -43,14 +43,16 @@ module wd{
                 ]);
             }
 
-            this.vertexIndexBuffer = BufferUtils.convertArrayToArrayBuffer(EVariableType.FLOAT_1, this._generateVertices());
+            this.vertexIndexBuffer = BufferUtils.convertArrayToArrayBuffer(EVariableType.FLOAT_1, this._generateVertexIndex());
 
             this.indices = this._generateIndices();
+
+            this.vertices = this._generateVerticesForCollisionCheck();
 
             return super.computeData();
         }
 
-        private _generateVertices(){
+        private _generateVertexIndex(){
             var vertices:Array<number> = [],
                 vIndexLength = this.bladeVerts * 2 * 1;
 
@@ -59,6 +61,24 @@ module wd{
             }
 
             return vertices;
+        }
+
+        private _generateVerticesForCollisionCheck(){
+            var halfWidth = this.rangeWidth / 2,
+                height = this.bladeMaxHeight,
+                halfDepth = this.rangeHeight / 2;
+
+            return [
+                -halfWidth, height, halfDepth,
+                halfWidth, height, halfDepth,
+                halfWidth, 0, halfDepth,
+                -halfWidth, 0, halfDepth,
+
+                -halfWidth, height, -halfDepth,
+                halfWidth, height, -halfDepth,
+                halfWidth, 0, -halfDepth,
+                -halfWidth, 0, -halfDepth
+            ];
         }
 
         private _generateShapes(){

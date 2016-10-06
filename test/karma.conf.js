@@ -42,13 +42,13 @@
 
         // 'test/unit/**/cloneSpec*',
 
-        'test/unit/**/grassMap*',
-        'test/unit/**/GrassMap*',
-        'test/unit/**/grassHardware*',
-        'test/unit/**/grassBatch*',
-        'test/unit/**/grassInstance*',
-
-        'test/unit/**/GrassInstanceGeometry*',
+        // 'test/unit/**/grassMap*',
+        // 'test/unit/**/GrassMap*',
+        // 'test/unit/**/grassHardware*',
+        // 'test/unit/**/grassBatch*',
+        // 'test/unit/**/grassInstance*',
+        //
+        // 'test/unit/**/GrassInstanceGeometry*',
 
 
         //'test/unit/**/procedural_texture/**',
@@ -238,7 +238,7 @@
 
         //'test/unit/component/physics/**/eventSpec*',
 
-        //'test/unit/**/OctreeSpec*',
+        'test/unit/**/OctreeSpec*',
         //'test/unit/**/CollisionDetectorSpec*',
         //'test/unit/**/BoundingRegionUtilsSpec*',
 

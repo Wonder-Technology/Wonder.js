@@ -16,6 +16,9 @@ module wd {
             return gameObject.hasComponent(OneToOneSourceInstance);
         }
 
+        public static isOneToManySourceInstance(gameObject:GameObject) {
+            return gameObject.hasComponent(OneToManySourceInstance);
+        }
         public static isObjectInstance(gameObject:GameObject) {
             return gameObject.hasComponent(ObjectInstance);
         }

@@ -1,9 +1,14 @@
 var instanceTool = (function(){
     return {
-        createBox: function(){
+        createBox: function(sourceInstance){
             var box1 = prepareTool.createBox(1);
-            var sourceInstance = wd.OneToOneSourceInstance.create();
-            box1.addComponent(sourceInstance);
+            if(sourceInstance){
+                box1.addComponent(sourceInstance);
+            }
+            else{
+                var sourceInstance = wd.OneToOneSourceInstance.create();
+                box1.addComponent(sourceInstance);
+            }
 
             return box1;
         },

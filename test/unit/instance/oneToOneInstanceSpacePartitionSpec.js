@@ -1,4 +1,4 @@
-describe("instance with spacePartition", function() {
+describe("one to one instance with spacePartition", function() {
     var gl = null;
     var device;
     var sandbox;

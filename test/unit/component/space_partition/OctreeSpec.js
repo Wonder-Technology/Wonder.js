@@ -412,7 +412,7 @@ describe("Octree", function () {
 
 
             tree.maxDepth = 2;
-            tree.maxCapacity = 1;
+            tree.maxNodeCapacity = 1;
         });
 
         describe("get render list by frustum cull", function(){

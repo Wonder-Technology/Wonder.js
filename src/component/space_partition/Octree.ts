@@ -124,7 +124,7 @@ module wd {
 
             this._root.nodeList.forEach((topNode:OctreeNode) => {
                 topNode[method].apply(topNode, args);
-            })
+            });
 
             this._selectionList = this._selectionList.removeRepeatItems();
 
@@ -244,7 +244,10 @@ module wd {
                 instanceSourceMap = wdCb.Hash.create<GameObject>();
 
             renderListByFrustumCull.forEach((gameObject:GameObject) => {
-                if(!InstanceUtils.isInstance(gameObject)){
+                //todo refactor?
+                if(!InstanceUtils.isInstance(gameObject)
+                    || InstanceUtils.isOneToManySourceInstance(gameObject)
+                ){
                     resultRenderList.addChild(gameObject);
 
                     return;

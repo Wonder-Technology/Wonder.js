@@ -5,6 +5,8 @@ module wd {
         public abstract init();
         public abstract update(elapsed:number);
 
+        //todo add to engine?
+
         public clone(){
             return CloneUtils.clone(this);
         }
