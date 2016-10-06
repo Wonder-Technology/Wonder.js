@@ -144,6 +144,7 @@
 
         // 'test/unit/**/instance/one*',
 
+        'test/unit/**/instance/oneToManyInstanceSpacePartition*',
 
         //'test/unit/**/instance/*lod*',
 

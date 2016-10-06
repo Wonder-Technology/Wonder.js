@@ -9,7 +9,7 @@ module wd{
 
         public type:string = "grass_common_instance";
 
-        @require(function(program: Program, cmd:InstanceCommand, material:GrassMapMaterial){
+        @require(function(program: Program, cmd:InstanceCommand, material:GrassInstanceMaterial){
             it("geometry should be GrassInstanceGeometry", () => {
                 expect(material.geometry).instanceOf(GrassInstanceGeometry);
             });
@@ -27,11 +27,7 @@ module wd{
             this._sendLightData(program);
         }
 
-        public setShaderDefinition(cmd:InstanceCommand, material:GrassMapMaterial){
-            const BLADE_SEGS = 4.0,
-                BLADE_DIVS = BLADE_SEGS + 1.0,
-                BLADE_VERTS = BLADE_DIVS * 2.0;
-
+        public setShaderDefinition(cmd:InstanceCommand, material:GrassInstanceMaterial){
             super.setShaderDefinition(cmd, material);
 
             this.addAttributeVariable(["a_vertexIndex"]);
@@ -52,18 +48,20 @@ module wd{
 
             this.vsSourceFuncDefine = ShaderChunk.common_heightMap.funcDefine + ShaderChunk.common_light.funcDefine + this.vsSourceFuncDefine;
 
+            let geometry:GrassInstanceGeometry = material.geometry;
+
             this.vsSourceDefineList.addChildren([
                 {
                     name: "BLADE_SEGS",
-                    value:`${BLADE_SEGS}.0`
+                    value:`${geometry.bladeSegments}.0`
                 },
                 {
                     name: "BLADE_DIVS",
-                    value:`${BLADE_DIVS}.0`
+                    value:`${geometry.bladeDivs}.0`
                 },
                 {
                     name: "BLADE_VERTS",
-                    value:`${BLADE_VERTS}.0`
+                    value:`${geometry.bladeVerts}.0`
                 }
             ]);
         }

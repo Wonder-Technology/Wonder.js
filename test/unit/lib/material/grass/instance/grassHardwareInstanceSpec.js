@@ -357,6 +357,8 @@ describe("test grass hardware instance", function() {
             });
 
             it("test define", function () {
+                 material.geometry = wd.GrassInstanceGeometry.create();
+
                 materialTool.init(material);
 
                 shaderTool.judgeGLSLDefine(

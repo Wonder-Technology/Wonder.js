@@ -20,17 +20,29 @@ describe("GrassInstanceGeometry", function() {
         });
 
         it("clone data", function(){
-            var bladeCount = 33,
+            var bladeCount = 2,
+                bladeSegments = 10,
+                bladeWidth = 1,
+                bladeMinHeight = 3,
+                bladeMaxHeight = 5,
                 offsetRadius = 11;
 
             cloneTool.extend(geo, {
                 bladeCount:bladeCount,
+                bladeSegments:bladeSegments,
+                bladeWidth:bladeWidth,
+                bladeMinHeight:bladeMinHeight,
+                bladeMaxHeight:bladeMaxHeight,
                 offsetRadius:offsetRadius
             })
 
             var result = geo.clone();
 
             expect(result.bladeCount).toEqual(bladeCount);
+            expect(result.bladeSegments).toEqual(bladeSegments);
+            expect(result.bladeWidth).toEqual(bladeWidth);
+            expect(result.bladeMinHeight).toEqual(bladeMinHeight);
+            expect(result.bladeMaxHeight).toEqual(bladeMaxHeight);
             expect(result.offsetRadius).toEqual(offsetRadius);
         });
     });

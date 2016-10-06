@@ -1,10 +1,4 @@
 module wd{
-    const BLADE_SEGS = 4,
-        BLADE_VERTS = (BLADE_SEGS + 1) * 2,
-        BLADE_WIDTH = 0.15,
-        BLADE_HEIGHT_MIN = 2.0,
-        BLADE_HEIGHT_MAX = 4.0;
-
     export class GrassInstanceGeometry extends InstanceGeometry{
         public static create(){
             var geom = new this();
@@ -12,8 +6,24 @@ module wd{
             return geom;
         }
 
+        get bladeVerts(){
+            return this.bladeDivs * 2;
+        }
+
+        get bladeDivs(){
+            return this.bladeSegments + 1;
+        }
+
         @cloneAttributeAsBasicType()
         public bladeCount:number = 10;
+        @cloneAttributeAsBasicType()
+        public bladeSegments = 4;
+        @cloneAttributeAsBasicType()
+        public bladeWidth = 0.15;
+        @cloneAttributeAsBasicType()
+        public bladeMinHeight = 2.0;
+        @cloneAttributeAsBasicType()
+        public bladeMaxHeight = 4.0;
         @cloneAttributeAsBasicType()
         public offsetRadius:number = 3;
 
@@ -40,7 +50,7 @@ module wd{
 
         private _generateVertices(){
             var vertices:Array<number> = [],
-                vIndexLength = BLADE_VERTS * 2 * 1;
+                vIndexLength = this.bladeVerts * 2 * 1;
 
             for(let i = 0; i < vIndexLength; i++){
                 vertices[i] = i;
@@ -51,8 +61,8 @@ module wd{
 
         private _generateShapes(){
             var shape:Array<number> = [],
-                width = BLADE_WIDTH + Math.random() * BLADE_WIDTH * 0.5,
-                height = BLADE_HEIGHT_MIN + Math.pow(Math.random(), 4.0) * (BLADE_HEIGHT_MAX - BLADE_HEIGHT_MIN),
+                width = this.bladeWidth + Math.random() * this.bladeWidth * 0.5,
+                height = this.bladeMinHeight + Math.pow(Math.random(), 4.0) * (this.bladeMaxHeight - this.bladeMinHeight),
                 lean = 0.0 + Math.random() * 0.2,
                 curve = 0.2 + Math.random() * 0.2;
 
@@ -84,35 +94,35 @@ module wd{
             var seg:number = null,
                 i:number = 0,
                 vc1 = 0,
-                vc2 = BLADE_VERTS,
+                vc2 = this.bladeVerts,
                 indices:Array<number> = [];
 
             // blade front side
-            for (seg = 0; seg < BLADE_SEGS; seg++) {
+            for (seg = 0; seg < this.bladeSegments; seg++) {
                 // tri 1
-                indices[i++] = vc1 + 0
-                indices[i++] = vc1 + 1
-                indices[i++] = vc1 + 2
+                indices[i++] = vc1 + 0;
+                indices[i++] = vc1 + 1;
+                indices[i++] = vc1 + 2;
                 // tri 2
-                indices[i++] = vc1 + 2
-                indices[i++] = vc1 + 1
-                indices[i++] = vc1 + 3
+                indices[i++] = vc1 + 2;
+                indices[i++] = vc1 + 1;
+                indices[i++] = vc1 + 3;
 
-                vc1 += 2
+                vc1 += 2;
             }
 
             // blade back side
-            for (seg = 0; seg < BLADE_SEGS; seg++) {
+            for (seg = 0; seg < this.bladeSegments; seg++) {
                 // tri 1
-                indices[i++] = vc2 + 2
-                indices[i++] = vc2 + 1
-                indices[i++] = vc2 + 0
+                indices[i++] = vc2 + 2;
+                indices[i++] = vc2 + 1;
+                indices[i++] = vc2 + 0;
                 // tri 2
-                indices[i++] = vc2 + 3
-                indices[i++] = vc2 + 1
-                indices[i++] = vc2 + 2
+                indices[i++] = vc2 + 3;
+                indices[i++] = vc2 + 1;
+                indices[i++] = vc2 + 2;
 
-                vc2 += 2
+                vc2 += 2;
             }
 
             return indices;
