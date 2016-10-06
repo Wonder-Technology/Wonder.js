@@ -85,7 +85,7 @@ describe("test grass batch instance", function() {
                         program.sendUniformData.withArgs("a_offset").firstCall.args[2],
                         1
                     )).toEqual([
-                        1.5, 0, 1.5, 3.1
+                        2.5, 0, 2.5, 3.1
                     ]);
                 });
                 it("send a_shape;", function () {

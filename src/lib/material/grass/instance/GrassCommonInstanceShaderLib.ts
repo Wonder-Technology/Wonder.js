@@ -15,11 +15,14 @@ module wd{
             });
         })
         public sendShaderVariables(program: Program, cmd: InstanceCommand, material: GrassInstanceMaterial) {
+            var geometry:GrassInstanceGeometry = material.geometry;
+
             this.sendAttributeBuffer(program, "a_vertexIndex", material.geometry.vertexIndexBuffer);
 
             this.sendUniformData(program, "u_mMatrix", cmd.mMatrix);
             this.sendUniformData(program, "u_vpMatrix", cmd.vpMatrix);
-            this.sendUniformData(program, "u_size", material.size);
+            this.sendUniformData(program, "u_grassRangeWidth", geometry.rangeWidth);
+            this.sendUniformData(program, "u_grassRangeHeight", geometry.rangeHeight);
             this.sendUniformData(program, "u_time", material.time);
 
             this._sendTerrainData(material, program);
@@ -35,7 +38,8 @@ module wd{
                 "u_grassMapSampler",
                 "u_mMatrix",
                 "u_vpMatrix",
-                "u_size",
+                "u_grassRangeWidth",
+                "u_grassRangeHeight",
                 "u_time",
                 "u_terrainRangeWidth",
                 "u_terrainRangeHeight",

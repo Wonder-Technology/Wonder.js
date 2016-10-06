@@ -528,7 +528,12 @@ module wd{
             value:EVariableCategory.ENGINE
         };
 
-        public static u_size:ShaderVariable = {
+        public static u_grassRangeWidth:ShaderVariable = {
+            type:EVariableType.FLOAT_1,
+            value:EVariableCategory.ENGINE
+        };
+
+        public static u_grassRangeHeight:ShaderVariable = {
             type:EVariableType.FLOAT_1,
             value:EVariableCategory.ENGINE
         };

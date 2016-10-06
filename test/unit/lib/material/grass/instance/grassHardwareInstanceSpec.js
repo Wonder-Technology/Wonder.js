@@ -43,19 +43,16 @@ describe("test grass hardware instance", function() {
 
     describe("clone", function(){
         it("clone basic data", function () {
-            var size = 2,
-                time = 1,
+            var time = 1,
                 speed = 10;
 
             cloneTool.extend(material, {
-                size:size,
                 time:time,
                 speed:speed
             });
 
             var result = material.clone();
 
-            expect(result.size).toEqual(size);
             expect(result.time).toEqual(time);
             expect(result.speed).toEqual(speed);
         });
@@ -208,12 +205,14 @@ describe("test grass hardware instance", function() {
                             1.7, 0, 0, 0, 0, 1.7, 0, 0, 0, 0, -1, -1, 0, 0, 19.8, 20
                         ]);
                     });
-                    it("send u_size", function () {
-                        material.size = 2;
+                    it("send range", function () {
+                        material.geometry.rangeWidth = 2;
+                        material.geometry.rangeHeight = 3;
 
                         rendererTool.renderGameObjectScene();
 
-                        expect(program.sendUniformData).toCalledWith("u_size", wd.EVariableType.FLOAT_1, 2);
+                        expect(program.sendUniformData).toCalledWith("u_grassRangeWidth", wd.EVariableType.FLOAT_1, 2);
+                        expect(program.sendUniformData).toCalledWith("u_grassRangeHeight", wd.EVariableType.FLOAT_1, 3);
                     });
                     it("send u_time", function () {
                         material.time = 2;
@@ -257,7 +256,7 @@ describe("test grass hardware instance", function() {
 
                     judgeMatricesInstancesArray(
                         [
-                            0.2, 2.1, 0.1, 0.3, 1.5, 0, 1.5, 3.1, 0.2, 2.1, 0.1, 0.3, 1.5, 0, 1.5, 3.1, 0.2, 2.1, 0.1, 0.3, 1.5, 0, 1.5, 3.1, 0.2, 2.1, 0.1, 0.3, 1.5, 0, 1.5, 3.1, 0.2, 2.1, 0.1, 0.3, 1.5, 0, 1.5, 3.1, 0.2, 2.1, 0.1, 0.3, 1.5, 0, 1.5, 3.1, 0.2, 2.1, 0.1, 0.3, 1.5, 0, 1.5, 3.1, 0.2, 2.1, 0.1, 0.3, 1.5, 0, 1.5, 3.1, 0.2, 2.1, 0.1, 0.3, 1.5, 0, 1.5, 3.1, 0.2, 2.1, 0.1, 0.3, 1.5, 0, 1.5, 3.1
+                            0.2, 2.1, 0.1, 0.3, 2.5, 0, 2.5, 3.1, 0.2, 2.1, 0.1, 0.3, 2.5, 0, 2.5, 3.1, 0.2, 2.1, 0.1, 0.3, 2.5, 0, 2.5, 3.1, 0.2, 2.1, 0.1, 0.3, 2.5, 0, 2.5, 3.1, 0.2, 2.1, 0.1, 0.3, 2.5, 0, 2.5, 3.1, 0.2, 2.1, 0.1, 0.3, 2.5, 0, 2.5, 3.1, 0.2, 2.1, 0.1, 0.3, 2.5, 0, 2.5, 3.1, 0.2, 2.1, 0.1, 0.3, 2.5, 0, 2.5, 3.1, 0.2, 2.1, 0.1, 0.3, 2.5, 0, 2.5, 3.1, 0.2, 2.1, 0.1, 0.3, 2.5, 0, 2.5, 3.1
                         ]
                     );
 
@@ -306,7 +305,8 @@ describe("test grass hardware instance", function() {
                         [
                             "uniform mat4 u_mMatrix;",
                             "uniform mat4 u_vpMatrix;",
-                            "uniform float u_size;",
+                            "uniform float u_grassRangeWidth;",
+                            "uniform float u_grassRangeHeight;",
                             "uniform float u_time;"
                             ]
                     )).toBeTruthy();
@@ -376,6 +376,19 @@ describe("test grass hardware instance", function() {
                     "BLADE_VERTS",
                     "10.0"
                 );
+            });
+            it("grass anchor should be the center point of the range", function () {
+                materialTool.init(material);
+
+                var source = material.shader.vsSource;
+
+                expect(glslTool.containMultiLine(
+                    source,
+                    [
+                        "pos.x += u_grassRangeWidth / 2.0 - a_offset.x;",
+                        "pos.z += u_grassRangeHeight / 2.0 - a_offset.z;"
+                    ]
+                )).toBeTruthy();
             });
         });
     });

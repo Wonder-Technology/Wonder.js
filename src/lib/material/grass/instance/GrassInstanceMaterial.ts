@@ -13,8 +13,6 @@ module wd{
         @cloneAttributeAsCloneable()
         public map:ImageTexture|ProceduralTexture = null;
         @cloneAttributeAsBasicType()
-        public size:number = 5;
-        @cloneAttributeAsBasicType()
         public time:number = 0;
         @cloneAttributeAsBasicType()
         public speed:number = 0.01;

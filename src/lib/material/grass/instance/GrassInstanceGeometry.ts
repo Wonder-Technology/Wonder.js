@@ -25,7 +25,9 @@ module wd{
         @cloneAttributeAsBasicType()
         public bladeMaxHeight = 4.0;
         @cloneAttributeAsBasicType()
-        public offsetRadius:number = 3;
+        public rangeWidth:number = 5;
+        @cloneAttributeAsBasicType()
+        public rangeHeight:number = 5;
 
         public vertexIndexBuffer:ArrayBuffer = null;
 
@@ -76,10 +78,9 @@ module wd{
 
         private _generateOffsets(){
             var offset:Array<number> = [],
-                offsetRadius = this.offsetRadius,
-                x = MathUtils.generateMinToMax(-1, 1) * offsetRadius,
+                x = MathUtils.generateMinToMax(-1, 1) * this.rangeWidth,
                 y = 0.0,
-                z = MathUtils.generateMinToMax(-1, 1) * offsetRadius,
+                z = MathUtils.generateMinToMax(-1, 1) * this.rangeHeight,
                 rot = Math.PI * 2.0 * Math.random();
 
             offset[0] = x;
@@ -129,3 +130,4 @@ module wd{
         }
     }
 }
+

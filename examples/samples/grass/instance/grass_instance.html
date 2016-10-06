@@ -15,8 +15,8 @@
         }).init();
 
         wd.LoaderManager.getInstance().load([
-//            {url: "../../../asset/texture/terrain/heightMap.png", id: "heightMap"},
-            {url: "./heightMap.png", id: "heightMap"},
+            {url: "../../../asset/texture/terrain/heightMap.png", id: "heightMap"},
+//            {url: "./heightMap.png", id: "heightMap"},
             {url: "../../../asset/texture/terrain/ground.jpg", id: "ground"},
             {url: "./grass.jpg", id: "grass"}
         ]).subscribe(null, null, function () {
@@ -57,7 +57,7 @@
             geometry.rangeWidth = 100;
             geometry.rangeHeight = 100;
             geometry.minHeight = 0;
-            geometry.maxHeight = 50;
+            geometry.maxHeight = 20;
             geometry.heightMapAsset = wd.LoaderManager.getInstance().get("heightMap");
 //            geometry.drawMode = wd.EDrawMode.LINE_STRIP;
 //            geometry.isHeightMapStoreHeightInEachPixel = false;
@@ -88,7 +88,7 @@
 
 
 
-            var count = 10,
+            var count = 0,
                    range = 50;
 
             for (var index = 0; index < count; index++){
@@ -113,7 +113,6 @@
             var material = wd.GrassInstanceMaterial.create();
 
             material.map = wd.LoaderManager.getInstance().get("grass").toTexture();
-            material.size = 5;
 //            material.getTerrainData(terrain);
             material.terrainGeometry = terrain.getComponent(wd.TerrainGeometry);
 
@@ -125,8 +124,10 @@
 
             var geometry = wd.GrassInstanceGeometry.create();
             geometry.material = material;
-            geometry.bladeCount = 100;
-            geometry.offsetRadius = 2;
+            geometry.bladeCount = 1000;
+            geometry.bladeWidth = 1;
+            geometry.rangeWidth = 50;
+            geometry.rangeHeight = 25;
 
 
 
@@ -143,7 +144,7 @@
 
 
 
-            gameObject.transform.translate(20,0,0);
+//            gameObject.transform.translate(20,0,0);
 
 
 

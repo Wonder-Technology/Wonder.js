@@ -92,19 +92,8 @@ normal.x = 1.0;
     pos.xz = rotate(pos.x, pos.z, rotv);
     normal.xz = rotate(normal.x, normal.z, rotv);
 
-    // Based on centre of view cone position, what grid tile should
-    // this piece of grass be drawn at?
-    vec2 gridOffset = vec2(
-        floor((- a_offset.x) / u_size) * u_size + u_size / 2.0,
-        floor((- a_offset.z) / u_size) * u_size + u_size / 2.0
-    );
-
-    // Find the blade mesh world x,y position
-    vec2 bladePos = vec2(a_offset.xz + gridOffset);
-
-    pos.x += bladePos.x;
-    pos.z += bladePos.y;
-
+    pos.x += u_grassRangeWidth / 2.0 - a_offset.x;
+    pos.z += u_grassRangeHeight / 2.0 - a_offset.z;
 
     pos = u_mMatrix * pos;
 

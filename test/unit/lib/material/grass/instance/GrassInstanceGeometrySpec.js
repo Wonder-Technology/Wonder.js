@@ -25,7 +25,8 @@ describe("GrassInstanceGeometry", function() {
                 bladeWidth = 1,
                 bladeMinHeight = 3,
                 bladeMaxHeight = 5,
-                offsetRadius = 11;
+                rangeWidth = 2,
+                rangeHeight = 10;
 
             cloneTool.extend(geo, {
                 bladeCount:bladeCount,
@@ -33,7 +34,8 @@ describe("GrassInstanceGeometry", function() {
                 bladeWidth:bladeWidth,
                 bladeMinHeight:bladeMinHeight,
                 bladeMaxHeight:bladeMaxHeight,
-                offsetRadius:offsetRadius
+                rangeWidth:rangeWidth,
+                rangeHeight:rangeHeight
             })
 
             var result = geo.clone();
@@ -43,7 +45,8 @@ describe("GrassInstanceGeometry", function() {
             expect(result.bladeWidth).toEqual(bladeWidth);
             expect(result.bladeMinHeight).toEqual(bladeMinHeight);
             expect(result.bladeMaxHeight).toEqual(bladeMaxHeight);
-            expect(result.offsetRadius).toEqual(offsetRadius);
+            expect(result.rangeWidth).toEqual(rangeWidth);
+            expect(result.rangeHeight).toEqual(rangeHeight);
         });
     });
 });
