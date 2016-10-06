@@ -79,6 +79,9 @@ module wd {
 
                 instanceBuffer.resetData(attributeArrayForInstance);
             }
+            else{
+                instanceBuffer.bindBuffer();
+            }
 
             let stride = this._getStride(instanceBuffer);
 

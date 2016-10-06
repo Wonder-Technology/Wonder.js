@@ -45,6 +45,13 @@ module wd{
             gl.bufferSubData(gl.ARRAY_BUFFER, 0, data);
         }
 
+
+        public bindBuffer(): void {
+            var gl = DeviceManager.getInstance().gl;
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
+        }
+
         public addCache(key:string, value:any){
             this._cacheMap.addChild(key, value);
         }

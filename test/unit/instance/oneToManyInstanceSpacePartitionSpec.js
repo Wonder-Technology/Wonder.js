@@ -86,92 +86,157 @@ describe("one to many instance with spacePartition", function() {
         testTool.clearInstance(sandbox);
     });
 
-    describe("test cull", function(){
-        beforeEach(function(){
-            createCamera(wd.Vector3.create(0,0,0), wd.Vector3.create(10,10,10), 0.1, 100, 60);
+    describe("if hardware support instance", function() {
+        beforeEach(function () {
+            createCamera(wd.Vector3.create(0, 0, 0), wd.Vector3.create(10, 10, 10), 0.1, 100, 60);
         });
 
-        it("test grass instances", function () {
-            camera.transform.position = wd.Vector3.create(camera.transform.position.x, 2.4, camera.transform.position.z);
+        describe("test cull", function () {
+            it("test grass instances", function () {
+                camera.transform.translate(0, 2.4, 0);
 
-            var grass1 = createGrass("grass1", [10, 10, 10]);
-            var grass2 = createGrass("grass2", [-10, -10, -10]);
-
-
-            octreeContainer.addChildren([grass1, grass2]);
+                var grass1 = createGrass("grass1", [10, 10, 10]);
+                var grass2 = createGrass("grass2", [-10, -10, -10]);
 
 
-            director.scene.addChild(octreeContainer);
+                octreeContainer.addChildren([grass1, grass2]);
 
 
-            director._init();
-
-            director._loopBody(1);
+                director.scene.addChild(octreeContainer);
 
 
-            expect(grass1.render).toCalledOnce();
+                director._init();
 
-            expect(grass2.render).not.toCalled();
-
-
-            expect(wd.DebugStatistics.count.renderGameObjects).toEqual(10);
-            expect(wd.DebugStatistics.count.drawCalls).toEqual(1);
+                director._loopBody(1);
 
 
+                expect(grass1.render).toCalledOnce();
 
-            camera.transform.position = wd.Vector3.create(camera.transform.position.x, 2.3, camera.transform.position.z);
-
-
-            director._loopBody(1);
+                expect(grass2.render).not.toCalled();
 
 
-            expect(grass1.render).toCalledTwice();
+                expect(wd.DebugStatistics.count.renderGameObjects).toEqual(10);
+                expect(wd.DebugStatistics.count.drawCalls).toEqual(1);
 
-            expect(grass2.render).toCalledOnce();
+
+                camera.transform.translate(0, -0.1, 0);
 
 
-            expect(wd.DebugStatistics.count.renderGameObjects).toEqual(10 + 10 * 2);
-            expect(wd.DebugStatistics.count.drawCalls).toEqual(1 + 2);
+                director._loopBody(1);
+
+
+                expect(grass1.render).toCalledTwice();
+
+                expect(grass2.render).toCalledOnce();
+
+
+                expect(wd.DebugStatistics.count.renderGameObjects).toEqual(10 + 10 * 2);
+                expect(wd.DebugStatistics.count.drawCalls).toEqual(1 + 2);
+            });
+            it("test with no-instance obj", function () {
+                var grass1 = createGrass("grass1", [10, 10, 10], 1, 1, 1);
+
+
+                var box1 = prepareTool.createBox(1);
+                box1.transform.position = wd.Vector3.create(8, 8, 8);
+                box1.name = "box1";
+                sandbox.spy(box1, "render");
+
+                var box2 = prepareTool.createBox(1);
+                box2.transform.position = wd.Vector3.create(-10, -10, -10);
+                box2.name = "box2";
+                sandbox.spy(box2, "render");
+
+
+                octreeContainer.addChildren([grass1, box1, box2]);
+
+
+                director.scene.addChild(octreeContainer);
+
+
+                director._init();
+
+                director._loopBody(1);
+
+
+                expect(grass1.render).toCalledOnce();
+                expect(box1.render).toCalledOnce();
+
+                expect(box2.render).not.toCalled();
+
+
+                expect(wd.DebugStatistics.count.renderGameObjects).toEqual(11);
+                expect(wd.DebugStatistics.count.drawCalls).toEqual(2);
+
+            });
         });
-        it("test with no-instance obj", function(){
-            var grass1 = createGrass("grass1", [10, 10, 10], 1, 1, 1);
+        
+        describe("fix bug", function(){
+            beforeEach(function(){
+            });
+            
+            it("all oneToMany instance object should bind its own instance buffer especially when drawing the not culled instance after drawing the one which is culled one before but now be not culled and is drawed at the first time", function(){
+                camera.transform.translate(0, 2.4, 0);
+
+                var grass1 = createGrass("grass1", [10, 10, 10]);
+                var grass2 = createGrass("grass2", [-10, -10, -10]);
+                var grass3 = createGrass("grass3", [6,6,6]);
 
 
-            var box1 = prepareTool.createBox(1);
-            box1.transform.position = wd.Vector3.create(8,8,8);
-            box1.name = "box1";
-            sandbox.spy(box1, "render");
-
-            var box2 = prepareTool.createBox(1);
-            box2.transform.position = wd.Vector3.create(-10,-10,-10);
-            box2.name = "box2";
-            sandbox.spy(box2, "render");
+                var instanceBuffer1 = grass1.getComponent(wd.OneToManySourceInstance).instanceBuffer;
+                instanceBuffer1.buffer = {type:1};
+                var instanceBuffer2 = grass2.getComponent(wd.OneToManySourceInstance).instanceBuffer;
+                instanceBuffer2.buffer = {type:2};
+                var instanceBuffer3 = grass3.getComponent(wd.OneToManySourceInstance).instanceBuffer;
+                instanceBuffer3.buffer = {type:3};
 
 
-            octreeContainer.addChildren([grass1, box1, box2]);
+                octreeContainer.addChildren([grass1, grass2, grass3]);
 
 
-            director.scene.addChild(octreeContainer);
+                director.scene.addChild(octreeContainer);
+
+
+                director._init();
+
+                director._loopBody(1);
+
+
+                expect(grass1.render).toCalledOnce();
+                expect(grass3.render).toCalledOnce();
+
+                expect(grass2.render).not.toCalled();
+
+
+                expect(gl.bindBuffer.withArgs(sinon.match.any, instanceBuffer1.buffer).callCount).toEqual(2);
+                expect(gl.bindBuffer.withArgs(sinon.match.any, instanceBuffer3.buffer).callCount).toEqual(2);
+                expect(gl.bindBuffer.withArgs(sinon.match.any, instanceBuffer2.buffer).callCount).toEqual(0);
 
 
 
-            director._init();
-
-            director._loopBody(1);
 
 
-            expect(grass1.render).toCalledOnce();
-            expect(box1.render).toCalledOnce();
 
-            expect(box2.render).not.toCalled();
+                camera.transform.translate(0, -0.1, 0);
 
 
-            expect(wd.DebugStatistics.count.renderGameObjects).toEqual(11);
-            expect(wd.DebugStatistics.count.drawCalls).toEqual(2);
+                director._loopBody(1);
 
+
+
+                expect(grass1.render).toCalledTwice();
+                expect(grass3.render).toCalledTwice();
+
+                expect(grass2.render).toCalledOnce();
+
+
+                expect(gl.bindBuffer.withArgs(sinon.match.any, instanceBuffer1.buffer).callCount).toEqual(2 + 2);
+                expect(gl.bindBuffer.withArgs(sinon.match.any, instanceBuffer3.buffer).callCount).toEqual(2 + 2);
+                expect(gl.bindBuffer.withArgs(sinon.match.any, instanceBuffer2.buffer).callCount).toEqual(0 + 2);
+            });
         });
     });
-
+        
     describe("if hardware not support instance", function(){
         beforeEach(function(){
             wd.GPUDetector.getInstance().extensionInstancedArrays = null;
