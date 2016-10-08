@@ -112,23 +112,23 @@
             //todo test
 
 
-//            var count = 50,
-//                    range = 50;
-//
-//            for (var index = 0; index < count; index++){
-//                var item = grass.clone({
-//                    cloneChildren:false,
-//                    shareGeometry:false,
-//                    cloneGeometry:true
-//                });
-//
-//
-//
-//                item.transform.position = wd.Vector3.create(range / 2 - getVal() * range, item.transform.position.y, range / 2 - getVal() * range);
-//
-//                arr.push(item);
-//            }
-//
+            var count = 50,
+                    range = 50;
+
+            for (var index = 0; index < count; index++){
+                var item = grass.clone({
+                    cloneChildren:false,
+                    shareGeometry:false,
+                    cloneGeometry:true
+                });
+
+
+
+                item.transform.position = wd.Vector3.create(range / 2 - getVal() * range, item.transform.position.y, range / 2 - getVal() * range);
+
+                arr.push(item);
+            }
+
             return arr;
         }
 

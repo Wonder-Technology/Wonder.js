@@ -11,7 +11,21 @@ module wd{
 
         public activeGameObject:GameObject = null;
         //todo @cloneAttributeAsCustomType?
-        private _gameObjectLevelList:wdCb.Collection<GameObjectLevelData> = wdCb.Collection.create<GameObjectLevelData>();
+        @cloneAttributeAsCustomType(function(source:GameObjectLOD, target:GameObjectLOD, memberName:string){
+            source._gameObjectLevelList.forEach((levelData:LevelData) => {
+                var gameObjectLevel:ELODState|GameObject = null;
+
+                if(levelData.gameObject === ELODState.INVISIBLE){
+                    gameObjectLevel = ELODState.INVISIBLE;
+                }
+                else{
+                    gameObjectLevel = (<GameObject>levelData.gameObject).clone();
+                }
+
+                target.addLevel(levelData.distanceBetweenCameraAndObject, gameObjectLevel);
+            });
+        })
+        private _gameObjectLevelList:wdCb.Collection<LevelData> = wdCb.Collection.create<LevelData>();
 
         public init(){
             var entityObject = this.entityObject;
@@ -48,13 +62,13 @@ module wd{
         }
 
         //todo check only addGameObjectLevel or addGameObjectLevel?
-        public addLevel(distanceBetweenCameraAndObject, levelGameObject:GameObject|ELODState){
+        public addLevel(distanceBetweenCameraAndObject, gameObjectLevel:GameObject|ELODState){
             this._gameObjectLevelList.addChild({
                 distanceBetweenCameraAndObject: distanceBetweenCameraAndObject,
-                gameObject:levelGameObject
+                gameObject:gameObjectLevel
             });
 
-            this._gameObjectLevelList.sort((levelData1:GameObjectLevelData, levelData2) => {
+            this._gameObjectLevelList.sort((levelData1:LevelData, levelData2) => {
                 return levelData2.distanceBetweenCameraAndObject - levelData1.distanceBetweenCameraAndObject;
             }, true);
         }
@@ -99,7 +113,7 @@ module wd{
         }
     }
 
-    type GameObjectLevelData = {
+    type LevelData = {
         distanceBetweenCameraAndObject:number;
         gameObject:GameObject|ELODState;
     }

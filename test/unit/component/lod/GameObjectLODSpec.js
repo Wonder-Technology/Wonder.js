@@ -1,43 +1,9 @@
 describe("GameObjectLOD", function() {
     var sandbox = null;
-    var lod = null;
 
     var model;
     var gameObjectLevel1,gameObjectLevel2;
     var gameObject;
-
-
-    function prepareLod(){
-        var model = grassInstanceTool.createGrass("instance");
-
-        // rendererComponent = model.getComponent(wd.MeshRenderer);
-
-        // sandbox.spy(rendererComponent, "render");
-
-        var gameObjectLevel1 = createGrassMap();
-
-        var gameObjectLevel2 = createBillboard();
-
-        lod = wd.GameObjectLOD.create();
-
-        lod.addLevel(15, gameObjectLevel1);
-        lod.addLevel(30, gameObjectLevel2);
-        lod.addLevel(40, wd.ELODState.INVISIBLE);
-
-        model.addComponent(lod);
-
-
-
-        sandbox.spy(model, "render");
-        sandbox.spy(gameObjectLevel1, "render");
-        sandbox.spy(gameObjectLevel2, "render");
-
-        return {
-            model:model,
-            gameObjectLevel1:gameObjectLevel1,
-            gameObjectLevel2:gameObjectLevel2
-        }
-    }
 
     function createGrassMap() {
         var grassMap = wd.ImageTexture.create({});
@@ -60,7 +26,7 @@ describe("GameObjectLOD", function() {
         var material = wd.GrassMapMaterial.create();
 
         material.grassMap = grassMap;
-
+        material.mapData = mapData;
 
 
 
@@ -105,11 +71,8 @@ describe("GameObjectLOD", function() {
         return gameObject;
     }
 
-
-
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        // lod = wd.GameObjectLOD.create();
 
         sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
 
@@ -126,6 +89,37 @@ describe("GameObjectLOD", function() {
     describe("integration test", function(){
         var director;
         var camera;
+        var lod;
+
+        function prepareLod(){
+            var model = grassInstanceTool.createGrass("instance");
+
+
+            var gameObjectLevel1 = createGrassMap();
+
+            var gameObjectLevel2 = createBillboard();
+
+            lod = wd.GameObjectLOD.create();
+
+            lod.addLevel(15, gameObjectLevel1);
+            lod.addLevel(30, gameObjectLevel2);
+            lod.addLevel(40, wd.ELODState.INVISIBLE);
+
+            model.addComponent(lod);
+
+
+
+            sandbox.spy(model, "render");
+            sandbox.spy(gameObjectLevel1, "render");
+            sandbox.spy(gameObjectLevel2, "render");
+
+            return {
+                model:model,
+                gameObjectLevel1:gameObjectLevel1,
+                gameObjectLevel2:gameObjectLevel2
+            }
+        }
+
 
         beforeEach(function(){
             director = wd.Director.getInstance();
@@ -251,51 +245,37 @@ describe("GameObjectLOD", function() {
         });
     });
 
-    //
-    // describe("clone", function(){
-    //     var gameObject;
-    //
-    //     beforeEach(function(){
-    //         gameObject = lodTool.createGeo();
-    //         lod.addGeometryLevel(10, gameObject);
-    //         lod.addGeometryLevel(20, wd.ELODGeometryState.INVISIBLE);
-    //     });
-    //
-    //     it("clone _gameObjectLevelList", function(){
-    //         var cloneGeo = lodTool.createGeo();
-    //         sandbox.stub(gameObject, "clone").returns(cloneGeo);
-    //
-    //         var result = lod.clone();
-    //
-    //         expect(result._gameObjectLevelList.getChildren()).toEqual( [
-    //                 {
-    //                     distanceBetweenCameraAndObject: 20,
-    //                     gameObject:wd.ELODGeometryState.INVISIBLE
-    //                 },
-    //                 {
-    //                     distanceBetweenCameraAndObject: 10,
-    //                     gameObject:cloneGeo
-    //                 }
-    //             ]
-    //         );
-    //         expect(result !== lod).toBeTruthy();
-    //     });
-    //     //it("if param->isShareGeometry is true, cloned _gameObjectLevelList->gameObject share with source->_gameObjectLevelList->gameObject", function(){
-    //     //    var result = lod.clone(true);
-    //     //
-    //     //    expect(result._gameObjectLevelList.getChildren()).toEqual( [
-    //     //            {
-    //     //                distanceBetweenCameraAndObject: 20,
-    //     //                gameObject:wd.ELODGeometryState.INVISIBLE
-    //     //            },
-    //     //            {
-    //     //                distanceBetweenCameraAndObject: 10,
-    //     //                gameObject:gameObject
-    //     //            }
-    //     //        ]
-    //     //    );
-    //     //    expect(result !== lod).toBeTruthy();
-    //     //});
-    // });
+
+    describe("clone", function(){
+        var lod;
+
+        beforeEach(function(){
+            lod = wd.GameObjectLOD.create();
+
+            gameObjectLevel1 = createGrassMap();
+            lod.addLevel(10, gameObjectLevel1);
+            lod.addLevel(20, wd.ELODState.INVISIBLE);
+        });
+
+        it("clone _gameObjectLevelList", function(){
+            var cloneGameObject = createGrassMap();
+            sandbox.stub(gameObjectLevel1, "clone").returns(cloneGameObject);
+
+            var result = lod.clone();
+
+            expect(result._gameObjectLevelList.getChildren()).toEqual( [
+                    {
+                        distanceBetweenCameraAndObject: 20,
+                        gameObject:wd.ELODState.INVISIBLE
+                    },
+                    {
+                        distanceBetweenCameraAndObject: 10,
+                        gameObject:cloneGameObject
+                    }
+                ]
+            );
+            expect(result !== lod).toBeTruthy();
+        });
+    });
 });
 
