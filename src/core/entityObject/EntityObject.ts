@@ -16,7 +16,7 @@ module wd {
         }
 
         get transform(){
-            return this._componentManager.transform;
+            return this.componentManager.transform;
         }
 
         @cloneAttributeAsBasicType()
@@ -28,10 +28,11 @@ module wd {
 
         public scriptManager:ScriptManager = ScriptManager.create(this);
 
+        protected componentManager:ComponentManager = ComponentManager.create(this);
+
         private _hasComponentCache:wdCb.Hash<boolean> = wdCb.Hash.create<boolean>();
         private _getComponentCache:wdCb.Hash<boolean> = wdCb.Hash.create<boolean>();
         private _componentChangeSubscription:wdFrp.IDisposable = null;
-        private _componentManager:ComponentManager = ComponentManager.create(this);
         private _entityObjectManager:EntityObjectManager = EntityObjectManager.create(this);
 
         @virtual
@@ -89,7 +90,7 @@ module wd {
                     self._onComponentChange();
                 });
 
-            this._componentManager.init();
+            this.componentManager.init();
             this._entityObjectManager.init();
 
             this.afterInitChildren();
@@ -125,7 +126,7 @@ module wd {
 
             this._componentChangeSubscription && this._componentChangeSubscription.dispose();
 
-            this._componentManager.dispose();
+            this.componentManager.dispose();
             this._entityObjectManager.dispose();
         }
 
@@ -207,19 +208,19 @@ module wd {
             this._getComponentCache.addChild(_class.name, result);
         })
         public getComponent<T>(_class:any):T{
-            return this._componentManager.getComponent<T>(_class);
+            return this.componentManager.getComponent<T>(_class);
         }
 
         public getComponents(){
-            return this._componentManager.getComponents();
+            return this.componentManager.getComponents();
         }
 
         public findComponentByUid(uid:number){
-            return this._componentManager.findComponentByUid(uid);
+            return this.componentManager.findComponentByUid(uid);
         }
 
         public forEachComponent(func:(component:Component) => void){
-            this._componentManager.forEachComponent(func);
+            this.componentManager.forEachComponent(func);
 
             return this;
         }
@@ -239,7 +240,7 @@ module wd {
                 return result;
             }
 
-            result =  this._componentManager.hasComponent(args[0]);
+            result =  this.componentManager.hasComponent(args[0]);
 
             this._hasComponentCache.addChild(key, result);
 
@@ -247,7 +248,7 @@ module wd {
         }
 
         public addComponent(component:Component, isShareComponent:boolean = false){
-            this._componentManager.addComponent(component, isShareComponent);
+            this.componentManager.addComponent(component, isShareComponent);
 
             this.componentDirty = true;
 
@@ -258,7 +259,7 @@ module wd {
         public removeComponent(_class:Function);
 
         public removeComponent(...args){
-            this._componentManager.removeComponent(args[0]);
+            this.componentManager.removeComponent(args[0]);
 
             this.componentDirty = true;
 
@@ -268,17 +269,14 @@ module wd {
         public removeAllComponent(){
             this.componentDirty = true;
 
-            return this._componentManager.removeAllComponent();
+            return this.componentManager.removeAllComponent();
         }
 
+        @virtual
         public render(renderer:Renderer, camera:GameObject):void {
             var rendererComponent = null;
 
-            if(!this.isVisible){
-                return;
-            }
-
-            rendererComponent = this._componentManager.getRendererComponent();
+            rendererComponent = this.componentManager.getRendererComponent();
 
             if(rendererComponent){
                 rendererComponent.render(renderer, this, camera);
@@ -296,12 +294,12 @@ module wd {
         }
 
         public getComponentCount(_class:Function){
-            return this._componentManager.getComponentCount(_class);
+            return this.componentManager.getComponentCount(_class);
         }
 
         @virtual
         public getGeometry(){
-            return this._componentManager.getGeometry();
+            return this.componentManager.getGeometry();
         }
 
         protected abstract createTransform():Transform;

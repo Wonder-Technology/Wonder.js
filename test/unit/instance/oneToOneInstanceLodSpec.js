@@ -1,4 +1,4 @@
-describe("instance with lod", function () {
+describe("one to one instance with lod", function () {
     var gl = null;
     var device;
     var sandbox;

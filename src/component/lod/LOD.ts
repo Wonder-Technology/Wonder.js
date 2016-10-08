@@ -39,7 +39,7 @@ module wd{
 
             this.levelList
                 .filter(({geometry, distanceBetweenCameraAndObject}) => {
-                    return !!geometry;
+                    return geometry !== ELODGeometryState.INVISIBLE;
                 })
                 .forEach(({geometry, distanceBetweenCameraAndObject}) => {
                     geometry.entityObject = entityObject;
@@ -100,6 +100,7 @@ module wd{
             });
 
             if(activeGeometry === ELODGeometryState.INVISIBLE){
+                //todo not null
                 this.activeGeometry = null;
                 this.entityObject.isVisible = false;
 

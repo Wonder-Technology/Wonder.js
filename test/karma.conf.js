@@ -33,6 +33,8 @@
         //'test/render/helper/*.js',
 
 
+        'test/unit/**/GameObjectLOD*',
+
         // 'test/unit/**/OneToOneSourceInstance*',
         // 'test/unit/**/oneToManyInstance*',
 
@@ -144,7 +146,7 @@
 
         // 'test/unit/**/instance/one*',
 
-        'test/unit/**/instance/oneToManyInstanceSpacePartition*',
+        // 'test/unit/**/instance/oneToManyInstanceSpacePartition*',
 
         //'test/unit/**/instance/*lod*',
 
@@ -238,7 +240,7 @@
 
         //'test/unit/component/physics/**/eventSpec*',
 
-        'test/unit/**/OctreeSpec*',
+        //'test/unit/**/OctreeSpec*',
         //'test/unit/**/CollisionDetectorSpec*',
         //'test/unit/**/BoundingRegionUtilsSpec*',
 

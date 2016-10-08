@@ -32,11 +32,8 @@ describe("LOD", function() {
         });
 
         describe("select level geometry by range-base", function(){
-            var rendererComponent;
-
             beforeEach(function(){
                 var result = lodTool.prepareLod(sandbox);
-                rendererComponent = result.rendererComponent;
                 model = result.model;
                 geo = result.geo;
                 geoLevel1 = result.geoLevel1;
@@ -204,13 +201,13 @@ describe("LOD", function() {
             lod.addGeometryLevel(20, wd.ELODGeometryState.INVISIBLE);
         });
 
-        it("clone levelList", function(){
+        it("clone _geometryLevelList", function(){
             var cloneGeo = lodTool.createGeo();
             sandbox.stub(geo, "clone").returns(cloneGeo);
 
             var result = lod.clone();
 
-            expect(result.levelList.getChildren()).toEqual( [
+            expect(result._geometryLevelList.getChildren()).toEqual( [
                     {
                         distanceBetweenCameraAndObject: 20,
                         geometry:wd.ELODGeometryState.INVISIBLE
@@ -223,10 +220,10 @@ describe("LOD", function() {
             );
             expect(result !== lod).toBeTruthy();
         });
-        //it("if param->isShareGeometry is true, cloned levelList->geometry share with source->levelList->geometry", function(){
+        //it("if param->isShareGeometry is true, cloned _geometryLevelList->geometry share with source->_geometryLevelList->geometry", function(){
         //    var result = lod.clone(true);
         //
-        //    expect(result.levelList.getChildren()).toEqual( [
+        //    expect(result._geometryLevelList.getChildren()).toEqual( [
         //            {
         //                distanceBetweenCameraAndObject: 20,
         //                geometry:wd.ELODGeometryState.INVISIBLE

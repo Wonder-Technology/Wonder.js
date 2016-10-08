@@ -1,9 +1,10 @@
 var grassInstanceTool = (function(){
     return {
-        createGrass: function (){
+        createGrass: function (name){
             var material = wd.GrassInstanceMaterial.create();
 
             material.map = wd.ImageTexture.create({});
+            material.terrainGeometry = {};
 
 
 
@@ -23,8 +24,12 @@ var grassInstanceTool = (function(){
             var sourceInstanceComponent = wd.OneToManySourceInstance.create();
             gameObject.addComponent(sourceInstanceComponent);
 
-            gameObject.name = "grass";
-
+            if(name){
+                gameObject.name = name;
+            }
+            else{
+                gameObject.name = "grass";
+            }
 
             return gameObject;
         },

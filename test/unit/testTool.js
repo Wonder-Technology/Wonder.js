@@ -93,7 +93,7 @@ var testTool = (function () {
                 useProgram: sandbox.stub(),
                 bindFramebuffer: sandbox.stub(),
                 bindRenderbuffer: sandbox.stub(),
-                createTexture: sandbox.stub(),
+                createTexture: sandbox.stub().returns({}),
                 texImage2D: sandbox.stub(),
                 activeTexture: sandbox.stub(),
                 bindTexture: sandbox.stub(),

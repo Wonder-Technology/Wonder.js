@@ -96,7 +96,9 @@ module wd{
                     expect(directionLights).not.empty;
                 }
 
-                expect(pointLights).not.empty;
+                if(pointLights) {
+                    expect(pointLights).not.empty;
+                }
             });
         })
         private _sendLightData(program:Program){
