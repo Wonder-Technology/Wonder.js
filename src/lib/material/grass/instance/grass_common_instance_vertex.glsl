@@ -29,7 +29,7 @@ only consider one light
 
 not consider ambient light
 */
-    float c = max(dot(normal, _getLightDir()), 0.0);
+    float c = max(-dot(normal, _getLightDir()), 0.0);
 
     c = max(c - (1.0 - hpct) * 0.75, 0.0);
     c = 0.3 + 0.7 * c;
@@ -64,16 +64,16 @@ not consider ambient light
 
 
     // Start computing a normal for this vertex
-//    vec3 normal = vec3(rotate(0.0, bside * 2.0 - 1.0, a_offset.w), 0.0);
+    vec3 normal = vec3(rotate(0.0, bside * 2.0 - 1.0, a_offset.w), 0.0);
 
-vec3 normal = vec3(0.0);
-
-if(bside == 0.0){
-normal.x = -1.0;
-}
-else{
-normal.x = 1.0;
-}
+//vec3 normal = vec3(0.0);
+//
+//if(bside == 0.0){
+//normal.x = -1.0;
+//}
+//else{
+//normal.x = 1.0;
+//}
 
     // Apply blade's natural curve amount
     float curve = a_shape.w;
