@@ -244,7 +244,6 @@ module wd {
                 instanceSourceMap = wdCb.Hash.create<GameObject>();
 
             renderListByFrustumCull.forEach((gameObject:GameObject) => {
-                //todo refactor?
                 if(!InstanceUtils.isInstance(gameObject)
                     || InstanceUtils.isOneToManySourceInstance(gameObject)
                 ){

@@ -2575,7 +2575,6 @@ describe("instance", function () {
                     lod.addLevel(300, geometryLevel2);
                     lod.addLevel(500, wd.ELODState.INVISIBLE);
 
-
                     gameObject.addComponent(lod);
 
                     return gameObject;
