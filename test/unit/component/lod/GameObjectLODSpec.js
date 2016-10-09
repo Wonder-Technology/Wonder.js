@@ -91,7 +91,7 @@ describe("GameObjectLOD", function() {
         var camera;
         var lod;
 
-        function prepareLod(){
+        function prepareLod(defaultSwitchHandler, switchHandlerLevel1, switchHandlerLevel2){
             var model = grassInstanceTool.createGrass("instance");
 
 
@@ -101,8 +101,24 @@ describe("GameObjectLOD", function() {
 
             lod = wd.GameObjectLOD.create();
 
-            lod.addLevel(15, gameObjectLevel1);
-            lod.addLevel(30, gameObjectLevel2);
+            if(defaultSwitchHandler){
+                lod.defaultGameObjectSwitchHandler = defaultSwitchHandler;
+            }
+
+            if(switchHandlerLevel1){
+                lod.addLevel(15, gameObjectLevel1, switchHandlerLevel1);
+            }
+            else{
+                lod.addLevel(15, gameObjectLevel1);
+            }
+
+            if(switchHandlerLevel1){
+                lod.addLevel(30, gameObjectLevel2, switchHandlerLevel2);
+            }
+            else{
+                lod.addLevel(30, gameObjectLevel2);
+            }
+
             lod.addLevel(40, wd.ELODState.INVISIBLE);
 
             model.addComponent(lod);
@@ -243,6 +259,81 @@ describe("GameObjectLOD", function() {
                 expect(gameObjectLevel2.init).toCalledOnce();
             });
         });
+
+        describe("test trigger corresponding switch handler when switch gameObject", function(){
+         var defaultSwitchHandler, switchHandlerLevel1, switchHandlerLevel2;
+
+
+            beforeEach(function(){
+                defaultSwitchHandler = sandbox.stub();
+                switchHandlerLevel1 = sandbox.stub();
+                switchHandlerLevel2 = sandbox.stub();
+
+
+                var result = prepareLod(defaultSwitchHandler, switchHandlerLevel1, switchHandlerLevel2);
+                model = result.model;
+                gameObjectLevel1 = result.gameObjectLevel1;
+                gameObjectLevel2 = result.gameObjectLevel2;
+
+                director.scene.addChild(model);
+
+                director._init();
+            });
+
+            it("when switch to lod.entityObject, trigger defaultGameObjectSwitchHandler", function() {
+                lodTool.setCameraPos(camera, wd.Vector3.create(10, 0, 0));
+
+                director._run(1);
+
+                expect(defaultSwitchHandler).toCalledOnce();
+                expect(defaultSwitchHandler).toCalledWith(model);
+            });
+            it("when switch to level1, trigger switchHandlerLevel1", function() {
+                lodTool.setCameraPos(camera, wd.Vector3.create(20, 0, 0));
+
+                director._run(1);
+
+                expect(switchHandlerLevel1).toCalledWith(gameObjectLevel1);
+            });
+            it("when switch to level2, trigger switchHandlerLevel2", function() {
+                lodTool.setCameraPos(camera, wd.Vector3.create(31, 0, 0));
+
+                director._run(1);
+
+                expect(switchHandlerLevel2).toCalledWith(gameObjectLevel2);
+            });
+            it("test together", function () {
+                lodTool.setCameraPos(camera, wd.Vector3.create(31, 0, 0));
+
+                director._run(1);
+
+                expect(switchHandlerLevel2).toCalledOnce();
+
+
+                lodTool.setCameraPos(camera, wd.Vector3.create(40, 0, 0));
+
+                director._run(1);
+
+
+
+
+                lodTool.setCameraPos(camera, wd.Vector3.create(10, 0, 0));
+
+                director._run(1);
+
+
+                expect(defaultSwitchHandler).toCalledOnce();
+
+
+
+                lodTool.setCameraPos(camera, wd.Vector3.create(25, 0, 0));
+
+                director._run(1);
+
+
+                expect(switchHandlerLevel1).toCalledOnce();
+            });
+        });
     });
 
 
@@ -257,6 +348,20 @@ describe("GameObjectLOD", function() {
             lod.addLevel(20, wd.ELODState.INVISIBLE);
         });
 
+        it("clone activeGameObject,defaultGameObjectSwitchHandler", function () {
+            var activeGameObject = {};
+            var defaultGameObjectSwitchHandler = function(){};
+
+            lod.activeGameObject = activeGameObject;
+            lod.defaultGameObjectSwitchHandler = defaultGameObjectSwitchHandler;
+
+
+            var result = lod.clone();
+
+
+            expect(result.activeGameObject).toEqual(activeGameObject);
+            expect(result.defaultGameObjectSwitchHandler).toEqual(defaultGameObjectSwitchHandler);
+        });
         it("clone _gameObjectLevelList", function(){
             var cloneGameObject = createGrassMap();
             sandbox.stub(gameObjectLevel1, "clone").returns(cloneGameObject);
@@ -266,11 +371,13 @@ describe("GameObjectLOD", function() {
             expect(result._gameObjectLevelList.getChildren()).toEqual( [
                     {
                         distanceBetweenCameraAndObject: 20,
-                        gameObject:wd.ELODState.INVISIBLE
+                        gameObject:wd.ELODState.INVISIBLE,
+                        switchHandler:lod._gameObjectLevelList.getChild(0).switchHandler
                     },
                     {
                         distanceBetweenCameraAndObject: 10,
-                        gameObject:cloneGameObject
+                        gameObject:cloneGameObject,
+                        switchHandler:lod._gameObjectLevelList.getChild(1).switchHandler
                     }
                 ]
             );

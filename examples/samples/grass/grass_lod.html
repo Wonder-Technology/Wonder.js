@@ -39,6 +39,7 @@
 //            octreeContainer.addChildren(createGrasses(terrain));
 
             director.scene.addChildren(createGrasses(terrain));
+//            director.scene.addChildren(octreeContainer);
 
             director.scene.addChild(terrain);
 
@@ -123,8 +124,12 @@
                 });
 
 
+                var x = range / 2 - getVal() * range;
+                var z = range / 2 - getVal() * range;
 
-                item.transform.position = wd.Vector3.create(range / 2 - getVal() * range, item.transform.position.y, range / 2 - getVal() * range);
+                item.transform.position = wd.Vector3.create(x, item.transform.position.y,  z);
+
+
 
                 arr.push(item);
             }
@@ -168,8 +173,15 @@
             var lod = wd.GameObjectLOD.create();
 
 
-            lod.addLevel(30, gameObjectLevel1);
-            lod.addLevel(60, gameObjectLevel2);
+            function switchHandler(gameObject){
+                var pos = gameObject.transform.position;
+
+                gameObject.transform.position = wd.Vector3.create(pos.x, getHeight(gameObject, terrain, pos.x, pos.z), pos.z);
+            }
+
+
+            lod.addLevel(30, gameObjectLevel1, switchHandler);
+            lod.addLevel(60, gameObjectLevel2, switchHandler);
 
             lod.addLevel(80, wd.ELODState.INVISIBLE);
 
@@ -249,7 +261,6 @@
 
             gameObject.addComponent(wd.MeshRenderer.create());
 
-            setHeight(gameObject, terrain, 0, 0);
 
 
             return gameObject;
@@ -276,14 +287,19 @@
 
             gameObject.addComponent(wd.MeshRenderer.create());
 
-            setHeight(gameObject, terrain, 0, 0);
 
             return gameObject;
         }
 
-        function setHeight(gameObject, terrain, x, z) {
-            var y = terrain.getComponent(wd.TerrainGeometry).getHeightAtCoordinates(x, z) + gameObject.getComponent(wd.Geometry).height / 2;
-            gameObject.transform.position = wd.Vector3.create(x, y, z);
+        function getHeight(gameObject, terrain, x, z) {
+            var height = 0,
+                    geometry = gameObject.getComponent(wd.Geometry);
+
+            if(geometry.height){
+                height = geometry.height / 2;
+            }
+
+            return terrain.getComponent(wd.TerrainGeometry).getHeightAtCoordinates(x, z) + height;
         }
 
         function createAmbientLight() {

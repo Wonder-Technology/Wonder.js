@@ -1,5 +1,4 @@
 module wd{
-    //todo test
     export class GameObjectLOD extends Component{
         public static create() {
             var obj = new this();
@@ -9,8 +8,10 @@ module wd{
 
         public entityObject:GameObject;
 
+        @cloneAttributeAsBasicType()
         public activeGameObject:GameObject = null;
-        //todo @cloneAttributeAsCustomType?
+        @cloneAttributeAsBasicType()
+        public defaultGameObjectSwitchHandler:Function = (gameObject:GameObject) => {};
         @cloneAttributeAsCustomType(function(source:GameObjectLOD, target:GameObjectLOD, memberName:string){
             source._gameObjectLevelList.forEach((levelData:LevelData) => {
                 var gameObjectLevel:ELODState|GameObject = null;
@@ -22,10 +23,11 @@ module wd{
                     gameObjectLevel = (<GameObject>levelData.gameObject).clone();
                 }
 
-                target.addLevel(levelData.distanceBetweenCameraAndObject, gameObjectLevel);
+                target.addLevel(levelData.distanceBetweenCameraAndObject, gameObjectLevel, levelData.switchHandler);
             });
         })
         private _gameObjectLevelList:wdCb.Collection<LevelData> = wdCb.Collection.create<LevelData>();
+        private _lastActiveGameObject:GameObject = null;
 
         public init(){
             var entityObject = this.entityObject;
@@ -62,10 +64,11 @@ module wd{
         }
 
         //todo check only addGameObjectLevel or addGameObjectLevel?
-        public addLevel(distanceBetweenCameraAndObject, gameObjectLevel:GameObject|ELODState){
+        public addLevel(distanceBetweenCameraAndObject, gameObjectLevel:GameObject|ELODState, switchHandler = (gameObject:GameObject) => {}){
             this._gameObjectLevelList.addChild({
                 distanceBetweenCameraAndObject: distanceBetweenCameraAndObject,
-                gameObject:gameObjectLevel
+                gameObject:gameObjectLevel,
+                switchHandler:switchHandler
             });
 
             this._gameObjectLevelList.sort((levelData1:LevelData, levelData2) => {
@@ -82,15 +85,17 @@ module wd{
         public update(elapsed:number):void {
             //todo optimize: only when camera move, then compute lod; reduce compute rate
             var currentDistanceBetweenCameraAndObject:number = Vector3.create().sub2(Director.getInstance().scene.currentCamera.transform.position, this.entityObject.transform.position).length(),
-                activeGameObject:any = null;
+                activeGameObject:any = null,
+                switchHandler = null;
 
             if(this.activeGameObject !== null){
                 this.activeGameObject.isVisible = false;
             }
 
-            this._gameObjectLevelList.forEach(({gameObject, distanceBetweenCameraAndObject}) => {
-                if(currentDistanceBetweenCameraAndObject >= distanceBetweenCameraAndObject){
-                    activeGameObject = gameObject;
+            this._gameObjectLevelList.forEach((levelData:LevelData) => {
+                if(currentDistanceBetweenCameraAndObject >= levelData.distanceBetweenCameraAndObject){
+                    activeGameObject = levelData.gameObject;
+                    switchHandler = levelData.switchHandler;
 
                     return wdCb.$BREAK;
                 }
@@ -104,17 +109,33 @@ module wd{
 
             if(activeGameObject === null){
                 this.activeGameObject = this.entityObject;
+
+                this.activeGameObject.isVisible = true;
+
+                if(this._isSwitch()){
+                    this.defaultGameObjectSwitchHandler(this.entityObject);
+                }
             }
             else{
                 this.activeGameObject = activeGameObject;
+                this.activeGameObject.isVisible = true;
+
+                if(this._isSwitch()){
+                    switchHandler(this.activeGameObject);
+                }
             }
 
-            this.activeGameObject.isVisible = true;
+            this._lastActiveGameObject = this.activeGameObject;
+        }
+
+        private _isSwitch(){
+            return !JudgeUtils.isEqual(this.activeGameObject, this._lastActiveGameObject)
         }
     }
 
     type LevelData = {
         distanceBetweenCameraAndObject:number;
         gameObject:GameObject|ELODState;
+        switchHandler:(gameObject:GameObject)=>void;
     }
 }
