@@ -84,6 +84,9 @@ var gameObjectLODTool = (function(){
         gameObject.addComponent(wd.MeshRenderer.create());
 
 
+            gameObject.name = "grassMap";
+
+
         return gameObject;
     },
     createBillboard: function () {
@@ -106,6 +109,9 @@ var gameObjectLODTool = (function(){
         gameObject.addComponent(billboard);
 
         gameObject.addComponent(wd.MeshRenderer.create());
+
+
+        gameObject.name = "billboard";
 
         return gameObject;
     }

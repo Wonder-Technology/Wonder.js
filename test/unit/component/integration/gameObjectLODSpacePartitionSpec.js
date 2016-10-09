@@ -81,6 +81,8 @@ describe("gameObjectLOD+spacePartition", function() {
 
 
                 expect(gameObjectLevel11.render).toCalledOnce();
+                expect(gameObjectLevel12.render).not.toCalled();
+                expect(model1.render).not.toCalled();
 
 
 
@@ -92,6 +94,12 @@ describe("gameObjectLOD+spacePartition", function() {
 
 
                 expect(gameObjectLevel22.render).toCalledOnce();
+                expect(gameObjectLevel21.render).not.toCalled();
+                expect(model2.render).not.toCalled();
+
+                expect(gameObjectLevel11.render).not.toCalledTwice();
+                expect(gameObjectLevel12.render).not.toCalled();
+                expect(model1.render).not.toCalled();
             });
         });
     });

@@ -7,7 +7,7 @@ module wd{
                 var gameObjectLOD = child.getComponent<GameObjectLOD>(GameObjectLOD),
                 activeGameObject:GameObject = null;
 
-                activeGameObject = this._getActiveGameObject(child)
+                activeGameObject = this._getActiveGameObject(child);
 
 
                 if(activeGameObject === null){
@@ -26,17 +26,28 @@ module wd{
         }
 
         public static getGameObjectRenderListForOctree(sourceList:wdCb.Collection<GameObject>){
-            var self = this;
+            var renderList = [];
 
-            return sourceList.filter((child:GameObject) => {
-                var activeGameObject = self._getActiveGameObject(child);
+            sourceList.forEach((child:GameObject) => {
+                var gameObjectLOD = child.getComponent<GameObjectLOD>(GameObjectLOD),
+                    activeGameObject:GameObject = null;
+
+                activeGameObject = this._getActiveGameObject(child);
+
 
                 if(activeGameObject === null){
-                    return;
+                    //todo optimize:use temp Collection
+                    return wdCb.Collection.create<GameObject>();
                 }
 
-                return activeGameObject.isVisible;
+
+                if(activeGameObject.isVisible){
+                    renderList.push(activeGameObject);
+                }
             });
+
+            //todo optimize:use temp Collection
+            return wdCb.Collection.create<GameObject>(renderList);
         }
 
         private static _getActiveGameObject(source:GameObject){
