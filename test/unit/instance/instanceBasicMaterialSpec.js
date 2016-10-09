@@ -36,7 +36,7 @@ describe("instance with basic material", function(){
     }
 
     function prepareWithChild(){
-        box1 = instanceTool.createBox(1);
+        box1 = instanceTool.createBox();
         box1.name = "box1";
 
         box1Child1 = prepareTool.createSphere(1)
@@ -235,7 +235,7 @@ describe("instance with basic material", function(){
 
         describe("batch draw call", function () {
             it("test when only one instance with children", function () {
-                box1 = instanceTool.createBox(1);
+                box1 = instanceTool.createBox();
 
                 box1Child1 = prepareTool.createSphere(1);
 

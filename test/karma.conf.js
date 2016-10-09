@@ -26,15 +26,15 @@
         'test/helper/yoop/yOOP.js',
         'test/unit/**/*Tool.js',
 
-        // 'test/unit/**',
+        'test/unit/**',
 
 
         //'test/render/*Tool.js',
         //'test/render/helper/*.js',
 
 
-        'test/unit/**/GameObjectLOD*',
-        'test/unit/**/gameObjectLODSpace*',
+        // 'test/unit/**/GameObjectLOD*',
+        // 'test/unit/**/gameObjectLODSpace*',
 
         // 'test/unit/**/OneToOneSourceInstance*',
         // 'test/unit/**/oneToManyInstance*',
@@ -145,11 +145,13 @@
         //
         // 'test/unit/**/instance/**',
 
+        // 'test/unit/**/instanceBasic*',
+
         // 'test/unit/**/instance/one*',
 
         // 'test/unit/**/instance/oneToManyInstanceSpacePartition*',
 
-        'test/unit/**/instance/*lod*',
+        // 'test/unit/**/instance/*lod*',
 
         // 'test/unit/**/instance/*SourceInstance*',
         // 'test/unit/**/instance/instance_basic*',
@@ -215,7 +217,7 @@
         //
 
 
-        'test/unit/**/lod/*',
+        // 'test/unit/**/lod/*',
 
         //'test/unit/**/CameraController*',
         //'test/unit/**/camera/**',

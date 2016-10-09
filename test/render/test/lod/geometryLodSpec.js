@@ -1,4 +1,4 @@
-describe("lod", function () {
+describe("geometryLod", function () {
     var sandbox = null;
 
     beforeEach(function () {
