@@ -7,22 +7,14 @@ module wd{
                 var gameObjectLOD = child.getComponent<GameObjectLOD>(GameObjectLOD),
                 activeGameObject:GameObject = null;
 
-                if(gameObjectLOD){
-                    if(gameObjectLOD.activeGameObject === null){
-                        //todo optimize:use temp Collection
-                     return wdCb.Collection.create<GameObject>();
-                    }
+                activeGameObject = this._getActiveGameObject(child)
 
-                    activeGameObject = gameObjectLOD.activeGameObject;
 
-                    // if(activeGameObject.isVisible && (!InstanceUtils.isObjectInstance(activeGameObject)){
-                    //     if(!InstanceUtils.isObjectInstance(activeGameObject)){
-                    //     renderList.push(activeGameObject);
-                    // }
+                if(activeGameObject === null){
+                    //todo optimize:use temp Collection
+                    return wdCb.Collection.create<GameObject>();
                 }
-                else{
-                    activeGameObject = child;
-                }
+
 
                 if(activeGameObject.isVisible && !InstanceUtils.isObjectInstance(activeGameObject)){
                     renderList.push(activeGameObject);
@@ -34,10 +26,27 @@ module wd{
         }
 
         public static getGameObjectRenderListForOctree(sourceList:wdCb.Collection<GameObject>){
-            //todo modify
+            var self = this;
+
             return sourceList.filter((child:GameObject) => {
-                return child.isVisible;
+                var activeGameObject = self._getActiveGameObject(child);
+
+                if(activeGameObject === null){
+                    return;
+                }
+
+                return activeGameObject.isVisible;
             });
+        }
+
+        private static _getActiveGameObject(source:GameObject){
+            var gameObjectLOD = source.getComponent<GameObjectLOD>(GameObjectLOD);
+
+            if(gameObjectLOD){
+                return gameObjectLOD.activeGameObject;
+            }
+
+            return source;
         }
     }
 }

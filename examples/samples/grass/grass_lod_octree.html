@@ -35,11 +35,10 @@
             wd.DebugConfig.showDebugPanel = true;
 
 
-//            var octreeContainer = createOctree();
-//            octreeContainer.addChildren(createGrasses(terrain));
+            var octreeContainer = createOctree();
+            octreeContainer.addChildren(createGrasses(terrain));
 
-            director.scene.addChildren(createGrasses(terrain));
-//            director.scene.addChildren(octreeContainer);
+            director.scene.addChildren(octreeContainer);
 
             director.scene.addChild(terrain);
 
@@ -53,6 +52,19 @@
 
 
             director.start();
+        }
+
+        function createOctree(){
+            var octreeContainer = wd.GameObject.create();
+
+            var octree= wd.Octree.create();
+            octree.maxDepth = 3;
+            octree.maxNodeCapacity = 32;
+
+
+            octreeContainer.addComponent(octree);
+
+            return octreeContainer;
         }
 
         function createTerrain() {

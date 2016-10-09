@@ -34,6 +34,7 @@
 
 
         'test/unit/**/GameObjectLOD*',
+        'test/unit/**/gameObjectLODSpace*',
 
         // 'test/unit/**/OneToOneSourceInstance*',
         // 'test/unit/**/oneToManyInstance*',
