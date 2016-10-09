@@ -5,72 +5,6 @@ describe("GameObjectLOD", function() {
     var gameObjectLevel1,gameObjectLevel2;
     var gameObject;
 
-    function createGrassMap() {
-        var grassMap = wd.ImageTexture.create({});
-        var width = grassMap.width / 4,
-            height = grassMap.height;
-        var mapData = [
-            {
-                sourceRegion:wd.RectRegion.create(0, 0, width, height)
-            },
-            {
-                sourceRegion:wd.RectRegion.create(width, 0, width, height)
-            },
-            {
-                sourceRegion:wd.RectRegion.create(width * 2, 0, width, height)
-            }
-        ];
-
-
-
-        var material = wd.GrassMapMaterial.create();
-
-        material.grassMap = grassMap;
-        material.mapData = mapData;
-
-
-
-
-
-
-        var gameObjectmetry = wd.GrassMapGeometry.create();
-        gameObjectmetry.material = material;
-
-
-
-        var gameObject = wd.GameObject.create();
-        gameObject.addComponent(gameObjectmetry);
-
-        gameObject.addComponent(wd.MeshRenderer.create());
-
-
-        return gameObject;
-    }
-
-    function createBillboard() {
-        var material = wd.LightMaterial.create();
-        material.diffuseMap = wd.GrassProceduralTexture.create();
-
-
-        var gameObjectmetry = wd.RectGeometry.create();
-        gameObjectmetry.material = material;
-        // gameObjectmetry.width = 5;
-        // gameObjectmetry.height = 5;
-
-
-        var billboard = wd.Billboard.create();
-        billboard.mode = wd.EBillboardMode.Y;
-
-
-        var gameObject = wd.GameObject.create();
-        gameObject.addComponent(gameObjectmetry);
-        gameObject.addComponent(billboard);
-
-        gameObject.addComponent(wd.MeshRenderer.create());
-
-        return gameObject;
-    }
-
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
@@ -91,52 +25,6 @@ describe("GameObjectLOD", function() {
         var camera;
         var lod;
 
-        function prepareLod(defaultSwitchHandler, switchHandlerLevel1, switchHandlerLevel2){
-            var model = grassInstanceTool.createGrass("instance");
-
-
-            var gameObjectLevel1 = createGrassMap();
-
-            var gameObjectLevel2 = createBillboard();
-
-            lod = wd.GameObjectLOD.create();
-
-            if(defaultSwitchHandler){
-                lod.defaultGameObjectSwitchHandler = defaultSwitchHandler;
-            }
-
-            if(switchHandlerLevel1){
-                lod.addLevel(15, gameObjectLevel1, switchHandlerLevel1);
-            }
-            else{
-                lod.addLevel(15, gameObjectLevel1);
-            }
-
-            if(switchHandlerLevel1){
-                lod.addLevel(30, gameObjectLevel2, switchHandlerLevel2);
-            }
-            else{
-                lod.addLevel(30, gameObjectLevel2);
-            }
-
-            lod.addLevel(40, wd.ELODState.INVISIBLE);
-
-            model.addComponent(lod);
-
-
-
-            sandbox.spy(model, "render");
-            sandbox.spy(gameObjectLevel1, "render");
-            sandbox.spy(gameObjectLevel2, "render");
-
-            return {
-                model:model,
-                gameObjectLevel1:gameObjectLevel1,
-                gameObjectLevel2:gameObjectLevel2
-            }
-        }
-
-
         beforeEach(function(){
             director = wd.Director.getInstance();
 
@@ -148,8 +36,6 @@ describe("GameObjectLOD", function() {
         });
 
         describe("select level gameObject by range-base", function(){
-
-            // function judgeSelectGameObject (callCount, gameObject, renderer) {
             function judgeSelectGameObject (gameObject) {
                 [model, gameObjectLevel1, gameObjectLevel2].forEach(function(object){
                     if(!wd.JudgeUtils.isEqual(object, gameObject)){
@@ -163,7 +49,8 @@ describe("GameObjectLOD", function() {
 
 
             beforeEach(function(){
-                var result = prepareLod();
+                var result = gameObjectLODTool.prepareLod(sandbox);
+                lod = result.lod;
                 model = result.model;
                 gameObjectLevel1 = result.gameObjectLevel1;
                 gameObjectLevel2 = result.gameObjectLevel2;
@@ -225,8 +112,12 @@ describe("GameObjectLOD", function() {
         });
 
         describe("init", function(){
+            var lod;
+
             beforeEach(function(){
-                var result = prepareLod();
+                var result = gameObjectLODTool.prepareLod(sandbox);
+
+                lod = result.lod;
                 model = result.model;
                 gameObjectLevel1 = result.gameObjectLevel1;
                 gameObjectLevel2 = result.gameObjectLevel2;
@@ -270,7 +161,7 @@ describe("GameObjectLOD", function() {
                 switchHandlerLevel2 = sandbox.stub();
 
 
-                var result = prepareLod(defaultSwitchHandler, switchHandlerLevel1, switchHandlerLevel2);
+                var result = gameObjectLODTool.prepareLod(sandbox, defaultSwitchHandler, switchHandlerLevel1, switchHandlerLevel2);
                 model = result.model;
                 gameObjectLevel1 = result.gameObjectLevel1;
                 gameObjectLevel2 = result.gameObjectLevel2;
@@ -343,7 +234,7 @@ describe("GameObjectLOD", function() {
         beforeEach(function(){
             lod = wd.GameObjectLOD.create();
 
-            gameObjectLevel1 = createGrassMap();
+            gameObjectLevel1 = gameObjectLODTool.createGrassMap();
             lod.addLevel(10, gameObjectLevel1);
             lod.addLevel(20, wd.ELODState.INVISIBLE);
         });
@@ -363,7 +254,7 @@ describe("GameObjectLOD", function() {
             expect(result.defaultGameObjectSwitchHandler).toEqual(defaultGameObjectSwitchHandler);
         });
         it("clone _gameObjectLevelList", function(){
-            var cloneGameObject = createGrassMap();
+            var cloneGameObject = gameObjectLODTool.createGrassMap();
             sandbox.stub(gameObjectLevel1, "clone").returns(cloneGameObject);
 
             var result = lod.clone();
