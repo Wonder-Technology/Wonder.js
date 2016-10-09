@@ -1,19 +1,17 @@
 module wd{
-    export class GameObjectLOD extends Component{
+    export class GameObjectLOD extends LOD{
         public static create() {
             var obj = new this();
 
             return obj;
         }
 
-        public entityObject:GameObject;
-
         @cloneAttributeAsBasicType()
         public activeGameObject:GameObject = null;
         @cloneAttributeAsBasicType()
         public defaultGameObjectSwitchHandler:Function = (gameObject:GameObject) => {};
         @cloneAttributeAsCustomType(function(source:GameObjectLOD, target:GameObjectLOD, memberName:string){
-            source._gameObjectLevelList.forEach((levelData:LevelData) => {
+            source._levelList.forEach((levelData:LevelData) => {
                 var gameObjectLevel:ELODState|GameObject = null;
 
                 if(levelData.gameObject === ELODState.INVISIBLE){
@@ -26,7 +24,7 @@ module wd{
                 target.addLevel(levelData.distanceBetweenCameraAndObject, gameObjectLevel, levelData.switchHandler);
             });
         })
-        private _gameObjectLevelList:wdCb.Collection<LevelData> = wdCb.Collection.create<LevelData>();
+        private _levelList:wdCb.Collection<LevelData> = wdCb.Collection.create<LevelData>();
         private _lastActiveGameObject:GameObject = null;
 
         public init(){
@@ -34,7 +32,7 @@ module wd{
 
             this.activeGameObject = entityObject;
 
-            this._gameObjectLevelList
+            this._levelList
                 .filter(({gameObject, distanceBetweenCameraAndObject}) => {
                     return gameObject !== ELODState.INVISIBLE;
                 })
@@ -47,41 +45,38 @@ module wd{
             super.init();
         }
 
-        public addToObject(entityObject:EntityObject, isShareComponent:boolean = false){
-            var engine:LODEngine = LODEngine.getInstance();
-
-            super.addToObject(entityObject, isShareComponent);
-
-            if(!engine.hasChild(this)){
-                engine.addChild(this);
-            }
-        }
-
-        public removeFromObject(entityObject:EntityObject){
-            super.removeFromObject(entityObject);
-
-            LODEngine.getInstance().removeChild(this);
-        }
-
-        //todo check only addGameObjectLevel or addGameObjectLevel?
         public addLevel(distanceBetweenCameraAndObject, gameObjectLevel:GameObject|ELODState, switchHandler = (gameObject:GameObject) => {}){
-            this._gameObjectLevelList.addChild({
+            this._levelList.addChild({
                 distanceBetweenCameraAndObject: distanceBetweenCameraAndObject,
                 gameObject:gameObjectLevel,
                 switchHandler:switchHandler
             });
 
-            this._gameObjectLevelList.sort((levelData1:LevelData, levelData2) => {
+            this._levelList.sort((levelData1:LevelData, levelData2) => {
                 return levelData2.distanceBetweenCameraAndObject - levelData1.distanceBetweenCameraAndObject;
             }, true);
         }
 
-        // @require(function(){
-        //     if(InstanceUtils.isHardwareSupport()){
-        //         assert(!InstanceUtils.isObjectInstance(this.entityObject), Log.info.FUNC_SHOULD_NOT("if hardware support instance, object instance", "add lod component"));
-        //     }
-        //todo ensure only activeGameObject is visible, others not visible
-        // })
+        @ensure(function(){
+            it("should only activeGameObject is visible while others is not", () => {
+                var activeGameObject = this.activeGameObject;
+
+                if(activeGameObject !== null){
+                    expect(activeGameObject.isVisible).true;
+                }
+
+                this._levelList.map((levelData:LevelData) => {
+                    return levelData.gameObject;
+                })
+                    .addChild(this.entityObject)
+                    .filter((gameObject:GameObject|ELODState) => {
+                        return gameObject !== ELODState.INVISIBLE &&  !JudgeUtils.isEqual(gameObject, activeGameObject);
+                    })
+                    .forEach((gameObject:GameObject) => {
+                        expect(gameObject.isVisible).false;
+                    });
+            });
+        })
         public update(elapsed:number):void {
             //todo optimize: only when camera move, then compute lod; reduce compute rate
             var currentDistanceBetweenCameraAndObject:number = Vector3.create().sub2(Director.getInstance().scene.currentCamera.transform.position, this.entityObject.transform.position).length(),
@@ -92,7 +87,7 @@ module wd{
                 this.activeGameObject.isVisible = false;
             }
 
-            this._gameObjectLevelList.forEach((levelData:LevelData) => {
+            this._levelList.forEach((levelData:LevelData) => {
                 if(currentDistanceBetweenCameraAndObject >= levelData.distanceBetweenCameraAndObject){
                     activeGameObject = levelData.gameObject;
                     switchHandler = levelData.switchHandler;

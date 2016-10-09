@@ -72,10 +72,10 @@ describe("OneToOneSourceInstance", function(){
 
             describe("test lod component", function(){
                 function judge(){
-                    box1.addComponent(wd.LOD.create());
+                    box1.addComponent(wd.GeometryLOD.create());
                     box1Instance1 = instanceTool.cloneInstance(box1, "instance1");
 
-                    expect(box1Instance1.hasComponent(wd.LOD)).toBeFalsy();
+                    expect(box1Instance1.hasComponent(wd.GeometryLOD)).toBeFalsy();
                 }
 
                 beforeEach(function(){

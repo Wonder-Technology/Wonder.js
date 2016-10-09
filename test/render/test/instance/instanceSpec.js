@@ -2569,11 +2569,11 @@ describe("instance", function () {
                     var geometryLevel1 = createSphereGeometry(wd.Color.create("rgb(0.0, 1.0, 0.0)"), 5);
                     var geometryLevel2 = createSphereGeometry(wd.Color.create("#ffffff"), 2);
 
-                    var lod = wd.LOD.create();
+                    var lod = wd.GeometryLOD.create();
 
-                    lod.addGeometryLevel(100, geometryLevel1);
-                    lod.addGeometryLevel(300, geometryLevel2);
-                    lod.addGeometryLevel(500, wd.ELODGeometryState.INVISIBLE);
+                    lod.addLevel(100, geometryLevel1);
+                    lod.addLevel(300, geometryLevel2);
+                    lod.addLevel(500, wd.ELODState.INVISIBLE);
 
 
                     gameObject.addComponent(lod);

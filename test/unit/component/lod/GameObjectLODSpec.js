@@ -66,21 +66,21 @@ describe("GameObjectLOD", function() {
                 judgeSelectGameObject(model);
             });
             it("if distance of camera->position to object->position >= gameObjectLevel1 distance, render level1 gameObject", function () {
-                lodTool.setCameraPos(camera, wd.Vector3.create(15, 0, 0));
+                geometryLODTool.setCameraPos(camera, wd.Vector3.create(15, 0, 0));
 
                 director._run(1);
 
                 judgeSelectGameObject(gameObjectLevel1);
             });
             it("if distance of camera->position to object->position >= gameObjectLevel2 distance, render level2 gameObject", function () {
-                lodTool.setCameraPos(camera, wd.Vector3.create(30, 0, 0));
+                geometryLODTool.setCameraPos(camera, wd.Vector3.create(30, 0, 0));
 
                 director._run(1);
 
                 judgeSelectGameObject(gameObjectLevel2);
             });
             it("if distance of camera->position to object->position >= 40, not render", function () {
-                lodTool.setCameraPos(camera, wd.Vector3.create(40, 0, 0));
+                geometryLODTool.setCameraPos(camera, wd.Vector3.create(40, 0, 0));
 
                 director._run(1);
 
@@ -91,14 +91,14 @@ describe("GameObjectLOD", function() {
                 });
             });
             it("if distance of camera->position to object->position < level1 distance, render lod.entityObject", function () {
-                lodTool.setCameraPos(camera, wd.Vector3.create(30, 0, 0));
+                geometryLODTool.setCameraPos(camera, wd.Vector3.create(30, 0, 0));
 
                 director._run(1);
 
 
 
 
-                lodTool.setCameraPos(camera, wd.Vector3.create(10, 0, 0));
+                geometryLODTool.setCameraPos(camera, wd.Vector3.create(10, 0, 0));
 
                 director._run(1);
 
@@ -172,7 +172,7 @@ describe("GameObjectLOD", function() {
             });
 
             it("when switch to lod.entityObject, trigger defaultGameObjectSwitchHandler", function() {
-                lodTool.setCameraPos(camera, wd.Vector3.create(10, 0, 0));
+                geometryLODTool.setCameraPos(camera, wd.Vector3.create(10, 0, 0));
 
                 director._run(1);
 
@@ -180,35 +180,35 @@ describe("GameObjectLOD", function() {
                 expect(defaultSwitchHandler).toCalledWith(model);
             });
             it("when switch to level1, trigger switchHandlerLevel1", function() {
-                lodTool.setCameraPos(camera, wd.Vector3.create(20, 0, 0));
+                geometryLODTool.setCameraPos(camera, wd.Vector3.create(20, 0, 0));
 
                 director._run(1);
 
                 expect(switchHandlerLevel1).toCalledWith(gameObjectLevel1);
             });
             it("when switch to level2, trigger switchHandlerLevel2", function() {
-                lodTool.setCameraPos(camera, wd.Vector3.create(31, 0, 0));
+                geometryLODTool.setCameraPos(camera, wd.Vector3.create(31, 0, 0));
 
                 director._run(1);
 
                 expect(switchHandlerLevel2).toCalledWith(gameObjectLevel2);
             });
             it("test together", function () {
-                lodTool.setCameraPos(camera, wd.Vector3.create(31, 0, 0));
+                geometryLODTool.setCameraPos(camera, wd.Vector3.create(31, 0, 0));
 
                 director._run(1);
 
                 expect(switchHandlerLevel2).toCalledOnce();
 
 
-                lodTool.setCameraPos(camera, wd.Vector3.create(40, 0, 0));
+                geometryLODTool.setCameraPos(camera, wd.Vector3.create(40, 0, 0));
 
                 director._run(1);
 
 
 
 
-                lodTool.setCameraPos(camera, wd.Vector3.create(10, 0, 0));
+                geometryLODTool.setCameraPos(camera, wd.Vector3.create(10, 0, 0));
 
                 director._run(1);
 
@@ -217,7 +217,7 @@ describe("GameObjectLOD", function() {
 
 
 
-                lodTool.setCameraPos(camera, wd.Vector3.create(25, 0, 0));
+                geometryLODTool.setCameraPos(camera, wd.Vector3.create(25, 0, 0));
 
                 director._run(1);
 
@@ -253,22 +253,22 @@ describe("GameObjectLOD", function() {
             expect(result.activeGameObject).toEqual(activeGameObject);
             expect(result.defaultGameObjectSwitchHandler).toEqual(defaultGameObjectSwitchHandler);
         });
-        it("clone _gameObjectLevelList", function(){
+        it("clone _levelList", function(){
             var cloneGameObject = gameObjectLODTool.createGrassMap();
             sandbox.stub(gameObjectLevel1, "clone").returns(cloneGameObject);
 
             var result = lod.clone();
 
-            expect(result._gameObjectLevelList.getChildren()).toEqual( [
+            expect(result._levelList.getChildren()).toEqual( [
                     {
                         distanceBetweenCameraAndObject: 20,
                         gameObject:wd.ELODState.INVISIBLE,
-                        switchHandler:lod._gameObjectLevelList.getChild(0).switchHandler
+                        switchHandler:lod._levelList.getChild(0).switchHandler
                     },
                     {
                         distanceBetweenCameraAndObject: 10,
                         gameObject:cloneGameObject,
-                        switchHandler:lod._gameObjectLevelList.getChild(1).switchHandler
+                        switchHandler:lod._levelList.getChild(1).switchHandler
                     }
                 ]
             );

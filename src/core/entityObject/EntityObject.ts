@@ -310,11 +310,7 @@ module wd {
 
         @virtual
         protected getRenderList(){
-            if(!this.isVisible){
-                return null;
-            }
-
-            return this._entityObjectManager.getChildren();
+            return this.getChildren();
         }
 
         protected getAllChildren(){

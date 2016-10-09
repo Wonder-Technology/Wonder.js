@@ -149,7 +149,7 @@
 
         // 'test/unit/**/instance/oneToManyInstanceSpacePartition*',
 
-        //'test/unit/**/instance/*lod*',
+        'test/unit/**/instance/*lod*',
 
         // 'test/unit/**/instance/*SourceInstance*',
         // 'test/unit/**/instance/instance_basic*',
@@ -215,7 +215,7 @@
         //
 
 
-        //'test/unit/**/lod/*',
+        'test/unit/**/lod/*',
 
         //'test/unit/**/CameraController*',
         //'test/unit/**/camera/**',

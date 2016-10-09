@@ -76,7 +76,7 @@ module wd {
         }
 
         public getGeometry():Geometry{
-            var lod:LOD = this.getComponent<LOD>(LOD);
+            var lod:GeometryLOD = this.getComponent<GeometryLOD>(GeometryLOD);
 
             if(lod && lod.activeGeometry) {
                 return <any>lod.activeGeometry;

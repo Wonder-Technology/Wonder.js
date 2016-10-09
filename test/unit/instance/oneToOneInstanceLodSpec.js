@@ -56,11 +56,11 @@ describe("one to one instance with lod", function () {
     });
 
     it("instance should show the same geometry with the source", function () {
-        var result = lodTool.prepareLod(sandbox);
+        var result = geometryLODTool.prepareLod(sandbox);
         source = result.model;
         prepare();
         instance.transform.position = wd.Vector3.create(10, 0, 0);
-        lodTool.setCameraPos(camera, wd.Vector3.create(20, 0, 0));
+        geometryLODTool.setCameraPos(camera, wd.Vector3.create(20, 0, 0));
 
         director._init();
 
@@ -77,16 +77,16 @@ describe("one to one instance with lod", function () {
 
         expect(instance.render).not.toCalled();
 
-        lodTool.judgeSelectGeometry(0, result.geoLevel1);
+        geometryLODTool.judgeSelectGeometry(0, result.geoLevel1);
         instanceTool.judgeInstanceCount(extensionInstancedArrays, 0, 2);
     });
 
     it("if there is instance not visible but the source is visible, all should be rendered", function () {
-        var result = lodTool.prepareLod(sandbox);
+        var result = geometryLODTool.prepareLod(sandbox);
         source = result.model;
         prepare();
         instance.transform.position = wd.Vector3.create(-30, 0, 0);
-        lodTool.setCameraPos(camera, wd.Vector3.create(20, 0, 0));
+        geometryLODTool.setCameraPos(camera, wd.Vector3.create(20, 0, 0));
 
         director._init();
 
@@ -110,7 +110,7 @@ describe("one to one instance with lod", function () {
         expect(instance.render).not.toCalled();
 
 
-        lodTool.judgeSelectGeometry(0, result.geoLevel1);
+        geometryLODTool.judgeSelectGeometry(0, result.geoLevel1);
         instanceTool.judgeInstanceCount(extensionInstancedArrays, 0, 2);
     });
 
@@ -129,13 +129,13 @@ describe("one to one instance with lod", function () {
 
         //it("if source not visible but instance is visible, source shouldn't be rendered and the instance should be rendered one by one by drawElements", function(){
             it("if source not visible but instance is visible, source and instance all should be not rendered", function(){
-            var result = lodTool.prepareLod(sandbox);
+            var result = geometryLODTool.prepareLod(sandbox);
             source = result.model;
             source.name = "source";
 
             prepare();
             instance.transform.position = wd.Vector3.create(10, 0, 0);
-            lodTool.setCameraPos(camera, wd.Vector3.create(40, 0, 0));
+            geometryLODTool.setCameraPos(camera, wd.Vector3.create(40, 0, 0));
 
             var instance2 = instanceTool.cloneInstance(source, "2");
 
@@ -184,15 +184,15 @@ describe("one to one instance with lod", function () {
 
             expect(gl.drawElements.callCount).toEqual(0);
             expect(extensionInstancedArrays.drawElementsInstancedANGLE).not.toCalled();
-            //lodTool.judgeSelectGeometry(0, result.geoLevel2, instanceRendererComponent);
-            //lodTool.judgeSelectGeometry(0, result.geo, instance2RendererComponent);
+            //geometryLODTool.judgeSelectGeometry(0, result.geoLevel2, instanceRendererComponent);
+            //geometryLODTool.judgeSelectGeometry(0, result.geo, instance2RendererComponent);
         });
         it("if there is instance not visible but the source is visible, all should be rendered", function () {
-            var result = lodTool.prepareLod(sandbox);
+            var result = geometryLODTool.prepareLod(sandbox);
             source = result.model;
             prepare();
             instance.transform.position = wd.Vector3.create(-30, 0, 0);
-            lodTool.setCameraPos(camera, wd.Vector3.create(20, 0, 0));
+            geometryLODTool.setCameraPos(camera, wd.Vector3.create(20, 0, 0));
 
             director._init();
 
@@ -218,7 +218,7 @@ describe("one to one instance with lod", function () {
             expect(gl.drawElements.callCount).toEqual(2);
 
 
-            lodTool.judgeSelectGeometry(0, result.geoLevel1);
+            geometryLODTool.judgeSelectGeometry(0, result.geoLevel1);
             //instanceTool.judgeInstanceCount(extensionInstancedArrays, 0, 2);
         });
     });

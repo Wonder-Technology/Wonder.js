@@ -1,4 +1,4 @@
-var lodTool = (function () {
+var geometryLODTool = (function () {
     var rendererComponent;
 
     return {
@@ -15,11 +15,11 @@ var lodTool = (function () {
 
             var geoLevel2 = this.createGeo();
 
-            var lod = wd.LOD.create();
+            var lod = wd.GeometryLOD.create();
 
-            lod.addGeometryLevel(15, geoLevel1);
-            lod.addGeometryLevel(30, geoLevel2);
-            lod.addGeometryLevel(40, wd.ELODGeometryState.INVISIBLE);
+            lod.addLevel(15, geoLevel1);
+            lod.addLevel(30, geoLevel2);
+            lod.addLevel(40, wd.ELODState.INVISIBLE);
 
             model.addComponent(lod);
 

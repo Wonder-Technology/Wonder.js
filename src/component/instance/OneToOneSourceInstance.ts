@@ -184,7 +184,7 @@ module wd{
 
             source.forEachComponent((component:Component) => {
                 if(component instanceof OneToOneSourceInstance
-                    || (component instanceof LOD)){
+                    || (component instanceof GeometryLOD)){
                     return;
                 }
 
