@@ -405,8 +405,8 @@ describe("grass map", function() {
             expect(material.program.sendStructureData).toCalledWith("u_windData.strength", wd.EVariableType.FLOAT_1, material.wind.strength);
         });
 
-        describe("test fs glsl source", function () {
-            var fsSource;
+        describe("test vs glsl source", function () {
+            var vsSource;
 
             beforeEach(function(){
                 materialTool.init(material);
@@ -414,23 +414,23 @@ describe("grass map", function() {
 
                 material.updateShader(cmd);
 
-                fsSource = material.shader.fsSource;
+                vsSource = material.shader.vsSource;
             });
 
             it("only affect top part of grass", function () {
-                expect(glslTool.containMultiLine(fsSource, [
+                expect(glslTool.containMultiLine(vsSource, [
                     "bool isTopPartOfGrass(){",
-                    "return v_grassTexCoord.y > 0.1;",
+                    "return a_texCoord.y >= 0.9;",
                     "}"
                 ])).toBeTruthy();
             });
             it("use sin function to generate animation effect", function () {
-                expect(glslTool.contain(fsSource, "float windPower = sin(u_windData.time) * u_windData.strength;"));
+                expect(glslTool.contain(vsSource, "float windPower = sin(u_windData.time) * u_windData.strength;"));
             });
-            it("affect v_grassTexCoord", function () {
-                expect(glslTool.containMultiLine(fsSource, [
+            it("affect v_worldPosition", function () {
+                expect(glslTool.containMultiLine(vsSource, [
                     "if(isTopPartOfGrass()){",
-                    "grassTexCoord = v_grassTexCoord + u_windData.direction *  getWindPower();",
+                    "position = computeVertexPositionForAnimation(a_position, u_windData.time, u_windData.direction);",
                     "}"
                 ])).toBeTruthy();
             });
