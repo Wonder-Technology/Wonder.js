@@ -13,7 +13,7 @@ describe("LightMaterial", function() {
     });
 
     describe("opacity attri", function(){
-        it("set opacity", function(){
+        it("set opacity not affect blend", function(){
             materialTool.testOpacity(material);
         });
     });
@@ -326,7 +326,7 @@ describe("LightMaterial", function() {
                 expect(result.emissionMap).toEqual(resultEmissionMap);
                 expect(result.normalMap).toEqual(resultNormalMap);
             });
-            it("clone opacity after blend", function () {
+            it("clone opacity", function () {
                 var opacity = 0.5,
                     blend = false;
 
@@ -337,7 +337,7 @@ describe("LightMaterial", function() {
                 var result = material.clone();
 
                 expect(result.opacity).toEqual(opacity);
-                expect(result.blend).toBeTruthy();
+                // expect(result.blend).toBeTruthy();
             });
             it("clone data", function () {
                 var shininess = 10,

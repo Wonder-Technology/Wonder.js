@@ -13,7 +13,7 @@ describe("BasicMaterial", function () {
     });
 
     describe("opacity attri", function(){
-        it("set opacity", function(){
+        it("set opacity not affect blend", function(){
             materialTool.testOpacity(material);
         });
     });
@@ -511,18 +511,17 @@ describe("BasicMaterial", function () {
                 expect(result.mapManager === material.mapManager).toBeFalsy();
                 expect(result.mapList.getChildren()).toEqual([resultImageTexture, resultProceduralTexture]);
             });
-            it("clone opacity after blend", function () {
-                var opacity = 0.5,
-                    blend = false;
+
+            it("clone opacity", function(){
+                var opacity = 0.5;
 
                 material.opacity = opacity;
-                material.blend = blend;
 
 
                 var result = material.clone();
 
                 expect(result.opacity).toEqual(opacity);
-                expect(result.blend).toBeTruthy();
+
             });
         });
 

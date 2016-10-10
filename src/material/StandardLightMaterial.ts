@@ -72,19 +72,8 @@ module wd{
             this._shininess = shininess;
         }
 
-        private _opacity:number = 1.0;
-        @cloneAttributeAsBasicType({
-            order:1
-        })
-        get opacity(){
-            return this._opacity;
-        }
-        set opacity(opacity:number){
-            this.setBlendByOpacity(opacity);
-
-            this._opacity = opacity;
-        }
-
+        @cloneAttributeAsBasicType()
+        public opacity:number = 1.0;
         @cloneAttributeAsBasicType()
         public lightModel:ELightModel = ELightModel.PHONG;
         @cloneAttributeAsCloneable()

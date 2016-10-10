@@ -30,15 +30,6 @@ module wd {
             }
         }
 
-        protected setBlendByOpacity(opacity:number){
-            if(opacity < 1.0 && opacity >= 0.0){
-                this.blend = true;
-            }
-            else{
-                this.blend = false;
-            }
-        }
-
         protected createShader():Shader{
             return CommonShader.create();
         }
