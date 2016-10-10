@@ -26,11 +26,14 @@ module wd{
         })
         private _levelList:wdCb.Collection<LevelData> = wdCb.Collection.create<LevelData>();
         private _lastActiveGameObject:GameObject = null;
+        private _lastNotNullActiveGameObject:GameObject = null;
 
         public init(){
             var entityObject = this.entityObject;
 
             this.activeGameObject = entityObject;
+
+            this._lastNotNullActiveGameObject = this.activeGameObject;
 
             this._levelList
                 .filter(({gameObject, distanceBetweenCameraAndObject}) => {
@@ -79,7 +82,7 @@ module wd{
         })
         public update(elapsed:number):void {
             //todo optimize: only when camera move, then compute lod; reduce compute rate
-            var currentDistanceBetweenCameraAndObject:number = Vector3.create().sub2(Director.getInstance().scene.currentCamera.transform.position, this.entityObject.transform.position).length(),
+            var currentCameraPos:Vector3 = Director.getInstance().scene.currentCamera.transform.position,
                 activeGameObject:any = null,
                 switchHandler = null;
 
@@ -87,16 +90,21 @@ module wd{
                 this.activeGameObject.isVisible = false;
             }
 
-            this._levelList.forEach((levelData:LevelData) => {
-                if(currentDistanceBetweenCameraAndObject >= levelData.distanceBetweenCameraAndObject){
+            this._levelList
+                .forEach((levelData:LevelData) => {
+                if(this._computeCurrentDistanceBetweenCameraAndObject(currentCameraPos, levelData.gameObject) >= levelData.distanceBetweenCameraAndObject){
                     activeGameObject = levelData.gameObject;
                     switchHandler = levelData.switchHandler;
 
                     return wdCb.$BREAK;
                 }
-            });
+            }, this);
 
             if(activeGameObject === ELODState.INVISIBLE){
+                if(this.activeGameObject !== null){
+                    this._lastNotNullActiveGameObject = this.activeGameObject;
+                }
+
                 this.activeGameObject = null;
 
                 return;
@@ -121,6 +129,25 @@ module wd{
             }
 
             this._lastActiveGameObject = this.activeGameObject;
+        }
+
+        @require(function(){
+            it("_lastNotNullActiveGameObject shouldn't be null", () => {
+                expect(this._lastNotNullActiveGameObject).not.null;
+            }, this);
+        })
+        private _computeCurrentDistanceBetweenCameraAndObject(currentCameraPos:Vector3, gameObject:GameObject|ELODState){
+            var targetGameObject:GameObject = null;
+
+            if(gameObject === ELODState.INVISIBLE){
+                targetGameObject = this._lastNotNullActiveGameObject;
+            }
+            else{
+                targetGameObject = <GameObject>gameObject;
+            }
+
+            //todo optimize:use temp Vector3
+            return Vector3.create().sub2(currentCameraPos, targetGameObject.transform.position).length();
         }
 
         private _isSwitch(){

@@ -26,14 +26,14 @@
         'test/helper/yoop/yOOP.js',
         'test/unit/**/*Tool.js',
 
-        'test/unit/**',
+        // 'test/unit/**',
 
 
         //'test/render/*Tool.js',
         //'test/render/helper/*.js',
 
 
-        // 'test/unit/**/GameObjectLOD*',
+        'test/unit/**/GameObjectLOD*',
         // 'test/unit/**/gameObjectLODSpace*',
 
         // 'test/unit/**/OneToOneSourceInstance*',
@@ -89,8 +89,8 @@
         //'test/unit/**/cubemapTexture*',
 
         //'test/unit/**/LineMaterial*',
-        //'test/unit/**/BasicMaterial*',
-        //'test/unit/**/LightMaterial*',
+        // 'test/unit/**/BasicMaterial*',
+        // 'test/unit/**/LightMaterial*',
         //'test/unit/**/Material*',
         //'test/unit/**/*Material*',
         //'test/unit/**/mirrorMaterial*',

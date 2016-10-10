@@ -35,10 +35,10 @@ describe("GameObjectLOD", function() {
             director.scene.addChild(lightTool.createDirectionLight());
         });
 
-        describe("select level gameObject by range-base", function(){
-            function judgeSelectGameObject (gameObject) {
-                [model, gameObjectLevel1, gameObjectLevel2].forEach(function(object){
-                    if(!wd.JudgeUtils.isEqual(object, gameObject)){
+        describe("select level gameObject by range-base", function() {
+            function judgeSelectGameObject(gameObject) {
+                [model, gameObjectLevel1, gameObjectLevel2].forEach(function (object) {
+                    if (!wd.JudgeUtils.isEqual(object, gameObject)) {
                         expect(object.render).not.toCalled();
                     }
                 });
@@ -47,8 +47,7 @@ describe("GameObjectLOD", function() {
             }
 
 
-
-            beforeEach(function(){
+            beforeEach(function () {
                 var result = gameObjectLODTool.prepareLod(sandbox);
                 lod = result.lod;
                 model = result.model;
@@ -85,8 +84,7 @@ describe("GameObjectLOD", function() {
                 director._run(1);
 
 
-
-                [model, gameObjectLevel1, gameObjectLevel2].forEach(function(object){
+                [model, gameObjectLevel1, gameObjectLevel2].forEach(function (object) {
                     expect(object.render).not.toCalled();
                 });
             });
@@ -94,8 +92,6 @@ describe("GameObjectLOD", function() {
                 geometryLODTool.setCameraPos(camera, wd.Vector3.create(30, 0, 0));
 
                 director._run(1);
-
-
 
 
                 geometryLODTool.setCameraPos(camera, wd.Vector3.create(10, 0, 0));
@@ -108,6 +104,61 @@ describe("GameObjectLOD", function() {
                 expect(model.render).toCalledAfter(gameObjectLevel2.render);
 
                 expect(gameObjectLevel1.render).not.toCalled();
+            });
+
+            describe("fix bug", function () {
+                beforeEach(function () {
+                });
+
+                describe("the distance should be the one from camera->position to activeGameObject->position", function(){
+                    beforeEach(function(){
+
+                    });
+
+                    it("test1", function () {
+                        geometryLODTool.setCameraPos(camera, wd.Vector3.create(15, 0, 0));
+
+                        gameObjectLevel1.transform.position = wd.Vector3.create(20, 0, 0);
+
+
+                        director._run(1);
+
+
+                        expect(model.render).toCalledOnce();
+                        expect(gameObjectLevel1.render).not.toCalled();
+                    });
+                    it("test update when already not invisible", function () {
+                        geometryLODTool.setCameraPos(camera, wd.Vector3.create(40, 0, 0));
+
+                        // gameObjectLevel1.transform.position = wd.Vector3.create(20, 0, 0);
+
+
+                        director._run(1);
+
+
+                        [model, gameObjectLevel1, gameObjectLevel2].forEach(function (object) {
+                            expect(object.render).not.toCalled();
+                        });
+
+
+                        director._run(2);
+
+
+                        [model, gameObjectLevel1, gameObjectLevel2].forEach(function (object) {
+                            expect(object.render).not.toCalled();
+                        });
+
+
+
+
+                        director._run(3);
+
+
+                        [model, gameObjectLevel1, gameObjectLevel2].forEach(function (object) {
+                            expect(object.render).not.toCalled();
+                        });
+                    });
+                });
             });
         });
 
