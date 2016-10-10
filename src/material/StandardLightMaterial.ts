@@ -122,6 +122,11 @@ module wd{
             }
         }
 
+        @virtual
+        protected addLightSetWorldPositionShaderLib(){
+            this.shader.addLib(LightSetWorldPositionShaderLib.create());
+        }
+
         protected addShaderLib(){
             var envMap = null;
 
@@ -131,6 +136,7 @@ module wd{
 
             this.addNormalShaderLib();
             this.shader.addLib(LightCommonShaderLib.create());
+            this.addLightSetWorldPositionShaderLib();
             this._setLightMapShaderLib();
 
             this.shader.addLib(LightShaderLib.create());

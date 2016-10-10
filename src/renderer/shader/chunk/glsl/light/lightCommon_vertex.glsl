@@ -2,7 +2,7 @@
 varying vec3 v_worldPosition;
 
 #if POINT_LIGHTS_COUNT > 0
-struct PointLight {
+    struct PointLight {
     vec3 position;
     vec4 color;
     float intensity;
@@ -18,7 +18,7 @@ uniform PointLight u_pointLights[POINT_LIGHTS_COUNT];
 
 
 #if DIRECTION_LIGHTS_COUNT > 0
-struct DirectionLight {
+    struct DirectionLight {
     vec3 position;
 
     float intensity;
@@ -31,9 +31,3 @@ uniform DirectionLight u_directionLights[DIRECTION_LIGHTS_COUNT];
 
 
 
-
-
-
-@body
-    v_worldPosition = vec3(mMatrix * vec4(a_position, 1.0));
-@end

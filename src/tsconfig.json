@@ -383,6 +383,7 @@
 		"renderer/shader/lib/map/BasicMapShaderLib.ts",
 		"renderer/shader/lib/map/MultiMapShaderLib.ts",
 		"renderer/shader/lib/light/LightCommonShaderLib.ts",
+		"renderer/shader/lib/light/LightSetWorldPositionShaderLib.ts",
 		"renderer/shader/lib/light/LightShaderLib.ts",
 		"renderer/shader/lib/light/LightEndShaderLib.ts",
 		"renderer/shader/lib/light/lightMap/BaseLightMapShaderLib.ts",

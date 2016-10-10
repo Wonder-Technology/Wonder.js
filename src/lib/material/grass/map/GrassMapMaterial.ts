@@ -72,8 +72,8 @@ module wd{
             this.shader.addLib(GrassMapShaderLib.create());
         }
 
-        private _computeTime(){
-            this.wind.time += this.wind.speed;
+        protected addLightSetWorldPositionShaderLib(){
+            this.shader.addLib(GrassMapSetWorldPositionShaderLib.create());
         }
     }
 
@@ -91,7 +91,7 @@ module wd{
         @cloneAttributeAsCloneable()
         public direction:Vector2 = Vector2.create(1, 1);
         @cloneAttributeAsBasicType()
-        public strength:number = 0.002;
+        public strength:number = 0.2;
 
         public clone(){
             return CloneUtils.clone(this);
