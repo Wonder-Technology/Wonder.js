@@ -35,11 +35,17 @@
 
             // 'test/render/test/**',
 
-            //'test/render/test/**/terrain*',
+
+
+
+
+            'test/render/test/**/oit*',
+
+            // 'test/render/test/**/terrain*',
             // 'test/render/test/**/clone*',
             // 'test/render/test/**/lod*',
 
-            'test/render/test/**/instance*',
+            // 'test/render/test/**/instance*',
             //'test/render/test/**/hard*',
             //'test/render/test/**/proce*',
             //'test/render/test/**/animation*',

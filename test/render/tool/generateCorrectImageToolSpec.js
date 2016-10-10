@@ -1,26 +1,18 @@
-describe("generate correct image lightTool", function () {
+describe("generate correct image tool", function () {
     var sandbox;
     var tester;
 
     function body(wrapper){
         wrapper.load([
-            {url: "../../asset/texture/terrain/heightMap.png", id: "heightMap"},
-            {url: "../../asset/texture/terrain/mixMap.png", id: "mixMap"},
-            {url: "../../asset/texture/terrain/floor.png", id: "floor"},
-            {url: "../../asset/texture/terrain/grass.png", id: "grass"},
-            {url: "../../asset/texture/terrain/rock.png", id: "rock"},
-
-
-            {url: "../../asset/texture/terrain/floorn.png", id: "floorn"},
-            {url: "../../asset/texture/terrain/grassn.png", id: "grassn"},
-            {url: "../../asset/texture/terrain/rockn.png", id: "rockn"}
-                ])
-                .do(initSample);
+            {url: "../../asset/texture/terrain/ground.jpg", id: "ground"},
+            {url: "../../asset/texture/grass/grassPack.png", id: "grassPack"}
+        ])
+            .do(initSample);
 
         function initSample() {
             var director = wd.Director.getInstance();
 
-            director.scene.addChild(createTerrain());
+            director.scene.addChild(createGrass());
             director.scene.addChild(createAmbientLight());
             director.scene.addChild(createDirectionLight());
             director.scene.addChild(createCamera());
@@ -29,64 +21,77 @@ describe("generate correct image lightTool", function () {
         }
 
         function createTerrain() {
-            var material = wd.TerrainMaterial.create();
+            var groundMap = wd.LoaderManager.getInstance().get("ground").toTexture();
+            var material = wd.LightMaterial.create();
+            material.diffuseMap = groundMap;
+            material.shading = wd.EShading.SMOOTH;
 
 
-            var grass = wd.GrassProceduralTexture.create();
-            grass.repeatRegion = wd.RectRegion.create(0.8, 0.2, 10, 10);
-            grass.wrapS = wd.ETextureWrapMode.REPEAT;
-            grass.wrapT = wd.ETextureWrapMode.REPEAT;
-//
-//
-//
-            var floor = wd.LoaderManager.getInstance().get("floor").toTexture();
-            floor.repeatRegion = wd.RectRegion.create(0.8, 0.2, 10, 10);
-            floor.wrapS = wd.ETextureWrapMode.REPEAT;
-            floor.wrapT = wd.ETextureWrapMode.REPEAT;
-
-            material.mix.mapData = {
-                mixMap:wd.LoaderManager.getInstance().get("mixMap").toTexture(),
-                diffuseMap1:floor,
-                diffuseMap2:wd.LoaderManager.getInstance().get("rock").toTexture(),
-                diffuseMap3:grass,
-
-                bumpMap1:wd.LoaderManager.getInstance().get("floorn").toTexture(),
-                bumpMap2:wd.LoaderManager.getInstance().get("rockn").toTexture(),
-                bumpMap3:wd.LoaderManager.getInstance().get("grassn").toTexture()
+            var geometry = wd.TerrainGeometry.create();
+            geometry.material = material;
+            geometry.subdivisions = 100;
+            geometry.range = {
+                width:100,
+                height:100
             };
+            geometry.minHeight = 0;
+            geometry.maxHeight = 50;
+            geometry.heightMapAsset = wd.LoaderManager.getInstance().get("heightMap");
+//            geometry.drawMode = wd.EDrawMode.LINE_STRIP;
+            geometry.isHeightMapStoreHeightInEachPixel = false;
 
 
-            material.layer.mapData = [
+            var gameObject = wd.GameObject.create();
+            gameObject.addComponent(geometry);
+
+            gameObject.addComponent(wd.MeshRenderer.create());
+
+            gameObject.transform.position = wd.Vector3.create(0, 10, 0);
+            gameObject.transform.scale = wd.Vector3.create(1,2,1);
+
+
+            return gameObject;
+        }
+
+        function createGrass() {
+            var grassMap = wd.LoaderManager.getInstance().get("grassPack").toTexture();
+            var width = grassMap.width / 4,
+                height = grassMap.height;
+            var mapData = [
                 {
-                    minHeight:30,
-                    maxHeight:40,
-                    diffuseMap:wd.CloudProceduralTexture.create()
+                    sourceRegion:wd.RectRegion.create(0, 0, width, height)
                 },
                 {
-                    minHeight:40,
-                    maxHeight:50,
-                    diffuseMap:wd.FireProceduralTexture.create()
+                    sourceRegion:wd.RectRegion.create(width, 0, width, height)
+                },
+                {
+                    sourceRegion:wd.RectRegion.create(width * 2, 0, width, height)
                 }
             ];
 
 
 
 
-            material.shading = wd.EShading.SMOOTH;
+            var material = wd.GrassMapMaterial.create();
+
+            material.grassMap = grassMap;
+            material.alphaTest = 0.1;
+            material.mapData = mapData;
+            material.wind.strength = 0.2;
+
+            material.alphaToCoverage = true;
 
 
-            var geometry = wd.TerrainGeometry.create();
+
+
+
+
+
+            var geometry = wd.GrassMapGeometry.create();
             geometry.material = material;
-            geometry.subdivisions = 50;
+            geometry.width = 10;
+            geometry.height = 20;
 
-//            geometry.rangeWidth = 50;
-//            geometry.rangeHeight = 50;
-
-            geometry.minHeight = 0;
-            geometry.maxHeight = 50;
-            geometry.heightMapAsset = wd.LoaderManager.getInstance().get("heightMap");
-            geometry.isHeightMapStoreHeightInEachPixel = false;
-//            geometry.drawMode = wd.EDrawMode.LINE_STRIP;
 
 
             var gameObject = wd.GameObject.create();
@@ -117,8 +122,7 @@ describe("generate correct image lightTool", function () {
             var directionLight = wd.GameObject.create();
             directionLight.addComponent(directionLightComponent);
 
-//            directionLight.transform.translate(wd.Vector3.create(10, 20, 30));
-            directionLight.transform.translate(wd.Vector3.create(10, 20, 0));
+            directionLight.transform.translate(wd.Vector3.create(10, 20, 30));
 
             return directionLight;
         }
@@ -134,14 +138,12 @@ describe("generate correct image lightTool", function () {
             cameraComponent.far = 1000;
 
             var controller = wd.ArcballCameraController.create(cameraComponent);
-            controller.theta = Math.PI / 5;
-            controller.distance = 400;
+            controller.distance = 20;
 
             camera.addComponent(controller);
 
             return camera;
         }
-
     }
 
 
@@ -164,7 +166,7 @@ describe("generate correct image lightTool", function () {
             [
                 {
                     frameIndex:1,
-                    imageName:"terrain_mixTexture_layerTexture"
+                    imageName:"transparent_oit_alphaToCoverage"
                 }
             ]
         );

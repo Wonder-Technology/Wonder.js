@@ -180,9 +180,9 @@ var SceneTester = YYC.Class({
             return wd.DeviceManager.getInstance().gl.canvas;
         },
         _download: function(imageDataURL, imageName){
-            var blob = fileOperator.dataURLToBlob(imageDataURL);
+            // var blob = fileOperator.dataURLToBlob(imageDataURL);
 
-            fileOperator.createFileAndDownload(blob, imageName);
+            fileOperator.createFileAndDownload(imageDataURL, imageName);
         },
         _buildImagePath: function(partialImagePath){
             return pathTool.join(pathTool.getPathData().rootPath, pathTool.join("base/test/render/res/correct_image", partialImagePath));

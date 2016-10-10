@@ -255,57 +255,66 @@
          *  createFileAndDownload(blob, "hello.json");
          */
         createFileAndDownload: function (args) {
-            var blob = null,
+            // var blob = null,
+            var dataURL = null,
                 name = null,
                 value = null,
                 tool = YYC.Tool;
 
             if (arguments.length === 2) {
-                blob = arguments[0];
+                if(tool.judge.isString(arguments[0])){
+                 dataURL = arguments[0];
+                }
+                else{
+                    throw new Error("only dataURL work!Blob not work!");
+                }
+                // blob = arguments[0];
                 name = arguments[1];
             }
             else if (arguments.length === 3) {
-                value = arguments[0];
-                type = arguments[1];
-                name = arguments[2];
+                // value = arguments[0];
+                // type = arguments[1];
+                // name = arguments[2];
+                //
+                // if (tool.judge.isHostMethod(window, "Blob")) {
+                //     blob = new Blob([value], {type: type});
+                // } else {
+                //     var BlobBuilder = window.BlobBuilder || window.MozBlobBuilder || window.WebKitBlobBuilder || window.MSBlobBuilder;
+                //     var bb = new BlobBuilder();
+                //     bb.append(value);
+                //     blob = bb.getBlob(type);
+                // }
 
-                if (tool.judge.isHostMethod(window, "Blob")) {
-                    blob = new Blob([value], {type: type});
-                } else {
-                    var BlobBuilder = window.BlobBuilder || window.MozBlobBuilder || window.WebKitBlobBuilder || window.MSBlobBuilder;
-                    var bb = new BlobBuilder();
-                    bb.append(value);
-                    blob = bb.getBlob(type);
-                }
+
+                throw new Error("not use blob!");
             }
 
-            var URL = window.URL || window.webkitURL;
-            if (!tool.judge.isHostMethod(URL, "createObjectURL")) {
-                console.log("浏览器不支持createObjectURL方法");
-                return;
-            }
-
-            var bloburl = URL.createObjectURL(blob);  //创建一个新的对象URL,该对象URL可以代表某一个指定的File对象或Blob对象.
+            // var URL = window.URL || window.webkitURL;
+            // if (!tool.judge.isHostMethod(URL, "createObjectURL")) {
+            //     console.log("浏览器不支持createObjectURL方法");
+            //     return;
+            // }
+            //
+            // var bloburl = URL.createObjectURL(blob);  //创建一个新的对象URL,该对象URL可以代表某一个指定的File对象或Blob对象.
             var anchor = document.createElement("a");
             if ('download' in anchor) {
                 anchor.style.visibility = "hidden";
-                anchor.href = bloburl;
+                anchor.href = dataURL;
                 anchor.download = name;
                 document.body.appendChild(anchor);
 
-//            var evt = document.createEvent("MouseEvents");
-//            evt.initEvent("click", true, true);
-//            anchor.dispatchEvent(evt);
-                tool.event.triggerEvent(anchor, "click");
+//                 tool.event.triggerEvent(anchor, "click");
+                anchor.click();
 
-                //window.URL.revokeObjectURL(anchor.href);
+                // window.URL.revokeObjectURL(anchor.href);
                 document.body.removeChild(anchor);
             }
             else if (navigator.msSaveBlob) {
                 navigator.msSaveBlob(blob, name);
             }
             else {
-                location.href = bloburl; //直接在页面上显示文件内容
+                // location.href = bloburl; //直接在页面上显示文件内容
+                location.href = dataURL; //直接在页面上显示文件内容
             }
         }
     }
