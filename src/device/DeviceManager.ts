@@ -8,9 +8,6 @@ module wd {
     export class DeviceManager {
         public static getInstance():any {}
 
-        public view:IView = null;
-        public gl:WebGLRenderingContext = null;
-
         /*!
          test order:
          scissor test -> depth test -> stencil test -> specular add -> fog -> alpha blend -> write mask
@@ -258,6 +255,29 @@ module wd {
             }
         }
 
+        private _alphaToCoverage:boolean = null;
+        get alphaToCoverage(){
+            return this._alphaToCoverage;
+        }
+        set alphaToCoverage(alphaToCoverage:boolean){
+            var gl = this.gl;
+
+            if (this._alphaToCoverage !== alphaToCoverage) {
+                if (alphaToCoverage) {
+                    gl.enable(gl.SAMPLE_ALPHA_TO_COVERAGE);
+                }
+                else {
+                    gl.disable(gl.SAMPLE_ALPHA_TO_COVERAGE);
+                }
+
+                this._alphaToCoverage = alphaToCoverage;
+            }
+        }
+
+        public view:IView = null;
+        public gl:WebGLRenderingContext = null;
+        public contextConfig:ContextConfigData = null;
+
         private _writeRed:boolean = null;
         private _writeGreen:boolean = null;
         private _writeBlue:boolean = null;
@@ -381,6 +401,8 @@ module wd {
 
         public createGL(canvasId:string, contextConfig:ContextConfigData, useDevicePixelRatio:boolean){
             var canvas = null;
+
+            this.contextConfig = contextConfig;
 
             if(canvasId){
                 canvas = wdCb.DomQuery.create(canvasId).get(0);

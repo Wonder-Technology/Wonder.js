@@ -91,7 +91,7 @@ module wd{
         @cloneAttributeAsCloneable()
         public direction:Vector2 = Vector2.create(1, 1);
         @cloneAttributeAsBasicType()
-        public strength:number = 0.2;
+        public strength:number = 0.5;
 
         public clone(){
             return CloneUtils.clone(this);

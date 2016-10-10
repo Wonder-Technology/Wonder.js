@@ -86,7 +86,9 @@ module wd{
 
             if(transparentCommandArr.length > 0){
                 deviceManager.depthWrite = false;
+
                 this._renderSortedTransparentCommands(<Array<QuadCommand>>transparentCommandArr);
+
                 deviceManager.depthWrite = true;
             }
 

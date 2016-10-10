@@ -18,6 +18,40 @@ describe("Material", function() {
         sandbox.restore();
     });
 
+    describe("alphaToCoverage", function(){
+        beforeEach(function(){
+        });
+
+        it("if enable alphaToCoverage, multiSample should be enabled", function(){
+            testTool.openContractCheck(sandbox);
+            var deviceManager = wd.DeviceManager.getInstance();
+
+            deviceManager.contextConfig = {
+                options:{
+                    antialias:false
+                }
+            };
+
+            expect(function () {
+                material.alphaToCoverage = true;
+                var alphaToCoverage = material.alphaToCoverage;
+            }).toThrow();
+
+
+
+            deviceManager.contextConfig = {
+                options:{
+                    antialias:true
+                }
+            };
+
+            expect(function () {
+                material.alphaToCoverage = true;
+                var alphaToCoverage = material.alphaToCoverage;
+            }).not.toThrow();
+        });
+    });
+
     it("test default value", function(){
         expect(material.color).toEqual(wd.Color.create("#ffffff"));
     });

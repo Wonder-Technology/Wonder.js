@@ -111,6 +111,23 @@ module wd {
             this.blendEquationSeparate = null;
         }
 
+
+        private _alphaToCoverage:boolean = null;
+        @cloneAttributeAsBasicType()
+        @ensureGetter(function(alphaToCoverage:boolean){
+            it("if enable alphaToCoverage, multiSample should be enabled", () => {
+                if(alphaToCoverage){
+                    expect(DeviceManager.getInstance().contextConfig.options.antialias).true;
+                }
+            });
+        })
+        get alphaToCoverage(){
+            return this._alphaToCoverage;
+        }
+        set alphaToCoverage(alphaToCoverage:boolean){
+            this._alphaToCoverage = alphaToCoverage;
+        }
+
         private _color:Color = Color.create("#ffffff");
         @cloneAttributeAsCloneable()
         get color(){

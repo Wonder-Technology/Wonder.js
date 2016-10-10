@@ -31,6 +31,10 @@ module wd{
                 deviceManager.setBlendFunc(material.blendSrc, material.blendDst);
                 deviceManager.setBlendEquation(material.blendEquation);
             }
+
+            if(material.alphaToCoverage){
+                deviceManager.alphaToCoverage = material.alphaToCoverage;
+            }
         }
     }
 }

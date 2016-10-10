@@ -184,6 +184,17 @@ describe("QuadCommand", function() {
                 expect(deviceManager.setBlendEquation).toCalledWith(material.blendEquation);
                 expect(deviceManager.setBlendFuncSeparate).not.toCalled();
             });
+            it("if set material->alphaToCoverage, use it", function(){
+                var gl = deviceManager.gl;
+
+                gl.SAMPLE_ALPHA_TO_COVERAGE = "SAMPLE_ALPHA_TO_COVERAGE";
+
+                material.alphaToCoverage = true;
+
+                result.cmd.webglState.setState(material);
+
+                expect(gl.enable).toCalledWith(gl.SAMPLE_ALPHA_TO_COVERAGE);
+            });
         });
     });
 });
