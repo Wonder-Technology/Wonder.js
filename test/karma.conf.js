@@ -91,11 +91,11 @@
         //'test/unit/**/LineMaterial*',
         // 'test/unit/**/BasicMaterial*',
         // 'test/unit/**/LightMaterial*',
-        //'test/unit/**/Material*',
+        // 'test/unit/**/Material*',
         //'test/unit/**/*Material*',
         //'test/unit/**/mirrorMaterial*',
 
-        //'test/unit/**/material/**',
+        'test/unit/**/material/**',
 
         //'test/unit/**/ConvexPolygonGeometrySpec*',
         //'test/unit/**/SolidLineGeometrySpec*',
@@ -110,7 +110,7 @@
 
         //'test/unit/**/RenderUtils*',
 
-        //'test/unit/**/command/*',
+        'test/unit/**/command/*',
 
         //'test/unit/**/light/**',
 
@@ -346,7 +346,7 @@
         //'test/unit/math/*.js',
         //'test/unit/component/**/GeometrySpec.js',
         // 'test/unit/component/**/InstanceGeometrySpec.js',
-        'test/unit/component/**/TerrainGeometrySpec.js',
+        // 'test/unit/component/**/TerrainGeometrySpec.js',
         //'test/unit/component/**/ModelGeometrySpec.js',
         //'test/unit/**/CommonBufferContainerSpec.js',
         //'test/unit/**/MorphBufferContainerSpec.js',

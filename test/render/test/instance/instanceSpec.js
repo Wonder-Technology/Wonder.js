@@ -2803,7 +2803,7 @@ describe("instance", function () {
                         .forEach(function (wing) {
                             var wingMaterial = wing.getComponent(wd.Geometry).material;
                             wingMaterial.side = wd.ESide.BOTH;
-                            wingMaterial.blendFuncSeparate = [wd.EBlendFunc.SRC_ALPHA, wd.EBlendFunc.ONE_MINUS_SRC_ALPHA, wd.EBlendFunc.ONE, wd.EBlendFunc.ONE_MINUS_SRC_ALPHA];
+                            wingMaterial.blend = true;
                             wingMaterial.blendFuncSeparate = [wd.EBlendFunc.SRC_ALPHA, wd.EBlendFunc.ONE_MINUS_SRC_ALPHA, wd.EBlendFunc.ONE, wd.EBlendFunc.ONE_MINUS_SRC_ALPHA];
                         });
 
