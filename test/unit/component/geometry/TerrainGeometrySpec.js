@@ -44,9 +44,9 @@ describe("TerrainGeometry", function() {
         });
 
         describe("else if have readed height map data", function(){
-           beforeEach(function(){
-               prepareGeo();
-           });
+            beforeEach(function(){
+                prepareGeo();
+            });
 
             it("if isHeightMapStoreHeightInEachPixel === true, return height map width * 4", function (done) {
                 wd.LoaderManager.getInstance().load([
@@ -139,7 +139,11 @@ describe("TerrainGeometry", function() {
         });
 
         describe("getHeightAtCoordinates", function(){
-            function judge1(done, isInit){
+            function judge1(done, isInit, x,z,height){
+                var x = x || 1;
+                var z = z || 2;
+                var targetHeight = height === undefined ? 30.9 : height;
+
                 wd.LoaderManager.getInstance().load([
                     {url: testTool.resPath + "test/res/terrain/heightMap.png", id: "heightMap"}
                 ]).subscribe(function(data){
@@ -152,9 +156,9 @@ describe("TerrainGeometry", function() {
                     }
 
 
-                    var height = geo.getHeightAtCoordinates(1, 2);
+                    var height = geo.getHeightAtCoordinates(x, z);
 
-                    expect(Math.floor(height)).toEqual(Math.floor(30.9));
+                    expect(testTool.getValues(height, 1)).toEqual(targetHeight);
 
                     done();
                 });
@@ -215,6 +219,21 @@ describe("TerrainGeometry", function() {
                 geo.subdivisions = 2;
 
                 judge1(done, true);
+            });
+
+            describe("fix bug", function(){
+                beforeEach(function(){
+                });
+
+                it("the height from cache should equal the one getterd by read height map data", function(done){
+                    geo.subdivisions = 100;
+                    geo.rangeWidth = 100;
+                    geo.rangeHeight = 100;
+                    geo.minHeight = 0;
+                    geo.maxHeight = 50;
+
+                    judge1(done, true, 8.2, 3.4, 25.4);
+                });
             });
         });
 

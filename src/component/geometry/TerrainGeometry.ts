@@ -75,21 +75,24 @@ module wd{
 
         public getHeightAtCoordinates(x:number, z:number):number {
             var transform = this.entityObject.transform,
-                heightFromHeightMapData:number = null;
+                heightFromHeightMapData:number = null,
+                heightMapIndex:number = null;
 
             if(!this._isReadHeightMapData()){
                 this._readHeightMapData();
             }
 
-            if(this._heightCache.length > 0){
-                heightFromHeightMapData = this._heightCache[this._buildHeightCacheIndex(this.subdivisions, this._computeHeightMapRow(z), this._computeHeightMapCol(x))];
+            heightMapIndex = this._computeHeightMapIndex(this._computeHeightMapRow(z), this._computeHeightMapCol(x));
 
-                if(heightFromHeightMapData === void 0){
-                    heightFromHeightMapData = this._getHeightByReadHeightMapData(this._computeHeightMapRow(z), this._computeHeightMapCol(x));
-                }
+            let cacheHeight = this._heightCache[heightMapIndex];
+
+            if(cacheHeight !== void 0){
+                heightFromHeightMapData = cacheHeight;
             }
             else{
-                heightFromHeightMapData = this._getHeightByReadHeightMapData(this._computeHeightMapRow(z), this._computeHeightMapCol(x));
+                heightFromHeightMapData = this._getHeightByReadHeightMapData(heightMapIndex);
+
+                this._heightCache[heightMapIndex] = heightFromHeightMapData;
             }
 
             return heightFromHeightMapData * transform.scale.y + transform.position.y;
@@ -139,11 +142,13 @@ module wd{
                         z = ((subdivisions - row) * height) / subdivisions - (height / 2.0),
                         heightMapRow = this._computeHeightMapRow(z),
                         heightMapCol = this._computeHeightMapCol(x),
-                        y:number = null;
+                        y:number = null,
+                        heightMapIndex = this._computeHeightMapIndex(heightMapRow, heightMapCol),
+                        cacheHeight:number = null;
 
-                    y = this._getHeightByReadHeightMapData(heightMapRow, heightMapCol);
+                    y = this._getHeightByReadHeightMapData(heightMapIndex);
 
-                    heightCache[this._buildHeightCacheIndex(subdivisions, heightMapRow, heightMapCol)] = y;
+                    heightCache[heightMapIndex] = y;
 
                     vertices.push(x, y, z);
                     texCoords.push(col / subdivisions, 1.0 - row / subdivisions);
@@ -157,34 +162,32 @@ module wd{
             };
         }
 
-        private _buildHeightCacheIndex(subdivisions:number, heightMapRow:number, heightMapCol:number){
-            return heightMapRow * subdivisions + heightMapCol;
-        }
-
         private _computeHeightMapCol(x:number){
             var heightMapImageDataWidth = this._heightMapImageDataCacheWidth,
                 width = this.rangeWidth;
 
-            return Math.floor((((x + width / 2) / width) * (heightMapImageDataWidth - 1)));
+            return Math.floor((x + width / 2) / width * (heightMapImageDataWidth - 1));
         }
 
         private _computeHeightMapRow(z:number){
             var heightMapImageDataHeight = this._heightMapImageDataCacheHeight,
                 height = this.rangeHeight;
 
-            return Math.floor(((1.0 - (z + height / 2) / height) * (heightMapImageDataHeight - 1)));
+            return Math.floor((1.0 - (z + height / 2) / height) * (heightMapImageDataHeight - 1));
         }
 
-        private _getHeightByReadHeightMapData(heightMapRow:number, heightMapCol:number){
+        private _computeHeightMapIndex(heightMapRow:number, heightMapCol:number){
+            return (heightMapCol + heightMapRow * this._heightMapImageDataCacheWidth) * 4
+        }
+
+        private _getHeightByReadHeightMapData(heightMapIndex:number){
             var heightMapImageData = this._heightMapImageDataCache,
-                heightMapImageDataWidth = this._heightMapImageDataCacheWidth,
-                pos = (heightMapCol + heightMapRow * heightMapImageDataWidth) * 4,
-            /*!
-             compute gradient from rgb heightMap->r,g,b components
-             */
-                r = heightMapImageData[pos] / 256.0,
-                g = heightMapImageData[pos + 1] / 256.0,
-                b = heightMapImageData[pos + 2] / 256.0,
+                /*!
+                 compute gradient from rgb heightMap->r,g,b components
+                 */
+                r = heightMapImageData[heightMapIndex] / 256.0,
+                g = heightMapImageData[heightMapIndex + 1] / 256.0,
+                b = heightMapImageData[heightMapIndex + 2] / 256.0,
                 gradient = r * 0.3 + g * 0.59 + b * 0.11,
                 minHeight = this.minHeight,
                 maxHeight = this.maxHeight;
@@ -212,3 +215,4 @@ module wd{
         }
     }
 }
+

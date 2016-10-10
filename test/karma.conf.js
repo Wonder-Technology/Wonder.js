@@ -33,7 +33,7 @@
         //'test/render/helper/*.js',
 
 
-        'test/unit/**/GameObjectLOD*',
+        // 'test/unit/**/GameObjectLOD*',
         // 'test/unit/**/gameObjectLODSpace*',
 
         // 'test/unit/**/OneToOneSourceInstance*',
@@ -346,7 +346,7 @@
         //'test/unit/math/*.js',
         //'test/unit/component/**/GeometrySpec.js',
         // 'test/unit/component/**/InstanceGeometrySpec.js',
-        // 'test/unit/component/**/TerrainGeometrySpec.js',
+        'test/unit/component/**/TerrainGeometrySpec.js',
         //'test/unit/component/**/ModelGeometrySpec.js',
         //'test/unit/**/CommonBufferContainerSpec.js',
         //'test/unit/**/MorphBufferContainerSpec.js',
