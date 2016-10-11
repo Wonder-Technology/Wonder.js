@@ -16,10 +16,9 @@
 
         wd.LoaderManager.getInstance().load([
             {url: "../../asset/texture/terrain/heightMap.png", id: "heightMap"},
-//            {url: "./heightMap.png", id: "heightMap"},
             {url: "../../asset/texture/grass/grassPack.png", id: "grassPack"},
             {url: "../../asset/texture/terrain/ground.jpg", id: "ground"},
-            {url: "./instance/grass.jpg", id: "grass"}
+            {url: "../../asset/texture/grass/grass.jpg", id: "grass"}
         ]).subscribe(null, null, function () {
             initSample();
         });
@@ -76,11 +75,11 @@
 
             var geometry = wd.TerrainGeometry.create();
             geometry.material = material;
-            geometry.subdivisions = 100;
-            geometry.rangeWidth = 100;
-            geometry.rangeHeight = 100;
+            geometry.subdivisions = 200;
+            geometry.rangeWidth = 500;
+            geometry.rangeHeight = 500;
             geometry.minHeight = 0;
-            geometry.maxHeight = 10;
+            geometry.maxHeight = 30;
             geometry.heightMapAsset = wd.LoaderManager.getInstance().get("heightMap");
 //            geometry.drawMode = wd.EDrawMode.LINE_STRIP;
             geometry.isHeightMapStoreHeightInEachPixel = false;
@@ -109,11 +108,8 @@
             arr.push(grass);
 
 
-            //todo test
-
-
-            var count = 50,
-                    range = 50;
+            var count = 300,
+                    range = 500;
 
             for (var index = 0; index < count; index++){
                 var item = grass.clone({
@@ -179,10 +175,10 @@
             }
 
 
-            lod.addLevel(30, gameObjectLevel1, switchHandler);
-            lod.addLevel(60, gameObjectLevel2, switchHandler);
+            lod.addLevel(100, gameObjectLevel1, switchHandler);
+            lod.addLevel(200, gameObjectLevel2, switchHandler);
 
-            lod.addLevel(80, wd.ELODState.INVISIBLE);
+            lod.addLevel(300, wd.ELODState.INVISIBLE);
 
 //            lod.addLevel(15, geometryLevel1);
 //            lod.addLevel(30, geometryLevel2);
@@ -338,8 +334,8 @@
 
             var controller = wd.ArcballCameraController.create(cameraComponent);
             controller.theta = Math.PI / 4;
-//            controller.phi = Math.PI;
-            controller.distance = 50;
+            controller.phi = Math.PI;
+            controller.distance = 100;
 
             camera.addComponent(controller);
 
