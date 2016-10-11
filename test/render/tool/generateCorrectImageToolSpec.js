@@ -32,9 +32,10 @@ describe("generate correct image tool", function () {
 
     function body(wrapper){
         wrapper.load([
-            {url: "../../../asset/texture/terrain/heightMap.png", id: "heightMap"},
-            {url: "../../../asset/texture/terrain/ground.jpg", id: "ground"},
-            {url: "../../../asset/texture/grass/grass.jpg", id: "grass"}
+            {url: "../../asset/texture/terrain/heightMap.png", id: "heightMap"},
+            {url: "../../asset/texture/grass/grassPack.png", id: "grassPack"},
+            {url: "../../asset/texture/terrain/ground.jpg", id: "ground"},
+            {url: "../../asset/texture/grass/grass.jpg", id: "grass"}
         ])
             .do(initSample);
 
@@ -44,9 +45,13 @@ describe("generate correct image tool", function () {
 
             var terrain = createTerrain();
 
-            director.scene.addChild(terrain);
+
+
 
             director.scene.addChildren(createGrasses(terrain));
+
+            director.scene.addChild(terrain);
+
 
 
             director.scene.addChild(createAmbientLight());
@@ -72,7 +77,7 @@ describe("generate correct image tool", function () {
             geometry.rangeWidth = 100;
             geometry.rangeHeight = 100;
             geometry.minHeight = 0;
-            geometry.maxHeight = 20;
+            geometry.maxHeight = 10;
             geometry.heightMapAsset = wd.LoaderManager.getInstance().get("heightMap");
 
 
@@ -89,9 +94,11 @@ describe("generate correct image tool", function () {
             var arr = [],
                 grass = createGrass(terrain);
 
+            function getVal(){
+                return Math.random();
+            }
+
             arr.push(grass);
-
-
 
 
             var count = 10,
@@ -110,6 +117,8 @@ describe("generate correct image tool", function () {
 
                 item.transform.position = wd.Vector3.create(pos.x, item.transform.position.y, pos.z);
 
+
+
                 arr.push(item);
             }
 
@@ -125,12 +134,12 @@ describe("generate correct image tool", function () {
 
 
 
+
             var geometry = wd.GrassInstanceGeometry.create();
             geometry.material = material;
             geometry.bladeCount = 100;
-            geometry.bladeWidth = 1;
-            geometry.rangeWidth = 10;
-            geometry.rangeHeight = 10;
+            geometry.rangeWidth = 1;
+            geometry.rangeHeight = 1;
 
 
 
@@ -143,7 +152,117 @@ describe("generate correct image tool", function () {
             var sourceInstanceComponent = wd.OneToManySourceInstance.create();
             gameObject.addComponent(sourceInstanceComponent);
 
+
+
+            var gameObjectLevel1 = createGrassMap(terrain);
+            var gameObjectLevel2 = createBillboard(terrain);
+
+            var lod = wd.GameObjectLOD.create();
+
+
+            function switchHandler(gameObject){
+                var pos = gameObject.transform.position;
+
+                gameObject.transform.position = wd.Vector3.create(pos.x, getHeight(gameObject, terrain, pos.x, pos.z), pos.z);
+            }
+
+
+            lod.addLevel(30, gameObjectLevel1, switchHandler);
+            lod.addLevel(60, gameObjectLevel2, switchHandler);
+
+            lod.addLevel(80, wd.ELODState.INVISIBLE);
+
+
+
+            gameObject.addComponent(lod);
+
+
+
+
             return gameObject;
+        }
+
+        function createGrassMap(terrain) {
+            var grassMap = wd.LoaderManager.getInstance().get("grassPack").toTexture();
+            var width = grassMap.width / 4,
+                height = grassMap.height;
+            var mapData = [
+                {
+                    sourceRegion:wd.RectRegion.create(0, 0, width, height)
+                },
+                {
+                    sourceRegion:wd.RectRegion.create(width, 0, width, height)
+                },
+                {
+                    sourceRegion:wd.RectRegion.create(width * 2, 0, width, height)
+                }
+            ];
+
+
+
+            var material = wd.GrassMapMaterial.create();
+
+            material.grassMap = grassMap;
+            material.alphaTest = 0.1;
+            material.mapData = mapData;
+
+
+
+
+
+
+
+            var geometry = wd.GrassMapGeometry.create();
+            geometry.material = material;
+            geometry.width = 10;
+            geometry.height = 20;
+
+
+
+            var gameObject = wd.GameObject.create();
+            gameObject.addComponent(geometry);
+
+            gameObject.addComponent(wd.MeshRenderer.create());
+
+
+
+            return gameObject;
+        }
+
+        function createBillboard(terrain) {
+            var material = wd.LightMaterial.create();
+            material.diffuseMap = wd.GrassProceduralTexture.create();
+
+
+            var geometry = wd.RectGeometry.create();
+            geometry.material = material;
+            geometry.width = 5;
+            geometry.height = 5;
+
+
+            var billboard = wd.Billboard.create();
+            billboard.mode = wd.EBillboardMode.Y;
+
+
+            var gameObject = wd.GameObject.create();
+            gameObject.addComponent(geometry);
+            gameObject.addComponent(billboard);
+
+            gameObject.addComponent(wd.MeshRenderer.create());
+
+
+            return gameObject;
+        }
+
+        function getHeight(gameObject, terrain, x, z) {
+            var height = 0,
+                geometry = gameObject.getComponent(wd.Geometry);
+
+            if(geometry.height){
+                height = geometry.height / 2;
+            }
+
+            return terrain.getComponent(wd.TerrainGeometry).getHeightAtCoordinates(x, z) + height;
         }
 
         function createAmbientLight() {
@@ -182,7 +301,7 @@ describe("generate correct image tool", function () {
 
             var controller = wd.ArcballCameraController.create(cameraComponent);
             controller.theta = Math.PI / 4;
-            controller.distance = 50;
+            controller.distance = 30;
 
             camera.addComponent(controller);
 
@@ -212,7 +331,7 @@ describe("generate correct image tool", function () {
             [
                 {
                     frameIndex:1,
-                    imageName:"grass_instance_render"
+                    imageName:"gameObjectLOD_switch(discrete)_selection(range-base)_distance30"
                 }
             ]
         );

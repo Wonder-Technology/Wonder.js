@@ -156,14 +156,14 @@ describe("geometryLod", function () {
             it("test distance 80", function (done) {
                 tester.compareAt({
                     frameIndex: 1,
-                    partialCorrectImagePath: "lod/lod_switch(discrete)_selection(range-base)_distance80.png",
+                    partialCorrectImagePath: "lod/geometryLOD_switch(discrete)_selection(range-base)_distance80.png",
                     done: done
                 });
             });
             it("test distance 50", function (done) {
                 tester.compareAt({
                     frameIndex: 1,
-                    partialCorrectImagePath: "lod/lod_switch(discrete)_selection(range-base)_distance50.png",
+                    partialCorrectImagePath: "lod/geometryLOD_switch(discrete)_selection(range-base)_distance50.png",
                     handle:function(){
                         var camera = wd.Director.getInstance().scene.currentCamera;
 
@@ -177,7 +177,7 @@ describe("geometryLod", function () {
             it("test distance 30", function (done) {
                 tester.compareAt({
                     frameIndex: 1,
-                    partialCorrectImagePath: "lod/lod_switch(discrete)_selection(range-base)_distance30.png",
+                    partialCorrectImagePath: "lod/geometryLOD_switch(discrete)_selection(range-base)_distance30.png",
                     handle:function(){
                         var camera = wd.Director.getInstance().scene.currentCamera;
 
