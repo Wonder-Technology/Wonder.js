@@ -39,7 +39,8 @@
 
 
 
-            'test/render/test/**/oit*',
+            // 'test/render/test/**/oit*',
+            'test/render/test/grass/*',
 
             // 'test/render/test/**/terrain*',
             // 'test/render/test/**/clone*',

@@ -10,9 +10,20 @@ var randomTool = (function(){
                 0.54, 0.71, 0.69, 0.36, 0.98
             ];
 
-            expect(index).not.toBeGreaterThan(seedArr.length);
+            var max = seedArr.length;
 
-            return seedArr[index];
+            // if(index > max)
+
+            // expect(index).not.toBeGreaterThan(seedArr.length);
+
+            return seedArr[index % max];
+        },
+        stubMathRandom: function(sandbox, count){
+            sandbox.stub(Math, "random");
+
+            for(var i = 0; i < count; i++){
+                Math.random.onCall(i).returns(this.getFixedRandomNum(i));
+            }
         }
     }
 })();
