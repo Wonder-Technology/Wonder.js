@@ -61,6 +61,10 @@ describe("one to many instance test", function(){
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
+
+
+        testTool.openContractCheck(sandbox);
+
         wd.DebugStatistics.clear();
 
         device = wd.DeviceManager.getInstance();
@@ -372,7 +376,6 @@ describe("one to many instance test", function(){
         beforeEach(function () {
             wd.GPUDetector.getInstance().extensionInstancedArrays = null;
 
-            testTool.openContractCheck(sandbox);
 
 
 

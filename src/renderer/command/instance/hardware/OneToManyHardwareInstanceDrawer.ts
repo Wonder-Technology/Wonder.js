@@ -100,7 +100,7 @@ module wd {
             });
         }
 
-        @require(function(program:Program, instanceBuffer:InstanceBuffer){
+        @require(function(instanceBuffer:InstanceBuffer){
             it("if cached, should geometry.dirty === false && has cache data", () => {
                 if(!this._geometry.dirty){
                     expect(instanceBuffer.getCache("stride")).exist;
