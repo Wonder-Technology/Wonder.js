@@ -97,9 +97,7 @@ not consider ambient light
 
     pos = u_mMatrix * pos;
 
-    vec2 heightMapSampleTexCoord = getHeightMapSampleTexCoord(pos.x, pos.z);
-
-    pos.y += getHeightFromHeightMap(heightMapSampleTexCoord);
+    pos.y += getHeightFromHeightMap(pos.x, pos.z);
 
     //todo add wind
     //todo pass wind direction uniform

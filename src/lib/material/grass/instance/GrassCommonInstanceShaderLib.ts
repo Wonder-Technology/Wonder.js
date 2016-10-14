@@ -45,6 +45,7 @@ module wd{
                 "u_terrainRangeHeight",
                 "u_terrainMinHeight",
                 "u_terrainMaxHeight",
+                "u_subdivisions",
                 "u_heightMapSampler",
                 "u_lightPos",
                 "u_lightColor"
@@ -74,6 +75,11 @@ module wd{
             it("material.terrainGeometry should exist ", () => {
                 expect(material.terrainGeometry).exist;
             });
+
+            //todo check u_sub should >= 2
+            //todo check u_terrainRangeWidth should > 0;
+            //todo check u_terrainRangeHeight should > 0;
+            //todo check u_terrainMaxHeight should > u_terrainMinHeight;
         })
         private _sendTerrainData(material:GrassInstanceMaterial, program:Program){
             let terrainGeo:TerrainGeometry = material.terrainGeometry;
@@ -82,6 +88,8 @@ module wd{
             this.sendUniformData(program, "u_terrainRangeHeight", terrainGeo.rangeHeight);
             this.sendUniformData(program, "u_terrainMinHeight", terrainGeo.minHeight);
             this.sendUniformData(program, "u_terrainMaxHeight", terrainGeo.maxHeight);
+            //todo test
+            this.sendUniformData(program, "u_subdivisions", terrainGeo.subdivisions);
         }
 
         @require(function(){

@@ -558,6 +558,11 @@ module wd{
             value:EVariableCategory.ENGINE
         };
 
+        public static u_subdivisions:ShaderVariable = {
+            type:EVariableType.FLOAT_1,
+            value:EVariableCategory.ENGINE
+        };
+
         public static u_heightMapSampler:ShaderVariable = {
             type:EVariableType.SAMPLER_2D,
             value:EVariableCategory.ENGINE

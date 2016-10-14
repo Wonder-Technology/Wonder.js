@@ -75,27 +75,137 @@ module wd{
 
         public getHeightAtCoordinates(x:number, z:number):number {
             var transform = this.entityObject.transform,
-                heightFromHeightMapData:number = null,
-                heightMapIndex:number = null;
+                heightFromHeightMapData:number = null;
+
+            x += this.rangeWidth / 2;
+            z += this.rangeHeight / 2;
+
+            //todo test
+            if(x > this.rangeWidth || z > this.rangeHeight || x < 0 || z < 0){
+                return 0;
+            }
 
             if(!this._isReadHeightMapData()){
                 this._readHeightMapData();
             }
 
-            heightMapIndex = this._computeHeightMapIndex(this._computeHeightMapRow(z), this._computeHeightMapCol(x));
 
-            let cacheHeight = this._heightCache[heightMapIndex];
+            //todo optimize:use temp array, vector2
+            let quadSubdivisionsCoordinateArr:Array<Vector2> = this._getQuadHeightMapCoordinateArr(this._getQuadSubdivisionsCoordinateArr(x, z)),
+                heightMinXMinZ = this._getCacheHeight(quadSubdivisionsCoordinateArr[0]),
+                heightMaxXMinZ = this._getCacheHeight(quadSubdivisionsCoordinateArr[1]),
+                heightMaxXMaxZ = this._getCacheHeight(quadSubdivisionsCoordinateArr[2]),
+                heightMinXMaxZ = this._getCacheHeight(quadSubdivisionsCoordinateArr[3]);
 
-            if(cacheHeight !== void 0){
-                heightFromHeightMapData = cacheHeight;
-            }
-            else{
-                heightFromHeightMapData = this._getHeightByReadHeightMapData(heightMapIndex);
-
-                this._heightCache[heightMapIndex] = heightFromHeightMapData;
-            }
+            heightFromHeightMapData = this._getBilinearInterpolatedHeight(quadSubdivisionsCoordinateArr[4], heightMinXMinZ, heightMaxXMinZ, heightMaxXMaxZ, heightMinXMaxZ);
 
             return heightFromHeightMapData * transform.scale.y + transform.position.y;
+        }
+
+        private _getQuadSubdivisionsCoordinateArr(x:number, z:number){
+            var quadSubdivisionsCoordinateArr:Array<Vector2> = [],
+                subdivisions = this.subdivisions,
+                sx = x / this.rangeWidth * subdivisions,
+                sz = z / this.rangeHeight * subdivisions,
+                sFloorX = Math.floor(sx),
+                sFloorZ = Math.floor(sz),
+                sMinX:number = null,
+                sMaxX:number = null,
+                sMinZ:number = null,
+                sMaxZ:number = null;
+
+            if(sFloorX < subdivisions){
+                sMinX = sFloorX;
+                sMaxX = sFloorX + 1;
+            }
+            else{
+                sMinX = sFloorX - 1;
+                sMaxX = sFloorX;
+            }
+
+            if(sFloorZ < subdivisions){
+                sMinZ = sFloorZ;
+                sMaxZ = sFloorZ + 1;
+            }
+            else{
+                sMinZ = sFloorZ - 1;
+                sMaxZ = sFloorZ;
+            }
+
+            quadSubdivisionsCoordinateArr.push(Vector2.create(sMinX, sMinZ));
+            quadSubdivisionsCoordinateArr.push(Vector2.create(sMaxX, sMinZ));
+            quadSubdivisionsCoordinateArr.push(Vector2.create(sMaxX, sMaxZ));
+            quadSubdivisionsCoordinateArr.push(Vector2.create(sMinX, sMaxZ));
+
+            quadSubdivisionsCoordinateArr.push(Vector2.create(sx - sMinX, sz - sMinZ));
+
+            return quadSubdivisionsCoordinateArr;
+}
+
+private _getQuadHeightMapCoordinateArr(quadSubdivisionsCoordinateArr:Array<Vector2>){
+    var subdivisions = this.subdivisions,
+        heightMapImageDataWidth = this._heightMapImageDataCacheWidth,
+        heightMapImageDataHeight = this._heightMapImageDataCacheHeight;
+
+    // heightMapImageDataWidth -= 1;
+    // heightMapImageDataHeight -= 1;
+
+    for(let i = 0; i <= 3; i++){
+        let quadSubdivisionsCoordinate:Vector2 = quadSubdivisionsCoordinateArr[i];
+
+
+        quadSubdivisionsCoordinate.x = Math.floor(quadSubdivisionsCoordinate.x / subdivisions * heightMapImageDataWidth);
+
+        if(quadSubdivisionsCoordinate.x > 0){
+            quadSubdivisionsCoordinate.x -= 1;
+        }
+
+        // quadSubdivisionsCoordinate.y = Math.floor(quadSubdivisionsCoordinate.y / subdivisions * heightMapImageDataHeight);
+        quadSubdivisionsCoordinate.y = Math.floor((1 - quadSubdivisionsCoordinate.y / subdivisions) * heightMapImageDataHeight);
+
+
+        if(quadSubdivisionsCoordinate.y > 0){
+            quadSubdivisionsCoordinate.y -= 1;
+        }
+    }
+
+    return quadSubdivisionsCoordinateArr;
+}
+
+// float _getHeightFromHeightMap(vec2 heightMapSampleTexCoord){
+//     vec4 data = texture2D(u_heightMapSampler, heightMapSampleTexCoord);
+//     /*!
+//      compute gradient from rgb heightMap->r,g,b components
+//      */
+//     float r = data.r,
+//         g = data.g,
+//         b = data.b,
+//         gradient = r * 0.3 + g * 0.59 + b * 0.11;
+//
+//     return u_terrainMinHeight + (u_terrainMaxHeight - u_terrainMinHeight) * gradient;
+// }
+
+
+private _getBilinearInterpolatedHeight(offset:Vector2,  heightMinXMinZ:number, heightMaxXMinZ:number, heightMaxXMaxZ:number, heightMinXMaxZ:number){
+    return (heightMinXMinZ * (1 - offset.x) + heightMaxXMinZ * offset.x) * (1 - offset.y) + (heightMaxXMaxZ * offset.x + heightMinXMaxZ * (1 - offset.x)) * offset.y;
+}
+
+        // private _getCacheHeight(row:number, col:number){
+        private _getCacheHeight(coordinate:Vector2){
+            var col = coordinate.x,
+                row = coordinate.y,
+                heightMapIndex = this._computeHeightMapIndex(row, col),
+                cacheHeight:number = this._heightCache[heightMapIndex];
+
+            if(cacheHeight !== void 0){
+                return cacheHeight;
+            }
+
+            let heightFromHeightMapData = this._getHeightByReadHeightMapData(heightMapIndex);
+
+            this._heightCache[heightMapIndex] = heightFromHeightMapData;
+
+            return heightFromHeightMapData;
         }
 
         public computeData(): GeometryDataType{
@@ -136,10 +246,11 @@ module wd{
                 height = this.rangeHeight,
                 heightCache = this._heightCache;
 
-            for (let row = 0; row <= subdivisions; row++) {
-                for (let col = 0; col <= subdivisions; col++) {
+            for (let row = 0; row < subdivisions; row++) {
+                for (let col = 0; col < subdivisions; col++) {
                     let x = (col * width) / subdivisions - (width / 2.0),
                         z = ((subdivisions - row) * height) / subdivisions - (height / 2.0),
+                        //todo optimize?
                         heightMapRow = this._computeHeightMapRow(z),
                         heightMapCol = this._computeHeightMapCol(x),
                         y:number = null,
@@ -177,7 +288,17 @@ module wd{
         }
 
         private _computeHeightMapIndex(heightMapRow:number, heightMapCol:number){
-            return (heightMapCol + heightMapRow * this._heightMapImageDataCacheWidth) * 4
+            // if(heightMapRow > 0){
+            //     heightMapRow -= 1;
+            // }
+
+            var index = (heightMapCol + heightMapRow * this._heightMapImageDataCacheWidth) * 4;
+
+            // if(index >= 4){
+            //     return index - 4;
+            // }
+
+            return index;
         }
 
         private _getHeightByReadHeightMapData(heightMapIndex:number){
@@ -199,15 +320,15 @@ module wd{
             var indices = [],
                 subdivisions = this.subdivisions;
 
-            for (let row = 0; row < subdivisions; row++) {
-                for (let col = 0; col < subdivisions; col++) {
-                    indices.push(col + row * (subdivisions + 1));
-                    indices.push(col + 1 + row * (subdivisions + 1));
-                    indices.push(col + 1 + (row + 1) * (subdivisions + 1));
+            for (let row = 0; row < subdivisions - 1; row++) {
+                for (let col = 0; col < subdivisions - 1; col++) {
+                    indices.push(col + row * subdivisions);
+                    indices.push(col + 1 + row * subdivisions);
+                    indices.push(col + 1 + (row + 1) * subdivisions);
 
-                    indices.push(col + row * (subdivisions + 1));
-                    indices.push(col + 1 + (row + 1) * (subdivisions + 1));
-                    indices.push(col + (row + 1) * (subdivisions + 1));
+                    indices.push(col + row * subdivisions);
+                    indices.push(col + 1 + (row + 1) * subdivisions);
+                    indices.push(col + (row + 1) * subdivisions);
                 }
             }
 
