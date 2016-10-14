@@ -1,7 +1,7 @@
 @funcDefine
 float _getHeightFromHeightMap(vec2 heightMapSampleTexCoord){
 heightMapSampleTexCoord.x /= u_subdivisions;
-heightMapSampleTexCoord.y /= u_subdivisions;
+heightMapSampleTexCoord.y =  1.0 - heightMapSampleTexCoord.y / u_subdivisions;
 
 
     vec4 data = texture2D(u_heightMapSampler, heightMapSampleTexCoord);

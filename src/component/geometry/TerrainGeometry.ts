@@ -140,37 +140,20 @@ module wd{
             quadSubdivisionsCoordinateArr.push(Vector2.create(sx - sMinX, sz - sMinZ));
 
             return quadSubdivisionsCoordinateArr;
-}
-
-private _getQuadHeightMapCoordinateArr(quadSubdivisionsCoordinateArr:Array<Vector2>){
-    var subdivisions = this.subdivisions,
-        heightMapImageDataWidth = this._heightMapImageDataCacheWidth,
-        heightMapImageDataHeight = this._heightMapImageDataCacheHeight;
-
-    // heightMapImageDataWidth -= 1;
-    // heightMapImageDataHeight -= 1;
-
-    for(let i = 0; i <= 3; i++){
-        let quadSubdivisionsCoordinate:Vector2 = quadSubdivisionsCoordinateArr[i];
-
-
-        quadSubdivisionsCoordinate.x = Math.floor(quadSubdivisionsCoordinate.x / subdivisions * heightMapImageDataWidth);
-
-        if(quadSubdivisionsCoordinate.x > 0){
-            quadSubdivisionsCoordinate.x -= 1;
         }
 
-        // quadSubdivisionsCoordinate.y = Math.floor(quadSubdivisionsCoordinate.y / subdivisions * heightMapImageDataHeight);
-        quadSubdivisionsCoordinate.y = Math.floor((1 - quadSubdivisionsCoordinate.y / subdivisions) * heightMapImageDataHeight);
+        private _getQuadHeightMapCoordinateArr(quadSubdivisionsCoordinateArr:Array<Vector2>){
+            for(let i = 0; i <= 3; i++){
+                let quadSubdivisionsCoordinate:Vector2 = quadSubdivisionsCoordinateArr[i];
+
+                quadSubdivisionsCoordinate.x = this._computeHeightMapColInCanvasCoordinate(quadSubdivisionsCoordinate.x);
 
 
-        if(quadSubdivisionsCoordinate.y > 0){
-            quadSubdivisionsCoordinate.y -= 1;
+                quadSubdivisionsCoordinate.y = this._computeHeightMapRowInCanvasCoordinate(quadSubdivisionsCoordinate.y);
+            }
+
+            return quadSubdivisionsCoordinateArr;
         }
-    }
-
-    return quadSubdivisionsCoordinateArr;
-}
 
 // float _getHeightFromHeightMap(vec2 heightMapSampleTexCoord){
 //     vec4 data = texture2D(u_heightMapSampler, heightMapSampleTexCoord);
@@ -186,9 +169,9 @@ private _getQuadHeightMapCoordinateArr(quadSubdivisionsCoordinateArr:Array<Vecto
 // }
 
 
-private _getBilinearInterpolatedHeight(offset:Vector2,  heightMinXMinZ:number, heightMaxXMinZ:number, heightMaxXMaxZ:number, heightMinXMaxZ:number){
-    return (heightMinXMinZ * (1 - offset.x) + heightMaxXMinZ * offset.x) * (1 - offset.y) + (heightMaxXMaxZ * offset.x + heightMinXMaxZ * (1 - offset.x)) * offset.y;
-}
+        private _getBilinearInterpolatedHeight(offset:Vector2,  heightMinXMinZ:number, heightMaxXMinZ:number, heightMaxXMaxZ:number, heightMinXMaxZ:number){
+            return (heightMinXMinZ * (1 - offset.x) + heightMaxXMinZ * offset.x) * (1 - offset.y) + (heightMaxXMaxZ * offset.x + heightMinXMaxZ * (1 - offset.x)) * offset.y;
+        }
 
         // private _getCacheHeight(row:number, col:number){
         private _getCacheHeight(coordinate:Vector2){
@@ -248,14 +231,12 @@ private _getBilinearInterpolatedHeight(offset:Vector2,  heightMinXMinZ:number, h
 
             for (let row = 0; row < subdivisions; row++) {
                 for (let col = 0; col < subdivisions; col++) {
-                    let x = (col * width) / subdivisions - (width / 2.0),
-                        z = ((subdivisions - row) * height) / subdivisions - (height / 2.0),
-                        //todo optimize?
-                        heightMapRow = this._computeHeightMapRow(z),
-                        heightMapCol = this._computeHeightMapCol(x),
-                        y:number = null,
+                    let x:number = (col * width) / subdivisions - (width / 2.0),
+                        z:number = ((subdivisions - row) * height) / subdivisions - (height / 2.0),
+                        heightMapRow = this._computeHeightMapRowInTexCoordCoordinate(row),
+                        heightMapCol = this._computeHeightMapColInTexCoordCoordinate(col),
                         heightMapIndex = this._computeHeightMapIndex(heightMapRow, heightMapCol),
-                        cacheHeight:number = null;
+                    y:number = null;
 
                     y = this._getHeightByReadHeightMapData(heightMapIndex);
 
@@ -273,18 +254,40 @@ private _getBilinearInterpolatedHeight(offset:Vector2,  heightMinXMinZ:number, h
             };
         }
 
-        private _computeHeightMapCol(x:number){
-            var heightMapImageDataWidth = this._heightMapImageDataCacheWidth,
-                width = this.rangeWidth;
+        private _computeHeightMapColInCanvasCoordinate(x:number){
+            var col = Math.floor(x / this.subdivisions * this._heightMapImageDataCacheWidth);
 
-            return Math.floor((x + width / 2) / width * (heightMapImageDataWidth - 1));
+            if(col > 0){
+                col -= 1;
+            }
+
+            return col;
         }
 
-        private _computeHeightMapRow(z:number){
-            var heightMapImageDataHeight = this._heightMapImageDataCacheHeight,
-                height = this.rangeHeight;
+        private _computeHeightMapRowInCanvasCoordinate(z:number){
+            var row = Math.floor((z / this.subdivisions) * this._heightMapImageDataCacheHeight);
 
-            return Math.floor((1.0 - (z + height / 2) / height) * (heightMapImageDataHeight - 1));
+
+            if(row > 0){
+                row -= 1;
+            }
+
+            return row;
+        }
+
+        private _computeHeightMapColInTexCoordCoordinate(x:number){
+            return this._computeHeightMapColInCanvasCoordinate(x);
+        }
+
+        private _computeHeightMapRowInTexCoordCoordinate(z:number){
+            var row = Math.floor((1 - z / this.subdivisions) * this._heightMapImageDataCacheHeight);
+
+
+            if(row > 0){
+                row -= 1;
+            }
+
+            return row;
         }
 
         private _computeHeightMapIndex(heightMapRow:number, heightMapCol:number){
