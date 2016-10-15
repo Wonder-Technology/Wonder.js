@@ -36,7 +36,7 @@
         // 'test/unit/**/GameObjectLOD*',
         // 'test/unit/**/gameObjectLODSpace*',
 
-        // 'test/unit/**/OneToOneSourceInstance*',
+        'test/unit/**/OneToOneSourceInstance*',
         // 'test/unit/**/oneToManyInstance*',
 
 
@@ -95,7 +95,7 @@
         //'test/unit/**/*Material*',
         //'test/unit/**/mirrorMaterial*',
 
-        'test/unit/**/material/**',
+        // 'test/unit/**/material/**',
 
         //'test/unit/**/ConvexPolygonGeometrySpec*',
         //'test/unit/**/SolidLineGeometrySpec*',
@@ -110,7 +110,7 @@
 
         //'test/unit/**/RenderUtils*',
 
-        'test/unit/**/command/*',
+        // 'test/unit/**/command/*',
 
         //'test/unit/**/light/**',
 

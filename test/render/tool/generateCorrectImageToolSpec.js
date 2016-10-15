@@ -301,7 +301,7 @@ describe("generate correct image tool", function () {
 
             var controller = wd.ArcballCameraController.create(cameraComponent);
             controller.theta = Math.PI / 4;
-            controller.distance = 30;
+            controller.distance = 80;
 
             camera.addComponent(controller);
 
@@ -331,6 +331,13 @@ describe("generate correct image tool", function () {
             [
                 {
                     frameIndex:1,
+                    handle:function(){
+                        var camera = wd.Director.getInstance().scene.currentCamera;
+
+                        var controller = camera.getComponent(wd.CameraController);
+
+                        controller.distance = 30;
+                    },
                     imageName:"gameObjectLOD_switch(discrete)_selection(range-base)_distance30"
                 }
             ]

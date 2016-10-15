@@ -80,7 +80,6 @@ module wd{
             x += this.rangeWidth / 2;
             z += this.rangeHeight / 2;
 
-            //todo test
             if(x > this.rangeWidth || z > this.rangeHeight || x < 0 || z < 0){
                 return 0;
             }

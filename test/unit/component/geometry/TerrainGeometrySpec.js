@@ -116,22 +116,22 @@ describe("TerrainGeometry", function() {
                     var data = geo.buffers.geometryData;
                     expect(testTool.getValues(data.vertices, 1)).toEqual(
                         [
-                            -50, 0, 50, -16.7, 0, 50, 16.7, 0, 50, 50, 0, 50, -50, 0, 16.7, -16.7, 5.9, 16.7, 16.7, 5.3, 16.7, 50, 0, 16.7, -50, 0, -16.7, -16.7, 0.5, -16.7, 16.7, 0.5, -16.7, 50, 0, -16.7, -50, 0, -50, -16.7, 0, -50, 16.7, 0, -50, 50, 0, -50
+                            -50, 0, 50, -16.7, 0, 50, 16.7, 0, 50, -50, 0, 16.7, -16.7, 0.5, 16.7, 16.7, 0.5, 16.7, -50, 0, -16.7, -16.7, 5.9, -16.7, 16.7, 5.4, -16.7
                         ]
-                    )
+                    );
                     expect(testTool.getValues(data.texCoords, 1)).toEqual(
                         [
-                            0, 1, 0.3, 1, 0.7, 1, 1, 1, 0, 0.7, 0.3, 0.7, 0.7, 0.7, 1, 0.7, 0, 0.3, 0.3, 0.3, 0.7, 0.3, 1, 0.3, 0, 0, 0.3, 0, 0.7, 0, 1, 0
+                            0, 1, 0.3, 1, 0.7, 1, 0, 0.7, 0.3, 0.7, 0.7, 0.7, 0, 0.3, 0.3, 0.3, 0.7, 0.3
                         ]
-                    )
+                    );
                     expect(data.indices).toEqual(
                         [
-                            0, 1, 5, 0, 5, 4, 1, 2, 6, 1, 6, 5, 2, 3, 7, 2, 7, 6, 4, 5, 9, 4, 9, 8, 5, 6, 10, 5, 10, 9, 6, 7, 11, 6, 11, 10, 8, 9, 13, 8, 13, 12, 9, 10, 14, 9, 14, 13, 10, 11, 15, 10, 15, 14
-                        ])
+                            0, 1, 4, 0, 4, 3, 1, 2, 5, 1, 5, 4, 3, 4, 7, 3, 7, 6, 4, 5, 8, 4, 8, 7
+                        ]);
                     expect(testTool.getValues(data.normals, 1)).toEqual(
                         [
-                            -0.2, 1, 0, 0, 1, 0.2, 0.2, 1, 0.2, 0, 1, 0, 0, 1, 0, 0, 1, -0.2, 0, 1, -0.1, 0.2, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0
-                        ])
+                            0, 1, 0, 0, 1, 0, 0, 1, 0, -0.2, 1, 0, 0, 1, 0.2, 0, 1, 0.1, -0.2, 1, 0, 0, 1, 0.2, 0, 1, 0.2
+                        ]);
 
                     done();
                 });
@@ -139,53 +139,37 @@ describe("TerrainGeometry", function() {
         });
 
         describe("getHeightAtCoordinates", function(){
-            function judge1(done, isInit, x,z,height){
-                var x = x || 1;
-                var z = z || 2;
+            var heightMapAsset;
+
+            function judgeSync1(isInit, x,z,height){
+                var x = x === undefined ? 1 : x;
+                var z = z === undefined ? 2 : z;
                 var targetHeight = height === undefined ? 30.9 : height;
 
-                wd.LoaderManager.getInstance().load([
-                    {url: testTool.resPath + "test/res/terrain/heightMap.png", id: "heightMap"}
-                ]).subscribe(function(data){
-                }, function(err){
-                }, function() {
-                    geo.heightMapAsset = wd.LoaderManager.getInstance().get("heightMap");
+                geo.heightMapAsset = heightMapAsset;
 
-                    if(isInit){
-                        geo.init();
-                    }
+                if(isInit){
+                    geo.init();
+                }
 
 
-                    var height = geo.getHeightAtCoordinates(x, z);
+                var height = geo.getHeightAtCoordinates(x, z);
 
-                    expect(testTool.getValues(height, 1)).toEqual(targetHeight);
-
-                    done();
-                });
+                expect(testTool.getValues(height, 1)).toEqual(testTool.getValues(targetHeight, 1));
             }
 
-            function judge2(done, isInit){
-                wd.LoaderManager.getInstance().load([
-                    {url: testTool.resPath + "test/res/terrain/heightMap.png", id: "heightMap"}
-                ]).subscribe(function(data){
-                }, function(err){
-                }, function() {
-                    geo.heightMapAsset = wd.LoaderManager.getInstance().get("heightMap");
+            function buildFakeHeightMapData(width, height) {
+                var buildFakeHeight = function (index) {
+                    return index % 256;
+                };
 
-                    if(isInit){
-                        geo.init();
-                    }
+                geo._heightMapImageDataCacheWidth = width || 20;
+                geo._heightMapImageDataCacheHeight = height || 20;
 
-                    entityObject.transform.scale = wd.Vector3.create(2,3,4);
-                    entityObject.transform.position = wd.Vector3.create(10,20,30);
-
-
-                    var height = geo.getHeightAtCoordinates(1, 2);
-
-                    expect(Math.floor(height)).toEqual(Math.floor(30.9 * 3 + 20));
-
-                    done();
-                });
+                geo._heightMapImageDataCache = [];
+                for(var i = 0; i < geo._heightMapImageDataCacheWidth * geo._heightMapImageDataCacheHeight * 4; i++){
+                    geo._heightMapImageDataCache[i] = buildFakeHeight(i);
+                }
             }
 
             beforeEach(function(){
@@ -194,47 +178,109 @@ describe("TerrainGeometry", function() {
                 geo.rangeHeight = 100;
                 geo.minHeight = 0;
                 geo.maxHeight = 50;
+
+
+                heightMapAsset = wd.ImageTextureAsset.create({});
+
+                sandbox.stub(geo, "_readHeightMapData");
+
+                buildFakeHeightMapData();
             });
 
-            describe("support get height before geo.computeData", function () {
-                it("get height from heightMap data", function (done) {
-                    judge1(done, false);
+            it("if x/z exceed range, return 0", function () {
+                judgeSync1(false, 50, 50, 11.9);
+
+                judgeSync1(false, 51, 50, 0);
+                judgeSync1(false, 50, 51, 0);
+                judgeSync1(false, -51, -50, 0);
+                judgeSync1(false, -50, -51, 0);
+            });
+
+            describe("get the bilinear interpolated height from height of points of the actual drawed quad where the point(x,z) is(the quad is determined by subdivisions)", function () {
+
+                function getHeight(offset, minXMinZPoint, maxXMinZPoint, maxXMaxZPoint, minXMaxZPoint) {
+                    return geo._getBilinearInterpolatedHeight(offset, geo._getCacheHeight(minXMinZPoint), geo._getCacheHeight(maxXMinZPoint), geo._getCacheHeight(maxXMaxZPoint), geo._getCacheHeight(minXMaxZPoint));
+                }
+
+
+                beforeEach(function(){
+                    geo.subdivisions = 5;
+                    geo.rangeWidth = 10;
+                    geo.rangeHeight = 10;
+
+                    geo.minHeight = 0;
+                    geo.maxHeight = 50;
                 });
-                it("consider transform->scale.y and position.y", function (done) {
-                    judge2(done, false);
+
+                it("test the point is in the middle quad", function () {
+                    judgeSync1(false, 0, 0, getHeight({x:0.5, y:0.5},
+                        {x:7, y:7},
+                        {x:11, y:7},
+                        {x:11,y:11},
+                        {x:7, y:11}));
+                });
+                it("test the point is in the first quad", function () {
+                                        judgeSync1(false, -4.5, -3.5, getHeight({x:0.25, y:0.75},
+                        {x:0, y:0},
+                        {x:3, y:0},
+                        {x:3,y:3},
+                        {x:0, y:3}));
+                });
+                it("test the point is in the last quad", function () {
+                    judgeSync1(false, 4.5, 4, getHeight({x:0.75, y:0.5},
+                        {x:15, y:15},
+                        {x:19, y:15},
+                        {x:19,y:19},
+                    {x:15, y:19}));
+                });
+            });
+
+
+            describe("support get height before geo.computeData", function () {
+                it("get height from heightMap data", function () {
+                    judgeSync1(false, 0, 0, 47.8);
+                });
+                it("consider transform->scale.y and position.y", function () {
+                    entityObject.transform.scale = wd.Vector3.create(2,3,4);
+                    entityObject.transform.position = wd.Vector3.create(10,20,30);
+
+                    judgeSync1(false, 0, 0, 47.8 * 3 + 20);
                 });
             });
 
 
             describe("support get height after geo.computeData", function () {
-                it("get height from heightMap data", function (done) {
-                    judge1(done, true);
+                it("get height from heightMap data", function () {
+                    judgeSync1(true, 0, 0, 47.8);
                 });
-                it("consider transform->scale.y and position.y", function (done) {
-                    judge2(done, true);
-                });
-            });
+                it("consider transform->scale.y and position.y", function () {
+                    entityObject.transform.scale = wd.Vector3.create(2,3,4);
+                    entityObject.transform.position = wd.Vector3.create(10,20,30);
 
-            it("if the height getted from heightCache is undefined, get the height from height map data", function(done){
-                geo.subdivisions = 2;
-
-                judge1(done, true);
-            });
-
-            describe("fix bug", function(){
-                beforeEach(function(){
-                });
-
-                it("the height from cache should equal the one getterd by read height map data", function(done){
-                    geo.subdivisions = 100;
-                    geo.rangeWidth = 100;
-                    geo.rangeHeight = 100;
-                    geo.minHeight = 0;
-                    geo.maxHeight = 50;
-
-                    judge1(done, true, 8.2, 3.4, 25.4);
+                    judgeSync1(true, 0, 0, 47.8 * 3 + 20);
                 });
             });
+            //
+            // it("if the height getted from heightCache is undefined, get the height from height map data", function(done){
+            //     geo.subdivisions = 2;
+            //
+            //     judge1(done, true);
+            // });
+            //
+            // describe("fix bug", function(){
+            //     beforeEach(function(){
+            //     });
+            //
+            //     it("the height from cache should equal the one getted by reading height map data", function(done){
+            //         geo.subdivisions = 100;
+            //         geo.rangeWidth = 100;
+            //         geo.rangeHeight = 100;
+            //         geo.minHeight = 0;
+            //         geo.maxHeight = 50;
+            //
+            //         judge1(done, true, 8.2, 3.4, 25.4);
+            //     });
+            // });
         });
 
         describe("test cache", function(){
@@ -244,9 +290,9 @@ describe("TerrainGeometry", function() {
                 ]).subscribe(function(data){
                 }, function(err){
                 }, function() {
-                    sandbox.spy(geo, "_readHeightMapData");
+                            geo.heightMapAsset = wd.LoaderManager.getInstance().get("heightMap");
 
-                    geo.heightMapAsset = wd.LoaderManager.getInstance().get("heightMap");
+                    sandbox.spy(geo, "_readHeightMapData");
 
                     geo.getHeightAtCoordinates(1,2);
 
