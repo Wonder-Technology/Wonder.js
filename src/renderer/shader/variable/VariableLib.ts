@@ -558,7 +558,17 @@ module wd{
             value:EVariableCategory.ENGINE
         };
 
-        public static u_subdivisions:ShaderVariable = {
+        public static u_terrainSubdivisions:ShaderVariable = {
+            type:EVariableType.FLOAT_1,
+            value:EVariableCategory.ENGINE
+        };
+
+        public static u_terrainScaleY:ShaderVariable = {
+            type:EVariableType.FLOAT_1,
+            value:EVariableCategory.ENGINE
+        };
+
+        public static u_terrainPositionY:ShaderVariable = {
             type:EVariableType.FLOAT_1,
             value:EVariableCategory.ENGINE
         };

@@ -1,7 +1,7 @@
 @funcDefine
 float _getHeightFromHeightMap(vec2 heightMapSampleTexCoord){
-heightMapSampleTexCoord.x /= u_subdivisions;
-heightMapSampleTexCoord.y =  1.0 - heightMapSampleTexCoord.y / u_subdivisions;
+heightMapSampleTexCoord.x /= u_terrainSubdivisions;
+heightMapSampleTexCoord.y =  1.0 - heightMapSampleTexCoord.y / u_terrainSubdivisions;
 
 
     vec4 data = texture2D(u_heightMapSampler, heightMapSampleTexCoord);
@@ -40,8 +40,8 @@ float getHeightFromHeightMap(float x, float z){
 
 
 
-    float sx = x / u_terrainRangeWidth * u_subdivisions,
-        sz = z / u_terrainRangeHeight * u_subdivisions;
+    float sx = x / u_terrainRangeWidth * u_terrainSubdivisions,
+        sz = z / u_terrainRangeHeight * u_terrainSubdivisions;
 
     float sFloorX = floor(sx),
         sFloorZ = floor(sz);
@@ -51,7 +51,7 @@ float getHeightFromHeightMap(float x, float z){
     sMinZ,
     sMaxZ;
 
-    if(sFloorX < u_subdivisions){
+    if(sFloorX < u_terrainSubdivisions){
         sMinX = sFloorX;
         sMaxX = sFloorX + 1.0;
     }
@@ -60,7 +60,7 @@ float getHeightFromHeightMap(float x, float z){
         sMaxX = sFloorX;
     }
 
-    if(sFloorZ < u_subdivisions){
+    if(sFloorZ < u_terrainSubdivisions){
         sMinZ = sFloorZ;
         sMaxZ = sFloorZ + 1.0;
     }

@@ -97,7 +97,11 @@ not consider ambient light
 
     pos = u_mMatrix * pos;
 
-    pos.y += getHeightFromHeightMap(pos.x, pos.z);
+
+    pos.y += getHeightFromHeightMap(pos.x, pos.z) * u_terrainScaleY + u_terrainPositionY;
+
+
+
 
     //todo add wind
     //todo pass wind direction uniform

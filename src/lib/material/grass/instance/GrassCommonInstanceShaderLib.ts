@@ -45,7 +45,9 @@ module wd{
                 "u_terrainRangeHeight",
                 "u_terrainMinHeight",
                 "u_terrainMaxHeight",
-                "u_subdivisions",
+                "u_terrainSubdivisions",
+                "u_terrainScaleY",
+                "u_terrainPositionY",
                 "u_heightMapSampler",
                 "u_lightPos",
                 "u_lightColor"
@@ -88,8 +90,12 @@ module wd{
             this.sendUniformData(program, "u_terrainRangeHeight", terrainGeo.rangeHeight);
             this.sendUniformData(program, "u_terrainMinHeight", terrainGeo.minHeight);
             this.sendUniformData(program, "u_terrainMaxHeight", terrainGeo.maxHeight);
-            //todo test
-            this.sendUniformData(program, "u_subdivisions", terrainGeo.subdivisions);
+            this.sendUniformData(program, "u_terrainSubdivisions", terrainGeo.subdivisions);
+
+            let terrainGameObjectTransform:ThreeDTransform = terrainGeo.entityObject.transform;
+
+            this.sendUniformData(program, "u_terrainScaleY", terrainGameObjectTransform.scale.y);
+            this.sendUniformData(program, "u_terrainPositionY", terrainGameObjectTransform.position.y);
         }
 
         @require(function(){
