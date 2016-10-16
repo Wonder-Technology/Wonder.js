@@ -33,7 +33,7 @@
             'test/render/helper/*.js',
 
 
-            'test/render/test/**',
+            // 'test/render/test/**',
 
 
 
@@ -53,7 +53,7 @@
             //'test/render/test/**/shadow*',
             //'test/render/test/**/threeDUI*',
             //'test/render/test/**/model*',
-            //'test/render/test/**/light*',
+            'test/render/test/**/light*',
             //'test/render/test/**/texture*',
             //'test/render/test/**/water*',
 

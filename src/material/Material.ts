@@ -111,8 +111,7 @@ module wd {
             this.blendEquationSeparate = null;
         }
 
-
-        private _alphaToCoverage:boolean = null;
+        private _alphaToCoverage:boolean = false;
         @cloneAttributeAsBasicType()
         @ensureGetter(function(alphaToCoverage:boolean){
             it("if enable alphaToCoverage, multiSample should be enabled", () => {

@@ -26,7 +26,7 @@
         'test/helper/yoop/yOOP.js',
         'test/unit/**/*Tool.js',
 
-        // 'test/unit/**',
+        'test/unit/**',
 
 
         //'test/render/*Tool.js',
@@ -36,7 +36,7 @@
         // 'test/unit/**/GameObjectLOD*',
         // 'test/unit/**/gameObjectLODSpace*',
 
-        'test/unit/**/OneToOneSourceInstance*',
+        // 'test/unit/**/OneToOneSourceInstance*',
         // 'test/unit/**/oneToManyInstance*',
 
 

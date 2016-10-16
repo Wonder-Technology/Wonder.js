@@ -1,10 +1,11 @@
 var grassInstanceTool = (function(){
     return {
+
         createGrass: function (name){
             var material = wd.GrassInstanceMaterial.create();
 
             material.map = wd.ImageTexture.create({});
-            material.terrainGeometry = {};
+            this.setFakeTerrainGeoemtry(material);
 
 
 
@@ -37,6 +38,10 @@ var grassInstanceTool = (function(){
             material.geometry = {
                 vertexIndexBuffer:wd.ArrayBuffer.create()
             }
+        },
+        setFakeTerrainGeoemtry:function(material){
+            material.terrainGeometry = wd.TerrainGeometry.create();
+            material.terrainGeometry.entityObject = wd.GameObject.create();
         }
     }
 })();

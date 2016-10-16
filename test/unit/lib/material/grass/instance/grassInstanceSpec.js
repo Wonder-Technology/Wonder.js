@@ -189,7 +189,8 @@ describe("test grass instance", function() {
 
     describe("send light data", function(){
         beforeEach(function(){
-            material.terrainGeometry = {entityObject:wd.GameObject.create()};
+            material.terrainGeometry = wd.TerrainGeometry.create();
+            material.terrainGeometry.entityObject = wd.GameObject.create();
         });
 
         describe("if direction lights exist", function(){
@@ -246,6 +247,7 @@ describe("test grass instance", function() {
 
         it("else, contract error", function () {
             testTool.openContractCheck(sandbox);
+
 
             director._init();
             program = shaderTool.getAndSpyProgram(sandbox, gameObject.getComponent(wd.Geometry).material, "grassProgram");

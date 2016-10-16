@@ -92,7 +92,7 @@ describe("test grass hardware instance", function() {
 
                 grassInstanceTool.setFakeGeoemtry(material);
 
-                material.terrainGeometry = {};
+                grassInstanceTool.setFakeTerrainGeoemtry(material);
 
                 sandbox.stub(grassMap, "bindToUnit");
 
@@ -144,7 +144,7 @@ describe("test grass hardware instance", function() {
                 gameObject = grassInstanceTool.createGrass();
                 material = gameObject.getComponent(wd.Geometry).material;
 
-                material.terrainGeometry = {};
+                grassInstanceTool.setFakeTerrainGeoemtry(material);
 
                 director.scene.addChild(gameObject);
             });

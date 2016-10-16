@@ -64,7 +64,7 @@ describe("test grass batch instance", function() {
                 gameObject = grassInstanceTool.createGrass();
                 material = gameObject.getComponent(wd.Geometry).material;
 
-                material.terrainGeometry = {};
+                grassInstanceTool.setFakeTerrainGeoemtry(material);
 
                 director.scene.addChild(gameObject);
             });

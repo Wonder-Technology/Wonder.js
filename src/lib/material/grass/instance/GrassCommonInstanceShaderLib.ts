@@ -74,14 +74,21 @@ module wd{
         }
 
         @require(function(material:GrassInstanceMaterial, program:Program){
-            it("material.terrainGeometry should exist ", () => {
-                expect(material.terrainGeometry).exist;
-            });
+            var geo = material.terrainGeometry;
 
-            //todo check u_sub should >= 2
-            //todo check u_terrainRangeWidth should > 0;
-            //todo check u_terrainRangeHeight should > 0;
-            //todo check u_terrainMaxHeight should > u_terrainMinHeight;
+            it("material.terrainGeometry should exist ", () => {
+                expect(geo).exist;
+            });
+            it("subdivisions should >= 2", () => {
+                expect(geo.subdivisions).greaterThan(1);
+            });
+            it("rangeWidth,rangeHeight should > 0", () => {
+                expect(geo.rangeWidth).greaterThan(0);
+                expect(geo.rangeHeight).greaterThan(0);
+            });
+            it("min height should < max height", () => {
+                expect(geo.minHeight).lessThan(geo.maxHeight);
+            });
         })
         private _sendTerrainData(material:GrassInstanceMaterial, program:Program){
             let terrainGeo:TerrainGeometry = material.terrainGeometry;

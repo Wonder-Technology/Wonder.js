@@ -13,7 +13,7 @@ describe("one to many instance with spacePartition", function() {
         var material = wd.GrassInstanceMaterial.create();
 
         material.map = wd.ImageTexture.create({});
-            material.terrainGeometry = wd.TerrainGeometry.create();
+        grassInstanceTool.setFakeTerrainGeoemtry(material);
 
 
             var geometry = wd.GrassInstanceGeometry.create();

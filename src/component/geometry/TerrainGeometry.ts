@@ -60,7 +60,7 @@ module wd{
         })
         public heightMapAsset:ImageTextureAsset = null;
         @cloneAttributeAsBasicType()
-        public subdivisions:number = 1;
+        public subdivisions:number = 2;
         @cloneAttributeAsBasicType()
         public minHeight:number = 0;
         @cloneAttributeAsBasicType()
@@ -154,25 +154,10 @@ module wd{
             return quadSubdivisionsCoordinateArr;
         }
 
-// float _getHeightFromHeightMap(vec2 heightMapSampleTexCoord){
-//     vec4 data = texture2D(u_heightMapSampler, heightMapSampleTexCoord);
-//     /*!
-//      compute gradient from rgb heightMap->r,g,b components
-//      */
-//     float r = data.r,
-//         g = data.g,
-//         b = data.b,
-//         gradient = r * 0.3 + g * 0.59 + b * 0.11;
-//
-//     return u_terrainMinHeight + (u_terrainMaxHeight - u_terrainMinHeight) * gradient;
-// }
-
-
         private _getBilinearInterpolatedHeight(offset:Vector2,  heightMinXMinZ:number, heightMaxXMinZ:number, heightMaxXMaxZ:number, heightMinXMaxZ:number){
             return (heightMinXMinZ * (1 - offset.x) + heightMaxXMinZ * offset.x) * (1 - offset.y) + (heightMaxXMaxZ * offset.x + heightMinXMaxZ * (1 - offset.x)) * offset.y;
         }
 
-        // private _getCacheHeight(row:number, col:number){
         private _getCacheHeight(coordinate:Vector2){
             var col = coordinate.x,
                 row = coordinate.y,
@@ -290,15 +275,7 @@ module wd{
         }
 
         private _computeHeightMapIndex(heightMapRow:number, heightMapCol:number){
-            // if(heightMapRow > 0){
-            //     heightMapRow -= 1;
-            // }
-
             var index = (heightMapCol + heightMapRow * this._heightMapImageDataCacheWidth) * 4;
-
-            // if(index >= 4){
-            //     return index - 4;
-            // }
 
             return index;
         }
