@@ -85,6 +85,7 @@ export = class ObjectsConverter {
 
             line = line.trim();
 
+
             if (line.length === 0 || line.charAt(0) === '#') {
                 return;
             }
@@ -160,10 +161,15 @@ export = class ObjectsConverter {
             normalIndices = null,
             uvIndices = null;
 
-        if (!this._currentObject || face.length < 3) {
-            return;
+        if(!this._currentObject){
+            this._currentObject = ObjectModel.create();
+
+            this.objects.addChild(this._currentObject);
         }
 
+        if (face.length < 3) {
+            return;
+        }
 
         verticeIndices = this._currentObject.verticeIndices;
         normalIndices = this._currentObject.normalIndices;

@@ -34,16 +34,22 @@ export class OBJToWD {
         var self = this,
             resultJson:any = {};
 
+
         resultJson.metadata = self._convertMetadata(filePath);
         resultJson.scene = self._convertScene(fileContent, filePath);
         resultJson.objects = self._convertObjects(fileContent, filePath);
 
-        return wdFrp.fromNodeCallback(fs.readFile)(ModelLoaderUtils.getPath(filePath, self._objectsConverter.mtlFilePath))
-            .map((data:string) => {
-                resultJson.materials = self._convertMaterials(data.toString());
+        if(this._objectsConverter.mtlFilePath){
+            return wdFrp.fromNodeCallback(fs.readFile)(ModelLoaderUtils.getPath(filePath, self._objectsConverter.mtlFilePath))
+                .map((data:string) => {
+                    resultJson.materials = self._convertMaterials(data.toString());
 
-                return [resultJson, self._getResourceUrlArr(resultJson.materials, filePath)];
-            });
+                    return [resultJson, self._getResourceUrlArr(resultJson.materials, filePath)];
+                });
+        }
+
+        return wdFrp.just([resultJson, null]);
+
     }
 
     private _getResourceUrlArr(materials, filePath) {

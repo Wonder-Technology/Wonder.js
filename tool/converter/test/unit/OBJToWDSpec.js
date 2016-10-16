@@ -8,8 +8,10 @@ require("jasmine-before-all");
 describe("OBJToWD", function () {
     var sandbox = null;
     var converter = null;
-    var testFile, testFile2;
+    var testFile1, testFile2;
+    var testFile3;
     var filePath1,filePath2;
+    var filePath3;
 
 
     beforeEach(function () {
@@ -22,9 +24,11 @@ describe("OBJToWD", function () {
     beforeAll(function () {
         filePath1 = path.join(process.cwd(), "tool/converter/test/res/test.obj");
         filePath2 = path.join(process.cwd(), "tool/converter/test/res/test2.obj");
+        filePath3 = path.join(process.cwd(), "tool/converter/test/res/noMtl.obj");
 
-        testFile = fs.readFileSync(filePath1);
+        testFile1 = fs.readFileSync(filePath1);
         testFile2 = fs.readFileSync(filePath2);
+        testFile3 = fs.readFileSync(filePath3);
     });
 
     function judge(file, filePath, assertion, done){
@@ -40,7 +44,7 @@ describe("OBJToWD", function () {
     }
 
     it("convert metadata", function (done) {
-        judge(testFile, filePath1, function(json){
+        judge(testFile1, filePath1, function(json){
             expect(json.metadata).toEqual({
                 formatVersion: '0.1.0',
                 description: '',
@@ -50,7 +54,7 @@ describe("OBJToWD", function () {
         }, done);
     });
     it("convert scene", function (done) {
-        judge(testFile, filePath1, function(json){
+        judge(testFile1, filePath1, function(json){
             expect(json.scene).toEqual({
                 ambientColor: [0, 0, 0]
             });
@@ -59,7 +63,7 @@ describe("OBJToWD", function () {
 
     describe("convert objects. object container has whole vertex data, each object has verticeIndices and normalIndices? , uvIndices?", function () {
         it("read normals from file", function (done) {
-            judge(testFile, filePath1, function(json){
+            judge(testFile1, filePath1, function(json){
                 expect(json.objects).toEqual(
                     [{
                         children: [{
@@ -116,10 +120,34 @@ describe("OBJToWD", function () {
                 done();
             }, done);
         });
+        it("support no mtl file", function (done) {
+            judge(testFile3, filePath3, function(json){
+                expect(json.objects.length).toEqual(1);
+                expect(json.objects).toEqual(
+                    [
+                        {
+                            children: [{
+                                name: null,
+                                material: null,
+                                verticeIndices: [-1, 0, 1],
+                                normalIndices: [0, 1, -1],
+                                uvIndices: [0, -1, 1],
+                                morphTargets: []
+                            }],
+                            name: 'noMtl',
+                            vertices: [0.061043, 0.025284, 0.03449, 0.011829, 0.022302, 0.083267, -0.058528, 0.017917, 0.083267],
+                            normals: [0.912731, 0.155721, 0.377721, 0.912731, 0.155721, 0.377721, 0.912731, 0.155721, 0.377721],
+                            uvs: [0.131375, 0.762327, 0.437504, 0.96342, 0.086658, 0.708747],
+                            colors: []
+                        }
+                    ]
+                );
+            }, done);
+        });
     });
 
     it("convert materials", function(done){
-        judge(testFile, filePath1, function(json, resourceUrlArr){
+        judge(testFile1, filePath1, function(json, resourceUrlArr){
             expect(json.materials).toEqual(
                 {
                     material1: {
