@@ -1,15 +1,11 @@
 module wd{
     export abstract class Action extends Component{
+        public abstract get isStop():boolean;
+        public abstract get isPause():boolean;
+
+
         get isStart() {
             return !this.isStop;
-        }
-
-        get isStop() {
-            return Log.error(true, Log.info.ABSTRACT_ATTRIBUTE);
-        }
-
-        get isPause() {
-            return Log.error(true, Log.info.ABSTRACT_ATTRIBUTE);
         }
 
         protected p_target:EntityObject = null;

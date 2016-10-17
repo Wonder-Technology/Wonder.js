@@ -1,14 +1,11 @@
 module wd{
     export abstract class Event{
-        constructor(eventName:EEventName) {
+        protected constructor(eventName:EEventName) {
             this.name = eventName;
         }
 
-
-        protected p_type:EEventType = null;
+        protected abstract p_type:EEventType;
         get type(){
-            Log.error(this.p_type === null, Log.info.ABSTRACT_ATTRIBUTE);
-
             return this.p_type;
         }
 

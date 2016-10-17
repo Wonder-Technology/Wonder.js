@@ -1,6 +1,6 @@
 module wd {
     export abstract class EventRegister {
-        protected listenerMap:EventListenerMap = ABSTRACT_ATTRIBUTE;
+        protected abstract listenerMap:EventListenerMap;
 
         public abstract register(...args):void;
         public abstract remove(...args):void;

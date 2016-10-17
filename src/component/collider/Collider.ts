@@ -11,7 +11,7 @@ module wd {
         @cloneAttributeAsCloneable()
         public boundingRegion:BoundingRegion = null;
 
-        protected type:string = ABSTRACT_ATTRIBUTE;
+        protected abstract type:string;
 
         public abstract createBoundingRegion();
         public abstract buildBoundingRegion();
