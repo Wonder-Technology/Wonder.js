@@ -9,8 +9,6 @@ var renderTestkarmaConfPath = path.join(process.cwd(), "test/karmaRenderTest.con
 var renderTestToolkarmaConfPath = path.join(process.cwd(), "test/karmaRenderTool.conf.js");
 
 
-require("../compile/parseTsconfigFilesGlob");
-require("../compile/removeTsconfigFiles");
 require("../compile/compileTs");
 require("../compile/combineInnerLib");
 
@@ -36,12 +34,12 @@ var tsFilePaths = ["src/*.ts", "src/**/*.ts"];
 var glslFilePaths = ["src/renderer/shader/chunk/glsl/**/*.glsl", "src/lib/**/*.glsl"];
 
 
-gulp.task("compileForTest", gulpSync.sync(["createInnerFile", "parseTsconfigFilesGlob", "compileTsDebugForTest", "removeTsconfigFiles"]));
+gulp.task("compileForTest", gulpSync.sync(["createInnerFile", "parseTsconfigFilesGlob", "compileTsDebugForTest", "changeDistFilePath", "removeTsconfigFiles"]));
 
 gulp.task("watchForTest", function(){
     var totalPaths = tsFilePaths.concat(glslFilePaths);
 
-    gulp.watch(totalPaths, gulpSync.sync(["createShaderChunk", "parseTsconfigFilesGlob", "compileTsDebugForTest", "removeTsconfigFiles"]));
+    gulp.watch(totalPaths, gulpSync.sync(["createShaderChunk", "compileForTest"]));
 });
 
 

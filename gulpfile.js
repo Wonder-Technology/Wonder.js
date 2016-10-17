@@ -14,7 +14,7 @@ require("./build/gulp_task/createInnerFile/index");
 
 require("./build/gulp_task/test/test");
 
-gulp.task("build", gulpSync.sync(["clean", "createInnerFile", "parseTsconfigFilesGlob", "compileDTS", "compileTs", "compileTsDebug", "combineInnerLib", "compress", "addBanner", "removeTsconfigFiles"]));
+gulp.task("build", gulpSync.sync(["clean", "createInnerFile", "parseTsconfigFilesGlob", "compileDTS", "compileTs", "compileTsDebug", "changeDistFilePath", "combineInnerLib", "compress", "addBanner", "removeTsconfigFiles"]));
 
 
 gulp.task("testAll", gulpSync.sync(["build", "testSingleRunByKarma", "renderTest"]));
@@ -26,7 +26,7 @@ var glslFilePaths = ["src/renderer/shader/chunk/glsl/**/*.glsl", "src/lib/**/*.g
 gulp.task("watch", function(){
     var totalPaths = tsFilePaths.concat(glslFilePaths);
 
-    gulp.watch(totalPaths, gulpSync.sync(["createShaderChunk", "parseTsconfigFilesGlob", "compileTsDebug", "removeTsconfigFiles"]));
+    gulp.watch(totalPaths, gulpSync.sync(["createShaderChunk", "parseTsconfigFilesGlob", "compileTsDebug", "changeDistFilePath", "removeTsconfigFiles"]));
 });
 
 

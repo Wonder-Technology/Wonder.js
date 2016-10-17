@@ -2,6 +2,7 @@ var gulp = require("gulp");
 var gulpSync = require("gulp-sync")(gulp);
 var path = require("path");
 var fs = require("fs-extra");
+var glob = require("glob");
 
 var distPath = path.join(process.cwd(), "dist");
 var combineDTsList = [
@@ -132,7 +133,40 @@ function getInnerLibDTsPathArr(tsconfigPath){
         files = null,
         resultArr = [];
 
-    files = JSON.parse(fs.readFileSync(tsconfigPath, "utf8")).files;
+var tsconfigJson = JSON.parse(fs.readFileSync(tsconfigPath, "utf8").replace(/\/\/.+/g, "")),
+    files = [];
+
+
+
+    var tsconfigFilePath = require("./pathData.js");
+    var folderPath = path.dirname(tsconfigFilePath);
+
+    // console.log(tsconfigJson.include);
+
+    var allFileGlobs = null;
+
+    if(tsconfigJson.include){
+        allFileGlobs = tsconfigJson.include.concat(tsconfigJson.files);
+    }
+    else{
+        allFileGlobs = tsconfigJson.files;
+    }
+
+
+
+    // console.log(allFileGlobs)
+
+    allFileGlobs.forEach(function(globPattern) {
+        files = files.concat(glob.sync(globPattern, {
+            cwd: folderPath
+        }));
+    });
+
+    // console.log(files);
+
+
+
+
 
     for(var i = 0, len = files.length; i < len; i++){
         var file = files[i];

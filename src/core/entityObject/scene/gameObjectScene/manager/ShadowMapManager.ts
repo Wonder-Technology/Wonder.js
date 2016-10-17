@@ -141,11 +141,10 @@ module wd {
         @require(function(layerList:wdCb.Collection<string>|ShadowLayerList, light:DirectionLight){
             assert(!layerList.hasRepeatItems(), Log.info.FUNC_SHOULD_NOT("has repeat shadow layer"));
         })
-        private _addTwoDShadowMapDataWithLayer(layerList:wdCb.Collection<string>|ShadowLayerList, light:DirectionLight){
+        private _addTwoDShadowMapDataWithLayer(layerList:{forEach:(string) => void}, light:DirectionLight){
             var twoDShadowMapDataMap = this.twoDShadowMapDataMap;
 
             layerList.forEach((layer:string) => {
-
                 twoDShadowMapDataMap.appendChild(layer, {
                     shadowMap: TwoDShadowMapTexture.create(),
                     light: light
@@ -156,11 +155,10 @@ module wd {
         @require(function(layerList:wdCb.Collection<string>, light:PointLight){
             assert(!layerList.hasRepeatItems(), Log.info.FUNC_SHOULD_NOT("has repeat shadow layer"));
         })
-        private _addCubemapShadowMapDataWithLayer(layerList:wdCb.Collection<string>|ShadowLayerList, light:PointLight){
+        private _addCubemapShadowMapDataWithLayer(layerList:{forEach:(string) => void}, light:PointLight){
             var cubemapShadowMapDataMap = this.cubemapShadowMapDataMap;
 
             layerList.forEach((layer:string) => {
-
                 cubemapShadowMapDataMap.appendChild(layer, {
                     shadowMap: CubemapShadowMapTexture.create(),
                     light: light

@@ -19,7 +19,7 @@ function handleRecipeFile(recipePath) {
 
     var config = null;
     try {
-        config = JSON.parse(contents.toString());
+        config = JSON.parse(contents.toString().replace(/\/\/.+/g, ""));
     } catch (err) {
         // Finding a recipe that cannot be parsed is a disaster
         console.log("Error in parsing JSON for " + recipePath);
