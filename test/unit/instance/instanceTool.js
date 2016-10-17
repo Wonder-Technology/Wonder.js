@@ -1,4 +1,14 @@
 var instanceTool = (function(){
+    function _sliceArray(array, start, end){
+        var result = [];
+
+        for(var i = start; i < end; i++){
+            result.push(array[i]);
+        }
+
+        return result;
+    }
+
     return {
         createBox: function(sourceInstance){
             var box1 = prepareTool.createBox(1);
@@ -69,12 +79,13 @@ var instanceTool = (function(){
 
             var len = Math.min(matricesInstancesArray.length, targetMatricesInstancesArray.length);
 
+
             expect(testTool.getValues(
-                matricesInstancesArray.slice(0, len),
+                _sliceArray(matricesInstancesArray, 0, len),
                 1)
             ).toEqual(
                 testTool.getValues(
-                    targetMatricesInstancesArray.slice(0, len),
+                    _sliceArray(targetMatricesInstancesArray, 0, len),
                     1
                 )
             )
