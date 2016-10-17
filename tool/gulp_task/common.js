@@ -21,7 +21,7 @@ gulp.task("compileTs", function () {
     });
 
     var tsResult = tsProject.src()
-        .pipe(gulpTs(tsProject))
+        .pipe(tsProject())
         .pipe(gulp.dest(distDir));
 
     return tsResult;
