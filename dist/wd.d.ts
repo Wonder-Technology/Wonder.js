@@ -8212,10 +8212,6 @@ declare module wd {
         static mediump_fragment: GLSLChunk;
         static noNormalMap_light_fragment: GLSLChunk;
         static common_envMap_fragment: GLSLChunk;
-        static map_forBasic_fragment: GLSLChunk;
-        static map_forBasic_vertex: GLSLChunk;
-        static multi_map_forBasic_fragment: GLSLChunk;
-        static multi_map_forBasic_vertex: GLSLChunk;
         static lightCommon_fragment: GLSLChunk;
         static lightCommon_vertex: GLSLChunk;
         static lightEnd_fragment: GLSLChunk;
@@ -8223,14 +8219,12 @@ declare module wd {
         static light_fragment: GLSLChunk;
         static light_setWorldPosition_vertex: GLSLChunk;
         static light_vertex: GLSLChunk;
+        static map_forBasic_fragment: GLSLChunk;
+        static map_forBasic_vertex: GLSLChunk;
+        static multi_map_forBasic_fragment: GLSLChunk;
+        static multi_map_forBasic_vertex: GLSLChunk;
         static skybox_fragment: GLSLChunk;
         static skybox_vertex: GLSLChunk;
-        static modelMatrix_batch_instance_vertex: GLSLChunk;
-        static normalMatrix_batch_instance_vertex: GLSLChunk;
-        static modelMatrix_noInstance_vertex: GLSLChunk;
-        static normalMatrix_noInstance_vertex: GLSLChunk;
-        static modelMatrix_hardware_instance_vertex: GLSLChunk;
-        static normalMatrix_hardware_instance_vertex: GLSLChunk;
         static basic_forBasic_envMap_fragment: GLSLChunk;
         static basic_forBasic_envMap_vertex: GLSLChunk;
         static forBasic_envMap_fragment: GLSLChunk;
@@ -8275,6 +8269,12 @@ declare module wd {
         static twoDShadowMap_fragment: GLSLChunk;
         static twoDShadowMap_unpackDepth_fragment: GLSLChunk;
         static twoDShadowMap_vertex: GLSLChunk;
+        static modelMatrix_hardware_instance_vertex: GLSLChunk;
+        static normalMatrix_hardware_instance_vertex: GLSLChunk;
+        static modelMatrix_noInstance_vertex: GLSLChunk;
+        static normalMatrix_noInstance_vertex: GLSLChunk;
+        static modelMatrix_batch_instance_vertex: GLSLChunk;
+        static normalMatrix_batch_instance_vertex: GLSLChunk;
         static basic_bitmapFont_fragment: GLSLChunk;
         static common_bitmapFont_vertex: GLSLChunk;
         static grass_batch_instance_vertex: GLSLChunk;
@@ -8284,6 +8284,8 @@ declare module wd {
         static grass_map_fragment: GLSLChunk;
         static grass_map_setWorldPosition_vertex: GLSLChunk;
         static grass_map_vertex: GLSLChunk;
+        static terrain_layer_fragment: GLSLChunk;
+        static terrain_layer_vertex: GLSLChunk;
         static terrain_mix_bump_cotangentFrame_fallback: GLSLChunk;
         static terrain_mix_bump_cotangentFrame_standardDerivatives: GLSLChunk;
         static terrain_mix_bump_fragment: GLSLChunk;
@@ -8291,8 +8293,6 @@ declare module wd {
         static terrain_mix_common_fragment: GLSLChunk;
         static terrain_mix_fragment: GLSLChunk;
         static terrain_mix_vertex: GLSLChunk;
-        static terrain_layer_fragment: GLSLChunk;
-        static terrain_layer_vertex: GLSLChunk;
         static multiPages_bitmapFont_fragment: GLSLChunk;
         static multiPages_bitmapFont_vertex: GLSLChunk;
         static sdf_bitmapFont_smoothStep_fallback: GLSLChunk;
@@ -9551,6 +9551,7 @@ declare module wd {
         setPixelRatio(pixelRatio: number): void;
         getPixelRatio(): number;
         private _setClearColor(color);
+        private _getCanvasId(canvasId);
     }
     enum EDepthFunction {
         NEVER,
