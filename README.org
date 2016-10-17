@@ -34,14 +34,19 @@ Join us, We can create the amazing 3D world together!
   - Instance
   - Render Queue Sort By RenderGroup,RenderPriority,Shader,Texture,VBO
   - Merge GameObject
+- Grass
+  - Grass Texture
+  - Grass Instance
 - Water
 - Procedural
   - Procedural Texture
 - Terrain
   - HeightMap
-  - Layer Texture
+  - Layer Texture, Mix Texture, Bump Texture
+  - HeightMapGenerator tool
 - LOD
   - Geometry LOD
+  - GameObject LOD
 - Space Partition
   - Octree
 - Event System
@@ -191,17 +196,6 @@ Here shows a spinning cube sample:
   //then run test gulp task in project dir
   gulp test
 #+END_SRC
-
-- render test
-
-  Wonder.js now has pixel render test and scene snapshot render test:
-
-#+BEGIN_SRC js
-    //run auto render test task
-    //note: now the render test is only passed in macbook pro retain screen, it may fail in other screen!
-    gulp renderTest
-#+END_SRC
-
 - debug
 
   You can first include wd.innerLib.js file, then include wd.debug.js file in your html, then you can debug in engine ts

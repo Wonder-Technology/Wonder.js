@@ -8104,7 +8104,7 @@ var wdCb;
             return true;
         };
         return JudgeUtils;
-    })();
+    }());
     wdCb.JudgeUtils = JudgeUtils;
     if (typeof /./ != 'function' && typeof Int8Array != 'object') {
         JudgeUtils.isFunction = function (func) {
@@ -8211,8 +8211,6 @@ var wdCb;
         };
         Log.info = {
             INVALID_PARAM: "invalid parameter",
-            ABSTRACT_ATTRIBUTE: "abstract attribute need override",
-            ABSTRACT_METHOD: "abstract method need override",
             helperFunc: function () {
                 var args = [];
                 for (var _i = 0; _i < arguments.length; _i++) {
@@ -8377,7 +8375,7 @@ var wdCb;
             }
         };
         return Log;
-    })();
+    }());
     wdCb.Log = Log;
 })(wdCb || (wdCb = {}));
 
@@ -8436,6 +8434,10 @@ var wdCb;
             }
             return this;
         };
+        List.prototype.setChildren = function (children) {
+            this.children = children;
+            return this;
+        };
         List.prototype.unShiftChild = function (child) {
             this.children.unshift(child);
         };
@@ -8483,7 +8485,7 @@ var wdCb;
             }
         };
         List.prototype._removeChild = function (arr, func) {
-            var self = this, index = null, removedElementArr = [], remainElementArr = [];
+            var self = this, removedElementArr = [], remainElementArr = [];
             this._forEach(arr, function (e, index) {
                 if (!!func.call(self, e)) {
                     removedElementArr.push(e);
@@ -8496,7 +8498,7 @@ var wdCb;
             return removedElementArr;
         };
         return List;
-    })();
+    }());
     wdCb.List = List;
 })(wdCb || (wdCb = {}));
 
@@ -8519,12 +8521,37 @@ var wdCb;
             var obj = new this(children);
             return obj;
         };
-        Collection.prototype.clone = function (isDeep) {
-            if (isDeep === void 0) { isDeep = false; }
-            if (isDeep) {
-                return Collection.create(wdCb.ExtendUtils.extendDeep(this.children));
+        Collection.prototype.clone = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
             }
-            return Collection.create().addChildren(this.children);
+            var target = null, isDeep = null;
+            if (args.length === 0) {
+                isDeep = false;
+                target = Collection.create();
+            }
+            else if (args.length === 1) {
+                if (wdCb.JudgeUtils.isBoolean(args[0])) {
+                    target = Collection.create();
+                    isDeep = args[0];
+                }
+                else {
+                    target = args[0];
+                    isDeep = false;
+                }
+            }
+            else {
+                target = args[0];
+                isDeep = args[1];
+            }
+            if (isDeep === true) {
+                target.setChildren(wdCb.ExtendUtils.extendDeep(this.children));
+            }
+            else {
+                target.setChildren(wdCb.ExtendUtils.extend([], this.children));
+            }
+            return target;
         };
         Collection.prototype.filter = function (func) {
             var children = this.children, result = [], value = null;
@@ -8593,7 +8620,7 @@ var wdCb;
             return hasRepeat;
         };
         return Collection;
-    })(wdCb.List);
+    }(wdCb.List));
     wdCb.Collection = Collection;
 })(wdCb || (wdCb = {}));
 
@@ -8676,6 +8703,9 @@ var wdCb;
             }
             return this;
         };
+        Hash.prototype.setChildren = function (children) {
+            this._children = children;
+        };
         Hash.prototype.removeChild = function (arg) {
             var result = [];
             if (wdCb.JudgeUtils.isString(arg)) {
@@ -8685,9 +8715,9 @@ var wdCb;
                 delete this._children[key];
             }
             else if (wdCb.JudgeUtils.isFunction(arg)) {
-                var func = arg, self_1 = this;
+                var func_1 = arg, self_1 = this;
                 this.forEach(function (val, key) {
-                    if (func(val, key)) {
+                    if (func_1(val, key)) {
                         result.push(self_1._children[key]);
                         self_1._children[key] = void 0;
                         delete self_1._children[key];
@@ -8781,15 +8811,40 @@ var wdCb;
             });
             return result;
         };
-        Hash.prototype.clone = function (isDeep) {
-            if (isDeep === void 0) { isDeep = false; }
-            if (isDeep) {
-                return Hash.create(wdCb.ExtendUtils.extendDeep(this._children));
+        Hash.prototype.clone = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
             }
-            return Hash.create().addChildren(this._children);
+            var target = null, isDeep = null;
+            if (args.length === 0) {
+                isDeep = false;
+                target = Hash.create();
+            }
+            else if (args.length === 1) {
+                if (wdCb.JudgeUtils.isBoolean(args[0])) {
+                    target = Hash.create();
+                    isDeep = args[0];
+                }
+                else {
+                    target = args[0];
+                    isDeep = false;
+                }
+            }
+            else {
+                target = args[0];
+                isDeep = args[1];
+            }
+            if (isDeep === true) {
+                target.setChildren(wdCb.ExtendUtils.extendDeep(this._children));
+            }
+            else {
+                target.setChildren(wdCb.ExtendUtils.extend({}, this._children));
+            }
+            return target;
         };
         return Hash;
-    })();
+    }());
     wdCb.Hash = Hash;
 })(wdCb || (wdCb = {}));
 
@@ -8836,7 +8891,7 @@ var wdCb;
             this.removeAllChildren();
         };
         return Queue;
-    })(wdCb.List);
+    }(wdCb.List));
     wdCb.Queue = Queue;
 })(wdCb || (wdCb = {}));
 
@@ -8875,15 +8930,106 @@ var wdCb;
         Stack.prototype.clear = function () {
             this.removeAllChildren();
         };
-        Stack.prototype.clone = function (isDeep) {
-            if (isDeep === void 0) { isDeep = false; }
-            if (isDeep) {
-                return Stack.create(wdCb.ExtendUtils.extendDeep(this.children));
+        Stack.prototype.clone = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
             }
-            return Stack.create([].concat(this.children));
+            var target = null, isDeep = null;
+            if (args.length === 0) {
+                isDeep = false;
+                target = Stack.create();
+            }
+            else if (args.length === 1) {
+                if (wdCb.JudgeUtils.isBoolean(args[0])) {
+                    target = Stack.create();
+                    isDeep = args[0];
+                }
+                else {
+                    target = args[0];
+                    isDeep = false;
+                }
+            }
+            else {
+                target = args[0];
+                isDeep = args[1];
+            }
+            if (isDeep === true) {
+                target.setChildren(wdCb.ExtendUtils.extendDeep(this.children));
+            }
+            else {
+                target.setChildren(wdCb.ExtendUtils.extend([], this.children));
+            }
+            return target;
+        };
+        Stack.prototype.filter = function (func) {
+            var children = this.children, result = [], value = null;
+            for (var i = 0, len = children.length; i < len; i++) {
+                value = children[i];
+                if (func.call(children, value, i)) {
+                    result.push(value);
+                }
+            }
+            return wdCb.Collection.create(result);
+        };
+        Stack.prototype.findOne = function (func) {
+            var scope = this.children, result = null;
+            this.forEach(function (value, index) {
+                if (!func.call(scope, value, index)) {
+                    return;
+                }
+                result = value;
+                return wdCb.$BREAK;
+            });
+            return result;
+        };
+        Stack.prototype.reverse = function () {
+            return wdCb.Collection.create(this.copyChildren().reverse());
+        };
+        Stack.prototype.removeChild = function (arg) {
+            return wdCb.Collection.create(this.removeChildHelper(arg));
+        };
+        Stack.prototype.sort = function (func, isSortSelf) {
+            if (isSortSelf === void 0) { isSortSelf = false; }
+            if (isSortSelf) {
+                this.children.sort(func);
+                return this;
+            }
+            return wdCb.Collection.create(this.copyChildren().sort(func));
+        };
+        Stack.prototype.map = function (func) {
+            var resultArr = [];
+            this.forEach(function (e, index) {
+                var result = func(e, index);
+                if (result !== wdCb.$REMOVE) {
+                    resultArr.push(result);
+                }
+            });
+            return wdCb.Collection.create(resultArr);
+        };
+        Stack.prototype.removeRepeatItems = function () {
+            var noRepeatList = wdCb.Collection.create();
+            this.forEach(function (item) {
+                if (noRepeatList.hasChild(item)) {
+                    return;
+                }
+                noRepeatList.addChild(item);
+            });
+            return noRepeatList;
+        };
+        Stack.prototype.hasRepeatItems = function () {
+            var noRepeatList = wdCb.Collection.create(), hasRepeat = false;
+            this.forEach(function (item) {
+                if (noRepeatList.hasChild(item)) {
+                    hasRepeat = true;
+                    return wdCb.$BREAK;
+                }
+                noRepeatList.addChild(item);
+            });
+            return hasRepeat;
         };
         return Stack;
-    })(wdCb.List);
+    }(wdCb.List));
     wdCb.Stack = Stack;
 })(wdCb || (wdCb = {}));
 
@@ -8976,7 +9122,7 @@ var wdCb;
             return dataType === "arraybuffer";
         };
         return AjaxUtils;
-    })();
+    }());
     wdCb.AjaxUtils = AjaxUtils;
 })(wdCb || (wdCb = {}));
 
@@ -9022,7 +9168,7 @@ var wdCb;
         };
         ;
         return ArrayUtils;
-    })();
+    }());
     wdCb.ArrayUtils = ArrayUtils;
 })(wdCb || (wdCb = {}));
 
@@ -9047,7 +9193,7 @@ var wdCb;
             return fn.toString().split('\n').slice(1, -1).join('\n') + '\n';
         };
         return ConvertUtils;
-    })();
+    }());
     wdCb.ConvertUtils = ConvertUtils;
 })(wdCb || (wdCb = {}));
 
@@ -9084,7 +9230,7 @@ var wdCb;
             }
         };
         return EventUtils;
-    })();
+    }());
     wdCb.EventUtils = EventUtils;
 })(wdCb || (wdCb = {}));
 
@@ -9159,7 +9305,7 @@ var wdCb;
             return destination;
         };
         return ExtendUtils;
-    })();
+    }());
     wdCb.ExtendUtils = ExtendUtils;
 })(wdCb || (wdCb = {}));
 
@@ -9222,7 +9368,7 @@ var wdCb;
             return SPLITPATH_REGEX.exec(fileName).slice(1);
         };
         return PathUtils;
-    })();
+    }());
     wdCb.PathUtils = PathUtils;
 })(wdCb || (wdCb = {}));
 
@@ -9237,7 +9383,7 @@ var wdCb;
             };
         };
         return FunctionUtils;
-    })();
+    }());
     wdCb.FunctionUtils = FunctionUtils;
 })(wdCb || (wdCb = {}));
 
@@ -9349,7 +9495,7 @@ var wdCb;
             return document.createElement(eleStr);
         };
         return DomQuery;
-    })();
+    }());
     wdCb.DomQuery = DomQuery;
 })(wdCb || (wdCb = {}));
 
@@ -9377,7 +9523,7 @@ var wdFrp;
             return i.next && i.error && i.completed;
         };
         return JudgeUtils;
-    })(wdCb.JudgeUtils);
+    }(wdCb.JudgeUtils));
     wdFrp.JudgeUtils = JudgeUtils;
 })(wdFrp || (wdFrp = {}));
 
@@ -9414,7 +9560,9 @@ var wdFrp;
     };
     wdFrp.fromStream = function (stream, finishEventName) {
         if (finishEventName === void 0) { finishEventName = "end"; }
-        stream.pause();
+        if (stream.pause) {
+            stream.pause();
+        }
         return wdFrp.createStream(function (observer) {
             var dataHandler = function (data) {
                 observer.next(data);
@@ -9426,7 +9574,9 @@ var wdFrp;
             stream.addListener("data", dataHandler);
             stream.addListener("error", errorHandler);
             stream.addListener(finishEventName, endHandler);
-            stream.resume();
+            if (stream.resume) {
+                stream.resume();
+            }
             return function () {
                 stream.removeListener("data", dataHandler);
                 stream.removeListener("error", errorHandler);
@@ -9464,7 +9614,7 @@ var wdFrp;
         });
         Entity.UID = 1;
         return Entity;
-    })();
+    }());
     wdFrp.Entity = Entity;
 })(wdFrp || (wdFrp = {}));
 
@@ -9475,7 +9625,7 @@ var wdFrp;
         }
         Main.isTest = false;
         return Main;
-    })();
+    }());
     wdFrp.Main = Main;
 })(wdFrp || (wdFrp = {}));
 
@@ -9586,7 +9736,6 @@ var wdFrp;
 })(wdFrp || (wdFrp = {}));
 
 
-
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -9613,7 +9762,7 @@ var wdFrp;
             this._disposeHandler();
         };
         return SingleDisposable;
-    })(wdFrp.Entity);
+    }(wdFrp.Entity));
     wdFrp.SingleDisposable = SingleDisposable;
 })(wdFrp || (wdFrp = {}));
 
@@ -9651,10 +9800,9 @@ var wdFrp;
             });
         };
         return GroupDisposable;
-    })(wdFrp.Entity);
+    }(wdFrp.Entity));
     wdFrp.GroupDisposable = GroupDisposable;
 })(wdFrp || (wdFrp = {}));
-
 
 
 var wdFrp;
@@ -9675,7 +9823,7 @@ var wdFrp;
             this._observer.dispose();
         };
         return InnerSubscription;
-    })();
+    }());
     wdFrp.InnerSubscription = InnerSubscription;
 })(wdFrp || (wdFrp = {}));
 
@@ -9698,7 +9846,7 @@ var wdFrp;
             });
         };
         return InnerSubscriptionGroup;
-    })();
+    }());
     wdFrp.InnerSubscriptionGroup = InnerSubscriptionGroup;
 })(wdFrp || (wdFrp = {}));
 
@@ -9712,10 +9860,6 @@ var wdFrp;
     }
 })(wdFrp || (wdFrp = {}));
 
-var wdFrp;
-(function (wdFrp) {
-    wdFrp.ABSTRACT_ATTRIBUTE = null;
-})(wdFrp || (wdFrp = {}));
 
 var wdFrp;
 (function (wdFrp) {
@@ -9803,7 +9947,7 @@ var wdFrp;
         __extends(Stream, _super);
         function Stream(subscribeFunc) {
             _super.call(this, "Stream");
-            this.scheduler = wdFrp.ABSTRACT_ATTRIBUTE;
+            this.scheduler = null;
             this.subscribeFunc = null;
             this.subscribeFunc = subscribeFunc || function () { };
         }
@@ -10009,7 +10153,7 @@ var wdFrp;
             })
         ], Stream.prototype, "takeLast", null);
         return Stream;
-    })(wdFrp.Entity);
+    }(wdFrp.Entity));
     wdFrp.Stream = Stream;
 })(wdFrp || (wdFrp = {}));
 
@@ -10062,7 +10206,7 @@ var wdFrp;
             }, time);
         };
         return Scheduler;
-    })();
+    }());
     wdFrp.Scheduler = Scheduler;
 })(wdFrp || (wdFrp = {}));
 
@@ -10088,15 +10232,15 @@ var wdFrp;
             this._isStop = false;
             this._disposable = null;
             if (args.length === 1) {
-                var observer = args[0];
+                var observer_1 = args[0];
                 this.onUserNext = function (v) {
-                    observer.next(v);
+                    observer_1.next(v);
                 };
                 this.onUserError = function (e) {
-                    observer.error(e);
+                    observer_1.error(e);
                 };
                 this.onUserCompleted = function () {
-                    observer.completed();
+                    observer_1.completed();
                 };
             }
             else {
@@ -10146,7 +10290,7 @@ var wdFrp;
             this._disposable = disposable;
         };
         return Observer;
-    })(wdFrp.Entity);
+    }(wdFrp.Entity));
     wdFrp.Observer = Observer;
 })(wdFrp || (wdFrp = {}));
 
@@ -10200,7 +10344,7 @@ var wdFrp;
             this._observer.dispose();
         };
         return Subject;
-    })();
+    }());
     wdFrp.Subject = Subject;
 })(wdFrp || (wdFrp = {}));
 
@@ -10310,7 +10454,7 @@ var wdFrp;
             this.observer.dispose();
         };
         return GeneratorSubject;
-    })(wdFrp.Entity);
+    }(wdFrp.Entity));
     wdFrp.GeneratorSubject = GeneratorSubject;
 })(wdFrp || (wdFrp = {}));
 
@@ -10339,7 +10483,7 @@ var wdFrp;
             this.onUserCompleted();
         };
         return AnonymousObserver;
-    })(wdFrp.Observer);
+    }(wdFrp.Observer));
     wdFrp.AnonymousObserver = AnonymousObserver;
 })(wdFrp || (wdFrp = {}));
 
@@ -10403,7 +10547,7 @@ var wdFrp;
             }
         };
         return AutoDetachObserver;
-    })(wdFrp.Observer);
+    }(wdFrp.Observer));
     wdFrp.AutoDetachObserver = AutoDetachObserver;
 })(wdFrp || (wdFrp = {}));
 
@@ -10445,7 +10589,7 @@ var wdFrp;
             this._currentObserver.completed();
         };
         return MapObserver;
-    })(wdFrp.Observer);
+    }(wdFrp.Observer));
     wdFrp.MapObserver = MapObserver;
 })(wdFrp || (wdFrp = {}));
 
@@ -10503,7 +10647,7 @@ var wdFrp;
             }
         };
         return DoObserver;
-    })(wdFrp.Observer);
+    }(wdFrp.Observer));
     wdFrp.DoObserver = DoObserver;
 })(wdFrp || (wdFrp = {}));
 
@@ -10558,7 +10702,7 @@ var wdFrp;
             })
         ], MergeAllObserver.prototype, "onNext", null);
         return MergeAllObserver;
-    })(wdFrp.Observer);
+    }(wdFrp.Observer));
     wdFrp.MergeAllObserver = MergeAllObserver;
     var InnerObserver = (function (_super) {
         __extends(InnerObserver, _super);
@@ -10594,7 +10738,7 @@ var wdFrp;
             return this._parent.done;
         };
         return InnerObserver;
-    })(wdFrp.Observer);
+    }(wdFrp.Observer));
 })(wdFrp || (wdFrp = {}));
 
 var __extends = (this && this.__extends) || function (d, b) {
@@ -10663,7 +10807,7 @@ var wdFrp;
             })
         ], MergeObserver.prototype, "onNext", null);
         return MergeObserver;
-    })(wdFrp.Observer);
+    }(wdFrp.Observer));
     wdFrp.MergeObserver = MergeObserver;
     var InnerObserver = (function (_super) {
         __extends(InnerObserver, _super);
@@ -10703,7 +10847,7 @@ var wdFrp;
             return this._parent.done;
         };
         return InnerObserver;
-    })(wdFrp.Observer);
+    }(wdFrp.Observer));
 })(wdFrp || (wdFrp = {}));
 
 var __extends = (this && this.__extends) || function (d, b) {
@@ -10732,7 +10876,7 @@ var wdFrp;
         TakeUntilObserver.prototype.onCompleted = function () {
         };
         return TakeUntilObserver;
-    })(wdFrp.Observer);
+    }(wdFrp.Observer));
     wdFrp.TakeUntilObserver = TakeUntilObserver;
 })(wdFrp || (wdFrp = {}));
 
@@ -10765,10 +10909,9 @@ var wdFrp;
             this._startNextStream();
         };
         return ConcatObserver;
-    })(wdFrp.Observer);
+    }(wdFrp.Observer));
     wdFrp.ConcatObserver = ConcatObserver;
 })(wdFrp || (wdFrp = {}));
-
 
 
 var wdFrp;
@@ -10818,7 +10961,7 @@ var wdFrp;
             this._disposable = disposable;
         };
         return SubjectObserver;
-    })();
+    }());
     wdFrp.SubjectObserver = SubjectObserver;
 })(wdFrp || (wdFrp = {}));
 
@@ -10848,7 +10991,7 @@ var wdFrp;
             this._currentObserver.completed();
         };
         return IgnoreElementsObserver;
-    })(wdFrp.Observer);
+    }(wdFrp.Observer));
     wdFrp.IgnoreElementsObserver = IgnoreElementsObserver;
 })(wdFrp || (wdFrp = {}));
 
@@ -10891,7 +11034,7 @@ var wdFrp;
             this.prevObserver.completed();
         };
         return FilterObserver;
-    })(wdFrp.Observer);
+    }(wdFrp.Observer));
     wdFrp.FilterObserver = FilterObserver;
 })(wdFrp || (wdFrp = {}));
 
@@ -10946,7 +11089,7 @@ var wdFrp;
             }
         };
         return FilterWithStateObserver;
-    })(wdFrp.FilterObserver);
+    }(wdFrp.FilterObserver));
     wdFrp.FilterWithStateObserver = FilterWithStateObserver;
 })(wdFrp || (wdFrp = {}));
 
@@ -10978,7 +11121,7 @@ var wdFrp;
             return this.subscribeCore(observer);
         };
         return BaseStream;
-    })(wdFrp.Stream);
+    }(wdFrp.Stream));
     wdFrp.BaseStream = BaseStream;
 })(wdFrp || (wdFrp = {}));
 
@@ -11007,7 +11150,7 @@ var wdFrp;
             return this._source.buildStream(wdFrp.DoObserver.create(observer, this._observer));
         };
         return DoStream;
-    })(wdFrp.BaseStream);
+    }(wdFrp.BaseStream));
     wdFrp.DoStream = DoStream;
 })(wdFrp || (wdFrp = {}));
 
@@ -11036,7 +11179,7 @@ var wdFrp;
             return this._source.buildStream(wdFrp.MapObserver.create(observer, this._selector));
         };
         return MapStream;
-    })(wdFrp.BaseStream);
+    }(wdFrp.BaseStream));
     wdFrp.MapStream = MapStream;
 })(wdFrp || (wdFrp = {}));
 
@@ -11074,7 +11217,7 @@ var wdFrp;
             return wdFrp.SingleDisposable.create();
         };
         return FromArrayStream;
-    })(wdFrp.BaseStream);
+    }(wdFrp.BaseStream));
     wdFrp.FromArrayStream = FromArrayStream;
 })(wdFrp || (wdFrp = {}));
 
@@ -11107,7 +11250,7 @@ var wdFrp;
             return wdFrp.SingleDisposable.create();
         };
         return FromPromiseStream;
-    })(wdFrp.BaseStream);
+    }(wdFrp.BaseStream));
     wdFrp.FromPromiseStream = FromPromiseStream;
 })(wdFrp || (wdFrp = {}));
 
@@ -11142,7 +11285,7 @@ var wdFrp;
             });
         };
         return FromEventPatternStream;
-    })(wdFrp.BaseStream);
+    }(wdFrp.BaseStream));
     wdFrp.FromEventPatternStream = FromEventPatternStream;
 })(wdFrp || (wdFrp = {}));
 
@@ -11185,7 +11328,7 @@ var wdFrp;
             return observer;
         };
         return AnonymousStream;
-    })(wdFrp.Stream);
+    }(wdFrp.Stream));
     wdFrp.AnonymousStream = AnonymousStream;
 })(wdFrp || (wdFrp = {}));
 
@@ -11223,7 +11366,7 @@ var wdFrp;
             });
         };
         return IntervalStream;
-    })(wdFrp.BaseStream);
+    }(wdFrp.BaseStream));
     wdFrp.IntervalStream = IntervalStream;
 })(wdFrp || (wdFrp = {}));
 
@@ -11257,7 +11400,7 @@ var wdFrp;
             });
         };
         return IntervalRequestStream;
-    })(wdFrp.BaseStream);
+    }(wdFrp.BaseStream));
     wdFrp.IntervalRequestStream = IntervalRequestStream;
 })(wdFrp || (wdFrp = {}));
 
@@ -11302,7 +11445,7 @@ var wdFrp;
             })
         ], TimeoutStream, "create", null);
         return TimeoutStream;
-    })(wdFrp.BaseStream);
+    }(wdFrp.BaseStream));
     wdFrp.TimeoutStream = TimeoutStream;
 })(wdFrp || (wdFrp = {}));
 
@@ -11332,7 +11475,7 @@ var wdFrp;
             return groupDisposable;
         };
         return MergeAllStream;
-    })(wdFrp.BaseStream);
+    }(wdFrp.BaseStream));
     wdFrp.MergeAllStream = MergeAllStream;
 })(wdFrp || (wdFrp = {}));
 
@@ -11363,7 +11506,7 @@ var wdFrp;
             return groupDisposable;
         };
         return MergeStream;
-    })(wdFrp.BaseStream);
+    }(wdFrp.BaseStream));
     wdFrp.MergeStream = MergeStream;
 })(wdFrp || (wdFrp = {}));
 
@@ -11397,7 +11540,7 @@ var wdFrp;
             return group;
         };
         return TakeUntilStream;
-    })(wdFrp.BaseStream);
+    }(wdFrp.BaseStream));
     wdFrp.TakeUntilStream = TakeUntilStream;
 })(wdFrp || (wdFrp = {}));
 
@@ -11443,7 +11586,7 @@ var wdFrp;
             return wdFrp.GroupDisposable.create(d);
         };
         return ConcatStream;
-    })(wdFrp.BaseStream);
+    }(wdFrp.BaseStream));
     wdFrp.ConcatStream = ConcatStream;
 })(wdFrp || (wdFrp = {}));
 
@@ -11483,7 +11626,7 @@ var wdFrp;
             return wdFrp.GroupDisposable.create(d);
         };
         return RepeatStream;
-    })(wdFrp.BaseStream);
+    }(wdFrp.BaseStream));
     wdFrp.RepeatStream = RepeatStream;
 })(wdFrp || (wdFrp = {}));
 
@@ -11510,7 +11653,7 @@ var wdFrp;
             return this._source.buildStream(wdFrp.IgnoreElementsObserver.create(observer));
         };
         return IgnoreElementsStream;
-    })(wdFrp.BaseStream);
+    }(wdFrp.BaseStream));
     wdFrp.IgnoreElementsStream = IgnoreElementsStream;
 })(wdFrp || (wdFrp = {}));
 
@@ -11538,7 +11681,7 @@ var wdFrp;
             return group;
         };
         return DeferStream;
-    })(wdFrp.BaseStream);
+    }(wdFrp.BaseStream));
     wdFrp.DeferStream = DeferStream;
 })(wdFrp || (wdFrp = {}));
 
@@ -11581,7 +11724,7 @@ var wdFrp;
             };
         };
         return FilterStream;
-    })(wdFrp.BaseStream);
+    }(wdFrp.BaseStream));
     wdFrp.FilterStream = FilterStream;
 })(wdFrp || (wdFrp = {}));
 
@@ -11608,7 +11751,7 @@ var wdFrp;
             return FilterWithStateStream.create(source, innerPredicate, thisArg);
         };
         return FilterWithStateStream;
-    })(wdFrp.FilterStream);
+    }(wdFrp.FilterStream));
     wdFrp.FilterWithStateStream = FilterWithStateStream;
 })(wdFrp || (wdFrp = {}));
 
@@ -11735,7 +11878,7 @@ var wdFrp;
             return this._time === other.time && this._comparer(this._value, other.value);
         };
         return Record;
-    })();
+    }());
     wdFrp.Record = Record;
 })(wdFrp || (wdFrp = {}));
 
@@ -11805,7 +11948,7 @@ var wdFrp;
             return result;
         };
         return MockObserver;
-    })(wdFrp.Observer);
+    }(wdFrp.Observer));
     wdFrp.MockObserver = MockObserver;
 })(wdFrp || (wdFrp = {}));
 
@@ -11826,7 +11969,7 @@ var wdFrp;
             this._scheduler.setStreamMap(observer, this._messages);
         };
         return MockPromise;
-    })();
+    }());
     wdFrp.MockPromise = MockPromise;
 })(wdFrp || (wdFrp = {}));
 
@@ -12054,7 +12197,7 @@ var wdFrp;
             this._clock += time;
         };
         return TestScheduler;
-    })(wdFrp.Scheduler);
+    }(wdFrp.Scheduler));
     wdFrp.TestScheduler = TestScheduler;
 })(wdFrp || (wdFrp = {}));
 
@@ -12093,7 +12236,7 @@ var wdFrp;
             return wdFrp.SingleDisposable.create();
         };
         return TestStream;
-    })(wdFrp.BaseStream);
+    }(wdFrp.BaseStream));
     wdFrp.TestStream = TestStream;
 })(wdFrp || (wdFrp = {}));
 

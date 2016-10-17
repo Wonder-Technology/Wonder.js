@@ -1,6 +1,6 @@
 /*!
  * wonder - 3d html5 game engine
- * @version v0.6.2
+ * @version v0.7.0
  * @author Yuanchao Yang <395976266@qq.com>
  * @link https://github.com/yyc-git/Wonder.js
  * @license MIT
@@ -43,8 +43,6 @@ declare module wdCb {
     class Log {
         static info: {
             INVALID_PARAM: string;
-            ABSTRACT_ATTRIBUTE: string;
-            ABSTRACT_METHOD: string;
             helperFunc: (...args: any[]) => string;
             assertion: (...args: any[]) => any;
             FUNC_INVALID: (...args: any[]) => any;
@@ -83,6 +81,7 @@ declare module wdCb {
         getChild(index: number): T;
         addChild(child: T): this;
         addChildren(arg: Array<T> | List<T> | any): this;
+        setChildren(children: Array<T>): this;
         unShiftChild(child: T): void;
         removeAllChildren(): this;
         forEach(func: Function, context?: any): this;
@@ -98,7 +97,10 @@ declare module wdCb {
     class Collection<T> extends List<T> {
         static create<T>(children?: any[]): Collection<T>;
         constructor(children?: Array<T>);
-        clone(isDeep?: boolean): Collection<T>;
+        clone(): any;
+        clone(isDeep: boolean): any;
+        clone(target: Collection<T>): any;
+        clone(target: Collection<T>, isDeep: boolean): any;
         filter(func: (value: T, index: number) => boolean): Collection<T>;
         findOne(func: (value: T, index: number) => boolean): T;
         reverse(): Collection<T>;
@@ -106,7 +108,7 @@ declare module wdCb {
         sort(func: (a: T, b: T) => any, isSortSelf?: boolean): Collection<T>;
         map(func: (value: T, index: number) => any): Collection<any>;
         removeRepeatItems(): Collection<T>;
-        hasRepeatItems(): boolean;
+        hasRepeatItems(): false;
     }
 }
 
@@ -128,6 +130,9 @@ declare module wdCb {
         addChild(key: string, value: any): this;
         addChildren(arg: {} | Hash<T>): this;
         appendChild(key: string, value: any): this;
+        setChildren(children: {
+            [s: string]: T;
+        }): void;
         removeChild(arg: any): Collection<T>;
         removeAllChildren(): void;
         hasChild(key: string): boolean;
@@ -138,7 +143,10 @@ declare module wdCb {
         map(func: Function): Hash<T>;
         toCollection(): Collection<any>;
         toArray(): Array<T>;
-        clone(isDeep?: boolean): Hash<T>;
+        clone(): any;
+        clone(isDeep: boolean): any;
+        clone(target: Hash<T>): any;
+        clone(target: Hash<T>, isDeep: boolean): any;
     }
 }
 
@@ -146,8 +154,8 @@ declare module wdCb {
     class Queue<T> extends List<T> {
         static create<T>(children?: any[]): Queue<T>;
         constructor(children?: Array<T>);
-        front: T;
-        rear: T;
+        readonly front: T;
+        readonly rear: T;
         push(element: T): void;
         pop(): T;
         clear(): void;
@@ -158,11 +166,22 @@ declare module wdCb {
     class Stack<T> extends List<T> {
         static create<T>(children?: any[]): Stack<T>;
         constructor(children?: Array<T>);
-        top: T;
+        readonly top: T;
         push(element: T): void;
         pop(): T;
         clear(): void;
-        clone(isDeep?: boolean): Stack<T>;
+        clone(): any;
+        clone(isDeep: boolean): any;
+        clone(target: Stack<T>): any;
+        clone(target: Stack<T>, isDeep: boolean): any;
+        filter(func: (value: T, index: number) => boolean): Collection<T>;
+        findOne(func: (value: T, index: number) => boolean): T;
+        reverse(): Collection<T>;
+        removeChild(arg: any): Collection<T>;
+        sort(func: (a: T, b: T) => any, isSortSelf?: boolean): Collection<T>;
+        map(func: (value: T, index: number) => any): Collection<any>;
+        removeRepeatItems(): Collection<T>;
+        hasRepeatItems(): false;
     }
 }
 
@@ -346,7 +365,6 @@ declare module wdFrp {
 }
 
 declare module wdFrp {
-    const ABSTRACT_ATTRIBUTE: any;
 }
 
 declare module wdFrp {
@@ -1926,12 +1944,12 @@ declare module wd {
 declare module wd {
     class DebugStatistics {
         static count: {
-            totalGameObjects: number;
+            readonly totalGameObjects: number;
             renderGameObjects: number;
             drawCalls: number;
         };
         static during: {
-            fps: any;
+            readonly fps: any;
         };
         private static _startLoopSubscription;
         static clear(): void;
@@ -1972,6 +1990,8 @@ declare module wd {
 declare module wd {
     function cacheGetter(judgeFunc: () => boolean, returnCacheValueFunc: () => any, setCacheFunc: (returnVal) => void): (target: any, name: any, descriptor: any) => any;
     function cache(judgeFunc: (...args) => boolean, returnCacheValueFunc: (...args) => any, setCacheFunc: (...returnVal) => void): (target: any, name: any, descriptor: any) => any;
+    function cacheBufferForBufferContainer(): (target: any, name: any, descriptor: any) => any;
+    function cacheBufferForBufferContainerWithFuncParam(setDataNameFuncName: string): (target: any, name: any, descriptor: any) => any;
 }
 
 declare module wd {
@@ -1992,8 +2012,78 @@ declare module wd {
 }
 
 declare module wd {
-    const ABSTRACT_ATTRIBUTE: any;
     var expect: Chai.ExpectStatic;
+}
+
+declare module wd {
+    class ArrayUtils extends wdCb.ArrayUtils {
+        static hasRepeatItems(arr: Array<any>): boolean;
+        static contain(arr: Array<any>, item: any): boolean;
+    }
+}
+
+declare module wd {
+    class BufferUtils {
+        static convertArrayToArrayBuffer(type: EVariableType, value: Array<any>): ArrayBuffer;
+        private static _getBufferSize(type);
+    }
+}
+
+declare module wd {
+    class ClassUtils {
+        static getClassName(objInstance: any): any;
+    }
+}
+
+declare module wd {
+    class CoordinateUtils {
+        static convertWebGLPositionToCanvasPosition(position: Vector3): Vector2;
+        static convertCanvasPositionToWebGLPosition(position: Vector2): Vector3;
+        static convertLeftCornerPositionToCenterPositionInWebGL(position: Vector2, width: number, height: number): Vector2;
+        static convertLeftCornerPositionXToCenterPositionXInWebGL(positionX: number, width: number): number;
+        static convertLeftCornerPositionYToCenterPositionYInWebGL(positionY: number, height: number): number;
+        static convertLeftCornerPositionToCenterPositionInCanvas(position: Vector2, width: number, height: number): Vector2;
+        static convertLeftCornerPositionXToCenterPositionXInCanvas(positionX: number, width: number): number;
+        static convertLeftCornerPositionYToCenterPositionYInCanvas(positionY: number, height: number): number;
+    }
+}
+
+declare module wd {
+    class GlobalGeometryUtils {
+        static hasAnimation(geometry: Geometry): boolean;
+    }
+}
+
+declare module wd {
+    class GlobalScriptUtils {
+        static handlerAfterLoadedScript(entityObject: EntityObject): void;
+        static addScriptToEntityObject(entityObject: EntityObject, data: ScriptFileData): void;
+    }
+}
+
+declare module wd {
+    class GlobalTextureUtils {
+        static convertSourceRegionCanvasMapToUV(sourceRegion: RectRegion, textureWidth: number, textureHeight: number): RectRegion;
+    }
+}
+
+declare module wd {
+    class InstanceUtils {
+        static isHardwareSupport(): boolean;
+        static isInstance(gameObject: GameObject): boolean;
+        static isSourceInstance(gameObject: GameObject): boolean;
+        static isOneToOneSourceInstance(gameObject: GameObject): boolean;
+        static isOneToManySourceInstance(gameObject: GameObject): boolean;
+        static isObjectInstance(gameObject: GameObject): boolean;
+        static addModelMatrixShaderLib(shader: Shader, gameObject: GameObject): void;
+        static addNormalModelMatrixShaderLib(shader: Shader, gameObject: GameObject): void;
+    }
+}
+
+declare module wd {
+    class IterateUtils {
+        static forEachAll(entityObject: EntityObject, handler: (entityObject: EntityObject) => void): void;
+    }
 }
 
 declare module wd {
@@ -2012,71 +2102,10 @@ declare module wd {
 }
 
 declare module wd {
-    class ArrayUtils extends wdCb.ArrayUtils {
-        static hasRepeatItems(arr: Array<any>): boolean;
-        static contain(arr: Array<any>, item: any): boolean;
-    }
-}
-
-declare module wd {
-    class ClassUtils {
-        static getClassName(objInstance: any): any;
-    }
-}
-
-declare module wd {
-    class SortUtils {
-        static insertSort(targetArr: Array<any>, compareFunc: (a: any, b: any) => boolean, isChangeSelf?: boolean): Array<any>;
-        static quickSort(targetArr: Array<any>, compareFunc: (a: any, b: any) => boolean, isChangeSelf?: boolean): Array<any>;
-        private static _swap(children, i, j);
-    }
-}
-
-declare module wd {
-    class MathUtils {
-        static clamp(num: number, below: number, up: number): number;
-        static bigThan(num: number, below: number): number;
-        static generateZeroToOne(): number;
-        static generateInteger(min: number, max: number): number;
-        static mod(a: number, b: number): number;
-        static maxFloorIntegralMultiple(a: number, b: number): number;
-    }
-}
-
-declare module wd {
-    class CoordinateUtils {
-        static convertWebGLPositionToCanvasPosition(position: Vector3): Vector2;
-        static convertCanvasPositionToWebGLPosition(position: Vector2): Vector3;
-        static convertLeftCornerPositionToCenterPositionInWebGL(position: Vector2, width: number, height: number): Vector2;
-        static convertLeftCornerPositionXToCenterPositionXInWebGL(positionX: number, width: number): number;
-        static convertLeftCornerPositionYToCenterPositionYInWebGL(positionY: number, height: number): number;
-        static convertLeftCornerPositionToCenterPositionInCanvas(position: Vector2, width: number, height: number): Vector2;
-        static convertLeftCornerPositionXToCenterPositionXInCanvas(positionX: number, width: number): number;
-        static convertLeftCornerPositionYToCenterPositionYInCanvas(positionY: number, height: number): number;
-    }
-}
-
-declare module wd {
-    class RenderUtils {
-        static getGameObjectRenderList(sourceList: wdCb.Collection<GameObject>): wdCb.Collection<GameObject>;
-        static getGameObjectRenderListForOctree(sourceList: wdCb.Collection<GameObject>): wdCb.Collection<GameObject>;
-    }
-}
-
-declare module wd {
-    class InstanceUtils {
-        static isHardwareSupport(): boolean;
-        static isInstance(gameObject: GameObject): boolean;
-        static isSourceInstance(gameObject: GameObject): boolean;
-        static isObjectInstance(gameObject: GameObject): boolean;
-        static addModelMatrixShaderLib(shader: Shader, gameObject: GameObject): void;
-        static addNormalModelMatrixShaderLib(shader: Shader, gameObject: GameObject): void;
-    }
-}
-
-declare module wd {
-    class IterateUtils {
-        static forEachAll(entityObject: EntityObject, handler: (entityObject: EntityObject) => void): void;
+    class LightUtils {
+        static getPointLightPosition(lightComponent: PointLight): Vector3;
+        static getDirectionLightPosition(lightComponent: DirectionLight): Vector3;
+        private static _isZero(position);
     }
 }
 
@@ -2086,15 +2115,30 @@ declare module wd {
 }
 
 declare module wd {
-    class GlobalGeometryUtils {
-        static hasAnimation(geometry: Geometry): boolean;
+    class MathUtils {
+        static clamp(num: number, below: number, up: number): number;
+        static bigThan(num: number, below: number): number;
+        static generateZeroToOne(): number;
+        static generateMinToMax(min: number, max: number): number;
+        static generateInteger(min: number, max: number): number;
+        static mod(a: number, b: number): number;
+        static maxFloorIntegralMultiple(a: number, b: number): number;
     }
 }
 
 declare module wd {
-    class GlobalScriptUtils {
-        static handlerAfterLoadedScript(entityObject: EntityObject): void;
-        static addScriptToEntityObject(entityObject: EntityObject, data: ScriptFileData): void;
+    class RenderUtils {
+        static getGameObjectRenderList(sourceList: wdCb.Collection<GameObject>): wdCb.Collection<GameObject>;
+        static getGameObjectRenderListForOctree(sourceList: wdCb.Collection<GameObject>): wdCb.Collection<GameObject>;
+        private static _getActiveGameObject(source);
+    }
+}
+
+declare module wd {
+    class SortUtils {
+        static insertSort(targetArr: Array<any>, compareFunc: (a: any, b: any) => boolean, isChangeSelf?: boolean): Array<any>;
+        static quickSort(targetArr: Array<any>, compareFunc: (a: any, b: any) => boolean, isChangeSelf?: boolean): Array<any>;
+        private static _swap(children, i, j);
     }
 }
 
@@ -2141,8 +2185,8 @@ declare module wd {
     function cloneAttributeAsCloneable(configData?: CloneAttributeAsCloneableConfigData): (target: any, memberName: string | symbol) => void;
     function cloneAttributeAsCustomType(cloneFunc: (source: any, target: any, memberName: string, cloneData: any) => void, configData?: CloneAttributeAsCustomTypeConfigData): (target: any, memberName: string | symbol) => void;
     class CloneUtils {
-        static clone<T>(source: T, cloneData?: any, createDataArr?: Array<any>): T;
-        static cloneArray(arr: Array<any>): any[];
+        static clone<T>(source: T, cloneData?: any, createDataArr?: Array<any>, target?: any): T;
+        static cloneArray(arr: Array<any>, isDeep?: boolean): any;
         static markNotClone(entityObject: EntityObject): void;
         static isNotClone(entityObject: EntityObject): boolean;
     }
@@ -2151,7 +2195,6 @@ declare module wd {
     };
     type CloneAttributeAsCloneableConfigData = {
         order?: number;
-        isInjectTarget?: boolean;
     };
     type CloneAttributeAsCustomTypeConfigData = {
         order?: number;
@@ -2412,7 +2455,7 @@ declare module wd {
         init(): void;
         dispose(): void;
         clone(): any;
-        transform: Transform;
+        readonly transform: Transform;
         addToObject(entityObject: EntityObject, isShareComponent?: boolean): void;
         removeFromObject(entityObject: EntityObject): void;
     }
@@ -2443,14 +2486,15 @@ declare module wd {
 declare module wd {
     class Director {
         static getInstance(): any;
-        gameTime: number;
-        fps: number;
-        isNormal: boolean;
-        isStop: boolean;
-        isPause: boolean;
-        isTimeChange: boolean;
-        elapsed: number;
-        view: any;
+        private constructor();
+        readonly gameTime: number;
+        readonly fps: number;
+        readonly isNormal: boolean;
+        readonly isStop: boolean;
+        readonly isPause: boolean;
+        readonly isTimeChange: boolean;
+        readonly elapsed: number;
+        readonly view: any;
         scene: SceneDispatcher;
         scheduler: Scheduler;
         renderer: Renderer;
@@ -2489,7 +2533,7 @@ declare module wd {
         private static _contextConfig;
         private static _useDevicePixelRatio;
         static setConfig({canvasId, isTest, screenSize, useDevicePixelRatio, contextConfig}: {
-            canvasId?: any;
+            canvasId?: null;
             isTest?: boolean;
             screenSize?: EScreenSize;
             useDevicePixelRatio?: boolean;
@@ -2521,7 +2565,7 @@ declare module wd {
 declare module wd {
     class DomEventManager {
         static create(): DomEventManager;
-        scene: SceneDispatcher;
+        readonly scene: SceneDispatcher;
         designatedTriggerList: any;
         private _lastTriggerList;
         private _isDragEventTriggering;
@@ -2554,15 +2598,15 @@ declare module wd {
         private _bubbleParent;
         bubbleParent: EntityObject;
         componentDirty: boolean;
-        transform: Transform;
+        readonly transform: Transform;
         name: string;
         parent: EntityObject;
         isVisible: boolean;
         scriptManager: ScriptManager;
+        protected componentManager: ComponentManager;
         private _hasComponentCache;
         private _getComponentCache;
         private _componentChangeSubscription;
-        private _componentManager;
         private _entityObjectManager;
         initWhenCreate(): void;
         clone(config?: CloneEntityObjectConfigData): any;
@@ -2600,10 +2644,10 @@ declare module wd {
         render(renderer: Renderer, camera: GameObject): void;
         update(elapsed: number): void;
         getComponentCount(_class: Function): number;
+        getGeometry(): Geometry;
         protected abstract createTransform(): Transform;
         protected afterInitChildren(): void;
         protected getRenderList(): wdCb.Collection<any>;
-        protected getGeometry(): Geometry;
         protected getAllChildren(): wdCb.Collection<EntityObject>;
         clearCache(): void;
         private _getHasComponentCacheKey(...args);
@@ -2730,7 +2774,7 @@ declare module wd {
         protected children: wdCb.Collection<GameObject>;
         initWhenCreate(): void;
         getSpacePartition(): SpacePartition;
-        protected getGeometry(): Geometry;
+        getGeometry(): Geometry;
         protected createTransform(): ThreeDTransform;
         protected getRenderList(): wdCb.Collection<GameObject>;
         protected afterInitChildren(): void;
@@ -2740,17 +2784,17 @@ declare module wd {
 declare module wd {
     class SceneDispatcher extends EntityObject {
         static create(): SceneDispatcher;
-        scriptManager: ScriptManager;
-        ambientLight: GameObject;
-        directionLights: wdCb.Collection<GameObject>;
-        pointLights: wdCb.Collection<GameObject>;
+        readonly scriptManager: ScriptManager;
+        readonly ambientLight: GameObject;
+        readonly directionLights: wdCb.Collection<GameObject>;
+        readonly pointLights: wdCb.Collection<GameObject>;
         side: ESide;
-        shadowMap: ShadowMapModel;
+        readonly shadowMap: ShadowMapModel;
         currentCamera: GameObject;
         physics: PhysicsConfig;
         glslData: wdCb.Hash<any>;
-        isUseShader: boolean;
-        currentShaderType: EShaderTypeOfScene;
+        readonly isUseShader: boolean;
+        readonly currentShaderType: EShaderTypeOfScene;
         name: string;
         uiObjectScene: UIObjectScene;
         gameObjectScene: GameObjectScene;
@@ -2848,12 +2892,12 @@ declare module wd {
 declare module wd {
     class GameObjectScene extends Scene {
         static create(): GameObjectScene;
-        ambientLight: GameObject;
-        directionLights: wdCb.Collection<GameObject>;
-        pointLights: wdCb.Collection<GameObject>;
+        readonly ambientLight: GameObject;
+        readonly directionLights: wdCb.Collection<GameObject>;
+        readonly pointLights: wdCb.Collection<GameObject>;
         private _currentCamera;
         currentCamera: any;
-        isUseShader: boolean;
+        readonly isUseShader: boolean;
         side: ESide;
         shadowMap: ShadowMapModel;
         physics: PhysicsConfig;
@@ -2896,14 +2940,8 @@ declare module wd {
         private _softType;
         softType: EShadowMapSoftType;
         shadowLayerList: ShadowLayerList;
-        getTwoDShadowMapDataMap(layer: string): wdCb.Collection<{
-            shadowMap: TwoDShadowMapTexture;
-            light: DirectionLight;
-        }>;
-        getCubemapShadowMapDataMap(layer: string): wdCb.Collection<{
-            shadowMap: CubemapShadowMapTexture;
-            light: DirectionLight;
-        }>;
+        getTwoDShadowMapDataMap(layer: string): wdCb.Collection<TwoDShadowMapData>;
+        getCubemapShadowMapDataMap(layer: string): wdCb.Collection<CubemapShadowMapData>;
     }
 }
 
@@ -2937,16 +2975,10 @@ declare module wd {
     class ShadowManager {
         static create(gameObjectScene: GameObjectScene): ShadowManager;
         constructor(gameObjectScene: GameObjectScene);
-        twoDShadowMapDataMap: wdCb.Hash<wdCb.Collection<{
-            shadowMap: TwoDShadowMapTexture;
-            light: DirectionLight;
-        }>>;
-        twoDShadowMapCountForGLSL: number;
-        cubemapShadowMapDataMap: wdCb.Hash<wdCb.Collection<{
-            shadowMap: CubemapShadowMapTexture;
-            light: DirectionLight;
-        }>>;
-        cubemapShadowMapCountForGLSL: number;
+        readonly twoDShadowMapDataMap: wdCb.Hash<wdCb.Collection<TwoDShadowMapData>>;
+        readonly twoDShadowMapCountForGLSL: number;
+        readonly cubemapShadowMapDataMap: wdCb.Hash<wdCb.Collection<CubemapShadowMapData>>;
+        readonly cubemapShadowMapCountForGLSL: number;
         gameObjectScene: GameObjectScene;
         private _shadowRenderList;
         private _endLoopSubscription;
@@ -2954,14 +2986,8 @@ declare module wd {
         private _shadowMapLayerChangeSubscription;
         update(elapsed: number): void;
         dispose(): void;
-        getTwoDShadowMapDataMap(layer: string): wdCb.Collection<{
-            shadowMap: TwoDShadowMapTexture;
-            light: DirectionLight;
-        }>;
-        getCubemapShadowMapDataMap(layer: string): wdCb.Collection<{
-            shadowMap: CubemapShadowMapTexture;
-            light: DirectionLight;
-        }>;
+        getTwoDShadowMapDataMap(layer: string): wdCb.Collection<TwoDShadowMapData>;
+        getCubemapShadowMapDataMap(layer: string): wdCb.Collection<CubemapShadowMapData>;
         setShadowRenderListForCurrentLoop(): void;
         getShadowRenderListByLayer(layer: string): wdCb.Collection<GameObject>;
         getShadowLayerList(): ShadowLayerList;
@@ -2981,8 +3007,8 @@ declare module wd {
     class ShadowMapManager {
         static create(shadowManager: ShadowManager): ShadowMapManager;
         constructor(shadowManager: ShadowManager);
-        twoDShadowMapCountForGLSL: number;
-        cubemapShadowMapCountForGLSL: number;
+        readonly twoDShadowMapCountForGLSL: number;
+        readonly cubemapShadowMapCountForGLSL: number;
         twoDShadowMapDataMap: wdCb.Hash<wdCb.Collection<TwoDShadowMapData>>;
         cubemapShadowMapDataMap: wdCb.Hash<wdCb.Collection<CubemapShadowMapData>>;
         private _shadowManager;
@@ -3012,9 +3038,9 @@ declare module wd {
 declare module wd {
     class LightManager {
         static create(): LightManager;
-        ambientLight: GameObject;
-        directionLights: wdCb.Collection<GameObject>;
-        pointLights: wdCb.Collection<GameObject>;
+        readonly ambientLight: GameObject;
+        readonly directionLights: wdCb.Collection<GameObject>;
+        readonly pointLights: wdCb.Collection<GameObject>;
         private _lights;
         addChild(light: GameObject): void;
         addChildren(lightList: wdCb.Collection<GameObject>): void;
@@ -3055,7 +3081,7 @@ declare module wd {
         removeChild(layer: string): ShadowLayerList;
         removeAllChildren(): void;
         removeRepeatItems(): ShadowLayerList;
-        hasRepeatItems(): boolean;
+        hasRepeatItems(): false;
         forEach(...args: any[]): void;
         getChildren(): string[];
         hasChild(layer: string): boolean;
@@ -3072,18 +3098,8 @@ declare module wd {
         hasChild(dom: HTMLElement, eventName: EEventName): boolean;
         hasChildWithFunc(func: (...args) => boolean): boolean;
         appendChild(target: EntityObject | HTMLElement, eventName: EEventName, data: any): void;
-        filter(func: Function): wdCb.Hash<wdCb.Collection<{
-            originHandler: Function;
-            handler: Function;
-            domHandler: Function;
-            priority: number;
-        }>>;
-        forEach(func: Function): wdCb.Hash<wdCb.Collection<{
-            originHandler: Function;
-            handler: Function;
-            domHandler: Function;
-            priority: number;
-        }>>;
+        filter(func: Function): wdCb.Hash<wdCb.Collection<EventRegisterData>>;
+        forEach(func: Function): wdCb.Hash<wdCb.Collection<EventRegisterData>>;
         getEventNameFromKey(key: string): EEventName;
         protected abstract buildKey(...args: any[]): string;
         protected abstract getEventSeparator(): string;
@@ -3183,9 +3199,9 @@ declare module wd {
 
 declare module wd {
     abstract class Event {
-        constructor(eventName: EEventName);
-        protected p_type: EEventType;
-        type: EEventType;
+        protected constructor(eventName: EEventName);
+        protected abstract p_type: EEventType;
+        readonly type: EEventType;
         name: EEventName;
         target: HTMLElement | EntityObject;
         currentTarget: HTMLElement | EntityObject;
@@ -3216,8 +3232,8 @@ declare module wd {
         locationInView: Point;
         private _button;
         button: number;
-        wheel: number;
-        movementDelta: {
+        readonly wheel: number;
+        readonly movementDelta: {
             x: any;
             y: any;
         };
@@ -3233,12 +3249,12 @@ declare module wd {
     class KeyboardEvent extends DomEvent {
         static create(event: any, eventName: EEventName): KeyboardEvent;
         protected p_type: EEventType;
-        ctrlKey: any;
-        altKey: any;
-        shiftKey: any;
-        metaKey: any;
-        keyCode: any;
-        key: any;
+        readonly ctrlKey: any;
+        readonly altKey: any;
+        readonly shiftKey: any;
+        readonly metaKey: any;
+        readonly keyCode: any;
+        readonly key: any;
         keyState: any;
         clone(): KeyboardEvent;
     }
@@ -3313,6 +3329,7 @@ declare module wd {
 declare module wd {
     class MouseEventHandler extends DomEventHandler {
         static getInstance(): any;
+        private constructor();
         on(eventName: EEventName, handler: (event: MouseEvent) => void, priority: number): any;
         on(dom: HTMLElement, eventName: EEventName, handler: (event: MouseEvent) => void, priority: number): any;
         protected getDefaultDom(): HTMLElement;
@@ -3329,6 +3346,7 @@ declare module wd {
 declare module wd {
     class KeyboardEventHandler extends DomEventHandler {
         static getInstance(): any;
+        private constructor();
         on(eventName: EEventName, handler: (event: MouseEvent) => void, priority: number): any;
         on(dom: HTMLElement, eventName: EEventName, handler: (event: MouseEvent) => void, priority: number): any;
         protected triggerDomEvent(dom: HTMLElement, event: Event, eventName: EEventName): void;
@@ -3346,6 +3364,7 @@ declare module wd {
 declare module wd {
     class CustomEventHandler extends EventHandler {
         static getInstance(): any;
+        private constructor();
         on(eventName: string, handler: Function, priority: number): void;
         on(target: EntityObject, eventName: string, handler: Function, priority: number): void;
         off(eventName: string): void;
@@ -3371,6 +3390,7 @@ declare module wd {
 declare module wd {
     class CustomEventDispatcher extends EventDispatcher {
         static getInstance(): any;
+        private constructor();
         trigger(event: Event): boolean;
         trigger(event: Event, userData: any): boolean;
         trigger(target: EntityObject, event: Event): boolean;
@@ -3386,6 +3406,7 @@ declare module wd {
 declare module wd {
     class DomEventDispatcher extends EventDispatcher {
         static getInstance(): any;
+        private constructor();
         trigger(event: Event): void;
         trigger(dom: HTMLElement, event: Event): void;
     }
@@ -3393,24 +3414,14 @@ declare module wd {
 
 declare module wd {
     abstract class EventRegister {
-        protected listenerMap: EventListenerMap;
+        protected abstract listenerMap: EventListenerMap;
         abstract register(...args: any[]): void;
         abstract remove(...args: any[]): void;
         getEventRegisterDataList(eventName: EEventName): any;
         getEventRegisterDataList(currentTarget: EntityObject, eventName: EEventName): any;
         getEventRegisterDataList(dom: HTMLElement, eventName: EEventName): any;
-        filter(func: Function): wdCb.Hash<wdCb.Collection<{
-            originHandler: Function;
-            handler: Function;
-            domHandler: Function;
-            priority: number;
-        }>>;
-        forEach(func: Function): wdCb.Hash<wdCb.Collection<{
-            originHandler: Function;
-            handler: Function;
-            domHandler: Function;
-            priority: number;
-        }>>;
+        filter(func: Function): wdCb.Hash<wdCb.Collection<EventRegisterData>>;
+        forEach(func: Function): wdCb.Hash<wdCb.Collection<EventRegisterData>>;
         getChild(eventName: EEventName): any;
         getChild(target: EntityObject): any;
         getChild(target: EntityObject, eventName: EEventName): any;
@@ -3428,6 +3439,7 @@ declare module wd {
 declare module wd {
     class CustomEventRegister extends EventRegister {
         static getInstance(): any;
+        private constructor();
         protected listenerMap: CustomEventListenerMap;
         register(target: EntityObject, eventName: EEventName, handler: Function, originHandler: Function, domHandler: Function, priority: number): void;
         remove(eventName: EEventName): any;
@@ -3454,6 +3466,7 @@ declare module wd {
 declare module wd {
     class DomEventRegister extends EventRegister {
         static getInstance(): any;
+        private constructor();
         protected listenerMap: DomEventListenerMap;
         register(dom: HTMLElement, eventName: EEventName, eventData: wdCb.Hash<any>, handler: Function, originHandler: Function, domHandler: Function, priority: number): void;
         remove(eventName: EEventName): any;
@@ -3485,6 +3498,7 @@ declare module wd {
 declare module wd {
     class CustomEventBinder extends EventBinder {
         static getInstance(): any;
+        private constructor();
         on(eventName: EEventName | string, handler: Function): void;
         on(eventName: EEventName | string, handler: Function, priority: number): void;
         on(target: EntityObject, eventName: EEventName | string, handler: Function): void;
@@ -3501,6 +3515,7 @@ declare module wd {
 declare module wd {
     class DomEventBinder extends EventBinder {
         static getInstance(): any;
+        private constructor();
         on(listener: {} | EventListener): void;
         on(eventName: EEventName | string, handler: Function): void;
         on(dom: HTMLElement, listener: {} | EventListener): void;
@@ -3635,26 +3650,49 @@ declare module wd {
 }
 
 declare module wd {
-    class LOD extends Component {
-        static create(): LOD;
+    abstract class LOD extends Component {
         entityObject: GameObject;
-        activeGeometry: Geometry;
-        levelList: wdCb.Collection<LevelData>;
-        private _originGeometry;
-        init(): void;
+        abstract addLevel(distanceBetweenCameraAndObject: any, targetLevel: any, ...args: any[]): void;
+        abstract update(elapsed: number): void;
         addToObject(entityObject: EntityObject, isShareComponent?: boolean): void;
         removeFromObject(entityObject: EntityObject): void;
-        addGeometryLevel(distanceBetweenCameraAndObject: any, levelGeometry: Geometry | ELODGeometryState): void;
+    }
+}
+
+declare module wd {
+    class GeometryLOD extends LOD {
+        static create(): GeometryLOD;
+        activeGeometry: Geometry;
+        private _levelList;
+        private _originGeometry;
+        init(): void;
+        addLevel(distanceBetweenCameraAndObject: any, geometryLevel: Geometry | ELODState): void;
         update(elapsed: number): void;
     }
     type LevelData = {
         distanceBetweenCameraAndObject: number;
-        geometry: Geometry | ELODGeometryState;
+        geometry: Geometry | ELODState;
     };
 }
 
 declare module wd {
-    enum ELODGeometryState {
+    class GameObjectLOD extends LOD {
+        static create(): GameObjectLOD;
+        activeGameObject: GameObject;
+        defaultGameObjectSwitchHandler: Function;
+        private _levelList;
+        private _lastActiveGameObject;
+        private _lastNotNullActiveGameObject;
+        init(): void;
+        addLevel(distanceBetweenCameraAndObject: any, gameObjectLevel: GameObject | ELODState, switchHandler?: (gameObject: GameObject) => void): void;
+        update(elapsed: number): void;
+        private _computeCurrentDistanceBetweenCameraAndObject(currentCameraPos, gameObject);
+        private _isSwitch();
+    }
+}
+
+declare module wd {
+    enum ELODState {
         INVISIBLE = 0,
     }
 }
@@ -3668,13 +3706,18 @@ declare module wd {
 }
 
 declare module wd {
-    class SourceInstance extends Instance {
-        static create(): SourceInstance;
-        toRenderInstanceListForDraw: wdCb.Collection<any>;
-        defaultToRenderInstanceList: wdCb.Collection<{}>;
+    abstract class SourceInstance extends Instance {
         private _instanceBuffer;
-        instanceBuffer: InstanceBuffer;
+        readonly instanceBuffer: InstanceBuffer;
         entityObject: GameObject;
+    }
+}
+
+declare module wd {
+    class OneToOneSourceInstance extends SourceInstance {
+        static create(): OneToOneSourceInstance;
+        readonly toRenderInstanceListForDraw: wdCb.Collection<any>;
+        readonly defaultToRenderInstanceList: wdCb.Collection<{}>;
         instanceList: wdCb.Collection<any>;
         private _toRenderInstanceList;
         private _endLoopSubscription;
@@ -3692,6 +3735,12 @@ declare module wd {
         private _addAllInstances();
         private _removeAllInstances();
         private _buildInstanceChildName(parentName, childName);
+    }
+}
+
+declare module wd {
+    class OneToManySourceInstance extends SourceInstance {
+        static create(): OneToManySourceInstance;
     }
 }
 
@@ -3807,7 +3856,7 @@ declare module wd {
     abstract class Transform extends Component {
         protected p_parent: Transform;
         parent: Transform;
-        isTransform: boolean;
+        readonly isTransform: boolean;
         private _isTranslate;
         isTranslate: boolean;
         private _isRotate;
@@ -3828,7 +3877,7 @@ declare module wd {
         protected abstract clearCache(): void;
         protected handleWhenSetTransformState(transformState: ETransformState): void;
         protected setParent(parent: Transform): void;
-        protected getMatrix(syncMethod: string, matrixAttriName: string): any;
+        protected getMatrix<T>(syncMethod: string, matrixAttriName: string): T;
         private _setGlobalTransformState(transformState, state);
         private _setLocalTransformState(transformState, state);
         private _resetTransformFlag();
@@ -3839,8 +3888,8 @@ declare module wd {
     class ThreeDTransform extends Transform {
         static create(): ThreeDTransform;
         private _localToWorldMatrix;
-        localToWorldMatrix: any;
-        normalMatrix: any;
+        readonly localToWorldMatrix: Matrix4;
+        readonly normalMatrix: Matrix3;
         private _position;
         position: Vector3;
         private _rotation;
@@ -3857,9 +3906,9 @@ declare module wd {
         localEulerAngles: Vector3;
         private _localScale;
         localScale: Vector3;
-        up: any;
-        right: any;
-        forward: any;
+        readonly up: Vector3;
+        readonly right: Vector3;
+        readonly forward: any;
         dirtyWorld: boolean;
         protected p_parent: ThreeDTransform;
         protected children: wdCb.Collection<ThreeDTransform>;
@@ -3895,9 +3944,9 @@ declare module wd {
     class RectTransform extends Transform {
         static create(): RectTransform;
         private _rotationMatrix;
-        rotationMatrix: any;
+        readonly rotationMatrix: Matrix3;
         private _localPositionAndScaleMatrix;
-        localPositionAndScaleMatrix: any;
+        readonly localPositionAndScaleMatrix: Matrix3;
         private _position;
         position: Vector2;
         private _rotation;
@@ -4012,9 +4061,9 @@ declare module wd {
 
 declare module wd {
     abstract class Animation extends Component {
-        isStart: boolean;
-        isStop: boolean;
-        isPause: boolean;
+        readonly isStart: boolean;
+        readonly isStop: boolean;
+        readonly isPause: boolean;
         entityObject: GameObject;
         isFrameChange: boolean;
         protected state: EAnimationState;
@@ -4053,7 +4102,7 @@ declare module wd {
 declare module wd {
     class MorphAnimation extends Animation {
         static create(): MorphAnimation;
-        nextFrame: number;
+        readonly nextFrame: number;
         interpolation: number;
         currentFrame: number;
         duration: number;
@@ -4138,7 +4187,7 @@ declare module wd {
     abstract class Geometry extends Component {
         private _material;
         material: Material;
-        geometryData: GeometryData;
+        readonly geometryData: GeometryData;
         entityObject: GameObject;
         buffers: BufferContainer;
         vaoManager: VAOManager;
@@ -4167,6 +4216,41 @@ declare module wd {
 }
 
 declare module wd {
+    abstract class InstanceGeometry extends Geometry {
+        private _customGeometry;
+        vertices: Array<number>;
+        texCoords: Array<number>;
+        colors: Array<number>;
+        indices: Array<number>;
+        normals: Array<number>;
+        readonly instanceAttributeData: wdCb.Collection<InstanceAttributeData>;
+        readonly instanceCount: number;
+        private _attributeData;
+        readonly attributeData: wdCb.Collection<wdCb.Collection<InstanceAttributeData>>;
+        dirty: boolean;
+        addInstanceAttributes(attributes: Array<InstanceAttributeData>): void;
+        clearInstanceAttributeData(): void;
+        computeData(): {
+            vertices: number[];
+            faces: Face3[];
+            texCoords: number[];
+            colors: number[];
+        };
+    }
+    type InstanceAttributeData = {
+        attributeName: string;
+        data: Array<number> | Float32Array;
+        meshPerAttribute: number;
+    };
+}
+
+declare module wd {
+    class BasicInstanceGeometry extends InstanceGeometry {
+        static create(): BasicInstanceGeometry;
+    }
+}
+
+declare module wd {
     class VAOManager {
         static create(): VAOManager;
         private _vaoMap;
@@ -4178,27 +4262,6 @@ declare module wd {
             isSetted: boolean;
         };
         sendAllBufferData(toSendBuffersUidStr: string, toSendBufferArr: Array<ArrayBuffer>): void;
-    }
-}
-
-declare module wd {
-    class BitmapFontGeometry extends Geometry {
-        static create(): BitmapFontGeometry;
-        material: BitmapFontMaterial;
-        private _pages;
-        computeData(): {
-            vertices: any;
-            faces: Face3[];
-            texCoords: any;
-        };
-        updateBuffers(): void;
-        hasMultiPages(): boolean;
-        protected createBufferContainer(): BufferContainer;
-        protected createGeometryData(vertices: Array<number>, faces: Array<Face3>, texCoords: Array<number>, colors: Array<number>, morphTargets: wdCb.Hash<MorphTargetsData>): GeometryData;
-        private _generatePages(layoutDataList);
-        private _generateVertices(layoutDataList, bitmapFontWidth, bitmapFontHeight);
-        private _generateTexCoords(layoutDataList, textureWidth, textureHeight, flipY);
-        private _generateIndices(layoutDataList);
     }
 }
 
@@ -4396,21 +4459,38 @@ declare module wd {
 declare module wd {
     class TerrainGeometry extends Geometry {
         static create(): TerrainGeometry;
+        private _rangeWidth;
+        rangeWidth: number;
+        private _rangeHeight;
+        rangeHeight: number;
+        readonly heightMapImageDataWidth: number;
+        readonly heightMapImageDataHeight: number;
+        heightMapAsset: ImageTextureAsset;
         subdivisions: number;
-        range: Range;
         minHeight: number;
         maxHeight: number;
-        heightMapAsset: ImageTextureAsset;
+        isHeightMapStoreHeightInEachPixel: boolean;
+        private _heightMapImageDataCache;
+        private _heightMapImageDataCacheWidth;
+        private _heightMapImageDataCacheHeight;
+        private _heightCache;
+        getHeightAtCoordinates(x: number, z: number): number;
+        private _getQuadSubdivisionsCoordinateArr(x, z);
+        private _getQuadHeightMapCoordinateArr(quadSubdivisionsCoordinateArr);
+        private _getBilinearInterpolatedHeight(offset, heightMinXMinZ, heightMaxXMinZ, heightMaxXMaxZ, heightMinXMaxZ);
+        private _getCacheHeight(coordinate);
         computeData(): GeometryDataType;
-        private _readHeightMapData(image, bufferWidth, bufferHeight);
-        private _createGroundFromHeightMap(buffer, bufferWidth, bufferHeight);
-        private _getHeight(x, z, buffer, bufferWidth, bufferHeight);
+        private _isReadHeightMapData();
+        private _readHeightMapData();
+        private _createGroundFromHeightMap();
+        private _computeHeightMapColInCanvasCoordinate(x);
+        private _computeHeightMapRowInCanvasCoordinate(z);
+        private _computeHeightMapColInTexCoordCoordinate(x);
+        private _computeHeightMapRowInTexCoordCoordinate(z);
+        private _computeHeightMapIndex(heightMapRow, heightMapCol);
+        private _getHeightByReadHeightMapData(heightMapIndex);
         private _getIndices();
     }
-    type Range = {
-        width: number;
-        height: number;
-    };
 }
 
 declare module wd {
@@ -4418,10 +4498,10 @@ declare module wd {
         constructor(geometry: Geometry);
         private _vertices;
         vertices: Array<number>;
-        normals: any;
-        normalsFromFaceNormal: any;
-        normalsFromVertexNormals: any;
-        indices: Array<number>;
+        readonly normals: any;
+        readonly normalsFromFaceNormal: any;
+        readonly normalsFromVertexNormals: any;
+        readonly indices: Array<number>;
         private _faces;
         faces: Array<Face3>;
         private _texCoords;
@@ -4429,7 +4509,7 @@ declare module wd {
         private _colors;
         colors: Array<number>;
         private _tangents;
-        tangents: number[];
+        readonly tangents: number[];
         tangentDirty: boolean;
         colorDirty: boolean;
         protected geometry: Geometry;
@@ -4466,7 +4546,7 @@ declare module wd {
 declare module wd {
     class MorphGeometryData extends GeometryData {
         static create(geometry: Geometry): MorphGeometryData;
-        morphNormals: any;
+        readonly morphNormals: any;
         private _morphTargets;
         morphTargets: wdCb.Hash<MorphTargetsData>;
         protected geometry: ModelGeometry;
@@ -4478,14 +4558,6 @@ declare module wd {
         protected onChangeFace(): void;
         private _copyFaces(faces);
         private _getMorphNormals(geometryData);
-    }
-}
-
-declare module wd {
-    class BitmapFontGeometryData extends GeometryData {
-        static create(geometry: Geometry): BitmapFontGeometryData;
-        private _pages;
-        pages: Array<number>;
     }
 }
 
@@ -4567,19 +4639,8 @@ declare module wd {
 }
 
 declare module wd {
-    class BitmapFontBufferContainer extends CommonBufferContainer {
-        static create(entityObject: GameObject): BitmapFontBufferContainer;
-        geometryData: BitmapFontGeometryData;
-        private _pageBuffer;
-        createBuffersFromGeometryData(): void;
-        getBufferForRenderSort(): Buffer;
-        protected getCustomData(dataName: string): ArrayBuffer;
-    }
-}
-
-declare module wd {
     abstract class Camera {
-        cameraToWorldMatrix: any;
+        readonly cameraToWorldMatrix: Matrix4;
         private _worldToCameraMatrix;
         worldToCameraMatrix: Matrix4;
         private _near;
@@ -4632,7 +4693,7 @@ declare module wd {
 declare module wd {
     abstract class CameraController extends Component {
         constructor(cameraComponent: Camera);
-        cameraToWorldMatrix: any;
+        readonly cameraToWorldMatrix: Matrix4;
         worldToCameraMatrix: Matrix4;
         pMatrix: Matrix4;
         entityObject: GameObject;
@@ -4763,9 +4824,9 @@ declare module wd {
 
 declare module wd {
     abstract class Action extends Component {
-        isStart: boolean;
-        isStop: any;
-        isPause: any;
+        readonly abstract isStop: boolean;
+        readonly abstract isPause: boolean;
+        readonly isStart: boolean;
         protected p_target: EntityObject;
         target: EntityObject;
         isFinish: boolean;
@@ -4786,8 +4847,8 @@ declare module wd {
 
 declare module wd {
     abstract class ActionInstant extends Action {
-        isStop: boolean;
-        isPause: boolean;
+        readonly isStop: boolean;
+        readonly isPause: boolean;
         start(): void;
         stop(): void;
         pause(): void;
@@ -4815,8 +4876,8 @@ declare module wd {
         private _isStop;
         private _isPause;
         private _timeController;
-        isStop: boolean;
-        isPause: boolean;
+        readonly isStop: boolean;
+        readonly isPause: boolean;
         update(elapsed: number): void;
         start(): void;
         stop(): void;
@@ -5022,7 +5083,7 @@ declare module wd {
 
 declare module wd {
     abstract class RendererComponent extends Component {
-        abstract render(renderer: Renderer, geometry: Geometry, camera: GameObject): any;
+        abstract render(renderer: Renderer, target: EntityObject, camera: GameObject): any;
     }
 }
 
@@ -5030,19 +5091,22 @@ declare module wd {
     class MeshRenderer extends RendererComponent {
         static create(): MeshRenderer;
         entityObject: GameObject;
-        render(renderer: Renderer, geometry: Geometry, camera: GameObject): void;
-        protected createDrawCommand(geometry: Geometry, camera: GameObject): QuadCommand;
+        render(renderer: Renderer, target: GameObject, camera: GameObject): void;
+        protected createDrawCommand(target: GameObject, geometry: Geometry, camera: GameObject): QuadCommand;
         private _createCommand(target, material);
-        private _getInstanceGLSLData(isModelMatrixInstance, isNormalMatrixInstance);
-        private _createHardwareInstanceCommand(target, material, glslData);
-        private _createBatchInstanceCommand(target, material, glslData);
+        private _getInstanceState(material);
+        private _getInstanceGLSLData(isOneToManyInstance, isModelMatrixInstance, isNormalMatrixInstance);
+        private _createOneToOneHardwareInstanceCommand(target, material, glslData);
+        private _createOneToManyHardwareInstanceCommand(target, material, glslData);
+        private _createOneToOneBatchInstanceCommand(target, material, glslData);
+        private _createOneToManyBatchInstanceCommand(target, material, glslData);
     }
 }
 
 declare module wd {
     class SkyboxRenderer extends MeshRenderer {
         static create(): SkyboxRenderer;
-        render(renderer: Renderer, geometry: Geometry, camera: GameObject): void;
+        render(renderer: Renderer, target: GameObject, camera: GameObject): void;
     }
 }
 
@@ -5064,7 +5128,7 @@ declare module wd {
         init(): void;
         initWhenCreate(): void;
         dispose(): void;
-        render(renderer: Renderer, geometry: Geometry, camera: GameObject): void;
+        render(renderer: Renderer, target: UIObject, camera: GameObject): void;
         clearCanvas(): void;
         private _createOverlayCanvas();
     }
@@ -5123,7 +5187,7 @@ declare module wd {
 declare module wd {
     class OctreeNode {
         static create(minPoint: Vector3, maxPoint: Vector3, capacity: number, depth: number, maxDepth: number): OctreeNode;
-        gameObjectCount: number;
+        readonly gameObjectCount: number;
         gameObjectList: wdCb.Collection<GameObject>;
         nodeList: wdCb.Collection<OctreeNode>;
         private _depth;
@@ -5155,7 +5219,7 @@ declare module wd {
 declare module wd {
     class BoxColliderForFirstCheck extends ColliderForFirstCheck {
         static create(): BoxColliderForFirstCheck;
-        shape: Shape;
+        readonly shape: Shape;
         private _collider;
         init(): void;
         update(elapsed: number): void;
@@ -5164,11 +5228,11 @@ declare module wd {
 
 declare module wd {
     abstract class Collider extends Component {
-        shape: Shape;
+        readonly shape: Shape;
         entityObject: GameObject;
         enable: boolean;
         boundingRegion: BoundingRegion;
-        protected type: string;
+        protected abstract type: string;
         abstract createBoundingRegion(): any;
         abstract buildBoundingRegion(): any;
         init(): void;
@@ -5412,7 +5476,7 @@ declare module wd {
         constructor(rigidBody: RigidBody);
         maxForce: number;
         protected rigidBody: RigidBody;
-        clone(rigidBody: RigidBody): this;
+        clone(constraint: this): this;
     }
     class LockConstraint extends PhysicsConstraint {
         static create(rigidBody: RigidBody): LockConstraint;
@@ -5615,11 +5679,7 @@ declare module wd {
     class CannonPointToPointConstraintDataList extends CannonConstraintDataList {
         static create(): CannonPointToPointConstraintDataList;
         protected dataList: wdCb.Collection<CannonPointToPointConstraintData>;
-        filter(func: (data: CannonPointToPointConstraintData) => boolean): wdCb.Collection<{
-            entityObject: GameObject;
-            pointToPointConstraint: PointToPointConstraint;
-            cannonConstraint: CANNON.Constraint;
-        }>;
+        filter(func: (data: CannonPointToPointConstraintData) => boolean): wdCb.Collection<CannonPointToPointConstraintData>;
         forEach(func: (data: CannonPointToPointConstraintData) => void): void;
         add(entityObject: GameObject, pointToPointConstraint: PointToPointConstraint, constraint: CANNON.Constraint): void;
         remove(constraint: PointToPointConstraint): void;
@@ -5831,7 +5891,7 @@ declare module wd {
 
 declare module wd {
     abstract class Light extends Component {
-        position: Vector3;
+        readonly position: Vector3;
         private _shadowMapWidth;
         shadowMapWidth: number;
         private _shadowMapHeight;
@@ -5921,24 +5981,7 @@ declare module wd {
             tabSize?: number;
             letterSpacing?: number;
             align?: EFontXAlignment;
-        }): wdCb.Collection<{
-            position: number[];
-            data: {
-                id: string;
-                rect: {
-                    x: number;
-                    y: number;
-                    width: number;
-                    height: number;
-                };
-                xOffset: number;
-                yOffset: number;
-                xAdvance: number;
-                page: number;
-            };
-            index: number;
-            line: number;
-        }>;
+        }): wdCb.Collection<LayoutCharData>;
         private _getFntObj(fntId);
     }
     type LayoutCharData = {
@@ -5960,19 +6003,7 @@ declare module wd {
         static create(): BitmapFontSearchGlyph;
         private _fallbackSpaceGlyph;
         private _fallbackTabGlyph;
-        getGlyph(fntObj: FntData, id: number): {
-            id: string;
-            rect: {
-                x: number;
-                y: number;
-                width: number;
-                height: number;
-            };
-            xOffset: number;
-            yOffset: number;
-            xAdvance: number;
-            page: number;
-        };
+        getGlyph(fntObj: FntData, id: number): FntCharData;
         getGlyphById(fntObj: FntData, id: number): FntCharData;
         setupSpaceGlyphs(fntObj: FntData, tabSize: number): void;
         private _getMGlyph(fntObj);
@@ -6057,8 +6088,8 @@ declare module wd {
 declare module wd {
     abstract class TwoDUI extends Component {
         dirty: boolean;
-        width: number;
-        height: number;
+        readonly width: number;
+        readonly height: number;
         entityObject: UIObject;
         context: CanvasRenderingContext2D;
         update(elapsed: number): void;
@@ -6179,7 +6210,7 @@ declare module wd {
     class CharFont extends TwoDFont {
         static create(): CharFont;
         x: number;
-        y: number;
+        readonly y: number;
         private _char;
         char: string;
         startPosX: number;
@@ -6251,8 +6282,8 @@ declare module wd {
         static create(): Button;
         private _text;
         text: string;
-        isDisabled: boolean;
-        currentState: EUIState;
+        readonly isDisabled: boolean;
+        readonly currentState: EUIState;
         private _mousedownSubscription;
         private _mouseupSubscription;
         private _mouseoverSubscription;
@@ -6294,13 +6325,14 @@ declare module wd {
     class UIStateMachine {
         static create(ui: InteractionUI): UIStateMachine;
         constructor(ui: InteractionUI);
-        transitionManager: TransitionManager;
-        currentState: EUIState;
+        readonly transitionManager: TransitionManager;
+        readonly currentState: EUIState;
         private _ui;
         private _stateHistory;
-        clone(ui: InteractionUI): this;
+        clone(machine: this): this;
         changeState(state: EUIState): void;
         backState(): void;
+        isState(state: EUIState): boolean;
     }
 }
 
@@ -6349,7 +6381,7 @@ declare module wd {
         private _ui;
         private _spriteTransitionMap;
         private _colorTransitionMap;
-        clone(interactionUI: InteractionUI): this;
+        clone(manager: this): this;
         getObjectTransition(objectName: EButtonObjectName): Transition;
         getObjectTarget(objectName: EButtonObjectName): any;
         changeState(state: EUIState): void;
@@ -6567,7 +6599,7 @@ declare module wd {
         init(): void;
         setClearColor(color: Color): void;
         private _renderSortedTransparentCommands(transparentCommandArr);
-        private _getObjectToCameraZDistance(cameraPositionZ, cmd);
+        private _getObjectZDistanceInCameraCoordinate(cmd);
         private _clearCommand();
         private _setClearOptions(clearOptions);
         private _buildOpaqueCommandSortId(opaqueCommand);
@@ -6667,11 +6699,15 @@ declare module wd {
 declare module wd {
     class InstanceBuffer extends Buffer {
         static create(): InstanceBuffer;
-        float32InstanceArraySize: number;
+        readonly float32InstanceArraySize: number;
         private _capacity;
+        private _cacheMap;
         initWhenCreate(): void;
         setCapacity(bufferCapacity: number): void;
-        resetData(data: Float32Array, offsetLocations: number[]): void;
+        resetData(data: Float32Array): void;
+        bindBuffer(): void;
+        addCache(key: string, value: any): void;
+        getCache(key: string): any;
         private _createBuffer();
     }
 }
@@ -6688,7 +6724,7 @@ declare module wd {
 declare module wd {
     class ElementBuffer extends CommonBuffer {
         static create(data: Array<number>, type?: EBufferType, usage?: EBufferUsage): ElementBuffer;
-        typeSize: number;
+        readonly typeSize: number;
         data: Uint16Array | Uint32Array;
         initWhenCreate(data: Array<number>, type: EBufferType, usage: EBufferUsage): any;
         resetData(data: Array<number>, type?: EBufferType, offset?: number): this;
@@ -6800,12 +6836,14 @@ declare module wd {
 
 declare module wd {
     abstract class QuadCommand extends RenderCommand {
-        program: Program;
+        readonly program: Program;
+        readonly mvpMatrix: Matrix4;
+        readonly vpMatrix: Matrix4;
+        mMatrix: Matrix4;
         vMatrix: Matrix4;
         pMatrix: Matrix4;
         buffers: BufferContainer;
         material: Material;
-        z: number;
         target: GameObject;
         sortId: number;
         execute(): void;
@@ -6816,9 +6854,6 @@ declare module wd {
 declare module wd {
     class SingleDrawCommand extends QuadCommand {
         static create(): SingleDrawCommand;
-        mvpMatrix: Matrix4;
-        private _mMatrix;
-        mMatrix: Matrix4;
         normalMatrix: Matrix3;
         protected draw(material: Material): void;
     }
@@ -6828,6 +6863,7 @@ declare module wd {
     enum EInstanceGLSLData {
         MODELMATRIX = 0,
         NORMALMATRIX_MODELMATRIX = 1,
+        ONE_MANY = 2,
     }
 }
 
@@ -6837,13 +6873,26 @@ declare module wd {
 }
 
 declare module wd {
-    class HardwareInstanceCommand extends InstanceCommand {
-        static create(): HardwareInstanceCommand;
-        instanceList: wdCb.Collection<GameObject>;
-        instanceBuffer: InstanceBuffer;
+    abstract class HardwareInstanceCommand extends InstanceCommand {
         glslData: EInstanceGLSLData;
+        instanceBuffer: InstanceBuffer;
+    }
+}
+
+declare module wd {
+    class OneToOneHardwareInstanceCommand extends HardwareInstanceCommand {
+        static create(): OneToOneHardwareInstanceCommand;
+        instanceList: wdCb.Collection<GameObject>;
         protected draw(material: Material): void;
         private _hasInstance();
+    }
+}
+
+declare module wd {
+    class OneToManyHardwareInstanceCommand extends HardwareInstanceCommand {
+        static create(): OneToManyHardwareInstanceCommand;
+        geometry: InstanceGeometry;
+        protected draw(material: Material): void;
     }
 }
 
@@ -6866,19 +6915,38 @@ declare module wd {
 
 declare module wd {
     abstract class HardwareInstanceDrawer extends InstanceDrawer {
+        protected abstract getOffsetLocationArray(...args: any[]): Array<number>;
+        protected abstract setCapacity(...args: any[]): void;
+        protected abstract sendGLSLData(...args: any[]): void;
+        protected unBind(instanceBuffer: InstanceBuffer, offsetLocationArr: Array<number>): void;
+        protected drawElementsInstancedANGLE(indexBuffer: ElementBuffer, instancesCount: number, drawMode: EDrawMode): void;
+    }
+}
+
+declare module wd {
+    abstract class OneToOneHardwareInstanceDrawer extends HardwareInstanceDrawer {
         draw(instanceList: wdCb.Collection<GameObject>, instanceBuffer: InstanceBuffer, program: Program, buffers: BufferContainer, drawMode: EDrawMode): void;
-        protected abstract getOffsetLocationArray(program: Program): Array<number>;
-        protected abstract setCapacity(instanceList: wdCb.Collection<GameObject>, instanceBuffer: InstanceBuffer): void;
-        protected abstract sendGLSLData(instanceList: wdCb.Collection<GameObject>, instanceBuffer: InstanceBuffer, offsetLocationArr: Array<number>): void;
-        private _unBind(instanceBuffer, offsetLocationArr);
-        private _drawElementsInstancedANGLE(indexBuffer, instancesCount, drawMode);
         private _drawArraysInstancedANGLE(vertexBuffer, instancesCount, drawMode);
     }
 }
 
 declare module wd {
-    class ModelMatrixHardwareInstanceDrawer extends HardwareInstanceDrawer {
+    class OneToManyHardwareInstanceDrawer extends HardwareInstanceDrawer {
         static getInstance(): any;
+        private constructor();
+        private _geometry;
+        draw(geometry: InstanceGeometry, instanceBuffer: InstanceBuffer, program: Program, buffers: BufferContainer, drawMode: EDrawMode): void;
+        protected getOffsetLocationArray(program: Program, instanceBuffer: InstanceBuffer): Array<number>;
+        protected setCapacity(instanceBuffer: InstanceBuffer): void;
+        protected sendGLSLData(instanceBuffer: InstanceBuffer, offsetLocationArr: Array<number>): void;
+        private _getStride(instanceBuffer);
+    }
+}
+
+declare module wd {
+    class ModelMatrixHardwareInstanceDrawer extends OneToOneHardwareInstanceDrawer {
+        static getInstance(): any;
+        private constructor();
         protected getOffsetLocationArray(program: Program): Array<number>;
         protected setCapacity(instanceList: wdCb.Collection<GameObject>, instanceBuffer: InstanceBuffer): void;
         protected sendGLSLData(instanceList: wdCb.Collection<GameObject>, instanceBuffer: InstanceBuffer, offsetLocationArr: Array<number>): void;
@@ -6886,8 +6954,9 @@ declare module wd {
 }
 
 declare module wd {
-    class NormalMatrixModelMatrixHardwareInstanceDrawer extends HardwareInstanceDrawer {
+    class NormalMatrixModelMatrixHardwareInstanceDrawer extends OneToOneHardwareInstanceDrawer {
         static getInstance(): any;
+        private constructor();
         protected getOffsetLocationArray(program: Program): Array<number>;
         protected setCapacity(instanceList: wdCb.Collection<GameObject>, instanceBuffer: InstanceBuffer): void;
         protected sendGLSLData(instanceList: wdCb.Collection<GameObject>, instanceBuffer: InstanceBuffer, offsetLocationArr: Array<number>): void;
@@ -6895,34 +6964,65 @@ declare module wd {
 }
 
 declare module wd {
-    class BatchInstanceCommand extends InstanceCommand {
-        static create(): BatchInstanceCommand;
-        instanceList: wdCb.Collection<GameObject>;
+    abstract class BatchInstanceCommand extends InstanceCommand {
         glslData: EInstanceGLSLData;
+    }
+}
+
+declare module wd {
+    class OneToOneBatchInstanceCommand extends BatchInstanceCommand {
+        static create(): OneToOneBatchInstanceCommand;
+        instanceList: wdCb.Collection<GameObject>;
         protected draw(material: Material): void;
         private _hasInstance();
     }
 }
 
 declare module wd {
-    abstract class BatchInstanceDrawer extends InstanceDrawer {
-        draw(instanceList: wdCb.Collection<GameObject>, program: Program, buffers: BufferContainer, drawMode: EDrawMode): void;
-        protected abstract getUniformDataNameArray(program: Program): Array<string>;
-        protected abstract sendGLSLData(program: Program, instance: GameObject, uniformDataNameArray: Array<string>): void;
+    class OneToManyBatchInstanceCommand extends BatchInstanceCommand {
+        static create(): OneToManyBatchInstanceCommand;
+        geometry: InstanceGeometry;
+        protected draw(material: Material): void;
     }
 }
 
 declare module wd {
-    class ModelMatrixBatchInstanceDrawer extends BatchInstanceDrawer {
+    abstract class BatchInstanceDrawer extends InstanceDrawer {
+        protected abstract sendGLSLData(...args: any[]): void;
+    }
+}
+
+declare module wd {
+    abstract class OneToOneBatchInstanceDrawer extends BatchInstanceDrawer {
+        draw(instanceList: wdCb.Collection<GameObject>, program: Program, buffers: BufferContainer, drawMode: EDrawMode): void;
+        protected abstract getUniformDataNameArray(program: Program): Array<string>;
+    }
+}
+
+declare module wd {
+    class OneToManyBatchInstanceDrawer extends BatchInstanceDrawer {
         static getInstance(): any;
+        private constructor();
+        private _geometry;
+        draw(geometry: InstanceGeometry, program: Program, buffers: BufferContainer, drawMode: EDrawMode): void;
+        protected sendGLSLData(program: Program, instanceAttributeDataList: wdCb.Collection<InstanceAttributeData>): void;
+        private _getVariableType(size);
+    }
+}
+
+declare module wd {
+    class ModelMatrixBatchInstanceDrawer extends OneToOneBatchInstanceDrawer {
+        static getInstance(): any;
+        private constructor();
         protected getUniformDataNameArray(program: Program): Array<string>;
         protected sendGLSLData(program: Program, instance: GameObject, [modelMatrixUniformDataName]: [any]): void;
     }
 }
 
 declare module wd {
-    class NormalMatrixModelMatrixBatchInstanceDrawer extends BatchInstanceDrawer {
+    class NormalMatrixModelMatrixBatchInstanceDrawer extends OneToOneBatchInstanceDrawer {
         static getInstance(): any;
+        private constructor();
         protected getUniformDataNameArray(program: Program): Array<string>;
         protected sendGLSLData(program: Program, instance: GameObject, [modelMatrixUniformDataName, normalMatrixUniformDataName]: [any, any]): void;
     }
@@ -6942,7 +7042,7 @@ declare module wd {
     class FrameBuffer {
         static create(width: number, height: number): FrameBuffer;
         constructor(width: number, height: number);
-        gl: any;
+        readonly gl: any;
         width: number;
         height: number;
         private _originScissorTest;
@@ -6978,8 +7078,8 @@ declare module wd {
         vsSource: string;
         private _fsSource;
         fsSource: string;
-        dirty: boolean;
-        program: Program;
+        readonly dirty: boolean;
+        readonly program: Program;
         libDirty: boolean;
         definitionDataDirty: boolean;
         mapManager: MapManager;
@@ -7032,20 +7132,10 @@ declare module wd {
         protected libs: wdCb.Collection<CustomShaderLib>;
         update(cmd: QuadCommand, material: ShaderMaterial): void;
         read(definitionData: ShaderDefinitionData): void;
-        getSampler2DUniformsAfterRead(): wdCb.Hash<{
-            type: EVariableType;
-            value?: any;
-            textureId?: string;
-        }>;
+        getSampler2DUniformsAfterRead(): wdCb.Hash<ShaderData>;
         protected buildDefinitionData(cmd: RenderCommand, material: Material): void;
         protected createShaderSourceBuilder(): ShaderSourceBuilder;
     }
-    type ShaderDefinitionData = {
-        attributes: wdCb.Hash<ShaderData>;
-        uniforms: wdCb.Hash<ShaderData>;
-        vsSourceId: string;
-        fsSourceId: string;
-    };
 }
 
 declare module wd {
@@ -7190,7 +7280,7 @@ declare module wd {
         hasCubemapShadowMap(shadowMap: CubemapShadowMapTexture): boolean;
         getTwoDShadowMapList(): wdCb.Collection<TwoDShadowMapTexture>;
         getCubemapShadowMapList(): wdCb.Collection<CubemapShadowMapTexture>;
-        getAllMapArr(): TwoDShadowMapTexture[];
+        getAllMapArr(): any;
         removeChild(map: Texture): void;
         removeAllChildren(): void;
     }
@@ -7251,8 +7341,6 @@ declare module wd {
         abstract clearShaderDefinition(): void;
         dispose(): void;
         protected convertAttributesData(): void;
-        private _convertArrayToArrayBuffer(type, value);
-        private _getBufferSize(type);
     }
     type SourceDefine = {
         name: string;
@@ -7385,12 +7473,17 @@ declare module wd {
         static u_mMatrix: ShaderVariable;
         static u_vMatrix: ShaderVariable;
         static u_pMatrix: ShaderVariable;
+        static u_mvpMatrix: ShaderVariable;
+        static u_vpMatrix: ShaderVariable;
         static u_normalMatrix: ShaderVariable;
         static u_samplerCube0: ShaderVariable;
         static u_sampler2D0: ShaderVariable;
         static u_sampler2D1: ShaderVariable;
         static u_lightMapSampler: ShaderVariable;
         static u_diffuseMapSampler: ShaderVariable;
+        static u_diffuseMap1Sampler: ShaderVariable;
+        static u_diffuseMap2Sampler: ShaderVariable;
+        static u_diffuseMap3Sampler: ShaderVariable;
         static u_specularMapSampler: ShaderVariable;
         static u_emissionMapSampler: ShaderVariable;
         static u_normalMapSampler: ShaderVariable;
@@ -7401,10 +7494,10 @@ declare module wd {
         static u_reflectivity: ShaderVariable;
         static u_map0SourceRegion: ShaderVariable;
         static u_map1SourceRegion: ShaderVariable;
-        static u_diffuseSourceRegion: ShaderVariable;
+        static u_diffuseMapSourceRegion: ShaderVariable;
         static u_map0RepeatRegion: ShaderVariable;
         static u_map1RepeatRegion: ShaderVariable;
-        static u_diffuseRepeatRegion: ShaderVariable;
+        static u_diffuseMapRepeatRegion: ShaderVariable;
         static u_combineMode: ShaderVariable;
         static u_mixRatio: ShaderVariable;
         static u_lightMapIntensity: ShaderVariable;
@@ -7446,6 +7539,9 @@ declare module wd {
         static u_waveData: ShaderVariable;
         static u_windMatrix: ShaderVariable;
         static u_bumpMapSampler: ShaderVariable;
+        static u_bumpMap1Sampler: ShaderVariable;
+        static u_bumpMap2Sampler: ShaderVariable;
+        static u_bumpMap3Sampler: ShaderVariable;
         static u_levelData: ShaderVariable;
         static a_mVec4_0: ShaderVariable;
         static a_mVec4_1: ShaderVariable;
@@ -7460,6 +7556,26 @@ declare module wd {
         static u_bitmapSampler: ShaderVariable;
         static a_page: ShaderVariable;
         static u_pageSampler2Ds: ShaderVariable;
+        static u_mixMapSampler: ShaderVariable;
+        static u_diffuseMap1RepeatRegion: ShaderVariable;
+        static u_diffuseMap2RepeatRegion: ShaderVariable;
+        static u_diffuseMap3RepeatRegion: ShaderVariable;
+        static u_grassMapDatas: ShaderVariable;
+        static a_quadIndex: ShaderVariable;
+        static u_grassMapSampler: ShaderVariable;
+        static u_windData: ShaderVariable;
+        static a_vertexIndex: ShaderVariable;
+        static u_grassRangeWidth: ShaderVariable;
+        static u_grassRangeHeight: ShaderVariable;
+        static u_terrainRangeWidth: ShaderVariable;
+        static u_terrainRangeHeight: ShaderVariable;
+        static u_terrainMinHeight: ShaderVariable;
+        static u_terrainMaxHeight: ShaderVariable;
+        static u_terrainSubdivisions: ShaderVariable;
+        static u_terrainScaleY: ShaderVariable;
+        static u_terrainPositionY: ShaderVariable;
+        static u_heightMapSampler: ShaderVariable;
+        static u_lightColor: ShaderVariable;
     }
     type ShaderVariable = {
         type: EVariableType;
@@ -7775,6 +7891,13 @@ declare module wd {
 }
 
 declare module wd {
+    class LightSetWorldPositionShaderLib extends EngineShaderLib {
+        static create(): LightSetWorldPositionShaderLib;
+        type: string;
+    }
+}
+
+declare module wd {
     class LightShaderLib extends EngineShaderLib {
         static create(): LightShaderLib;
         type: string;
@@ -7783,7 +7906,6 @@ declare module wd {
         private _sendLightVariables(program);
         private _sendPointLightVariables(program, pointLights);
         private _sendDirectionLightVariables(program, directionLights);
-        private _isZero(position);
         private _setLightDefinition(material);
         private _addDefine(list, direction_lights_count, point_lights_count);
         private _convertLightModelToGLSLVariable(lightModel);
@@ -7895,6 +8017,7 @@ declare module wd {
         static create(): NoNormalMapShaderLib;
         type: string;
         sendShaderVariables(program: Program, cmd: QuadCommand, material: LightMaterial): void;
+        setShaderDefinition(cmd: QuadCommand, material: TerrainMaterial): void;
     }
 }
 
@@ -8087,19 +8210,27 @@ declare module wd {
         static highp_fragment: GLSLChunk;
         static lowp_fragment: GLSLChunk;
         static mediump_fragment: GLSLChunk;
+        static noNormalMap_light_fragment: GLSLChunk;
         static common_envMap_fragment: GLSLChunk;
+        static map_forBasic_fragment: GLSLChunk;
+        static map_forBasic_vertex: GLSLChunk;
+        static multi_map_forBasic_fragment: GLSLChunk;
+        static multi_map_forBasic_vertex: GLSLChunk;
         static lightCommon_fragment: GLSLChunk;
         static lightCommon_vertex: GLSLChunk;
         static lightEnd_fragment: GLSLChunk;
         static light_common: GLSLChunk;
         static light_fragment: GLSLChunk;
+        static light_setWorldPosition_vertex: GLSLChunk;
         static light_vertex: GLSLChunk;
-        static map_forBasic_fragment: GLSLChunk;
-        static map_forBasic_vertex: GLSLChunk;
-        static multi_map_forBasic_fragment: GLSLChunk;
-        static multi_map_forBasic_vertex: GLSLChunk;
         static skybox_fragment: GLSLChunk;
         static skybox_vertex: GLSLChunk;
+        static modelMatrix_batch_instance_vertex: GLSLChunk;
+        static normalMatrix_batch_instance_vertex: GLSLChunk;
+        static modelMatrix_noInstance_vertex: GLSLChunk;
+        static normalMatrix_noInstance_vertex: GLSLChunk;
+        static modelMatrix_hardware_instance_vertex: GLSLChunk;
+        static normalMatrix_hardware_instance_vertex: GLSLChunk;
         static basic_forBasic_envMap_fragment: GLSLChunk;
         static basic_forBasic_envMap_vertex: GLSLChunk;
         static forBasic_envMap_fragment: GLSLChunk;
@@ -8114,12 +8245,6 @@ declare module wd {
         static fresnel_forLight_envMap_fragment: GLSLChunk;
         static reflection_forLight_envMap_fragment: GLSLChunk;
         static refraction_forLight_envMap_fragment: GLSLChunk;
-        static modelMatrix_batch_instance_vertex: GLSLChunk;
-        static normalMatrix_batch_instance_vertex: GLSLChunk;
-        static modelMatrix_hardware_instance_vertex: GLSLChunk;
-        static normalMatrix_hardware_instance_vertex: GLSLChunk;
-        static modelMatrix_noInstance_vertex: GLSLChunk;
-        static normalMatrix_noInstance_vertex: GLSLChunk;
         static diffuseMap_fragment: GLSLChunk;
         static diffuseMap_vertex: GLSLChunk;
         static emissionMap_fragment: GLSLChunk;
@@ -8152,15 +8277,31 @@ declare module wd {
         static twoDShadowMap_vertex: GLSLChunk;
         static basic_bitmapFont_fragment: GLSLChunk;
         static common_bitmapFont_vertex: GLSLChunk;
+        static grass_batch_instance_vertex: GLSLChunk;
+        static grass_common_instance_fragment: GLSLChunk;
+        static grass_common_instance_vertex: GLSLChunk;
+        static grass_hardware_instance_vertex: GLSLChunk;
+        static grass_map_fragment: GLSLChunk;
+        static grass_map_setWorldPosition_vertex: GLSLChunk;
+        static grass_map_vertex: GLSLChunk;
+        static terrain_mix_bump_cotangentFrame_fallback: GLSLChunk;
+        static terrain_mix_bump_cotangentFrame_standardDerivatives: GLSLChunk;
+        static terrain_mix_bump_fragment: GLSLChunk;
+        static terrain_mix_bump_vertex: GLSLChunk;
+        static terrain_mix_common_fragment: GLSLChunk;
+        static terrain_mix_fragment: GLSLChunk;
+        static terrain_mix_vertex: GLSLChunk;
+        static terrain_layer_fragment: GLSLChunk;
+        static terrain_layer_vertex: GLSLChunk;
         static multiPages_bitmapFont_fragment: GLSLChunk;
         static multiPages_bitmapFont_vertex: GLSLChunk;
         static sdf_bitmapFont_smoothStep_fallback: GLSLChunk;
         static sdf_bitmapFont_smoothStep_standardDerivatives: GLSLChunk;
         static sdf_bitmapFont_smooth_fragment: GLSLChunk;
+        static common_heightMap: GLSLChunk;
+        static common_light: GLSLChunk;
         static mirror_fragment: GLSLChunk;
         static mirror_vertex: GLSLChunk;
-        static terrainLayer_fragment: GLSLChunk;
-        static terrainLayer_vertex: GLSLChunk;
         static water_bump_fragment: GLSLChunk;
         static water_bump_vertex: GLSLChunk;
         static water_fragment: GLSLChunk;
@@ -8201,7 +8342,7 @@ declare module wd {
 
 declare module wd {
     abstract class Material {
-        program: Program;
+        readonly program: Program;
         private _blendType;
         blendType: EBlendType;
         envMap: CubemapTexture;
@@ -8211,10 +8352,12 @@ declare module wd {
         blendDst: EBlendFunc;
         private _blendEquation;
         blendEquation: EBlendEquation;
+        private _alphaToCoverage;
+        alphaToCoverage: boolean;
         private _color;
         color: Color;
-        mapManager: MapManager;
-        shader: Shader;
+        readonly mapManager: MapManager;
+        readonly shader: Shader;
         redWrite: boolean;
         greenWrite: boolean;
         blueWrite: boolean;
@@ -8250,7 +8393,6 @@ declare module wd {
         init(): void;
         protected addShaderLib(): void;
         protected addNormalShaderLib(): void;
-        protected setBlendByOpacity(opacity: number): void;
         protected createShader(): Shader;
         private _addTopShaderLib();
         private _addShaderLibToTop(lib);
@@ -8272,32 +8414,37 @@ declare module wd {
         normalMap: ImageTexture;
         private _shininess;
         shininess: number;
-        private _opacity;
         opacity: number;
         lightModel: ELightModel;
         specularColor: Color;
         emissionColor: Color;
         lightMapIntensity: number;
+        init(): void;
+        protected addTopExtendShaderLib(): void;
         protected addExtendShaderLib(): void;
         protected addEndShaderLib(): void;
+        protected addNormalRelatedShaderLib(): void;
+        protected addLightSetWorldPositionShaderLib(): void;
         protected addShaderLib(): void;
         private _setLightMapShaderLib();
         private _setEnvMapShaderLib(envMap);
         private _hasTwoDShadowMap();
         private _hasCubemapShadowMap();
+        private _addMap();
     }
 }
 
 declare module wd {
     abstract class StandardBasicMaterial extends EngineMaterial {
-        mapList: wdCb.Collection<BasicTexture | ProceduralTexture>;
-        map: any;
-        private _opacity;
+        readonly mapList: wdCb.Collection<ProceduralTexture | BasicTexture>;
+        private _map;
+        map: Texture | TextureAsset | Array<Texture> | Array<TextureAsset>;
         opacity: number;
         protected addExtendShaderLib(): void;
         protected addShaderLib(): void;
         private _setMapShaderLib();
         private _setEnvMapShaderLib(envMap);
+        private _addMap();
     }
 }
 
@@ -8337,11 +8484,18 @@ declare module wd {
     class ShaderMaterial extends Material {
         static create(): ShaderMaterial;
         shader: CustomShader;
+        definitionData: ShaderDefinitionData;
         init(): void;
         getTextureForRenderSort(): Texture;
         read(definitionDataId: string): void;
         protected createShader(): CustomShader;
     }
+    type ShaderDefinitionData = {
+        attributes: ShaderData;
+        uniforms: ShaderData;
+        vsSourceId: string;
+        fsSourceId: string;
+    };
 }
 
 declare module wd {
@@ -8355,8 +8509,8 @@ declare module wd {
     class ShaderManager {
         static create(material: Material): ShaderManager;
         constructor(material: Material);
-        shader: Shader;
-        mapManager: MapManager;
+        readonly shader: Shader;
+        readonly mapManager: MapManager;
         private _material;
         private _otherShaderMap;
         private _mainShader;
@@ -8397,6 +8551,7 @@ declare module wd {
 declare module wd {
     class GLSLLoader extends Loader {
         static getInstance(): any;
+        private constructor();
         protected loadAsset(url: string, id: string): wdFrp.Stream;
         protected loadAsset(url: Array<string>, id: string): wdFrp.Stream;
     }
@@ -8405,6 +8560,7 @@ declare module wd {
 declare module wd {
     class JsLoader extends Loader {
         static getInstance(): any;
+        private constructor();
         protected loadAsset(url: string, id: string): wdFrp.Stream;
         protected loadAsset(url: Array<string>, id: string): wdFrp.Stream;
         private _createScript();
@@ -8415,6 +8571,7 @@ declare module wd {
 declare module wd {
     class JSONLoader extends Loader {
         static getInstance(): any;
+        private constructor();
         protected loadAsset(url: string, id: string): wdFrp.Stream;
         protected loadAsset(url: Array<string>, id: string): wdFrp.Stream;
     }
@@ -8423,6 +8580,7 @@ declare module wd {
 declare module wd {
     class VideoLoader extends Loader {
         static getInstance(): any;
+        private constructor();
         protected loadAsset(url: string, id: string): wdFrp.Stream;
         protected loadAsset(url: Array<string>, id: string): wdFrp.Stream;
     }
@@ -8431,6 +8589,7 @@ declare module wd {
 declare module wd {
     class TextureLoader extends Loader {
         static getInstance(): any;
+        private constructor();
         protected loadAsset(url: string, id: string): wdFrp.Stream;
         protected loadAsset(url: Array<string>, id: string): wdFrp.Stream;
     }
@@ -8692,6 +8851,7 @@ declare module wd {
 declare module wd {
     class LoaderManager {
         static getInstance(): any;
+        private constructor();
         assetCount: number;
         currentLoadedCount: number;
         private _assetTable;
@@ -8977,6 +9137,7 @@ declare module wd {
 declare module wd {
     class GLTFLoader extends Loader {
         static getInstance(): any;
+        private constructor();
         private _arrayBufferMap;
         private _imageMap;
         protected loadAsset(url: string, id: string): wdFrp.Stream;
@@ -9211,6 +9372,7 @@ declare module wd {
 declare module wd {
     class WDLoader extends Loader {
         static getInstance(): any;
+        private constructor();
         private _parseData;
         protected loadAsset(url: string, id: string): wdFrp.Stream;
         protected loadAsset(url: Array<string>, id: string): wdFrp.Stream;
@@ -9278,6 +9440,7 @@ declare module wd {
 declare module wd {
     class FontLoader extends Loader {
         static getInstance(): any;
+        private constructor();
         private _familyName;
         dispose(): void;
         protected loadAsset(url: string, id: string): wdFrp.Stream;
@@ -9290,34 +9453,7 @@ declare module wd {
 declare module wd {
     class FntParser {
         static create(): FntParser;
-        parseFnt(fntStr: string, url: string): {
-            commonHeight: number;
-            commonBase: number;
-            scaleW: number;
-            scaleH: number;
-            atlasName: string;
-            fontDefDictionary: {
-                [charId: string]: {
-                    id: string;
-                    rect: {
-                        x: number;
-                        y: number;
-                        width: number;
-                        height: number;
-                    };
-                    xOffset: number;
-                    yOffset: number;
-                    xAdvance: number;
-                    page: number;
-                };
-            };
-            kerningArray: {
-                first: string;
-                second: string;
-                amount: number;
-            }[];
-            isMultiPages: boolean;
-        };
+        parseFnt(fntStr: string, url: string): FntData;
         private _parseStrToObj(str);
         private _parseChar(fntStr, fnt);
         private _parseKerning(fntStr, fnt);
@@ -9327,6 +9463,7 @@ declare module wd {
 declare module wd {
     class FntLoader extends Loader {
         static getInstance(): any;
+        private constructor();
         private _parser;
         protected loadAsset(url: string, id: string): wdFrp.Stream;
         protected loadAsset(url: Array<string>, id: string): wdFrp.Stream;
@@ -9365,8 +9502,7 @@ declare module wd {
 declare module wd {
     class DeviceManager {
         static getInstance(): any;
-        view: IView;
-        gl: WebGLRenderingContext;
+        private constructor();
         private _scissorTest;
         scissorTest: boolean;
         setScissor(x: number, y: number, width: number, height: number): void;
@@ -9385,6 +9521,11 @@ declare module wd {
         depthWrite: boolean;
         private _blend;
         blend: boolean;
+        private _alphaToCoverage;
+        alphaToCoverage: boolean;
+        view: IView;
+        gl: WebGLRenderingContext;
+        contextConfig: ContextConfigData;
         private _writeRed;
         private _writeGreen;
         private _writeBlue;
@@ -9471,7 +9612,8 @@ declare module wd {
 declare module wd {
     class GPUDetector {
         static getInstance(): any;
-        gl: any;
+        private constructor();
+        readonly gl: any;
         maxTextureUnit: number;
         maxTextureSize: number;
         maxCubemapTextureSize: number;
@@ -9543,12 +9685,12 @@ declare module wd {
     class ViewWebGL implements IView {
         static create(view: any): ViewWebGL;
         constructor(dom: any);
-        offset: {
+        readonly offset: {
             x: any;
             y: any;
         };
         private _dom;
-        dom: any;
+        readonly dom: any;
         width: number;
         height: number;
         styleWidth: string;
@@ -9605,7 +9747,7 @@ declare module wd {
 
 declare module wd {
     abstract class Texture extends Entity {
-        geometry: Geometry;
+        readonly geometry: Geometry;
         name: string;
         material: Material;
         width: number;
@@ -9750,7 +9892,7 @@ declare module wd {
         sourceRegionMethod: ETextureSourceRegionMethod;
         private _sourceRegion;
         sourceRegion: RectRegion;
-        sourceRegionForGLSL: any;
+        readonly sourceRegionForGLSL: any;
         generateMipmaps: boolean;
         format: ETextureFormat;
         source: any;
@@ -9777,7 +9919,6 @@ declare module wd {
         protected setTextureParameters(textureType: any, isSourcePowerOfTwo: any): void;
         protected isSourcePowerOfTwo(): boolean;
         private _setAnisotropy(textureType);
-        private _convertSourceRegionCanvasMapToUV(sourceRegion);
         private _convertSourceRegionToUV(sourceRegion);
     }
 }
@@ -9973,6 +10114,7 @@ declare module wd {
 declare module wd {
     class VideoManager {
         static getInstance(): any;
+        private constructor();
         play(id: string): void;
     }
 }
@@ -10013,7 +10155,7 @@ declare module wd {
 
 declare module wd {
     abstract class ProceduralTexture extends TwoDRenderTargetTexture {
-        sourceRegionForGLSL: any;
+        readonly sourceRegionForGLSL: any;
         repeatRegion: RectRegion;
         initWhenCreate(): void;
         getSamplerName(unit: number): string;
@@ -10299,6 +10441,38 @@ declare module wd {
 }
 
 declare module wd {
+    class TerrainMaterial extends StandardLightMaterial {
+        static create(): TerrainMaterial;
+        layer: TerrainLayer;
+        mix: TerrainMix;
+        init(): void;
+        getTextureForRenderSort(): Texture;
+        protected addExtendShaderLib(): void;
+        protected addTopExtendShaderLib(): void;
+        protected addNormalRelatedShaderLib(): void;
+    }
+}
+
+declare module wd {
+    class TerrainLayer {
+        static create(): TerrainLayer;
+        private _mapData;
+        mapData: Array<TerrainLayerData>;
+        readonly mapArray: (ProceduralTexture | ImageTexture)[];
+        addMap(mapManager: MapManager): void;
+        hasData(): boolean;
+        getMapCount(): number;
+        getTextureForRenderSort(): ProceduralTexture | ImageTexture;
+        clone(layer: this): this;
+    }
+    type TerrainLayerData = {
+        minHeight: number;
+        maxHeight: number;
+        diffuseMap: ImageTexture | ProceduralTexture;
+    };
+}
+
+declare module wd {
     class TerrainLayerShaderLib extends EngineShaderLib {
         static create(): TerrainLayerShaderLib;
         type: string;
@@ -10308,25 +10482,217 @@ declare module wd {
 }
 
 declare module wd {
-    class TerrainMaterial extends StandardLightMaterial {
-        static create(): TerrainMaterial;
-        layer: TerrainLayerMapModel;
+    class TerrainMix {
+        static create(): TerrainMix;
+        private _mapData;
+        mapData: TerrainMixData;
+        alphaTest: number;
+        addMap(mapManager: MapManager): void;
+        hasData(): boolean;
+        hasBumpMap(): boolean;
+        getTextureForRenderSort(): ProceduralTexture | ImageTexture;
+        clone(mix: this): this;
+        private _setBumpMapRepeatRegion(bumpMap, diffuseMap);
+        private _addBumpMap(mapManager, bumpMap, correspondDiffuseMap, samplerVariableName);
+    }
+    type TerrainMixData = {
+        mixMap: ImageTexture | ProceduralTexture;
+        diffuseMap1: ImageTexture | ProceduralTexture;
+        diffuseMap2: ImageTexture | ProceduralTexture;
+        diffuseMap3: ImageTexture | ProceduralTexture;
+        bumpMap1: ImageTexture;
+        bumpMap2: ImageTexture;
+        bumpMap3: ImageTexture;
+    };
+}
+
+declare module wd {
+    class TerrainMixBumpShaderLib extends EngineShaderLib {
+        static create(): TerrainMixBumpShaderLib;
+        type: string;
+        setShaderDefinition(cmd: QuadCommand, material: TerrainMaterial): void;
+    }
+}
+
+declare module wd {
+    class TerrainMixCommonShaderLib extends EngineShaderLib {
+        static create(): TerrainMixCommonShaderLib;
+        type: string;
+    }
+}
+
+declare module wd {
+    class TerrainMixMapShaderLib extends EngineShaderLib {
+        static create(): TerrainMixMapShaderLib;
+        type: string;
+        sendShaderVariables(program: Program, cmd: QuadCommand, material: TerrainMaterial): void;
+        setShaderDefinition(cmd: QuadCommand, material: TerrainMaterial): void;
+    }
+}
+
+declare module wd {
+    class GrassMapBufferContainer extends CommonBufferContainer {
+        static create(entityObject: GameObject): GrassMapBufferContainer;
+        geometryData: GrassMapGeometryData;
+        private _quadIndexBuffer;
+        createBuffersFromGeometryData(): void;
+        getBufferForRenderSort(): Buffer;
+        protected getCustomData(dataName: string): ArrayBuffer;
+    }
+}
+
+declare module wd {
+    class GrassMapGeometry extends Geometry {
+        static create(): GrassMapGeometry;
+        width: number;
+        height: number;
+        private _vertices;
+        private _texCoords;
+        private _indices;
+        private _normals;
+        private _quadIndices;
+        computeData(): {
+            vertices: number[];
+            faces: Face3[];
+            texCoords: number[];
+        };
+        protected createBufferContainer(): BufferContainer;
+        protected createGeometryData(vertices: Array<number>, faces: Array<Face3>, texCoords: Array<number>, colors: Array<number>, morphTargets: wdCb.Hash<MorphTargetsData>): GeometryData;
+        private _generateFirstRect();
+        private _generateSecondRect();
+        private _generateThirdRect();
+        private _generateRect(rotationMatrix, index);
+        private _generateQuadIndices();
+    }
+}
+
+declare module wd {
+    class GrassMapGeometryData extends GeometryData {
+        static create(geometry: Geometry): GrassMapGeometryData;
+        private _quadIndices;
+        quadIndices: Array<number>;
+    }
+}
+
+declare module wd {
+    class GrassMapMaterial extends StandardLightMaterial {
+        static create(): GrassMapMaterial;
+        private _mapData;
+        mapData: Array<GrassMapData>;
+        grassMap: ImageTexture | ProceduralTexture;
+        alphaTest: number;
+        wind: GrassWindModel;
+        initWhenCreate(): void;
         init(): void;
         getTextureForRenderSort(): Texture;
+        updateShader(cmd: QuadCommand): void;
         protected addExtendShaderLib(): void;
+        protected addLightSetWorldPositionShaderLib(): void;
     }
-    class TerrainLayerMapModel {
-        static create(): TerrainLayerMapModel;
-        private _mapDataList;
-        mapDataList: wdCb.Collection<TerrainLayerMapData>;
-        mapArray: Texture[];
+    class GrassWindModel {
+        static create(): GrassWindModel;
+        time: number;
+        speed: number;
+        direction: Vector2;
+        strength: number;
         clone(): this;
+        computeTime(): void;
     }
-    type TerrainLayerMapData = {
-        minHeight: number;
-        maxHeight: number;
-        diffuseMap: Texture;
+    type GrassMapData = {
+        sourceRegion: RectRegion;
     };
+}
+
+declare module wd {
+    class GrassMapSetWorldPositionShaderLib extends EngineShaderLib {
+        static create(): GrassMapSetWorldPositionShaderLib;
+        type: string;
+        sendShaderVariables(program: Program, cmd: QuadCommand, material: GrassMapMaterial): void;
+        setShaderDefinition(cmd: QuadCommand, material: GrassMapMaterial): void;
+    }
+}
+
+declare module wd {
+    class GrassMapShaderLib extends EngineShaderLib {
+        static create(): GrassMapShaderLib;
+        type: string;
+        sendShaderVariables(program: Program, cmd: QuadCommand, material: GrassMapMaterial): void;
+        setShaderDefinition(cmd: QuadCommand, material: GrassMapMaterial): void;
+    }
+}
+
+declare module wd {
+    class GrassInstanceGeometry extends InstanceGeometry {
+        static create(): GrassInstanceGeometry;
+        readonly bladeVerts: number;
+        readonly bladeDivs: number;
+        bladeCount: number;
+        bladeSegments: number;
+        bladeWidth: number;
+        bladeMinHeight: number;
+        bladeMaxHeight: number;
+        rangeWidth: number;
+        rangeHeight: number;
+        vertexIndexBuffer: ArrayBuffer;
+        computeData(): {
+            vertices: number[];
+            faces: Face3[];
+            texCoords: number[];
+            colors: number[];
+        };
+        private _generateVertexIndex();
+        private _generateVerticesForCollisionCheck();
+        private _generateShapes();
+        private _generateOffsets();
+        private _generateIndices();
+    }
+}
+
+declare module wd {
+    class GrassInstanceMaterial extends Material {
+        static create(): GrassInstanceMaterial;
+        geometry: GrassInstanceGeometry;
+        map: ImageTexture | ProceduralTexture;
+        time: number;
+        speed: number;
+        terrainGeometry: TerrainGeometry;
+        init(): void;
+        getTextureForRenderSort(): Texture;
+        updateShader(cmd: InstanceCommand): void;
+        protected createShader(): Shader;
+        private _addShaderLib();
+        private _computeTime();
+    }
+}
+
+declare module wd {
+    abstract class GrassInstanceShaderLib extends EngineShaderLib {
+    }
+}
+
+declare module wd {
+    class GrassBatchInstanceShaderLib extends GrassInstanceShaderLib {
+        static create(): GrassBatchInstanceShaderLib;
+        type: string;
+    }
+}
+
+declare module wd {
+    class GrassCommonInstanceShaderLib extends EngineShaderLib {
+        static create(): GrassCommonInstanceShaderLib;
+        type: string;
+        sendShaderVariables(program: Program, cmd: InstanceCommand, material: GrassInstanceMaterial): void;
+        setShaderDefinition(cmd: InstanceCommand, material: GrassInstanceMaterial): void;
+        private _sendTerrainData(material, program);
+        private _sendLightData(program);
+    }
+}
+
+declare module wd {
+    class GrassHardwareInstanceShaderLib extends GrassInstanceShaderLib {
+        static create(): GrassHardwareInstanceShaderLib;
+        type: string;
+    }
 }
 
 declare module wd {
@@ -10364,20 +10730,21 @@ declare module wd {
         updateShader(cmd: QuadCommand): void;
         getTextureForRenderSort(): Texture;
         protected addExtendShaderLib(): void;
-        private _computeTime();
     }
     class WaterWindModel {
         static create(): WaterWindModel;
-        matrix: Matrix4;
+        readonly matrix: Matrix4;
         time: number;
         direction: Vector2;
-        clone(): this;
+        speed: number;
+        clone(model: this): this;
+        computeTime(): void;
     }
     class WaterWaveModel {
         static create(): WaterWaveModel;
         height: number;
         length: number;
-        clone(): this;
+        clone(model: this): this;
     }
 }
 
@@ -10425,6 +10792,46 @@ declare module wd {
 }
 
 declare module wd {
+    class BitmapFontBufferContainer extends CommonBufferContainer {
+        static create(entityObject: GameObject): BitmapFontBufferContainer;
+        geometryData: BitmapFontGeometryData;
+        private _pageBuffer;
+        createBuffersFromGeometryData(): void;
+        getBufferForRenderSort(): Buffer;
+        protected getCustomData(dataName: string): ArrayBuffer;
+    }
+}
+
+declare module wd {
+    class BitmapFontGeometry extends Geometry {
+        static create(): BitmapFontGeometry;
+        material: BitmapFontMaterial;
+        private _pages;
+        computeData(): {
+            vertices: any;
+            faces: Face3[];
+            texCoords: any;
+        };
+        updateBuffers(): void;
+        hasMultiPages(): boolean;
+        protected createBufferContainer(): BufferContainer;
+        protected createGeometryData(vertices: Array<number>, faces: Array<Face3>, texCoords: Array<number>, colors: Array<number>, morphTargets: wdCb.Hash<MorphTargetsData>): GeometryData;
+        private _generatePages(layoutDataList);
+        private _generateVertices(layoutDataList, bitmapFontWidth, bitmapFontHeight);
+        private _generateTexCoords(layoutDataList, textureWidth, textureHeight, flipY);
+        private _generateIndices(layoutDataList);
+    }
+}
+
+declare module wd {
+    class BitmapFontGeometryData extends GeometryData {
+        static create(geometry: Geometry): BitmapFontGeometryData;
+        private _pages;
+        pages: Array<number>;
+    }
+}
+
+declare module wd {
     class BitmapFontMaterial extends StandardLightMaterial {
         static create(): BitmapFontMaterial;
         geometry: BitmapFontGeometry;
@@ -10433,8 +10840,8 @@ declare module wd {
         alphaTest: number;
         private _bitmap;
         bitmap: ImageTexture;
-        private _pageMapList;
-        pageMapList: wdCb.Collection<ImageTexture>;
+        private _pageMapData;
+        pageMapData: Array<ImageTexture>;
         isMapFlipY(): boolean;
         initWhenCreate(): void;
         init(): void;
@@ -10487,6 +10894,7 @@ declare module wd {
 declare module wd {
     class ActionEngine extends ComponentContainer {
         static getInstance(): any;
+        private constructor();
         protected list: wdCb.Collection<Action>;
         update(elapsed: number): void;
     }
@@ -10495,6 +10903,7 @@ declare module wd {
 declare module wd {
     class ScriptEngine {
         static getInstance(): any;
+        private constructor();
         private _scriptList;
         addChild(entityObject: EntityObject, scriptName: string, classInstance: IScriptBehavior): void;
         removeChild(entityObject: EntityObject, classInstance: IScriptBehavior): void;
@@ -10512,6 +10921,7 @@ declare module wd {
 declare module wd {
     class LODEngine extends ComponentContainer {
         static getInstance(): any;
+        private constructor();
         protected list: wdCb.Collection<LOD>;
         update(elapsed: number): void;
     }
@@ -10520,6 +10930,7 @@ declare module wd {
 declare module wd {
     class SpacePartitionEngine extends ComponentContainer {
         static getInstance(): any;
+        private constructor();
         protected list: wdCb.Collection<SpacePartition>;
         update(elapsed: number): void;
     }
@@ -10528,6 +10939,7 @@ declare module wd {
 declare module wd {
     class AnimationEngine extends ComponentContainer {
         static getInstance(): any;
+        private constructor();
         protected list: wdCb.Collection<Animation>;
         update(elapsed: number): void;
     }
@@ -10536,6 +10948,7 @@ declare module wd {
 declare module wd {
     class CollisionEngine extends ComponentContainer {
         static getInstance(): any;
+        private constructor();
         protected list: wdCb.Collection<Collider>;
         private _collisionDetector;
         update(elapsed: number): void;
@@ -10546,6 +10959,7 @@ declare module wd {
 declare module wd {
     class PhysicsEngine extends ComponentContainer {
         static getInstance(): any;
+        private constructor();
         physicsEngineAdapter: IPhysicsEngineAdapter;
         protected list: wdCb.Collection<RigidBody>;
         removeChild(body: RigidBody): void;
@@ -10559,6 +10973,7 @@ declare module wd {
 declare module wd {
     class BillboardEngine extends ComponentContainer {
         static getInstance(): any;
+        private constructor();
         update(elapsed: number): void;
     }
 }
@@ -10572,6 +10987,7 @@ declare module wd {
 declare module wd {
     class ThreeDUIEngine extends UIEngine {
         static getInstance(): any;
+        private constructor();
         protected list: wdCb.Collection<ThreeDUI>;
     }
 }
@@ -10579,6 +10995,7 @@ declare module wd {
 declare module wd {
     class TwoDUIEngine extends UIEngine {
         static getInstance(): any;
+        private constructor();
         protected list: wdCb.Collection<TwoDUI>;
         render(): void;
         private _isDirty(uiObject);
