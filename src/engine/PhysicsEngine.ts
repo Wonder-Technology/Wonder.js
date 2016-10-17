@@ -3,6 +3,8 @@ module wd{
     export class PhysicsEngine extends ComponentContainer{
         public static getInstance():any {}
 
+		private constructor(){super();}
+
         public physicsEngineAdapter:IPhysicsEngineAdapter = PhysicsEngineFactory.createNullAdapter();
 
         protected list:wdCb.Collection<RigidBody>;

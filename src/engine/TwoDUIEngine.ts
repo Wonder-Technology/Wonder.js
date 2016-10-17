@@ -3,6 +3,8 @@ module wd{
     export class TwoDUIEngine extends UIEngine{
         public static getInstance():any {}
 
+		private constructor(){super();}
+
         protected list:wdCb.Collection<TwoDUI>;
 
         public render(){

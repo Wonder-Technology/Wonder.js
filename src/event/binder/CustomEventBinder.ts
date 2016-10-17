@@ -3,6 +3,8 @@ module wd {
     export class CustomEventBinder extends EventBinder{
         public static getInstance():any {}
 
+		private constructor(){super();}
+
         public on(eventName:EEventName|string, handler:Function):void;
 
         public on(eventName:EEventName|string, handler:Function, priority:number):void;

@@ -3,6 +3,8 @@ module wd {
     export class WDLoader extends Loader {
         public static getInstance():any {}
 
+		private constructor(){super();}
+
         private _parseData:WDFileParseData = null;
 
         protected loadAsset(url:string, id:string):wdFrp.Stream;

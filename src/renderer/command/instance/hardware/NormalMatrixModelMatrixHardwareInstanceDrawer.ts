@@ -3,6 +3,8 @@ module wd {
     export class NormalMatrixModelMatrixHardwareInstanceDrawer extends OneToOneHardwareInstanceDrawer{
         public static getInstance():any {}
 
+		private constructor(){super();}
+
         //todo add cache
         protected getOffsetLocationArray(program:Program):Array<number>{
             return [

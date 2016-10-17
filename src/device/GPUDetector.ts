@@ -3,6 +3,8 @@ module wd {
     export class GPUDetector {
         public static getInstance():any {}
 
+        private constructor(){}
+
         get gl() {
             return DeviceManager.getInstance().gl;
         }

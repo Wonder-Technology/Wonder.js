@@ -3,6 +3,8 @@ module wd {
     export class ModelMatrixHardwareInstanceDrawer extends OneToOneHardwareInstanceDrawer{
         public static getInstance():any {}
 
+		private constructor(){super();}
+
         //todo add cache
         protected getOffsetLocationArray(program:Program):Array<number>{
             return [program.getAttribLocation("a_mVec4_0"), program.getAttribLocation("a_mVec4_1"), program.getAttribLocation("a_mVec4_2"), program.getAttribLocation("a_mVec4_3")];

@@ -3,6 +3,8 @@ module wd {
     export class CustomEventRegister extends EventRegister{
         public static getInstance():any {}
 
+		private constructor(){super();}
+
         protected listenerMap:CustomEventListenerMap = CustomEventListenerMap.create();
 
 

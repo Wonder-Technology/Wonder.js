@@ -3,6 +3,8 @@ module wd{
     export class ActionEngine extends ComponentContainer{
         public static getInstance():any {}
 
+		private constructor(){super();}
+
         protected list:wdCb.Collection<Action>;
 
         public update(elapsed:number){

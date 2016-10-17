@@ -3,6 +3,8 @@ module wd{
     export class ScriptEngine{
         public static getInstance():any {}
 
+        private constructor(){}
+
         private _scriptList:wdCb.Collection<IScriptBehavior> = wdCb.Collection.create<IScriptBehavior>();
 
         public addChild(entityObject:EntityObject, scriptName:string, classInstance:IScriptBehavior){

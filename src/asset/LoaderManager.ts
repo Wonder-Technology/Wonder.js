@@ -3,6 +3,8 @@ module wd{
     export class LoaderManager{
         public static getInstance():any {}
 
+		private constructor(){}
+
         public assetCount:number = 0;
         public currentLoadedCount:number = 0;
 

@@ -3,6 +3,8 @@ module wd {
     export class ModelMatrixBatchInstanceDrawer extends OneToOneBatchInstanceDrawer{
         public static getInstance():any {}
 
+		private constructor(){super();}
+
         protected getUniformDataNameArray(program:Program):Array<string>{
             return ["u_mMatrix"];
         }

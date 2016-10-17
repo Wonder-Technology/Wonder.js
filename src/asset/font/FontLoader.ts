@@ -12,6 +12,8 @@ module wd{
     export class FontLoader extends Loader{
         public static getInstance():any {}
 
+		private constructor(){super();}
+
         private _familyName:string = null;
 
 

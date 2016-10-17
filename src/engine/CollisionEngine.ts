@@ -3,6 +3,8 @@ module wd{
     export class CollisionEngine extends ComponentContainer{
         public static getInstance():any {}
 
+		private constructor(){super();}
+
         protected list:wdCb.Collection<Collider>;
 
         private _collisionDetector:CollisionDetector = CollisionDetector.create();

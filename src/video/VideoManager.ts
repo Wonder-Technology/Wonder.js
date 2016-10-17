@@ -3,6 +3,8 @@ module wd{
     export class VideoManager{
         public static getInstance():any {}
 
+        private constructor(){}
+
         public play(id:string){
             var asset = VideoLoader.getInstance().get(id),
                 video:Video = null;

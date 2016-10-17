@@ -3,6 +3,8 @@ module wd {
     export class FntLoader extends Loader {
         public static getInstance():any {}
 
+		private constructor(){super();}
+
         private _parser:FntParser = FntParser.create();
 
         protected loadAsset(url:string, id:string):wdFrp.Stream;

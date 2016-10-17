@@ -3,6 +3,8 @@ module wd {
     export class MouseEventHandler extends DomEventHandler{
         public static getInstance():any {}
 
+		private constructor(){super();}
+
         public on(eventName:EEventName, handler:(event:MouseEvent) => void, priority:number);
         public on(dom:HTMLElement, eventName:EEventName, handler:(event:MouseEvent) => void, priority:number);
 

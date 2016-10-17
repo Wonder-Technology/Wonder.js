@@ -3,6 +3,8 @@ module wd{
     export class SpacePartitionEngine extends ComponentContainer{
         public static getInstance():any {}
 
+		private constructor(){super();}
+
         protected list:wdCb.Collection<SpacePartition>;
 
         public update(elapsed:number){

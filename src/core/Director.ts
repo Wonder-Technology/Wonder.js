@@ -11,6 +11,8 @@ module wd{
     export class Director{
         public static getInstance():any{};
 
+        private constructor(){}
+
         get gameTime(){
             return this._timeController.gameTime;
         }

@@ -3,6 +3,8 @@ module wd {
     export class OneToManyHardwareInstanceDrawer extends HardwareInstanceDrawer{
         public static getInstance():any {}
 
+		private constructor(){super();}
+
         private _geometry:InstanceGeometry = null;
 
         @require(function(geometry:InstanceGeometry, instanceBuffer:InstanceBuffer, program:Program, buffers:BufferContainer, drawMode:EDrawMode){

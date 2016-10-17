@@ -3,6 +3,8 @@ module wd{
     export class LODEngine extends ComponentContainer{
         public static getInstance():any {}
 
+		private constructor(){super();}
+
         protected list:wdCb.Collection<LOD>;
 
         public update(elapsed:number){

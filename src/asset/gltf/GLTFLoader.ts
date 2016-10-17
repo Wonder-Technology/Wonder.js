@@ -5,6 +5,8 @@ module wd{
     export class GLTFLoader extends Loader{
         public static getInstance():any {}
 
+		private constructor(){super();}
+
         private _arrayBufferMap:wdCb.Hash<any> = wdCb.Hash.create<any>();
         private _imageMap:wdCb.Hash<HTMLImageElement> = wdCb.Hash.create<HTMLImageElement>();
 

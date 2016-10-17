@@ -3,6 +3,8 @@ module wd {
     export class DomEventBinder extends EventBinder{
         public static getInstance():any {}
 
+		private constructor(){super();}
+
         public on(listener:{}|EventListener):void;
 
         public on(eventName:EEventName|string, handler:Function):void;

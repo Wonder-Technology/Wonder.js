@@ -3,6 +3,8 @@ module wd {
     export class DomEventDispatcher extends EventDispatcher{
         public static getInstance():any {}
 
+		private constructor(){super();}
+
         public trigger(event:Event):void;
         public trigger(dom:HTMLElement, event:Event):void;
 

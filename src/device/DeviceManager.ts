@@ -8,6 +8,8 @@ module wd {
     export class DeviceManager {
         public static getInstance():any {}
 
+        private constructor(){}
+
         /*!
          test order:
          scissor test -> depth test -> stencil test -> specular add -> fog -> alpha blend -> write mask

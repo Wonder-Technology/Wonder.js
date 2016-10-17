@@ -3,6 +3,8 @@ module wd {
     export class CustomEventHandler extends EventHandler{
         public static getInstance():any {}
 
+		private constructor(){super();}
+
         public on(eventName:string, handler:Function, priority:number):void;
         public on(target:EntityObject, eventName:string, handler:Function, priority:number):void;
 

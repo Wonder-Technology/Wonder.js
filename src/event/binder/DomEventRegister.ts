@@ -3,6 +3,8 @@ module wd {
     export class DomEventRegister extends EventRegister {
         public static getInstance():any {}
 
+		private constructor(){super();}
+
         protected listenerMap:DomEventListenerMap = DomEventListenerMap.create();
 
 

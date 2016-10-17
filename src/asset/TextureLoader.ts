@@ -3,6 +3,8 @@ module wd{
     export class TextureLoader extends Loader{
         public static getInstance():any {}
 
+		private constructor(){super();}
+
         protected loadAsset(url:string, id:string):wdFrp.Stream;
         protected loadAsset(url:Array<string>, id:string):wdFrp.Stream;
 

@@ -6,6 +6,8 @@ module wd {
     export class KeyboardEventHandler extends DomEventHandler{
         public static getInstance():any {}
 
+		private constructor(){super();}
+
         //public keyState:any = {};
 
         public on(eventName:EEventName, handler:(event:MouseEvent) => void, priority:number);

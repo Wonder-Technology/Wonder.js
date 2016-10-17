@@ -3,6 +3,8 @@ module wd {
     export class CustomEventDispatcher extends EventDispatcher{
         public static getInstance():any {}
 
+		private constructor(){super();}
+
         public trigger(event:Event):boolean;
 
         public trigger(event:Event, userData:any):boolean;
