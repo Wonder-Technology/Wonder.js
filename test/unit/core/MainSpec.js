@@ -70,6 +70,14 @@ describe("Main", function () {
 
                 expect(device.gl).toBeDefined();
             });
+            it("support pass #canvasId", function(){
+                Main.setConfig({
+                    canvasId:"#a"
+                });
+                Main.init();
+
+                expect(device.gl).toBeDefined();
+            });
         });
 
         describe("set context config data", function(){

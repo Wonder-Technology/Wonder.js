@@ -407,7 +407,7 @@ module wd {
             this.contextConfig = contextConfig;
 
             if(canvasId){
-                canvas = wdCb.DomQuery.create(`#${canvasId}`).get(0);
+                canvas = wdCb.DomQuery.create(this._getCanvasId(canvasId)).get(0);
             }
             else{
                 canvas = wdCb.DomQuery.create("<canvas></canvas>").prependTo("body").get(0);
@@ -498,6 +498,19 @@ module wd {
 
             this._clearColor = color;
         }
+
+        @ensure(function(id:string){
+            it("canvas id should be #xxx", () => {
+                expect(/#[^#]+/.test(id)).true;
+            });
+        })
+        private _getCanvasId(canvasId:string){
+            if(canvasId.indexOf('#') > -1){
+                return canvasId;
+            }
+
+            return `#${canvasId}`;
+        }
     }
 
     export enum EDepthFunction{
@@ -514,9 +527,9 @@ module wd {
     export enum ESide{
         NONE,
         BOTH,
-        //CCW
+            //CCW
         BACK,
-        //CW
+            //CW
         FRONT
     }
 
@@ -565,4 +578,3 @@ module wd {
         context:CanvasRenderingContext2D
     }
 }
-
