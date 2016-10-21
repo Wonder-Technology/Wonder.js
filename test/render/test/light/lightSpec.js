@@ -965,7 +965,15 @@ describe("light", function () {
             });
 
             it("test", function (done) {
-                tester.compareAt(1, "light/light_normalMap.png", done);
+
+
+
+
+                tester.compareAt({                                        frameIndex:1,
+                    partialCorrectImagePath:"light/light_normalMap.png",
+                    correctRate:0.8,
+                    done:done
+                });
             });
         });
 

@@ -160,6 +160,17 @@ describe("BasicTexture", function() {
             });
         });
 
+        it("if repeat texture and draw part of texture by changing texcoords in glsl, warn", function () {
+            testTool.openContractCheck(sandbox);
+            sandbox.stub(wd.Log, "warn");
+            texture.sourceRegion = wd.RectRegion.create(100, 0, 100, 200);
+            texture.sourceRegionMethod = wd.ETextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL;
+            texture.repeatRegion = wd.RectRegion.create(0, 0.5, 1, 2);
+
+            texture.update();
+
+            expect(wd.Log.warn).toCalledWith("the glsl->texCoord data may be wrong due to both repeating texture and drawing part of texture by changing texcoords in glsl");
+        });
         it("set pixelStorei", function(){
             texture.packAlignment = 2;
             texture.unpackAlignment = 4;

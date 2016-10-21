@@ -24,6 +24,7 @@
     "gulp-uglify": "^1.5.1",
     "gulp-util": "^3.0.7",
     "jasmine-before-all": "^0.1.0",
+    "jasmine-core": "^2.5.2",
     "jasmine-node": "^1.14.5",
     "karma": "^0.13.22",
     "karma-chrome-launcher": "^0.2.0",
