@@ -7,6 +7,12 @@
 //@ http://jsfromhell.com/classes/binary-parser [rev. #1]
 
 export = class BufferReader {
+    public static create(buffer:Buffer) {
+        var obj = new this(buffer);
+
+        return obj;
+    }
+
     constructor(buffer:Buffer) {
         this._buffer = buffer;
     };

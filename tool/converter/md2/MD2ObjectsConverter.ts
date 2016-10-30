@@ -26,7 +26,7 @@ export = class MD2ObjectsConverter {
             morphTargets:Array<any> = null,
             vertices:Array<number> = null,
             object:any = {},
-            reader:any = new BufferReader(fileBuffer),
+            reader:any = BufferReader.create(fileBuffer),
             info:any = {},
             header:any = {};
 
