@@ -40,6 +40,10 @@
 		"./obj/ObjectsConverter.ts",
 		"./obj/OBJToWD.ts",
 
-		"./Converter.ts"
+		"./Converter.ts",
+
+
+		"./gulp_task/convertIndices/Converter.ts",
+		"./gulp_task/convertIndices/Utils.ts"
 	]
 }
