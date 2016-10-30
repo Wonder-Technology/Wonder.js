@@ -43,7 +43,7 @@
     "typescript": "^2.0.3",
     "vinyl": "^0.4.6",
     "vinyl-bufferstream": "^1.0.1",
-    "wdcb": "^0.1.1",
+    "wdcb": "^0.1.4",
     "wdfrp": "^0.1.3"
   }
 }
