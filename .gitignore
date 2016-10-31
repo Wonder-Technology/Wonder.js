@@ -9,5 +9,3 @@ src/**/*.js
 test/coverage
 **/*forRunTest*
 tool/**/dist/
-tool/**/*.js.map
-tool/**/*.js
