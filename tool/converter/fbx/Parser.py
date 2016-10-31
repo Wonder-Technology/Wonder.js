@@ -1,6 +1,5 @@
 from helper import *
 from parsePrimitiveData import *
-from parseIndiceData import *
 from fbx import *
 
 class Parser(object):
