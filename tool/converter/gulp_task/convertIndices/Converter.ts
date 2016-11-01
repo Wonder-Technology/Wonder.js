@@ -86,6 +86,7 @@ export class Converter {
 
         this._duplicateVertexWithDifferentAttributeData(vertices, verticeIndices, texCoordIndices)
         this._duplicateVertexWithDifferentAttributeData(vertices, verticeIndices, normalIndices)
+        this._duplicateVertexWithDifferentAttributeData(vertices, verticeIndices, colorIndices)
     }
 
 
@@ -208,12 +209,15 @@ export class Converter {
             // face = Face3.create(aIndex, bIndex, cIndex);
 
             if (Utils.hasData(texCoordIndices) && Utils.hasData(sourceTexCoords)) {
-                this._setTwoComponentDataWhenParse(texCoords, sourceTexCoords, texCoordIndices, indexArr, verticeIndiceArr)
                 this._setTwoComponentDataWhenParse(texCoords, sourceTexCoords, texCoordIndices, indexArr, verticeIndiceArr);
             }
 
             if (Utils.hasData(normalIndices) && Utils.hasData(sourceNormals)) {
                 this._setThreeComponentDataWhenParse(normals, sourceNormals, normalIndices, indexArr, verticeIndiceArr);
+            }
+
+            if (Utils.hasData(colorIndices) && Utils.hasData(sourceColors)) {
+                this._setThreeComponentDataWhenParse(colors, sourceColors, colorIndices, indexArr, verticeIndiceArr);
             }
         }
 
@@ -226,13 +230,18 @@ export class Converter {
             attributes.TEXCOORD = texCoords;
         }
 
-        attributes.COLOR = sourceColors;
-
         if (!Utils.hasData(normalIndices)) {
             attributes.NORMAL = sourceNormals;
         }
         else {
             attributes.NORMAL = normals;
+        }
+
+        if (!Utils.hasData(colorIndices)) {
+            attributes.COLOR = sourceColors;
+        }
+        else {
+            attributes.COLOR = colors;
         }
 
         // this._setMorphTargets(source, source.verticeIndices, source.normalIndices);

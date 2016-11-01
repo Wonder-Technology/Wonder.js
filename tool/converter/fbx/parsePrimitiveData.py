@@ -17,18 +17,20 @@ def parsePrimitiveData(node):
 
     normals, normalIndices = getNormalData(mesh)
 
+    colors, colorIndices = getColorData(mesh)
+
 
     return {
         "attributes": {
             "POSITION": vertices,
             "NORMAL": normals,
-            "COLOR": [  ],
+            "COLOR": colors,
             "TEXCOORD": texCoords
         },
         "verticeIndices": verticeIndices,
         "normalIndices":normalIndices,
         "texCoordIndices":texCoordIndices,
-        "colorIndices":[]
+        "colorIndices":colorIndices
     }
 
 
@@ -182,13 +184,70 @@ def getNormalData(mesh):
     return values, indices
 
 
+def getColorData(mesh):
+    poly_count = mesh.GetPolygonCount()
+
+    indices = []
+
+    dict = {}
+
+    value = None
+    index = None
+
+    vertexId = 0
+
+    for p in range(poly_count):
+        poly_size = mesh.GetPolygonSize(p)
+
+        for v in range(poly_size):
+            control_point_index = mesh.GetPolygonVertex(p, v)
+            for l in range(mesh.GetElementVertexColorCount()):
+                data = mesh.GetElementVertexColor(l)
+
+                mappingMode = data.GetMappingMode()
+                referenceMode = data.GetReferenceMode()
+
+                if mappingMode == FbxLayerElement.eByControlPoint:
+                    if referenceMode == FbxLayerElement.eDirect:
+                        index = control_point_index
+                        value = data.GetDirectArray().GetAt(index)
+                    if referenceMode == FbxLayerElement.eIndexToDirect:
+                        index = data.GetIndexArray().GetAt(control_point_index)
+                        value = data.GetDirectArray().GetAt(index)
+                elif mappingMode == FbxLayerElement.eByPolygonVertex:
+                    if referenceMode == FbxLayerElement.eDirect:
+                        index = vertexId
+                        value = data.GetDirectArray().GetAt(index)
+                    if referenceMode == FbxLayerElement.eIndexToDirect:
+                        index = data.GetIndexArray().GetAt(vertexId)
+                        value = data.GetDirectArray().GetAt(index)
+                else:
+                    print("unsupported mapping mode")
+
+                indices.append(index)
+
+                # dict[generateColorKey(value)] = index
+                dict[index] = value
+
+            vertexId += 1
+
+    values = getValuesFromDict(dict, LayerKey.COLOR)
+
+    return values, indices
 
 
-def generateTexCoordKey(texCoord):
-    return (round(texCoord[0], 6), round(texCoord[1], 6))
 
-def generateNormalKey(normal):
-    return (round(normal[0], 6), round(normal[1], 6), round(normal[2], 6))
+
+
+# def generateTexCoordKey(texCoord):
+#     return (round(texCoord[0], 6), round(texCoord[1], 6))
+#
+# def generateNormalKey(normal):
+#     return (round(normal[0], 6), round(normal[1], 6), round(normal[2], 6))
+#
+# def generateColorKey(color):
+#     return getHex(color)
+
 
 def getValuesFromDict(dict, layerKey):
     values = []
@@ -199,7 +258,7 @@ def getValuesFromDict(dict, layerKey):
             values.append(value[0])
             values.append(value[1])
     elif layerKey == LayerKey.NORMAL or \
-            layerKey == LayerKey.COLOR:
+                    layerKey == LayerKey.COLOR:
         for key, value in sorted(dict.items(), key = operator.itemgetter(0)):
             # if(key < 1000):
             #     print (key)
@@ -208,5 +267,5 @@ def getValuesFromDict(dict, layerKey):
             values.append(value[1])
             values.append(value[2])
 
-    print (len(values))
+    # print (len(values))
     return values

@@ -15,19 +15,19 @@ describe("convertIndices->Converter", function(){
     });
 
     describe("convert", function(){
-        function buildJson(positions, texCoords, normals, verticeIndices, texCoordIndices, normalIndices) {
+        function buildJson(positions, texCoords, normals, colors, verticeIndices, texCoordIndices, normalIndices, colorIndices) {
             return {
                 "meshes": {
                     "RootNode": {
                         "primitives": [
                             {
                                 "attributes": {
-                                    "COLOR": [],
+                                    "COLOR": colors,
                                     "NORMAL": normals,
                                     "POSITION": positions,
                                     "TEXCOORD": texCoords
                                 },
-                                "colorIndices": [],
+                                "colorIndices": colorIndices,
                                 "normalIndices": normalIndices,
                                 "texCoordIndices": texCoordIndices,
                                 "verticeIndices": verticeIndices
@@ -59,6 +59,14 @@ describe("convertIndices->Converter", function(){
 
             return testTool.getValues(
                 primitive.attributes.NORMAL
+            )
+        }
+
+        function getColors(resultJson) {
+            var primitive = _getPrimitive(resultJson);
+
+            return testTool.getValues(
+                primitive.attributes.COLOR
             )
         }
 
@@ -109,11 +117,13 @@ describe("convertIndices->Converter", function(){
                         [1, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -4],
                         [1.0, 0.1, 0.1, 0.2, 0.2, 0.2, 0.3, 0.5],
                         [],
+                        [],
 
 
 
                         [0, 1, 2, 1, 3, 2],
                         [2, 0, 1, 2, 3, 1],
+                        [],
                         []
                     ));
 
@@ -174,9 +184,11 @@ describe("convertIndices->Converter", function(){
 [1, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -4],
 [1.0, 0.1, 0.1, 0.2, 0.2, 0.2, 0.3, 0.5],
                         [],
+                        [],
 
                         [0, 1, 2, 1, 3, 2, 1, 0, 2],
                         [2, 0, 1, 3, 3, 0, 3, 2, 2],
+                        [],
                         []
                     ));
 
@@ -221,10 +233,12 @@ describe("convertIndices->Converter", function(){
                             [1, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -4],
                             [1.0, 0.1, 0.1, 0.2, 0.2, 0.2, 0.3, 0.5],
                             [1, 1, 1, 6, -1, -2, 1, 2, -1, -2, 0, -4],
+                            [],
 
 
                             [0, 1, 2, 1, 3, 2, 1, 0, 2],
                             [2, 0, 1, 3, 3, 0, 3, 2, 2],
+                            [],
                             []
                         ));
 
@@ -250,11 +264,13 @@ describe("convertIndices->Converter", function(){
                             [1, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -4],
                             [1.0, 0.1, 0.1, 0.2, 0.2, 0.2, 0.3, 0.5],
                             [1, 1, 1, 6, -1, -2, 1, 2, -1, -2, 0, -4, 3, 5, 0.5],
+                            [],
 
 
                             [0, 1, 2, 1, 3, 2, 1, 0, 2],
                             [2, 0, 1, 3, 3, 0, 3, 2, 2],
-                            [2, 0, 1, 0, 3, 1, 4, 2, 1]
+                            [2, 0, 1, 0, 3, 1, 4, 2, 1],
+                            []
                         ));
 
 
@@ -270,6 +286,82 @@ describe("convertIndices->Converter", function(){
                                 1, 2, -1, 1, 1, 1, 6, -1, -2, -2, 0, -4, 1, 1, 1, 6, -1, -2, 6, -1, -2, 3, 5, 0.5
                             ]
                         );
+                    });
+                });
+
+                describe("test one vertex has multi different uvs and normals and colors", function(){
+                    it("test no colorIndice", function(){
+                        var normals = [1, 1, 1, 6, -1, -2, 1, 2, -1, -2, 0, -4];
+                        var colors = [4, -1, 2, 2, 2, 0, 4, 1, 1, -5, -1, -7]
+
+                        var result = converter.convert(buildJson(
+                            [1, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -4],
+                            [1.0, 0.1, 0.1, 0.2, 0.2, 0.2, 0.3, 0.5],
+                            normals,
+                            colors,
+
+
+                            [0, 1, 2, 1, 3, 2, 1, 0, 2],
+                            [2, 0, 1, 3, 3, 0, 3, 2, 2],
+                            [],
+                            []
+                        ));
+
+                        expect(getPositions(result)).toEqual(
+                            [
+                                1, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -4, 4, -1, -2, 3, 2, 3, 3, 2, 3
+                            ]
+                        )
+                        expect(getNormals(result)).toEqual(
+                            normals
+                        )
+
+                        expect(getColors(result)).toEqual(
+                            colors
+                        )
+
+                        expect(getIndices(result)).toEqual(
+                            [
+                                0, 1, 2, 4, 3, 5, 4, 0, 6
+                            ]
+                        )
+                    });
+                    it("test with colorIndice", function(){
+                        var result = converter.convert(buildJson(
+                            [1, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -4],
+                            [1.0, 0.1, 0.1, 0.2, 0.2, 0.2, 0.3, 0.5],
+                            [1, 1, 1, 6, -1, -2, 1, 2, -1, -2, 0, -4, 3, 5, 0.5],
+                            [4, -1, 2, 2, 2, 0, 4, 1, 1, -5, -1, -7, 0.1, 2.2, 3],
+
+
+                            [0, 1, 2, 1, 3, 2, 1, 0, 2],
+                            [2, 0, 1, 3, 3, 0, 3, 2, 2],
+                            [2, 0, 1, 0, 3, 1, 4, 2, 1],
+                            [2, 4, 1, 0, 3, 1, 4, 2, 1]
+                        ));
+
+                        expect(getPositions(result)).toEqual(
+                            [
+                                1, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -4, 4, -1, -2, 3, 2, 3, 3, 2, 3, 4, -1, -2
+                            ]
+                        )
+                        expect(getNormals(result)).toEqual(
+                            [
+                                1, 2, -1, 1, 1, 1, 6, -1, -2, -2, 0, -4, 1, 1, 1, 6, -1, -2, 6, -1, -2, 3, 5, 0.5
+                            ]
+                        )
+
+                        expect(getColors(result)).toEqual(
+                            [
+                                4, 1, 1, 0.1, 2.2, 3, 2, 2, 0, -5, -1, -7, 4, -1, 2, 2, 2, 0, 2, 2, 0, 0.1, 2.2, 3
+                            ]
+                        )
+
+                        expect(getIndices(result)).toEqual(
+                            [
+                                0, 1, 2, 4, 3, 5, 7, 0, 6
+                            ]
+                        )
                     });
                 });
             });
