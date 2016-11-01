@@ -6,26 +6,6 @@ class Parser(object):
     def __init__(self, converter):
         self._converter = converter
 
-    # export interface IWDMesh extends IWDChildRootProperty {
-    #     primitives: Array<IWDMeshPrimitive>;
-    # }
-    #
-    # export interface IWDMeshPrimitive {
-    #     attributes: IWDAttribute;
-    # indices?: string;
-    # material: string;
-    # mode: number;
-    # }
-    #
-    # export interface IWDAttribute {
-    #     POSITION:string;
-    # NORMAL?:string;
-    # TEXCOORD_0?:string
-    # COLOR?:string;
-    # // JOINT?:string;
-    # // WEIGH?:string;
-    # }
-
     def parse(self, scene, filename):
         # TODO parse nodes, meshes(geometry data)
 

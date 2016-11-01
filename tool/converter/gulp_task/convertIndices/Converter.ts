@@ -2,14 +2,52 @@ import wdCb = require("wdcb");
 
 import Utils = require("./Utils")
 
-export = class Converter {
+import chai = require("chai");
+
+import Vector3 = require("../../../ts/Vector3");
+
+import contract = require("../../../ts/definition/typescript/decorator/contract");
+
+var it = contract.it,
+    requireInNodejs = contract.requireInNodejs;
+
+var expect = chai.expect;
+
+export class Converter {
     public static create() {
     	var obj = new this();
 
     	return obj;
     }
 
+    /*!
+    the texCoordIndices, normalIndices may not be corresponding to verticeIndices(so need duplicate vertex)
+     */
+    @requireInNodejs(function(sourceJson:SourceJsonData){
+        it("each indice's count should be equal", () => {
+            for(let key in sourceJson.meshes) {
+                if (sourceJson.meshes.hasOwnProperty(key)) {
+                    let mesh = sourceJson.meshes[key];
 
+                    for (let primitiveData of mesh.primitives) {
+                        let len = primitiveData.verticeIndices.length;
+
+                        if (primitiveData.texCoordIndices.length > 0) {
+                            expect(primitiveData.texCoordIndices.length).equal(len);
+                        }
+
+                        if (primitiveData.normalIndices.length > 0) {
+                            expect(primitiveData.normalIndices.length).equal(len);
+                        }
+
+                        if (primitiveData.colorIndices.length > 0) {
+                            expect(primitiveData.colorIndices.length).equal(len);
+                        }
+                    }
+                }
+            }
+        });
+    })
     public convert(sourceJson:SourceJsonData):TargetJsonData {
         var targetJson:TargetJsonData = <TargetJsonData>{
             meshes: {
@@ -22,7 +60,7 @@ export = class Converter {
                     newPrimitives:Array<TargetPrimitive> = [];
 
                 for(let primitiveData of mesh.primitives){
-                    this._duplicateVertexWithDifferentTexCoords(primitiveData);
+                    this._duplicateVertex(primitiveData);
                     newPrimitives.push(this._parseObjectFromIndices(primitiveData));
                     // this._removeRebundantIndiceData(primitiveData);
                 }
@@ -37,46 +75,47 @@ export = class Converter {
         return targetJson;
     }
 
-    //todo handle "same vertex different normals" situation?
-    private _duplicateVertexWithDifferentTexCoords({
+    private _duplicateVertex({
         attributes,
         verticeIndices,
         normalIndices,
         texCoordIndices,
         colorIndices
-    }) {
+    }){
+        var vertices = attributes.POSITION;
+
+        this._duplicateVertexWithDifferentAttributeData(vertices, verticeIndices, texCoordIndices)
+        this._duplicateVertexWithDifferentAttributeData(vertices, verticeIndices, normalIndices)
+    }
+
+
+    private _duplicateVertexWithDifferentAttributeData(vertices:Array<number>, verticeIndices:Array<number>, dataIndices:Array<number>) {
         var arr = [],
             container = wdCb.Hash.create<wdCb.Collection<Array<number>>>();
-            // verticeIndices = primitiveData.verticeIndices,
-            // texCoordIndices = primitiveData.texCoordIndices;
 
-        if (!Utils.hasData(texCoordIndices)) {
+        if (!Utils.hasData(dataIndices)) {
             return;
         }
 
         for (var i = 0, len = verticeIndices.length; i < len; i++) {
             var verticeIndex = verticeIndices[i];
 
-            if (this._isSameVertexWithDifferentTexCoordsByCompareToFirstOne(arr, texCoordIndices[i], verticeIndex)) {
-                // console.log("a")
-
-                //todo resume!
-                if (this._isTexCoordIndiceEqualTheOneOfAddedVertex(container, verticeIndex, texCoordIndices[i])) {
-                    verticeIndices[i] = this._getVerticeIndexOfAddedVertexByFindContainer(container, verticeIndex, texCoordIndices[i]);
+            if (this._isSameVertexWithDifferentDataByCompareToFirstOne(arr, dataIndices[i], verticeIndex)) {
+                if (this._isDataIndiceEqualTheOneOfAddedVertex(container, verticeIndex, dataIndices[i])) {
+                    verticeIndices[i] = this._getVerticeIndexOfAddedVertexByFindContainer(container, verticeIndex, dataIndices[i]);
                 }
                 else {
-                    this._addVertexData(attributes, verticeIndices, normalIndices, texCoordIndices, colorIndices, container, verticeIndex, i);
+                    this._addVertexData(vertices, verticeIndices, dataIndices, container, verticeIndex, i);
                 }
 
                 verticeIndex = verticeIndices[i];
             }
 
-
-            arr[verticeIndex] = texCoordIndices[i];
+            arr[verticeIndex] = dataIndices[i];
         }
     }
 
-    private _isTexCoordIndiceEqualTheOneOfAddedVertex(container, targetVerticeIndex, targetTexCoordIndex) {
+    private _isDataIndiceEqualTheOneOfAddedVertex(container, targetVerticeIndex, targetTexCoordIndex) {
         var data = container.getChild(String(targetVerticeIndex));
 
         if (!data) {
@@ -91,26 +130,20 @@ export = class Converter {
     // @require(function (container, targetVerticeIndex, targetTexCoordIndex) {
     //     assert(this._isTexCoordIndiceEqualTheOneOfAddedVertex(container, targetVerticeIndex, targetTexCoordIndex), Log.info.FUNC_SHOULD("texCoordIndex", "equal the one of added vertex"))
     // })
-    private _getVerticeIndexOfAddedVertexByFindContainer(container, targetVerticeIndex, targetTexCoordIndex) {
+    private _getVerticeIndexOfAddedVertexByFindContainer(container, targetVerticeIndex, targetDataIndex) {
         var data = container.getChild(String(targetVerticeIndex));
 
-        return data.findOne(([texCoordIndex, verticeIndex]) => {
-            return texCoordIndex === targetTexCoordIndex;
+        return data.findOne(([dataIndex, verticeIndex]) => {
+            return dataIndex === targetDataIndex;
         })[1];
     }
 
-    private _isSameVertexWithDifferentTexCoordsByCompareToFirstOne(arr, texCoordIndex, verticeIndex) {
+    private _isSameVertexWithDifferentDataByCompareToFirstOne(arr, texCoordIndex, verticeIndex) {
         return arr[verticeIndex] !== void 0 && arr[verticeIndex] !== texCoordIndex;
     }
 
-    private _addVertexData(attributes, verticeIndices, normalIndices, texCoordIndices, colorIndices, container, verticeIndex, index) {
-        // var verticeIndices = primitiveData.verticeIndices,
-        //     texCoordIndices = primitiveData.texCoordIndices,
-        //     normalIndices = primitiveData.normalIndices,
-            var vertices = attributes.POSITION,
-            normals = attributes.NORMAL,
-            // morphTargets = this._findData(object, "morphTargets"),
-            verticeIndexOfAddedVertex = null;
+    private _addVertexData(vertices:Array<number>, verticeIndices:Array<number>, dataIndices:Array<number>, container:wdCb.Hash<wdCb.Collection<Array<number>>>, verticeIndex:number, index:number) {
+        var verticeIndexOfAddedVertex = null;
 
         this._addThreeComponent(vertices, verticeIndex);
 
@@ -129,60 +162,20 @@ export = class Converter {
         //     }
         // }
 
-        // if (GeometryUtils.hasData(normals)) {
-        //     this._addDuplicateNormalOfAddedVertex(normals, normalIndices, index, verticeIndex);
-        //
-        //     if (GeometryUtils.hasData(normalIndices)) {
-        //         normalIndices[index] = verticeIndexOfAddedVertex;
-        //     }
-        // }
-
-        //todo add duplicated colors
-
-        container.appendChild(String(verticeIndex), [texCoordIndices[index], verticeIndexOfAddedVertex]);
+        container.appendChild(String(verticeIndex), [dataIndices[index], verticeIndexOfAddedVertex]);
     }
 
-    private _addThreeComponent(data:Array<number>, index:number);
-    // private _addThreeComponent(targetData:Array<number>, sourceData:Array<number>, index:number);
-
-    private _addThreeComponent(...args) {
-        // if (args.length === 2) {
-            let data = args[0],
-                index = args[1];
-
-            data.push(
-                data[index * 3],
-                data[index * 3 + 1],
-                data[index * 3 + 2]
-            );
-        // }
-        // else {
-        //     let targetData = args[0],
-        //         sourceData = args[1],
-        //         index = args[2];
-        //
-        //     targetData.push(
-        //         sourceData[index * 3],
-        //         sourceData[index * 3 + 1],
-        //         sourceData[index * 3 + 2]
-        //     );
-        // }
+    private _addThreeComponent(data:Array<number>, index:number) {
+        data.push(
+            data[index * 3],
+            data[index * 3 + 1],
+            data[index * 3 + 2]
+        );
     }
 
     private _getVerticeIndexOfAddedVertex(vertices) {
         return vertices.length / 3 - 1;
     }
-
-    // private _addDuplicateNormalOfAddedVertex(normals, normalIndices, index, oldVerticeIndex) {
-    //     if (!GeometryUtils.hasData(normalIndices)) {
-    //         this._addThreeComponent(normals, normals, oldVerticeIndex);
-    //
-    //         return;
-    //     }
-    //
-    //
-    //     this._addThreeComponent(normals, normals, normalIndices[index]);
-    // }
 
     private _parseObjectFromIndices({
         attributes,
@@ -193,7 +186,8 @@ export = class Converter {
     }) {
         var vertices = [],
             texCoords = [],
-            faces = [],
+            normals = [],
+            // faces = [],
             // face:Face3 = null,
             colors = [],
             sourceVertices = attributes.POSITION,
@@ -214,14 +208,13 @@ export = class Converter {
             // face = Face3.create(aIndex, bIndex, cIndex);
 
             if (Utils.hasData(texCoordIndices) && Utils.hasData(sourceTexCoords)) {
-                this._setTexCoord(texCoords, sourceTexCoords, texCoordIndices, indexArr, verticeIndiceArr);
+                this._setTwoComponentDataWhenParse(texCoords, sourceTexCoords, texCoordIndices, indexArr, verticeIndiceArr)
+                this._setTwoComponentDataWhenParse(texCoords, sourceTexCoords, texCoordIndices, indexArr, verticeIndiceArr);
             }
 
-            // if (GeometryUtils.hasData(sourceNormals)) {
-            //     this._setNormal(face.vertexNormals, sourceNormals, source.normalIndices, indexArr, verticeIndiceArr);
-            // }
-
-            // faces.push(face);
+            if (Utils.hasData(normalIndices) && Utils.hasData(sourceNormals)) {
+                this._setThreeComponentDataWhenParse(normals, sourceNormals, normalIndices, indexArr, verticeIndiceArr);
+            }
         }
 
         attributes.POSITION = sourceVertices;
@@ -234,7 +227,13 @@ export = class Converter {
         }
 
         attributes.COLOR = sourceColors;
-        // source.faces = faces;
+
+        if (!Utils.hasData(normalIndices)) {
+            attributes.NORMAL = sourceNormals;
+        }
+        else {
+            attributes.NORMAL = normals;
+        }
 
         // this._setMorphTargets(source, source.verticeIndices, source.normalIndices);
 
@@ -244,20 +243,73 @@ export = class Converter {
         }
     }
 
-    private _setTexCoord(targetTexCoords:Array<number>, sourceTexCoords:Array<number>, texCoordIndices:Array<number>, indexArr:Array<number>, verticeIndiceArr:Array<number>) {
-        var texCoordIndice1 = null,
-            texCoordIndice2 = null,
-            texCoordIndice3 = null,
+    private _setTwoComponentDataWhenParse(targetDatas:Array<number>, sourceDatas:Array<number>, dataIndices:Array<number>, indexArr:Array<number>, verticeIndiceArr:Array<number>) {
+        var dataIndice1 = null,
+            dataIndice2 = null,
+            dataIndice3 = null,
             [index1, index2, index3] = indexArr,
             [aIndex, bIndex, cIndex] = verticeIndiceArr;
 
-        texCoordIndice1 = texCoordIndices[index1];
-        texCoordIndice2 = texCoordIndices[index2];
-        texCoordIndice3 = texCoordIndices[index3];
+        dataIndice1 = dataIndices[index1];
+        dataIndice2 = dataIndices[index2];
+        dataIndice3 = dataIndices[index3];
 
-        this._setTwoComponentData(targetTexCoords, sourceTexCoords, aIndex, texCoordIndice1);
-        this._setTwoComponentData(targetTexCoords, sourceTexCoords, bIndex, texCoordIndice2);
-        this._setTwoComponentData(targetTexCoords, sourceTexCoords, cIndex, texCoordIndice3);
+        this._setTwoComponentData(targetDatas, sourceDatas, aIndex, dataIndice1);
+        this._setTwoComponentData(targetDatas, sourceDatas, bIndex, dataIndice2);
+        this._setTwoComponentData(targetDatas, sourceDatas, cIndex, dataIndice3);
+    }
+
+    private _setThreeComponentDataWhenParse(targetDatas:Array<number>, sourceDatas:Array<number>, dataIndices:Array<number>, indexArr:Array<number>, verticeIndiceArr:Array<number>) {
+        var dataIndice1 = null,
+            dataIndice2 = null,
+            dataIndice3 = null,
+            [index1, index2, index3] = indexArr,
+            [aIndex, bIndex, cIndex] = verticeIndiceArr;
+
+        dataIndice1 = dataIndices[index1];
+        dataIndice2 = dataIndices[index2];
+        dataIndice3 = dataIndices[index3];
+
+        this._setThreeComponentData(targetDatas, sourceDatas, aIndex, dataIndice1);
+        this._setThreeComponentData(targetDatas, sourceDatas, bIndex, dataIndice2);
+        this._setThreeComponentData(targetDatas, sourceDatas, cIndex, dataIndice3);
+    }
+
+    private _setThreeComponentData(targetData, sourceData, index, indice) {
+        targetData[index * 3] = sourceData[indice * 3];
+        targetData[index * 3 + 1] = sourceData[indice * 3 + 1];
+        targetData[index * 3 + 2] = sourceData[indice * 3 + 2];
+    }
+
+    private _addNormalData(targetNormals:wdCb.Collection<any>|Array<number>, sourceNormals:Array<number>, normalIndiceArr:Array<number>) {
+        let [aIndex, bIndex, cIndex] = normalIndiceArr;
+
+        if (targetNormals instanceof wdCb.Collection) {
+            targetNormals.addChildren(
+                [
+                    this._getThreeComponentData(sourceNormals, aIndex),
+                    this._getThreeComponentData(sourceNormals, bIndex),
+                    this._getThreeComponentData(sourceNormals, cIndex)
+                ]
+            );
+        }
+        else {
+            let normals = <Array<number>>targetNormals;
+
+            for (let v of [this._getThreeComponentData(sourceNormals, aIndex), this._getThreeComponentData(sourceNormals, bIndex), this._getThreeComponentData(sourceNormals, cIndex)]) {
+                normals.push(v.x, v.y, v.z);
+            }
+        }
+    }
+
+    private _getThreeComponentData(sourceData:Array<number>, index:number) {
+        var startIndex = 3 * index;
+
+        return Vector3.create(
+            sourceData[startIndex],
+            sourceData[startIndex + 1],
+            sourceData[startIndex + 2]
+        );
     }
 
     private _setTwoComponentData(targetData, sourceData, index, indice) {

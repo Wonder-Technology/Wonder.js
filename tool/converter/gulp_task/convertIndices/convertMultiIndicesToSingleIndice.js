@@ -13,7 +13,7 @@ gulp.task("convertMultiIndicesToSingleIndice", function (done) {
 
     var destFile = "../../mine/result.json";
 
-    var Converter = require("../../dist/converter/gulp_task/convertIndices/Converter");
+    var Converter = require("../../dist/converter/gulp_task/convertIndices/Converter").Converter;
 
     var converter = Converter.create();
 
