@@ -2,541 +2,1416 @@ describe("WDParser", function () {
     var sandbox = null;
     var parser = null;
     var json = null;
+    var Utils = wd.WDUtils;
+    var arrayBufferMap;
+    var imageMap;
 
     function setJson(data) {
         cloneTool.extend(json, data);
     }
 
-    function setObject(data) {
-        json.objects.push(data);
+    function createColor(valueArr){
+        var color = wd.Color.create();
+
+        color.r = valueArr[0];
+        color.g = valueArr[1];
+        color.b = valueArr[2];
+
+        if(valueArr.length === 4){
+            color.a = valueArr[3];
+        }
+
+        return color;
     }
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
         parser = new wd.WDParser();
 
+
+
+        arrayBufferMap = wdCb.Hash.create();
+        imageMap = wdCb.Hash.create();
+
         json = {
-            scene: {},
-            materials: {},
-            objects: []
+            scenes: {
+            }
         }
+
+        testTool.openContractCheck(sandbox);
     });
     afterEach(function () {
         sandbox.restore();
     });
+    
+    // describe("parse metadata", function(){
+    //     beforeEach(function(){
+    //
+    //     });
+    //
+    //     it("if json.asset not exist, not parse", function(){
+    //         var data = parser.parse(json, arrayBufferMap, imageMap);
+    //
+    //         expect(data.metadata).toBeUndefined();
+    //     });
+    //
+    //     describe("else", function(){
+    //         it("parse version,genertor,premultipliedAlpha, profile data", function(){
+    //             setJson({
+    //                 asset:{
+    //                  "generator": "collada2gltf@ceec062e3d5793f2f249f53cbd843aee382ad40b",
+    //                 "premultipliedAlpha": true,
+    //                 "profile": {
+    //                     "api": "WebGL",
+    //                     "version": "1.0.2"
+    //                 },
+    //                 "version": 1
+    //                 }
+    //             })
+    //
+    //             var data = parser.parse(json, arrayBufferMap, imageMap);
+    //
+    //             expect(data.metadata).toEqual(json.asset);
+    //         });
+    //     });
+    // });
 
-    describe("parse scene", function () {
-        it("parse ambientColor", function () {
-            setJson({
-                scene: {
-                    ambientColor: [1.0, 0, 0.5]
-                }
-            })
+    describe("parse objects", function(){
+        var vertices,texCoords,indices;
 
-            var result = parser.parse(json);
-
-            expect(result.scene.ambientColor).toEqual(wd.Color.create("rgb(1.0,0.0,0.5)"));
-        });
-    });
-
-    describe("parse material", function () {
-        it("parse diffuseColor,specularColor", function () {
-            setJson({
-                materials: {
-                    a: {
-                        diffuseColor: [0, 0, 1],
-                        specularColor: [0.1, 0.2, 1.0]
-                    },
-                    b: {
-                        diffuseColor: [0, 0, 1],
-                        specularColor: [0.1, 0.2, 1.0]
-                    }
-                }
-            })
-
-            var result = parser.parse(json);
-
-            expect(result.materials.getChild("a").diffuseColor).toEqual(wd.Color.create("rgb(0.0,0.0,1.0)"));
-            expect(result.materials.getChild("a").specularColor).toEqual(wd.Color.create("rgb(0.1,0.2,1.0)"));
-            expect(result.materials.getChild("b").diffuseColor).toEqual(wd.Color.create("rgb(0.0,0.0,1.0)"));
-            expect(result.materials.getChild("b").specularColor).toEqual(wd.Color.create("rgb(0.1,0.2,1.0)"));
-        });
-        it("color's rgb can exceed 1", function () {
-            setJson({
-                materials: {
-                    a: {
-                        diffuseColor: [2, 2, 2],
-                        specularColor: [10, 10, 10]
-                    }
-                }
-            })
-
-            var result = parser.parse(json);
-
-            expect(result.materials.getChild("a").diffuseColor).toEqual(wd.Color.create("rgb(2.0,2.0,2.0)"));
-            expect(result.materials.getChild("a").specularColor.r).toEqual(10);
-            expect(result.materials.getChild("a").specularColor.g).toEqual(10);
-            expect(result.materials.getChild("a").specularColor.b).toEqual(10);
-        });
-    });
-
-    describe("parseObject", function () {
-        function getObject(result, index) {
-            if (result.objects instanceof wdCb.Collection) {
-                return result.objects.getChild(index);
+        function getAttributeData() {
+            // {
+            //                         "NORMAL": "accessor_3",
+            //                         "POSITION": "accessor_2",
+            //                         "TEXCOORD": "accessor_4"
+            //                     }
+            return {
+                "NORMAL": [],
+                "POSITION": vertices,
+                "TEXCOORD": texCoords
             }
-
-            return result.objects[index];
         }
 
-        beforeEach(function () {
+        function getIndiceData() {
+            // accessor_1
+            return indices;
+        }
 
+        function judgeGeometryDataEqual(source, target, size){
+            var sourceData = [];
+
+            for(var i = 0, len = source.length; i < len; i++){
+                sourceData.push(source[i]);
+            }
+
+            expect(sourceData).toEqual(target);
+        }
+
+        beforeEach(function(){
+            setJson({
+                "scene": "defaultScene",
+                "scenes": {
+                    "defaultScene": {
+                        "nodes": [
+                            "node_1"
+                        ]
+                    }
+                },
+
+                // "buffers": {
+                //     "box": {
+                //         "byteLength": 840,
+                //         "type": "arraybuffer",
+                //         //"uri": "box.bin"
+                //         "uri": "data:application/octet-stream;base64,AAABAAIAAwACAAEABAAFAAYABwAGAAUACAAJAAoACwAKAAkADAANAA4ADwAOAA0AEAARABIAEwASABEAFAAVABYAFwAWABUAAAAAvwAAAL8AAAA/AAAAPwAAAL8AAAA/AAAAvwAAAD8AAAA/AAAAPwAAAD8AAAA/AAAAPwAAAL8AAAA/AAAAvwAAAL8AAAA/AAAAPwAAAL8AAAC/AAAAvwAAAL8AAAC/AAAAPwAAAD8AAAA/AAAAPwAAAL8AAAA/AAAAPwAAAD8AAAC/AAAAPwAAAL8AAAC/AAAAvwAAAD8AAAA/AAAAPwAAAD8AAAA/AAAAvwAAAD8AAAC/AAAAPwAAAD8AAAC/AAAAvwAAAL8AAAA/AAAAvwAAAD8AAAA/AAAAvwAAAL8AAAC/AAAAvwAAAD8AAAC/AAAAvwAAAL8AAAC/AAAAvwAAAD8AAAC/AAAAPwAAAL8AAAC/AAAAPwAAAD8AAAC/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAgL8AAAAAAAAAAAAAgL8AAAAAAAAAAAAAgL8AAAAAAAAAAAAAgL8AAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAAAAAAAAgD8AAAAAAAAAAAAAgD8AAAAAAAAAAAAAgD8AAAAAAAAAAAAAgD8AAAAAAACAvwAAAAAAAAAAAACAvwAAAAAAAAAAAACAvwAAAAAAAAAAAACAvwAAAAAAAAAAAAAAAAAAAAAAAIC/AAAAAAAAAAAAAIC/AAAAAAAAAAAAAIC/AAAAAAAAAAAAAIC/AACAPgAAAAAAAIA+oKqqPgAAAD8AAAAAAAAAP6Cqqj4AAIA+oKqqPgAAAACgqqo+AACAPrCqKj8AAAAAsKoqPwAAAD+gqqo+AACAPqCqqj4AAAA/sKoqPwAAgD6wqio/AABAP6Cqqj4AAAA/oKqqPgAAQD+wqio/AAAAP7CqKj8AAIA/oKqqPgAAQD+gqqo+AACAP7CqKj8AAEA/sKoqPwAAgD4AAIA/AAAAPwAAgD8AAIA+sKoqPwAAAD+wqio/"
+                //     }
+                // },
+                // "bufferViews": {
+                //     "bufferView_1": {
+                //         "buffer": "box",
+                //         "byteLength": 72,
+                //         "byteOffset": 0,
+                //         "target": 34963
+                //     },
+                //     "bufferView_2": {
+                //         "buffer": "box",
+                //         "byteLength": 768,
+                //         "byteOffset": 72,
+                //         "target": 34962
+                //     }
+                // },
+                // "accessors": {
+                //     "accessor_1": {
+                //         "bufferView": "bufferView_1",
+                //         "byteOffset": 0,
+                //         "byteStride": 0,
+                //         "componentType": 5123,
+                //         "count": 36,
+                //         "type": "SCALAR"
+                //     },
+                //     "accessor_2": {
+                //         "bufferView": "bufferView_2",
+                //         "byteOffset": 0,
+                //         "byteStride": 12,
+                //         "componentType": 5126,
+                //         "count": 24,
+                //         "max": [
+                //             0.5,
+                //             0.5,
+                //             0.5
+                //         ],
+                //         "min": [
+                //             -0.5,
+                //             -0.5,
+                //             -0.5
+                //         ],
+                //         "type": "VEC3"
+                //     },
+                //     "accessor_3": {
+                //         "bufferView": "bufferView_2",
+                //         "byteOffset": 288,
+                //         "byteStride": 12,
+                //         "componentType": 5126,
+                //         "count": 24,
+                //         "max": [
+                //             1,
+                //             1,
+                //             1
+                //         ],
+                //         "min": [
+                //             -1,
+                //             -1,
+                //             -1
+                //         ],
+                //         "type": "VEC3"
+                //     },
+                //     "accessor_4": {
+                //         "bufferView": "bufferView_2",
+                //         "byteOffset": 576,
+                //         "byteStride": 8,
+                //         "componentType": 5126,
+                //         "count": 24,
+                //         "max": [
+                //             1,
+                //             1
+                //         ],
+                //         "min": [
+                //             0,
+                //             0
+                //         ],
+                //         "type": "VEC2"
+                //     }
+                // },
+
+                // "materials": {
+                //     "Effect-Red": {
+                //         "name": "Red"
+                //     }
+                // }
+            })
+
+            // sandbox.stub(arrayBufferMap, "getChild").returns(Utils.decodeArrayBuffer(json.buffers.box.uri));
+
+            vertices =[ -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5 ];
+
+            texCoords =[ 0.25, 1, 0.25, 0.6666669845581055, 0.5, 1, 0.5, 0.6666669845581055, 0.25, 0.6666669845581055, 0, 0.6666669845581055, 0.25, 0.33333301544189453, 0, 0.33333301544189453, 0.5, 0.6666669845581055, 0.25, 0.6666669845581055, 0.5, 0.33333301544189453, 0.25, 0.33333301544189453, 0.75, 0.6666669845581055, 0.5, 0.6666669845581055, 0.75, 0.33333301544189453, 0.5, 0.33333301544189453, 1, 0.6666669845581055, 0.75, 0.6666669845581055, 1, 0.33333301544189453, 0.75, 0.33333301544189453, 0.25, 0, 0.5, 0, 0.25, 0.33333301544189453, 0.5, 0.33333301544189453 ];
+            indices = [ 0, 1, 2, 3, 2, 1, 4, 5, 6, 7, 6, 5, 8, 9, 10, 11, 10, 9, 12, 13, 14, 15, 14, 13, 16, 17, 18, 19, 18, 17, 20, 21, 22, 23, 22, 21 ];
         });
 
-        describe("parse vertices,morphTargets->vertices,colors,uvs,indices(add duplicate vertexData to make it independent)", function () {
-            describe("duplicate the vertex which has different texture coordinates", function () {
-                it("test one vertex has two different uvs", function() {
-                    setObject({
-                        name: "a",
-                        vertices: [1, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -4],
-                        morphTargets: [
-                            {
-                                name: "stand001",
-                                vertices: [1, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -4]
-                            },
-                            {
-                                name: "stand002",
-                                vertices: [3, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -4]
-                            }
+        it("parse current scene->nodes", function(){
+            setJson({
+                "scene": "defaultScene",
+                "scenes": {
+                    "defaultScene": {
+                        "nodes": [
+                            "node_2",
+                            "node_3"
+                        ]
+                    }
+                },
+                "nodes": {
+                    "node_1": {
+                        "children": [
                         ],
-                        colors: [],
-                        uvs: [1.0, 0.1, 0.1, 0.2, 0.2, 0.2, 0.3, 0.5],
-                        verticeIndices: [0, 1, 2, 1, 3, 2],
-                        uvIndices: [2, 0, 1, 2, 3, 1]
-                    })
-                    var result = parser.parse(json);
-
-                    expect(getObject(result, 0).vertices).toEqual(
-                        [
-                            1, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -4,
-                            4, -1, -2
-                        ]
-                    )
-
-                    expect(getObject(result, 0).morphTargets.getChild("stand").getChild(0)).toEqual(
-                        [
-                            1, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -4,
-                            4, -1, -2
-                        ]
-                    )
-                    expect(getObject(result, 0).morphTargets.getChild("stand").getChild(1)).toEqual(
-                        [
-                            3, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -4,
-                            4, -1, -2
-                        ]
-                    )
-                    expect(getObject(result, 0).morphNormals.getCount()).toEqual(0);
-
-                    expect(testTool.getValues(getObject(result, 0).uvs)).toEqual(
-                        [
-                            0.2, 0.2, 1, 0.1, 0.1, 0.2, 0.3, 0.5,
-                            0.2, 0.2
-                        ]
-                    )
-                    geometryTool.judgeFaceIndices(getObject(result, 0).faces, [
-                        0, 1, 2, 4, 3, 2
-                    ]);
-                });
-                it("test one vertex has multi different uvs(only add vertex that has different uvs, not add it which's corresponding uvIndice is the same as the prev one)", function() {
-                    setObject({
-                        name: "a",
-                        vertices: [1, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -4],
-                        morphTargets: [
-                            {
-                                name: "stand001",
-                                vertices: [1, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -4]
-                            },
-                            {
-                                name: "stand002",
-                                vertices: [3, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -4]
-                            }
+                        "name": "1"
+                    },
+                    "node_2": {
+                        "children": [
                         ],
-                        colors: [],
-                        uvs: [1.0, 0.1, 0.1, 0.2, 0.2, 0.2, 0.3, 0.5],
-                        verticeIndices: [0, 1, 2, 1, 3, 2, 1, 0, 2],
-                        uvIndices:      [2, 0, 1, 3, 3, 0, 3, 2, 2]
-                    })
-                    var result = parser.parse(json);
+                        "name": "2"
+                    },
+                    "node_3": {
+                        "children": [
+                        ],
+                        "name": "3"
+                    }
+                }
+            })
 
-                    expect(getObject(result, 0).vertices).toEqual(
-                        [
-                            1, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -4,
-                            4, -1, -2, 3, 2, 3, 3, 2, 3
+            var data = parser.parse(json, arrayBufferMap, wdCb.Hash.create());
+
+            expect(data.objects.getCount()).toEqual(2);
+            var object1 = data.objects.getChild(0);
+            var object2 = data.objects.getChild(1);
+            expect(object1.name).toEqual("2");
+            expect(object1.id).toEqual("node_2");
+            expect(object2.name).toEqual("3");
+            expect(object2.id).toEqual("node_3");
+        });
+
+        it("test id", function () {
+            setJson({
+                "scenes": {
+                    "defaultScene": {
+                        "nodes": [
+                            "node_1",
+                            "node_2"
                         ]
-                    )
-
-                    expect(getObject(result, 0).morphTargets.getChild("stand").getChild(0)).toEqual(
-                        [
-                            1, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -4,
-                            4, -1, -2, 3, 2, 3, 3, 2, 3
+                    }
+                },
+                "nodes": {
+                    "node_1": {
+                        "children": [
+                            "node_11"
                         ]
-                    )
-                    expect(getObject(result, 0).morphTargets.getChild("stand").getChild(1)).toEqual(
-                        [
-                            3, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -4,
-                            4, -1, -2, 3, 2, 3, 3, 2, 3
+                    },
+                    "node_11": {
+                        "children": [
                         ]
-                    )
-                    expect(getObject(result, 0).morphNormals.getCount()).toEqual(0);
-
-                    expect(testTool.getValues(getObject(result, 0).uvs)).toEqual(
-                        [
-                            0.2, 0.2, 1, 0.1, 0.1, 0.2, 0.3, 0.5,
-                            0.3, 0.5, 1, 0.1, 0.2, 0.2
+                    },
+                    "node_2": {
+                        "children": [
                         ]
-                    )
-                    geometryTool.judgeFaceIndices(getObject(result, 0).faces, [
-                        0, 1, 2, 4, 3, 5, 4, 0, 6
-                    ]);
-                });
-                describe("test one vertex has multi different uvs with normals", function(){
-                    it("test no normalIndice", function(){
+                    }
+                }
+            })
 
-                            setObject({
-                                name: "a",
-                                vertices: [1, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -4],
-                                normals: [1, 1, 1, 6, -1, -2, 1, 2, -1, -2, 0, -4],
-                                morphTargets: [
-                                    {
-                                        name: "stand001",
-                                        vertices: [1, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -4],
+            var data = parser.parse(json, arrayBufferMap, wdCb.Hash.create());
 
-                                        normals: [5, 1, 2, 4, -1, -2, 3, 2, 3, -2, 0, -4]
-                                    }
-                                ],
-                                colors: [],
-                                uvs: [1.0, 0.1, 0.1, 0.2, 0.2, 0.2, 0.3, 0.5],
-                                verticeIndices: [0, 1, 2, 1, 3, 2, 1, 0, 2],
-                                uvIndices:      [2, 0, 1, 3, 3, 0, 3, 2, 2]
-                            })
-                        var result = parser.parse(json);
+            expect(data.objects.getCount()).toEqual(2);
+            expect(data.objects.getChild(0).id).toEqual("node_1");
+            expect(data.objects.getChild(0).children.getChild(0).id).toEqual("node_11");
+            expect(data.objects.getChild(1).id).toEqual("node_2");
+        });
 
-                        geometryTool.judgeFaceVertexNormals(getObject(result, 0).faces,
-                            [
-                                //normals: [1, 1, 1, 6, -1, -2, 1, 2, -1, -2, 0, -4],
-
-                                //verticeIndices: [0, 1, 2, 1, 3, 2, 1, 0, 2],
-                            //0, 1, 2, 4, 3, 5, 4, 0, 6
-
-                                1, 1, 1, 6, -1, -2, 1, 2, -1, 6, -1, -2,
-                                -2, 0, -4, 1, 2, -1, 6, -1, -2, 1, 1, 1, 1, 2, -1
-                            ]
-                        )
-                        expect(getObject(result, 0).morphNormals.getChild("stand").getChild(0)).toEqual(
-                            [
-                                //normals: [5, 1, 2, 4, -1, -2, 3, 2, 3, -2, 0, -4]
-                                //verticeIndices: [0, 1, 2, 1, 3, 2, 1, 0, 2],
-                                //0, 1, 2, 4, 3, 5, 4, 0, 6
-                                5, 1, 2, 4, -1, -2, 3, 2, 3, -2, 0, -4,
-                                4, -1, -2, 3, 2, 3, 3, 2, 3
-                            ]
-                        );
-                    });
-                    it("test with normalIndice", function(){
-
-                            setObject({
-                                name: "a",
-                                vertices: [1, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -4],
-                                normals: [1, 1, 1, 6, -1, -2, 1, 2, -1, -2, 0, -4],
-                                morphTargets: [
-                                    {
-                                        name: "stand001",
-                                        vertices: [1, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -4],
-
-                                        normals: [5, 1, 2, 4, -1, -2, 3, 2, 3, -2, 0, -4]
-                                    }
-                                ],
-                                colors: [],
-                                uvs: [1.0, 0.1, 0.1, 0.2, 0.2, 0.2, 0.3, 0.5],
-                                verticeIndices: [0, 1, 2, 1, 3, 2, 1, 0, 2],
-                                normalIndices: [2, 0, 1, 0, 3, 1, 0, 2, 1],
-                                uvIndices:      [2, 0, 1, 3, 3, 0, 3, 2, 2]
-                            })
-                        var result = parser.parse(json);
-
-                        geometryTool.judgeFaceVertexNormals(getObject(result, 0).faces,
-                            [
-                                //normals: [1, 1, 1, 6, -1, -2, 1, 2, -1, -2, 0, -4],
-
-                                //verticeIndices: [0, 1, 2, 1, 3, 2, 1, 0, 2],
-                                //normalIndices:  [2, 0, 1, 0, 3, 1, 0, 2, 1],
-                            //0, 1, 2, 4, 3, 5, 4, 0, 6
-
-
-                                1, 2, -1, 1, 1, 1, 6, -1, -2,
-                                1, 1, 1, -2, 0, -4, 6, -1, -2,
-                                1, 1, 1, 1, 2, -1, 6, -1, -2
-                            ]
-                        )
-                        expect(getObject(result, 0).morphNormals.getChild("stand").getChild(0)).toEqual(
-                            [
-                                //normals: [5, 1, 2, 4, -1, -2, 3, 2, 3, -2, 0, -4]
-                                //verticeIndices: [0, 1, 2, 1, 3, 2, 1, 0, 2],
-                                //normalIndices:  [2, 0, 1, 0, 3, 1, 0, 2, 1],
-                                //0, 1, 2, 4, 3, 5, 4, 0, 6
-
-                                3, 2, 3,
-                                5, 1, 2,
-                                4, -1, -2,
-                                -2, 0, -4,
-
-                                5, 1, 2,
-                                4,-1,-2,
-                                4, -1, -2
-
-                            ]
-                        );
-                    });
-                });
-                it("test one vertex has multi different uvs and normals", function(){
-                    //todo
-                });
+        describe("test name", function(){
+            beforeEach(function(){
             });
 
-            it("parse files which's format likes the one converted from .md2", function () {
-                setObject({
-                    name: "a",
-                    vertices: [1, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -4],
-                    morphTargets: [
-                        {
-                            name: "stand001",
-                            vertices: [-3, 2, 3, 2, -1, -2, 2, 2, 3, 4, -1, -2]
-                        },
-                        {
-                            name: "play001",
-                            vertices: [2, 2, 3, 4, -1, -2, 2, 2, 3, 4, -1, -2]
-                        },
-                        {
-                            name: "play002",
-                            vertices: [0, 5, 3, 4, -1, -2, 2, 2, 3, 1, -1, -2]
+            it("if !node->name&&mesh.name, use mesh->name to be object.name", function () {
+                setJson({
+                    "meshes": {
+                        "geometry1": {
+                            "name": "geo1",
+                            "primitives": [
+                            ]
                         }
-                    ],
-                    colors: [1.0, 0.1, 0.1, 0.2, 0.2, 0.2, 1.0, 0.2, 0.1, 0.2, 0.2, 0.3],
-                    uvs: [1.0, 0.1, 0.1, 0.2, 0.2, 0.2, 0.3, 0.5],
-                    verticeIndices: [0, 1, 2, 1, 3, 2],
-                    uvIndices: [2, 0, 1, 0, 3, 1]
+                    },
+                    "nodes": {
+                        "node_1": {
+                            "children": [
+                            ],
+                            //"name": "1",
+                            "mesh": "geometry1"
+                        }
+                    }
                 })
-                var result = parser.parse(json);
 
-                expect(getObject(result, 0).vertices).toEqual(
-                    [
-                        1, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -4
-                    ]
-                )
+                var data = parser.parse(json, arrayBufferMap, wdCb.Hash.create());
 
-                expect(getObject(result, 0).morphTargets.getChild("stand").getChild(0)).toEqual(
-                    [
-                        -3, 2, 3, 2, -1, -2, 2, 2, 3, 4, -1, -2
-                    ]
-                )
-                expect(getObject(result, 0).morphTargets.getChild("play").getChild(0)).toEqual(
-                    [
-                        2, 2, 3, 4, -1, -2, 2, 2, 3, 4, -1, -2
-                    ]
-                )
-                expect(getObject(result, 0).morphTargets.getChild("play").getChild(1)).toEqual(
-                    [
-                        0, 5, 3, 4, -1, -2, 2, 2, 3, 1, -1, -2
-                    ]
-                )
-                expect(getObject(result, 0).morphNormals.getCount()).toEqual(0);
-
-
-                expect(testTool.getValues(getObject(result, 0).colors)).toEqual(
-                    [
-                        1, 0.1, 0.1, 0.2, 0.2, 0.2, 1, 0.2, 0.1, 0.2, 0.2, 0.3
-                    ]
-                )
-                expect(testTool.getValues(getObject(result, 0).uvs)).toEqual(
-                    [
-                        0.2, 0.2, 1, 0.1, 0.1, 0.2, 0.3, 0.5
-                    ]
-                )
-                geometryTool.judgeFaceIndices(getObject(result, 0).faces, [0, 1, 2, 1, 3, 2 ]);
+                expect(data.objects.getCount()).toEqual(1);
+                expect(data.objects.getChild(0).name).toEqual("geo1");
             });
-            it("parse files which's format likes the one converted from .obj", function () {
-                setObject({
-                    name: "object container",
-                    vertices: [1, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -4],
-                    colors: [1.0, 0.1, 0.1, 0.2, 0.2, 0.2, 1.0, 0.2, 0.1, 0.2, 0.2, 0.3],
-                    uvs: [1.0, 0.1, 0.1, 0.2, 0.2, 0.2, 0.3, 0.5],
-                    children: [
-                        {
-                            name: "child1",
-                            morphTargets: [
-                                {
-                                    name: "stand001",
-                                    vertices: [-3, 2, 3, 2, -1, -2, 2, 2, 3, 4, -1, -2]
-                                }
-                            ],
-                            verticeIndices: [0, 1, 2, 1, 3, 2],
-                            uvIndices: [2, 0, 1, 0, 3, 1]
-
-                        },
-                        {
-                            name: "child2",
-                            morphTargets: [
-                                {
-                                    name: "stand001",
-                                    vertices: [1, 2, 3, 2, -1, -2, 2, 2, 3, 4, -1, -2]
-                                }
-                            ],
-                            verticeIndices: [0, 1, 2, 1, 2, 3]
-
+            it("else if node->name, use node->name to be object.name", function () {
+                setJson({
+                    "meshes": {
+                        "geometry1": {
+                            "name": "geo1",
+                            "primitives": [
+                            ]
                         }
-                    ]
+                    },
+                    "nodes": {
+                        "node_1": {
+                            "children": [
+                            ],
+                            "name": "1",
+                            "mesh": "geometry1"
+                        }
+                    }
                 })
-                var result = parser.parse(json);
 
-                var objectContainer = getObject(result, 0);
-                expect(objectContainer.vertices).toBeUndefined();
-                expect(objectContainer.uvs).toBeUndefined();
-                expect(objectContainer.colors).toBeUndefined();
+                var data = parser.parse(json, arrayBufferMap, wdCb.Hash.create());
 
-
-                var object1 = objectContainer.children.getChild(0);
-                expect(object1.vertices).toEqual(
-                    [
-                        1, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -4
-                    ]
-                )
-
-                expect(object1.morphTargets.getChild("stand").getChild(0)).toEqual(
-                    [
-                        -3, 2, 3, 2, -1, -2, 2, 2, 3, 4, -1, -2
-                    ]
-                )
-
-                expect(testTool.getValues(object1.colors)).toEqual(
-                    [
-                        1.0, 0.1, 0.1, 0.2, 0.2, 0.2, 1.0, 0.2, 0.1, 0.2, 0.2, 0.3
-                    ]
-                )
-                expect(testTool.getValues(object1.uvs)).toEqual(
-                    [
-                        0.2, 0.2, 1, 0.1, 0.1, 0.2, 0.3, 0.5
-                    ]
-                )
-                geometryTool.judgeFaceIndices(object1.faces, [0, 1, 2, 1, 3, 2 ]);
-
-                var object2 = objectContainer.children.getChild(1);
-                expect(object2.vertices).toEqual(
-                    [
-                        1, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -4
-                    ]
-                )
-
-                expect(object2.morphTargets.getChild("stand").getChild(0)).toEqual(
-                    [
-                        1, 2, 3, 2, -1, -2, 2, 2, 3, 4, -1, -2
-                    ]
-                )
-
-                expect(testTool.getValues(object2.colors)).toEqual(
-                    [
-                        1, 0.1, 0.1, 0.2, 0.2, 0.2, 1, 0.2, 0.1, 0.2, 0.2, 0.3
-                    ]
-                )
-                expect(testTool.getValues(object2.uvs)).toEqual(
-                    [
-                        1, 0.1, 0.1, 0.2, 0.2, 0.2, 0.3, 0.5
-                    ]
-                )
-                geometryTool.judgeFaceIndices(object2.faces, [0, 1, 2, 1, 2, 3]);
+                expect(data.objects.getCount()).toEqual(1);
+                expect(data.objects.getChild(0).name).toEqual("1");
             });
         });
 
-        describe("parse normals", function () {
-            beforeEach(function () {
+        describe("parse Geometry", function(){
+
+            it("if mesh->primitives has multi ones, the primitives should be children of the node(one primitive is one child)", function(){
+                setJson({
+                    "meshes": {
+                        "geometry1": {
+                            //"name": "geo1",
+                            "primitives": [
+                                {
+                                    "attributes": {
+                                        "NORMAL": [],
+                                        "POSITION": [],
+                                        "TEXCOORD": []
+                                    },
+                                    "indices": [],
+                                    "material": "mat1",
+                                    "mode": 4
+                                },
+                                {
+                                    "attributes": {
+                                        "NORMAL": [],
+                                        "POSITION": [],
+                                        "TEXCOORD": []
+                                    },
+                                    "indices": [],
+                                    "material": "mat2",
+                                    "mode": 4
+                                }
+                            ]
+                        }
+                    },
+                    "nodes": {
+                        "node_1": {
+                            "children": [
+                            ],
+                            "name": "1",
+                            "mesh": "geometry1"
+                        }
+                    }
+                })
+
+
+                var data = parser.parse(json, arrayBufferMap, wdCb.Hash.create());
+
+
+
+
+
+                expect(data.objects.getCount()).toEqual(1);
+                var object1 = data.objects.getChild(0);
+
+                expect(object1.isContainer).toBeTruthy();
+
+
+
+                expect(object1.children.getCount()).toEqual(2);
+                expect(object1.children.getChild(0).name).toEqual("mat1");
+                expect(object1.children.getChild(1).name).toEqual("mat2");
+            });
+            it("test with indices", function(){
+                setJson({
+                    "meshes": {
+                        "geometry1": {
+                            "primitives": [
+                                {
+                                    "attributes": getAttributeData(),
+                                    "indices": getIndiceData(),
+                                    "material": "mat1",
+                                    "mode": 4
+                                }
+                            ]
+                        }
+                    },
+                    "nodes": {
+                        "node_1": {
+                            "children": [
+                            ],
+                            "name": "1",
+                            "mesh": "geometry1"
+                        }
+                    }
+                })
+
+
+                var data = parser.parse(json, arrayBufferMap, wdCb.Hash.create());
+
+
+
+
+
+                expect(data.objects.getCount()).toEqual(1);
+                var object = data.objects.getChild(0);
+
+                var geo = object.components.getChild(0);
+
+                judgeGeometryDataEqual(vertices, geo.vertices, 3);
+                //expect(geo.vertices).toEqual(
+                //    vertices
+                //);
+                //expect(geo.texCoords).toEqual(
+                //    texCoords
+                //);
+                expect(geo.colors).toBeUndefined();
+                geometryTool.judgeFaceIndices(geo.faces, indices);
+                // expect(geo.drawMode).toEqual(wd.EDrawMode.TRIANGLES);
+
+
+                //expect(object1.children.getChild(0).name).toEqual("mat1");
+                //expect(object1.children.getChild(1).name).toEqual("mat2");
+            });
+            it("test without indices", function(){
+                setJson({
+                    "meshes": {
+                        "geometry1": {
+                            "primitives": [
+                                {
+                                    "attributes": getAttributeData(),
+                                    "material": "mat1",
+                                    "mode": 3
+                                }
+                            ]
+                        }
+                    },
+                    "nodes": {
+                        "node_1": {
+                            "children": [
+                            ],
+                            "name": "1",
+                            "mesh": "geometry1"
+                        }
+                    }
+                })
+
+
+                var data = parser.parse(json, arrayBufferMap, wdCb.Hash.create());
+
+
+
+
+
+                //expect(data.objects.getCount()).toEqual(1);
+                var object = data.objects.getChild(0);
+
+                var geo = object.components.getChild(0);
+                //expect(geo.vertices).toEqual(
+                //    vertices
+                //);
+                //expect(geo.texCoords).toEqual(
+                //    texCoords
+                //);
+                //expect(geo.colors).toBeUndefined();
+
+                geometryTool.judgeFaceIndices(geo.faces, []);
+                // expect(geo.drawMode).toEqual(wd.EDrawMode.LINE_STRIP);
             });
 
-            describe("if normals exist, parse it", function () {
-                it("parse files which's format likes the one converted from .md2", function () {
-                    setObject({
-                        name: "a",
-                        vertices: [1, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -4],
-                        normals: [1, 1, 1, 6, -1, -2, 1, 2, -1, -2, 0, -4],
-                        morphTargets: [
+            // describe("parse material", function(){
+            //     function getMaterial(data){
+            //         var geo = data.objects.getChild(0).components.getChild(0);
+            //
+            //         return geo.material;
+            //     }
+            //
+            //     function judgeMaterial(data, value){
+            //         var i = null,
+            //             mat = getMaterial(data);
+            //
+            //         for(i in value){
+            //             if(value.hasOwnProperty(i)){
+            //                 expect(mat[i]).toEqual(value[i]);
+            //             }
+            //         }
+            //     }
+            //
+            //     beforeEach(function(){
+            //         setJson({
+            //             "meshes": {
+            //                 "geometry1": {
+            //                     "primitives": [
+            //                         {
+            //                             "attributes": {
+            //                                 "NORMAL": "accessor_3",
+            //                                 "POSITION": "accessor_2",
+            //                                 "TEXCOORD_0": "accessor_4"
+            //                             },
+            //                             "indices": "accessor_1",
+            //                             "material": "mat1",
+            //                             "mode": 4
+            //                         }
+            //                     ]
+            //                 }
+            //             },
+            //             "nodes": {
+            //                 "node_1": {
+            //                     "children": [
+            //                     ],
+            //                     "name": "1",
+            // "mesh": "geometry1"
+            //                 }
+            //             }
+            //         })
+            //     });
+            //
+            //     it("if no KHR_materials_common extension found, will use default material instead and log info", function(){
+            //         sandbox.stub(wd.Log, "log");
+            //         setJson({
+            //             "materials": {
+            //                 "Effect-Red": {
+            //                     "name": "Red"
+            //                 }
+            //             }
+            //         })
+            //
+            //
+            //         var data = parser.parse(json, arrayBufferMap, imageMap);
+            //
+            //         expect(wd.Log.log).toCalledOnce();
+            //         judgeMaterial(data, {
+            //             type:"BasicMaterial",
+            //
+            //             doubleSided:false
+            //         });
+            //     });
+            //
+            //     describe("else, parse KHR_materials_common extension", function(){
+            //         beforeEach(function(){
+            //             setJson({
+            //                 "extensionsUsed": [
+            //                     "KHR_materials_common"
+            //                 ]
+            //             })
+            //         });
+            //
+            //         describe("parse technique", function(){
+            //             function judge(dataFunc){
+            //                 setJson({
+            //                     "materials": {
+            //                         "mat1": {
+            //                             "name": "Red",
+            //                             "extensions": {
+            //                                 "KHR_materials_common": {
+            //                                     "technique": "PHONG"
+            //                                 }
+            //                             }
+            //                         }
+            //                     }
+            //                 })
+            //
+            //
+            //                 judgeMaterial(parser.parse(json, arrayBufferMap, imageMap), dataFunc("PHONG"));
+            //
+            //
+            //
+            //
+            //                 setJson({
+            //                     "materials": {
+            //                         "mat1": {
+            //                             "name": "Red",
+            //                             "extensions": {
+            //                                 "KHR_materials_common": {
+            //                                     "technique": "BLINN"
+            //                                 }
+            //                             }
+            //                         }
+            //                     }
+            //                 })
+            //
+            //
+            //                 judgeMaterial(parser.parse(json, arrayBufferMap, imageMap), dataFunc("BLINN"));
+            //
+            //
+            //
+            //
+            //                 setJson({
+            //                     "materials": {
+            //                         "mat1": {
+            //                             "name": "Red",
+            //                             "extensions": {
+            //                                 "KHR_materials_common": {
+            //                                     "technique": "LAMBERT"
+            //                                 }
+            //                             }
+            //                         }
+            //                     }
+            //                 })
+            //
+            //
+            //                 judgeMaterial(parser.parse(json, arrayBufferMap, imageMap), dataFunc("LAMBERT"));
+            //
+            //
+            //
+            //
+            //                 setJson({
+            //                     "materials": {
+            //                         "mat1": {
+            //                             "name": "Red",
+            //                             "extensions": {
+            //                                 "KHR_materials_common": {
+            //                                     "technique": "CONSTANT"
+            //                                 }
+            //                             }
+            //                         }
+            //                     }
+            //                 })
+            //
+            //
+            //                 judgeMaterial(parser.parse(json, arrayBufferMap, imageMap), dataFunc("CONSTANT"));
+            //             }
+            //
+            //             beforeEach(function(){
+            //             });
+            //
+            //             it("material type should always be LightMaterial", function(){
+            //                 judge(function(){
+            //                     return {
+            //                         type:"LightMaterial"
+            //                     }
+            //                 });
+            //             });
+            //             it("get lightModel", function(){
+            //                 judge(function(technique){
+            //                     return {
+            //                         lightModel:technique
+            //                     }
+            //                 });
+            //             });
+            //         });
+            //         it("parse doubledSided,transparent,transparency", function(){
+            //
+            //             setJson({
+            //                 "materials": {
+            //                     "mat1": {
+            //                         "name": "Red",
+            //                         "extensions": {
+            //                             "KHR_materials_common": {
+            //                                 "doubleSided": false,
+            //                                 "transparent": true,
+            //                                 "technique": "PHONG",
+            //                                 "values":{
+            //
+            //                                     "transparency": {
+            //                                         "type": 5126,
+            //                                         "value": 0.2
+            //                                     }
+            //                                 }
+            //                             }
+            //                         }
+            //                     }
+            //                 }
+            //             })
+            //
+            //
+            //             var data = parser.parse(json, arrayBufferMap, imageMap);
+            //
+            //             judgeMaterial(data, {
+            //                 doubleSided:false,
+            //                 transparent:true,
+            //                 opacity:0.2
+            //             });
+            //         });
+            //
+            //         describe("parse values", function(){
+            //             var image;
+            //
+            //             function judgeLightColor(name){
+            //                 it("if " + name + " is array, parse " + name + " color", function(){
+            //                     setJson({
+            //                         "materials": {
+            //                             "mat1": {
+            //                                 "name": "Red",
+            //                                 "extensions": {
+            //                                     "KHR_materials_common": {
+            //                                         "technique": "PHONG",
+            //                                         values:{}
+            //                                     }
+            //                                 }
+            //                             }
+            //                         }
+            //                     })
+            //
+            //                     var colorData = [
+            //                             0,
+            //                             0,
+            //                             0,
+            //                             1
+            //                         ];
+            //
+            //                     json.materials.mat1.extensions.KHR_materials_common.values[name] = colorData;
+            //
+            //
+            //                     var data = parser.parse(json, arrayBufferMap, imageMap);
+            //
+            //                     var judgeData = {};
+            //                     judgeData[name + "Color"] = createColor([0,0,0,1]);
+            //                     judgeMaterial(data, judgeData);
+            //                 });
+            //
+            //                 describe("else", function(){
+            //                     it("if " + name + " type is 35666, parse " + name + " color", function(){
+            //                         setJson({
+            //                             "materials": {
+            //                                 "mat1": {
+            //                                     "name": "Red",
+            //                                     "extensions": {
+            //                                         "KHR_materials_common": {
+            //                                             "technique": "PHONG",
+            //                                             values:{
+            //
+            //                                             }
+            //                                         }
+            //                                     }
+            //                                 }
+            //                             }
+            //                         })
+            //
+            //                         var colorData = {
+            //                             "type": 35666,
+            //                             "value": [
+            //                                 0,
+            //                                 0,
+            //                                 0,
+            //                                 1
+            //                             ]
+            //                         };
+            //
+            //                         json.materials.mat1.extensions.KHR_materials_common.values[name] = colorData;
+            //
+            //
+            //                         var data = parser.parse(json, arrayBufferMap, imageMap);
+            //
+            //                         var judgeData = {};
+            //                         judgeData[name + "Color"] = createColor([0,0,0,1]);
+            //                         judgeMaterial(data, judgeData);
+            //                     });
+            //
+            //
+            //                     describe("else if " + name + " type is 35678, parse " + name + " map", function(){
+            //                         it("", function () {
+            //                             setJson({
+            //                                 "materials": {
+            //                                     "mat1": {
+            //                                         "name": "Red",
+            //                                         "extensions": {
+            //                                             "KHR_materials_common": {
+            //                                                 "technique": "PHONG",
+            //                                                 values:{
+            //                                                 }
+            //                                             }
+            //                                         }
+            //                                     }
+            //                                 },
+            //
+            //                                 "textures": {
+            //                                     "texture_Image0001": {
+            //                                         "format": 6408,
+            //                                         "internalFormat": 6408,
+            //                                         "sampler": "sampler_0",
+            //                                         "source": "Image0001",
+            //                                         "target": 3553,
+            //                                         "type": 5121
+            //                                     }
+            //                                 },
+            //                                 "images": {
+            //                                     "Image0001": {
+            //                                         "name": "Image0001",
+            //                                         "uri": "Cesium_Logo_Flat.png"
+            //                                     }
+            //                                 },
+            //                                 "samplers": {
+            //                                     "sampler_0": {
+            //                                         "magFilter": 9729,
+            //                                         "minFilter": 9987,
+            //                                         "wrapS": 10497,
+            //                                         "wrapT": 10497
+            //                                     }
+            //                                 }
+            //                             })
+            //
+            //
+            //                             var colorData = {
+            //                                 "type": 35678,
+            //                                 "value": "texture_Image0001"
+            //                             };
+            //                             json.materials.mat1.extensions.KHR_materials_common.values[name] = colorData;
+            //
+            //
+            //
+            //
+            //
+            //
+            //                             var data = parser.parse(json, arrayBufferMap, imageMap);
+            //
+            //                             var mat = getMaterial(data);
+            //                             var map = mat[name + "Map"];
+            //
+            //                             expect(map).toBeInstanceOf(wd.ImageTexture);
+            //                             expect(map.source).toEqual(image);
+            //                             expect(map.format).toEqual(wd.ETextureFormat.RGBA);
+            //                             expect(map.type).toEqual(wd.ETextureType.UNSIGNED_BYTE);
+            //                             expect(map.minFilter).toEqual(wd.ETextureFilterMode.LINEAR_MIPMAP_LINEAR);
+            //                             expect(map.magFilter).toEqual(wd.ETextureFilterMode.LINEAR);
+            //                             expect(map.wrapS).toEqual(wd.ETextureWrapMode.REPEAT);
+            //                             expect(map.wrapT).toEqual(wd.ETextureWrapMode.REPEAT);
+            //                         });
+            //                     });
+            //                 });
+            //             };
+            //
+            //             beforeEach(function(){
+            //                 image = {};
+            //                 sandbox.stub(imageMap, "getChild").returns(image);
+            //                 sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+            //             });
+            //
+            //             describe("parse diffuse", function() {
+            //                 judgeLightColor("diffuse");
+            //             });
+            //
+            //             describe("parse specular", function() {
+            //                 judgeLightColor("specular");
+            //             });
+            //
+            //             describe("parse emission", function() {
+            //                 judgeLightColor("emission");
+            //             });
+            //
+            //             it("parse shininess", function(){
+            //                 setJson({
+            //                     "materials": {
+            //                         "mat1": {
+            //                             "name": "Red",
+            //                             "extensions": {
+            //                                 "KHR_materials_common": {
+            //                                     "technique": "BLINN",
+            //                                     values:{
+            //                                         "shininess": {
+            //                                             "type": 5126,
+            //                                             "value": 256
+            //                                         }
+            //                                     }
+            //                                 }
+            //                             }
+            //                         }
+            //                     }
+            //                 })
+            //
+            //
+            //
+            //                 var data = parser.parse(json, arrayBufferMap, imageMap);
+            //
+            //                 judgeMaterial(data, {
+            //                     shininess: 256
+            //                 })
+            //             });
+            //         });
+            //     });
+            // });
+        });
+
+        // describe("parse light", function(){
+        //     function getLight(data){
+        //         return data.objects.getChild(0).components.getChild(0);
+        //     }
+        //
+        //     function judgeLight(data, value){
+        //         var i = null,
+        //             light = getLight(data);
+        //
+        //         for(i in value){
+        //             if(value.hasOwnProperty(i)){
+        //                 expect(light[i]).toEqual(value[i]);
+        //             }
+        //         }
+        //     }
+        //     beforeEach(function(){
+        //
+        //     });
+        //
+        //     it("parse ambient light", function(){
+        //         setJson({
+        //             "extensions": {
+        //                 "KHR_materials_common": {
+        //                     "lights": {
+        //                         "EnvironmentAmbientLight": {
+        //                             "ambient": {
+        //                                 "color": [
+        //                                     0,
+        //                                     0.1,
+        //                                     0.2
+        //                                 ]
+        //                             },
+        //                             "name": "EnvironmentAmbientLight",
+        //                             "type": "ambient"
+        //                         },
+        //                     }
+        //                 }
+        //             },
+        //             "extensionsUsed": [
+        //                 "KHR_materials_common"
+        //             ],
+        //             "nodes": {
+        //                 "node_1": {
+        //                     "children": [
+        //                     ],
+        //                     "name": "1",
+        // "mesh": "geometry1"
+        //                     "extensions": {
+        //                         "KHR_materials_common": {
+        //                             "light": "EnvironmentAmbientLight"
+        //                         }
+        //                     },
+        //                 }
+        //             }
+        //         })
+        //
+        //
+        //
+        //
+        //         var data = parser.parse(json, arrayBufferMap, imageMap);
+        //
+        //
+        //         judgeLight(data, {
+        //             type:"ambient",
+        //             lightColor: createColor([0, 0.1, 0.2])
+        //         })
+        //     });
+        //     it("parse direction light", function(){
+        //         setJson({
+        //             "extensions": {
+        //                 "KHR_materials_common": {
+        //                     "lights": {
+        //                         "light1": {
+        //                             "directional": {
+        //                                 "color": [
+        //                                     0,
+        //                                     0.1,
+        //                                     0.2
+        //                                 ]
+        //                             },
+        //                             "name": "light1",
+        //                             "type": "directional"
+        //                         },
+        //                     }
+        //                 }
+        //             },
+        //             "extensionsUsed": [
+        //                 "KHR_materials_common"
+        //             ],
+        //             "nodes": {
+        //                 "node_1": {
+        //                     "children": [
+        //                     ],
+        //                     "name": "1",
+        // "mesh": "geometry1"
+        //                     "extensions": {
+        //                         "KHR_materials_common": {
+        //                             "light": "light1"
+        //                         }
+        //                     },
+        //                 }
+        //             }
+        //         })
+        //
+        //
+        //
+        //
+        //         var data = parser.parse(json, arrayBufferMap, imageMap);
+        //
+        //
+        //         judgeLight(data, {
+        //             type:"directional",
+        //             lightColor: createColor([0, 0.1, 0.2])
+        //         })
+        //     });
+        //     describe("parse point light", function(){
+        //         it("test without distance", function(){
+        //             setJson({
+        //                 "extensions": {
+        //                     "KHR_materials_common": {
+        //                         "lights": {
+        //                             "light1": {
+        //                                 "name": "light1",
+        //                                 "point": {
+        //                                     "color": [
+        //                                         0,
+        //                                         0.1,
+        //                                         0.2
+        //                                     ],
+        //                                     "constantAttenuation": 1,
+        //                                     "linearAttenuation": 0.1,
+        //                                     "quadraticAttenuation": 0.2
+        //                                 },
+        //                                 "type": "point"
+        //                             }
+        //                         }
+        //                     }
+        //                 },
+        //                 "extensionsUsed": [
+        //                     "KHR_materials_common"
+        //                 ],
+        //                 "nodes": {
+        //                     "node_1": {
+        //                         "children": [
+        //                         ],
+        //                         "name": "1",
+        //                         "extensions": {
+        //                             "KHR_materials_common": {
+        //                                 "light": "light1"
+        //                             }
+        //                         },
+        //                     }
+        //                 }
+        //             })
+        //
+        //
+        //
+        //
+        //             var data = parser.parse(json, arrayBufferMap, imageMap);
+        //
+        //
+        //             judgeLight(data, {
+        //                 type:"point",
+        //                 lightColor: createColor([0, 0.1, 0.2]),
+        //                 constantAttenuation:1,
+        //                 linearAttenuation:0.1,
+        //                 quadraticAttenuation:0.2
+        //             })
+        //         });
+        //         it("test with distance", function(){
+        //             setJson({
+        //                 "extensions": {
+        //                     "KHR_materials_common": {
+        //                         "lights": {
+        //                             "light1": {
+        //                                 "name": "light1",
+        //                                 "point": {
+        //                                     "color": [
+        //                                         0,
+        //                                         0.1,
+        //                                         0.2
+        //                                     ],
+        //                                     "constantAttenuation": 1,
+        //                                     "linearAttenuation": 0.1,
+        //                                     "quadraticAttenuation": 0.2,
+        //                                     "distance": 10
+        //                                 },
+        //                                 "type": "point"
+        //                             }
+        //                         }
+        //                     }
+        //                 },
+        //                 "extensionsUsed": [
+        //                     "KHR_materials_common"
+        //                 ],
+        //                 "nodes": {
+        //                     "node_1": {
+        //                         "children": [
+        //                         ],
+        //                         "name": "1",
+        //                         "extensions": {
+        //                             "KHR_materials_common": {
+        //                                 "light": "light1"
+        //                             }
+        //                         },
+        //                     }
+        //                 }
+        //             })
+        //
+        //
+        //
+        //
+        //             var data = parser.parse(json, arrayBufferMap, imageMap);
+        //
+        //
+        //             judgeLight(data, {
+        //                 type:"point",
+        //                 lightColor: createColor([0, 0.1, 0.2]),
+        //                 constantAttenuation:1,
+        //                 linearAttenuation:0.1,
+        //                 quadraticAttenuation:0.2,
+        //                 distance:10
+        //             })
+        //         });
+        //     });
+        // });
+        //
+        // describe("parse camera", function(){
+        //     function getCamera(data) {
+        //         return data.objects.getChild(0).components.getChild(0);
+        //     }
+        //
+        //     beforeEach(function(){
+        //
+        //     });
+        //
+        //     describe("parse perspective camera", function(){
+        //         it("test", function() {
+        //             setJson({
+        //                 "cameras": {
+        //                     "Camera01-camera": {
+        //                         "name": "Camera01",
+        //                         "perspective": {
+        //                             "yfov": 10,
+        //                             "zfar": 255,
+        //                             "aspectRatio": 1,
+        //                             "znear": 0.1
+        //                         },
+        //                         "type": "perspective"
+        //                     }
+        //                 },
+        //                 "nodes": {
+        //                     "node_1": {
+        //                         "children": [],
+        //                         "name": "1",
+        //                         "camera": "Camera01-camera",
+        //                     }
+        //                 }
+        //             })
+        //
+        //
+        //             var data = parser.parse(json, arrayBufferMap, imageMap);
+        //
+        //
+        //             var camera = getCamera(data).camera;
+        //             expect(camera.near).toEqual(0.1);
+        //             expect(camera.far).toEqual(255);
+        //             expect(camera.fovy).toEqual(10);
+        //             expect(camera.aspect).toEqual(1);
+        //         });
+        //         it("if no aspectRatio, compute it:canvas.width / canvas.height", function(){
+        //             sandbox.stub(wd.DeviceManager.getInstance(), "view", {
+        //                 width:100,
+        //                 height:50
+        //             });
+        //             setJson({
+        //                 "cameras": {
+        //                     "Camera01-camera": {
+        //                         "name": "Camera01",
+        //                         "perspective": {
+        //                             "yfov": 10,
+        //                             "zfar": 255,
+        //                             "znear": 0.1
+        //                         },
+        //                         "type": "perspective"
+        //                     }
+        //                 },
+        //                 "nodes": {
+        //                     "node_1": {
+        //                         "children": [],
+        //                         "name": "1",
+        //                         "camera": "Camera01-camera",
+        //                     }
+        //                 }
+        //             })
+        //
+        //
+        //             var data = parser.parse(json, arrayBufferMap, imageMap);
+        //
+        //
+        //             var camera = getCamera(data).camera;
+        //             expect(camera.aspect).toEqual(100/50);
+        //         });
+        //     });
+        //
+        //     it("parse orthographic camera", function() {
+        //         setJson({
+        //             "cameras": {
+        //                 "Camera01-camera": {
+        //                     "name": "Camera01",
+        //                     "orthographic": {
+        //                         "xmag": 10,
+        //                         "ymag": 20,
+        //                         "zfar": 255,
+        //                         "znear": 0.1
+        //                     },
+        //                     "type": "orthographic"
+        //                 }
+        //             },
+        //             "nodes": {
+        //                 "node_1": {
+        //                     "children": [],
+        //                     "name": "1",
+        //                     "camera": "Camera01-camera",
+        //                 }
+        //             }
+        //         })
+        //
+        //
+        //         var data = parser.parse(json, arrayBufferMap, imageMap);
+        //
+        //
+        //         var camera = getCamera(data).camera;
+        //         expect(camera.near).toEqual(0.1);
+        //         expect(camera.far).toEqual(255);
+        //         expect(camera.left).toEqual(-10);
+        //         expect(camera.right).toEqual(10);
+        //         expect(camera.top).toEqual(20);
+        //         expect(camera.bottom).toEqual(-20);
+        //     });
+        // });
+        //
+        // describe("parse transform", function(){
+        //     function getTransform(data){
+        //         return data.objects.getChild(0).components.getChild(0);
+        //     }
+        //
+        //     beforeEach(function(){
+        //     });
+        //
+        //     it("if node define matrix", function(){
+        //         var matrix = [
+        //                         -3.17587e-008,
+        //                         0.0739029,
+        //                         5.45614e-009,
+        //                         0,
+        //                         -8.90597e-009,
+        //                         4.72178e-009,
+        //                         -0.0739029,
+        //                         0,
+        //                         -0.0739029,
+        //                         1.14182e-008,
+        //                         1.27195e-009,
+        //                         0,
+        //                         -0.0259341,
+        //                         -0.0210049,
+        //                         0.136316,
+        //                         1
+        //                     ];
+        //
+        //         setJson({
+        //             "nodes": {
+        //                 "node_1": {
+        //                     "children": [],
+        //                     "name": "1",
+        //                     "matrix": matrix
+        //                 }
+        //             }
+        //         })
+        //
+        //
+        //         var data = parser.parse(json, arrayBufferMap, imageMap);
+        //
+        //         expect(testTool.getValues(
+        //             getTransform(data).matrix.values
+        //         )).toEqual(testTool.getValues(matrix));
+        //     });
+        //     it("if node define translation,rotation,scale", function(){
+        //         var translation = [
+        //                 18.9199,
+        //                 22.7283,
+        //                 0.484955
+        //             ],
+        //             rotation = [
+        //                 -0.253652,
+        //                 0.642284,
+        //                 0.343852,
+        //                 0.636316
+        //             ],
+        //             scale = [
+        //                 1,
+        //                 1,
+        //                 1
+        //             ];
+        //
+        //         setJson({
+        //             "nodes": {
+        //                 "node_1": {
+        //                     "children": [],
+        //                     "name": "1",
+        //                     "rotation": rotation,
+        //                     "scale": scale,
+        //                     "translation": translation
+        //                 }
+        //             }
+        //         })
+        //
+        //
+        //         var data = parser.parse(json, arrayBufferMap, imageMap);
+        //
+        //
+        //         var tran = getTransform(data);
+        //         expect(testTool.getValues(
+        //             tran.position, 1
+        //         )).toEqual(
+        //             testTool.getValues(
+        //                 translation, 1
+        //             )
+        //         )
+        //         expect(testTool.getValues(
+        //             [tran.rotation.x,tran.rotation.y,tran.rotation.z,tran.rotation.w], 1
+        //         )).toEqual(
+        //             testTool.getValues(
+        //                 rotation, 1
+        //             )
+        //         )
+        //         expect(testTool.getValues(
+        //             tran.scale, 1
+        //         )).toEqual(
+        //             testTool.getValues(
+        //                 scale, 1
+        //             )
+        //         )
+        //     });
+        // });
+
+        it("parse children", function(){
+            setJson({
+                "meshes": {
+                    "geometry1": {
+                        "primitives": [
                             {
-                                name: "stand_001",
-                                vertices: [2, 2, 3, 4, -1, -2, 2, 2, 3, 4, -1, -2],
-                                normals: [5, 1, 2, 4, -1, -2, 3, 2, 3, -2, 0, -4]
+                                "attributes": getAttributeData(),
+                                "material": "mat1",
+                                "mode": 0
                             }
+                        ]
+                    },
+                    "geometry2": {
+                        "primitives": [
+                            {
+                                "attributes": getAttributeData(),
+                                "indices": getIndiceData(),
+                                "material": "mat2",
+                                "mode": 4
+                            }
+                        ]
+                    }
+                },
+                "nodes": {
+                    "node_1": {
+                        "children": [
+                            "node_11"
                         ],
-                        colors: [1.0, 0.1, 0.1, 0.2, 0.2, 0.2, 1.0, 0.2, 0.1, 0.2, 0.2, 0.3],
-                        uvs: [1.0, 0.1, 0.1, 0.2, 0.2, 0.2, 0.3, 0.5],
-                        verticeIndices: [0, 1, 2, 1, 3, 2],
-                        normalIndices: [1, 2, 3, 2, 0, 3],
-                        uvIndices: [0, 1, 3, 1, 2, 3]
-                    })
-                    var result = parser.parse(json);
-
-                    //normals: [1, 1, 1, 6, -1, -2, 1, 2, -1, -2, 0, -4],
-                    geometryTool.judgeFaceVertexNormals(getObject(result, 0).faces,
-                        [
-                            6, -1, -2, 1, 2, -1, -2, 0, -4, 1, 2, -1, 1, 1, 1, -2, 0, -4
-                        ]
-                    );
-
-                    expect(getObject(result, 0).morphNormals.getChild("stand").getCount()).toEqual(1)
-                    expect(getObject(result, 0).morphNormals.getChild("stand").getChild(0)).toEqual(
-                        [
-                            4, -1, -2, 3, 2, 3, -2, 0, -4, 5, 1, 2
-                        ]
-                    );
-                });
-                it("parse files which's format likes the one converted from .obj", function () {
-                    setObject({
-                        name: "object container",
-                        vertices: [1, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -4],
-                        normals: [1, 1, 1, 6, -1, -2, 1, 2, -1, -2, 0, -4],
-                        colors: [1.0, 0.1, 0.1, 0.2, 0.2, 0.2, 1.0, 0.2, 0.1, 0.2, 0.2, 0.3],
-                        uvs: [1.0, 0.1, 0.1, 0.2, 0.2, 0.2, 0.3, 0.5],
-                        children: [
-                            {
-                                name: "child1",
-                                morphTargets: [
-                                    {
-                                        name: "stand001",
-                                        vertices: [3, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -4],
-                                        normals: [5, 1, 2, 4, -1, -2, 3, 2, 3, -2, 0, -4]
-                                    }
-                                ],
-                                verticeIndices: [0, 1, 2, 1, 3, 2],
-                                uvIndices: [2, 0, 1, 0, 3, 1]
-
-                            }
-                        ]
-                    })
-                    var result = parser.parse(json);
+                        "name": "1",
+                        "mesh": "geometry1"
+                    },
+                    "node_11": {
+                        "children": [
+                        ],
+                        "name": "11",
+                        "mesh": "geometry2"
+                    }
+                }
+            })
 
 
-                    var objectContainer = result.objects.getChild(0);
-                    var object1 = objectContainer.children.getChild(0);
+            var data = parser.parse(json, arrayBufferMap, imageMap);
 
-                    geometryTool.judgeFaceVertexNormals(object1.faces,
-                        [
-                            1, 1, 1, 6, -1, -2, 1, 2, -1, 6, -1, -2, -2, 0, -4, 1, 2, -1
-                        ]
-                    );
-                    expect(object1.morphNormals.getChild("stand").getCount()).toEqual(1)
-                    expect(object1.morphNormals.getChild("stand").getChild(0)).toEqual(
-                        [
-                            5, 1, 2, 4, -1, -2, 3, 2, 3, -2, 0, -4
-                        ]
-                    );
-                });
-            });
+
+
+
+
+            expect(data.objects.getCount()).toEqual(1);
+            var object1 = data.objects.getChild(0);
+            var object2 = object1.children.getChild(0);
+
+            var geo1 = object1.components.getChild(0);
+            var geo2 = object2.components.getChild(0);
+
+            expect(object1.name).toEqual("1");
+            expect(object2.name).toEqual("11");
+
+            expect(geo1).toBeDefined();
+            expect(geo2).toBeDefined();
         });
     });
 });

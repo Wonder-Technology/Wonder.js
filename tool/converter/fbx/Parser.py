@@ -121,9 +121,11 @@ class Parser(object):
                 self._parseContentHierarchy(nodeChild, output)
 
     def _parseContentHierarchy(self, node, output):
-        nodeName = getObjectName(node)
+        nodeId = getObjectName(node)
         nodeData = {}
-        output["nodes"][nodeName] = nodeData
+        output["nodes"][nodeId] = nodeData
+
+        setName(node, nodeData)
 
         nodeAttribute = node.GetNodeAttribute()
 
@@ -149,13 +151,16 @@ class Parser(object):
                 # if attribute_type != FbxNodeAttribute.eMesh:
                 #     self._converter.Triangulate(node.GetNodeAttribute(), True)
                 mesh = node.GetNodeAttribute()
-                meshName = getObjectName(mesh, False, nodeName + "_mesh")
+                meshId = getObjectName(mesh, False, nodeId + "_mesh")
 
-                nodeData["mesh"] = meshName
+                nodeData["mesh"] = meshId
 
                 meshData = {}
 
-                output["meshes"][meshName] = meshData
+                output["meshes"][meshId] = meshData
+
+                setName(mesh, meshData)
+
 
                 parseMesh(mesh, meshData)
 

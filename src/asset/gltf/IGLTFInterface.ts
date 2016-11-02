@@ -58,6 +58,8 @@ module wd {
 
     export interface IGLTFCamera extends IGLTFChildRootProperty {
         type:string;
+        perspective:IGLTFCameraPerspective;
+        orthographic:IGLTFCameraOrthographic;
     }
 
     export interface IGLTFCameraOrthographic {
@@ -92,7 +94,9 @@ module wd {
     export interface IGLTFAnimation extends IGLTFChildRootProperty {
         channels?: IGLTFAnimationChannel[];
         parameters?: Object;
-        samplers?: Object;
+        samplers?: {
+            [id:string]: IGLTFAnimationSampler
+        };
     }
 
     export interface IGLTFAnimationChannel {
@@ -297,6 +301,7 @@ module wd {
 
         lightModel:ELightModel;
 
+        //todo add ambient
 
         diffuseColor?: Color;
         specularColor?: Color;

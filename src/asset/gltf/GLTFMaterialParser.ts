@@ -110,6 +110,7 @@ module wd{
             }
 
             if(values.ambient){
+                //todo support ambient light!
                 Log.warn(Log.info.FUNC_NOT_SUPPORT("ambient of material"));
             }
 

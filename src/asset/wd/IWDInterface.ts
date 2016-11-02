@@ -78,17 +78,27 @@ module wd {
 
     export interface IWDMeshPrimitive {
         attributes: IWDAttribute;
-        indices?: string;
+        //todo fix
+        // indices?: string;
+        indices?: Array<number>;
         material: string;
         mode: number;
     }
 
     export interface IWDAttribute {
-        POSITION:string;
-        NORMAL?:string;
-        //todo support multi TexCoords
-        TEXCOORD?:string;
-        COLOR?:string;
+        // POSITION:string;
+        // NORMAL?:string;
+        // todo support multi TexCoords
+        // TEXCOORD?:string;
+        // COLOR?:string;
+
+        //todo use binary
+        POSITION:Array<number>;
+        NORMAL?:Array<number>;
+        TEXCOORD?:Array<number>;
+        COLOR?:Array<number>;
+
+
         // JOINT?:string;
         // WEIGH?:string;
     }
@@ -251,6 +261,159 @@ module wd {
         linearAttenuation?:number;
         quadraticAttenuation?:number;
         distance?:number;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    export interface IWDParseData{
+        metadata:IWDMetadata;
+        objects: wdCb.Collection<IWDObjectData>;
+    }
+
+
+    export interface IWDObjectData {
+        name?:string;
+        id:string;
+
+        isContainer:boolean;
+
+        components: wdCb.Collection<IWDComponent>;
+
+        children: wdCb.Collection<IWDObjectData>;
+    }
+
+
+    export interface IWDComponent{
+    }
+
+    // export interface IWDArticulatedAnimation extends IWDComponent{
+    //     [animName:string]: wdCb.Collection<IWDKeyFrameData>
+    // }
+    //
+    // export interface IWDKeyFrameData{
+    //     time:number,
+    //     //interpolationMethod:EKeyFrameInterpolation,
+    //
+    //     targets:wdCb.Collection<IWDKeyFrameTargetData>
+    // }
+    //
+    // export interface IWDKeyFrameTargetData{
+    //     interpolationMethod:EKeyFrameInterpolation,
+    //     target:EArticulatedAnimationTarget,
+    //     data:any
+    // }
+    //
+    // export interface IWDTransform extends IWDComponent{
+    //     matrix?:Matrix4;
+    //     position?:Vector3;
+    //     scale?:Vector3;
+    //     rotation?:Quaternion;
+    // }
+    //
+    // export interface IWDCamera extends IWDComponent{
+    //     camera:Camera;
+    // }
+    //
+    // export interface IWDLight extends IWDComponent{
+    //     type:string;
+    //     lightColor:Color;
+    // }
+    //
+    // export interface IWDAmbientLight extends IWDLight{
+    // }
+    //
+    // export interface IWDDirectionLight extends IWDLight{
+    //     //direction?
+    // }
+    //
+    // export interface IWDPointLight extends IWDLight{
+    //     constantAttenuation:number;
+    //     linearAttenuation:number;
+    //     quadraticAttenuation:number;
+    //
+    //     //todo need distance?
+    //     distance?:number;
+    // }
+
+    export interface IWDGeometry extends IWDComponent{
+        // material:IWDMaterial;
+
+        vertices: Array<number>;
+        colors?: Array<number>;
+        texCoords?: Array<number>;
+        faces:Array<Face3>;
+
+        drawMode:EDrawMode;
+
+        //morphTargets: wdCb.Hash<wdCb.Collection<Array<number>>>;
+        //morphNormals:wdCb.Hash<wdCb.Collection<Array<number>>>;
+    }
+
+    // export interface IWDMaterial{
+    //     type:string;
+    //
+    //     doubleSided?:boolean;
+    // }
+
+
+    // export interface IWDBasicMaterial extends IWDMaterial{
+    // }
+    //
+    // export interface IWDLightMaterial extends IWDMaterial{
+    //     transparent?:boolean;
+    //     opacity?: number
+    //
+    //     lightModel:ELightModel;
+    //
+    //     //todo add ambient
+    //
+    //     diffuseColor?: Color;
+    //     specularColor?: Color;
+    //     emissionColor?:Color;
+    //
+    //     diffuseMap?:Texture;
+    //     specularMap?:Texture;
+    //     emissionMap?:Texture;
+    //
+    //     //todo support normalMap
+    //     //normalMap:Texture;
+    //
+    //     shininess?: number;
+    // }
+
+
+
+    export interface IWDMetadata {
+        version:string;
+        genertor?:string;
+        premultipliedAlpha?:boolean;
+        profile?: {
+            api :string;
+            version:string
+            extras:Object
+        }
+    }
+
+
+
+
+
+
+    export interface IWDResult{
+        metadata:wdCb.Hash<IWDMetadata>;
+        models:wdCb.Collection<GameObject>
     }
 }
 

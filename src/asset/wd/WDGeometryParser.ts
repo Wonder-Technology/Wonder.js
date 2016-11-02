@@ -1,5 +1,5 @@
 module wd{
-    export class GLTFGeometryParser{
+    export class WDGeometryParser{
         public static create() {
             var obj = new this();
 
@@ -8,10 +8,10 @@ module wd{
 
         private _arrayBufferMap:wdCb.Hash<any> = null;
         private _imageMap:wdCb.Hash<HTMLImageElement> = null;
-        private _json:IGLTFJsonData = null;
-        private _materialParser = GLTFMaterialParser.create();
+        private _json:IWDJsonData = null;
+        // private _materialParser = WDMaterialParser.create();
 
-        public parse(json:IGLTFJsonData, object:IGLTFObjectData, mesh:IGLTFMesh, arrayBufferMap:wdCb.Hash<any>, imageMap:wdCb.Hash<HTMLImageElement>):void{
+        public parse(json:IWDJsonData, object:IWDObjectData, mesh:IWDMesh, arrayBufferMap:wdCb.Hash<any>, imageMap:wdCb.Hash<HTMLImageElement>):void{
             this._json = json;
             this._arrayBufferMap = arrayBufferMap;
             this._imageMap = imageMap;
@@ -21,8 +21,9 @@ module wd{
              */
 
             if(mesh.primitives.length > 1){
+                // todo support
                 for(let primitive of mesh.primitives){
-                    let childObject:IGLTFObjectData = GLTFUtils.createObjectData();
+                    let childObject:IWDObjectData = WDUtils.createObjectData();
 
                     this._setChildObjectNameWithMultiPrimitives(childObject, primitive);
 
@@ -40,16 +41,16 @@ module wd{
             }
         }
 
-        private _setChildObjectNameWithMultiPrimitives(object:IGLTFObjectData, primitive:IGLTFMeshPrimitive){
+        private _setChildObjectNameWithMultiPrimitives(object:IWDObjectData, primitive:IWDMeshPrimitive){
             object.name = primitive.material;
         }
 
-        private _parseGeometry( primitive:IGLTFMeshPrimitive):IGLTFGeometry{
-            var json:IGLTFJsonData = this._json,
+        private _parseGeometry( primitive:IWDMeshPrimitive):IWDGeometry{
+            var json:IWDJsonData = this._json,
                 arrayBufferMap = this._arrayBufferMap,
-                accessor:IGLTFAccessor = null,
+                accessor:IWDAccessor = null,
                 bufferArr:any = null,
-                geometry:IGLTFGeometry = <any>{},
+                geometry:IWDGeometry = <any>{},
                 vertices:Array<number> = null,
                 texCoords:Array<number> = null,
                 colors:Array<number> = null,
@@ -61,27 +62,32 @@ module wd{
                 if(primitive.attributes.hasOwnProperty(semantic)){
                     let attribute = primitive.attributes[semantic];
 
-                    accessor = json.accessors[attribute];
-                    bufferArr = GLTFUtils.getBufferArrFromAccessor(json, accessor, arrayBufferMap);
+                    //todo support binary
+                    // accessor = json.accessors[attribute];
+                    // bufferArr = WDUtils.getBufferArrFromAccessor(json, accessor, arrayBufferMap);
+                    bufferArr = attribute;
 
                     if(semantic === "POSITION"){
                         vertices = [];
 
                         this._addGeometryData(vertices, bufferArr);
                     }
-                    else if(semantic.indexOf("TEXCOORD_") > -1){
+                    //todo support multi texCoords
+                    // else if(semantic.indexOf("TEXCOORD_") > -1){
+                    else if(semantic === "TEXCOORD"){
                         texCoords = [];
 
                         this._addGeometryData(texCoords, bufferArr);
 
-                        this._normalizeTexCoords(texCoords);
+                        // this._normalizeTexCoords(texCoords);
                     }
                     else if(semantic === "NORMAL"){
                         normals = [];
 
-                        for(let data of bufferArr){
-                            normals.push(data);
-                        }
+                        // for(let data of bufferArr){
+                        //     normals.push(data);
+                        // }
+                        this._addGeometryData(normals, bufferArr);
                     }
                     else if(semantic === "COLOR"){
                         colors = [];
@@ -92,18 +98,16 @@ module wd{
                 }
             }
 
-
             faces = this._getFaces(json, primitive.indices, normals);
 
+            WDUtils.addData(geometry, "vertices", vertices);
+            WDUtils.addData(geometry, "colors", colors);
+            WDUtils.addData(geometry, "texCoords", texCoords);
+            WDUtils.addData(geometry, "faces", faces);
 
-            GLTFUtils.addData(geometry, "vertices", vertices);
-            GLTFUtils.addData(geometry, "colors", colors);
-            GLTFUtils.addData(geometry, "texCoords", texCoords);
-            GLTFUtils.addData(geometry, "faces", faces);
+            // WDUtils.addData(geometry, "drawMode", this._parseDrawMode(primitive.mode));
 
-            GLTFUtils.addData(geometry, "drawMode", this._parseDrawMode(primitive.mode));
-
-            geometry.material = this._materialParser.parse(json, primitive.material, this._imageMap);
+            // geometry.material = this._materialParser.parse(json, primitive.material, this._imageMap);
 
             return geometry;
         }
@@ -114,22 +118,25 @@ module wd{
             }
         }
 
-        @require(function(json:IGLTFJsonData, indices:string, normals:Array<number>){
-            var accessor:IGLTFAccessor = null,
-                bufferArr:any = null;
-
-            if(!indices){
-                return [];
-            }
-
-            accessor = json.accessors[indices];
-
-            bufferArr = GLTFUtils.getBufferArrFromAccessor(json, accessor, this._arrayBufferMap);
-
-            assert(bufferArr.length % 3 === 0, Log.info.FUNC_SHOULD("indices' count", "3 times"));
+        @require(function(json:IWDJsonData, indices:string, normals:Array<number>){
+            //todo support
+            // var accessor:IWDAccessor = null,
+            //     bufferArr:any = null;
+            //
+            // if(!indices){
+            //     return [];
+            // }
+            //
+            // accessor = json.accessors[indices];
+            //
+            // bufferArr = WDUtils.getBufferArrFromAccessor(json, accessor, this._arrayBufferMap);
+            //
+            // assert(bufferArr.length % 3 === 0, Log.info.FUNC_SHOULD("indices' count", "3 times"));
         })
-        private _getFaces(json:IGLTFJsonData, indices:string, normals:Array<number>){
-            var accessor:IGLTFAccessor = null,
+        // private _getFaces(json:IWDJsonData, indices:string, normals:Array<number>){
+        //todo fix
+        private _getFaces(json:IWDJsonData, indices:Array<number>, normals:Array<number>){
+            var accessor:IWDAccessor = null,
                 bufferArr:any = null,
                 face:Face3 = null,
                 faces:Array<Face3> = [];
@@ -138,9 +145,11 @@ module wd{
                 return [];
             }
 
-            accessor = json.accessors[indices];
+            // accessor = json.accessors[indices];
 
-            bufferArr = GLTFUtils.getBufferArrFromAccessor(json, accessor, this._arrayBufferMap);
+            //todo fix
+            // bufferArr = WDUtils.getBufferArrFromAccessor(json, accessor, this._arrayBufferMap);
+            bufferArr = indices;
 
             for (let i = 0, len = bufferArr.length; i < len; i += 3) {
                 let aIndex = bufferArr[i],

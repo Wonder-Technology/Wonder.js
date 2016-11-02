@@ -56,5 +56,11 @@ def getObjectName(o, forcePrefix = False, defaultName = "defaultName"):
 
     return name
 
+def setName(o, dict):
+    name = o.GetName()
+
+    if name != None and name != "":
+        dict["name"] = name
+
 def getPrefixedName(o, prefix):
     return (prefix + '_%s_') % o.GetUniqueID() + o.GetName()
