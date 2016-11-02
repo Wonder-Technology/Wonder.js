@@ -92,6 +92,23 @@ describe("convertIndices->Converter", function(){
 
         });
 
+        describe("only change 'meshes' field, deep copy other fields", function(){
+            beforeEach(function(){
+            });
+
+            it("test", function(){
+                var nodes = {
+                    "a":{}
+                }
+                var result = converter.convert({
+                    "meshes":{},
+                    "nodes":nodes
+                });
+
+                expect(result.nodes).toEqual(nodes);
+            });
+        });
+
         describe("convert multi indices to single indices", function () {
             describe("duplicate the vertex which has different attribute data", function () {
                 it("test one vertex has two different uvs", function() {

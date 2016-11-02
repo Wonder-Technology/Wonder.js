@@ -1,5 +1,5 @@
 from helper import *
-from parsePrimitiveData import *
+from parseMesh import *
 from fbx import *
 
 class Parser(object):
@@ -9,6 +9,8 @@ class Parser(object):
     def parse(self, scene, filename):
         # TODO parse nodes, meshes(geometry data)
 
+        output = {}
+
 
         # global_settings = scene.GetGlobalSettings()
         # objects, nobjects = generate_scene_objects(scene)
@@ -16,7 +18,7 @@ class Parser(object):
         # textures = generate_texture_dict(scene)
         # materials = generate_material_dict(scene)
         # geometries = generate_geometry_dict(scene)
-        meshes = self._parseMesh(scene)
+        self._parseContent(scene, output)
 
         # ntextures = len(textures)
         # nmaterials = len(materials)
@@ -75,57 +77,93 @@ class Parser(object):
 
 
 
-        output = {
-            "meshes": meshes
-        }
+        # output = {
+        #     "meshes": meshes
+        # }
 
         return output
 
-    def _parseMesh(self, scene):
-        meshPrimitives = []
-
-        mesh_dict = {}
+    def _parseContent(self, scene, output):
+        # meshPrimitives = []
+        #
+        # mesh_dict = {}
 
         node = scene.GetRootNode()
 
-        mesh_name = getObjectName(node)
+        output["nodes"] = {}
+        output["meshes"] = {}
 
-        mesh_dict[mesh_name] = {
-         "primitives": meshPrimitives
+        sceneName = scene.GetName()
+
+        if sceneName == "":
+            sceneName = "sceneName"
+
+        output["scene"] = sceneName
+
+        sceneNodes = []
+        output["scenes"] = {}
+        output["scenes"][sceneName] = {
+            "nodes": sceneNodes
         }
+
+        # mesh_name = getObjectName(node)
+        #
+        # mesh_dict[mesh_name] = {
+        #  "primitives": meshPrimitives
+        # }
 
         if node:
             for i in range(node.GetChildCount()):
-                self._parseMeshHierarchy(node.GetChild(i), meshPrimitives)
+                nodeChild = node.GetChild(i)
 
-        return mesh_dict
+                sceneNodes.append(getObjectName(nodeChild))
 
-    # TODO fix bug?
+                self._parseContentHierarchy(nodeChild, output)
 
-    def _parseMeshHierarchy(self, node, meshPrimitives):
-        if node.GetNodeAttribute() == None:
+    def _parseContentHierarchy(self, node, output):
+        nodeName = getObjectName(node)
+        nodeData = {}
+        output["nodes"][nodeName] = nodeData
+
+        nodeAttribute = node.GetNodeAttribute()
+
+        if nodeAttribute == None:
+            print ("not handle null node attribute")
             pass
         else:
-            attribute_type = (node.GetNodeAttribute().GetAttributeType())
-            if attribute_type == FbxNodeAttribute.eMesh or \
-                            attribute_type == FbxNodeAttribute.eNurbs or \
-                            attribute_type == FbxNodeAttribute.eNurbsSurface or \
-                            attribute_type == FbxNodeAttribute.ePatch:
+            # nodeData = {}
+            # output.nodes[getObjectName(node)] = nodeData
 
-                if attribute_type != FbxNodeAttribute.eMesh:
-                    self._converter.Triangulate(node.GetNodeAttribute(), True)
+            # self._parseNode(node, output)
 
-                primitiveData = parsePrimitiveData(node)
+            attribute_type = nodeAttribute.GetAttributeType()
 
-                meshPrimitives.append(
-                    {
-                        "attributes": primitiveData["attributes"],
-                        "verticeIndices": primitiveData["verticeIndices"],
-                        "normalIndices":primitiveData["normalIndices"],
-                        "texCoordIndices":primitiveData["texCoordIndices"],
-                        "colorIndices":primitiveData["colorIndices"]
-                    }
-                )
+            if attribute_type == FbxNodeAttribute.eNurbs or \
+            attribute_type == FbxNodeAttribute.eNurbsSurface or \
+            attribute_type == FbxNodeAttribute.ePatch:
+                print ("not support attribute_type:%s" % attribute_type)
+                return
+
+            if attribute_type == FbxNodeAttribute.eMesh:
+
+                # if attribute_type != FbxNodeAttribute.eMesh:
+                #     self._converter.Triangulate(node.GetNodeAttribute(), True)
+                mesh = node.GetNodeAttribute()
+                meshName = getObjectName(mesh, False, nodeName + "_mesh")
+
+                nodeData["mesh"] = meshName
+
+                meshData = {}
+
+                output["meshes"][meshName] = meshData
+
+                parseMesh(mesh, meshData)
+
+        nodeData["children"] = []
 
         for i in range(node.GetChildCount()):
-            self._parseMeshHierarchy(node.GetChild(i), meshPrimitives)
+            nodeChild = node.GetChild(i)
+
+            nodeData["children"].append(getObjectName(nodeChild))
+
+            self._parseContentHierarchy(nodeChild, output)

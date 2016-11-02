@@ -8,9 +8,7 @@ def enum(**enums):
 
 LayerKey = enum(TEXCOORD=1, NORMAL=2, COLOR=3)
 
-def parsePrimitiveData(node):
-    mesh = node.GetNodeAttribute()
-
+def parseMesh(mesh, meshData):
     vertices, verticeIndices = getVerticeData(mesh)
 
     texCoords, texCoordIndices = getTexCoordData(mesh)
@@ -20,19 +18,26 @@ def parsePrimitiveData(node):
     colors, colorIndices = getColorData(mesh)
 
 
-    return {
-        "attributes": {
-            "POSITION": vertices,
-            "NORMAL": normals,
-            "COLOR": colors,
-            "TEXCOORD": texCoords
-        },
-        "verticeIndices": verticeIndices,
-        "normalIndices":normalIndices,
-        "texCoordIndices":texCoordIndices,
-        "colorIndices":colorIndices
-    }
+    # TODO support parse tangent, binormal data
 
+    # TODO support multi primitives?
+
+    meshData["primitives"] = [
+        {
+            "attributes": {
+                "POSITION": vertices,
+                "NORMAL": normals,
+                "COLOR": colors,
+                "TEXCOORD": texCoords
+            },
+            "verticeIndices": verticeIndices,
+            "normalIndices":normalIndices,
+            "texCoordIndices":texCoordIndices,
+            "colorIndices":colorIndices
+
+            # TODO parse material, mode
+        }
+    ]
 
 
 
@@ -127,7 +132,8 @@ def getTexCoordData(mesh):
                                     referenceMode == FbxLayerElement.eIndexToDirect:
                         value = texCoordData.GetDirectArray().GetAt(index)
                 else:
-                    print("unsupported mapping mode")
+                    print("texCoords:unsupported mapping mode")
+                    continue
 
                 indices.append(index)
 
@@ -170,7 +176,8 @@ def getNormalData(mesh):
                         index = data.GetIndexArray().GetAt(vertexId)
                         value = data.GetDirectArray().GetAt(index)
                 else:
-                    print("unsupported mapping mode")
+                    print("normals: unsupported mapping mode")
+                    continue
 
                 indices.append(index)
 
@@ -222,7 +229,8 @@ def getColorData(mesh):
                         index = data.GetIndexArray().GetAt(vertexId)
                         value = data.GetDirectArray().GetAt(index)
                 else:
-                    print("unsupported mapping mode")
+                    print("colors:unsupported mapping mode")
+                    continue
 
                 indices.append(index)
 
@@ -269,3 +277,4 @@ def getValuesFromDict(dict, layerKey):
 
     # print (len(values))
     return values
+

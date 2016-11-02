@@ -8,6 +8,8 @@ import Vector3 = require("../../../ts/Vector3");
 
 import contract = require("../../../ts/definition/typescript/decorator/contract");
 
+import ExtendUtils = require("../../../ts/ExtendUtils")
+
 var it = contract.it,
     requireInNodejs = contract.requireInNodejs;
 
@@ -49,10 +51,9 @@ export class Converter {
         });
     })
     public convert(sourceJson:SourceJsonData):TargetJsonData {
-        var targetJson:TargetJsonData = <TargetJsonData>{
-            meshes: {
-            }
-        };
+        var targetJson:TargetJsonData = ExtendUtils.extendDeep(sourceJson);
+
+        targetJson.meshes = {};
 
         for(let key in sourceJson.meshes){
             if(sourceJson.meshes.hasOwnProperty(key)){

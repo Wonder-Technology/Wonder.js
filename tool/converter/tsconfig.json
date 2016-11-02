@@ -21,6 +21,7 @@
 		"../ts/Vector2.ts",
 		"../ts/Vector3.ts",
 		"../ts/Log.ts",
+		"../ts/ExtendUtils.ts",
 
 
 		"./dts/chalk.d.ts",
