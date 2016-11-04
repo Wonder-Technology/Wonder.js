@@ -78,26 +78,17 @@ module wd {
 
     export interface IWDMeshPrimitive {
         attributes: IWDAttribute;
-        //todo fix
-        // indices?: string;
-        indices?: Array<number>;
+        indices?: string;
         material: string;
         mode: number;
     }
 
     export interface IWDAttribute {
-        // POSITION:string;
-        // NORMAL?:string;
+        POSITION:string;
+        NORMAL?:string;
         // todo support multi TexCoords
-        // TEXCOORD?:string;
-        // COLOR?:string;
-
-        //todo use binary
-        POSITION:Array<number>;
-        NORMAL?:Array<number>;
-        TEXCOORD?:Array<number>;
-        COLOR?:Array<number>;
-
+        TEXCOORD?:string;
+        COLOR?:string;
 
         // JOINT?:string;
         // WEIGH?:string;
@@ -118,8 +109,8 @@ module wd {
     export interface IWDBuffer extends IWDChildRootProperty {
         uri: string;
 
-        byteLength?: number;
-        type?: string;
+        byteLength: number;
+        type: string;
     }
 
     export interface IWDBufferView extends IWDChildRootProperty {

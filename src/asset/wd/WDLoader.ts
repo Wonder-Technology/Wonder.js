@@ -76,7 +76,7 @@ module wd{
 
         private constructor(){super();}
 
-        private _arrayBufferMap:wdCb.Hash<any> = wdCb.Hash.create<any>();
+        private _arrayBufferMap:wdCb.Hash<ArrayBuffer> = wdCb.Hash.create<ArrayBuffer>();
         private _imageMap:wdCb.Hash<HTMLImageElement> = wdCb.Hash.create<HTMLImageElement>();
 
         protected loadAsset(url:string, id:string):wdFrp.Stream;
@@ -95,9 +95,9 @@ module wd{
                     jsonData = json;
 
                     //todo fix
-                    // return self._createLoadAllAssetsStream(url, json);
+                    return self._createLoadAllAssetsStream(url, json);
                     // return wdFrp.empty;
-                    return wdFrp.fromArray([1]);
+                    // return wdFrp.fromArray([1]);
                 })
                 .lastOrDefault()
                 .map(() => {
@@ -105,28 +105,28 @@ module wd{
                 });
         }
 
-        // private _createLoadAllAssetsStream(url:string, json:IWDJsonData):wdFrp.Stream{
-        //     return wdFrp.fromArray([
-        //         this._createLoadBuffersStream(url, json),
-        //         this._createLoadImageAssetStream(url, json)
-        //     ])
-        //         .mergeAll();
-        // }
+        private _createLoadAllAssetsStream(url:string, json:IWDJsonData):wdFrp.Stream{
+            return wdFrp.fromArray([
+                this._createLoadBuffersStream(url, json)
+                // this._createLoadImageAssetStream(url, json)
+            ])
+                .mergeAll();
+        }
 
-        // private _createLoadBuffersStream(filePath:string, json:IWDJsonData):wdFrp.Stream{
-        //     var arrayBufferMap = this._arrayBufferMap;
-        //
-        //     return this._createLoadAssetStream(filePath, json, json.buffers, arrayBufferMap, (id, url) => {
-        //             return AjaxLoader.load(url, "arraybuffer")
-        //                 .do((buffer:any) => {
-        //                     Log.error(!(buffer instanceof ArrayBuffer), Log.info.FUNC_SHOULD(`Buffer:${id}`, "be an array buffer"));
-        //                     Log.error(buffer.byteLength !== buffer.byteLength, Log.info.FUNC_SHOULD(`Buffer:${id}'s length is ${buffer.byteLength}, but it`, `be ${buffer.byteLength}`));
-        //
-        //                     arrayBufferMap.addChild(id, buffer);
-        //                 });
-        //         }
-        //     );
-        // }
+        private _createLoadBuffersStream(filePath:string, json:IWDJsonData):wdFrp.Stream{
+            var arrayBufferMap = this._arrayBufferMap;
+
+            return this._createLoadAssetStream(filePath, json, json.buffers, arrayBufferMap, (id, url) => {
+                    return AjaxLoader.load(url, "arraybuffer")
+                        .do((buffer:any) => {
+                            Log.error(!(buffer instanceof ArrayBuffer), Log.info.FUNC_SHOULD(`Buffer:${id}`, "be an array buffer"));
+                            Log.error(buffer.byteLength !== buffer.byteLength, Log.info.FUNC_SHOULD(`Buffer:${id}'s length is ${buffer.byteLength}, but it`, `be ${buffer.byteLength}`));
+
+                            arrayBufferMap.addChild(id, buffer);
+                        });
+                }
+            );
+        }
         //
         // private _createLoadImageAssetStream(filePath:string, json:IWDJsonData):wdFrp.Stream{
         //     var imageMap = this._imageMap;
@@ -140,29 +140,29 @@ module wd{
         //     );
         // }
         //
-        // private _createLoadAssetStream(filePath:string, json:IWDJsonData, datas:any, dataMap:wdCb.Hash<any>, loadStreamFunc:(id:string, url:string) => wdFrp.Stream):wdFrp.Stream{
-        //     var streamArr = [];
-        //
-        //     if(datas){
-        //         let id:string = null;
-        //
-        //         for(id in datas){
-        //             if(datas.hasOwnProperty(id)){
-        //                 let data = datas[id];
-        //
-        //                 if(WDUtils.isBase64(data.uri)){
-        //                     dataMap.addChild(id, WDUtils.decodeArrayBuffer(data.uri));
-        //                 }
-        //                 else{
-        //                     let url = ModelLoaderUtils.getPath(filePath, data.uri);
-        //
-        //                     streamArr.push(loadStreamFunc(id, url));
-        //                 }
-        //             }
-        //         }
-        //     }
-        //
-        //     return wdFrp.fromArray(streamArr).mergeAll();
-        // }
+        private _createLoadAssetStream(filePath:string, json:IWDJsonData, datas:any, dataMap:wdCb.Hash<any>, loadStreamFunc:(id:string, url:string) => wdFrp.Stream):wdFrp.Stream{
+            var streamArr = [];
+
+            if(datas){
+                let id:string = null;
+
+                for(id in datas){
+                    if(datas.hasOwnProperty(id)){
+                        let data = datas[id];
+
+                        if(WDUtils.isBase64(data.uri)){
+                            dataMap.addChild(id, WDUtils.decodeArrayBuffer(data.uri));
+                        }
+                        else{
+                            let url = ModelLoaderUtils.getPath(filePath, data.uri);
+
+                            streamArr.push(loadStreamFunc(id, url));
+                        }
+                    }
+                }
+            }
+
+            return wdFrp.fromArray(streamArr).mergeAll();
+        }
     }
 }

@@ -80,21 +80,14 @@ describe("WDParser", function () {
         var vertices,texCoords,indices;
 
         function getAttributeData() {
-            // {
-            //                         "NORMAL": "accessor_3",
-            //                         "POSITION": "accessor_2",
-            //                         "TEXCOORD": "accessor_4"
-            //                     }
             return {
-                "NORMAL": [],
-                "POSITION": vertices,
-                "TEXCOORD": texCoords
-            }
+            "POSITION": "accessor_1",
+            "TEXCOORD": "accessor_2"
+          }
         }
 
         function getIndiceData() {
-            // accessor_1
-            return indices;
+            return "accessor_0";
         }
 
         function judgeGeometryDataEqual(source, target, size){
@@ -105,6 +98,29 @@ describe("WDParser", function () {
             }
 
             expect(sourceData).toEqual(target);
+        }
+
+        function buildArrayBuffer(vertices, texCoords, indices) {
+            var attributeArr = vertices.concat(texCoords);
+
+
+            var length = 0;
+
+            length += 4 * attributeArr.length;
+            length += 2 * indices.length;
+
+            var writer = BufferWriter.create(length);
+
+            indices.forEach(function(indice){
+                writer.writeUInt16(indice);
+            });
+
+
+            attributeArr.forEach(function(val){
+                writer.writeFloat(val);
+            });
+
+            return writer.arraybuffer;
         }
 
         beforeEach(function(){
@@ -118,90 +134,51 @@ describe("WDParser", function () {
                     }
                 },
 
-                // "buffers": {
-                //     "box": {
-                //         "byteLength": 840,
-                //         "type": "arraybuffer",
-                //         //"uri": "box.bin"
-                //         "uri": "data:application/octet-stream;base64,AAABAAIAAwACAAEABAAFAAYABwAGAAUACAAJAAoACwAKAAkADAANAA4ADwAOAA0AEAARABIAEwASABEAFAAVABYAFwAWABUAAAAAvwAAAL8AAAA/AAAAPwAAAL8AAAA/AAAAvwAAAD8AAAA/AAAAPwAAAD8AAAA/AAAAPwAAAL8AAAA/AAAAvwAAAL8AAAA/AAAAPwAAAL8AAAC/AAAAvwAAAL8AAAC/AAAAPwAAAD8AAAA/AAAAPwAAAL8AAAA/AAAAPwAAAD8AAAC/AAAAPwAAAL8AAAC/AAAAvwAAAD8AAAA/AAAAPwAAAD8AAAA/AAAAvwAAAD8AAAC/AAAAPwAAAD8AAAC/AAAAvwAAAL8AAAA/AAAAvwAAAD8AAAA/AAAAvwAAAL8AAAC/AAAAvwAAAD8AAAC/AAAAvwAAAL8AAAC/AAAAvwAAAD8AAAC/AAAAPwAAAL8AAAC/AAAAPwAAAD8AAAC/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAgL8AAAAAAAAAAAAAgL8AAAAAAAAAAAAAgL8AAAAAAAAAAAAAgL8AAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAAAAAAAAgD8AAAAAAAAAAAAAgD8AAAAAAAAAAAAAgD8AAAAAAAAAAAAAgD8AAAAAAACAvwAAAAAAAAAAAACAvwAAAAAAAAAAAACAvwAAAAAAAAAAAACAvwAAAAAAAAAAAAAAAAAAAAAAAIC/AAAAAAAAAAAAAIC/AAAAAAAAAAAAAIC/AAAAAAAAAAAAAIC/AACAPgAAAAAAAIA+oKqqPgAAAD8AAAAAAAAAP6Cqqj4AAIA+oKqqPgAAAACgqqo+AACAPrCqKj8AAAAAsKoqPwAAAD+gqqo+AACAPqCqqj4AAAA/sKoqPwAAgD6wqio/AABAP6Cqqj4AAAA/oKqqPgAAQD+wqio/AAAAP7CqKj8AAIA/oKqqPgAAQD+gqqo+AACAP7CqKj8AAEA/sKoqPwAAgD4AAIA/AAAAPwAAgD8AAIA+sKoqPwAAAD+wqio/"
-                //     }
-                // },
-                // "bufferViews": {
-                //     "bufferView_1": {
-                //         "buffer": "box",
-                //         "byteLength": 72,
-                //         "byteOffset": 0,
-                //         "target": 34963
-                //     },
-                //     "bufferView_2": {
-                //         "buffer": "box",
-                //         "byteLength": 768,
-                //         "byteOffset": 72,
-                //         "target": 34962
-                //     }
-                // },
-                // "accessors": {
-                //     "accessor_1": {
-                //         "bufferView": "bufferView_1",
-                //         "byteOffset": 0,
-                //         "byteStride": 0,
-                //         "componentType": 5123,
-                //         "count": 36,
-                //         "type": "SCALAR"
-                //     },
-                //     "accessor_2": {
-                //         "bufferView": "bufferView_2",
-                //         "byteOffset": 0,
-                //         "byteStride": 12,
-                //         "componentType": 5126,
-                //         "count": 24,
-                //         "max": [
-                //             0.5,
-                //             0.5,
-                //             0.5
-                //         ],
-                //         "min": [
-                //             -0.5,
-                //             -0.5,
-                //             -0.5
-                //         ],
-                //         "type": "VEC3"
-                //     },
-                //     "accessor_3": {
-                //         "bufferView": "bufferView_2",
-                //         "byteOffset": 288,
-                //         "byteStride": 12,
-                //         "componentType": 5126,
-                //         "count": 24,
-                //         "max": [
-                //             1,
-                //             1,
-                //             1
-                //         ],
-                //         "min": [
-                //             -1,
-                //             -1,
-                //             -1
-                //         ],
-                //         "type": "VEC3"
-                //     },
-                //     "accessor_4": {
-                //         "bufferView": "bufferView_2",
-                //         "byteOffset": 576,
-                //         "byteStride": 8,
-                //         "componentType": 5126,
-                //         "count": 24,
-                //         "max": [
-                //             1,
-                //             1
-                //         ],
-                //         "min": [
-                //             0,
-                //             0
-                //         ],
-                //         "type": "VEC2"
-                //     }
-                // },
+                "buffers": {
+                    "box": {
+                        "byteLength": 552,
+                        "type": "arraybuffer",
+                        "uri": "box.bin"
+                    }
+                },
+                "bufferViews": {
+                    "bufferView_0": {
+                        "buffer": "result",
+                        "byteLength": 72,
+                        "byteOffset": 0,
+                        "target": 34963
+                    },
+                    "bufferView_1": {
+                        "buffer": "result",
+                        "byteLength": 480,
+                        "byteOffset": 72,
+                        "target": 34962
+                    }
+                },
+                "accessors": {
+                    "accessor_0": {
+                        "bufferView": "bufferView_0",
+                        "byteOffset": 0,
+                        "count": 36,
+                        "componentType": 5123,
+                        "type": "SCALAR"
+                    },
+                    "accessor_1": {
+                        "bufferView": "bufferView_1",
+                        "byteOffset": 0,
+                        "count": 24,
+                        "componentType": 5126,
+                        "type": "VEC3"
+                    },
+                    "accessor_2": {
+                        "bufferView": "bufferView_1",
+                        "byteOffset": 288,
+                        "count": 24,
+                        "componentType": 5126,
+                        "type": "VEC2"
+                    }
+                }
+
 
                 // "materials": {
                 //     "Effect-Red": {
@@ -210,12 +187,17 @@ describe("WDParser", function () {
                 // }
             })
 
-            // sandbox.stub(arrayBufferMap, "getChild").returns(Utils.decodeArrayBuffer(json.buffers.box.uri));
-
             vertices =[ -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5 ];
 
             texCoords =[ 0.25, 1, 0.25, 0.6666669845581055, 0.5, 1, 0.5, 0.6666669845581055, 0.25, 0.6666669845581055, 0, 0.6666669845581055, 0.25, 0.33333301544189453, 0, 0.33333301544189453, 0.5, 0.6666669845581055, 0.25, 0.6666669845581055, 0.5, 0.33333301544189453, 0.25, 0.33333301544189453, 0.75, 0.6666669845581055, 0.5, 0.6666669845581055, 0.75, 0.33333301544189453, 0.5, 0.33333301544189453, 1, 0.6666669845581055, 0.75, 0.6666669845581055, 1, 0.33333301544189453, 0.75, 0.33333301544189453, 0.25, 0, 0.5, 0, 0.25, 0.33333301544189453, 0.5, 0.33333301544189453 ];
             indices = [ 0, 1, 2, 3, 2, 1, 4, 5, 6, 7, 6, 5, 8, 9, 10, 11, 10, 9, 12, 13, 14, 15, 14, 13, 16, 17, 18, 19, 18, 17, 20, 21, 22, 23, 22, 21 ];
+
+
+
+
+
+
+            sandbox.stub(arrayBufferMap, "getChild").returns(buildArrayBuffer(vertices, texCoords, indices));
         });
 
         it("parse current scene->nodes", function(){
@@ -357,22 +339,17 @@ describe("WDParser", function () {
                             //"name": "geo1",
                             "primitives": [
                                 {
-                                    "attributes": {
-                                        "NORMAL": [],
-                                        "POSITION": [],
-                                        "TEXCOORD": []
-                                    },
-                                    "indices": [],
+                                    "attributes": getAttributeData(),
+                                    "indices": getIndiceData(),
                                     "material": "mat1",
                                     "mode": 4
                                 },
                                 {
                                     "attributes": {
-                                        "NORMAL": [],
-                                        "POSITION": [],
-                                        "TEXCOORD": []
+                                        "POSITION": "accessor_2",
+                                        "TEXCOORD": "accessor_1"
                                     },
-                                    "indices": [],
+                                    "indices": "accessor_0",
                                     "material": "mat2",
                                     "mode": 4
                                 }
@@ -430,6 +407,7 @@ describe("WDParser", function () {
                         }
                     }
                 })
+
 
 
                 var data = parser.parse(json, arrayBufferMap, wdCb.Hash.create());

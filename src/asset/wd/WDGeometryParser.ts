@@ -6,12 +6,12 @@ module wd{
             return obj;
         }
 
-        private _arrayBufferMap:wdCb.Hash<any> = null;
+        private _arrayBufferMap:wdCb.Hash<ArrayBuffer> = null;
         private _imageMap:wdCb.Hash<HTMLImageElement> = null;
         private _json:IWDJsonData = null;
         // private _materialParser = WDMaterialParser.create();
 
-        public parse(json:IWDJsonData, object:IWDObjectData, mesh:IWDMesh, arrayBufferMap:wdCb.Hash<any>, imageMap:wdCb.Hash<HTMLImageElement>):void{
+        public parse(json:IWDJsonData, object:IWDObjectData, mesh:IWDMesh, arrayBufferMap:wdCb.Hash<ArrayBuffer>, imageMap:wdCb.Hash<HTMLImageElement>):void{
             this._json = json;
             this._arrayBufferMap = arrayBufferMap;
             this._imageMap = imageMap;
@@ -21,7 +21,6 @@ module wd{
              */
 
             if(mesh.primitives.length > 1){
-                // todo support
                 for(let primitive of mesh.primitives){
                     let childObject:IWDObjectData = WDUtils.createObjectData();
 
@@ -48,8 +47,7 @@ module wd{
         private _parseGeometry( primitive:IWDMeshPrimitive):IWDGeometry{
             var json:IWDJsonData = this._json,
                 arrayBufferMap = this._arrayBufferMap,
-                accessor:IWDAccessor = null,
-                bufferArr:any = null,
+                bufferReader:BufferReader = null,
                 geometry:IWDGeometry = <any>{},
                 vertices:Array<number> = null,
                 texCoords:Array<number> = null,
@@ -60,39 +58,36 @@ module wd{
 
             for(let semantic in primitive.attributes){
                 if(primitive.attributes.hasOwnProperty(semantic)){
-                    let attribute = primitive.attributes[semantic];
-
-                    //todo support binary
-                    // accessor = json.accessors[attribute];
-                    // bufferArr = WDUtils.getBufferArrFromAccessor(json, accessor, arrayBufferMap);
-                    bufferArr = attribute;
+                    let attribute = primitive.attributes[semantic],
+                        accessor:IWDAccessor = json.accessors[attribute],
+                        {bufferReader, count} = WDUtils.getBufferReaderFromAccessor(json, accessor, arrayBufferMap);
 
                     if(semantic === "POSITION"){
                         vertices = [];
 
-                        this._addGeometryData(vertices, bufferArr);
+                        this._addAttributeData(vertices, bufferReader, count);
                     }
                     //todo support multi texCoords
                     // else if(semantic.indexOf("TEXCOORD_") > -1){
                     else if(semantic === "TEXCOORD"){
                         texCoords = [];
 
-                        this._addGeometryData(texCoords, bufferArr);
+                        this._addAttributeData(texCoords, bufferReader, count);
 
                         // this._normalizeTexCoords(texCoords);
                     }
                     else if(semantic === "NORMAL"){
                         normals = [];
 
-                        // for(let data of bufferArr){
+                        // for(let data of bufferReader){
                         //     normals.push(data);
                         // }
-                        this._addGeometryData(normals, bufferArr);
+                        this._addAttributeData(normals, bufferReader, count);
                     }
                     else if(semantic === "COLOR"){
                         colors = [];
 
-                        this._addGeometryData(colors, bufferArr);
+                        this._addAttributeData(colors, bufferReader, count);
                     }
                     //todo support JOINT, WEIGHT
                 }
@@ -112,32 +107,24 @@ module wd{
             return geometry;
         }
 
-        private _addGeometryData(geometryData:Array<number>, sourceData:Array<number>){
-            for(let i = 0, len = sourceData.length; i < len; i++){
-                geometryData.push(sourceData[i]);
+        private _addAttributeData(geometryData:Array<number>, bufferReader:BufferReader, count:number){
+            for(let i = 0; i < count; i++){
+                geometryData.push(bufferReader.readFloat());
             }
         }
 
         @require(function(json:IWDJsonData, indices:string, normals:Array<number>){
-            //todo support
-            // var accessor:IWDAccessor = null,
-            //     bufferArr:any = null;
-            //
-            // if(!indices){
-            //     return [];
-            // }
-            //
-            // accessor = json.accessors[indices];
-            //
-            // bufferArr = WDUtils.getBufferArrFromAccessor(json, accessor, this._arrayBufferMap);
-            //
-            // assert(bufferArr.length % 3 === 0, Log.info.FUNC_SHOULD("indices' count", "3 times"));
+            if(indices){
+                it("indices' count should be 3 times", () => {
+                    var accessor:IWDAccessor = json.accessors[indices],
+                        {bufferReader, count} = WDUtils.getBufferReaderFromAccessor(json, accessor, this._arrayBufferMap);
+
+                    expect(count % 3).equal(0);
+                }, this);
+            }
         })
-        // private _getFaces(json:IWDJsonData, indices:string, normals:Array<number>){
-        //todo fix
-        private _getFaces(json:IWDJsonData, indices:Array<number>, normals:Array<number>){
+        private _getFaces(json:IWDJsonData, indices:string, normals:Array<number>){
             var accessor:IWDAccessor = null,
-                bufferArr:any = null,
                 face:Face3 = null,
                 faces:Array<Face3> = [];
 
@@ -145,16 +132,14 @@ module wd{
                 return [];
             }
 
-            // accessor = json.accessors[indices];
+            accessor = json.accessors[indices];
 
-            //todo fix
-            // bufferArr = WDUtils.getBufferArrFromAccessor(json, accessor, this._arrayBufferMap);
-            bufferArr = indices;
+            let {bufferReader, count} = WDUtils.getBufferReaderFromAccessor(json, accessor, this._arrayBufferMap);
 
-            for (let i = 0, len = bufferArr.length; i < len; i += 3) {
-                let aIndex = bufferArr[i],
-                    bIndex = bufferArr[i + 1],
-                    cIndex = bufferArr[i + 2],
+            for (let i = 0, len = count; i < len; i += 3) {
+                let aIndex = bufferReader.readUInt16(),
+                    bIndex = bufferReader.readUInt16(),
+                    cIndex = bufferReader.readUInt16(),
                     verticeIndiceArr = [aIndex, bIndex, cIndex];
 
                 face = Face3.create(aIndex, bIndex, cIndex);

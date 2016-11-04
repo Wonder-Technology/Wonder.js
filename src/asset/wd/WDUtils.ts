@@ -49,26 +49,37 @@ module wd{
             return color;
         }
 
-        public static getBufferArrFromAccessor(json:IWDJsonData, accessor: IWDAccessor, arrayBufferMap:wdCb.Hash<any>): any{
+        public static getBufferReaderFromAccessor(json:IWDJsonData, accessor: IWDAccessor, arrayBufferMap:wdCb.Hash<any>){
             var bufferView: IWDBufferView = json.bufferViews[accessor.bufferView],
                 arrayBuffer: any = arrayBufferMap.getChild(bufferView.buffer),
                 byteOffset = accessor.byteOffset + bufferView.byteOffset,
-                count = accessor.count * this.getAccessorTypeSize(accessor);
+                count = accessor.count * this.getAccessorTypeSize(accessor),
+                byteSize:number = null;
 
             switch (accessor.componentType) {
                 case 5120:
-                    return new Int8Array(arrayBuffer, byteOffset, count);
+                    byteSize = 1;
+                    break;
                 case 5121:
-                    return new Uint8Array(arrayBuffer, byteOffset, count);
+                    byteSize = 1;
+                    break;
                 case 5122:
-                    return new Int16Array(arrayBuffer, byteOffset, count);
+                    byteSize = 2;
+                    break;
                 case 5123:
-                    return new Uint16Array(arrayBuffer, byteOffset, count);
+                    byteSize = 2;
+                    break;
                 case 5126:
-                    return new Float32Array(arrayBuffer, byteOffset, count);
+                    byteSize = 4;
+                    break;
                 default:
                     Log.error(true, Log.info.FUNC_UNEXPECT(`componentType:${accessor.componentType}`));
                     break;
+            }
+
+            return {
+                bufferReader:BufferReader.create(arrayBuffer, byteOffset, count * byteSize),
+                count: count
             }
         }
 

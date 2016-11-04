@@ -26,6 +26,8 @@
         'test/helper/yoop/yOOP.js',
         'test/unit/**/*Tool.js',
 
+        'test/unit/**/BufferWriter.js',
+
         // 'test/unit/**',
 
 
