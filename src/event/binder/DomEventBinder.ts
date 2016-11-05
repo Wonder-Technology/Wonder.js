@@ -3,7 +3,7 @@ module wd {
     export class DomEventBinder extends EventBinder{
         public static getInstance():any {}
 
-		private constructor(){super();}
+        private constructor(){super();}
 
         public on(listener:{}|EventListener):void;
 
@@ -15,31 +15,6 @@ module wd {
 
         public on(dom:HTMLElement, eventName:EEventName|string, handler:Function, priority:number):void;
 
-        @require(function(...args){
-            var checkEventSeparator = (eventName:string) => {
-                assert(eventName.indexOf(DomEventListenerMap.eventSeparator) === -1, Log.info.FUNC_SHOULD_NOT("eventName", `contain ${DomEventListenerMap.eventSeparator}`));
-            };
-
-            if(args.length === 1){
-            }
-            else if(args.length === 2){
-            }
-            else if(args.length === 3 && JudgeUtils.isString(args[0])){
-                let eventName = args[0];
-
-                checkEventSeparator(eventName);
-            }
-            else if(args.length === 3 && JudgeUtils.isDom(args[0])){
-                let eventName = args[1];
-
-                checkEventSeparator(eventName);
-            }
-            else if(args.length === 4) {
-                let eventName = args[1];
-
-                checkEventSeparator(eventName);
-            }
-        })
         public on(...args) {
             if(args.length === 1){
                 let listener:EventListener = !(args[0] instanceof EventListener) ?  EventListener.create(args[0]): args[0];
@@ -106,19 +81,17 @@ module wd {
             var eventRegister = DomEventRegister.getInstance();
 
             if(args.length === 0){
-                eventRegister.forEach((list:wdCb.Collection<EventHandlerData>, key:string) => {
-                    var eventName = eventRegister.getEventNameFromKey(key);
-
-                        EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName))
-                            .off(eventName);
+                eventRegister.forEachAll((list:wdCb.Collection<DomEventRegisterData>, eventName:EEventName) => {
+                    EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName))
+                        .off(eventName);
                 });
+
+                eventRegister.clear();
             }
             else if(args.length === 1 && JudgeUtils.isString(args[0])){
                 let eventName = args[0];
 
-                eventRegister.forEach((list:wdCb.Collection<EventHandlerData>, key:string) => {
-                    var registeredEventName = eventRegister.getEventNameFromKey(key);
-
+                eventRegister.forEachEventName((list:wdCb.Collection<DomEventRegisterData>, registeredEventName:string) => {
                     if(registeredEventName === eventName){
                         EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName))
                             .off(eventName);
@@ -126,16 +99,17 @@ module wd {
                 });
             }
             else if(args.length === 1 && JudgeUtils.isDom(args[0])){
-                let dom = args[0];
+                let dom = args[0],
+                    secondMap = null;
 
-                eventRegister.forEach((list:wdCb.Collection<EventHandlerData>, key:string) => {
-                    var eventName = eventRegister.getEventNameFromKey(key);
+                secondMap = eventRegister.getChild(dom);
 
-                    if(eventRegister.isDom(key, dom, list)){
+                if(!!secondMap){
+                    secondMap.forEach((list:wdCb.Collection<DomEventRegisterData>, eventName:EEventName) => {
                         EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName))
                             .off(dom, eventName);
-                    }
-                });
+                    });
+                }
             }
             else if(args.length === 2 && JudgeUtils.isString(args[0])){
                 let eventName = args[0],

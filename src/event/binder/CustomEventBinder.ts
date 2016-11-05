@@ -3,7 +3,7 @@ module wd {
     export class CustomEventBinder extends EventBinder{
         public static getInstance():any {}
 
-		private constructor(){super();}
+        private constructor(){super();}
 
         public on(eventName:EEventName|string, handler:Function):void;
 
@@ -12,34 +12,6 @@ module wd {
 
         public on(target:EntityObject, eventName:EEventName|string, handler:Function, priority:number):void;
 
-        @require(function(...args){
-            var checkEventSeparator = (eventName:string) => {
-                assert(eventName.indexOf(CustomEventListenerMap.eventSeparator) === -1, Log.info.FUNC_SHOULD_NOT("eventName", `contain ${CustomEventListenerMap.eventSeparator}`));
-            };
-
-            if(args.length === 1){
-            }
-            else if(args.length === 2){
-                let eventName = args[0];
-
-                checkEventSeparator(eventName);
-            }
-            else if(args.length === 3 && JudgeUtils.isString(args[0])){
-                let eventName = args[0];
-
-                checkEventSeparator(eventName);
-            }
-            else if(args.length === 3 && args[0] instanceof EntityObject){
-                let eventName = args[1];
-
-                checkEventSeparator(eventName);
-            }
-            else if(args.length === 4) {
-                let eventName = args[1];
-
-                checkEventSeparator(eventName);
-            }
-        })
         public on(...args) {
             if(args.length === 2){
                 let eventName = args[0],
@@ -89,25 +61,17 @@ module wd {
             var eventRegister = CustomEventRegister.getInstance();
 
             if(args.length === 0){
-                eventRegister.forEach((list:wdCb.Collection<EventHandlerData>, key:string) => {
-                    var eventName = eventRegister.getEventNameFromKey(key),
-                        targetUid = eventRegister.getUidFromKey(key);
-
-                    if(!targetUid){
-                        EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName))
-                            .off(eventName);
-                    }
-                    else{
-                        EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName)).off(targetUid, eventName);
-                    }
+                eventRegister.forEachAll((list:wdCb.Collection<CustomEventRegisterData>, eventName:EEventName) => {
+                    EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName))
+                        .off(eventName);
                 });
+
+                eventRegister.clear();
             }
             else if(args.length === 1 && JudgeUtils.isString(args[0])){
                 let eventName = args[0];
 
-                eventRegister.forEach((list:wdCb.Collection<EventHandlerData>, key:string) => {
-                    var registeredEventName = eventRegister.getEventNameFromKey(key);
-
+                eventRegister.forEachEventName((list:wdCb.Collection<CustomEventRegisterData>, registeredEventName:string) => {
                     if(registeredEventName === eventName){
                         EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName))
                             .off(eventName);
@@ -115,16 +79,17 @@ module wd {
                 });
             }
             else if(args.length === 1 && args[0] instanceof EntityObject){
-                let target = args[0];
+                let target:EntityObject = args[0],
+                    secondMap = null;
 
-                eventRegister.forEach((list:wdCb.Collection<CustomEventRegisterData>, key:string) => {
-                    var eventName = eventRegister.getEventNameFromKey(key);
+                secondMap = eventRegister.getChild(target);
 
-                    if(eventRegister.isTarget(key, target, list)){
+                if(!!secondMap){
+                    secondMap.forEach((list:wdCb.Collection<CustomEventRegisterData>, eventName:EEventName) => {
                         EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName))
                             .off(target, eventName);
-                    }
-                });
+                    });
+                }
             }
             else if(args.length === 2 && JudgeUtils.isString(args[0])){
                 let eventName = args[0],

@@ -1,5 +1,6 @@
 module wd {
     export abstract class DomEventHandler extends EventHandler{
+        public off():void;
         public off(eventName:EEventName):void;
 
         public off(eventName:EEventName, handler:Function):void;
@@ -15,14 +16,10 @@ module wd {
             eventOffDataList = eventRegister.remove.apply(eventRegister, args);
 
             if(eventOffDataList){
-                eventOffDataList.forEach((list:wdCb.Collection<DomEventOffData>) => {
-                    list.forEach((eventOffData:DomEventOffData) => {
-                        self._unBind(eventOffData.dom, eventOffData.eventName, eventOffData.domHandler);
-                    });
+                eventOffDataList.forEach((eventOffData:DomEventOffData) => {
+                    self._unBind(eventOffData.dom, eventOffData.eventName, eventOffData.domHandler);
                 })
             }
-
-            //this.clearHandler();
         }
 
         public trigger(event:Event):void;

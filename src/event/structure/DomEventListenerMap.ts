@@ -1,131 +1,195 @@
 module wd{
     export class DomEventListenerMap extends EventListenerMap{
-        public static eventSeparator = "@";
-
         public static create() {
-        	var obj = new this();
+            var obj = new this();
 
-        	return obj;
+            return obj;
         }
 
-        protected listenerMap:wdCb.Hash<wdCb.Collection<DomEventRegisterData>>;
+        protected targetListenerMap: wdCb.Hash<wdCb.Hash<wdCb.Collection<EventRegisterData>>> = wdCb.Hash.create<wdCb.Hash<wdCb.Collection<EventRegisterData>>>();
 
-        public getChild(eventName:EEventName):wdCb.Collection<DomEventRegisterData>;
+        public hasChild(dom:HTMLElement, eventName:EEventName):boolean{
+            var list:any = this.targetListenerMap.getChild(this.buildFirstLevelKey(dom));
+
+            if(!list){
+                return false;
+            }
+
+            list = list.getChild(eventName);
+
+            return list && list.getCount() > 0;
+        }
+
+        public appendChild(dom:HTMLElement, eventName:EEventName, data:any){
+            var firstLevelKey = this.buildFirstLevelKey(dom);
+
+            if(!this.targetListenerMap.hasChild(firstLevelKey)){
+                let secondMap = wdCb.Hash.create<wdCb.Collection<EventRegisterData>>();
+
+                secondMap.addChild(this.buildSecondLevelKey(eventName), wdCb.Collection.create<EventRegisterData>([data]));
+
+                this.targetListenerMap.addChild(firstLevelKey, secondMap);
+
+                return;
+            }
+
+            this.targetListenerMap.getChild(firstLevelKey).appendChild(this.buildSecondLevelKey(eventName), data);
+        }
+
+        public forEachAll(func:(list:wdCb.Collection<DomEventRegisterData>, eventName:EEventName) => void){
+            this.targetListenerMap.forEach((secondMap:wdCb.Collection<EventRegisterData>) => {
+                secondMap.forEach(func);
+            });
+        }
+
+        public forEachEventName(func:(list:wdCb.Collection<DomEventRegisterData>, eventName:EEventName) => void){
+            this.forEachAll(func);
+        }
+
+        public clear(){
+            this.targetListenerMap.removeAllChildren();
+        }
+
+        public getChild(dom:HTMLElement):wdCb.Collection<DomEventRegisterData>;
         public getChild(dom:HTMLElement, eventName:EEventName):wdCb.Collection<DomEventRegisterData>;
 
         public getChild(...args):any{
             if(args.length === 1){
-                let eventName = args[0];
+                let dom = args[0];
 
-                return this.listenerMap.getChild(eventName);
+                return this.targetListenerMap.getChild(this.buildFirstLevelKey(dom));
             }
             else if(args.length === 2){
                 let dom = args[0],
-                    eventName = args[1];
+                    eventName = args[1],
+                    secondMap = null;
 
-                return this.listenerMap.getChild(this.buildKey(dom, eventName));
+                secondMap = this.targetListenerMap.getChild(this.buildFirstLevelKey(dom));
+
+                if(!secondMap){
+                    return null;
+                }
+
+                return secondMap.getChild(this.buildSecondLevelKey(eventName));
             }
         }
 
-        public removeChild(eventName:EEventName):wdCb.Collection<wdCb.Collection<DomEventOffData>>;
+        public removeChild(eventName:EEventName):wdCb.Collection<DomEventOffData>;
+        public removeChild(eventName:EEventName, handler:Function):wdCb.Collection<DomEventOffData>;
+        public removeChild(dom:HTMLElement, eventName:EEventName):wdCb.Collection<DomEventOffData>;
+        public removeChild(dom:HTMLElement, eventName:EEventName, handler:Function):wdCb.Collection<DomEventOffData>;
 
-        public removeChild(eventName:EEventName, handler:Function):wdCb.Collection<wdCb.Collection<DomEventOffData>>;
-        public removeChild(dom:HTMLElement, eventName:EEventName):wdCb.Collection<wdCb.Collection<DomEventOffData>>;
-
-        public removeChild(dom:HTMLElement, eventName:EEventName, handler:Function):wdCb.Collection<wdCb.Collection<DomEventOffData>>;
-
-
-        public removeChild(...args):wdCb.Collection<wdCb.Collection<DomEventOffData>>{
-            var self = this,
-                result:any = null;
+        public removeChild(...args){
+            var result:any = null;
 
             if(args.length === 1 && JudgeUtils.isString(args[0])){
-                let eventName = args[0];
+                let eventName = args[0],
+                    arr:Array<wdCb.Collection<DomEventRegisterData>> = [];
 
-                result =this._getEventDataOffDataList(eventName, this.listenerMap.removeChild((list:wdCb.Collection<DomEventRegisterData>, key:string) => {
-                    return self.isEventName(key, eventName);
-                }));
+                this.targetListenerMap.forEach((secondMap:wdCb.Hash<wdCb.Collection<DomEventRegisterData>>, firstLevelKey:string) => {
+                    var secondLevelKey = this.buildSecondLevelKey(eventName);
+
+                    if(secondMap.hasChild(secondLevelKey)){
+                        arr.push(secondMap.removeChild(secondLevelKey).getChild(0));
+                    }
+                });
+
+                let l = wdCb.Collection.create<DomEventRegisterData>();
+
+                for(let list of arr){
+                    l.addChildren(list);
+                }
+
+                result = this._getEventDataOffDataList(eventName, l);
             }
             else if(args.length === 2 && JudgeUtils.isString(args[0])){
                 let eventName = args[0],
                     handler = args[1],
-                    resultList = wdCb.Collection.create();
+                    arr:Array<wdCb.Collection<DomEventRegisterData>> = [];
 
-                    this.listenerMap.forEach((list:wdCb.Collection<DomEventRegisterData>, key:string) => {
-                        if(self.isEventName(key, eventName)){
-                            let result = list.removeChild((val:DomEventRegisterData) => {
-                                return val.originHandler === handler;
-                            });
+                this.targetListenerMap.forEach((secondMap:wdCb.Hash<wdCb.Collection<DomEventRegisterData>>, firstLevelKey:string) => {
+                    let list = secondMap.getChild(this.buildSecondLevelKey(eventName));
 
-                            if(result.getCount() > 0){
-                                resultList.addChild(result);
-                            }
-
-                            if(list.getCount() === 0){
-                                return wdCb.$REMOVE;
-                            }
-                        }
-                    });
-
-                    result = this._getEventDataOffDataList(eventName, resultList);
-            }
-            else if(args.length === 2 && JudgeUtils.isDom(args[0])){
-                let dom = args[0],
-                    eventName = args[1];
-
-
-                result =this._getEventDataOffDataList(eventName, this.listenerMap.removeChild(this.buildKey(dom, eventName)));
-            }
-            else if(args.length === 3 && JudgeUtils.isDom(args[0])){
-                let eventName = args[1],
-                    resultList = wdCb.Collection.create(),
-                    handler = args[2];
-
-                this.listenerMap.forEach((list:wdCb.Collection<DomEventRegisterData>, key:string) => {
-                    let result = list.removeChild((val:DomEventRegisterData) => {
-                        return val.originHandler === handler;
-                    });
-
-                    if(result.getCount() > 0){
-                        resultList.addChild(result);
-                    }
-
-                    if(list.getCount() === 0){
-                        return wdCb.$REMOVE;
+                    if(list){
+                        arr.push(list.removeChild((data:DomEventRegisterData) => {
+                            return data.originHandler === handler
+                        }));
                     }
                 });
 
-                result = this._getEventDataOffDataList(eventName, resultList);
+                let l = wdCb.Collection.create<DomEventRegisterData>();
+
+                for(let list of arr){
+                    l.addChildren(list);
+                }
+
+                result = this._getEventDataOffDataList(eventName, l);
+            }
+            else if(args.length === 2 && JudgeUtils.isDom(args[0])){
+                let dom = args[0],
+                    eventName = args[1],
+                    secondMap = null;
+
+                secondMap = this.targetListenerMap.getChild(this.buildFirstLevelKey(dom));
+
+                if(!secondMap){
+                    result = wdCb.Collection.create<DomEventOffData>();
+                }
+                else{
+                    result =this._getEventDataOffDataList(eventName, secondMap.removeChild(this.buildSecondLevelKey(eventName)).getChild(0));
+                }
+            }
+            else if(args.length === 3 && JudgeUtils.isDom(args[0])){
+                let dom = args[0],
+                    eventName = args[1],
+                    handler = args[2],
+                    secondMap = null;
+
+                secondMap = this.targetListenerMap.getChild(this.buildFirstLevelKey(dom));
+
+                if(!secondMap){
+                    result = wdCb.Collection.create<DomEventOffData>();
+                }
+                else{
+                    let list = secondMap.getChild(this.buildSecondLevelKey(eventName));
+
+                    if(!list){
+                        result = wdCb.Collection.create<DomEventOffData>();
+                    }
+                    else{
+                        result = this._getEventDataOffDataList(eventName, list.removeChild((val:DomEventRegisterData) => {
+                            return val.originHandler === handler;
+                        }));
+                    }
+                }
             }
 
             return result;
         }
 
-        public isDom(key:string, dom:HTMLElement, list:wdCb.Collection<DomEventRegisterData>){
-            return key.indexOf(this._buildKeyPrefix(dom)) > -1 && list !== undefined;
+        protected buildFirstLevelKey(dom:HTMLElement){
+            if(dom.id){
+                return `${dom.tagName}${dom.id}`;
+            }
+
+            if(dom.nodeName){
+                return `${dom.nodeName}`;
+            }
+
+            return `${dom.tagName}`;
         }
 
-        protected getEventSeparator():string{
-            return `${DomEventListenerMap.eventSeparator}`;
-        }
+        private _getEventDataOffDataList(eventName:string, result:wdCb.Collection<DomEventRegisterData>):any{
+            if(!result){
+                return wdCb.Collection.create<DomEventRegisterData>();
+            }
 
-        protected buildKey(dom:HTMLElement, eventName:EEventName):string{
-            return `${this._buildKeyPrefix(dom)}${DomEventListenerMap.eventSeparator}${eventName}`;
-        }
-
-        private _buildKeyPrefix(dom:HTMLElement){
-            return dom.id ? `${dom.tagName}${dom.id}` : `${dom.tagName}`;
-        }
-
-        private _getEventDataOffDataList(eventName:string, result:any):any{
-            return result.map((list:wdCb.Collection<any>) => {
-                return list.map((data:DomEventRegisterData) => {
-                    return {
-                        dom: data.dom,
-                        eventName: eventName,
-                        domHandler: data.domHandler
-                    }
-                });
+            return result.map((data:DomEventRegisterData) => {
+                return {
+                    dom: data.dom,
+                    eventName: eventName,
+                    domHandler: data.domHandler
+                }
             });
         }
     }

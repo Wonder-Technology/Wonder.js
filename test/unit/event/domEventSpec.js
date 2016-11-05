@@ -32,6 +32,9 @@ describe("dom event", function () {
     });
 
     it("can bind the same dom event multi handler that it only bind dom event once", function () {
+
+        manager.off();
+
         var sum = 0;
         sandbox.spy(wd.MouseEventHandler.getInstance(), "triggerDomEvent");
         target = wd.Director.getInstance().scene;

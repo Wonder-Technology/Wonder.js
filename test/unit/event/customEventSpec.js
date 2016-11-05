@@ -16,20 +16,20 @@ describe("custom event", function () {
 
     describe("bind/unbind custom event", function () {
         describe("on/off", function () {
-            it("if eventName contain EventListenerMap->eventSeparator, contract error", function(){
-                testTool.openContractCheck(sandbox);
-
-                sandbox.stub(wd.CustomEventListenerMap, "eventSeparator", "%");
-
-                expect(function(){
-                    manager.on("wd%endLoop", function (e) {
-                    });
-                }).toThrow();
-                expect(function(){
-                    manager.on(new wd.GameObject(), "wd%endLoop", function (e) {
-                    }, 10);
-                }).toThrow();
-            });
+            // it("if eventName contain EventListenerMap->eventSeparator, contract error", function(){
+            //     testTool.openContractCheck(sandbox);
+            //
+            //     sandbox.stub(wd.CustomEventListenerMap, "eventSeparator", "%");
+            //
+            //     expect(function(){
+            //         manager.on("wd%endLoop", function (e) {
+            //         });
+            //     }).toThrow();
+            //     expect(function(){
+            //         manager.on(new wd.GameObject(), "wd%endLoop", function (e) {
+            //         }, 10);
+            //     }).toThrow();
+            // });
             it("eventName", function () {
                 var eventTarget = null;
                 var sum = 0;

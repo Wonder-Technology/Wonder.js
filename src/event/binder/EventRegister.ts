@@ -3,7 +3,7 @@ module wd {
         protected abstract listenerMap:EventListenerMap;
 
         public abstract register(...args):void;
-        public abstract remove(...args):void;
+        public abstract remove(...args):any;
 
         public getEventRegisterDataList(eventName:EEventName):any;
 
@@ -22,16 +22,20 @@ module wd {
             });
         }
 
-        public filter(func:Function) {
-            return this.listenerMap.filter(func);
+        public forEachAll(func:(list:wdCb.Collection<any>, eventName:EEventName) => void) {
+            return this.listenerMap.forEachAll(func);
         }
 
-        public forEach(func:Function) {
-            return this.listenerMap.forEach(func);
+        public forEachEventName(func:(list:wdCb.Collection<EventRegisterData>, eventName:EEventName) => void){
+            this.listenerMap.forEachEventName(func);
         }
 
-        public getChild(eventName:EEventName);
+        public clear() {
+            return this.listenerMap.clear();
+        }
+
         public getChild(target:EntityObject);
+        public getChild(dom:HTMLElement);
 
         public getChild(target:EntityObject, eventName:EEventName);
         public getChild(dom:HTMLElement, eventName:EEventName);
@@ -41,10 +45,6 @@ module wd {
                 this.listenerMap,
                 Array.prototype.slice.call(arguments, 0)
             );
-        }
-
-        public getEventNameFromKey(key:string) {
-            return this.listenerMap.getEventNameFromKey(key);
         }
     }
 

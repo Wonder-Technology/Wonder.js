@@ -16,7 +16,6 @@ module wd {
                     priority = args[2];
 
                 CustomEventRegister.getInstance().register(
-                    null,
                     <any>eventName,
                     handler,
                     originHandler,

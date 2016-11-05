@@ -135,16 +135,16 @@ module wd {
                 eventBinder.off(eventName);
             }
             else if(args.length === 1 && args[0] instanceof EntityObject){
-                let eventName = args[0],
+                let target = args[0],
                     eventBinder = CustomEventBinder.getInstance();
 
-                eventBinder.off(eventName);
+                eventBinder.off(target);
             }
             else if(args.length === 1 && JudgeUtils.isDom(args[0])){
-                let eventName = args[0],
+                let dom = args[0],
                     eventBinder = DomEventBinder.getInstance();
 
-                eventBinder.off(eventName);
+                eventBinder.off(dom);
             }
             else if(args.length === 2 && JudgeUtils.isString(args[0])){
                 let eventName = args[0],

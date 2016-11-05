@@ -3,20 +3,47 @@ module wd {
     export class CustomEventRegister extends EventRegister{
         public static getInstance():any {}
 
-		private constructor(){super();}
+        private constructor(){super();}
 
         protected listenerMap:CustomEventListenerMap = CustomEventListenerMap.create();
 
+        public register(eventName:EEventName, handler:Function, originHandler:Function, domHandler:Function, priority:number);
+        public register(target:EntityObject, eventName:EEventName, handler:Function, originHandler:Function, domHandler:Function, priority:number);
 
-        public register(target:EntityObject, eventName:EEventName, handler:Function, originHandler:Function, domHandler:Function, priority:number) {
-            this.listenerMap.appendChild(target, eventName, <CustomEventRegisterData>{
-                target: target,
-                eventName: eventName,
-                handler: handler,
-                originHandler: originHandler,
-                domHandler: domHandler,
-                priority: priority
-            });
+        public register(...args) {
+            if(args.length === 5){
+                let eventName = args[0],
+                    handler = args[1],
+                    originHandler = args[2],
+                    domHandler = args[3],
+                    priority = args[4];
+
+                this.listenerMap.appendChild(eventName, <CustomEventRegisterData>{
+                    target: null,
+                    eventName: eventName,
+                    handler: handler,
+                    originHandler: originHandler,
+                    domHandler: domHandler,
+                    priority: priority
+                });
+            }
+            else{
+                let target = args[0],
+                    eventName = args[1],
+                    handler = args[2],
+                    originHandler = args[3],
+                    domHandler = args[4],
+                    priority = args[5];
+
+                this.listenerMap.appendChild(target, eventName, <CustomEventRegisterData>{
+                    target: target,
+                    eventName: eventName,
+                    handler: handler,
+                    originHandler: originHandler,
+                    domHandler: domHandler,
+                    priority: priority
+                });
+            }
         }
 
         public remove(eventName:EEventName);
@@ -67,18 +94,8 @@ module wd {
             target.bubbleParent = parent;
         }
 
-        public getUidFromKey(key:string) {
-            return this.listenerMap.getUidFromKey(key);
-        }
-
-        public isTarget(key:string, target:EntityObject, list:wdCb.Collection<CustomEventRegisterData>) {
-            return this.listenerMap.isTarget(key, target, list);
-        }
-
         private _isAllEventHandlerRemoved(target:EntityObject) {
-            return !this.listenerMap.hasChildWithFunc((list:wdCb.Collection<CustomEventRegisterData>, key:string) => {
-                return key.indexOf(String(target.uid)) > -1 && (list && list.getCount() > 0);
-            });
+            return !this.listenerMap.hasChild(target);
         }
 
         private _handleAfterAllEventHandlerRemoved(target:EntityObject) {

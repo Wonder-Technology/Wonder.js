@@ -1,39 +1,92 @@
 module wd{
     export class CustomEventListenerMap extends EventListenerMap{
-        public static eventSeparator = "@";
-
         public static create() {
-        	var obj = new this();
+            var obj = new this();
 
-        	return obj;
+            return obj;
         }
 
-        protected listenerMap:wdCb.Hash<wdCb.Collection<CustomEventRegisterData>>;
+        protected globalListenerMap: wdCb.Hash<wdCb.Collection<CustomEventRegisterData>> = wdCb.Hash.create<wdCb.Collection<CustomEventRegisterData>>();
+        protected targetListenerMap: wdCb.Hash<wdCb.Hash<wdCb.Collection<CustomEventRegisterData>>> = wdCb.Hash.create<wdCb.Hash<wdCb.Collection<CustomEventRegisterData>>>();
+
+        public hasChild(target:EntityObject){
+            return this.targetListenerMap.hasChild(this.buildFirstLevelKey(target));
+        }
+
+        public appendChild(eventName:EEventName, data:any);
+        public appendChild(target:EntityObject, eventName:EEventName, data:any);
+
+        public appendChild(...args){
+            if(args.length === 2){
+                let eventName:EEventName = args[0],
+                    data:any = args[1];
+
+                this.globalListenerMap.appendChild(<any>eventName, data);
+            }
+            else{
+                let target:EntityObject = args[0],
+                    eventName:EEventName = args[1],
+                    data:any = args[2],
+                    firstLevelKey = this.buildFirstLevelKey(target);
+
+                if(!this.targetListenerMap.hasChild(firstLevelKey)){
+                    let secondMap = wdCb.Hash.create<wdCb.Collection<EventRegisterData>>();
+
+                    secondMap.addChild(this.buildSecondLevelKey(eventName), wdCb.Collection.create<EventRegisterData>([data]));
+
+                    this.targetListenerMap.addChild(firstLevelKey, secondMap);
+
+                    return;
+                }
+
+                this.targetListenerMap.getChild(firstLevelKey).appendChild(this.buildSecondLevelKey(eventName), data);
+            }
+        }
+
+        public forEachAll(func:(list:wdCb.Collection<CustomEventRegisterData>, eventName:EEventName) => void){
+            this.globalListenerMap.forEach(func);
+
+            this.targetListenerMap.forEach((secondMap:wdCb.Hash<wdCb.Collection<CustomEventRegisterData>>) => {
+                secondMap.forEach(func);
+            });
+        }
+
+        public forEachEventName(func:(list:wdCb.Collection<CustomEventRegisterData>, eventName:EEventName) => void){
+            this.globalListenerMap.forEach(func);
+        }
+
+        public clear(){
+            this.globalListenerMap.removeAllChildren();
+            this.targetListenerMap.removeAllChildren();
+        }
 
         public getChild(eventName:EEventName):wdCb.Collection<CustomEventRegisterData>;
         public getChild(target:EntityObject):wdCb.Collection<CustomEventRegisterData>;
         public getChild(target:EntityObject, eventName:EEventName):wdCb.Collection<CustomEventRegisterData>;
 
         public getChild(...args):any{
-            var self = this;
-
             if(args.length === 1 && JudgeUtils.isString(args[0])){
                 let eventName = args[0];
 
-                return this.listenerMap.getChild(eventName);
+                return this.globalListenerMap.getChild(eventName);
             }
             else if(args.length === 1 && args[0] instanceof EntityObject){
                 let target = args[0];
 
-                return this.listenerMap.filter((list:wdCb.Collection<CustomEventRegisterData>, key:string) => {
-                    return self.isTarget(key, target, list);
-                });
+                return this.targetListenerMap.getChild(this.buildFirstLevelKey(target));
             }
             else if(args.length === 2){
                 let target = args[0],
-                    eventName = args[1];
+                    eventName = args[1],
+                    secondMap = null;
 
-                return this.listenerMap.getChild(this.buildKey(target, eventName));
+                secondMap = this.targetListenerMap.getChild(this.buildFirstLevelKey(target));
+
+                if(!secondMap){
+                    return null;
+                }
+
+                return secondMap.getChild(this.buildSecondLevelKey(eventName));
             }
         }
 
@@ -48,111 +101,90 @@ module wd{
 
 
         public removeChild(...args):void{
-            var self = this;
-
             if(args.length === 1 && JudgeUtils.isString(args[0])){
                 let eventName = args[0];
 
-                this.listenerMap.removeChild((list:wdCb.Collection<CustomEventRegisterData>, key:string) => {
-                    return self.isEventName(key, eventName);
-                });
+                this.globalListenerMap.removeChild(eventName);
             }
             else if(args.length === 1 && args[0] instanceof EntityObject){
                 let target = args[0];
 
-                this.listenerMap.removeChild((list:wdCb.Collection<CustomEventRegisterData>, key:string) => {
-                    return self.isTarget(key, target, list);
-                });
+                this.targetListenerMap.removeChild(this.buildFirstLevelKey(target));
             }
             else if(args.length === 2 && JudgeUtils.isString(args[0])){
                 let eventName = args[0],
                     handler = args[1],
-                    list:wdCb.Collection<CustomEventRegisterData> = null;
+                    list = null;
 
+                list = this.globalListenerMap.getChild(eventName);
 
-                if(this.listenerMap.hasChild(eventName)){
-                    list = this.listenerMap.getChild(eventName);
-
-                    wdCb.Collection.create().addChild(list.removeChild((val:CustomEventRegisterData) => {
+                if(!!list){
+                    list.removeChild((val:CustomEventRegisterData) => {
                         return val.originHandler === handler;
-                    }));
+                    })
 
                     if(list.getCount() === 0){
-                        this.listenerMap.removeChild(eventName);
+                        this.globalListenerMap.removeChild(eventName);
                     }
                 }
             }
             else if(args.length === 2 && JudgeUtils.isNumber(args[0])){
                 let uid = args[0],
-                    eventName = args[1];
+                    eventName = args[1],
+                    secondMap = null;
+                secondMap = this.targetListenerMap.getChild(this.buildFirstLevelKey(uid));
 
-                this.listenerMap.removeChild(this.buildKey(uid, eventName));
+                if(!!secondMap){
+                    secondMap.removeChild(this.buildSecondLevelKey(eventName));
+                }
             }
             else if(args.length === 2 && args[0] instanceof EntityObject){
                 let target = args[0],
-                eventName = args[1];
+                    eventName = args[1],
+                    secondMap = null;
 
-                this.listenerMap.removeChild(this.buildKey(target, eventName));
+                secondMap = this.targetListenerMap.getChild(this.buildFirstLevelKey(target));
+
+                if(!!secondMap){
+                    secondMap.removeChild(this.buildSecondLevelKey(eventName));
+                }
             }
             else if(args.length === 3 && args[0] instanceof EntityObject){
-                let eventName = args[1],
-                    handler = args[2];
-
-                this.listenerMap.forEach((list:wdCb.Collection<CustomEventRegisterData>, key:string) => {
-                    list.removeChild((val:CustomEventRegisterData) => {
-                        return val.originHandler === handler;
-                    });
-
-                    if(list.getCount() === 0){
-                        return wdCb.$REMOVE;
-                    }
-                });
-            }
-        }
-
-        public getUidFromKey(key:string):number{
-            var separator = `${CustomEventListenerMap.eventSeparator}`;
-
-            return key.indexOf(separator) > -1 ? Number(<any>key.split(separator)[0]) : null;
-        }
-
-        public isTarget(key:string, target:EntityObject, list:wdCb.Collection<CustomEventRegisterData>){
-            return key.indexOf(this._buildKeyPrefix(target.uid)) > -1 && list !== undefined;
-        }
-
-        protected getEventSeparator():string{
-            return `${CustomEventListenerMap.eventSeparator}`;
-        }
-
-        protected buildKey(uid:number, eventName:EEventName):string;
-        protected buildKey(target:EntityObject, eventName:EEventName):string;
-
-        protected buildKey(...args):string{
-            if(JudgeUtils.isNumber(args[0])){
-                let uid = args[0],
-                    eventName = args[1];
-
-                return this._buildKeyWithUid(uid, eventName);
-            }
-            else if(args[0] instanceof EntityObject){
                 let target = args[0],
-                    eventName = args[1];
+                    eventName = args[1],
+                    handler = args[2],
+                    secondMap = null;
 
-                return this._buildKeyWithUid(target.uid, eventName);
-            }
-            else if(args[0] === null){
-                let eventName = args[1];
+                secondMap = this.targetListenerMap.getChild(this.buildFirstLevelKey(target));
 
-                return eventName;
+                if(!!secondMap){
+                    let secondList = secondMap.getChild(eventName);
+
+                    if(!!secondList){
+                        secondList.removeChild((val:CustomEventRegisterData) => {
+                            return val.originHandler === handler;
+                        });
+
+                        if(secondList.getCount() === 0){
+                            secondMap.removeChild(eventName);
+                        }
+                    }
+                }
             }
         }
 
-        private _buildKeyWithUid(uid:number, eventName:EEventName){
-            return `${this._buildKeyPrefix(uid)}${CustomEventListenerMap.eventSeparator}${eventName}`;
-        }
+        protected buildFirstLevelKey(target:EntityObject);
+        protected buildFirstLevelKey(uid:number);
 
-        private _buildKeyPrefix(uid:number){
-            return `${String(uid)}`;
+        protected buildFirstLevelKey(...args){
+            var v = args[0],
+                uid = v.uid;
+
+            if(uid){
+                return String(uid);
+            }
+
+            return v;
         }
     }
 }

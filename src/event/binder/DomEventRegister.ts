@@ -3,16 +3,14 @@ module wd {
     export class DomEventRegister extends EventRegister {
         public static getInstance():any {}
 
-		private constructor(){super();}
+        private constructor(){super();}
 
         protected listenerMap:DomEventListenerMap = DomEventListenerMap.create();
-
 
         public register(dom:HTMLElement, eventName:EEventName, eventData:wdCb.Hash<any>, handler:Function, originHandler:Function, domHandler:Function, priority:number) {
             this.listenerMap.appendChild(dom, eventName, <DomEventRegisterData>{
                 dom: dom,
                 eventName: eventName,
-                //eventHandler: eventHandler,
                 eventData: eventData,
                 handler: handler,
                 originHandler: originHandler,
@@ -54,10 +52,6 @@ module wd {
             return this.listenerMap.hasChild(dom, eventName);
         }
 
-        public isDom(key:string, dom:HTMLElement, list:wdCb.Collection<DomEventRegisterData>){
-            return this.listenerMap.isDom(key, dom, list);
-        }
-
         public getDomHandler(dom:HTMLElement, eventName:EEventName) {
             var list:wdCb.Collection<DomEventRegisterData> = this.getChild(dom, eventName);
 
@@ -70,7 +64,6 @@ module wd {
     export type DomEventRegisterData = {
         dom?:HTMLElement,
         target?:EntityObject,
-        //eventHandler:EventHandler,
         eventData:wdCb.Hash<any>,
         //user's event handler
         originHandler:Function,
