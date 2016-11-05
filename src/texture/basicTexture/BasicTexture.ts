@@ -92,7 +92,7 @@ module wd{
         @require(function(isSourcePowerOfTwo:boolean){
             it("if repeat texture and draw part of texture by changing texcoords in glsl, warn", () => {
                 if(!BasicTextureUtils.isDrawPartOfTexture(this.sourceRegion, this.sourceRegionMethod)
-                    && !this.repeatRegion.isEqual(Vector4.create(0, 0, 1, 1))){
+                    && (this.repeatRegion && !this.repeatRegion.isEqual(Vector4.create(0, 0, 1, 1)))){
                     Log.warn("the glsl->texCoord data may be wrong due to both repeating texture and drawing part of texture by changing texcoords in glsl")
                 }
             }, this);

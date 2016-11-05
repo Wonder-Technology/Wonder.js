@@ -26,7 +26,7 @@
         'test/helper/yoop/yOOP.js',
         'test/unit/**/*Tool.js',
 
-        // 'test/unit/**',
+        'test/unit/**',
 
 
         //'test/render/*Tool.js',
@@ -186,7 +186,7 @@
         //'test/unit/**/*ProceduralTexture*',
 
         //
-        //'test/unit/**/MapManager*',
+        // 'test/unit/**/MapManager*',
 
         //'test/unit/renderer/**',
         //'test/unit/renderer/renderTargetRenderer/**',
@@ -264,7 +264,7 @@
 
         //'test/unit/**/MainSpec*',
 
-        'test/unit/component/event/eventSpec*',
+        // 'test/unit/component/event/eventSpec*',
 
         //'test/unit/**/ui/**',
         //'test/unit/**/UIObjectSpec*',
@@ -354,7 +354,7 @@
         //'test/unit/**/morph*.js',
         //'test/unit/core/*.js',
         //'test/unit/device/*.js',
-        'test/unit/event/**',
+        // 'test/unit/event/**',
         //'test/unit/event/mouseEv*.js',
         //'test/unit/event/customEv*.js',
         //'test/unit/event/keyboardEv*.js',
