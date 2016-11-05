@@ -4,6 +4,7 @@ module wd{
     export class Vector4{
         public static create(x, y, z, w);
         public static create();
+
         public static create(...args){
             var m = null;
 
@@ -19,6 +20,7 @@ module wd{
 
         constructor(x, y, z, w);
         constructor();
+
         constructor(...args){
             this.values = new Float32Array(4);
 

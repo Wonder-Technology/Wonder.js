@@ -1,5 +1,6 @@
 module wd{
     export enum EKeyFrameInterpolation{
-        LINEAR
+        LINEAR,
+        SWITCH
     }
 }

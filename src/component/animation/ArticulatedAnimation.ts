@@ -31,34 +31,54 @@ module wd{
             if(JudgeUtils.isNumber(args[0])){
                 let animIndex:number = args[0];
 
-                assert(this.data.getCount() >= animIndex + 1, Log.info.FUNC_NOT_EXIST(`animation index:${animIndex}`));
+                it(`should exist animation index:${animIndex}`, () => {
+                    expect(this.data.getCount()).greaterThan(animIndex);
+                });
             }
             else if(JudgeUtils.isString(args[0])){
                 let animName:string = args[0];
 
-                assert(this.data.hasChild(animName), Log.info.FUNC_NOT_EXIST(`animation name:${animName}`));
+                it(`should exist animation name:${animName}`, () => {
+                    expect(this.data.hasChild(animName)).true;
+                });
             }
         })
         @ensure(function(){
-            assert(!!this._currentAnimData, Log.info.FUNC_NOT_EXIST(`animation name:${this._currentAnimName}`));
+            it(`should exist animation name:${this._currentAnimName}`, () => {
+                expect(this._currentAnimData).exist;
+            });
 
             this._currentAnimData.forEach((data:ArticulatedAnimationFrameData) => {
-                assert(data.time >= 0, Log.info.FUNC_SHOULD("time", ">= 0"));
-
-                assert(data.targets.getCount() > 0, Log.info.FUNC_SHOULD("ArticulatedAnimationFrameData->targets.getCount()", "> 0"));
+                it("time should >= 0", () => {
+                    expect(data.time).gte(0);
+                });
+                it("ArticulatedAnimationFrameData->targets.getCount() should > 0", () => {
+                    expect(data.targets.getCount()).greaterThan(0);
+                });
 
                 data.targets.forEach((target:ArticulatedAnimationFrameTargetData) => {
                     var data = target.data;
 
                     switch (target.target){
                         case EArticulatedAnimationTarget.TRANSLATION:
-                            assert(data instanceof Vector3, Log.info.FUNC_MUST_BE("if target:EArticulatedAnimationTarget === TRANSLATION, its data", "Vector3"));
+                            it("if target:EArticulatedAnimationTarget === TRANSLATION, its data must be Vector3", () => {
+                                expect(data).instanceof(Vector3);
+                            });
                             break;
                         case EArticulatedAnimationTarget.ROTATION:
-                            assert(data instanceof Quaternion, Log.info.FUNC_MUST_BE("if target:EArticulatedAnimationTarget ===ROTATION, its data", "Quaternion"));
+                            it("if target:EArticulatedAnimationTarget === ROTATION, its data must be Vector3", () => {
+                                expect(data).instanceof(Quaternion);
+                            });
                             break;
                         case EArticulatedAnimationTarget.SCALE:
-                            assert(data instanceof Vector3, Log.info.FUNC_MUST_BE("if target:EArticulatedAnimationTarget === SCALE, its data", "Vector3"));
+                            it("if target:EArticulatedAnimationTarget === SCALE, its data must be Vector3", () => {
+                                expect(data).instanceof(Vector3);
+                            });
+                            break;
+                        case EArticulatedAnimationTarget.TEXTURE_OFFSET:
+                            it("if target:EArticulatedAnimationTarget === TEXTURE_OFFSET, its data must be Array", () => {
+                                expect(data).be.a("array");
+                            });
                             break;
                         default:
                             Log.error(true, Log.info.FUNC_NOT_SUPPORT(`EArticulatedAnimationTarget:${target.target}`));
@@ -92,7 +112,11 @@ module wd{
             }
 
             this.resetAnim();
-            this._saveStartFrameData(this.entityObject.transform);
+
+            //todo pass test
+            // this._saveStartFrameData(this.entityObject.transform);
+            // this._saveAllInitPosibleAnimatedData(this.entityObject.transform);
+            this._saveStartFrameData(this._currentAnimData.getChild(0));
 
             this.frameCount = this._currentAnimData.getCount();
             this.state = EAnimationState.RUN;
@@ -139,7 +163,6 @@ module wd{
 
         private _updateTargets(elapsed:number):void{
             var self = this,
-                transform = this.entityObject.transform,
                 startFrameDataMap = this._startFrameDataMap;
 
             this._currentFrameData.targets.forEach((target:ArticulatedAnimationFrameTargetData) => {
@@ -147,21 +170,68 @@ module wd{
                     startFrameData = startFrameDataMap.getChild(<any>target.target),
                     interpolation = self._computeInterpolation(elapsed, target.interpolationMethod);
 
+                self._updateTarget(target, startFrameData, endFrameData, interpolation);
+            });
+        }
+
+        @require(function(target:ArticulatedAnimationFrameTargetData, startFrameData:TextureArticulatedAnimationFrameTargetData, endFrameData:TextureArticulatedAnimationFrameTargetData, interpolation:number){
+            it("transform animation->interpolationMethod shouldn't be SWITCH", () => {
                 switch (target.target){
                     case EArticulatedAnimationTarget.TRANSLATION:
-                        transform.localPosition = Vector3.create().lerp(startFrameData, endFrameData, interpolation);
-                        break;
                     case EArticulatedAnimationTarget.ROTATION:
-                        transform.localRotation = Quaternion.create().slerp(startFrameData, endFrameData, interpolation);
-                        break;
                     case EArticulatedAnimationTarget.SCALE:
-                        transform.localScale = Vector3.create().lerp(startFrameData, endFrameData, interpolation);
-                        break;
-                    default:
-                        Log.error(true, Log.info.FUNC_NOT_SUPPORT(`EArticulatedAnimationTarget:${target.target}`));
+                        expect(startFrameData.interpolationMethod).not.equals(EKeyFrameInterpolation.SWITCH);
+                        expect(endFrameData.interpolationMethod).not.equals(EKeyFrameInterpolation.SWITCH);
                         break;
                 }
             });
+        })
+        private _updateTarget(target:ArticulatedAnimationFrameTargetData, startFrameData:any, endFrameData:any, interpolation:number){
+            var transform = this.entityObject.transform;
+
+            switch (target.target){
+                case EArticulatedAnimationTarget.TRANSLATION:
+                    transform.localPosition = Vector3.create().lerp(startFrameData, endFrameData, interpolation);
+                    break;
+                case EArticulatedAnimationTarget.ROTATION:
+                    transform.localRotation = Quaternion.create().slerp(startFrameData, endFrameData, interpolation);
+                    break;
+                case EArticulatedAnimationTarget.SCALE:
+                    transform.localScale = Vector3.create().lerp(startFrameData, endFrameData, interpolation);
+                    break;
+                case EArticulatedAnimationTarget.TEXTURE_OFFSET:
+                    this._updateTextureData(target, startFrameData, endFrameData, interpolation);
+                    break;
+                default:
+                    Log.error(true, Log.info.FUNC_NOT_SUPPORT(`EArticulatedAnimationTarget:${target.target}`));
+                    break;
+            }
+        }
+
+        @require(function(target:ArticulatedAnimationFrameTargetData, startFrameData:Array<number>, endFrameData:Array<number>, interpolation:number){
+            // it("interpolationMethod in frames data should all be the same", () => {
+            //     expect(target.interpolationMethod).equals(endFrameData.interpolationMethod);
+            // });
+            // it("extra->target in frames data should all be the same", () => {
+            //     expect(startFrameData.extra.target).equals(endFrameData.extra.target);
+            // });
+            it("animated texture should be BasicTexture", () => {
+                //todo finish
+            });
+            it("texture animation->interpolationMethod should be SWITCH", () => {
+                        expect(target.interpolationMethod).equals(EKeyFrameInterpolation.SWITCH);
+            });
+        })
+        //todo remove startFrameData
+        private _updateTextureData(target:ArticulatedAnimationFrameTargetData, startFrameData:Array<number>, endFrameData:Array<number>, interpolation:number){
+            var material:Material = this.entityObject.getComponent<Geometry>(Geometry).material,
+            mapName:string = target.extra.target,
+            map:BasicTexture = material[mapName];
+
+            if(!!map){
+                //todo optimize:use temp RectRegion
+                map.sourceRegion = RectRegion.create(startFrameData[0], startFrameData[1], startFrameData[2], startFrameData[3]);
+            }
         }
 
         @ensure(function(interpolation:number, elapsed:number, interpolationMethod:EKeyFrameInterpolation){
@@ -179,6 +249,9 @@ module wd{
                         interpolation = (elapsed - this._beginElapsedTimeOfFirstFrame - this.pauseDuration - this._prevFrameTime) / (this._currentFrameData.time - this._prevFrameTime);
                     }
                     break;
+                case EKeyFrameInterpolation.SWITCH:
+                    interpolation = 1;
+                    break;
                 default:
                     Log.error(true, Log.info.FUNC_NOT_SUPPORT(`interpolationMethod:${interpolationMethod}`));
                     break
@@ -187,12 +260,18 @@ module wd{
             return interpolation;
         }
 
+        // private _saveAllInitPosibleAnimatedData(startTransform:ThreeDTransform){
+        //         startFrameDataMap.addChild(<any>EArticulatedAnimationTarget.TRANSLATION, startTransform.localPosition);
+        //         startFrameDataMap.addChild(<any>EArticulatedAnimationTarget.ROTATION, startTransform.localRotation);
+        //         startFrameDataMap.addChild(<any>EArticulatedAnimationTarget.SCALE, startTransform.localScale);
+        // }
 
+        //todo refactor
         private _saveStartFrameData(frameData:ArticulatedAnimationFrameData);
-        private _saveStartFrameData(startTransform:ThreeDTransform);
+        // private _saveStartFrameData(startTransform:ThreeDTransform);
 
         @require(function(...args){
-            if(this._isFrameData(args[0])){
+            // if(this._isFrameData(args[0])){
                 let frameData:ArticulatedAnimationFrameData = args[0];
 
                 assert(this._currentFrameData !== null, Log.info.FUNC_SHOULD("set currentFrameData"));
@@ -200,25 +279,25 @@ module wd{
                 this._currentFrameData.targets.forEach((currentTarget:ArticulatedAnimationFrameTargetData, index:number) => {
                     assert(frameData.targets.getChild(index).target === currentTarget.target, Log.info.FUNC_SHOULD("the current frame and the start frame", "modify the same targets"));
                 });
-            }
+            // }
         })
         private _saveStartFrameData(...args){
             var startFrameDataMap = this._startFrameDataMap;
 
-            if(this._isFrameData(args[0])){
+            // if(this._isFrameData(args[0])){
                 let frameData:ArticulatedAnimationFrameData = args[0];
 
                 frameData.targets.forEach((target:ArticulatedAnimationFrameTargetData) => {
                     startFrameDataMap.addChild(<any>target.target, target.data);
                 });
-            }
-            else{
-                let transform:ThreeDTransform = args[0];
-
-                startFrameDataMap.addChild(<any>EArticulatedAnimationTarget.TRANSLATION, transform.localPosition);
-                startFrameDataMap.addChild(<any>EArticulatedAnimationTarget.ROTATION, transform.localRotation);
-                startFrameDataMap.addChild(<any>EArticulatedAnimationTarget.SCALE, transform.localScale);
-            }
+            // }
+            // else{
+            //     let transform:ThreeDTransform = args[0];
+            //
+            //     startFrameDataMap.addChild(<any>EArticulatedAnimationTarget.TRANSLATION, transform.localPosition);
+            //     startFrameDataMap.addChild(<any>EArticulatedAnimationTarget.ROTATION, transform.localRotation);
+            //     startFrameDataMap.addChild(<any>EArticulatedAnimationTarget.SCALE, transform.localScale);
+            // }
         }
 
         private _updateCurrentFrameData(){
@@ -263,9 +342,9 @@ module wd{
             }while(!this._isFinishAllFrames() && this.isCurrentFrameFinish(elapsed));
         }
 
-        private _isFrameData(data:any){
-            return data.time !== void 0 && data.targets !== void 0;
-        }
+        // private _isFrameData(data:any){
+        //     return data.time !== void 0 && data.targets !== void 0;
+        // }
     }
 
     export type ArticulatedAnimationData = wdCb.Hash<wdCb.Collection<ArticulatedAnimationFrameData>>
@@ -279,7 +358,17 @@ module wd{
     export type ArticulatedAnimationFrameTargetData = {
         interpolationMethod:EKeyFrameInterpolation,
         target:EArticulatedAnimationTarget,
-        data:any
+        data:any,
+        extra?:any
+    }
+
+    export type TextureArticulatedAnimationFrameTargetData = {
+        interpolationMethod:EKeyFrameInterpolation,
+        target:EArticulatedAnimationTarget,
+        data:Array<number>,
+        extra:{
+            target:string
+        }
     }
 }
 
