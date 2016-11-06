@@ -384,10 +384,24 @@ describe("procedural texture", function () {
             });
 
             it("test at frame 1", function (done) {
-                tester.compareAt(1, "procedural/procedural_texture_animate_frame1.png", done);
+                tester.compareAt(
+                    {
+                        frameIndex: 1,
+                        correctRate: 0.95,
+                        partialCorrectImagePath: "procedural/procedural_texture_animate_frame1.png",
+                        done: done
+                    }
+                );
             });
             it("test at frame 10", function (done) {
-                tester.compareAt(10, "procedural/procedural_texture_animate_frame10.png", done);
+                tester.compareAt(
+                    {
+                        frameIndex: 10,
+                        correctRate: 0.95,
+                        partialCorrectImagePath: "procedural/procedural_texture_animate_frame10.png",
+                        done: done
+                    }
+                );
             });
         });
 

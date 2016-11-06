@@ -249,7 +249,14 @@ describe("terrain", function () {
             });
 
             it("test", function (done) {
-                tester.compareAt(1, "terrain/terrain_layerTexture.png", done);
+                tester.compareAt(
+                    {
+                        frameIndex:1,
+                        partialCorrectImagePath:"terrain/terrain_layerTexture.png",
+                        done:done,
+                        correctRate:0.94
+                    }
+                );
             });
         });
 

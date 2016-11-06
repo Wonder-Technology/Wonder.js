@@ -315,6 +315,7 @@ describe("gameObjectLod", function () {
             it("test distance 30", function (done) {
                 tester.compareAt({
                     frameIndex: 1,
+                    correctRate:0.9,
                     partialCorrectImagePath: "lod/gameObjectLOD_switch(discrete)_selection(range-base)_distance30.png",
                     handle:function(){
                         var camera = wd.Director.getInstance().scene.currentCamera;

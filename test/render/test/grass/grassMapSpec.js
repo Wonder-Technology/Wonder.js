@@ -168,6 +168,7 @@ describe("grass map", function () {
         it("test frame1", function (done) {
             tester.compareAt({
                 frameIndex:1,
+                correctRate:0.95,
                 partialCorrectImagePath:"grass/grass_map_frame1.png",
                 done:done
             });
@@ -175,6 +176,7 @@ describe("grass map", function () {
         it("test frame5", function (done) {
             tester.compareAt({
                 frameIndex:5,
+                correctRate:0.95,
                 partialCorrectImagePath:"grass/grass_map_frame5.png",
                 done:done
             });

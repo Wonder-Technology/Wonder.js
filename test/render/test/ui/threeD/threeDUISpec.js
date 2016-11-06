@@ -213,7 +213,7 @@ describe("threeD ui", function () {
                         frameIndex:1,
                         partialCorrectImagePath:"ui/threeD/ui_font_threeD_bitmap.png",
                         done:done,
-                        correctRate:0.95
+                        correctRate:0.92
                     }
                 );
             });

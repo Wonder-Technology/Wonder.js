@@ -21,5 +21,6 @@ uniform FireColor u_fireColor;
 	float luminance = dot(color.rgb, vec3(0.3, 0.59, 0.11));
 
 	gl_FragColor = vec4(color, luminance * u_alphaThreshold + (1.0 - u_alphaThreshold));
+
 @end
 
