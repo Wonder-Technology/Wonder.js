@@ -82,6 +82,9 @@ module wd{
         public emissionColor:Color = Color.create("rgba(0,0,0,0)");
         @cloneAttributeAsBasicType()
         public lightMapIntensity:number = 1;
+        //todo test
+        @cloneAttributeAsBasicType()
+        public alphaTest:number = null;
 
         public init(){
             this._addMap();

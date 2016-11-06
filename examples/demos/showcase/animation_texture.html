@@ -18,7 +18,13 @@
         }).init();
 
         wd.LoaderManager.getInstance().load([
-            {url: "./asset/animation/black_cat.png", id: "animationCat"}
+            {url: "./asset/animation/black_cat.png", id: "animationCat"},
+            {url: "../../asset/texture/skybox/px.jpg", id: "px"},
+            {url: "../../asset/texture/skybox/nx.jpg", id: "nx"},
+            {url: "../../asset/texture/skybox/py.jpg", id: "py"},
+            {url: "../../asset/texture/skybox/ny.jpg", id: "ny"},
+            {url: "../../asset/texture/skybox/pz.jpg", id: "pz"},
+            {url: "../../asset/texture/skybox/nz.jpg", id: "nz"}
         ]).subscribe(null, null, function () {
             initSample();
         });
@@ -27,6 +33,11 @@
             var director = wd.Director.getInstance();
 
             director.renderer.setClearColor(wd.Color.create("#aaaaff"));
+
+
+            var skybox = createSkybox();
+
+            director.scene.addChild(skybox);
 
             director.scene.addChild(createRect1());
 
@@ -37,23 +48,59 @@
             director.start();
         }
 
+        function createSkybox() {
+            var cubemap = wd.CubemapTexture.create(
+                    [
+                        {
+                            asset: wd.LoaderManager.getInstance().get("px")
+                        },
+                        {
+                            asset: wd.LoaderManager.getInstance().get("nx")
+                        },
+                        {
+                            asset: wd.LoaderManager.getInstance().get("py")
+                        },
+                        {
+                            asset: wd.LoaderManager.getInstance().get("ny")
+                        },
+                        {
+                            asset: wd.LoaderManager.getInstance().get("pz")
+                        },
+                        {
+                            asset: wd.LoaderManager.getInstance().get("nz")
+                        }
+                    ]
+            );
+
+            var material = wd.SkyboxMaterial.create();
+            material.envMap = cubemap;
+
+
+            var geometry = wd.BoxGeometry.create();
+            geometry.material = material;
+            geometry.width = 5;
+            geometry.height = 5;
+            geometry.depth = 5;
+
+
+            var gameObject = wd.GameObject.create();
+
+            gameObject.addComponent(wd.SkyboxRenderer.create());
+            gameObject.addComponent(geometry);
+
+            return gameObject;
+        }
+
         function createRect1() {
             var map = wd.LoaderManager.getInstance().get("animationCat").toTexture();
-            /*!
-             the default sourceRegionMethod is CHANGE_TEXCOORDS_IN_GLSL.
-             in this case, it can't repeat
-             */
-//            map.sourceRegion = wd.RectRegion.create(0, 0, 64, 64);
 
-
-//            var material = wd.BasicMaterial.create();
-//            material.map = map;
             var material = wd.LightMaterial.create();
             material.diffuseMap = map;
             material.specularColor = wd.Color.create("rgb(0,0,255)");
-//            material.specularColor = wd.Color.create("rgb(0,0,0)");
-//            material.specularColor = wd.Color.create("#000000");
             material.side = wd.ESide.BOTH;
+
+            material.alphaTest = 0.9;
+
 
 
             var geometry = wd.RectGeometry.create();
@@ -172,14 +219,14 @@
         function createDirectionLight() {
             var directionLightComponent = wd.DirectionLight.create();
             directionLightComponent.color = wd.Color.create("#ffffff");
-            directionLightComponent.intensity = 0.5;
+            directionLightComponent.intensity = 1;
 
 
             var directionLight = wd.GameObject.create();
             directionLight.addComponent(directionLightComponent);
 
 
-            directionLight.transform.translate(wd.Vector3.create(100, 100, 300));
+            directionLight.transform.translate(wd.Vector3.create(0, 10, 30));
 
 
             return directionLight;

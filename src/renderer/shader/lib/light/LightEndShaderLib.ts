@@ -8,7 +8,15 @@ module wd{
 
         public type:string = "lightEnd";
 
-        public sendShaderVariables(program: Program, cmd:QuadCommand, material:LightMaterial){
+        public setShaderDefinition(cmd:QuadCommand, material:LightMaterial){
+            super.setShaderDefinition(cmd, material);
+
+            //todo test
+            if(material.alphaTest !== null){
+                this.fsSourceBody += `if (totalColor.a < ${material.alphaTest}){
+    discard;
+}\n`;
+            }
         }
     }
 }

@@ -57,6 +57,7 @@ vec4 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, ve
         vec3 specularColor = spec * materialSpecular * specularStrength * intensity;
 
         return vec4(emissionColor + ambientColor + attenuation * (diffuseColor.rgb + specularColor), diffuseColor.a);
+//        return vec4(emissionColor + ambientColor + attenuation * (diffuseColor.rgb + specularColor), 1.0);
 }
 
 
