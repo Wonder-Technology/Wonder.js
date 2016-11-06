@@ -1,4 +1,4 @@
-describe("articulated animation", function () {
+describe("transform articulated animation", function () {
     var sandbox = null;
 
     beforeEach(function () {
@@ -86,6 +86,15 @@ describe("articulated animation", function () {
             sandbox.stub(wd.Director.getInstance()._timeController, "elapsed", time);
         }
 
+        function getInitTransformData() {
+            return {
+                translation:wd.Vector3.create(0,0,0),
+                rotation:wd.Quaternion.create(0,0,0,1),
+                scale:wd.Vector3.create(1,1,1)
+            }
+        }
+
+
         beforeEach(function(){
         });
 
@@ -111,6 +120,17 @@ describe("articulated animation", function () {
                     anim.data = wdCb.Hash.create({
                         "play": wdCb.Collection.create([
                             {
+                                time:0,
+
+                                targets: wdCb.Collection.create(
+                                    [
+                                        { interpolationMethod: wd.EKeyFrameInterpolation.LINEAR,
+                                            target: wd.EArticulatedAnimationTarget.TRANSLATION,
+                                            data: getInitTransformData().translation}
+                                    ]
+                                )
+                            },
+                            {
                                 time:10,
 
                                 targets: wdCb.Collection.create(
@@ -135,6 +155,17 @@ describe("articulated animation", function () {
             it("if not play animation, update nothing", function(){
                 anim.data = wdCb.Hash.create({
                     "play": wdCb.Collection.create([
+                        {
+                            time:0,
+
+                            targets: wdCb.Collection.create(
+                                [
+                                    { interpolationMethod: wd.EKeyFrameInterpolation.LINEAR,
+                                        target: wd.EArticulatedAnimationTarget.TRANSLATION,
+                                        data: getInitTransformData().translation}
+                                ]
+                            )
+                        },
                         {
                             time:10,
 
@@ -266,6 +297,19 @@ describe("articulated animation", function () {
                     anim.data = wdCb.Hash.create({
                         "play": wdCb.Collection.create([
                             {
+                                time:0,
+
+                                targets: wdCb.Collection.create(
+                                    [
+                                        { interpolationMethod: wd.EKeyFrameInterpolation.LINEAR,
+                                            target: wd.EArticulatedAnimationTarget.TRANSLATION,
+                                            data: getInitTransformData().translation},
+                                        {interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,target:wd.EArticulatedAnimationTarget.ROTATION, data: getInitTransformData().rotation},
+                                        {interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,target:wd.EArticulatedAnimationTarget.SCALE, data: getInitTransformData().scale}
+                                    ]
+                                )
+                            },
+                            {
                                 time:firstKeyTime,
 
                                 targets: wdCb.Collection.create(
@@ -374,15 +418,29 @@ describe("articulated animation", function () {
                         wd.AnimationEngine.getInstance().update(firstKeyTime + 1);
                     });
 
+                    it("if just finish all keys, reach the end data", function () {
+                        wd.AnimationEngine.getInstance().update(secondKeyTime);
 
-                    it("test first key", function () {
+                        judgePos([3,1,0]);
+                        judgeScale([1,2,4]);
+                        judgeRotation([10,20,40]);
+                    });
+                    it("if the elapsed exceed the last key->time, go back to the first key data", function () {
                         wd.AnimationEngine.getInstance().update(secondKeyTime + 2);
 
-                        judgePos([2.8,1,0]);
-                        judgeScale([1,2,3.8]);
-                        judgeRotation([10,20,38]);
+                        judgePos([0,0,0]);
+                        judgeScale([1,1,1]);
+                        judgeRotation([0,0,0]);
                     });
-                    it("test second key", function () {
+                    it("test reach the next loop->first key", function () {
+                        wd.AnimationEngine.getInstance().update(secondKeyTime + 2);
+                        wd.AnimationEngine.getInstance().update(secondKeyTime + 3);
+
+                        judgePos([0.6,0.3,0]);
+                        judgeScale([1,1.3,1.6]);
+                        judgeRotation([1.8,6.5,8.5]);
+                    });
+                    it("test reach the next loop->second key", function () {
                         wd.AnimationEngine.getInstance().update(secondKeyTime + 1);
                         wd.AnimationEngine.getInstance().update(secondKeyTime + firstKeyTime + 1);
 
@@ -390,15 +448,15 @@ describe("articulated animation", function () {
                         judgeScale([1,2,3.2]);
                         judgeRotation([10,20,32]);
                     });
-                    it("test finish all key twice", function () {
+                    it("test finish next loop", function () {
                         wd.AnimationEngine.getInstance().update(secondKeyTime + 1);
                         wd.AnimationEngine.getInstance().update(secondKeyTime + firstKeyTime + 1);
 
                         wd.AnimationEngine.getInstance().update(secondKeyTime + secondKeyTime + 1);
 
-                        judgePos([2.9,1,0]);
-                        judgeScale([1,2,3.9]);
-                        judgeRotation([10,20,39]);
+                        judgePos([0,0,0]);
+                        judgeScale([1,1,1]);
+                        judgeRotation([0,0,0]);
                     });
                 });
             });
@@ -430,6 +488,16 @@ describe("articulated animation", function () {
 
                 anim.data = wdCb.Hash.create({
                     "play": wdCb.Collection.create([
+                        {
+                            time:0,
+
+
+                            targets: wdCb.Collection.create(
+                                [
+                                    {interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,target:wd.EArticulatedAnimationTarget.TRANSLATION, data: getInitTransformData().translation}
+                                ]
+                            )
+                        },
                         {
                             time:firstKeyTime,
 
@@ -484,7 +552,7 @@ describe("articulated animation", function () {
 
                 judgePos(
                     wd.Vector3.create().lerp(
-                        wd.Vector3.create(0.2,0.1,0),
+                        wd.Vector3.create(0,0,0),
                         wd.Vector3.create(2,1,0),
                         (4 - 2) / 10
                     ).toArray()
@@ -535,10 +603,10 @@ describe("articulated animation", function () {
                 });
                 it("test finish all keys", function () {
                     wd.AnimationEngine.getInstance().update(firstKeyTime + 2);
-                    wd.AnimationEngine.getInstance().update(secondKeyTime + 2);
+                    wd.AnimationEngine.getInstance().update(secondKeyTime + 1);
 
                     judgePos(
-                        [2.9, 1, 0]
+                        [3, 1, 0]
                     );
                 });
             });

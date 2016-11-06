@@ -29,10 +29,10 @@
         // 'test/unit/**',
 
 
-        'test/unit/**/*Light*',
-        'test/unit/**/Light*',
-        'test/unit/**/*light*',
-        'test/unit/**/light*',
+        // 'test/unit/**/*Light*',
+        // 'test/unit/**/Light*',
+        // 'test/unit/**/*light*',
+        // 'test/unit/**/light*',
 
 
         //'test/render/*Tool.js',
@@ -67,15 +67,15 @@
         //'test/unit/**/Billboard*',
 
         //'test/unit/**/BufferTable*',
-        'test/unit/**/ProgramTable*',
+        // 'test/unit/**/ProgramTable*',
 
         //'test/unit/**/BasicTexture*',
 
         //'test/unit/renderer/**',
         //'test/unit/**/*InstanceCommand*',
 
-        'test/unit/**/ProgramSpec.js',
-        'test/unit/**/GLSLDataSenderSpec.js',
+        // 'test/unit/**/ProgramSpec.js',
+        // 'test/unit/**/GLSLDataSenderSpec.js',
         //'test/unit/**/programIn*',
 
         //'test/unit/**/renderer/**',
@@ -236,9 +236,9 @@
 
         //'test/unit/**/customShader*',
 
-        //'test/unit/**/*animation*',
-        //'test/unit/component/**/*Animation*.js',
-        //'test/unit/component/**/morphAnimation*.js',
+        'test/unit/**/*animation*',
+        'test/unit/component/**/*Animation*.js',
+        'test/unit/component/**/morphAnimation*.js',
 
         //'test/unit/**/GLTFParserSpec*',
         //'test/unit/**/GLTFAssemblerSpec*',

@@ -113,9 +113,6 @@ module wd{
 
             this.resetAnim();
 
-            //todo pass test
-            // this._saveStartFrameData(this.entityObject.transform);
-            // this._saveAllInitPosibleAnimatedData(this.entityObject.transform);
             this._saveStartFrameData(this._currentAnimData.getChild(0));
 
             this.frameCount = this._currentAnimData.getCount();
@@ -209,24 +206,20 @@ module wd{
         }
 
         @require(function(target:ArticulatedAnimationFrameTargetData, startFrameData:Array<number>, endFrameData:Array<number>, interpolation:number){
-            // it("interpolationMethod in frames data should all be the same", () => {
-            //     expect(target.interpolationMethod).equals(endFrameData.interpolationMethod);
-            // });
-            // it("extra->target in frames data should all be the same", () => {
-            //     expect(startFrameData.extra.target).equals(endFrameData.extra.target);
-            // });
-            it("animated texture should be BasicTexture", () => {
-                //todo finish
-            });
+            it("material should has the corresponding animated texture", () => {
+                expect(this.entityObject.getGeometry().material[target.extra.target]).exist;
+            }, this);
+            it("this animated texture should has 'sourceRegion' attribute", () => {
+                expect(this.entityObject.getGeometry().material[target.extra.target].sourceRegion).not.be.a("undefined");
+            }, this);
             it("texture animation->interpolationMethod should be SWITCH", () => {
-                        expect(target.interpolationMethod).equals(EKeyFrameInterpolation.SWITCH);
+                expect(target.interpolationMethod).equals(EKeyFrameInterpolation.SWITCH);
             });
         })
-        //todo remove startFrameData
         private _updateTextureData(target:ArticulatedAnimationFrameTargetData, startFrameData:Array<number>, endFrameData:Array<number>, interpolation:number){
             var material:Material = this.entityObject.getComponent<Geometry>(Geometry).material,
-            mapName:string = target.extra.target,
-            map:BasicTexture = material[mapName];
+                mapName:string = target.extra.target,
+                map:BasicTexture = material[mapName];
 
             if(!!map){
                 //todo optimize:use temp RectRegion
@@ -260,44 +253,22 @@ module wd{
             return interpolation;
         }
 
-        // private _saveAllInitPosibleAnimatedData(startTransform:ThreeDTransform){
-        //         startFrameDataMap.addChild(<any>EArticulatedAnimationTarget.TRANSLATION, startTransform.localPosition);
-        //         startFrameDataMap.addChild(<any>EArticulatedAnimationTarget.ROTATION, startTransform.localRotation);
-        //         startFrameDataMap.addChild(<any>EArticulatedAnimationTarget.SCALE, startTransform.localScale);
-        // }
+        @require(function(frameData:ArticulatedAnimationFrameData){
+            var frameData:ArticulatedAnimationFrameData = args[0];
 
-        //todo refactor
-        private _saveStartFrameData(frameData:ArticulatedAnimationFrameData);
-        // private _saveStartFrameData(startTransform:ThreeDTransform);
+            assert(this._currentFrameData !== null, Log.info.FUNC_SHOULD("set currentFrameData"));
 
-        @require(function(...args){
-            // if(this._isFrameData(args[0])){
-                let frameData:ArticulatedAnimationFrameData = args[0];
-
-                assert(this._currentFrameData !== null, Log.info.FUNC_SHOULD("set currentFrameData"));
-
-                this._currentFrameData.targets.forEach((currentTarget:ArticulatedAnimationFrameTargetData, index:number) => {
-                    assert(frameData.targets.getChild(index).target === currentTarget.target, Log.info.FUNC_SHOULD("the current frame and the start frame", "modify the same targets"));
-                });
-            // }
+            this._currentFrameData.targets.forEach((currentTarget:ArticulatedAnimationFrameTargetData, index:number) => {
+                assert(frameData.targets.getChild(index).target === currentTarget.target, Log.info.FUNC_SHOULD("the current frame and the start frame", "modify the same targets"));
+            });
         })
-        private _saveStartFrameData(...args){
-            var startFrameDataMap = this._startFrameDataMap;
+        private _saveStartFrameData(frameData:ArticulatedAnimationFrameData){
+            var startFrameDataMap = this._startFrameDataMap,
+                frameData:ArticulatedAnimationFrameData = args[0];
 
-            // if(this._isFrameData(args[0])){
-                let frameData:ArticulatedAnimationFrameData = args[0];
-
-                frameData.targets.forEach((target:ArticulatedAnimationFrameTargetData) => {
-                    startFrameDataMap.addChild(<any>target.target, target.data);
-                });
-            // }
-            // else{
-            //     let transform:ThreeDTransform = args[0];
-            //
-            //     startFrameDataMap.addChild(<any>EArticulatedAnimationTarget.TRANSLATION, transform.localPosition);
-            //     startFrameDataMap.addChild(<any>EArticulatedAnimationTarget.ROTATION, transform.localRotation);
-            //     startFrameDataMap.addChild(<any>EArticulatedAnimationTarget.SCALE, transform.localScale);
-            // }
+            frameData.targets.forEach((target:ArticulatedAnimationFrameTargetData) => {
+                startFrameDataMap.addChild(<any>target.target, target.data);
+            });
         }
 
         private _updateCurrentFrameData(){
@@ -341,10 +312,6 @@ module wd{
                 this._updateCurrentFrameData();
             }while(!this._isFinishAllFrames() && this.isCurrentFrameFinish(elapsed));
         }
-
-        // private _isFrameData(data:any){
-        //     return data.time !== void 0 && data.targets !== void 0;
-        // }
     }
 
     export type ArticulatedAnimationData = wdCb.Hash<wdCb.Collection<ArticulatedAnimationFrameData>>
