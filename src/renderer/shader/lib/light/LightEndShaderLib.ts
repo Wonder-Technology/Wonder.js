@@ -11,7 +11,6 @@ module wd{
         public setShaderDefinition(cmd:QuadCommand, material:LightMaterial){
             super.setShaderDefinition(cmd, material);
 
-            //todo test
             if(material.alphaTest !== null){
                 this.fsSourceBody += `if (totalColor.a < ${material.alphaTest}){
     discard;

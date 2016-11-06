@@ -7,6 +7,7 @@ module wd{
         VECTOR_2 = <any>"VECTOR_2",
         VECTOR_3 = <any>"VECTOR_3",
         VECTOR_4 = <any>"VECTOR_4",
+        COLOR_3 = <any>"COLOR_3",
         FLOAT_MAT3 = <any>"FLOAT_MAT3",
         FLOAT_MAT4 = <any>"FLOAT_MAT4",
         BUFFER = <any>"BUFFER",

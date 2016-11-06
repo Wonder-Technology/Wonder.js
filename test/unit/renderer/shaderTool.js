@@ -44,7 +44,6 @@ var shaderTool = (function(){
             sandbox.spy(program, "sendVector2");
             sandbox.spy(program, "sendVector3");
             sandbox.spy(program, "sendVector4");
-            sandbox.spy(program, "sendColor4");
             sandbox.spy(program, "sendNum1");
             sandbox.spy(program, "sendMatrix3");
             sandbox.spy(program, "sendMatrix4");
@@ -74,7 +73,7 @@ var shaderTool = (function(){
             sandbox.stub(program, "sendVector2");
             sandbox.stub(program, "sendVector3");
             sandbox.stub(program, "sendVector4");
-            sandbox.stub(program, "sendColor4");
+            sandbox.stub(program, "sendColor3");
             sandbox.stub(program, "sendNum1");
             sandbox.stub(program, "sendMatrix3");
             sandbox.stub(program, "sendMatrix4");

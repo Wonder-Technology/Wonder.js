@@ -344,7 +344,8 @@ describe("LightMaterial", function() {
                     lightModel = wd.ELightModel.LAMBERT,
                     specularColor = wd.Color.create("#111111"),
                     emissionColor = wd.Color.create("#222222"),
-                    lightMapIntensity = 0.1;
+                    lightMapIntensity = 0.1,
+                    alphaTest = 0.1;
 
 
                 cloneTool.extend(material, {
@@ -353,7 +354,8 @@ describe("LightMaterial", function() {
                     lightModel: lightModel,
                     specularColor: specularColor,
                     emissionColor: emissionColor,
-                    lightMapIntensity: lightMapIntensity
+                    lightMapIntensity: lightMapIntensity,
+                    alphaTest:alphaTest
                 });
 
 
@@ -367,6 +369,7 @@ describe("LightMaterial", function() {
                 expect(result.emissionColor).toEqual(emissionColor);
                 expect(result.emissionColor === material.emissionColor).toBeFalsy();
                 expect(result.lightMapIntensity).toEqual(lightMapIntensity);
+                expect(result.alphaTest).toEqual(alphaTest);
             });
         });
     });

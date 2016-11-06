@@ -337,6 +337,32 @@ describe("Program", function(){
             });
         });
 
+        describe("test send COLOR_3", function () {
+            it("convert data to array", function () {
+                program.sendUniformData("u_a", wd.EVariableType.COLOR_3, wd.Color.create("rgb(0.1,0.2,0.3)"));
+
+                expect(gl.uniform3f).toCalledWith(pos, 0.1, 0.2, 0.3);
+            });
+
+            describe("test cache", function(){
+                beforeEach(function(){
+                });
+
+                it("if cached, return cached data", function () {
+                    program.sendUniformData("u_a", wd.EVariableType.COLOR_3, wd.Color.create("rgb(0.1,0.2,0.3)"));
+                    program.sendUniformData("u_a", wd.EVariableType.COLOR_3, wd.Color.create("rgb(0.1,0.2,0.3)"));
+
+                    expect(gl.uniform3f.withArgs(pos)).toCalledOnce();
+                });
+                it("if data not equal, cache miss", function () {
+                    program.sendUniformData("u_a", wd.EVariableType.COLOR_3, wd.Color.create("rgb(0.1,0.2,0.3)"));
+                    program.sendUniformData("u_a", wd.EVariableType.COLOR_3, wd.Color.create("rgb(0.2,0.1,0.3)"));
+
+                    expect(gl.uniform3f.withArgs(pos)).toCalledTwice();
+                });
+            });
+        });
+
         it("test send FLOAT_MAT3", function () {
             var mat = wd.Matrix3.create();
             program.sendUniformData("u_a", wd.EVariableType.FLOAT_MAT3, mat);

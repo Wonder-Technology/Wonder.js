@@ -174,7 +174,6 @@ module wd{
             gl.uniform4f(pos, x, y, z, w);
         }
 
-        //todo test
         public sendColor3(name:string, data:Color){
             var gl = null,
                 pos = null,
@@ -199,33 +198,6 @@ module wd{
             }
 
             gl.uniform3f(pos, r, g, b);
-        }
-
-        public sendColor4(name:string, data:Color){
-            var gl = null,
-                pos = null,
-                recordedData:any = this._uniformCache[name],
-                convertedData = null;
-
-            if(recordedData && recordedData[0] == data.r && recordedData[1] == data.g && recordedData[2] == data.b && recordedData[3] == data.a){
-                return;
-            }
-
-            let r = data.r,
-                g = data.g,
-                b = data.b,
-                a = data.a;
-
-            this._recordUniformData(name, [r, g, b, a]);
-
-            gl = DeviceManager.getInstance().gl;
-            pos = this.getUniformLocation(name);
-
-            if(this._isUniformDataNotExistByLocation(pos)){
-                return;
-            }
-
-            gl.uniform4f(pos, r, g, b, a);
         }
 
         @require(function(name:string, data:number){

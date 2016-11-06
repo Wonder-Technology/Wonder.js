@@ -130,7 +130,7 @@ describe("LightShaderLib", function () {
 
                 lib.sendShaderVariables(program, cmd, material);
 
-                expect(program.sendColor4.withArgs("u_directionLights[0].color", color)).toCalledOnce();
+                expect(program.sendColor3.withArgs("u_directionLights[0].color", color)).toCalledOnce();
             });
         });
 

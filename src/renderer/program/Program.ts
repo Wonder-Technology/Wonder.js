@@ -77,6 +77,9 @@ module wd{
                 case EVariableType.VECTOR_4:
                     this._sender.sendVector4(name, data);
                     break;
+                case EVariableType.COLOR_3:
+                    this._sender.sendColor3(name, data);
+                    break;
                 case EVariableType.FLOAT_MAT3:
                     this._sender.sendMatrix3(name, data);
                     break;
@@ -148,10 +151,6 @@ module wd{
 
         public sendColor3(name:string, data:any){
             this._sender.sendColor3(name, data);
-        }
-
-        public sendColor4(name:string, data:any){
-            this._sender.sendColor4(name, data);
         }
 
         public sendNum1(name:string, data:any){
