@@ -13,84 +13,293 @@ describe("animation", function () {
     });
 
     describe("scene test", function(){
-        describe("test articulated animation", function () {
-            var tester;
-
-            function body(wrapper){
-                wrapper.load([
-                        {url: "../../asset/model/gltf/CesiumMilkTruck/glTF-MaterialsCommon/CesiumMilkTruck.gltf", id: "model"}
-                    ])
-                    .do(initSample);
-
-                function initSample() {
-                    var director = wd.Director.getInstance();
-
-                    director.scene.addChildren(setModelAndReturn());
-                    director.scene.addChild(createCamera());
-                    director.scene.addChild(createDirectionLight());
-
-                    director.start();
-                }
-
-                function createDirectionLight() {
-                    var directionLightComponent = wd.DirectionLight.create();
-                    directionLightComponent.color = wd.Color.create("#ffffff");
-                    directionLightComponent.intensity = 1;
-
-
-                    var directionLight = wd.GameObject.create();
-                    directionLight.addComponent(directionLightComponent);
-
-                    directionLight.transform.translate(wd.Vector3.create(0, 100, 100));
-
-                    return directionLight;
-                }
-
-                function setModelAndReturn() {
-                    var models = wd.LoaderManager.getInstance().get("model").getChild("models");
-
-                    var frontWheels = models.getChild(1).getChild(3);
-                    var backWheels = models.getChild(1).getChild(4);
-
-                    var frontWheelsAnim = frontWheels.getComponent(wd.ArticulatedAnimation);
-                    var backWheelsAnim = backWheels.getComponent(wd.ArticulatedAnimation);
-
-                    frontWheelsAnim.play("animation_0");
-                    backWheelsAnim.play("animation_1");
-
-                    return models;
-                }
-
-                function createCamera() {
-                    var camera = wd.GameObject.create(),
-                        view = wd.Director.getInstance().view,
-                        cameraComponent = wd.PerspectiveCamera.create();
-
-                    cameraComponent.fovy = 60;
-                    cameraComponent.aspect = view.width / view.height;
-                    cameraComponent.near = 0.1;
-                    cameraComponent.far = 1000;
-
-                    var controller = wd.ArcballCameraController.create(cameraComponent);
-                    controller.distance = 5;
-                    controller.theta = Math.PI / 4;
-
-                    camera.addComponent(controller);
-
-                    return camera;
-                }
-            }
-
-            beforeEach(function (done) {
-                tester = SceneTester.create(sandbox);
-
-                renderTestTool.prepareContext();
-
-                tester.execBody(body, done);
+        describe("test articulated animation", function(){
+            beforeEach(function(){
             });
 
-            it("test", function (done) {
-                tester.compareAt(1, "animation/animation_articulated.png", done);
+            // describe("test transform articulated animation", function () {
+            //     var tester;
+            //
+            //     function body(wrapper){
+            //         wrapper.load([
+            //             {url: "../../asset/model/gltf/CesiumMilkTruck/glTF-MaterialsCommon/CesiumMilkTruck.gltf", id: "model"}
+            //         ])
+            //             .do(initSample);
+            //
+            //         function initSample() {
+            //             var director = wd.Director.getInstance();
+            //
+            //             director.scene.addChildren(setModelAndReturn());
+            //             director.scene.addChild(createCamera());
+            //             director.scene.addChild(createDirectionLight());
+            //
+            //             director.start();
+            //         }
+            //
+            //         function createDirectionLight() {
+            //             var directionLightComponent = wd.DirectionLight.create();
+            //             directionLightComponent.color = wd.Color.create("#ffffff");
+            //             directionLightComponent.intensity = 1;
+            //
+            //
+            //             var directionLight = wd.GameObject.create();
+            //             directionLight.addComponent(directionLightComponent);
+            //
+            //             directionLight.transform.translate(wd.Vector3.create(0, 100, 100));
+            //
+            //             return directionLight;
+            //         }
+            //
+            //         function setModelAndReturn() {
+            //             var models = wd.LoaderManager.getInstance().get("model").getChild("models");
+            //
+            //             var frontWheels = models.getChild(1).getChild(3);
+            //             var backWheels = models.getChild(1).getChild(4);
+            //
+            //             var frontWheelsAnim = frontWheels.getComponent(wd.ArticulatedAnimation);
+            //             var backWheelsAnim = backWheels.getComponent(wd.ArticulatedAnimation);
+            //
+            //             frontWheelsAnim.play("animation_0");
+            //             backWheelsAnim.play("animation_1");
+            //
+            //             return models;
+            //         }
+            //
+            //         function createCamera() {
+            //             var camera = wd.GameObject.create(),
+            //                 view = wd.Director.getInstance().view,
+            //                 cameraComponent = wd.PerspectiveCamera.create();
+            //
+            //             cameraComponent.fovy = 60;
+            //             cameraComponent.aspect = view.width / view.height;
+            //             cameraComponent.near = 0.1;
+            //             cameraComponent.far = 1000;
+            //
+            //             var controller = wd.ArcballCameraController.create(cameraComponent);
+            //             controller.distance = 5;
+            //             controller.theta = Math.PI / 4;
+            //
+            //             camera.addComponent(controller);
+            //
+            //             return camera;
+            //         }
+            //     }
+            //
+            //     beforeEach(function (done) {
+            //         tester = SceneTester.create(sandbox);
+            //
+            //         renderTestTool.prepareContext();
+            //
+            //         tester.execBody(body, done);
+            //     });
+            //
+            //     it("test", function (done) {
+            //         tester.compareAt(1, "animation/animation_transform_articulated.png", done);
+            //     });
+            // });
+
+            describe("test texture articulated animation", function () {
+                var tester;
+
+                function body(wrapper){
+                    wrapper.load([
+                        {url: "../../asset/texture/animation/black_cat.png", id: "animationCat"}
+                    ])
+                        .do(initSample);
+
+                    function initSample() {
+                        var director = wd.Director.getInstance();
+
+                        director.renderer.setClearColor(wd.Color.create("#aaaaff"));
+
+
+                        director.scene.addChild(createRect1());
+
+                        director.scene.addChild(createAmbientLight());
+                        director.scene.addChild(createDirectionLight());
+                        director.scene.addChild(createCamera());
+
+                        director.start();
+                    }
+
+                    function createRect1() {
+                        var map = wd.LoaderManager.getInstance().get("animationCat").toTexture();
+
+                        var material = wd.LightMaterial.create();
+                        material.diffuseMap = map;
+                        material.alphaTest = 0.9;
+
+
+
+                        var geometry = wd.RectGeometry.create();
+                        geometry.material = material;
+                        geometry.width = 5;
+                        geometry.height = 5;
+                        var gameObject = wd.GameObject.create();
+                        gameObject.addComponent(geometry);
+
+
+
+                        var animation = wd.TextureArticulatedAnimation.create();
+
+
+
+                        var width = 128;
+                        var height = 128;
+
+                        animation.data = wdCb.Hash.create({
+                            "run": wdCb.Collection.create([
+
+                                {
+                                    time: 0,
+                                    targets:wdCb.Collection.create([
+                                        {
+                                            interpolationMethod:wd.EKeyFrameInterpolation.SWITCH,
+                                            target:wd.EArticulatedAnimationTarget.TEXTURE_OFFSET,
+                                            data:[0, 0, width, height],
+                                            extra:{
+                                                target:"diffuseMap"
+                                            }
+                                        }
+                                    ])
+                                },
+                                {
+                                    time: 100,
+                                    targets:wdCb.Collection.create([
+                                        {
+                                            interpolationMethod:wd.EKeyFrameInterpolation.SWITCH,
+                                            target:wd.EArticulatedAnimationTarget.TEXTURE_OFFSET,
+                                            data:[width, 0, width, height],
+                                            extra:{
+                                                target:"diffuseMap"
+                                            }
+                                        },
+
+                                    ])
+                                },
+                                {
+                                    time: 200,
+                                    targets:wdCb.Collection.create([
+                                        {
+                                            interpolationMethod:wd.EKeyFrameInterpolation.SWITCH,
+                                            target:wd.EArticulatedAnimationTarget.TEXTURE_OFFSET,
+                                            data:[0, height, width, height],
+                                            extra:{
+                                                target:"diffuseMap"
+                                            }
+                                        }
+                                    ])
+                                }
+                            ])
+                        });
+
+
+                        map.sourceRegion = wd.RectRegion.create(0, 0, width, height);
+
+
+
+                        animation.play("run");
+
+                        gameObject.addComponent(animation);
+
+
+                        gameObject.addComponent(wd.MeshRenderer.create());
+//            gameObject.transform.translate(-8, 0, 0);
+
+                        return gameObject;
+                    }
+
+                    function createAmbientLight() {
+                        var ambientLightComponent = wd.AmbientLight.create();
+                        ambientLightComponent.color = wd.Color.create("rgb(30, 30, 30)");
+
+                        var ambientLight = wd.GameObject.create();
+                        ambientLight.addComponent(ambientLightComponent);
+
+                        return ambientLight;
+                    }
+
+                    function createDirectionLight() {
+                        var directionLightComponent = wd.DirectionLight.create();
+                        directionLightComponent.color = wd.Color.create("#ffffff");
+                        directionLightComponent.intensity = 1;
+
+
+                        var directionLight = wd.GameObject.create();
+                        directionLight.addComponent(directionLightComponent);
+
+
+                        directionLight.transform.translate(wd.Vector3.create(0, 10, 30));
+
+
+                        return directionLight;
+                    }
+
+                    function createCamera() {
+                        var camera = wd.GameObject.create(),
+                            view = wd.Director.getInstance().view,
+                            cameraComponent = wd.PerspectiveCamera.create();
+
+                        cameraComponent.fovy = 60;
+                        cameraComponent.aspect = view.width / view.height;
+                        cameraComponent.near = 0.1;
+                        cameraComponent.far = 1000;
+
+                        var controller = wd.ArcballCameraController.create(cameraComponent);
+                        controller.distance = 10;
+
+                        camera.addComponent(controller);
+
+                        return camera;
+
+                    }
+                }
+
+                beforeEach(function (done) {
+                    tester = SceneTester.create(sandbox);
+
+                    renderTestTool.prepareContext();
+
+                    tester.execBody(body, done);
+                });
+
+                describe("test keyFrame1", function () {
+                    it("test1", function (done) {
+                        tester.compareAt(
+                            {
+                                frameIndex: 10,
+
+                                partialCorrectImagePath: "animation/animation_texture_articulated_keyFrame1.png",
+                                done: done
+                            });
+                    });
+                    it("test2", function (done) {
+                        tester.compareAt(
+                            {
+                                frameIndex: 101,
+
+                                partialCorrectImagePath: "animation/animation_texture_articulated_keyFrame1.png",
+                                done: done
+                            });
+                    });
+                });
+                it("test keyFrame2", function (done) {
+                    tester.compareAt(
+                        {
+                            frameIndex: 102,
+
+                            partialCorrectImagePath: "animation/animation_texture_articulated_keyFrame2.png",
+                            done: done
+                        });
+                });
+                it("test keyFrame3", function (done) {
+                    tester.compareAt(
+                        {
+                            frameIndex: 202,
+                            partialCorrectImagePath: "animation/animation_texture_articulated_keyFrame3.png",
+                            done: done
+                        });
+                });
             });
         });
 
@@ -99,9 +308,9 @@ describe("animation", function () {
 
             function body(wrapper){
                 wrapper.load([
-                        {url: "../../asset/model/wd/ratamahatta/ratamahatta.wd", id: "model"},
-                        {url: "../../asset/model/wd/ratamahatta/ratamahatta.png", id: "skin"}
-                    ])
+                    {url: "../../asset/model/wd/ratamahatta/ratamahatta.wd", id: "model"},
+                    {url: "../../asset/model/wd/ratamahatta/ratamahatta.png", id: "skin"}
+                ])
                     .do(initSample);
 
                 function initSample() {
@@ -224,7 +433,7 @@ describe("animation", function () {
 
             function body(wrapper){
                 wrapper.load([
-                    ])
+                ])
                     .do(initSample);
 
                 function initSample() {
