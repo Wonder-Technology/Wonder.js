@@ -14,12 +14,15 @@ module wd{
             }
 
             this.sendAttributeBuffer(program, "a_texCoord", texCoordBuffer);
+
+            this.sendUniformData(program, "u_specular", material.specularColor.toVector3());
         }
 
         public setShaderDefinition(cmd:QuadCommand, material:EngineMaterial){
             super.setShaderDefinition(cmd, material);
 
             this.addAttributeVariable(["a_texCoord"]);
+            this.addUniformVariable(["u_specular"]);
         }
     }
 }

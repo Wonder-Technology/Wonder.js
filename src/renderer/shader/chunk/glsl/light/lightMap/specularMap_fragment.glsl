@@ -3,7 +3,7 @@
 @end
 
 @funcDefine
-    vec3 getMaterialSpecular() {
-        return texture2D(u_specularMapSampler, v_specularMapTexCoord).rgb;
+    float getSpecularStrength() {
+        return texture2D(u_specularMapSampler, v_specularMapTexCoord).r;
     }
 @end

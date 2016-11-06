@@ -26,8 +26,10 @@ vec4 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, ve
 {
         vec3 materialLight = getMaterialLight();
         vec4 materialDiffuse = getMaterialDiffuse();
-        vec3 materialSpecular = getMaterialSpecular();
+        vec3 materialSpecular = u_specular;
         vec3 materialEmission = getMaterialEmission();
+
+        float specularStrength = getSpecularStrength();
 
         float dotResultBetweenNormAndLight = dot(normal, lightDir);
         float diff = max(dotResultBetweenNormAndLight, 0.0);
@@ -52,7 +54,7 @@ vec4 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, ve
                 spec = getBlinnShininess(u_shininess, normal, lightDir, viewDir, diff);
         }
 
-        vec3 specularColor = spec * materialSpecular * intensity;
+        vec3 specularColor = spec * materialSpecular * specularStrength * intensity;
 
         return vec4(emissionColor + ambientColor + attenuation * (diffuseColor.rgb + specularColor), diffuseColor.a);
 }

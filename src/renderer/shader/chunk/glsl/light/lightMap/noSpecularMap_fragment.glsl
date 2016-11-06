@@ -1,5 +1,5 @@
 @funcDefine
-    vec3 getMaterialSpecular() {
-        return u_specular;
+    float getSpecularStrength() {
+        return 1.0;
     }
 @end
