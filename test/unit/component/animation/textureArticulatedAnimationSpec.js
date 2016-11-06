@@ -107,7 +107,7 @@ describe("articulated animation", function () {
 
                 model = wd.GameObject.create();
 
-                anim = wd.ArticulatedAnimation.create();
+                anim = wd.TextureArticulatedAnimation.create();
 
                 model.addComponent(anim);
 

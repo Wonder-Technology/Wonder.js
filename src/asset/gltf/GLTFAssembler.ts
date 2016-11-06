@@ -248,7 +248,7 @@ module wd{
         }
 
         private _createArticulatedAnimation(component:IGLTFArticulatedAnimation){
-             var anim = ArticulatedAnimation.create();
+             var anim = TransformArticulatedAnimation.create();
 
             anim.data = wdCb.Hash.create<wdCb.Collection<IGLTFKeyFrameData>>(component);
 

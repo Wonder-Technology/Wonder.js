@@ -1,11 +1,5 @@
 module wd{
-    export class ArticulatedAnimation extends Animation{
-        public static create() {
-            var obj = new this();
-
-            return obj;
-        }
-
+    export abstract class ArticulatedAnimation extends Animation{
         @cloneAttributeAsCloneable()
         public data:ArticulatedAnimationData = null;
 
@@ -119,6 +113,8 @@ module wd{
             this.state = EAnimationState.RUN;
         }
 
+        protected abstract updateTarget(target:ArticulatedAnimationFrameTargetData, startFrameData:any, endFrameData:any, interpolation:number):void;
+
         protected handleWhenPause(elapsed:number):void{
         }
 
@@ -136,7 +132,9 @@ module wd{
         }
 
         @require(function(elapsed:number){
-            assert(elapsed - this._beginElapsedTimeOfFirstFrame - this.pauseDuration >= 0, Log.info.FUNC_SHOULD(`elapsed of current frame:${elapsed - this._beginElapsedTimeOfFirstFrame - this.pauseDuration}`, ">= 0"));
+            it(`elapsed of current frame:${elapsed - this._beginElapsedTimeOfFirstFrame - this.pauseDuration} should >= 0`, () => {
+                expect(elapsed - this._beginElapsedTimeOfFirstFrame - this.pauseDuration).gte(0);
+            });
         })
         protected isCurrentFrameFinish(elapsed:number):boolean{
             return elapsed - this._beginElapsedTimeOfFirstFrame - this.pauseDuration > this._currentFrameData.time;
@@ -167,68 +165,14 @@ module wd{
                     startFrameData = startFrameDataMap.getChild(<any>target.target),
                     interpolation = self._computeInterpolation(elapsed, target.interpolationMethod);
 
-                self._updateTarget(target, startFrameData, endFrameData, interpolation);
+                self.updateTarget(target, startFrameData, endFrameData, interpolation);
             });
-        }
-
-        @require(function(target:ArticulatedAnimationFrameTargetData, startFrameData:TextureArticulatedAnimationFrameTargetData, endFrameData:TextureArticulatedAnimationFrameTargetData, interpolation:number){
-            it("transform animation->interpolationMethod shouldn't be SWITCH", () => {
-                switch (target.target){
-                    case EArticulatedAnimationTarget.TRANSLATION:
-                    case EArticulatedAnimationTarget.ROTATION:
-                    case EArticulatedAnimationTarget.SCALE:
-                        expect(startFrameData.interpolationMethod).not.equals(EKeyFrameInterpolation.SWITCH);
-                        expect(endFrameData.interpolationMethod).not.equals(EKeyFrameInterpolation.SWITCH);
-                        break;
-                }
-            });
-        })
-        private _updateTarget(target:ArticulatedAnimationFrameTargetData, startFrameData:any, endFrameData:any, interpolation:number){
-            var transform = this.entityObject.transform;
-
-            switch (target.target){
-                case EArticulatedAnimationTarget.TRANSLATION:
-                    transform.localPosition = Vector3.create().lerp(startFrameData, endFrameData, interpolation);
-                    break;
-                case EArticulatedAnimationTarget.ROTATION:
-                    transform.localRotation = Quaternion.create().slerp(startFrameData, endFrameData, interpolation);
-                    break;
-                case EArticulatedAnimationTarget.SCALE:
-                    transform.localScale = Vector3.create().lerp(startFrameData, endFrameData, interpolation);
-                    break;
-                case EArticulatedAnimationTarget.TEXTURE_OFFSET:
-                    this._updateTextureData(target, startFrameData, endFrameData, interpolation);
-                    break;
-                default:
-                    Log.error(true, Log.info.FUNC_NOT_SUPPORT(`EArticulatedAnimationTarget:${target.target}`));
-                    break;
-            }
-        }
-
-        @require(function(target:ArticulatedAnimationFrameTargetData, startFrameData:Array<number>, endFrameData:Array<number>, interpolation:number){
-            it("material should has the corresponding animated texture", () => {
-                expect(this.entityObject.getGeometry().material[target.extra.target]).exist;
-            }, this);
-            it("this animated texture should has 'sourceRegion' attribute", () => {
-                expect(this.entityObject.getGeometry().material[target.extra.target].sourceRegion).not.be.a("undefined");
-            }, this);
-            it("texture animation->interpolationMethod should be SWITCH", () => {
-                expect(target.interpolationMethod).equals(EKeyFrameInterpolation.SWITCH);
-            });
-        })
-        private _updateTextureData(target:ArticulatedAnimationFrameTargetData, startFrameData:Array<number>, endFrameData:Array<number>, interpolation:number){
-            var material:Material = this.entityObject.getComponent<Geometry>(Geometry).material,
-                mapName:string = target.extra.target,
-                map:BasicTexture = material[mapName];
-
-            if(!!map){
-                //todo optimize:use temp RectRegion
-                map.sourceRegion = RectRegion.create(startFrameData[0], startFrameData[1], startFrameData[2], startFrameData[3]);
-            }
         }
 
         @ensure(function(interpolation:number, elapsed:number, interpolationMethod:EKeyFrameInterpolation){
-            assert(interpolation >= 0 && interpolation <= 1 , Log.info.FUNC_SHOULD(`interpolation:${interpolation}`, ">= 0 && <= 1"));
+            it(`interpolation:${interpolation} >= 0 && <= 1`, () => {
+                expect(interpolation >= 0 && interpolation <= 1).true;
+            });
         })
         private _computeInterpolation(elapsed:number, interpolationMethod:EKeyFrameInterpolation){
             var interpolation:number = null;
@@ -254,17 +198,18 @@ module wd{
         }
 
         @require(function(frameData:ArticulatedAnimationFrameData){
-            var frameData:ArticulatedAnimationFrameData = args[0];
-
-            assert(this._currentFrameData !== null, Log.info.FUNC_SHOULD("set currentFrameData"));
+            it("should set currentFrameData", () => {
+                expect(this._currentFrameData).not.null;
+            });
 
             this._currentFrameData.targets.forEach((currentTarget:ArticulatedAnimationFrameTargetData, index:number) => {
-                assert(frameData.targets.getChild(index).target === currentTarget.target, Log.info.FUNC_SHOULD("the current frame and the start frame", "modify the same targets"));
+                it("the current frame and the start frame should modify the same targets", () => {
+                    expect(frameData.targets.getChild(index).target === currentTarget.target).true;
+                });
             });
         })
         private _saveStartFrameData(frameData:ArticulatedAnimationFrameData){
-            var startFrameDataMap = this._startFrameDataMap,
-                frameData:ArticulatedAnimationFrameData = args[0];
+            var startFrameDataMap = this._startFrameDataMap;
 
             frameData.targets.forEach((target:ArticulatedAnimationFrameTargetData) => {
                 startFrameDataMap.addChild(<any>target.target, target.data);
@@ -294,7 +239,9 @@ module wd{
         @require(function(elapsed:number){
             var lastEndFrameTime = this._currentAnimData.getChild(this.frameCount - 1).time;
 
-            assert(elapsed >= lastEndFrameTime, Log.info.FUNC_SHOULD(`elapsed:${elapsed}`, `>= lastEndFrameTime:${lastEndFrameTime}`));
+            it(`elapsed:${elapsed} should >= lastEndFrameTime:${lastEndFrameTime}`, () => {
+                expect(elapsed).gte(lastEndFrameTime);
+            });
         })
         private _getBeginElapsedTimeOfFirstFrameWhenFinishAllFrames(elapsed:number){
             return MathUtils.maxFloorIntegralMultiple(elapsed, this._currentAnimData.getChild(this.frameCount - 1).time);
@@ -327,15 +274,6 @@ module wd{
         target:EArticulatedAnimationTarget,
         data:any,
         extra?:any
-    }
-
-    export type TextureArticulatedAnimationFrameTargetData = {
-        interpolationMethod:EKeyFrameInterpolation,
-        target:EArticulatedAnimationTarget,
-        data:Array<number>,
-        extra:{
-            target:string
-        }
     }
 }
 

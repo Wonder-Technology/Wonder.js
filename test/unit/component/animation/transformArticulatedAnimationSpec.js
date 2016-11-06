@@ -16,7 +16,7 @@ describe("transform articulated animation", function () {
         var anim;
 
         beforeEach(function(){
-            anim = wd.ArticulatedAnimation.create();
+            anim = wd.TransformArticulatedAnimation.create();
         });
 
         describe("clone", function(){
@@ -39,7 +39,7 @@ describe("transform articulated animation", function () {
 
                 var result = anim.clone();
 
-                expect(result).toBeInstanceOf(wd.ArticulatedAnimation);
+                expect(result).toBeInstanceOf(wd.TransformArticulatedAnimation);
                 expect(result === anim).toBeFalsy();
 
                 data.getChild("play").addChild({});
@@ -107,7 +107,7 @@ describe("transform articulated animation", function () {
 
                 model = wd.GameObject.create();
 
-                anim = wd.ArticulatedAnimation.create();
+                anim = wd.TransformArticulatedAnimation.create();
 
                 model.addComponent(anim);
 
@@ -471,7 +471,7 @@ describe("transform articulated animation", function () {
 
                 model = wd.GameObject.create();
 
-                anim = wd.ArticulatedAnimation.create();
+                anim = wd.TransformArticulatedAnimation.create();
 
                 model.addComponent(anim);
 

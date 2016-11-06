@@ -132,6 +132,8 @@
 		"component/animation/Animation.ts",
 		"component/animation/MorphAnimation.ts",
 		"component/animation/ArticulatedAnimation.ts",
+		"component/animation/TransformArticulatedAnimation.ts",
+		"component/animation/TextureArticulatedAnimation.ts",
 		"component/animation/EKeyFrameInterpolation.ts",
 		"component/animation/EArticulatedAnimationTarget.ts",
 		"component/geometry/Geometry.ts",
