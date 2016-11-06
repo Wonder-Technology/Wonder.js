@@ -208,17 +208,17 @@ module wd{
         };
 
         public static u_diffuse:ShaderVariable = {
-            type:EVariableType.VECTOR_4,
+            type:EVariableType.VECTOR_3,
             value:EVariableCategory.ENGINE
         };
 
         public static u_specular:ShaderVariable = {
-            type:EVariableType.VECTOR_4,
+            type:EVariableType.VECTOR_3,
             value:EVariableCategory.ENGINE
         };
 
         public static u_emission:ShaderVariable = {
-            type:EVariableType.VECTOR_4,
+            type:EVariableType.VECTOR_3,
             value:EVariableCategory.ENGINE
         };
 
@@ -243,7 +243,7 @@ module wd{
         };
 
         public static u_ambient:ShaderVariable = {
-            type:EVariableType.VECTOR_4,
+            type:EVariableType.VECTOR_3,
             value:EVariableCategory.ENGINE
         };
 

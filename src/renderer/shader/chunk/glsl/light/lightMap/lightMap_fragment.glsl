@@ -3,7 +3,7 @@
 @end
 
 @funcDefine
-    vec4 getMaterialLight() {
-        return texture2D(u_lightMapSampler, v_lightMapTexCoord) * u_lightMapIntensity;
+    vec3 getMaterialLight() {
+        return texture2D(u_lightMapSampler, v_lightMapTexCoord).rgb * u_lightMapIntensity;
     }
 @end

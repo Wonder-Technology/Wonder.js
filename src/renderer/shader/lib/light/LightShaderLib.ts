@@ -34,7 +34,7 @@ module wd{
                 pointLights:wdCb.Collection<GameObject> = scene.pointLights;
 
             if(ambientLight){
-                this.sendUniformData(program, "u_ambient", ambientLight.getComponent<AmbientLight>(AmbientLight).color.toVector4());
+                this.sendUniformData(program, "u_ambient", ambientLight.getComponent<AmbientLight>(AmbientLight).color.toVector3());
             }
 
             if(pointLights){
@@ -53,7 +53,7 @@ module wd{
 
                 program.sendVector3(structureMemberNameData.position, LightUtils.getPointLightPosition(lightComponent));
 
-                program.sendColor4(structureMemberNameData.color, lightComponent.color);
+                program.sendColor3(structureMemberNameData.color, lightComponent.color);
 
                 program.sendFloat1(structureMemberNameData.intensity, lightComponent.intensity);
 
@@ -71,15 +71,13 @@ module wd{
         }
 
         private _sendDirectionLightVariables(program: Program, directionLights:wdCb.Collection<GameObject> ){
-            var self = this;
-
             directionLights.forEach((directionLight:GameObject, index:number) => {
                 var lightComponent:DirectionLight = directionLight.getComponent<DirectionLight>(DirectionLight),
                     structureMemberNameData = DIRECTION_LIGHT_GLSLDATA_STRUCTURE_MEMBER_NAME[index];
 
                 program.sendVector3(structureMemberNameData.position, LightUtils.getDirectionLightPosition(lightComponent));
 
-                program.sendColor4(structureMemberNameData.color, lightComponent.color);
+                program.sendColor3(structureMemberNameData.color, lightComponent.color);
 
                 program.sendFloat1(structureMemberNameData.intensity, lightComponent.intensity);
             });

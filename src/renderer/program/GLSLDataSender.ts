@@ -174,6 +174,33 @@ module wd{
             gl.uniform4f(pos, x, y, z, w);
         }
 
+        //todo test
+        public sendColor3(name:string, data:Color){
+            var gl = null,
+                pos = null,
+                recordedData:any = this._uniformCache[name],
+                convertedData = null;
+
+            if(recordedData && recordedData[0] == data.r && recordedData[1] == data.g && recordedData[2] == data.b){
+                return;
+            }
+
+            let r = data.r,
+                g = data.g,
+                b = data.b;
+
+            this._recordUniformData(name, [r, g, b]);
+
+            gl = DeviceManager.getInstance().gl;
+            pos = this.getUniformLocation(name);
+
+            if(this._isUniformDataNotExistByLocation(pos)){
+                return;
+            }
+
+            gl.uniform3f(pos, r, g, b);
+        }
+
         public sendColor4(name:string, data:Color){
             var gl = null,
                 pos = null,

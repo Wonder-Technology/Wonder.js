@@ -9,7 +9,7 @@ module wd{
         public type:string = "noEmissionMap";
 
         public sendShaderVariables(program: Program, cmd:QuadCommand, material:LightMaterial){
-            this.sendUniformData(program, "u_emission", material.emissionColor.toVector4());
+            this.sendUniformData(program, "u_emission", material.emissionColor.toVector3());
         }
 
         public setShaderDefinition(cmd:QuadCommand, material:EngineMaterial){

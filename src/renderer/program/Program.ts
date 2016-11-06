@@ -146,6 +146,10 @@ module wd{
             this._sender.sendVector4(name, data);
         }
 
+        public sendColor3(name:string, data:any){
+            this._sender.sendColor3(name, data);
+        }
+
         public sendColor4(name:string, data:any){
             this._sender.sendColor4(name, data);
         }

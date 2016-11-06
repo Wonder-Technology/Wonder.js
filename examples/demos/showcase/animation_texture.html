@@ -29,9 +29,6 @@
             director.renderer.setClearColor(wd.Color.create("#aaaaff"));
 
             director.scene.addChild(createRect1());
-//            director.scene.addChild(createRect2());
-//            director.scene.addChild(createRect3());
-//            director.scene.addChild(createMultiTexturesTriangle());
 
             director.scene.addChild(createAmbientLight());
             director.scene.addChild(createDirectionLight());
@@ -53,6 +50,10 @@
 //            material.map = map;
             var material = wd.LightMaterial.create();
             material.diffuseMap = map;
+            material.specularColor = wd.Color.create("rgb(0,0,255)");
+//            material.specularColor = wd.Color.create("rgb(0,0,0)");
+//            material.specularColor = wd.Color.create("#000000");
+            material.side = wd.ESide.BOTH;
 
 
             var geometry = wd.RectGeometry.create();
@@ -178,25 +179,30 @@
             directionLight.addComponent(directionLightComponent);
 
 
+            directionLight.transform.translate(wd.Vector3.create(100, 100, 300));
+
+
             return directionLight;
         }
 
         function createCamera() {
-            var camera = wd.GameObject.create(),
-                    view = wd.Director.getInstance().view,
-                    cameraComponent = wd.PerspectiveCamera.create();
+             var camera = wd.GameObject.create(),
+                 view = wd.Director.getInstance().view,
+                 cameraComponent = wd.PerspectiveCamera.create();
 
-            cameraComponent.fovy = 60;
-            cameraComponent.aspect = view.width / view.height;
-            cameraComponent.near = 0.1;
-            cameraComponent.far = 80;
+             cameraComponent.fovy = 60;
+             cameraComponent.aspect = view.width / view.height;
+             cameraComponent.near = 0.1;
+             cameraComponent.far = 1000;
 
-            var controller = wd.BasicCameraController.create(cameraComponent);
-            camera.addComponent(controller);
+             var controller = wd.ArcballCameraController.create(cameraComponent);
+             controller.distance = 10;
+//             controller.phi = Math.PI / 2.5;
 
-            camera.transform.translate(wd.Vector3.create(0, 0, 10));
+             camera.addComponent(controller);
 
-            return camera;
+             return camera;
+
         }
     }
 </script>

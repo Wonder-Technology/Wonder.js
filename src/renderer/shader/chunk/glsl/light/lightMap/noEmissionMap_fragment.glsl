@@ -1,5 +1,5 @@
 @funcDefine
-    vec4 getMaterialEmission() {
+    vec3 getMaterialEmission() {
         return u_emission;
     }
 @end

@@ -22,31 +22,26 @@ float getPhongShininess(float shininess, vec3 normal, vec3 lightDir, vec3 viewDi
         return phongTerm;
 }
 
-vec4 calcLight(vec3 lightDir, vec4 color, float intensity, float attenuation, vec3 normal, vec3 viewDir)
+vec4 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, vec3 normal, vec3 viewDir)
 {
-        vec4 materialLight = getMaterialLight();
+        vec3 materialLight = getMaterialLight();
         vec4 materialDiffuse = getMaterialDiffuse();
-        vec4 materialSpecular = getMaterialSpecular();
-        vec4 materialEmission = getMaterialEmission();
+        vec3 materialSpecular = getMaterialSpecular();
+        vec3 materialEmission = getMaterialEmission();
 
         float dotResultBetweenNormAndLight = dot(normal, lightDir);
         float diff = max(dotResultBetweenNormAndLight, 0.0);
 
-        vec4 emissionColor = materialEmission;
+        vec3 emissionColor = materialEmission;
 
-        vec4 ambientColor = (u_ambient + materialLight) * materialDiffuse;
+        vec3 ambientColor = (u_ambient + materialLight) * materialDiffuse.rgb;
 
 
         if(u_lightModel == 3){
-            return emissionColor + ambientColor;
+            return vec4(emissionColor + ambientColor, 1.0);
         }
 
-
-        vec4 diffuseColor = color * materialDiffuse;
-
-        //not affect alpha data
-        diffuseColor = vec4(diff * vec3(diffuseColor) * intensity, diffuseColor.a);
-
+        vec4 diffuseColor = vec4(color * materialDiffuse.rgb * diff * intensity, materialDiffuse.a);
 
         float spec = 0.0;
 
@@ -57,13 +52,9 @@ vec4 calcLight(vec3 lightDir, vec4 color, float intensity, float attenuation, ve
                 spec = getBlinnShininess(u_shininess, normal, lightDir, viewDir, diff);
         }
 
-        //not affect alpha data
-        vec4 specularColor = vec4(spec * vec3(materialSpecular) * intensity, materialSpecular.a);
+        vec3 specularColor = spec * materialSpecular * intensity;
 
-        vec4 tColor = diffuseColor + specularColor;
-
-        //not affect alpha data
-        return emissionColor + ambientColor + vec4(attenuation * vec3(tColor), tColor.a);
+        return vec4(emissionColor + ambientColor + attenuation * (diffuseColor.rgb + specularColor), diffuseColor.a);
 }
 
 
@@ -134,6 +125,8 @@ vec3 viewDir = normalize(getViewDir());
 
 vec4 totalColor = calcTotalLight(normal, viewDir);
 
-totalColor *= vec4(getShadowVisibility(), 1.0);
+totalColor.a *= u_opacity;
+
+totalColor.rgb = totalColor.rgb * getShadowVisibility();
 @end
 
