@@ -44,7 +44,7 @@ describe("instance+articulated animation", function () {
     function createModel(animData){
         model = wd.GameObject.create();
 
-        modelAnim = wd.ArticulatedAnimation.create();
+        modelAnim = wd.TransformArticulatedAnimation.create();
 
         modelAnim.data = animData;
 
@@ -68,7 +68,7 @@ describe("instance+articulated animation", function () {
 
         modelInstance = instanceTool.cloneInstance(model, "0");
 
-        modelInstanceAnim = modelInstance.getComponent(wd.ArticulatedAnimation);
+        modelInstanceAnim = modelInstance.getComponent(wd.TransformArticulatedAnimation);
 
 
         instanceArr.push(modelInstance);
@@ -112,6 +112,15 @@ describe("instance+articulated animation", function () {
         prepare(wdCb.Hash.create({
             "play": wdCb.Collection.create([
                 {
+                    time:0,
+
+                    targets: wdCb.Collection.create(
+                        [
+                            {interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,target:wd.EArticulatedAnimationTarget.TRANSLATION, data: wd.Vector3.create(0,0,0)}
+                        ]
+                    )
+                },
+                {
                     time:10,
 
                     targets: wdCb.Collection.create(
@@ -122,6 +131,15 @@ describe("instance+articulated animation", function () {
                 }
             ]),
             "run": wdCb.Collection.create([
+                {
+                    time:0,
+
+                    targets: wdCb.Collection.create(
+                        [
+                            {interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,target:wd.EArticulatedAnimationTarget.SCALE, data: wd.Vector3.create(1,1,1)}
+                        ]
+                    )
+                },
                 {
                     time:10,
 

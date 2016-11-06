@@ -26,7 +26,7 @@
         'test/helper/yoop/yOOP.js',
         'test/unit/**/*Tool.js',
 
-        // 'test/unit/**',
+        'test/unit/**',
 
 
         // 'test/unit/**/*Light*',
@@ -236,9 +236,9 @@
 
         //'test/unit/**/customShader*',
 
-        'test/unit/**/*animation*',
-        'test/unit/component/**/*Animation*.js',
-        'test/unit/component/**/morphAnimation*.js',
+        // 'test/unit/**/*animation*',
+        // 'test/unit/component/**/*Animation*.js',
+        // 'test/unit/component/**/morphAnimation*.js',
 
         //'test/unit/**/GLTFParserSpec*',
         //'test/unit/**/GLTFAssemblerSpec*',
