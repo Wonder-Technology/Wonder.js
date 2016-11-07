@@ -6,22 +6,18 @@ module wd{
     //todo can fallback to flash
     //todo support loop
     export class Video{
-        public static create(data:any) {
-            var obj = new this(data);
+        public static create(config:VideoConfig) {
+            var obj = new this(config);
 
         	obj.initWhenCreate();
 
         	return obj;
         }
 
-        constructor({
-            urlArr,
-            onLoad= (video:Video) => {},
-            onError= (err:any) => {}
-            }){
-            this._urlArr = wdCb.Collection.create<string>(urlArr);
-            this._onLoad = onLoad;
-            this._onError = onError;
+        constructor(config:VideoConfig){
+            this._urlArr = wdCb.Collection.create<string>(config.urlArr);
+            this._onLoad = config.onLoad;
+            this._onError = config.onError;
         }
 
         public url:string = null;
@@ -46,13 +42,20 @@ module wd{
             this.source.play();
         }
 
+        @ensure(function(canPlayUrl:string){
+            it("if browser not support video urlArr, warn", () => {
+                if(canPlayUrl === null){
+                    Log.warn(`browser not support video urlArr: ${this._urlArr}`);
+                }
+            }, this);
+        })
         private _getCanPlayUrl() {
             var self = this,
                 canPlayUrl = null,
                 extnameArr = [];
 
             this._urlArr.forEach((url) => {
-                var extname =  wdCb.PathUtils.extname(url);
+                var extname = wdCb.PathUtils.extname(url);
 
                 extnameArr.push(extname);
 
@@ -61,8 +64,6 @@ module wd{
                     return wdCb.$BREAK;
                 }
             });
-
-            Log.error(canPlayUrl === null, Log.info.FUNC_NOT_SUPPORT("browser", extnameArr.join(",")));
 
             return canPlayUrl;
         }
@@ -102,5 +103,11 @@ module wd{
                 self.isStop = true;
             }, false);
         }
+    }
+
+    export type VideoConfig = {
+        urlArr:Array<string>;
+        onLoad: (video:Video) => void;
+        onError: (err:string) => void;
     }
 }

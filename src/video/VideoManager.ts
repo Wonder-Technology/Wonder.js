@@ -9,7 +9,10 @@ module wd{
             var asset = VideoLoader.getInstance().get(id),
                 video:Video = null;
 
-            Log.error(!asset, Log.info.FUNC_NOT_EXIST("video asset which id is " + id));
+            if (!asset) {
+                Log.warn(`not exist video asset whose id is ${id}`);
+                return ;
+            }
 
             video = asset.video;
 

@@ -48,6 +48,11 @@ module wd{
                 case ".webm":
                     loader = VideoLoader.getInstance();
                     break;
+                case ".ogg":
+                case ".mp3":
+                case ".wav":
+                    loader = SoundLoader.getInstance();
+                    break;
                 case ".gltf":
                     loader = GLTFLoader.getInstance();
                     break;
