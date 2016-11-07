@@ -77,6 +77,7 @@ module wd{
             }
 
             if(this.canPlay()) {
+                //todo refactor:use frp(add catch operator)
                 this.audioObj.load()
                     .subscribe(null, (e) => {
                         Log.log("fail to use Web Audio to load！try use Html5 Audio to load");

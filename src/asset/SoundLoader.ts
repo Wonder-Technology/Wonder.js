@@ -18,6 +18,7 @@ module wd{
                 urlArr = args[0];
             }
 
+            //todo refactor:use frp
             return wdFrp.fromPromise(new RSVP.Promise((resolve, reject) => {
                 Sound.create({
                     urlArr:urlArr,

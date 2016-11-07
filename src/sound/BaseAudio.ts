@@ -39,22 +39,11 @@ module wd {
             for(let url of this.urlArr){
                 let result = url.match(/\.(\w+)$/);
 
-                // if (result === null) {
-                //     YE.error(true, "声音url错误，必须加上类型后缀名");
-                //     // return $break;
-                //     return $break;
-                // }
-
                 if (this._canPlay(result[1])) {
                     canPlayUrl = url;
                     break;
                 }
             }
-
-            // if (canPlayUrl === null) {
-            //     YE.error(true, "浏览器不支持该声音格式");
-            //     return;
-            // }
 
             return canPlayUrl;
         }

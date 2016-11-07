@@ -19,7 +19,6 @@ module wd{
         }
 
         private _buffer = null;
-        // private _bufferSource = null;
         private _onLoad = null;
         private _onError = null;
         private _config = null;
