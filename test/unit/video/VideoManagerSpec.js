@@ -15,13 +15,13 @@ describe("VideoManager", function () {
             var video = {
                 play:sandbox.stub()
             };
-            sandbox.stub(wd.VideoLoader.getInstance(), "get").returns({
+            sandbox.stub(wd.LoaderManager.getInstance(), "get").returns({
                 video:video
             });
 
             manager.play("a");
 
-            expect(wd.VideoLoader.getInstance().get).toCalledWith("a");
+            expect(wd.LoaderManager.getInstance().get).toCalledWith("a");
             expect(video.play).toCalledOnce();
         });
     });

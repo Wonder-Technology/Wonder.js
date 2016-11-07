@@ -6,7 +6,7 @@ module wd{
         private constructor(){}
 
         public play(id:string){
-            var sound:Sound = SoundLoader.getInstance().get(id),
+            var sound:Sound = LoaderManager.getInstance().get(id),
                 audioObject:Sound = null;
 
             if(!sound || !sound.canPlay()) {

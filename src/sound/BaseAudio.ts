@@ -45,7 +45,7 @@ module wd {
                 //     return $break;
                 // }
 
-                if (this._canplay(result[1])) {
+                if (this._canPlay(result[1])) {
                     canPlayUrl = url;
                     break;
                 }
@@ -59,36 +59,12 @@ module wd {
             return canPlayUrl;
         }
 
-        private _canplay(mimeType) {
+        private _canPlay(mimeType) {
             var audio = new window.Audio(),
-                mimeStr = null;
+                mimeStr = SoundUtils.getMimeStr(mimeType);
 
-            //todo support more mimeType
-            switch (mimeType) {
-                case "mp3":
-                    mimeStr = "audio/mpeg";
-                    break;
-//                    case "vorbis":
-//                        mimeStr = "audio/ogg; codecs="vorbis"";
-//                        break;
-//                    case "opus":
-//                        mimeStr = "audio/ogg; codecs="opus"";
-////                        break;
-//                    case "webm":
-//                        mimeStr = "audio/webm; codecs="vorbis"";
-//                        break;
-//                    case "mp4":
-//                        mimeStr = "audio/mp4; codecs="mp4a.40.5"";
-//                        break;
-                case "wav":
-                    mimeStr = "audio/wav";
-                    break;
-                default :
-                    Log.warn(`unknown mimeType:${mimeType}`);
-                    return false;
-            }
-
-            if (mimeType == "mp3" && bowser.firefox) {
+            if (mimeStr === null
+                || (mimeType == "mp3" && bowser.firefox)) {
                 return false;
             }
 

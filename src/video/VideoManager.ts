@@ -6,7 +6,7 @@ module wd{
         private constructor(){}
 
         public play(id:string){
-            var asset = VideoLoader.getInstance().get(id),
+            var asset = LoaderManager.getInstance().get(id),
                 video:Video = null;
 
             if (!asset) {

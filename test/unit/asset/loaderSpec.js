@@ -149,6 +149,75 @@ describe("loader", function () {
         //});
     });
 
+    describe("load sound", function(){
+        it("load the can-play asset", function(done){
+           var current = [],
+               total = [];
+
+            sandbox.stub(wd.SoundUtils, "getMimeStr");
+
+            //not support .ogg sound
+            wd.SoundUtils.getMimeStr.withArgs("ogg").returns(null);
+            wd.SoundUtils.getMimeStr.withArgs("mp3").returns("audio/mpeg");
+
+           wd.LoaderManager.getInstance().load([
+               {url: [testTool.resPath + "test/res/sound/b.ogg",testTool.resPath + "test/res/sound/a.mp3"], id: "sound1"}
+           ]).subscribe(function(data){
+               current.push(data.currentLoadedCount);
+               total.push(data.assetCount);
+           }, function(err){
+               console.log(err);
+           }, function(){
+               expect(current).toEqual([1]);
+               expect(total).toEqual([1]);
+
+               var sound = wd.LoaderManager.getInstance().get("sound1");
+
+               expect(sound).toBeInstanceOf(wd.BaseAudio);
+               expect(sound.url).toEqual(testTool.resPath + "test/res/sound/a.mp3");
+
+               done();
+           });
+        });
+        it("if the current asset can't be loaded, skip it and load the next", function (done) {
+           var current = [],
+               total = [];
+
+            sandbox.stub(wd.SoundUtils, "getMimeStr");
+
+            //not support .ogg sound
+            wd.SoundUtils.getMimeStr.withArgs("ogg").returns(null);
+            wd.SoundUtils.getMimeStr.withArgs("mp3").returns("audio/mpeg");
+
+           wd.LoaderManager.getInstance().load([
+               {url: testTool.resPath + "test/res/sound/b.ogg", id: "sound1"},
+               {url: testTool.resPath + "test/res/sound/a.mp3", id: "sound2"}
+           ]).subscribe(function(data){
+               current.push(data.currentLoadedCount);
+               total.push(data.assetCount);
+           }, function(err){
+               console.log(err);
+           }, function(){
+               expect(current).toEqual([1, 2]);
+               expect(total).toEqual([2, 2]);
+
+               var sound1 = wd.LoaderManager.getInstance().get("sound1");
+
+               expect(sound1).toBeNull();
+
+               var sound2 = wd.LoaderManager.getInstance().get("sound2");
+               expect(sound2).toBeInstanceOf(wd.BaseAudio);
+
+               expect(sound2.url).toEqual(testTool.resPath + "test/res/sound/a.mp3");
+
+               done();
+           });
+        });
+        // it("test load error", function(done){
+        //
+        // });
+    });
+
     describe("load wd file", function(){
         var json;
 

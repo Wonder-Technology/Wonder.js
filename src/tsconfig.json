@@ -520,6 +520,7 @@
 		"video/VideoManager.ts",
 		"sound/EAudioType.ts",
 		"sound/ESoundPlayState.ts",
+		"sound/SoundUtils.ts",
 		"sound/Sound.ts",
 		"sound/BaseAudio.ts",
 		"sound/WebAudio.ts",

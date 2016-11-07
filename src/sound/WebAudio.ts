@@ -68,30 +68,7 @@ module wd{
             return AjaxLoader.load(url, "arraybuffer")
                 .do((arraybuffer) => {
                     self._decodeAudioData(arraybuffer);
-                })
-
-            // AjaxLoader.load(url, "arraybuffer")
-            //     .subscribe((arraybuffer) => {
-            //         self._decodeAudioData(arraybuffer);
-            //     }, (e) => {
-            //         Log.log("fail to use Web Audio to load！try use Html5 Audio to load");
-            //
-            //         Sound.audioObj = Html5Audio.create(self._config);
-            //         Sound.audioObj.load();
-            //     }, null);
-            // YE.$.ajax({
-            //     type: "get",
-            //     url: url,
-            //     dataType: "arraybuffer",
-            //     success: function (data) {
-            //         self._decodeAudioData(data, self);
-            //     },
-            //     error: function () {
-            //         YE.log("使用Web Audio加载失败！尝试使用Html5 Audio加载");
-            //         Sound.audioObj = _Html5Audio.create(self._config);
-            //         Sound.audioObj.load();
-            //     }
-            // });
+                });
         }
 
         private _decodeAudioData(arraybuffer) {

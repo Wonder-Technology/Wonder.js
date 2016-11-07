@@ -19,8 +19,8 @@
 
         wd.LoaderManager.getInstance().load([
             {url: "../../asset/sound/a.mp3", id: "sound1"},
-            {url: "../../asset/sound/b.ogg", id: "sound2"}
-//            {url: ["../../asset/sound/b.ogg", "../../asset/sound/b.mp3"], id: "sound2"}
+//            {url: "../../asset/sound/b.ogg", id: "sound2"}
+            {url: ["../../asset/sound/b.ogg", "../../asset/sound/b.mp3"], id: "sound2"}
         ]).subscribe(null, null, function () {
             initSample();
         });
@@ -38,13 +38,13 @@
 
         function playSound() {
 
-//            wd.Director.getInstance().scheduler.scheduleTime(function(){
-//                wd.SoundManager.getInstance().play("sound1");
-//            }, 2000);
+            wd.Director.getInstance().scheduler.scheduleTime(function(){
+                wd.SoundManager.getInstance().play("sound1");
+            }, 2000);
 
             wd.Director.getInstance().scheduler.scheduleTime(function(){
                 wd.SoundManager.getInstance().play("sound2");
-                wd.SoundManager.getInstance().play("sound1");
+//                wd.SoundManager.getInstance().play("sound1");
             }, 1000);
         }
 

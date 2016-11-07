@@ -70,7 +70,7 @@ module wd{
                     this.audioObj = Html5Audio.create(this._config);
                     break;
                 case EAudioType.NONE:
-                    Log.warn("浏览器不支持Web Audio和Html5 Audio");
+                    Log.warn("browser not support Web Audio and Html5 Audio");
                     return;
                 default:
                     return;
