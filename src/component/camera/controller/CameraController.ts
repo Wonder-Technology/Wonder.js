@@ -83,6 +83,10 @@ module wd {
             return this.camera.convertScreenToWorld(screenX, screenY, distanceFromCamera);
         }
 
+        public convertWorldToScreen(worldX:number, worldY:number, worldZ:number, screenWidth:number, screenHeight:number):Vector2{
+            return this.camera.convertWorldToScreen(worldX, worldY, worldZ, screenWidth, screenHeight);
+        }
+
         public getPlanes():Array<Plane> {
             var frustumPlanes = [],
                 transform = this.worldToCameraMatrix.applyMatrix(this.pMatrix, true);

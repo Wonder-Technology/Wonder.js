@@ -58,6 +58,7 @@ module wd{
          * @returns {Vector3} The world space coordinate.
          */
         public abstract convertScreenToWorld(screenX:number, screenY:number, distanceFromCamera:number):Vector3;
+        public abstract convertWorldToScreen(worldX:number, worldY:number, worldZ:number, screenWidth:number, screenHeight:number):Vector2;
 
         @virtual
         public init(){

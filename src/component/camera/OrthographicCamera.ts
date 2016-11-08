@@ -55,6 +55,13 @@ module wd{
             return this.getInvViewProjMat().multiplyPoint(normalizedDeviceCoordinate);
         }
 
+        public convertWorldToScreen(worldX:number, worldY:number, worldZ:number, screenWidth:number, screenHeight:number):Vector2{
+            //todo implement
+            Log.error(true, "need implement");
+
+            return null;
+        }
+
         protected updateProjectionMatrix(){
             this.pMatrix.setOrtho(this._left, this._right, this._bottom, this._top, this.near, this.far);
         }

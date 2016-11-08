@@ -56,6 +56,18 @@ module wd{
             return Vector3.create().lerp(this.entityObject.transform.position, point, distanceFromCamera / this.far);
         }
 
+        public convertWorldToScreen(worldX:number, worldY:number, worldZ:number, screenWidth:number, screenHeight:number):Vector2{
+            var viewProjectionMatrix:Matrix4 = this.worldToCameraMatrix.clone().applyMatrix(this.pMatrix),
+                //todo optimize:use temp Vector3, Vector4
+                normalizedDeviceCoordinate:Vector4 = viewProjectionMatrix.multiplyVector4(Vector4.create(worldX, worldY, worldZ, 1.0)),
+                ndcSpacePos:Vector3 = Vector3.create(normalizedDeviceCoordinate.x / normalizedDeviceCoordinate.w, normalizedDeviceCoordinate.y / normalizedDeviceCoordinate.w, normalizedDeviceCoordinate.z / normalizedDeviceCoordinate.w);
+
+            return Vector2.create(
+                Math.round((ndcSpacePos.x + 1) / 2.0 * screenWidth),
+                Math.round((1 - ndcSpacePos.y) / 2.0 * screenHeight)
+            );
+        }
+
         protected updateProjectionMatrix(){
             this.pMatrix.setPerspective(this._fovy, this._aspect, this.near, this.far);
         }

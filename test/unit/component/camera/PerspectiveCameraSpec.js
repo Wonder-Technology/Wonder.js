@@ -57,5 +57,36 @@ describe("PerspectiveCamera", function() {
             expect(testTool.getValues(result.pMatrix)).toEqual(testTool.getValues(origin));
         });
     });
+
+    describe("convertWorldToScreen", function(){
+        beforeEach(function(){
+
+        });
+
+        it("convert world coordinate to screen coordinate", function(){
+            var screenWidth = 1000,
+                screenHeight = 2000;
+
+            camera.fovy = 60;
+            camera.near = 0.1;
+            camera.far = 100;
+            camera.aspect = screenWidth / screenHeight;
+
+            camera.worldToCameraMatrix = wd.Matrix4.create();
+            camera.worldToCameraMatrix.lookAt(
+                wd.Vector3.create(0, 1, 1),
+                wd.Vector3.create(0, 0, 0),
+                wd.Vector3.up
+            );
+
+            camera.init();
+
+            var screenCoordinate = camera.convertWorldToScreen(0,0,0, screenWidth, screenHeight);
+
+            expect([screenCoordinate.x, screenCoordinate.y]).toEqual(
+                [500, 2732]
+            );
+        });
+    });
 });
 
