@@ -16,26 +16,36 @@
             screenSize: wd.EScreenSize.FULL
         }).init();
 
+
+        wd.LoaderManager.getInstance().load([
+            {type:wd.EAssetType.SCRIPT, url: "./js/collision/userBox.js", id: "userBox"}
+        ]).subscribe(null, null, function () {
+            initSample();
+        });
+
+        function initSample() {
 //        wd.DebugConfig.showDebugPanel = true;
 
-        var director = wd.Director.getInstance();
+            var director = wd.Director.getInstance();
 
 
-        var octreeContainer = createOctree();
-        octreeContainer.addChildren(createBoxes());
+            var octreeContainer = createOctree();
+            octreeContainer.addChildren(createBoxes());
 
 
-        //todo add message
+            //todo add message
 
 
-        director.scene.addChild(octreeContainer);
+            director.scene.addChild(octreeContainer);
 
-        director.scene.addChild(createUserBox());
+            director.scene.addChild(createUserBox());
 
-        director.scene.addChild(createCamera());
+            director.scene.addChild(createCamera());
 
 
-        director.start();
+            director.start();
+
+        }
 
 
         function createOctree(){
@@ -115,7 +125,7 @@
 
 
 
-            gameObject.addComponent(wd.Script.create("./js/collision/userBox.js"));
+            gameObject.addComponent(wd.Script.create("userBox"));
 
 
             return gameObject;

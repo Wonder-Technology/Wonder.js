@@ -16,7 +16,11 @@
             screenSize: wd.EScreenSize.FULL
         }).init();
 
-        initSample();
+        wd.LoaderManager.getInstance().load([
+            {type:wd.EAssetType.SCRIPT, url: "./js/picking/rayPicking.js", id: "rayPicking"}
+        ]).subscribe(null, null, function () {
+            initSample();
+        });
 
         function initSample() {
             var director = wd.Director.getInstance();
@@ -57,7 +61,7 @@
 
 
 
-            gameObject.addComponent(wd.Script.create("./js/picking/rayPicking.js"));
+            gameObject.addComponent(wd.Script.create("rayPicking"));
 
 
 
@@ -92,7 +96,7 @@
 
 
 
-            gameObject.addComponent(wd.Script.create("./js/picking/rayPicking.js"));
+            gameObject.addComponent(wd.Script.create("rayPicking"));
 
 
 

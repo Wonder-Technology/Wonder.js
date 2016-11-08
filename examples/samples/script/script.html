@@ -16,13 +16,18 @@
             screenSize: wd.EScreenSize.FULL
         }).init();
 
-        initSample();
+        wd.LoaderManager.getInstance().load([
+            {type:wd.EAssetType.SCRIPT, url: "./camera.js", id: "camera"},
+            {type:wd.EAssetType.SCRIPT, url: "./scene.js", id: "scene"}
+        ]).subscribe(null, null, function () {
+            initSample();
+        });
 
         function initSample() {
             var director = wd.Director.getInstance();
 
             //add scene.js before add camera.js, so that scene.js->init can execute before camera.js->init
-            director.scene.addComponent(wd.Script.create("./scene.js"));
+            director.scene.addComponent(wd.Script.create("scene"));
             director.scene.addChild(createCamera());
 
             director.start();
@@ -42,7 +47,7 @@
 
             camera.addComponent(controller);
 
-            camera.addComponent(wd.Script.create("./camera.js"));
+            camera.addComponent(wd.Script.create("camera"));
 
             return camera;
         }

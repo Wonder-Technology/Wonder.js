@@ -18,6 +18,7 @@
 
 
         wd.LoaderManager.getInstance().load([
+            {type:wd.EAssetType.SCRIPT, url: "./js/spriteButton.js", id: "spriteButton"},
             {url: "../../asset/texture/1.jpg", id: "texture"},
             {url: "../../asset/texture/2.jpg", id: "highlight"},
             {url: "../../asset/texture/3.jpg", id: "pressed"},
@@ -148,7 +149,7 @@
 
 
 
-            buttonUIObject.addComponent(wd.Script.create("./js/spriteButton.js"));
+            buttonUIObject.addComponent(wd.Script.create("spriteButton"));
 
 
 

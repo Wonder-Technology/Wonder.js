@@ -77,133 +77,131 @@ describe("instance+script", function(){
     }());
 
 
-        function testScriptOfTwoGameObjects (entityObject1, data1, entityObject2, data2, done, isNotAdd) {
-            var director = wd.Director.getInstance();
-
-            var test1 = null;
-            var test2 = null;
-
-
-
-
-            if(isNotAdd === true){
-            }
-            else{
-                if(!wd.JudgeUtils.isEqual(entityObject1, director.scene)){
-                    director.scene.addChild(entityObject1);
-                }
-                if(!wd.JudgeUtils.isEqual(entityObject2, director.scene)){
-                    director.scene.addChild(entityObject2);
-                }
-            }
-
-            var execScript1 = entityObject1.execScript;
-
-            entityObject1.execScript = function(scriptHandlerName){
-                if(scriptHandlerName === "onEnter"){
-                    test1 = entityObject1.scriptList.getChild(data1.scriptName);
-                    //if(test){
-                    data1.judgeOnEnter(test1, entityObject1);
-                    //}
-
-                    execScript1.apply(entityObject1, arguments);
-
-                    return;
-                }
-
-                if(scriptHandlerName === "init"){
-                    execScript1.apply(entityObject1, arguments);
-
-                    //director._loopBody(1);
-                    //
-                    return;
-                }
-
-
-                execScript1.apply(entityObject1, arguments);
-            }
-
-
-
-
-            var execScript2 = entityObject2.execScript;
-
-
-            entityObject2.execScript = function(scriptHandlerName){
-                if(scriptHandlerName === "onEnter"){
-                    test2 = entityObject2.scriptList.getChild(data2.scriptName);
-                    //if(test){
-                    data2.judgeOnEnter(test2, entityObject2);
-                    //}
-
-                    execScript2.apply(entityObject2, arguments);
-
-                    return;
-                }
-
-                if(scriptHandlerName === "init"){
-                    execScript2.apply(entityObject2, arguments);
-
-                    //director._loopBody(1);
-                    //
-                    return;
-                }
-
-
-                execScript2.apply(entityObject2, arguments);
-            }
-
-
-
-            //var loopBody = director._loopBody;
-
-
-
-
-
-
-            //director._loopBody = function () {
-            //    var time = 100;
-            //
-            //    data1.judgeBeforeLoopBody(test1, entityObject1);
-            //    data2.judgeBeforeLoopBody(test2, entityObject2);
-            //
-            //    loopBody.call(director, time);
-            //
-            //    data1.judgeAfterLoopBody(test1, time, entityObject1);
-            //    data2.judgeAfterLoopBody(test2, time, entityObject2);
-            //
-            //    director.stop();
-            //
-            //    done();
-            //};
-
-
-
-            director._init();
-
-
-            wd.GlobalScriptUtils.handlerAfterLoadedScript({
-                name:data1.scriptName,
-                class: InstanceSourceScript
-            }, entityObject1);
-
-            wd.GlobalScriptUtils.handlerAfterLoadedScript({
-                name:data2.scriptName,
-                class: InstanceInstanceScript
-            }, entityObject2);
-
-            data1.judgeBeforeLoopBody(test1, entityObject1);
-            data2.judgeBeforeLoopBody(test2, entityObject2);
-
-            director._loopBody(1);
-
-
-            data1.judgeAfterLoopBody(test1, entityObject1);
-            data2.judgeAfterLoopBody(test2, entityObject2);
-
-            done();
-    }
+    //     function testScriptOfTwoGameObjects (entityObject1, data1, entityObject2, data2, done, isNotAdd) {
+    //         var director = wd.Director.getInstance();
+    //
+    //         var test1 = null;
+    //         var test2 = null;
+    //
+    //
+    //
+    //
+    //         if(isNotAdd === true){
+    //         }
+    //         else{
+    //             if(!wd.JudgeUtils.isEqual(entityObject1, director.scene)){
+    //                 director.scene.addChild(entityObject1);
+    //             }
+    //             if(!wd.JudgeUtils.isEqual(entityObject2, director.scene)){
+    //                 director.scene.addChild(entityObject2);
+    //             }
+    //         }
+    //
+    //         var execScript1 = entityObject1.execScript;
+    //
+    //         entityObject1.execScript = function(scriptHandlerName){
+    //             if(scriptHandlerName === "onEnter"){
+    //                 test1 = entityObject1.scriptList.getChild(data1.scriptName);
+    //                 //if(test){
+    //                 data1.judgeOnEnter(test1, entityObject1);
+    //                 //}
+    //
+    //                 execScript1.apply(entityObject1, arguments);
+    //
+    //                 return;
+    //             }
+    //
+    //             if(scriptHandlerName === "init"){
+    //                 execScript1.apply(entityObject1, arguments);
+    //
+    //                 //director._loopBody(1);
+    //                 //
+    //                 return;
+    //             }
+    //
+    //
+    //             execScript1.apply(entityObject1, arguments);
+    //         }
+    //
+    //
+    //
+    //
+    //         var execScript2 = entityObject2.execScript;
+    //
+    //
+    //         entityObject2.execScript = function(scriptHandlerName){
+    //             if(scriptHandlerName === "onEnter"){
+    //                 test2 = entityObject2.scriptList.getChild(data2.scriptName);
+    //                 //if(test){
+    //                 data2.judgeOnEnter(test2, entityObject2);
+    //                 //}
+    //
+    //                 execScript2.apply(entityObject2, arguments);
+    //
+    //                 return;
+    //             }
+    //
+    //             if(scriptHandlerName === "init"){
+    //                 execScript2.apply(entityObject2, arguments);
+    //
+    //                 //director._loopBody(1);
+    //                 //
+    //                 return;
+    //             }
+    //
+    //
+    //             execScript2.apply(entityObject2, arguments);
+    //         }
+    //
+    //
+    //
+    //         //var loopBody = director._loopBody;
+    //
+    //
+    //
+    //
+    //
+    //
+    //         //director._loopBody = function () {
+    //         //    var time = 100;
+    //         //
+    //         //    data1.judgeBeforeLoopBody(test1, entityObject1);
+    //         //    data2.judgeBeforeLoopBody(test2, entityObject2);
+    //         //
+    //         //    loopBody.call(director, time);
+    //         //
+    //         //    data1.judgeAfterLoopBody(test1, time, entityObject1);
+    //         //    data2.judgeAfterLoopBody(test2, time, entityObject2);
+    //         //
+    //         //    director.stop();
+    //         //
+    //         //    done();
+    //         //};
+    //
+    //
+    //
+    //         director._init();
+    //
+    //
+    //         wd.GlobalScriptUtils.handlerAfterLoadedScript({
+    //             name:data1.scriptName,
+    //             class: InstanceSourceScript
+    //         }, entityObject1);
+    //
+    //         wd.GlobalScriptUtils.handlerAfterLoadedScript({
+    //             name:data2.scriptName,
+    //             class: InstanceInstanceScript
+    //         }, entityObject2);
+    //
+    //         data1.judgeBeforeLoopBody(test1, entityObject1);
+    //         data2.judgeBeforeLoopBody(test2, entityObject2);
+    //
+    //         director._loopBody(1);
+    //
+    //
+    //         data1.judgeAfterLoopBody(test1, entityObject1);
+    //         data2.judgeAfterLoopBody(test2, entityObject2);
+    // }
 
 
 
@@ -246,7 +244,7 @@ describe("instance+script", function(){
         testTool.clearInstance(sandbox);
     });
 
-    it("source and instance share script", function(done){
+    it("source and instance share script", function(){
         createBox();
         box1.addComponent(scriptSource);
 
@@ -287,7 +285,6 @@ describe("instance+script", function(){
                 judgeAfterLoopBody:function(test, time, gameObject){
                 }
             },
-            done,
             true);
         });
 

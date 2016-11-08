@@ -437,6 +437,7 @@
 		"asset/Loader.ts",
 		"asset/GLSLLoader.ts",
 		"asset/JsLoader.ts",
+		"asset/ScriptLoader.ts",
 		"asset/JSONLoader.ts",
 		"asset/VideoLoader.ts",
 		"asset/SoundLoader.ts",

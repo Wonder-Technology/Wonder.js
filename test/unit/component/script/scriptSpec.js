@@ -101,26 +101,36 @@ describe("script", function () {
     }
 
     function testTwoScript(judgeTest1OnEnter, judgeTest2OnEnter, judgeBeforeLoopBody, judgeAfterLoopBody, done){
-        var script2 = wd.Script.create();
-        var gameObject = wd.GameObject.create();
+        wd.LoaderManager.getInstance().load([
+            {type:wd.EAssetType.SCRIPT, url: url1, id: "id1"},
+            {type:wd.EAssetType.SCRIPT, url: url2, id: "id2"}
+        ]).subscribe(null, null, function () {
+            var script2 = wd.Script.create();
+            var gameObject = wd.GameObject.create();
 
-        script.url = url1;
-        script2.url = url2;
+            // script.url = url1;
+            script.id = "id1";
+            // script2.url = url2;
+            script2.id = "id2";
 
-        gameObject.addComponent(script);
-        gameObject.addComponent(script2);
+            gameObject.addComponent(script);
+            gameObject.addComponent(script2);
 
-        scriptTool.testTwoScript(gameObject, {
-            scriptName: "test",
-            class: Test,
-            judgeOnEnter: judgeTest1OnEnter,
-            judgeBeforeLoopBody: judgeBeforeLoopBody,
-            judgeAfterLoopBody: judgeAfterLoopBody
-        }, {
-            scriptName: "test2",
-            class: Test2,
-            judgeOnEnter: judgeTest2OnEnter
-        }, done);
+            scriptTool.testTwoScript(gameObject, {
+                scriptName: "test",
+                class: Test,
+                judgeOnEnter: judgeTest1OnEnter,
+                judgeBeforeLoopBody: judgeBeforeLoopBody,
+                judgeAfterLoopBody: judgeAfterLoopBody
+            }, {
+                scriptName: "test2",
+                class: Test2,
+                judgeOnEnter: judgeTest2OnEnter
+            }, done);
+
+            done();
+        });
+
     }
 
     function testSceneScript(judgeOnEnter, judgeBeforeLoopBody, judgeAfterLoopBody){
@@ -194,6 +204,53 @@ describe("script", function () {
             scene.dispose();
 
             expect(test.onDispose).toCalledOnce();
+        });
+    });
+
+    it("exec script->init after all children's and all components' init is executed", function () {
+        wd.LoaderManager.getInstance().load([
+            {type:wd.EAssetType.SCRIPT, url: url1, id: "id1"}
+        ]).subscribe(null, null, function () {
+            sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+
+            var gameObject = wd.GameObject.create();
+
+            script.id = "id1";
+
+            gameObject.addComponent(script);
+
+            var geometry = wd.RectGeometry.create();
+
+            sandbox.stub(geometry, "init");
+
+
+            gameObject.addComponent(geometry);
+
+
+            var child = wd.GameObject.create();
+
+            sandbox.stub(child, "init");
+
+            gameObject.addChild(child);
+
+
+            director.scene.addChild(gameObject);
+
+
+            var test = wd.ScriptEngine.getInstance().findScript(gameObject, "test");
+            sandbox.stub(test, "init");
+
+
+
+
+
+
+            director._init();
+
+
+
+            expect(test.init).toCalledAfter(child.init);
+            expect(test.init).toCalledAfter(geometry.init);
         });
     });
 

@@ -16,17 +16,17 @@ describe("Script", function () {
 
         });
 
-        it("clone url", function(){
-            var url = "/aaa.js";
+        it("clone id", function(){
+            var id = "aaa";
 
             cloneTool.extend(script, {
-                url:url
+                id:id
             });
 
             var result = script.clone();
 
             expect(result === script).toBeFalsy();
-            expect(result.url).toEqual(url);
+            expect(result.id).toEqual(id);
         });
     });
 });

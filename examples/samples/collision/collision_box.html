@@ -18,7 +18,10 @@
         }).init();
 
         wd.LoaderManager.getInstance().load([
-            {url: "../../asset/texture/crate.gif", id: "ground"}
+            {url: "../../asset/texture/crate.gif", id: "ground"},
+//            {type:wd.EAssetType.SCRIPT, url: "./js/collision_box/box1.js", id: "box1"},
+//            {type:wd.EAssetType.SCRIPT, url: "./js/collision_box/box1.js", id: "box1"},
+            {type:wd.EAssetType.SCRIPT, url: "./js/collision_box/box1.js", id: "box1"}
         ]).subscribe(null, null, function () {
             initSample();
         });
@@ -70,9 +73,7 @@
 
             gameObject.transform.translate(-15, 0, 0);
 
-
-            gameObject.addComponent(wd.Script.create("./js/collision_box/box1.js"));
-
+            gameObject.addComponent(wd.Script.create("box1"));
 
             return gameObject;
         }

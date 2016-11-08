@@ -19,7 +19,12 @@
             screenSize: wd.EScreenSize.FULL
         }).init();
 
-        initSample();
+        wd.LoaderManager.getInstance().load([
+            {type:wd.EAssetType.SCRIPT, url: "./js/physics_events/sphere1.js", id: "sphere1"}
+        ]).subscribe(null, null, function () {
+            initSample();
+        });
+
 
         function initSample() {
             var director = wd.Director.getInstance();
@@ -71,7 +76,7 @@
             gameObject.transform.translate(-10, 0, 0);
 
 
-            gameObject.addComponent(wd.Script.create("./js/physics_events/sphere1.js"));
+            gameObject.addComponent(wd.Script.create("sphere1"));
 
 
             return gameObject;

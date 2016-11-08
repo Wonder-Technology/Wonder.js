@@ -29,6 +29,12 @@
 
 
         wd.LoaderManager.getInstance().load([
+            {type:wd.EAssetType.SCRIPT, url: "./js/image1EventHandler.js", id: "image1EventHandler"},
+            {type:wd.EAssetType.SCRIPT, url: "./js/image11EventHandler.js", id: "image11EventHandler"},
+            {type:wd.EAssetType.SCRIPT, url: "./js/image2EventHandler.js", id: "image2EventHandler"},
+            {type:wd.EAssetType.SCRIPT, url: "./js/sceneEventHandler.js", id: "sceneEventHandler"},
+
+
             {url: "../../asset/texture/1.jpg", id: "1"},
             {url: "../../asset/texture/2.jpg", id: "2"},
             {url: "../../asset/texture/3.jpg", id: "3"}
@@ -44,10 +50,10 @@
 
             image1.addChild(image11);
 
-            image1.addComponent(wd.Script.create("./js/image1EventHandler.js"));
-            image11.addComponent(wd.Script.create("./js/image11EventHandler.js"));
+            image1.addComponent(wd.Script.create("image1EventHandler"));
+            image11.addComponent(wd.Script.create("image11EventHandler"));
 
-            image2.addComponent(wd.Script.create("./js/image2EventHandler.js"));
+            image2.addComponent(wd.Script.create("image2EventHandler"));
 
 
             var eventTriggerDetector = wd.UIEventTriggerDetector.create();
@@ -98,7 +104,7 @@
 
 
 
-            director.scene.addComponent(wd.Script.create("./js/sceneEventHandler.js"));
+            director.scene.addComponent(wd.Script.create("sceneEventHandler"));
 
 
             director.start();

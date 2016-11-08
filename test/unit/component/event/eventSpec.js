@@ -71,6 +71,12 @@ describe("event component", function () {
         sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
 
 
+        sandbox.stub(wd.LoaderManager.getInstance(), "get").returns({
+            name:"",
+            class:function(){}
+        });
+
+
         manager = wd.EventManager;
     });
     afterEach(function () {
@@ -83,10 +89,10 @@ describe("event component", function () {
 
     describe("integration test", function(){
         var fakeEvent;
-        var url = null;
+        var id = null;
 
         function createGameObject(){
-            return eventScriptTool.createGameObject(url);
+            return eventScriptTool.createGameObject(id);
         }
 
         function createUIObject(renderer){
@@ -103,7 +109,7 @@ describe("event component", function () {
 
 
 
-            barUIObject.addComponent(wd.Script.create(url));
+            barUIObject.addComponent(wd.Script.create(id));
 
 
 
@@ -120,7 +126,8 @@ describe("event component", function () {
         }
 
         beforeEach(function(){
-            url = "http://" + location.host + "/" + testTool.resPath + "test/res/script/event.js";
+            // id = "http://" + location.host + "/" + testTool.resPath + "test/res/script/event.js";
+            id = null;
         });
 
         describe("trigger order should be bubble up to scene(include scene)", function() {
@@ -371,7 +378,7 @@ describe("event component", function () {
 
         describe("test trigger Scene mouse event and trigger EEngineEvent", function() {
             beforeEach(function () {
-                director.scene.addComponent(wd.Script.create(url));
+                director.scene.addComponent(wd.Script.create(id));
             });
 
             describe("test trigger onMouseMove,onMouseOver,onMouseOut", function () {

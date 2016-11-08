@@ -18,6 +18,10 @@
 
 
         wd.LoaderManager.getInstance().load([
+            {type:wd.EAssetType.SCRIPT, url: "./js/spriteButton.js", id: "spriteButton"},
+            {type:wd.EAssetType.SCRIPT, url: "./js/colorButton.js", id: "colorButton"},
+            {type:wd.EAssetType.SCRIPT, url: "./js/colorButton2.js", id: "colorButton2"},
+
             {url: "../../../../asset/texture/1.jpg", id: "normal"},
             {url: "../../../../asset/texture/5.jpg", id: "normal2"},
             {url: "../../../../asset/texture/2.jpg", id: "highlight"},
@@ -46,7 +50,7 @@
             buttonObject2.getComponent(wd.Button).disable();
 
 
-            var buttonObject3 = createButtonUIWithColor(renderer, "./js/colorButton.js");
+            var buttonObject3 = createButtonUIWithColor(renderer, "colorButton");
             buttonObject3.transform.width = 200;
             buttonObject3.transform.height = 100;
 
@@ -54,7 +58,7 @@
 
 
 
-            var buttonObject4 = createButtonUIWithColor(renderer, "./js/colorButton2.js");
+            var buttonObject4 = createButtonUIWithColor(renderer, "colorButton2");
             buttonObject4.transform.width = 200;
             buttonObject4.transform.height = 100;
 
@@ -95,7 +99,7 @@
 
 
 
-            buttonUIObject.addComponent(wd.Script.create("./js/spriteButton.js"));
+            buttonUIObject.addComponent(wd.Script.create("spriteButton"));
 
 
 
@@ -113,7 +117,7 @@
             return buttonUIObject;
         }
 
-        function createButtonUIWithColor(renderer, scriptUrl){
+        function createButtonUIWithColor(renderer, scriptId){
             var button = wd.Button.create();
 
             button.text = "I'm a button";
@@ -136,7 +140,7 @@
 
 
 
-            buttonUIObject.addComponent(wd.Script.create(scriptUrl));
+            buttonUIObject.addComponent(wd.Script.create(scriptId));
 
 
 

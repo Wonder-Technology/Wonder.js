@@ -18,7 +18,8 @@
         }).init();
 
         wd.LoaderManager.getInstance().load([
-            {url: "../../asset/texture/crate.gif", id: "ground"}
+            {url: "../../asset/texture/crate.gif", id: "ground"},
+            {type:wd.EAssetType.SCRIPT, url: "./js/collision_sphere/sphere1.js", id: "sphere1"}
         ]).subscribe(null, null, function () {
             initSample();
         });
@@ -72,7 +73,7 @@
             gameObject.transform.translate(-15, 0, 0);
 
 
-            gameObject.addComponent(wd.Script.create("./js/collision_sphere/sphere1.js"));
+            gameObject.addComponent(wd.Script.create("sphere1"));
 
 
             return gameObject;

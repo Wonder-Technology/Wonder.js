@@ -26,10 +26,10 @@
         'test/helper/yoop/yOOP.js',
         'test/unit/**/*Tool.js',
 
-        // 'test/unit/**',
+        'test/unit/**',
 
 
-        'test/unit/**/SoundManager*',
+        // 'test/unit/**/SoundManager*',
 
 
         // 'test/unit/**/*Light*',
@@ -166,7 +166,7 @@
         // 'test/unit/**/instance/instance_basic*',
         //'test/unit/**/instance/instance_light*',
 
-        //'test/unit/**/instance_script*',
+        // 'test/unit/**/instanceScript*',
 
         //'test/unit/**/instance_animation*',
 
@@ -229,7 +229,7 @@
         // 'test/unit/**/lod/*',
 
         //'test/unit/**/CameraController*',
-        //'test/unit/**/camera/**',
+        // 'test/unit/**/camera/**',
 
 
         //'test/unit/**/*GeometryData*',
@@ -252,7 +252,7 @@
 
         //'test/unit/component/physics/**/eventSpec*',
 
-        //'test/unit/**/OctreeSpec*',
+        // 'test/unit/**/OctreeSpec*',
         //'test/unit/**/CollisionDetectorSpec*',
         //'test/unit/**/BoundingRegionUtilsSpec*',
 
@@ -342,14 +342,14 @@
         //'test/unit/**/*Shape*.js',
         //'test/unit/**/Arcball*',
         //'test/unit/**/FlyCameraController*',
-        //'test/unit/**/scriptSpec.js',
+        // 'test/unit/**/scriptSpec.js',
       //
       //  'test/unit/**/*ControllerSpec.js',
       //'test/unit/core/Tran*.js',
       //  'test/unit/asset/*.js',
       //  'test/unit/asset/obj/*.js',
       //  'test/unit/asset/obj/OBJParserSpec.js',
-       'test/unit/asset/loaderSpec.js',
+      //  'test/unit/asset/loaderSpec.js',
         //'test/unit/asset/wd/WDParserSpec.js',
         //'test/unit/asset/wd/WDBuilderSpec.js',
         //'test/unit/math/*.js',

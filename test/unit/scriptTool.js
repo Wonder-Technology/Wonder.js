@@ -1,70 +1,75 @@
 var scriptTool = (function () {
+    function handlerAfterLoadedScript(entityObject){
+        wd.ScriptEngine.getInstance().execEntityObjectScriptOnlyOnce(entityObject, "onEnter");
+        wd.ScriptEngine.getInstance().execEntityObjectScriptOnlyOnce(entityObject, "init");
+    }
+
     return {
-        testScript: function (entityObject, scriptName, judgeOnEnter, judgeBeforeLoopBody, judgeAfterLoopBody, done, isNotAdd) {
-            var director = wd.Director.getInstance();
-
-            var test = null;
-            var execScript = entityObject.scriptManager.execScriptOnlyOnce;
-
-
-
-
-            if(isNotAdd === true){
-            }
-            else{
-                if(!wd.JudgeUtils.isEqual(entityObject, director.scene)){
-                    director.scene.addChild(entityObject);
-                }
-            }
-
-
-            entityObject.scriptManager.execScriptOnlyOnce = function(scriptHandlerName){
-                if(scriptHandlerName === "onEnter"){
-                    //test = entityObject.scriptList.getChild(scriptName);
-                    test = wd.ScriptEngine.getInstance().findScript(entityObject, scriptName);
-                    //if(test){
-                    judgeOnEnter(test, entityObject);
-                    //}
-
-                    execScript.apply(entityObject.scriptManager, arguments);
-
-                    return;
-                }
-
-                if(scriptHandlerName === "init"){
-                    execScript.apply(entityObject.scriptManager, arguments);
-
-                    director._loopBody(1);
-
-                    return;
-                }
-
-
-                execScript.apply(entityObject.scriptManager, arguments);
-            }
-
-
-
-
-            var loopBody = director._loopBody;
-            director._loopBody = function () {
-                var time = 100;
-
-                judgeBeforeLoopBody(test, entityObject);
-
-                loopBody.call(director, time);
-
-                judgeAfterLoopBody(test, time, entityObject);
-
-                director.stop();
-
-                done();
-            };
-
-
-
-            director._init();
-        },
+        // testScript: function (entityObject, scriptName, judgeOnEnter, judgeBeforeLoopBody, judgeAfterLoopBody, done, isNotAdd) {
+        //     var director = wd.Director.getInstance();
+        //
+        //     var test = null;
+        //     var execScript = entityObject.scriptManager.execScriptOnlyOnce;
+        //
+        //
+        //
+        //
+        //     if(isNotAdd === true){
+        //     }
+        //     else{
+        //         if(!wd.JudgeUtils.isEqual(entityObject, director.scene)){
+        //             director.scene.addChild(entityObject);
+        //         }
+        //     }
+        //
+        //
+        //     entityObject.scriptManager.execScriptOnlyOnce = function(scriptHandlerName){
+        //         if(scriptHandlerName === "onEnter"){
+        //             //test = entityObject.scriptList.getChild(scriptName);
+        //             test = wd.ScriptEngine.getInstance().findScript(entityObject, scriptName);
+        //             //if(test){
+        //             judgeOnEnter(test, entityObject);
+        //             //}
+        //
+        //             execScript.apply(entityObject.scriptManager, arguments);
+        //
+        //             return;
+        //         }
+        //
+        //         if(scriptHandlerName === "init"){
+        //             execScript.apply(entityObject.scriptManager, arguments);
+        //
+        //             director._loopBody(1);
+        //
+        //             return;
+        //         }
+        //
+        //
+        //         execScript.apply(entityObject.scriptManager, arguments);
+        //     }
+        //
+        //
+        //
+        //
+        //     var loopBody = director._loopBody;
+        //     director._loopBody = function () {
+        //         var time = 100;
+        //
+        //         judgeBeforeLoopBody(test, entityObject);
+        //
+        //         loopBody.call(director, time);
+        //
+        //         judgeAfterLoopBody(test, time, entityObject);
+        //
+        //         director.stop();
+        //
+        //         done();
+        //     };
+        //
+        //
+        //
+        //     director._init();
+        // },
         testScriptNotLoadScript: function (entityObject1, data1, isNotAdd) {
             var director = wd.Director.getInstance();
 
@@ -127,7 +132,7 @@ var scriptTool = (function () {
             }
 
 
-            wd.GlobalScriptUtils.handlerAfterLoadedScript(entityObject1);
+            handlerAfterLoadedScript(entityObject1);
 
 
 
@@ -140,11 +145,9 @@ var scriptTool = (function () {
 
 
             data1.judgeAfterLoopBody && data1.judgeAfterLoopBody(test1, time, entityObject1);
-
-            //done();
         },
 
-        testTwoScript: function(entityObject1, data1, data2, done){
+        testTwoScript: function(entityObject1, data1, data2){
             var director = wd.Director.getInstance();
 
 
@@ -226,8 +229,6 @@ var scriptTool = (function () {
                 data1.judgeAfterLoopBody(test, test2, time, entityObject1);
 
                 director.stop();
-
-                done();
             };
 
             director._init();
@@ -332,7 +333,7 @@ var scriptTool = (function () {
 
 
 
-            wd.GlobalScriptUtils.handlerAfterLoadedScript(entityObject1);
+            handlerAfterLoadedScript(entityObject1);
 
 
 
@@ -346,7 +347,7 @@ var scriptTool = (function () {
 
             data1.judgeAfterLoopBody && data1.judgeAfterLoopBody(test1, test2, time, entityObject1);
         },
-        testScriptOfTwoGameObjectsNotLoadScript:function (entityObject1, data1, entityObject2, data2, done, isNotAdd) {
+        testScriptOfTwoGameObjectsNotLoadScript:function (entityObject1, data1, entityObject2, data2, isNotAdd) {
             var director = wd.Director.getInstance();
 
             var test1 = null;
@@ -418,7 +419,7 @@ var scriptTool = (function () {
 
 
 
-            wd.GlobalScriptUtils.handlerAfterLoadedScript(entityObject1);
+            handlerAfterLoadedScript(entityObject1);
 
 
 
@@ -462,7 +463,7 @@ var scriptTool = (function () {
 
 
 
-            wd.GlobalScriptUtils.handlerAfterLoadedScript(entityObject2);
+            handlerAfterLoadedScript(entityObject2);
 
 
 
@@ -479,8 +480,6 @@ var scriptTool = (function () {
 
             data1.judgeAfterLoopBody(test1, time, entityObject1);
             data2.judgeAfterLoopBody(test2, time, entityObject2);
-
-            done();
         }
     }
 })();

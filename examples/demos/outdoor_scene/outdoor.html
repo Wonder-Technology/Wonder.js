@@ -512,33 +512,6 @@
             return gameObject;
         }
 
-        function createBox(terrain){
-            var material = wd.BasicMaterial.create();
-            material.color = wd.Color.create("rgb(1.0,0.0,1.0)");
-
-            var geometry = wd.BoxGeometry.create();
-            geometry.material = material;
-            geometry.width = 5;
-            geometry.height = 5;
-            geometry.depth = 5;
-
-
-            var gameObject = wd.GameObject.create();
-            gameObject.addComponent(geometry);
-
-            gameObject.addComponent(wd.MeshRenderer.create());
-
-
-            gameObject.addComponent(wd.Script.create("./js/move.js"));
-
-//            var x = -6;
-//            var z = 4;
-//            var y = terrain.getComponent(wd.TerrainGeometry).getHeightAtCoordinates(x, z);
-//            gameObject.transform.position = wd.Vector3.create(x, y, z);
-
-            return gameObject;
-        }
-
         function createAmbientLight() {
             var ambientLightComponent = wd.AmbientLight.create();
             ambientLightComponent.color = wd.Color.create("rgb(30, 30, 30)");

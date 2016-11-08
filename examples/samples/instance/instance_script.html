@@ -18,7 +18,11 @@
         }).init();
 
 
-        initSample();
+        wd.LoaderManager.getInstance().load([
+            {type:wd.EAssetType.SCRIPT, url: "./js/sphere.js", id: "sphere"}
+        ]).subscribe(null, null, function () {
+            initSample();
+        });
 
         function initSample() {
             var director = wd.Director.getInstance();
@@ -38,7 +42,7 @@
             var sourceInstanceComponent = wd.OneToOneSourceInstance.create();
             model.addComponent(sourceInstanceComponent);
 
-            model.addComponent(wd.Script.create("./js/sphere.js"));
+            model.addComponent(wd.Script.create("sphere"));
 
             arr.push(model);
 
@@ -48,7 +52,6 @@
                 instance.transform.position = wd.Vector3.create(range / 2 - Math.random() * range, range / 2 - Math.random() * range, range / 2 - Math.random() * range);
 
 
-//                instance.addComponent(wd.Script.create("./js/instance.js"));
 
                 arr.push(instance);
             }
@@ -56,7 +59,6 @@
 
 
 
-//            model.addComponent(wd.Script.create("./js/sphere.js"));
 
             return arr;
         }

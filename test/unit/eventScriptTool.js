@@ -1,6 +1,6 @@
 var eventScriptTool = (function () {
     return {
-        createGameObject: function (url) {
+        createGameObject: function (scriptId) {
             var gameObject = wd.GameObject.create();
 
             var eventTriggerDetector = wd.RayCasterEventTriggerDetector.create();
@@ -8,7 +8,9 @@ var eventScriptTool = (function () {
             gameObject.addComponent(eventTriggerDetector);
 
 
-            gameObject.addComponent(wd.Script.create(url));
+            if(!!scriptId){
+                gameObject.addComponent(wd.Script.create(scriptId));
+            }
 
 
             var material = wd.BasicMaterial.create();

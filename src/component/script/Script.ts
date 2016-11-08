@@ -3,16 +3,16 @@ module wd{
         public static scriptList:wdCb.Stack<ScriptFileData> = wdCb.Stack.create<ScriptFileData>();
 
         public static create():Script;
-        public static create(url:string):Script;
+        public static create(id:string):Script;
 
         public static create(...args) {
             if(args.length === 0){
                 return new this();
             }
             else if(args.length === 1){
-                let url = args[0];
+                let id = args[0];
 
-                return new this(url);
+                return new this(id);
             }
         }
 
@@ -23,38 +23,26 @@ module wd{
             });
         }
 
-        constructor(url:string = null){
+        constructor(id:string = null){
             super();
 
-            this.url = url;
+            this.id = id;
         }
 
         @cloneAttributeAsBasicType()
-        public url:string = null;
+        public id:string = null;
 
-        private _subscription:wdFrp.IDisposable = null;
-
-        public dispose(){
-            this._subscription.dispose();
-        }
-
-        public createLoadJsStream(){
-            Log.error(!this.url, Log.info.FUNC_MUST_DEFINE("url"));
-
-            return LoaderManager.getInstance().load(this.url)
-            .map(() => {
-                    return Script.scriptList.pop();
-                });
-        }
-
+        @require(function(entityObject:EntityObject, isShareComponent:boolean = false){
+            it("script should be loaded", () => {
+                expect(LoaderManager.getInstance().get(this.id)).exist;
+            }, this);
+        })
         public addToObject(entityObject:EntityObject, isShareComponent:boolean = false){
             super.addToObject(entityObject, isShareComponent);
 
-            this._subscription = this.createLoadJsStream()
-                .subscribe((data:ScriptFileData) => {
-                    GlobalScriptUtils.addScriptToEntityObject(entityObject, data);
-                    GlobalScriptUtils.handlerAfterLoadedScript(entityObject);
-                });
+            let data:ScriptFileData = LoaderManager.getInstance().get(this.id);
+
+            GlobalScriptUtils.addScriptToEntityObject(entityObject, data);
         }
     }
 

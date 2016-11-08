@@ -125,7 +125,7 @@ var loadingUI = (function(){
 
         uiObject.addComponent(eventTriggerDetector);
 
-        uiObject.addComponent(wd.Script.create("./js/bitmapFontEventHandler.js"));
+        uiObject.addComponent(wd.Script.create("bitmapFontEventHandler"));
 
 
         return uiObject;

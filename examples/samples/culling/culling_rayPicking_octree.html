@@ -15,24 +15,33 @@
             screenSize: wd.EScreenSize.FULL
         }).init();
 
-        wd.DebugConfig.showDebugPanel = true;
-
-        var director = wd.Director.getInstance();
-
-
-        var octreeContainer = createOctree();
-        octreeContainer.addChildren(createBoxes());
+        wd.LoaderManager.getInstance().load([
+            {type:wd.EAssetType.SCRIPT, url: "./js/rayPicking.js", id: "rayPicking"}
+        ]).subscribe(null, null, function () {
+            initSample();
+        });
 
 
-        //todo add message
+        function initSample() {
+            wd.DebugConfig.showDebugPanel = true;
+
+            var director = wd.Director.getInstance();
 
 
-        director.scene.addChild(octreeContainer);
+            var octreeContainer = createOctree();
+            octreeContainer.addChildren(createBoxes());
 
-        director.scene.addChild(createCamera());
+
+            //todo add message
 
 
-        director.start();
+            director.scene.addChild(octreeContainer);
+
+            director.scene.addChild(createCamera());
+
+
+            director.start();
+        }
 
 
         function createOctree(){
@@ -91,7 +100,7 @@
             gameObject.addComponent(eventTriggerDetector);
 
 
-            gameObject.addComponent(wd.Script.create("./js/rayPicking.js"));
+            gameObject.addComponent(wd.Script.create("rayPicking"));
 
 
 

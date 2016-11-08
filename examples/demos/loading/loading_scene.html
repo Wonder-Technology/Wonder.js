@@ -23,10 +23,11 @@
 
 
         wd.LoaderManager.getInstance().load([
-                    {url: "../../asset/logo/wonder.png", id: "logo"},
-                    {url: "../../asset/font/bitmap/myFont.fnt", id: "myFont_fnt"},
-                    {url: "../../asset/font/bitmap/myFont.png", id: "myFont_image"}
-                ])
+            {type:wd.EAssetType.SCRIPT, url: "./js/bitmapFontEventHandler.js", id: "bitmapFontEventHandler"},
+            {url: "../../asset/logo/wonder.png", id: "logo"},
+            {url: "../../asset/font/bitmap/myFont.fnt", id: "myFont_fnt"},
+            {url: "../../asset/font/bitmap/myFont.png", id: "myFont_image"}
+        ])
                 .do(null, null, function () {
                     loadingUI.createLoadingUI();
 

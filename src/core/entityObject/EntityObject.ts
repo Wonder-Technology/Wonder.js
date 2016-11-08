@@ -95,6 +95,8 @@ module wd {
 
             this.afterInitChildren();
 
+            ScriptEngine.getInstance().execEntityObjectScriptOnlyOnce(this, "init");
+
             return this;
         }
 

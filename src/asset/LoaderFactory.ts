@@ -4,6 +4,9 @@ module wd{
             var loader = null;
 
             switch (type){
+                case EAssetType.SCRIPT:
+                    loader = ScriptLoader.getInstance();
+                    break;
                 case EAssetType.FONT:
                     loader = FontLoader.getInstance();
                     break;
