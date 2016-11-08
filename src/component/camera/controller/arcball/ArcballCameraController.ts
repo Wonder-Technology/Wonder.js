@@ -97,18 +97,13 @@ module wd {
             super.init();
 
             this._bindCanvasEvent();
+
+            this._updateTransform();
+
+            this._isChange = false;
         }
 
         public update(elapsed:number) {
-            /*!
-             X= r*cos(phi)*sin(theta);
-             Z= r*sin(phi)*sin(theta);
-             Y= r*cos(theta);
-             */
-            var x = null,
-                y = null,
-                z = null;
-
             super.update(elapsed);
 
             if(!this._isChange){
@@ -117,12 +112,7 @@ module wd {
 
             this._isChange = false;
 
-            x = ((this.distance) * Math.cos(this.phi) * Math.sin(this.theta) + this.target.x);
-            z = ((this.distance) * Math.sin(this.phi) * Math.sin(this.theta) + this.target.z);
-            y = ((this.distance) * Math.cos(this.theta) + this.target.y);
-
-            this.entityObject.transform.position = Vector3.create(x, y, z);
-            this.entityObject.transform.lookAt(this.target);
+            this._updateTransform();
         }
 
         public dispose() {
@@ -254,6 +244,24 @@ module wd {
             this._mouseDragSubscription.dispose();
             this._mouseWheelSubscription.dispose();
             this._keydownSubscription.dispose();
+        }
+
+        private _updateTransform(){
+            /*!
+             X= r*cos(phi)*sin(theta);
+             Z= r*sin(phi)*sin(theta);
+             Y= r*cos(theta);
+             */
+            var x = null,
+                y = null,
+                z = null;
+
+            x = ((this.distance) * Math.cos(this.phi) * Math.sin(this.theta) + this.target.x);
+            z = ((this.distance) * Math.sin(this.phi) * Math.sin(this.theta) + this.target.z);
+            y = ((this.distance) * Math.cos(this.theta) + this.target.y);
+
+            this.entityObject.transform.position = Vector3.create(x, y, z);
+            this.entityObject.transform.lookAt(this.target);
         }
     }
 }

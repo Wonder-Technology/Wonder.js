@@ -10,6 +10,21 @@ describe("RectRectTransform", function(){
         return testTool.getValues(values, digit);
     }
 
+    function judgeRendererDirty(tra, setFunc) {
+        tra.entityObject = wd.UIObject.create();
+
+        var renderer = new wd.UIRenderer();
+        renderer.dirty = false;
+
+        tra.entityObject.addComponent(renderer);
+
+        expect(renderer.dirty).toBeFalsy();
+
+        setFunc(tra);
+
+        expect(renderer.dirty).toBeTruthy();
+    }
+
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
         tra1 = RectTransform.create();
@@ -132,6 +147,11 @@ describe("RectRectTransform", function(){
 
             expect(getValues(tra3.position)).toEqual([2, 2]);
         });
+        it("mark renderer dirty", function () {
+            judgeRendererDirty(tra1, function(tra){
+                tra.position = Vector2.create(1, 2);
+            })
+        });
     });
 
     describe("set rotation", function(){
@@ -151,6 +171,11 @@ describe("RectRectTransform", function(){
 
             expect(getValues(tra2.rotation)).toEqual(20);
             expect(getValues(tra2.rotationMatrix.getTranslation(), 1)).toEqual([0.5, -0.6]);
+        });
+        it("mark renderer dirty", function () {
+            judgeRendererDirty(tra2, function(tra){
+                tra.rotation = 30;
+            })
         });
     });
 
@@ -178,6 +203,11 @@ describe("RectRectTransform", function(){
             expect(getValues(tra1.scale)).toEqual([2, 3]);
             expect(getValues(tra1.position)).toEqual([100, -50]);
             expect(getValues(tra2.scale)).toEqual([1, 1]);
+        });
+        it("mark renderer dirty", function () {
+            judgeRendererDirty(tra1, function(tra){
+                tra.scale = Vector2.create(2,3);
+            });
         });
 
         describe("scale shouldn't affect position", function(){

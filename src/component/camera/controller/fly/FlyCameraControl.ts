@@ -27,6 +27,10 @@ module wd {
             this._gameObject = entityObject;
 
             this._bindCanvasEvent();
+
+            this._updateTransform();
+
+            this._isRotate = false;
         }
 
         public update(elapsed:number){
@@ -36,7 +40,7 @@ module wd {
 
             this._isRotate = false;
 
-            this._gameObject.transform.eulerAngles = Vector3.create(this._rotateX, this._rotateY, 0);
+            this._updateTransform();
         }
 
         public dispose() {
@@ -102,6 +106,10 @@ module wd {
         private _removeEvent() {
             this._mouseDragSubscription.dispose();
             this._keydownSubscription.dispose();
+        }
+
+        private _updateTransform(){
+            this._gameObject.transform.eulerAngles = Vector3.create(this._rotateX, this._rotateY, 0);
         }
     }
 }

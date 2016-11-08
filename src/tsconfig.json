@@ -271,6 +271,7 @@
 		"component/ui/twoD/interaction/transition/ETransitionMode.ts",
 		"component/ui/twoD/interaction/transition/TransitionManager.ts",
 		"component/ui/twoD/utils/RoundedRectUtils.ts",
+		"component/ui/twoD/utils/UIRendererUtils.ts",
 		"renderer/renderTargetRenderer/RenderTargetRenderer.ts",
 		"renderer/renderTargetRenderer/CommonRenderTargetRenderer.ts",
 		"renderer/renderTargetRenderer/TwoDRenderTargetRenderer.ts",

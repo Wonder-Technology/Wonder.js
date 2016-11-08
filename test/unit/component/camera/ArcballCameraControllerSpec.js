@@ -2,6 +2,7 @@ describe("ArcballCameraController", function () {
     var sandbox = null;
     var controller = null;
     var manager = null;
+    var director;
 
     var camera,cameraComponent,component;
 
@@ -15,7 +16,6 @@ describe("ArcballCameraController", function () {
         cameraComponent.far = 1000;
 
         controller = wd.ArcballCameraController.create(cameraComponent);
-        controller.distance = 10;
 
         camera.addComponent(controller);
 
@@ -43,6 +43,8 @@ describe("ArcballCameraController", function () {
 
         testTool.openContractCheck(sandbox);
 
+        director = wd.Director.getInstance();
+
         manager = wd.EventManager;
 
         insertDom();
@@ -58,34 +60,75 @@ describe("ArcballCameraController", function () {
         sandbox.restore();
     });
 
-    it("control Camera", function () {
-        if(bowser.firefox){
-            expect().toPass();
-            return;
-        }
+    describe("init", function() {
+        beforeEach(function () {
+            prepare(sandbox);
 
-        var director = wd.Director.getInstance();
-        prepare(sandbox);
-        director.scene.addChild(camera);
+            director.scene.addChild(camera);
+        });
 
-        //camera.init();
-        director._init();
+        it("set camera component's entityObject", function () {
+            director._init();
 
-        expect(component).toEqual(cameraComponent);
-        expect(component.entityObject).toEqual(camera);
-        expect(testTool.getValues(component.worldToCameraMatrix)).toEqual(
-            [
-                1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1
-            ]
-        );
+            expect(component).toEqual(cameraComponent);
+            expect(component.entityObject).toEqual(camera);
+        });
 
-        sandbox.spy(component.entityObject.transform, "lookAt");
+        describe("update entityObject's transform", function () {
+            it("update position based on distance", function () {
+                controller.distance = 10;
 
-        director._loopBody(1);
+                director._init();
 
+                expect(testTool.getValues(component.worldToCameraMatrix)).toEqual(
+                    [
+                        1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, -10, 1
+                    ]
+                );
+                expect(testTool.getValues(component.entityObject.transform.position)).toEqual([0, 0, 10]);
+            });
+            it("update lookAt based on target", function () {
+                controller.target = wd.Vector3.create(10, 10, 10);
 
-        expect(testTool.getValues(component.entityObject.transform.position)).toEqual([0, 0, 10]);
-        expect(component.entityObject.transform.lookAt).toCalledWith(controller.target);
+                director._init();
+
+                expect(testTool.getValues(component.entityObject.transform.localToWorldMatrix.invert())).toEqual(
+                    [
+                        1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -10, -10, -20, 1
+                    ]
+                );
+            });
+        });
+    });
+
+    describe("update", function(){
+        beforeEach(function(){
+            prepare(sandbox);
+
+            director.scene.addChild(camera);
+        });
+
+        it("if not change after init, not  update transform", function () {
+            sandbox.spy(controller, "_updateTransform");
+            controller.distance = 10;
+
+            director._init();
+            director._loopBody(1);
+
+            expect(controller._updateTransform).toCalledOnce();
+        });
+        it("else, update transform", function(){
+            sandbox.spy(controller, "_updateTransform");
+            controller.distance = 10;
+
+            director._init();
+
+            controller.distance = 20;
+
+            director._loopBody(1);
+
+            expect(controller._updateTransform).toCalledTwice();
+        });
     });
 
     describe("dispose", function(){

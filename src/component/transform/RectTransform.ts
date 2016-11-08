@@ -6,6 +6,8 @@ module wd{
             return obj;
         }
 
+        public entityObject:UIObject;
+
         private _rotationMatrix:Matrix3 = null;
         @cacheGetter(function(){
             return this._rotationMatrixCache !== null;
@@ -48,6 +50,7 @@ module wd{
             }
 
             this.isTranslate = true;
+            this._markRendererDirty();
         }
 
         private _rotation:number = 0;
@@ -63,6 +66,7 @@ module wd{
 
             this.dirtyRotation = true;
             this.isRotate = true;
+            this._markRendererDirty();
         }
 
         private _scale:Vector2 = Vector2.create(1, 1);
@@ -81,6 +85,7 @@ module wd{
             }
 
             this.isScale = true;
+            this._markRendererDirty();
         }
 
         //todo add skew attri
@@ -95,6 +100,7 @@ module wd{
             this._localPosition = position;
 
             this.isLocalTranslate = true;
+            this._markRendererDirty();
         }
 
         private _localScale:Vector2 = Vector2.create(1, 1);
@@ -106,6 +112,7 @@ module wd{
             this._localScale = scale;
 
             this.isLocalScale = true;
+            this._markRendererDirty();
         }
 
         //todo extract RootRectTransform?
@@ -421,6 +428,16 @@ module wd{
             }
 
             return this.p_parent.scale;
+        }
+
+        private _markRendererDirty(){
+            var renderer = UIRendererUtils.getUIRenderer(this.entityObject);
+
+            if(!renderer){
+                return;
+            }
+
+            renderer.dirty = true;
         }
     }
 }

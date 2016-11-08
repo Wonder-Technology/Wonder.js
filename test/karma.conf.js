@@ -26,7 +26,7 @@
         'test/helper/yoop/yOOP.js',
         'test/unit/**/*Tool.js',
 
-        'test/unit/**',
+        // 'test/unit/**',
 
 
         // 'test/unit/**/SoundManager*',
@@ -300,7 +300,7 @@
         //'test/unit/**/ImageSpec*',
         //
         //'test/unit/**/ThreeDTransformSpec.js',
-        //'test/unit/**/RectTransformSpec*',
+        // 'test/unit/**/RectTransformSpec*',
         //'test/unit/**/TransformSpec*',
         //'test/unit/**/component/**',
         //'test/unit/**/PanelSpec*',
@@ -340,8 +340,8 @@
         //'test/unit/**/physics/**/compound*',
         // 'test/unit/**/GameObjectSpec.js',
         //'test/unit/**/*Shape*.js',
-        //'test/unit/**/Arcball*',
-        //'test/unit/**/FlyCameraController*',
+        'test/unit/**/Arcball*',
+        'test/unit/**/FlyCameraController*',
         // 'test/unit/**/scriptSpec.js',
       //
       //  'test/unit/**/*ControllerSpec.js',

@@ -26,28 +26,93 @@ describe("FlyCameraController", function () {
         sandbox.restore();
     });
 
-    it("control Camera", function () {
-        sandbox.stub(wd.DeviceManager.getInstance(), "view", {
-            height:100,
-            dom:{}
-        })
+    // it("control Camera", function () {
+    //     sandbox.stub(wd.DeviceManager.getInstance(), "view", {
+    //         height:100,
+    //         dom:{}
+    //     })
+    //
+    //     prepareOrthoCamera(sandbox);
+    //
+    //
+    //
+    //     expect(testTool.getValues(component.worldToCameraMatrix)).toEqual(
+    //         [
+    //             1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1
+    //         ]
+    //     );
+    // });
 
-        prepareOrthoCamera(sandbox);
+    describe("init", function() {
+        var component = null;
+
+        beforeEach(function () {
+            sandbox.stub(wd.DeviceManager.getInstance(), "view", {
+                height:100,
+                dom:{}
+            })
+
+            prepareOrthoCamera(sandbox);
+        });
+
+        it("set camera component's entityObject", function () {
+            camera.init();
+
+            component = camera.getComponent(wd.CameraController).camera;
 
 
+            expect(component).toEqual(cameraComponent);
+            expect(component.entityObject).toEqual(camera);
+        });
 
-        camera.init();
+        describe("update entityObject's transform", function () {
+            it("update eulerAngles based on entityObject's eulerAngles", function () {
+                controller.entityObject.transform.eulerAngles = wd.Vector3.create(10, 20, 30);
 
+                camera.init();
 
+                component = camera.getComponent(wd.CameraController).camera;
 
-        var component = camera.getComponent(wd.CameraController).camera;
-        expect(component).toEqual(cameraComponent);
-        expect(component.entityObject).toEqual(camera);
-        expect(testTool.getValues(component.worldToCameraMatrix)).toEqual(
-            [
-                1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1
-            ]
-        );
+                expect(testTool.getValues(component.entityObject.transform.eulerAngles, 1)).toEqual([10, 20, 0]);
+            });
+        });
+    });
+
+    describe("update", function(){
+        var director;
+
+        beforeEach(function(){
+            sandbox.stub(wd.DeviceManager.getInstance(), "view", {
+                height:100,
+                dom:{}
+            })
+            sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+
+            prepareOrthoCamera(sandbox);
+
+            director = wd.Director.getInstance();
+            director.scene.addChild(camera);
+        });
+
+        it("if not change after init, not  update transform", function () {
+            sandbox.spy(controller._control, "_updateTransform");
+
+            director._init();
+            director._loopBody(1);
+
+            expect(controller._control._updateTransform).toCalledOnce();
+        });
+        it("else, update transform", function(){
+            sandbox.spy(controller._control, "_updateTransform");
+
+            director._init();
+
+            controller._control._isRotate = true;
+
+            director._loopBody(1);
+
+            expect(controller._control._updateTransform).toCalledTwice();
+        });
     });
 
     testTool.shouldExecRunTest("test more");

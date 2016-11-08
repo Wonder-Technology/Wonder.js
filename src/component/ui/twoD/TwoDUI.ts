@@ -100,11 +100,7 @@ module wd {
         //    assert(this.entityObject.hasComponent(UIRenderer), Log.info.FUNC_SHOULD("entityObject", "contain UIRenderer"))
         //})
         protected getUIRenderer(){
-            if(!this.entityObject){
-                return null;
-            }
-
-            return this.entityObject.getComponent<UIRenderer>(UIRenderer);
+            return UIRendererUtils.getUIRenderer(this.entityObject);
         }
 
 
