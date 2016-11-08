@@ -19,7 +19,7 @@ module wd{
         }
 
         public static createAllLoader():wdCb.Collection<Loader>{
-            return wdCb.Collection.create<Loader>([JsLoader.getInstance(), GLSLLoader.getInstance(), TextureLoader.getInstance(), VideoLoader.getInstance(), FontLoader.getInstance(), FntLoader.getInstance()]);
+            return wdCb.Collection.create<Loader>([JsLoader.getInstance(), GLSLLoader.getInstance(), WDLoader.getInstance(), TextureLoader.getInstance(), SoundLoader.getInstance(), VideoLoader.getInstance(), FontLoader.getInstance(), FntLoader.getInstance()]);
         }
 
         private static _getLoaderByExtname(extname:string){
