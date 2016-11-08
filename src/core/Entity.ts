@@ -8,6 +8,7 @@ module wd {
         }
 
         public uid:number = null;
+        public data:any = null;
 
         private _tagList:wdCb.Collection<string> = wdCb.Collection.create<string>();
 
