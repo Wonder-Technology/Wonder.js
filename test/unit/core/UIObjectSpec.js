@@ -494,6 +494,45 @@ describe("UIObject", function () {
     //    });
     //});
 
+    describe("if uiObject is inVisible", function () {
+        it("clear canvas", function () {
+            sandbox.spy(renderer, "clearCanvas");
+
+            director.scene.addChild(uiObject);
+
+            director.initUIObjectScene();
+
+            director.runUIObjectScene(1);
+
+            expect(renderer.clearCanvas).toCalledOnce();
+
+
+            uiObject.isVisible = false;
+
+            director.runUIObjectScene(1);
+
+            expect(renderer.clearCanvas).toCalledTwice();
+        });
+        it("not render ui", function () {
+            sandbox.spy(renderer.context, "fillText");
+
+            director.scene.addChild(uiObject);
+
+            director.initUIObjectScene();
+
+            director.runUIObjectScene(1);
+
+
+            var callCount = renderer.context.fillText.callCount;
+
+            uiObject.isVisible = false;
+
+            director.runUIObjectScene(1);
+
+            expect(renderer.context.fillText.callCount).toEqual(callCount);
+        });
+    });
+
     describe("sort sibling children by transform->zIndex", function(){
         var uiObject2, uiObject3;
 

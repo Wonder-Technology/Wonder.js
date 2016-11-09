@@ -350,17 +350,23 @@ describe("GameObject", function() {
 
             it("clone data", function () {
                 var name = "a",
-                    isVisible = false;
+                    isVisible = false,
+                    renderGroup = 1,
+                    renderPriority = 2;
 
                 cloneTool.extend(gameObject, {
                     name:name,
-                    isVisible:isVisible
+                    isVisible:isVisible,
+                    renderGroup:renderGroup,
+                    renderPriority:renderPriority
                 })
 
                 var result = gameObject.clone();
 
                 expect(result.name).toEqual(name);
                 expect(result.isVisible).toEqual(isVisible);
+                expect(result.renderGroup).toEqual(renderGroup);
+                expect(result.renderPriority).toEqual(renderPriority);
             });
         });
 
@@ -434,6 +440,19 @@ describe("GameObject", function() {
 
                 expect(gameObjectProgram.sendUniformData).toCalledWith("u_mMatrix", sinon.match.any, wd.Matrix4.create().translate(10,0,0));
             });
+        });
+    });
+
+    describe("render", function(){
+        it("if not visible, return", function(){
+            gameObject.isVisible = false;
+            sandbox.spy(gameObject, "getComponent");
+            var renderer = wd.WebGLRenderer.create();
+            var camera = wd.GameObject.create();
+
+            gameObject.render(renderer, camera);
+
+            expect(gameObject.getComponent).not.toCalled();
         });
     });
 });

@@ -279,18 +279,4 @@ describe("EntityObject", function() {
         });
         //todo test more
     });
-
-    describe("render", function(){
-        it("if not visible, return", function(){
-            entityObject.isVisible = false;
-            sandbox.spy(entityObject, "getComponent");
-            var renderer = wd.WebGLRenderer.create();
-            var camera = wd.GameObject.create();
-
-            entityObject.render(renderer, camera);
-
-            expect(entityObject.getComponent).not.toCalled();
-        });
-        //todo test more
-    });
 });

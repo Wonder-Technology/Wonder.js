@@ -60,8 +60,12 @@ module wd {
         public transform:ThreeDTransform;
         public parent:GameObject;
 
+        @cloneAttributeAsBasicType()
         public renderGroup:number = 0;
+        @cloneAttributeAsBasicType()
         public renderPriority:number = 0;
+        @cloneAttributeAsBasicType()
+        public isVisible:boolean = true;
 
         protected children:wdCb.Collection<GameObject>;
 

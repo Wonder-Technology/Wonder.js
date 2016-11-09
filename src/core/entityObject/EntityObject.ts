@@ -23,8 +23,6 @@ module wd {
         public name:string = null;
         @cloneAttributeAsBasicType()
         public parent:EntityObject = null;
-        @cloneAttributeAsBasicType()
-        public isVisible:boolean = true;
 
         public customEventMap:wdCb.Hash<wdCb.Collection<CustomEventRegisterData>> = wdCb.Hash.create<wdCb.Collection<CustomEventRegisterData>>();
         public scriptManager:ScriptManager = ScriptManager.create(this);

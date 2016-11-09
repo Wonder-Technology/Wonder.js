@@ -273,10 +273,10 @@
 
         //'test/unit/**/MainSpec*',
 
-        'test/unit/component/event/eventSpec*',
+        // 'test/unit/component/event/eventSpec*',
 
         //'test/unit/**/ui/**',
-        //'test/unit/**/UIObjectSpec*',
+        'test/unit/**/UIObjectSpec*',
 
         // 'test/unit/**/ButtonSpec*',
         //'test/unit/**/UIStateMachineSpec*',
@@ -300,7 +300,7 @@
         //'test/unit/**/ImageSpec*',
         //
         //'test/unit/**/ThreeDTransformSpec.js',
-        'test/unit/**/RectTransformSpec*',
+        // 'test/unit/**/RectTransformSpec*',
         //'test/unit/**/TransformSpec*',
         //'test/unit/**/component/**',
         //'test/unit/**/PanelSpec*',
@@ -338,7 +338,7 @@
         //'test/unit/**/physics/**/bounce*',
         //'test/unit/**/physics/**/constraint*',
         //'test/unit/**/physics/**/compound*',
-        // 'test/unit/**/GameObjectSpec.js',
+        'test/unit/**/GameObjectSpec.js',
         //'test/unit/**/*Shape*.js',
         //'test/unit/**/Arcball*',
         //'test/unit/**/FlyCameraController*',
@@ -363,11 +363,11 @@
         //'test/unit/**/morph*.js',
         //'test/unit/core/*.js',
         //'test/unit/device/*.js',
-        'test/unit/event/**',
-        'test/unit/event/mouseEv*.js',
-        'test/unit/event/customEv*.js',
-        'test/unit/event/keyboardEv*.js',
-        'test/unit/event/domEv*.js',
+        // 'test/unit/event/**',
+        // 'test/unit/event/mouseEv*.js',
+        // 'test/unit/event/customEv*.js',
+        // 'test/unit/event/keyboardEv*.js',
+        // 'test/unit/event/domEv*.js',
         //'test/unit/utils/**',
         //'test/unit/video/**',
 

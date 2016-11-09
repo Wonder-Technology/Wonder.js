@@ -9,7 +9,9 @@ module wd{
 
         public render(){
             this.list.forEach((ui:TwoDUI) => {
-                if(this._isDirty(ui.entityObject))
+                var uiObject = ui.entityObject;
+
+                if(uiObject.isVisible && this._isDirty(ui.entityObject))
                     ui.render();
             }, this);
         }

@@ -54,7 +54,7 @@ module wd {
             this._resetAllRendererState();
 
             this.forEach((child:UIObject) => {
-                var renderer = self._getUIRenderer(child);
+                let renderer = self._getUIRenderer(child);
 
                 if(renderer.dirty){
                     if(!renderer.isClearCanvas) {
@@ -83,7 +83,7 @@ module wd {
             assert(uiObject.getComponentCount(UIRenderer) <= 1, Log.info.FUNC_SHOULD_NOT("uiObject", "contain more than 1 uiRenderer component"));
         })
         private _getUIRenderer(uiObject:UIObject):UIRenderer{
-            return uiObject.getComponent<UIRenderer>(UIRenderer);
+            return UIRendererUtils.getUIRenderer(uiObject);
         }
 
         @ensure(function(){

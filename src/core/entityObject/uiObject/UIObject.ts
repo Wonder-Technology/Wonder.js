@@ -11,6 +11,18 @@ module wd {
         public transform:RectTransform;
         public parent:UIObject;
 
+        @cloneAttributeAsBasicType()
+        private _isVisible:boolean = true;
+        get isVisible(){
+            return this._isVisible;
+        }
+        set isVisible(isVisible:boolean){
+            if(this._isVisible !== isVisible){
+                this._isVisible = isVisible;
+
+                UIRendererUtils.getUIRenderer(this).dirty = true;
+            }
+        }
 
         protected children:wdCb.Collection<UIObject>;
 
