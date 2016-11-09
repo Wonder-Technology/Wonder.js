@@ -257,6 +257,26 @@ describe("EntityObject", function() {
 
             expect(entityObject._onComponentChange).not.toCalledTwice();
         });
+        it("off custom event", function () {
+            var a = 0;
+            var b = 0;
+
+            wd.EventManager.on(entityObject, "customEvent1", function(){
+                a++;
+            });
+
+            wd.EventManager.on(entityObject, "customEvent2", function(){
+                a++;
+            });
+
+            entityObject.dispose();
+
+            wd.EventManager.trigger(entityObject, wd.CustomEvent.create("customEvent1"));
+            wd.EventManager.trigger(entityObject, wd.CustomEvent.create("customEvent2"));
+
+            expect(a).toEqual(0);
+            expect(b).toEqual(0);
+        });
         //todo test more
     });
 

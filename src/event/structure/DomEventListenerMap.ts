@@ -6,10 +6,10 @@ module wd{
             return obj;
         }
 
-        protected targetListenerMap: wdCb.Hash<wdCb.Hash<wdCb.Collection<EventRegisterData>>> = wdCb.Hash.create<wdCb.Hash<wdCb.Collection<EventRegisterData>>>();
+        private _targetListenerMap: wdCb.Hash<wdCb.Hash<wdCb.Collection<EventRegisterData>>> = wdCb.Hash.create<wdCb.Hash<wdCb.Collection<EventRegisterData>>>();
 
         public hasChild(dom:HTMLElement, eventName:EEventName):boolean{
-            var list:any = this.targetListenerMap.getChild(this.buildFirstLevelKey(dom));
+            var list:any = this._targetListenerMap.getChild(this.buildFirstLevelKey(dom));
 
             if(!list){
                 return false;
@@ -23,21 +23,21 @@ module wd{
         public appendChild(dom:HTMLElement, eventName:EEventName, data:any){
             var firstLevelKey = this.buildFirstLevelKey(dom);
 
-            if(!this.targetListenerMap.hasChild(firstLevelKey)){
+            if(!this._targetListenerMap.hasChild(firstLevelKey)){
                 let secondMap = wdCb.Hash.create<wdCb.Collection<EventRegisterData>>();
 
                 secondMap.addChild(this.buildSecondLevelKey(eventName), wdCb.Collection.create<EventRegisterData>([data]));
 
-                this.targetListenerMap.addChild(firstLevelKey, secondMap);
+                this._targetListenerMap.addChild(firstLevelKey, secondMap);
 
                 return;
             }
 
-            this.targetListenerMap.getChild(firstLevelKey).appendChild(this.buildSecondLevelKey(eventName), data);
+            this._targetListenerMap.getChild(firstLevelKey).appendChild(this.buildSecondLevelKey(eventName), data);
         }
 
         public forEachAll(func:(list:wdCb.Collection<DomEventRegisterData>, eventName:EEventName) => void){
-            this.targetListenerMap.forEach((secondMap:wdCb.Collection<EventRegisterData>) => {
+            this._targetListenerMap.forEach((secondMap:wdCb.Collection<EventRegisterData>) => {
                 secondMap.forEach(func);
             });
         }
@@ -47,7 +47,7 @@ module wd{
         }
 
         public clear(){
-            this.targetListenerMap.removeAllChildren();
+            this._targetListenerMap.removeAllChildren();
         }
 
         public getChild(dom:HTMLElement):wdCb.Collection<DomEventRegisterData>;
@@ -57,14 +57,14 @@ module wd{
             if(args.length === 1){
                 let dom = args[0];
 
-                return this.targetListenerMap.getChild(this.buildFirstLevelKey(dom));
+                return this._targetListenerMap.getChild(this.buildFirstLevelKey(dom));
             }
             else if(args.length === 2){
                 let dom = args[0],
                     eventName = args[1],
                     secondMap = null;
 
-                secondMap = this.targetListenerMap.getChild(this.buildFirstLevelKey(dom));
+                secondMap = this._targetListenerMap.getChild(this.buildFirstLevelKey(dom));
 
                 if(!secondMap){
                     return null;
@@ -86,7 +86,7 @@ module wd{
                 let eventName = args[0],
                     arr:Array<wdCb.Collection<DomEventRegisterData>> = [];
 
-                this.targetListenerMap.forEach((secondMap:wdCb.Hash<wdCb.Collection<DomEventRegisterData>>, firstLevelKey:string) => {
+                this._targetListenerMap.forEach((secondMap:wdCb.Hash<wdCb.Collection<DomEventRegisterData>>, firstLevelKey:string) => {
                     var secondLevelKey = this.buildSecondLevelKey(eventName);
 
                     if(secondMap.hasChild(secondLevelKey)){
@@ -107,7 +107,7 @@ module wd{
                     handler = args[1],
                     arr:Array<wdCb.Collection<DomEventRegisterData>> = [];
 
-                this.targetListenerMap.forEach((secondMap:wdCb.Hash<wdCb.Collection<DomEventRegisterData>>, firstLevelKey:string) => {
+                this._targetListenerMap.forEach((secondMap:wdCb.Hash<wdCb.Collection<DomEventRegisterData>>, firstLevelKey:string) => {
                     let list = secondMap.getChild(this.buildSecondLevelKey(eventName));
 
                     if(list){
@@ -130,7 +130,7 @@ module wd{
                     eventName = args[1],
                     secondMap = null;
 
-                secondMap = this.targetListenerMap.getChild(this.buildFirstLevelKey(dom));
+                secondMap = this._targetListenerMap.getChild(this.buildFirstLevelKey(dom));
 
                 if(!secondMap){
                     result = wdCb.Collection.create<DomEventOffData>();
@@ -145,7 +145,7 @@ module wd{
                     handler = args[2],
                     secondMap = null;
 
-                secondMap = this.targetListenerMap.getChild(this.buildFirstLevelKey(dom));
+                secondMap = this._targetListenerMap.getChild(this.buildFirstLevelKey(dom));
 
                 if(!secondMap){
                     result = wdCb.Collection.create<DomEventOffData>();

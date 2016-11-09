@@ -1,9 +1,32 @@
 module wd {
     export class CustomEvent extends Event{
-        public static create(eventName:string) {
-            var obj = new this(<any>eventName);
+        public static create(eventName:string);
+        public static create(eventName:string, userData:any);
+
+        public static create(...args) {
+            var obj = null;
+
+            if(args.length === 1){
+                obj = new this(args[0]);
+            }
+            else{
+                obj = new this(args[0], args[1]);
+            }
 
             return obj;
+        }
+
+        constructor(eventName:EEventName);
+        constructor(eventName:EEventName, userData:any);
+
+        constructor(...args) {
+            super(args[0]);
+
+            if(args.length === 2) {
+                let userData = args[1];
+
+                this.userData = userData;
+            }
         }
 
         public userData:any = null;

@@ -26,7 +26,7 @@
         'test/helper/yoop/yOOP.js',
         'test/unit/**/*Tool.js',
 
-        'test/unit/**',
+        // 'test/unit/**',
 
 
         // 'test/unit/**/SoundManager*',
@@ -248,7 +248,7 @@
 
         //'test/unit/**/Debug*',
 
-        //'test/unit/**/EntityObjectSpec*',
+        'test/unit/**/EntityObjectSpec*',
 
         //'test/unit/component/physics/**/eventSpec*',
 
@@ -273,7 +273,7 @@
 
         //'test/unit/**/MainSpec*',
 
-        // 'test/unit/component/event/eventSpec*',
+        'test/unit/component/event/eventSpec*',
 
         //'test/unit/**/ui/**',
         //'test/unit/**/UIObjectSpec*',
@@ -363,11 +363,11 @@
         //'test/unit/**/morph*.js',
         //'test/unit/core/*.js',
         //'test/unit/device/*.js',
-        // 'test/unit/event/**',
-        //'test/unit/event/mouseEv*.js',
-        //'test/unit/event/customEv*.js',
-        //'test/unit/event/keyboardEv*.js',
-        //'test/unit/event/domEv*.js',
+        'test/unit/event/**',
+        'test/unit/event/mouseEv*.js',
+        'test/unit/event/customEv*.js',
+        'test/unit/event/keyboardEv*.js',
+        'test/unit/event/domEv*.js',
         //'test/unit/utils/**',
         //'test/unit/video/**',
 

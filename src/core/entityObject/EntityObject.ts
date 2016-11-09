@@ -26,6 +26,7 @@ module wd {
         @cloneAttributeAsBasicType()
         public isVisible:boolean = true;
 
+        public customEventMap:wdCb.Hash<wdCb.Collection<CustomEventRegisterData>> = wdCb.Hash.create<wdCb.Collection<CustomEventRegisterData>>();
         public scriptManager:ScriptManager = ScriptManager.create(this);
 
         protected componentManager:ComponentManager = ComponentManager.create(this);
@@ -130,6 +131,8 @@ module wd {
 
             this.componentManager.dispose();
             this._entityObjectManager.dispose();
+
+            EventManager.off(this);
         }
 
         public hasChild(child:EntityObject):boolean {

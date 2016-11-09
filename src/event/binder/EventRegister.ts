@@ -19,7 +19,7 @@ module wd {
 
             return result.sort(function (dataA, dataB) {
                 return dataB.priority - dataA.priority;
-            });
+            }, true);
         }
 
         public forEachAll(func:(list:wdCb.Collection<any>, eventName:EEventName) => void) {
