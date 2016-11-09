@@ -428,7 +428,8 @@ describe("BasicMaterial", function () {
                     polygonOffsetMode = wd.EPolygonOffsetMode.IN,
                     side = wd.ESide.BOTH,
                     shading = wd.EShading.SMOOTH,
-                alphaToCoverage = true;
+                alphaToCoverage = true,
+                    alphaTest = 0.2;
 
                 cloneTool.extend(material, {
                     color: color,
@@ -439,7 +440,8 @@ describe("BasicMaterial", function () {
                     polygonOffsetMode: polygonOffsetMode,
                     side: side,
                     shading: shading,
-                    alphaToCoverage:alphaToCoverage
+                    alphaToCoverage:alphaToCoverage,
+                    alphaTest: alphaTest
                 });
 
 
@@ -454,6 +456,7 @@ describe("BasicMaterial", function () {
                 expect(result.side).toEqual(side);
                 expect(result.shading).toEqual(shading);
                 expect(result.alphaToCoverage).toEqual(alphaToCoverage);
+                expect(result.alphaTest).toEqual(alphaTest);
             });
         });
 

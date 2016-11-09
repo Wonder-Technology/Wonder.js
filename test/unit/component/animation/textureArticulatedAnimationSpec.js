@@ -27,73 +27,87 @@ describe("articulated animation", function () {
             var width,height;
             var geo, material;
 
-            function buildAnimData() {
-                return [
-                    {
-                    time:0,
+            function judgeNormalCase(buildAnimData, judgeIsFirstFrameSourceRegion, judgeIsSecondFrameSourceRegion, judgeIsThirdFrameSourceRegion) {
+                describe("test normal cases", function(){
+                    beforeEach(function(){
+                        anim.data = wdCb.Hash.create({
+                            "play": wdCb.Collection.create(buildAnimData())
+                        });
 
-                        targets: wdCb.Collection.create(
-                    [
-                        {
-                            interpolationMethod:wd.EKeyFrameInterpolation.SWITCH,
-                            target:wd.EArticulatedAnimationTarget.TEXTURE_OFFSET,
-                            data: [0,0,width,height],
-                            extra:{
-                                target:"diffuseMap"
-                            }
-                        }
-                    ]
-                )
-                },
-                    {
-                    time:10,
 
-                        targets: wdCb.Collection.create(
-                    [
-                        {
-                            interpolationMethod:wd.EKeyFrameInterpolation.SWITCH,
-                            target:wd.EArticulatedAnimationTarget.TEXTURE_OFFSET,
-                            data: [width,0,width,height],
-                            extra:{
-                                target:"diffuseMap"
-                            }
-                        }
-                    ]
-                )
-                },
-                    {
-                        time:20,
+                        anim.play("play");
 
-                        targets: wdCb.Collection.create(
-                            [
-                                {
-                                    interpolationMethod:wd.EKeyFrameInterpolation.SWITCH,
-                                    target:wd.EArticulatedAnimationTarget.TEXTURE_OFFSET,
-                                    data: [0,height,width,height],
-                                    extra:{
-                                        target:"diffuseMap"
-                                    }
-                                }
-                            ]
-                        )
-                    }
-                ]
+                        model.init();
+                    });
+
+                    it("if time reach next frame, just switch to the next frame->data ", function () {
+                        wd.AnimationEngine.getInstance().update(firstKeyTime+1);
+
+                        judgeIsSecondFrameSourceRegion();
+                    });
+                    it("else, remain the current frame->data", function () {
+                        wd.AnimationEngine.getInstance().update(firstKeyTime/2);
+                        judgeIsFirstFrameSourceRegion();
+                    });
+
+                    describe("test finish all keys", function(){
+                        beforeEach(function(){
+                            wd.AnimationEngine.getInstance().update(firstKeyTime + 1);
+                        });
+
+                        it("if just finish all keys, reach the end data", function () {
+                            wd.AnimationEngine.getInstance().update(secondKeyTime);
+
+                            judgeIsSecondFrameSourceRegion();
+                        });
+                        it("if the elapsed exceed the last key->time, go back to the second key data", function () {
+                            wd.AnimationEngine.getInstance().update(secondKeyTime + 2);
+
+                            judgeIsThirdFrameSourceRegion();
+                        });
+                        it("test reach the next loop->first key", function () {
+                            wd.AnimationEngine.getInstance().update(secondKeyTime + 2);
+                            wd.AnimationEngine.getInstance().update(secondKeyTime + 3);
+
+                            judgeIsFirstFrameSourceRegion();
+                        });
+                        it("test reach the next loop->second key", function () {
+                            wd.AnimationEngine.getInstance().update(secondKeyTime + 1);
+                            wd.AnimationEngine.getInstance().update(secondKeyTime + firstKeyTime + 1);
+
+                            judgeIsSecondFrameSourceRegion();
+                        });
+                        it("test finish next loop", function () {
+                            wd.AnimationEngine.getInstance().update(secondKeyTime + 1);
+                            wd.AnimationEngine.getInstance().update(secondKeyTime + firstKeyTime + 1);
+
+                            wd.AnimationEngine.getInstance().update(secondKeyTime + secondKeyTime + 1);
+
+                            judgeIsThirdFrameSourceRegion();
+                        });
+                    });
+                });
             }
 
-            function judgeSourceRegion(dataArr) {
-                expect(material.diffuseMap.sourceRegion.isEqual(wd.RectRegion.create(dataArr[0], dataArr[1], dataArr[2], dataArr[3]))).toBeTruthy();
-            }
+            function judgeSpecialCase(buildAnimData, judgeIsFirstFrameSourceRegion, judgeIsSecondFrameSourceRegion, judgeIsThirdFrameSourceRegion) {
+                describe("test special cases", function(){
+                    beforeEach(function(){
+                    });
 
-            function judgeIsFirstFrameSourceRegion() {
-                judgeSourceRegion([0,0,width,height]);
-            }
+                    it("test time === 0", function () {
+                        anim.data = wdCb.Hash.create({
+                            "play": wdCb.Collection.create( buildAnimData() )
+                        });
+                        anim.play("play");
+                        model.init();
 
-            function judgeIsSecondFrameSourceRegion() {
-                judgeSourceRegion([width,0,width,height]);
-            }
 
-            function judgeIsThirdFrameSourceRegion() {
-                judgeSourceRegion([0,height,width,height]);
+                        wd.AnimationEngine.getInstance().update(0);
+
+
+                        judgeIsFirstFrameSourceRegion();
+                    });
+                });
             }
 
             beforeEach(function(){
@@ -111,130 +125,213 @@ describe("articulated animation", function () {
 
                 model.addComponent(anim);
 
-                material = wd.LightMaterial.create();
-                material.diffuseMap = wd.ImageTexture.create({});
-
-                geo = wd.RectGeometry.create();
-                geo.material = material;
-
-                model.addComponent(geo);
-
-
                 setCurrentTime(0);
             });
 
-            describe("contract check", function(){
+            describe("test animate StandardBasicMaterial", function () {
+                function buildAnimData() {
+                    return [
+                        {
+                            time:0,
+
+                            targets: wdCb.Collection.create(
+                                [
+                                    {
+                                        interpolationMethod:wd.EKeyFrameInterpolation.SWITCH,
+                                        target:wd.EArticulatedAnimationTarget.TEXTURE_OFFSET,
+                                        data: [0,0,width,height],
+                                        extra:{
+                                            target:"map"
+                                        }
+                                    }
+                                ]
+                            )
+                        },
+                        {
+                            time:10,
+
+                            targets: wdCb.Collection.create(
+                                [
+                                    {
+                                        interpolationMethod:wd.EKeyFrameInterpolation.SWITCH,
+                                        target:wd.EArticulatedAnimationTarget.TEXTURE_OFFSET,
+                                        data: [width,0,width,height],
+                                        extra:{
+                                            target:"map"
+                                        }
+                                    }
+                                ]
+                            )
+                        },
+                        {
+                            time:20,
+
+                            targets: wdCb.Collection.create(
+                                [
+                                    {
+                                        interpolationMethod:wd.EKeyFrameInterpolation.SWITCH,
+                                        target:wd.EArticulatedAnimationTarget.TEXTURE_OFFSET,
+                                        data: [0,height,width,height],
+                                        extra:{
+                                            target:"map"
+                                        }
+                                    }
+                                ]
+                            )
+                        }
+                    ]
+                }
+
+                function judgeSourceRegion(dataArr) {
+                    expect(material.map.sourceRegion.isEqual(wd.RectRegion.create(dataArr[0], dataArr[1], dataArr[2], dataArr[3]))).toBeTruthy();
+                }
+
+
+                function judgeIsFirstFrameSourceRegion() {
+                    judgeSourceRegion([0,0,width,height]);
+                }
+
+                function judgeIsSecondFrameSourceRegion() {
+                    judgeSourceRegion([width,0,width,height]);
+                }
+
+                function judgeIsThirdFrameSourceRegion() {
+                    judgeSourceRegion([0,height,width,height]);
+                }
+
                 beforeEach(function(){
-                    testTool.openContractCheck(sandbox);
+                    material = wd.BasicMaterial.create();
+                    material.map = wd.ImageTexture.create({});
+
+                    geo = wd.RectGeometry.create();
+                    geo.material = material;
+
+                    model.addComponent(geo);
                 });
 
-                it("material should has the corresponding animated texture", function() {
-                    anim.data = wdCb.Hash.create({
-                        "play": wdCb.Collection.create(buildAnimData())
-                    });
-                    anim.play("play");
+                judgeSpecialCase(buildAnimData, judgeIsFirstFrameSourceRegion, judgeIsSecondFrameSourceRegion, judgeIsThirdFrameSourceRegion);
 
-                    geo.material = wd.BasicMaterial.create();
-                    model.init();
-
-
-                    expect(function () {
-                        wd.AnimationEngine.getInstance().update(0);
-                    }).toThrow("material should has the corresponding animated texture");
-                });
-                it("this animated texture should has 'sourceRegion' attribute", function(){
-                    anim.data = wdCb.Hash.create({
-                        "play": wdCb.Collection.create(buildAnimData())
-                    });
-                    anim.play("play");
-
-                    material.diffuseMap.sourceRegion = undefined;
-                    model.init();
-
-
-                    expect(function () {
-                        wd.AnimationEngine.getInstance().update(0);
-                    }).toThrow("this animated texture should has 'sourceRegion' attribute");
-                });
+                judgeNormalCase(buildAnimData, judgeIsFirstFrameSourceRegion, judgeIsSecondFrameSourceRegion, judgeIsThirdFrameSourceRegion);
             });
 
-            describe("test special cases", function(){
+            describe("test animate StandardLightMaterial", function () {
+                function buildAnimData() {
+                    return [
+                        {
+                            time:0,
+
+                            targets: wdCb.Collection.create(
+                                [
+                                    {
+                                        interpolationMethod:wd.EKeyFrameInterpolation.SWITCH,
+                                        target:wd.EArticulatedAnimationTarget.TEXTURE_OFFSET,
+                                        data: [0,0,width,height],
+                                        extra:{
+                                            target:"diffuseMap"
+                                        }
+                                    }
+                                ]
+                            )
+                        },
+                        {
+                            time:10,
+
+                            targets: wdCb.Collection.create(
+                                [
+                                    {
+                                        interpolationMethod:wd.EKeyFrameInterpolation.SWITCH,
+                                        target:wd.EArticulatedAnimationTarget.TEXTURE_OFFSET,
+                                        data: [width,0,width,height],
+                                        extra:{
+                                            target:"diffuseMap"
+                                        }
+                                    }
+                                ]
+                            )
+                        },
+                        {
+                            time:20,
+
+                            targets: wdCb.Collection.create(
+                                [
+                                    {
+                                        interpolationMethod:wd.EKeyFrameInterpolation.SWITCH,
+                                        target:wd.EArticulatedAnimationTarget.TEXTURE_OFFSET,
+                                        data: [0,height,width,height],
+                                        extra:{
+                                            target:"diffuseMap"
+                                        }
+                                    }
+                                ]
+                            )
+                        }
+                    ]
+                }
+
+                function judgeSourceRegion(dataArr) {
+                    expect(material.diffuseMap.sourceRegion.isEqual(wd.RectRegion.create(dataArr[0], dataArr[1], dataArr[2], dataArr[3]))).toBeTruthy();
+                }
+
+                function judgeIsFirstFrameSourceRegion() {
+                    judgeSourceRegion([0,0,width,height]);
+                }
+
+                function judgeIsSecondFrameSourceRegion() {
+                    judgeSourceRegion([width,0,width,height]);
+                }
+
+                function judgeIsThirdFrameSourceRegion() {
+                    judgeSourceRegion([0,height,width,height]);
+                }
+
                 beforeEach(function(){
+                    material = wd.LightMaterial.create();
+                    material.diffuseMap = wd.ImageTexture.create({});
+
+                    geo = wd.RectGeometry.create();
+                    geo.material = material;
+
+                    model.addComponent(geo);
                 });
 
-                it("test time === 0", function () {
-                    anim.data = wdCb.Hash.create({
-                        "play": wdCb.Collection.create( buildAnimData() )
-                    });
-                    anim.play("play");
-                    model.init();
-
-
-                    wd.AnimationEngine.getInstance().update(0);
-
-
-                    judgeIsFirstFrameSourceRegion();
-                });
-            });
-
-            describe("test normal cases", function(){
-                beforeEach(function(){
-                    anim.data = wdCb.Hash.create({
-                        "play": wdCb.Collection.create(buildAnimData())
-                    });
-
-
-                    anim.play("play");
-
-                    model.init();
-                });
-
-                it("if time reach next frame, just switch to the next frame->data ", function () {
-                    wd.AnimationEngine.getInstance().update(firstKeyTime+1);
-
-                    judgeIsSecondFrameSourceRegion();
-                });
-                it("else, remain the current frame->data", function () {
-                    wd.AnimationEngine.getInstance().update(firstKeyTime/2);
-                    judgeIsFirstFrameSourceRegion();
-                });
-
-                describe("test finish all keys", function(){
+                describe("contract check", function(){
                     beforeEach(function(){
-                        wd.AnimationEngine.getInstance().update(firstKeyTime + 1);
+                        testTool.openContractCheck(sandbox);
                     });
 
-                    it("if just finish all keys, reach the end data", function () {
-                        wd.AnimationEngine.getInstance().update(secondKeyTime);
+                    it("material should has the corresponding animated texture", function() {
+                        anim.data = wdCb.Hash.create({
+                            "play": wdCb.Collection.create(buildAnimData())
+                        });
+                        anim.play("play");
 
-                        judgeIsSecondFrameSourceRegion();
+                        geo.material = wd.BasicMaterial.create();
+                        model.init();
+
+
+                        expect(function () {
+                            wd.AnimationEngine.getInstance().update(0);
+                        }).toThrow("material should has the corresponding animated texture");
                     });
-                    it("if the elapsed exceed the last key->time, go back to the second key data", function () {
-                        wd.AnimationEngine.getInstance().update(secondKeyTime + 2);
+                    it("this animated texture should has 'sourceRegion' attribute", function(){
+                        anim.data = wdCb.Hash.create({
+                            "play": wdCb.Collection.create(buildAnimData())
+                        });
+                        anim.play("play");
 
-                        judgeIsThirdFrameSourceRegion();
-                    });
-                    it("test reach the next loop->first key", function () {
-                        wd.AnimationEngine.getInstance().update(secondKeyTime + 2);
-                        wd.AnimationEngine.getInstance().update(secondKeyTime + 3);
+                        material.diffuseMap.sourceRegion = undefined;
+                        model.init();
 
-                        judgeIsFirstFrameSourceRegion();
-                    });
-                    it("test reach the next loop->second key", function () {
-                        wd.AnimationEngine.getInstance().update(secondKeyTime + 1);
-                        wd.AnimationEngine.getInstance().update(secondKeyTime + firstKeyTime + 1);
 
-                        judgeIsSecondFrameSourceRegion();
-                    });
-                    it("test finish next loop", function () {
-                        wd.AnimationEngine.getInstance().update(secondKeyTime + 1);
-                        wd.AnimationEngine.getInstance().update(secondKeyTime + firstKeyTime + 1);
-
-                        wd.AnimationEngine.getInstance().update(secondKeyTime + secondKeyTime + 1);
-
-                        judgeIsThirdFrameSourceRegion();
+                        expect(function () {
+                            wd.AnimationEngine.getInstance().update(0);
+                        }).toThrow("this animated texture should has 'sourceRegion' attribute");
                     });
                 });
+
+                judgeSpecialCase(buildAnimData, judgeIsFirstFrameSourceRegion, judgeIsSecondFrameSourceRegion, judgeIsThirdFrameSourceRegion)
+
+                judgeNormalCase(buildAnimData, judgeIsFirstFrameSourceRegion, judgeIsSecondFrameSourceRegion, judgeIsThirdFrameSourceRegion);
             });
         });
     });

@@ -8,7 +8,14 @@ module wd{
 
         public type:string = "end_basic";
 
-        public sendShaderVariables(program: Program, cmd:QuadCommand, material:EngineMaterial){
+        public setShaderDefinition(cmd:QuadCommand, material:StandardBasicMaterial){
+            super.setShaderDefinition(cmd, material);
+
+            if(material.alphaTest !== null){
+                this.fsSourceBody += `if (gl_FragColor.a < ${material.alphaTest}){
+    discard;
+}\n`;
+            }
         }
     }
 }

@@ -32,9 +32,14 @@ module wd{
 
             this._addMap();
         }
+        get map(){
+            return this.mapList.getChild(0);
+        }
 
         @cloneAttributeAsBasicType()
         public opacity:number = 1.0;
+        @cloneAttributeAsBasicType()
+        public alphaTest:number = null;
 
         @virtual
         protected addExtendShaderLib(){
