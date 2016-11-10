@@ -16,18 +16,13 @@ describe("GeometryData", function() {
     describe("dispose", function(){
         var object;
 
-        beforeEach(function(){
-            object = wd.GameObject.create();
-            geometryData.geometry = {
-                entity: object
-            }
-        });
-
-        it("unbind material_color_change event", function(){
+        function judgeEvent(eventName){
             geometryData.colorDirty = false;
             geometryData.init();
 
-            wd.EventManager.trigger(object, wd.CustomEvent.create(wd.EEngineEvent.MATERIAL_COLOR_CHANGE));
+            expect(geometryData.colorDirty).toBeFalsy();
+
+            wd.EventManager.trigger(object, wd.CustomEvent.create(eventName));
 
             expect(geometryData.colorDirty).toBeTruthy();
 
@@ -36,9 +31,23 @@ describe("GeometryData", function() {
             geometryData.colorDirty = false;
             geometryData.dispose();
 
-            wd.EventManager.trigger(object, wd.CustomEvent.create(wd.EEngineEvent.MATERIAL_COLOR_CHANGE));
+            wd.EventManager.trigger(object, wd.CustomEvent.create(eventName));
 
             expect(geometryData.colorDirty).toBeFalsy();
+        }
+
+        beforeEach(function(){
+            object = wd.GameObject.create();
+            geometryData.geometry = {
+                entityObject: object
+            }
+        });
+
+        it("unbind material_color_change event", function(){
+            judgeEvent(wd.EEngineEvent.MATERIAL_COLOR_CHANGE);
+        });
+        it("unbind material_change event", function(){
+            judgeEvent(wd.EEngineEvent.MATERIAL_CHANGE);
         });
     });
 });

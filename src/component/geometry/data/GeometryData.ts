@@ -235,6 +235,7 @@ module wd {
                         EventManager.fromEvent(this.geometry.entityObject, <any>EEngineEvent.MATERIAL_COLOR_CHANGE),
                         EventManager.fromEvent(this.geometry.entityObject, <any>EEngineEvent.MATERIAL_CHANGE)
                     ])
+                    .mergeAll()
                     .subscribe(() => {
                         if(self._needGetColorsFromMaterial()){
                             self.colorDirty = true;
