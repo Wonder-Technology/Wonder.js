@@ -232,7 +232,7 @@
         // 'test/unit/**/camera/**',
 
 
-        'test/unit/**/*GeometryData*',
+        // 'test/unit/**/*GeometryData*',
         //'test/unit/**/**BufferContainer*',
         //
         //'test/unit/**/Face3*',
@@ -248,7 +248,7 @@
 
         //'test/unit/**/Debug*',
 
-        // 'test/unit/**/EntityObjectSpec*',
+        'test/unit/**/EntityObjectSpec*',
 
         //'test/unit/component/physics/**/eventSpec*',
 

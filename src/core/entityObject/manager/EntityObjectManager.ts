@@ -36,6 +36,8 @@ module wd{
 
             child.parent = this._entityObject;
 
+            child.transform.parent = this._entityObject.transform;
+
             this._children.addChild(child);
 
             /*!

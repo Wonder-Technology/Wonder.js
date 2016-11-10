@@ -123,6 +123,28 @@ describe("EntityObject", function() {
             entityObject.addComponent(component);
         });
 
+        describe("addChildren", function(){
+            beforeEach(function(){
+
+            });
+
+            it("set children->transform's parent", function(){
+                var child1 = new wd.EntityObject();
+                child1.addComponent(wd.ThreeDTransform.create());
+
+                var child2 = new wd.EntityObject();
+                child2.addComponent(wd.ThreeDTransform.create());
+
+
+                entityObject.addComponent(wd.ThreeDTransform.create());
+
+                entityObject.addChildren([child1, child2]);
+
+                expect(child1.transform.parent).toEqual(entityObject.transform);
+                expect(child2.transform.parent).toEqual(entityObject.transform);
+            });
+        });
+
         describe("addComponent", function(){
             it("if component exist, contract error", function(){
                 testTool.openContractCheck(sandbox);
@@ -206,7 +228,9 @@ describe("EntityObject", function() {
     describe("removeAllChildren", function(){
         it("remove all children", function(){
             var child1 = new EntityObject();
+            child1.addComponent(wd.ThreeDTransform.create());
             var child2 = new EntityObject();
+            child2.addComponent(wd.ThreeDTransform.create());
             entityObject.addChildren([child1, child2]);
 
             entityObject.removeAllChildren();

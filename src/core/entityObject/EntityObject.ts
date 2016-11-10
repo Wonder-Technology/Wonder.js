@@ -140,8 +140,6 @@ module wd {
         public addChild(child:EntityObject):EntityObject {
             this._entityObjectManager.addChild(child);
 
-            child.transform.parent = this.transform;
-
             return this;
         }
 
@@ -151,6 +149,8 @@ module wd {
 
         public addChildren(...args) {
             this._entityObjectManager.addChildren(args[0]);
+
+
 
             return this;
         }
