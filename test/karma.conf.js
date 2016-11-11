@@ -26,7 +26,7 @@
         'test/helper/yoop/yOOP.js',
         'test/unit/**/*Tool.js',
 
-        // 'test/unit/**',
+        'test/unit/**',
 
 
         // 'test/unit/**/SoundManager*',
@@ -248,7 +248,7 @@
 
         //'test/unit/**/Debug*',
 
-        'test/unit/**/EntityObjectSpec*',
+        // 'test/unit/**/EntityObjectSpec*',
 
         //'test/unit/component/physics/**/eventSpec*',
 

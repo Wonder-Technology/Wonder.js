@@ -12,8 +12,7 @@ module wd{
                     case EArticulatedAnimationTarget.TRANSLATION:
                     case EArticulatedAnimationTarget.ROTATION:
                     case EArticulatedAnimationTarget.SCALE:
-                        expect(startFrameData.interpolationMethod).not.equals(EKeyFrameInterpolation.SWITCH);
-                        expect(endFrameData.interpolationMethod).not.equals(EKeyFrameInterpolation.SWITCH);
+                        expect(target.interpolationMethod).not.equals(EKeyFrameInterpolation.SWITCH);
                         break;
                 }
             });
@@ -23,12 +22,24 @@ module wd{
 
             switch (target.target){
                 case EArticulatedAnimationTarget.TRANSLATION:
+                    if(!startFrameData){
+                        startFrameData = transform.localPosition;
+                    }
+
                     transform.localPosition = Vector3.create().lerp(startFrameData, endFrameData, interpolation);
                     break;
                 case EArticulatedAnimationTarget.ROTATION:
+                    if(!startFrameData){
+                        startFrameData = transform.localRotation;
+                    }
+
                     transform.localRotation = Quaternion.create().slerp(startFrameData, endFrameData, interpolation);
                     break;
                 case EArticulatedAnimationTarget.SCALE:
+                    if(!startFrameData){
+                        startFrameData = transform.localScale;
+                    }
+
                     transform.localScale = Vector3.create().lerp(startFrameData, endFrameData, interpolation);
                     break;
                 default:

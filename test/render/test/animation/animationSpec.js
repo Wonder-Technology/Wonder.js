@@ -151,19 +151,6 @@ describe("animation", function () {
                             "run": wdCb.Collection.create([
 
                                 {
-                                    time: 0,
-                                    targets:wdCb.Collection.create([
-                                        {
-                                            interpolationMethod:wd.EKeyFrameInterpolation.SWITCH,
-                                            target:wd.EArticulatedAnimationTarget.TEXTURE_OFFSET,
-                                            data:[0, 0, width, height],
-                                            extra:{
-                                                target:"diffuseMap"
-                                            }
-                                        }
-                                    ])
-                                },
-                                {
                                     time: 100,
                                     targets:wdCb.Collection.create([
                                         {
@@ -184,6 +171,19 @@ describe("animation", function () {
                                             interpolationMethod:wd.EKeyFrameInterpolation.SWITCH,
                                             target:wd.EArticulatedAnimationTarget.TEXTURE_OFFSET,
                                             data:[0, height, width, height],
+                                            extra:{
+                                                target:"diffuseMap"
+                                            }
+                                        }
+                                    ])
+                                },
+                                {
+                                    time: 300,
+                                    targets:wdCb.Collection.create([
+                                        {
+                                            interpolationMethod:wd.EKeyFrameInterpolation.SWITCH,
+                                            target:wd.EArticulatedAnimationTarget.TEXTURE_OFFSET,
+                                            data:[0, 0, width, height],
                                             extra:{
                                                 target:"diffuseMap"
                                             }

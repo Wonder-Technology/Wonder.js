@@ -60,19 +60,19 @@ describe("articulated animation", function () {
 
                             judgeIsSecondFrameSourceRegion();
                         });
-                        it("if the elapsed exceed the last key->time, go back to the second key data", function () {
-                            wd.AnimationEngine.getInstance().update(secondKeyTime + 2);
-
-                            judgeIsThirdFrameSourceRegion();
-                        });
-                        it("test reach the next loop->first key", function () {
-                            wd.AnimationEngine.getInstance().update(secondKeyTime + 2);
-                            wd.AnimationEngine.getInstance().update(secondKeyTime + 3);
+                        it("if the elapsed exceed the last key->time and not reach the second key of the next loop, go to the first key data of the next loop", function () {
+                            wd.AnimationEngine.getInstance().update(secondKeyTime + firstKeyTime / 3);
 
                             judgeIsFirstFrameSourceRegion();
                         });
-                        it("test reach the next loop->second key", function () {
-                            wd.AnimationEngine.getInstance().update(secondKeyTime + 1);
+                        it("test reach the next loop->first key", function () {
+                            wd.AnimationEngine.getInstance().update(secondKeyTime + firstKeyTime / 3);
+                            wd.AnimationEngine.getInstance().update(secondKeyTime + firstKeyTime / 2);
+
+                            judgeIsFirstFrameSourceRegion();
+                        });
+                        it("test exceed the next loop->first key", function () {
+                            wd.AnimationEngine.getInstance().update(secondKeyTime + firstKeyTime / 3);
                             wd.AnimationEngine.getInstance().update(secondKeyTime + firstKeyTime + 1);
 
                             judgeIsSecondFrameSourceRegion();
@@ -83,7 +83,7 @@ describe("articulated animation", function () {
 
                             wd.AnimationEngine.getInstance().update(secondKeyTime + secondKeyTime + 1);
 
-                            judgeIsThirdFrameSourceRegion();
+                            judgeIsFirstFrameSourceRegion();
                         });
                     });
                 });

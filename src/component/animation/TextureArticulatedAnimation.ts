@@ -31,6 +31,9 @@ module wd{
             it("this animated texture should has 'sourceRegion' attribute", () => {
                 expect(this.entityObject.getGeometry().material[target.extra.target].sourceRegion).not.be.a("undefined");
             }, this);
+            it("intergration should be 0 or 1", () => {
+                expect(interpolation === 0 || interpolation === 1).true;
+            });
         })
         private _updateTextureData(target:TextureArticulatedAnimationFrameTargetData, startFrameData:Array<number>, endFrameData:Array<number>, interpolation:number){
             var material:Material = this.entityObject.getComponent<Geometry>(Geometry).material,
@@ -38,8 +41,19 @@ module wd{
                 map:BasicTexture = material[mapName];
 
             if(!!map){
+                let frameData = null;
+
+                if(interpolation === 0){
+                    frameData = startFrameData;
+                }
+                else{
+                    frameData = endFrameData;
+                }
+
                 //todo optimize:use temp RectRegion
-                map.sourceRegion = RectRegion.create(startFrameData[0], startFrameData[1], startFrameData[2], startFrameData[3]);
+                if(!!frameData){
+                    map.sourceRegion = RectRegion.create(frameData[0], frameData[1], frameData[2], frameData[3]);
+                }
             }
         }
     }

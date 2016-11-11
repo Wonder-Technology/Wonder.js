@@ -107,7 +107,11 @@ module wd{
 
             this.resetAnim();
 
-            this._saveStartFrameData(this._currentAnimData.getChild(0));
+            let firstAnimData = this._currentAnimData.getChild(0);
+
+            if(firstAnimData.time === 0){
+                this._saveStartFrameData(firstAnimData);
+            }
 
             this.frameCount = this._currentAnimData.getCount();
             this.state = EAnimationState.RUN;
@@ -187,7 +191,12 @@ module wd{
                     }
                     break;
                 case EKeyFrameInterpolation.SWITCH:
-                    interpolation = 1;
+                    if(this._currentFrameData.time - this._prevFrameTime === 0){
+                        interpolation = 1;
+                    }
+                    else{
+                        interpolation = 0;
+                    }
                     break;
                 default:
                     Log.error(true, Log.info.FUNC_NOT_SUPPORT(`interpolationMethod:${interpolationMethod}`));
