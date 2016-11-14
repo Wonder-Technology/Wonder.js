@@ -141,6 +141,8 @@ class Parser(object):
 
             attribute_type = nodeAttribute.GetAttributeType()
 
+            _parseTransform(nodeData, node)
+
             if attribute_type == FbxNodeAttribute.eNurbs or \
             attribute_type == FbxNodeAttribute.eNurbsSurface or \
             attribute_type == FbxNodeAttribute.ePatch:
@@ -176,3 +178,18 @@ class Parser(object):
             nodeData["children"].append(getObjectId(nodeChild))
 
             self._parseContentHierarchy(nodeChild, output)
+
+
+def _parseTransform(nodeData, node):
+    nodeLocalMatrix = node.EvaluateLocalTransform()
+
+    localMatrixData = []
+
+    for i in range(4):
+        column = nodeLocalMatrix.GetColumn(i)
+        localMatrixData.append(column[0])
+        localMatrixData.append(column[1])
+        localMatrixData.append(column[2])
+        localMatrixData.append(column[3])
+
+    nodeData["matrix"] = localMatrixData

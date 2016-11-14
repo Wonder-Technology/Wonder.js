@@ -320,14 +320,14 @@ module wd {
     //     target:EArticulatedAnimationTarget,
     //     data:any
     // }
-    //
-    // export interface IWDTransform extends IWDComponent{
-    //     matrix?:Matrix4;
-    //     position?:Vector3;
-    //     scale?:Vector3;
-    //     rotation?:Quaternion;
-    // }
-    //
+
+    export interface IWDTransform extends IWDComponent{
+        matrix?:Matrix4;
+        position?:Vector3;
+        scale?:Vector3;
+        rotation?:Quaternion;
+    }
+
     // export interface IWDCamera extends IWDComponent{
     //     camera:Camera;
     // }

@@ -74,27 +74,27 @@ module wd{
 
             components.forEach((component:IWDComponent) => {
                 //todo support
-                // if(self._isTransform(component)){
-                //     model.addComponent(self._createTransform(<IWDTransform>component));
-                // }
+                if(self._isTransform(component)){
+                    model.addComponent(self._createTransform(<IWDTransform>component));
+                }
                 // else if(self._isCamera(component)){
                 //     model.addComponent(self._createCamera(<IWDCamera>component));
                 // }
                 // else if(self._isLight(component)){
                 //     model.addComponent(self._createLight(<any>component));
                 // }
-                // if(self._isGeometry(component)){
+                if(self._isGeometry(component)){
                     model.addComponent(self._createGeometry(<any>component));
-                // }
+                }
                 // else if(self._isArticulatedAnimation(component)){
                 //     model.addComponent(self._createArticulatedAnimation(<any>component));
                 // }
             });
         }
 
-        // private _isTransform(component:any){
-        //     return !!component.matrix || !!component.position;
-        // }
+        private _isTransform(component:any){
+            return !!component.matrix || !!component.position;
+        }
         //
         // private _isCamera(component:any){
         //     return !!component.camera;
@@ -112,22 +112,22 @@ module wd{
         //     return WDUtils.isIWDArticulatedAnimation(component);
         // }
         //
-        // private _createTransform(component:IWDTransform){
-        //     var transform:ThreeDTransform = ThreeDTransform.create();
-        //
-        //     if(component.matrix){
-        //         transform.localPosition = component.matrix.getTranslation();
-        //         transform.localRotation = component.matrix.getRotation();
-        //         transform.localScale = component.matrix.getScale();
-        //     }
-        //     else{
-        //         transform.localPosition = component.position;
-        //         transform.localRotation = component.rotation;
-        //         transform.localScale = component.scale;
-        //     }
-        //
-        //     return transform;
-        // }
+        private _createTransform(component:IWDTransform){
+            var transform:ThreeDTransform = ThreeDTransform.create();
+
+            if(component.matrix){
+                transform.localPosition = component.matrix.getTranslation();
+                transform.localRotation = component.matrix.getRotation();
+                transform.localScale = component.matrix.getScale();
+            }
+            else{
+                transform.localPosition = component.position;
+                transform.localRotation = component.rotation;
+                transform.localScale = component.scale;
+            }
+
+            return transform;
+        }
         //
         // private _createCamera(component:IWDCamera){
         //     return BasicCameraController.create(component.camera);

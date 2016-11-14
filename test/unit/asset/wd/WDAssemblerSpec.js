@@ -179,60 +179,60 @@ describe("WDAssembler", function () {
 
                 });
 
-                // describe("add ThreeDTransform component", function(){
-                //     var matrix;
-                //
-                //     beforeEach(function(){
-                //         matrix = wd.Matrix4.create();
-                //     });
-                //
-                //     it("if matrix exist, decompose matrix to set position,rotation,scale", function () {
-                //         var position = wd.Vector3.create(1,2,3);
-                //         var scale = wd.Vector3.create(2,2,2);
-                //         var rotation = wd.Quaternion.create(0,1,5,1);
-                //
-                //         matrix.setTRS(position, rotation, scale);
-                //
-                //         setComponent({
-                //             matrix: matrix
-                //         })
-                //
-                //
-                //         var data = builder.build(parseData);
-                //
-                //         var component = getComponent(data, wd.ThreeDTransform);
-                //         //expect(component).toBeInstanceOf(wd.ThreeDTransform);
-                //
-                //         judgeEqual(component.position, matrix.getTranslation());
-                //         /*!
-                //         //todo not equal! why?
-                //          judgeRotation(component.rotation, matrix.getRotation())
-                //          judgeEqual(component.scale, matrix.getScale());
-                //          */
-                //     });
-                //     it("else if position,rotation,scale exist, directly set them", function () {
-                //         var position = wd.Vector3.create(1,2,3);
-                //         var scale = wd.Vector3.create(2,2,2);
-                //         var rotation = wd.Quaternion.create(0,1,5,1);
-                //
-                //
-                //         setComponent({
-                //             position:position,
-                //             rotation:rotation,
-                //             scale:scale
-                //         })
-                //
-                //
-                //         var data = builder.build(parseData);
-                //
-                //         var component = getComponent(data, wd.ThreeDTransform);
-                //         //expect(component).toBeInstanceOf(wd.ThreeDTransform);
-                //         matrix.setTRS(position, rotation, scale);
-                //         judgeEqual(component.position, matrix.getTranslation());
-                //         judgeRotation(component.rotation, matrix.getRotation())
-                //         judgeEqual(component.scale, matrix.getScale());
-                //     });
-                // });
+                describe("add ThreeDTransform component", function(){
+                    var matrix;
+
+                    beforeEach(function(){
+                        matrix = wd.Matrix4.create();
+                    });
+
+                    it("if matrix exist, decompose matrix to set position,rotation,scale", function () {
+                        var position = wd.Vector3.create(1,2,3);
+                        var scale = wd.Vector3.create(2,2,2);
+                        var rotation = wd.Quaternion.create(0,1,5,1);
+
+                        matrix.setTRS(position, rotation, scale);
+
+                        setComponent({
+                            matrix: matrix
+                        })
+
+
+                        var data = builder.build(parseData);
+
+                        var component = getComponent(data, wd.ThreeDTransform);
+                        //expect(component).toBeInstanceOf(wd.ThreeDTransform);
+
+                        judgeEqual(component.position, matrix.getTranslation());
+                        /*!
+                        //todo not equal! why?
+                         judgeRotation(component.rotation, matrix.getRotation())
+                         judgeEqual(component.scale, matrix.getScale());
+                         */
+                    });
+                    it("else if position,rotation,scale exist, directly set them", function () {
+                        var position = wd.Vector3.create(1,2,3);
+                        var scale = wd.Vector3.create(2,2,2);
+                        var rotation = wd.Quaternion.create(0,1,5,1);
+
+
+                        setComponent({
+                            position:position,
+                            rotation:rotation,
+                            scale:scale
+                        })
+
+
+                        var data = builder.build(parseData);
+
+                        var component = getComponent(data, wd.ThreeDTransform);
+                        //expect(component).toBeInstanceOf(wd.ThreeDTransform);
+                        matrix.setTRS(position, rotation, scale);
+                        judgeEqual(component.position, matrix.getTranslation());
+                        judgeRotation(component.rotation, matrix.getRotation())
+                        judgeEqual(component.scale, matrix.getScale());
+                    });
+                });
 
                 // describe("add cameraController component", function(){
                 //     it("add BasicCameraController", function () {
