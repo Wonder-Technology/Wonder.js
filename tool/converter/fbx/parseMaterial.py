@@ -4,17 +4,17 @@ from helper import *
 def parseMaterial(mesh, meshData, output):
     node = mesh.GetNode()
 
-    materialDatas = {}
-    output["materials"] = materialDatas
-
-    textureDatas = {}
-    output["textures"] = textureDatas
-
-    imageDatas = {}
-    output["images"] = imageDatas
-
-    samplerDatas = {}
-    output["samplers"] = samplerDatas
+    # materialDatas = {}
+    # output["materials"] = materialDatas
+    #
+    # textureDatas = {}
+    # output["textures"] = textureDatas
+    #
+    # imageDatas = {}
+    # output["images"] = imageDatas
+    #
+    # samplerDatas = {}
+    # output["samplers"] = samplerDatas
 
     if node:
         materialCount = node.GetMaterialCount()
@@ -46,13 +46,15 @@ def parseMaterial(mesh, meshData, output):
         elif material.GetClassId().Is(FbxSurfacePhong.ClassId):
             _addMaterialDataToMesh(materialId, meshData)
             materialData = {}
-            materialDatas[materialId] = materialData
-            _parsePhongMaterial(material, materialData, textureDatas, samplerDatas, imageDatas)
+            output["materials"][materialId] = materialData
+            # print ("materialId %s" % materialId, materialDatas)
+            _parsePhongMaterial(material, materialData, output)
         elif material.GetClassId().Is(FbxSurfaceLambert.ClassId):
             _addMaterialDataToMesh(materialId, meshData)
             materialData = {}
-            materialDatas[materialId] = materialData
-            _parseLambertMaterial(material, materialData, textureDatas, samplerDatas, imageDatas)
+            # materialDatas[materialId] = materialData
+            output["materials"][materialId] = materialData
+            _parseLambertMaterial(material, materialData, output)
 
         else:
             print ("Unknown type of Material"), materialId
@@ -66,42 +68,50 @@ def _addMaterialDataToMesh(materialId, meshData):
     primitiveData["mode"] = 4
 
 
-def _parseLambertMaterial(material, materialData, textureDatas, samplerDatas, imageDatas):
+def _parseLambertMaterial(material, materialData, output):
     materialData["technique"] = "LAMBERT"
 
     valueData = {}
     materialData["values"] = valueData
 
-    _parseMaterial(material, valueData, materialData, textureDatas, samplerDatas, imageDatas)
+    _parseMaterial(material, valueData, materialData, output)
 
 
 
-def _parsePhongMaterial(material, materialData, textureDatas, samplerDatas, imageDatas):
+def _parsePhongMaterial(material, materialData, output):
     materialData["technique"] = "PHONG"
 
     valueData = {}
     materialData["values"] = valueData
 
 
+    _setMaterialProperty(material.Specular.Get(), material.SpecularFactor.Get(), valueData, "specular")
 
-    specular = material.Specular.Get()
-    specular = [specular[0], specular[1], specular[2]]
+    # specular = material.Specular.Get()
+    # specular = [specular[0], specular[1], specular[2]]
 
+
+    # _setMaterialProperty(material, FbxSurfaceMaterial.sSpecular, FbxSurfaceMaterial.sSpecularFactor, valueData, "specular")
 
     shininess = material.Shininess.Get()
+    # shininess = material.FindProperty(FbxSurfaceMaterial.sShininess)
+
+    # if shininess.IsValid():
+    shininess *= 12
+    valueData["shininess"] = shininess
 
     # reflective = material.ReflectionFactor.Get()
 
 
-    valueData["specular"] = specular
-    valueData["shininess"] = shininess
+    # valueData["specular"] = specular
+    # valueData["shininess"] = shininess
     # valueData["reflective"] = reflective
 
-    _parseMaterial(material, valueData, materialData, textureDatas, samplerDatas, imageDatas)
+    _parseMaterial(material, valueData, materialData, output)
 
 
 
-def _parseMaterial(material, valueData, materialData, textureDatas, samplerDatas, imageDatas):
+def _parseMaterial(material, valueData, materialData, output):
     setName(material, materialData)
 
     # TODO support parse side
@@ -121,23 +131,51 @@ def _parseMaterial(material, valueData, materialData, textureDatas, samplerDatas
     # ambient = material.Ambient.Get()
     # ambient = [ambient[0], ambient[1], ambient[2]]
 
-    diffuse = material.Diffuse.Get()
-    diffuse = [diffuse[0], diffuse[1], diffuse[2]]
+    # _setMaterialProperty(material, FbxSurfaceMaterial.sDiffuse, FbxSurfaceMaterial.sDiffuseFactor, valueData, "diffuse")
+    _setMaterialProperty(material.Diffuse.Get(), material.DiffuseFactor.Get(), valueData, "diffuse")
 
-    emissive = material.Emissive.Get()
-    emissive = [emissive[0], emissive[1], emissive[2]]
+
+    _setMaterialProperty(material.Emissive.Get(), material.EmissiveFactor.Get(), valueData, "emission")
+
+    # diffuse = material.Diffuse.Get()
+    # diffuse = [diffuse[0], diffuse[1], diffuse[2]]
+    #
+    # emissive = material.Emissive.Get()
+    # emissive = [emissive[0], emissive[1], emissive[2]]
 
 
 
     # valueData["ambient"] = ambient
-    valueData["diffuse"] = diffuse
-    valueData["emission"] = emissive
+    # valueData["diffuse"] = diffuse
+    # valueData["emission"] = emissive
 
-    _parseTexture(material, valueData, textureDatas, samplerDatas, imageDatas)
+    _parseTexture(material, valueData, output)
 
 
+def _setMaterialProperty(property,factor, valueData, name):
+    # property = material.FindProperty(propertyName)
+    # factorProperty = material.FindProperty(factorPropertyName)
 
-def _parseTexture(material, valueData, textureDatas, samplerDatas, imageDatas):
+    # if property.IsValid():
+        # result = property.Get()
+    result = property
+
+        # if factorProperty.IsValid():
+            # factor = factorProperty.Get()
+            # factor = factorProperty
+
+    result = [result[0], result[1], result[2]]
+
+    if factor != 1:
+        result[0] *= factor
+        result[1] *= factor
+        result[2] *= factor
+
+    # print (dir(result))
+    valueData[name] = result
+
+
+def _parseTexture(material, valueData, output):
     texture_count = FbxLayerElement.sTypeTextureCount()
 
     for texture_index in range(texture_count):
@@ -155,7 +193,7 @@ def _parseTexture(material, valueData, textureDatas, samplerDatas, imageDatas):
                         if texture:
                             # textureId = getTextureId(texture, True)
                             # material_params[binding_types[str(material_property.GetName())]] = textureId
-                            parseTextureForMaterialAndAddTextureData(texture, material_property, valueData, textureDatas, samplerDatas, imageDatas)
+                            parseTextureForMaterialAndAddTextureData(texture, material_property, valueData, output)
             else:
                 # no layered texture simply get on the property
                 texture_count = material_property.GetSrcObjectCount(FbxCriteria.ObjectType(FbxTexture.ClassId))
@@ -165,10 +203,10 @@ def _parseTexture(material, valueData, textureDatas, samplerDatas, imageDatas):
                         # TODO finish
                         # textureId = getTextureId(texture, True)
                         # material_params[binding_types[str(material_property.GetName())]] = textureId
-                        parseTextureForMaterialAndAddTextureData(texture, material_property, valueData, textureDatas, samplerDatas, imageDatas)
+                        parseTextureForMaterialAndAddTextureData(texture, material_property, valueData, output)
 
 
-def parseTextureForMaterialAndAddTextureData(texture, material_property, valueData, textureDatas, samplerDatas, imageDatas):
+def parseTextureForMaterialAndAddTextureData(texture, material_property, valueData, output):
     binding_types = {
         "DiffuseColor": "diffuse",
         # "DiffuseFactor": "diffuseFactor",
@@ -196,21 +234,23 @@ def parseTextureForMaterialAndAddTextureData(texture, material_property, valueDa
 
     mapStr = binding_types[str(material_property.GetName())]
 
-    if mapStr and valueData[mapStr]:
+    # print (mapStr, valueData)
+    # if mapStr and valueData[mapStr]:
+    if mapStr:
         valueData[mapStr] = textureId
 
-        addTextureData(textureId, texture, textureDatas, samplerDatas, imageDatas)
+        addTextureData(textureId, texture, output)
 
     else:
         print ("not support %s" % mapStr)
 
-def addTextureData(id, texture, textureDatas, samplerDatas, imageDatas):
-    if textureDatas.get(id, None) != None:
+def addTextureData(id, texture, output):
+    if output["textures"].get(id, None) != None:
         return
 
     textureData = {}
 
-    textureDatas[id] = textureData
+    output["textures"][id] = textureData
 
     # TODO parse cube map texture
     textureData["target"] = 3553
@@ -222,24 +262,24 @@ def addTextureData(id, texture, textureDatas, samplerDatas, imageDatas):
         imageId = getImageId(id)
         textureData["sampler"] = samplerId
         textureData["source"] = imageId
-        addSamplerData(samplerDatas, samplerId, texture)
-        addImageData(imageDatas, imageId, texture)
+        addSamplerData(output, samplerId, texture)
+        addImageData(output, imageId, texture)
 
 
     # TODO support procedural texture
     elif type(texture) is FbxProceduralTexture:
         print ("not support procedural texture")
         return
-
-def addSamplerData(samplerDatas, id, texture):
-    if samplerDatas.get(id, None) != None:
+#
+def addSamplerData(output, id, texture):
+    if output["samplers"].get(id, None) != None:
         return
 
     wrap_u = texture.GetWrapModeU()
     wrap_v = texture.GetWrapModeV()
     repeatRegion = [texture.GetTranslationU(), texture.GetTranslationV(), texture.GetScaleU(), texture.GetScaleV()]
 
-    samplerDatas[id] = {
+    output["samplers"][id] = {
         "name": id,
         "wrapS": _getWrap(wrap_u),
         "wrapT": _getWrap(wrap_v),
@@ -254,22 +294,15 @@ def _getWrap(wrapValue):
         return 33071
 
 
-def addImageData(imageDatas, id, texture):
-    if imageDatas.get(id, None) != None:
+def addImageData(output, id, texture):
+    if output["images"].get(id, None) != None:
         return
 
-    uri = texture.GetRelativeFileName()
+    # uri = texture.GetRelativeFileName()
 
-    if uri == "":
-        uri = texture.GetFileName()
-        index = uri.rfind( '/' )
-        if index == -1:
-            index = uri.rfind( '\\' )
+    uri = getBaseName(texture.GetFileName())
 
-        uri = uri[ index+1 : len(uri) ]
-
-
-    imageDatas[id] = {
+    output["images"][id] = {
         "name": id,
         "uri": uri
     }

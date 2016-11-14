@@ -93,6 +93,17 @@ class Parser(object):
 
         output["nodes"] = {}
         output["meshes"] = {}
+        # materialDatas = {}
+        output["materials"] = {}
+
+        # textureDatas = {}
+        output["textures"] = {}
+
+        # imageDatas = {}
+        output["images"] = {}
+
+        # samplerDatas = {}
+        output["samplers"] = {}
 
         sceneName = scene.GetName()
 
@@ -168,6 +179,8 @@ class Parser(object):
                 parseMesh(mesh, meshData)
 
                 parseMaterial(mesh, meshData, output)
+
+                # print ("materialId %s" % output["materials"])
 
 
         nodeData["children"] = []

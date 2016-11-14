@@ -45,7 +45,8 @@ def getMaterialId(o, forcePrefix = True, defaultName = "defaultMaterialName"):
 def getTextureId(t, forcePrefix = True):
     if type(t) is FbxFileTexture:
         texture_file = t.GetFileName()
-        texture_id = os.path.splitext(os.path.basename(texture_file))[0]
+        # texture_id = os.path.splitext(os.path.basename(texture_file))[0]
+        texture_id = getBaseName(texture_file).split(".")[0]
     else:
         texture_id = t.GetName()
         if texture_id == "_empty_":
@@ -57,6 +58,21 @@ def getTextureId(t, forcePrefix = True):
         if len(texture_id) == 0:
             prefix = prefix[0:len(prefix)-1]
     return prefix + texture_id
+
+
+def getBaseName(uri):
+    index = uri.rfind( '/' )
+    if index == -1:
+        index = uri.rfind( '\\' )
+
+    return uri[ index+1 : len(uri) ]
+
+def getBaseName(uri):
+    index = uri.rfind( '/' )
+    if index == -1:
+        index = uri.rfind( '\\' )
+
+    return uri[ index+1 : len(uri) ]
 
 def getSamplerId(textureId):
     return textureId.replace("Texture_", "Sampler_")
