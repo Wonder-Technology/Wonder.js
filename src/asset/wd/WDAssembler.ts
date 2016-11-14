@@ -173,81 +173,79 @@ module wd{
             WDUtils.addData(geometry, "colors", component.colors);
             WDUtils.addData(geometry, "texCoords", component.texCoords);
 
-            //todo support
-            // geometry.drawMode = component.drawMode;
+            geometry.drawMode = component.drawMode;
 
-            // geometry.material = this._createMaterial(component.material);
+            geometry.material = this._createMaterial(component.material);
 
             //todo support morph targets
 
             return geometry;
         }
 
-        // private _createMaterial(materialData:IWDMaterial){
-        //     var material:Material = null;
-        //
-        //     switch (materialData.type){
-        //         case "BasicMaterial":
-        //             material = this._createBasicMaterial(<IWDBasicMaterial>materialData);
-        //             break;
-        //         case "LightMaterial":
-        //             material = this._createLightMaterial(<IWDLightMaterial>materialData);
-        //             break;
-        //         default:
-        //             Log.error(true, Log.info.FUNC_UNEXPECT(`material type:${materialData.type}`));
-        //             break;
-        //     }
-        //
-        //     return material;
-        // }
-        //
-        // private _createBasicMaterial(materialData:IWDBasicMaterial){
-        //     var material = BasicMaterial.create();
-        //
-        //     this._setBasicDataOfMaterial(material, materialData);
-        //
-        //     return material;
-        // }
-        //
-        // private _createLightMaterial(materialData:IWDLightMaterial){
-        //     var material = LightMaterial.create();
-        //
-        //     this._setBasicDataOfMaterial(material, materialData);
-        //
-        //     if(materialData.transparent === true && materialData.opacity !== void 0){
-        //         material.opacity = materialData.opacity;
-        //         material.blendType = EBlendType.NORMAL;
-        //     }
-        //
-        //     if(materialData.lightModel === ELightModel.LAMBERT){
-        //         Log.log(Log.info.FUNC_NOT_SUPPORT("LAMBERT light model, use PHONG light model instead"));
-        //         material.lightModel = ELightModel.PHONG;
-        //     }
-        //     else{
-        //         material.lightModel = materialData.lightModel;
-        //     }
-        //
-        //     WDUtils.addData(material, "color", materialData.diffuseColor);
-        //     WDUtils.addData(material, "specularColor", materialData.specularColor);
-        //     WDUtils.addData(material, "emissionColor", materialData.emissionColor);
-        //
-        //     WDUtils.addData(material, "diffuseMap", materialData.diffuseMap);
-        //     WDUtils.addData(material, "specularMap", materialData.specularMap);
-        //     WDUtils.addData(material, "emissionMap", materialData.emissionMap);
-        //
-        //     WDUtils.addData(material, "shininess", materialData.shininess);
-        //
-        //     return material;
-        // }
-        //
-        // private _setBasicDataOfMaterial(material:Material, materialData:IWDMaterial){
-        //     if(!!materialData.doubleSided && materialData.doubleSided === true){
-        //         material.side = ESide.BOTH;
-        //     }
-        //     else{
-        //         material.side = ESide.FRONT;
-        //     }
-        // }
+        @require(function(materialData:IWDMaterialForAssembler){
+            it("material type should always be LightMaterial", () => {
+                expect(materialData.type).equals("LightMaterial");
+            });
+        })
+        private _createMaterial(materialData:IWDMaterialForAssembler){
+            var material:Material = null;
+
+            switch (materialData.type){
+                case "LightMaterial":
+                    material = this._createLightMaterial(<IWDLightMaterialForAssembler>materialData);
+                    break;
+                default:
+                    Log.error(true, Log.info.FUNC_UNEXPECT(`material type:${materialData.type}`));
+                    break;
+            }
+
+            return material;
+        }
+
+        private _createLightMaterial(materialData:IWDLightMaterialForAssembler){
+            return this._createStandardLightMaterial<LightMaterial>(LightMaterial.create(), materialData);
+        }
+
+        private _createStandardLightMaterial<T extends StandardLightMaterial>(material:T, materialData:IWDLightMaterialForAssembler):T{
+            this._setBasicDataOfMaterial(material, materialData);
+
+            if(materialData.transparent === true && materialData.opacity !== void 0){
+                material.opacity = materialData.opacity;
+                material.blendType = EBlendType.NORMAL;
+            }
+
+            if(materialData.lightModel === ELightModel.LAMBERT){
+                Log.log(Log.info.FUNC_NOT_SUPPORT("LAMBERT light model, use PHONG light model instead"));
+                material.lightModel = ELightModel.PHONG;
+            }
+            else{
+                material.lightModel = materialData.lightModel;
+            }
+
+            WDUtils.addData(material, "color", materialData.diffuseColor);
+            WDUtils.addData(material, "specularColor", materialData.specularColor);
+            WDUtils.addData(material, "emissionColor", materialData.emissionColor);
+
+            WDUtils.addData(material, "diffuseMap", materialData.diffuseMap);
+            WDUtils.addData(material, "specularMap", materialData.specularMap);
+            WDUtils.addData(material, "emissionMap", materialData.emissionMap);
+
+            WDUtils.addData(material, "lightMap", materialData.lightMap);
+            WDUtils.addData(material, "normalMap", materialData.normalMap);
+
+            WDUtils.addData(material, "shininess", materialData.shininess);
+
+            return material;
+        }
+
+        private _setBasicDataOfMaterial(material:Material, materialData:IWDMaterialForAssembler){
+            if(!!materialData.doubleSided && materialData.doubleSided === true){
+                material.side = ESide.BOTH;
+            }
+            else{
+                material.side = ESide.FRONT;
+            }
+        }
         //
         // private _createArticulatedAnimation(component:IWDArticulatedAnimation){
         //      var anim = ArticulatedAnimation.create();

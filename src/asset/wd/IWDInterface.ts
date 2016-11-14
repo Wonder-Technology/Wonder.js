@@ -160,10 +160,13 @@ module wd {
         minFilter?: number;
         wrapS?: number;
         wrapT?: number;
+
+        //todo parse
+        repeatRegion?: Array<number>;
     }
 
     export interface IWDMaterial extends IWDChildRootProperty {
-        // technique?: string;
+        technique: string;
 
 
         doubleSided?:boolean;
@@ -183,30 +186,42 @@ module wd {
     // }
     //
     export interface IWDMaterialValue{
-        ambient?:{
-            type:number;
-            value:Array<number>|string;
-        };
-        diffuse?:{
-            type:number;
-            value:Array<number>|string;
-        };
-        specular?:{
-            type:number;
-            value:Array<number>|string;
-        };
-        normal?:{
-            type:number;
-            value:Array<number>|string;
-        };
-        emission?:{
-            type:number;
-            value:Array<number>|string;
-        };
-        shininess?:{
-            type:number;
-            value:Array<number>|string;
-        };
+        // ambient?:{
+        //     type:number;
+        //     value:Array<number>|string;
+        // };
+        // diffuse?:{
+        //     type:number;
+        //     value:Array<number>|string;
+        // };
+        // specular?:{
+        //     type:number;
+        //     value:Array<number>|string;
+        // };
+        // normal?:{
+        //     type:number;
+        //     value:Array<number>|string;
+        // };
+        // emission?:{
+        //     type:number;
+        //     value:Array<number>|string;
+        // };
+        // shininess?:{
+        //     type:number;
+        //     value:Array<number>|string;
+        // };
+
+        //todo add it/light map
+        lightMap?:string;
+
+        diffuse?:Array<number>|string;
+        specular?:Array<number>|string;
+        emission?:Array<number>|string;
+        shininess?:string;
+
+        // reflective?:Array<number>|string;
+        //todo consider normal map!
+        normalMap?:string;
     }
 
     export interface IWDAnimation extends IWDChildRootProperty {
@@ -269,7 +284,7 @@ module wd {
 
 
     export interface IWDParseData{
-        metadata:IWDMetadata;
+        // metadata:IWDMetadata;
         objects: wdCb.Collection<IWDObjectData>;
     }
 
@@ -339,7 +354,7 @@ module wd {
     // }
 
     export interface IWDGeometry extends IWDComponent{
-        // material:IWDMaterial;
+        material:IWDMaterialForAssembler;
 
         vertices: Array<number>;
         colors?: Array<number>;
@@ -352,50 +367,53 @@ module wd {
         //morphNormals:wdCb.Hash<wdCb.Collection<Array<number>>>;
     }
 
-    // export interface IWDMaterial{
-    //     type:string;
-    //
-    //     doubleSided?:boolean;
-    // }
+    export interface IWDMaterialForAssembler{
+        type:string;
 
-
-    // export interface IWDBasicMaterial extends IWDMaterial{
-    // }
-    //
-    // export interface IWDLightMaterial extends IWDMaterial{
-    //     transparent?:boolean;
-    //     opacity?: number
-    //
-    //     lightModel:ELightModel;
-    //
-    //     //todo add ambient
-    //
-    //     diffuseColor?: Color;
-    //     specularColor?: Color;
-    //     emissionColor?:Color;
-    //
-    //     diffuseMap?:Texture;
-    //     specularMap?:Texture;
-    //     emissionMap?:Texture;
-    //
-    //     //todo support normalMap
-    //     //normalMap:Texture;
-    //
-    //     shininess?: number;
-    // }
-
-
-
-    export interface IWDMetadata {
-        version:string;
-        genertor?:string;
-        premultipliedAlpha?:boolean;
-        profile?: {
-            api :string;
-            version:string
-            extras:Object
-        }
+        doubleSided?:boolean;
     }
+
+
+    // export interface IWDBasicMaterialForAssembler extends IWDMaterialForAssembler{
+    // }
+
+    export interface IWDLightMaterialForAssembler extends IWDMaterialForAssembler{
+        transparent?:boolean;
+        opacity?: number
+
+        lightModel:ELightModel;
+
+        //todo add ambient
+
+        // ambientColor?: Color;
+        diffuseColor?: Color;
+        specularColor?: Color;
+        emissionColor?:Color;
+
+        //todo add lightMap
+        lightMap?:ImageTexture;
+        diffuseMap?:ImageTexture;
+        specularMap?:ImageTexture;
+        emissionMap?:ImageTexture;
+
+        //todo support normalMap
+        normalMap?:ImageTexture;
+
+        shininess?: number;
+    }
+
+
+
+    // export interface IWDMetadata {
+    //     version:string;
+    //     genertor?:string;
+    //     premultipliedAlpha?:boolean;
+    //     profile?: {
+    //         api :string;
+    //         version:string
+    //         extras:Object
+    //     }
+    // }
 
 
 
@@ -403,7 +421,7 @@ module wd {
 
 
     export interface IWDResult{
-        metadata:wdCb.Hash<IWDMetadata>;
+        // metadata:wdCb.Hash<IWDMetadata>;
         models:wdCb.Collection<GameObject>
     }
 }

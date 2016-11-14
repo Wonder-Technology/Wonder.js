@@ -15,7 +15,9 @@ describe("convertIndices->Converter", function(){
     });
 
     describe("convert", function(){
-        function buildJson(positions, texCoords, normals, colors, verticeIndices, texCoordIndices, normalIndices, colorIndices) {
+        function buildJson(positions, texCoords, normals, colors, verticeIndices, texCoordIndices, normalIndices, colorIndices, materialData) {
+            materialData = materialData || {material:"a", mode:4}
+
             return {
                 "meshes": {
                     "RootNode": {
@@ -30,7 +32,9 @@ describe("convertIndices->Converter", function(){
                                 "colorIndices": colorIndices,
                                 "normalIndices": normalIndices,
                                 "texCoordIndices": texCoordIndices,
-                                "verticeIndices": verticeIndices
+                                "verticeIndices": verticeIndices,
+                                "material": materialData.material,
+                                "mode": materialData.mode
                             }
                         ]
                     }
@@ -96,7 +100,7 @@ describe("convertIndices->Converter", function(){
             beforeEach(function(){
             });
 
-            it("test", function(){
+            it("copy nodes", function(){
                 var nodes = {
                     "a":{}
                 }
@@ -110,6 +114,36 @@ describe("convertIndices->Converter", function(){
         });
 
         describe("convert multi indices to single indices", function () {
+            it("remain primitive->material,mode data", function () {
+                var result = converter.convert(buildJson(
+                    [],
+                    [],
+                    [],
+                    [],
+
+
+
+                    [],
+                    [],
+                    [],
+                    [],
+
+                    {
+                        material:"mat",
+                        mode:4
+                    }
+                ));
+
+                var data = null;
+
+                for(var key in result.meshes){
+                    data = result.meshes[key].primitives[0]
+                }
+
+                expect(data.material).toEqual("mat");
+                expect(data.mode).toEqual(4);
+            });
+
             describe("duplicate the vertex which has different attribute data", function () {
                 it("test one vertex has two different uvs", function() {
                     // setObject({

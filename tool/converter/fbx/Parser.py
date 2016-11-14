@@ -1,5 +1,6 @@
 from helper import *
 from parseMesh import *
+from parseMaterial import *
 from fbx import *
 
 class Parser(object):
@@ -96,7 +97,7 @@ class Parser(object):
         sceneName = scene.GetName()
 
         if sceneName == "":
-            sceneName = "sceneName"
+            sceneName = "defaultScene"
 
         output["scene"] = sceneName
 
@@ -106,7 +107,7 @@ class Parser(object):
             "nodes": sceneNodes
         }
 
-        # mesh_name = getObjectName(node)
+        # mesh_name = getObjectId(node)
         #
         # mesh_dict[mesh_name] = {
         #  "primitives": meshPrimitives
@@ -116,12 +117,12 @@ class Parser(object):
             for i in range(node.GetChildCount()):
                 nodeChild = node.GetChild(i)
 
-                sceneNodes.append(getObjectName(nodeChild))
+                sceneNodes.append(getObjectId(nodeChild))
 
                 self._parseContentHierarchy(nodeChild, output)
 
     def _parseContentHierarchy(self, node, output):
-        nodeId = getObjectName(node)
+        nodeId = getObjectId(node)
         nodeData = {}
         output["nodes"][nodeId] = nodeData
 
@@ -134,7 +135,7 @@ class Parser(object):
             pass
         else:
             # nodeData = {}
-            # output.nodes[getObjectName(node)] = nodeData
+            # output.nodes[getObjectId(node)] = nodeData
 
             # self._parseNode(node, output)
 
@@ -151,7 +152,7 @@ class Parser(object):
                 # if attribute_type != FbxNodeAttribute.eMesh:
                 #     self._converter.Triangulate(node.GetNodeAttribute(), True)
                 mesh = node.GetNodeAttribute()
-                meshId = getObjectName(mesh, False, nodeId + "_mesh")
+                meshId = getObjectId(mesh, False, nodeId + "_mesh")
 
                 nodeData["mesh"] = meshId
 
@@ -164,11 +165,14 @@ class Parser(object):
 
                 parseMesh(mesh, meshData)
 
+                parseMaterial(mesh, meshData, output)
+
+
         nodeData["children"] = []
 
         for i in range(node.GetChildCount()):
             nodeChild = node.GetChild(i)
 
-            nodeData["children"].append(getObjectName(nodeChild))
+            nodeData["children"].append(getObjectId(nodeChild))
 
             self._parseContentHierarchy(nodeChild, output)

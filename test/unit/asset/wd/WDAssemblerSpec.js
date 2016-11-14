@@ -311,7 +311,7 @@ describe("WDAssembler", function () {
                     it("create ModelGeometry", function(){
                         setComponent({
                             material:{
-                                type:"BasicMaterial"
+                                type:"LightMaterial"
                             }
                         })
 
@@ -335,7 +335,7 @@ describe("WDAssembler", function () {
                             faces:faces,
 
                             material:{
-                                type:"BasicMaterial"
+                                type:"LightMaterial"
                             }
                         })
 
@@ -351,210 +351,218 @@ describe("WDAssembler", function () {
                         expect(component.texCoords).toEqual(texCoords);
                         expect(component.faces).toEqual(faces);
                     });
-                    // it("add drawMode", function () {
-                    //     setComponent({
-                    //         drawMode: wd.EDrawMode.LINE_LOOP,
-                    //
-                    //         material:{
-                    //             type:"BasicMaterial"
-                    //         }
-                    //     })
-                    //
-                    //     var data = builder.build(parseData);
-                    //
-                    //     var component = getComponent(data, wd.Geometry);
-                    //     expect(component.drawMode).toEqual(wd.EDrawMode.LINE_LOOP);
-                    // });
+                    it("add drawMode", function () {
+                        setComponent({
+                            drawMode: wd.EDrawMode.LINE_LOOP,
+
+                            material:{
+                                type:"LightMaterial"
+                            }
+                        })
+
+                        var data = builder.build(parseData);
+
+                        var component = getComponent(data, wd.Geometry);
+                        expect(component.drawMode).toEqual(wd.EDrawMode.LINE_LOOP);
+                    });
 
 
-                    // describe("add material", function(){
-                    //     function getMaterial(data){
-                    //         return getComponent(data, wd.Geometry).material;
-                    //     }
-                    //     function setMaterial(data){
-                    //         setComponent({
-                    //             material:data
-                    //         })
-                    //     }
-                    //
-                    //     function createColor(valueArr){
-                    //         var color = wd.Color.create();
-                    //
-                    //         color.r = valueArr[0];
-                    //         color.g = valueArr[1];
-                    //         color.b = valueArr[2];
-                    //
-                    //         if(valueArr.length === 4){
-                    //             color.a = valueArr[3];
-                    //         }
-                    //
-                    //         return color;
-                    //     }
-                    //
-                    //     function judgeColorEqual(source, target){
-                    //         expect(source).toEqual(target);
-                    //     }
-                    //
-                    //     beforeEach(function(){
-                    //         sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
-                    //     });
-                    //
-                    //     it("if type === 'BasicMaterial', add BasicMaterial", function(){
-                    //         setMaterial({
-                    //             type:"BasicMaterial"
-                    //         })
-                    //
-                    //         var data = builder.build(parseData);
-                    //
-                    //         var material = getMaterial(data);
-                    //         expect(material.side).toEqual(wd.ESide.FRONT);
-                    //
-                    //
-                    //
-                    //
-                    //
-                    //
-                    //         setMaterial({
-                    //             type:"BasicMaterial",
-                    //             doubleSided:true
-                    //         })
-                    //
-                    //     var data = builder.build(parseData);
-                    //
-                    //     var material = getMaterial(data);
-                    //     expect(material).toBeInstanceOf(wd.BasicMaterial);
-                    //         expect(material.side).toEqual(wd.ESide.BOTH);
-                    //     });
-                    //
-                    //     describe("else if type === 'LightMaterial', add LightMaterial", function(){
-                    //         it("common test", function(){
-                    //             var materialData = {
-                    //                 type:"LightMaterial",
-                    //                 doubleSided:true,
-                    //
-                    //                 diffuseColor:createColor([1,1,0]),
-                    //                 specularColor:createColor([0.2,1,0]),
-                    //
-                    //                 diffuseMap:wd.ImageTexture.create({}),
-                    //                 specularMap:wd.ImageTexture.create({a:1}),
-                    //
-                    //                 shininess: 10,
-                    //
-                    //                 transparent:true,
-                    //                 opacity: 0
-                    //             };
-                    //             setMaterial(materialData);
-                    //
-                    //
-                    //
-                    //
-                    //             var data = builder.build(parseData);
-                    //
-                    //
-                    //
-                    //
-                    //             var material = getMaterial(data);
-                    //             expect(material).toBeInstanceOf(wd.LightMaterial);
-                    //             expect(material.side).toEqual(wd.ESide.BOTH);
-                    //             judgeColorEqual(material.color, materialData.diffuseColor);
-                    //             judgeColorEqual(material.specularColor, materialData.specularColor);
-                    //
-                    //             expect(material.diffuseMap).toEqual(materialData.diffuseMap);
-                    //             expect(material.specularMap).toEqual(materialData.specularMap);
-                    //
-                    //             expect(material.shininess).toEqual(materialData.shininess);
-                    //         });
-                    //         describe("test set blend", function () {
-                    //             it("set blendType to be NORMAL", function () {
-                    //                 var materialData = {
-                    //                     type:"LightMaterial",
-                    //
-                    //                     transparent:true,
-                    //                     opacity: 0.1
-                    //                 };
-                    //                 setMaterial(materialData);
-                    //
-                    //
-                    //
-                    //
-                    //                 var data = builder.build(parseData);
-                    //
-                    //
-                    //
-                    //
-                    //                 var material = getMaterial(data);
-                    //                 expect(material).toBeInstanceOf(wd.LightMaterial);
-                    //                 expect(material.blend).toBeTruthy();
-                    //                 expect(material.opacity).toEqual(0.1);
-                    //                 expect(material.blendType).toEqual(wd.EBlendType.NORMAL);
-                    //             });
-                    //             it("test opacity = 0", function () {
-                    //                 var materialData = {
-                    //                     type:"LightMaterial",
-                    //
-                    //                     transparent:true,
-                    //                     opacity: 0
-                    //                 };
-                    //                 setMaterial(materialData);
-                    //
-                    //
-                    //
-                    //
-                    //                 var data = builder.build(parseData);
-                    //
-                    //
-                    //
-                    //
-                    //                 var material = getMaterial(data);
-                    //                 expect(material).toBeInstanceOf(wd.LightMaterial);
-                    //
-                    //                 expect(material.blend).toBeTruthy();
-                    //                 expect(material.opacity).toEqual(0);
-                    //                 expect(material.blendType).toEqual(wd.EBlendType.NORMAL);
-                    //             });
-                    //         });
-                    //
-                    //         describe("test lightModel", function(){
-                    //             it("if it's LAMBERT, log 'not support' info and use PHONG instead", function () {
-                    //                 sandbox.stub(wd.Log, "log");
-                    //                 setMaterial({
-                    //                     type:"LightMaterial",
-                    //                     lightModel:wd.ELightModel.LAMBERT
-                    //                 });
-                    //
-                    //
-                    //
-                    //
-                    //                 var data = builder.build(parseData);
-                    //
-                    //
-                    //                 expect(wd.Log.log).toCalledOnce();
-                    //                 var material = getMaterial(data);
-                    //                 expect(material.lightModel).toEqual(wd.ELightModel.PHONG);
-                    //             });
-                    //             it("else, set lightModel", function () {
-                    //                 setMaterial({
-                    //                     type:"LightMaterial",
-                    //                     lightModel:wd.ELightModel.CONSTANT
-                    //                 });
-                    //
-                    //
-                    //
-                    //
-                    //                 var data = builder.build(parseData);
-                    //
-                    //
-                    //                 var material = getMaterial(data);
-                    //                 expect(material.lightModel).toEqual(wd.ELightModel.CONSTANT);
-                    //             });
-                    //         });
-                    //     });
-                    // });
+                    describe("add material", function(){
+                        function getMaterial(data){
+                            return getComponent(data, wd.Geometry).material;
+                        }
+                        function setMaterial(data){
+                            setComponent({
+                                material:data
+                            })
+                        }
+
+                        function createColor(valueArr){
+                            var color = wd.Color.create();
+
+                            color.r = valueArr[0];
+                            color.g = valueArr[1];
+                            color.b = valueArr[2];
+
+                            if(valueArr.length === 4){
+                                color.a = valueArr[3];
+                            }
+
+                            return color;
+                        }
+
+                        function judgeColorEqual(source, target){
+                            expect(source).toEqual(target);
+                        }
+
+                        beforeEach(function(){
+                            sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+                        });
+
+                        // it("if type === 'BasicMaterial', add BasicMaterial", function(){
+                        //     setMaterial({
+                        //         type:"BasicMaterial"
+                        //     })
+                        //
+                        //     var data = builder.build(parseData);
+                        //
+                        //     var material = getMaterial(data);
+                        //     expect(material.side).toEqual(wd.ESide.FRONT);
+                        //
+                        //
+                        //
+                        //
+                        //
+                        //
+                        //     setMaterial({
+                        //         type:"BasicMaterial",
+                        //         doubleSided:true
+                        //     })
+                        //
+                        // var data = builder.build(parseData);
+                        //
+                        // var material = getMaterial(data);
+                        // expect(material).toBeInstanceOf(wd.BasicMaterial);
+                        //     expect(material.side).toEqual(wd.ESide.BOTH);
+                        // });
+
+                        describe("else if type === 'LightMaterial', add LightMaterial", function(){
+                            it("common test", function(){
+                                var materialData = {
+                                    type:"LightMaterial",
+                                    doubleSided:true,
+
+                                    diffuseColor:createColor([1,1,0]),
+                                    specularColor:createColor([0.2,1,0]),
+
+                                    diffuseMap:wd.ImageTexture.create({}),
+                                    specularMap:wd.ImageTexture.create({a:1}),
+                                    normalMap:wd.ImageTexture.create({a:1}),
+                                    lightMap:wd.ImageTexture.create({a:1}),
+
+                                    shininess: 10,
+
+                                    transparent:true,
+                                    opacity: 0
+                                };
+                                setMaterial(materialData);
+
+
+
+
+                                var data = builder.build(parseData);
+
+
+
+
+                                var material = getMaterial(data);
+                                expect(material).toBeInstanceOf(wd.LightMaterial);
+                                expect(material.side).toEqual(wd.ESide.BOTH);
+                                judgeColorEqual(material.color, materialData.diffuseColor);
+                                judgeColorEqual(material.specularColor, materialData.specularColor);
+
+                                expect(material.diffuseMap).toEqual(materialData.diffuseMap);
+                                expect(material.specularMap).toEqual(materialData.specularMap);
+                                expect(material.lightMap).toEqual(materialData.lightMap);
+                                expect(material.normalMap).toEqual(materialData.normalMap);
+
+                                expect(material.shininess).toEqual(materialData.shininess);
+                            });
+
+                            describe("test set blend", function () {
+                                it("set blendType to be NORMAL", function () {
+                                    var materialData = {
+                                        type:"LightMaterial",
+
+                                        transparent:true,
+                                        opacity: 0.1
+                                    };
+                                    setMaterial(materialData);
+
+
+
+
+                                    var data = builder.build(parseData);
+
+
+
+
+                                    var material = getMaterial(data);
+                                    expect(material).toBeInstanceOf(wd.LightMaterial);
+                                    expect(material.blend).toBeTruthy();
+                                    expect(material.opacity).toEqual(0.1);
+                                    expect(material.blendType).toEqual(wd.EBlendType.NORMAL);
+                                });
+                                it("test opacity = 0", function () {
+                                    var materialData = {
+                                        type:"LightMaterial",
+
+                                        transparent:true,
+                                        opacity: 0
+                                    };
+                                    setMaterial(materialData);
+
+
+
+
+                                    var data = builder.build(parseData);
+
+
+
+
+                                    var material = getMaterial(data);
+                                    expect(material).toBeInstanceOf(wd.LightMaterial);
+
+                                    expect(material.blend).toBeTruthy();
+                                    expect(material.opacity).toEqual(0);
+                                    expect(material.blendType).toEqual(wd.EBlendType.NORMAL);
+                                });
+                            });
+
+                            describe("test lightModel", function(){
+                                it("if it's LAMBERT, log 'not support' info and use PHONG instead", function () {
+                                    sandbox.stub(wd.Log, "log");
+                                    setMaterial({
+                                        type:"LightMaterial",
+                                        lightModel:wd.ELightModel.LAMBERT
+                                    });
+
+
+
+
+                                    var data = builder.build(parseData);
+
+
+                                    expect(wd.Log.log).toCalledOnce();
+                                    var material = getMaterial(data);
+                                    expect(material.lightModel).toEqual(wd.ELightModel.PHONG);
+                                });
+                                it("else, set lightModel", function () {
+                                    setMaterial({
+                                        type:"LightMaterial",
+                                        lightModel:wd.ELightModel.CONSTANT
+                                    });
+
+
+
+
+                                    var data = builder.build(parseData);
+
+
+                                    var material = getMaterial(data);
+                                    expect(material.lightModel).toEqual(wd.ELightModel.CONSTANT);
+                                });
+                            });
+                        });
+                    });
                 });
 
                 it("add MeshRenderer component", function(){
-                        setComponent({
-                        })
+                    setComponent({
+                        material:{
+                            type:"LightMaterial"
+                        }
+                    })
 
 
                         var data = builder.build(parseData);

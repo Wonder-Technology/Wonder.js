@@ -9,7 +9,7 @@ module wd{
         private _arrayBufferMap:wdCb.Hash<ArrayBuffer> = null;
         private _imageMap:wdCb.Hash<HTMLImageElement> = null;
         private _json:IWDJsonData = null;
-        // private _materialParser = WDMaterialParser.create();
+        private _materialParser = WDMaterialParser.create();
 
         public parse(json:IWDJsonData, object:IWDObjectData, mesh:IWDMesh, arrayBufferMap:wdCb.Hash<ArrayBuffer>, imageMap:wdCb.Hash<HTMLImageElement>):void{
             this._json = json;
@@ -100,9 +100,11 @@ module wd{
             WDUtils.addData(geometry, "texCoords", texCoords);
             WDUtils.addData(geometry, "faces", faces);
 
-            // WDUtils.addData(geometry, "drawMode", this._parseDrawMode(primitive.mode));
+            WDUtils.addData(geometry, "drawMode", this._parseDrawMode(primitive.mode));
 
-            // geometry.material = this._materialParser.parse(json, primitive.material, this._imageMap);
+            if(!!primitive.material){
+                geometry.material = this._materialParser.parse(json, primitive.material, this._imageMap);
+            }
 
             return geometry;
         }

@@ -34,18 +34,18 @@ module wd{
             return this._data;
         }
 
-        private _parseMetadata(){
-            var metadata = <any>{},
-                json = this._json;
-
-            for(let i in json.asset){
-                if(json.asset.hasOwnProperty(i)){
-                    metadata[i] = json.asset[i];
-                }
-            }
-
-            this._data.metadata = metadata;
-        }
+        // private _parseMetadata(){
+        //     var metadata = <any>{},
+        //         json = this._json;
+        //
+        //     for(let i in json.asset){
+        //         if(json.asset.hasOwnProperty(i)){
+        //             metadata[i] = json.asset[i];
+        //         }
+        //     }
+        //
+        //     this._data.metadata = metadata;
+        // }
 
         private _parseObjects(){
             var self = this,

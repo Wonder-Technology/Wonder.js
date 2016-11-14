@@ -184,7 +184,9 @@ export class Converter {
         verticeIndices,
         normalIndices,
         texCoordIndices,
-        colorIndices
+        colorIndices,
+        material,
+        mode
     }) {
         var vertices = [],
             texCoords = [],
@@ -247,10 +249,20 @@ export class Converter {
 
         // this._setMorphTargets(source, source.verticeIndices, source.normalIndices);
 
-        return {
+        let result:TargetPrimitive = <any>{
             attributes: attributes,
             indices: newIndices
         }
+
+        if(!!material){
+            result.material = material;
+        }
+
+        if(!!mode){
+            result.mode = mode;
+        }
+
+        return result;
     }
 
     private _setTwoComponentDataWhenParse(targetDatas:Array<number>, sourceDatas:Array<number>, dataIndices:Array<number>, indexArr:Array<number>, verticeIndiceArr:Array<number>) {
@@ -342,6 +354,8 @@ type SourcePrimitive = {
     normalIndices:Array<number>;
     texCoordIndices:Array<number>;
     colorIndices:Array<number>;
+    material:string;
+    mode:number;
 }
 
 type TargetJsonData = {
@@ -355,6 +369,8 @@ type TargetJsonData = {
 type TargetPrimitive = {
     attributes: Attribute;
     indices:Array<number>;
+    material:string;
+    mode:number;
 }
 
 type Attribute = {

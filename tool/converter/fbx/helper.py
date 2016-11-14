@@ -1,3 +1,5 @@
+import os
+
 from fbx import *
 
 # #####################################################
@@ -33,7 +35,36 @@ def hasUniqueName(o, class_id):
 
     return True
 
-def getObjectName(o, forcePrefix = False, defaultName = "defaultName"):
+def getObjectId(o, forcePrefix = True, defaultName = "defaultName"):
+    return _getId(o, FbxNode.ClassId, "Object", forcePrefix, defaultName)
+
+def getMaterialId(o, forcePrefix = True, defaultName = "defaultMaterialName"):
+    return _getId(o, FbxSurfaceMaterial.ClassId, "Material", forcePrefix, defaultName)
+
+
+def getTextureId(t, forcePrefix = True):
+    if type(t) is FbxFileTexture:
+        texture_file = t.GetFileName()
+        texture_id = os.path.splitext(os.path.basename(texture_file))[0]
+    else:
+        texture_id = t.GetName()
+        if texture_id == "_empty_":
+            texture_id = ""
+    prefix = ""
+    # if option_prefix or force_prefix:
+    if forcePrefix:
+        prefix = "Texture_%s_" % t.GetUniqueID()
+        if len(texture_id) == 0:
+            prefix = prefix[0:len(prefix)-1]
+    return prefix + texture_id
+
+def getSamplerId(textureId):
+    return textureId.replace("Texture_", "Sampler_")
+
+def getImageId(textureId):
+    return textureId.replace("Texture_", "Image_")
+
+def _getId(o, classId, typeName, forcePrefix = False, defaultName = "defaultMaterialName"):
     if not o:
         return ""
 
@@ -41,12 +72,12 @@ def getObjectName(o, forcePrefix = False, defaultName = "defaultName"):
     object_id = o.GetUniqueID()
 
     if not forcePrefix:
-        forcePrefix = not hasUniqueName(o, FbxNode.ClassId)
+        forcePrefix = not hasUniqueName(o, classId)
 
     prefix = ""
     # if option_prefix or force_prefix:
     if forcePrefix:
-        prefix = "Object_%s_" % object_id
+        prefix = "%s_%s_" % (typeName,object_id)
 
 
     name = prefix + object_name
@@ -55,6 +86,7 @@ def getObjectName(o, forcePrefix = False, defaultName = "defaultName"):
         return defaultName
 
     return name
+
 
 def setName(o, dict):
     name = o.GetName()

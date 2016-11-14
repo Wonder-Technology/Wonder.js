@@ -107,8 +107,8 @@ module wd{
 
         private _createLoadAllAssetsStream(url:string, json:IWDJsonData):wdFrp.Stream{
             return wdFrp.fromArray([
-                this._createLoadBuffersStream(url, json)
-                // this._createLoadImageAssetStream(url, json)
+                this._createLoadBuffersStream(url, json),
+                this._createLoadImageAssetStream(url, json)
             ])
                 .mergeAll();
         }
@@ -127,19 +127,19 @@ module wd{
                 }
             );
         }
-        //
-        // private _createLoadImageAssetStream(filePath:string, json:IWDJsonData):wdFrp.Stream{
-        //     var imageMap = this._imageMap;
-        //
-        //     return this._createLoadAssetStream(filePath, json, json.images, imageMap, (id, url) => {
-        //             return ImageLoader.load(url)
-        //                 .do((image:HTMLImageElement) => {
-        //                     imageMap.addChild(id, image);
-        //                 });
-        //         }
-        //     );
-        // }
-        //
+
+        private _createLoadImageAssetStream(filePath:string, json:IWDJsonData):wdFrp.Stream{
+            var imageMap = this._imageMap;
+
+            return this._createLoadAssetStream(filePath, json, json.images, imageMap, (id, url) => {
+                    return ImageLoader.load(url)
+                        .do((image:HTMLImageElement) => {
+                            imageMap.addChild(id, image);
+                        });
+                }
+            );
+        }
+
         private _createLoadAssetStream(filePath:string, json:IWDJsonData, datas:any, dataMap:wdCb.Hash<any>, loadStreamFunc:(id:string, url:string) => wdFrp.Stream):wdFrp.Stream{
             var streamArr = [];
 
