@@ -630,7 +630,7 @@ if __name__ == "__main__":
         # TODO master merge geometry
 
         # output_content = extract_scene(scene, os.path.basename(args[0]))
-        output_content = Parser(converter).parse(scene, os.path.basename(args[0]))
+        output_content = Parser(converter).parse(scene, os.path.join(os.getcwd(), args[0]))
 
         #
         # output_content = {

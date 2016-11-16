@@ -67,12 +67,25 @@ def getBaseName(uri):
 
     return uri[ index+1 : len(uri) ]
 
-def getBaseName(uri):
-    index = uri.rfind( '/' )
-    if index == -1:
-        index = uri.rfind( '\\' )
 
-    return uri[ index+1 : len(uri) ]
+import urlparse
+import posixpath
+
+def getRelativeUrl(destination, source):
+    u_dest = urlparse.urlsplit(destination)
+    u_src = urlparse.urlsplit(source)
+
+    _uc1 = urlparse.urlunsplit(u_dest[:2] + tuple('' for i in range(3)))
+    _uc2 = urlparse.urlunsplit(u_src[:2] + tuple('' for i in range(3)))
+
+    if _uc1 != _uc2:
+        ## This is a different domain
+        return destination
+
+    _relpath = posixpath.relpath(u_dest.path, posixpath.dirname(u_src.path))
+
+    return urlparse.urlunsplit(('', '', _relpath, u_dest.query, u_dest.fragment))
+
 
 def getSamplerId(textureId):
     return textureId.replace("Texture_", "Sampler_")

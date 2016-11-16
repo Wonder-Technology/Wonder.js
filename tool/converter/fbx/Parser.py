@@ -1,16 +1,16 @@
 from helper import *
 from parseMesh import *
-from parseMaterial import *
+from MaterialParser import *
 from fbx import *
 
 class Parser(object):
     def __init__(self, converter):
         self._converter = converter
 
-    def parse(self, scene, filename):
-        # TODO parse nodes, meshes(geometry data)
-
+    def parse(self, scene, fileUrl):
         output = {}
+
+        self._materialParser = MaterialParser(output, fileUrl)
 
 
         # global_settings = scene.GetGlobalSettings()
@@ -178,7 +178,8 @@ class Parser(object):
 
                 parseMesh(mesh, meshData)
 
-                parseMaterial(mesh, meshData, output)
+                self._materialParser.parse(mesh, meshData)
+                # parseMaterial(mesh, meshData, output)
 
                 # print ("materialId %s" % output["materials"])
 
@@ -199,10 +200,10 @@ def _parseTransform(nodeData, node):
     localMatrixData = []
 
     for i in range(4):
-        column = nodeLocalMatrix.GetColumn(i)
-        localMatrixData.append(column[0])
-        localMatrixData.append(column[1])
-        localMatrixData.append(column[2])
-        localMatrixData.append(column[3])
+        row = nodeLocalMatrix.GetRow(i)
+        localMatrixData.append(row[0])
+        localMatrixData.append(row[1])
+        localMatrixData.append(row[2])
+        localMatrixData.append(row[3])
 
     nodeData["matrix"] = localMatrixData
