@@ -366,6 +366,8 @@ describe("cubemap texture", function() {
                 });
 
                 var result = texture.clone();
+                texture.init();
+                result.init();
 
                 expect(texture.glTexture === glTexture1).toBeTruthy();
                 expect(result.glTexture === glTexture2).toBeTruthy();

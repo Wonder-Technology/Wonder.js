@@ -70,17 +70,17 @@ module wd{
         private _sourceRegionForGLSLCache:RectRegion = null;
 
         public initWhenCreate(...args){
-            var gl = DeviceManager.getInstance().gl;
-            //texture.addEventListener( "dispose", onTextureDispose );
-
-            this.glTexture = gl.createTexture();
-
             //_this.info.memory.textures ++;
 
             this.needUpdate = true;
         }
 
         public init(){
+            if(this.glTexture === null){
+                let gl = DeviceManager.getInstance().gl;
+
+                this.glTexture = gl.createTexture();
+            }
         }
 
         public dispose(){

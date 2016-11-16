@@ -838,7 +838,149 @@ describe("WDParser", function () {
                     });
                 });
             });
-            // });
+
+            describe("optimize", function(){
+                beforeEach(function(){
+                });
+
+                describe("the texture which has the same image source+same filter+same wrap share the same webglTexture", function(){
+                    var gl;
+
+                    beforeEach(function(){
+                        sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+
+                        gl = wd.DeviceManager.getInstance().gl;
+                    });
+
+                    it("test1", function(){
+                        gl.createTexture.onCall(0).returns({})
+                        gl.createTexture.onCall(1).returns({a:1})
+
+                        setJson({
+
+                            "meshes": {
+                                "geometry1": {
+                                    "primitives": [
+                                        {
+                                            "attributes": getAttributeData(),
+                                            "indices": getIndiceData(),
+                                            "material": "mat1",
+                                            "mode": 4
+                                        }
+                                    ]
+                                },
+
+                                "geometry2": {
+                                    "primitives": [
+                                        {
+                                            "attributes": getAttributeData(),
+                                            "indices": getIndiceData(),
+                                            "material": "mat2",
+                                            "mode": 4
+                                        }
+                                    ]
+                                }
+                            },
+                            "nodes": {
+                                "node_1": {
+                                    "children": [
+                                        "node_2"
+                                    ],
+                                    "name": "1",
+                                    "mesh": "geometry1"
+                                },
+                                "node_2": {
+                                    "children": [
+                                    ],
+                                    "name": "2",
+                                    "mesh": "geometry2"
+                                }
+                            },
+
+
+                            "materials": {
+                                "mat1": {
+                                    "name": "Red",
+                                    "technique": "PHONG",
+                                    values:{
+                                        "diffuse": "texture1"
+                                    }
+                                },
+                                "mat2": {
+                                    "name": "Red",
+                                    "technique": "PHONG",
+                                    values:{
+                                        "diffuse": "texture2"
+                                    }
+                                }
+                            },
+
+                            "textures": {
+                                "texture1": {
+                                    "format": 6408,
+                                    "internalFormat": 6408,
+                                    "sampler": "sampler_0",
+                                    "source": "Image0001",
+                                    "target": 3553,
+                                    "type": 5121
+                                },
+
+                                "texture2": {
+                                    "format": 6408,
+                                    "internalFormat": 6408,
+                                    "sampler": "sampler_1",
+                                    "source": "Image0001",
+                                    "target": 3553,
+                                    "type": 5121
+                                }
+                            },
+                            "images": {
+                                "Image0001": {
+                                    "name": "Image0001",
+                                    "uri": "Cesium_Logo_Flat.png"
+                                }
+                            },
+                            "samplers": {
+                                "sampler_0": {
+                                    "magFilter": 9729,
+                                    "minFilter": 9987,
+                                    "wrapS": 10497,
+                                    "wrapT": 10497,
+
+                                    "repeatRegion": [0, 0, 1, 1]
+                                },
+                                "sampler_1": {
+                                    "magFilter": 9729,
+                                    "minFilter": 9987,
+                                    "wrapS": 10497,
+                                    "wrapT": 10497,
+                                    "repeatRegion": [0,0.1, 2,3]
+
+                                }
+                            }
+                        })
+
+
+                        var data = parser.parse(json, arrayBufferMap, imageMap);
+
+
+                        var map1 = data.objects.getChild(0).components.getChild(0).material.diffuseMap;
+                        var map2 = data.objects.getChild(0).children.getChild(0).components.getChild(0).material.diffuseMap;
+
+
+                        expect(map1.glTexture === map2.glTexture).toBeTruthy();
+
+                        // expect(map).toBeInstanceOf(wd.ImageTexture);
+                        // expect(map.source).toEqual(image);
+                        // expect(map.format).toEqual(wd.ETextureFormat.RGBA);
+                        // expect(map.type).toEqual(wd.ETextureType.UNSIGNED_BYTE);
+                        // expect(map.minFilter).toEqual(wd.ETextureFilterMode.LINEAR);
+                        // expect(map.magFilter).toEqual(wd.ETextureFilterMode.LINEAR);
+                        // expect(map.wrapS).toEqual(wd.ETextureWrapMode.REPEAT);
+                        // expect(map.wrapT).toEqual(wd.ETextureWrapMode.REPEAT);
+                    });
+                });
+            });
         });
 
         // describe("parse light", function(){

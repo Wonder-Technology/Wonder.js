@@ -8,6 +8,7 @@ module wd{
 
         private _imageMap:wdCb.Hash<HTMLImageElement> = null;
         private _json:IWDJsonData = null;
+        private _glTextureMap:wdCb.Hash<WebGLTexture> = wdCb.Hash.create<WebGLTexture>();
 
         public parse(json:IWDJsonData, materialId:string, imageMap:wdCb.Hash<HTMLImageElement>):IWDMaterialForAssembler{
             var materialData = null;
@@ -156,37 +157,61 @@ module wd{
         //@require(function(textureId:string){
         //assert(!!this._json.textures[textureId], Log.info.FUNC_NOT_EXIST(`textureId:${textureId}`));
         //})
-        private _getTexture(textureId:string):Texture{
-            var texture = null,
+        private _getTexture(textureDataId:string):Texture{
+            var textureData:IWDTexture = null,
                 asset:TextureAsset = null;
 
-            if(!this._json.textures || !this._json.textures[textureId]) {
+            if(!this._json.textures || !this._json.textures[textureDataId]) {
                 return null;
             }
 
+            textureData = this._json.textures[textureDataId];
 
-            texture = this._json.textures[textureId];
+            asset = this._createTextureAsset(textureData.target, textureData.source);
 
-            asset = this._createTextureAsset(texture.target, texture.source);
+            if(!!textureData.format){
+                asset.format = this._getTextureFormat(textureData.format);
 
-            if(!!texture.format){
-                asset.format = this._getTextureFormat(texture.format);
-
-                if(!!texture.internalFormat){
-                    if(texture.internalFormat !== texture.format){
-                        Log.warn(`texture.internalFormat(${texture.internalFormat}) !== texture.format(${texture.format}), here take texture.format value as their value`);
+                if(!!textureData.internalFormat){
+                    if(textureData.internalFormat !== textureData.format){
+                        Log.warn(`textureData.internalFormat(${textureData.internalFormat}) !== textureData.format(${textureData.format}), here take textureData.format value as their value`);
                     }
                 }
             }
 
-            if(!!texture.type){
-                asset.type = this._getTextureType(texture.type);
+            if(!!textureData.type){
+                asset.type = this._getTextureType(textureData.type);
             }
 
-            this._addTextureSampler(asset, texture.sampler);
+            this._addTextureSampler(asset, textureData.sampler);
 
-            //todo optimize:if texture asset same, share its texture!
-            return asset.toTexture();
+            let glTexture:WebGLTexture = this._getGLTexture(asset, textureData.source),
+                texture = asset.toTexture();
+
+            if(glTexture !== null){
+                texture.glTexture = glTexture;
+            }
+
+            return texture;
+        }
+
+        private _getGLTexture(asset:TextureAsset, sourceId:string){
+            var key:string = this._buildGLTextureMapKey(asset, sourceId),
+                glTexture:WebGLTexture = null;
+
+            if(this._glTextureMap.hasChild(key)){
+                return this._glTextureMap.getChild(key);
+            }
+
+            glTexture = DeviceManager.getInstance().gl.createTexture();
+
+            this._glTextureMap.addChild(key, glTexture);
+
+            return glTexture;
+        }
+
+        private _buildGLTextureMapKey(asset:TextureAsset, sourceId:string){
+            return `${sourceId}_${asset.wrapS}_${asset.wrapT}_${asset.magFilter}_${asset.minFilter}`;
         }
 
         private _createTextureAsset(target:number, imageId:string){
