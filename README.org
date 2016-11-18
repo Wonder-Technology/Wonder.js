@@ -108,7 +108,7 @@ Here shows a spinning cube sample:
       window.onload = function () {
           //set full screen and init engine
           wd.Main.setConfig({
-              screenSize: wd.ScreenSize.FULL
+              screenSize: wd.EScreenSize.FULL
           }).init();
 
           initSample();
