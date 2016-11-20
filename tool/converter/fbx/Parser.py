@@ -1,6 +1,7 @@
 from helper import *
 from parseMesh import *
 from MaterialParser import *
+from KeyFrameAnimationParser import *
 from fbx import *
 
 class Parser(object):
@@ -11,6 +12,7 @@ class Parser(object):
         output = {}
 
         self._materialParser = MaterialParser(output, fileUrl)
+        self._keyFrameAnimationParser = KeyFrameAnimationParser(output)
 
 
         # global_settings = scene.GetGlobalSettings()
@@ -125,6 +127,8 @@ class Parser(object):
         # }
 
         if node:
+            self._keyFrameAnimationParser.parse(scene)
+
             for i in range(node.GetChildCount()):
                 nodeChild = node.GetChild(i)
 

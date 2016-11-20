@@ -16,6 +16,9 @@ class MaterialParser(object):
             if materialCount > 1:
                 print ("not support multi materials! only use the first material")
 
+            if materialCount == 0:
+                return
+
             # for i in range(materialCount):
             material = node.GetMaterial(0)
             materialId = getMaterialId(material)

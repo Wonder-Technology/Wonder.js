@@ -41,6 +41,14 @@ def getObjectId(o, forcePrefix = True, defaultName = "defaultName"):
 def getMaterialId(o, forcePrefix = True, defaultName = "defaultMaterialName"):
     return _getId(o, FbxSurfaceMaterial.ClassId, "Material", forcePrefix, defaultName)
 
+def getAnimationId(animStack, forcePrefix = True, defaultName = "defaultAnimName"):
+    name = animStack.GetName()
+
+    if name:
+        return name
+
+    return _getId(animStack, FbxAnimStack.ClassId, "Animation", forcePrefix, defaultName)
+
 
 def getTextureId(t, forcePrefix = True):
     if type(t) is FbxFileTexture:
@@ -116,6 +124,8 @@ def _getId(o, classId, typeName, forcePrefix = False, defaultName = "defaultMate
 
     return name
 
+def getName(o):
+    return o.GetName()
 
 def setName(o, dict):
     name = o.GetName()
