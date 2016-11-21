@@ -205,9 +205,6 @@ def _parseTransform(nodeData, node):
 
     for i in range(4):
         row = nodeLocalMatrix.GetRow(i)
-        localMatrixData.append(row[0])
-        localMatrixData.append(row[1])
-        localMatrixData.append(row[2])
-        localMatrixData.append(row[3])
+        addVector4Data(localMatrixData, row)
 
     nodeData["matrix"] = localMatrixData

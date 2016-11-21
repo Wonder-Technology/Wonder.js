@@ -1,0 +1,1 @@
+PRECISE_DIGIT = 6

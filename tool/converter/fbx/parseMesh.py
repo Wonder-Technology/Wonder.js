@@ -50,12 +50,9 @@ def convertVectorToList(vectorList):
         data = vectorList[i]
 
         if(isinstance(data, FbxVector4)):
-            resultList.append(data[0])
-            resultList.append(data[1])
-            resultList.append(data[2])
+            addVector3Data(resultList, data)
         elif(isinstance(data, FbxVector2)):
-            resultList.append(data[0])
-            resultList.append(data[1])
+            addVector2Data(resultList, data)
         else:
             raise AssertionError("not support data")
 
@@ -263,17 +260,14 @@ def getValuesFromDict(dict, layerKey):
     if layerKey == LayerKey.TEXCOORD:
         for key, value in sorted(dict.items(), key = operator.itemgetter(0)):
             # print (key)
-            values.append(value[0])
-            values.append(value[1])
+            addVector2Data(values, value)
     elif layerKey == LayerKey.NORMAL or \
                     layerKey == LayerKey.COLOR:
         for key, value in sorted(dict.items(), key = operator.itemgetter(0)):
             # if(key < 1000):
             #     print (key)
             # print (key)
-            values.append(value[0])
-            values.append(value[1])
-            values.append(value[2])
+            addVector3Data(values, value)
 
     # print (len(values))
     return values

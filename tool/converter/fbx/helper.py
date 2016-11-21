@@ -1,6 +1,7 @@
 import os
 
 from fbx import *
+from globalDefine import *
 
 # #####################################################
 # Helpers
@@ -135,3 +136,29 @@ def setName(o, dict):
 
 def getPrefixedName(o, prefix):
     return (prefix + '_%s_') % o.GetUniqueID() + o.GetName()
+
+
+
+def addVector2Data(list, vec2Data):
+    list.append(roundUtil(vec2Data[0]))
+    list.append(roundUtil(vec2Data[1]))
+
+def addVector3Data(list, vec3Data):
+    list.append(roundUtil(vec3Data[0]))
+    list.append(roundUtil(vec3Data[1]))
+    list.append(roundUtil(vec3Data[2]))
+
+
+
+
+def addVector4Data(list, vec4Data):
+    list.append(roundUtil(vec4Data[0]))
+    list.append(roundUtil(vec4Data[1]))
+    list.append(roundUtil(vec4Data[2]))
+    list.append(roundUtil(vec4Data[3]))
+
+def roundUtil(data):
+    if data < 0.0001:
+        return 0
+
+    return round(data, PRECISE_DIGIT)

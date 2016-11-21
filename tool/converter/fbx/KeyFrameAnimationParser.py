@@ -5,13 +5,18 @@ class KeyFrameAnimationParser(object):
     def __init__(self, output):
         self._output = output
         self._animationName = None
-        # self._globalSetting = None
+        self._globalSetting = None
+        self._timeMode = None
 
     def parse(self, scene):
         animationDatas = {}
         self._output["animations"] = animationDatas
 
-        # self._globalSetting = scene.GetGlobalSettings()
+        self._globalSetting = scene.GetGlobalSettings()
+
+        # 11->EMode.eFrames24
+        self._timeMode = self._globalSetting.GetTimeMode() or 11
+        # print (self._globalSetting.GetCustomFrameRate())
 
         for i in range(scene.GetSrcObjectCount(FbxCriteria.ObjectType(FbxAnimStack.ClassId))):
             animStack = scene.GetSrcObject(FbxCriteria.ObjectType(FbxAnimStack.ClassId), i)
@@ -23,8 +28,9 @@ class KeyFrameAnimationParser(object):
             self._animationName = getAnimationId(animStack)
             animationDatas[self._animationName] = animationData
 
+            self._parseAnimationStackData(animStack, scene.GetRootNode(), animationData)
 
-            self._parseLayers(animStack, scene.GetRootNode(), animationData)
+            # self._parseLayers(animStack, scene.GetRootNode(), animationData)
             # DisplayAnimation(lAnimStack, pScene->GetRootNode(), true);
 
         self._removeEmptyAnimationData()
@@ -36,163 +42,82 @@ class KeyFrameAnimationParser(object):
             if not data.has_key("channels"):
                 del animations[key]
 
-    def _parseLayers(self, animStack, rootNode, animationData):
-        animLayerCount = animStack.GetMemberCount(FbxCriteria.ObjectType(FbxAnimLayer .ClassId))
+    def _parseAnimationStackData(self, animStack, node, animationData):
+        startFrame = animStack.GetLocalTimeSpan().GetStart().GetFrameCount(self._timeMode)
+        endFrame = animStack.GetLocalTimeSpan().GetStop().GetFrameCount(self._timeMode)
+        animLengthInFrame = endFrame - startFrame + 1
 
-        print ("animLayerCount %d " % animLayerCount)
+        translationCurveNode = node.LclTranslation.GetCurveNode(animStack)
+        rotationCurveNode = node.LclRotation.GetCurveNode(animStack)
+        scalingCurveNode = node.LclScaling.GetCurveNode(animStack)
 
-        # TODO should only support one layer?(not support blend yet)
-        for i in range(animLayerCount):
-            layer = animStack.GetMember(FbxCriteria.ObjectType(FbxAnimLayer .ClassId), i)
+        # print (translationCurveNode, rotationCurveNode, scalingCurveNode)
 
-            self._parseLayer(layer, rootNode, animationData)
+        if self._hasCurveData(translationCurveNode) or self._hasCurveData(rotationCurveNode) or self._hasCurveData(scalingCurveNode):
+            # TODO not support Constant interpolation?
+            interpolation = self._parseInterpolation(self._getCurveWhichHasData(translationCurveNode, rotationCurveNode, scalingCurveNode))
 
-    def _parseLayer(self, animLayer, node, animationData):
-        self._parseAnimationData(node, animLayer, animationData)
+            self._parseData(animLengthInFrame, startFrame, endFrame, node, interpolation, translationCurveNode, rotationCurveNode, scalingCurveNode, animationData)
+
+
+            # print ("parse %s ", node.GetName() + "|" + self._animationName)
+
 
         for i in range(node.GetChildCount()):
-            self._parseLayer(animLayer, node.GetChild(i), animationData)
+            self._parseAnimationStackData(animStack, node.GetChild(i), animationData)
 
-    def _parseAnimationData(self, node, animLayer, animationData):
-        # animationData["channels"] =
+    def _hasCurveData(self, curveNode):
+        # return curveNode and curveNode.GetCurveCount(0) > 0
+        return curveNode
 
-        print ("parse %s ", node.GetName())
-
-        self._parseLocalTranslationData(animLayer, node, animationData)
-        self._parseLocalRotationData(animLayer, node, animationData)
-        self._parseLocalScaleData(animLayer, node, animationData)
-
-    def _parseLocalTranslationData(self, animLayer, node, animationData):
-        curveX = node.LclTranslation.GetCurve(animLayer, "X")
-        curveY = node.LclTranslation.GetCurve(animLayer, "Y")
-        curveZ = node.LclTranslation.GetCurve(animLayer, "Z")
-
-        self._parseTransformData("translation", animLayer, node, animationData, curveX, curveY, curveZ)
-
-    def _parseTransformData(self, path, animLayer, node, animationData, curveX, curveY, curveZ):
-
-        if not self._isCurveHasData(curveX) and not self._isCurveHasData(curveY) and not self._isCurveHasData(curveZ):
-            return
-
-        # TODO fix!
-        if (self._isCurveHasData(curveX) and self._isCurveHasData(curveY) and curveX.KeyGetCount() != curveY.KeyGetCount())\
-                or (self._isCurveHasData(curveX) and self._isCurveHasData(curveZ) and curveX.KeyGetCount() != curveZ.KeyGetCount()) \
-                or (self._isCurveHasData(curveY) and self._isCurveHasData(curveZ) and curveY.KeyGetCount() != curveZ.KeyGetCount()):
-            if self._isCurveHasData(curveX):
-                print ("curveX key count:%d" % curveX.KeyGetCount())
-            if self._isCurveHasData(curveY):
-                print ("curveY key count:%d" % curveY.KeyGetCount())
-            if self._isCurveHasData(curveZ):
-                print ("curveZ key count:%d" % curveZ.KeyGetCount())
-            print ("error curve data:the %s curve data components' count are different with node:%s" % (path, getName(node)))
-            return
+    def _getCurveWhichHasData(self, translationCurveNode, rotationCurveNode, scalingCurveNode):
+        if self._hasCurveData(translationCurveNode):
+            # if translationCurveNode:
+            #     print (translationCurveNode.GetChannelsCount(), translationCurveNode.GetCurveCount(0), translationCurveNode.GetCurve(0))
+            return translationCurveNode.GetCurve(0)
 
 
-        curveWhichHasData = None
+        if self._hasCurveData(rotationCurveNode):
+            return rotationCurveNode.GetCurve(0)
 
-        if self._isCurveHasData(curveX):
-            curveWhichHasData = curveX
-        elif self._isCurveHasData(curveY):
-            curveWhichHasData = curveY
-        else:
-            curveWhichHasData = curveZ
+        if self._hasCurveData(scalingCurveNode):
+            return scalingCurveNode.GetCurve(0)
 
-        # has no data(test with the fbx file generated by blender)
-        if curveWhichHasData.KeyGetCount() <= 2:
-            return
+        return None
 
-        self._parseData(animationData, getObjectId(node), path, curveWhichHasData, curveX, curveY, curveZ)
-
-    def _isCurveHasData(self, curve):
-        return curve and curve.KeyGetCount() > 1
-
-    def _parseLocalRotationData(self, animLayer, node, animationData):
-        curveX = node.LclRotation.GetCurve(animLayer, "X")
-        curveY = node.LclRotation.GetCurve(animLayer, "Y")
-        curveZ = node.LclRotation.GetCurve(animLayer, "Z")
-
-
-        self._parseTransformData("rotation", animLayer, node, animationData, curveX, curveY, curveZ)
-
-        # # if curveX and curveY and curveZ:
-        # #     if curveX.KeyGetCount() != curveY.KeyGetCount() or curveX.KeyGetCount() != curveZ.KeyGetCount():
-        # #         # print (curveX.KeyGetCount(), curveY.KeyGetCount(), curveZ.KeyGetCount())
-        # #         print ("error curve data:the rotation curve data components' count are different with node:%s" % getName(node))
-        # #         return
-        # #
-        # #     print ("has curve rotation")
-        # self._parseData(animationData, getObjectId(node), "rotation", curveWhichHasData, curveX, curveY, curveZ)
-
-    def _parseLocalScaleData(self, animLayer, node, animationData):
-        curveX = node.LclScaling.GetCurve(animLayer, "X")
-        curveY = node.LclScaling.GetCurve(animLayer, "Y")
-        curveZ = node.LclScaling.GetCurve(animLayer, "Z")
-
-        self._parseTransformData("scale", animLayer, node, animationData, curveX, curveY, curveZ)
-        # if curveX and curveY and curveZ:
-        #     if curveX.KeyGetCount() != curveY.KeyGetCount() or curveX.KeyGetCount() != curveZ.KeyGetCount():
-        #         print ("error curve data:the scale curve data components' count are different with node:%s" % getName(node))
-        #         return
-        #
-        #     # print ("has curve")
-        #     self._parseData(animationData, getObjectId(node), "scale", curveX.KeyGetCount(), curveX, curveY, curveZ)
-
-
-    def _parseData(self, animationData, nodeId, path, curveWhichHasData, curveX, curveY, curveZ):
-        # TODO not support Constant interpolation?
-        interpolation = self._parseInterpolation(curveWhichHasData)
+    def _parseData(self, animLengthInFrame, startFrame, endFrame, node, interpolation, translationCurveNode, rotationCurveNode, scalingCurveNode, animationData):
         timeList = []
-        valueList = []
+        translationValueList = []
+        rotationValueList = []
+        scalingValueList = []
 
-        keyCount = curveWhichHasData.KeyGetCount()
+        for i in range(animLengthInFrame):
+            time = FbxTime()
+            time.SetFrame(startFrame + i, self._timeMode)
 
-        # print (dir(self._globalSetting))
-        # animStack->GetLocalTimeSpan().GetStart()
-        # print (animStack->GetLocalTimeSpan().GetStart())
-        # print (self._globalSetting.GetCurrent)
-        # print (self._globalSetting.AnimationsFrameRate())
-        # print (self._animStack.GetLocalTimeSpan().GetStart().GetFrameCount())
-        print (self._animStack.GetLocalTimeSpan().GetStart().GetMilliSeconds())
-        print (self._animStack.GetLocalTimeSpan().GetStop().GetMilliSeconds())
+            timeList.append(time.GetMilliSeconds())
+            currTransform = node.EvaluateLocalTransform(time)
 
+            if self._hasCurveData(translationCurveNode):
+                addVector3Data(translationValueList, currTransform.GetT())
+            if self._hasCurveData(rotationCurveNode):
+                addVector4Data(rotationValueList, currTransform.GetQ())
+            if self._hasCurveData(scalingCurveNode):
+                addVector3Data(scalingValueList, currTransform.GetS())
 
+        if len(translationValueList) > 0:
+            self._addData(animationData, getObjectId(node), "translation", interpolation, timeList, translationValueList)
 
-        # print (self._animStack.GetLocalTimeSpan().GetStop().GetFrameCount())
-        # animTimeMode = self._globalSetting.Current().AnimationsTimeMode
+        if len(rotationValueList) > 0:
+            self._addData(animationData, getObjectId(node), "rotation", interpolation, timeList, rotationValueList)
 
-        # print (animTimeMode)
+        if len(scalingValueList) > 0:
+            self._addData(animationData, getObjectId(node), "scale", interpolation, timeList, scalingValueList)
 
-        # print ("curve key count %d" % keyCount)
-        for i in range(keyCount):
-            # if curveX.KeyGetTime(i).GetMilliSeconds() != curveY.KeyGetTime(i).GetMilliSeconds() or curveX.KeyGetTime(i).GetMilliSeconds() != curveZ.KeyGetTime(i).GetMilliSeconds():
-            #     raise AssertionError("the time of different components of curve data should be the same")
-
-            if (self._isCurveHasData(curveX) and self._isCurveHasData(curveY) and curveX.KeyGetTime(i).GetMilliSeconds() != curveY.KeyGetTime(i).GetMilliSeconds()) \
-                    or (self._isCurveHasData(curveX) and self._isCurveHasData(curveZ) and curveX.KeyGetTime(i).GetMilliSeconds() != curveZ.KeyGetTime(i).GetMilliSeconds()) \
-                    or (self._isCurveHasData(curveY) and self._isCurveHasData(curveZ) and curveY.KeyGetTime(i).GetMilliSeconds() != curveZ.KeyGetTime(i).GetMilliSeconds()):
-                raise AssertionError("the time of different components of curve data should be the same")
-
-            timeList.append(curveWhichHasData.KeyGetTime(i).GetMilliSeconds())
-            # print(curveWhichHasData.KeyGetTime(i).GetTimeString("", FbxUShort(256)))
-
-            if self._isCurveHasData(curveX):
-                valueList.append(curveX.KeyGetValue(i))
-            else:
-                valueList.append(0)
-
-            if self._isCurveHasData(curveY):
-                valueList.append(curveY.KeyGetValue(i))
-            else:
-                valueList.append(0)
-
-            if self._isCurveHasData(curveZ):
-                valueList.append(curveZ.KeyGetValue(i))
-            else:
-                valueList.append(0)
-
-        self._addData(animationData, nodeId, path, interpolation, timeList, valueList)
 
     def _parseInterpolation(self, curveWhichHasData):
+        # print (curveWhichHasData)
+        # return "LINEAR"
         # if curveX.KeyGetInterpolation(0) != curveY.KeyGetInterpolation(0) or curveX.KeyGetInterpolation(0) != curveZ.KeyGetInterpolation(0):
         #     raise AssertionError("the interpolation of one of animation->channels should be the same")
 
@@ -216,15 +141,6 @@ class KeyFrameAnimationParser(object):
         else:
             channels = animationData["channels"]
 
-        samplerId = self._getSamplerId(path)
-
-        channels.append({
-            "sampler": samplerId,
-            "target": {
-                "id": nodeId,
-                "path": path
-            }
-        })
 
         if not animationData.has_key("parameters"):
             animationData["parameters"] = {}
@@ -236,22 +152,65 @@ class KeyFrameAnimationParser(object):
             animationData["parameters"]["TIME"] = timeList
         else:
             # TODO asset time data should be equal
-            print (len(timeList))
-            pass
+            if len(animationData["parameters"]["TIME"]) != len(timeList):
+                raise AssertionError("exist TIME.len should equal timeList.len")
 
-        if animationData["parameters"].has_key(path):
-            raise AssertionError("parameters->%s shouldn't be defined before" % path)
 
-        animationData["parameters"][path] = valueList
+        index = self._findParameterDataIndex(path, animationData)
 
-        if animationData["samplers"].has_key(samplerId):
-            raise AssertionError("samplers->%s shouldn't be defined before" % samplerId)
+        samplerId = self._getSamplerId(path, index)
+
+        channels.append({
+            "sampler": samplerId,
+            "target": {
+                "id": nodeId,
+                "path": path
+            }
+        })
+
+        # if animationData["parameters"].has_key(path):
+        #     print(path)
+        # raise AssertionError("parameters->%s shouldn't be defined before" % path)
+
+        parameterDataKey = self._getParameterDataKey(path, index)
+
+        animationData["parameters"][parameterDataKey] = valueList
+
+        # if animationData["samplers"].has_key(samplerId):
+        #     print(samplerId)
+        # raise AssertionError("samplers->%s shouldn't be defined before" % samplerId)
 
         animationData["samplers"][samplerId] = {
             "input": "TIME",
             "interpolation": interpolation,
-            "output": path
+            "output": parameterDataKey
         }
 
-    def _getSamplerId(self, path):
-        return "%s_%s_sampler" % (self._animationName, path)
+    def _getParameterDataKey(self, path, index):
+        if index == 0:
+            return path
+
+        return path + str(index)
+
+    def _getSamplerId(self, path, index):
+        if index == 0:
+            return "%s_%s_sampler" % (self._animationName, path)
+
+        return "%s_%s%d_sampler" % (self._animationName, path, index)
+
+
+    def _findParameterDataIndex(self, path, animationData):
+        parameters = animationData["parameters"]
+
+        index = 0
+        key = path
+
+        while True:
+            if not parameters.has_key(key):
+                break
+
+            index += 1
+            key += str(index)
+
+        return index
+
