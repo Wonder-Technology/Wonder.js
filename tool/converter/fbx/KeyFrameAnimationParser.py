@@ -95,7 +95,8 @@ class KeyFrameAnimationParser(object):
             time = FbxTime()
             time.SetFrame(startFrame + i, self._timeMode)
 
-            timeList.append(time.GetMilliSeconds())
+
+            addFloor(timeList, time.GetSecondDouble(), 3)
             currTransform = node.EvaluateLocalTransform(time)
 
             if self._hasCurveData(translationCurveNode):

@@ -1,4 +1,5 @@
 import os
+import math
 
 from fbx import *
 from globalDefine import *
@@ -138,6 +139,10 @@ def getPrefixedName(o, prefix):
     return (prefix + '_%s_') % o.GetUniqueID() + o.GetName()
 
 
+def addFloor(list, data, digit = PRECISE_DIGIT):
+    d = pow(10, digit)
+
+    list.append(math.floor(d * data) / d)
 
 def addVector2Data(list, vec2Data):
     list.append(roundUtil(vec2Data[0]))
@@ -157,8 +162,8 @@ def addVector4Data(list, vec4Data):
     list.append(roundUtil(vec4Data[2]))
     list.append(roundUtil(vec4Data[3]))
 
-def roundUtil(data):
-    if data < 0.0001:
+def roundUtil(data, digit = PRECISE_DIGIT):
+    if math.fabs(data) < 0.0001:
         return 0
 
-    return round(data, PRECISE_DIGIT)
+    return round(data, digit)
