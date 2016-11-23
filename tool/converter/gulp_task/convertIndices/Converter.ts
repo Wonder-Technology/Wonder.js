@@ -17,13 +17,13 @@ var expect = chai.expect;
 
 export class Converter {
     public static create() {
-    	var obj = new this();
+        var obj = new this();
 
-    	return obj;
+        return obj;
     }
 
     /*!
-    the texCoordIndices, normalIndices may not be corresponding to verticeIndices(so need duplicate vertex)
+     the texCoordIndices, normalIndices may not be corresponding to verticeIndices(so need duplicate vertex)
      */
     @requireInNodejs(function(sourceJson:SourceJsonData){
         it("each indice's count should be equal", () => {
@@ -63,13 +63,11 @@ export class Converter {
                 for(let primitiveData of mesh.primitives){
                     this._duplicateVertex(primitiveData);
                     newPrimitives.push(this._parseObjectFromIndices(primitiveData));
-                    // this._removeRebundantIndiceData(primitiveData);
                 }
 
                 targetJson.meshes[key] = {
                     primitives: newPrimitives
                 };
-                // mesh.primitives = <any>newPrimitives;
             }
         }
 
@@ -104,8 +102,8 @@ export class Converter {
         }
 
         if(data[fieldName].filter((value:number) => {
-            return value !== null && value !== void 0;
-        }).length === 0){
+                return value !== null && value !== void 0;
+            }).length === 0){
             delete data[fieldName]
         }
     }
@@ -163,9 +161,6 @@ export class Converter {
         });
     }
 
-    // @require(function (container, targetVerticeIndex, targetTexCoordIndex) {
-    //     assert(this._isTexCoordIndiceEqualTheOneOfAddedVertex(container, targetVerticeIndex, targetTexCoordIndex), Log.info.FUNC_SHOULD("texCoordIndex", "equal the one of added vertex"))
-    // })
     private _getVerticeIndexOfAddedVertexByFindContainer(container, targetVerticeIndex, targetDataIndex) {
         var data = container.getChild(String(targetVerticeIndex));
 
@@ -186,17 +181,6 @@ export class Converter {
         verticeIndexOfAddedVertex = this._getVerticeIndexOfAddedVertex(vertices);
 
         verticeIndices[index] = verticeIndexOfAddedVertex;
-
-
-        // if (GeometryUtils.hasData(morphTargets)) {
-        //     for (let frame of morphTargets) {
-        //         this._addThreeComponent(frame.vertices, verticeIndex);
-        //
-        //         if (GeometryUtils.hasData(frame.normals)) {
-        //             this._addDuplicateNormalOfAddedVertex(frame.normals, normalIndices, index, verticeIndex);
-        //         }
-        //     }
-        // }
 
         container.appendChild(String(verticeIndex), [dataIndices[index], verticeIndexOfAddedVertex]);
     }
@@ -222,11 +206,8 @@ export class Converter {
         material,
         mode
     }) {
-        var vertices = [],
-            texCoords = [],
+        var texCoords = [],
             normals = [],
-            // faces = [],
-            // face:Face3 = null,
             colors = [],
             sourceVertices = attributes.POSITION,
             sourceTexCoords = attributes.TEXCOORD,
@@ -242,8 +223,6 @@ export class Converter {
                 verticeIndiceArr = [aIndex, bIndex, cIndex];
 
             newIndices = newIndices.concat(verticeIndiceArr);
-
-            // face = Face3.create(aIndex, bIndex, cIndex);
 
             if (Utils.hasData(texCoordIndices) && Utils.hasData(sourceTexCoords)) {
                 this._setTwoComponentDataWhenParse(texCoords, sourceTexCoords, texCoordIndices, indexArr, verticeIndiceArr);
@@ -280,8 +259,6 @@ export class Converter {
         else {
             attributes.COLOR = colors;
         }
-
-        // this._setMorphTargets(source, source.verticeIndices, source.normalIndices);
 
         let result:TargetPrimitive = <any>{
             attributes: attributes,
@@ -413,3 +390,4 @@ type Attribute = {
     TEXCOORD?:Array<number>;
     COLOR?:Array<number>;
 }
+

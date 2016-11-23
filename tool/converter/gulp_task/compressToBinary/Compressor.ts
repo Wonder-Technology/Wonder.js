@@ -36,12 +36,32 @@ export class Compressor {
         return 2;
     }
 
-    //todo refactor
-    //todo compress animation data
     public compress(fileName: string, binFileRelatedDir: string, sourceJson: SourceJsonData) {
         var targetJson: TargetJsonData = ExtendUtils.extendDeep(sourceJson),
-            recoredAnimationArr:Array<AnimationDataRecord> = [],
-            recordedAttributeArr:Array<PrimitiveDataRecord> = [],
+            {recordedAttributeArr, recordedIndiceArr} = this._recordPrimitiveData(sourceJson),
+            recoredAnimationArr:Array<AnimationDataRecord> = this._recordAnimationData(sourceJson);
+
+        this._removeRepeatData(recoredAnimationArr);
+        this._removeRepeatData(recordedAttributeArr);
+        this._removeRepeatData(recordedIndiceArr);
+
+        let buffersData = this._buildBuffersArr(fileName, binFileRelatedDir, recoredAnimationArr, recordedAttributeArr, recordedIndiceArr);
+
+        let bufferViewsJson = this._buildBufferViewsJson(buffersData.id, recoredAnimationArr, recordedIndiceArr, recordedAttributeArr);
+
+        let accessorsData = this._buildAccessorsJson(bufferViewsJson.animationBufferViewId, bufferViewsJson.attributeBufferViewId, bufferViewsJson.indiceBufferViewId, recoredAnimationArr, recordedIndiceArr, recordedAttributeArr);
+
+        this._buildJson(targetJson, buffersData.json, bufferViewsJson.json, accessorsData);
+
+        return {
+            buffer: this._toBuffer(buffersData.arraybuffer),
+            uri: buffersData.uri,
+            json: targetJson
+        }
+    }
+
+    private _recordPrimitiveData(sourceJson: SourceJsonData){
+        var recordedAttributeArr:Array<PrimitiveDataRecord> = [],
             recordedIndiceArr:Array<PrimitiveDataRecord> = [];
 
         for (let id in sourceJson.meshes) {
@@ -78,6 +98,15 @@ export class Compressor {
             }
         }
 
+        return {
+            recordedAttributeArr: recordedAttributeArr,
+            recordedIndiceArr: recordedIndiceArr
+        }
+    }
+
+    private _recordAnimationData(sourceJson: SourceJsonData){
+        var recoredAnimationArr:Array<AnimationDataRecord> = [];
+
         for (let id in sourceJson.animations) {
             if (sourceJson.animations.hasOwnProperty(id)) {
                 let animation = sourceJson.animations[id];
@@ -103,23 +132,7 @@ export class Compressor {
             }
         }
 
-        this._removeRepeatData(recoredAnimationArr);
-        this._removeRepeatData(recordedAttributeArr);
-        this._removeRepeatData(recordedIndiceArr);
-
-        let buffersData = this._buildBuffersArr(fileName, binFileRelatedDir, recoredAnimationArr, recordedAttributeArr, recordedIndiceArr);
-
-        let bufferViewsJson = this._buildBufferViewsJson(buffersData.id, recoredAnimationArr, recordedIndiceArr, recordedAttributeArr);
-
-        let accessorsData = this._buildAccessorsJson(bufferViewsJson.animationBufferViewId, bufferViewsJson.attributeBufferViewId, bufferViewsJson.indiceBufferViewId, recoredAnimationArr, recordedIndiceArr, recordedAttributeArr);
-
-        this._buildJson(targetJson, buffersData.json, bufferViewsJson.json, accessorsData);
-
-        return {
-            buffer: this._toBuffer(buffersData.arraybuffer),
-            uri: buffersData.uri,
-            json: targetJson
-        }
+        return recoredAnimationArr;
     }
 
     private _hasData(data: Array<number>) {
@@ -511,8 +524,6 @@ export class Compressor {
         return Buffer.from(arraybuffer);
     }
 }
-
-//todo refactor
 
 type SourceJsonData = {
     animations:{

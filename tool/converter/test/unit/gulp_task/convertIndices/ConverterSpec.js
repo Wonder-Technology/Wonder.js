@@ -425,28 +425,32 @@ describe("convertIndices->Converter", function(){
                 normals.push(null);
             }
 
-            var result = converter.convert(buildJson(
-                [1, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -4],
-                [1.0, 0.1, 0.1, 0.2, 0.2, 0.2, 0.3, 0.5],
-                [1, 1, 1, 6, -1, -2, 1, 2, -1, -2, 0, -4, 3, 5, 0.5],
-                [4, -1, 2, 2, 2, 0, 4, 1, 1, -5, -1, -7, 0.1, 2.2, 3],
-
-
-                [0, 1, 2, 1, 3, 2, 1, 0, 2],
-                [2, 0, 1, 3, 3, 0, 3, 2, 2],
-                [2, 0, 1, 0, 3, 1, 4, 2, 1],
-                [2, 4, 1, 0, 3, 1, 4, 2, 1]
-            ));
-
-            var data = null;
-
-            for(var key in result.meshes){
-                data = result.meshes[key].primitives[0]
+            var targetJson =
+            {
+                "meshes": {
+                    "RootNode": {
+                        "primitives": [
+                            {
+                                "attributes": {
+                                    "NORMAL": normals,
+                                    "POSITION": [1, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -4],
+                                },
+                                "indices": [0, 1, 2, 1, 3, 2, 1, 0, 2],
+                                // "material": materialData.material,
+                                // "mode": materialData.mode
+                            }
+                        ]
+                    }
+                }
             }
 
-            expect(data.material).toEqual("mat");
-            expect(data.mode).toEqual(4);
-        }
+
+
+            converter._removeNullData(targetJson);
+
+
+            expect(targetJson.meshes["RootNode"].primitives[0].attributes.NORMAL).toBeUndefined();
+        });
     });
 });
 
