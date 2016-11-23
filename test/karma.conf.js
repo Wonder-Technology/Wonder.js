@@ -353,6 +353,7 @@
       //  'test/unit/asset/obj/OBJParserSpec.js',
       //  'test/unit/asset/loaderSpec.js',
         'test/unit/asset/wd/WDParserSpec.js',
+        'test/unit/asset/wd/wdAni*.js',
         'test/unit/asset/wd/WDAssemblerSpec.js',
         //'test/unit/math/*.js',
         //'test/unit/component/**/GeometrySpec.js',

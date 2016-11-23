@@ -234,7 +234,7 @@ module wd {
 
     export interface IWDAnimationSampler{
         input:string;
-        interpolation:string;
+        interpolation:"LINEAR";
         output:string;
     }
 
@@ -245,7 +245,7 @@ module wd {
 
     export interface IWDAnimationChannelTarget {
         id: string;
-        path: string;
+        path: "translation"|"rotation"|"scale";
     }
 
     export interface IWDAsset {
@@ -304,22 +304,22 @@ module wd {
     export interface IWDComponent{
     }
 
-    // export interface IWDArticulatedAnimation extends IWDComponent{
-    //     [animName:string]: wdCb.Collection<IWDKeyFrameData>
-    // }
-    //
-    // export interface IWDKeyFrameData{
-    //     time:number,
-    //     //interpolationMethod:EKeyFrameInterpolation,
-    //
-    //     targets:wdCb.Collection<IWDKeyFrameTargetData>
-    // }
-    //
-    // export interface IWDKeyFrameTargetData{
-    //     interpolationMethod:EKeyFrameInterpolation,
-    //     target:EArticulatedAnimationTarget,
-    //     data:any
-    // }
+    export interface IWDArticulatedAnimation extends IWDComponent{
+        [animName:string]: wdCb.Collection<IWDKeyFrameData>
+    }
+
+    export interface IWDKeyFrameData{
+        time:number,
+        //interpolationMethod:EKeyFrameInterpolation,
+
+        targets:wdCb.Collection<IWDKeyFrameTargetData>
+    }
+
+    export interface IWDKeyFrameTargetData{
+        interpolationMethod:EKeyFrameInterpolation,
+        target:EArticulatedAnimationTarget,
+        data:any
+    }
 
     export interface IWDTransform extends IWDComponent{
         matrix?:Matrix4;

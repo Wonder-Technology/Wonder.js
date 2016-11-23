@@ -8,13 +8,15 @@ var del = require("del");
 var wdFrp = require("wdfrp");
 var path = require("path");
 
+var commandUtils = require("./gulp_task/common/commandUtils");
+
 
 gulp.task("convert", function (done) {
     var Converter = require("./dist/converter/Converter");
 //todo support combine multi wd files to one file(according to command line param)
 
-    var sourceDir = parseOption("--sourceDir") || "./source/",
-        destDir = parseOption("--destDir") || "./dest/",
+    var sourceDir = commandUtils.parseOption("--sourceDir") || "./source/",
+        destDir = commandUtils.parseOption("--destDir") || "./dest/",
         converter = Converter.create();
 
     wdFrp.fromNodeCallback(fs.remove)(destDir)
@@ -39,17 +41,6 @@ gulp.task("convert", function (done) {
             done();
         });
 });
-
-function parseOption(name) {
-    var value = null,
-        i = process.argv.indexOf(name);
-
-    if (i > -1) {
-        value = process.argv[i + 1];
-    }
-
-    return value;
-}
 
 require("../gulp_task/common");
 

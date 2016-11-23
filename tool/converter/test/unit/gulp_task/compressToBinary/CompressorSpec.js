@@ -23,6 +23,148 @@ describe("compressToBinary->Compressor", function () {
             ExtendUtils.extend(fileJson, data);
         }
 
+        function getAnimationData1(animationIndex, meshId) {
+            var samplers = {
+            }
+
+            samplers["animation_" + animationIndex + "_scale_sampler"] = {
+                "input": "TIME",
+                "interpolation": "LINEAR",
+                "output": "scale"            }
+
+
+            samplers["animation_" + animationIndex + "_translation_sampler"] = {
+                "input": "TIME",
+                "interpolation": "LINEAR",
+                "output": "translation"
+            }
+
+            return {
+                "channels": [
+                    {
+                        "sampler": "animation_" + animationIndex + "_scale_sampler",
+                        "target": {
+                            "id": meshId,
+                            "path": "scale"
+                        }
+                    },
+                    {
+                        "sampler": "animation_" + animationIndex + "_translation_sampler",
+                        "target": {
+                            "id": meshId,
+                            "path": "translation"
+                        }
+                    }
+                ],
+                "parameters": {
+                    "TIME": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "scale": [
+                        1,1,1,
+                        2,2,2,
+                        3,3,3
+                    ],
+                    "translation": [
+                        0,0,0,
+                        1,0,2,
+                        2,0,4
+                    ]
+                },
+                "samplers": samplers
+            }
+        }
+
+        function getAnimationData2(animationIndex, meshId) {
+            var samplers = {
+            }
+
+            samplers["animation_" + animationIndex + "_rotation_sampler"] = {
+                "input": "TIME",
+                "interpolation": "LINEAR",
+                "output": "rotation"
+            }
+
+            return {
+                "channels": [
+                    {
+                        "sampler": "animation_" + animationIndex + "_rotation_sampler",
+                        "target": {
+                            "id": meshId,
+                            "path": "rotation"
+                        }
+                    }
+                ],
+                "parameters": {
+                    "TIME": [
+                        1,
+                        2
+                    ],
+                    "rotation": [
+                        1,1,1,1,
+                        0.2,0.5,0.4,0.8
+                    ]
+                },
+                "samplers": samplers
+            }
+        }
+
+        function getAnimationData3(animationIndex, meshId) {
+            var samplers = {
+            }
+
+            samplers["animation_" + animationIndex + "_translation_sampler"] = {
+                "input": "TIME",
+                "interpolation": "LINEAR",
+                "output": "translation"
+            }
+
+            samplers["animation_" + animationIndex + "_rotation_sampler"] = {
+                "input": "TIME",
+                "interpolation": "LINEAR",
+                "output": "rotation"
+            }
+
+            return {
+                "channels": [
+                    {
+                        "sampler": "animation_" + animationIndex + "_rotation_sampler",
+                        "target": {
+                            "id": meshId,
+                            "path": "translation"
+                        }
+                    },
+                    {
+                        "sampler": "animation_" + animationIndex + "_rotation_sampler",
+                        "target": {
+                            "id": meshId,
+                            "path": "rotation"
+                        }
+                    }
+                ],
+                "parameters": {
+                    "TIME": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "translation": [
+                        0,0,0,
+                        1,0,2,
+                        2,0,4
+                    ],
+                    "rotation": [
+                        1,1,1,1,
+                        0.2,0.5,0.4,0.8,
+                        0.1,0.3,0.2,0.3
+                    ]
+                },
+                "samplers": samplers
+            }
+        }
+
         function getPrimitiveData() {
             return {
                 "attributes": {
@@ -164,8 +306,38 @@ describe("compressToBinary->Compressor", function () {
                 }
             }
 
-            function judgeIndice(arraybuffer, primitiveData, json) {
-                var accessor = json.meshes.geometry1.primitives[0].indices;
+            function judgeAnimation(arraybuffer, animationData, json, animationName, parameterName) {
+                var timeAccessor = json.animations[animationName].parameters[parameterName];
+
+                _judgeAnimationData(arraybuffer, timeAccessor, json, animationData.parameters[parameterName]);
+            }
+
+            function _judgeAnimationData(arraybuffer, accessor, json, targetData) {
+                var accessorData = json.accessors[accessor];
+
+                var count = getLength(accessorData);
+
+                var view = new DataView(arraybuffer, getOffset(accessorData, json), count * 4);
+
+
+                var data = [];
+                var offset =0 ;
+                for(var i = 0; i < count; i++){
+                    data.push(view.getFloat32(offset, true));
+
+                    offset += 4;
+                }
+
+
+
+                expect(testTool.getValues(
+                    data
+                )).toEqual(testTool.getValues(targetData));
+            }
+
+            function judgeIndice(arraybuffer, primitiveData, json, index) {
+                index = index || 0;
+                var accessor = json.meshes.geometry1.primitives[index].indices;
 
                 var accessorData = json.accessors[accessor];
 
@@ -187,53 +359,26 @@ describe("compressToBinary->Compressor", function () {
                 expect(data).toEqual(primitiveData.indices);
             }
 
-            function judgePosition(arraybuffer, primitiveData, json) {
-                // var accessor = json.meshes.geometry1.primitives[0].attributes.POSITION;
-                //
-                // var accessorData = json.accessors[accessor];
-                //
-                // var count = getLength(accessorData);
-                //
-                // var view = new DataView(arraybuffer, getOffset(accessorData, json), count * 4);
-                //
-                // // console.log(getLength(accessorData), getOffset(accessorData, json))
-                //
-                // // var data = new Float32Array(arraybuffer, getOffset(accessorData, json), getLength(accessorData));
-                //
-                // var data = [];
-                // var offset =0 ;
-                // for(var i = 0; i < count; i++){
-                //     data.push(view.getFloat32(offset, true));
-                //
-                //     offset += 4;
-                // }
-                //
-                //
-                // expect(testTool.getValues(
-                //     data
-                // )).toEqual(testTool.getValues(
-                //     primitiveData.attributes.POSITION
-                // ));
-                //
-                //
-                _judgeAttributeData("POSITION", arraybuffer, primitiveData, json);
+            function judgePosition(arraybuffer, primitiveData, json, index) {
+                _judgeAttributeData("POSITION", arraybuffer, primitiveData, json, index);
             }
 
-            function judgeNormal(arraybuffer, primitiveData, json) {
-                _judgeAttributeData("NORMAL", arraybuffer, primitiveData, json);
+            function judgeNormal(arraybuffer, primitiveData, json, index) {
+                _judgeAttributeData("NORMAL", arraybuffer, primitiveData, json, index);
 
             }
 
-            function judgeTexCoord(arraybuffer, primitiveData, json) {
-                _judgeAttributeData("TEXCOORD", arraybuffer, primitiveData, json);
+            function judgeTexCoord(arraybuffer, primitiveData, json, index) {
+                _judgeAttributeData("TEXCOORD", arraybuffer, primitiveData, json, index);
             }
 
-            function judgeColor(arraybuffer, primitiveData, json) {
-                _judgeAttributeData("COLOR", arraybuffer, primitiveData, json);
+            function judgeColor(arraybuffer, primitiveData, json, index) {
+                _judgeAttributeData("COLOR", arraybuffer, primitiveData, json, index);
             }
 
-            function _judgeAttributeData(semantic, arraybuffer, primitiveData, json) {
-                var accessor = json.meshes.geometry1.primitives[0].attributes[semantic];
+            function _judgeAttributeData(semantic, arraybuffer, primitiveData, json, index) {
+                index = index || 0;
+                var accessor = json.meshes.geometry1.primitives[index].attributes[semantic];
 
                 var accessorData = json.accessors[accessor];
 
@@ -265,33 +410,153 @@ describe("compressToBinary->Compressor", function () {
             beforeEach(function () {
             });
 
-            it("test buffer content", function () {
-                var primitiveData = getPrimitiveData();
-
-                setFileJson({
-                    "meshes": {
-                        "geometry1": {
-                            "primitives": [
-                                primitiveData
-                            ]
-                        }
-                    }
+            describe("test buffer content", function(){
+                beforeEach(function(){
                 });
 
-                var data = compressor.compress("", "", fileJson);
+                it("test meshes", function () {
+                    var primitiveData = getPrimitiveData();
+
+                    setFileJson({
+                        "meshes": {
+                            "geometry1": {
+                                "primitives": [
+                                    primitiveData
+                                ]
+                            }
+                        }
+                    });
+
+                    var data = compressor.compress("", "", fileJson);
 
 
-                // var reader = BufferReader.create(data.buffer);
+                    // var reader = BufferReader.create(data.buffer);
 
-                var arraybuffer = data.buffer.buffer;
+                    var arraybuffer = data.buffer.buffer;
 
-                // console.log(arraybuffer.buffer)
-                judgeIndice(arraybuffer, primitiveData, data.json);
+                    // console.log(arraybuffer.buffer)
+                    judgeIndice(arraybuffer, primitiveData, data.json);
 
-                judgePosition(arraybuffer, primitiveData, data.json);
-                judgeNormal(arraybuffer, primitiveData, data.json);
-                judgeTexCoord(arraybuffer, primitiveData, data.json);
-                judgeColor(arraybuffer, primitiveData, data.json);
+                    judgePosition(arraybuffer, primitiveData, data.json);
+                    judgeNormal(arraybuffer, primitiveData, data.json);
+                    judgeTexCoord(arraybuffer, primitiveData, data.json);
+                    judgeColor(arraybuffer, primitiveData, data.json);
+                });
+                it("test meshes + animations", function () {
+                    var primitiveData = getPrimitiveData();
+                    var animData1 = getAnimationData1(1, "geometry1");
+                    var animData2 = getAnimationData2(2, "geometry1");
+
+                    setFileJson({
+                        "animations": {
+                            "animation_1":animData1,
+                            "animation_2":animData2
+                        },
+                        "meshes": {
+                            "geometry1": {
+                                "primitives": [
+                                    primitiveData
+                                ]
+                            }
+                        }
+                    });
+
+                    var data = compressor.compress("", "", fileJson);
+
+
+
+                    var arraybuffer = data.buffer.buffer;
+
+                    judgeAnimation(arraybuffer, animData1, data.json, "animation_1", "TIME");
+                    judgeAnimation(arraybuffer, animData1, data.json, "animation_1", "translation");
+                    judgeAnimation(arraybuffer, animData1, data.json, "animation_1", "scale");
+
+                    judgeAnimation(arraybuffer, animData2, data.json, "animation_2", "TIME");
+                    judgeAnimation(arraybuffer, animData2, data.json, "animation_2", "rotation");
+
+                    judgeIndice(arraybuffer, primitiveData, data.json);
+
+                    judgePosition(arraybuffer, primitiveData, data.json);
+                    judgeNormal(arraybuffer, primitiveData, data.json);
+                    judgeTexCoord(arraybuffer, primitiveData, data.json);
+                    judgeColor(arraybuffer, primitiveData, data.json);
+
+
+                    expect(data.json.accessors).toEqual(
+                        {
+                            animAccessor_0: {
+                                bufferView: 'bufferView_0',
+                                byteOffset: 0,
+                                count: 3,
+                                componentType: 5126,
+                                type: 'SCALAR'
+                            },
+                            animAccessor_1: {
+                                bufferView: 'bufferView_0',
+                                byteOffset: 12,
+                                count: 3,
+                                componentType: 5126,
+                                type: 'VEC3'
+                            },
+                            animAccessor_2: {
+                                bufferView: 'bufferView_0',
+                                byteOffset: 48,
+                                count: 3,
+                                componentType: 5126,
+                                type: 'VEC3'
+                            },
+                            animAccessor_3: {
+                                bufferView: 'bufferView_0',
+                                byteOffset: 84,
+                                count: 2,
+                                componentType: 5126,
+                                type: 'SCALAR'
+                            },
+                            animAccessor_4: {
+                                bufferView: 'bufferView_0',
+                                byteOffset: 92,
+                                count: 2,
+                                componentType: 5126,
+                                type: 'VEC4'
+                            },
+                            accessor_0: {
+                                bufferView: 'bufferView_1',
+                                byteOffset: 0,
+                                count: 3,
+                                componentType: 5123,
+                                type: 'SCALAR'
+                            },
+                            accessor_1: {
+                                bufferView: 'bufferView_2',
+                                byteOffset: 0,
+                                count: 3,
+                                componentType: 5126,
+                                type: 'VEC3'
+                            },
+                            accessor_2: {
+                                bufferView: 'bufferView_2',
+                                byteOffset: 36,
+                                count: 3,
+                                componentType: 5126,
+                                type: 'VEC3'
+                            },
+                            accessor_3: {
+                                bufferView: 'bufferView_2',
+                                byteOffset: 72,
+                                count: 3,
+                                componentType: 5126,
+                                type: 'VEC2'
+                            },
+                            accessor_4: {
+                                bufferView: 'bufferView_2',
+                                byteOffset: 96,
+                                count: 3,
+                                componentType: 5126,
+                                type: 'VEC3'
+                            }
+                        }
+                    );
+                });
             });
 
             describe("modify .wd fileJson file", function () {
@@ -327,42 +592,42 @@ describe("compressToBinary->Compressor", function () {
                         }, bufferView_1: {buffer: 'wdFileName', byteLength: 132, byteOffset: 6, target: 34962}
                     });
                     expect(json.accessors).toEqual({
-                            accessor_0: {
-                                bufferView: 'bufferView_0',
-                                byteOffset: 0,
-                                count: 3,
-                                componentType: 5123,
-                                type: 'SCALAR'
-                            },
-                            accessor_1: {
-                                bufferView: 'bufferView_1',
-                                byteOffset: 0,
-                                count: 3,
-                                componentType: 5126,
-                                type: 'VEC3'
-                            },
-                            accessor_2: {
-                                bufferView: 'bufferView_1',
-                                byteOffset: 36,
-                                count: 3,
-                                componentType: 5126,
-                                type: 'VEC3'
-                            },
-                            accessor_3: {
-                                bufferView: 'bufferView_1',
-                                byteOffset: 72,
-                                count: 3,
-                                componentType: 5126,
-                                type: 'VEC2'
-                            },
-                            accessor_4: {
-                                bufferView: 'bufferView_1',
-                                byteOffset: 96,
-                                count: 3,
-                                componentType: 5126,
-                                type: 'VEC3'
-                            }
-                        });
+                        accessor_0: {
+                            bufferView: 'bufferView_0',
+                            byteOffset: 0,
+                            count: 3,
+                            componentType: 5123,
+                            type: 'SCALAR'
+                        },
+                        accessor_1: {
+                            bufferView: 'bufferView_1',
+                            byteOffset: 0,
+                            count: 3,
+                            componentType: 5126,
+                            type: 'VEC3'
+                        },
+                        accessor_2: {
+                            bufferView: 'bufferView_1',
+                            byteOffset: 36,
+                            count: 3,
+                            componentType: 5126,
+                            type: 'VEC3'
+                        },
+                        accessor_3: {
+                            bufferView: 'bufferView_1',
+                            byteOffset: 72,
+                            count: 3,
+                            componentType: 5126,
+                            type: 'VEC2'
+                        },
+                        accessor_4: {
+                            bufferView: 'bufferView_1',
+                            byteOffset: 96,
+                            count: 3,
+                            componentType: 5126,
+                            type: 'VEC3'
+                        }
+                    });
                 });
 
                 it("replace 'meshes'->primitives->attributes,indices array data with accessor id", function () {
@@ -480,7 +745,7 @@ describe("compressToBinary->Compressor", function () {
                 }
 
                 beforeEach(function(){
-                    
+
                 });
 
                 it("test multi meshes", function () {
@@ -570,60 +835,394 @@ describe("compressToBinary->Compressor", function () {
                     judgeData(json);
                 });
             });
-        });
 
-        describe("test special cases", function () {
-            beforeEach(function () {
+            describe("test special cases", function () {
+                beforeEach(function () {
+                });
 
-            });
-
-            it("if primitives has duplicate data, the ones share the same accessor", function () {
+                it("if primitives has duplicate data, the ones share the same accessor", function () {
                     var primitiveData = getPrimitiveData();
 
-                setFileJson({
-                    "meshes": {
-                        "geometry1": {
-                            "primitives": [
-                                primitiveData,
-                                {
-                                    "attributes": {
-                                        "POSITION": primitiveData.attributes.POSITION,
-                                        "NORMAL": [
-                                            0.6, 5, 5,
-                                            5, 10, 2,
-                                            -6, -5, 3
-                                        ],
-                                        "TEXCOORD": [
-
-                                        ]
-                                    },
-                                    "indices": [
-                                        2,1,3
-                                    ]
-                                }
+                    var primitiveData2 = {
+                        "attributes": {
+                            "POSITION": [
+                                5, 10, 2,
+                                0.6, 5, 5,
+                                -6, -5, 3
+                            ],
+                            "NORMAL": [
+                                0.6, 5, 5,
+                                5, 10, 2,
+                                -6, -5, 3
+                            ],
+                            "TEXCOORD": [
+                                0.6, 0.1,
+                                0.6, 0.1,
+                                0.6, 0.1
                             ]
+                        },
+                        "indices": [
+
+                            2,1,3
+                        ]
+                    };
+
+                    setFileJson({
+                        "meshes": {
+                            "geometry1": {
+                                "primitives": [
+                                    primitiveData,
+                                    primitiveData,
+                                    primitiveData2
+                                ]
+                            }
                         }
-                    }
-                });
+                    });
 
                     var data = compressor.compress("wdFileName", "./", fileJson);
 
                     var json = data.json;
 
-                expect(json.meshes).toEqual(
-                    {
-                        geometry1: {
-                            primitives: [{
-                                attributes: {
-                                    POSITION: 'accessor_2',
-                                    NORMAL: 'accessor_3',
-                                    COLOR: 'accessor_5',
-                                    TEXCOORD: 'accessor_4'
-                                }, indices: 'accessor_0'
-                            }, {attributes: {POSITION: 'accessor_2', NORMAL: 'accessor_6'}, indices: 'accessor_1'}]
+                    expect(json.meshes).toEqual(
+                        {
+                            geometry1: {
+                                primitives: [
+                                    {
+                                        attributes: {
+                                            POSITION: 'accessor_2',
+                                            NORMAL: 'accessor_3',
+                                            COLOR: 'accessor_5',
+                                            TEXCOORD: 'accessor_4'
+                                        },
+                                        indices: 'accessor_0'
+                                    },
+                                    {
+                                        attributes: {
+                                            POSITION: 'accessor_2',
+                                            NORMAL: 'accessor_3',
+                                            COLOR: 'accessor_5',
+                                            TEXCOORD: 'accessor_4'
+                                        },
+                                        indices: 'accessor_0'
+                                    },
+                                    {
+                                        attributes: {
+                                            POSITION: 'accessor_6',
+                                            NORMAL: 'accessor_7',
+                                            TEXCOORD: 'accessor_8'
+                                        },
+                                        indices: 'accessor_1'
+                                    }
+                                ]
+                            }
                         }
-                    }
-                );
+                    );
+
+
+
+                    var arraybuffer = data.buffer.buffer;
+
+
+
+
+                    judgeIndice(arraybuffer, primitiveData2, data.json, 2);
+
+
+
+
+                    judgePosition(arraybuffer, primitiveData2, data.json, 2);
+                    judgeNormal(arraybuffer, primitiveData2, data.json, 2);
+                    judgeTexCoord(arraybuffer, primitiveData2, data.json, 2);
+                });
+
+                describe("test animations", function(){
+                    beforeEach(function(){
+                    });
+
+                    it("if animations has duplicate data, the ones share the same accessor", function () {
+                        var primitiveData = getPrimitiveData();
+                        var animData1 = getAnimationData1(1, "geometry1");
+                        var animData2 = getAnimationData3(2, "geometry1");
+
+                        setFileJson({
+                            "animations": {
+                                "animation_1":animData1,
+                                "animation_2":animData2
+                            },
+                            "meshes": {
+                                "geometry1": {
+                                    "primitives": [
+                                        primitiveData
+                                    ]
+                                }
+                            }
+                        });
+
+                        var data = compressor.compress("wdFileName", "./", fileJson);
+
+
+
+                        expect(data.json.animations).toEqual(
+                            {
+                                animation_1: {
+                                    channels: [
+                                        {
+                                            sampler: 'animation_1_scale_sampler',
+                                            target: {
+                                                id: 'geometry1',
+                                                path: 'scale'
+                                            }
+                                        },
+                                        {
+                                            sampler: 'animation_1_translation_sampler',
+                                            target: {
+                                                id: 'geometry1',
+                                                path: 'translation'
+                                            }
+                                        }
+                                    ],
+                                    parameters: {
+                                        TIME: 'animAccessor_0',
+                                        scale: 'animAccessor_1',
+                                        translation: 'animAccessor_2'
+                                    },
+                                    samplers: {
+                                        animation_1_scale_sampler: {
+                                            input: 'TIME',
+                                            interpolation: 'LINEAR',
+                                            output: 'scale'
+                                        },
+                                        animation_1_translation_sampler: {
+                                            input: 'TIME',
+                                            interpolation: 'LINEAR',
+                                            output: 'translation'
+                                        }
+                                    }
+                                },
+                                animation_2: {
+                                    channels: [
+                                        {
+                                            sampler: 'animation_2_rotation_sampler',
+                                            target: {
+                                                id: 'geometry1',
+                                                path: 'translation'
+                                            }
+                                        },
+                                        {
+                                            sampler: 'animation_2_rotation_sampler',
+                                            target: {
+                                                id: 'geometry1',
+                                                path: 'rotation'
+                                            }
+                                        }
+                                    ],
+                                    parameters: {
+                                        TIME: 'animAccessor_0',
+                                        translation: 'animAccessor_2',
+                                        rotation: 'animAccessor_3'
+                                    },
+                                    samplers: {
+                                        animation_2_translation_sampler: {
+                                            input: 'TIME',
+                                            interpolation: 'LINEAR',
+                                            output: 'translation'
+                                        },
+                                        animation_2_rotation_sampler: {
+                                            input: 'TIME',
+                                            interpolation: 'LINEAR',
+                                            output: 'rotation'
+                                        }
+                                    }
+                                }
+                            }
+                        );
+                    });
+                    it("one animation data support multi transform datas of one transform type(e.g. scale,...) which are corresponding to different meshes", function () {
+                        var primitiveData = getPrimitiveData();
+
+                        var meshId1 = "geometry1",
+                            meshId2 = "geometry2";
+
+                        var animData1 = {
+                            "channels": [
+                                {
+                                    "sampler": "animation_1_scale_sampler",
+                                    "target": {
+                                        "id": meshId1,
+                                        "path": "scale"
+                                    }
+                                },
+                                {
+                                    "sampler": "animation_1_scale1_sampler",
+                                    "target": {
+                                        "id": meshId2,
+                                        "path": "scale"
+                                    }
+                                }
+                            ],
+                            "parameters": {
+                                "TIME": [
+                                    1,
+                                    2,
+                                    3
+                                ],
+                                "scale": [
+                                    1, 1, 1,
+                                    2, 2, 2,
+                                    3, 3, 3
+                                ],
+                                "scale1": [
+                                    3, 3, 3,
+                                    2, 2, 2,
+                                    1, 1, 1
+                                ]
+                            },
+                            "samplers": {
+                                "animation_1_scale_sampler": {
+                                    "input": "TIME",
+                                    "interpolation": "LINEAR",
+                                    "output": "scale"
+                                },
+
+                                "animation_1_scale1_sampler": {
+                                    "input": "TIME",
+                                    "interpolation": "LINEAR",
+                                    "output": "scale1"
+                                }
+                            }
+                        }
+
+                        setFileJson({
+                            "animations": {
+                                "animation_1": animData1
+                            },
+                            "meshes": {
+                                "geometry1": {
+                                    "primitives": [
+                                        primitiveData
+                                    ]
+                                },
+                                "geometry2": {
+                                    "primitives": [
+                                        primitiveData
+                                    ]
+                                }
+                            }
+                        });
+
+                        var data = compressor.compress("wdFileName", "./", fileJson);
+
+
+                        var arraybuffer = data.buffer.buffer;
+
+
+                        judgeAnimation(arraybuffer, animData1, data.json, "animation_1", "TIME");
+                        judgeAnimation(arraybuffer, animData1, data.json, "animation_1", "scale");
+                        judgeAnimation(arraybuffer, animData1, data.json, "animation_1", "scale1");
+
+                        expect(data.json.animations).toEqual(
+                            {
+                                animation_1: {
+                                    channels: [
+                                        {
+                                            sampler: 'animation_1_scale_sampler',
+                                            target: {
+                                                id: 'geometry1',
+                                                path: 'scale'
+                                            }
+                                        },
+                                        {
+                                            sampler: 'animation_1_scale1_sampler',
+                                            target: {
+                                                id: 'geometry2',
+                                                path: 'scale'
+                                            }
+                                        }
+                                    ],
+                                    parameters: {
+                                        TIME: 'animAccessor_0',
+                                        scale: 'animAccessor_1',
+                                        scale1: 'animAccessor_2'
+                                    },
+                                    samplers: {
+                                        animation_1_scale_sampler: {
+                                            input: 'TIME',
+                                            interpolation: 'LINEAR',
+                                            output: 'scale'
+                                        },
+                                        animation_1_scale1_sampler: {
+                                            input: 'TIME',
+                                            interpolation: 'LINEAR',
+                                            output: 'scale1'
+                                        }
+                                    }
+                                }
+                            }
+                        );
+
+
+                        expect(data.json.accessors).toEqual(
+                            {
+                                animAccessor_0: {
+                                    bufferView: 'bufferView_0',
+                                    byteOffset: 0,
+                                    count: 3,
+                                    componentType: 5126,
+                                    type: 'SCALAR'
+                                },
+                                animAccessor_1: {
+                                    bufferView: 'bufferView_0',
+                                    byteOffset: 12,
+                                    count: 3,
+                                    componentType: 5126,
+                                    type: 'VEC3'
+                                },
+                                animAccessor_2: {
+                                    bufferView: 'bufferView_0',
+                                    byteOffset: 48,
+                                    count: 3,
+                                    componentType: 5126,
+                                    type: 'VEC3'
+                                },
+                                accessor_0: {
+                                    bufferView: 'bufferView_1',
+                                    byteOffset: 0,
+                                    count: 3,
+                                    componentType: 5123,
+                                    type: 'SCALAR'
+                                },
+                                accessor_1: {
+                                    bufferView: 'bufferView_2',
+                                    byteOffset: 0,
+                                    count: 3,
+                                    componentType: 5126,
+                                    type: 'VEC3'
+                                },
+                                accessor_2: {
+                                    bufferView: 'bufferView_2',
+                                    byteOffset: 36,
+                                    count: 3,
+                                    componentType: 5126,
+                                    type: 'VEC3'
+                                },
+                                accessor_3: {
+                                    bufferView: 'bufferView_2',
+                                    byteOffset: 72,
+                                    count: 3,
+                                    componentType: 5126,
+                                    type: 'VEC2'
+                                },
+                                accessor_4: {
+                                    bufferView: 'bufferView_2',
+                                    byteOffset: 96,
+                                    count: 3,
+                                    componentType: 5126,
+                                    type: 'VEC3'
+                                }
+                            }
+                        );
+                    });
+                });
             });
         });
     });

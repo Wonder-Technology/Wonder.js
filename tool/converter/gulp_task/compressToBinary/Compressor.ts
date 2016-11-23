@@ -24,6 +24,10 @@ export class Compressor {
         return obj;
     }
 
+    private get _animationDataByteSize() {
+        return 4;
+    }
+
     private get _attributeDataByteSize() {
         return 4;
     }
@@ -36,8 +40,9 @@ export class Compressor {
     //todo compress animation data
     public compress(fileName: string, binFileRelatedDir: string, sourceJson: SourceJsonData) {
         var targetJson: TargetJsonData = ExtendUtils.extendDeep(sourceJson),
-            recordedAttributeArr = [],
-            recordedIndiceArr = [];
+            recoredAnimationArr:Array<AnimationDataRecord> = [],
+            recordedAttributeArr:Array<PrimitiveDataRecord> = [],
+            recordedIndiceArr:Array<PrimitiveDataRecord> = [];
 
         for (let id in sourceJson.meshes) {
             if (sourceJson.meshes.hasOwnProperty(id)) {
@@ -73,16 +78,40 @@ export class Compressor {
             }
         }
 
-        //todo record animation data
+        for (let id in sourceJson.animations) {
+            if (sourceJson.animations.hasOwnProperty(id)) {
+                let animation = sourceJson.animations[id];
 
+                for (let name in animation.parameters) {
+                    if (animation.parameters.hasOwnProperty(name)) {
+                        let data = animation.parameters[name],
+                            type:string = null;
+
+                        if(name.indexOf("TIME") > -1){
+                            type = "SCALAR";
+                        }
+                        else if(name.indexOf("rotation") > -1){
+                            type = "VEC4";
+                        }
+                        else if(name.indexOf("translation") > -1 || name.indexOf("scale") > -1){
+                            type = "VEC3";
+                        }
+
+                        this._recordAnimation(data, recoredAnimationArr, id, name, type);
+                    }
+                }
+            }
+        }
+
+        this._removeRepeatData(recoredAnimationArr);
         this._removeRepeatData(recordedAttributeArr);
         this._removeRepeatData(recordedIndiceArr);
 
-        let buffersData = this._buildBuffersArr(fileName, binFileRelatedDir, recordedAttributeArr, recordedIndiceArr);
+        let buffersData = this._buildBuffersArr(fileName, binFileRelatedDir, recoredAnimationArr, recordedAttributeArr, recordedIndiceArr);
 
-        let bufferViewsJson = this._buildBufferViewsJson(buffersData.id, recordedAttributeArr, recordedIndiceArr);
+        let bufferViewsJson = this._buildBufferViewsJson(buffersData.id, recoredAnimationArr, recordedIndiceArr, recordedAttributeArr);
 
-        let accessorsData = this._buildAccessorsJson(bufferViewsJson.attributeBufferViewId, bufferViewsJson.indiceBufferViewId, recordedAttributeArr, recordedIndiceArr);
+        let accessorsData = this._buildAccessorsJson(bufferViewsJson.animationBufferViewId, bufferViewsJson.attributeBufferViewId, bufferViewsJson.indiceBufferViewId, recoredAnimationArr, recordedIndiceArr, recordedAttributeArr);
 
         this._buildJson(targetJson, buffersData.json, bufferViewsJson.json, accessorsData);
 
@@ -95,6 +124,15 @@ export class Compressor {
 
     private _hasData(data: Array<number>) {
         return data && data.length > 0;
+    }
+
+    private _recordAnimation(data: Array<number>, arr: Array<AnimationDataRecord>, id:string, name:string, type: string) {
+        arr.push({
+            data: data,
+            where: this._buildAnimationWhere(id, name),
+            componentType: 5126,
+            type: type
+        });
     }
 
     private _recordAttribute(data: Array<number>, arr: Array<PrimitiveDataRecord>, meshId: string, primitiveIndex: number, attributeName: string, type: string) {
@@ -115,24 +153,28 @@ export class Compressor {
         });
     }
 
+    private _buildAnimationWhere(id: string, name: string) {
+        return `animations%%${id}%%parameters%%${name}`;
+    }
+
     private _buildAttributeWhere(meshId: string, primitiveIndex: number, attributeName: string) {
-        return `${meshId}%%primitives%%${String(primitiveIndex)}%%attributes%%${attributeName}`;
+        return `meshes%%${meshId}%%primitives%%${String(primitiveIndex)}%%attributes%%${attributeName}`;
     }
 
     private _buildIndiceWhere(meshId: string, primitiveIndex: number) {
-        return `${meshId}%%primitives%%${String(primitiveIndex)}%%indices`;
+        return `meshes%%${meshId}%%primitives%%${String(primitiveIndex)}%%indices`;
     }
 
     private _parseWhere(where: string) {
         return where.split('%%');
     }
 
-    private _removeRepeatData(recordedArr: Array<PrimitiveDataRecord>) {
+    private _removeRepeatData(recordedArr: Array<DataRecord>) {
         for (let i = 0, len = recordedArr.length; i < len; i++) {
-            let sourceItem: PrimitiveDataRecord = recordedArr[i];
+            let sourceItem: DataRecord = recordedArr[i];
 
             for (let j = i + 1; j < len; j++) {
-                let targetItem: PrimitiveDataRecord = recordedArr[j];
+                let targetItem: DataRecord = recordedArr[j];
 
                 if (this._isRepeat(sourceItem.data, targetItem.data)) {
                     targetItem.data = sourceItem.where;
@@ -162,15 +204,25 @@ export class Compressor {
         return true;
     }
 
-    private _buildBuffersArr(fileName: string, binFileRelatedDir: string, recordedAttributeArr: Array<PrimitiveDataRecord>, recordedIndiceArr: Array<PrimitiveDataRecord>) {
+    private _buildBuffersArr(fileName: string, binFileRelatedDir: string, recoredAnimationArr:Array<AnimationDataRecord>, recordedAttributeArr: Array<PrimitiveDataRecord>, recordedIndiceArr: Array<PrimitiveDataRecord>) {
         var json = {},
             uri: string = null,
-            byteLength = this._getBufferByteLength(recordedIndiceArr, this._indiceDataByteSize) + this._getBufferByteLength(recordedAttributeArr, this._attributeDataByteSize),
+            byteLength = this._getBufferByteLength(recoredAnimationArr, this._animationDataByteSize) + this._getBufferByteLength(recordedIndiceArr, this._indiceDataByteSize) + this._getBufferByteLength(recordedAttributeArr, this._attributeDataByteSize),
             bufferWriter = BufferWriter.create(byteLength);
+
+        recoredAnimationArr
+            .filter((item: AnimationDataRecord) => {
+                return JudgeUtils.isArrayExactly(item.data);
+            })
+            .forEach((item: AnimationDataRecord) => {
+                for (let value of item.data) {
+                    bufferWriter.writeFloat(<number>value);
+                }
+            });
 
         recordedIndiceArr
             .filter((item: PrimitiveDataRecord) => {
-                return JudgeUtils.isArray(item.data);
+                return JudgeUtils.isArrayExactly(item.data);
             })
             .forEach((item: PrimitiveDataRecord) => {
                 for (let value of item.data) {
@@ -180,7 +232,7 @@ export class Compressor {
 
         recordedAttributeArr
             .filter((item: PrimitiveDataRecord) => {
-                return JudgeUtils.isArray(item.data);
+                return JudgeUtils.isArrayExactly(item.data);
             })
             .forEach((item: PrimitiveDataRecord) => {
                 for (let value of item.data) {
@@ -204,41 +256,59 @@ export class Compressor {
         }
     }
 
-    private _getBufferByteLength(recordedArr: Array<PrimitiveDataRecord>, size: number) {
+    private _getBufferByteLength(recordedArr: Array<DataRecord>, size: number) {
         var length = 0;
 
         recordedArr
-            .filter((item: PrimitiveDataRecord) => {
-                return JudgeUtils.isArray(item.data);
+            .filter((item: DataRecord) => {
+                return JudgeUtils.isArrayExactly(item.data);
             })
-            .forEach((item: PrimitiveDataRecord) => {
+            .forEach((item: DataRecord) => {
                 length += size * item.data.length;
             });
 
         return length;
     }
 
-    private _buildBufferViewsJson(bufferId: string, recordedAttributeArr: Array<PrimitiveDataRecord>, recordedIndiceArr: Array<PrimitiveDataRecord>) {
+    private _buildBufferViewsJson(bufferId: string, recoredAnimationArr:Array<AnimationDataRecord>, recordedIndiceArr:Array<PrimitiveDataRecord>, recordedAttributeArr:Array<PrimitiveDataRecord>) {
         var json = {},
             length: number = null,
             id = 0,
             offset = 0,
-            attributeBufferViewId: string = null,
-            indiceBufferViewId: string = null;
+            animationBufferViewId: string = null,
+            indiceBufferViewId: string = null,
+            attributeBufferViewId: string = null;
+
+        length = this._getBufferByteLength(recoredAnimationArr, this._animationDataByteSize);
+
+        if(length > 0){
+            animationBufferViewId = `bufferView_${id}`;
+
+            json[animationBufferViewId] = {
+                buffer: bufferId,
+                byteLength: length,
+                byteOffset: offset
+            };
+
+            id++;
+            offset += length;
+        }
 
         length = this._getBufferByteLength(recordedIndiceArr, this._indiceDataByteSize);
 
-        indiceBufferViewId = `bufferView_${id}`;
+        if(length > 0){
+            indiceBufferViewId = `bufferView_${id}`;
 
-        json[indiceBufferViewId] = {
-            buffer: bufferId,
-            byteLength: length,
-            byteOffset: offset,
-            target: 34963
-        };
+            json[indiceBufferViewId] = {
+                buffer: bufferId,
+                byteLength: length,
+                byteOffset: offset,
+                target: 34963
+            };
 
-        id++;
-        offset += length;
+            id++;
+            offset += length;
+        }
 
         attributeBufferViewId = `bufferView_${id}`;
 
@@ -250,23 +320,33 @@ export class Compressor {
         };
 
         return {
+            animationBufferViewId: animationBufferViewId,
             attributeBufferViewId: attributeBufferViewId,
             indiceBufferViewId: indiceBufferViewId,
             json: json
         };
     }
 
-    private _buildAccessorsJson(attributeBufferViewId: string, indiceBufferViewId: string, recordedAttributeArr: Array<PrimitiveDataRecord>, recordedIndiceArr: Array<PrimitiveDataRecord>) {
+    private _buildAccessorsJson(animationBufferViewId:string, attributeBufferViewId: string, indiceBufferViewId: string, recordedAnimationArr: Array<AnimationDataRecord>, recordedIndiceArr: Array<PrimitiveDataRecord>, recordedAttributeArr: Array<PrimitiveDataRecord>) {
         var json = {},
             mappingTable = {},
             id = 0,
             accessorCount: number = null;
 
-        accessorCount = this._buildAccessorData(json, mappingTable, id, indiceBufferViewId, recordedIndiceArr, this._indiceDataByteSize);
+        if(!this._isArrayEmpty(recordedAnimationArr)){
+            accessorCount = this._buildAccessorData(json, mappingTable, id, animationBufferViewId, recordedAnimationArr, this._animationDataByteSize, "anim");
+        }
 
-        id += accessorCount;
+        if(!this._isArrayEmpty(recordedIndiceArr)){
+            accessorCount = this._buildAccessorData(json, mappingTable, id, indiceBufferViewId, recordedIndiceArr, this._indiceDataByteSize);
 
-        this._buildAccessorData(json, mappingTable, id, attributeBufferViewId, recordedAttributeArr, this._attributeDataByteSize);
+            id += accessorCount;
+        }
+
+
+        if(!this._isArrayEmpty(recordedAttributeArr)){
+            this._buildAccessorData(json, mappingTable, id, attributeBufferViewId, recordedAttributeArr, this._attributeDataByteSize);
+        }
 
         return {
             json: json,
@@ -285,7 +365,7 @@ export class Compressor {
     })
     private _buildAccessorData(json: {
         [id: string]: Object
-    }, mappingTable: Object, id, bufferViewId: string, recordedArr: Array<PrimitiveDataRecord>, byteSize: number) {
+    }, mappingTable: Object, id, bufferViewId: string, recordedArr: Array<AnimationDataRecord|PrimitiveDataRecord>, byteSize: number, prefix?:string) {
         var offset = 0,
             accessorCount = 0;
 
@@ -303,7 +383,12 @@ export class Compressor {
                 continue;
             }
 
-            accessorId = `accessor_${String(id + accessorCount)}`;
+            if(prefix){
+                accessorId = `${prefix}Accessor_${String(id + accessorCount)}`;
+            }
+            else{
+                accessorId = `accessor_${String(id + accessorCount)}`;
+            }
 
             accessorCount++;
 
@@ -315,7 +400,9 @@ export class Compressor {
                 type: item.type
             };
 
-            mappingTable[item.where] = accessorId;
+            if(item.where){
+                mappingTable[item.where] = accessorId;
+            }
 
             offset += byteSize * count;
         }
@@ -379,9 +466,8 @@ export class Compressor {
         for(let where in mappingTable){
             if(mappingTable.hasOwnProperty(where)){
                 let accessorId = mappingTable[where],
-                    whereDataArr = this._parseWhere(where);
-
-                let data:any = targetJson.meshes,
+                    whereDataArr = this._parseWhere(where),
+                    data = targetJson,
                     i = 0;
 
                 for(let len = whereDataArr.length - 1; i < len; i++){
@@ -401,13 +487,13 @@ export class Compressor {
                 let mesh = targetJson.meshes[id];
 
                 for (let primitiveData of mesh.primitives) {
-                    if (this._isEmptyData(primitiveData.indices)) {
+                    if (this._isArrayEmpty(primitiveData.indices)) {
                         delete primitiveData.indices;
                     }
 
                     for (let key in primitiveData.attributes) {
                         if (primitiveData.attributes.hasOwnProperty(key)) {
-                            if (this._isEmptyData(primitiveData.attributes[key])) {
+                            if (this._isArrayEmpty(primitiveData.attributes[key])) {
                                 delete primitiveData.attributes[key];
                             }
                         }
@@ -417,8 +503,8 @@ export class Compressor {
         }
     }
 
-    private _isEmptyData(data:string|Array<number>){
-        return JudgeUtils.isArray(data) && data.length === 0;
+    private _isArrayEmpty(data:string|Array<any>){
+        return JudgeUtils.isArrayExactly(data) && data.length === 0;
     }
 
     private _toBuffer(arraybuffer:ArrayBuffer) {
@@ -429,11 +515,20 @@ export class Compressor {
 //todo refactor
 
 type SourceJsonData = {
+    animations:{
+        [id:string]: SourceAnimation
+    },
     meshes: {
         [id:string]: {
             primitives: Array<SourcePrimitive>
         }
     };
+}
+
+type SourceAnimation = {
+    channels: Array<any>;
+    parameters: any;
+    samplers: any;
 }
 
 type SourcePrimitive = {
@@ -448,6 +543,19 @@ type SourceAttribute = {
     COLOR?:Array<number>;
 }
 
+
+type DataRecord = {
+    data:Array<number>|string;
+    where:string;
+}
+
+type AnimationDataRecord = {
+    data:Array<number>|string;
+    where:string;
+    componentType:number,
+    type:string;
+}
+
 type PrimitiveDataRecord = {
     data:Array<number>|string;
     where:string;
@@ -456,6 +564,9 @@ type PrimitiveDataRecord = {
 }
 
 type TargetJsonData = {
+    animations:{
+        [id:string]: Object
+    },
     accessors: {
         [id:string]: Object
     },

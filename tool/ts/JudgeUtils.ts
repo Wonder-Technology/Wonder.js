@@ -8,4 +8,8 @@ export = class JudgeUtils extends wdCb.JudgeUtils{
 
         return typeof length == 'number' && length >= 0 && length <= MAX_ARRAY_INDEX;
     }
+
+    public static isArrayExactly(arr:any) {
+        return Object.prototype.toString.call(arr) === "[object Array]";
+    }
 }

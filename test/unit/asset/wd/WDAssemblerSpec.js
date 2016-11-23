@@ -571,33 +571,33 @@ describe("WDAssembler", function () {
                     expect(component).toBeExist();
                 });
 
-                // describe("add animation component", function(){
-                //     it("add ArticulatedAnimation component", function(){
-                //         var animData = {
-                //             "animation_0": wdCb.Collection.create([
-                //                 {
-                //                     time: 1000,
-                //                     interpolationMethod: wd.EKeyFrameInterpolation.LINEAR,
-                //                     targets: wdCb.Collection.create([
-                //                         {
-                //                             target: wd.EArticulatedAnimationTarget.TRANSLATION,
-                //                             data: wd.Vector3.create(1, 1, 0)
-                //                         }
-                //                     ])
-                //                 }
-                //             ])
-                //         };
-                //         setComponent(animData);
-                //
-                //
-                //         var data = builder.build(parseData);
-                //
-                //
-                //         var component = getComponent(data, wd.ArticulatedAnimation);
-                //         expect(component.data).toBeInstanceOf(wdCb.Hash);
-                //         expect(component.data.getChildren()).toEqual(animData);
-                //     });
-                // });
+                describe("add animation component", function(){
+                    it("add ArticulatedAnimation component", function(){
+                        var animData = {
+                            "animation_0": wdCb.Collection.create([
+                                {
+                                    time: 1000,
+                                    interpolationMethod: wd.EKeyFrameInterpolation.LINEAR,
+                                    targets: wdCb.Collection.create([
+                                        {
+                                            target: wd.EArticulatedAnimationTarget.TRANSLATION,
+                                            data: wd.Vector3.create(1, 1, 0)
+                                        }
+                                    ])
+                                }
+                            ])
+                        };
+                        setComponent(animData);
+
+
+                        var data = builder.build(parseData);
+
+
+                        var component = getComponent(data, wd.ArticulatedAnimation);
+                        expect(component.data).toBeInstanceOf(wdCb.Hash);
+                        expect(component.data.getChildren()).toEqual(animData);
+                    });
+                });
             });
         });
     });

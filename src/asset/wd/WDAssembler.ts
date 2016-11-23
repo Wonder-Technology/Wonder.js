@@ -86,9 +86,9 @@ module wd{
                 if(self._isGeometry(component)){
                     model.addComponent(self._createGeometry(<any>component));
                 }
-                // else if(self._isArticulatedAnimation(component)){
-                //     model.addComponent(self._createArticulatedAnimation(<any>component));
-                // }
+                else if(self._isArticulatedAnimation(component)){
+                    model.addComponent(self._createArticulatedAnimation(<any>component));
+                }
             });
         }
 
@@ -108,10 +108,10 @@ module wd{
             return !!component.material;
         }
 
-        // private _isArticulatedAnimation(component:any){
-        //     return WDUtils.isIWDArticulatedAnimation(component);
-        // }
-        //
+        private _isArticulatedAnimation(component:any){
+            return WDUtils.isIWDArticulatedAnimation(component);
+        }
+
         private _createTransform(component:IWDTransform){
             var transform:ThreeDTransform = ThreeDTransform.create();
 
@@ -246,13 +246,13 @@ module wd{
                 material.side = ESide.FRONT;
             }
         }
-        //
-        // private _createArticulatedAnimation(component:IWDArticulatedAnimation){
-        //      var anim = ArticulatedAnimation.create();
-        //
-        //     anim.data = wdCb.Hash.create<wdCb.Collection<IWDKeyFrameData>>(component);
-        //
-        //     return anim;
-        // }
+
+        private _createArticulatedAnimation(component:IWDArticulatedAnimation){
+             var anim = TransformArticulatedAnimation.create();
+
+            anim.data = wdCb.Hash.create<wdCb.Collection<IWDKeyFrameData>>(component);
+
+            return anim;
+        }
     }
 }

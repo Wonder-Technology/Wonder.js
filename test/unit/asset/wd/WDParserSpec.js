@@ -852,7 +852,7 @@ describe("WDParser", function () {
                         gl = wd.DeviceManager.getInstance().gl;
                     });
 
-                    it("test1", function(){
+                    it("if only repeatRegion is different, share", function(){
                         gl.createTexture.onCall(0).returns({})
                         gl.createTexture.onCall(1).returns({a:1})
 
@@ -969,15 +969,6 @@ describe("WDParser", function () {
 
 
                         expect(map1.glTexture === map2.glTexture).toBeTruthy();
-
-                        // expect(map).toBeInstanceOf(wd.ImageTexture);
-                        // expect(map.source).toEqual(image);
-                        // expect(map.format).toEqual(wd.ETextureFormat.RGBA);
-                        // expect(map.type).toEqual(wd.ETextureType.UNSIGNED_BYTE);
-                        // expect(map.minFilter).toEqual(wd.ETextureFilterMode.LINEAR);
-                        // expect(map.magFilter).toEqual(wd.ETextureFilterMode.LINEAR);
-                        // expect(map.wrapS).toEqual(wd.ETextureWrapMode.REPEAT);
-                        // expect(map.wrapT).toEqual(wd.ETextureWrapMode.REPEAT);
                     });
                 });
             });

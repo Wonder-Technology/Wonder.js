@@ -6,9 +6,12 @@ var fs = require("fs-extra");
 // var del = require("del");
 // var gulpSync = require("gulp-sync")(gulp);
 var wdFrp = require("wdfrp");
-// var path = require("path");
+var path = require("path");
+var commandUtils = require("../common/commandUtils.js");
 
 gulp.task("convertMultiIndicesToSingleIndice", function (done) {
+    var isRemoveNullData = commandUtils.isDefinOption("--removeNullData") || false;
+
     var sourceFile = "../../mine/output.json";
 
     var destFile = "../../mine/result.json";
@@ -21,7 +24,7 @@ gulp.task("convertMultiIndicesToSingleIndice", function (done) {
         .subscribe(function(file){
             fs.writeFileSync(
                 destFile,
-                JSON.stringify(converter.convert(JSON.parse(file.toString())))
+                JSON.stringify(converter.convert(JSON.parse(file.toString()), isRemoveNullData))
             );
 
             done();

@@ -13,7 +13,7 @@ module wd{
         private _imageMap:wdCb.Hash<HTMLImageElement> = null;
         private _json:IWDJsonData = null;
         private _geometryParser = WDGeometryParser.create();
-        // private _articulatedAnimationParser = WDArticulatedAnimationParser.create();
+        private _articulatedAnimationParser = WDArticulatedAnimationParser.create();
 
         public parse(json:IWDJsonData, arrayBufferMap:wdCb.Hash<any>, imageMap:wdCb.Hash<HTMLImageElement>):IWDParseData{
             this._json = json;
@@ -27,9 +27,9 @@ module wd{
 
             this._parseObjects();
 
-            // if(json.animations){
-            //     this._articulatedAnimationParser.parse(json, this._data.objects, this._arrayBufferMap)
-            // }
+            if(json.animations){
+                this._articulatedAnimationParser.parse(json, this._data.objects, this._arrayBufferMap)
+            }
 
             return this._data;
         }

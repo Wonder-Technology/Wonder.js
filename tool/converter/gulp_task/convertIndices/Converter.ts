@@ -50,7 +50,7 @@ export class Converter {
             }
         });
     })
-    public convert(sourceJson:SourceJsonData):TargetJsonData {
+    public convert(sourceJson:SourceJsonData, isRemoveNullData:boolean):TargetJsonData {
         var targetJson:TargetJsonData = ExtendUtils.extendDeep(sourceJson);
 
         targetJson.meshes = {};
@@ -73,7 +73,41 @@ export class Converter {
             }
         }
 
+        if(isRemoveNullData){
+            this._removeNullData(targetJson);
+        }
+
         return targetJson;
+    }
+
+    private _removeNullData(targetJson:TargetJsonData){
+        for(let key in targetJson.meshes){
+            if(targetJson.meshes.hasOwnProperty(key)){
+                let mesh = targetJson.meshes[key];
+
+                for(let primitiveData of mesh.primitives){
+                    this._removeFieldWhoseDataAreAllNull(primitiveData, "indices");
+
+                    for(let key in primitiveData.attributes) {
+                        if (primitiveData.attributes.hasOwnProperty(key)) {
+                            this._removeFieldWhoseDataAreAllNull(primitiveData.attributes, key);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private _removeFieldWhoseDataAreAllNull(data:Object, fieldName:string){
+        if(!data[fieldName]){
+            return;
+        }
+
+        if(data[fieldName].filter((value:number) => {
+            return value !== null && value !== void 0;
+        }).length === 0){
+            delete data[fieldName]
+        }
     }
 
     private _duplicateVertex({
