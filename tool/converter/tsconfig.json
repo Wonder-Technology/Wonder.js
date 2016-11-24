@@ -50,6 +50,12 @@
 		"./gulp_task/convertIndices/Utils.ts",
 
 
-		"./gulp_task/compressToBinary/Compressor.ts"
+		"./gulp_task/compressToBinary/Utils.ts",
+		"./gulp_task/compressToBinary/CompressorManager.ts",
+		"./gulp_task/compressToBinary/Compressor.ts",
+		"./gulp_task/compressToBinary/AnimationCompressor.ts",
+		"./gulp_task/compressToBinary/AttributeCompressor.ts",
+		"./gulp_task/compressToBinary/IndiceCompressor.ts",
+		"./gulp_task/compressToBinary/MorphTargetCompressor.ts"
 	]
 }

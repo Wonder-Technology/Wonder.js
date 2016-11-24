@@ -1,16 +1,16 @@
-var Compressor = require("../../../../dist/converter/gulp_task/compressToBinary/Compressor").Compressor,
+var CompressorManager = require("../../../../dist/converter/gulp_task/compressToBinary/CompressorManager").CompressorManager,
     ExtendUtils = require("../../../../dist/ts/ExtendUtils"),
     BufferReader = require("../../../../dist/converter/common/BufferReader"),
     testTool = require("../../../../../js/testTool"),
     sinon = require("sinon");
 
-describe("compressToBinary->Compressor", function () {
+describe("compressToBinary->CompressorManager", function () {
     var sandbox = null;
-    var compressor;
+    var compressorManager;
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        compressor = Compressor.create();
+        compressorManager = CompressorManager.create();
     });
     afterEach(function () {
         sandbox.restore();
@@ -247,7 +247,7 @@ describe("compressToBinary->Compressor", function () {
                     }
                 });
 
-                var data = compressor.compress("", "", fileJson);
+                var data = compressorManager.compress("", "", fileJson);
 
                 expect(data.buffer instanceof Buffer).toBeTruthy();
             });
@@ -266,7 +266,7 @@ describe("compressToBinary->Compressor", function () {
                 }
             });
 
-            var data = compressor.compress("wdFileName", "../", fileJson);
+            var data = compressorManager.compress("wdFileName", "../", fileJson);
 
             var buffers = data.json.buffers;
 
@@ -466,7 +466,7 @@ _judgeMorphFrame(arraybuffer, frame.vertices, "vertices", primitiveData, json, i
                         }
                     });
 
-                    var data = compressor.compress("", "", fileJson);
+                    var data = compressorManager.compress("", "", fileJson);
 
 
                     // var reader = BufferReader.create(data.buffer);
@@ -500,7 +500,7 @@ _judgeMorphFrame(arraybuffer, frame.vertices, "vertices", primitiveData, json, i
                         }
                     });
 
-                    var data = compressor.compress("", "", fileJson);
+                    var data = compressorManager.compress("", "", fileJson);
 
 
                     var arraybuffer = data.buffer.buffer;
@@ -639,7 +639,7 @@ _judgeMorphFrame(arraybuffer, frame.vertices, "vertices", primitiveData, json, i
                         }
                     });
 
-                    var data = compressor.compress("", "", fileJson);
+                    var data = compressorManager.compress("", "", fileJson);
 
 
                     // var reader = BufferReader.create(data.buffer);
@@ -769,7 +769,7 @@ _judgeMorphFrame(arraybuffer, frame.vertices, "vertices", primitiveData, json, i
                         }
                     });
 
-                    var data = compressor.compress("wdFileName", "./", fileJson);
+                    var data = compressorManager.compress("wdFileName", "./", fileJson);
 
                     var json = data.json;
 
@@ -836,7 +836,7 @@ _judgeMorphFrame(arraybuffer, frame.vertices, "vertices", primitiveData, json, i
                         }
                     });
 
-                    var data = compressor.compress("wdFileName", "./", fileJson);
+                    var data = compressorManager.compress("wdFileName", "./", fileJson);
 
                     var json = data.json;
 
@@ -960,7 +960,7 @@ _judgeMorphFrame(arraybuffer, frame.vertices, "vertices", primitiveData, json, i
                         }
                     });
 
-                    var data = compressor.compress("wdFileName", "./", fileJson);
+                    var data = compressorManager.compress("wdFileName", "./", fileJson);
 
                     var json = data.json;
 
@@ -1003,7 +1003,7 @@ _judgeMorphFrame(arraybuffer, frame.vertices, "vertices", primitiveData, json, i
                         }
                     });
 
-                    var data = compressor.compress("wdFileName", "./", fileJson);
+                    var data = compressorManager.compress("wdFileName", "./", fileJson);
 
                     var json = data.json;
 
@@ -1072,7 +1072,7 @@ _judgeMorphFrame(arraybuffer, frame.vertices, "vertices", primitiveData, json, i
                         }
                     });
 
-                    var data = compressor.compress("wdFileName", "./", fileJson);
+                    var data = compressorManager.compress("wdFileName", "./", fileJson);
 
                     var json = data.json;
 
@@ -1151,7 +1151,7 @@ _judgeMorphFrame(arraybuffer, frame.vertices, "vertices", primitiveData, json, i
                             }
                         });
 
-                        var data = compressor.compress("wdFileName", "./", fileJson);
+                        var data = compressorManager.compress("wdFileName", "./", fileJson);
 
 
 
@@ -1303,7 +1303,7 @@ _judgeMorphFrame(arraybuffer, frame.vertices, "vertices", primitiveData, json, i
                             }
                         });
 
-                        var data = compressor.compress("wdFileName", "./", fileJson);
+                        var data = compressorManager.compress("wdFileName", "./", fileJson);
 
 
                         var arraybuffer = data.buffer.buffer;

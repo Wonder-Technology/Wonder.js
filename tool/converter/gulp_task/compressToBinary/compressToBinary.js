@@ -14,9 +14,9 @@ gulp.task("compressToBinary", function (done) {
     // var binFilePath = "../../mine/data.bin";
     var binFileDir = "../../mine/";
 
-    var Compressor = require("../../dist/converter/gulp_task/compressToBinary/Compressor").Compressor;
+    var CompressorManager = require("../../dist/converter/gulp_task/compressToBinary/CompressorManager").CompressorManager;
 
-    var compressor = Compressor.create();
+    var compressorManager = CompressorManager.create();
 
     wdFrp.fromNodeCallback(fs.readFile)(sourceFilePath)
         .subscribe(function(file){
@@ -27,7 +27,7 @@ gulp.task("compressToBinary", function (done) {
             var fileName = path.basename(sourceFilePath, ".json"),
                 binFileRelatedDir = path.dirname(path.relative(sourceFilePath, binFileDir));
 
-            var data = compressor.compress(fileName, binFileRelatedDir, sourceJson);
+            var data = compressorManager.compress(fileName, binFileRelatedDir, sourceJson);
 
             fs.writeFileSync(
                 path.join(path.dirname(sourceFilePath), data.uri),
