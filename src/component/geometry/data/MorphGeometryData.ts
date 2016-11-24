@@ -34,11 +34,11 @@ module wd {
         }
 
         private _morphTargets:wdCb.Hash<MorphTargetsData> = null;
-        get morphTargets(){
+        get morphVertices(){
             return this._morphTargets;
         }
-        set morphTargets(morphTargets:wdCb.Hash<MorphTargetsData>){
-            this._morphTargets = morphTargets;
+        set morphVertices(morphVertices:wdCb.Hash<MorphTargetsData>){
+            this._morphTargets = morphVertices;
             this._morphNormalDirty = true;
         }
 

@@ -525,9 +525,9 @@ describe("WDParser", function () {
                 var morphTargets;
 
 
-                function judgeMorphDataEqual(animName, sourceMorphTargets, targetMorphTargets, targetMorphNormals){
-                    sourceMorphTargets.forEach(function(sourceFrame, index){
-                        var targetFrameVertices = targetMorphTargets.getChild(animName).getChild(index),
+                function judgeMorphDataEqual(animName, sourceMorphVertices, targetMorphVertices, targetMorphNormals){
+                    sourceMorphVertices.forEach(function(sourceFrame, index){
+                        var targetFrameVertices = targetMorphVertices.getChild(animName).getChild(index),
                             targetFrameNormals = null;
 
                         expect(sourceFrame.vertices).toEqual(targetFrameVertices);
@@ -685,7 +685,7 @@ describe("WDParser", function () {
 
                     var geo = object.components.getChild(0);
 
-                    judgeMorphDataEqual("anim", morphTargets, geo.morphTargets, geo.morphNormals);
+                    judgeMorphDataEqual("anim", morphTargets, geo.morphVertices, geo.morphNormals);
 
                     judgeGeometryDataEqual(vertices, geo.vertices, 3);
 
@@ -738,7 +738,7 @@ describe("WDParser", function () {
 
                     var geo = object.components.getChild(0);
 
-                    judgeMorphDataEqual("anim", morphTargets, geo.morphTargets, geo.morphNormals);
+                    judgeMorphDataEqual("anim", morphTargets, geo.morphVertices, geo.morphNormals);
 
                     judgeGeometryDataEqual(vertices, geo.vertices, 3);
 

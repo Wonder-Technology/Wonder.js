@@ -88,7 +88,7 @@ module wd{
 
                     model.addComponent(geometry);
 
-                    if(!!geometry.morphTargets && geometry.morphTargets.getCount() > 0){
+                    if(!!geometry.morphVertices && geometry.morphVertices.getCount() > 0){
                         model.addComponent(MorphAnimation.create());
                     }
                 }
@@ -179,7 +179,7 @@ module wd{
             WDUtils.addData(geometry, "colors", component.colors);
             WDUtils.addData(geometry, "texCoords", component.texCoords);
 
-            WDUtils.addData(geometry, "morphTargets", component.morphTargets);
+            WDUtils.addData(geometry, "morphVertices", component.morphVertices);
             WDUtils.addData(geometry, "morphNormals", component.morphNormals);
 
             geometry.drawMode = component.drawMode;

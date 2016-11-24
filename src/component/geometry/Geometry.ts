@@ -47,12 +47,12 @@ module wd{
                     faces = [],
                     texCoords,
                     colors,
-                    morphTargets
+                    morphVertices
                     } = this.computeData();
 
             this.buffers = this.createBufferContainer();
 
-            geometryData = this.createGeometryData(vertices, faces, texCoords, colors, morphTargets);
+            geometryData = this.createGeometryData(vertices, faces, texCoords, colors, morphVertices);
 
             this.buffers.geometryData = geometryData;
 
@@ -140,7 +140,7 @@ module wd{
         }
 
         @virtual
-        protected createGeometryData(vertices:Array<number>, faces:Array<Face3>, texCoords:Array<number>, colors:Array<number>, morphTargets:wdCb.Hash<MorphTargetsData>):GeometryData{
+        protected createGeometryData(vertices:Array<number>, faces:Array<Face3>, texCoords:Array<number>, colors:Array<number>, morphVertices:wdCb.Hash<MorphTargetsData>):GeometryData{
             return this.createBasicGeometryData(vertices, faces, texCoords, colors);
         }
 
@@ -161,7 +161,7 @@ module wd{
         faces?:Array<Face3>;
         texCoords?:Array<number>;
         colors?:Array<number>;
-        morphTargets?:wdCb.Hash<MorphTargetsData>;
+        morphVertices?:wdCb.Hash<MorphTargetsData>;
     };
 }
 

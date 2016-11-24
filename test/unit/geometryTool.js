@@ -94,7 +94,7 @@ var geometryTool = (function(){
             var geo = wd.ModelGeometry.create();
             var data = cloneTool.extend({
                 vertices:[1,-1,0, 0,1,0,0,0,1],
-                morphTargets: wdCb.Hash.create({
+                morphVertices: wdCb.Hash.create({
                     "play": wdCb.Collection.create(
                         [
                             [1, -1, 0, 0, 1, 0, 0, 0, 1],
@@ -107,7 +107,7 @@ var geometryTool = (function(){
             }, geometryData);
 
             geo.vertices = data.vertices;
-            geo.morphTargets = data.morphTargets;
+            geo.morphVertices = data.morphVertices;
             geo.faces = createFaces(data.faces);
 
             return geo;

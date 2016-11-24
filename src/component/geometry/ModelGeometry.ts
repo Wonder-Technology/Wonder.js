@@ -25,7 +25,7 @@ module wd{
         @cloneAttributeAsCustomType(function(source:ModelGeometry, target:ModelGeometry, memberName:string){
             target[memberName] = this._getDeepCloneMorphData(source[memberName]);
         })
-        public morphTargets:wdCb.Hash<MorphTargetsData> = null;
+        public morphVertices:wdCb.Hash<MorphTargetsData> = null;
         @cloneAttributeAsCustomType(function(source:ModelGeometry, target:ModelGeometry, memberName:string){
             target[memberName] = this._getDeepCloneMorphData(source[memberName]);
         })
@@ -205,7 +205,7 @@ module wd{
                 faces: this.faces,
                 texCoords: this.texCoords,
                 colors: this.colors,
-                morphTargets: this.morphTargets
+                morphVertices: this.morphVertices
             };
         }
 
@@ -222,7 +222,7 @@ module wd{
             return BasicBufferContainer.create(this.entityObject);
         }
 
-        protected createGeometryData(vertices:Array<number>, faces:Array<Face3>, texCoords:Array<number>, colors:Array<number>, morphTargets:wdCb.Hash<MorphTargetsData>):GeometryData{
+        protected createGeometryData(vertices:Array<number>, faces:Array<Face3>, texCoords:Array<number>, colors:Array<number>, morphVertices:wdCb.Hash<MorphTargetsData>):GeometryData{
             if(this.hasAnimation()){
                 let geometryData = MorphGeometryData.create(this);
 
@@ -230,7 +230,7 @@ module wd{
                 geometryData.faces = faces;
                 geometryData.texCoords = texCoords;
                 geometryData.colors = colors;
-                geometryData.morphTargets = morphTargets;
+                geometryData.morphVertices = morphVertices;
 
                 return geometryData;
             }
@@ -239,7 +239,7 @@ module wd{
         }
 
         private _hasMorphTargets(){
-            return this.morphTargets && this.morphTargets.getCount() > 0;
+            return this.morphVertices && this.morphVertices.getCount() > 0;
         }
 
         private _getDeepCloneMorphData(source:wdCb.Hash<wdCb.Collection<Array<number>>>){

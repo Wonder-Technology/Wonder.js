@@ -77,7 +77,7 @@ module wd{
             return BasicBufferContainer.create(this.entityObject);
         }
 
-        protected createGeometryData(vertices:Array<number>, faces:Array<Face3>, texCoords:Array<number>, colors:Array<number>, morphTargets:wdCb.Hash<MorphTargetsData>):GeometryData{
+        protected createGeometryData(vertices:Array<number>, faces:Array<Face3>, texCoords:Array<number>, colors:Array<number>, morphVertices:wdCb.Hash<MorphTargetsData>):GeometryData{
             if(this.hasMultiPages()){
                 let geometryData = BitmapFontGeometryData.create(this);
 

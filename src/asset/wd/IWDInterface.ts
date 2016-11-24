@@ -369,7 +369,7 @@ module wd {
         texCoords?: Array<number>;
         faces:Array<Face3>;
 
-        morphTargets: wdCb.Hash<MorphTargetsData>;
+        morphVertices: wdCb.Hash<MorphTargetsData>;
         morphNormals:wdCb.Hash<MorphTargetsData>;
 
         drawMode:EDrawMode;

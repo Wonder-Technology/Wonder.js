@@ -39,7 +39,7 @@ module wd{
             var geometry = this.entityObject.getComponent(ModelGeometry);
 
             assert(geometry, Log.info.FUNC_SHOULD("this entityObject", "add ModelGeometry component"));
-            assert(geometry.morphTargets.getChild(animName) && geometry.morphTargets.getChild(animName).getCount() > 0, Log.info.FUNC_NOT_EXIST(`"${animName}" animation`));
+            assert(geometry.morphVertices.getChild(animName) && geometry.morphVertices.getChild(animName).getCount() > 0, Log.info.FUNC_NOT_EXIST(`"${animName}" animation`));
         })
         @ensure(function(){
             assert(this.frameCount > 1, Log.info.FUNC_SHOULD("frames.count", "> 1"));
@@ -52,7 +52,7 @@ module wd{
 
             this.duration = 1.0 / fps * 1000;
 
-            this.frameCount = geometry.morphTargets.getChild(animName).getCount();
+            this.frameCount = geometry.morphVertices.getChild(animName).getCount();
 
             this.resetAnim();
 

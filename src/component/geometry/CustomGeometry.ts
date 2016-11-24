@@ -1,5 +1,5 @@
 module wd{
-    //todo support morphTargets?
+    //todo support morphVertices?
     export class CustomGeometry extends Geometry{
         public static create(){
             var geom = new this();

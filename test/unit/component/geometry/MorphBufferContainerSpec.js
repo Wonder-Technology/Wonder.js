@@ -58,7 +58,7 @@ describe("MorphBufferContainer", function() {
             geo.buffers = container;
 
 
-            geometryData.morphTargets = wdCb.Hash.create({
+            geometryData.morphVertices = wdCb.Hash.create({
                 "play": wdCb.Collection.create(
                     [
                         [1, -1, 0, 0, 1, 0, 0, 0, 1],
@@ -69,7 +69,7 @@ describe("MorphBufferContainer", function() {
             });
 
 
-            geo.morphTargets = geometryData.morphTargets;
+            geo.morphVertices = geometryData.morphVertices;
         });
         afterEach(function(){
             testTool.clearInstance(sandbox);

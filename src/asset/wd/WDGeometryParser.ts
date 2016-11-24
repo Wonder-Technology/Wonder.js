@@ -54,7 +54,7 @@ module wd{
                 colors:Array<number> = null,
                 normals:Array<number> = null,
                 faces:Array<Face3> = null,
-                morphTargets:wdCb.Hash<MorphTargetsData> = null,
+                morphVertices:wdCb.Hash<MorphTargetsData> = null,
                 morphNormals:wdCb.Hash<MorphTargetsData>|null = null;
 
             for(let semantic in primitive.attributes){
@@ -99,7 +99,7 @@ module wd{
             if(primitive.morphTargets !== void 0){
                 let data = WDMorphDataParseUtils.parseMorphData(json, primitive.morphTargets, this._arrayBufferMap);
 
-                morphTargets = data.morphTargets;
+                morphVertices = data.morphVertices;
                 morphNormals = data.morphNormals;
             }
 
@@ -107,7 +107,7 @@ module wd{
             WDUtils.addData(geometry, "colors", colors);
             WDUtils.addData(geometry, "texCoords", texCoords);
             WDUtils.addData(geometry, "faces", faces);
-            WDUtils.addData(geometry, "morphTargets", morphTargets);
+            WDUtils.addData(geometry, "morphVertices", morphVertices);
             WDUtils.addData(geometry, "morphNormals", morphNormals);
 
             WDUtils.addData(geometry, "drawMode", this._parseDrawMode(primitive.mode));

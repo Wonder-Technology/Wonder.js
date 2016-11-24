@@ -1,14 +1,14 @@
 module wd {
     export class WDMorphDataParseUtils {
         public static parseMorphData(json: IWDJsonData, sourceMorphTargets: Array<IWDMorphTarget>, arrayBufferMap:wdCb.Hash<ArrayBuffer>) {
-            var morphTargets: wdCb.Hash<MorphTargetsData> = wdCb.Hash.create<MorphTargetsData>(),
+            var morphVertices: wdCb.Hash<MorphTargetsData> = wdCb.Hash.create<MorphTargetsData>(),
                 morphNormals: wdCb.Hash<MorphTargetsData> = wdCb.Hash.create<MorphTargetsData>(),
                 accessor: IWDAccessor = null;
 
             for (let frame of sourceMorphTargets) {
                 let animName = this._getAnimName(frame.name);
 
-                morphTargets.appendChild(animName, this._getMorphDatas(json, frame.vertices, arrayBufferMap));
+                morphVertices.appendChild(animName, this._getMorphDatas(json, frame.vertices, arrayBufferMap));
 
                 if (!!frame.normals) {
                     morphNormals.appendChild(animName, this._getMorphDatas(json, frame.normals, arrayBufferMap));
@@ -20,7 +20,7 @@ module wd {
             }
 
             return {
-                morphTargets: morphTargets,
+                morphVertices: morphVertices,
                 morphNormals: morphNormals
             };
         }

@@ -29,14 +29,14 @@ module wd {
         }
 
         @require(function (type:EBufferDataType) {
-            assert(this.geometryData.morphTargets && this.geometryData.morphTargets.getCount() > 0, Log.info.FUNC_SHOULD("set morphTargets"));
+            assert(this.geometryData.morphVertices && this.geometryData.morphVertices.getCount() > 0, Log.info.FUNC_SHOULD("set morphVertices"));
         })
         protected getVertice(type:EBufferDataType) {
-            return this._getMorphData(type, this.geometryData.morphTargets);
+            return this._getMorphData(type, this.geometryData.morphVertices);
         }
 
         @require(function (type:EBufferDataType) {
-            assert(this.geometryData.morphTargets && this.geometryData.morphTargets.getCount() > 0, Log.info.FUNC_SHOULD("set morphTargets"));
+            assert(this.geometryData.morphVertices && this.geometryData.morphVertices.getCount() > 0, Log.info.FUNC_SHOULD("set morphVertices"));
         })
         protected getNormal(type:EBufferDataType) {
             return this._getMorphData(type, this.geometryData.morphNormals);

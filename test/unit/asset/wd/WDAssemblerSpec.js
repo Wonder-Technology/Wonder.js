@@ -353,11 +353,11 @@ describe("WDAssembler", function () {
                     });
 
                     describe("add morph data", function(){
-                        var morphTargets,
+                        var morphVertices,
                             morphNormals;
 
                         beforeEach(function(){
-                            morphTargets = wdCb.Hash.create(
+                            morphVertices = wdCb.Hash.create(
                                 {
                                     "frame0":wdCb.Collection.create([
                                         1,2,3,
@@ -376,7 +376,7 @@ describe("WDAssembler", function () {
                                 }
                             );
                             setComponent({
-                                morphTargets:morphTargets,
+                                morphVertices:morphVertices,
                                 morphNormals:morphNormals,
 
                                 material:{
@@ -390,7 +390,7 @@ describe("WDAssembler", function () {
 
 
                             var component = getComponent(data, wd.Geometry);
-                            expect(component.morphTargets).toEqual(morphTargets);
+                            expect(component.morphVertices).toEqual(morphVertices);
                             expect(component.morphNormals).toEqual(morphNormals);
                         });
                         it("add MorphAnimation component", function () {

@@ -122,7 +122,7 @@ describe("ModelGeometry", function() {
                 model.addComponent(createAnimation());
 
                 geo.vertices = [1,-1,0, 0,1,0,0,0,1];
-                geo.morphTargets = wdCb.Hash.create({
+                geo.morphVertices = wdCb.Hash.create({
                     "play": wdCb.Collection.create(
                             [
                                 [1, -1, 0, 0, 1, 0, 0, 0, 1],
@@ -163,7 +163,7 @@ describe("ModelGeometry", function() {
                 model.addComponent(createAnimation());
 
                 geo.vertices = [1,-1,0, 0,1,0,0,0,1, 2,3,-2];
-                geo.morphTargets = wdCb.Hash.create({
+                geo.morphVertices = wdCb.Hash.create({
                     "play": wdCb.Collection.create(
                         [
                             [1,-1,0, 0,1,0,0,0,1, 2,3,-2],
@@ -237,8 +237,8 @@ describe("ModelGeometry", function() {
         it("deep clone morphVertexNormals", function(){
             judgeCloneMorphData("morphVertexNormals");
         });
-        it("deep clone morphTargets", function(){
-            judgeCloneMorphData("morphTargets");
+        it("deep clone morphVertices", function(){
+            judgeCloneMorphData("morphVertices");
         });
         it("clone other geometry data", function () {
             var vertices = [1,2,3],
