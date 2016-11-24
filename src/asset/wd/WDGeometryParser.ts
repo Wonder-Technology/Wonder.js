@@ -97,7 +97,7 @@ module wd{
             faces = this._getFaces(json, primitive.indices, normals);
 
             if(primitive.morphTargets !== void 0){
-                let data = this._parseMorphData(json, primitive.morphTargets);
+                let data = WDMorphDataParseUtils.parseMorphData(json, primitive.morphTargets, this._arrayBufferMap);
 
                 morphTargets = data.morphTargets;
                 morphNormals = data.morphNormals;
@@ -115,51 +115,6 @@ module wd{
             geometry.material = this._materialParser.parse(json, primitive.material, this._imageMap);
 
             return geometry;
-        }
-
-        private _parseMorphData(json:IWDJsonData, sourceMorphTargets:Array<IWDMorphTarget>){
-            var morphTargets:wdCb.Hash<MorphTargetsData> = wdCb.Hash.create<MorphTargetsData>(),
-                morphNormals:wdCb.Hash<MorphTargetsData> = wdCb.Hash.create<MorphTargetsData>(),
-                accessor:IWDAccessor = null;
-
-            for(let frame of sourceMorphTargets) {
-                let animName = this._getAnimName(frame.name);
-
-                morphTargets.appendChild(animName, this._getMorphDatas(json, frame.vertices));
-
-                if(!!frame.normals){
-                    morphNormals.appendChild(animName, this._getMorphDatas(json, frame.normals));
-                }
-            }
-
-            if(morphNormals.getCount() === 0){
-                morphNormals = null;
-            }
-
-            return {
-                morphTargets:morphTargets,
-                morphNormals:morphNormals
-            };
-        }
-
-        private _getMorphDatas(json:IWDJsonData, frameDataAccessorId:string){
-            var accessor = json.accessors[frameDataAccessorId],
-                {bufferReader, count} = WDUtils.getBufferReaderFromAccessor(json, accessor, this._arrayBufferMap),
-                dataArr: Array<number> = [];
-
-            for (let i = 0; i < count; i++) {
-                dataArr.push(bufferReader.readFloat());
-            }
-
-            return dataArr;
-        }
-
-        private _getAnimName(frameName:string):string {
-            const PATTERN = /([a-z]+)_?(\d+)/,
-                DEFAULT_ANIM_NAME = "defaultMorphAnimation";
-            var parts = frameName.match(PATTERN);
-
-            return parts && parts.length > 1 ? parts[1] : DEFAULT_ANIM_NAME;
         }
 
         private _addAttributeData(geometryData:Array<number>, bufferReader:BufferReader, count:number){
