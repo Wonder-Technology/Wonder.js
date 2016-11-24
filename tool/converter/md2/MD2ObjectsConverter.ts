@@ -12,17 +12,16 @@ export = class MD2ObjectsConverter {
         return obj;
     }
 
-    public convert(fileBuffer:Buffer, filePath:string) {
+    public convert(json:any,fileBuffer:Buffer, nodeName:string) {
         const HEADERNAMES = [
             'skinwidth', 'skinheight',
             'framesize',
             'num_skins', 'num_vertices', 'num_st', 'num_tris', 'num_glcmds', 'num_frames',
             'offset_skins', 'offset_st', 'offset_tris', 'offset_frames', 'offset_glcmds', 'offset_end'
         ];
-        var result:Array<any> = [],
-            uvs:Array<number> = [],
+        var texCoords:Array<number> = [],
             verticeIndices:Array<number> = [],
-            uvIndices:Array<number> = [],
+            texCoordIndices:Array<number> = [],
             morphTargets:Array<any> = null,
             vertices:Array<number> = null,
             object:any = {},
@@ -46,15 +45,15 @@ export = class MD2ObjectsConverter {
             wdCb.Log.error(true, "Corrupted MD2 file");
         }
 
-        uvs = this._convertUVs(header, reader);
+        texCoords = this._convertTexCoords(header, reader);
 
         //todo get texture name?
-                //var textureName = null;
+        //var textureName = null;
         //reader.seek(header.offset_skins);
         //
         //textureName = reader.readString(header.num_skins);
 
-        [verticeIndices, uvIndices] = this._convertTriangles(header, reader);
+        [verticeIndices, texCoordIndices] = this._convertTriangles(header, reader);
 
         morphTargets = this._convertMorphTargets(header, reader);
 
@@ -63,57 +62,108 @@ export = class MD2ObjectsConverter {
 
         //todo for flat shading?
 
+        let nodes = {},
+            meshId = `${nodeName}_mesh`;
 
-        object.name = ModelLoaderUtils.getNameByPath(filePath);
+        json.nodes = nodes;
 
-        object.material = null;
+        nodes[nodeName] = {
+            children:[],
+            matrix:[
+                1,
+                0,
+                0,
+                0,
 
-        object.vertices = vertices;
-        object.normals = [];
-        object.colors = [];
-        object.morphTargets = morphTargets;
-        object.uvIndices = uvIndices;
-        object.verticeIndices = verticeIndices;
-        object.uvs = uvs;
+                0,
+                1,
+                0,
+                0,
 
-        result.push(object);
+                0,
+                0,
+                1,
+                0,
 
-        return result;
+                0,
+                0,
+                0,
+                1
+            ],
+            mesh:meshId,
+            name:nodeName
+        };
+
+        let meshes = {};
+
+        json.meshes = meshes;
+
+        meshes[meshId] = {
+            name:meshId,
+            primitives:[
+                {
+                    attributes:{
+                        POSITION:vertices,
+                        TEXCOORD:texCoords
+                    },
+                    morphTargets:morphTargets,
+                    verticeIndices: verticeIndices,
+                    texCoordIndices: texCoordIndices,
+                    // material:null,
+                    mode:4
+                }
+            ]
+        }
+
+
+        // object.material = null;
+        //
+        // object.vertices = vertices;
+        // object.normals = [];
+        // object.colors = [];
+        // object.morphTargets = morphTargets;
+        // object.texCoordIndices = texCoordIndices;
+        // object.verticeIndices = verticeIndices;
+        // object.texCoords = texCoords;
+        //
+        // result.push(object);
+        //
+        // return result;
     }
 
-    private  _convertUVs(header:any, reader:any) {
-        var uvs = [];
+    private  _convertTexCoords(header:any, reader:any) {
+        var texCoords = [];
 
         reader.seek(header.offset_st);
         for (let i = 0; i < header.num_st; i++) {
             let s = reader.readInt16() / header.skinwidth,
                 t = 1 - (reader.readInt16() / header.skinheight);
 
-            uvs.push(s);
-            uvs.push(t);
+            texCoords.push(s);
+            texCoords.push(t);
         }
 
-        return uvs;
+        return texCoords;
     }
 
     private  _convertTriangles(header:any, reader:any) {
         var verticeIndices:Array<number> = [],
-            uvIndices:Array<number> = [];
+            texCoordIndices:Array<number> = [];
 
         reader.seek(header.offset_tris);
         for (let i = 0; i < header.num_tris; i++) {
             let a = reader.readInt16(),
                 b = reader.readInt16(),
                 c = reader.readInt16(),
-                uva_i = reader.readUInt16(),
-                uvb_i = reader.readUInt16(),
-                uvc_i = reader.readUInt16();
+                texCoorda_i = reader.readUInt16(),
+                texCoordb_i = reader.readUInt16(),
+                texCoordc_i = reader.readUInt16();
 
             verticeIndices.push(a, b, c);
-            uvIndices.push(uva_i, uvb_i, uvc_i);
+            texCoordIndices.push(texCoorda_i, texCoordb_i, texCoordc_i);
         }
 
-        return [verticeIndices, uvIndices];
+        return [verticeIndices, texCoordIndices];
     }
 
     private  _convertMorphTargets(header:any, reader:any) {

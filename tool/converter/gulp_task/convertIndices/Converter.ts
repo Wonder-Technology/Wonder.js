@@ -34,15 +34,15 @@ export class Converter {
                     for (let primitiveData of mesh.primitives) {
                         let len = primitiveData.verticeIndices.length;
 
-                        if (primitiveData.texCoordIndices.length > 0) {
+                        if (primitiveData.texCoordIndices && primitiveData.texCoordIndices.length > 0) {
                             expect(primitiveData.texCoordIndices.length).equal(len);
                         }
 
-                        if (primitiveData.normalIndices.length > 0) {
+                        if (primitiveData.normalIndices && primitiveData.normalIndices.length > 0) {
                             expect(primitiveData.normalIndices.length).equal(len);
                         }
 
-                        if (primitiveData.colorIndices.length > 0) {
+                        if (primitiveData.colorIndices && primitiveData.colorIndices.length > 0) {
                             expect(primitiveData.colorIndices.length).equal(len);
                         }
                     }
@@ -108,23 +108,19 @@ export class Converter {
         }
     }
 
-    private _duplicateVertex({
-        attributes,
-        verticeIndices,
-        normalIndices,
-        texCoordIndices,
-        colorIndices
-    }){
-        var vertices = attributes.POSITION;
+    private _duplicateVertex(
+        primitiveData:SourcePrimitive
+    ){
+        var vertices = primitiveData.attributes.POSITION;
 
-        this._duplicateVertexWithDifferentAttributeData(vertices, verticeIndices, texCoordIndices)
-        this._duplicateVertexWithDifferentAttributeData(vertices, verticeIndices, normalIndices)
-        this._duplicateVertexWithDifferentAttributeData(vertices, verticeIndices, colorIndices)
+        this._duplicateVertexWithDifferentAttributeData(vertices, primitiveData.morphTargets, primitiveData.verticeIndices, primitiveData.texCoordIndices);
+        this._duplicateVertexWithDifferentAttributeData(vertices, primitiveData.morphTargets, primitiveData.verticeIndices, primitiveData.normalIndices);
+        this._duplicateVertexWithDifferentAttributeData(vertices, primitiveData.morphTargets, primitiveData.verticeIndices, primitiveData.colorIndices);
     }
 
 
-    private _duplicateVertexWithDifferentAttributeData(vertices:Array<number>, verticeIndices:Array<number>, dataIndices:Array<number>) {
-        var arr = [],
+    private _duplicateVertexWithDifferentAttributeData(vertices:Array<number>, morphTargets:Array<MorphTarget>|undefined, verticeIndices:Array<number>, dataIndices:Array<number>) {
+        var arr:Array<number|undefined> = [],
             container = wdCb.Hash.create<wdCb.Collection<Array<number>>>();
 
         if (!Utils.hasData(dataIndices)) {
@@ -139,7 +135,7 @@ export class Converter {
                     verticeIndices[i] = this._getVerticeIndexOfAddedVertexByFindContainer(container, verticeIndex, dataIndices[i]);
                 }
                 else {
-                    this._addVertexData(vertices, verticeIndices, dataIndices, container, verticeIndex, i);
+                    this._addVertexData(vertices, morphTargets, verticeIndices, dataIndices, container, verticeIndex, i);
                 }
 
                 verticeIndex = verticeIndices[i];
@@ -173,10 +169,16 @@ export class Converter {
         return arr[verticeIndex] !== void 0 && arr[verticeIndex] !== texCoordIndex;
     }
 
-    private _addVertexData(vertices:Array<number>, verticeIndices:Array<number>, dataIndices:Array<number>, container:wdCb.Hash<wdCb.Collection<Array<number>>>, verticeIndex:number, index:number) {
+    private _addVertexData(vertices:Array<number>, morphTargets:Array<MorphTarget>|undefined, verticeIndices:Array<number>, dataIndices:Array<number>, container:wdCb.Hash<wdCb.Collection<Array<number>>>, verticeIndex:number, index:number) {
         var verticeIndexOfAddedVertex = null;
 
         this._addThreeComponent(vertices, verticeIndex);
+
+        if(morphTargets !== void 0){
+            for(let frame of morphTargets){
+                this._addThreeComponent(frame.vertices, verticeIndex);
+            }
+        }
 
         verticeIndexOfAddedVertex = this._getVerticeIndexOfAddedVertex(vertices);
 
@@ -197,22 +199,25 @@ export class Converter {
         return vertices.length / 3 - 1;
     }
 
-    private _parseObjectFromIndices({
-        attributes,
-        verticeIndices,
-        normalIndices,
-        texCoordIndices,
-        colorIndices,
-        material,
-        mode
-    }) {
+    private _parseObjectFromIndices(
+        primitiveData:SourcePrimitive
+    ) {
         var texCoords = [],
             normals = [],
+            morphNormals:Array<Array<number>> = [],
             colors = [],
+            attributes = primitiveData.attributes,
+            morphTargets = primitiveData.morphTargets,
+            verticeIndices = primitiveData.verticeIndices,
+            normalIndices = primitiveData.normalIndices,
+            texCoordIndices = primitiveData.texCoordIndices,
+            colorIndices = primitiveData.colorIndices,
             sourceVertices = attributes.POSITION,
             sourceTexCoords = attributes.TEXCOORD,
             sourceNormals = attributes.NORMAL,
             sourceColors = attributes.COLOR,
+            material = primitiveData.material,
+            mode = primitiveData.mode,
             newIndices:Array<number> = [];
 
         for (let i = 0, len = verticeIndices.length; i < len; i += 3) {
@@ -230,6 +235,10 @@ export class Converter {
 
             if (Utils.hasData(normalIndices) && Utils.hasData(sourceNormals)) {
                 this._setThreeComponentDataWhenParse(normals, sourceNormals, normalIndices, indexArr, verticeIndiceArr);
+
+                if(morphTargets !== void 0){
+                    this._setMorphNormalsFromIndices(morphTargets, morphNormals, normalIndices, indexArr, verticeIndiceArr);
+                }
             }
 
             if (Utils.hasData(colorIndices) && Utils.hasData(sourceColors)) {
@@ -263,6 +272,12 @@ export class Converter {
         let result:TargetPrimitive = <any>{
             attributes: attributes,
             indices: newIndices
+        };
+
+        if(morphTargets !== void 0){
+            this._updateMorphNormalsOfMorphTargets(morphTargets, morphNormals);
+
+            result.morphTargets = morphTargets;
         }
 
         if(!!material){
@@ -274,6 +289,30 @@ export class Converter {
         }
 
         return result;
+    }
+
+    private _setMorphNormalsFromIndices(morphTargets, morphNormals, normalIndices, indexArr, verticeIndiceArr){
+        for(let i = 0, len = morphTargets.length; i < len; i++){
+            let frame = morphTargets[i];
+
+            if(!!frame.normals){
+                let normals = morphNormals[i] || [];
+
+                this._setThreeComponentDataWhenParse(normals, frame.normals, normalIndices, indexArr, verticeIndiceArr);
+
+                morphNormals[i] = normals;
+            }
+        }
+    }
+
+    private _updateMorphNormalsOfMorphTargets(morphTargets, morphNormals){
+        for(let i = 0, len = morphTargets.length; i < len; i++) {
+            let frame = morphTargets[i];
+
+            if (!!frame.normals) {
+                frame.normals = morphNormals[i];
+            }
+        }
     }
 
     private _setTwoComponentDataWhenParse(targetDatas:Array<number>, sourceDatas:Array<number>, dataIndices:Array<number>, indexArr:Array<number>, verticeIndiceArr:Array<number>) {
@@ -361,6 +400,7 @@ type SourceJsonData = {
 
 type SourcePrimitive = {
     attributes: Attribute;
+    morphTargets?: Array<MorphTarget>;
     verticeIndices:Array<number>;
     normalIndices:Array<number>;
     texCoordIndices:Array<number>;
@@ -379,9 +419,17 @@ type TargetJsonData = {
 
 type TargetPrimitive = {
     attributes: Attribute;
+    morphTargets?: Array<MorphTarget>;
     indices:Array<number>;
     material:string;
     mode:number;
+}
+
+
+type MorphTarget = {
+    name:string;
+    vertices:Array<number>;
+    normals?:Array<number>;
 }
 
 type Attribute = {

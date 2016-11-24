@@ -15,6 +15,10 @@ describe("convertIndices->Converter", function(){
     });
 
     describe("convert", function(){
+        function getPrimitivesDataFromBuildedJson(buildedJson) {
+            return buildedJson.meshes.RootNode.primitives;
+        }
+
         function buildJson(positions, texCoords, normals, colors, verticeIndices, texCoordIndices, normalIndices, colorIndices, materialData) {
             materialData = materialData || {material:"a", mode:4}
 
@@ -405,6 +409,83 @@ describe("convertIndices->Converter", function(){
                         expect(getColors(result)).toEqual(
                             [
                                 4, 1, 1, 0.1, 2.2, 3, 2, 2, 0, -5, -1, -7, 4, -1, 2, 2, 2, 0, 2, 2, 0, 0.1, 2.2, 3
+                            ]
+                        )
+
+                        expect(getIndices(result)).toEqual(
+                            [
+                                0, 1, 2, 4, 3, 5, 7, 0, 6
+                            ]
+                        )
+                    });
+                });
+
+                describe("test morph targets", function () {
+                    function getMorphTargets(resultJson) {
+                        var primitive = _getPrimitive(resultJson);
+
+                        return primitive.morphTargets;
+                    }
+
+                    it("test with normalIndices, texCoordIndices, colorIndices", function () {
+                        var vertices = [1, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -4],
+                            normals = [1, 1, 1, 6, -1, -2, 1, 2, -1, -2, 0, -4, 3, 5, 0.5];
+
+                        var morphTargets = [{
+                            name: "FRAME000",
+                            vertices: vertices.slice(0),
+                            normals: normals.slice(0)
+                        }];
+
+
+                        var json = buildJson(
+                            vertices,
+                            [1.0, 0.1, 0.1, 0.2, 0.2, 0.2, 0.3, 0.5],
+                            normals,
+                            [4, -1, 2, 2, 2, 0, 4, 1, 1, -5, -1, -7, 0.1, 2.2, 3],
+
+
+                            [0, 1, 2, 1, 3, 2, 1, 0, 2],
+                            [2, 0, 1, 3, 3, 0, 3, 2, 2],
+                            [2, 0, 1, 0, 3, 1, 4, 2, 1],
+                            [2, 4, 1, 0, 3, 1, 4, 2, 1]
+                        );
+                        var primitives =  getPrimitivesDataFromBuildedJson(json);
+
+                        primitives[0].morphTargets = morphTargets;
+
+
+
+
+
+                        var result = converter.convert(json);
+
+
+
+
+
+                        var resultVertices =
+                            [
+                                1, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -4, 4, -1, -2, 3, 2, 3, 3, 2, 3, 4, -1, -2
+                            ],
+                            resultNormals = [
+                                    1, 2, -1, 1, 1, 1, 6, -1, -2, -2, 0, -4, 1, 1, 1, 6, -1, -2, 6, -1, -2, 3, 5, 0.5
+                                ];
+
+                        expect(getPositions(result)).toEqual(
+                            resultVertices
+                        )
+                        expect(getNormals(result)).toEqual(
+                         resultNormals
+                        )
+
+                        expect(getMorphTargets(result)).toEqual(
+                            [
+                                {
+                                    name: "FRAME000",
+                                    vertices: resultVertices,
+                                    normals: resultNormals
+                                }
                             ]
                         )
 

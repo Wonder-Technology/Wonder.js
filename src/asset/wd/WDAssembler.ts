@@ -84,7 +84,13 @@ module wd{
                 //     model.addComponent(self._createLight(<any>component));
                 // }
                 if(self._isGeometry(component)){
-                    model.addComponent(self._createGeometry(<any>component));
+                    let geometry = self._createGeometry(<any>component);
+
+                    model.addComponent(geometry);
+
+                    if(!!geometry.morphTargets && geometry.morphTargets.getCount() > 0){
+                        model.addComponent(MorphAnimation.create());
+                    }
                 }
                 else if(self._isArticulatedAnimation(component)){
                     model.addComponent(self._createArticulatedAnimation(<any>component));
@@ -173,11 +179,13 @@ module wd{
             WDUtils.addData(geometry, "colors", component.colors);
             WDUtils.addData(geometry, "texCoords", component.texCoords);
 
+            WDUtils.addData(geometry, "morphTargets", component.morphTargets);
+            WDUtils.addData(geometry, "morphNormals", component.morphNormals);
+
             geometry.drawMode = component.drawMode;
 
             geometry.material = this._createMaterial(component.material);
 
-            //todo support morph targets
 
             return geometry;
         }

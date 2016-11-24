@@ -351,6 +351,57 @@ describe("WDAssembler", function () {
                         expect(component.texCoords).toEqual(texCoords);
                         expect(component.faces).toEqual(faces);
                     });
+
+                    describe("add morph data", function(){
+                        var morphTargets,
+                            morphNormals;
+
+                        beforeEach(function(){
+                            morphTargets = wdCb.Hash.create(
+                                {
+                                    "frame0":wdCb.Collection.create([
+                                        1,2,3,
+                                        4,5,6,
+                                        4,2,1
+                                    ])
+                                }
+                            );
+                            morphNormals = wdCb.Hash.create(
+                                {
+                                    "frame0":wdCb.Collection.create([
+                                        0.1,5,5,
+                                        10,8,10,
+                                        11,0,2
+                                    ])
+                                }
+                            );
+                            setComponent({
+                                morphTargets:morphTargets,
+                                morphNormals:morphNormals,
+
+                                material:{
+                                    type:"LightMaterial"
+                                }
+                            })
+                        });
+
+                        it("add morph data to ModelGeometry", function () {
+                            var data = builder.build(parseData);
+
+
+                            var component = getComponent(data, wd.Geometry);
+                            expect(component.morphTargets).toEqual(morphTargets);
+                            expect(component.morphNormals).toEqual(morphNormals);
+                        });
+                        it("add MorphAnimation component", function () {
+                            var data = builder.build(parseData);
+
+
+                            var component = getComponent(data, wd.MorphAnimation);
+                            expect(component).toBeExist();
+                        });
+                    });
+
                     it("add drawMode", function () {
                         setComponent({
                             drawMode: wd.EDrawMode.LINE_LOOP,

@@ -1,8 +1,4 @@
-import fs = require("fs");
-import path = require("path");
 import wdFrp = require("wdfrp");
-import wdCb = require("wdcb");
-import Log = require("../../ts/Log");
 import ModelLoaderUtils = require("../common/ModelLoaderUtils");
 import ObjectsConverter = require("./MD2ObjectsConverter");
 import contract = require("../../ts/definition/typescript/decorator/contract");
@@ -36,6 +32,7 @@ export class MD2ToWD {
     }
 
     public name:string = "MD2ToWD";
+    //todo fix version
     public version:string = null;
 
     private _objectsConverter:any = ObjectsConverter.create();
@@ -47,29 +44,38 @@ export class MD2ToWD {
     })
     public convert(fileBuffer:Buffer, filePath:string):wdFrp.Stream {
         var self = this,
-            resultJson:any = {};
+            resultJson:any = {},
+            nodeName = ModelLoaderUtils.getNameByPath(filePath);
 
-        resultJson.metadata = self._convertMetadata(filePath);
-        resultJson.scene = {};
-        resultJson.objects = self._convertObjects(fileBuffer, filePath);
-        resultJson.materials = {};
+        resultJson.scene = "Scene";
+
+        resultJson.scenes = {
+            Scene:{
+                nodes:[nodeName]
+            }
+        };
+
+
+        // resultJson.metadata = self._convertMetadata(filePath);
+
+        self._convertObjects(resultJson, fileBuffer, nodeName);
 
         return wdFrp.just([resultJson]);
     }
 
-    private _convertMetadata(filePath:string) {
-        var result:any = {};
+    // private _convertMetadata(filePath:string) {
+    //     var result:any = {};
+    //
+    //     result.formatVersion = this.version;
+    //     result.description = "";
+    //     result.sourceFile = filePath;
+    //     result.generatedBy = this.name;
+    //
+    //     return result;
+    // }
 
-        result.formatVersion = this.version;
-        result.description = "";
-        result.sourceFile = filePath;
-        result.generatedBy = this.name;
-
-        return result;
-    }
-
-    private _convertObjects(fileBuffer:Buffer, filePath:string) {
-        return this._objectsConverter.convert(fileBuffer, filePath);
+    private _convertObjects(resultJson:any, fileBuffer:Buffer, filePath:string) {
+        return this._objectsConverter.convert(resultJson, fileBuffer, filePath);
     }
 }
 

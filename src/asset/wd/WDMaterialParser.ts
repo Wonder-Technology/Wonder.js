@@ -14,6 +14,10 @@ module wd{
             var materialData = null;
                 // materialExtension = null;
 
+            if(!materialId){
+                return this._getDefaultMaterialData();
+            }
+
             this._json = json;
             this._imageMap = imageMap;
 
@@ -50,6 +54,13 @@ module wd{
             this._addMaterialValues(material, materialData.values);
 
             return material;
+        }
+
+        private _getDefaultMaterialData(){
+            return {
+                type:"LightMaterial",
+                lightModel:ELightModel.PHONG
+            }
         }
 
         // private _isUseKHRMaterialExtension(){

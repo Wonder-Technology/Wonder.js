@@ -410,8 +410,47 @@ describe("compressToBinary->Compressor", function () {
             beforeEach(function () {
             });
 
-            describe("test buffer content", function(){
-                beforeEach(function(){
+            describe("test buffer content", function() {
+                function judgeMorphTargets(arraybuffer, primitiveData, json, index) {
+                    var index = index || 0;
+
+                    var morphTargets = json.meshes.geometry1.primitives[index].morphTargets;
+
+                    morphTargets.forEach(function (frame, index) {
+_judgeMorphFrame(arraybuffer, frame.vertices, "vertices", primitiveData, json, index);
+                        if(frame.normals){
+                            _judgeMorphFrame(arraybuffer, frame.normals, "normals", primitiveData, json, index);
+                        }
+                    });
+                }
+
+                function _judgeMorphFrame(arraybuffer, accessor, type, primitiveData, json, index) {
+                        var accessorData = json.accessors[accessor];
+
+                        var count = getLength(accessorData);
+
+                        var view = new DataView(arraybuffer, getOffset(accessorData, json), count * 4);
+
+                        var data = [];
+                        var offset =0 ;
+                        for(var i = 0; i < count; i++){
+                            data.push(view.getFloat32(offset, true));
+
+                            offset += 4;
+                        }
+
+
+
+                        expect(testTool.getValues(
+                            data
+                        )).toEqual(testTool.getValues(
+                            primitiveData.morphTargets[index][type]
+                        ));
+
+                        //todo test normals
+                }
+
+                beforeEach(function () {
                 });
 
                 it("test meshes", function () {
@@ -449,8 +488,8 @@ describe("compressToBinary->Compressor", function () {
 
                     setFileJson({
                         "animations": {
-                            "animation_1":animData1,
-                            "animation_2":animData2
+                            "animation_1": animData1,
+                            "animation_2": animData2
                         },
                         "meshes": {
                             "geometry1": {
@@ -462,7 +501,6 @@ describe("compressToBinary->Compressor", function () {
                     });
 
                     var data = compressor.compress("", "", fileJson);
-
 
 
                     var arraybuffer = data.buffer.buffer;
@@ -553,6 +591,161 @@ describe("compressToBinary->Compressor", function () {
                                 count: 3,
                                 componentType: 5126,
                                 type: 'VEC3'
+                            }
+                        }
+                    );
+                });
+                it("test morphTargets", function () {
+                    var primitiveData = getPrimitiveData();
+
+
+                    primitiveData.morphTargets = [
+                        {
+                            name: "FRAME000",
+                            vertices: [
+                                1, 10, 2,
+                                0.2, 5, 5,
+                                -2, -5, 3
+                            ],
+                            normals: [
+                                1, 10, 2,
+                                0.2, 5, 5,
+                                -1, 4, 10
+                            ]
+                        },
+                        {
+                            name: "FRAME001",
+                            vertices: [
+                                0.2, 5, 5,
+                                1, 10, 2,
+                                0.2, 5, 10
+                            ],
+                            normals: [
+                                0.2, 5, 5,
+                                3, 10, 2,
+                                2, 3, 6
+                            ]
+                        }
+                    ]
+
+
+                    setFileJson({
+                        "meshes": {
+                            "geometry1": {
+                                "primitives": [
+                                    primitiveData
+                                ]
+                            }
+                        }
+                    });
+
+                    var data = compressor.compress("", "", fileJson);
+
+
+                    // var reader = BufferReader.create(data.buffer);
+
+                    var arraybuffer = data.buffer.buffer;
+
+                    var json = data.json;
+
+
+                    judgeMorphTargets(arraybuffer, primitiveData, json);
+
+                    judgeIndice(arraybuffer, primitiveData, json);
+
+                    judgePosition(arraybuffer, primitiveData, json);
+                    judgeNormal(arraybuffer, primitiveData, json);
+                    judgeTexCoord(arraybuffer, primitiveData, json);
+                    judgeColor(arraybuffer, primitiveData, json);
+
+
+                    expect(data.json.accessors).toEqual(
+                        {
+                            accessor_0: {
+                                bufferView: 'bufferView_0',
+                                byteOffset: 0,
+                                count: 3,
+                                componentType: 5123,
+                                type: 'SCALAR'
+                            },
+                            accessor_1: {
+                                bufferView: 'bufferView_1',
+                                byteOffset: 0,
+                                count: 3,
+                                componentType: 5126,
+                                type: 'VEC3'
+                            },
+                            accessor_2: {
+                                bufferView: 'bufferView_1',
+                                byteOffset: 36,
+                                count: 3,
+                                componentType: 5126,
+                                type: 'VEC3'
+                            },
+                            accessor_3: {
+                                bufferView: 'bufferView_1',
+                                byteOffset: 72,
+                                count: 3,
+                                componentType: 5126,
+                                type: 'VEC2'
+                            },
+                            accessor_4: {
+                                bufferView: 'bufferView_1',
+                                byteOffset: 96,
+                                count: 3,
+                                componentType: 5126,
+                                type: 'VEC3'
+                            },
+                            accessor_5: {
+                                bufferView: 'bufferView_2',
+                                byteOffset: 0,
+                                count: 3,
+                                componentType: 5126,
+                                type: 'VEC3'
+                            },
+                            accessor_6: {
+                                bufferView: 'bufferView_2',
+                                byteOffset: 36,
+                                count: 3,
+                                componentType: 5126,
+                                type: 'VEC3'
+                            },
+                            accessor_7: {
+                                bufferView: 'bufferView_2',
+                                byteOffset: 72,
+                                count: 3,
+                                componentType: 5126,
+                                type: 'VEC3'
+                            },
+                            accessor_8: {
+                                bufferView: 'bufferView_2',
+                                byteOffset: 108,
+                                count: 3,
+                                componentType: 5126,
+                                type: 'VEC3'
+                            }
+                        }
+                    );
+
+                    expect(data.json.bufferViews).toEqual(
+                        {
+                            bufferView_0: {
+                                buffer: '',
+                                byteLength: 6,
+                                byteOffset: 0,
+                                target: 34963
+                            },
+                            bufferView_1: {
+                                buffer: '',
+                                byteLength: 132,
+                                byteOffset: 6,
+                                target: 34962
+                            },
+                            bufferView_2: {
+                                buffer: '',
+                                byteLength: 144,
+                                byteOffset: 138,
+                                target: 34962
                             }
                         }
                     );

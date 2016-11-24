@@ -32,24 +32,29 @@ export class Compressor {
         return 4;
     }
 
+    private get _morphTargetDataByteSize() {
+        return 4;
+    }
+
     private get _indiceDataByteSize() {
         return 2;
     }
 
     public compress(fileName: string, binFileRelatedDir: string, sourceJson: SourceJsonData) {
         var targetJson: TargetJsonData = ExtendUtils.extendDeep(sourceJson),
-            {recordedAttributeArr, recordedIndiceArr} = this._recordPrimitiveData(sourceJson),
+            {recordedAttributeArr, recordedMorphTargetArr, recordedIndiceArr} = this._recordPrimitiveData(sourceJson),
             recoredAnimationArr:Array<AnimationDataRecord> = this._recordAnimationData(sourceJson);
 
         this._removeRepeatData(recoredAnimationArr);
         this._removeRepeatData(recordedAttributeArr);
+        this._removeRepeatData(recordedMorphTargetArr);
         this._removeRepeatData(recordedIndiceArr);
 
-        let buffersData = this._buildBuffersArr(fileName, binFileRelatedDir, recoredAnimationArr, recordedAttributeArr, recordedIndiceArr);
+        let buffersData = this._buildBuffersArr(fileName, binFileRelatedDir, recoredAnimationArr, recordedAttributeArr, recordedMorphTargetArr, recordedIndiceArr);
 
-        let bufferViewsJson = this._buildBufferViewsJson(buffersData.id, recoredAnimationArr, recordedIndiceArr, recordedAttributeArr);
+        let bufferViewsJson = this._buildBufferViewsJson(buffersData.id, recoredAnimationArr, recordedIndiceArr, recordedAttributeArr, recordedMorphTargetArr);
 
-        let accessorsData = this._buildAccessorsJson(bufferViewsJson.animationBufferViewId, bufferViewsJson.attributeBufferViewId, bufferViewsJson.indiceBufferViewId, recoredAnimationArr, recordedIndiceArr, recordedAttributeArr);
+        let accessorsData = this._buildAccessorsJson(bufferViewsJson.animationBufferViewId, bufferViewsJson.attributeBufferViewId, bufferViewsJson.morphTargetBufferViewId, bufferViewsJson.indiceBufferViewId, recoredAnimationArr, recordedIndiceArr, recordedAttributeArr, recordedMorphTargetArr);
 
         this._buildJson(targetJson, buffersData.json, bufferViewsJson.json, accessorsData);
 
@@ -62,6 +67,7 @@ export class Compressor {
 
     private _recordPrimitiveData(sourceJson: SourceJsonData){
         var recordedAttributeArr:Array<PrimitiveDataRecord> = [],
+            recordedMorphTargetArr:Array<PrimitiveDataRecord> = [],
             recordedIndiceArr:Array<PrimitiveDataRecord> = [];
 
         for (let id in sourceJson.meshes) {
@@ -75,7 +81,8 @@ export class Compressor {
                             NORMAL,
                             TEXCOORD,
                             COLOR
-                        } = primitiveData.attributes;
+                        } = primitiveData.attributes,
+                        morphTargets = primitiveData.morphTargets;
 
                     this._recordAttribute(POSITION, recordedAttributeArr, id, i, "POSITION", "VEC3");
 
@@ -94,12 +101,18 @@ export class Compressor {
                     if (this._hasData(primitiveData.indices)) {
                         this._recordIndice(primitiveData.indices, recordedIndiceArr, id, i, "SCALAR");
                     }
+
+
+                    if (this._hasData(morphTargets)) {
+                        this._recordMorphTargets(morphTargets, recordedMorphTargetArr, id, i);
+                    }
                 }
             }
         }
 
         return {
             recordedAttributeArr: recordedAttributeArr,
+            recordedMorphTargetArr: recordedMorphTargetArr,
             recordedIndiceArr: recordedIndiceArr
         }
     }
@@ -135,7 +148,7 @@ export class Compressor {
         return recoredAnimationArr;
     }
 
-    private _hasData(data: Array<number>) {
+    private _hasData(data: Array<any>) {
         return data && data.length > 0;
     }
 
@@ -166,6 +179,28 @@ export class Compressor {
         });
     }
 
+    private _recordMorphTargets(morphTargets:Array<SourceMorphTarget>, arr: Array<PrimitiveDataRecord>, meshId: string, primitiveIndex: number){
+        for(let i = 0, len = morphTargets.length; i < len; i++){
+            let frame = morphTargets[i];
+
+            arr.push({
+                data: frame.vertices,
+                where: this._buildMorphTargetsWhere(meshId, primitiveIndex, i, "vertices"),
+                componentType: 5126,
+                type: "VEC3"
+            });
+
+            if(!!frame.normals){
+                arr.push({
+                    data: frame.normals,
+                    where: this._buildMorphTargetsWhere(meshId, primitiveIndex, i, "normals"),
+                    componentType: 5126,
+                    type: "VEC3"
+                });
+            }
+        }
+    }
+
     private _buildAnimationWhere(id: string, name: string) {
         return `animations%%${id}%%parameters%%${name}`;
     }
@@ -176,6 +211,10 @@ export class Compressor {
 
     private _buildIndiceWhere(meshId: string, primitiveIndex: number) {
         return `meshes%%${meshId}%%primitives%%${String(primitiveIndex)}%%indices`;
+    }
+
+    private _buildMorphTargetsWhere(meshId: string, primitiveIndex: number, index:number, type:"vertices"|"normals") {
+        return `meshes%%${meshId}%%primitives%%${String(primitiveIndex)}%%morphTargets%%${index}%%${type}`;
     }
 
     private _parseWhere(where: string) {
@@ -217,10 +256,10 @@ export class Compressor {
         return true;
     }
 
-    private _buildBuffersArr(fileName: string, binFileRelatedDir: string, recoredAnimationArr:Array<AnimationDataRecord>, recordedAttributeArr: Array<PrimitiveDataRecord>, recordedIndiceArr: Array<PrimitiveDataRecord>) {
+    private _buildBuffersArr(fileName: string, binFileRelatedDir: string, recoredAnimationArr:Array<AnimationDataRecord>, recordedAttributeArr: Array<PrimitiveDataRecord>, recordedMorphTargetArr:Array<PrimitiveDataRecord>, recordedIndiceArr: Array<PrimitiveDataRecord>) {
         var json = {},
             uri: string = null,
-            byteLength = this._getBufferByteLength(recoredAnimationArr, this._animationDataByteSize) + this._getBufferByteLength(recordedIndiceArr, this._indiceDataByteSize) + this._getBufferByteLength(recordedAttributeArr, this._attributeDataByteSize),
+            byteLength = this._getBufferByteLength(recoredAnimationArr, this._animationDataByteSize) + this._getBufferByteLength(recordedIndiceArr, this._indiceDataByteSize) + this._getBufferByteLength(recordedAttributeArr, this._attributeDataByteSize) + this._getBufferByteLength(recordedMorphTargetArr, this._morphTargetDataByteSize),
             bufferWriter = BufferWriter.create(byteLength);
 
         recoredAnimationArr
@@ -244,6 +283,16 @@ export class Compressor {
             });
 
         recordedAttributeArr
+            .filter((item: PrimitiveDataRecord) => {
+                return JudgeUtils.isArrayExactly(item.data);
+            })
+            .forEach((item: PrimitiveDataRecord) => {
+                for (let value of item.data) {
+                    bufferWriter.writeFloat(<number>value);
+                }
+            });
+
+        recordedMorphTargetArr
             .filter((item: PrimitiveDataRecord) => {
                 return JudgeUtils.isArrayExactly(item.data);
             })
@@ -283,14 +332,15 @@ export class Compressor {
         return length;
     }
 
-    private _buildBufferViewsJson(bufferId: string, recoredAnimationArr:Array<AnimationDataRecord>, recordedIndiceArr:Array<PrimitiveDataRecord>, recordedAttributeArr:Array<PrimitiveDataRecord>) {
+    private _buildBufferViewsJson(bufferId: string, recoredAnimationArr:Array<AnimationDataRecord>, recordedIndiceArr:Array<PrimitiveDataRecord>, recordedAttributeArr:Array<PrimitiveDataRecord>, recordedMorphTargetArr:Array<PrimitiveDataRecord>) {
         var json = {},
             length: number = null,
             id = 0,
             offset = 0,
             animationBufferViewId: string = null,
             indiceBufferViewId: string = null,
-            attributeBufferViewId: string = null;
+            attributeBufferViewId: string = null,
+            morphTargetBufferViewId: string = null;
 
         length = this._getBufferByteLength(recoredAnimationArr, this._animationDataByteSize);
 
@@ -323,24 +373,46 @@ export class Compressor {
             offset += length;
         }
 
-        attributeBufferViewId = `bufferView_${id}`;
+        length = this._getBufferByteLength(recordedAttributeArr, this._attributeDataByteSize);
 
-        json[attributeBufferViewId] = {
-            buffer: bufferId,
-            byteLength: this._getBufferByteLength(recordedAttributeArr, this._attributeDataByteSize),
-            byteOffset: offset,
-            target: 34962
-        };
+
+        if(length > 0) {
+            attributeBufferViewId = `bufferView_${id}`;
+
+            json[attributeBufferViewId] = {
+                buffer: bufferId,
+                byteLength: length,
+                byteOffset: offset,
+                target: 34962
+            };
+
+            id++;
+            offset += length;
+        }
+
+        length = this._getBufferByteLength(recordedMorphTargetArr, this._morphTargetDataByteSize);
+
+        if(length > 0){
+            morphTargetBufferViewId = `bufferView_${id}`;
+
+            json[morphTargetBufferViewId] = {
+                buffer: bufferId,
+                byteLength: length,
+                byteOffset: offset,
+                target: 34962
+            };
+        }
 
         return {
             animationBufferViewId: animationBufferViewId,
             attributeBufferViewId: attributeBufferViewId,
+            morphTargetBufferViewId: morphTargetBufferViewId,
             indiceBufferViewId: indiceBufferViewId,
             json: json
         };
     }
 
-    private _buildAccessorsJson(animationBufferViewId:string, attributeBufferViewId: string, indiceBufferViewId: string, recordedAnimationArr: Array<AnimationDataRecord>, recordedIndiceArr: Array<PrimitiveDataRecord>, recordedAttributeArr: Array<PrimitiveDataRecord>) {
+    private _buildAccessorsJson(animationBufferViewId:string, attributeBufferViewId: string, morphTargetBufferViewId: string, indiceBufferViewId: string, recordedAnimationArr: Array<AnimationDataRecord>, recordedIndiceArr: Array<PrimitiveDataRecord>, recordedAttributeArr: Array<PrimitiveDataRecord>, recordedMorphTargetArr: Array<PrimitiveDataRecord>) {
         var json = {},
             mappingTable = {},
             id = 0,
@@ -356,9 +428,14 @@ export class Compressor {
             id += accessorCount;
         }
 
-
         if(!this._isArrayEmpty(recordedAttributeArr)){
-            this._buildAccessorData(json, mappingTable, id, attributeBufferViewId, recordedAttributeArr, this._attributeDataByteSize);
+            accessorCount = this._buildAccessorData(json, mappingTable, id, attributeBufferViewId, recordedAttributeArr, this._attributeDataByteSize);
+
+            id += accessorCount;
+        }
+
+        if(!this._isArrayEmpty(recordedMorphTargetArr)){
+            this._buildAccessorData(json, mappingTable, id, morphTargetBufferViewId, recordedMorphTargetArr, this._morphTargetDataByteSize);
         }
 
         return {
@@ -511,6 +588,20 @@ export class Compressor {
                             }
                         }
                     }
+
+                    //todo test
+                    if(this._hasData(primitiveData.morphTargets)){
+                        for(let frame of primitiveData.morphTargets){
+                            if (this._isArrayEmpty(frame.vertices)) {
+                                delete frame.vertices;
+                            }
+
+                            if (!!frame.normals
+                                && this._isArrayEmpty(frame.normals)) {
+                                delete frame.normals;
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -544,6 +635,7 @@ type SourceAnimation = {
 
 type SourcePrimitive = {
     attributes: SourceAttribute;
+    morphTargets?:Array<SourceMorphTarget>;
     indices:Array<number>;
 }
 
@@ -596,6 +688,7 @@ type TargetJsonData = {
 
 type TargetPrimitive = {
     attributes:TargetAttribute;
+    morphTargets?:Array<TargetMorphTarget>;
     indices:string;
 }
 
@@ -604,4 +697,17 @@ type TargetAttribute = {
     NORMAL?:string;
     TEXCOORD?:string;
     COLOR?:string;
+}
+
+
+type SourceMorphTarget = {
+    name:string;
+    vertices:Array<number>;
+    normals?:Array<number>;
+}
+
+type TargetMorphTarget = {
+    name:string;
+    vertices:string;
+    normals?:string;
 }

@@ -1,5 +1,4 @@
 module wd {
-    //todo support morph
     export interface IWDJsonData {
         asset: IWDAsset;
         scene: string;
@@ -78,9 +77,18 @@ module wd {
 
     export interface IWDMeshPrimitive {
         attributes: IWDAttribute;
+
+        morphTargets?: Array<IWDMorphTarget>;
+
         indices?: string;
         material: string;
         mode: number;
+    }
+
+    export interface IWDMorphTarget {
+        name:string;
+        vertices:string;
+        normals?:string;
     }
 
     export interface IWDAttribute {
@@ -361,10 +369,10 @@ module wd {
         texCoords?: Array<number>;
         faces:Array<Face3>;
 
-        drawMode:EDrawMode;
+        morphTargets: wdCb.Hash<MorphTargetsData>;
+        morphNormals:wdCb.Hash<MorphTargetsData>;
 
-        //morphTargets: wdCb.Hash<wdCb.Collection<Array<number>>>;
-        //morphNormals:wdCb.Hash<wdCb.Collection<Array<number>>>;
+        drawMode:EDrawMode;
     }
 
     export interface IWDMaterialForAssembler{
