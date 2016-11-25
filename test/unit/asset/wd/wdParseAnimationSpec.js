@@ -1,4 +1,4 @@
-describe("wd animation parser", function () {
+describe("parse wd animation", function () {
     var sandbox = null;
     var parser = null;
     var json = null;
