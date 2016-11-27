@@ -14,6 +14,8 @@ module wd{
         private _json:IWDJsonData = null;
         private _geometryParser = WDGeometryParser.create();
         private _articulatedAnimationParser = WDArticulatedAnimationParser.create();
+        private _transformParser:WDTransformParser = WDTransformParser.create();
+        private _cameraParser:WDCameraParser = WDCameraParser.create();
 
         public parse(json:IWDJsonData, arrayBufferMap:wdCb.Hash<any>, imageMap:wdCb.Hash<HTMLImageElement>):IWDParseData{
             this._json = json;
@@ -88,14 +90,14 @@ module wd{
                 // }
 
                 if(node.camera){
-                    object.components.addChild(self._parseCamera(node.camera));
+                    object.components.addChild((self._cameraParser.parse(self._json, node.camera)));
                 }
 
                 if(node.matrix){
-                    object.components.addChild(self._parseTransform(node.matrix));
+                    object.components.addChild(self._transformParser.parse(node.matrix));
                 }
                 else if(node.rotation && node.scale && node.translation){
-                    object.components.addChild(self._parseTransform(node.translation, node.rotation, node.scale));
+                    object.components.addChild(self._transformParser.parse(node.translation, node.rotation, node.scale));
                 }
 
                 if(node.children){
@@ -157,93 +159,6 @@ module wd{
         //             break;
         //     }
         // }
-
-        @require(function(cameraId:string){
-            it("should exist corresponding camera data", () => {
-                var cameras = this._json.cameras;
-
-                expect(cameras).exist;
-                expect(cameras[cameraId]).exist;
-            }, this);
-        })
-        private _parseCamera(cameraId:string):IWDCameraForAssembler{
-            var cameraData = this._json.cameras[cameraId],
-                camera:IWDCameraForAssembler = <any>{};
-
-            //todo intensity data?
-
-            this._parseCameraDataByType(camera, cameraData);
-
-            return camera;
-        }
-
-        private _parseCameraDataByType(camera:IWDCameraForAssembler, cameraData:any){
-            var cameraComponent:any = null,
-                type = cameraData.type,
-                data:any = cameraData[type];
-
-            switch (type){
-                case "perspective":
-                    data = cameraData[type];
-                    cameraComponent = PerspectiveCamera.create();
-
-                    cameraComponent.near = data.znear;
-                    cameraComponent.far = data.zfar;
-
-                    if(data.aspectRatio){
-                        cameraComponent.aspect = data.aspectRatio;
-                    }
-                    else{
-                        let view = DeviceManager.getInstance().view;
-
-                        cameraComponent.aspect = view.width / view.height;
-                    }
-
-                    cameraComponent.fovy = AngleUtils.convertRadiansToDegree(data.yfov);
-
-                    camera.camera = cameraComponent;
-                    break;
-                case "orthographic":
-                    cameraComponent = OrthographicCamera.create();
-
-                    cameraComponent.near = data.znear;
-                    cameraComponent.far = data.zfar;
-                    cameraComponent.left = -data.xmag;
-                    cameraComponent.right = data.xmag;
-                    cameraComponent.top = data.ymag;
-                    cameraComponent.bottom = -data.ymag;
-
-                    camera.camera = cameraComponent;
-                    break;
-                default:
-                    Log.error(true, Log.info.FUNC_UNEXPECT(`camera type:${type}`));
-                    break;
-            }
-        }
-
-        private _parseTransform(matrix:Array<number>);
-        private _parseTransform(translation:Array<number>, rotation:Array<number>, scale:Array<number>);
-
-        private _parseTransform(...args){
-            var transform:IWDTransform = <any>{};
-
-            if(args.length === 1){
-                let matrix:Array<number> = args[0];
-
-                transform.matrix = Matrix4.create(new Float32Array(matrix));
-            }
-            else if(args.length === 3){
-                let translation:Array<number> = args[0],
-                    rotation:Array<number> = args[1],
-                    scale:Array<number> = args[2];
-
-                transform.position = Vector3.create(translation[0], translation[1], translation[2]);
-                transform.rotation = Quaternion.create(rotation[0], rotation[1], rotation[2], rotation[3]);
-                transform.scale = Vector3.create(scale[0], scale[1], scale[2]);
-            }
-
-            return transform;
-        }
     }
 }
 

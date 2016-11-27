@@ -7,6 +7,8 @@ module wd{
         }
 
         private _result:wdCb.Hash<IWDResult> = wdCb.Hash.create<IWDResult>();
+        private _geometryAssembler:WDGeometryAssembler = WDGeometryAssembler.create();
+        private _transformAssembler:WDTransformAssembler = WDTransformAssembler.create();
 
         public build(parseData:IWDParseData){
             // this._buildMetadata(parseData);
@@ -75,7 +77,7 @@ module wd{
             components.forEach((component:IWDComponent) => {
                 //todo refactor: define type
                 if(self._isTransform(component)) {
-                    model.addComponent(self._createTransform(<IWDTransform>component));
+                    model.addComponent(self._transformAssembler.createComponent(<IWDTransform>component));
                 }
                 else if(self._isCamera(<IWDCameraForAssembler>component)){
                     model.addComponent(self._createCamera(<IWDCameraForAssembler>component));
@@ -84,7 +86,7 @@ module wd{
                 //     model.addComponent(self._createLight(<any>component));
                 // }
                 if(self._isGeometry(component)){
-                    let geometry = self._createGeometry(<any>component);
+                    let geometry = self._geometryAssembler.createComponent(<any>component);
 
                     model.addComponent(geometry);
 
@@ -116,23 +118,6 @@ module wd{
 
         private _isArticulatedAnimation(component:any){
             return WDUtils.isIWDArticulatedAnimation(component);
-        }
-
-        private _createTransform(component:IWDTransform){
-            var transform:ThreeDTransform = ThreeDTransform.create();
-
-            if(component.matrix){
-                transform.localPosition = component.matrix.getTranslation();
-                transform.localRotation = component.matrix.getRotation();
-                transform.localScale = component.matrix.getScale();
-            }
-            else{
-                transform.localPosition = component.position;
-                transform.localRotation = component.rotation;
-                transform.localScale = component.scale;
-            }
-
-            return transform;
         }
 
         private _createCamera(component:IWDCameraForAssembler){
@@ -170,90 +155,6 @@ module wd{
         //
         //     return light;
         // }
-
-        private _createGeometry(component:IWDGeometry){
-            var geometry = ModelGeometry.create();
-
-            geometry.vertices = component.vertices;
-            geometry.faces = component.faces;
-            WDUtils.addData(geometry, "colors", component.colors);
-            WDUtils.addData(geometry, "texCoords", component.texCoords);
-
-            WDUtils.addData(geometry, "morphVertices", component.morphVertices);
-            WDUtils.addData(geometry, "morphNormals", component.morphNormals);
-
-            geometry.drawMode = component.drawMode;
-
-            geometry.material = this._createMaterial(component.material);
-
-
-            return geometry;
-        }
-
-        @require(function(materialData:IWDMaterialForAssembler){
-            it("material type should always be LightMaterial", () => {
-                expect(materialData.type).equals("LightMaterial");
-            });
-        })
-        private _createMaterial(materialData:IWDMaterialForAssembler){
-            var material:Material = null;
-
-            switch (materialData.type){
-                case "LightMaterial":
-                    material = this._createLightMaterial(<IWDLightMaterialForAssembler>materialData);
-                    break;
-                default:
-                    Log.error(true, Log.info.FUNC_UNEXPECT(`material type:${materialData.type}`));
-                    break;
-            }
-
-            return material;
-        }
-
-        private _createLightMaterial(materialData:IWDLightMaterialForAssembler){
-            return this._createStandardLightMaterial<LightMaterial>(LightMaterial.create(), materialData);
-        }
-
-        private _createStandardLightMaterial<T extends StandardLightMaterial>(material:T, materialData:IWDLightMaterialForAssembler):T{
-            this._setBasicDataOfMaterial(material, materialData);
-
-            if(materialData.transparent === true && materialData.opacity !== void 0){
-                material.opacity = materialData.opacity;
-                material.blendType = EBlendType.NORMAL;
-            }
-
-            if(materialData.lightModel === ELightModel.LAMBERT){
-                Log.log(Log.info.FUNC_NOT_SUPPORT("LAMBERT light model, use PHONG light model instead"));
-                material.lightModel = ELightModel.PHONG;
-            }
-            else{
-                material.lightModel = materialData.lightModel;
-            }
-
-            WDUtils.addData(material, "color", materialData.diffuseColor);
-            WDUtils.addData(material, "specularColor", materialData.specularColor);
-            WDUtils.addData(material, "emissionColor", materialData.emissionColor);
-
-            WDUtils.addData(material, "diffuseMap", materialData.diffuseMap);
-            WDUtils.addData(material, "specularMap", materialData.specularMap);
-            WDUtils.addData(material, "emissionMap", materialData.emissionMap);
-
-            WDUtils.addData(material, "lightMap", materialData.lightMap);
-            WDUtils.addData(material, "normalMap", materialData.normalMap);
-
-            WDUtils.addData(material, "shininess", materialData.shininess);
-
-            return material;
-        }
-
-        private _setBasicDataOfMaterial(material:Material, materialData:IWDMaterialForAssembler){
-            if(!!materialData.doubleSided && materialData.doubleSided === true){
-                material.side = ESide.BOTH;
-            }
-            else{
-                material.side = ESide.FRONT;
-            }
-        }
 
         private _createArticulatedAnimation(component:IWDArticulatedAnimation){
              var anim = TransformArticulatedAnimation.create();

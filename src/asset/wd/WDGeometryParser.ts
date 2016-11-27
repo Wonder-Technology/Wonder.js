@@ -1,5 +1,5 @@
 module wd{
-    export class WDGeometryParser{
+    export class WDGeometryParser extends WDComponentParser{
         public static create() {
             var obj = new this();
 

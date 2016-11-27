@@ -1,5 +1,5 @@
 module wd{
-    export class WDArticulatedAnimationParser{
+    export class WDArticulatedAnimationParser extends WDComponentParser{
         public static create() {
             var obj = new this();
 
