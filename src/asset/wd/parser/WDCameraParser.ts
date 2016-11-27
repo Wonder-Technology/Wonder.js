@@ -7,7 +7,7 @@ module wd {
         }
 
 
-        @require(function(json:IWDJsonData, cameraId:string){
+        @require(function(json:IWDJsonDataParser, cameraId:string){
             it("should exist corresponding camera data", () => {
                 var cameras = json.cameras;
 
@@ -15,7 +15,7 @@ module wd {
                 expect(cameras[cameraId]).exist;
             }, this);
         })
-        public parse(json:IWDJsonData, cameraId:string):IWDCameraAssembler{
+        public parse(json:IWDJsonDataParser, cameraId:string):IWDCameraAssembler{
             var cameraData = json.cameras[cameraId],
                 camera:IWDCameraAssembler = <any>{};
 

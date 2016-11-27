@@ -7,9 +7,9 @@ module wd{
         }
 
         private _arrayBufferMap:wdCb.Hash<any> = null;
-        private _json:IWDJsonData = null;
+        private _json:IWDJsonDataParser = null;
 
-        public parse(json:IWDJsonData, objects:wdCb.Collection<IWDObjectDataAssembler>, arrayBufferMap:wdCb.Hash<any>):void{
+        public parse(json:IWDJsonDataParser, objects:wdCb.Collection<IWDObjectDataAssembler>, arrayBufferMap:wdCb.Hash<any>):void{
             var nodeWithAnimationMap:wdCb.Hash<any> = wdCb.Hash.create<any>(),
                 self = this;
 
@@ -18,17 +18,17 @@ module wd{
 
             for(let animId in json.animations){
                 if(json.animations.hasOwnProperty(animId)){
-                    let animation:IWDAnimation = json.animations[animId],
-                        nodeWithChannelMap = wdCb.Hash.create<IWDAnimationChannel>();
+                    let animation:IWDAnimationParser = json.animations[animId],
+                        nodeWithChannelMap = wdCb.Hash.create<IWDAnimationChannelParser>();
 
                     for(let i = 0, len = animation.channels.length; i < len; i++) {
-                        let channel:IWDAnimationChannel = animation.channels[i],
+                        let channel:IWDAnimationChannelParser = animation.channels[i],
                             targetId:string = channel.target.id;
 
                         nodeWithChannelMap.appendChild(targetId, channel);
                     }
 
-                    nodeWithChannelMap.forEach((channelList:wdCb.Collection<IWDAnimationChannel>, targetId:string) => {
+                    nodeWithChannelMap.forEach((channelList:wdCb.Collection<IWDAnimationChannelParser>, targetId:string) => {
                         var keyFrameDataList = wdCb.Collection.create<IWDKeyFrameDataAssembler>(),
                             targetNode = self._findNode(objects, targetId),
                             inputData = null;
@@ -62,11 +62,11 @@ module wd{
             this._addAnimationComponent(nodeWithAnimationMap);
         }
 
-        private _getChannelBufferReaderArr(animation:IWDAnimation, channelList:wdCb.Collection<IWDAnimationChannel>){
+        private _getChannelBufferReaderArr(animation:IWDAnimationParser, channelList:wdCb.Collection<IWDAnimationChannelParser>){
             var bufferReaderArr:Array<BufferReader> = [];
 
-            channelList.forEach((channel:IWDAnimationChannel) => {
-                var sampler: IWDAnimationSampler = animation.samplers[channel.sampler],
+            channelList.forEach((channel:IWDAnimationChannelParser) => {
+                var sampler: IWDAnimationSamplerParser = animation.samplers[channel.sampler],
                     outputData: any = null,
                     targetPath: EWDArticulatedAnimationPath = null;
 
@@ -86,11 +86,11 @@ module wd{
             return bufferReaderArr;
         }
 
-        private _getAnimName(animation:IWDAnimation, animId:string){
+        private _getAnimName(animation:IWDAnimationParser, animId:string){
             return animation.name ? animation.name : animId;
         }
 
-        @require(function(animation:IWDAnimation, channelList:wdCb.Collection<IWDAnimationChannel>){
+        @require(function(animation:IWDAnimationParser, channelList:wdCb.Collection<IWDAnimationChannelParser>){
             var inputSamplerList = wdCb.Collection.create<string>();
 
             for(let samplerId in animation.samplers) {
@@ -103,11 +103,11 @@ module wd{
 
             assert(inputSamplerList.removeRepeatItems().getCount() === 1, Log.info.FUNC_SHOULD("all sampler->input", "be the same"));
         })
-        private _getInputData(animation:IWDAnimation, channelList:wdCb.Collection<IWDAnimationChannel>){
+        private _getInputData(animation:IWDAnimationParser, channelList:wdCb.Collection<IWDAnimationChannelParser>){
             var result = null;
 
-            channelList.forEach((channel:IWDAnimationChannel) => {
-                var sampler:IWDAnimationSampler = animation.samplers[channel.sampler];
+            channelList.forEach((channel:IWDAnimationChannelParser) => {
+                var sampler:IWDAnimationSamplerParser = animation.samplers[channel.sampler];
 
                 if (sampler) {
                     result = animation.parameters[sampler.input];
@@ -129,11 +129,11 @@ module wd{
             nodeWithAnimationMap.getChild(targetId).animationData[animName] = keyFrameDataList;
         }
 
-        private _getKeyFrameDataTargets(animation:IWDAnimation, channelList:wdCb.Collection<IWDAnimationChannel>, channelBufferReaderArr:Array<BufferReader>){
+        private _getKeyFrameDataTargets(animation:IWDAnimationParser, channelList:wdCb.Collection<IWDAnimationChannelParser>, channelBufferReaderArr:Array<BufferReader>){
             var targets = wdCb.Collection.create<IWDKeyFrameTargetDataAssembler>();
 
-            channelList.forEach((channel:IWDAnimationChannel, index:number) => {
-                var sampler:IWDAnimationSampler = animation.samplers[channel.sampler],
+            channelList.forEach((channel:IWDAnimationChannelParser, index:number) => {
+                var sampler:IWDAnimationSamplerParser = animation.samplers[channel.sampler],
                     outputData:any = null,
                     targetPath:EWDArticulatedAnimationPath = null,
                     targetData:IWDKeyFrameTargetDataAssembler = <any>{},

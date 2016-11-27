@@ -19,7 +19,7 @@
 //
 //             return AjaxLoader.load(url, "json")
 //                 // .flatMap((json:WDFileJsonData) => {
-//                 .map((json:IWDJsonData) => {
+//                 .map((json:IWDJsonDataParser) => {
 //                     self._parseData = WDParser.create().parse(json);
 //
 //                     // return self._createLoadMapStream(url, self._parseData);
@@ -88,10 +88,10 @@ module wd{
         protected loadAsset(...args):wdFrp.Stream {
             var url = args[0],
                 self = this,
-                jsonData:IWDJsonData = null;
+                jsonData:IWDJsonDataParser = null;
 
             return AjaxLoader.load(url, "json")
-                .flatMap((json:IWDJsonData) => {
+                .flatMap((json:IWDJsonDataParser) => {
                     jsonData = json;
 
                     //todo fix
@@ -105,7 +105,7 @@ module wd{
                 });
         }
 
-        private _createLoadAllAssetsStream(url:string, json:IWDJsonData):wdFrp.Stream{
+        private _createLoadAllAssetsStream(url:string, json:IWDJsonDataParser):wdFrp.Stream{
             return wdFrp.fromArray([
                 this._createLoadBuffersStream(url, json),
                 this._createLoadImageAssetStream(url, json)
@@ -113,7 +113,7 @@ module wd{
                 .mergeAll();
         }
 
-        private _createLoadBuffersStream(filePath:string, json:IWDJsonData):wdFrp.Stream{
+        private _createLoadBuffersStream(filePath:string, json:IWDJsonDataParser):wdFrp.Stream{
             var arrayBufferMap = this._arrayBufferMap;
 
             return this._createLoadAssetStream(filePath, json, json.buffers, arrayBufferMap, (id, url) => {
@@ -128,7 +128,7 @@ module wd{
             );
         }
 
-        private _createLoadImageAssetStream(filePath:string, json:IWDJsonData):wdFrp.Stream{
+        private _createLoadImageAssetStream(filePath:string, json:IWDJsonDataParser):wdFrp.Stream{
             var imageMap = this._imageMap;
 
             return this._createLoadAssetStream(filePath, json, json.images, imageMap, (id, url) => {
@@ -140,7 +140,7 @@ module wd{
             );
         }
 
-        private _createLoadAssetStream(filePath:string, json:IWDJsonData, datas:any, dataMap:wdCb.Hash<any>, loadStreamFunc:(id:string, url:string) => wdFrp.Stream):wdFrp.Stream{
+        private _createLoadAssetStream(filePath:string, json:IWDJsonDataParser, datas:any, dataMap:wdCb.Hash<any>, loadStreamFunc:(id:string, url:string) => wdFrp.Stream):wdFrp.Stream{
             var streamArr = [];
 
             if(datas){

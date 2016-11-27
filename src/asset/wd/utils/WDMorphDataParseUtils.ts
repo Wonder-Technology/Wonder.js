@@ -1,9 +1,9 @@
 module wd {
     export class WDMorphDataParseUtils {
-        public static parseMorphData(json: IWDJsonData, sourceMorphTargets: Array<IWDMorphTarget>, arrayBufferMap:wdCb.Hash<ArrayBuffer>) {
+        public static parseMorphData(json: IWDJsonDataParser, sourceMorphTargets: Array<IWDMorphTargetParser>, arrayBufferMap:wdCb.Hash<ArrayBuffer>) {
             var morphVertices: wdCb.Hash<MorphTargetsData> = wdCb.Hash.create<MorphTargetsData>(),
                 morphNormals: wdCb.Hash<MorphTargetsData> = wdCb.Hash.create<MorphTargetsData>(),
-                accessor: IWDAccessor = null;
+                accessor: IWDAcccessorParser = null;
 
             for (let frame of sourceMorphTargets) {
                 let animName = this._getAnimName(frame.name);
@@ -25,7 +25,7 @@ module wd {
             };
         }
 
-        private static _getMorphDatas(json: IWDJsonData, frameDataAccessorId: string, arrayBufferMap:wdCb.Hash<ArrayBuffer>) {
+        private static _getMorphDatas(json: IWDJsonDataParser, frameDataAccessorId: string, arrayBufferMap:wdCb.Hash<ArrayBuffer>) {
             var accessor = json.accessors[frameDataAccessorId],
                 {bufferReader, count} = WDUtils.getBufferReaderFromAccessor(json, accessor, arrayBufferMap),
                 dataArr: Array<number> = [];

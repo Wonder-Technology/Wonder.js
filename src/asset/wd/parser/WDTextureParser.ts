@@ -7,11 +7,11 @@ module wd{
         }
 
         public imageMap:wdCb.Hash<HTMLImageElement> = null;
-        public json:IWDJsonData = null;
+        public json:IWDJsonDataParser = null;
         public glTextureMap:wdCb.Hash<WebGLTexture> = wdCb.Hash.create<WebGLTexture>();
 
         public getTexture(textureDataId:string):Texture{
-            var textureData:IWDTexture = null,
+            var textureData:IWDTextureParser = null,
                 asset:TextureAsset = null;
 
             if(!this.json.textures || !this.json.textures[textureDataId]) {

@@ -49,8 +49,8 @@ module wd{
             return color;
         }
 
-        public static getBufferReaderFromAccessor(json:IWDJsonData, accessor: IWDAccessor, arrayBufferMap:wdCb.Hash<any>){
-            var bufferView: IWDBufferView = json.bufferViews[accessor.bufferView],
+        public static getBufferReaderFromAccessor(json:IWDJsonDataParser, accessor: IWDAcccessorParser, arrayBufferMap:wdCb.Hash<any>){
+            var bufferView: IWDBufferViewParser = json.bufferViews[accessor.bufferView],
                 arrayBuffer: any = arrayBufferMap.getChild(bufferView.buffer),
                 byteOffset = accessor.byteOffset + bufferView.byteOffset,
                 count = accessor.count * this.getAccessorTypeSize(accessor),
@@ -83,7 +83,7 @@ module wd{
             }
         }
 
-        public static getAccessorTypeSize(accessor: IWDAccessor): number{
+        public static getAccessorTypeSize(accessor: IWDAcccessorParser): number{
             var type = accessor.type;
 
             switch (type) {

@@ -7,7 +7,7 @@ module wd{
         }
 
 
-        @require(function(json:IWDJsonData,lightId:string){
+        @require(function(json:IWDJsonDataParser,lightId:string){
             it("should exist corresponding light data", () => {
                 var lights = json.lights;
 
@@ -15,7 +15,7 @@ module wd{
                 expect(lights[lightId]).exist;
             }, this);
         })
-        public parse(json:IWDJsonData,lightId:string):IWDLightAssembler{
+        public parse(json:IWDJsonDataParser,lightId:string):IWDLightAssembler{
             var lightData = json.lights[lightId],
                 light:IWDLightAssembler = <any>{};
 

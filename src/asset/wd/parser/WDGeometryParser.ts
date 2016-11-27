@@ -8,10 +8,10 @@ module wd{
 
         private _arrayBufferMap:wdCb.Hash<ArrayBuffer> = null;
         private _imageMap:wdCb.Hash<HTMLImageElement> = null;
-        private _json:IWDJsonData = null;
+        private _json:IWDJsonDataParser = null;
         private _materialParser = WDMaterialParser.create();
 
-        public parse(json:IWDJsonData, object:IWDObjectDataAssembler, mesh:IWDMesh, arrayBufferMap:wdCb.Hash<ArrayBuffer>, imageMap:wdCb.Hash<HTMLImageElement>):void{
+        public parse(json:IWDJsonDataParser, object:IWDObjectDataAssembler, mesh:IWDMeshParser, arrayBufferMap:wdCb.Hash<ArrayBuffer>, imageMap:wdCb.Hash<HTMLImageElement>):void{
             this._json = json;
             this._arrayBufferMap = arrayBufferMap;
             this._imageMap = imageMap;
@@ -40,12 +40,12 @@ module wd{
             }
         }
 
-        private _setChildObjectNameWithMultiPrimitives(object:IWDObjectDataAssembler, primitive:IWDMeshPrimitive){
+        private _setChildObjectNameWithMultiPrimitives(object:IWDObjectDataAssembler, primitive:IWDMeshPrimitiveParser){
             object.name = primitive.material;
         }
 
-        private _parseGeometry( primitive:IWDMeshPrimitive):IWDGeometryAssembler{
-            var json:IWDJsonData = this._json,
+        private _parseGeometry( primitive:IWDMeshPrimitiveParser):IWDGeometryAssembler{
+            var json:IWDJsonDataParser = this._json,
                 arrayBufferMap = this._arrayBufferMap,
                 bufferReader:BufferReader = null,
                 geometry:IWDGeometryAssembler = <IWDGeometryAssembler>{},
@@ -60,7 +60,7 @@ module wd{
             for(let semantic in primitive.attributes){
                 if(primitive.attributes.hasOwnProperty(semantic)){
                     let attribute = primitive.attributes[semantic],
-                        accessor:IWDAccessor = json.accessors[attribute],
+                        accessor:IWDAcccessorParser = json.accessors[attribute],
                         {bufferReader, count} = WDUtils.getBufferReaderFromAccessor(json, accessor, arrayBufferMap);
 
                     if(semantic === "POSITION"){
@@ -123,18 +123,18 @@ module wd{
             }
         }
 
-        @require(function(json:IWDJsonData, indices:string, normals:Array<number>){
+        @require(function(json:IWDJsonDataParser, indices:string, normals:Array<number>){
             if(indices){
                 it("indices' count should be 3 times", () => {
-                    var accessor:IWDAccessor = json.accessors[indices],
+                    var accessor:IWDAcccessorParser = json.accessors[indices],
                         {bufferReader, count} = WDUtils.getBufferReaderFromAccessor(json, accessor, this._arrayBufferMap);
 
                     expect(count % 3).equal(0);
                 }, this);
             }
         })
-        private _getFaces(json:IWDJsonData, indices:string, normals:Array<number>){
-            var accessor:IWDAccessor = null,
+        private _getFaces(json:IWDJsonDataParser, indices:string, normals:Array<number>){
+            var accessor:IWDAcccessorParser = null,
                 face:Face3 = null,
                 faces:Array<Face3> = [];
 

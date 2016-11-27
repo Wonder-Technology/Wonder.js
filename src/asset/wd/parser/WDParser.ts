@@ -11,14 +11,14 @@ module wd{
         private _data:IWDParseDataAssembler = <any>{};
         private _arrayBufferMap:wdCb.Hash<any> = null;
         private _imageMap:wdCb.Hash<HTMLImageElement> = null;
-        private _json:IWDJsonData = null;
+        private _json:IWDJsonDataParser = null;
         private _geometryParser = WDGeometryParser.create();
         private _articulatedAnimationParser = WDArticulatedAnimationParser.create();
         private _transformParser:WDTransformParser = WDTransformParser.create();
         private _cameraParser:WDCameraParser = WDCameraParser.create();
         private _lightParser:WDLightParser = WDLightParser.create();
 
-        public parse(json:IWDJsonData, arrayBufferMap:wdCb.Hash<any>, imageMap:wdCb.Hash<HTMLImageElement>):IWDParseDataAssembler{
+        public parse(json:IWDJsonDataParser, arrayBufferMap:wdCb.Hash<any>, imageMap:wdCb.Hash<HTMLImageElement>):IWDParseDataAssembler{
             this._json = json;
 
             this._arrayBufferMap = arrayBufferMap;
@@ -54,7 +54,7 @@ module wd{
             var self = this,
                 json = this._json,
                 objects = wdCb.Collection.create<IWDObjectDataAssembler>();
-            var parse = (nodeId:string, node:IWDNode) => {
+            var parse = (nodeId:string, node:IWDNodeParser) => {
                 var object:IWDObjectDataAssembler = WDUtils.createObjectData();
 
                 object.id = nodeId;
@@ -67,7 +67,7 @@ module wd{
                 not support multi mesh
                  */
                 if(node.mesh){
-                    let mesh:IWDMesh = null;
+                    let mesh:IWDMeshParser = null;
 
                     // if(node.meshes.length > 1){
                     //     Log.warn(Log.info.FUNC_NOT_SUPPORT("multi mesh(geometry), just use the first mesh(geometry)"));

@@ -1,60 +1,60 @@
 module wd {
-    export interface IWDJsonData {
-        asset: IWDAsset;
+    export interface IWDJsonDataParser {
+        asset: IWDAssetParser;
         scene: string;
         scenes: {
-            [id:string]: IWDScene
+            [id:string]: IWDSceneParser
         };
         nodes: {
-            [id:string]: IWDNode
+            [id:string]: IWDNodeParser
         };
         meshes: {
-            [id:string]: IWDMesh
+            [id:string]: IWDMeshParser
         };
         accessors: {
-            [id:string]: IWDAccessor
+            [id:string]: IWDAcccessorParser
         };
         buffers: {
-            [id:string]: IWDBuffer
+            [id:string]: IWDBufferParser
         };
         bufferViews: {
-            [id:string]: IWDBufferView
+            [id:string]: IWDBufferViewParser
         };
         cameras?: {
-            [id:string]: IWDCamera
+            [id:string]: IWDCameraParser
         };
         images?: {
-            [id:string]: IWDImage
+            [id:string]: IWDImageParser
         };
         textures?: {
-            [id:string]: IWDTexture
+            [id:string]: IWDTextureParser
         };
         samplers: {
-            [id:string]: IWDSampler
+            [id:string]: IWDSamplerParser
         };
         materials: {
-            [id:string]: IWDMaterial
+            [id:string]: IWDMaterialParser
         };
         animations: {
-            [id:string]: IWDAnimation
+            [id:string]: IWDAnimationParser
         };
         lights: {
-            [id:string]: IWDLight
+            [id:string]: IWDLightParser
         }
     }
 
-    export interface IWDChildRootProperty {
+    export interface IWDChildRootPropertyParser {
         name?: string;
     }
 
-    export interface IWDScene extends IWDChildRootProperty {
+    export interface IWDSceneParser extends IWDChildRootPropertyParser {
         // ambientColor?:Array<number>;
         nodes: Array<string>;
     }
 
 
 
-    export interface IWDNode extends IWDChildRootProperty {
+    export interface IWDNodeParser extends IWDChildRootPropertyParser {
         children: Array<string>;
         camera?: string;
         // skin?: string;
@@ -71,27 +71,27 @@ module wd {
         // extensions?:Object;
     }
 
-    export interface IWDMesh extends IWDChildRootProperty {
-        primitives: Array<IWDMeshPrimitive>;
+    export interface IWDMeshParser extends IWDChildRootPropertyParser {
+        primitives: Array<IWDMeshPrimitiveParser>;
     }
 
-    export interface IWDMeshPrimitive {
-        attributes: IWDAttribute;
+    export interface IWDMeshPrimitiveParser {
+        attributes: IWDAttributeParser;
 
-        morphTargets?: Array<IWDMorphTarget>;
+        morphTargets?: Array<IWDMorphTargetParser>;
 
         indices?: string;
         material: string;
         mode: number;
     }
 
-    export interface IWDMorphTarget {
+    export interface IWDMorphTargetParser {
         name:string;
         vertices:string;
         normals?:string;
     }
 
-    export interface IWDAttribute {
+    export interface IWDAttributeParser {
         POSITION:string;
         NORMAL?:string;
         // todo support multi TexCoords
@@ -102,7 +102,7 @@ module wd {
         // WEIGH?:string;
     }
 
-    export interface IWDAccessor extends IWDChildRootProperty {
+    export interface IWDAcccessorParser extends IWDChildRootPropertyParser {
         bufferView: string;
         byteOffset: number;
         // byteStride: number;
@@ -114,14 +114,14 @@ module wd {
         min?: Array<number>;
     }
 
-    export interface IWDBuffer extends IWDChildRootProperty {
+    export interface IWDBufferParser extends IWDChildRootPropertyParser {
         uri: string;
 
         byteLength: number;
         type: string;
     }
 
-    export interface IWDBufferView extends IWDChildRootProperty {
+    export interface IWDBufferViewParser extends IWDChildRootPropertyParser {
         buffer: string;
         byteOffset: number;
         byteLength: number;
@@ -129,31 +129,31 @@ module wd {
         target?: number;
     }
 
-    export interface IWDCamera extends IWDChildRootProperty {
+    export interface IWDCameraParser extends IWDChildRootPropertyParser {
         type:"perspective"|"orthographic";
-        perspective?:IWDCameraPerspective;
-        orthographic?:IWDCameraOrthographic;
+        perspective?:IWDCameraPerspectiveParser;
+        orthographic?:IWDCameraOrthographicParser;
     }
 
-    export interface IWDCameraOrthographic {
+    export interface IWDCameraOrthographicParser {
         xmag: number;
         ymag: number;
         zfar: number;
         znear: number;
     }
 
-    export interface IWDCameraPerspective {
+    export interface IWDCameraPerspectiveParser {
         aspectRatio?: number;
         yfov: number;
         zfar: number;
         znear: number;
     }
 
-    export interface IWDImage extends IWDChildRootProperty {
+    export interface IWDImageParser extends IWDChildRootPropertyParser {
         uri: string;
     }
 
-    export interface IWDTexture extends IWDChildRootProperty {
+    export interface IWDTextureParser extends IWDChildRootPropertyParser {
         sampler: string;
         source: string;
 
@@ -163,7 +163,7 @@ module wd {
         type?: number;
     }
 
-    export interface IWDSampler extends IWDChildRootProperty {
+    export interface IWDSamplerParser extends IWDChildRootPropertyParser {
         magFilter?: number;
         minFilter?: number;
         wrapS?: number;
@@ -173,7 +173,7 @@ module wd {
         repeatRegion?: Array<number>;
     }
 
-    export interface IWDMaterial extends IWDChildRootProperty {
+    export interface IWDMaterialParser extends IWDChildRootPropertyParser {
         technique: "CONSTANT"|"BLINN"|"PHONG"|"LAMBERT";
 
 
@@ -182,18 +182,18 @@ module wd {
         transparency?:number;
 
 
-        values?: IWDMaterialValue;
+        values?: IWDMaterialValueParser;
         // extensions?:Object;
     }
 
-    // export interface IWDMaterialValue{
+    // export interface IWDMaterialValueParser{
     //     diffuse?:Array<number>;
     //     specular?:Array<number>;
     //     emission?:Array<number>;
     //     shininess?:number;
     // }
     //
-    export interface IWDMaterialValue{
+    export interface IWDMaterialValueParser{
         // ambient?:{
         //     type:number;
         //     value:Array<number>|string;
@@ -232,31 +232,31 @@ module wd {
         normalMap?:string;
     }
 
-    export interface IWDAnimation extends IWDChildRootProperty {
-        channels?: IWDAnimationChannel[];
+    export interface IWDAnimationParser extends IWDChildRootPropertyParser {
+        channels?: IWDAnimationChannelParser[];
         parameters?: Object;
         samplers?: {
-            [id:string]: IWDAnimationSampler
+            [id:string]: IWDAnimationSamplerParser
         };
     }
 
-    export interface IWDAnimationSampler{
+    export interface IWDAnimationSamplerParser{
         input:string;
         interpolation:"LINEAR";
         output:string;
     }
 
-    export interface IWDAnimationChannel {
+    export interface IWDAnimationChannelParser {
         sampler: string;
-        target: IWDAnimationChannelTarget;
+        target: IWDAnimationChannelTargetParser;
     }
 
-    export interface IWDAnimationChannelTarget {
+    export interface IWDAnimationChannelTargetParser {
         id: string;
         path: "translation"|"rotation"|"scale";
     }
 
-    export interface IWDAsset {
+    export interface IWDAssetParser {
         version:string;
         source:string;
 
@@ -268,7 +268,7 @@ module wd {
         };
     }
 
-    export interface IWDLight{
+    export interface IWDLightParser{
         type:"directional"|"point"|"spot"|"ambient";
         ambient?:{
             intensity?:number;
