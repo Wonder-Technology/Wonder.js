@@ -10,7 +10,7 @@ module wd {
         public parse(translation:Array<number>, rotation:Array<number>, scale:Array<number>);
 
         public parse(...args){
-            var transform:IWDTransform = <any>{};
+            var transform:IWDTransformAssembler = <any>{};
 
             if(args.length === 1){
                 let matrix:Array<number> = args[0];

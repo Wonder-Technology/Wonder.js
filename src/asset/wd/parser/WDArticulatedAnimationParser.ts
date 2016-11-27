@@ -9,7 +9,7 @@ module wd{
         private _arrayBufferMap:wdCb.Hash<any> = null;
         private _json:IWDJsonData = null;
 
-        public parse(json:IWDJsonData, objects:wdCb.Collection<IWDObjectData>, arrayBufferMap:wdCb.Hash<any>):void{
+        public parse(json:IWDJsonData, objects:wdCb.Collection<IWDObjectDataAssembler>, arrayBufferMap:wdCb.Hash<any>):void{
             var nodeWithAnimationMap:wdCb.Hash<any> = wdCb.Hash.create<any>(),
                 self = this;
 
@@ -29,7 +29,7 @@ module wd{
                     }
 
                     nodeWithChannelMap.forEach((channelList:wdCb.Collection<IWDAnimationChannel>, targetId:string) => {
-                        var keyFrameDataList = wdCb.Collection.create<IWDKeyFrameData>(),
+                        var keyFrameDataList = wdCb.Collection.create<IWDKeyFrameDataAssembler>(),
                             targetNode = self._findNode(objects, targetId),
                             inputData = null;
 
@@ -47,7 +47,7 @@ module wd{
 
                         for(let i = 0; i < count; i++){
                             let data = bufferReader.readFloat();
-                            let keyFrameData:IWDKeyFrameData = <any>{};
+                            let keyFrameData:IWDKeyFrameDataAssembler = <any>{};
 
                             keyFrameData.time = this._convertSecondToMillisecond(data);
 
@@ -118,7 +118,7 @@ module wd{
             return result;
         }
 
-        private _addAnimationToNode(nodeWithAnimationMap:wdCb.Hash<any>, targetId:string, targetNode:IWDObjectData, animName:string, keyFrameDataList:wdCb.Collection<IWDKeyFrameData>){
+        private _addAnimationToNode(nodeWithAnimationMap:wdCb.Hash<any>, targetId:string, targetNode:IWDObjectDataAssembler, animName:string, keyFrameDataList:wdCb.Collection<IWDKeyFrameDataAssembler>){
             if(!nodeWithAnimationMap.hasChild(targetId)){
                 nodeWithAnimationMap.addChild(targetId, {
                     node:targetNode,
@@ -130,13 +130,13 @@ module wd{
         }
 
         private _getKeyFrameDataTargets(animation:IWDAnimation, channelList:wdCb.Collection<IWDAnimationChannel>, channelBufferReaderArr:Array<BufferReader>){
-            var targets = wdCb.Collection.create<IWDKeyFrameTargetData>();
+            var targets = wdCb.Collection.create<IWDKeyFrameTargetDataAssembler>();
 
             channelList.forEach((channel:IWDAnimationChannel, index:number) => {
                 var sampler:IWDAnimationSampler = animation.samplers[channel.sampler],
                     outputData:any = null,
                     targetPath:EWDArticulatedAnimationPath = null,
-                    targetData:IWDKeyFrameTargetData = <any>{},
+                    targetData:IWDKeyFrameTargetDataAssembler = <any>{},
                     bufferReader = null;
 
                 if (!sampler) {
@@ -175,9 +175,9 @@ module wd{
             return targets;
         }
 
-        private _findNode(objects:wdCb.Collection<IWDObjectData>, targetId:string){
-            var find = (objects:wdCb.Collection<IWDObjectData>) => {
-                var result = objects.findOne((object:IWDObjectData) => {
+        private _findNode(objects:wdCb.Collection<IWDObjectDataAssembler>, targetId:string){
+            var find = (objects:wdCb.Collection<IWDObjectDataAssembler>) => {
+                var result = objects.findOne((object:IWDObjectDataAssembler) => {
                     return object.id === targetId;
                 });
 
@@ -185,7 +185,7 @@ module wd{
                     return result;
                 }
 
-                objects.forEach((object:IWDObjectData) => {
+                objects.forEach((object:IWDObjectDataAssembler) => {
                     result = find(object.children);
                     if (result) {
                         return wdCb.$BREAK;
@@ -201,8 +201,8 @@ module wd{
         @ensure(function(returnVal, nodeWithAnimationMap:wdCb.Hash<any>){
             it("node should only has 1 IWDArticulatedAnimation component", () => {
                 nodeWithAnimationMap.forEach(({node, animationData}) => {
-                    expect(node.components.filter((component:IWDComponent) => {
-                        return WDUtils.isIWDArticulatedAnimation(component);
+                    expect(node.components.filter((component:IWDComponentAssembler) => {
+                        return WDUtils.isIWDArticulatedAnimationAssembler(component);
                     }).getCount()).most(1);
                 })
             });

@@ -11,7 +11,7 @@ module wd{
         private _glTextureMap:wdCb.Hash<WebGLTexture> = wdCb.Hash.create<WebGLTexture>();
         private _textureParser:WDTextureParser = WDTextureParser.create();
 
-        public parse(json:IWDJsonData, materialId:string, imageMap:wdCb.Hash<HTMLImageElement>):IWDMaterialForAssembler{
+        public parse(json:IWDJsonData, materialId:string, imageMap:wdCb.Hash<HTMLImageElement>):IWDMaterialAssembler{
             var materialData = null;
 
             if(!materialId){
@@ -25,7 +25,7 @@ module wd{
             this._textureParser.imageMap = this._imageMap;
             this._textureParser.glTextureMap = this._glTextureMap;
 
-            let material:IWDLightMaterialForAssembler = <any>{};
+            let material:IWDLightMaterialAssembler = <any>{};
 
             materialData = json.materials[materialId];
 
@@ -93,7 +93,7 @@ module wd{
             return model;
         }
 
-        private _addMaterialValues(material:IWDLightMaterialForAssembler, values:any){
+        private _addMaterialValues(material:IWDLightMaterialAssembler, values:any){
             if(!values){
                 return;
             }
@@ -111,7 +111,7 @@ module wd{
             }
         }
 
-        private _addMaterialLightColor(material:IWDLightMaterialForAssembler, colorName:string, colorData:Array<number>|string, mapName?:string){
+        private _addMaterialLightColor(material:IWDLightMaterialAssembler, colorName:string, colorData:Array<number>|string, mapName?:string){
             if(!colorData){
                 return;
             }
@@ -126,7 +126,7 @@ module wd{
             }
         }
 
-        private _addMaterialLightMap(material:IWDMaterialForAssembler, mapName:string, mapId:string){
+        private _addMaterialLightMap(material:IWDMaterialAssembler, mapName:string, mapId:string){
             if(!mapId){
                 return;
             }

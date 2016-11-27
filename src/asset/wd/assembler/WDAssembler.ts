@@ -6,18 +6,18 @@ module wd{
         	return obj;
         }
 
-        private _result:wdCb.Hash<IWDResult> = wdCb.Hash.create<IWDResult>();
+        private _result:wdCb.Hash<IWDResultAssembler> = wdCb.Hash.create<IWDResultAssembler>();
         private _geometryAssembler:WDGeometryAssembler = WDGeometryAssembler.create();
         private _transformAssembler:WDTransformAssembler = WDTransformAssembler.create();
 
-        public build(parseData:IWDParseData){
+        public build(parseData:IWDParseDataAssembler){
             // this._buildMetadata(parseData);
             this._buildModels(parseData);
 
             return this._result;
         }
 
-        // private _buildMetadata(parseData:IWDParseData){
+        // private _buildMetadata(parseData:IWDParseDataAssembler){
         //     var metadata = wdCb.Hash.create<any>();
         //
         //     for(let i in parseData.metadata){
@@ -29,10 +29,10 @@ module wd{
         //     this._result.addChild("metadata", metadata);
         // }
 
-        private _buildModels(parseData:IWDParseData){
+        private _buildModels(parseData:IWDParseDataAssembler){
             var models = wdCb.Collection.create<GameObject>(),
                 self = this;
-            var build = (object:IWDObjectData) => {
+            var build = (object:IWDObjectDataAssembler) => {
                 var model = GameObject.create();
 
                 if(object.name){
@@ -48,7 +48,7 @@ module wd{
                 model.addComponent(MeshRenderer.create());
 
                 if(object.children){
-                    object.children.forEach((child:IWDObjectData) => {
+                    object.children.forEach((child:IWDObjectDataAssembler) => {
                         model.addChild(build(child));
                     });
                 }
@@ -60,27 +60,27 @@ module wd{
                 return;
             }
 
-            parseData.objects.forEach((object:IWDObjectData) => {
+            parseData.objects.forEach((object:IWDObjectDataAssembler) => {
                 models.addChild(build(object));
             });
 
             this._result.addChild("models", models);
         }
 
-        private _isModelContainer(object:IWDObjectData){
+        private _isModelContainer(object:IWDObjectDataAssembler){
             return object.isContainer;
         }
 
-        private _addComponentsFromWD(model:GameObject, components:wdCb.Collection<IWDComponent>){
+        private _addComponentsFromWD(model:GameObject, components:wdCb.Collection<IWDComponentAssembler>){
             var self = this;
 
-            components.forEach((component:IWDComponent) => {
+            components.forEach((component:IWDComponentAssembler) => {
                 //todo refactor: define type
                 if(self._isTransform(component)) {
-                    model.addComponent(self._transformAssembler.createComponent(<IWDTransform>component));
+                    model.addComponent(self._transformAssembler.createComponent(<IWDTransformAssembler>component));
                 }
-                else if(self._isCamera(<IWDCameraForAssembler>component)){
-                    model.addComponent(self._createCamera(<IWDCameraForAssembler>component));
+                else if(self._isCamera(<IWDCameraAssembler>component)){
+                    model.addComponent(self._createCamera(<IWDCameraAssembler>component));
                 }
                 // else if(self._isLight(component)){
                 //     model.addComponent(self._createLight(<any>component));
@@ -104,7 +104,7 @@ module wd{
             return !!component.matrix || !!component.position;
         }
 
-        private _isCamera(component:IWDCameraForAssembler){
+        private _isCamera(component:IWDCameraAssembler){
             return !!component.camera;
         }
         //
@@ -117,14 +117,14 @@ module wd{
         }
 
         private _isArticulatedAnimation(component:any){
-            return WDUtils.isIWDArticulatedAnimation(component);
+            return WDUtils.isIWDArticulatedAnimationAssembler(component);
         }
 
-        private _createCamera(component:IWDCameraForAssembler){
+        private _createCamera(component:IWDCameraAssembler){
             return BasicCameraController.create(component.camera);
         }
 
-        // private _createLight(component:IWDLight&IWDPointLight&IWDAmbientLight&IWDDirectionLight){
+        // private _createLight(component:IWDLightAssembler&IWDPointLightAssembler&IWDAmbientLightAssembler&IWDDirectionLightAssembler){
         //     var light = null;
         //
         //     switch (component.type){
@@ -156,10 +156,10 @@ module wd{
         //     return light;
         // }
 
-        private _createArticulatedAnimation(component:IWDArticulatedAnimation){
+        private _createArticulatedAnimation(component:IWDArticulatedAnimationAssembler){
              var anim = TransformArticulatedAnimation.create();
 
-            anim.data = wdCb.Hash.create<wdCb.Collection<IWDKeyFrameData>>(component);
+            anim.data = wdCb.Hash.create<wdCb.Collection<IWDKeyFrameDataAssembler>>(component);
 
             return anim;
         }

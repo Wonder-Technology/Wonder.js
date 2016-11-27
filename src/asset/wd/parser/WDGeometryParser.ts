@@ -11,7 +11,7 @@ module wd{
         private _json:IWDJsonData = null;
         private _materialParser = WDMaterialParser.create();
 
-        public parse(json:IWDJsonData, object:IWDObjectData, mesh:IWDMesh, arrayBufferMap:wdCb.Hash<ArrayBuffer>, imageMap:wdCb.Hash<HTMLImageElement>):void{
+        public parse(json:IWDJsonData, object:IWDObjectDataAssembler, mesh:IWDMesh, arrayBufferMap:wdCb.Hash<ArrayBuffer>, imageMap:wdCb.Hash<HTMLImageElement>):void{
             this._json = json;
             this._arrayBufferMap = arrayBufferMap;
             this._imageMap = imageMap;
@@ -22,7 +22,7 @@ module wd{
 
             if(mesh.primitives.length > 1){
                 for(let primitive of mesh.primitives){
-                    let childObject:IWDObjectData = WDUtils.createObjectData();
+                    let childObject:IWDObjectDataAssembler = WDUtils.createObjectData();
 
                     this._setChildObjectNameWithMultiPrimitives(childObject, primitive);
 
@@ -40,15 +40,15 @@ module wd{
             }
         }
 
-        private _setChildObjectNameWithMultiPrimitives(object:IWDObjectData, primitive:IWDMeshPrimitive){
+        private _setChildObjectNameWithMultiPrimitives(object:IWDObjectDataAssembler, primitive:IWDMeshPrimitive){
             object.name = primitive.material;
         }
 
-        private _parseGeometry( primitive:IWDMeshPrimitive):IWDGeometry{
+        private _parseGeometry( primitive:IWDMeshPrimitive):IWDGeometryAssembler{
             var json:IWDJsonData = this._json,
                 arrayBufferMap = this._arrayBufferMap,
                 bufferReader:BufferReader = null,
-                geometry:IWDGeometry = <IWDGeometry>{},
+                geometry:IWDGeometryAssembler = <IWDGeometryAssembler>{},
                 vertices:Array<number> = null,
                 texCoords:Array<number> = null,
                 colors:Array<number> = null,

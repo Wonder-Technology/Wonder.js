@@ -8,7 +8,7 @@ module wd{
             return obj;
         }
 
-        private _data:IWDParseData = <any>{};
+        private _data:IWDParseDataAssembler = <any>{};
         private _arrayBufferMap:wdCb.Hash<any> = null;
         private _imageMap:wdCb.Hash<HTMLImageElement> = null;
         private _json:IWDJsonData = null;
@@ -17,7 +17,7 @@ module wd{
         private _transformParser:WDTransformParser = WDTransformParser.create();
         private _cameraParser:WDCameraParser = WDCameraParser.create();
 
-        public parse(json:IWDJsonData, arrayBufferMap:wdCb.Hash<any>, imageMap:wdCb.Hash<HTMLImageElement>):IWDParseData{
+        public parse(json:IWDJsonData, arrayBufferMap:wdCb.Hash<any>, imageMap:wdCb.Hash<HTMLImageElement>):IWDParseDataAssembler{
             this._json = json;
 
             this._arrayBufferMap = arrayBufferMap;
@@ -52,9 +52,9 @@ module wd{
         private _parseObjects(){
             var self = this,
                 json = this._json,
-                objects = wdCb.Collection.create<IWDObjectData>();
+                objects = wdCb.Collection.create<IWDObjectDataAssembler>();
             var parse = (nodeId:string, node:IWDNode) => {
-                var object:IWDObjectData = WDUtils.createObjectData();
+                var object:IWDObjectDataAssembler = WDUtils.createObjectData();
 
                 object.id = nodeId;
 

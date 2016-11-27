@@ -6,7 +6,7 @@ module wd{
             return obj;
         }
 
-        public createComponent(component:IWDTransform):ThreeDTransform{
+        public createComponent(component:IWDTransformAssembler):ThreeDTransform{
             var transform:ThreeDTransform = ThreeDTransform.create();
 
             if(component.matrix){

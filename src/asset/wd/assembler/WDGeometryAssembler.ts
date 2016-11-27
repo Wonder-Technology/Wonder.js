@@ -6,7 +6,7 @@ module wd{
         	return obj;
         }
 
-        public createComponent(component:IWDGeometry):ModelGeometry{
+        public createComponent(component:IWDGeometryAssembler):ModelGeometry{
             var geometry = ModelGeometry.create();
 
             geometry.vertices = component.vertices;
@@ -25,17 +25,17 @@ module wd{
             return geometry;
         }
 
-        @require(function(materialData:IWDMaterialForAssembler){
+        @require(function(materialData:IWDMaterialAssembler){
             it("material type should always be LightMaterial", () => {
                 expect(materialData.type).equals("LightMaterial");
             });
         })
-        private _createMaterial(materialData:IWDMaterialForAssembler){
+        private _createMaterial(materialData:IWDMaterialAssembler){
             var material:Material = null;
 
             switch (materialData.type){
                 case "LightMaterial":
-                    material = this._createLightMaterial(<IWDLightMaterialForAssembler>materialData);
+                    material = this._createLightMaterial(<IWDLightMaterialAssembler>materialData);
                     break;
                 default:
                     Log.error(true, Log.info.FUNC_UNEXPECT(`material type:${materialData.type}`));
@@ -45,11 +45,11 @@ module wd{
             return material;
         }
 
-        private _createLightMaterial(materialData:IWDLightMaterialForAssembler){
+        private _createLightMaterial(materialData:IWDLightMaterialAssembler){
             return this._createStandardLightMaterial<LightMaterial>(LightMaterial.create(), materialData);
         }
 
-        private _createStandardLightMaterial<T extends StandardLightMaterial>(material:T, materialData:IWDLightMaterialForAssembler):T{
+        private _createStandardLightMaterial<T extends StandardLightMaterial>(material:T, materialData:IWDLightMaterialAssembler):T{
             this._setBasicDataOfMaterial(material, materialData);
 
             if(materialData.transparent === true && materialData.opacity !== void 0){
@@ -81,7 +81,7 @@ module wd{
             return material;
         }
 
-        private _setBasicDataOfMaterial(material:Material, materialData:IWDMaterialForAssembler){
+        private _setBasicDataOfMaterial(material:Material, materialData:IWDMaterialAssembler){
             if(!!materialData.doubleSided && materialData.doubleSided === true){
                 material.side = ESide.BOTH;
             }

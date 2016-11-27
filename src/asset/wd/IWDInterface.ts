@@ -291,68 +291,68 @@ module wd {
 
 
 
-    export interface IWDParseData{
-        // metadata:IWDMetadata;
-        objects: wdCb.Collection<IWDObjectData>;
+    export interface IWDParseDataAssembler{
+        // metadata:IWDMetadataAssembler;
+        objects: wdCb.Collection<IWDObjectDataAssembler>;
     }
 
 
-    export interface IWDObjectData {
+    export interface IWDObjectDataAssembler {
         name?:string;
         id:string;
 
         isContainer:boolean;
 
-        components: wdCb.Collection<IWDComponent>;
+        components: wdCb.Collection<IWDComponentAssembler>;
 
-        children: wdCb.Collection<IWDObjectData>;
+        children: wdCb.Collection<IWDObjectDataAssembler>;
     }
 
 
-    export interface IWDComponent{
+    export interface IWDComponentAssembler{
     }
 
-    export interface IWDArticulatedAnimation extends IWDComponent{
-        [animName:string]: wdCb.Collection<IWDKeyFrameData>
+    export interface IWDArticulatedAnimationAssembler extends IWDComponentAssembler{
+        [animName:string]: wdCb.Collection<IWDKeyFrameDataAssembler>
     }
 
-    export interface IWDKeyFrameData{
+    export interface IWDKeyFrameDataAssembler{
         time:number,
         //interpolationMethod:EKeyFrameInterpolation,
 
-        targets:wdCb.Collection<IWDKeyFrameTargetData>
+        targets:wdCb.Collection<IWDKeyFrameTargetDataAssembler>
     }
 
-    export interface IWDKeyFrameTargetData{
+    export interface IWDKeyFrameTargetDataAssembler{
         interpolationMethod:EKeyFrameInterpolation,
         target:EArticulatedAnimationTarget,
         data:any
     }
 
-    export interface IWDTransform extends IWDComponent{
+    export interface IWDTransformAssembler extends IWDComponentAssembler{
         matrix?:Matrix4;
         position?:Vector3;
         scale?:Vector3;
         rotation?:Quaternion;
     }
 
-    export interface IWDCameraForAssembler extends IWDComponent{
+    export interface IWDCameraAssembler extends IWDComponentAssembler{
         camera:Camera;
     }
     //
-    // export interface IWDLight extends IWDComponent{
+    // export interface IWDLightAssembler extends IWDComponentAssembler{
     //     type:string;
     //     lightColor:Color;
     // }
     //
-    // export interface IWDAmbientLight extends IWDLight{
+    // export interface IWDAmbientLightAssembler extends IWDLightAssembler{
     // }
     //
-    // export interface IWDDirectionLight extends IWDLight{
+    // export interface IWDDirectionLightAssembler extends IWDLightAssembler{
     //     //direction?
     // }
     //
-    // export interface IWDPointLight extends IWDLight{
+    // export interface IWDPointLightAssembler extends IWDLightAssembler{
     //     constantAttenuation:number;
     //     linearAttenuation:number;
     //     quadraticAttenuation:number;
@@ -361,8 +361,8 @@ module wd {
     //     distance?:number;
     // }
 
-    export interface IWDGeometry extends IWDComponent{
-        material:IWDMaterialForAssembler;
+    export interface IWDGeometryAssembler extends IWDComponentAssembler{
+        material:IWDMaterialAssembler;
 
         vertices: Array<number>;
         colors?: Array<number>;
@@ -375,17 +375,17 @@ module wd {
         drawMode:EDrawMode;
     }
 
-    export interface IWDMaterialForAssembler{
+    export interface IWDMaterialAssembler{
         type:string;
 
         doubleSided?:boolean;
     }
 
 
-    // export interface IWDBasicMaterialForAssembler extends IWDMaterialForAssembler{
+    // export interface IWDBasicMaterialAssembler extends IWDMaterialAssembler{
     // }
 
-    export interface IWDLightMaterialForAssembler extends IWDMaterialForAssembler{
+    export interface IWDLightMaterialAssembler extends IWDMaterialAssembler{
         transparent?:boolean;
         opacity?: number
 
@@ -412,7 +412,7 @@ module wd {
 
 
 
-    // export interface IWDMetadata {
+    // export interface IWDMetadataAssembler {
     //     version:string;
     //     genertor?:string;
     //     premultipliedAlpha?:boolean;
@@ -428,8 +428,8 @@ module wd {
 
 
 
-    export interface IWDResult{
-        // metadata:wdCb.Hash<IWDMetadata>;
+    export interface IWDResultAssembler{
+        // metadata:wdCb.Hash<IWDMetadataAssembler>;
         models:wdCb.Collection<GameObject>
     }
 }

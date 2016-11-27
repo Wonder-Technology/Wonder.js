@@ -15,16 +15,16 @@ module wd {
                 expect(cameras[cameraId]).exist;
             }, this);
         })
-        public parse(json:IWDJsonData, cameraId:string):IWDCameraForAssembler{
+        public parse(json:IWDJsonData, cameraId:string):IWDCameraAssembler{
             var cameraData = json.cameras[cameraId],
-                camera:IWDCameraForAssembler = <any>{};
+                camera:IWDCameraAssembler = <any>{};
 
             this._parseCameraDataByType(camera, cameraData);
 
             return camera;
         }
 
-        private _parseCameraDataByType(camera:IWDCameraForAssembler, cameraData:any){
+        private _parseCameraDataByType(camera:IWDCameraAssembler, cameraData:any){
             var cameraComponent:any = null,
                 type = cameraData.type,
                 data:any = cameraData[type];

@@ -30,8 +30,8 @@ module wd{
                 id:null,
                 isContainer: false,
 
-                components:wdCb.Collection.create<IWDComponent>(),
-                children: wdCb.Collection.create<IWDObjectData>()
+                components:wdCb.Collection.create<IWDComponentAssembler>(),
+                children: wdCb.Collection.create<IWDObjectDataAssembler>()
             }
         }
 
@@ -104,12 +104,12 @@ module wd{
             }
         }
 
-        public static isIWDArticulatedAnimation(component:IWDComponent){
+        public static isIWDArticulatedAnimationAssembler(component:IWDComponentAssembler){
             if(!JudgeUtils.isDirectObject(component)){
                 return false;
             }
 
-            for(let animName in component){
+            for(let animName in <IWDArticulatedAnimationAssembler>component){
                 return component[animName] instanceof wdCb.Collection && component[animName].getCount() > 0 && component[animName].getChild(0).time !== void 0;
             }
         }
