@@ -1,6 +1,6 @@
 from fbx import *
-from helper import *
-from transformHelper import *
+from utils import *
+from transformUtils import *
 
 class KeyFrameAnimationParser(object):
     def __init__(self, output):

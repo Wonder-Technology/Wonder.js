@@ -1,5 +1,5 @@
 from fbx import *
-from helper import *
+from utils import *
 
 class CameraParser(object):
     def __init__(self, output):

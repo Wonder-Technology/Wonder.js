@@ -1,5 +1,5 @@
 from fbx import *
-from helper import *
+from utils import *
 
 class MaterialParser(object):
     def __init__(self, output, fileUrl):

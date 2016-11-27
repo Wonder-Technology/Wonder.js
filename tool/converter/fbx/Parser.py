@@ -1,4 +1,4 @@
-from helper import *
+from utils import *
 from parseMesh import *
 from MaterialParser import *
 from KeyFrameAnimationParser import *
