@@ -77,17 +77,17 @@ module wd{
 
             components.forEach((component:IWDComponentAssembler) => {
                 //todo refactor: define type
-                if(self._isTransform(component)) {
+                if(self._isTransform(<IWDTransformAssembler>component)) {
                     model.addComponent(self._transformAssembler.createComponent(<IWDTransformAssembler>component));
                 }
                 else if(self._isCamera(<IWDCameraAssembler>component)){
                     model.addComponent(self._createCamera(<IWDCameraAssembler>component));
                 }
-                else if(self._isLight(component)){
-                    model.addComponent(self._lightAssembler.createComponent(<any>component));
+                else if(self._isLight(<IWDLightAssembler>component)){
+                    model.addComponent(self._lightAssembler.createComponent(<IWDLightAssembler>component));
                 }
-                if(self._isGeometry(component)){
-                    let geometry = self._geometryAssembler.createComponent(<any>component);
+                if(self._isGeometry(<IWDGeometryAssembler>component)){
+                    let geometry = self._geometryAssembler.createComponent(<IWDGeometryAssembler>component);
 
                     model.addComponent(geometry);
 
@@ -95,13 +95,13 @@ module wd{
                         model.addComponent(MorphAnimation.create());
                     }
                 }
-                else if(self._isArticulatedAnimation(component)){
-                    model.addComponent(self._createArticulatedAnimation(<any>component));
+                else if(self._isArticulatedAnimation(<IWDArticulatedAnimationAssembler>component)){
+                    model.addComponent(self._createArticulatedAnimation(<IWDArticulatedAnimationAssembler>component));
                 }
             });
         }
 
-        private _isTransform(component:any){
+        private _isTransform(component:IWDTransformAssembler){
             return !!component.matrix || !!component.position;
         }
 
@@ -109,15 +109,15 @@ module wd{
             return !!component.camera;
         }
 
-        private _isLight(component:any){
+        private _isLight(component:IWDLightAssembler){
             return !!component.color && !!component.type
         }
 
-        private _isGeometry(component:any){
+        private _isGeometry(component:IWDGeometryAssembler){
             return !!component.material;
         }
 
-        private _isArticulatedAnimation(component:any){
+        private _isArticulatedAnimation(component:IWDArticulatedAnimationAssembler){
             return WDUtils.isIWDArticulatedAnimationAssembler(component);
         }
 
