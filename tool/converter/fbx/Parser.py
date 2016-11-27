@@ -2,7 +2,10 @@ from helper import *
 from parseMesh import *
 from MaterialParser import *
 from KeyFrameAnimationParser import *
+from CameraParser import *
+from TransformParser import *
 from fbx import *
+from globalDefine import *
 
 class Parser(object):
     def __init__(self, converter):
@@ -13,6 +16,8 @@ class Parser(object):
 
         self._materialParser = MaterialParser(output, fileUrl)
         self._keyFrameAnimationParser = KeyFrameAnimationParser(output)
+        self._cameraParser = CameraParser(output)
+        self._transformParser = TransformParser()
 
 
         # global_settings = scene.GetGlobalSettings()
@@ -98,6 +103,9 @@ class Parser(object):
         # materialDatas = {}
         output["materials"] = {}
 
+
+        output["cameras"] = {}
+
         # textureDatas = {}
         output["textures"] = {}
 
@@ -143,6 +151,11 @@ class Parser(object):
 
         setName(node, nodeData)
 
+
+        # Set PivotState to active to ensure ConvertPivotAnimationRecursive() execute correctly.
+        # node.SetPivotState(eSourcePivot, ePivotActive)
+        # node.SetPivotState(eDestinationPivot, ePivotActive)
+
         nodeAttribute = node.GetNodeAttribute()
 
         if nodeAttribute == None:
@@ -154,38 +167,58 @@ class Parser(object):
 
             # self._parseNode(node, output)
 
-            attribute_type = nodeAttribute.GetAttributeType()
+            attributeType = nodeAttribute.GetAttributeType()
 
-            _parseTransform(nodeData, node)
+            # self._parseTransform(nodeData, node, attributeType)
 
-            if attribute_type == FbxNodeAttribute.eNurbs or \
-            attribute_type == FbxNodeAttribute.eNurbsSurface or \
-            attribute_type == FbxNodeAttribute.ePatch:
-                print ("not support attribute_type:%s" % attribute_type)
+            if attributeType == FbxNodeAttribute.eNurbs or \
+            attributeType == FbxNodeAttribute.eNurbsSurface or \
+            attributeType == FbxNodeAttribute.ePatch:
+                print ("not support attributeType:%s" % attributeType)
                 return
 
-            if attribute_type == FbxNodeAttribute.eMesh:
 
-                # if attribute_type != FbxNodeAttribute.eMesh:
+            if attributeType == FbxNodeAttribute.eMesh:
+                self._transformParser.parseBasicNode(nodeData, node)
+
+                # if attributeType != FbxNodeAttribute.eMesh:
                 #     self._converter.Triangulate(node.GetNodeAttribute(), True)
                 mesh = node.GetNodeAttribute()
-                meshId = getObjectId(mesh, False, nodeId + "_mesh")
+                # meshId = getObjectId(mesh, False, nodeId + "_mesh")
+                #
+                # nodeData["mesh"] = meshId
+                #
+                # meshData = {}
+                #
+                # output["meshes"][meshId] = meshData
+                #
+                # setName(mesh, meshData)
 
-                nodeData["mesh"] = meshId
-
-                meshData = {}
-
-                output["meshes"][meshId] = meshData
-
-                setName(mesh, meshData)
+                data = self._handleNodeAttribute(output, node, nodeId, nodeData, "mesh", "meshes")
 
 
-                parseMesh(mesh, meshData)
+                parseMesh(mesh, data)
 
-                self._materialParser.parse(mesh, meshData)
+                self._materialParser.parse(mesh, data)
                 # parseMaterial(mesh, meshData, output)
 
                 # print ("materialId %s" % output["materials"])
+
+            elif attributeType == FbxNodeAttribute.eCamera:
+                self._transformParser.parseCameraNode(nodeData, node)
+                data = self._handleNodeAttribute(output, node, nodeId, nodeData, "camera", "cameras")
+                # camera = node.GetNodeAttribute()
+                # cameraId = getObjectId(camera, False, nodeId + "_camera")
+                #
+                # nodeData["camera"] = cameraId
+                #
+                # cameraData = {}
+                #
+                # output["cameras"][cameraId] = cameraData
+                #
+                # setName(camera, cameraData)
+
+                self._cameraParser.parse(node, data)
 
 
         nodeData["children"] = []
@@ -198,13 +231,16 @@ class Parser(object):
             self._parseContentHierarchy(nodeChild, output)
 
 
-def _parseTransform(nodeData, node):
-    nodeLocalMatrix = node.EvaluateLocalTransform()
+    def _handleNodeAttribute(self, output, node, nodeId, nodeData, type, types):
+        attribute = node.GetNodeAttribute()
+        id = getObjectId(attribute, False, nodeId + "_%s" % type)
 
-    localMatrixData = []
+        nodeData[type] = id
 
-    for i in range(4):
-        row = nodeLocalMatrix.GetRow(i)
-        addVector4Data(localMatrixData, row)
+        data = {}
 
-    nodeData["matrix"] = localMatrixData
+        output[types][id] = data
+
+        setName(attribute, data)
+
+        return data

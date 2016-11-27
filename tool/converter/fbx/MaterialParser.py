@@ -17,6 +17,7 @@ class MaterialParser(object):
                 print ("not support multi materials! only use the first material")
 
             if materialCount == 0:
+                print ("no material")
                 return
 
             # for i in range(materialCount):
@@ -324,9 +325,10 @@ class MaterialParser(object):
         else:
             uri = getRelativeUrl(absoluteUrl, self._fileUrl)
 
+
         output["images"][id] = {
             "name": id,
-            "uri": uri
+            "uri": uri.replace( "\\", "/" )
         }
 
 

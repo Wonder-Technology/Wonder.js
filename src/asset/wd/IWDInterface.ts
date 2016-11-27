@@ -130,9 +130,9 @@ module wd {
     }
 
     export interface IWDCamera extends IWDChildRootProperty {
-        type:string;
-        perspective:IWDCameraPerspective;
-        orthographic:IWDCameraOrthographic;
+        type:"perspective"|"orthographic";
+        perspective?:IWDCameraPerspective;
+        orthographic?:IWDCameraOrthographic;
     }
 
     export interface IWDCameraOrthographic {
@@ -336,9 +336,9 @@ module wd {
         rotation?:Quaternion;
     }
 
-    // export interface IWDCamera extends IWDComponent{
-    //     camera:Camera;
-    // }
+    export interface IWDCameraForAssembler extends IWDComponent{
+        camera:Camera;
+    }
     //
     // export interface IWDLight extends IWDComponent{
     //     type:string;
@@ -433,4 +433,3 @@ module wd {
         models:wdCb.Collection<GameObject>
     }
 }
-

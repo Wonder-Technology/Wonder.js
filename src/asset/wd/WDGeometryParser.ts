@@ -186,11 +186,11 @@ module wd{
             );
         }
 
-        private _parseDrawMode(mode:number){
+        private _parseDrawMode(mode:number|null){
             var drawMode:EDrawMode = null;
 
             if(!mode){
-                return null;
+                return EDrawMode.TRIANGLES;
             }
 
             switch(mode){

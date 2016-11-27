@@ -87,9 +87,9 @@ module wd{
                 //     }
                 // }
 
-                // if(node.camera){
-                //     object.components.addChild(self._parseCamera(node.camera));
-                // }
+                if(node.camera){
+                    object.components.addChild(self._parseCamera(node.camera));
+                }
 
                 if(node.matrix){
                     object.components.addChild(self._parseTransform(node.matrix));
@@ -157,65 +157,69 @@ module wd{
         //             break;
         //     }
         // }
-        //
-        // @require(function(cameraId:string){
-        //     var cameras = this._json.cameras;
-        //     assert(cameras && cameras[cameraId], Log.info.FUNC_NOT_EXIST(`cameraId:${cameraId}`));
-        // })
-        // private _parseCamera(cameraId:string):IWDCamera{
-        //     var cameraData = this._json.cameras[cameraId],
-        //         camera:IWDCamera = <any>{};
-        //
-        //     //todo intensity data?
-        //
-        //     this._parseCameraDataByType(camera, cameraData);
-        //
-        //     return camera;
-        // }
-        //
-        // private _parseCameraDataByType(camera:IWDCamera, cameraData:any){
-        //     var cameraComponent:any = null,
-        //         type = cameraData.type,
-        //         data:any = cameraData[type];
-        //
-        //     switch (type){
-        //         case "perspective":
-        //             data = cameraData[type];
-        //             cameraComponent = PerspectiveCamera.create();
-        //
-        //             cameraComponent.near = data.znear;
-        //             cameraComponent.far = data.zfar;
-        //
-        //             if(data.aspectRatio){
-        //                 cameraComponent.aspect = data.aspectRatio;
-        //             }
-        //             else{
-        //                 let view = DeviceManager.getInstance().view;
-        //
-        //                 cameraComponent.aspect = view.width / view.height;
-        //             }
-        //
-        //             cameraComponent.fovy = data.yfov;
-        //
-        //             camera.camera = cameraComponent;
-        //             break;
-        //         case "orthographic":
-        //             cameraComponent = OrthographicCamera.create();
-        //
-        //             cameraComponent.near = data.znear;
-        //             cameraComponent.far = data.zfar;
-        //             cameraComponent.left = -data.xmag;
-        //             cameraComponent.right = data.xmag;
-        //             cameraComponent.top = data.ymag;
-        //             cameraComponent.bottom = -data.ymag;
-        //
-        //             camera.camera = cameraComponent;
-        //             break;
-        //         default:
-        //             Log.error(true, Log.info.FUNC_UNEXPECT(`camera type:${type}`));
-        //             break;
-        //     }
-        // }
+
+        @require(function(cameraId:string){
+            it("should exist corresponding camera data", () => {
+                var cameras = this._json.cameras;
+
+                expect(cameras).exist;
+                expect(cameras[cameraId]).exist;
+            }, this);
+        })
+        private _parseCamera(cameraId:string):IWDCameraForAssembler{
+            var cameraData = this._json.cameras[cameraId],
+                camera:IWDCameraForAssembler = <any>{};
+
+            //todo intensity data?
+
+            this._parseCameraDataByType(camera, cameraData);
+
+            return camera;
+        }
+
+        private _parseCameraDataByType(camera:IWDCameraForAssembler, cameraData:any){
+            var cameraComponent:any = null,
+                type = cameraData.type,
+                data:any = cameraData[type];
+
+            switch (type){
+                case "perspective":
+                    data = cameraData[type];
+                    cameraComponent = PerspectiveCamera.create();
+
+                    cameraComponent.near = data.znear;
+                    cameraComponent.far = data.zfar;
+
+                    if(data.aspectRatio){
+                        cameraComponent.aspect = data.aspectRatio;
+                    }
+                    else{
+                        let view = DeviceManager.getInstance().view;
+
+                        cameraComponent.aspect = view.width / view.height;
+                    }
+
+                    cameraComponent.fovy = AngleUtils.convertRadiansToDegree(data.yfov);
+
+                    camera.camera = cameraComponent;
+                    break;
+                case "orthographic":
+                    cameraComponent = OrthographicCamera.create();
+
+                    cameraComponent.near = data.znear;
+                    cameraComponent.far = data.zfar;
+                    cameraComponent.left = -data.xmag;
+                    cameraComponent.right = data.xmag;
+                    cameraComponent.top = data.ymag;
+                    cameraComponent.bottom = -data.ymag;
+
+                    camera.camera = cameraComponent;
+                    break;
+                default:
+                    Log.error(true, Log.info.FUNC_UNEXPECT(`camera type:${type}`));
+                    break;
+            }
+        }
 
         private _parseTransform(matrix:Array<number>);
         private _parseTransform(translation:Array<number>, rotation:Array<number>, scale:Array<number>);

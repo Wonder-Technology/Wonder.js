@@ -23,10 +23,20 @@ import json
 
 from helper import *
 from Parser import *
+from globalDefine import *
 
 # #####################################################
 # Globals
 # #####################################################
+
+# sdkManager = None
+# converter = None
+# inputFolder = ""
+# outputFolder = ""
+
+
+# config params
+
 option_triangulate = True
 # option_textures = True
 # option_copy_textures = True
@@ -37,9 +47,6 @@ option_forced_y_up = False
 # option_default_light = False
 # option_pretty_print = False
 
-converter = None
-inputFolder = ""
-outputFolder = ""
 
 
 
@@ -570,8 +577,11 @@ if __name__ == "__main__":
     option_forced_y_up = options.forceyup
 
 
-    sdk_manager, scene = InitializeSdkObjects()
-    converter = FbxGeometryConverter(sdk_manager)
+    manager, scene = InitializeSdkObjects()
+
+    sdkManager = manager
+
+    converter = FbxGeometryConverter(manager)
 
 
 
@@ -587,7 +597,7 @@ if __name__ == "__main__":
         # # Populate the FBX file format version numbers with the import file.
         # lImporter->GetFileVersion(lFileMajor, lFileMinor, lFileRevision);
 
-        result = LoadScene(sdk_manager, scene, args[0])
+        result = LoadScene(manager, scene, args[0])
     else:
         result = False
         # TODO remove threejs
@@ -601,16 +611,17 @@ if __name__ == "__main__":
             print("\nForcing geometry to triangles")
             triangulate_scene(scene)
 
+        # TODO open?
 
-        axis_system = FbxAxisSystem.MayaYUp
-
-        if not option_forced_y_up:
-            # According to asset's coordinate to convert scene
-            upVector = scene.GetGlobalSettings().GetAxisSystem().GetUpVector()
-            if upVector[0] == 3:
-                axis_system = FbxAxisSystem.MayaZUp
-
-        axis_system.ConvertScene(scene)
+        # axis_system = FbxAxisSystem.MayaYUp
+        #
+        # if not option_forced_y_up:
+        #     # According to asset's coordinate to convert scene
+        #     upVector = scene.GetGlobalSettings().GetAxisSystem().GetUpVector()
+        #     if upVector[0] == 3:
+        #         axis_system = FbxAxisSystem.MayaZUp
+        #
+        # axis_system.ConvertScene(scene)
 
 
 
@@ -650,7 +661,7 @@ if __name__ == "__main__":
 
 
     # Destroy all objects created by the FBX SDK.
-    sdk_manager.Destroy()
+    manager.Destroy()
     sys.exit(0)
 
 

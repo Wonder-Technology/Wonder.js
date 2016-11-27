@@ -4,6 +4,9 @@ import math
 from fbx import *
 from globalDefine import *
 
+
+
+
 # #####################################################
 # Helpers
 # #####################################################
@@ -140,30 +143,58 @@ def getPrefixedName(o, prefix):
 
 
 def addFloor(list, data, digit = PRECISE_DIGIT):
+    list.append(floorValue(data, digit))
+
+def floorValue(value, digit = PRECISE_DIGIT):
     d = pow(10, digit)
 
-    list.append(math.floor(d * data) / d)
+    return math.floor(d * value) / d
 
 def addVector2Data(list, vec2Data):
     list.append(roundUtil(vec2Data[0]))
     list.append(roundUtil(vec2Data[1]))
+
+    return list
 
 def addVector3Data(list, vec3Data):
     list.append(roundUtil(vec3Data[0]))
     list.append(roundUtil(vec3Data[1]))
     list.append(roundUtil(vec3Data[2]))
 
+    return list
 
 
 
-def addVector4Data(list, vec4Data):
-    list.append(roundUtil(vec4Data[0]))
-    list.append(roundUtil(vec4Data[1]))
-    list.append(roundUtil(vec4Data[2]))
-    list.append(roundUtil(vec4Data[3]))
+def addVector4Data(list, vec4Data, digit = PRECISE_DIGIT):
+    list.append(roundUtil(vec4Data[0], digit))
+    list.append(roundUtil(vec4Data[1], digit))
+    list.append(roundUtil(vec4Data[2], digit))
+    list.append(roundUtil(vec4Data[3], digit))
+
+    return list
 
 def roundUtil(data, digit = PRECISE_DIGIT):
     if math.fabs(data) < 0.0001:
         return 0
 
     return round(data, digit)
+
+
+def convertDegreeToRadians(a):
+    return a * math.pi / 180.0
+
+#define GLTF_ANGLE(a) \
+# GetIOSettings ()->GetBoolProp (IOSN_FBX_GLTF_ANGLEINDEGREE, false) ? a : DEG2RAD(a)
+
+
+def convertHFOVToVFOV(h, ar):
+
+    return 2.0 * math.atan ((ar) * math.tan ((h * FBXSDK_PI_DIV_180) * 0.5)) * FBXSDK_180_DIV_PI
+
+
+# def getGLTFAngle(angle):
+#     sdkManager.GetIOSettings().GetBoolProp (IOSN_FBX_GLTF_ANGLEINDEGREE, false) ? a : DEG2RAD(a)
+#
+#
+#
+

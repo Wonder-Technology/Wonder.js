@@ -1,5 +1,6 @@
 from fbx import *
 from helper import *
+from transformHelper import *
 
 class KeyFrameAnimationParser(object):
     def __init__(self, output):
@@ -85,11 +86,22 @@ class KeyFrameAnimationParser(object):
 
         return None
 
+    def _isCamera(self, node):
+        if node.GetCamera():
+            return True
+
+        return False
+
     def _parseData(self, animLengthInFrame, startFrame, endFrame, node, interpolation, translationCurveNode, rotationCurveNode, scalingCurveNode, animationData):
         timeList = []
         translationValueList = []
         rotationValueList = []
         scalingValueList = []
+
+        isCamera = False
+
+        if self._isCamera(node):
+            isCamera = True
 
         for i in range(animLengthInFrame):
             time = FbxTime()
@@ -102,7 +114,16 @@ class KeyFrameAnimationParser(object):
             if self._hasCurveData(translationCurveNode):
                 addVector3Data(translationValueList, currTransform.GetT())
             if self._hasCurveData(rotationCurveNode):
-                addVector4Data(rotationValueList, currTransform.GetQ())
+                fbxQ = None
+
+                # camera transform should rotate -90 by y axis
+                if isCamera:
+                    fbxQ = rotate90ByYAxis(currTransform.GetQ())
+                else:
+                    fbxQ = currTransform.GetQ()
+
+                addVector4Data(rotationValueList, fbxQ)
+
             if self._hasCurveData(scalingCurveNode):
                 addVector3Data(scalingValueList, currTransform.GetS())
 
@@ -122,16 +143,18 @@ class KeyFrameAnimationParser(object):
         # if curveX.KeyGetInterpolation(0) != curveY.KeyGetInterpolation(0) or curveX.KeyGetInterpolation(0) != curveZ.KeyGetInterpolation(0):
         #     raise AssertionError("the interpolation of one of animation->channels should be the same")
 
-        interpolation = curveWhichHasData.KeyGetInterpolation(0)
+        # interpolation = curveWhichHasData.KeyGetInterpolation(0)
+        #
+        # if interpolation == FbxAnimCurveDef.eInterpolationConstant:
+        #     return "CONSTANT"
+        # elif interpolation == FbxAnimCurveDef.eInterpolationLinear:
+        #     return "LINEAR"
+        # elif interpolation == FbxAnimCurveDef.eInterpolationCubic:
+        #     return "CUBIC"
+        # else:
+        #     raise AssertionError("unknow interpolation:%d" % interpolation)
 
-        if interpolation == FbxAnimCurveDef.eInterpolationConstant:
-            return "CONSTANT"
-        elif interpolation == FbxAnimCurveDef.eInterpolationLinear:
-            return "LINEAR"
-        elif interpolation == FbxAnimCurveDef.eInterpolationCubic:
-            return "CUBIC"
-        else:
-            raise AssertionError("unknow interpolation:%d" % interpolation)
+        return "LINEAR"
 
     def _addData(self, animationData, nodeId, path, interpolation, timeList, valueList):
         channels = None

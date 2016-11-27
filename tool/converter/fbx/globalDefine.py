@@ -1,1 +1,33 @@
+from fbx import *
+
 PRECISE_DIGIT = 6
+
+
+
+sdkManager = None
+converter = None
+inputFolder = ""
+outputFolder = ""
+
+
+
+FBXSDK_PI_DIV_180 = 0.017453292519943295769236907684886127134428718885417
+
+FBXSDK_180_DIV_PI = 57.295779513082320876798154814105170332405472466565
+
+eSourcePivot = 0
+eDestinationPivot = 1
+
+ePivotActive = 0
+
+
+def FBXSDK_LONGLONG	(x):
+    return str(x) + "##LL"
+
+FBXSDK_TC_ZERO = FBXSDK_LONGLONG(0)
+
+# FBXSDK_TIME_ZERO = FbxTime(FBXSDK_TC_ZERO)
+FBXSDK_TIME_ZERO = FbxTime(0)
+
+
+

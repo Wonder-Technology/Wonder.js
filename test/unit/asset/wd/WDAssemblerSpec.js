@@ -234,24 +234,24 @@ describe("WDAssembler", function () {
                     });
                 });
 
-                // describe("add cameraController component", function(){
-                //     it("add BasicCameraController", function () {
-                //         var camera = wd.PerspectiveCamera.create();
-                //         camera.near = 0.1;
-                //
-                //         setComponent({
-                //             camera:camera
-                //         })
-                //
-                //
-                //         var data = builder.build(parseData);
-                //
-                //         var component = getComponent(data, wd.BasicCameraController);
-                //         //expect(component).toBeInstanceOf(wd.BasicCameraController);
-                //         expect(component.camera.near).toEqual(camera.near);
-                //     });
-                // });
-                //
+                describe("add cameraController component", function(){
+                    it("add BasicCameraController", function () {
+                        var camera = wd.PerspectiveCamera.create();
+                        camera.near = 0.1;
+
+                        setComponent({
+                            camera:camera
+                        })
+
+
+                        var data = builder.build(parseData);
+
+                        var component = getComponent(data, wd.BasicCameraController);
+                        expect(component).toBeInstanceOf(wd.BasicCameraController);
+                        expect(component.camera.near).toEqual(camera.near);
+                    });
+                });
+
                 // describe("add light component", function(){
                 //     var color;
                 //

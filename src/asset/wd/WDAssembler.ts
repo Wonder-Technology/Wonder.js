@@ -73,13 +73,13 @@ module wd{
             var self = this;
 
             components.forEach((component:IWDComponent) => {
-                //todo support
-                if(self._isTransform(component)){
+                //todo refactor: define type
+                if(self._isTransform(component)) {
                     model.addComponent(self._createTransform(<IWDTransform>component));
                 }
-                // else if(self._isCamera(component)){
-                //     model.addComponent(self._createCamera(<IWDCamera>component));
-                // }
+                else if(self._isCamera(<IWDCameraForAssembler>component)){
+                    model.addComponent(self._createCamera(<IWDCameraForAssembler>component));
+                }
                 // else if(self._isLight(component)){
                 //     model.addComponent(self._createLight(<any>component));
                 // }
@@ -101,10 +101,10 @@ module wd{
         private _isTransform(component:any){
             return !!component.matrix || !!component.position;
         }
-        //
-        // private _isCamera(component:any){
-        //     return !!component.camera;
-        // }
+
+        private _isCamera(component:IWDCameraForAssembler){
+            return !!component.camera;
+        }
         //
         // private _isLight(component:any){
         //     return !!component.lightColor && !!component.type
@@ -134,11 +134,11 @@ module wd{
 
             return transform;
         }
-        //
-        // private _createCamera(component:IWDCamera){
-        //     return BasicCameraController.create(component.camera);
-        // }
-        //
+
+        private _createCamera(component:IWDCameraForAssembler){
+            return BasicCameraController.create(component.camera);
+        }
+
         // private _createLight(component:IWDLight&IWDPointLight&IWDAmbientLight&IWDDirectionLight){
         //     var light = null;
         //
