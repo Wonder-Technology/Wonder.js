@@ -9,6 +9,7 @@ module wd{
         private _result:wdCb.Hash<IWDResultAssembler> = wdCb.Hash.create<IWDResultAssembler>();
         private _geometryAssembler:WDGeometryAssembler = WDGeometryAssembler.create();
         private _transformAssembler:WDTransformAssembler = WDTransformAssembler.create();
+        private _lightAssembler:WDLightAssembler = WDLightAssembler.create();
 
         public build(parseData:IWDParseDataAssembler){
             // this._buildMetadata(parseData);
@@ -83,7 +84,7 @@ module wd{
                     model.addComponent(self._createCamera(<IWDCameraAssembler>component));
                 }
                 else if(self._isLight(component)){
-                    model.addComponent(self._createLight(<any>component));
+                    model.addComponent(self._lightAssembler.createComponent(<any>component));
                 }
                 if(self._isGeometry(component)){
                     let geometry = self._geometryAssembler.createComponent(<any>component);
@@ -122,40 +123,6 @@ module wd{
 
         private _createCamera(component:IWDCameraAssembler){
             return BasicCameraController.create(component.camera);
-        }
-
-        private _createLight(component:IWDLightAssembler&IWDPointLightAssembler&IWDAmbientLightAssembler&IWDDirectionLightAssembler){
-            var light = null;
-
-            switch (component.type){
-                case "ambient":
-                    light = AmbientLight.create();
-
-                    light.color = component.color;
-                    break;
-                case "directional":
-                    light = DirectionLight.create();
-
-                    light.color = component.color;
-                    break;
-                case "point":
-                    light = PointLight.create();
-
-                    light.color = component.color;
-
-                    WDUtils.addData(light, "constant", component.constantAttenuation);
-                    WDUtils.addData(light, "linear", component.linearAttenuation);
-                    WDUtils.addData(light, "quadratic", component.quadraticAttenuation);
-                    WDUtils.addData(light, "range", component.range);
-                    break;
-                default:
-                    //todo support spot
-                    break;
-            }
-
-            WDUtils.addData(light, "intensity", component.intensity);
-
-            return light;
         }
 
         private _createArticulatedAnimation(component:IWDArticulatedAnimationAssembler){

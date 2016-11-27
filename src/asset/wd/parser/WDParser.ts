@@ -16,6 +16,7 @@ module wd{
         private _articulatedAnimationParser = WDArticulatedAnimationParser.create();
         private _transformParser:WDTransformParser = WDTransformParser.create();
         private _cameraParser:WDCameraParser = WDCameraParser.create();
+        private _lightParser:WDLightParser = WDLightParser.create();
 
         public parse(json:IWDJsonData, arrayBufferMap:wdCb.Hash<any>, imageMap:wdCb.Hash<HTMLImageElement>):IWDParseDataAssembler{
             this._json = json;
@@ -82,7 +83,7 @@ module wd{
                 }
 
                 if(node.light){
-                        object.components.addChild(self._parseLight(node.light));
+                        object.components.addChild(self._lightParser.parse(self._json, node.light));
                 }
 
                 if(node.camera){
@@ -116,48 +117,6 @@ module wd{
             }
 
             this._data.objects = objects;
-        }
-
-        @require(function(lightId:string){
-            it("should exist corresponding light data", () => {
-                var lights = this._json.lights;
-
-                expect(lights).exist;
-                expect(lights[lightId]).exist;
-            }, this);
-        })
-        private _parseLight(lightId:string):IWDLightAssembler{
-            var lightData = this._json.lights[lightId],
-                light:IWDLightAssembler = <any>{};
-
-            WDUtils.addData(light, "type", lightData.type);
-
-            this._parseLightDataByType(light, lightData, light.type);
-
-            return light;
-        }
-
-        private _parseLightDataByType(light:IWDLightAssembler, lightData:any, type:string){
-            var data = lightData[type];
-
-            WDUtils.addData(light, "intensity", data.intensity);
-
-            switch (type){
-                case "ambient":
-                case "directional":
-                    light.color = WDUtils.getColor(data.color);
-                    break;
-                case "point":
-                    light.color = WDUtils.getColor(data.color);
-                    WDUtils.addData(light, "range", data.range);
-                    WDUtils.addData(light, "constantAttenuation", data.constantAttenuation);
-                    WDUtils.addData(light, "linearAttenuation", data.linearAttenuation);
-                    WDUtils.addData(light, "quadraticAttenuation", data.quadraticAttenuation);
-                    break;
-                default:
-                    //todo support spot
-                    break;
-            }
         }
     }
 }
