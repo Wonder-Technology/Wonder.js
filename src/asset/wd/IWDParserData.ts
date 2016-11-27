@@ -168,6 +168,7 @@ module wd {
         minFilter?: number;
         wrapS?: number;
         wrapT?: number;
+        isPremultipliedAlpha?:boolean;
 
         //todo parse
         repeatRegion?: Array<number>;
@@ -258,9 +259,11 @@ module wd {
 
     export interface IWDAssetParser {
         version:string;
-        source:string;
+        generator?:string;
+        copyright?:string;
+        // source:string;
 
-        genertor?:string;
+        // Specifies if the shaders were generated with premultiplied alpha.
         premultipliedAlpha?:boolean;
         profile?: {
             api? :string;

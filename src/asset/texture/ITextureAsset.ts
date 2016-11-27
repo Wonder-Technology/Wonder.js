@@ -13,6 +13,7 @@ module wd{
         packAlignment:number;
         flipY:boolean;
         premultiplyAlpha:boolean;
+        isPremultipliedAlpha:boolean;
         colorspaceConversion:any;
         wrapS:ETextureWrapMode;
         wrapT:ETextureWrapMode;
@@ -37,6 +38,7 @@ module wd{
         packAlignment:number;
         flipY:boolean;
         premultiplyAlpha:boolean;
+        isPremultipliedAlpha:boolean;
         colorspaceConversion:any;
         needUpdate:boolean;
         mode:EEnvMapMode;

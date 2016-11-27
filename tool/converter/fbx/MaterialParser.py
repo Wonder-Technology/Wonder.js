@@ -281,6 +281,8 @@ class MaterialParser(object):
         if output["samplers"].get(id, None) != None:
             return
 
+        isPremultipliedAlpha = texture.PremultiplyAlpha.Get()
+
         wrap_u = texture.GetWrapModeU()
         wrap_v = texture.GetWrapModeV()
 
@@ -291,6 +293,7 @@ class MaterialParser(object):
 
         output["samplers"][id] = {
             "name": id,
+            "isPremultipliedAlpha": isPremultipliedAlpha,
             "wrapS": self._getWrap(wrap_u),
             "wrapT": self._getWrap(wrap_v),
             "repeatRegion": repeatRegion

@@ -25,6 +25,7 @@ describe("TextureAsset", function() {
         expect(asset.unpackAlignment).toEqual(4);
         expect(asset.flipY).toBeTruthy();
         expect(asset.premultiplyAlpha).toBeFalsy();
+        expect(asset.isPremultipliedAlpha).toBeNull();
         expect(asset.colorspaceConversion).toEqual(gl.BROWSER_DEFAULT_WEBGL);
 
         //todo test more

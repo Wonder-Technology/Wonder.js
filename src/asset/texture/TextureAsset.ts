@@ -33,6 +33,7 @@ module wd{
         public unpackAlignment:number = 4;
         public flipY:boolean = true;
         public premultiplyAlpha:boolean = false;
+        public isPremultipliedAlpha:boolean = null;
         public colorspaceConversion:any = DeviceManager.getInstance().gl.BROWSER_DEFAULT_WEBGL;
 
         //todo extract TextureDefault class to save default setting?
@@ -69,6 +70,7 @@ module wd{
             cubemapTexture.wrapT = this.wrapT;
             cubemapTexture.anisotropy = this.anisotropy;
             cubemapTexture.premultiplyAlpha = this.premultiplyAlpha;
+            cubemapTexture.isPremultipliedAlpha = this.isPremultipliedAlpha;
             cubemapTexture.flipY = false;
             cubemapTexture.unpackAlignment = this.unpackAlignment;
             cubemapTexture.packAlignment = this.packAlignment;
@@ -106,6 +108,7 @@ module wd{
 
             texture.generateMipmaps = this.generateMipmaps;
             texture.premultiplyAlpha = this.premultiplyAlpha;
+            texture.isPremultipliedAlpha = this.isPremultipliedAlpha;
             texture.flipY = this.flipY;
             texture.unpackAlignment = this.unpackAlignment;
             texture.packAlignment = this.packAlignment;

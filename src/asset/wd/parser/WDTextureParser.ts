@@ -64,7 +64,9 @@ module wd{
         }
 
         private _buildGLTextureMapKey(asset:TextureAsset, sourceId:string){
-            return `${sourceId}_${asset.wrapS}_${asset.wrapT}_${asset.magFilter}_${asset.minFilter}`;
+            var isPremultipliedAlpha = asset.isPremultipliedAlpha !== null ? asset.isPremultipliedAlpha : false;
+
+            return `${sourceId}_${isPremultipliedAlpha}_${asset.wrapS}_${asset.wrapT}_${asset.magFilter}_${asset.minFilter}`;
         }
 
         private _createTextureAsset(target:number, imageId:string){
@@ -144,6 +146,10 @@ module wd{
         })
         private _addTextureSampler(asset:TextureAsset, samplerId:string){
             var sampler = this.json.samplers[samplerId];
+
+            if(sampler.isPremultipliedAlpha !== void 0){
+                asset.isPremultipliedAlpha = sampler.isPremultipliedAlpha;
+            }
 
             if(!!sampler.wrapT){
                 asset.wrapT = this._getTextureWrap(sampler.wrapT);

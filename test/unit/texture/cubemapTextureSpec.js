@@ -200,6 +200,7 @@ describe("cubemap texture", function() {
             expect(texture.wrapT).toEqual(commonAsset.wrapT);
             expect(texture.anisotropy).toEqual(commonAsset.anisotropy);
             expect(texture.premultiplyAlpha).toEqual(commonAsset.premultiplyAlpha);
+            expect(texture.isPremultipliedAlpha).toEqual(commonAsset.isPremultipliedAlpha);
             expect(texture.unpackAlignment).toEqual(commonAsset.unpackAlignment);
             expect(texture.needUpdate).toEqual(commonAsset.needUpdate);
         });
@@ -456,6 +457,7 @@ source:source
                     sourceRegionMapping = wd.ETextureSourceRegionMapping.UV,
                     flipY = true,
                     premultiplyAlpha = true,
+                    isPremultipliedAlpha = true,
                     unpackAlignment = 2,
                     type = wd.ETextureType.UNSIGNED_SHORT_4_4_4_4,
                     anisotropy = 2;
@@ -468,6 +470,7 @@ source:source
                     sourceRegionMapping: sourceRegionMapping,
                     flipY: flipY,
                     premultiplyAlpha: premultiplyAlpha,
+                    isPremultipliedAlpha: isPremultipliedAlpha,
                     unpackAlignment: unpackAlignment,
                     type: type,
                     anisotropy: anisotropy
@@ -481,6 +484,7 @@ source:source
                 expect(result.sourceRegionMapping).toEqual(sourceRegionMapping);
                 expect(result.flipY).toEqual(flipY);
                 expect(result.premultiplyAlpha).toEqual(premultiplyAlpha);
+                expect(result.isPremultipliedAlpha).toEqual(isPremultipliedAlpha);
                 expect(result.unpackAlignment).toEqual(unpackAlignment);
                 expect(result.type).toEqual(type);
                 expect(result.anisotropy).toEqual(anisotropy);

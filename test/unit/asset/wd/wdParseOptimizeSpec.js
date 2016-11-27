@@ -43,14 +43,12 @@ describe("parse wd optimize", function(){
             sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
 
             gl = wd.DeviceManager.getInstance().gl;
-        });
 
-        it("if only repeatRegion is different, share", function(){
+
             gl.createTexture.onCall(0).returns({})
             gl.createTexture.onCall(1).returns({a:1})
 
             wdTool.setJson(json, {
-
                 "meshes": {
                     "geometry1": {
                         "primitives": [
@@ -132,7 +130,12 @@ describe("parse wd optimize", function(){
                         "name": "Image0001",
                         "uri": "Cesium_Logo_Flat.png"
                     }
-                },
+                }
+            })
+        });
+
+        it("if only repeatRegion is different, share", function(){
+            wdTool.setJson(json, {
                 "samplers": {
                     "sampler_0": {
                         "magFilter": 9729,
@@ -162,6 +165,39 @@ describe("parse wd optimize", function(){
 
 
             expect(map1.glTexture === map2.glTexture).toBeTruthy();
+        });
+        it("if isPremultipliedAlpha is different, not share", function(){
+            wdTool.setJson(json, {
+                "samplers": {
+                    "sampler_0": {
+                        "magFilter": 9729,
+                        "minFilter": 9987,
+                        "wrapS": 10497,
+                        "wrapT": 10497,
+                        "isPremultipliedAlpha": true,
+
+                        "repeatRegion": [0, 0, 1, 1]
+                    },
+                    "sampler_1": {
+                        "magFilter": 9729,
+                        "minFilter": 9987,
+                        "wrapS": 10497,
+                        "wrapT": 10497,
+                        "repeatRegion": [0, 0, 1, 1]
+
+                    }
+                }
+            })
+
+
+            var data = parser.parse(json, arrayBufferMap, imageMap);
+
+
+            var map1 = data.objects.getChild(0).components.getChild(0).material.diffuseMap;
+            var map2 = data.objects.getChild(0).children.getChild(0).components.getChild(0).material.diffuseMap;
+
+
+            expect(map1.glTexture !== map2.glTexture).toBeTruthy();
         });
     });
 });

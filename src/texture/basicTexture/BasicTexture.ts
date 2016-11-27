@@ -57,6 +57,8 @@ module wd{
         @cloneAttributeAsBasicType()
         public premultiplyAlpha:boolean = null;
         @cloneAttributeAsBasicType()
+        public isPremultipliedAlpha:boolean = null;
+        @cloneAttributeAsBasicType()
         public colorspaceConversion:any = null;
 
         @cloneAttributeAsBasicType()

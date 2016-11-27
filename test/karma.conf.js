@@ -85,7 +85,7 @@
 
         //'test/unit/**/renderer/**',
 
-        //'test/unit/**/TextureSpec*',
+        'test/unit/**/TextureSpec*',
 
         //'test/unit/**/*ProceduralRenderTargetRenderer*',
 
@@ -97,7 +97,7 @@
         //'test/unit/**/proceduralRenderTargetRenderer*',
 
 
-        //'test/unit/**/cubemapTexture*',
+        'test/unit/**/cubemapTexture*',
 
         //'test/unit/**/LineMaterial*',
         // 'test/unit/**/BasicMaterial*',
@@ -284,7 +284,7 @@
         //'test/unit/**/UIStateMachineSpec*',
 
 
-        //'test/unit/**/*Asset*',
+        'test/unit/**/*Asset*',
         //
         //'test/unit/**/TwoDFontSpec*',
         //'test/unit/**/PlainFontSpec*',
