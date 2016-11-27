@@ -82,9 +82,9 @@ module wd{
                 else if(self._isCamera(<IWDCameraAssembler>component)){
                     model.addComponent(self._createCamera(<IWDCameraAssembler>component));
                 }
-                // else if(self._isLight(component)){
-                //     model.addComponent(self._createLight(<any>component));
-                // }
+                else if(self._isLight(component)){
+                    model.addComponent(self._createLight(<any>component));
+                }
                 if(self._isGeometry(component)){
                     let geometry = self._geometryAssembler.createComponent(<any>component);
 
@@ -107,10 +107,10 @@ module wd{
         private _isCamera(component:IWDCameraAssembler){
             return !!component.camera;
         }
-        //
-        // private _isLight(component:any){
-        //     return !!component.lightColor && !!component.type
-        // }
+
+        private _isLight(component:any){
+            return !!component.color && !!component.type
+        }
 
         private _isGeometry(component:any){
             return !!component.material;
@@ -124,37 +124,39 @@ module wd{
             return BasicCameraController.create(component.camera);
         }
 
-        // private _createLight(component:IWDLightAssembler&IWDPointLightAssembler&IWDAmbientLightAssembler&IWDDirectionLightAssembler){
-        //     var light = null;
-        //
-        //     switch (component.type){
-        //         case "ambient":
-        //             light = AmbientLight.create();
-        //
-        //             light.color = component.lightColor;
-        //             break;
-        //         case "directional":
-        //             light = DirectionLight.create();
-        //
-        //             light.color = component.lightColor;
-        //             break;
-        //         case "point":
-        //             light = PointLight.create();
-        //
-        //             light.color = component.lightColor;
-        //
-        //             WDUtils.addData(light, "range", component.distance);
-        //             WDUtils.addData(light, "constant", component.constantAttenuation);
-        //             WDUtils.addData(light, "linear", component.linearAttenuation);
-        //             WDUtils.addData(light, "quadratic", component.quadraticAttenuation);
-        //             break;
-        //         default:
-        //             //todo support spot
-        //             break;
-        //     }
-        //
-        //     return light;
-        // }
+        private _createLight(component:IWDLightAssembler&IWDPointLightAssembler&IWDAmbientLightAssembler&IWDDirectionLightAssembler){
+            var light = null;
+
+            switch (component.type){
+                case "ambient":
+                    light = AmbientLight.create();
+
+                    light.color = component.color;
+                    break;
+                case "directional":
+                    light = DirectionLight.create();
+
+                    light.color = component.color;
+                    break;
+                case "point":
+                    light = PointLight.create();
+
+                    light.color = component.color;
+
+                    WDUtils.addData(light, "constant", component.constantAttenuation);
+                    WDUtils.addData(light, "linear", component.linearAttenuation);
+                    WDUtils.addData(light, "quadratic", component.quadraticAttenuation);
+                    WDUtils.addData(light, "range", component.range);
+                    break;
+                default:
+                    //todo support spot
+                    break;
+            }
+
+            WDUtils.addData(light, "intensity", component.intensity);
+
+            return light;
+        }
 
         private _createArticulatedAnimation(component:IWDArticulatedAnimationAssembler){
              var anim = TransformArticulatedAnimation.create();

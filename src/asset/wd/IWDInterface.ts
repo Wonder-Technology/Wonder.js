@@ -174,7 +174,7 @@ module wd {
     }
 
     export interface IWDMaterial extends IWDChildRootProperty {
-        technique: string;
+        technique: "CONSTANT"|"BLINN"|"PHONG"|"LAMBERT";
 
 
         doubleSided?:boolean;
@@ -269,12 +269,33 @@ module wd {
     }
 
     export interface IWDLight{
-        type:string;
-        color:Array<number>;
-        constantAttenuation?:number;
-        linearAttenuation?:number;
-        quadraticAttenuation?:number;
-        distance?:number;
+        type:"directional"|"point"|"spot"|"ambient";
+        ambient?:{
+            intensity?:number;
+            color:Array<number>;
+        };
+        directional?:{
+            intensity?:number;
+            color:Array<number>;
+        };
+        point?:{
+            intensity?:number;
+            color:Array<number>;
+            constantAttenuation?:number;
+            linearAttenuation?:number;
+            quadraticAttenuation?:number;
+            range?:number;
+        };
+        //todo support spot light
+        // spot?:{
+        //     intensity?:number;
+        //     color:Array<number>;
+        //     range?:number;
+        //     constantAttenuation?:number;
+        //     linearAttenuation?:number;
+        //     quadraticAttenuation?:number;
+        //     range?:number;
+        // };
     }
 
 
@@ -339,27 +360,26 @@ module wd {
     export interface IWDCameraAssembler extends IWDComponentAssembler{
         camera:Camera;
     }
-    //
-    // export interface IWDLightAssembler extends IWDComponentAssembler{
-    //     type:string;
-    //     lightColor:Color;
-    // }
-    //
-    // export interface IWDAmbientLightAssembler extends IWDLightAssembler{
-    // }
-    //
-    // export interface IWDDirectionLightAssembler extends IWDLightAssembler{
-    //     //direction?
-    // }
-    //
-    // export interface IWDPointLightAssembler extends IWDLightAssembler{
-    //     constantAttenuation:number;
-    //     linearAttenuation:number;
-    //     quadraticAttenuation:number;
-    //
-    //     //todo need distance?
-    //     distance?:number;
-    // }
+
+    export interface IWDLightAssembler extends IWDComponentAssembler{
+        type:string;
+        color:Color;
+        intensity?:number;
+    }
+
+    export interface IWDAmbientLightAssembler extends IWDLightAssembler{
+    }
+
+    export interface IWDDirectionLightAssembler extends IWDLightAssembler{
+        //direction?
+    }
+
+    export interface IWDPointLightAssembler extends IWDLightAssembler{
+        range?:number;
+        constantAttenuation:number;
+        linearAttenuation:number;
+        quadraticAttenuation:number;
+    }
 
     export interface IWDGeometryAssembler extends IWDComponentAssembler{
         material:IWDMaterialAssembler;

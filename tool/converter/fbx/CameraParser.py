@@ -2,8 +2,8 @@ from fbx import *
 from utils import *
 
 class CameraParser(object):
-    def __init__(self, output):
-        self._output = output
+    def __init__(self):
+        pass
 
     def parse(self, node, cameraData):
         camera = node.GetCamera()

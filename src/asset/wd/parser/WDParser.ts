@@ -81,13 +81,9 @@ module wd{
                     self._geometryParser.parse(json, object, mesh, self._arrayBufferMap, self._imageMap)
                 }
 
-                //todo support
-
-                // if(node.extensions){
-                //     if(node.extensions["KHR_materials_common"] && node.extensions["KHR_materials_common"].light){
-                //         object.components.addChild(self._parseLight(node.extensions["KHR_materials_common"].light));
-                //     }
-                // }
+                if(node.light){
+                        object.components.addChild(self._parseLight(node.light));
+                }
 
                 if(node.camera){
                     object.components.addChild((self._cameraParser.parse(self._json, node.camera)));
@@ -122,43 +118,47 @@ module wd{
             this._data.objects = objects;
         }
 
-        // @require(function(lightId:string){
-        //     var lights = this._json.extensions["KHR_materials_common"].lights;
-        //     assert(lights && lights[lightId], Log.info.FUNC_NOT_EXIST(`lightId:${lightId}`));
-        // })
-        // private _parseLight(lightId:string):IWDLight{
-        //     var lightData = this._json.extensions["KHR_materials_common"].lights[lightId],
-        //         light:IWDLight = <any>{};
-        //
-        //     //todo intensity data?
-        //
-        //     WDUtils.addData(light, "type", lightData.type);
-        //
-        //     this._parseLightDataByType(light, lightData, light.type);
-        //
-        //     return light;
-        // }
+        @require(function(lightId:string){
+            it("should exist corresponding light data", () => {
+                var lights = this._json.lights;
 
-        // private _parseLightDataByType(light:IWDLight, lightData:any, type:string){
-        //     var data = lightData[type];
-        //
-        //     switch (type){
-        //         case "ambient":
-        //         case "directional":
-        //             light.lightColor = WDUtils.getColor(data.color);
-        //             break;
-        //         case "point":
-        //             light.lightColor = WDUtils.getColor(data.color);
-        //             WDUtils.addData(light, "distance", data.distance);
-        //             WDUtils.addData(light, "constantAttenuation", data.constantAttenuation);
-        //             WDUtils.addData(light, "linearAttenuation", data.linearAttenuation);
-        //             WDUtils.addData(light, "quadraticAttenuation", data.quadraticAttenuation);
-        //             break;
-        //         default:
-        //             //todo support spot
-        //             break;
-        //     }
-        // }
+                expect(lights).exist;
+                expect(lights[lightId]).exist;
+            }, this);
+        })
+        private _parseLight(lightId:string):IWDLightAssembler{
+            var lightData = this._json.lights[lightId],
+                light:IWDLightAssembler = <any>{};
+
+            WDUtils.addData(light, "type", lightData.type);
+
+            this._parseLightDataByType(light, lightData, light.type);
+
+            return light;
+        }
+
+        private _parseLightDataByType(light:IWDLightAssembler, lightData:any, type:string){
+            var data = lightData[type];
+
+            WDUtils.addData(light, "intensity", data.intensity);
+
+            switch (type){
+                case "ambient":
+                case "directional":
+                    light.color = WDUtils.getColor(data.color);
+                    break;
+                case "point":
+                    light.color = WDUtils.getColor(data.color);
+                    WDUtils.addData(light, "range", data.range);
+                    WDUtils.addData(light, "constantAttenuation", data.constantAttenuation);
+                    WDUtils.addData(light, "linearAttenuation", data.linearAttenuation);
+                    WDUtils.addData(light, "quadraticAttenuation", data.quadraticAttenuation);
+                    break;
+                default:
+                    //todo support spot
+                    break;
+            }
+        }
     }
 }
 

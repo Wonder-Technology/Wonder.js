@@ -3,6 +3,7 @@ from parseMesh import *
 from MaterialParser import *
 from KeyFrameAnimationParser import *
 from CameraParser import *
+from LightParser import *
 from TransformParser import *
 from fbx import *
 from globalDefine import *
@@ -16,7 +17,8 @@ class Parser(object):
 
         self._materialParser = MaterialParser(output, fileUrl)
         self._keyFrameAnimationParser = KeyFrameAnimationParser(output)
-        self._cameraParser = CameraParser(output)
+        self._cameraParser = CameraParser()
+        self._lightParser = LightParser()
         self._transformParser = TransformParser()
 
 
@@ -105,6 +107,7 @@ class Parser(object):
 
 
         output["cameras"] = {}
+        output["lights"] = {}
 
         # textureDatas = {}
         output["textures"] = {}
@@ -203,6 +206,14 @@ class Parser(object):
                 # parseMaterial(mesh, meshData, output)
 
                 # print ("materialId %s" % output["materials"])
+
+
+            elif attributeType == FbxNodeAttribute.eLight:
+                self._transformParser.parseBasicNode(nodeData, node)
+
+                data = self._handleNodeAttribute(output, node, nodeId, nodeData, "light", "lights")
+
+                self._lightParser.parse(node, data)
 
             elif attributeType == FbxNodeAttribute.eCamera:
                 self._transformParser.parseCameraNode(nodeData, node)
