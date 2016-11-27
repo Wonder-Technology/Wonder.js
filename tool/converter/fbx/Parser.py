@@ -1,5 +1,6 @@
 from utils import *
 from parseMesh import *
+from AssetParser import *
 from MaterialParser import *
 from KeyFrameAnimationParser import *
 from CameraParser import *
@@ -15,11 +16,14 @@ class Parser(object):
     def parse(self, scene, fileUrl):
         output = {}
 
+        self._assetParser = AssetParser()
         self._materialParser = MaterialParser(output, fileUrl)
         self._keyFrameAnimationParser = KeyFrameAnimationParser(output)
         self._cameraParser = CameraParser()
         self._lightParser = LightParser()
         self._transformParser = TransformParser()
+
+        self._assetParser.parse(scene, output)
 
 
         # global_settings = scene.GetGlobalSettings()

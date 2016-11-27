@@ -261,7 +261,6 @@ module wd {
         version:string;
         generator?:string;
         copyright?:string;
-        // source:string;
 
         // Specifies if the shaders were generated with premultiplied alpha.
         premultipliedAlpha?:boolean;

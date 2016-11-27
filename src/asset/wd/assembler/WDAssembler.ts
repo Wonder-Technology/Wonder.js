@@ -12,23 +12,23 @@ module wd{
         private _lightAssembler:WDLightAssembler = WDLightAssembler.create();
 
         public build(parseData:IWDParseDataAssembler){
-            // this._buildMetadata(parseData);
+            this._buildMetadata(parseData);
             this._buildModels(parseData);
 
             return this._result;
         }
 
-        // private _buildMetadata(parseData:IWDParseDataAssembler){
-        //     var metadata = wdCb.Hash.create<any>();
-        //
-        //     for(let i in parseData.metadata){
-        //         if(parseData.metadata.hasOwnProperty(i)){
-        //             metadata.addChild(i, parseData.metadata[i]);
-        //         }
-        //     }
-        //
-        //     this._result.addChild("metadata", metadata);
-        // }
+        private _buildMetadata(parseData:IWDParseDataAssembler){
+            var metadata = wdCb.Hash.create<any>();
+
+            for(let i in parseData.metadata){
+                if(parseData.metadata.hasOwnProperty(i)){
+                    metadata.addChild(i, parseData.metadata[i]);
+                }
+            }
+
+            this._result.addChild("metadata", metadata);
+        }
 
         private _buildModels(parseData:IWDParseDataAssembler){
             var models = wdCb.Collection.create<GameObject>(),

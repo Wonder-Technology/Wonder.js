@@ -26,37 +26,37 @@ describe("WDParser", function () {
         sandbox.restore();
     });
 
-    // describe("parse metadata", function(){
-    //     beforeEach(function(){
-    //
-    //     });
-    //
-    //     it("if json.asset not exist, not parse", function(){
-    //         var data = parser.parse(json, arrayBufferMap, imageMap);
-    //
-    //         expect(data.metadata).toBeUndefined();
-    //     });
-    //
-    //     describe("else", function(){
-    //         it("parse version,genertor,premultipliedAlpha, profile data", function(){
-    //             wdTool.setJson(json, {
-    //                 asset:{
-    //                  "generator": "collada2gltf@ceec062e3d5793f2f249f53cbd843aee382ad40b",
-    //                 "premultipliedAlpha": true,
-    //                 "profile": {
-    //                     "api": "WebGL",
-    //                     "version": "1.0.2"
-    //                 },
-    //                 "version": 1
-    //                 }
-    //             })
-    //
-    //             var data = parser.parse(json, arrayBufferMap, imageMap);
-    //
-    //             expect(data.metadata).toEqual(json.asset);
-    //         });
-    //     });
-    // });
+    describe("parse metadata", function(){
+        beforeEach(function(){
+
+        });
+
+        it("if json.asset not exist, not parse", function(){
+            var data = parser.parse(json, arrayBufferMap, imageMap);
+
+            expect(data.metadata).toBeUndefined();
+        });
+
+        describe("else", function(){
+            it("parse version,genertor,premultipliedAlpha, profile data", function(){
+                wdTool.setJson(json, {
+                    asset:{
+                     "generator": "collada2gltf@ceec062e3d5793f2f249f53cbd843aee382ad40b",
+                    "premultipliedAlpha": true,
+                    "profile": {
+                        "api": "WebGL",
+                        "version": "1.0.2"
+                    },
+                    "version": 1
+                    }
+                })
+
+                var data = parser.parse(json, arrayBufferMap, imageMap);
+
+                expect(data.metadata).toEqual(json.asset);
+            });
+        });
+    });
 
     describe("parse objects", function(){
         // var vertices,texCoords,indices;

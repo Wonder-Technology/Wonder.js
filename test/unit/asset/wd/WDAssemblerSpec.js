@@ -38,23 +38,23 @@ describe("WDAssembler", function () {
 
         });
 
-        // it("build metadata", function(){
-        //     setData({
-        //         metadata:{
-        //             "generator": "collada2gltf@ceec062e3d5793f2f249f53cbd843aee382ad40b",
-        //             "premultipliedAlpha": true,
-        //             "profile": {
-        //                 "api": "WebGL",
-        //                 "version": "1.0.2"
-        //             },
-        //             "version": 1
-        //         }
-        //     })
-        //
-        //     var data = builder.build(parseData);
-        //
-        //     expect(data.getChild("metadata").getChildren()).toEqual(parseData.metadata);
-        // });
+        it("build metadata", function(){
+            setData({
+                metadata:{
+                    "generator": "collada2gltf@ceec062e3d5793f2f249f53cbd843aee382ad40b",
+                    "premultipliedAlpha": true,
+                    "profile": {
+                        "api": "WebGL",
+                        "version": "1.0.2"
+                    },
+                    "version": 1
+                }
+            })
+
+            var data = builder.build(parseData);
+
+            expect(data.getChild("metadata").getChildren()).toEqual(parseData.metadata);
+        });
 
         describe("build model", function(){
             function setSingleObject(data){

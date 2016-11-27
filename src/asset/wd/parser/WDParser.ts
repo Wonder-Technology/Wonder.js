@@ -24,9 +24,9 @@ module wd{
             this._arrayBufferMap = arrayBufferMap;
             this._imageMap = imageMap;
 
-            // if(json.asset){
-            //     this._parseMetadata();
-            // }
+            if(json.asset){
+                this._parseMetadata();
+            }
 
             this._parseObjects();
 
@@ -37,18 +37,18 @@ module wd{
             return this._data;
         }
 
-        // private _parseMetadata(){
-        //     var metadata = <any>{},
-        //         json = this._json;
-        //
-        //     for(let i in json.asset){
-        //         if(json.asset.hasOwnProperty(i)){
-        //             metadata[i] = json.asset[i];
-        //         }
-        //     }
-        //
-        //     this._data.metadata = metadata;
-        // }
+        private _parseMetadata(){
+            var metadata = <IWDAssetParser>{},
+                json = this._json;
+
+            for(let i in json.asset){
+                if(json.asset.hasOwnProperty(i)){
+                    metadata[i] = json.asset[i];
+                }
+            }
+
+            this._data.metadata = metadata;
+        }
 
         private _parseObjects(){
             var self = this,

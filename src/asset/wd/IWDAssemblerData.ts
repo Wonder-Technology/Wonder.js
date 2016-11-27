@@ -1,6 +1,6 @@
 module wd {
     export interface IWDParseDataAssembler{
-        // metadata:IWDMetadataAssembler;
+        metadata:IWDMetadataAssembler;
         objects: wdCb.Collection<IWDObjectDataAssembler>;
     }
 
@@ -119,16 +119,18 @@ module wd {
 
 
 
-    // export interface IWDMetadataAssembler {
-    //     version:string;
-    //     genertor?:string;
-    //     premultipliedAlpha?:boolean;
-    //     profile?: {
-    //         api :string;
-    //         version:string
-    //         extras:Object
-    //     }
-    // }
+    export interface IWDMetadataAssembler {
+        version:string;
+        generator?:string;
+        copyright?:string;
+
+        // Specifies if the shaders were generated with premultiplied alpha.
+        premultipliedAlpha?:boolean;
+        profile?: {
+            api? :string;
+            version?:string;
+        };
+    }
 
 
 
@@ -136,7 +138,7 @@ module wd {
 
 
     export interface IWDResultAssembler{
-        // metadata:wdCb.Hash<IWDMetadataAssembler>;
+        metadata:wdCb.Hash<IWDMetadataAssembler>;
         models:wdCb.Collection<GameObject>
     }
 }
