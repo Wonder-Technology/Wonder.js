@@ -89,9 +89,6 @@ module wd {
     }
 
 
-    // export interface IWDBasicMaterialAssembler extends IWDMaterialAssembler{
-    // }
-
     export interface IWDLightMaterialAssembler extends IWDMaterialAssembler{
         transparent?:boolean;
         opacity?: number
@@ -105,13 +102,11 @@ module wd {
         specularColor?: Color;
         emissionColor?:Color;
 
-        //todo add lightMap
         lightMap?:ImageTexture;
         diffuseMap?:ImageTexture;
         specularMap?:ImageTexture;
         emissionMap?:ImageTexture;
 
-        //todo support normalMap
         normalMap?:ImageTexture;
 
         shininess?: number;

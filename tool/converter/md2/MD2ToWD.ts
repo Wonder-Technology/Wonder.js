@@ -3,6 +3,7 @@ import ModelLoaderUtils = require("../common/ModelLoaderUtils");
 import ObjectsConverter = require("./MD2ObjectsConverter");
 import contract = require("../../ts/definition/typescript/decorator/contract");
 import chai = require("chai");
+import {SingleModelConverter} from "../common/SingleModelConverter";
 
 var describe = contract.describe,
     it = contract.it,
@@ -18,7 +19,7 @@ var describe = contract.describe,
 
 var expect = chai.expect;
 
-export class MD2ToWD {
+export class MD2ToWD extends SingleModelConverter{
     public static create(version:string) {
         var obj = null;
 
@@ -27,12 +28,7 @@ export class MD2ToWD {
         return obj;
     }
 
-    constructor(version:string) {
-        this.version = version;
-    }
-
     public name:string = "WonderJsMD2ToWDConverter";
-    public version:string = null;
 
     private _objectsConverter:any = ObjectsConverter.create();
 
@@ -45,32 +41,16 @@ export class MD2ToWD {
         var resultJson:any = {},
             nodeName = ModelLoaderUtils.getNameByPath(filePath);
 
-        resultJson.scene = "Scene";
+        this.convertSceneData(resultJson, nodeName);
 
-        resultJson.scenes = {
-            Scene:{
-                nodes:[nodeName]
-            }
-        };
-
-        resultJson.asset = this._convertAssetData();
+        resultJson.asset = this.convertAssetData();
 
         this._convertObjects(resultJson, fileBuffer, nodeName);
 
         return wdFrp.just([resultJson]);
     }
 
-    private _convertAssetData() {
-        var result:any = {};
-
-        result.version = this.version;
-        result.generator = this.name;
-
-        return result;
-    }
-
     private _convertObjects(resultJson:any, fileBuffer:Buffer, filePath:string) {
         return this._objectsConverter.convert(resultJson, fileBuffer, filePath);
     }
 }
-

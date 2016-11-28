@@ -48,7 +48,6 @@ module wd {
     }
 
     export interface IWDSceneParser extends IWDChildRootPropertyParser {
-        // ambientColor?:Array<number>;
         nodes: Array<string>;
     }
 
@@ -172,7 +171,6 @@ module wd {
         wrapT?: number;
         isPremultipliedAlpha?:boolean;
 
-        //todo parse
         repeatRegion?: Array<number>;
     }
 
@@ -189,40 +187,7 @@ module wd {
         // extensions?:Object;
     }
 
-    // export interface IWDMaterialValueParser{
-    //     diffuse?:Array<number>;
-    //     specular?:Array<number>;
-    //     emission?:Array<number>;
-    //     shininess?:number;
-    // }
-    //
     export interface IWDMaterialValueParser{
-        // ambient?:{
-        //     type:number;
-        //     value:Array<number>|string;
-        // };
-        // diffuse?:{
-        //     type:number;
-        //     value:Array<number>|string;
-        // };
-        // specular?:{
-        //     type:number;
-        //     value:Array<number>|string;
-        // };
-        // normal?:{
-        //     type:number;
-        //     value:Array<number>|string;
-        // };
-        // emission?:{
-        //     type:number;
-        //     value:Array<number>|string;
-        // };
-        // shininess?:{
-        //     type:number;
-        //     value:Array<number>|string;
-        // };
-
-        //todo add it/light map
         lightMap?:string;
 
         diffuse?:Array<number>|string;
@@ -230,8 +195,6 @@ module wd {
         emission?:Array<number>|string;
         shininess?:string;
 
-        // reflective?:Array<number>|string;
-        //todo consider normal map!
         normalMap?:string;
     }
 

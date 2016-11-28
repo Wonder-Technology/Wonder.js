@@ -36,6 +36,9 @@
 		"./common/Config.ts",
 		"./common/ModelLoaderUtils.ts",
 
+
+		"./common/SingleModelConverter.ts",
+
 		"./md2/MD2ToWD.ts",
 		"./md2/MD2ObjectsConverter.ts",
 

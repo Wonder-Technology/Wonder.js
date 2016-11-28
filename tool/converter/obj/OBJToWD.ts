@@ -8,8 +8,26 @@ import ModelLoaderUtils = require("../common/ModelLoaderUtils");
 import Log = require("../../ts/Log");
 
 import {MaterialsConverter} from "./MaterialsConverter";
+import {SingleModelConverter} from "../common/SingleModelConverter";
 
-export class OBJToWD {
+import contract = require("../../ts/definition/typescript/decorator/contract");
+import chai = require("chai");
+
+var describe = contract.describe,
+    it = contract.it,
+    requireInNodejs = contract.requireInNodejs,
+    requireGetter = contract.requireGetter,
+    requireSetter = contract.requireSetter,
+    requireGetterAndSetter = contract.requireGetterAndSetter,
+    ensure = contract.ensure,
+    ensureGetter = contract.ensureGetter,
+    ensureSetter = contract.ensureSetter,
+    ensureGetterAndSetter = contract.ensureGetterAndSetter,
+    invariant = contract.invariant;
+
+var expect = chai.expect;
+
+export class OBJToWD extends SingleModelConverter{
     public static create(version:string) {
         var obj = null;
 
@@ -18,30 +36,24 @@ export class OBJToWD {
         return obj;
     }
 
-    constructor(version:string) {
-        this.version = version;
-    }
-
     public name:string = "WonderJsOBJToWDConverter";
-    public version:string = null;
 
     private _objectsConverter:any = ObjectsConverter.create();
     private _materialsConverter:any = MaterialsConverter.create();
 
 
+    @ensure(function(stream:wdFrp.Stream){
+        it("should return stream", () => {
+            expect(stream).instanceOf(wdFrp.Stream);
+        });
+    })
     public convert(fileContent:string, filePath:string):wdFrp.Stream {
         var resultJson:any = {},
             nodeName = ModelLoaderUtils.getNameByPath(filePath);
 
-        resultJson.scene = "Scene";
+        this.convertSceneData(resultJson, nodeName);
 
-        resultJson.scenes = {
-            Scene:{
-                nodes:[nodeName]
-            }
-        };
-
-        resultJson.asset = this._convertAssetData();
+        resultJson.asset = this.convertAssetData();
 
         this._convertObjects(resultJson, fileContent, nodeName);
 
@@ -76,27 +88,6 @@ export class OBJToWD {
         return path.resolve(path.dirname(filePath), resourceRelativeUrl);
     }
 
-    private _convertAssetData() {
-        var result:any = {};
-
-        result.version = this.version;
-        result.generator = this.name;
-
-        return result;
-    }
-
-    // private _convertScene(fileContent:string, filePath:string) {
-    //     var result:any = {};
-    //
-    //     /*!every material has one ambientColor, i don't know use which one, so just set it to be black*/
-    //     result.ambientColor = [0.0, 0.0, 0.0];
-    //
-    //     return result;
-    // }
-
-    // private _convertObjects(fileContent:string, filePath:string) {
-    //     return this._objectsConverter.convert(fileContent, filePath);
-    // }
     private _convertObjects(resultJson:any, fileContent:string, nodeName:string) {
         return this._objectsConverter.convert(resultJson, fileContent, nodeName);
     }
