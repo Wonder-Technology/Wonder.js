@@ -1,7 +1,9 @@
 import Log = require("../../ts/Log");
 import wdCb = require("wdcb");
 
-export = class MaterialsConverter {
+import ModelLoaderUtils = require("../common/ModelLoaderUtils");
+
+export class MaterialsConverter {
     public static create() {
         var obj = new this();
 
@@ -11,31 +13,106 @@ export = class MaterialsConverter {
     public materials:wdCb.Collection<MaterialModel> = wdCb.Collection.create<MaterialModel>();
 
     private _currentMaterial:MaterialModel;
+    private _json:any = null;
 
-    public convert(fileContent:string) {
-        var lines = fileContent.split('\n'),
-            result:any = {},
-            self = this;
+    public convert(json:any, fileContent:string) {
+        var lines = fileContent.split('\n');
 
         this._convertToMaterials(lines);
 
+        this._json = json;
+
+        this._json.textures = {};
+        this._json.samplers = {};
+        this._json.images = {};
+
+        let materials = {};
+
         this.materials.forEach((material:MaterialModel) => {
-            let materialData:any = {};
-
-            materialData.type = "LightMaterial";
-            materialData.diffuseColor = material.diffuseColor;
-            materialData.specularColor = material.specularColor;
-            materialData.diffuseMapUrl = material.diffuseMapUrl;
-            materialData.specularMapUrl = material.specularMapUrl;
-            materialData.normalMapUrl = material.bumpMapUrl;
-            materialData.shininess = material.shininess;
-            materialData.opacity = material.opacity;
-
-
-            result[material.name] = materialData;
+            this._buildMaterialData(materials, material);
         });
 
-        return result;
+        return materials;
+    }
+
+    private _buildMaterialData(materials:any, material:MaterialModel){
+        var materialData:any = {},
+            valueData:any = {};
+
+        materialData.technique = "PHONG";
+
+        if(material.opacity !== null || material.opacity !== void 0){
+            if(material.opacity < 1){
+                materialData.transparent = true;
+            }
+            else{
+                materialData.transparent = false;
+            }
+
+            materialData.transparency = material.opacity;
+        }
+
+        if(!!material.diffuseMapUrl){
+            this._addTextureData(valueData, "diffuse", material.diffuseMapUrl);
+        }
+        else{
+            this._addData(valueData, "diffuse", material.diffuseColor);
+        }
+
+        if(!!material.specularMapUrl){
+            this._addTextureData(valueData, "specular", material.specularMapUrl);
+        }
+        else{
+            this._addData(valueData, "specular", material.specularColor);
+        }
+
+
+        if(!!material.bumpMapUrl) {
+            this._addTextureData(valueData, "normalMap", material.bumpMapUrl);
+        }
+
+        this._addData(valueData, "shininess", material.shininess);
+
+        materialData.values = valueData;
+
+        materials[material.name] = materialData;
+    }
+
+    private _addData(valueData:any, key:string, data:any){
+        if(!!data){
+            valueData[key] = data;
+        }
+    }
+
+    private _addTextureData(valueData:any, key:string, mapUrl:string){
+        //todo fix bug: if different mapUrls with the same name but different path, the id should be different!
+        var id = ModelLoaderUtils.getNameByPath(mapUrl),
+            textureName = `texture_${id}`,
+            samplerName = `sampler_${id}`,
+            imageName = `image_${id}`;
+
+        valueData[key] = textureName;
+
+        this._json.textures[textureName] = {
+            sampler: samplerName,
+            source: imageName,
+            format: 6408,
+            internalFormat: 6408,
+            target: 3553,
+            type: 5121
+        };
+
+        this._json.samplers[samplerName] = {
+            minFilter:9986,
+            magFilter:9729,
+            wrapS:10497,
+            wrapT:10497
+        };
+
+        this._json.images[imageName] = {
+            name: imageName,
+            uri: mapUrl
+        };
     }
 
     private _convertToMaterials(lines:Array<string>){

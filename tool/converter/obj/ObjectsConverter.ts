@@ -9,13 +9,13 @@ const VERTEX_PATTERN = /v\s([\d|\.|\+|\-|e]+)( +[\d|\.|\+|\-|e]+)( +[\d|\.|\+|\-
 // vn float float float
     NORMAL_PATTERN = /vn\s([\d|\.|\+|\-|e]+)( +[\d|\.|\+|\-|e]+)( +[\d|\.|\+|\-|e]+)/,
 // vt float float
-    UV_PATTERN = /vt\s([\d|\.|\+|\-|e]+)( +[\d|\.|\+|\-|e]+)/,
+    TEXCOORD_PATTERN = /vt\s([\d|\.|\+|\-|e]+)( +[\d|\.|\+|\-|e]+)/,
     FACE_PATTERN = /f\s(.+)/,
 // f vertex vertex vertex ...
     FACE_PATTERN1 = /f\s(([\d]{1,}[\s]+){2,}([\d]{1,}[\s]?))+/,
-// f vertex/uv vertex/uv vertex/uv ...
+// f vertex/texCoord vertex/texCoord vertex/texCoord ...
     FACE_PATTERN2 = /f\s((([\d]{1,}\/[\d]{1,}[\s]+){2,}([\d]{1,}\/[\d]{1,}[\s]?))+)/,
-// f vertex/uv/normal vertex/uv/normal vertex/uv/normal ...
+// f vertex/texCoord/normal vertex/texCoord/normal vertex/texCoord/normal ...
     FACE_PATTERN3 = /f\s((([\d]{1,}\/[\d]{1,}\/[\d]{1,}[\s]+){2,}([\d]{1,}\/[\d]{1,}\/[\d]{1,}[\s]?))+)/,
 // f vertex//normal vertex//normal vertex//normal ...
     FACE_PATTERN4 = /f\s((([\d]{1,}\/\/[\d]{1,}[\s]+){2,}([\d]{1,}\/\/[\d]{1,}[\s]?))+)/,
@@ -45,38 +45,117 @@ export = class ObjectsConverter {
     private _currentObject:ObjectModel = null;
     private _currentObjectName:string = null;
 
-    public convert(fileContent:string, filePath:string) {
+    public convert(json:any, fileContent:string, nodeName:string) {
         var lines = fileContent.split('\n'),
             topObject:any = {children:[]},
             result = [];
 
         this._convertFromObj(lines);
 
+
+        // let nodes = {};
+        //     // meshId = `${nodeName}_mesh`;
+        //
+        // json.nodes = nodes;
+        //
+        //
+        // // topObject.name = ModelLoaderUtils.getNameByPath(filePath);
+        //
+        // topObject.matrix = [
+        //         1,
+        //         0,
+        //         0,
+        //         0,
+        //
+        //         0,
+        //         1,
+        //         0,
+        //         0,
+        //
+        //         0,
+        //         0,
+        //         1,
+        //         0,
+        //
+        //         0,
+        //         0,
+        //         0,
+        //         1
+        // ]
+        //
+        // topObject.meshId = `${nodeName}_mesh`;
+        // topObject.name = nodeName;
+        //
+        //
+        // nodes[nodeName] = topObject;
+
+        //todo refactor with md2
+        let nodes = {},
+            meshId = `${nodeName}_mesh`;
+
+        json.nodes = nodes;
+
+        nodes[nodeName] = {
+            children:[],
+            matrix:[
+                1,
+                0,
+                0,
+                0,
+
+                0,
+                1,
+                0,
+                0,
+
+                0,
+                0,
+                1,
+                0,
+
+                0,
+                0,
+                0,
+                1
+            ],
+            mesh:meshId,
+            name:nodeName
+        };
+
+
+        let meshes = {};
+
+        json.meshes = meshes;
+
+        meshes[meshId] = {
+            name:meshId,
+            primitives:this._buildPrimitiveArr()
+        }
+
+        return json;
+    }
+    
+    private _buildPrimitiveArr(){
+        var self = this,
+            arr = [];
+        
         this.objects.forEach((objectModel:ObjectModel) => {
-            var object:any = {};
-
-            object.name = objectModel.name;
-            object.material = objectModel.materialName;
-
-            object.verticeIndices = objectModel.verticeIndices;
-            object.normalIndices = objectModel.normalIndices;
-            object.uvIndices = objectModel.uvIndices;
-
-            object.morphTargets = [];
-
-            topObject.children.push(object);
+            arr.push({
+                name:objectModel.name,
+                attributes:{
+                    POSITION:self._vertices,
+                    TEXCOORD:self._texCoords,
+                    NORMAL:self._normals
+                },
+                verticeIndices: objectModel.verticeIndices,
+                normalIndices: objectModel.normalIndices,
+                texCoordIndices: objectModel.texCoordIndices,
+                material:objectModel.materialName,
+                mode:4
+            });
         });
 
-        topObject.name = ModelLoaderUtils.getNameByPath(filePath);
-
-        topObject.vertices = this._vertices;
-        topObject.normals = this._normals;
-        topObject.uvs = this._texCoords;
-        topObject.colors = [];
-
-        result.push(topObject);
-
-        return result;
+        return arr;
     }
 
     private _convertFromObj(lines:Array<string>) {
@@ -107,7 +186,7 @@ export = class ObjectsConverter {
                         parseFloat(result[3])
                 );
             }
-            else if (( result = UV_PATTERN.exec(line) ) !== null) {
+            else if (( result = TEXCOORD_PATTERN.exec(line) ) !== null) {
                 // ["vt 0.1 0.2", "0.1", "0.2"]
 
                 this._texCoords.push(
@@ -159,7 +238,7 @@ export = class ObjectsConverter {
             k = null,
             verticeIndices = null,
             normalIndices = null,
-            uvIndices = null;
+            texCoordIndices = null;
 
         if(!this._currentObject){
             this._currentObject = ObjectModel.create();
@@ -173,7 +252,7 @@ export = class ObjectsConverter {
 
         verticeIndices = this._currentObject.verticeIndices;
         normalIndices = this._currentObject.normalIndices;
-        uvIndices = this._currentObject.uvIndices;
+        texCoordIndices = this._currentObject.texCoordIndices;
 
         this._getTriangles(face, triangles);
 
@@ -187,7 +266,7 @@ export = class ObjectsConverter {
                 let point = k.split("/");
 
                 verticeIndices.push(parseInt(point[0]) - 1);
-                uvIndices.push(parseInt(point[1]) - 1);
+                texCoordIndices.push(parseInt(point[1]) - 1);
             }
         }
         else if (( result = FACE_PATTERN3.exec(line) ) !== null) {
@@ -195,7 +274,7 @@ export = class ObjectsConverter {
                 let point = k.split("/");
 
                 verticeIndices.push(parseInt(point[0]) - 1);
-                uvIndices.push(parseInt(point[1]) - 1);
+                texCoordIndices.push(parseInt(point[1]) - 1);
                 normalIndices.push(parseInt(point[2]) - 1);
             }
         }
@@ -253,7 +332,7 @@ class ObjectModel {
     public texCoords:Array<number> = [];
     public verticeIndices:Array<number> = [];
     public normalIndices:Array<number> = [];
-    public uvIndices:Array<number> = [];
+    public texCoordIndices:Array<number> = [];
     public materialName:string = null;
     public name:string = null;
     public indicesCount:number = 0;

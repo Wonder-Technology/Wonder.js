@@ -37,22 +37,14 @@ describe("MD2ToWD", function () {
             })
     }
 
-    //todo test
-    // it("convert metadata", function (done) {
-    //     judge(testFile, filePath1, function (json) {
-    //         expect(json.metadata).toEqual({
-    //             formatVersion: '0.1.0',
-    //             description: '',
-    //             sourceFile: filePath1,
-    //             generatedBy: 'MD2ToWD'
-    //         });
-    //     }, done);
-    // });
-    // it("convert scene", function (done) {
-    //     judge(testFile, filePath1, function (json) {
-    //         expect(json.scene).toEqual({});
-    //     }, done);
-    // });
+    it("convert metadata", function (done) {
+        judge(testFile, filePath1, function (json) {
+            expect(json.asset).toEqual({
+                version: "0.1.0",
+                generator: "WonderJsMD2ToWDConverter"
+            });
+        }, done);
+    });
 
     describe("convert objects", function(){
         beforeEach(function(){

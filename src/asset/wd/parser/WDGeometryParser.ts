@@ -41,7 +41,12 @@ module wd{
         }
 
         private _setChildObjectNameWithMultiPrimitives(object:IWDObjectDataAssembler, primitive:IWDMeshPrimitiveParser){
-            object.name = primitive.material;
+            if(!!primitive.name){
+                object.name = primitive.name;
+            }
+            else if(!!primitive.material){
+                object.name = primitive.material;
+            }
         }
 
         private _parseGeometry( primitive:IWDMeshPrimitiveParser):IWDGeometryAssembler{

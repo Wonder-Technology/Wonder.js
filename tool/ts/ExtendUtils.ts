@@ -52,6 +52,10 @@ export = class ExtendUtils {
                     continue;
                 }
 
+                if(member === null || member === void 0){
+                    continue;
+                }
+
                 if(member.clone){
                     _child[i] = member.clone();
                     continue;
@@ -75,6 +79,10 @@ export = class ExtendUtils {
                 let member = parent[i];
 
                 if(!filter(member, i)){
+                    continue;
+                }
+
+                if(member === null || member === void 0){
                     continue;
                 }
 

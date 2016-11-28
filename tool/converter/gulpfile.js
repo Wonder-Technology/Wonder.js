@@ -48,6 +48,8 @@ require("./gulp_task/convertIndices/convertMultiIndicesToSingleIndice");
 
 require("./gulp_task/compressToBinary/compressToBinary");
 
+require("./gulp_task/filterPrimitiveData/filterPrimitiveDataByIndices");
+
 
 
 // var BufferWriter = require("./common/BufferWriter");

@@ -218,6 +218,7 @@ export class Converter {
             sourceColors = attributes.COLOR,
             material = primitiveData.material,
             mode = primitiveData.mode,
+            name = primitiveData.name,
             newIndices:Array<number> = [];
 
         for (let i = 0, len = verticeIndices.length; i < len; i += 3) {
@@ -286,6 +287,10 @@ export class Converter {
 
         if(!!mode){
             result.mode = mode;
+        }
+
+        if(!!name){
+            result.name = name;
         }
 
         return result;
@@ -407,6 +412,7 @@ type SourcePrimitive = {
     colorIndices:Array<number>;
     material:string;
     mode:number;
+    name:string;
 }
 
 type TargetJsonData = {
@@ -423,6 +429,7 @@ type TargetPrimitive = {
     indices:Array<number>;
     material:string;
     mode:number;
+    name:string;
 }
 
 

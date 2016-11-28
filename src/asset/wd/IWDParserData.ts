@@ -76,6 +76,8 @@ module wd {
     }
 
     export interface IWDMeshPrimitiveParser {
+        name?:string;
+
         attributes: IWDAttributeParser;
 
         morphTargets?: Array<IWDMorphTargetParser>;

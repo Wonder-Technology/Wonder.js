@@ -49,6 +49,8 @@
 		"./gulp_task/convertIndices/Converter.ts",
 		"./gulp_task/convertIndices/Utils.ts",
 
+		"./gulp_task/filterPrimitiveData/Filter.ts",
+
 
 		"./gulp_task/compressToBinary/Utils.ts",
 		"./gulp_task/compressToBinary/CompressorManager.ts",

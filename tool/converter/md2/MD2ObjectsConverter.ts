@@ -114,21 +114,6 @@ export = class MD2ObjectsConverter {
                 }
             ]
         }
-
-
-        // object.material = null;
-        //
-        // object.vertices = vertices;
-        // object.normals = [];
-        // object.colors = [];
-        // object.morphTargets = morphTargets;
-        // object.texCoordIndices = texCoordIndices;
-        // object.verticeIndices = verticeIndices;
-        // object.texCoords = texCoords;
-        //
-        // result.push(object);
-        //
-        // return result;
     }
 
     private  _convertTexCoords(header:any, reader:any) {

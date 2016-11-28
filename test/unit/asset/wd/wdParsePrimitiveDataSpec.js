@@ -100,6 +100,7 @@ describe("parse wd Geometry", function(){
 
 
         expect(object1.children.getCount()).toEqual(2);
+        //todo fix
         expect(object1.children.getChild(0).name).toEqual("mat1");
         expect(object1.children.getChild(1).name).toEqual("mat2");
     });

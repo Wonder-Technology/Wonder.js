@@ -31,8 +31,7 @@ export class MD2ToWD {
         this.version = version;
     }
 
-    public name:string = "MD2ToWD";
-    //todo fix version
+    public name:string = "WonderJsMD2ToWDConverter";
     public version:string = null;
 
     private _objectsConverter:any = ObjectsConverter.create();
@@ -43,8 +42,7 @@ export class MD2ToWD {
         });
     })
     public convert(fileBuffer:Buffer, filePath:string):wdFrp.Stream {
-        var self = this,
-            resultJson:any = {},
+        var resultJson:any = {},
             nodeName = ModelLoaderUtils.getNameByPath(filePath);
 
         resultJson.scene = "Scene";
@@ -55,24 +53,21 @@ export class MD2ToWD {
             }
         };
 
+        resultJson.asset = this._convertAssetData();
 
-        // resultJson.metadata = self._convertMetadata(filePath);
-
-        self._convertObjects(resultJson, fileBuffer, nodeName);
+        this._convertObjects(resultJson, fileBuffer, nodeName);
 
         return wdFrp.just([resultJson]);
     }
 
-    // private _convertMetadata(filePath:string) {
-    //     var result:any = {};
-    //
-    //     result.formatVersion = this.version;
-    //     result.description = "";
-    //     result.sourceFile = filePath;
-    //     result.generatedBy = this.name;
-    //
-    //     return result;
-    // }
+    private _convertAssetData() {
+        var result:any = {};
+
+        result.version = this.version;
+        result.generator = this.name;
+
+        return result;
+    }
 
     private _convertObjects(resultJson:any, fileBuffer:Buffer, filePath:string) {
         return this._objectsConverter.convert(resultJson, fileBuffer, filePath);

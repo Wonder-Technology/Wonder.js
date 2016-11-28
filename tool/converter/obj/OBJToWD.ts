@@ -2,10 +2,12 @@ import fs = require("fs");
 import path = require("path");
 import wdFrp = require("wdfrp");
 import wdCb = require("wdcb");
-import MaterialsConverter = require("./MaterialsConverter");
 import ObjectsConverter = require("./ObjectsConverter");
 import ModelLoaderUtils = require("../common/ModelLoaderUtils");
+
 import Log = require("../../ts/Log");
+
+import {MaterialsConverter} from "./MaterialsConverter";
 
 export class OBJToWD {
     public static create(version:string) {
@@ -20,54 +22,50 @@ export class OBJToWD {
         this.version = version;
     }
 
-    public name:string = "OBJToWD";
+    public name:string = "WonderJsOBJToWDConverter";
     public version:string = null;
-
-    //todo why "_objectsConverter:ObjectsConverter" can't find ObjectsConverter?
-    //private _objectsConverter:ObjectsConverter = ObjectsConverter.create();
 
     private _objectsConverter:any = ObjectsConverter.create();
     private _materialsConverter:any = MaterialsConverter.create();
 
 
     public convert(fileContent:string, filePath:string):wdFrp.Stream {
-        var self = this,
-            resultJson:any = {};
+        var resultJson:any = {},
+            nodeName = ModelLoaderUtils.getNameByPath(filePath);
 
+        resultJson.scene = "Scene";
 
-        resultJson.metadata = self._convertMetadata(filePath);
-        resultJson.scene = self._convertScene(fileContent, filePath);
-        resultJson.objects = self._convertObjects(fileContent, filePath);
+        resultJson.scenes = {
+            Scene:{
+                nodes:[nodeName]
+            }
+        };
+
+        resultJson.asset = this._convertAssetData();
+
+        this._convertObjects(resultJson, fileContent, nodeName);
 
         if(this._objectsConverter.mtlFilePath){
-            return wdFrp.fromNodeCallback(fs.readFile)(ModelLoaderUtils.getPath(filePath, self._objectsConverter.mtlFilePath))
+            return wdFrp.fromNodeCallback(fs.readFile)(ModelLoaderUtils.getPath(filePath, this._objectsConverter.mtlFilePath))
                 .map((data:string) => {
-                    resultJson.materials = self._convertMaterials(data.toString());
+                    resultJson.materials = this._convertMaterials(resultJson, data.toString());
 
-                    return [resultJson, self._getResourceUrlArr(resultJson.materials, filePath)];
+                    return [resultJson, this._getResourceUrlArr(resultJson.images, filePath)];
                 });
         }
 
         return wdFrp.just([resultJson, null]);
-
     }
 
-    private _getResourceUrlArr(materials, filePath) {
+    private _getResourceUrlArr(images:any, filePath:string) {
         var urlArr = [];
 
-        for (let name in materials) {
-            if (materials.hasOwnProperty(name)) {
-                let material = materials[name];
+        for (let name in images) {
+            if (images.hasOwnProperty(name)) {
+                let image = images[name],
+                    uri = image.uri;
 
-                if (material.diffuseMapUrl) {
-                    urlArr.push(this._getAbsoluteResourceUrl(filePath, material.diffuseMapUrl));
-                }
-                if (material.specularMapUrl) {
-                    urlArr.push(this._getAbsoluteResourceUrl(filePath, material.specularMapUrl));
-                }
-                if (material.normalMapUrl) {
-                    urlArr.push(this._getAbsoluteResourceUrl(filePath, material.normalMapUrl));
-                }
+                urlArr.push(this._getAbsoluteResourceUrl(filePath, uri));
             }
         }
 
@@ -78,32 +76,33 @@ export class OBJToWD {
         return path.resolve(path.dirname(filePath), resourceRelativeUrl);
     }
 
-    private _convertMetadata(filePath:string) {
+    private _convertAssetData() {
         var result:any = {};
 
-        result.formatVersion = this.version;
-        result.description = "";
-        result.sourceFile = filePath;
-        result.generatedBy = this.name;
+        result.version = this.version;
+        result.generator = this.name;
 
         return result;
     }
 
-    private _convertScene(fileContent:string, filePath:string) {
-        var result:any = {};
+    // private _convertScene(fileContent:string, filePath:string) {
+    //     var result:any = {};
+    //
+    //     /*!every material has one ambientColor, i don't know use which one, so just set it to be black*/
+    //     result.ambientColor = [0.0, 0.0, 0.0];
+    //
+    //     return result;
+    // }
 
-        /*!every material has one ambientColor, i don't know use which one, so just set it to be black*/
-        result.ambientColor = [0.0, 0.0, 0.0];
-
-        return result;
+    // private _convertObjects(fileContent:string, filePath:string) {
+    //     return this._objectsConverter.convert(fileContent, filePath);
+    // }
+    private _convertObjects(resultJson:any, fileContent:string, nodeName:string) {
+        return this._objectsConverter.convert(resultJson, fileContent, nodeName);
     }
 
-    private _convertObjects(fileContent:string, filePath:string) {
-        return this._objectsConverter.convert(fileContent, filePath);
-    }
-
-    private _convertMaterials(mtlFileContent:string) {
-        return this._materialsConverter.convert(mtlFileContent);
+    private _convertMaterials(resultJson:any,  mtlFileContent:string) {
+        return this._materialsConverter.convert(resultJson, mtlFileContent);
     }
 }
 
