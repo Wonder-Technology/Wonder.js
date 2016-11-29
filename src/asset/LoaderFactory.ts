@@ -56,9 +56,6 @@ module wd{
                 case ".wav":
                     loader = SoundLoader.getInstance();
                     break;
-                case ".gltf":
-                    loader = GLTFLoader.getInstance();
-                    break;
                 case ".wd":
                     loader = WDLoader.getInstance();
                     break;
