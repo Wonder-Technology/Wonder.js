@@ -203,41 +203,32 @@ describe("collider", function () {
         });
     });
 
-    it("support add collider to CONTAINER gameObject", function (done) {
-        sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+    it("support add collider to CONTAINER gameObject", function () {
+        // sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
 
-        wd.LoaderManager.getInstance().load([
-            {url: testTool.resPath + "test/res/wd/test.wd", id: "sceneModel"}
-        ]).subscribe(function (data) {
-        }, function (err) {
-            expect().toFail(err.message);
-            done();
-        }, function () {
-            var sceneModel = wd.LoaderManager.getInstance().get("sceneModel");
+        var objModel = wd.GameObject.create();
+        objModel.addTag(wd.EWDTag.CONTAINER);
 
-            var result = sceneModel;
+        var child = wd.GameObject.create();
 
-            var objModel = result.getChild("models").getChild(1);
+        child.addComponent(geometryTool.createGeometryWithFakeGeometryData());
 
-            expect(objModel.hasTag(wd.EWDTag.CONTAINER)).toBeTruthy();
+        objModel.addChild(child);
 
 
 
 
 
-            objModel.addComponent(wd.BoxCollider.create());
+        objModel.addComponent(wd.BoxCollider.create());
 
-            objModel.init();
-
-
+        objModel.init();
 
 
 
-            var shape = objModel.getComponent(wd.BoxCollider).shape;
-            expect(shape.halfExtents).toBeInstanceOf(wd.Vector3);
 
 
-            done();
-        });
+        var shape = objModel.getComponent(wd.BoxCollider).shape;
+        expect(shape.halfExtents).toBeInstanceOf(wd.Vector3);
+
     });
 });

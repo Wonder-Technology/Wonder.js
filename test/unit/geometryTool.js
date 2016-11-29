@@ -4,6 +4,38 @@ var geometryTool = (function(){
     }
 
     return {
+        createGeometryWithFakeGeometryData: function(){
+            var material = wd.BasicMaterial.create();
+
+            var geo = wd.CustomGeometry.create();
+
+            geo.material = material;
+            geo.vertices = [
+                0.0,  3.0,  -5.0,
+                -3.0, -3.0,  -5.0,
+                3.0, -3.0,  -5.0
+            ];
+            geo.indices = [
+                0, 1, 2
+            ];
+            geo.normals = [
+                0.0,  2.5,  -5.0,
+                -2.5, -2.5,  -5.0,
+                2.5, -2.5,  -5.0
+            ];
+            geo.texCoords = [
+                0.0, 0.1,
+                1.0, 0.5,
+                0.2, 0.2
+            ];
+            geo.colors = [
+                0.5, 0.1,
+                0.0, 0.5,
+                0.2, 0.2
+            ];
+
+            return geo;
+        },
         judgeVertices: function(vertices, program, callIndex){
             this.judgeAttributeBufferData("a_position", vertices, program, callIndex);
         },

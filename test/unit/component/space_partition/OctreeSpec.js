@@ -306,52 +306,41 @@ describe("Octree", function () {
                 judgeFirstDepthChild(6, 1, obj1);
                 judgeFirstDepthChild(7, 1, obj1);
             });
-            it("test add obj object", function (done) {
-                sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+            it("test add container object", function () {
+                var objModel = wd.GameObject.create();
+                objModel.addTag(wd.EWDTag.CONTAINER);
 
-                wd.LoaderManager.getInstance().load([
-                    {url: testTool.resPath + "test/res/wd/test.wd", id: "sceneModel"}
-                ]).subscribe(function (data) {
-                }, function (err) {
-                    expect().toFail(err.message);
-                    done();
-                }, function () {
-                    var sceneModel = wd.LoaderManager.getInstance().get("sceneModel");
+                var child = wd.GameObject.create();
+
+                child.addComponent(geometryTool.createGeometryWithFakeGeometryData());
 
 
-                    var result = sceneModel;
-
-                    var objModel = result.getChild("models").getChild(0);
-
-                    //obj1 = createObject();
-
-                    //obj1.addChild(objModel);
-
-                    obj1.transform.position = Vector3.create(10, 10, 10);
-                    objModel.transform.position = Vector3.create(-10, -10, -10);
-
-                    octreeObject.addChild(objModel);
-
-                    octreeObject.init();
+                objModel.addChild(child);
 
 
 
-                    tree.build();
+
+                objModel.transform.position = Vector3.create(-10, -10, -10);
+
+                octreeObject.addChild(objModel);
+
+                octreeObject.init();
 
 
-                    judgeRoot();
 
-                    judgeFirstDepthChild(0, 1, objModel);
-                    judgeFirstDepthChild(1, 1, objModel);
-                    judgeFirstDepthChild(2, 1, objModel);
-                    judgeFirstDepthChild(3, 1, objModel);
-                    judgeFirstDepthChild(4, 1, objModel);
-                    judgeFirstDepthChild(5, 1, objModel);
-                    judgeFirstDepthChild(6, 1, objModel);
-                    judgeFirstDepthChild(7, 1, objModel);
+                tree.build();
 
-                    done();
-                });
+
+                judgeRoot();
+
+                judgeFirstDepthChild(0, 1, objModel);
+                judgeFirstDepthChild(1, 1, objModel);
+                judgeFirstDepthChild(2, 1, objModel);
+                judgeFirstDepthChild(3, 1, objModel);
+                judgeFirstDepthChild(4, 1, objModel);
+                judgeFirstDepthChild(5, 1, objModel);
+                judgeFirstDepthChild(6, 1, objModel);
+                judgeFirstDepthChild(7, 1, objModel);
             });
         });
 

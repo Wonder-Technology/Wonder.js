@@ -28,7 +28,7 @@
 
         'test/unit/**/BufferWriter.js',
 
-        // 'test/unit/**',
+        'test/unit/**',
 
 
         // 'test/unit/**/SoundManager*',
@@ -85,7 +85,7 @@
 
         //'test/unit/**/renderer/**',
 
-        'test/unit/**/TextureSpec*',
+        // 'test/unit/**/TextureSpec*',
 
         //'test/unit/**/*ProceduralRenderTargetRenderer*',
 
@@ -97,7 +97,7 @@
         //'test/unit/**/proceduralRenderTargetRenderer*',
 
 
-        'test/unit/**/cubemapTexture*',
+        // 'test/unit/**/cubemapTexture*',
 
         //'test/unit/**/LineMaterial*',
         // 'test/unit/**/BasicMaterial*',
@@ -284,7 +284,7 @@
         //'test/unit/**/UIStateMachineSpec*',
 
 
-        'test/unit/**/*Asset*',
+        // 'test/unit/**/*Asset*',
         //
         //'test/unit/**/TwoDFontSpec*',
         //'test/unit/**/PlainFontSpec*',
@@ -324,7 +324,11 @@
         //'test/unit/**/SphereColliderSpec.js',
         //'test/unit/**/BoxColliderSpec*',
         //'test/unit/**/*ColliderSpec.js',
-        //'test/unit/**/colliderSpec.js',
+        // 'test/unit/**/colliderSpec.js',
+
+
+        // 'test/unit/**/OctreeSpec.js',
+
         //'test/unit/**/collider/optimizeSpec.js',
         //'test/unit/**/collider/*',
         //'test/unit/**/physics/*.js',
@@ -352,9 +356,9 @@
       //  'test/unit/asset/obj/*.js',
       //  'test/unit/asset/obj/OBJParserSpec.js',
       //  'test/unit/asset/loaderSpec.js',
-        'test/unit/asset/wd/WDParserSpec.js',
-        'test/unit/asset/wd/wd*.js',
-        'test/unit/asset/wd/WDAssemblerSpec.js',
+        // 'test/unit/asset/wd/WDParserSpec.js',
+        // 'test/unit/asset/wd/wd*.js',
+        // 'test/unit/asset/wd/WDAssemblerSpec.js',
         //'test/unit/math/*.js',
         //'test/unit/component/**/GeometrySpec.js',
         // 'test/unit/component/**/InstanceGeometrySpec.js',
