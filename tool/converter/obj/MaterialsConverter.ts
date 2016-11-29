@@ -66,6 +66,12 @@ export class MaterialsConverter {
             this._addData(valueData, "specular", material.specularColor);
         }
 
+        if(!!material.emissionMapUrl){
+            this._addTextureData(valueData, "emission", material.emissionMapUrl);
+        }
+        else{
+            this._addData(valueData, "emission", material.emissionColor);
+        }
 
         if(!!material.bumpMapUrl) {
             this._addTextureData(valueData, "normalMap", material.bumpMapUrl);
@@ -154,6 +160,9 @@ export class MaterialsConverter {
                 // Specular color (color when light is reflected from shiny surface) using RGB values
                 this._setColor("specularColor", value.split(DELIMITER_PATTERN, 3));
             }
+            else if (key === "ke") {
+                this._setColor("emissionColor", value.split(DELIMITER_PATTERN, 3));
+            }
             else if (key === "ns") {
                 this._currentMaterial.shininess = parseFloat(value);
             }
@@ -171,6 +180,10 @@ export class MaterialsConverter {
             else if (key === "map_ks") {
                 // Specular map
                 this._currentMaterial.specularMapUrl = value;
+            }
+            else if (key === "map_ke") {
+                // Emission map
+                this._currentMaterial.emissionMapUrl = value;
             }
             else if (key === "map_bump") {
                 // Bump map
@@ -217,10 +230,12 @@ class MaterialModel {
     public name:string = null;
     public diffuseColor:Array<number> = null;
     public specularColor:Array<number> = null;
+    public emissionColor:Array<number> = null;
     public opacity:number = null;
     public shininess:number = null;
     public diffuseMapUrl:string = null;
     public specularMapUrl:string = null;
+    public emissionMapUrl:string = null;
     public bumpMapUrl:string = null;
 }
 

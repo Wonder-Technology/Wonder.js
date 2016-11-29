@@ -327,6 +327,7 @@ describe("OBJToWD", function () {
                                 '0.500000',
                                 '0.500000'
                             ],
+                            emission: 'texture_2',
                             normalMap: 'texture_2',
                             shininess: 96.078431
                         }
@@ -342,6 +343,11 @@ describe("OBJToWD", function () {
                                 '0.100000'
                             ],
                             specular: 'texture_1',
+                            emission:[
+                                '0.100000',
+                                '0.500000',
+                                '0.600000'
+                            ],
                             shininess: 80.078431
                         }
                     }
