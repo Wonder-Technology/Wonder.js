@@ -8,6 +8,8 @@ import wdCb = require("wdcb");
 
 // import contract = require("../../../ts/definition/typescript/decorator/contract");
 
+import DataUtils = require("../../common/DataUtils");
+
 import ExtendUtils = require("../../../ts/ExtendUtils")
 
 import JudgeUtils = require("../../../ts/JudgeUtils")
@@ -24,7 +26,7 @@ export class Filter {
         return obj;
     }
 
-    public filter(sourceJson:JsonData):JsonData {
+    public filter(sourceJson:JsonData, isRemoveNullData:boolean):JsonData {
         var targetJson:JsonData = ExtendUtils.extendDeep(sourceJson);
 
         targetJson.meshes = {};
@@ -44,6 +46,10 @@ export class Filter {
             }
         }
 
+        if(isRemoveNullData){
+            DataUtils.removeNullData(targetJson);
+        }
+
         return targetJson;
     }
 
@@ -57,35 +63,36 @@ export class Filter {
             newIndices = [],
             newPrimitive = null,
             index = 0,
-            // map = wdCb.Hash.create<Array<number>>();
             map = wdCb.Hash.create<number>();
 
-        for(let indice of indices){
-            if(!map.hasChild(String(indice))){
-                this._addAttributeData(newPosition, attributes.POSITION, indice, 3);
+        if(!!indices){
+            for(let indice of indices){
+                if(!map.hasChild(String(indice))){
+                    this._addAttributeData(newPosition, attributes.POSITION, indice, 3);
 
-                if(!!attributes.NORMAL){
-                    this._addAttributeData(newNormal, attributes.NORMAL, indice, 3);
+                    if(!!attributes.NORMAL){
+                        this._addAttributeData(newNormal, attributes.NORMAL, indice, 3);
+                    }
+
+                    if(!!attributes.TEXCOORD){
+                        this._addAttributeData(newTexCoord, attributes.TEXCOORD, indice, 2);
+                    }
+
+                    if(!!attributes.COLOR){
+                        this._addAttributeData(newColor, attributes.COLOR, indice, 3);
+                    }
+
+                    map.addChild(String(indice), index);
+
+                    index++;
                 }
-
-                if(!!attributes.TEXCOORD){
-                    this._addAttributeData(newTexCoord, attributes.TEXCOORD, indice, 2);
-                }
-
-                if(!!attributes.COLOR){
-                    this._addAttributeData(newColor, attributes.COLOR, indice, 3);
-                }
-
-                map.addChild(String(indice), index);
-
-                index++;
             }
-        }
 
-        for(let indice of indices){
-            newIndices.push(
-                map.getChild(String(indice))
-            )
+            for(let indice of indices){
+                newIndices.push(
+                    map.getChild(String(indice))
+                )
+            }
         }
 
         newPrimitive = {

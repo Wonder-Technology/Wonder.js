@@ -36,6 +36,7 @@
 		"./common/Config.ts",
 		"./common/ModelLoaderUtils.ts",
 		"./common/PathUtils.ts",
+		"./common/DataUtils.ts",
 
 
 		"./common/SingleModelConverter.ts",

@@ -2,9 +2,11 @@ var gulp = require("gulp");
 var fs = require("fs-extra");
 var wdFrp = require("wdfrp");
 // var path = require("path");
-// var commandUtils = require("../common/commandUtils.js");
+var commandUtils = require("../common/commandUtils.js");
 
 gulp.task("filterPrimitiveDataByIndices", function (done) {
+    var isRemoveNullData = commandUtils.isDefinOption("--removeNullData") || false;
+
     var sourceFile = "../../mine/result.json";
 
     var destFile = "../../mine/result.json";
@@ -17,7 +19,7 @@ gulp.task("filterPrimitiveDataByIndices", function (done) {
         .subscribe(function(file){
             fs.writeFileSync(
                 destFile,
-                JSON.stringify(filter.filter(JSON.parse(file.toString())))
+                JSON.stringify(filter.filter(JSON.parse(file.toString()), isRemoveNullData))
             );
 
             done();

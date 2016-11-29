@@ -6,6 +6,8 @@ import chai = require("chai");
 
 import Vector3 = require("../../../ts/Vector3");
 
+import DataUtils = require("../../common/DataUtils");
+
 import contract = require("../../../ts/definition/typescript/decorator/contract");
 
 import ExtendUtils = require("../../../ts/ExtendUtils")
@@ -61,6 +63,10 @@ export class Converter {
                     newPrimitives:Array<TargetPrimitive> = [];
 
                 for(let primitiveData of mesh.primitives){
+                    if(this._hasNoIndiceData(primitiveData)){
+                        continue;
+                    }
+
                     this._duplicateVertex(primitiveData);
                     newPrimitives.push(this._parseObjectFromIndices(primitiveData));
                 }
@@ -72,7 +78,7 @@ export class Converter {
         }
 
         if(isRemoveNullData){
-            this._removeNullData(targetJson);
+            DataUtils.removeNullData(targetJson);
         }
 
         return targetJson;
@@ -108,6 +114,11 @@ export class Converter {
         }
     }
 
+    private _hasNoIndiceData(primitiveData:SourcePrimitive)    {
+        return !Utils.hasData(primitiveData.verticeIndices)
+        && !Utils.hasData(primitiveData.normalIndices)
+        && !Utils.hasData(primitiveData.texCoordIndices);
+    }
     private _duplicateVertex(
         primitiveData:SourcePrimitive
     ){

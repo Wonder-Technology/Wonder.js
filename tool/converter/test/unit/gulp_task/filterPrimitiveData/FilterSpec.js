@@ -15,10 +15,6 @@ describe("filterPrimitiveData->Filter", function(){
     });
 
     describe("filter", function(){
-        function getPrimitivesDataFromBuildedJson(buildedJson) {
-            return buildedJson.meshes.RootNode.primitives;
-        }
-
         function buildJson(positions, texCoords, normals, colors, indices, otherData) {
             otherData = otherData || {material:"a", mode:4}
 
@@ -102,44 +98,6 @@ describe("filterPrimitiveData->Filter", function(){
             beforeEach(function(){
             });
 
-            it("remain nodes data", function () {
-                var result = filter.filter({
-                    "nodes": {
-                        node1: {
-                            children: [],
-                            matrix: [
-                                1,
-                                0,
-                                0,
-                                0,
-
-                                0,
-                                1,
-                                0,
-                                0,
-
-                                0,
-                                0,
-                                1,
-                                0,
-
-                                0,
-                                0,
-                                0,
-                                1
-                            ]
-                            // mesh: 'cube_mesh',
-                            // name: 'cube'
-                        }
-                    }
-                });
-
-
-                // var primitive = _getPrimitive(result);
-                expect(result.nodes.node1.matrix).toEqual([
-
-                ])
-            });
             it("remain material,mode,name", function () {
                 var result = filter.filter(buildJson(
                     [

@@ -42,7 +42,9 @@ export = class AttributeCompressor extends Compressor.Compressor{
                             COLOR
                         } = primitiveData.attributes;
 
-                    this._recordAttribute(POSITION, recordedAttributeArr, id, i, "POSITION", "VEC3");
+                    if (Utils.hasData(POSITION)) {
+                        this._recordAttribute(POSITION, recordedAttributeArr, id, i, "POSITION", "VEC3");
+                    }
 
                     if (Utils.hasData(NORMAL)) {
                         this._recordAttribute(NORMAL, recordedAttributeArr, id, i, "NORMAL", "VEC3");
