@@ -35,6 +35,7 @@
 		"./common/BufferWriter.ts",
 		"./common/Config.ts",
 		"./common/ModelLoaderUtils.ts",
+		"./common/PathUtils.ts",
 
 
 		"./common/SingleModelConverter.ts",
@@ -45,6 +46,8 @@
 		"./obj/MaterialsConverter.ts",
 		"./obj/ObjectsConverter.ts",
 		"./obj/OBJToWD.ts",
+
+		"./gltf/GLTFToWD.ts",
 
 		"./Converter.ts",
 

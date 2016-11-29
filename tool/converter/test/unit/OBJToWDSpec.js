@@ -384,8 +384,6 @@ describe("OBJToWD", function () {
                 }
             )
 
-            filePath1 = path.join(process.cwd(), "../res/obj/test.obj");
-
             expect(resourceUrlArr).toEqual(
                 [
                     path.resolve(path.dirname(filePath1), "1.jpg"),

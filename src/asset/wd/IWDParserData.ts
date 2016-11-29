@@ -193,7 +193,7 @@ module wd {
         diffuse?:Array<number>|string;
         specular?:Array<number>|string;
         emission?:Array<number>|string;
-        shininess?:string;
+        shininess?:number;
 
         normalMap?:string;
     }

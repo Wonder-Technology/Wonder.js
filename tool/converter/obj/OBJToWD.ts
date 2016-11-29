@@ -4,6 +4,7 @@ import wdFrp = require("wdfrp");
 import wdCb = require("wdcb");
 import ObjectsConverter = require("./ObjectsConverter");
 import ModelLoaderUtils = require("../common/ModelLoaderUtils");
+import PathUtils = require("../common/PathUtils")
 
 import Log = require("../../ts/Log");
 
@@ -78,7 +79,7 @@ export class OBJToWD extends SingleModelConverter{
                 let image = images[name],
                     uri = image.uri;
 
-                urlArr.push(this._getAbsoluteResourceUrl(filePath, uri));
+                urlArr.push(PathUtils.getAbsoluteResourceUrl(filePath, uri));
             }
         }
 

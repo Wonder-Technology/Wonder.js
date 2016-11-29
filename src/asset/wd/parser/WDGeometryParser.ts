@@ -6,6 +6,7 @@ module wd{
             return obj;
         }
 
+        private _isGeneratedFromGLTF:boolean = false;
         private _arrayBufferMap:wdCb.Hash<ArrayBuffer> = null;
         private _imageMap:wdCb.Hash<HTMLImageElement> = null;
         private _json:IWDJsonDataParser = null;
@@ -15,6 +16,10 @@ module wd{
             this._json = json;
             this._arrayBufferMap = arrayBufferMap;
             this._imageMap = imageMap;
+
+            if(json.asset && json.asset.generator && json.asset.generator.indexOf("GLTF") > -1){
+                this._isGeneratedFromGLTF = true;
+            }
 
             /*!
             if mesh->primitives has multi ones, they should as the children of the node(one primitive as one child)
@@ -80,7 +85,9 @@ module wd{
 
                         this._addAttributeData(texCoords, bufferReader, count);
 
-                        // this._normalizeTexCoords(texCoords);
+                        if(this._isGeneratedFromGLTF){
+                            this._normalizeTexCoords(texCoords);
+                        }
                     }
                     else if(semantic === "NORMAL"){
                         normals = [];

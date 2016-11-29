@@ -39,6 +39,11 @@ export = class Converter {
             case ".gltf":
                 result = GLTFToWD.GLTFToWD.create(this.version).convert(fileBuffer, filePath);
                 break;
+            case ".bin":
+                //todo just copy?
+                // result = GLTFToWD.GLTFToWD.create(this.version).convert(fileBuffer, filePath);
+                result = wdFrp.empty();
+                break;
             default:
                 result = wdFrp.empty();
                 break;
