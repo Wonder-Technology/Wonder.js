@@ -47,8 +47,9 @@ export class OBJToWD extends SingleModelConverter{
             expect(stream).instanceOf(wdFrp.Stream);
         });
     })
-    public convert(fileContent:string, filePath:string):wdFrp.Stream {
+    public convert(fileBuffer:Buffer, filePath:string):wdFrp.Stream {
         var resultJson:any = {},
+            fileContent = fileBuffer.toString(),
             nodeName = ModelLoaderUtils.getNameByPath(filePath);
 
         this.convertSceneData(resultJson, nodeName);

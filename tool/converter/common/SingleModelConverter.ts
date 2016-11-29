@@ -9,8 +9,7 @@ export abstract class SingleModelConverter {
 
     public version:string = null;
 
-    public abstract convert(...args):wdFrp.Stream;
-
+    public abstract convert(fileBuffer:Buffer, filePath:string):wdFrp.Stream;
 
     protected convertSceneData(resultJson:any, nodeName:string) {
         resultJson.scene = "Scene";

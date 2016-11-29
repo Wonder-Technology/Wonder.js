@@ -33,7 +33,7 @@ describe("OBJToWD", function () {
     });
 
     function judge(file, filePath, assertion, done) {
-        converter.convert(file.toString(), filePath)
+        converter.convert(file, filePath)
             .subscribe(function (arr) {
                 var json = arr[0],
                     sourceUrlArr = arr[1];

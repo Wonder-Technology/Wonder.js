@@ -7,6 +7,7 @@ import wdCb = require("wdcb");
 import Log = require("../ts/Log");
 import OBJToWD = require("./obj/OBJToWD");
 import MD2ToWD = require("./md2/MD2ToWD");
+import GLTFToWD = require("./gltf/GLTFToWD");
 
 export = class Converter {
     public static create() {
@@ -30,10 +31,13 @@ export = class Converter {
 
         switch (fileExtname) {
             case ".obj":
-                result = OBJToWD.OBJToWD.create(this.version).convert(fileBuffer.toString(), filePath);
+                result = OBJToWD.OBJToWD.create(this.version).convert(fileBuffer, filePath);
                 break;
             case ".md2":
                 result = MD2ToWD.MD2ToWD.create(this.version).convert(fileBuffer, filePath);
+                break;
+            case ".gltf":
+                result = GLTFToWD.GLTFToWD.create(this.version).convert(fileBuffer, filePath);
                 break;
             default:
                 result = wdFrp.empty();
