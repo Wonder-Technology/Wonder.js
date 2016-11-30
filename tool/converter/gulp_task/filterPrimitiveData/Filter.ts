@@ -61,6 +61,7 @@ export class Filter {
             newTexCoord = [],
             newColor = [],
             newIndices = [],
+            newMorphTargets = [],
             newPrimitive = null,
             index = 0,
             map = wdCb.Hash.create<number>();
@@ -93,6 +94,10 @@ export class Filter {
                     map.getChild(String(indice))
                 )
             }
+
+            if(!!primitiveData.morphTargets){
+                this._addMorphData(newMorphTargets, primitiveData.morphTargets, indices);
+            }
         }
 
         newPrimitive = {
@@ -105,6 +110,8 @@ export class Filter {
         this._addData(newPrimitive.attributes, "NORMAL", newNormal);
         this._addData(newPrimitive.attributes, "TEXCOORD", newTexCoord);
         this._addData(newPrimitive.attributes, "COLOR", newColor);
+
+        this._addData(newPrimitive, "morphTargets", newMorphTargets);
 
         this._addData(newPrimitive, "material", primitiveData.material);
         this._addData(newPrimitive, "mode", primitiveData.mode);
@@ -122,6 +129,44 @@ export class Filter {
             );
             start++;
             size--;
+        }
+    }
+
+    private _addMorphData(newMorphTargets:Array<MorphTarget>, morphTargets:Array<MorphTarget>, indices:Array<number>){
+        var map = wdCb.Hash.create<number>(),
+            index = 0;
+
+        for(let frame of morphTargets) {
+            let newFrame:MorphTarget = <MorphTarget>{},
+                newVertices:Array<number> = [],
+                newNormals: Array<number> = [];
+
+
+            map.removeAllChildren();
+            index = 0;
+
+            newFrame.name = frame.name;
+
+            for(let indice of indices) {
+                if (!map.hasChild(String(indice))) {
+
+                    this._addAttributeData(newVertices, frame.vertices, indice, 3);
+
+                    newFrame.vertices = newVertices;
+
+                    if (!!frame.normals) {
+                        this._addAttributeData(newNormals, frame.normals, indice, 3);
+
+                        newFrame.normals = newNormals;
+                    }
+
+                    map.addChild(String(indice), index);
+
+                    index++;
+                }
+            }
+
+            newMorphTargets.push(newFrame);
         }
     }
 
@@ -151,6 +196,7 @@ type JsonData = {
 
 type Primitive = {
     attributes: Attribute;
+    morphTargets?: Array<MorphTarget>;
     indices:Array<number>;
     material:string;
     mode:number;
@@ -165,3 +211,9 @@ type Attribute = {
     COLOR?:Array<number>;
 }
 
+
+type MorphTarget = {
+    name:string;
+    vertices:Array<number>;
+    normals?:Array<number>;
+}

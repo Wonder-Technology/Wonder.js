@@ -64,6 +64,7 @@ export class Converter {
 
                 for(let primitiveData of mesh.primitives){
                     if(this._hasNoIndiceData(primitiveData)){
+                        wdCb.Log.warn("just skip the primitive which has no indices");
                         continue;
                     }
 
