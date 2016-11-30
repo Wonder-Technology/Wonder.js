@@ -12,15 +12,101 @@ describe("model", function () {
         sandbox.restore();
     });
 
-    describe("scene test", function() {
+    describe("test read .wd file", function() {
         var tester;
 
-        describe("test convert from md2", function () {
+        describe("test models converted from obj", function () {
             function body(wrapper){
                 wrapper.load([
-                        {url: "../../asset/model/wd/ratamahatta/ratamahatta.wd", id: "model"},
-                        {url: "../../asset/model/wd/ratamahatta/ratamahatta.png", id: "skin"}
-                    ])
+                    {url: "../../asset/model/wd/male02/male02.wd", id: "model"}
+                ])
+                    .do(initSample);
+
+                function initSample() {
+                    var director = wd.Director.getInstance();
+
+                    director.scene.addChildren(setModelAndReturn());
+                    director.scene.addChild(createAmbientLight());
+                    director.scene.addChild(createDirectionLight());
+                    director.scene.addChild(createCamera());
+
+                    director.start();
+                }
+
+                function setModelAndReturn() {
+                    var models = wd.LoaderManager.getInstance().get("model").getChild("models");
+
+                    // var model = models.getChild(0);
+                    //
+                    // model.transform.position = wd.Vector3.create(5, 0, 0);
+                    // model.transform.scale = wd.Vector3.create(10,10,10);
+
+                    return models;
+                }
+
+                function createAmbientLight() {
+                    var ambientLightComponent = wd.AmbientLight.create();
+                    ambientLightComponent.color = wd.Color.create("rgb(30, 30, 30)");
+
+                    var ambientLight = wd.GameObject.create();
+                    ambientLight.addComponent(ambientLightComponent);
+
+                    return ambientLight;
+                }
+
+                function createDirectionLight() {
+                    var directionLightComponent = wd.DirectionLight.create();
+                    directionLightComponent.color = wd.Color.create("#ffffff");
+                    directionLightComponent.intensity = 1;
+
+
+                    var directionLight = wd.GameObject.create();
+                    directionLight.addComponent(directionLightComponent);
+
+
+                    directionLight.transform.position = wd.Vector3.create(1,2,3)
+
+                    return directionLight;
+                }
+
+                function createCamera() {
+                    var camera = wd.GameObject.create(),
+                        view = wd.Director.getInstance().view,
+                        cameraComponent = wd.PerspectiveCamera.create();
+
+                    cameraComponent.fovy = 60;
+                    cameraComponent.aspect = view.width / view.height;
+                    cameraComponent.near = 0.1;
+                    cameraComponent.far = 1000;
+
+                    var controller = wd.ArcballCameraController.create(cameraComponent);
+                    controller.distance = 500;
+
+                    camera.addComponent(controller);
+
+                    return camera;
+                }
+            }
+
+            beforeEach(function (done) {
+                tester = SceneTester.create(sandbox);
+
+                renderTestTool.prepareContext();
+
+                tester.execBody(body, done);
+            });
+
+            it("test", function (done) {
+                tester.compareAt(1, "model/model_convertedFromOBJ.png", done);
+            });
+        });
+
+        describe("test models from md2", function () {
+            function body(wrapper){
+                wrapper.load([
+                    {url: "../../asset/model/wd/ratamahatta/ratamahatta.wd", id: "model"},
+                    {url: "../../asset/model/wd/ratamahatta/ratamahatta.png", id: "skin"}
+                ])
                     .do(initSample);
 
                 function initSample() {
@@ -48,6 +134,22 @@ describe("model", function () {
 
                     var geo = model.getComponent(wd.Geometry);
                     geo.material = material;
+
+                    //
+                    // var anim = model.getComponent(wd.Animation);
+                    // anim.play("stand", 10);
+
+
+//                    wd.Director.getInstance().scheduler.scheduleTime(function(){
+//                        anim.pause();
+////                anim.stop();
+//                    }, 1000);
+//
+//                    wd.Director.getInstance().scheduler.scheduleTime(function(){
+//                        anim.resume();
+////                anim.play("stand", 10);
+//                    }, 2000);
+
 
 
                     model.transform.rotate(0, -90, 0);
@@ -108,101 +210,31 @@ describe("model", function () {
             });
 
             it("test", function (done) {
-                tester.compareAt({
-                    frameIndex: 1,
-                    partialCorrectImagePath: "model/model_converter_md2.png",
-                    done: done
-                });
+                tester.compareAt(2, "model/model_convertedFromMD2.png", done);
             });
         });
 
-        describe("test convert from obj", function () {
+        describe("test models from gltf", function () {
             function body(wrapper){
                 wrapper.load([
-                        {url: "../../asset/model/wd/butterfly/butterfly.wd", id: "model"}
-                    ])
+                    {url: "../../asset/model/wd/duck/duck.wd", id: "model"}
+                ])
                     .do(initSample);
 
                 function initSample() {
                     var director = wd.Director.getInstance();
 
-                    wd.DebugConfig.debugCollision = true;
-
-                    director.renderer.setClearColor(wd.Color.create("#aaaaff"));
-
-                    director.scene.addChild(setModel());
-                    director.scene.addChild(createAmbientLight());
-                    director.scene.addChild(createDirectionLight());
-                    director.scene.addChild(createCamera());
+                    director.scene.addChildren(setModel());
 
                     director.start();
                 }
 
                 function setModel() {
-                    var model = wd.LoaderManager.getInstance().get("model").getChild("models").getChild(0);
+                    var models = wd.LoaderManager.getInstance().get("model").getChild("models");
 
-                    model.transform.scale = wd.Vector3.create(140, 140, 140);
 
-                    model.findChildrenByName("wing")
-                        .forEach(function (wing) {
-                            var wingMaterial = wing.getComponent(wd.Geometry).material;
-                            wingMaterial.side = wd.ESide.BOTH;
-                            wingMaterial.blendFuncSeparate = [wd.EBlendFunc.SRC_ALPHA, wd.EBlendFunc.ONE_MINUS_SRC_ALPHA, wd.EBlendFunc.ONE, wd.EBlendFunc.ONE_MINUS_SRC_ALPHA];
-                        });
-
-                    model.getChildren()
-                        .forEach(function (child) {
-                            var material = child.getComponent(wd.Geometry).material;
-                            material.shading = wd.EShading.SMOOTH;
-                        });
-
-                    //model.addComponent(wd.BoxCollider.create());
-
-                    return model;
+                    return models;
                 }
-
-                function createAmbientLight() {
-                    var ambientLightComponent = wd.AmbientLight.create();
-                    ambientLightComponent.color = wd.Color.create("rgb(30, 30, 30)");
-
-                    var ambientLight = wd.GameObject.create();
-                    ambientLight.addComponent(ambientLightComponent);
-
-                    return ambientLight;
-                }
-
-                function createDirectionLight() {
-                    var directionLightComponent = wd.DirectionLight.create();
-                    directionLightComponent.color = wd.Color.create("#ffffff");
-                    directionLightComponent.intensity = 2;
-
-
-                    var directionLight = wd.GameObject.create();
-                    directionLight.addComponent(directionLightComponent);
-
-
-                    return directionLight;
-                }
-
-                function createCamera() {
-                    var camera = wd.GameObject.create(),
-                        view = wd.Director.getInstance().view,
-                        cameraComponent = wd.PerspectiveCamera.create();
-
-                    cameraComponent.fovy = 60;
-                    cameraComponent.aspect = view.width / view.height;
-                    cameraComponent.near = 0.1;
-                    cameraComponent.far = 1000;
-
-                    var controller = wd.ArcballCameraController.create(cameraComponent);
-                    controller.distance = 60;
-
-                    camera.addComponent(controller);
-
-                    return camera;
-                }
-
-
             }
 
             beforeEach(function (done) {
@@ -213,10 +245,58 @@ describe("model", function () {
                 tester.execBody(body, done);
             });
 
-            it("test", function (done) {
+            it("test frame1", function (done) {
+                tester.compareAt(1, "model/model_convertedFromGLTF.png", done);
+            });
+        });
+
+        describe("test models from fbx", function () {
+            function body(wrapper){
+                wrapper.load([
+                    {url: "../../asset/model/wd/fromFBX/test.wd", id: "model"}
+                ])
+                    .do(initSample);
+
+                function initSample() {
+                    var director = wd.Director.getInstance();
+
+
+
+                    director.scene.addChildren(setModel());
+
+                    director.start();
+                }
+
+                function setModel() {
+                    var models = wd.LoaderManager.getInstance().get("model").getChild("models");
+
+                    models.forEach(function(model){
+                        if(model.hasComponent(wd.Animation)){
+                            model.getComponent(wd.Animation).play(0);
+                        }
+                    });
+
+
+                    return models;
+                }
+            }
+
+            beforeEach(function (done) {
+                tester = SceneTester.create(sandbox);
+
+                renderTestTool.prepareContext();
+
+                tester.execBody(body, done);
+            });
+
+            it("test frame1", function (done) {
+                tester.compareAt(1, "model/model_convertedFromFBX_frame1.png", done);
+            });
+            it("test frame3000", function (done) {
                 tester.compareAt({
-                    frameIndex: 1,
-                    partialCorrectImagePath: "model/model_converter_obj.png",
+                    frameIndex: 3000,
+                    step: 1000,
+                    partialCorrectImagePath: "model/model_convertedFromFBX_frame3000.png",
                     done: done
                 });
             });
