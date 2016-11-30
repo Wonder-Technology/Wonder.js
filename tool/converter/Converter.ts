@@ -5,9 +5,10 @@ import gutil = require("gulp-util");
 import wdFrp = require("wdfrp");
 import wdCb = require("wdcb");
 import Log = require("../ts/Log");
-import OBJToWD = require("./obj/OBJToWD");
-import MD2ToWD = require("./md2/MD2ToWD");
-import GLTFToWD = require("./gltf/GLTFToWD");
+import {OBJToWD} from "./obj/OBJToWD";
+import {MD2ToWD} from "./md2/MD2ToWD";
+import {GLTFToWD} from "./gltf/GLTFToWD";
+import {FBXToWD} from "./fbx/FBXToWD";
 
 export = class Converter {
     public static create() {
@@ -25,24 +26,22 @@ export = class Converter {
         this.version = fs.readJsonSync(path.join(__dirname, "../../../../package.json")).version;
     }
 
-    public convert(fileBuffer:Buffer, filePath:string):wdFrp.Stream {
+    public convert(fileBuffer:Buffer, filePath:string, sourceDir:string, destDir:string):wdFrp.Stream {
         var fileExtname = path.extname(filePath),
             result:wdFrp.Stream = null;
 
-        switch (fileExtname) {
+        switch (fileExtname.toLowerCase()) {
             case ".obj":
-                result = OBJToWD.OBJToWD.create(this.version).convert(fileBuffer, filePath);
+                result = OBJToWD.create(this.version).convert(fileBuffer, filePath);
                 break;
             case ".md2":
-                result = MD2ToWD.MD2ToWD.create(this.version).convert(fileBuffer, filePath);
+                result = MD2ToWD.create(this.version).convert(fileBuffer, filePath);
                 break;
             case ".gltf":
-                result = GLTFToWD.GLTFToWD.create(this.version).convert(fileBuffer, filePath);
+                result = GLTFToWD.create(this.version).convert(fileBuffer, filePath);
                 break;
-            case ".bin":
-                //todo just copy?
-                // result = GLTFToWD.GLTFToWD.create(this.version).convert(fileBuffer, filePath);
-                result = wdFrp.empty();
+            case ".fbx":
+                result = FBXToWD.create().convert(filePath, destDir);
                 break;
             default:
                 result = wdFrp.empty();
@@ -55,8 +54,15 @@ export = class Converter {
     public write(fileContentStream:wdFrp.Stream, sourceDir:string, destDir:string, filePath:string):wdFrp.Stream {
         var self = this;
 
-        return fileContentStream.flatMap(([fileJson, resourceUrlArr]) => {
-            var resultFilePath = self._getDestFilePath(sourceDir, destDir, filePath.replace(/\.\w+$/, self.extname));
+        // return fileContentStream.flatMap(([fileJson, resourceUrlArr]) => {
+            return fileContentStream.flatMap((data:any) => {
+            if(!data || data.length === 0 || !data[0]){
+                return wdFrp.just(null);
+            }
+
+            let fileJson = data[0],
+                resourceUrlArr = data[1],
+                resultFilePath = self._getDestFilePath(sourceDir, destDir, filePath.replace(/\.\w+$/, self.extname));
 
             if(resourceUrlArr && resourceUrlArr.length > 0){
                 return wdFrp.fromNodeCallback(fs.outputJson)(resultFilePath, fileJson)

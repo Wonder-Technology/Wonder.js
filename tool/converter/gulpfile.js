@@ -8,7 +8,19 @@ var del = require("del");
 var wdFrp = require("wdfrp");
 var path = require("path");
 
+var run = require("gulp-run");
+
 var commandUtils = require("./gulp_task/common/commandUtils");
+
+gulp.task("convertFBX", function(done){
+    run("python fbx/converter.py source/webgl-node-animation-threejs-example.fbx fbx/output.json").exec( function(){
+        console.log("callback");
+        var str = fs.readFileSync("fbx/output.json");
+
+        console.log(str.toString())
+        done();
+    })
+});
 
 
 gulp.task("convert", function (done) {
@@ -28,7 +40,7 @@ gulp.task("convert", function (done) {
                         .flatMap(function (fileBuffer) {
                             var filePath = data.path;
 
-                            return converter.write(converter.convert(fileBuffer, filePath), sourceDir, destDir, filePath);
+                            return converter.write(converter.convert(fileBuffer, filePath, sourceDir, destDir), sourceDir, destDir, filePath);
                         })
                 })
         )
