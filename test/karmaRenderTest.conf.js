@@ -33,11 +33,12 @@
             'test/render/helper/*.js',
 
 
-            'test/render/test/**',
+            // 'test/render/test/**',
 
 
 
 
+            'test/render/test/**/loader*',
 
             // 'test/render/test/**/oit*',
             // 'test/render/test/grass/*',
