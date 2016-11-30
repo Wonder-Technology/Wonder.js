@@ -333,6 +333,7 @@ describe("parse wd material", function() {
                         "samplers": {
                             "sampler_0": {
                                 "isPremultipliedAlpha": true,
+                                "repeatRegion": [0.1, 0.2, 2, 3]
                                 // "magFilter": 9729,
                                 // "minFilter": 9987,
                                 // "wrapS": 10497,
@@ -359,6 +360,7 @@ describe("parse wd material", function() {
                     expect(map.magFilter).toEqual(wd.ETextureFilterMode.LINEAR);
                     expect(map.wrapS).toEqual(wd.ETextureWrapMode.REPEAT);
                     expect(map.wrapT).toEqual(wd.ETextureWrapMode.REPEAT);
+                    expect(map.repeatRegion).toEqual(wd.RectRegion.create(0.1, 0.2, 2, 3));
                     expect(map.isPremultipliedAlpha).toBeTruthy();
                 });
             }

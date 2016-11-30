@@ -178,6 +178,14 @@ module wd{
             else{
                 asset.magFilter = ETextureFilterMode.LINEAR;
             }
+
+            if(!!sampler.repeatRegion){
+                asset.repeatRegion = this._getTextureRepeatRegion(sampler.repeatRegion);
+            }
+        }
+
+        private _getTextureRepeatRegion(repeatRegion:Array<number>){
+            return RectRegion.create(repeatRegion[0], repeatRegion[1], repeatRegion[2], repeatRegion[3]);
         }
 
         private _getTextureFilter(filter:number){

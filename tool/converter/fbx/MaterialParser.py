@@ -120,9 +120,9 @@ class MaterialParser(object):
         materialData["transparency"] = transparency
 
         if transparency < 1.0:
-            materialData["transparenct"] = True
+            materialData["transparent"] = True
         else:
-            materialData["transparenct"] = False
+            materialData["transparent"] = False
 
         # ambient = material.Ambient.Get()
         # ambient = [ambient[0], ambient[1], ambient[2]]
@@ -287,7 +287,7 @@ class MaterialParser(object):
         wrap_v = texture.GetWrapModeV()
 
         # TODO support texture rotation
-        repeatRegion = [texture.GetTranslationU(), texture.GetTranslationV(), texture.GetScaleU(), texture.GetScaleV()]
+        repeatRegion = [roundUtil(texture.GetTranslationU()), roundUtil(texture.GetTranslationV()), roundUtil(texture.GetScaleU()), roundUtil(texture.GetScaleV())]
 
         # print (id, texture.GetUVTranslation(), texture.GetScale())
 
