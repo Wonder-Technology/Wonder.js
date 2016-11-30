@@ -3,8 +3,6 @@ import wdCb = require("wdcb");
 
 import ExtendUtils = require("../../ts/ExtendUtils")
 
-import JudgeUtils = require("../../ts/JudgeUtils")
-import PathUtils = require("../common/PathUtils")
 
 import contract = require("../../ts/definition/typescript/decorator/contract");
 import chai = require("chai");
@@ -65,40 +63,7 @@ export class GLTFToWD {
         this._convertNodes(resultJson);
         this._clean(resultJson);
 
-        return wdFrp.just([resultJson, this._getResourceUrlArr(resultJson, filePath)]);
-    }
-
-    private _getResourceUrlArr(resultJson:any, filePath:string) {
-        var urlArr = [];
-
-        this._addBinsUrl(resultJson, urlArr, filePath);
-        this._addImagesUrl(resultJson, urlArr, filePath);
-
-        return wdCb.ArrayUtils.removeRepeatItems(urlArr);
-    }
-
-    private _addBinsUrl(resultJson:any, urlArr:Array<string>, filePath:string){
-        this._addFileUrl(resultJson, "buffers", urlArr, filePath);
-    }
-
-    private _addImagesUrl(resultJson:any, urlArr:Array<string>, filePath:string){
-        this._addFileUrl(resultJson, "images", urlArr, filePath);
-    }
-
-    private _addFileUrl(resultJson:any, type:string, urlArr:Array<string>, filePath:string){
-        if(!resultJson[type]){
-            return;
-        }
-
-        for (let name in resultJson[type]) {
-            if (resultJson[type].hasOwnProperty(name)) {
-                let file = resultJson[type][name];
-
-                if(JudgeUtils.isString(file.uri) && file.uri.match(/\.\w+$/) !== null){
-                    urlArr.push(PathUtils.getAbsoluteResourceUrl(filePath, file.uri));
-                }
-            }
-        }
+        return wdFrp.just([resultJson]);
     }
 
     private _convertAssets(resultJson:any){

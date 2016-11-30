@@ -212,25 +212,25 @@ describe("GLTFToWD", function () {
             }, done);
         });
     });
-
-    describe("parse resource url arr", function(){
-        beforeEach(function(){
-        });
-        
-        it("parse bin file", function(done){
-            judge(testFile, filePath1, function (json, resourceUrlArr) {
-                expect(resourceUrlArr[0]).toEqual(
-                        path.resolve(path.dirname(filePath1), "duck.bin")
-                );
-            }, done);
-        });
-        it("parse image files", function(done){
-            judge(testFile, filePath1, function (json, resourceUrlArr) {
-                expect(resourceUrlArr[1]).toEqual(
-                        path.resolve(path.dirname(filePath1), "duckCM.png")
-                );
-            }, done);
-        });
-    });
+    //
+    // describe("parse resource url arr", function(){
+    //     beforeEach(function(){
+    //     });
+    //
+    //     it("parse bin file", function(done){
+    //         judge(testFile, filePath1, function (json, resourceUrlArr) {
+    //             expect(resourceUrlArr[0]).toEqual(
+    //                     path.resolve(path.dirname(filePath1), "duck.bin")
+    //             );
+    //         }, done);
+    //     });
+    //     it("parse image files", function(done){
+    //         judge(testFile, filePath1, function (json, resourceUrlArr) {
+    //             expect(resourceUrlArr[1]).toEqual(
+    //                     path.resolve(path.dirname(filePath1), "duckCM.png")
+    //             );
+    //         }, done);
+    //     });
+    // });
 });
 

@@ -383,13 +383,6 @@ describe("OBJToWD", function () {
                     }
                 }
             )
-
-            expect(resourceUrlArr).toEqual(
-                [
-                    path.resolve(path.dirname(filePath1), "1.jpg"),
-                    path.resolve(path.dirname(filePath1), "./resource/2.png")
-                ]
-            );
         }, done);
     });
 });

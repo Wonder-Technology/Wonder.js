@@ -21,11 +21,15 @@ describe("Converter", function () {
         var testFile, testFile2;
         var testPath1, testPath2;
         var sourceDir;
+        var destDir;
 
         beforeEach(function () {
-            sourceDir = path.join(process.cwd(), "tool/converter/test/");
-            testPath1 = path.join(process.cwd(), "tool/converter/test/res/test.obj");
-            testPath2 = path.join(process.cwd(), "tool/converter/test/res/test2.obj");
+            sourceDir = path.join(process.cwd(), "../res/obj/");
+            destDir = path.join(process.cwd(), "../dest_forTest");
+
+
+            testPath1 = path.join(process.cwd(), "../res/obj/test.obj");
+            testPath2 = path.join(process.cwd(), "../res/obj/test2.obj");
         });
         beforeAll(function () {
             testFile = fs.readFileSync(testPath1);
@@ -44,23 +48,20 @@ describe("Converter", function () {
         }
 
         it("convert one file, get the .wd file and relative resource files", function (done) {
-            var destDir = path.join(process.cwd(), "tool/converter/test/dest_forTest");
-            converter.write(converter.convert(testFile, testPath1), sourceDir, destDir, testPath1)
+            converter.write(converter.convert(testFile, testPath1, sourceDir, destDir), sourceDir, destDir, testPath1)
                 .subscribe(function (data) {
                     console.log(data)
                 }, null, function () {
                     var resultFilePath = path.join(destDir, path.relative(sourceDir, testPath1));
                     var resultJson = readJSON(resultFilePath);
 
-                    expect(resultJson.metadata).toEqual({
-                        formatVersion: jasmine.any(String),
-                        description: '',
-                        sourceFile: testPath1,
-                        generatedBy: "OBJToWD"
+                    expect(resultJson.asset).toEqual({
+                        version: '0.7.0',
+                        generator: 'WonderJsOBJToWDConverter'
                     });
 
-                    //expect(fs.existsSync(path.resolve(path.dirname(resultFilePath), "1.jpg"))).toBeTruthy();
-                    //expect(fs.existsSync(path.resolve(path.dirname(resultFilePath), "./resource/2.png"))).toBeTruthy();
+                    expect(fs.existsSync(path.resolve(path.dirname(resultFilePath), "1.jpg"))).toBeTruthy();
+                    expect(fs.existsSync(path.resolve(path.dirname(resultFilePath), "./resource/2.png"))).toBeTruthy();
 
                     fs.removeSync(destDir);
 
@@ -69,10 +70,9 @@ describe("Converter", function () {
         });
 
         it("convert multi files, get the .wd file and relative resource files", function (done) {
-            var destDir = path.join(process.cwd(), "tool/converter/test/dest_forTest");
-            converter.write(converter.convert(testFile, testPath1), sourceDir, destDir, testPath1)
+            converter.write(converter.convert(testFile, testPath1, sourceDir, destDir), sourceDir, destDir, testPath1)
                 .merge(
-                    converter.write(converter.convert(testFile2, testPath2), sourceDir, destDir, testPath2)
+                    converter.write(converter.convert(testFile2, testPath2, sourceDir, destDir), sourceDir, destDir, testPath2)
                 )
                 .subscribe(function (data) {
                 }, null, function () {
@@ -81,9 +81,9 @@ describe("Converter", function () {
                     var resultJson1 = readJSON(resultFilePath1);
                     var resultJson2 = readJSON(resultFilePath2);
 
-                    expect(resultJson1.objects).toBeDefined();
+                    expect(resultJson1.nodes).toBeDefined();
                     expect(resultJson1.materials).toBeDefined();
-                    expect(resultJson2.objects).toBeDefined();
+                    expect(resultJson2.nodes).toBeDefined();
                     expect(resultJson2.materials).toBeDefined();
 
 

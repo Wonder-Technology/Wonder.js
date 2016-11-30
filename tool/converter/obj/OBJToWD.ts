@@ -4,7 +4,6 @@ import wdFrp = require("wdfrp");
 import wdCb = require("wdcb");
 import ObjectsConverter = require("./ObjectsConverter");
 import ModelLoaderUtils = require("../common/ModelLoaderUtils");
-import PathUtils = require("../common/PathUtils")
 
 import Log = require("../../ts/Log");
 
@@ -64,30 +63,11 @@ export class OBJToWD extends SingleModelConverter{
                 .map((data:string) => {
                     resultJson.materials = this._convertMaterials(resultJson, data.toString());
 
-                    return [resultJson, this._getResourceUrlArr(resultJson.images, filePath)];
+                    return [resultJson];
                 });
         }
 
-        return wdFrp.just([resultJson, null]);
-    }
-
-    private _getResourceUrlArr(images:any, filePath:string) {
-        var urlArr = [];
-
-        for (let name in images) {
-            if (images.hasOwnProperty(name)) {
-                let image = images[name],
-                    uri = image.uri;
-
-                urlArr.push(PathUtils.getAbsoluteResourceUrl(filePath, uri));
-            }
-        }
-
-        return wdCb.ArrayUtils.removeRepeatItems(urlArr);
-    }
-
-    private _getAbsoluteResourceUrl(filePath, resourceRelativeUrl) {
-        return path.resolve(path.dirname(filePath), resourceRelativeUrl);
+        return wdFrp.just([resultJson]);
     }
 
     private _convertObjects(resultJson:any, fileContent:string, nodeName:string) {
