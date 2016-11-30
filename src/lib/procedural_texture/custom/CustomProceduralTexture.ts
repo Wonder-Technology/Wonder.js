@@ -24,6 +24,8 @@ module wd {
 
             Director.getInstance().scene.addProceduralRenderTargetRenderer(CustomProceduralRenderTargetRenderer.create(this));
 
+            this.mapManager.init();
+
             return this;
         }
 
@@ -56,7 +58,7 @@ module wd {
                     let uniform:ShaderData = uniforms[name];
 
                     if(uniform.type === EVariableType.SAMPLER_2D){
-                        this.mapManager.addMap(<TwoDTexture>LoaderManager.getInstance().get(uniform.textureId), {
+                        this.mapManager.addMap(<TextureAsset>LoaderManager.getInstance().get(uniform.textureId), {
                             samplerVariableName: name
                         });
                     }

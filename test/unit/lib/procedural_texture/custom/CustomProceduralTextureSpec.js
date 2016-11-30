@@ -16,13 +16,22 @@ describe("CustomProceduralTexture", function () {
     });
 
 
-    describe("init", function(){
-        it("add CustomProceduralRenderTargetRenderer to scene", function(){
+    describe("init", function() {
+        it("add CustomProceduralRenderTargetRenderer to scene", function () {
             sandbox.stub(wd.Director.getInstance().scene, "addProceduralRenderTargetRenderer");
 
             texture.init();
 
             expect(wd.Director.getInstance().scene.addProceduralRenderTargetRenderer.firstCall.args[0]).toEqual(jasmine.any(wd.CustomProceduralRenderTargetRenderer));
+        });
+        it("create mapManager->textures->glTexture", function () {
+            var gl = wd.DeviceManager.getInstance().gl;
+
+            texture.mapManager.addMap(wd.ImageTexture.create({}));
+
+            texture.init();
+
+            expect(gl.createTexture).toCalledOnce();
         });
     });
 
