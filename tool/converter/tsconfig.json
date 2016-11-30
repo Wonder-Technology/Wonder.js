@@ -47,8 +47,6 @@
 		"./obj/MaterialsConverter.ts",
 		"./obj/ObjectsConverter.ts",
 		"./obj/OBJToWD.ts",
-
-
 		"./fbx/FBXToWD.ts",
 
 		"./gltf/GLTFToWD.ts",

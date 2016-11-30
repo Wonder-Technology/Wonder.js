@@ -41,7 +41,7 @@ export class FBXToWD{
     public convert(filePath:string, destDir:string):wdFrp.Stream {
         var fileName = ModelLoaderUtils.getNameByPath(filePath),
             promise = new Promise(function (resolve, reject) {
-                run(`python fbx/converter.py ${filePath} ${path.join(destDir, fileName + ".json")}`).exec( function(){
+                run(`python fbx/python/converter.py ${filePath} ${path.join(destDir, fileName + ".json")}`).exec( function(){
                 resolve();
             });
         });
