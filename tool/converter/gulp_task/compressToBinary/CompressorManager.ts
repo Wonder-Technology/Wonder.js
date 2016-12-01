@@ -201,7 +201,6 @@ export class CompressorManager {
                         }
                     }
 
-                    //todo test
                     if(Utils.hasData(primitiveData.morphTargets)){
                         for(let frame of primitiveData.morphTargets){
                             if (Utils.isArrayEmpty(frame.vertices)) {

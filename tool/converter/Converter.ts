@@ -55,26 +55,34 @@ export = class Converter {
     }
 
     public write(fileContentStream:wdFrp.Stream, sourceDir:string, destDir:string, filePath:string):wdFrp.Stream {
-        var self = this;
+        var self = this,
+            resultRelativeFilePath:string = null;
 
-        return fileContentStream.flatMap((data:any) => {
+        return fileContentStream.concatMap((data:any) => {
             if(!data || data.length === 0 || !data[0]){
-                return wdFrp.just(null);
+                return wdFrp.empty();
             }
 
             let [fileJson] = data,
-                resultFilePath = self._getDestFilePath(sourceDir, destDir, filePath.replace(/\.\w+$/, self.extname)),
                 resourceUrlArr = self._getResourceUrlArr(fileJson, filePath);
 
+            resultRelativeFilePath = self._getRelativeDestFilePath(sourceDir, destDir, filePath.replace(/\.\w+$/, self.extname));
+
             if(resourceUrlArr && resourceUrlArr.length > 0){
-                return wdFrp.fromNodeCallback(fs.outputJson)(resultFilePath, fileJson)
-                    .merge(
-                        self._createCopyResourceStream(resourceUrlArr, sourceDir, destDir)
+                return self._createCopyResourceStream(resourceUrlArr, sourceDir, destDir)
+                    .ignoreElements()
+                    .concat(
+                        wdFrp.fromNodeCallback(fs.outputJson)(resultRelativeFilePath, fileJson)
                     )
             }
-
-            return wdFrp.fromNodeCallback(fs.outputJson)(resultFilePath, fileJson);
+            else{
+                return wdFrp.fromNodeCallback(fs.outputJson)(resultRelativeFilePath, fileJson);
+            }
         })
+        .map(() => {
+            return resultRelativeFilePath;
+        })
+            // .concat(wdFrp.just(resultRelativeFilePath));
     }
 
     private _getResourceUrlArr(resultJson:any, filePath:string) {
@@ -113,11 +121,11 @@ export = class Converter {
     private _createCopyResourceStream(resourceUrlArr, sourceDir, destDir){
         return wdFrp.fromArray(resourceUrlArr)
             .flatMap((resourceUrl:string) => {
-                return wdFrp.fromNodeCallback(fs.copy)(resourceUrl, this._getDestFilePath(sourceDir, destDir, resourceUrl));
+                return wdFrp.fromNodeCallback(fs.copy)(resourceUrl, this._getRelativeDestFilePath(sourceDir, destDir, resourceUrl));
             })
     }
 
-    private _getDestFilePath(sourceDir:string, destDir:string, sourceFilePath:string){
+    private _getRelativeDestFilePath(sourceDir:string, destDir:string, sourceFilePath:string){
         return path.join(destDir, path.relative(sourceDir, sourceFilePath));
     }
 }
