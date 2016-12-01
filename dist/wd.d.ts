@@ -1,6 +1,6 @@
 /*!
  * wonder - 3d html5 game engine
- * @version v0.7.0
+ * @version v0.8.0
  * @author Yuanchao Yang <395976266@qq.com>
  * @link https://github.com/yyc-git/Wonder.js
  * @license MIT
@@ -2016,6 +2016,13 @@ declare module wd {
 }
 
 declare module wd {
+    class AngleUtils {
+        static convertDegreeToRadians(angle: number): number;
+        static convertRadiansToDegree(angle: number): number;
+    }
+}
+
+declare module wd {
     class ArrayUtils extends wdCb.ArrayUtils {
         static hasRepeatItems(arr: Array<any>): boolean;
         static contain(arr: Array<any>, item: any): boolean;
@@ -2056,7 +2063,6 @@ declare module wd {
 
 declare module wd {
     class GlobalScriptUtils {
-        static handlerAfterLoadedScript(entityObject: EntityObject): void;
         static addScriptToEntityObject(entityObject: EntityObject, data: ScriptFileData): void;
     }
 }
@@ -2440,6 +2446,7 @@ declare module wd {
         private static _count;
         constructor();
         uid: number;
+        data: any;
         private _tagList;
         addTag(tag: string): void;
         removeTag(tag: string): void;
@@ -2601,7 +2608,7 @@ declare module wd {
         readonly transform: Transform;
         name: string;
         parent: EntityObject;
-        isVisible: boolean;
+        customEventMap: wdCb.Hash<wdCb.Collection<CustomEventRegisterData>>;
         scriptManager: ScriptManager;
         protected componentManager: ComponentManager;
         private _hasComponentCache;
@@ -2755,6 +2762,8 @@ declare module wd {
         static create(): UIObject;
         transform: RectTransform;
         parent: UIObject;
+        private _isVisible;
+        isVisible: boolean;
         protected children: wdCb.Collection<UIObject>;
         protected createTransform(): RectTransform;
         initWhenCreate(): void;
@@ -2771,6 +2780,7 @@ declare module wd {
         parent: GameObject;
         renderGroup: number;
         renderPriority: number;
+        isVisible: boolean;
         protected children: wdCb.Collection<GameObject>;
         initWhenCreate(): void;
         getSpacePartition(): SpacePartition;
@@ -3091,27 +3101,29 @@ declare module wd {
 
 declare module wd {
     abstract class EventListenerMap {
-        protected listenerMap: wdCb.Hash<wdCb.Collection<EventRegisterData>>;
         abstract getChild(...args: any[]): wdCb.Collection<any>;
         abstract removeChild(...args: any[]): any;
-        hasChild(target: EntityObject, eventName: EEventName): boolean;
-        hasChild(dom: HTMLElement, eventName: EEventName): boolean;
-        hasChildWithFunc(func: (...args) => boolean): boolean;
-        appendChild(target: EntityObject | HTMLElement, eventName: EEventName, data: any): void;
-        filter(func: Function): wdCb.Hash<wdCb.Collection<EventRegisterData>>;
-        forEach(func: Function): wdCb.Hash<wdCb.Collection<EventRegisterData>>;
-        getEventNameFromKey(key: string): EEventName;
-        protected abstract buildKey(...args: any[]): string;
-        protected abstract getEventSeparator(): string;
-        protected isEventName(key: string, eventName: EEventName): boolean;
+        abstract hasChild(...args: any[]): boolean;
+        abstract appendChild(...args: any[]): void;
+        abstract forEachAll(func: (list: wdCb.Collection<any>, eventName: EEventName) => void): void;
+        abstract forEachEventName(func: (list: wdCb.Collection<any>, eventName: EEventName) => void): void;
+        abstract clear(): void;
+        protected abstract buildFirstLevelKey(target: EntityObject | HTMLElement): string;
+        protected buildSecondLevelKey(eventName: EEventName): string;
     }
 }
 
 declare module wd {
     class CustomEventListenerMap extends EventListenerMap {
-        static eventSeparator: string;
         static create(): CustomEventListenerMap;
-        protected listenerMap: wdCb.Hash<wdCb.Collection<CustomEventRegisterData>>;
+        private _globalListenerMap;
+        private _targetRecordMap;
+        hasChild(target: EntityObject): boolean;
+        appendChild(eventName: EEventName, data: any): any;
+        appendChild(target: EntityObject, eventName: EEventName, data: any): any;
+        forEachAll(func: (list: wdCb.Collection<CustomEventRegisterData>, eventName: EEventName) => void): void;
+        forEachEventName(func: (list: wdCb.Collection<CustomEventRegisterData>, eventName: EEventName) => void): void;
+        clear(): void;
         getChild(eventName: EEventName): wdCb.Collection<CustomEventRegisterData>;
         getChild(target: EntityObject): wdCb.Collection<CustomEventRegisterData>;
         getChild(target: EntityObject, eventName: EEventName): wdCb.Collection<CustomEventRegisterData>;
@@ -3121,31 +3133,27 @@ declare module wd {
         removeChild(uid: number, eventName: EEventName): void;
         removeChild(target: EntityObject, eventName: EEventName): void;
         removeChild(target: EntityObject, eventName: EEventName, handler: Function): void;
-        getUidFromKey(key: string): number;
-        isTarget(key: string, target: EntityObject, list: wdCb.Collection<CustomEventRegisterData>): boolean;
-        protected getEventSeparator(): string;
-        protected buildKey(uid: number, eventName: EEventName): string;
-        protected buildKey(target: EntityObject, eventName: EEventName): string;
-        private _buildKeyWithUid(uid, eventName);
-        private _buildKeyPrefix(uid);
+        protected buildFirstLevelKey(target: EntityObject): any;
+        protected buildFirstLevelKey(uid: number): any;
     }
 }
 
 declare module wd {
     class DomEventListenerMap extends EventListenerMap {
-        static eventSeparator: string;
         static create(): DomEventListenerMap;
-        protected listenerMap: wdCb.Hash<wdCb.Collection<DomEventRegisterData>>;
-        getChild(eventName: EEventName): wdCb.Collection<DomEventRegisterData>;
+        private _targetListenerMap;
+        hasChild(dom: HTMLElement, eventName: EEventName): boolean;
+        appendChild(dom: HTMLElement, eventName: EEventName, data: any): void;
+        forEachAll(func: (list: wdCb.Collection<DomEventRegisterData>, eventName: EEventName) => void): void;
+        forEachEventName(func: (list: wdCb.Collection<DomEventRegisterData>, eventName: EEventName) => void): void;
+        clear(): void;
+        getChild(dom: HTMLElement): wdCb.Collection<DomEventRegisterData>;
         getChild(dom: HTMLElement, eventName: EEventName): wdCb.Collection<DomEventRegisterData>;
-        removeChild(eventName: EEventName): wdCb.Collection<wdCb.Collection<DomEventOffData>>;
-        removeChild(eventName: EEventName, handler: Function): wdCb.Collection<wdCb.Collection<DomEventOffData>>;
-        removeChild(dom: HTMLElement, eventName: EEventName): wdCb.Collection<wdCb.Collection<DomEventOffData>>;
-        removeChild(dom: HTMLElement, eventName: EEventName, handler: Function): wdCb.Collection<wdCb.Collection<DomEventOffData>>;
-        isDom(key: string, dom: HTMLElement, list: wdCb.Collection<DomEventRegisterData>): boolean;
-        protected getEventSeparator(): string;
-        protected buildKey(dom: HTMLElement, eventName: EEventName): string;
-        private _buildKeyPrefix(dom);
+        removeChild(eventName: EEventName): wdCb.Collection<DomEventOffData>;
+        removeChild(eventName: EEventName, handler: Function): wdCb.Collection<DomEventOffData>;
+        removeChild(dom: HTMLElement, eventName: EEventName): wdCb.Collection<DomEventOffData>;
+        removeChild(dom: HTMLElement, eventName: EEventName, handler: Function): wdCb.Collection<DomEventOffData>;
+        protected buildFirstLevelKey(dom: HTMLElement): string;
         private _getEventDataOffDataList(eventName, result);
     }
     type DomEventOffData = {
@@ -3262,7 +3270,10 @@ declare module wd {
 
 declare module wd {
     class CustomEvent extends Event {
-        static create(eventName: string): CustomEvent;
+        static create(eventName: string): any;
+        static create(eventName: string, userData: any): any;
+        constructor(eventName: EEventName);
+        constructor(eventName: EEventName, userData: any);
         userData: any;
         protected p_type: EEventType;
         copyPublicAttri(destination: any, source: any): any;
@@ -3308,6 +3319,7 @@ declare module wd {
 
 declare module wd {
     abstract class DomEventHandler extends EventHandler {
+        off(): void;
         off(eventName: EEventName): void;
         off(eventName: EEventName, handler: Function): void;
         off(dom: HTMLElement, eventName: EEventName): void;
@@ -3416,17 +3428,17 @@ declare module wd {
     abstract class EventRegister {
         protected abstract listenerMap: EventListenerMap;
         abstract register(...args: any[]): void;
-        abstract remove(...args: any[]): void;
+        abstract remove(...args: any[]): any;
         getEventRegisterDataList(eventName: EEventName): any;
         getEventRegisterDataList(currentTarget: EntityObject, eventName: EEventName): any;
         getEventRegisterDataList(dom: HTMLElement, eventName: EEventName): any;
-        filter(func: Function): wdCb.Hash<wdCb.Collection<EventRegisterData>>;
-        forEach(func: Function): wdCb.Hash<wdCb.Collection<EventRegisterData>>;
-        getChild(eventName: EEventName): any;
+        forEachAll(func: (list: wdCb.Collection<any>, eventName: EEventName) => void): void;
+        forEachEventName(func: (list: wdCb.Collection<EventRegisterData>, eventName: EEventName) => void): void;
+        clear(): void;
         getChild(target: EntityObject): any;
+        getChild(dom: HTMLElement): any;
         getChild(target: EntityObject, eventName: EEventName): any;
         getChild(dom: HTMLElement, eventName: EEventName): any;
-        getEventNameFromKey(key: string): EEventName;
     }
     type EventRegisterData = {
         originHandler: Function;
@@ -3441,7 +3453,8 @@ declare module wd {
         static getInstance(): any;
         private constructor();
         protected listenerMap: CustomEventListenerMap;
-        register(target: EntityObject, eventName: EEventName, handler: Function, originHandler: Function, domHandler: Function, priority: number): void;
+        register(eventName: EEventName, handler: Function, originHandler: Function, domHandler: Function, priority: number): any;
+        register(target: EntityObject, eventName: EEventName, handler: Function, originHandler: Function, domHandler: Function, priority: number): any;
         remove(eventName: EEventName): any;
         remove(target: EntityObject): any;
         remove(eventName: EEventName, handler: Function): any;
@@ -3449,8 +3462,6 @@ declare module wd {
         remove(target: EntityObject, eventName: EEventName): any;
         remove(target: EntityObject, eventName: EEventName, handler: Function): any;
         setBubbleParent(target: EntityObject, parent: EntityObject): void;
-        getUidFromKey(key: string): number;
-        isTarget(key: string, target: EntityObject, list: wdCb.Collection<CustomEventRegisterData>): boolean;
         private _isAllEventHandlerRemoved(target);
         private _handleAfterAllEventHandlerRemoved(target);
     }
@@ -3474,7 +3485,6 @@ declare module wd {
         remove(dom: HTMLElement, eventName: EEventName): any;
         remove(dom: HTMLElement, eventName: EEventName, handler: Function): any;
         isBinded(dom: HTMLElement, eventName: EEventName): boolean;
-        isDom(key: string, dom: HTMLElement, list: wdCb.Collection<DomEventRegisterData>): boolean;
         getDomHandler(dom: HTMLElement, eventName: EEventName): Function;
     }
     type DomEventRegisterData = {
@@ -3837,13 +3847,10 @@ declare module wd {
     class Script extends Component {
         static scriptList: wdCb.Stack<ScriptFileData>;
         static create(): Script;
-        static create(url: string): Script;
+        static create(id: string): Script;
         static addScript(scriptName: string, _class: Function): void;
-        constructor(url?: string);
-        url: string;
-        private _subscription;
-        dispose(): void;
-        createLoadJsStream(): any;
+        constructor(id?: string);
+        id: string;
         addToObject(entityObject: EntityObject, isShareComponent?: boolean): void;
     }
     type ScriptFileData = {
@@ -3943,6 +3950,7 @@ declare module wd {
 declare module wd {
     class RectTransform extends Transform {
         static create(): RectTransform;
+        entityObject: UIObject;
         private _rotationMatrix;
         readonly rotationMatrix: Matrix3;
         private _localPositionAndScaleMatrix;
@@ -3993,6 +4001,7 @@ declare module wd {
         private _getParentHeight();
         private _getParentPosition();
         private _getParentScale();
+        private _markRendererDirty();
     }
 }
 
@@ -4125,8 +4134,7 @@ declare module wd {
 }
 
 declare module wd {
-    class ArticulatedAnimation extends Animation {
-        static create(): ArticulatedAnimation;
+    abstract class ArticulatedAnimation extends Animation {
         data: ArticulatedAnimationData;
         private _currentFrame;
         private _currentAnimName;
@@ -4140,6 +4148,7 @@ declare module wd {
         dispose(): void;
         play(animName: string): any;
         play(animIndex: number): any;
+        protected abstract updateTarget(target: ArticulatedAnimationFrameTargetData, startFrameData: any, endFrameData: any, interpolation: number): void;
         protected handleWhenPause(elapsed: number): void;
         protected handleWhenCurrentFrameFinish(elapsed: number): void;
         protected handleBeforeJudgeWhetherCurrentFrameFinish(elapsed: number): void;
@@ -4149,13 +4158,11 @@ declare module wd {
         private _updateTargets(elapsed);
         private _computeInterpolation(elapsed, interpolationMethod);
         private _saveStartFrameData(frameData);
-        private _saveStartFrameData(startTransform);
         private _updateCurrentFrameData();
         private _updateFrame(elapsed);
         private _getBeginElapsedTimeOfFirstFrameWhenFinishAllFrames(elapsed);
         private _isFinishAllFrames();
         private _updateCurrentFrameIndex(elapsed);
-        private _isFrameData(data);
     }
     type ArticulatedAnimationData = wdCb.Hash<wdCb.Collection<ArticulatedAnimationFrameData>>;
     type ArticulatedAnimationFrameData = {
@@ -4166,12 +4173,42 @@ declare module wd {
         interpolationMethod: EKeyFrameInterpolation;
         target: EArticulatedAnimationTarget;
         data: any;
+        extra?: any;
+    };
+}
+
+declare module wd {
+    class TransformArticulatedAnimation extends ArticulatedAnimation {
+        static create(): TransformArticulatedAnimation;
+        protected updateTarget(target: TransformArticulatedAnimationFrameTargetData, startFrameData: any, endFrameData: any, interpolation: number): void;
+    }
+    type TransformArticulatedAnimationFrameTargetData = {
+        interpolationMethod: EKeyFrameInterpolation;
+        target: EArticulatedAnimationTarget;
+        data: any;
+    };
+}
+
+declare module wd {
+    class TextureArticulatedAnimation extends ArticulatedAnimation {
+        static create(): TextureArticulatedAnimation;
+        protected updateTarget(target: TextureArticulatedAnimationFrameTargetData, startFrameData: Array<number>, endFrameData: Array<number>, interpolation: number): void;
+        private _updateTextureData(target, startFrameData, endFrameData, interpolation);
+    }
+    type TextureArticulatedAnimationFrameTargetData = {
+        interpolationMethod: EKeyFrameInterpolation;
+        target: EArticulatedAnimationTarget;
+        data: Array<number>;
+        extra: {
+            target: string;
+        };
     };
 }
 
 declare module wd {
     enum EKeyFrameInterpolation {
-        LINEAR = 0,
+        LINEAR,
+        SWITCH,
     }
 }
 
@@ -4180,6 +4217,7 @@ declare module wd {
         TRANSLATION,
         ROTATION,
         SCALE,
+        TEXTURE_OFFSET,
     }
 }
 
@@ -4203,7 +4241,7 @@ declare module wd {
         createBuffersFromGeometryData(): void;
         protected computeNormals(): void;
         protected createBufferContainer(): BufferContainer;
-        protected createGeometryData(vertices: Array<number>, faces: Array<Face3>, texCoords: Array<number>, colors: Array<number>, morphTargets: wdCb.Hash<MorphTargetsData>): GeometryData;
+        protected createGeometryData(vertices: Array<number>, faces: Array<Face3>, texCoords: Array<number>, colors: Array<number>, morphVertices: wdCb.Hash<MorphTargetsData>): GeometryData;
         protected createBasicGeometryData(vertices: Array<number>, faces: Array<Face3>, texCoords: Array<number>, colors: Array<number>): BasicGeometryData;
     }
     type GeometryDataType = {
@@ -4211,7 +4249,7 @@ declare module wd {
         faces?: Array<Face3>;
         texCoords?: Array<number>;
         colors?: Array<number>;
-        morphTargets?: wdCb.Hash<MorphTargetsData>;
+        morphVertices?: wdCb.Hash<MorphTargetsData>;
     };
 }
 
@@ -4353,7 +4391,7 @@ declare module wd {
         colors: Array<number>;
         texCoords: Array<number>;
         faces: Array<Face3>;
-        morphTargets: wdCb.Hash<MorphTargetsData>;
+        morphVertices: wdCb.Hash<MorphTargetsData>;
         morphFaceNormals: wdCb.Hash<wdCb.Collection<Array<number>>>;
         morphVertexNormals: wdCb.Hash<wdCb.Collection<Array<number>>>;
         buffers: MorphBufferContainer;
@@ -4372,7 +4410,7 @@ declare module wd {
         protected computeNormals(): void;
         computeData(): any;
         protected createBufferContainer(): BufferContainer;
-        protected createGeometryData(vertices: Array<number>, faces: Array<Face3>, texCoords: Array<number>, colors: Array<number>, morphTargets: wdCb.Hash<MorphTargetsData>): GeometryData;
+        protected createGeometryData(vertices: Array<number>, faces: Array<Face3>, texCoords: Array<number>, colors: Array<number>, morphVertices: wdCb.Hash<MorphTargetsData>): GeometryData;
         private _hasMorphTargets();
         private _getDeepCloneMorphData(source);
     }
@@ -4548,7 +4586,7 @@ declare module wd {
         static create(geometry: Geometry): MorphGeometryData;
         readonly morphNormals: any;
         private _morphTargets;
-        morphTargets: wdCb.Hash<MorphTargetsData>;
+        morphVertices: wdCb.Hash<MorphTargetsData>;
         protected geometry: ModelGeometry;
         private _morphNormalCache;
         private _morphNormalDirty;
@@ -4651,6 +4689,7 @@ declare module wd {
         entityObject: GameObject;
         protected dirty: boolean;
         abstract convertScreenToWorld(screenX: number, screenY: number, distanceFromCamera: number): Vector3;
+        abstract convertWorldToScreen(worldX: number, worldY: number, worldZ: number, screenWidth: number, screenHeight: number): Vector2;
         init(): void;
         dispose(): void;
         clone(): this;
@@ -4672,6 +4711,7 @@ declare module wd {
         private _top;
         top: number;
         convertScreenToWorld(screenX: number, screenY: number, distanceFromCamera: number): Vector3;
+        convertWorldToScreen(worldX: number, worldY: number, worldZ: number, screenWidth: number, screenHeight: number): Vector2;
         protected updateProjectionMatrix(): void;
     }
 }
@@ -4686,6 +4726,7 @@ declare module wd {
         zoomIn(speed: number, min?: number): void;
         zoomOut(speed: number, max?: number): void;
         convertScreenToWorld(screenX: number, screenY: number, distanceFromCamera: number): Vector3;
+        convertWorldToScreen(worldX: number, worldY: number, worldZ: number, screenWidth: number, screenHeight: number): Vector2;
         protected updateProjectionMatrix(): void;
     }
 }
@@ -4707,6 +4748,7 @@ declare module wd {
         isIntersectWithRay(entityObject: GameObject, screenX: number, screenY: number): boolean;
         createRay(screenX: number, screenY: number): Ray;
         convertScreenToWorld(screenX: number, screenY: number, distanceFromCamera: number): Vector3;
+        convertWorldToScreen(worldX: number, worldY: number, worldZ: number, screenWidth: number, screenHeight: number): Vector2;
         getPlanes(): Array<Plane>;
         protected bindClearCacheEvent(): void;
         protected disposeClearCacheEvent(): void;
@@ -4763,6 +4805,7 @@ declare module wd {
         private _move(event);
         private _bindCanvasEvent();
         private _removeEvent();
+        private _updateTransform();
     }
 }
 
@@ -4819,6 +4862,7 @@ declare module wd {
         private _constrainDistance();
         private _constrainTheta();
         private _removeEvent();
+        private _updateTransform();
     }
 }
 
@@ -6397,6 +6441,12 @@ declare module wd {
 }
 
 declare module wd {
+    class UIRendererUtils {
+        static getUIRenderer(uiObject: UIObject): UIRenderer;
+    }
+}
+
+declare module wd {
     abstract class RenderTargetRenderer {
         constructor(renderTargetTexture: RenderTargetTexture);
         texture: RenderTargetTexture;
@@ -6772,7 +6822,7 @@ declare module wd {
         sendVector2(name: string, data: any): void;
         sendVector3(name: string, data: any): void;
         sendVector4(name: string, data: any): void;
-        sendColor4(name: string, data: any): void;
+        sendColor3(name: string, data: any): void;
         sendNum1(name: string, data: any): void;
         sendMatrix3(name: string, data: any): void;
         sendMatrix4(name: string, data: any): void;
@@ -6800,7 +6850,7 @@ declare module wd {
         sendVector2(name: string, data: any): void;
         sendVector3(name: string, data: any): void;
         sendVector4(name: string, data: any): void;
-        sendColor4(name: string, data: Color): void;
+        sendColor3(name: string, data: Color): void;
         sendNum1(name: string, data: number): void;
         sendMatrix3(name: string, data: Matrix3): void;
         sendMatrix4(name: string, data: Matrix4): void;
@@ -7416,6 +7466,7 @@ declare module wd {
         VECTOR_2,
         VECTOR_3,
         VECTOR_4,
+        COLOR_3,
         FLOAT_MAT3,
         FLOAT_MAT4,
         BUFFER,
@@ -7721,7 +7772,7 @@ declare module wd {
     class EndBasicShaderLib extends EngineShaderLib {
         static create(): EndBasicShaderLib;
         type: string;
-        sendShaderVariables(program: Program, cmd: QuadCommand, material: EngineMaterial): void;
+        setShaderDefinition(cmd: QuadCommand, material: StandardBasicMaterial): void;
     }
 }
 
@@ -7916,7 +7967,7 @@ declare module wd {
     class LightEndShaderLib extends EngineShaderLib {
         static create(): LightEndShaderLib;
         type: string;
-        sendShaderVariables(program: Program, cmd: QuadCommand, material: LightMaterial): void;
+        setShaderDefinition(cmd: QuadCommand, material: LightMaterial): void;
     }
 }
 
@@ -7998,8 +8049,6 @@ declare module wd {
     class NoSpecularMapShaderLib extends EngineShaderLib {
         static create(): NoSpecularMapShaderLib;
         type: string;
-        sendShaderVariables(program: Program, cmd: QuadCommand, material: LightMaterial): void;
-        setShaderDefinition(cmd: QuadCommand, material: EngineMaterial): void;
     }
 }
 
@@ -8219,12 +8268,12 @@ declare module wd {
         static light_fragment: GLSLChunk;
         static light_setWorldPosition_vertex: GLSLChunk;
         static light_vertex: GLSLChunk;
+        static skybox_fragment: GLSLChunk;
+        static skybox_vertex: GLSLChunk;
         static map_forBasic_fragment: GLSLChunk;
         static map_forBasic_vertex: GLSLChunk;
         static multi_map_forBasic_fragment: GLSLChunk;
         static multi_map_forBasic_vertex: GLSLChunk;
-        static skybox_fragment: GLSLChunk;
-        static skybox_vertex: GLSLChunk;
         static basic_forBasic_envMap_fragment: GLSLChunk;
         static basic_forBasic_envMap_vertex: GLSLChunk;
         static forBasic_envMap_fragment: GLSLChunk;
@@ -8269,12 +8318,12 @@ declare module wd {
         static twoDShadowMap_fragment: GLSLChunk;
         static twoDShadowMap_unpackDepth_fragment: GLSLChunk;
         static twoDShadowMap_vertex: GLSLChunk;
+        static modelMatrix_batch_instance_vertex: GLSLChunk;
+        static normalMatrix_batch_instance_vertex: GLSLChunk;
         static modelMatrix_hardware_instance_vertex: GLSLChunk;
         static normalMatrix_hardware_instance_vertex: GLSLChunk;
         static modelMatrix_noInstance_vertex: GLSLChunk;
         static normalMatrix_noInstance_vertex: GLSLChunk;
-        static modelMatrix_batch_instance_vertex: GLSLChunk;
-        static normalMatrix_batch_instance_vertex: GLSLChunk;
         static basic_bitmapFont_fragment: GLSLChunk;
         static common_bitmapFont_vertex: GLSLChunk;
         static grass_batch_instance_vertex: GLSLChunk;
@@ -8298,6 +8347,15 @@ declare module wd {
         static sdf_bitmapFont_smoothStep_fallback: GLSLChunk;
         static sdf_bitmapFont_smoothStep_standardDerivatives: GLSLChunk;
         static sdf_bitmapFont_smooth_fragment: GLSLChunk;
+        static brick_proceduralTexture_fragment: GLSLChunk;
+        static cloud_proceduralTexture_fragment: GLSLChunk;
+        static common_proceduralTexture_fragment: GLSLChunk;
+        static common_proceduralTexture_vertex: GLSLChunk;
+        static fire_proceduralTexture_fragment: GLSLChunk;
+        static grass_proceduralTexture_fragment: GLSLChunk;
+        static marble_proceduralTexture_fragment: GLSLChunk;
+        static road_proceduralTexture_fragment: GLSLChunk;
+        static wood_proceduralTexture_fragment: GLSLChunk;
         static common_heightMap: GLSLChunk;
         static common_light: GLSLChunk;
         static mirror_fragment: GLSLChunk;
@@ -8312,15 +8370,6 @@ declare module wd {
         static water_reflection_fragment: GLSLChunk;
         static water_refraction_fragment: GLSLChunk;
         static water_vertex: GLSLChunk;
-        static brick_proceduralTexture_fragment: GLSLChunk;
-        static cloud_proceduralTexture_fragment: GLSLChunk;
-        static common_proceduralTexture_fragment: GLSLChunk;
-        static common_proceduralTexture_vertex: GLSLChunk;
-        static fire_proceduralTexture_fragment: GLSLChunk;
-        static grass_proceduralTexture_fragment: GLSLChunk;
-        static marble_proceduralTexture_fragment: GLSLChunk;
-        static road_proceduralTexture_fragment: GLSLChunk;
-        static wood_proceduralTexture_fragment: GLSLChunk;
     }
     type GLSLChunk = {
         top?: string;
@@ -8419,6 +8468,7 @@ declare module wd {
         specularColor: Color;
         emissionColor: Color;
         lightMapIntensity: number;
+        alphaTest: number;
         init(): void;
         protected addTopExtendShaderLib(): void;
         protected addExtendShaderLib(): void;
@@ -8436,10 +8486,11 @@ declare module wd {
 
 declare module wd {
     abstract class StandardBasicMaterial extends EngineMaterial {
-        readonly mapList: wdCb.Collection<ProceduralTexture | BasicTexture>;
+        readonly mapList: wdCb.Collection<BasicTexture | ProceduralTexture>;
         private _map;
         map: Texture | TextureAsset | Array<Texture> | Array<TextureAsset>;
         opacity: number;
+        alphaTest: number;
         protected addExtendShaderLib(): void;
         protected addShaderLib(): void;
         private _setMapShaderLib();
@@ -8528,6 +8579,7 @@ declare module wd {
     enum EAssetType {
         UNKNOW = 0,
         FONT = 1,
+        SCRIPT = 2,
     }
 }
 
@@ -8569,6 +8621,15 @@ declare module wd {
 }
 
 declare module wd {
+    class ScriptLoader extends Loader {
+        static getInstance(): any;
+        private constructor();
+        protected loadAsset(url: string, id: string): wdFrp.Stream;
+        protected loadAsset(url: Array<string>, id: string): wdFrp.Stream;
+    }
+}
+
+declare module wd {
     class JSONLoader extends Loader {
         static getInstance(): any;
         private constructor();
@@ -8587,6 +8648,15 @@ declare module wd {
 }
 
 declare module wd {
+    class SoundLoader extends Loader {
+        static getInstance(): any;
+        private constructor();
+        protected loadAsset(url: string, id: string): wdFrp.Stream;
+        protected loadAsset(url: Array<string>, id: string): wdFrp.Stream;
+    }
+}
+
+declare module wd {
     class TextureLoader extends Loader {
         static getInstance(): any;
         private constructor();
@@ -8596,14 +8666,34 @@ declare module wd {
 }
 
 declare module wd {
-    class ImageLoader {
-        static load(url: string): wdFrp.FromPromiseStream;
+    class AjaxLoader {
+        static load(url: string, dataType: string): wdFrp.FromPromiseStream;
     }
 }
 
 declare module wd {
-    class AjaxLoader {
-        static load(url: string, dataType: string): wdFrp.FromPromiseStream;
+    class BufferReader {
+        static create(arraybuffer: any, byteOffset: number, byteLength: number): BufferReader;
+        readonly arraybuffer: any;
+        readonly byteLength: number;
+        readonly byteOffset: number;
+        private _dataView;
+        private _offset;
+        initWhenCreate(arraybuffer: any, byteOffset: number, byteLength: number): void;
+        readInt8(): number;
+        readUInt8(): number;
+        readInt16(): number;
+        readUInt16(): number;
+        readInt32(): number;
+        readUInt32(): number;
+        readFloat(): number;
+        seek(pos: number): void;
+    }
+}
+
+declare module wd {
+    class ImageLoader {
+        static load(url: string): wdFrp.FromPromiseStream;
     }
 }
 
@@ -8628,6 +8718,7 @@ declare module wd {
         packAlignment: number;
         flipY: boolean;
         premultiplyAlpha: boolean;
+        isPremultipliedAlpha: boolean;
         colorspaceConversion: any;
         wrapS: ETextureWrapMode;
         wrapT: ETextureWrapMode;
@@ -8651,6 +8742,7 @@ declare module wd {
         packAlignment: number;
         flipY: boolean;
         premultiplyAlpha: boolean;
+        isPremultipliedAlpha: boolean;
         colorspaceConversion: any;
         needUpdate: boolean;
         mode: EEnvMapMode;
@@ -8716,6 +8808,7 @@ declare module wd {
         unpackAlignment: number;
         flipY: boolean;
         premultiplyAlpha: boolean;
+        isPremultipliedAlpha: boolean;
         colorspaceConversion: any;
         wrapS: ETextureWrapMode;
         wrapT: ETextureWrapMode;
@@ -8884,129 +8977,142 @@ declare module wd {
 }
 
 declare module wd {
-    interface IGLTFChildRootProperty {
-        name?: string;
+    enum EWDTag {
+        CONTAINER,
     }
-    interface IGLTFJsonData {
-        asset: IGLTFAsset;
-        accessors: {
-            [id: string]: IGLTFAccessor;
-        };
-        buffers: {
-            [id: string]: IGLTFBuffer;
-        };
-        bufferViews: {
-            [id: string]: IGLTFBufferView;
-        };
-        meshes: {
-            [id: string]: IGLTFMesh;
-        };
-        cameras?: {
-            [id: string]: IGLTFCamera;
-        };
-        nodes: {
-            [id: string]: IGLTFNode;
-        };
-        images?: {
-            [id: string]: IGLTFImage;
-        };
-        textures?: {
-            [id: string]: IGLTFTexture;
-        };
-        shaders: Object;
-        programs: Object;
-        samplers: {
-            [id: string]: IGLTFSampler;
-        };
-        techniques: Object;
-        materials: {
-            [id: string]: IGLTFMaterial;
-        };
-        animations: {
-            [id: string]: IGLTFAnimation;
-        };
-        skins: Object;
+}
+
+declare module wd {
+    enum EWDArticulatedAnimationPath {
+        TRANSLATION,
+        ROTATION,
+        SCALE,
+    }
+}
+
+declare module wd {
+    interface IWDJsonDataParser {
+        asset: IWDAssetParser;
         scene: string;
         scenes: {
-            [id: string]: IGLTFScene;
+            [id: string]: IWDSceneParser;
         };
-        extensionsUsed?: Array<string>;
-        extensions?: Object;
+        nodes: {
+            [id: string]: IWDNodeParser;
+        };
+        meshes: {
+            [id: string]: IWDMeshParser;
+        };
+        accessors: {
+            [id: string]: IWDAcccessorParser;
+        };
+        buffers: {
+            [id: string]: IWDBufferParser;
+        };
+        bufferViews: {
+            [id: string]: IWDBufferViewParser;
+        };
+        cameras?: {
+            [id: string]: IWDCameraParser;
+        };
+        images?: {
+            [id: string]: IWDImageParser;
+        };
+        textures?: {
+            [id: string]: IWDTextureParser;
+        };
+        samplers: {
+            [id: string]: IWDSamplerParser;
+        };
+        materials: {
+            [id: string]: IWDMaterialParser;
+        };
+        animations: {
+            [id: string]: IWDAnimationParser;
+        };
+        lights: {
+            [id: string]: IWDLightParser;
+        };
     }
-    interface IGLTFScene extends IGLTFChildRootProperty {
+    interface IWDChildRootPropertyParser {
+        name?: string;
+    }
+    interface IWDSceneParser extends IWDChildRootPropertyParser {
         nodes: Array<string>;
     }
-    interface IGLTFCamera extends IGLTFChildRootProperty {
+    interface IWDNodeParser extends IWDChildRootPropertyParser {
+        children: Array<string>;
+        camera?: string;
+        matrix?: Array<number>;
+        mesh?: string;
+        rotation?: Array<number>;
+        scale?: Array<number>;
+        translation?: Array<number>;
+        light?: string;
+    }
+    interface IWDMeshParser extends IWDChildRootPropertyParser {
+        primitives: Array<IWDMeshPrimitiveParser>;
+    }
+    interface IWDMeshPrimitiveParser {
+        name?: string;
+        attributes: IWDAttributeParser;
+        morphTargets?: Array<IWDMorphTargetParser>;
+        indices?: string;
+        material: string;
+        mode: number;
+    }
+    interface IWDMorphTargetParser {
+        name: string;
+        vertices: string;
+        normals?: string;
+    }
+    interface IWDAttributeParser {
+        POSITION: string;
+        NORMAL?: string;
+        TEXCOORD?: string;
+        COLOR?: string;
+    }
+    interface IWDAcccessorParser extends IWDChildRootPropertyParser {
+        bufferView: string;
+        byteOffset: number;
+        count: number;
+        type: string;
+        componentType: number;
+        max?: Array<number>;
+        min?: Array<number>;
+    }
+    interface IWDBufferParser extends IWDChildRootPropertyParser {
+        uri: string;
+        byteLength: number;
         type: string;
     }
-    interface IGLTFCameraOrthographic {
+    interface IWDBufferViewParser extends IWDChildRootPropertyParser {
+        buffer: string;
+        byteOffset: number;
+        byteLength: number;
+        target?: number;
+    }
+    interface IWDCameraParser extends IWDChildRootPropertyParser {
+        type: "perspective" | "orthographic";
+        perspective?: IWDCameraPerspectiveParser;
+        orthographic?: IWDCameraOrthographicParser;
+    }
+    interface IWDCameraOrthographicParser {
         xmag: number;
         ymag: number;
         zfar: number;
         znear: number;
     }
-    interface IGLTFCameraPerspective {
+    interface IWDCameraPerspectiveParser {
         aspectRatio?: number;
         yfov: number;
         zfar: number;
         znear: number;
     }
-    interface IGLTFNode extends IGLTFChildRootProperty {
-        children: Array<string>;
-        camera?: string;
-        skin?: string;
-        jointName?: string;
-        matrix?: Array<number>;
-        mesh?: string;
-        meshes?: Array<string>;
-        rotation?: Array<number>;
-        scale?: Array<number>;
-        translation?: Array<number>;
-        extensions?: Object;
-    }
-    interface IGLTFAnimation extends IGLTFChildRootProperty {
-        channels?: IGLTFAnimationChannel[];
-        parameters?: Object;
-        samplers?: Object;
-    }
-    interface IGLTFAnimationChannel {
-        sampler: string;
-        target: IGLTFAnimationChannelTarget;
-    }
-    interface IGLTFAnimationChannelTarget {
-        id: string;
-        path: string;
-    }
-    interface IGLTFAnimationSampler {
-        input: string;
-        output: string;
-        interpolation?: string;
-    }
-    interface IGLTFAsset {
-        version: string;
-        genertor?: string;
-        premultipliedAlpha?: boolean;
-        profile?: {
-            api: string;
-            version: string;
-            extras: Object;
-        };
-    }
-    interface IGLTFMaterial extends IGLTFChildRootProperty {
-        technique?: string;
-        values?: Array<string>;
-        extensions?: Object;
-    }
-    interface IGLTFImage extends IGLTFChildRootProperty {
+    interface IWDImageParser extends IWDChildRootPropertyParser {
         uri: string;
     }
-    interface IGLTFSampler extends IGLTFChildRootProperty {
-        magFilter?: number;
-        minFilter?: number;
-        wrapS?: number;
-        wrapT?: number;
-    }
-    interface IGLTFTexture extends IGLTFChildRootProperty {
+    interface IWDTextureParser extends IWDChildRootPropertyParser {
         sampler: string;
         source: string;
         format?: number;
@@ -9014,128 +9120,176 @@ declare module wd {
         target?: number;
         type?: number;
     }
-    interface IGLTFAccessor extends IGLTFChildRootProperty {
-        bufferView: string;
-        byteOffset: number;
-        byteStride: number;
-        count: number;
-        type: string;
-        componentType: number;
-        max?: Array<number>;
-        min?: Array<number>;
+    interface IWDSamplerParser extends IWDChildRootPropertyParser {
+        magFilter?: number;
+        minFilter?: number;
+        wrapS?: number;
+        wrapT?: number;
+        isPremultipliedAlpha?: boolean;
+        repeatRegion?: Array<number>;
     }
-    interface IGLTFBufferView extends IGLTFChildRootProperty {
-        buffer: string;
-        byteOffset: number;
-        byteLength: number;
-        target?: number;
+    interface IWDMaterialParser extends IWDChildRootPropertyParser {
+        technique: "CONSTANT" | "BLINN" | "PHONG" | "LAMBERT";
+        doubleSided?: boolean;
+        transparent?: boolean;
+        transparency?: number;
+        values?: IWDMaterialValueParser;
     }
-    interface IGLTFBuffer extends IGLTFChildRootProperty {
-        uri: string;
-        byteLength?: number;
-        type?: string;
+    interface IWDMaterialValueParser {
+        lightMap?: string;
+        diffuse?: Array<number> | string;
+        specular?: Array<number> | string;
+        emission?: Array<number> | string;
+        shininess?: number;
+        normalMap?: string;
     }
-    interface IGLTFMeshPrimitive {
-        attributes: Object;
-        indices?: string;
-        material: string;
-        mode: number;
+    interface IWDAnimationParser extends IWDChildRootPropertyParser {
+        channels?: IWDAnimationChannelParser[];
+        parameters?: Object;
+        samplers?: {
+            [id: string]: IWDAnimationSamplerParser;
+        };
     }
-    interface IGLTFMesh extends IGLTFChildRootProperty {
-        primitives: Array<IGLTFMeshPrimitive>;
+    interface IWDAnimationSamplerParser {
+        input: string;
+        interpolation: "LINEAR";
+        output: string;
     }
-    interface IGLTFParseData {
-        metadata: IGLTFMetadata;
-        objects: wdCb.Collection<IGLTFObjectData>;
+    interface IWDAnimationChannelParser {
+        sampler: string;
+        target: IWDAnimationChannelTargetParser;
     }
-    interface IGLTFObjectData {
+    interface IWDAnimationChannelTargetParser {
+        id: string;
+        path: "translation" | "rotation" | "scale";
+    }
+    interface IWDAssetParser {
+        version: string;
+        generator?: string;
+        copyright?: string;
+        premultipliedAlpha?: boolean;
+        profile?: {
+            api?: string;
+            version?: string;
+        };
+    }
+    interface IWDLightParser {
+        type: "directional" | "point" | "spot" | "ambient";
+        ambient?: {
+            intensity?: number;
+            color: Array<number>;
+        };
+        directional?: {
+            intensity?: number;
+            color: Array<number>;
+        };
+        point?: {
+            intensity?: number;
+            color: Array<number>;
+            constantAttenuation?: number;
+            linearAttenuation?: number;
+            quadraticAttenuation?: number;
+            range?: number;
+        };
+    }
+}
+
+declare module wd {
+    interface IWDParseDataAssembler {
+        metadata: IWDMetadataAssembler;
+        objects: wdCb.Collection<IWDObjectDataAssembler>;
+    }
+    interface IWDObjectDataAssembler {
         name?: string;
         id: string;
         isContainer: boolean;
-        components: wdCb.Collection<IGLTFComponent>;
-        children: wdCb.Collection<IGLTFObjectData>;
+        components: wdCb.Collection<IWDComponentAssembler>;
+        children: wdCb.Collection<IWDObjectDataAssembler>;
     }
-    interface IGLTFComponent {
+    interface IWDComponentAssembler {
     }
-    interface IGLTFArticulatedAnimation extends IGLTFComponent {
-        [animName: string]: wdCb.Collection<IGLTFKeyFrameData>;
+    interface IWDArticulatedAnimationAssembler extends IWDComponentAssembler {
+        [animName: string]: wdCb.Collection<IWDKeyFrameDataAssembler>;
     }
-    interface IGLTFKeyFrameData {
+    interface IWDKeyFrameDataAssembler {
         time: number;
-        targets: wdCb.Collection<IGLTFKeyFrameTargetData>;
+        targets: wdCb.Collection<IWDKeyFrameTargetDataAssembler>;
     }
-    interface IGLTFKeyFrameTargetData {
+    interface IWDKeyFrameTargetDataAssembler {
         interpolationMethod: EKeyFrameInterpolation;
         target: EArticulatedAnimationTarget;
         data: any;
     }
-    interface IGLTFTransform extends IGLTFComponent {
+    interface IWDTransformAssembler extends IWDComponentAssembler {
         matrix?: Matrix4;
         position?: Vector3;
         scale?: Vector3;
         rotation?: Quaternion;
     }
-    interface IGLTFCamera extends IGLTFComponent {
+    interface IWDCameraAssembler extends IWDComponentAssembler {
         camera: Camera;
     }
-    interface IGLTFLight extends IGLTFComponent {
+    interface IWDLightAssembler extends IWDComponentAssembler {
         type: string;
-        lightColor: Color;
+        color: Color;
+        intensity?: number;
     }
-    interface IGLTFAmbientLight extends IGLTFLight {
+    interface IWDAmbientLightAssembler extends IWDLightAssembler {
     }
-    interface IGLTFDirectionLight extends IGLTFLight {
+    interface IWDDirectionLightAssembler extends IWDLightAssembler {
     }
-    interface IGLTFPointLight extends IGLTFLight {
+    interface IWDPointLightAssembler extends IWDLightAssembler {
+        range?: number;
         constantAttenuation: number;
         linearAttenuation: number;
         quadraticAttenuation: number;
-        distance?: number;
     }
-    interface IGLTFGeometry extends IGLTFComponent {
-        material: IGLTFMaterial;
+    interface IWDGeometryAssembler extends IWDComponentAssembler {
+        material: IWDMaterialAssembler;
         vertices: Array<number>;
         colors?: Array<number>;
         texCoords?: Array<number>;
         faces: Array<Face3>;
+        morphVertices: wdCb.Hash<MorphTargetsData>;
+        morphNormals: wdCb.Hash<MorphTargetsData>;
         drawMode: EDrawMode;
     }
-    interface IGLTFMaterial {
+    interface IWDMaterialAssembler {
         type: string;
         doubleSided?: boolean;
     }
-    interface IGLTFBasicMaterial extends IGLTFMaterial {
-    }
-    interface IGLTFLightMaterial extends IGLTFMaterial {
+    interface IWDLightMaterialAssembler extends IWDMaterialAssembler {
         transparent?: boolean;
         opacity?: number;
         lightModel: ELightModel;
         diffuseColor?: Color;
         specularColor?: Color;
         emissionColor?: Color;
-        diffuseMap?: Texture;
-        specularMap?: Texture;
-        emissionMap?: Texture;
+        lightMap?: ImageTexture;
+        diffuseMap?: ImageTexture;
+        specularMap?: ImageTexture;
+        emissionMap?: ImageTexture;
+        normalMap?: ImageTexture;
         shininess?: number;
     }
-    interface IGLTFMetadata {
+    interface IWDMetadataAssembler {
         version: string;
-        genertor?: string;
+        generator?: string;
+        copyright?: string;
         premultipliedAlpha?: boolean;
         profile?: {
-            api: string;
-            version: string;
-            extras: Object;
+            api?: string;
+            version?: string;
         };
     }
-    interface IGLTFResult {
-        metadata: wdCb.Hash<IGLTFMetadata>;
+    interface IWDResultAssembler {
+        metadata: wdCb.Hash<IWDMetadataAssembler>;
         models: wdCb.Collection<GameObject>;
     }
 }
 
 declare module wd {
-    class GLTFLoader extends Loader {
+    class WDLoader extends Loader {
         static getInstance(): any;
         private constructor();
         private _arrayBufferMap;
@@ -9150,63 +9304,41 @@ declare module wd {
 }
 
 declare module wd {
-    class GLTFAssembler {
-        static create(): GLTFAssembler;
-        private _result;
-        build(parseData: IGLTFParseData): wdCb.Hash<IGLTFResult>;
-        private _buildMetadata(parseData);
-        private _buildModels(parseData);
-        private _isModelContainer(object);
-        private _addComponentsFromGLTF(model, components);
-        private _isTransform(component);
-        private _isCamera(component);
-        private _isLight(component);
-        private _isGeometry(component);
-        private _isArticulatedAnimation(component);
-        private _createTransform(component);
-        private _createCamera(component);
-        private _createLight(component);
-        private _createGeometry(component);
-        private _createMaterial(materialData);
-        private _createBasicMaterial(materialData);
-        private _createLightMaterial(materialData);
-        private _setBasicDataOfMaterial(material, materialData);
-        private _createArticulatedAnimation(component);
-    }
-}
-
-declare module wd {
-    class GLTFParser {
-        static create(): GLTFParser;
+    class WDParser {
+        static create(): WDParser;
         private _data;
         private _arrayBufferMap;
         private _imageMap;
         private _json;
         private _geometryParser;
         private _articulatedAnimationParser;
-        parse(json: IGLTFJsonData, arrayBufferMap: wdCb.Hash<any>, imageMap: wdCb.Hash<HTMLImageElement>): IGLTFParseData;
+        private _transformParser;
+        private _cameraParser;
+        private _lightParser;
+        parse(json: IWDJsonDataParser, arrayBufferMap: wdCb.Hash<any>, imageMap: wdCb.Hash<HTMLImageElement>): IWDParseDataAssembler;
         private _parseMetadata();
         private _parseObjects();
-        private _parseLight(lightId);
-        private _parseLightDataByType(light, lightData, type);
-        private _parseCamera(cameraId);
-        private _parseCameraDataByType(camera, cameraData);
-        private _parseTransform(matrix);
-        private _parseTransform(translation, rotation, scale);
     }
 }
 
 declare module wd {
-    class GLTFGeometryParser {
-        static create(): GLTFGeometryParser;
+    abstract class WDComponentParser {
+        abstract parse(...args: any[]): any;
+    }
+}
+
+declare module wd {
+    class WDGeometryParser extends WDComponentParser {
+        static create(): WDGeometryParser;
+        private _isGeneratedFromGLTF;
         private _arrayBufferMap;
         private _imageMap;
         private _json;
         private _materialParser;
-        parse(json: IGLTFJsonData, object: IGLTFObjectData, mesh: IGLTFMesh, arrayBufferMap: wdCb.Hash<any>, imageMap: wdCb.Hash<HTMLImageElement>): void;
+        parse(json: IWDJsonDataParser, object: IWDObjectDataAssembler, mesh: IWDMeshParser, arrayBufferMap: wdCb.Hash<ArrayBuffer>, imageMap: wdCb.Hash<HTMLImageElement>): void;
         private _setChildObjectNameWithMultiPrimitives(object, primitive);
         private _parseGeometry(primitive);
-        private _addGeometryData(geometryData, sourceData);
+        private _addAttributeData(geometryData, bufferReader, count);
         private _getFaces(json, indices, normals);
         private _addNormalData(targetNormals, sourceNormals, normalIndiceArr);
         private _getThreeComponentData(sourceData, index);
@@ -9216,40 +9348,76 @@ declare module wd {
 }
 
 declare module wd {
-    class GLTFMaterialParser {
-        static create(): GLTFMaterialParser;
+    class WDTransformParser extends WDComponentParser {
+        static create(): WDTransformParser;
+        parse(matrix: Array<number>): any;
+        parse(translation: Array<number>, rotation: Array<number>, scale: Array<number>): any;
+    }
+}
+
+declare module wd {
+    class WDCameraParser extends WDComponentParser {
+        static create(): WDCameraParser;
+        parse(json: IWDJsonDataParser, cameraId: string): IWDCameraAssembler;
+        private _parseCameraDataByType(camera, cameraData);
+    }
+}
+
+declare module wd {
+    class WDLightParser extends WDComponentParser {
+        static create(): WDLightParser;
+        parse(json: IWDJsonDataParser, lightId: string): IWDLightAssembler;
+        private _parseLightDataByType(light, lightData, type);
+    }
+}
+
+declare module wd {
+    class WDMaterialParser {
+        static create(): WDMaterialParser;
         private _imageMap;
         private _json;
-        parse(json: IGLTFJsonData, materialId: string, imageMap: wdCb.Hash<HTMLImageElement>): IGLTFMaterial;
-        private _isUseKHRMaterialExtension();
+        private _glTextureMap;
+        private _textureParser;
+        parse(json: IWDJsonDataParser, materialId: string, imageMap: wdCb.Hash<HTMLImageElement>): IWDMaterialAssembler;
+        private _getDefaultMaterialData();
         private _getMaterialType(technique);
         private _getLightModel(technique);
-        private _addMaterialExtensionValues(material, values);
-        private _addMaterialLightColor(material, colorName, colorData);
-        private _isColor(type);
-        private _getTexture(textureId);
+        private _addMaterialValues(material, values);
+        private _addMaterialLightColor(material, colorName, colorData, mapName?);
+        private _addMaterialLightMap(material, mapName, mapId);
+    }
+}
+
+declare module wd {
+    class WDTextureParser {
+        static create(): WDTextureParser;
+        imageMap: wdCb.Hash<HTMLImageElement>;
+        json: IWDJsonDataParser;
+        glTextureMap: wdCb.Hash<WebGLTexture>;
+        getTexture(textureDataId: string): Texture;
+        private _getGLTexture(asset, sourceId);
+        private _buildGLTextureMapKey(asset, sourceId);
         private _createTextureAsset(target, imageId);
         private _getTextureType(type);
         private _getTextureFormat(format);
         private _addTextureSampler(asset, samplerId);
+        private _getTextureRepeatRegion(repeatRegion);
         private _getTextureFilter(filter);
         private _getTextureWrap(wrap);
     }
 }
 
 declare module wd {
-    class GLTFArticulatedAnimationParser {
-        static create(): GLTFArticulatedAnimationParser;
+    class WDArticulatedAnimationParser extends WDComponentParser {
+        static create(): WDArticulatedAnimationParser;
         private _arrayBufferMap;
         private _json;
-        private _translationArrayOffset;
-        private _rotationArrayOffset;
-        private _scaleArrayOffset;
-        parse(json: IGLTFJsonData, objects: wdCb.Collection<IGLTFObjectData>, arrayBufferMap: wdCb.Hash<any>): void;
+        parse(json: IWDJsonDataParser, objects: wdCb.Collection<IWDObjectDataAssembler>, arrayBufferMap: wdCb.Hash<any>): void;
+        private _getChannelBufferReaderArr(animation, channelList);
         private _getAnimName(animation, animId);
         private _getInputData(animation, channelList);
         private _addAnimationToNode(nodeWithAnimationMap, targetId, targetNode, animName, keyFrameDataList);
-        private _getKeyFrameDataTargets(animation, channelList);
+        private _getKeyFrameDataTargets(animation, channelList, channelBufferReaderArr);
         private _findNode(objects, targetId);
         private _addAnimationComponent(nodeWithAnimationMap);
         private _convertSecondToMillisecond(time);
@@ -9258,182 +9426,87 @@ declare module wd {
 }
 
 declare module wd {
-    class GLTFUtils {
+    class WDUtils {
         static addData(target: Object, sourceName: string, sourceData: any): void;
         static isBase64(uri: string): boolean;
         static decodeArrayBuffer(base64Str: string): any;
         static createObjectData(): {
             id: any;
             isContainer: boolean;
-            components: wdCb.Collection<IGLTFComponent>;
-            children: wdCb.Collection<IGLTFObjectData>;
+            components: wdCb.Collection<IWDComponentAssembler>;
+            children: wdCb.Collection<IWDObjectDataAssembler>;
         };
         static getColor(value: Array<number>): Color;
-        static getBufferArrFromAccessor(json: IGLTFJsonData, accessor: IGLTFAccessor, arrayBufferMap: wdCb.Hash<any>): any;
-        static getAccessorTypeSize(accessor: IGLTFAccessor): number;
-        static isIGLTFArticulatedAnimation(component: IGLTFComponent): boolean;
-    }
-}
-
-declare module wd {
-    enum EWDTag {
-        CONTAINER,
-    }
-}
-
-declare module wd {
-    type WDFileJsonData = {
-        metadata: WDFileMetadata;
-        scene: {
-            ambientColor?: Array<number>;
+        static getBufferReaderFromAccessor(json: IWDJsonDataParser, accessor: IWDAcccessorParser, arrayBufferMap: wdCb.Hash<any>): {
+            bufferReader: BufferReader;
+            count: number;
         };
-        materials: {
-            [name: string]: {
-                type: string;
-                diffuseColor?: Array<number>;
-                specularColor?: Array<number>;
-                diffuseMapUrl?: string;
-                specularMapUrl?: string;
-                normalMapUrl?: string;
-                shininess?: number;
-                opacity?: number;
-            };
+        static getAccessorTypeSize(accessor: IWDAcccessorParser): number;
+        static isIWDArticulatedAnimationAssembler(component: IWDComponentAssembler): boolean;
+    }
+}
+
+declare module wd {
+    class WDMorphDataParseUtils {
+        static parseMorphData(json: IWDJsonDataParser, sourceMorphTargets: Array<IWDMorphTargetParser>, arrayBufferMap: wdCb.Hash<ArrayBuffer>): {
+            morphVertices: wdCb.Hash<wdCb.Collection<number[]>>;
+            morphNormals: wdCb.Hash<wdCb.Collection<number[]>>;
         };
-        objects: Array<WDFileJsonObjectData>;
-    };
-    type WDFileJsonObjectData = {
-        material: string;
-        name: string;
-        vertices?: Array<number>;
-        morphTargets: Array<WDFileJsonFrameData>;
-        normals?: Array<number>;
-        colors?: Array<number>;
-        uvs?: Array<number>;
-        verticeIndices?: Array<number>;
-        normalIndices?: Array<number>;
-        uvIndices?: Array<number>;
-        children: Array<WDFileParseObjectData>;
-    };
-    type WDFileJsonFrameData = {
-        name: string;
-        vertices: Array<number>;
-        normals?: Array<number>;
-    };
-    type WDFileParseData = {
-        metadata: WDFileMetadata;
-        scene: {
-            ambientColor?: Color;
-        };
-        materials: wdCb.Hash<WDFileParseMaterialData>;
-        objects: wdCb.Collection<WDFileParseObjectData>;
-    };
-    type WDFileParseMaterialData = {
-        type: string;
-        diffuseColor?: Color;
-        specularColor?: Color;
-        diffuseMapUrl?: string;
-        specularMapUrl?: string;
-        normalMapUrl?: string;
-        diffuseMap?: Texture;
-        specularMap?: Texture;
-        normalMap?: Texture;
-        shininess?: number;
-        opacity?: number;
-    };
-    type WDFileParseObjectData = {
-        material: string;
-        name: string;
-        isContainer: boolean;
-        vertices: Array<number>;
-        morphTargets: wdCb.Hash<wdCb.Collection<Array<number>>>;
-        morphNormals: wdCb.Hash<wdCb.Collection<Array<number>>>;
-        colors?: Array<number>;
-        uvs?: Array<number>;
-        faces: Array<Face3>;
-        parent: WDFileParseObjectData;
-        children: wdCb.Collection<WDFileParseObjectData>;
-    };
-    type WDFileParseMorphTargetsData = wdCb.Collection<Array<number>>;
-    type WDFileResult = {
-        metadata: wdCb.Hash<WDFileMetadata>;
-        scene: wdCb.Hash<{
-            ambientColor: Color;
-        }>;
-        models: wdCb.Collection<GameObject>;
-    };
-    type WDFileMetadata = {
-        formatVersion: number;
-        description?: string;
-        sourceFile: string;
-        generatedBy: string;
-    };
-}
-
-declare module wd {
-    class WDLoader extends Loader {
-        static getInstance(): any;
-        private constructor();
-        private _parseData;
-        protected loadAsset(url: string, id: string): wdFrp.Stream;
-        protected loadAsset(url: Array<string>, id: string): wdFrp.Stream;
-        private _createLoadMapStream(filePath, parseData);
+        private static _getMorphDatas(json, frameDataAccessorId, arrayBufferMap);
+        private static _getAnimName(frameName);
     }
 }
 
 declare module wd {
-    class WDParser {
-        static create(): WDParser;
-        private _data;
-        private _objectParser;
-        parse(json: WDFileJsonData): WDFileParseData;
-        private _parseMetadata(json);
-        private _parseObject(json);
-        private _parseScene(json);
-        private _parseMaterial(json);
-        private _createColor(colorArr);
-    }
-}
-
-declare module wd {
-    class WDObjectParser {
-        static create(): WDObjectParser;
-        parse(data: WDFileParseData, json: WDFileJsonData): void;
-        private _isObjectContainer(object);
-        private _parseFromIndices(object);
-        private _duplicateVertexWithDifferentUvs(object);
-        private _isSameVertexWithDifferentUvsByCompareToFirstOne(arr, uvIndex, verticeIndex);
-        private _addVertexData(object, container, verticeIndex, index);
-        private _addDuplicateNormalOfAddedVertex(normals, normalIndices, index, oldVerticeIndex);
-        private _isUvIndiceEqualTheOneOfAddedVertex(container, targetVerticeIndex, targetUvIndex);
-        private _getVerticeIndexOfAddedVertexByFindContainer(container, targetVerticeIndex, targetUvIndex);
-        private _getVerticeIndexOfAddedVertex(vertices);
-        private _addThreeComponent(data, index);
-        private _addThreeComponent(targetData, sourceData, index);
-        private _parseObjectFromIndices(object);
-        private _getAnimName(frameName);
-        private _removeRebundantIndiceData(object);
-        private _removeObjectContainerData(object);
-        private _findData(object, dataName);
-        private _setUV(targetUVs, sourceUVs, uvIndices, indexArr, verticeIndiceArr);
-        private _setTwoComponentData(targetData, sourceData, index, indice);
-        private _setThreeComponentData(targetData, sourceData, index, indice);
-        private _getThreeComponentData(sourceData, index);
-        private _setNormal(targetNormals, sourceNormals, normalIndices, indexArr, verticeIndiceArr);
-        private _addNormalData(targetNormals, sourceNormals, normalIndiceArr);
-        private _setMorphTargets(object, verticeIndices, normalIndices);
-    }
-}
-
-declare module wd {
-    class WDBuilder {
-        static create(): WDBuilder;
+    class WDAssembler {
+        static create(): WDAssembler;
         private _result;
-        build(parseData: WDFileParseData): wdCb.Hash<WDFileResult>;
+        private _geometryAssembler;
+        private _transformAssembler;
+        private _lightAssembler;
+        build(parseData: IWDParseDataAssembler): wdCb.Hash<IWDResultAssembler>;
         private _buildMetadata(parseData);
-        private _buildScene(parseData);
         private _buildModels(parseData);
         private _isModelContainer(object);
-        private _buildMaterial(materialName, materials);
+        private _addComponentsFromWD(model, components);
+        private _isTransform(component);
+        private _isCamera(component);
+        private _isLight(component);
+        private _isGeometry(component);
+        private _isArticulatedAnimation(component);
+        private _createCamera(component);
+        private _createArticulatedAnimation(component);
+    }
+}
+
+declare module wd {
+    abstract class WDComponentAssembler {
+        abstract createComponent(component: IWDComponentAssembler): Component;
+    }
+}
+
+declare module wd {
+    class WDGeometryAssembler extends WDComponentAssembler {
+        static create(): WDGeometryAssembler;
+        createComponent(component: IWDGeometryAssembler): ModelGeometry;
+        private _createMaterial(materialData);
+        private _createLightMaterial(materialData);
+        private _createStandardLightMaterial<T>(material, materialData);
+        private _setBasicDataOfMaterial(material, materialData);
+    }
+}
+
+declare module wd {
+    class WDTransformAssembler extends WDComponentAssembler {
+        static create(): WDTransformAssembler;
+        createComponent(component: IWDTransformAssembler): ThreeDTransform;
+    }
+}
+
+declare module wd {
+    class WDLightAssembler extends WDComponentAssembler {
+        static create(): WDLightAssembler;
+        createComponent(component: IWDLightAssembler): any;
     }
 }
 
@@ -9903,6 +9976,7 @@ declare module wd {
         unpackAlignment: number;
         flipY: boolean;
         premultiplyAlpha: boolean;
+        isPremultipliedAlpha: boolean;
         colorspaceConversion: any;
         type: ETextureType;
         mipmaps: wdCb.Collection<any>;
@@ -10092,12 +10166,8 @@ declare module wd {
 
 declare module wd {
     class Video {
-        static create(data: any): Video;
-        constructor({urlArr, onLoad, onError}: {
-            urlArr: any;
-            onLoad?: (video: Video) => void;
-            onError?: (err: any) => void;
-        });
+        static create(config: VideoConfig): Video;
+        constructor(config: VideoConfig);
         url: string;
         source: HTMLVideoElement;
         isStop: boolean;
@@ -10110,6 +10180,11 @@ declare module wd {
         private _canplay(extname);
         private _bindEvent();
     }
+    type VideoConfig = {
+        urlArr: Array<string>;
+        onLoad: (video: Video) => void;
+        onError: (err: string) => void;
+    };
 }
 
 declare module wd {
@@ -10117,6 +10192,105 @@ declare module wd {
         static getInstance(): any;
         private constructor();
         play(id: string): void;
+    }
+}
+
+declare module wd {
+    enum EAudioType {
+        NONE = 0,
+        WEBAUDIO = 1,
+        HTML5AUDIO = 2,
+    }
+}
+
+declare module wd {
+    enum ESoundPlayState {
+        NONE = 0,
+        PLAYING = 1,
+        END = 2,
+    }
+}
+
+declare module wd {
+    class SoundUtils {
+        static getMimeStr(mimeType: string): string;
+    }
+}
+
+declare module wd {
+    class Sound {
+        static ctx: any;
+        private static _audioType;
+        static create(config: SoundConfig): Sound;
+        static audioDetect(): void;
+        private static _html5AudioDetect();
+        constructor(config: SoundConfig);
+        audioObj: any;
+        private _config;
+        initWhenCreate(): void;
+        play(): void;
+        canPlay(): any;
+        getPlayState(): any;
+    }
+    type SoundConfig = {
+        urlArr: Array<string>;
+        onLoad: (sound: Sound) => void;
+        onError: (err: string) => void;
+    };
+}
+
+declare module wd {
+    abstract class BaseAudio {
+        protected urlArr: Array<string>;
+        protected url: string;
+        abstract play(): void;
+        abstract load(): wdFrp.Stream;
+        abstract getPlayState(): ESoundPlayState;
+        initWhenCreate(): void;
+        canPlay(): boolean;
+        private _getCanPlayUrl();
+        private _canPlay(mimeType);
+    }
+}
+
+declare module wd {
+    class WebAudio extends BaseAudio {
+        static create(config: SoundConfig): WebAudio;
+        constructor(config: SoundConfig);
+        private _buffer;
+        private _onLoad;
+        private _onError;
+        private _config;
+        private _playState;
+        initWhenCreate(): void;
+        load(): wdFrp.Stream;
+        play(): void;
+        getPlayState(): ESoundPlayState;
+        private _loadBuffer(url);
+        private _decodeAudioData(arraybuffer);
+    }
+}
+
+declare module wd {
+    class Html5Audio extends BaseAudio {
+        static create(config: SoundConfig): Html5Audio;
+        constructor(config: SoundConfig);
+        private _audio;
+        private _onLoad;
+        private _onError;
+        load(): wdFrp.AnonymousStream;
+        play(): void;
+        getPlayState(): ESoundPlayState;
+        private _load();
+    }
+}
+
+declare module wd {
+    class SoundManager {
+        static getInstance(): any;
+        private constructor();
+        play(id: string): void;
+        private _playOnlyOneSimultaneously(audioObject);
     }
 }
 
@@ -10442,19 +10616,6 @@ declare module wd {
 }
 
 declare module wd {
-    class TerrainMaterial extends StandardLightMaterial {
-        static create(): TerrainMaterial;
-        layer: TerrainLayer;
-        mix: TerrainMix;
-        init(): void;
-        getTextureForRenderSort(): Texture;
-        protected addExtendShaderLib(): void;
-        protected addTopExtendShaderLib(): void;
-        protected addNormalRelatedShaderLib(): void;
-    }
-}
-
-declare module wd {
     class TerrainLayer {
         static create(): TerrainLayer;
         private _mapData;
@@ -10532,6 +10693,19 @@ declare module wd {
 }
 
 declare module wd {
+    class TerrainMaterial extends StandardLightMaterial {
+        static create(): TerrainMaterial;
+        layer: TerrainLayer;
+        mix: TerrainMix;
+        init(): void;
+        getTextureForRenderSort(): Texture;
+        protected addExtendShaderLib(): void;
+        protected addTopExtendShaderLib(): void;
+        protected addNormalRelatedShaderLib(): void;
+    }
+}
+
+declare module wd {
     class GrassMapBufferContainer extends CommonBufferContainer {
         static create(entityObject: GameObject): GrassMapBufferContainer;
         geometryData: GrassMapGeometryData;
@@ -10558,7 +10732,7 @@ declare module wd {
             texCoords: number[];
         };
         protected createBufferContainer(): BufferContainer;
-        protected createGeometryData(vertices: Array<number>, faces: Array<Face3>, texCoords: Array<number>, colors: Array<number>, morphTargets: wdCb.Hash<MorphTargetsData>): GeometryData;
+        protected createGeometryData(vertices: Array<number>, faces: Array<Face3>, texCoords: Array<number>, colors: Array<number>, morphVertices: wdCb.Hash<MorphTargetsData>): GeometryData;
         private _generateFirstRect();
         private _generateSecondRect();
         private _generateThirdRect();
@@ -10816,7 +10990,7 @@ declare module wd {
         updateBuffers(): void;
         hasMultiPages(): boolean;
         protected createBufferContainer(): BufferContainer;
-        protected createGeometryData(vertices: Array<number>, faces: Array<Face3>, texCoords: Array<number>, colors: Array<number>, morphTargets: wdCb.Hash<MorphTargetsData>): GeometryData;
+        protected createGeometryData(vertices: Array<number>, faces: Array<Face3>, texCoords: Array<number>, colors: Array<number>, morphVertices: wdCb.Hash<MorphTargetsData>): GeometryData;
         private _generatePages(layoutDataList);
         private _generateVertices(layoutDataList, bitmapFontWidth, bitmapFontHeight);
         private _generateTexCoords(layoutDataList, textureWidth, textureHeight, flipY);
