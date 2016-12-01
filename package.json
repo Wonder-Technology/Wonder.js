@@ -36,6 +36,7 @@
     "merge2": "^0.3.6",
     "promise": "^7.1.1",
     "pump": "^1.0.1",
+    "relaxed-json": "^1.0.0",
     "sinon": "^1.14.1",
     "stream-assert": "^2.0.2",
     "strip-bom": "^1.0.0",

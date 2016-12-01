@@ -3,6 +3,8 @@ import wdCb = require("wdcb");
 
 import ExtendUtils = require("../../ts/ExtendUtils")
 
+var json = require("relaxed-json");
+
 
 import contract = require("../../ts/definition/typescript/decorator/contract");
 import chai = require("chai");
@@ -53,7 +55,7 @@ export class GLTFToWD {
 
         //todo convert base64 data(or .wd file support base64 data?)
 
-        resultJson = ExtendUtils.extendDeep(JSON.parse(fileContent));
+        resultJson = ExtendUtils.extendDeep(json.parse(fileContent));
 
         this._convertAssets(resultJson);
         this._convertCameras(resultJson);
