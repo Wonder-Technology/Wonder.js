@@ -1,5 +1,6 @@
 import wdFrp = require("wdfrp");
 import ModelLoaderUtils = require("../common/ModelLoaderUtils");
+import fs = require("fs-extra");
 
 import contract = require("../../ts/definition/typescript/decorator/contract");
 import chai = require("chai");
@@ -41,12 +42,15 @@ export class FBXToWD{
     public convert(filePath:string, destDir:string):wdFrp.Stream {
         var fileName = ModelLoaderUtils.getNameByPath(filePath),
             promise = new Promise(function (resolve, reject) {
-                run(`python fbx/python/converter.py ${filePath} ${path.join(destDir, fileName + ".json")}`).exec( function(){
-                resolve();
+                var destFilePath = path.join(destDir, fileName + ".wd");
+
+                run(`python fbx/python/converter.py ${filePath} ${destFilePath}`).exec( function(){
+                    fs.readFile(destFilePath, function(err, buffer){
+                        resolve([JSON.parse(buffer.toString())]);
+                    });
+                });
             });
-        });
 
         return wdFrp.fromPromise(promise);
     }
 }
-

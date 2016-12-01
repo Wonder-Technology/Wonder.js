@@ -44,6 +44,7 @@ export = class Converter {
                 result = GLTFToWD.create(this.version).convert(fileBuffer, filePath);
                 break;
             case ".fbx":
+                console.log("fbx")
                 result = FBXToWD.create().convert(filePath, destDir);
                 break;
             default:
@@ -82,7 +83,6 @@ export = class Converter {
         .map(() => {
             return resultRelativeFilePath;
         })
-            // .concat(wdFrp.just(resultRelativeFilePath));
     }
 
     private _getResourceUrlArr(resultJson:any, filePath:string) {
