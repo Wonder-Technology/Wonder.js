@@ -2,12 +2,6 @@ from utils import *
 import math
 
 def setFromEulerAngles(ex, ey, ez):
-    # var
-# sx, cx, sy, cy, sz, cz, halfToRad, \
-# ex = eulerAngles.x, \
-#      ey = eulerAngles.y, \
-#           ez = eulerAngles.z;
-
     halfToRad =  convertDegreeToRadians(0.5)
     ex *= halfToRad
     ey *= halfToRad

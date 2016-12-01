@@ -1,26 +1,21 @@
 import os
 import math
 
+import urlparse
+import posixpath
+
+
 from fbx import *
 from globalDefine import *
 
 
 
 
-# #####################################################
-# Helpers
-# #####################################################
 def getRadians(v):
     return ((v[0]*math.pi)/180, (v[1]*math.pi)/180, (v[2]*math.pi)/180)
 
-# def getHex(c):
-#     color = (int(c[0]*255) << 16) + (int(c[1]*255) << 8) + int(c[2]*255)
-#     return int(color)
 
 
-# #####################################################
-# Object Name Helpers
-# #####################################################
 def hasUniqueName(o, class_id):
     scene = o.GetScene()
     object_name = o.GetName()
@@ -58,14 +53,13 @@ def getAnimationId(animStack, forcePrefix = True, defaultName = "defaultAnimName
 def getTextureId(t, forcePrefix = True):
     if type(t) is FbxFileTexture:
         texture_file = t.GetFileName()
-        # texture_id = os.path.splitext(os.path.basename(texture_file))[0]
         texture_id = getBaseName(texture_file).split(".")[0]
     else:
         texture_id = t.GetName()
         if texture_id == "_empty_":
             texture_id = ""
     prefix = ""
-    # if option_prefix or force_prefix:
+
     if forcePrefix:
         prefix = "Texture_%s_" % t.GetUniqueID()
         if len(texture_id) == 0:
@@ -79,10 +73,6 @@ def getBaseName(uri):
         index = uri.rfind( '\\' )
 
     return uri[ index+1 : len(uri) ]
-
-
-import urlparse
-import posixpath
 
 def getRelativeUrl(destination, source):
     u_dest = urlparse.urlsplit(destination)
@@ -117,7 +107,7 @@ def _getId(o, classId, typeName, forcePrefix = False, defaultName = "defaultMate
         forcePrefix = not hasUniqueName(o, classId)
 
     prefix = ""
-    # if option_prefix or force_prefix:
+
     if forcePrefix:
         prefix = "%s_%s_" % (typeName,object_id)
 
@@ -183,18 +173,5 @@ def roundUtil(data, digit = PRECISE_DIGIT):
 def convertDegreeToRadians(a):
     return a * math.pi / 180.0
 
-#define GLTF_ANGLE(a) \
-# GetIOSettings ()->GetBoolProp (IOSN_FBX_GLTF_ANGLEINDEGREE, false) ? a : DEG2RAD(a)
-
-
 def convertHFOVToVFOV(h, ar):
-
     return 2.0 * math.atan ((ar) * math.tan ((h * FBXSDK_PI_DIV_180) * 0.5)) * FBXSDK_180_DIV_PI
-
-
-# def getGLTFAngle(angle):
-#     sdkManager.GetIOSettings().GetBoolProp (IOSN_FBX_GLTF_ANGLEINDEGREE, false) ? a : DEG2RAD(a)
-#
-#
-#
-

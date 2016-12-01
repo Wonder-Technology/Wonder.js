@@ -134,7 +134,6 @@ def getTexCoordData(mesh):
 
                 indices.append(index)
 
-                # dict[generateTexCoordKey(value)] = index
                 dict[index] = value
 
     values = getValuesFromDict(dict, LayerKey.TEXCOORD)
@@ -178,7 +177,6 @@ def getNormalData(mesh):
 
                 indices.append(index)
 
-                # dict[generateNormalKey(value)] = index
                 dict[index] = value
 
             vertexId += 1
@@ -231,7 +229,6 @@ def getColorData(mesh):
 
                 indices.append(index)
 
-                # dict[generateColorKey(value)] = index
                 dict[index] = value
 
             vertexId += 1
@@ -241,17 +238,6 @@ def getColorData(mesh):
     return values, indices
 
 
-
-
-
-# def generateTexCoordKey(texCoord):
-#     return (round(texCoord[0], 6), round(texCoord[1], 6))
-#
-# def generateNormalKey(normal):
-#     return (round(normal[0], 6), round(normal[1], 6), round(normal[2], 6))
-#
-# def generateColorKey(color):
-#     return getHex(color)
 
 
 def getValuesFromDict(dict, layerKey):
@@ -264,11 +250,7 @@ def getValuesFromDict(dict, layerKey):
     elif layerKey == LayerKey.NORMAL or \
                     layerKey == LayerKey.COLOR:
         for key, value in sorted(dict.items(), key = operator.itemgetter(0)):
-            # if(key < 1000):
-            #     print (key)
-            # print (key)
             addVector3Data(values, value)
 
-    # print (len(values))
     return values
 

@@ -23,17 +23,6 @@ class TransformParser:
 
     # refer to FBX: Camera and Lights issues(https://developer.blender.org/T41374)
     def parseCameraNode(self, nodeData, node):
-        # camera = node.GetCamera()
-        #
-        # position = camera.Position.Get()
-        # center = camera.InterestPosition.Get()
-        # up = camera.UpVector.Get()
-        #
-        # FbxVector4(position[0], position[1], position[2], 1)
-
-        # print (addVector3Data([], position), addVector3Data([], center), addVector3Data([], up))
-
-        # # For Single Matrix situation, obtain transform matrix from eDestinationPivot, which include pivot offsets and pre/post rotations.
         nodeLocalMatrix = node.EvaluateLocalTransform()
 
         localMatrixData = []

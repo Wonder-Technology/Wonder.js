@@ -32,10 +32,6 @@ class MaterialParser(object):
                 implementation = GetImplementation(material, "ImplementationCGFX")
                 implementation_type = "CGFX"
 
-            # self._output = None
-            # material_params = None
-            # material_type = None
-
             if implementation:
                 # TODO support shader material
                 print("not support Shader materials")
@@ -44,12 +40,10 @@ class MaterialParser(object):
                 self._addMaterialDataToMesh(materialId, meshData)
                 materialData = {}
                 self._output["materials"][materialId] = materialData
-                # print ("materialId %s" % materialId, materialDatas)
                 self._parsePhongMaterial(material, materialData)
             elif material.GetClassId().Is(FbxSurfaceLambert.ClassId):
                 self._addMaterialDataToMesh(materialId, meshData)
                 materialData = {}
-                # materialDatas[materialId] = materialData
                 self._output["materials"][materialId] = materialData
                 self._parseLambertMaterial(material, materialData)
             else:
@@ -83,25 +77,10 @@ class MaterialParser(object):
 
         self._setMaterialProperty(material.Specular.Get(), material.SpecularFactor.Get(), valueData, "specular")
 
-        # specular = material.Specular.Get()
-        # specular = [specular[0], specular[1], specular[2]]
-
-
-        # _setMaterialProperty(material, FbxSurfaceMaterial.sSpecular, FbxSurfaceMaterial.sSpecularFactor, valueData, "specular")
-
         shininess = material.Shininess.Get()
-        # shininess = material.FindProperty(FbxSurfaceMaterial.sShininess)
 
-        # if shininess.IsValid():
         shininess *= 12
         valueData["shininess"] = shininess
-
-        # reflective = material.ReflectionFactor.Get()
-
-
-        # valueData["specular"] = specular
-        # valueData["shininess"] = shininess
-        # valueData["reflective"] = reflective
 
         self._parseMaterial(material, valueData, materialData)
 
@@ -124,42 +103,17 @@ class MaterialParser(object):
         else:
             materialData["transparent"] = False
 
-        # ambient = material.Ambient.Get()
-        # ambient = [ambient[0], ambient[1], ambient[2]]
-
-        # _setMaterialProperty(material, FbxSurfaceMaterial.sDiffuse, FbxSurfaceMaterial.sDiffuseFactor, valueData, "diffuse")
         self._setMaterialProperty(material.Diffuse.Get(), material.DiffuseFactor.Get(), valueData, "diffuse")
 
 
         self._setMaterialProperty(material.Emissive.Get(), material.EmissiveFactor.Get(), valueData, "emission")
-
-        # diffuse = material.Diffuse.Get()
-        # diffuse = [diffuse[0], diffuse[1], diffuse[2]]
-        #
-        # emissive = material.Emissive.Get()
-        # emissive = [emissive[0], emissive[1], emissive[2]]
-
-
-
-        # valueData["ambient"] = ambient
-        # valueData["diffuse"] = diffuse
-        # valueData["emission"] = emissive
 
         self._parseTexture(material, valueData)
 
 
 
     def _setMaterialProperty(self, property,factor, valueData, name):
-        # property = material.FindProperty(propertyName)
-        # factorProperty = material.FindProperty(factorPropertyName)
-
-        # if property.IsValid():
-        # result = property.Get()
         result = property
-
-        # if factorProperty.IsValid():
-        # factor = factorProperty.Get()
-        # factor = factorProperty
 
         result = [result[0], result[1], result[2]]
 
@@ -168,7 +122,6 @@ class MaterialParser(object):
             result[1] *= factor
             result[2] *= factor
 
-        # print (dir(result))
         valueData[name] = result
 
 
@@ -188,8 +141,6 @@ class MaterialParser(object):
                         for k in range(texture_count):
                             texture = layered_texture.GetSrcObject(FbxCriteria.ObjectType(FbxTexture.ClassId),k)
                             if texture:
-                                # textureId = getTextureId(texture, True)
-                                # material_params[binding_types[str(material_property.GetName())]] = textureId
                                 self._parseTextureForMaterialAndAddTextureData(texture, material_property, valueData)
                 else:
                     # no layered texture simply get on the property
@@ -197,9 +148,6 @@ class MaterialParser(object):
                     for j in range(texture_count):
                         texture = material_property.GetSrcObject(FbxCriteria.ObjectType(FbxTexture.ClassId),j)
                         if texture:
-                            # TODO finish
-                            # textureId = getTextureId(texture, True)
-                            # material_params[binding_types[str(material_property.GetName())]] = textureId
                             self._parseTextureForMaterialAndAddTextureData(texture, material_property, valueData)
 
 
@@ -207,24 +155,12 @@ class MaterialParser(object):
     def _parseTextureForMaterialAndAddTextureData(self, texture, material_property, valueData):
         binding_types = {
             "DiffuseColor": "diffuse",
-            # "DiffuseFactor": "diffuseFactor",
             "EmissiveColor": "emission",
-            # "EmissiveFactor": "emissiveFactor",
             "AmbientColor": "lightMap", # "ambientMap",
-            # "AmbientFactor": "ambientFactor",
             "SpecularColor": "specular",
-            # "SpecularFactor": "specularFactor",
-            # "ShininessExponent": "shininessExponent",
             "NormalMap": "normalMap",
-            # "Bump": "bumpMap",
             "Bump": "normalMap",
-            # "ReflectionColor": "reflective",
-            # "ReflectionFactor": "reflectionFactor",
             # TODO support reflectionMap, transparentMap(aoMap?),displacementMap,vectorDisplacementMap
-            # "TransparentColor": "transparentMap",
-            # "TransparencyFactor": "transparentFactor",
-            # "DisplacementColor": "displacementMap",
-            # "VectorDisplacementColor": "vectorDisplacementMap"
         }
 
 
@@ -232,8 +168,6 @@ class MaterialParser(object):
 
         mapStr = binding_types[str(material_property.GetName())]
 
-        # print (mapStr, valueData)
-        # if mapStr and valueData[mapStr]:
         if mapStr:
             valueData[mapStr] = textureId
 
@@ -289,8 +223,6 @@ class MaterialParser(object):
         # TODO support texture rotation
         repeatRegion = [roundUtil(texture.GetTranslationU()), roundUtil(texture.GetTranslationV()), roundUtil(texture.GetScaleU()), roundUtil(texture.GetScaleV())]
 
-        # print (id, texture.GetUVTranslation(), texture.GetScale())
-
         output["samplers"][id] = {
             "name": id,
             "isPremultipliedAlpha": isPremultipliedAlpha,
@@ -312,10 +244,6 @@ class MaterialParser(object):
 
         if output["images"].get(id, None) != None:
             return
-
-        # uri = texture.GetRelativeFileName()
-
-        # uri = getBaseName(texture.GetFileName())
 
         absoluteUrl = texture.GetFileName()
 
