@@ -29,37 +29,25 @@ Please learn samples in examples/samples/ to get more info.
 * Contributing
 Join us, We can create the amazing 3D world together!
 * Feature
-- Billboard
-- Batch Draw
-  - Instance
-  - Render Queue Sort By RenderGroup,RenderPriority,Shader,Texture,VBO
-  - Merge GameObject
-- Grass
-  - Grass Texture
-  - Grass Instance
-- Water
+- Skybox
+- Texture
+  - Canvas Texture
+  - Video Texture
+  - Compressed Texture(DDS)
+  - Cubemap Texture
 - Procedural
   - Procedural Texture
-- Terrain
-  - HeightMap
-  - Layer Texture, Mix Texture, Bump Texture
-  - HeightMapGenerator tool
-- LOD
-  - Geometry LOD
-  - GameObject LOD
-- Space Partition
-  - Octree
+- Light
+  - Direction,Point Light
+  - Diffuse Map,Specular Map,Emission Map,Light Map
+  - Normal Map
+  - Mirror
+  - Reflection,Refraction,Fresnel
+- Shadow
+  - Direction,Point Light ShadowMap
+- Billboard
 - Event System
   - EventTriggerDetector
-- ThreeD UI
-  - Bitmap Font
-  - Solid Line, Dash Line
-  - Arrow
-- TwoD UI
-  - Ttf Font, Bitmap Font
-  - ProgressBar
-  - Image
-  - Button
 - Picking
   - RayCast Picking
 - Collider
@@ -73,30 +61,48 @@ Join us, We can create the amazing 3D world together!
   - Perspective,Orthographic Camera
   - Arcball Control
   - Fly Control
-- Light
-  - Direction,Point Light
-  - Diffuse Map,Specular Map,Emission Map,Light Map
-  - Normal Map
-  - Mirror
-  - Reflection,Refraction,Fresnel
+- UI
+  - ThreeD UI
+    - Bitmap Font
+    - Solid Line, Dash Line
+    - Arrow
+  - TwoD UI
+    - Ttf Font, Bitmap Font
+    - ProgressBar
+    - Image
+    - Button
 - Script
   - User Script
   - Event Script
 - Shader
   - Custom Shader
-- Shadow
-  - Direction,Point Light ShadowMap
-- Skybox
-- Texture
-  - Canvas Texture
-  - Video Texture
-  - Compressed Texture(DDS)
-  - Cubemap Texture
-- Loader
-  - support load .gltf
+- Optimize
+  - LOD
+    - Geometry LOD
+    - GameObject LOD
+  - Space Partition
+    - Octree
+  - VAO
+  - Batch Draw
+    - Instance
+    - Render Queue Sort By RenderGroup,RenderPriority,Shader,Texture,VBO
+    - Merge GameObject
+- Outdoor
+  - Grass
+    - Grass Texture
+    - Grass Instance
+  - Water
+  - Terrain
+    - HeightMap
+    - Layer Texture, Mix Texture, Bump Texture
+
+
+* Tool
 - Converter
-  - OBJ Converter
-  - MD2 Converter
+support .fbx,.obj,.md2,.gltf converter
+
+- terrain height map generator
+
 * Usage
 Include library in your html:
 #+BEGIN_SRC html

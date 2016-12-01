@@ -212,7 +212,7 @@ describe("parse wd Geometry", function(){
                     return;
                 }
 
-                for (let i = 0, len = texCoords.length / 2; i < len; i++) {
+                for (var i = 0, len = texCoords.length / 2; i < len; i++) {
                     texCoords[i * 2 + 1] = 1.0 - texCoords[i * 2 + 1];
                 }
 
