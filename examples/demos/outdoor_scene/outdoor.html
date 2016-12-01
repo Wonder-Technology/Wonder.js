@@ -484,7 +484,9 @@
 
 
         function createTree() {
-            var gameObject = wd.LoaderManager.getInstance().get("tree").getChild("models").getChild(0).getChild(0);
+            var models = wd.LoaderManager.getInstance().get("tree").getChild("models");
+
+            var gameObject = wd.LoaderManager.getInstance().get("tree").getChild("models").getChild(0);
 
             gameObject.transform.scale = wd.Vector3.create(30, 30, 30);
 
