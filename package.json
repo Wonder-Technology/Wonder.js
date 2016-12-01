@@ -46,6 +46,6 @@
     "vinyl": "^0.4.6",
     "vinyl-bufferstream": "^1.0.1",
     "wdcb": "^0.1.4",
-    "wdfrp": "^0.1.3"
+    "wdfrp": "^0.1.6"
   }
 }

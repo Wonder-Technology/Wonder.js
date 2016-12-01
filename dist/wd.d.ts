@@ -8268,12 +8268,12 @@ declare module wd {
         static light_fragment: GLSLChunk;
         static light_setWorldPosition_vertex: GLSLChunk;
         static light_vertex: GLSLChunk;
-        static skybox_fragment: GLSLChunk;
-        static skybox_vertex: GLSLChunk;
         static map_forBasic_fragment: GLSLChunk;
         static map_forBasic_vertex: GLSLChunk;
         static multi_map_forBasic_fragment: GLSLChunk;
         static multi_map_forBasic_vertex: GLSLChunk;
+        static skybox_fragment: GLSLChunk;
+        static skybox_vertex: GLSLChunk;
         static basic_forBasic_envMap_fragment: GLSLChunk;
         static basic_forBasic_envMap_vertex: GLSLChunk;
         static forBasic_envMap_fragment: GLSLChunk;
@@ -8281,6 +8281,8 @@ declare module wd {
         static fresnel_forBasic_envMap_fragment: GLSLChunk;
         static reflection_forBasic_envMap_fragment: GLSLChunk;
         static refraction_forBasic_envMap_fragment: GLSLChunk;
+        static modelMatrix_batch_instance_vertex: GLSLChunk;
+        static normalMatrix_batch_instance_vertex: GLSLChunk;
         static basic_forLight_envMap_fragment: GLSLChunk;
         static basic_forLight_envMap_vertex: GLSLChunk;
         static forLight_envMap_fragment: GLSLChunk;
@@ -8288,6 +8290,10 @@ declare module wd {
         static fresnel_forLight_envMap_fragment: GLSLChunk;
         static reflection_forLight_envMap_fragment: GLSLChunk;
         static refraction_forLight_envMap_fragment: GLSLChunk;
+        static modelMatrix_noInstance_vertex: GLSLChunk;
+        static normalMatrix_noInstance_vertex: GLSLChunk;
+        static modelMatrix_hardware_instance_vertex: GLSLChunk;
+        static normalMatrix_hardware_instance_vertex: GLSLChunk;
         static diffuseMap_fragment: GLSLChunk;
         static diffuseMap_vertex: GLSLChunk;
         static emissionMap_fragment: GLSLChunk;
@@ -8318,12 +8324,6 @@ declare module wd {
         static twoDShadowMap_fragment: GLSLChunk;
         static twoDShadowMap_unpackDepth_fragment: GLSLChunk;
         static twoDShadowMap_vertex: GLSLChunk;
-        static modelMatrix_batch_instance_vertex: GLSLChunk;
-        static normalMatrix_batch_instance_vertex: GLSLChunk;
-        static modelMatrix_hardware_instance_vertex: GLSLChunk;
-        static normalMatrix_hardware_instance_vertex: GLSLChunk;
-        static modelMatrix_noInstance_vertex: GLSLChunk;
-        static normalMatrix_noInstance_vertex: GLSLChunk;
         static basic_bitmapFont_fragment: GLSLChunk;
         static common_bitmapFont_vertex: GLSLChunk;
         static grass_batch_instance_vertex: GLSLChunk;
@@ -8342,20 +8342,11 @@ declare module wd {
         static terrain_mix_common_fragment: GLSLChunk;
         static terrain_mix_fragment: GLSLChunk;
         static terrain_mix_vertex: GLSLChunk;
-        static multiPages_bitmapFont_fragment: GLSLChunk;
-        static multiPages_bitmapFont_vertex: GLSLChunk;
         static sdf_bitmapFont_smoothStep_fallback: GLSLChunk;
         static sdf_bitmapFont_smoothStep_standardDerivatives: GLSLChunk;
         static sdf_bitmapFont_smooth_fragment: GLSLChunk;
-        static brick_proceduralTexture_fragment: GLSLChunk;
-        static cloud_proceduralTexture_fragment: GLSLChunk;
-        static common_proceduralTexture_fragment: GLSLChunk;
-        static common_proceduralTexture_vertex: GLSLChunk;
-        static fire_proceduralTexture_fragment: GLSLChunk;
-        static grass_proceduralTexture_fragment: GLSLChunk;
-        static marble_proceduralTexture_fragment: GLSLChunk;
-        static road_proceduralTexture_fragment: GLSLChunk;
-        static wood_proceduralTexture_fragment: GLSLChunk;
+        static multiPages_bitmapFont_fragment: GLSLChunk;
+        static multiPages_bitmapFont_vertex: GLSLChunk;
         static common_heightMap: GLSLChunk;
         static common_light: GLSLChunk;
         static mirror_fragment: GLSLChunk;
@@ -8370,6 +8361,15 @@ declare module wd {
         static water_reflection_fragment: GLSLChunk;
         static water_refraction_fragment: GLSLChunk;
         static water_vertex: GLSLChunk;
+        static brick_proceduralTexture_fragment: GLSLChunk;
+        static cloud_proceduralTexture_fragment: GLSLChunk;
+        static common_proceduralTexture_fragment: GLSLChunk;
+        static common_proceduralTexture_vertex: GLSLChunk;
+        static fire_proceduralTexture_fragment: GLSLChunk;
+        static grass_proceduralTexture_fragment: GLSLChunk;
+        static marble_proceduralTexture_fragment: GLSLChunk;
+        static road_proceduralTexture_fragment: GLSLChunk;
+        static wood_proceduralTexture_fragment: GLSLChunk;
     }
     type GLSLChunk = {
         top?: string;

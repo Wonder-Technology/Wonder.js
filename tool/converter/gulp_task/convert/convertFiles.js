@@ -5,7 +5,6 @@ var path = require("path");
 
 var Converter = require("../../dist/converter/Converter");
 
-
 function convertFiles(sourceDir, destDir) {
     var converter = Converter.create();
 
