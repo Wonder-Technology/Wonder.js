@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>benchmark+3000 monkeys+instance</title>
+
+    <script src="../../dist/wd.innerLib.js" type="text/javascript"></script>
+    <script src="../../dist/wd.debug.js" type="text/javascript"></script>
+</head>
+<body>
+<script>
+    window.onload = function () {
+        wd.Main.setConfig({
+            isTest: false,
+            screenSize: wd.EScreenSize.FULL
+        }).init();
+
+        wd.LoaderManager.getInstance().load([
+//            {url: "../../examples/asset/texture/1.jpg", id: "texture"}
+            {url: "../../mine/result.wd", id: "model"}
+        ]).subscribe(null, null, function () {
+            initSample();
+        });
+
+
+        function initSample() {
+            var director = wd.Director.getInstance();
+
+
+            director.scene.addChildren(createMonkeyes());
+
+
+
+//            director.scene.addChild(createAmbientLight());
+//            director.scene.addChild(createDirectionLight());
+//            director.scene.addChild(createPointLight());
+
+
+            director.scene.addChild(createCamera());
+
+
+            director.start();
+
+        }
+
+        function createMonkeyes(){
+            var resultArr = [],
+                    playgroundSize = 500;
+
+            var monkey = createMonkey();
+
+            var sourceInstanceComponent = wd.OneToOneSourceInstance.create();
+            monkey.addComponent(sourceInstanceComponent);
+
+            resultArr.push(monkey);
+
+            for (var index = 0; index < 3000; index++) {
+                var instance = sourceInstanceComponent.cloneInstance("index" + String(index));
+
+                var scale = Math.random() * 0.8 + 0.6;
+                instance.transform.scale = wd.Vector3.create(scale, scale, scale);
+                instance.transform.position = wd.Vector3.create(Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize);
+
+                resultArr.push(instance);
+            }
+
+            return resultArr;
+        }
+
+        function createMonkey(){
+            var models = wd.LoaderManager.getInstance().get("model").getChild("models");
+
+            return models.getChild(0);
+        }
+
+        function createCamera() {
+            var camera = wd.GameObject.create(),
+                    view = wd.Director.getInstance().view,
+                    cameraComponent = wd.PerspectiveCamera.create();
+
+            cameraComponent.fovy = 60;
+            cameraComponent.aspect = view.width / view.height;
+            cameraComponent.near = 0.1;
+            cameraComponent.far = 10000;
+
+            var controller = wd.ArcballCameraController.create(cameraComponent);
+
+            controller.distance = 1000;
+            controller.wheelSpeed = 5;
+
+
+            camera.addComponent(controller);
+
+
+            return camera;
+        }
+    };
+</script>
+</body>
+</html>
