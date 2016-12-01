@@ -31,7 +31,6 @@ module wd{
 
             WDUtils.addData(material, "doubleSided", materialData.doubleSided);
             WDUtils.addData(material, "transparent", Boolean(materialData.transparent));
-            WDUtils.addData(material, "opacity", materialData.transparency);
 
             //todo parse jointCount
 
@@ -105,6 +104,8 @@ module wd{
 
             this._addMaterialLightMap(material, "lightMap", values.lightMap);
             this._addMaterialLightMap(material, "normalMap", values.normalMap);
+
+            WDUtils.addData(material, "opacity", values.transparency);
 
             if(!!values.shininess){
                 material.shininess = values.shininess;

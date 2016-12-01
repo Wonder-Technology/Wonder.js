@@ -168,7 +168,7 @@ export class GLTFToWD {
             if (values.hasOwnProperty(name)) {
                 let value = values[name];
 
-                if(!!value.value){
+                if(value.value !== void 0 && value.value !== null){
                     values[name] = value.value;
                 }
             }

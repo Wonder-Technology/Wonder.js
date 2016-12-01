@@ -249,7 +249,9 @@ describe("parse wd material", function() {
                         "doubleSided": false,
                         "transparent": true,
                         "technique": "PHONG",
-                        "transparency": 0.2
+                        "values":{
+                            "transparency": 0.2
+                        }
                     }
                 }
             })

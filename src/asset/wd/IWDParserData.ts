@@ -180,7 +180,6 @@ module wd {
 
         doubleSided?:boolean;
         transparent?:boolean;
-        transparency?:number;
 
 
         values?: IWDMaterialValueParser;
@@ -196,6 +195,8 @@ module wd {
         shininess?:number;
 
         normalMap?:string;
+
+        transparency?:number;
     }
 
     export interface IWDAnimationParser extends IWDChildRootPropertyParser {

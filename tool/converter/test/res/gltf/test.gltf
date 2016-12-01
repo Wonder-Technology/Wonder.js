@@ -172,7 +172,7 @@
                     "doubleSided": false,
                     "jointCount": 0,
                     "technique": "BLINN",
-                    "transparent": false,
+                    "transparent": true,
                     "values": {
                         "ambient": {
                             "type": 35666,
@@ -208,6 +208,10 @@
                                 0,
                                 1
                             ]
+                        },
+                        "transparency": {
+                          "type": 5126,
+                          "value": 0
                         }
                     }
                 }

@@ -120,7 +120,7 @@ describe("GLTFToWD", function () {
                         "doubleSided": false,
                         "jointCount": 0,
                         "technique": "BLINN",
-                        "transparent": false,
+                        "transparent": true,
                         "values": {
                             "ambient": [
                                 0,
@@ -141,7 +141,8 @@ describe("GLTFToWD", function () {
                                 0,
                                 0,
                                 1
-                            ]
+                            ],
+                            "transparency": 0
                         },
                         "name": "blinn3"
                     }
