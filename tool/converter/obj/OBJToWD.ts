@@ -1,4 +1,4 @@
-import fs = require("fs");
+import fs = require("fs-extra");
 import path = require("path");
 import wdFrp = require("wdfrp");
 import wdCb = require("wdcb");

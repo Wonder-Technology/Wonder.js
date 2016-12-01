@@ -76,7 +76,6 @@ module wd{
             var self = this;
 
             components.forEach((component:IWDComponentAssembler) => {
-                //todo refactor: define type
                 if(self._isTransform(<IWDTransformAssembler>component)) {
                     model.addComponent(self._transformAssembler.createComponent(<IWDTransformAssembler>component));
                 }

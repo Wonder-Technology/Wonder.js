@@ -28,11 +28,11 @@
 
         'test/unit/**/BufferWriter.js',
 
-        // 'test/unit/**',
+        'test/unit/**',
 
 
 
-        'test/unit/**/CustomProcedural*',
+        // 'test/unit/**/CustomProcedural*',
 
 
         // 'test/unit/**/SoundManager*',

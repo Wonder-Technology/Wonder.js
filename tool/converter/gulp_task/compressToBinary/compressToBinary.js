@@ -1,4 +1,3 @@
-var gulp = require("gulp");
 var fs = require("fs-extra");
 var path = require("path");
 var CompressorManager = require("../../dist/converter/gulp_task/compressToBinary/CompressorManager").CompressorManager;

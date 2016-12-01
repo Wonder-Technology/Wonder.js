@@ -52,44 +52,6 @@ export = class ObjectsConverter {
 
         this._convertFromObj(lines);
 
-
-        // let nodes = {};
-        //     // meshId = `${nodeName}_mesh`;
-        //
-        // json.nodes = nodes;
-        //
-        //
-        // // topObject.name = ModelLoaderUtils.getNameByPath(filePath);
-        //
-        // topObject.matrix = [
-        //         1,
-        //         0,
-        //         0,
-        //         0,
-        //
-        //         0,
-        //         1,
-        //         0,
-        //         0,
-        //
-        //         0,
-        //         0,
-        //         1,
-        //         0,
-        //
-        //         0,
-        //         0,
-        //         0,
-        //         1
-        // ]
-        //
-        // topObject.meshId = `${nodeName}_mesh`;
-        // topObject.name = nodeName;
-        //
-        //
-        // nodes[nodeName] = topObject;
-
-        //todo refactor with md2
         let nodes = {},
             meshId = `${nodeName}_mesh`;
 

@@ -1,4 +1,3 @@
-var gulp = require("gulp");
 var Filter = require("../../dist/converter/gulp_task/filterPrimitiveData/Filter").Filter;
 
 function filterPrimitiveDataByIndices(isRemoveNullData, json) {
