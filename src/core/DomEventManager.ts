@@ -1,6 +1,4 @@
 module wd{
-    declare var document:any;
-
     export class DomEventManager{
         public static create() {
             var obj = new this();
@@ -17,34 +15,40 @@ module wd{
         private _lastTriggerList:any = null;
         private _isDragEventTriggering:boolean = false;
         private _triggerListOfDragEvent = null;
+        private _pointEventBinder:PointEventBinder = PointEventBinder.create();
 
         public initDomEvent(){
             var self = this;
 
+            this._pointEventBinder.initPointEvent();
+
             return wdFrp.fromArray(
                 [
-                    EventManager.fromEvent(EEventName.CLICK),
-                    EventManager.fromEvent(EEventName.MOUSEDOWN),
-                    EventManager.fromEvent(EEventName.MOUSEUP),
-                    EventManager.fromEvent(EEventName.MOUSEWHEEL),
-                    this._buildMouseDragStream()
+                    EventManager.fromEvent(EEngineEvent.POINT_TAP),
+                    EventManager.fromEvent(EEngineEvent.POINT_DOWN),
+                    EventManager.fromEvent(EEngineEvent.POINT_UP),
+                    EventManager.fromEvent(EEngineEvent.POINT_SCALE),
+                    this._buildPointDragStream()
                 ]
                 )
                 .mergeAll()
-                .filter((e:MouseEvent) => {
+                .map((e:CustomEvent) => {
+                    return e.userData;
+                })
+                .filter((e:PointEvent) => {
                     return !Director.getInstance().isPause;
                 })
-                .map((e:MouseEvent) => {
-                    var triggerList = self._getMouseEventTriggerList(e);
+                .map((e:PointEvent) => {
+                    var triggerList = self._getPointEventTriggerList(e);
 
                     if(self._isDragEventTriggering){
                         self._triggerListOfDragEvent = triggerList;
                     }
 
-                    return self._getMouseEventTriggerListData(e, triggerList);
+                    return self._getPointEventTriggerListData(e, triggerList);
                 })
                 .merge(
-                    this._buildMouseMoveStream()
+                    this._buildPointMoveStream()
                 )
                 .subscribe(([triggerList, e]) => {
                     triggerList.forEach((entityObject:EntityObject) => {
@@ -53,37 +57,56 @@ module wd{
                 });
         }
 
-        private _buildMouseDragStream(){
+        public dispose(){
+            this._pointEventBinder.dispose();
+        }
+
+        private _buildPointDragStream(){
             var self = this;
 
-            /*!
-             here bind on document(not on document.body), so the event handler binded will not affected by other event handler binded on the same event
-             */
-            return EventManager.fromEvent(document, EEventName.MOUSEDOWN)
-                .flatMap((e:MouseEvent) => {
-                    return EventManager.fromEvent(document, EEventName.MOUSEMOVE).takeUntil(EventManager.fromEvent(document, EEventName.MOUSEUP)
-                        .do((e:MouseEvent) => {
+            return EventManager.fromEvent(EEngineEvent.POINT_DOWN)
+                .flatMap((e:PointEvent) => {
+                    return EventManager.fromEvent(EEngineEvent.POINT_MOVE)
+                        .takeUntil(EventManager.fromEvent(EEngineEvent.POINT_UP)
+                        .do((e:CustomEvent) => {
                             self._isDragEventTriggering = false;
                         })
                     );
                 })
-                .map((e:MouseEvent) => {
-                    e.name = EEventName.MOUSEDRAG;
+                .map((e:CustomEvent) => {
+                    e.name = EEngineEvent.POINT_DRAG;
+                    e.userData.name = EEngineEvent.POINT_DRAG;
+
+                    if(self._isDragEventFirstTriggered()){
+                        self._resetLastPosition(e.userData);
+                    }
 
                     self._isDragEventTriggering = true;
 
                     return e;
-                })
+                });
         }
 
-        private _buildMouseMoveStream(){
+        private _resetLastPosition(e:PointEvent){
+            e.lastX = null;
+            e.lastY = null;
+        }
+
+        private _isDragEventFirstTriggered(){
+                return this._isDragEventTriggering === false;
+        }
+
+        private _buildPointMoveStream(){
             var self = this;
 
-            return EventManager.fromEvent(EEventName.MOUSEMOVE)
-                .filter((e:MouseEvent) => {
+            return EventManager.fromEvent(EEngineEvent.POINT_MOVE)
+                .map((e:CustomEvent) => {
+                    return e.userData;
+                })
+                .filter((e:PointEvent) => {
                     return !Director.getInstance().isPause;
                 })
-                .map((e:MouseEvent) => {
+                .map((e:PointEvent) => {
                     var triggerList = null;
 
                     if(self.designatedTriggerList){
@@ -93,28 +116,28 @@ module wd{
                         triggerList = self._triggerListOfDragEvent;
                     }
                     else{
-                        triggerList = self._getMouseEventTriggerList(e);
+                        triggerList = self._getPointEventTriggerList(e);
                     }
 
-                    var {mouseoverObjects, mouseoutObjects} = self._getMouseOverAndMouseOutObject(triggerList, self._lastTriggerList);
+                    var {pointoverObjects, pointoutObjects} = self._getPointOverAndPointOutObject(triggerList, self._lastTriggerList);
 
-                    self._setMouseOverTag(mouseoverObjects);
-                    self._setMouseOutTag(mouseoutObjects);
+                    self._setPointOverTag(pointoverObjects);
+                    self._setPointOutTag(pointoutObjects);
 
                     self._lastTriggerList = triggerList.clone();
 
-                    triggerList = mouseoutObjects.addChildren(triggerList);
+                    triggerList = pointoutObjects.addChildren(triggerList);
 
-                    return self._getMouseEventTriggerListData(e, triggerList);
+                    return self._getPointEventTriggerListData(e, triggerList);
                 })
         }
 
-        private _getMouseOverAndMouseOutObject(currentTriggerList:wdCb.Collection<EntityObject>, lastTriggerList:wdCb.Collection<EntityObject>){
-            var mouseoverObjects = wdCb.Collection.create<EntityObject>(),
-                mouseoutObjects = wdCb.Collection.create<EntityObject>();
+        private _getPointOverAndPointOutObject(currentTriggerList:wdCb.Collection<EntityObject>, lastTriggerList:wdCb.Collection<EntityObject>){
+            var pointoverObjects = wdCb.Collection.create<EntityObject>(),
+                pointoutObjects = wdCb.Collection.create<EntityObject>();
 
             if(!lastTriggerList){
-                mouseoverObjects = currentTriggerList;
+                pointoverObjects = currentTriggerList;
             }
             else{
                 //todo optimize
@@ -122,7 +145,7 @@ module wd{
                     if(!currentTriggerList.hasChildWithFunc((currentObject:EntityObject) => {
                             return JudgeUtils.isEqual(currentObject, lastObject);
                         })){
-                        mouseoutObjects.addChild(lastObject);
+                        pointoutObjects.addChild(lastObject);
                     }
                 });
 
@@ -130,53 +153,53 @@ module wd{
                     if(!lastTriggerList.hasChildWithFunc((lastObject:EntityObject) => {
                             return JudgeUtils.isEqual(currentObject, lastObject);
                         })){
-                        mouseoverObjects.addChild(currentObject);
+                        pointoverObjects.addChild(currentObject);
                     }
                 });
             }
 
             return {
-                mouseoverObjects: mouseoverObjects,
-                mouseoutObjects: mouseoutObjects
+                pointoverObjects: pointoverObjects,
+                pointoutObjects: pointoutObjects
             }
         }
 
-        private _setMouseOverTag(objects:wdCb.Collection<EntityObject>){
+        private _setPointOverTag(objects:wdCb.Collection<EntityObject>){
             objects.forEach((object:EntityObject) => {
-                object.addTag(<any>EEventTag.MOUSE_OVER);
+                object.addTag(<any>EEventTag.POINT_OVER);
             })
         }
 
-        private _setMouseOutTag(objects:wdCb.Collection<EntityObject>){
+        private _setPointOutTag(objects:wdCb.Collection<EntityObject>){
             objects.forEach((object:EntityObject) => {
-                object.addTag(<any>EEventTag.MOUSE_OUT);
+                object.addTag(<any>EEventTag.POINT_OUT);
             })
         }
 
-        private _setEventNameByEventTag(object:EntityObject, e:MouseEvent){
-            if(object.hasTag(<any>EEventTag.MOUSE_OVER)){
-                e.name = EEventName.MOUSEOVER;
+        private _setEventNameByEventTag(object:EntityObject, e:PointEvent){
+            if(object.hasTag(<any>EEventTag.POINT_OVER)){
+                e.name = EEngineEvent.POINT_OVER;
             }
-            else if(object.hasTag(<any>EEventTag.MOUSE_OUT)){
-                e.name = EEventName.MOUSEOUT;
+            else if(object.hasTag(<any>EEventTag.POINT_OUT)){
+                e.name = EEngineEvent.POINT_OUT;
             }
 
             return e;
         }
 
         private _removeEventTag(object:EntityObject){
-            object.removeTag(<any>EEventTag.MOUSE_OVER);
-            object.removeTag(<any>EEventTag.MOUSE_OUT);
+            object.removeTag(<any>EEventTag.POINT_OVER);
+            object.removeTag(<any>EEventTag.POINT_OUT);
         }
 
-        private _trigger(e:MouseEvent, entityObject:EntityObject);
-        private _trigger(e:MouseEvent, entityObject:EntityObject, isBubble:boolean);
+        private _trigger(e:PointEvent, entityObject:EntityObject);
+        private _trigger(e:PointEvent, entityObject:EntityObject, isBubble:boolean);
 
         private _trigger(...args) {
-            var e:MouseEvent = args[0],
+            var e:PointEvent = args[0],
                 entityObject:EntityObject = args[1],
                 notSetTarget = false,
-                event:MouseEvent = null,
+                event:PointEvent = null,
                 customEvent:CustomEvent = null,
                 handlerName = null;
 
@@ -189,14 +212,15 @@ module wd{
                 this._removeEventTag(entityObject);
             }
 
-            handlerName = EventTriggerTable.getScriptHandlerName(event.name);
 
-            customEvent = CustomEvent.create(<any>EEngineEvent[EventTriggerTable.getScriptEngineEvent(event.name)]);
+
+            handlerName = EventTriggerTable.getScriptHandlerName(<EEventName>event.name);
+
+            customEvent = CustomEvent.create(<string>event.name, event);
 
             customEvent.getDataFromDomEvent(event);
 
-            //todo refactor: support directly trigger mouse event on target
-            EventManager.trigger(entityObject, customEvent, event, notSetTarget);
+            EventManager.trigger(entityObject, customEvent, notSetTarget);
 
             event.getDataFromCustomEvent(customEvent);
 
@@ -207,9 +231,9 @@ module wd{
             }
         }
 
-        private _getMouseEventTriggerList(e:MouseEvent){
+        private _getPointEventTriggerList(e:PointEvent){
             var topGameObject:GameObject = null,
-                topUIObject:UIObject = null,
+                topUIObject:any = null,
                 triggerList:wdCb.Collection<EntityObject> = null;
 
             if(this.designatedTriggerList){
@@ -221,11 +245,11 @@ module wd{
             topGameObject = this._findTopGameObject(e, this.scene.gameObjectScene);
             topUIObject = this._findTopUIObject(e, this.scene.uiObjectScene);
 
-            if(topGameObject){
+            if(!!topGameObject){
                 triggerList.addChild(topGameObject);
             }
 
-            if(topUIObject){
+            if(!!topUIObject){
                 triggerList.addChild(topUIObject);
             }
 
@@ -236,11 +260,11 @@ module wd{
             return triggerList;
         }
 
-        private _isSceneAsTopOne(e:MouseEvent, triggerList:wdCb.Collection<EntityObject>){
+        private _isSceneAsTopOne(e:PointEvent, triggerList:wdCb.Collection<EntityObject>){
             return this._isTriggerScene(e) && triggerList.getCount() === 0;
         }
 
-        private _findTopGameObject(e:MouseEvent, gameObjectScene:GameObjectScene){
+        private _findTopGameObject(e:PointEvent, gameObjectScene:GameObjectScene){
             var self = this;
 
             return this._findTriggerGameObjectList(e, gameObjectScene).sort((a:GameObject, b:GameObject) => {
@@ -253,18 +277,22 @@ module wd{
             return obj.transform.position.clone().sub(Director.getInstance().scene.currentCamera.transform.position).length();
         }
 
-        private _findTopUIObject(e:MouseEvent, uiObjectScene:UIObjectScene){
-            return this._findTriggerUIObjectList(e, uiObjectScene).sort((a:UIObject, b:UIObject) => {
+        private _findTopUIObject(e:PointEvent, uiObjectScene:any|null){
+            if(uiObjectScene === null){
+                return null;
+            }
+
+            return this._findTriggerUIObjectList(e, uiObjectScene).sort((a:any, b:any) => {
                     return b.transform.zIndex - a.transform.zIndex;
                 })
                 .getChild(0);
         }
 
-        private _findTriggerGameObjectList(e:MouseEvent, objectScene:GameObjectScene):wdCb.Collection<GameObject>{
+        private _findTriggerGameObjectList(e:PointEvent, objectScene:GameObjectScene):wdCb.Collection<GameObject>{
             var triggerObjectList = wdCb.Collection.create<any>(),
                 self = this;
             var find = (entityObject:GameObject) => {
-                if(entityObject.hasComponent(SpacePartition)){
+                if(ClassUtils.hasComponent(entityObject, "SpacePartition")){
                     entityObject.getSpacePartition().getIntersectListWithRay(e)
                         .forEach((entityObject:GameObject) => {
                             self._addTriggerObjectByQueryDetector(entityObject, e, triggerObjectList);
@@ -277,7 +305,7 @@ module wd{
                         find(child);
                     });
                 }
-            }
+            };
 
             objectScene.forEach((child:GameObject) => {
                 find(child);
@@ -286,25 +314,25 @@ module wd{
             return triggerObjectList;
         }
 
-        private _findTriggerUIObjectList(e:MouseEvent, objectScene:UIObjectScene):wdCb.Collection<UIObject>{
+        private _findTriggerUIObjectList(e:PointEvent, objectScene:any):wdCb.Collection<any>{
             var triggerObjectList = wdCb.Collection.create<any>(),
                 self = this;
-            var find = (entityObject:UIObject) => {
+            var find = (entityObject:any) => {
                 self._addTriggerObjectByQueryDetector(entityObject, e, triggerObjectList);
 
-                entityObject.forEach((child:UIObject) => {
+                entityObject.forEach((child:any) => {
                     find(child);
                 });
-            }
+            };
 
-            objectScene.forEach((child:UIObject) => {
+            objectScene.forEach((child:any) => {
                 find(child);
             });
 
             return triggerObjectList;
         }
 
-        private _addTriggerObjectByQueryDetector(entityObject:EntityObject, e:MouseEvent, triggerObjectList:wdCb.Collection<EntityObject>){
+        private _addTriggerObjectByQueryDetector(entityObject:EntityObject, e:PointEvent, triggerObjectList:wdCb.Collection<EntityObject>){
             if (entityObject.hasComponent(EventTriggerDetector)) {
                 let detector = entityObject.getComponent<EventTriggerDetector>(EventTriggerDetector);
 
@@ -314,19 +342,19 @@ module wd{
             }
         }
 
-        private _isTriggerScene(e:MouseEvent){
+        private _isTriggerScene(e:PointEvent){
             var detector = this.scene.getComponent<EventTriggerDetector>(EventTriggerDetector);
 
             return detector.isTrigger(e);
         }
 
-        private _getMouseEventTriggerListData(e:MouseEvent, triggerList:wdCb.Collection<EntityObject>){
+        private _getPointEventTriggerListData(e:PointEvent, triggerList:wdCb.Collection<EntityObject>){
             return [triggerList, e];
         }
     }
 
     enum EEventTag{
-        MOUSE_OVER = <any>"MOUSE_OVER",
-        MOUSE_OUT = <any>"MOUSE_OUT"
+        POINT_OVER = <any>"POINT_OVER",
+        POINT_OUT = <any>"POINT_OUT"
     }
 }

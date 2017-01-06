@@ -1,31 +1,19 @@
 import wdFrp = require("wdfrp");
 import ModelLoaderUtils = require("../common/ModelLoaderUtils");
 import fs = require("fs-extra");
-
-import contract = require("../../ts/definition/typescript/decorator/contract");
-import chai = require("chai");
-
-var describe = contract.describe,
-    it = contract.it,
-    requireInNodejs = contract.requireInNodejs,
-    requireGetter = contract.requireGetter,
-    requireSetter = contract.requireSetter,
-    requireGetterAndSetter = contract.requireGetterAndSetter,
-    ensure = contract.ensure,
-    ensureGetter = contract.ensureGetter,
-    ensureSetter = contract.ensureSetter,
-    ensureGetterAndSetter = contract.ensureGetterAndSetter,
-    invariant = contract.invariant;
-
-var expect = chai.expect;
-
-
-var run = require("gulp-run");
-var Promise = require("promise");
-
 import path = require("path");
 
-export class FBXToWD{
+
+import {it, ensure} from "../../ts/definition/typescript/decorator/contract"
+import {expect} from "chai"
+
+
+var exec = require('child_process').exec;
+var Promise = require("promise");
+var json = require("relaxed-json");
+
+
+export class FBXTowd{
     public static create() {
         var obj = null;
 
@@ -44,9 +32,9 @@ export class FBXToWD{
             promise = new Promise(function (resolve, reject) {
                 var destFilePath = path.join(destDir, fileName + ".wd");
 
-                run(`python fbx/python/converter.py ${filePath} ${destFilePath}`).exec( function(){
+                exec(`python fbx/python/converter.py ${filePath} ${destFilePath}`, function (err, stdout, stderr) {
                     fs.readFile(destFilePath, function(err, buffer){
-                        resolve([JSON.parse(buffer.toString())]);
+                        resolve([json.parse(buffer.toString())]);
                     });
                 });
             });

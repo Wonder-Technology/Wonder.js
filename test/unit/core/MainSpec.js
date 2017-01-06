@@ -15,7 +15,7 @@ describe("Main", function () {
             beforeEach(function(){
             });
 
-            it("it will open wonder-frp contract check", function(){
+            it("it will open wd-frp contract check", function(){
                 sandbox.stub(Main, "isTest", false);
 
                 expect(function(){
@@ -28,7 +28,7 @@ describe("Main", function () {
                     wdFrp.fromArray([1, 2]).take(-1);
                 }).toThrow();
             });
-            it("it will open wonder.js contract check", function(){
+            it("it will open wd.js contract check", function(){
                 //already test in other unit tests
             });
         });
@@ -162,6 +162,45 @@ describe("Main", function () {
                 Main.init();
 
                 expect(device.setPixelRatio).toCalledWith(devicePixelRatio);
+            });
+        });
+
+        describe("set isTest", function(){
+            beforeEach(function(){
+            });
+
+            it("if CompileConfig.closeContractTest === true, set isTest to be false", function(){
+                sandbox.stub(wd.CompileConfig, "closeContractTest", true);
+
+                Main.setConfig({
+                    isTest:true
+                });
+
+                expect(Main.isTest).toBeFalsy();
+            });
+
+            describe("else", function(){
+                beforeEach(function(){
+                    sandbox.stub(wd.CompileConfig, "closeContractTest", false);
+                });
+
+                it("if not set by config, set isTest = DebugConfig.isTest", function(){
+                    sandbox.stub(wd.DebugConfig, "isTest", true);
+
+                    Main.setConfig({
+                    });
+
+                    expect(Main.isTest).toBeTruthy();
+                });
+                it("else,, set isTest by config", function () {
+                    sandbox.stub(wd.DebugConfig, "isTest", true);
+
+                    Main.setConfig({
+                        isTest:false
+                    });
+
+                    expect(Main.isTest).toBeFalsy();
+                });
             });
         });
     });

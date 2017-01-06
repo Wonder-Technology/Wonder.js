@@ -11,6 +11,8 @@ module wd {
         get scriptManager(){
             return this.gameObjectScene.scriptManager;
         }
+        set scriptManager(manager:ScriptManager){
+        }
 
         get ambientLight():GameObject {
             return this.gameObjectScene.ambientLight;
@@ -59,7 +61,7 @@ module wd {
         get physics(){
             return this.gameObjectScene.physics;
         }
-        set physics(physics:PhysicsConfig){
+        set physics(physics:any){
             this.gameObjectScene.physics = physics;
         }
 
@@ -87,7 +89,7 @@ module wd {
 
         public name:string = `scene${String(this.uid)}`;
 
-        public uiObjectScene:UIObjectScene = UIObjectScene.create();
+        public uiObjectScene:any = null;
         public gameObjectScene:GameObjectScene = GameObjectScene.create();
 
 
@@ -95,6 +97,12 @@ module wd {
             super.initWhenCreate();
 
             this.addComponent(SceneEventTriggerDetector.create());
+
+            let UIObjectScene = ClassUtils.getClass("UIObjectScene");
+
+            if(!!UIObjectScene){
+                this.uiObjectScene = UIObjectScene.create();
+            }
         }
 
         public useShaderType(type:EShaderTypeOfScene){
@@ -109,7 +117,7 @@ module wd {
             if(child instanceof GameObject){
                 this.gameObjectScene.addChild(child);
             }
-            else if(child instanceof UIObject){
+            else if(JudgeUtils.isClass(child, "UIObject")){
                 this.uiObjectScene.addChild(child);
             }
 
@@ -135,7 +143,7 @@ module wd {
             if(child instanceof GameObject){
                 return this.gameObjectScene.hasChild(child);
             }
-            else if(child instanceof UIObject){
+            else if(JudgeUtils.isClass(child, "UIObject")){
                 return this.uiObjectScene.hasChild(child);
             }
         }
@@ -170,7 +178,7 @@ module wd {
         }
 
         public getChildren(){
-            return this.gameObjectScene.getChildren().addChildren(this.uiObjectScene.getChildren());
+            return this.gameObjectScene.getChildren().clone().addChildren(this.uiObjectScene.getChildren());
         }
 
         public findChildByUid(uid:number){
@@ -211,7 +219,7 @@ module wd {
             if(child instanceof GameObject){
                 return this.gameObjectScene.removeChild(child);
             }
-            else if(child instanceof UIObject){
+            else if(JudgeUtils.isClass(child, "UIObject")){
                 return this.uiObjectScene.removeChild(child);
             }
         }

@@ -1,7 +1,9 @@
 var wdTool = (function () {
     return {
-        buildArrayBuffer: function (vertices, texCoords, indices, morphTargets) {
-            var attributeArr = vertices.concat(texCoords);
+        buildArrayBuffer: function (vertices, texCoords, indices, morphTargets, joints, weights) {
+            var joints = joints || [],
+                weights = weights || [];
+            var attributeArr = vertices.concat(texCoords, joints, weights);
 
 
             var length = 0;

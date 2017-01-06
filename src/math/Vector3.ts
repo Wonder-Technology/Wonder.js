@@ -6,7 +6,7 @@ module wd{
         public static forward = Vector3.create(0, 0, 1);
         public static right = Vector3.create(1, 0, 0);
 
-        public static create(x, y, z):Vector3 ;
+        public static create(x:number, y:number, z:number):Vector3 ;
         public static create():Vector3 ;
 
         public static create(...args):Vector3 {
@@ -22,15 +22,16 @@ module wd{
             return m;
         }
 
-        constructor(x, y, z);
+        constructor(x:number, y:number, z:number);
         constructor();
+
         constructor(...args){
             this.values = new Float32Array(3);
 
             if(args.length > 0){
                 this.values[0] = args[0];
                 this.values[1] = args[1];
-                this.values[2] =args[2];
+                this.values[2] = args[2];
             }
         }
 

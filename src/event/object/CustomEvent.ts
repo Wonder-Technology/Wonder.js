@@ -16,8 +16,8 @@ module wd {
             return obj;
         }
 
-        constructor(eventName:EEventName);
-        constructor(eventName:EEventName, userData:any);
+        constructor(eventName:string);
+        constructor(eventName:string, userData:any);
 
         constructor(...args) {
             super(args[0]);
@@ -29,9 +29,9 @@ module wd {
             }
         }
 
-        public userData:any = null;
+        public readonly type:EEventType = EEventType.CUSTOM;
 
-        protected p_type:EEventType = EEventType.CUSTOM;
+        public userData:any = null;
 
 
         public copyPublicAttri(destination, source:any){
@@ -51,12 +51,12 @@ module wd {
             return <CustomEvent>this.copyMember(eventObj, this, ["target", "currentTarget", "isStopPropagation", "phase"]);
         }
 
-        //@require(function(event:MouseEvent){
+        //@require(function(event:PointEvent){
         //    if(event.target){
         //        assert(event.target instanceof EntityObject, Log.info.FUNC_MUST_BE("target", "EntityObject"));
         //    }
         //})
-        public getDataFromDomEvent(event:MouseEvent){
+        public getDataFromDomEvent(event:DomEvent){
             this.target = <EntityObject>event.target;
             this.currentTarget = event.currentTarget;
             this.isStopPropagation = event.isStopPropagation;

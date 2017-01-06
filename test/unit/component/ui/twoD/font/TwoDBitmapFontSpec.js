@@ -55,6 +55,8 @@ describe("TwoDBitmapFont", function () {
 
         uiObject = createBitmapFont();
 
+        uiObject.name = "uiObject";
+
         setHeight(400);
         setPosition(0, 0);
 
@@ -193,20 +195,6 @@ describe("TwoDBitmapFont", function () {
                 source:image
             });
         });
-
-        //it("if set width to be auto, it can equal view.width", function(){
-        //    function setDimensions(width) {
-        //        font.width = width;
-        //    }
-        //
-        //    font.text = "阿斯";
-        //    setDimensions(wd.EFontDimension.AUTO);
-        //
-        //    font.init();
-        //
-        //    expect(font.width).toEqual(1000);
-        //});
-
 
         it("test single line text", function () {
             font.text = "正ab";
@@ -557,6 +545,9 @@ describe("TwoDBitmapFont", function () {
 
                     function addRotateAction(index, angle){
                         var charFontUIObject = getCharFontUIObject(index);
+                        charFontUIObject.name = "charFontUIObject";
+
+                        var t = uiObject;
 
                         var action = wd.CallFunc.create(function(){
                             this.transform.rotation = angle;

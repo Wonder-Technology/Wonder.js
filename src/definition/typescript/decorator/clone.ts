@@ -170,7 +170,11 @@ module wd {
             return target;
         }
 
-        public static cloneArray(arr:Array<any>, isDeep:boolean = false){
+        public static cloneArray(arr:Array<any>|null, isDeep:boolean = false){
+            if(arr === null){
+                return null;
+            }
+
             if(isDeep){
                 return wdCb.ExtendUtils.extendDeep(arr);
             }

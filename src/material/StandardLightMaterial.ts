@@ -186,16 +186,16 @@ module wd{
                 if(this._hasTwoDShadowMap()){
                     hasTwoD = true;
 
-                    this.shader.addLib(TwoDShadowMapShaderLib.create());
+                    this.shader.addLib(ClassUtils.getClass("TwoDShadowMapShaderLib").create());
                 }
                 if(this._hasCubemapShadowMap()){
                     hasCubemap = true;
 
-                    this.shader.addLib(CubemapShadowMapShaderLib.create());
+                    this.shader.addLib(ClassUtils.getClass("CubemapShadowMapShaderLib").create());
                 }
 
                 if(hasTwoD || hasCubemap){
-                    this.shader.addLib(TotalShadowMapShaderLib.create());
+                    this.shader.addLib(ClassUtils.getClass("TotalShadowMapShaderLib").create());
                 }
                 else{
                     this.shader.addLib(NoShadowMapShaderLib.create());
@@ -229,10 +229,22 @@ module wd{
         }
 
         private _hasTwoDShadowMap(){
+            var ShadowUtils = ClassUtils.getClass("ShadowUtils");
+
+            if(ShadowUtils === void 0){
+                return false;
+            }
+
             return ShadowUtils.isReceive(this.geometry.entityObject) && this.mapManager.getTwoDShadowMapList().getCount() > 0;
         }
 
         private _hasCubemapShadowMap(){
+            var ShadowUtils = ClassUtils.getClass("ShadowUtils");
+
+            if(ShadowUtils === void 0){
+                return false;
+            }
+
             return ShadowUtils.isReceive(this.geometry.entityObject) && this.mapManager.getCubemapShadowMapList().getCount() > 0;
         }
 

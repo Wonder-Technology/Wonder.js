@@ -7,8 +7,8 @@ module wd {
 
         private _parser:FntParser = FntParser.create();
 
-        protected loadAsset(url:string, id:string):wdFrp.Stream;
-        protected loadAsset(url:Array<string>, id:string):wdFrp.Stream;
+        protected loadAsset(url:string, id:string, config:AssetConfigData):wdFrp.Stream;
+        protected loadAsset(url:Array<string>, id:string, config:AssetConfigData):wdFrp.Stream;
 
         @require(function (...args) {
             assert(!JudgeUtils.isArrayExactly(args[0]), Log.info.FUNC_MUST_BE("url", "string"));

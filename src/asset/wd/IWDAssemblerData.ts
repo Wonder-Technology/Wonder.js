@@ -20,7 +20,7 @@ module wd {
     export interface IWDComponentAssembler{
     }
 
-    export interface IWDArticulatedAnimationAssembler extends IWDComponentAssembler{
+    export interface IWDKeyFrameAnimationAssembler extends IWDComponentAssembler{
         [animName:string]: wdCb.Collection<IWDKeyFrameDataAssembler>
     }
 
@@ -33,8 +33,16 @@ module wd {
 
     export interface IWDKeyFrameTargetDataAssembler{
         interpolationMethod:EKeyFrameInterpolation,
-        target:EArticulatedAnimationTarget,
+        target:EKeyFrameAnimationTarget,
         data:any
+    }
+
+    export interface IWDSkinSkeletonAnimationAssembler extends IWDComponentAssembler{
+        bindShapeMatrix:Matrix4|null;
+        inverseBindMatrices:Array<Matrix4>;
+        jointNames:Array<string>;
+        boneMatrixMap:wdCb.Hash<BoneMatrix>;
+        jointTransformData:SkinSkeletonAnimationData;
     }
 
     export interface IWDTransformAssembler extends IWDComponentAssembler{
@@ -73,6 +81,8 @@ module wd {
 
         vertices: Array<number>;
         colors?: Array<number>;
+        jointIndices?: Array<number>;
+        jointWeights?: Array<number>;
         texCoords?: Array<number>;
         faces:Array<Face3>;
 
@@ -125,16 +135,6 @@ module wd {
             api? :string;
             version?:string;
         };
-    }
-
-
-
-
-
-
-    export interface IWDResultAssembler{
-        metadata:wdCb.Hash<IWDMetadataAssembler>;
-        models:wdCb.Collection<GameObject>
     }
 }
 

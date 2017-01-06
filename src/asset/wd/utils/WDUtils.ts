@@ -8,17 +8,20 @@ module wd{
             }
         }
 
+        //todo test not contain "data:" prefix
         public static isBase64(uri: string): boolean{
-            return uri.length < 5 ? false : uri.substr(0, 5) === "data:";
+            return /^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$/.test(uri)
+                || uri.substr(0, 5) === "data:";
         }
 
         public static decodeArrayBuffer(base64Str: string):any{
-            var base64 = base64Str.split(',')[1],
+            var arr = base64Str.split(','),
+                base64 = arr.length > 1 ? arr[1] : arr[0],
                 decodedString = atob(base64),
                 bufferLength = decodedString.length,
                 arraybuffer = new Uint8Array(new ArrayBuffer(bufferLength));
 
-            for (var i = 0; i < bufferLength; i++) {
+            for (let i = 0; i < bufferLength; i++) {
                 arraybuffer[i] = decodedString.charCodeAt(i);
             }
 
@@ -104,12 +107,12 @@ module wd{
             }
         }
 
-        public static isIWDArticulatedAnimationAssembler(component:IWDComponentAssembler){
+        public static isIWDKeyFrameAnimationAssembler(component:IWDComponentAssembler){
             if(!JudgeUtils.isDirectObject(component)){
                 return false;
             }
 
-            for(let animName in <IWDArticulatedAnimationAssembler>component){
+            for(let animName in <IWDKeyFrameAnimationAssembler>component){
                 return component[animName] instanceof wdCb.Collection && component[animName].getCount() > 0 && component[animName].getChild(0).time !== void 0;
             }
         }

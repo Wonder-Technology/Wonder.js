@@ -23,8 +23,8 @@ module wd{
             wdCb.DomQuery.create(`#${this._familyName}`).remove();
         }
 
-        protected loadAsset(url:string, id:string):wdFrp.Stream;
-        protected loadAsset(url:Array<string>, id:string):wdFrp.Stream;
+        protected loadAsset(url:string, id:string, config:AssetConfigData):wdFrp.Stream;
+        protected loadAsset(url:Array<string>, id:string, config:AssetConfigData):wdFrp.Stream;
 
         protected loadAsset(...args):wdFrp.Stream {
             var familyName = args[1],

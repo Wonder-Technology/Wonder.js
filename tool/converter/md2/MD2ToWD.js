@@ -1,86 +1,53 @@
+"use strict";
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
 var wdFrp = require("wdfrp");
+var ModelLoaderUtils = require("../common/ModelLoaderUtils");
 var ObjectsConverter = require("./MD2ObjectsConverter");
-module.exports = (function () {
-    function MD2ToWD(version) {
-        this.name = "MD2ToWD";
-        this.version = null;
-        this._objectsConverter = ObjectsConverter.create();
-        this.version = version;
+var contract = require("../../ts/definition/typescript/decorator/contract");
+var chai = require("chai");
+var SingleModelConverter_1 = require("../common/SingleModelConverter");
+var describe = contract.describe, it = contract.it, requireInNodejs = contract.requireInNodejs, requireGetter = contract.requireGetter, requireSetter = contract.requireSetter, requireGetterAndSetter = contract.requireGetterAndSetter, ensure = contract.ensure, ensureGetter = contract.ensureGetter, ensureSetter = contract.ensureSetter, ensureGetterAndSetter = contract.ensureGetterAndSetter, invariant = contract.invariant;
+var expect = chai.expect;
+var MD2Towd = (function (_super) {
+    __extends(MD2Towd, _super);
+    function MD2Towd() {
+        var _this = _super.apply(this, arguments) || this;
+        _this.name = "wdJsMD2ToWDConverter";
+        _this._objectsConverter = ObjectsConverter.create();
+        return _this;
     }
-    MD2ToWD.create = function (version) {
+    MD2Towd.create = function (version) {
         var obj = null;
         obj = new this(version);
         return obj;
     };
-    MD2ToWD.prototype.convert = function (fileBuffer, filePath) {
-        var self = this, resultJson = {};
-        resultJson.metadata = self._convertMetadata(filePath);
-        resultJson.scene = {};
-        resultJson.objects = self._convertObjects(fileBuffer, filePath);
-        resultJson.materials = {};
-        //return wdFrp.fromNodeCallback(fs.readFile)(ModelLoaderUtils.getPath(filePath, self._objectsConverter.mtlFilePath))
-        //    .map((data:string) => {
-        //        resultJson.materials = self._convertMaterials(data.toString());
-        //
-        //        return [resultJson, self._getResourceUrlArr(resultJson.materials, filePath)];
-        //    });
-        this._duplicateVertexWithDifferentUv(resultJson.objects);
+    MD2Towd.prototype.convert = function (fileBuffer, filePath) {
+        var resultJson = {}, nodeName = ModelLoaderUtils.getNameByPath(filePath);
+        this.convertSceneData(resultJson, nodeName);
+        resultJson.asset = this.convertAssetData();
+        this._convertObjects(resultJson, fileBuffer, nodeName);
         return wdFrp.just([resultJson]);
     };
-    //private _getResourceUrlArr(materials, filePath) {
-    //    var urlArr = [];
-    //
-    //    for (let name in materials) {
-    //        if (materials.hasOwnProperty(name)) {
-    //            let material = materials[name];
-    //
-    //            if (material.diffuseMapUrl) {
-    //                urlArr.push(this._getAbsoluteResourceUrl(filePath, material.diffuseMapUrl));
-    //            }
-    //            if (material.specularMapUrl) {
-    //                urlArr.push(this._getAbsoluteResourceUrl(filePath, material.specularMapUrl));
-    //            }
-    //            if (material.normalMapUrl) {
-    //                urlArr.push(this._getAbsoluteResourceUrl(filePath, material.normalMapUrl));
-    //            }
-    //        }
-    //    }
-    //
-    //    return wdCb.ArrayUtils.removeRepeatItems(urlArr);
-    //}
-    //
-    //private _getAbsoluteResourceUrl(filePath, resourceRelativeUrl) {
-    //    return path.resolve(path.dirname(filePath), resourceRelativeUrl);
-    //}
-    //
-    MD2ToWD.prototype._convertMetadata = function (filePath) {
-        var result = {};
-        result.formatVersion = this.version;
-        result.description = "";
-        result.sourceFile = filePath;
-        result.generatedBy = this.name;
-        return result;
+    MD2Towd.prototype._convertObjects = function (resultJson, fileBuffer, filePath) {
+        return this._objectsConverter.convert(resultJson, fileBuffer, filePath);
     };
-    MD2ToWD.prototype._convertObjects = function (fileBuffer, filePath) {
-        return this._objectsConverter.convert(fileBuffer, filePath);
-    };
-    MD2ToWD.prototype._duplicateVertexWithDifferentUv = function (objects) {
-        for (var _i = 0; _i < objects.length; _i++) {
-            var object = objects[_i];
-            //for(let verticeIndex of object.verticeIndices){
-            //
-            //}
-            var arr = [], uvIndices = object.uvIndices;
-            if (!this._hasData(uvIndices)) {
-                continue;
-            }
-            for (var i = 0, len = object.verticeIndices.length; i < len; i++) {
-                var verticeIndex = object.verticeIndices[i];
-            }
-        }
-    };
-    MD2ToWD.prototype._hasData = function (data) {
-        return data && data.length > 0;
-    };
-    return MD2ToWD;
-})();
+    return MD2Towd;
+}(SingleModelConverter_1.SingleModelConverter));
+exports.MD2Towd = MD2Towd;
+__decorate([
+    ensure(function (stream) {
+        it("should return stream", function () {
+            expect(stream).instanceOf(wdFrp.Stream);
+        });
+    })
+], MD2Towd.prototype, "convert", null);

@@ -28,7 +28,7 @@ var physicsTool = (function () {
                     mathTestUtils.toFixed(rot[2])
                 ]
             );
-            expect(testTool.getValues(this.convertToWonderQuaternion(this.getBody(obj).quaternion).getEulerAngles(), digit || 7))
+            expect(testTool.getValues(this.convertTowdQuaternion(this.getBody(obj).quaternion).getEulerAngles(), digit || 7))
             .toEqual(
                 [
                     mathTestUtils.toFixed(rot[0]),
@@ -139,10 +139,10 @@ var physicsTool = (function () {
 
             return gameObject;
         },
-        convertToWonderVector3: function (v){
+        convertTowdVector3: function (v){
             return wd.Vector3.create(v.x, v.y, v.z);
         },
-        convertToWonderQuaternion: function (r){
+        convertTowdQuaternion: function (r){
             return wd.Quaternion.create(r.x, r.y, r.z, r.w);
         },
         getPhysicsEngineAdapter: function() {

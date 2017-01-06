@@ -6,10 +6,12 @@ module wd{
 
             switch (eventType){
                 case EEventType.MOUSE:
+                case EEventType.TOUCH:
                 case EEventType.KEYBOARD:
                     binder = DomEventBinder.getInstance();
                     break;
                 case EEventType.CUSTOM:
+                case EEventType.POINT:
                     binder = CustomEventBinder.getInstance();
                     break;
                 default :

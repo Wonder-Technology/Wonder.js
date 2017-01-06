@@ -21,7 +21,7 @@ module wd{
         private _allMapsCache:Array<Texture> = null;
         private _allSingleMapsCache:Array<Texture> = null;
 
-        private _shadowMapController:ShadowMapController = ShadowMapController.create();
+        private _shadowMapController:any = ClassUtils.createClassInstanceOrEmpty("ShadowMapController", "EmptyShadowMapController", this);
         private _arrayMapController:MapArrayController = MapArrayController.create();
         private _envMapController:EnvMapController = EnvMapController.create();
         private _commonMapController:CommonMapController = CommonMapController.create();
@@ -42,7 +42,9 @@ module wd{
         public addMap(map:Texture, option:MapVariableData);
 
         @require(function(...args){
-            assert(args[0] instanceof TextureAsset || args[0] instanceof Texture, Log.info.FUNC_SHOULD("arguments[0]", "be TextureAsset || Texture"));
+            it("arguments[0] should be TextureAsset or Texture", () => {
+                expect(args[0] instanceof TextureAsset || args[0] instanceof Texture).true;
+            });
         })
         public addMap(...args){
             var map:Texture = null;
@@ -67,10 +69,14 @@ module wd{
         }
 
         @require(function(samplerName:string, mapArray:Array<Texture>){
-            assert(JudgeUtils.isArrayExactly(mapArray), Log.info.FUNC_SHOULD("second param", "be array"));
+            it("mapArray should be array", () => {
+                expect(JudgeUtils.isArrayExactly(mapArray)).true;
+            });
 
             for(let map of mapArray){
-                assert(map instanceof Texture, Log.info.FUNC_SHOULD(Log.info.FUNC_SHOULD("second param", "be Array<Texture>")));
+                it("mapArray should be Array<Texture>", () => {
+                    expect(map).instanceof(Texture)
+                });
             }
         })
         public addMapArray(samplerName:string, mapArray:Array<Texture>){
@@ -79,10 +85,14 @@ module wd{
             this._textureDirty = true;
         }
 
-        @require(function(shadowMap:IShadowMapTexture){
-            assert(!this._shadowMapController.hasTwoDShadowMap(shadowMap), Log.info.FUNC_SHOULD_NOT("add the shadowMap which is already exist"));
+        @require(function(shadowMap:any){
+            if(!JudgeUtils.isClass(this._shadowMapController, "EmptyShadowMapController")){
+                it("shouldn't add the shadowMap which is already exist", () => {
+                    expect(this._shadowMapController.hasTwoDShadowMap(shadowMap)).false;
+                });
+            }
         })
-        public addTwoDShadowMap(shadowMap:TwoDShadowMapTexture){
+        public addTwoDShadowMap(shadowMap:any){
             this._shadowMapController.addTwoDShadowMap(shadowMap);
 
             this._textureDirty = true;
@@ -92,14 +102,18 @@ module wd{
             return this._shadowMapController.getTwoDShadowMapList();
         }
 
-        public hasTwoDShadowMap(shadowMap:TwoDShadowMapTexture){
+        public hasTwoDShadowMap(shadowMap:any){
             return this._shadowMapController.hasTwoDShadowMap(shadowMap);
         }
 
-        @require(function(shadowMap:IShadowMapTexture){
-            assert(!this._shadowMapController.hasCubemapShadowMap(shadowMap), Log.info.FUNC_SHOULD_NOT("add the shadowMap which is already exist"));
+        @require(function(shadowMap:any){
+            if(!JudgeUtils.isClass(this._shadowMapController, "EmptyShadowMapController")){
+                it("shouldn't add the shadowMap which is already exist", () => {
+                    expect(this._shadowMapController.hasCubemapShadowMap(shadowMap)).false;
+                });
+            }
         })
-        public addCubemapShadowMap(shadowMap:CubemapShadowMapTexture){
+        public addCubemapShadowMap(shadowMap:any){
             this._shadowMapController.addCubemapShadowMap(shadowMap);
 
             this._textureDirty = true;
@@ -109,13 +123,15 @@ module wd{
             return this._shadowMapController.getCubemapShadowMapList();
         }
 
-        public hasCubemapShadowMap(shadowMap:CubemapShadowMapTexture){
+        public hasCubemapShadowMap(shadowMap:any){
             return this._shadowMapController.hasCubemapShadowMap(shadowMap);
         }
 
         @ensure(function(mapList:wdCb.Collection<BasicTexture|ProceduralTexture>){
             mapList.forEach((map:BasicTexture|ProceduralTexture) => {
-                assert(map instanceof BasicTexture || map instanceof ProceduralTexture, Log.info.FUNC_SHOULD("mapList", "only contain BasicTexture or ProceduralTexture"));
+                it("mapList should only contain BasicTexture or ProceduralTexture", () => {
+                    expect(map instanceof BasicTexture || map instanceof ProceduralTexture).true;
+                });
             })
         })
         public getMapList():wdCb.Collection<BasicTexture|ProceduralTexture>{
@@ -201,7 +217,9 @@ module wd{
                 let map = maps[i],
                     samplerName:string = map.getSamplerName(i);
 
-                assert(mapMap[samplerName] !== 1, Log.info.FUNC_SHOULD_NOT(`has duplicate maps, but actual has the ones with the same samplerName:${samplerName}`));
+                it(`shouldn't has duplicate maps, but actual has the ones with the same samplerName:${samplerName}`, () => {
+                    expect(mapMap[samplerName]).not.equal(1);
+                });
 
                 mapMap[samplerName] = 1;
             }
@@ -224,7 +242,9 @@ module wd{
 
         @ensure(function(mapArr:Array<Texture>){
             for(let map of mapArr){
-                assert(map instanceof Texture, Log.info.FUNC_SHOULD("each element", "be Texture"));
+                it("all maps should be Texture", () => {
+                    expect(map).instanceof(Texture);
+                });
             }
         })
         @cache(function(){
@@ -255,7 +275,11 @@ module wd{
             var arr = [];
 
             for(let controller of this._getAllSingleMapControllerArr()){
-                arr = arr.concat(controller.getAllMapArr());
+                let map = controller.getAllMapArr();
+
+                if(map !== null){
+                    arr = arr.concat(map);
+                }
             }
 
             return arr;

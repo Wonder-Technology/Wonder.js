@@ -17,7 +17,8 @@ module wd{
         STRUCTURE = <any>"STRUCTURE",
         STRUCTURES = <any>"STRUCTURES",
 
-        SAMPLER_ARRAY = <any>"SAMPLER_ARRAY"
+        SAMPLER_ARRAY = <any>"SAMPLER_ARRAY",
+        FLOAT_MAT4_ARRAY = <any>"FLOAT_MAT4_ARRAY"
     }
 }
 

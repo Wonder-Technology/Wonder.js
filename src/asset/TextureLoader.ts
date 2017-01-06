@@ -5,8 +5,8 @@ module wd{
 
 		private constructor(){super();}
 
-        protected loadAsset(url:string, id:string):wdFrp.Stream;
-        protected loadAsset(url:Array<string>, id:string):wdFrp.Stream;
+        protected loadAsset(url:string, id:string, config:AssetConfigData):wdFrp.Stream;
+        protected loadAsset(url:Array<string>, id:string, config:AssetConfigData):wdFrp.Stream;
 
         @require(function (...args) {
             assert(!JudgeUtils.isArrayExactly(args[0]), Log.info.FUNC_MUST_BE("url", "string"));
@@ -14,7 +14,8 @@ module wd{
         protected loadAsset(...args):wdFrp.Stream {
             var extname = null,
                 stream = null,
-                url = args[0];
+                url = args[0],
+                config:AssetConfigData = args[2];
 
             extname = wdCb.PathUtils.extname(url).toLowerCase();
 
@@ -24,7 +25,7 @@ module wd{
                 case ".gif":
                     case ".bmp":
                     //todo is RGB?
-                    stream =  ImageLoader.load(url)
+                    stream =  ImageLoader.load(url, config)
                         .map((image:HTMLImageElement) => {
                             var asset = ImageTextureAsset.create(image);
 
@@ -34,12 +35,13 @@ module wd{
                         });
                     break;
                 case ".png":
-                    stream =  ImageLoader.load(url)
+                    stream =  ImageLoader.load(url, config)
                         .map((image:HTMLImageElement) => {
                             return ImageTextureAsset.create(image);
                         });
                     break;
                 case ".dds":
+                    //todo handle cross origin?
                     stream = CompressedTextureLoader.load(url);
                     break;
                 default:

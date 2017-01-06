@@ -131,4 +131,14 @@ describe("TwoDFont", function () {
             expect(font.needFormat).toBeFalsy();
         });
     });
+
+    describe("update", function(){
+        beforeEach(function(){
+
+        });
+
+        it("", function(){
+
+        });
+    });
 });

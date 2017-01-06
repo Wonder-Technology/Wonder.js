@@ -2,7 +2,6 @@ module wd {
     export abstract class TwoDFont extends TwoDUI {
         protected needFormat:boolean = false;
 
-        private _isFirstUpdate:boolean = true;
         private _sizeChangeEventSubscription:wdFrp.IDisposable = null;
 
         public init() {
@@ -25,16 +24,11 @@ module wd {
         }
 
         public update(elapsed:number){
-            if(!this._isFirstUpdate){
-                if(this.needFormat){
-                    this.reFormat();
-                }
-            }
-            else{
-                this._isFirstUpdate = false;
-            }
+            if(this.needFormat){
+                this.reFormat();
 
-            this.needFormat = false;
+                this.needFormat = false;
+            }
         }
 
         @virtual

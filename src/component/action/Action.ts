@@ -46,9 +46,7 @@ module wd{
             }
         }
 
-        public removeFromObject(entityObject:EntityObject){
-            super.removeFromObject(entityObject);
-
+        public removeFromEngine(){
             ActionEngine.getInstance().removeChild(this);
         }
 

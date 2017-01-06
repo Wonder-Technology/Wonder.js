@@ -1,17 +1,14 @@
 import {DataRecord, SourceJsonData} from "./TypeDefinition";
 
-import chai = require("chai");
-
-import contract = require("../../../ts/definition/typescript/decorator/contract");
 
 import BufferWriter = require("../../common/BufferWriter");
 import JudgeUtils = require("../../../ts/JudgeUtils")
 import {Utils} from "./Utils";
 
-var it = contract.it,
-    ensure = contract.ensure;
 
-var expect = chai.expect;
+import {it, ensure} from "../../../ts/definition/typescript/decorator/contract"
+import {expect} from "chai"
+import {virtual} from "../../../ts/definition/typescript/decorator/virtual";
 
 
 export abstract class Compressor {
@@ -24,9 +21,17 @@ export abstract class Compressor {
     public abstract recordData(sourceJson: SourceJsonData):void;
     public abstract buildBuffersArr(bufferWriter:any):void;
     public abstract buildBufferViewsJson(json:any, bufferId: string, bufferViewId:number, length:number, offset:number):void;
-    public abstract buildAccessorData(json:{
+
+    @virtual
+    public buildAccessorData(json:{
         [id: string]: Object
-    }, mappingTable:Object, id:number):number;
+    }, mappingTable:Object, id:number) {
+        if(!this.isArrayEmpty(this.recordedArr)){
+            return this.buildAccessorDataHelper(json, mappingTable, id);
+        }
+
+        return 0;
+    }
 
     public removeRepeatData() {
         var recordedArr = this.recordedArr;

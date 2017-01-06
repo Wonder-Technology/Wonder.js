@@ -15,25 +15,6 @@ module wd {
         private _selectionList:wdCb.Collection<GameObject> = wdCb.Collection.create<GameObject>();
         private _renderListCache:wdCb.Collection<GameObject> = null;
 
-        @require(function(entityObject:GameObject){
-            assert(entityObject instanceof GameObject, Log.info.FUNC_SHOULD("Octree component", "add to GameObject"));
-        })
-        public addToObject(entityObject:GameObject, isShareComponent:boolean = false){
-            var engine:SpacePartitionEngine = SpacePartitionEngine.getInstance();
-
-            super.addToObject(entityObject, isShareComponent);
-
-            if(!engine.hasChild(this)){
-                engine.addChild(this);
-            }
-        }
-
-        public removeFromObject(entityObject:EntityObject){
-            super.removeFromObject(entityObject);
-
-            SpacePartitionEngine.getInstance().removeChild(this);
-        }
-
         @require(function(){
             assert(JudgeUtils.isEqual(this.entityObject.parent, Director.getInstance().scene) && Director.getInstance().scene.gameObjectScene.hasChild(this.entityObject), Log.info.FUNC_SHOULD("be added to the one which is the firstLevel child of gameObjectScene"));
         })
@@ -102,10 +83,10 @@ module wd {
             return this._visitRoot("findAndAddToRenderList", [currentCamera.getComponent(CameraController).getPlanes(), this._selectionList]);
         }
 
-        @require(function(){
+        @require(function(e:PointEvent){
             assert(!!Director.getInstance().scene.currentCamera.getComponent(CameraController), Log.info.FUNC_SHOULD("contain CameraController component"));
         })
-        public getIntersectListWithRay(e:MouseEvent){
+        public getIntersectListWithRay(e:PointEvent){
             var locationInView = e.locationInView;
 
             return this._visitRoot("findAndAddToIntersectList", [Director.getInstance().scene.currentCamera.getComponent(CameraController).createRay(locationInView.x, locationInView.y), this._selectionList]);

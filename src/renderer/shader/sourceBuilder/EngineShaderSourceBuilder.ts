@@ -235,12 +235,12 @@ module wd{
         private _buildSourceDefine(defineList:wdCb.Collection<SourceDefine>){
             var result = "";
 
-            defineList.forEach((define:SourceDefine) => {
-                if(define.value === void 0){
-                    result += `#define ${define.name}\n`;
+            defineList.forEach((sourceDefine:SourceDefine) => {
+                if(sourceDefine.value === void 0){
+                    result += `#define ${sourceDefine.name}\n`;
                 }
                 else{
-                    result += `#define ${define.name} ${define.value}\n`;
+                    result += `#define ${sourceDefine.name} ${sourceDefine.value}\n`;
                 }
             });
 

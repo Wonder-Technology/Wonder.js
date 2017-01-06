@@ -62,6 +62,8 @@ module wd{
                 vertices:Array<number> = null,
                 texCoords:Array<number> = null,
                 colors:Array<number> = null,
+                joints:Array<number> = null,
+                weights:Array<number> = null,
                 normals:Array<number> = null,
                 faces:Array<Face3> = null,
                 morphVertices:wdCb.Hash<MorphTargetsData> = null,
@@ -102,7 +104,16 @@ module wd{
 
                         this._addAttributeData(colors, bufferReader, count);
                     }
-                    //todo support JOINT, WEIGHT
+                    else if(semantic === "JOINT"){
+                        joints = [];
+
+                        this._addAttributeData(joints, bufferReader, count);
+                    }
+                    else if(semantic === "WEIGHT"){
+                        weights = [];
+
+                        this._addWeightAttributeData(weights, bufferReader, count);
+                    }
                 }
             }
 
@@ -117,6 +128,8 @@ module wd{
 
             WDUtils.addData(geometry, "vertices", vertices);
             WDUtils.addData(geometry, "colors", colors);
+            WDUtils.addData(geometry, "jointIndices", joints);
+            WDUtils.addData(geometry, "jointWeights", weights);
             WDUtils.addData(geometry, "texCoords", texCoords);
             WDUtils.addData(geometry, "faces", faces);
             WDUtils.addData(geometry, "morphVertices", morphVertices);
@@ -132,6 +145,27 @@ module wd{
         private _addAttributeData(geometryData:Array<number>, bufferReader:BufferReader, count:number){
             for(let i = 0; i < count; i++){
                 geometryData.push(bufferReader.readFloat());
+            }
+        }
+
+        @require(function(geometryData:Array<number>, bufferReader:BufferReader, count:number){
+            it("count should 4 times", () => {
+                expect(count % 4).equals(0);
+            });
+        })
+        private _addWeightAttributeData(geometryData:Array<number>, bufferReader:BufferReader, count:number){
+            for(let i = 0; i < count; i += 4){
+                let vec4 = Vector4.create(bufferReader.readFloat(), bufferReader.readFloat(), bufferReader.readFloat(), bufferReader.readFloat()),
+                    scale = 1.0 / vec4.lengthManhattan();
+
+                if(scale !== Infinity){
+                    vec4.multiplyScalar(scale);
+                }
+                else{
+                    vec4.set(1,0,0,0);
+                }
+
+                geometryData.push(vec4.x, vec4.y, vec4.z, vec4.w);
             }
         }
 

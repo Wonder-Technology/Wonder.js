@@ -5,10 +5,10 @@ module wd{
             if(component instanceof SourceInstance){
                 return 1;
             }
-            if(component instanceof Shadow){
+            if(JudgeUtils.isClass(component, "Shadow")){
                 return 2;
             }
-            if(component instanceof ThreeDBitmapFont){
+            if(JudgeUtils.isClass(component, "ThreeDBitmapFont")){
                 return 3;
             }
             if(component instanceof Geometry){

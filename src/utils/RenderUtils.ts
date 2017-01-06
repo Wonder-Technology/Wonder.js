@@ -4,17 +4,23 @@ module wd{
             var renderList = [];
 
             sourceList.forEach((child:GameObject) => {
-                var gameObjectLOD = child.getComponent<GameObjectLOD>(GameObjectLOD),
-                activeGameObject:GameObject = null;
+                var GameObjectLOD:any = ClassUtils.getClass("GameObjectLOD"),
+                    activeGameObject:GameObject = null;
 
-                activeGameObject = this._getActiveGameObject(child);
+                if(GameObjectLOD !== void 0){
+                    let gameObjectLOD = child.getComponent<any>(GameObjectLOD);
+
+                    activeGameObject = this._getActiveGameObject(child, gameObjectLOD);
 
 
-                if(activeGameObject === null){
-                    //todo optimize:use temp Collection
-                    return wdCb.Collection.create<GameObject>();
+                    if(activeGameObject === null){
+                        //todo optimize:use temp Collection
+                        return wdCb.Collection.create<GameObject>();
+                    }
                 }
-
+                else{
+                    activeGameObject = child;
+                }
 
                 if(activeGameObject.isVisible && !InstanceUtils.isObjectInstance(activeGameObject)){
                     renderList.push(activeGameObject);
@@ -29,17 +35,23 @@ module wd{
             var renderList = [];
 
             sourceList.forEach((child:GameObject) => {
-                var gameObjectLOD = child.getComponent<GameObjectLOD>(GameObjectLOD),
+                var GameObjectLOD:any = ClassUtils.getClass("GameObjectLOD"),
                     activeGameObject:GameObject = null;
 
-                activeGameObject = this._getActiveGameObject(child);
+                if(GameObjectLOD !== void 0){
+                    let gameObjectLOD = child.getComponent<any>(GameObjectLOD);
+
+                    activeGameObject = this._getActiveGameObject(child, gameObjectLOD);
 
 
-                if(activeGameObject === null){
-                    //todo optimize:use temp Collection
-                    return wdCb.Collection.create<GameObject>();
+                    if(activeGameObject === null){
+                        //todo optimize:use temp Collection
+                        return wdCb.Collection.create<GameObject>();
+                    }
                 }
-
+                else{
+                    activeGameObject = child;
+                }
 
                 if(activeGameObject.isVisible){
                     renderList.push(activeGameObject);
@@ -50,10 +62,8 @@ module wd{
             return wdCb.Collection.create<GameObject>(renderList);
         }
 
-        private static _getActiveGameObject(source:GameObject){
-            var gameObjectLOD = source.getComponent<GameObjectLOD>(GameObjectLOD);
-
-            if(gameObjectLOD){
+        private static _getActiveGameObject(source:GameObject, gameObjectLOD:any){
+            if(!!gameObjectLOD){
                 return gameObjectLOD.activeGameObject;
             }
 

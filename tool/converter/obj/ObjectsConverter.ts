@@ -192,7 +192,7 @@ export = class ObjectsConverter {
         this.objects.addChild(this._currentObject);
     }
 
-    private _convertFace(lineResult:string) {
+    private _convertFace(lineResult:Array<string>) {
         var face = lineResult[1].trim().split(" "),
             line = lineResult[0],
             triangles = [],

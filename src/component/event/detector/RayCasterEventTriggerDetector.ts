@@ -6,7 +6,7 @@ module wd {
             return obj;
         }
 
-        public isTrigger(e:MouseEvent):boolean {
+        public isTrigger(e:PointEvent):boolean {
             var scene:SceneDispatcher = Director.getInstance().scene,
                 cameraController:CameraController = scene.currentCamera.getComponent<CameraController>(CameraController),
                 locationInView = e.locationInView;

@@ -14,7 +14,7 @@ module wd {
         private _rotateX:number = 0;
         private _rotateY:number = 0;
         private _isRotate:boolean = false;
-        private _mouseDragSubscription:wdFrp.IDisposable = null;
+        private _pointDragSubscription:wdFrp.IDisposable = null;
         private _keydownSubscription:wdFrp.IDisposable = null;
         private _gameObject:GameObject = null;
 
@@ -71,11 +71,11 @@ module wd {
         private _bindCanvasEvent() {
             var self = this,
                 rotateSpeed = this.rotateSpeed,
-                mousedrag = EventManager.fromEvent(Director.getInstance().scene, <any>EEngineEvent.MOUSE_DRAG),
+                pointdrag = EventManager.fromEvent(Director.getInstance().scene, EEngineEvent.POINT_DRAG),
                 keydown = EventManager.fromEvent(EEventName.KEYDOWN),
                 canvas = Director.getInstance().view;
 
-            this._mouseDragSubscription = mousedrag
+            this._pointDragSubscription = pointdrag
                 .map((e:CustomEvent) => {
                     var movementDelta = e.userData.movementDelta,
                         dx = null,
@@ -93,8 +93,7 @@ module wd {
                     };
                 })
                 .subscribe(function (pos) {
-                    self._rotateY -= pos.dx;
-                    self._rotateX -= pos.dy;
+                    self._changeRotation(pos);
                 });
 
             this._keydownSubscription = keydown.subscribe((e:KeyboardEvent) => {
@@ -103,8 +102,13 @@ module wd {
             });
         }
 
+        private _changeRotation({dx,dy}){
+            this._rotateY -= dx;
+            this._rotateX -= dy;
+        }
+
         private _removeEvent() {
-            this._mouseDragSubscription.dispose();
+            this._pointDragSubscription.dispose();
             this._keydownSubscription.dispose();
         }
 

@@ -1,6 +1,9 @@
 var CompressorManager = require("../../../../dist/converter/gulp_task/compressToBinary/CompressorManager").CompressorManager,
     ExtendUtils = require("../../../../dist/ts/ExtendUtils"),
     BufferReader = require("../../../../dist/converter/common/BufferReader"),
+    Base64Utils = require("../../../../dist/converter/common/Base64Utils"),
+    bufferToArraybuffer = require("buffer-to-arraybuffer"),
+    path = require("path"),
     testTool = require("../../../../../js/testTool"),
     sinon = require("sinon");
 
@@ -224,6 +227,90 @@ describe("compressToBinary->CompressorManager", function () {
             }
         }
 
+        function getPrimitiveDataWithSkinData() {
+            return {
+                "attributes": {
+                    "POSITION": [
+                        1, 10, 2,
+                        0.2, 5, 5,
+                        -2, -5, 3
+                    ],
+                    "NORMAL": [
+
+                        2, 5, 3,
+                        3, 3, 4,
+                        1, 4.5, 2
+                    ],
+                    "COLOR": [
+
+                        0.1, 0.2, 0.1,
+                        0.3, 0.1, 0.1,
+                        0.1, 0.5, 0.2
+                    ],
+                    "TEXCOORD": [
+
+                        0.2, 0.1,
+                        0.1, 0.2,
+                        0.3, 0.5
+                    ],
+                    "JOINT": [
+                        0,1,0,0,
+                        0,0,0,2,
+                        1,2,0,0
+                    ],
+                    "WEIGHT": [
+                        0.3,0.3,0.1,0.1,
+                        0.1,0.1,0.2,0.6,
+                        1.0,0.0,0.0,0.0
+                    ]
+                },
+                "indices": [
+
+                    3, 1, 2
+                ]
+            }
+        }
+
+        function getSkinInverseBindMatrices() {
+            return [
+                0.0254,
+                0,
+                0,
+                0,
+                0,
+                0.0254,
+                0,
+                0,
+                0,
+                0,
+                0.0254,
+                0,
+                0,
+                0,
+                11.7322,
+                1,
+
+
+
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+            ]
+        }
+
         beforeEach(function () {
             fileJson = {};
         });
@@ -376,6 +463,14 @@ describe("compressToBinary->CompressorManager", function () {
                 _judgeAttributeData("COLOR", arraybuffer, primitiveData, json, index);
             }
 
+            function judgeJoint(arraybuffer, primitiveData, json, index) {
+                _judgeAttributeData("JOINT", arraybuffer, primitiveData, json, index);
+            }
+
+            function judgeWeight(arraybuffer, primitiveData, json, index) {
+                _judgeAttributeData("WEIGHT", arraybuffer, primitiveData, json, index);
+            }
+
             function _judgeAttributeData(semantic, arraybuffer, primitiveData, json, index) {
                 index = index || 0;
                 var accessor = json.meshes.geometry1.primitives[index].attributes[semantic];
@@ -417,7 +512,7 @@ describe("compressToBinary->CompressorManager", function () {
                     var morphTargets = json.meshes.geometry1.primitives[index].morphTargets;
 
                     morphTargets.forEach(function (frame, index) {
-_judgeMorphFrame(arraybuffer, frame.vertices, "vertices", primitiveData, json, index);
+                        _judgeMorphFrame(arraybuffer, frame.vertices, "vertices", primitiveData, json, index);
                         if(frame.normals){
                             _judgeMorphFrame(arraybuffer, frame.normals, "normals", primitiveData, json, index);
                         }
@@ -425,36 +520,62 @@ _judgeMorphFrame(arraybuffer, frame.vertices, "vertices", primitiveData, json, i
                 }
 
                 function _judgeMorphFrame(arraybuffer, accessor, type, primitiveData, json, index) {
-                        var accessorData = json.accessors[accessor];
+                    var accessorData = json.accessors[accessor];
 
-                        var count = getLength(accessorData);
+                    var count = getLength(accessorData);
 
-                        var view = new DataView(arraybuffer, getOffset(accessorData, json), count * 4);
+                    var view = new DataView(arraybuffer, getOffset(accessorData, json), count * 4);
 
-                        var data = [];
-                        var offset =0 ;
-                        for(var i = 0; i < count; i++){
-                            data.push(view.getFloat32(offset, true));
+                    var data = [];
+                    var offset =0 ;
+                    for(var i = 0; i < count; i++){
+                        data.push(view.getFloat32(offset, true));
 
-                            offset += 4;
-                        }
+                        offset += 4;
+                    }
 
 
 
-                        expect(testTool.getValues(
-                            data
-                        )).toEqual(testTool.getValues(
-                            primitiveData.morphTargets[index][type]
-                        ));
+                    expect(testTool.getValues(
+                        data
+                    )).toEqual(testTool.getValues(
+                        primitiveData.morphTargets[index][type]
+                    ));
 
-                        //todo test normals
+                    //todo test normals
+                }
+
+                function judgeInverseBindMatrices(arraybuffer, accessor, data, json) {
+                    var accessorData = json.accessors[accessor];
+
+                    var count = getLength(accessorData);
+
+                    var view = new DataView(arraybuffer, getOffset(accessorData, json), count * 4);
+
+                    var data = [];
+                    var offset =0 ;
+                    for(var i = 0; i < count; i++){
+                        data.push(view.getFloat32(offset, true));
+
+                        offset += 4;
+                    }
+
+
+
+                    expect(testTool.getValues(
+                        data,
+                        2
+                    )).toEqual(testTool.getValues(
+                        data,
+                        2
+                    ));
                 }
 
                 beforeEach(function () {
                 });
 
                 it("test meshes", function () {
-                    var primitiveData = getPrimitiveData();
+                    var primitiveData = getPrimitiveDataWithSkinData();
 
                     setFileJson({
                         "meshes": {
@@ -480,13 +601,23 @@ _judgeMorphFrame(arraybuffer, frame.vertices, "vertices", primitiveData, json, i
                     judgeNormal(arraybuffer, primitiveData, data.json);
                     judgeTexCoord(arraybuffer, primitiveData, data.json);
                     judgeColor(arraybuffer, primitiveData, data.json);
+                    judgeJoint(arraybuffer, primitiveData, data.json);
+                    judgeWeight(arraybuffer, primitiveData, data.json);
                 });
-                it("test meshes + animations", function () {
-                    var primitiveData = getPrimitiveData();
+                it("test meshes + animations + skins", function () {
+                    // var primitiveData = getPrimitiveData();
+                    var primitiveData = getPrimitiveDataWithSkinData();
                     var animData1 = getAnimationData1(1, "geometry1");
                     var animData2 = getAnimationData2(2, "geometry1");
 
+                    var inverseBindMatrices =  getSkinInverseBindMatrices();
+
                     setFileJson({
+                        "skins": {
+                            "skin1":{
+                                "inverseBindMatrices": inverseBindMatrices
+                            }
+                        },
                         "animations": {
                             "animation_1": animData1,
                             "animation_2": animData2
@@ -518,82 +649,10 @@ _judgeMorphFrame(arraybuffer, frame.vertices, "vertices", primitiveData, json, i
                     judgeNormal(arraybuffer, primitiveData, data.json);
                     judgeTexCoord(arraybuffer, primitiveData, data.json);
                     judgeColor(arraybuffer, primitiveData, data.json);
+                    judgeJoint(arraybuffer, primitiveData, data.json);
+                    judgeWeight(arraybuffer, primitiveData, data.json);
 
-
-                    expect(data.json.accessors).toEqual(
-                        {
-                            animAccessor_0: {
-                                bufferView: 'bufferView_0',
-                                byteOffset: 0,
-                                count: 3,
-                                componentType: 5126,
-                                type: 'SCALAR'
-                            },
-                            animAccessor_1: {
-                                bufferView: 'bufferView_0',
-                                byteOffset: 12,
-                                count: 3,
-                                componentType: 5126,
-                                type: 'VEC3'
-                            },
-                            animAccessor_2: {
-                                bufferView: 'bufferView_0',
-                                byteOffset: 48,
-                                count: 3,
-                                componentType: 5126,
-                                type: 'VEC3'
-                            },
-                            animAccessor_3: {
-                                bufferView: 'bufferView_0',
-                                byteOffset: 84,
-                                count: 2,
-                                componentType: 5126,
-                                type: 'SCALAR'
-                            },
-                            animAccessor_4: {
-                                bufferView: 'bufferView_0',
-                                byteOffset: 92,
-                                count: 2,
-                                componentType: 5126,
-                                type: 'VEC4'
-                            },
-                            accessor_0: {
-                                bufferView: 'bufferView_1',
-                                byteOffset: 0,
-                                count: 3,
-                                componentType: 5123,
-                                type: 'SCALAR'
-                            },
-                            accessor_1: {
-                                bufferView: 'bufferView_2',
-                                byteOffset: 0,
-                                count: 3,
-                                componentType: 5126,
-                                type: 'VEC3'
-                            },
-                            accessor_2: {
-                                bufferView: 'bufferView_2',
-                                byteOffset: 36,
-                                count: 3,
-                                componentType: 5126,
-                                type: 'VEC3'
-                            },
-                            accessor_3: {
-                                bufferView: 'bufferView_2',
-                                byteOffset: 72,
-                                count: 3,
-                                componentType: 5126,
-                                type: 'VEC2'
-                            },
-                            accessor_4: {
-                                bufferView: 'bufferView_2',
-                                byteOffset: 96,
-                                count: 3,
-                                componentType: 5126,
-                                type: 'VEC3'
-                            }
-                        }
-                    );
+                    judgeInverseBindMatrices(arraybuffer, data.json.skins.skin1.inverseBindMatrices, inverseBindMatrices, data.json);
                 });
                 it("test morphTargets", function () {
                     var primitiveData = getPrimitiveData();
@@ -750,81 +809,280 @@ _judgeMorphFrame(arraybuffer, frame.vertices, "vertices", primitiveData, json, i
                         }
                     );
                 });
+                it("support convert buffer to base64", function(){
+                    var primitiveData = getPrimitiveDataWithSkinData();
+
+                    setFileJson({
+                        "meshes": {
+                            "geometry1": {
+                                "primitives": [
+                                    primitiveData
+                                ]
+                            }
+                        }
+                    });
+
+                    var data = compressorManager.compress("", "", fileJson, "", true);
+
+
+
+
+                    var arraybuffer = bufferToArraybuffer.bufferToArrayBuffer(Base64Utils.decode(data.uri));
+
+
+                    judgeIndice(arraybuffer, primitiveData, data.json);
+
+                    judgePosition(arraybuffer, primitiveData, data.json);
+                    judgeNormal(arraybuffer, primitiveData, data.json);
+                    judgeTexCoord(arraybuffer, primitiveData, data.json);
+                    judgeColor(arraybuffer, primitiveData, data.json);
+                    judgeJoint(arraybuffer, primitiveData, data.json);
+                    judgeWeight(arraybuffer, primitiveData, data.json);
+                });
             });
 
             describe("modify .wd fileJson file", function () {
                 beforeEach(function () {
                 });
 
-                it("add 'accessors', 'bufferViews', 'buffers' field", function () {
-                    var primitiveData = getPrimitiveData();
+                describe("add 'accessors', 'bufferViews', 'buffers' field", function () {
+                    it("test mesh", function () {
+                        var primitiveData = getPrimitiveDataWithSkinData();
 
-                    setFileJson({
-                        "meshes": {
-                            "geometry1": {
-                                "primitives": [
-                                    primitiveData
-                                ]
+                        setFileJson({
+                            "meshes": {
+                                "geometry1": {
+                                    "primitives": [
+                                        primitiveData
+                                    ]
+                                }
                             }
-                        }
-                    });
+                        });
 
-                    var data = compressorManager.compress("wdFileName", "./", fileJson);
+                        var data = compressorManager.compress("wdFileName", "./", fileJson);
 
-                    var json = data.json;
+                        var json = data.json;
 
-                    expect(json.buffers).toEqual({
-                        wdFileName: {byteLength: 138, type: 'arraybuffer', uri: 'wdFileName.bin'}
+                        expect(json.buffers).toEqual({
+                            wdFileName: {byteLength: 234, type: 'arraybuffer', uri: 'wdFileName.bin'}
+                        });
+                        expect(json.bufferViews).toEqual(
+                            {
+                                bufferView_0: {
+                                    buffer: 'wdFileName',
+                                    byteLength: 6,
+                                    byteOffset: 0,
+                                    target: 34963
+                                },
+                                bufferView_1: {
+                                    buffer: 'wdFileName',
+                                    byteLength: 228,
+                                    byteOffset: 6,
+                                    target: 34962
+                                }
+                            }
+                        );
+                        expect(json.accessors).toEqual(
+                            {
+                                accessor_0: {
+                                    bufferView: 'bufferView_0',
+                                    byteOffset: 0,
+                                    count: 3,
+                                    componentType: 5123,
+                                    type: 'SCALAR'
+                                },
+                                accessor_1: {
+                                    bufferView: 'bufferView_1',
+                                    byteOffset: 0,
+                                    count: 3,
+                                    componentType: 5126,
+                                    type: 'VEC3'
+                                },
+                                accessor_2: {
+                                    bufferView: 'bufferView_1',
+                                    byteOffset: 36,
+                                    count: 3,
+                                    componentType: 5126,
+                                    type: 'VEC3'
+                                },
+                                accessor_3: {
+                                    bufferView: 'bufferView_1',
+                                    byteOffset: 72,
+                                    count: 3,
+                                    componentType: 5126,
+                                    type: 'VEC2'
+                                },
+                                accessor_4: {
+                                    bufferView: 'bufferView_1',
+                                    byteOffset: 96,
+                                    count: 3,
+                                    componentType: 5126,
+                                    type: 'VEC3'
+                                },
+                                accessor_5: {
+                                    bufferView: 'bufferView_1',
+                                    byteOffset: 132,
+                                    count: 3,
+                                    componentType: 5126,
+                                    type: 'VEC4'
+                                },
+                                accessor_6: {
+                                    bufferView: 'bufferView_1',
+                                    byteOffset: 180,
+                                    count: 3,
+                                    componentType: 5126,
+                                    type: 'VEC4'
+                                }
+                            }
+                        );
                     });
-                    expect(json.bufferViews).toEqual({
-                        bufferView_0: {
-                            buffer: 'wdFileName',
-                            byteLength: 6,
-                            byteOffset: 0,
-                            target: 34963
-                        }, bufferView_1: {buffer: 'wdFileName', byteLength: 132, byteOffset: 6, target: 34962}
-                    });
-                    expect(json.accessors).toEqual({
-                        accessor_0: {
-                            bufferView: 'bufferView_0',
-                            byteOffset: 0,
-                            count: 3,
-                            componentType: 5123,
-                            type: 'SCALAR'
-                        },
-                        accessor_1: {
-                            bufferView: 'bufferView_1',
-                            byteOffset: 0,
-                            count: 3,
-                            componentType: 5126,
-                            type: 'VEC3'
-                        },
-                        accessor_2: {
-                            bufferView: 'bufferView_1',
-                            byteOffset: 36,
-                            count: 3,
-                            componentType: 5126,
-                            type: 'VEC3'
-                        },
-                        accessor_3: {
-                            bufferView: 'bufferView_1',
-                            byteOffset: 72,
-                            count: 3,
-                            componentType: 5126,
-                            type: 'VEC2'
-                        },
-                        accessor_4: {
-                            bufferView: 'bufferView_1',
-                            byteOffset: 96,
-                            count: 3,
-                            componentType: 5126,
-                            type: 'VEC3'
-                        }
+                    it("test mesh + animation + skins", function () {
+                        var primitiveData = getPrimitiveData();
+                        var animData1 = getAnimationData1(1, "geometry1");
+                        var animData2 = getAnimationData2(2, "geometry1");
+
+                        var inverseBindMatrices =  getSkinInverseBindMatrices();
+
+                        setFileJson({
+                            "skins": {
+                                "skin1":{
+                                    "inverseBindMatrices": inverseBindMatrices
+                                }
+                            },
+                            "animations": {
+                                "animation_1": animData1,
+                                "animation_2": animData2
+                            },
+                            "meshes": {
+                                "geometry1": {
+                                    "primitives": [
+                                        primitiveData
+                                    ]
+                                }
+                            }
+                        });
+
+                        var data = compressorManager.compress("wdFileName", "./", fileJson);
+
+
+                        expect(data.json.buffers).toEqual({
+                            wdFileName: {byteLength: 390, type: 'arraybuffer', uri: 'wdFileName.bin'}
+                        });
+
+                        expect(data.json.bufferViews).toEqual(
+                            {
+                                bufferView_0: {
+                                    buffer: 'wdFileName',
+                                    byteLength: 124,
+                                    byteOffset: 0
+                                },
+                                bufferView_1: {
+                                    buffer: 'wdFileName',
+                                    byteLength: 128,
+                                    byteOffset: 124
+                                },
+                                bufferView_2: {
+                                    buffer: 'wdFileName',
+                                    byteLength: 6,
+                                    byteOffset: 252,
+                                    target: 34963
+                                },
+                                bufferView_3: {
+                                    buffer: 'wdFileName',
+                                    byteLength: 132,
+                                    byteOffset: 258,
+                                    target: 34962
+                                }
+                            }
+                        );
+
+
+                        expect(data.json.accessors).toEqual(
+                            {
+                                animAccessor_0: {
+                                    bufferView: 'bufferView_0',
+                                    byteOffset: 0,
+                                    count: 3,
+                                    componentType: 5126,
+                                    type: 'SCALAR'
+                                },
+                                animAccessor_1: {
+                                    bufferView: 'bufferView_0',
+                                    byteOffset: 12,
+                                    count: 3,
+                                    componentType: 5126,
+                                    type: 'VEC3'
+                                },
+                                animAccessor_2: {
+                                    bufferView: 'bufferView_0',
+                                    byteOffset: 48,
+                                    count: 3,
+                                    componentType: 5126,
+                                    type: 'VEC3'
+                                },
+                                animAccessor_3: {
+                                    bufferView: 'bufferView_0',
+                                    byteOffset: 84,
+                                    count: 2,
+                                    componentType: 5126,
+                                    type: 'SCALAR'
+                                },
+                                animAccessor_4: {
+                                    bufferView: 'bufferView_0',
+                                    byteOffset: 92,
+                                    count: 2,
+                                    componentType: 5126,
+                                    type: 'VEC4'
+                                },
+                                accessor_0: {
+                                    bufferView: 'bufferView_1',
+                                    byteOffset: 0,
+                                    count: 2,
+                                    componentType: 5126,
+                                    type: 'MAT4'
+                                },
+                                accessor_1: {
+                                    bufferView: 'bufferView_2',
+                                    byteOffset: 0,
+                                    count: 3,
+                                    componentType: 5123,
+                                    type: 'SCALAR'
+                                },
+                                accessor_2: {
+                                    bufferView: 'bufferView_3',
+                                    byteOffset: 0,
+                                    count: 3,
+                                    componentType: 5126,
+                                    type: 'VEC3'
+                                },
+                                accessor_3: {
+                                    bufferView: 'bufferView_3',
+                                    byteOffset: 36,
+                                    count: 3,
+                                    componentType: 5126,
+                                    type: 'VEC3'
+                                },
+                                accessor_4: {
+                                    bufferView: 'bufferView_3',
+                                    byteOffset: 72,
+                                    count: 3,
+                                    componentType: 5126,
+                                    type: 'VEC2'
+                                },
+                                accessor_5: {
+                                    bufferView: 'bufferView_3',
+                                    byteOffset: 96,
+                                    count: 3,
+                                    componentType: 5126,
+                                    type: 'VEC3'
+                                }
+                            }
+                        );
                     });
                 });
 
                 it("replace 'meshes'->primitives->attributes,indices array data with accessor id", function () {
-                    var primitiveData = getPrimitiveData();
+                    var primitiveData = getPrimitiveDataWithSkinData();
 
                     setFileJson({
                         "meshes": {
@@ -840,31 +1098,68 @@ _judgeMorphFrame(arraybuffer, frame.vertices, "vertices", primitiveData, json, i
 
                     var json = data.json;
 
-                    expect(json.meshes).toEqual({
-                        geometry1: {
-                            primitives: [{
-                                attributes: {
-                                    POSITION: 'accessor_1',
-                                    NORMAL: 'accessor_2',
-                                    COLOR: 'accessor_4',
-                                    TEXCOORD: 'accessor_3'
-                                }, indices: 'accessor_0'
-                            }]
+                    expect(json.meshes).toEqual(
+                        {
+                            geometry1: {
+                                primitives: [
+                                    {
+                                        attributes: {
+                                            POSITION: 'accessor_1',
+                                            NORMAL: 'accessor_2',
+                                            COLOR: 'accessor_4',
+                                            TEXCOORD: 'accessor_3',
+                                            JOINT: 'accessor_5',
+                                            WEIGHT: 'accessor_6'
+                                        },
+                                        indices: 'accessor_0'
+                                    }
+                                ]
+                            }
+                        }
+                    );
+                });
+
+                it("support convert images to base64", function () {
+                    setFileJson({
+                        "images": {
+                            "monster_jpg": {
+                                "name": "monster_jpg",
+                                "uri": "./1.jpg"
+                            }
                         }
                     });
+
+                    var sourceDir = path.join(process.cwd(), "../../../res/texture/");
+                    var data = compressorManager.compress("wdFileName", "./", fileJson, sourceDir, true);
+
+                    var json = data.json;
+
+                    expect(json.images.monster_jpg.uri).toContain(
+                        "data:image/jpg;base64, /9j/4AA"
+                    );
                 });
             });
 
             describe("test multi primitive datas", function(){
                 function judgeData(json) {
                     expect(json.buffers).toEqual({
-                        wdFileName: {byteLength: 240, type: 'arraybuffer', uri: 'wdFileName.bin'}
+                        wdFileName: {byteLength: 336, type: 'arraybuffer', uri: 'wdFileName.bin'}
                     });
 
                     expect(json.bufferViews).toEqual(
                         {
-                            bufferView_0: {buffer: 'wdFileName', byteLength: 12, byteOffset: 0, target: 34963},
-                            bufferView_1: {buffer: 'wdFileName', byteLength: 228, byteOffset: 12, target: 34962}
+                            bufferView_0: {
+                                buffer: 'wdFileName',
+                                byteLength: 12,
+                                byteOffset: 0,
+                                target: 34963
+                            },
+                            bufferView_1: {
+                                buffer: 'wdFileName',
+                                byteLength: 324,
+                                byteOffset: 12,
+                                target: 34962
+                            }
                         }
                     );
 
@@ -917,18 +1212,32 @@ _judgeMorphFrame(arraybuffer, frame.vertices, "vertices", primitiveData, json, i
                                 byteOffset: 132,
                                 count: 3,
                                 componentType: 5126,
-                                type: 'VEC3'
+                                type: 'VEC4'
                             },
                             accessor_7: {
                                 bufferView: 'bufferView_1',
-                                byteOffset: 168,
+                                byteOffset: 180,
+                                count: 3,
+                                componentType: 5126,
+                                type: 'VEC4'
+                            },
+                            accessor_8: {
+                                bufferView: 'bufferView_1',
+                                byteOffset: 228,
                                 count: 3,
                                 componentType: 5126,
                                 type: 'VEC3'
                             },
-                            accessor_8: {
+                            accessor_9: {
                                 bufferView: 'bufferView_1',
-                                byteOffset: 204,
+                                byteOffset: 264,
+                                count: 3,
+                                componentType: 5126,
+                                type: 'VEC3'
+                            },
+                            accessor_10: {
+                                bufferView: 'bufferView_1',
+                                byteOffset: 300,
                                 count: 3,
                                 componentType: 5126,
                                 type: 'VEC2'
@@ -942,7 +1251,7 @@ _judgeMorphFrame(arraybuffer, frame.vertices, "vertices", primitiveData, json, i
                 });
 
                 it("test multi meshes", function () {
-                    var primitiveData = getPrimitiveData(),
+                    var primitiveData = getPrimitiveDataWithSkinData(),
                         primitiveData2 = getPrimitiveData2();
 
                     setFileJson({
@@ -964,32 +1273,42 @@ _judgeMorphFrame(arraybuffer, frame.vertices, "vertices", primitiveData, json, i
 
                     var json = data.json;
 
-                    expect(json.meshes).toEqual({
-                        geometry1: {
-                            primitives: [{
-                                attributes: {
-                                    POSITION: 'accessor_2',
-                                    NORMAL: 'accessor_3',
-                                    COLOR: 'accessor_5',
-                                    TEXCOORD: 'accessor_4'
-                                }, indices: 'accessor_0'
-                            }]
-                        },
-                        geometry2: {
-                            primitives: [{
-                                attributes: {
-                                    POSITION: 'accessor_6',
-                                    NORMAL: 'accessor_7',
-                                    TEXCOORD: 'accessor_8'
-                                }, indices: 'accessor_1'
-                            }]
+                    expect(json.meshes).toEqual(
+                        {
+                            geometry1: {
+                                primitives: [
+                                    {
+                                        attributes: {
+                                            POSITION: 'accessor_2',
+                                            NORMAL: 'accessor_3',
+                                            COLOR: 'accessor_5',
+                                            TEXCOORD: 'accessor_4',
+                                            JOINT: 'accessor_6',
+                                            WEIGHT: 'accessor_7'
+                                        },
+                                        indices: 'accessor_0'
+                                    }
+                                ]
+                            },
+                            geometry2: {
+                                primitives: [
+                                    {
+                                        attributes: {
+                                            POSITION: 'accessor_8',
+                                            NORMAL: 'accessor_9',
+                                            TEXCOORD: 'accessor_10'
+                                        },
+                                        indices: 'accessor_1'
+                                    }
+                                ]
+                            }
                         }
-                    });
+                    );
 
                     judgeData(json);
                 });
                 it("test multi primitives", function () {
-                    var primitiveData = getPrimitiveData(),
+                    var primitiveData = getPrimitiveDataWithSkinData(),
                         primitiveData2 = getPrimitiveData2();
 
                     setFileJson({
@@ -1010,17 +1329,27 @@ _judgeMorphFrame(arraybuffer, frame.vertices, "vertices", primitiveData, json, i
                     expect(json.meshes).toEqual(
                         {
                             geometry1: {
-                                primitives: [{
-                                    attributes: {
-                                        POSITION: 'accessor_2',
-                                        NORMAL: 'accessor_3',
-                                        COLOR: 'accessor_5',
-                                        TEXCOORD: 'accessor_4'
-                                    }, indices: 'accessor_0'
-                                }, {
-                                    attributes: {POSITION: 'accessor_6', NORMAL: 'accessor_7', TEXCOORD: 'accessor_8'},
-                                    indices: 'accessor_1'
-                                }]
+                                primitives: [
+                                    {
+                                        attributes: {
+                                            POSITION: 'accessor_2',
+                                            NORMAL: 'accessor_3',
+                                            COLOR: 'accessor_5',
+                                            TEXCOORD: 'accessor_4',
+                                            JOINT: 'accessor_6',
+                                            WEIGHT: 'accessor_7'
+                                        },
+                                        indices: 'accessor_0'
+                                    },
+                                    {
+                                        attributes: {
+                                            POSITION: 'accessor_8',
+                                            NORMAL: 'accessor_9',
+                                            TEXCOORD: 'accessor_10'
+                                        },
+                                        indices: 'accessor_1'
+                                    }
+                                ]
                             }
                         }
                     );

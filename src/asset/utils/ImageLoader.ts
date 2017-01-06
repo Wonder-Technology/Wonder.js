@@ -1,10 +1,15 @@
 module wd{
     export class ImageLoader{
-        public static load(url:string) {
+        public static load(url:string, config:AssetConfigData) {
             return wdFrp.fromPromise(new RSVP.Promise((resolve, reject) => {
                 var img = null;
 
                 img = new root.Image();
+
+                if(config.isCrossOrigin){
+                    img.crossOrigin = "anonymous";
+                }
+
                 /*!
                  经过对多个浏览器版本的测试，发现ie、opera下，当图片加载过一次以后，如果再有对该图片的请求时，由于浏览器已经缓存住这张图
 

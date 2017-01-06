@@ -4,7 +4,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-/// <reference path="../../../dist/wd.d.ts"/>
+/// <reference path="../../../dist/Hilo3D.d.ts"/>
 var sample;
 (function (sample) {
     var Event = (function () {
@@ -27,9 +27,10 @@ var sample;
         Event.prototype.onMouseDrag = function (e) {
         };
         Event = __decorate([
-            wd.script("event")
+            Hilo3D.script("event")
         ], Event);
         return Event;
-    })();
+    }());
     sample.Event = Event;
 })(sample || (sample = {}));
+//# sourceMappingURL=event.js.map

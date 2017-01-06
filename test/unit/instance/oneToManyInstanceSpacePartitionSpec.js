@@ -68,7 +68,7 @@ describe("one to many instance with spacePartition", function() {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
-        wd.DebugStatistics.clear();
+        wd.DebugStatistics.resetData();
 
         device = wd.DeviceManager.getInstance();
         sandbox.stub(device, "gl", testTool.buildFakeGl(sandbox));

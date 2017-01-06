@@ -789,13 +789,15 @@ describe("ThreeDTransform", function(){
             });
         });
 
-        it("set parent", function () {
-            var parent = Transform.create();
-            tra1.parent = parent;
+        describe("test clone parent", function () {
+            it("reference to old parent", function () {
+                var parent = Transform.create();
+                tra1.parent = parent;
 
-            var result = tra1.clone();
+                var result = tra1.clone();
 
-            expect(result.parent === tra1.parent).toBeTruthy();
+                expect(result.parent === tra1.parent).toBeTruthy();
+            });
         });
     });
 });

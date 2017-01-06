@@ -113,6 +113,29 @@ describe("loader", function () {
                 done();
             });
         });
+        it("test set crossOrigin", function (done) {
+            var current = [],
+                total = [];
+
+            wd.LoaderManager.getInstance().load([
+                {url: testTool.resPath + "test/res/1.jpg", id: "jpg", config:{
+                isCrossOrigin:true
+                }},
+                {url: testTool.resPath + "test/res/2.png", id: "png"}
+            ]).subscribe(function (data) {
+            }, function (err) {
+                console.log(err);
+                done();
+            }, function () {
+                var jpg = wd.LoaderManager.getInstance().get("jpg");
+                var png = wd.LoaderManager.getInstance().get("png");
+
+                expect(jpg.source.crossOrigin).toEqual("anonymous")
+                expect(png.source.crossOrigin).not.toBeExist();
+
+                done();
+            });
+        });
     });
 
     describe("load video", function(){

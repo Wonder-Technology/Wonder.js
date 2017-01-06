@@ -3,8 +3,6 @@ module wd {
         public static create() {
             var obj = new this();
 
-            obj.initWhenCreate();
-
             return obj;
         }
 
@@ -50,26 +48,28 @@ module wd {
 
         public side:ESide = null;
         public shadowMap = ShadowMapModel.create(this);
-        public physics = PhysicsConfig.create();
+        public physics = ClassUtils.createClassInstance("PhysicsConfig");
         public glslData:wdCb.Hash<any> = wdCb.Hash.create<any>();
         public currentShaderType:EShaderTypeOfScene = null;
         public renderTargetRendererManager:RenderTargetRendererManager = RenderTargetRendererManager.create();
-        public shadowManager:ShadowManager = ShadowManager.create(this);
+        public shadowManager:any = ClassUtils.createClassInstanceOrEmpty("ShadowManager", "EmptyShadowManager", this);
 
         private _lightManager:LightManager = LightManager.create();
         private _cameraList:wdCb.Collection<GameObject> = wdCb.Collection.create<GameObject>();
 
         public init(){
-            PhysicsEngine.getInstance().initPhysicsEngineAdapter();
+            ClassUtils.execSingletonMethod("PhysicsEngine", "initPhysicsEngineAdapter");
 
-            this.shadowManager.init();
+            if(this.shadowManager){
+                this.shadowManager.init();
+            }
 
             super.init();
 
             this.renderTargetRendererManager.init();
 
-            PhysicsEngine.getInstance().initBody();
-            PhysicsEngine.getInstance().initConstraint();
+            ClassUtils.execSingletonMethod("PhysicsEngine", "initBody");
+            ClassUtils.execSingletonMethod("PhysicsEngine", "initConstraint");
 
             return this;
         }
@@ -97,10 +97,9 @@ module wd {
 
         public update(elapsed:number){
             var currentCamera= this._getCurrentCameraComponent(),
-                shadowManager:ShadowManager = this.shadowManager;
+                shadowManager:any = this.shadowManager;
 
-
-            PhysicsEngine.getInstance().update(elapsed);
+            ClassUtils.execSingletonMethod("PhysicsEngine", "update", elapsed);
 
             if(currentCamera){
                 currentCamera.update(elapsed);
@@ -108,19 +107,20 @@ module wd {
 
             shadowManager.update(elapsed);
 
-            LODEngine.getInstance().update(elapsed);
-            SpacePartitionEngine.getInstance().update(elapsed);
+            ClassUtils.execSingletonMethod("LODEngine", "update", elapsed);
+            ClassUtils.execSingletonMethod("SpacePartitionEngine", "update", elapsed);
 
-            AnimationEngine.getInstance().update(elapsed);
+            ClassUtils.execSingletonMethod("AnimationEngine", "update", elapsed);
+
             CollisionEngine.getInstance().update(elapsed);
 
-            ThreeDUIEngine.getInstance().update(elapsed);
+            ClassUtils.execSingletonMethod("ThreeDUIEngine", "update", elapsed);
 
             super.update(elapsed);
 
             CollisionEngine.getInstance().detect(elapsed);
 
-            BillboardEngine.getInstance().update(elapsed);
+            ClassUtils.execSingletonMethod("BillboardEngine", "update", elapsed);
         }
 
         public render(renderer:Renderer) {
@@ -190,27 +190,6 @@ module wd {
         }
     }
 
-    export class PhysicsConfig{
-        public static create() {
-            var obj = new this();
-
-            return obj;
-        }
-
-        private _gravity:Vector3 = Vector3.create(0, -9.8, 0);
-        @operateWorldDataGetterAndSetter("Gravity")
-        get gravity(){
-            return this._gravity;
-        }
-        set gravity(gravity:Vector3){
-            this._gravity = gravity;
-        }
-
-        public enable:boolean = false;
-        public engine:EPhysicsEngineType = EPhysicsEngineType.CANNON;
-        public iterations:number = 10;
-    }
-
     export class ShadowMapModel{
         public static create(scene:GameObjectScene) {
         	var obj = new this(scene);
@@ -246,7 +225,7 @@ module wd {
             }
         }
 
-        public shadowLayerList:ShadowLayerList = ShadowLayerList.create();
+        public shadowLayerList:any = ClassUtils.createClassInstance("ShadowLayerList", this);
 
         public getTwoDShadowMapDataMap(layer:string) {
             return this._scene.shadowManager.getTwoDShadowMapDataMap(layer);

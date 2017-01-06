@@ -17,9 +17,7 @@ module wd {
             }
         }
 
-        public removeFromObject(entityObject:GameObject){
-            super.removeFromObject(entityObject);
-
+        public removeFromEngine(){
             ThreeDUIEngine.getInstance().removeChild(this);
         }
     }

@@ -147,7 +147,7 @@ describe("instance+morph animation", function () {
         testTool.openContractCheck(sandbox);
 
 
-        //wd.DebugStatistics.clear();
+        //wd.DebugStatistics.resetData();
 
         device = wd.DeviceManager.getInstance();
 

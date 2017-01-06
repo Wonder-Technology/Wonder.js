@@ -21,9 +21,7 @@ module wd{
             }
         }
 
-        public removeFromObject(entityObject:EntityObject){
-            super.removeFromObject(entityObject);
-
+        public removeFromEngine(){
             BillboardEngine.getInstance().removeChild(this);
         }
 

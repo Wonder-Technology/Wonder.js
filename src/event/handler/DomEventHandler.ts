@@ -10,12 +10,43 @@ module wd {
 
         public off(...args) {
             var self = this,
+                eventName:EEventName = null,
+                dom:HTMLElement = null,
                 eventRegister = DomEventRegister.getInstance(),
                 eventOffDataList:wdCb.Collection<DomEventOffData> = null;
 
-            eventOffDataList = eventRegister.remove.apply(eventRegister, args);
+            if(args.length === 1){
+                eventName = args[0];
 
-            if(eventOffDataList){
+                dom = this.getDefaultDom();
+
+                eventOffDataList = eventRegister.remove(eventName);
+            }
+            else if(args.length === 2 && JudgeUtils.isDom(args[0])){
+                dom = args[0];
+                eventName = args[1];
+
+                eventOffDataList = eventRegister.remove(dom, eventName);
+            }
+            else if(args.length === 2){
+                let handler = args[1];
+
+                eventName = args[0];
+                dom = this.getDefaultDom();
+
+                eventOffDataList = eventRegister.remove(eventName, handler);
+            }
+            else{
+                let handler = args[2];
+
+                dom = args[0];
+                eventName = args[1];
+
+                eventOffDataList = eventRegister.remove(dom, eventName, handler);
+            }
+
+
+            if(eventOffDataList && !eventRegister.isBinded(dom, eventName)){
                 eventOffDataList.forEach((eventOffData:DomEventOffData) => {
                     self._unBind(eventOffData.dom, eventOffData.eventName, eventOffData.domHandler);
                 })
@@ -55,7 +86,7 @@ module wd {
             });
         }
 
-        protected abstract triggerDomEvent(dom:HTMLElement, event:Event, eventName:EEventName);
+        protected abstract triggerDomEvent(dom:HTMLElement, event:IEventData, eventName:EEventName);
         protected abstract addEngineHandler(eventName:EEventName, handler:Function);
         protected abstract getDefaultDom():HTMLElement;
         protected abstract createEventData():wdCb.Hash<any>;

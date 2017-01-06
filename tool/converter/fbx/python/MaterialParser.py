@@ -245,9 +245,16 @@ class MaterialParser(object):
         if output["images"].get(id, None) != None:
             return
 
-        absoluteUrl = texture.GetFileName()
+        try:
+            absoluteUrl = texture.GetFileName()
+        except:
+            absoluteUrl = "./defaultTexture.png"
 
-        relativeUrl = texture.GetRelativeFileName()
+
+        try:
+            relativeUrl = texture.GetRelativeFileName()
+        except:
+            relativeUrl = "./defaultTexture.png"
 
         uri = None
 

@@ -1,0 +1,9 @@
+{
+  "name": "converter",
+  "version": "0.0.1",
+  "devDependencies": {
+    "buffer-to-arraybuffer": "0.0.4",
+    "canvas": "^1.6.0",
+    "node-base64-image": "^1.0.3"
+  }
+}

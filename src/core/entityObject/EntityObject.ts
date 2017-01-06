@@ -275,6 +275,10 @@ module wd {
             return this.componentManager.removeAllComponent();
         }
 
+        public removeAllComponentFromEngine(){
+            return this.componentManager.removeAllComponentFromEngine();
+        }
+
         @virtual
         public render(renderer:Renderer, camera:GameObject):void {
             var rendererComponent = null;
@@ -300,6 +304,10 @@ module wd {
             return this.componentManager.getComponentCount(_class);
         }
 
+        public getAllChildren(){
+            return this._entityObjectManager.getAllChildren();
+        }
+
         @virtual
         public getGeometry(){
             return this.componentManager.getGeometry();
@@ -314,10 +322,6 @@ module wd {
         @virtual
         protected getRenderList(){
             return this.getChildren();
-        }
-
-        protected getAllChildren(){
-            return this._entityObjectManager.getAllChildren();
         }
 
         public clearCache(){

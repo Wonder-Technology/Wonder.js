@@ -156,6 +156,10 @@ module wd{
             return this;
         }
 
+        public removeAllComponentFromEngine(){
+            this._components.forEach((component:Component) => component.removeFromEngine());
+        }
+
         public getComponentCount(_class:Function){
             return this._components.filter((component:Component) => {
                 return component instanceof _class;

@@ -175,7 +175,7 @@ module wd{
             return heightFromHeightMapData;
         }
 
-        public computeData(): GeometryDataType{
+        public computeData(){
             if(!this._isReadHeightMapData()){
                 this._readHeightMapData();
             }

@@ -56,7 +56,7 @@ describe("one to one instance with spacePartition", function() {
 
         //testTool.openContractCheck(sandbox);
 
-        wd.DebugStatistics.clear();
+        wd.DebugStatistics.resetData();
 
         device = wd.DeviceManager.getInstance();
         sandbox.stub(device, "gl", testTool.buildFakeGl(sandbox));

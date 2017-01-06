@@ -8,6 +8,8 @@ module wd{
     _table.addChild(<any>EBufferDataType.TEXCOORD, "texCoords");
     _table.addChild(<any>EBufferDataType.COLOR, "colors");
     _table.addChild(<any>EBufferDataType.TANGENT, "tangents");
+    _table.addChild(<any>EBufferDataType.JOINT_INDICE, "jointIndices");
+    _table.addChild(<any>EBufferDataType.JOINT_WEIGHT, "jointWeights");
 
     export class BufferDataTable{
         @ensure(function(result, type:EBufferDataType){

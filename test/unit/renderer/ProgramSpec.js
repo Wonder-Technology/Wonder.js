@@ -376,6 +376,30 @@ describe("Program", function(){
             expect(gl.uniformMatrix4fv).toCalledWith(pos, false, mat.values);
         });
 
+        describe("test send FLOAT_MAT4 array", function () {
+            var data;
+
+            beforeEach(function(){
+                var mat1 = wd.Matrix4.create();
+                var mat2 = wd.Matrix4.create().translate(1,2,3);
+
+                data = new Float32Array(16 * 2);
+                mat1.cloneToArray(data, 0);
+                mat2.cloneToArray(data, 16);
+            });
+
+            it("uniform name should add '[0]'", function () {
+                program.sendUniformData("u_matrixArr", wd.EVariableType.FLOAT_MAT4_ARRAY, data);
+
+                expect(gl.getUniformLocation.getCall(0).args[1]).toEqual("u_matrixArr[0]")
+            });
+            it("test send data", function () {
+                program.sendUniformData("u_matrixArr", wd.EVariableType.FLOAT_MAT4_ARRAY, data);
+
+                expect(gl.uniformMatrix4fv).toCalledWith(pos, false, data);
+            });
+        });
+
         describe("test send NUMBER_1", function () {
             it("test", function () {
                 program.sendUniformData("u_a", wd.EVariableType.NUMBER_1, 1);

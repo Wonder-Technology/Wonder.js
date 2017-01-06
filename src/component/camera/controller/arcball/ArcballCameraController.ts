@@ -89,8 +89,8 @@ module wd {
         public wheelSpeed:number = 1;
 
         private _isChange:boolean = true;
-        private _mouseDragSubscription:wdFrp.IDisposable = null;
-        private _mouseWheelSubscription:wdFrp.IDisposable = null;
+        private _pointDragSubscription:wdFrp.IDisposable = null;
+        private _pointWheelSubscription:wdFrp.IDisposable = null;
         private _keydownSubscription:wdFrp.IDisposable = null;
 
         public init() {
@@ -125,21 +125,20 @@ module wd {
         private _bindCanvasEvent() {
             var self = this,
                 scene = Director.getInstance().scene,
-                mousewheel = EventManager.fromEvent(scene, <any>EEngineEvent.MOUSE_WHEEL),
-                mousedrag = EventManager.fromEvent(scene, <any>EEngineEvent.MOUSE_DRAG),
-            keydown = EventManager.fromEvent(EEventName.KEYDOWN);
+                pointwheel = EventManager.fromEvent(scene, EEngineEvent.POINT_SCALE),
+                pointdrag = EventManager.fromEvent(scene, EEngineEvent.POINT_DRAG),
+                keydown = EventManager.fromEvent(EEventName.KEYDOWN);
 
-
-            this._mouseDragSubscription = mousedrag.subscribe((e:CustomEvent) => {
+            this._pointDragSubscription = pointdrag.subscribe((e:CustomEvent) => {
                 self._changeOrbit(e.userData);
             });
 
-            this._mouseWheelSubscription = mousewheel.subscribe((e:CustomEvent) => {
-                var mouseEvent:MouseEvent = e.userData;
+            this._pointWheelSubscription = pointwheel.subscribe((e:CustomEvent) => {
+                var pointEvent:PointEvent = e.userData;
 
-                mouseEvent.preventDefault();
+                pointEvent.preventDefault();
 
-                self._changeDistance(mouseEvent);
+                self._changeDistance(pointEvent);
             });
 
             this._keydownSubscription = keydown.subscribe(function (e) {
@@ -147,7 +146,7 @@ module wd {
             });
         }
 
-        private _changeOrbit(e:MouseEvent) {
+        private _changeOrbit(e:PointEvent) {
             var movementDelta = e.movementDelta;
 
             this._isChange = true;
@@ -211,11 +210,11 @@ module wd {
             }
         }
 
-        private _changeDistance(e:MouseEvent);
+        private _changeDistance(e:PointEvent);
         private _changeDistance(distance:number);
 
         @require(function(...args){
-            expect(JudgeUtils.isNumber(args[0]) || args[0] instanceof MouseEvent).true;
+            expect(JudgeUtils.isNumber(args[0]) || args[0] instanceof PointEvent).true;
         })
         private _changeDistance(...args){
             this._isChange = true;
@@ -224,7 +223,7 @@ module wd {
                 this._distance = args[0];
             }
             else{
-                let e:MouseEvent = args[0];
+                let e:PointEvent = args[0];
 
                 this._distance -= this.wheelSpeed * e.wheel;
             }
@@ -241,8 +240,8 @@ module wd {
         }
 
         private _removeEvent() {
-            this._mouseDragSubscription.dispose();
-            this._mouseWheelSubscription.dispose();
+            this._pointDragSubscription.dispose();
+            this._pointWheelSubscription.dispose();
             this._keydownSubscription.dispose();
         }
 

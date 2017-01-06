@@ -19,7 +19,7 @@ var describe = contract.describe,
 
 var expect = chai.expect;
 
-export class MD2ToWD extends SingleModelConverter{
+export class MD2Towd extends SingleModelConverter{
     public static create(version:string) {
         var obj = null;
 
@@ -28,7 +28,7 @@ export class MD2ToWD extends SingleModelConverter{
         return obj;
     }
 
-    public name:string = "WonderJsMD2ToWDConverter";
+    public name:string = "wdJsMD2ToWDConverter";
 
     private _objectsConverter:any = ObjectsConverter.create();
 

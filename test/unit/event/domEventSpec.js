@@ -1,52 +1,69 @@
 describe("dom event", function () {
     var manager = null;
-    var Listener = null;
     var sandbox = null;
     var target = null;
-
-    var canvas;
-
-    function insertDom() {
-        $("html").append($("<canvas id='event-test'></canvas>"));
-    }
-
-    function removeDom() {
-        $("#event-test").remove();
-    }
+    var director, scene, camera;
+    var fakeEvent;
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        insertDom();
-        prepareTool.createGL("event-test");
         target = wd.GameObject.create();
         manager = wd.EventManager;
-        Listener = wd.EventListener;
 
-        canvas = document.getElementById("event-test");
+
+
+        fakeEvent = {
+            pageX:10,
+            pageY:10
+        };
+
+
+
+        director = wd.Director.getInstance();
+
+        scene = director.scene;
+
+        camera =  testTool.createCamera();
+
+        scene.addChild(camera);
+
+
+        sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+
+        sandbox.stub(wd.DeviceManager.getInstance(), "view", {
+            width:100,
+            height:100,
+            offset:{
+                x:0,
+                y:0
+            }
+        });
     });
     afterEach(function () {
-        removeDom();
         manager.off();
         testTool.clearInstance(sandbox);
         sandbox.restore();
     });
 
     it("can bind the same dom event multi handler that it only bind dom event once", function () {
-
         manager.off();
+
 
         var sum = 0;
         sandbox.spy(wd.MouseEventHandler.getInstance(), "triggerDomEvent");
-        target = wd.Director.getInstance().scene;
 
-        subscription = manager.fromEvent(wd.EEventName.MOUSEDOWN).subscribe(function(e){
+
+        director._init();
+
+
+        var subscription = manager.fromEvent(scene, wd.EEngineEvent.POINT_DOWN).subscribe(function(e){
             sum++;
         });
-        manager.on(wd.EEventName.MOUSEDOWN, function(e){
+        manager.on(scene, wd.EEngineEvent.POINT_DOWN, function(e){
             sum++;
         });
 
-        eventTool.triggerDomEvent(wd.EEventName.MOUSEDOWN);
+        eventTool.triggerDomEvent(wd.EEventName.MOUSEDOWN, document.body, fakeEvent);
 
         expect(sum).toEqual(2);
         expect(wd.MouseEventHandler.getInstance().triggerDomEvent).toCalledOnce();
@@ -58,30 +75,38 @@ describe("dom event", function () {
                 var sum = 0;
                 sandbox.spy(wd.MouseEventHandler.getInstance(), "triggerDomEvent");
                 sandbox.stub(bowser, "firefox", true);
-                target = wd.Director.getInstance().scene;
 
-                manager.on(wd.EEventName.MOUSEWHEEL, function(e){
+
+                director._init();
+
+
+                manager.on(scene, wd.EEngineEvent.POINT_SCALE, function(e){
                     sum++;
                 });
 
-                YYC.Tool.event.triggerEvent(document.body, "DOMMouseScroll");
+                YYC.Tool.event.triggerEvent(document.body, "DOMMouseScroll", fakeEvent);
 
                 expect(wd.MouseEventHandler.getInstance().triggerDomEvent).toCalledOnce();
+                expect(sum).toEqual(1);
             });
             it("chrome", function(){
                 var sum = 0;
                 sandbox.spy(wd.MouseEventHandler.getInstance(), "triggerDomEvent");
                 sandbox.stub(bowser, "firefox", false);
                 sandbox.stub(bowser, "chrome", true);
-                target = wd.Director.getInstance().scene;
 
-                manager.on(wd.EEventName.MOUSEWHEEL, function(e){
+                director._init();
+
+
+
+                manager.on(scene, wd.EEngineEvent.POINT_SCALE, function(e){
                     sum++;
                 });
 
-                YYC.Tool.event.triggerEvent(document.body, "mousewheel");
+                YYC.Tool.event.triggerEvent(document.body, "mousewheel", fakeEvent);
 
                 expect(wd.MouseEventHandler.getInstance().triggerDomEvent).toCalledOnce();
+                expect(sum).toEqual(1);
             });
         });
     });
@@ -93,18 +118,20 @@ describe("dom event", function () {
             sum4 = 0;
 
         beforeEach(function(){
+            director._init();
+
             sum1 = 0;
             sum2 = 0;
             sum3 = 0;
             sum4 = 0;
 
-            manager.on(wd.EEventName.MOUSEWHEEL, function(e){
+            manager.on(scene, wd.EEngineEvent.POINT_SCALE, function(e){
                 sum1++;
             });
-            manager.on(document.body, wd.EEventName.MOUSEDOWN, function(e){
+            manager.on(scene, wd.EEngineEvent.POINT_DOWN, function(e){
                 sum2++;
             });
-            manager.on(document.body, wd.EEventName.MOUSEDOWN, function(e){
+            manager.on(scene, wd.EEngineEvent.POINT_DOWN, function(e){
                 sum3++;
             });
             manager.on(wd.EEventName.KEYUP, function(e){
@@ -113,8 +140,8 @@ describe("dom event", function () {
 
 
 
-            eventTool.triggerDomEvent(wd.EEventName.MOUSEWHEEL);
-            eventTool.triggerDomEvent(wd.EEventName.MOUSEDOWN, document.body);
+            eventTool.triggerDomEvent(wd.EEventName.MOUSEWHEEL, document.body, fakeEvent);
+            eventTool.triggerDomEvent(wd.EEventName.MOUSEDOWN, document.body, fakeEvent);
             eventTool.triggerDomEvent(wd.EEventName.KEYUP, document.body);
 
             expect(sum1).toEqual(1);
@@ -126,8 +153,8 @@ describe("dom event", function () {
         it("test off()", function(){
             manager.off();
 
-            eventTool.triggerDomEvent(wd.EEventName.MOUSEWHEEL);
-            eventTool.triggerDomEvent(wd.EEventName.MOUSEDOWN, document.body);
+            eventTool.triggerDomEvent(wd.EEventName.MOUSEWHEEL, document.body, fakeEvent);
+            eventTool.triggerDomEvent(wd.EEventName.MOUSEDOWN, document.body, fakeEvent);
             eventTool.triggerDomEvent(wd.EEventName.KEYUP, document.body);
 
             expect(sum1).toEqual(1);
@@ -136,10 +163,8 @@ describe("dom event", function () {
             expect(sum4).toEqual(1);
         });
         it("test off(dom)", function(){
-            manager.off(wd.DeviceManager.getInstance().view.dom);
-
-            eventTool.triggerDomEvent(wd.EEventName.MOUSEWHEEL);
-            eventTool.triggerDomEvent(wd.EEventName.MOUSEDOWN, document.body);
+            eventTool.triggerDomEvent(wd.EEventName.MOUSEWHEEL, document.body, fakeEvent);
+            eventTool.triggerDomEvent(wd.EEventName.MOUSEDOWN, document.body, fakeEvent);
             eventTool.triggerDomEvent(wd.EEventName.KEYUP, document.body);
 
 
@@ -152,17 +177,66 @@ describe("dom event", function () {
 
 
 
-            manager.off(document.body);
+            manager.off(scene);
 
-            eventTool.triggerDomEvent(wd.EEventName.MOUSEWHEEL);
-            eventTool.triggerDomEvent(wd.EEventName.MOUSEDOWN, document.body);
+            eventTool.triggerDomEvent(wd.EEventName.MOUSEWHEEL, document.body, fakeEvent);
+            eventTool.triggerDomEvent(wd.EEventName.MOUSEDOWN, document.body, fakeEvent);
             eventTool.triggerDomEvent(wd.EEventName.KEYUP, document.body);
 
 
             expect(sum1).toEqual(2);
             expect(sum2).toEqual(2);
             expect(sum3).toEqual(2);
-            expect(sum4).toEqual(2);
+            expect(sum4).toEqual(3);
+
+
+
+
+            manager.off(document.body);
+
+            eventTool.triggerDomEvent(wd.EEventName.KEYUP, document.body);
+
+
+            expect(sum4).toEqual(3);
+        });
+    });
+
+    describe("fix bug", function(){
+        beforeEach(function(){
+        });
+
+        it("if dispose one handler of the dom event which is binded multi handler, the other handlers should keep binded", function () {
+            fakeEvent = eventTool.buildFakeTouchEvent(10, 10);
+
+            sandbox.stub(director.domEventManager._pointEventBinder, "_isSupportTouch").returns(true);
+
+
+            var EEventName = wd.EEventName;
+
+            var touchdown = manager.fromEvent(EEventName.TOUCHDOWN);
+
+            var sum1 = 0,
+                sum2 = 0;
+
+            var sub1 = touchdown.subscribe(function(){
+                sum1++;
+            });
+
+            var sub2 = touchdown.subscribe(function(){
+                sum2++;
+            });
+
+            eventTool.triggerDomEvent(wd.EEventName.TOUCHDOWN, document.body, fakeEvent);
+
+            expect(sum1).toEqual(1);
+            expect(sum2).toEqual(1);
+
+            sub1.dispose();
+
+            eventTool.triggerDomEvent(wd.EEventName.TOUCHDOWN, document.body, fakeEvent);
+
+            expect(sum1).toEqual(1);
+            expect(sum2).toEqual(2);
         });
     });
 });

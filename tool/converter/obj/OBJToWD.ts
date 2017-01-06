@@ -27,7 +27,7 @@ var describe = contract.describe,
 
 var expect = chai.expect;
 
-export class OBJToWD extends SingleModelConverter{
+export class OBJTowd extends SingleModelConverter{
     public static create(version:string) {
         var obj = null;
 
@@ -36,7 +36,7 @@ export class OBJToWD extends SingleModelConverter{
         return obj;
     }
 
-    public name:string = "WonderJsOBJToWDConverter";
+    public name:string = "wdJsOBJToWDConverter";
 
     private _objectsConverter:any = ObjectsConverter.create();
     private _materialsConverter:any = MaterialsConverter.create();

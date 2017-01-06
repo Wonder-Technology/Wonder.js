@@ -28,7 +28,7 @@ describe("transform articulated animation", function () {
 
                             targets: wdCb.Collection.create(
                                 [
-                                    {interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,target:wd.EArticulatedAnimationTarget.TRANSLATION, data: wd.Vector3.create(3,1,0)}
+                                    {interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,target:wd.EKeyFrameAnimationTarget.TRANSLATION, data: wd.Vector3.create(3,1,0)}
                                 ]
                             )
                         }
@@ -98,7 +98,7 @@ describe("transform articulated animation", function () {
         beforeEach(function(){
         });
 
-        describe("update position/scale/rotation in each key(should set transform->local TRS instead of global TRS, because the transform in .gltf is in local coordinate system)", function(){
+        describe("update position/scale/rotation in each key(should set transform->local TRS instead of global TRS, because the transform in .wd is in local coordinate system)", function(){
             var firstKeyTime,secondKeyTime;
 
             beforeEach(function(){
@@ -125,7 +125,7 @@ describe("transform articulated animation", function () {
                                 targets: wdCb.Collection.create(
                                     [
                                         { interpolationMethod: wd.EKeyFrameInterpolation.LINEAR,
-                                            target: wd.EArticulatedAnimationTarget.TRANSLATION,
+                                            target: wd.EKeyFrameAnimationTarget.TRANSLATION,
                                             data: getInitTransformData().translation}
                                     ]
                                 )
@@ -135,7 +135,7 @@ describe("transform articulated animation", function () {
 
                                 targets: wdCb.Collection.create(
                                     [
-                                        {interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,target:wd.EArticulatedAnimationTarget.TRANSLATION, data: wd.Vector3.create(3,1,0)}
+                                        {interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,target:wd.EKeyFrameAnimationTarget.TRANSLATION, data: wd.Vector3.create(3,1,0)}
                                     ]
                                 )
                             }
@@ -161,7 +161,7 @@ describe("transform articulated animation", function () {
                             targets: wdCb.Collection.create(
                                 [
                                     { interpolationMethod: wd.EKeyFrameInterpolation.LINEAR,
-                                        target: wd.EArticulatedAnimationTarget.TRANSLATION,
+                                        target: wd.EKeyFrameAnimationTarget.TRANSLATION,
                                         data: getInitTransformData().translation}
                                 ]
                             )
@@ -171,7 +171,7 @@ describe("transform articulated animation", function () {
 
                             targets: wdCb.Collection.create(
                                 [
-                                    {interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,target:wd.EArticulatedAnimationTarget.TRANSLATION, data: wd.Vector3.create(3,1,0)}
+                                    {interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,target:wd.EKeyFrameAnimationTarget.TRANSLATION, data: wd.Vector3.create(3,1,0)}
                                 ]
                             )
                         }
@@ -200,10 +200,10 @@ describe("transform articulated animation", function () {
                                     [
                                         {
                                             interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,
-                                            target:wd.EArticulatedAnimationTarget.TRANSLATION,
+                                            target:wd.EKeyFrameAnimationTarget.TRANSLATION,
                                             data: wd.Vector3.create(3,1,0)
                                         },
-                                        {interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,target:wd.EArticulatedAnimationTarget.SCALE, data: wd.Vector3.create(1,2,4)}
+                                        {interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,target:wd.EKeyFrameAnimationTarget.SCALE, data: wd.Vector3.create(1,2,4)}
                                     ]
                                 )
                             }
@@ -230,7 +230,7 @@ describe("transform articulated animation", function () {
                                         [
                                             {
                                                 interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,
-                                                target:wd.EArticulatedAnimationTarget.TRANSLATION,
+                                                target:wd.EKeyFrameAnimationTarget.TRANSLATION,
                                                 data: wd.Vector3.create(2,1,0)
                                             }
                                         ]
@@ -243,7 +243,7 @@ describe("transform articulated animation", function () {
                                         [
                                             {
                                                 interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,
-                                                target:wd.EArticulatedAnimationTarget.TRANSLATION,
+                                                target:wd.EKeyFrameAnimationTarget.TRANSLATION,
                                                 data: wd.Vector3.create(3,1,0)
                                             }
                                         ]
@@ -256,7 +256,7 @@ describe("transform articulated animation", function () {
                                         [
                                             {
                                                 interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,
-                                                target:wd.EArticulatedAnimationTarget.TRANSLATION,
+                                                target:wd.EKeyFrameAnimationTarget.TRANSLATION,
                                                 data: wd.Vector3.create(4,1,0)
                                             }
                                         ]
@@ -302,10 +302,10 @@ describe("transform articulated animation", function () {
                                 targets: wdCb.Collection.create(
                                     [
                                         { interpolationMethod: wd.EKeyFrameInterpolation.LINEAR,
-                                            target: wd.EArticulatedAnimationTarget.TRANSLATION,
+                                            target: wd.EKeyFrameAnimationTarget.TRANSLATION,
                                             data: getInitTransformData().translation},
-                                        {interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,target:wd.EArticulatedAnimationTarget.ROTATION, data: getInitTransformData().rotation},
-                                        {interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,target:wd.EArticulatedAnimationTarget.SCALE, data: getInitTransformData().scale}
+                                        {interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,target:wd.EKeyFrameAnimationTarget.ROTATION, data: getInitTransformData().rotation},
+                                        {interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,target:wd.EKeyFrameAnimationTarget.SCALE, data: getInitTransformData().scale}
                                     ]
                                 )
                             },
@@ -314,9 +314,9 @@ describe("transform articulated animation", function () {
 
                                 targets: wdCb.Collection.create(
                                     [
-                                        {interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,target:wd.EArticulatedAnimationTarget.TRANSLATION, data: wd.Vector3.create(2,1,0)},
-                                        {interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,target:wd.EArticulatedAnimationTarget.ROTATION, data: wd.Quaternion.create().setFromEulerAngles(wd.Vector3.create(10,20,30))},
-                                        {interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,target:wd.EArticulatedAnimationTarget.SCALE, data: wd.Vector3.create(1,2,3)}
+                                        {interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,target:wd.EKeyFrameAnimationTarget.TRANSLATION, data: wd.Vector3.create(2,1,0)},
+                                        {interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,target:wd.EKeyFrameAnimationTarget.ROTATION, data: wd.Quaternion.create().setFromEulerAngles(wd.Vector3.create(10,20,30))},
+                                        {interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,target:wd.EKeyFrameAnimationTarget.SCALE, data: wd.Vector3.create(1,2,3)}
                                     ]
                                 )
                             },
@@ -326,9 +326,9 @@ describe("transform articulated animation", function () {
 
                                 targets: wdCb.Collection.create(
                                     [
-                                        {interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,target:wd.EArticulatedAnimationTarget.TRANSLATION, data: wd.Vector3.create(3,1,0)},
-                                        {interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,target:wd.EArticulatedAnimationTarget.ROTATION, data: wd.Quaternion.create().setFromEulerAngles(wd.Vector3.create(10,20,40))},
-                                        {interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,target:wd.EArticulatedAnimationTarget.SCALE, data: wd.Vector3.create(1,2,4)}
+                                        {interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,target:wd.EKeyFrameAnimationTarget.TRANSLATION, data: wd.Vector3.create(3,1,0)},
+                                        {interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,target:wd.EKeyFrameAnimationTarget.ROTATION, data: wd.Quaternion.create().setFromEulerAngles(wd.Vector3.create(10,20,40))},
+                                        {interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,target:wd.EKeyFrameAnimationTarget.SCALE, data: wd.Vector3.create(1,2,4)}
                                     ]
                                 )
 
@@ -458,156 +458,6 @@ describe("transform articulated animation", function () {
                         judgeScale([1,1,1]);
                         judgeRotation([0,0,0]);
                     });
-                });
-            });
-        });
-
-        describe("test animation control", function(){
-            var firstKeyTime,secondKeyTime;
-
-            beforeEach(function(){
-                firstKeyTime = 10;
-                secondKeyTime = 15;
-
-                model = wd.GameObject.create();
-
-                anim = wd.TransformArticulatedAnimation.create();
-
-                model.addComponent(anim);
-
-
-                setCurrentTime(0);
-
-
-
-
-
-
-
-
-
-                anim.data = wdCb.Hash.create({
-                    "play": wdCb.Collection.create([
-                        {
-                            time:0,
-
-
-                            targets: wdCb.Collection.create(
-                                [
-                                    {interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,target:wd.EArticulatedAnimationTarget.TRANSLATION, data: getInitTransformData().translation}
-                                ]
-                            )
-                        },
-                        {
-                            time:firstKeyTime,
-
-
-                            targets: wdCb.Collection.create(
-                                [
-                                    {interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,target:wd.EArticulatedAnimationTarget.TRANSLATION, data: wd.Vector3.create(2,1,0)}
-                                ]
-                            )
-                        },
-                        {
-                            time:secondKeyTime,
-
-                            targets: wdCb.Collection.create(
-                                [
-                                    {interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,target:wd.EArticulatedAnimationTarget.TRANSLATION, data: wd.Vector3.create(3,1,0)}
-                                ]
-                            )
-                        }
-                    ])
-                });
-                model.init();
-            });
-
-            it("play,stop", function(){
-                anim.play("play");
-
-                wd.AnimationEngine.getInstance().update(1);
-
-                judgePos([0.2, 0.1, 0]);
-
-                anim.stop();
-
-
-
-
-
-                wd.AnimationEngine.getInstance().update(2);
-
-                judgePos([0.2, 0.1, 0]);
-
-                setCurrentTime(2);
-
-                anim.play("play");
-
-
-
-
-
-
-                wd.AnimationEngine.getInstance().update(4);
-
-                judgePos(
-                    wd.Vector3.create().lerp(
-                        wd.Vector3.create(0,0,0),
-                        wd.Vector3.create(2,1,0),
-                        (4 - 2) / 10
-                    ).toArray()
-                );
-            });
-
-            describe("pause,resume", function(){
-                beforeEach(function(){
-                    anim.play("play");
-
-                    wd.AnimationEngine.getInstance().update(1);
-
-                    judgePos([0.2, 0.1, 0]);
-
-                    setCurrentTime(1);
-
-                    anim.pause();
-
-
-
-
-                    wd.AnimationEngine.getInstance().update(2);
-
-                    judgePos([0.2, 0.1, 0]);
-
-                    setCurrentTime(2);
-
-                    anim.resume();
-                });
-
-                it("test in first key", function () {
-                    wd.AnimationEngine.getInstance().update(4);
-
-                    judgePos(
-                        wd.Vector3.create().lerp(
-                            wd.Vector3.create(0,0,0),
-                            wd.Vector3.create(2,1,0),
-                            (4 - (2 - 1)) / 10
-                        ).toArray()
-                    );
-                });
-                it("test switch to second key", function () {
-                    wd.AnimationEngine.getInstance().update(firstKeyTime + 2);
-
-                    judgePos(
-                        [2.2, 1, 0]
-                    );
-                });
-                it("test finish all keys", function () {
-                    wd.AnimationEngine.getInstance().update(firstKeyTime + 2);
-                    wd.AnimationEngine.getInstance().update(secondKeyTime + 1);
-
-                    judgePos(
-                        [3, 1, 0]
-                    );
                 });
             });
         });

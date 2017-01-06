@@ -11,7 +11,7 @@ module wd {
         @cloneAttributeAsBasicType()
         private _text:string = null;
         get text(){
-            var fontObject = null;
+            var fontObject:UIObject = null;
 
             if(this.entityObject === null){
                 return this._text;
@@ -20,7 +20,7 @@ module wd {
             fontObject = this.getObject(EButtonObjectName.TEXT);
 
             if(fontObject){
-                return fontObject.getComponent(PlainFont).text;
+                return fontObject.getComponent<PlainFont>(PlainFont).text;
             }
 
             return null;
@@ -52,10 +52,10 @@ module wd {
             return this._stateMachine.currentState;
         }
 
-        private _mousedownSubscription:wdFrp.IDisposable = null;
-        private _mouseupSubscription:wdFrp.IDisposable = null;
-        private _mouseoverSubscription:wdFrp.IDisposable = null;
-        private _mouseoutSubscription:wdFrp.IDisposable = null;
+        private _pointdownSubscription:wdFrp.IDisposable = null;
+        private _pointupSubscription:wdFrp.IDisposable = null;
+        private _pointoverSubscription:wdFrp.IDisposable = null;
+        private _pointoutSubscription:wdFrp.IDisposable = null;
         @cloneAttributeAsCloneable()
         private _stateMachine:UIStateMachine = UIStateMachine.create(this);
 
@@ -79,10 +79,10 @@ module wd {
         public dispose(){
             super.dispose();
 
-            this._mousedownSubscription.dispose();
-            this._mouseupSubscription.dispose();
-            this._mouseoverSubscription.dispose();
-            this._mouseoutSubscription.dispose();
+            this._pointdownSubscription.dispose();
+            this._pointupSubscription.dispose();
+            this._pointoverSubscription.dispose();
+            this._pointoutSubscription.dispose();
         }
 
         public getObject(objectName:EButtonObjectName):UIObject{
@@ -195,7 +195,7 @@ module wd {
         private _bindEvent(){
             var self = this;
 
-            this._mousedownSubscription = EventManager.fromEvent(this.entityObject, <any>EEngineEvent.MOUSE_DOWN)
+            this._pointdownSubscription = EventManager.fromEvent(this.entityObject, EEngineEvent.POINT_DOWN)
                 .filter((e:CustomEvent) => {
                     return !self.isDisabled;
                 })
@@ -203,7 +203,7 @@ module wd {
                     self._stateMachine.changeState(EUIState.PRESSED);
                 });
 
-            this._mouseupSubscription = EventManager.fromEvent(this.entityObject, <any>EEngineEvent.MOUSE_UP)
+            this._pointupSubscription = EventManager.fromEvent(this.entityObject, EEngineEvent.POINT_UP)
                 .filter((e:CustomEvent) => {
                     return !self.isDisabled;
                 })
@@ -211,7 +211,7 @@ module wd {
                     self._stateMachine.backState();
                 });
 
-            this._mouseoverSubscription = EventManager.fromEvent(this.entityObject, <any>EEngineEvent.MOUSE_OVER)
+            this._pointoverSubscription = EventManager.fromEvent(this.entityObject, EEngineEvent.POINT_OVER)
                 .filter((e:CustomEvent) => {
                     return !self.isDisabled;
                 })
@@ -219,7 +219,7 @@ module wd {
                     self._stateMachine.changeState(EUIState.HIGHLIGHT);
                 });
 
-            this._mouseoutSubscription = EventManager.fromEvent(this.entityObject, <any>EEngineEvent.MOUSE_OUT)
+            this._pointoutSubscription = EventManager.fromEvent(this.entityObject, EEngineEvent.POINT_OUT)
                 .filter((e:CustomEvent) => {
                     return !self.isDisabled;
                 })

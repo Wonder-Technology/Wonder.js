@@ -6,6 +6,10 @@ node_modules/
 mine/
 src/**/*.js.map
 src/**/*.js
+extension/**/*.js
 test/coverage
 **/*forRunTest*
 tool/**/dist/
+tool/**/source/
+tool/**/dest/
+*.pyc

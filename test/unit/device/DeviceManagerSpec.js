@@ -234,4 +234,22 @@ describe("deviceManager", function() {
             expect(device.getPixelRatio()).toEqual(2.1);
         });
     });
+
+    describe("createGL", function(){
+        beforeEach(function(){
+        });
+
+        it("if not get gl, info not support webgl", function(){
+            sandbox.stub(wd.ViewWebGL, "create").returns({
+                getContext: sandbox.stub().returns(null)
+            });
+
+            device.createGL(null, null, false);
+
+            expect($("p.not-support-webgl").text()).toEqual("Your device doesn't support WebGL");
+
+
+            $("p.not-support-webgl").remove();
+        });
+    });
 });

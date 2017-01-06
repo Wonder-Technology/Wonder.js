@@ -21,13 +21,14 @@ module wd{
                 let url:string = args[0],
                     id:string = url;
 
-                return this._createLoadSingleAssetStream(url, id);
+                return this._createLoadSingleAssetStream(url, id, self._getConfig(null));
             }
             else{
-                let assetArr = args[0];
+                let self = this,
+                    assetArr = args[0];
 
-                return wdFrp.fromArray(assetArr).concatMap((asset) => {
-                    return self._createLoadMultiAssetStream(asset.type || EAssetType.UNKNOW, asset.url, asset.id);
+                return wdFrp.fromArray(assetArr).concatMap((asset:AssetData) => {
+                    return self._createLoadMultiAssetStream(asset.type || EAssetType.UNKNOW, asset.url, asset.id, self._getConfig(asset.config));
                 });
             }
         }
@@ -55,13 +56,14 @@ module wd{
             this._assetTable.addChild(id, loader);
         }
 
-        private _createLoadMultiAssetStream(type:EAssetType, url:string, id:string);
-        private _createLoadMultiAssetStream(type:EAssetType, url:Array<string>, id:string);
+        private _createLoadMultiAssetStream(type:EAssetType, url:string, id:string, config:AssetConfigData|null);
+        private _createLoadMultiAssetStream(type:EAssetType, url:Array<string>, id:string, config:AssetConfigData);
 
         private _createLoadMultiAssetStream(...args){
             var type = args[0],
                 url = args[1],
                 id = args[2],
+                config:AssetData = args[3],
                 loader = this._getLoader(type, url),
                 stream = null,
                 self = this;
@@ -70,7 +72,7 @@ module wd{
                 self.assetCount ++;
             }
 
-            return loader.load(url, id)
+            return loader.load(url, id, config)
                 .map(() => {
                     self.currentLoadedCount++;
 
@@ -81,10 +83,10 @@ module wd{
                 });
         }
 
-        private _createLoadSingleAssetStream(url, id){
+        private _createLoadSingleAssetStream(url:string, id:string, config:AssetConfigData){
             var loader = this._getLoader(EAssetType.UNKNOW, url);
 
-            return loader.load(url, id);
+            return loader.load(url, id, config);
         }
 
         private _getLoader(type:EAssetType, url:string);
@@ -103,11 +105,28 @@ module wd{
 
             return LoaderFactory.create(type, extname.toLowerCase());
         }
+
+        private _getConfig(config:AssetConfigData|null){
+            var defaultConfig:AssetConfigData = {
+                isCrossOrigin:false
+            };
+
+            if(config === null){
+                return defaultConfig;
+            }
+
+            return wdCb.ExtendUtils.extend(defaultConfig, config);
+        }
     }
 
     export type AssetData = {
-        type?:EAssetType,
-        url:Array<string>,
-        id:string
+        id:string;
+        url:Array<string>;
+        type?:EAssetType;
+        config?:AssetConfigData;
     };
+
+    export type AssetConfigData = {
+        isCrossOrigin:boolean;
+    }
 }

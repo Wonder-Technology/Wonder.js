@@ -8,7 +8,6 @@ module wd {
         get vertices() {
             return this._vertices;
         }
-
         set vertices(vertices:Array<number>) {
             this._vertices = vertices;
             this.tangentDirty = true;
@@ -152,7 +151,6 @@ module wd {
         get faces() {
             return this._faces;
         }
-
         set faces(faces:Array<Face3>) {
             this._faces = faces;
 
@@ -166,7 +164,6 @@ module wd {
         get texCoords() {
             return this._texCoords;
         }
-
         set texCoords(texCoords:Array<number>) {
             this._texCoords = texCoords;
             this.tangentDirty = true;
@@ -187,9 +184,9 @@ module wd {
             this.colorDirty = false;
         })
         get colors() {
-            if(this._needGetColorsFromMaterial()){
-                return this._getColorsFromMaterial(this._vertices);
-            }
+            // if(this._needGetColorsFromMaterial()){
+            //     return this._getColorsFromMaterial(this._vertices);
+            // }
 
             return this._colors;
         }
@@ -230,6 +227,7 @@ module wd {
         public init(){
             var self = this;
 
+            //todo remove?
             this._materialColorChangeSubscription =
                 wdFrp.fromArray([
                         EventManager.fromEvent(this.geometry.entityObject, <any>EEngineEvent.MATERIAL_COLOR_CHANGE),
@@ -305,6 +303,10 @@ module wd {
             return true;
         }
 
+        public hasColors(){
+            return GeometryUtils.hasData(this._colors);
+        }
+
         @virtual
         protected onChangeFace(){
             this.tangentDirty = true;
@@ -349,23 +351,23 @@ module wd {
             return normals;
         }
 
-        private _getColorsFromMaterial(vertices:Array<number>) {
-            var arr = [],
-                i = 0,
-                color = this.geometry.material.color,
-                r = color.r,
-                g = color.g,
-                b = color.b,
-                len = null;
-
-            len = vertices.length / 3;
-
-            for (i = 0; i < len; i++) {
-                arr.push(r, g, b);
-            }
-
-            return arr;
-        }
+        // private _getColorsFromMaterial(vertices:Array<number>) {
+        //     var arr = [],
+        //         i = 0,
+        //         color = this.geometry.material.color,
+        //         r = color.r,
+        //         g = color.g,
+        //         b = color.b,
+        //         len = null;
+        //
+        //     len = vertices.length / 3;
+        //
+        //     for (i = 0; i < len; i++) {
+        //         arr.push(r, g, b);
+        //     }
+        //
+        //     return arr;
+        // }
 
         private _fillEmptyData(data:Array<number>){
             for(let i = 0,len = data.length; i < len; i++){

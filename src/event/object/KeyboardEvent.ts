@@ -120,7 +120,7 @@ module wd {
             return obj;
         }
 
-        protected p_type:EEventType = EEventType.KEYBOARD;
+        public event:IKeyboardEventData;
 
         get ctrlKey(){
             return this.event.ctrlKey;
@@ -160,12 +160,14 @@ module wd {
             return key;
         }
 
+        public readonly type:EEventType = EEventType.KEYBOARD;
+
         public keyState:any = null;
 
         public clone():KeyboardEvent{
-            var eventObj = KeyboardEvent.create(this.event, this.name);
+            var eventObj = KeyboardEvent.create(this.event, <EEventName>this.name);
 
-            return <KeyboardEvent>this.copyMember(eventObj, this, ["target", "currentTarget", "isStopPropagation", "phase", "altKey", "shiftKey", "ctrlKey", "metaKey", "keyCode", "key"]);
+            return <KeyboardEvent>this.copyMember(eventObj, this, ["target", "currentTarget", "isStopPropagation", "phase"]);
         }
     }
 }

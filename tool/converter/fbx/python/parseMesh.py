@@ -8,7 +8,7 @@ def enum(**enums):
 
 LayerKey = enum(TEXCOORD=1, NORMAL=2, COLOR=3)
 
-def parseMesh(mesh, meshData):
+def parseMesh(mesh, meshData, skinSkeletonParser):
     vertices, verticeIndices = getVerticeData(mesh)
 
     texCoords, texCoordIndices = getTexCoordData(mesh)
@@ -17,6 +17,23 @@ def parseMesh(mesh, meshData):
 
     colors, colorIndices = getColorData(mesh)
 
+    joints = None
+    weights = None
+
+    if skinSkeletonParser.hasSkin:
+        joints, weights = skinSkeletonParser.getSkinAttributeData(mesh)
+
+    attributeData = {
+        "POSITION": vertices,
+        "NORMAL": normals,
+        "COLOR": colors,
+        "TEXCOORD": texCoords
+    }
+
+    if joints != None:
+        attributeData["JOINT"] = joints
+        attributeData["WEIGHT"] = weights
+
 
     # TODO support parse tangent, binormal data
 
@@ -24,12 +41,7 @@ def parseMesh(mesh, meshData):
 
     meshData["primitives"] = [
         {
-            "attributes": {
-                "POSITION": vertices,
-                "NORMAL": normals,
-                "COLOR": colors,
-                "TEXCOORD": texCoords
-            },
+            "attributes": attributeData,
             "verticeIndices": verticeIndices,
             "normalIndices":normalIndices,
             "texCoordIndices":texCoordIndices,
@@ -105,36 +117,43 @@ def getTexCoordData(mesh):
     value = None
     index = None
 
+    elementCount = mesh.GetElementUVCount()
+
+    if elementCount == 0:
+        return [], []
+    elif elementCount > 1:
+        print ("uv element count > 1, only use the first element!")
+
     for p in range(poly_count):
         poly_size = mesh.GetPolygonSize(p)
 
         for v in range(poly_size):
             control_point_index = mesh.GetPolygonVertex(p, v)
-            for l in range(mesh.GetElementUVCount()):
-                texCoordData = mesh.GetElementUV(l)
 
-                mappingMode = texCoordData.GetMappingMode()
-                referenceMode = texCoordData.GetReferenceMode()
+            texCoordData = mesh.GetElementUV(0)
 
-                if mappingMode == FbxLayerElement.eByControlPoint:
-                    if referenceMode == FbxLayerElement.eDirect:
-                        index = control_point_index
-                        value = texCoordData.GetDirectArray().GetAt(index)
-                    elif referenceMode == FbxLayerElement.eIndexToDirect:
-                        index = texCoordData.GetIndexArray().GetAt(control_point_index)
-                        value = texCoordData.GetDirectArray().GetAt(index)
-                elif mappingMode == FbxLayerElement.eByPolygonVertex:
-                    index = mesh.GetTextureUVIndex(p, v)
-                    if referenceMode == FbxLayerElement.eDirect or \
-                                    referenceMode == FbxLayerElement.eIndexToDirect:
-                        value = texCoordData.GetDirectArray().GetAt(index)
-                else:
-                    print("texCoords:unsupported mapping mode")
-                    continue
+            mappingMode = texCoordData.GetMappingMode()
+            referenceMode = texCoordData.GetReferenceMode()
 
-                indices.append(index)
+            if mappingMode == FbxLayerElement.eByControlPoint:
+                if referenceMode == FbxLayerElement.eDirect:
+                    index = control_point_index
+                    value = texCoordData.GetDirectArray().GetAt(index)
+                elif referenceMode == FbxLayerElement.eIndexToDirect:
+                    index = texCoordData.GetIndexArray().GetAt(control_point_index)
+                    value = texCoordData.GetDirectArray().GetAt(index)
+            elif mappingMode == FbxLayerElement.eByPolygonVertex:
+                index = mesh.GetTextureUVIndex(p, v)
+                if referenceMode == FbxLayerElement.eDirect or \
+                                referenceMode == FbxLayerElement.eIndexToDirect:
+                    value = texCoordData.GetDirectArray().GetAt(index)
+            else:
+                print("texCoords:unsupported mapping mode")
+                continue
 
-                dict[index] = value
+            indices.append(index)
+
+            dict[index] = value
 
     values = getValuesFromDict(dict, LayerKey.TEXCOORD)
 
@@ -154,30 +173,36 @@ def getNormalData(mesh):
 
     vertexId = 0
 
+    elementCount = mesh.GetElementNormalCount()
+
+    if elementCount == 0:
+        return [], []
+    elif elementCount > 1:
+        print ("normal element count > 1, only use the first element!")
+
     for p in range(poly_count):
         poly_size = mesh.GetPolygonSize(p)
 
         for v in range(poly_size):
-            for l in range(mesh.GetElementNormalCount()):
-                data = mesh.GetElementNormal(l)
+            data = mesh.GetElementNormal(0)
 
-                mappingMode = data.GetMappingMode()
-                referenceMode = data.GetReferenceMode()
+            mappingMode = data.GetMappingMode()
+            referenceMode = data.GetReferenceMode()
 
-                if mappingMode == FbxLayerElement.eByPolygonVertex:
-                    if referenceMode == FbxLayerElement.eDirect:
-                        index = vertexId
-                        value = data.GetDirectArray().GetAt(index)
-                    if referenceMode == FbxLayerElement.eIndexToDirect:
-                        index = data.GetIndexArray().GetAt(vertexId)
-                        value = data.GetDirectArray().GetAt(index)
-                else:
-                    print("normals: unsupported mapping mode")
-                    continue
+            if mappingMode == FbxLayerElement.eByPolygonVertex:
+                if referenceMode == FbxLayerElement.eDirect:
+                    index = vertexId
+                    value = data.GetDirectArray().GetAt(index)
+                if referenceMode == FbxLayerElement.eIndexToDirect:
+                    index = data.GetIndexArray().GetAt(vertexId)
+                    value = data.GetDirectArray().GetAt(index)
+            else:
+                print("normals: unsupported mapping mode")
+                continue
 
-                indices.append(index)
+            indices.append(index)
 
-                dict[index] = value
+            dict[index] = value
 
             vertexId += 1
 
@@ -198,38 +223,44 @@ def getColorData(mesh):
 
     vertexId = 0
 
+    elementCount = mesh.GetElementVertexColorCount()
+
+    if elementCount == 0:
+        return [], []
+    elif elementCount > 1:
+        print ("color element count > 1, only use the first element!")
+
     for p in range(poly_count):
         poly_size = mesh.GetPolygonSize(p)
 
         for v in range(poly_size):
             control_point_index = mesh.GetPolygonVertex(p, v)
-            for l in range(mesh.GetElementVertexColorCount()):
-                data = mesh.GetElementVertexColor(l)
+            data = mesh.GetElementVertexColor(0)
 
-                mappingMode = data.GetMappingMode()
-                referenceMode = data.GetReferenceMode()
+            mappingMode = data.GetMappingMode()
+            referenceMode = data.GetReferenceMode()
 
-                if mappingMode == FbxLayerElement.eByControlPoint:
-                    if referenceMode == FbxLayerElement.eDirect:
-                        index = control_point_index
-                        value = data.GetDirectArray().GetAt(index)
-                    if referenceMode == FbxLayerElement.eIndexToDirect:
-                        index = data.GetIndexArray().GetAt(control_point_index)
-                        value = data.GetDirectArray().GetAt(index)
-                elif mappingMode == FbxLayerElement.eByPolygonVertex:
-                    if referenceMode == FbxLayerElement.eDirect:
-                        index = vertexId
-                        value = data.GetDirectArray().GetAt(index)
-                    if referenceMode == FbxLayerElement.eIndexToDirect:
-                        index = data.GetIndexArray().GetAt(vertexId)
-                        value = data.GetDirectArray().GetAt(index)
-                else:
-                    print("colors:unsupported mapping mode")
-                    continue
+            if mappingMode == FbxLayerElement.eByControlPoint:
+                if referenceMode == FbxLayerElement.eDirect:
+                    index = control_point_index
+                    value = data.GetDirectArray().GetAt(index)
+                if referenceMode == FbxLayerElement.eIndexToDirect:
+                    index = data.GetIndexArray().GetAt(control_point_index)
+                    value = data.GetDirectArray().GetAt(index)
+            elif mappingMode == FbxLayerElement.eByPolygonVertex:
+                if referenceMode == FbxLayerElement.eDirect:
+                    index = vertexId
+                    value = data.GetDirectArray().GetAt(index)
+                if referenceMode == FbxLayerElement.eIndexToDirect:
+                    index = data.GetIndexArray().GetAt(vertexId)
+                    value = data.GetDirectArray().GetAt(index)
+            else:
+                print("colors:unsupported mapping mode")
+                continue
 
-                indices.append(index)
+            indices.append(index)
 
-                dict[index] = value
+            dict[index] = value
 
             vertexId += 1
 

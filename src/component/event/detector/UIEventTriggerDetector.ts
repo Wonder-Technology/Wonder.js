@@ -7,7 +7,7 @@ module wd {
             return obj;
         }
 
-        public isTrigger(e:MouseEvent):boolean {
+        public isTrigger(e:PointEvent):boolean {
             var transform:RectTransform = <RectTransform>this.entityObject.transform,
                 width = transform.width,
                 height = transform.height,

@@ -20,23 +20,22 @@ module wd {
         }
 
         @require(function(min:number, max:number){
-            assert(min < max, Log.info.FUNC_SHOULD("min", "< max"));
+            it("min should <= max", () => {
+                expect(min).lte(max);
+            });
         })
         public static generateMinToMax(min:number, max:number){
-            var max = max + 1;
-
-            return Math.random() * (max - min) + min;
+            return Math.random() * (max + 1 - min) + min;
         }
 
-        @require(function(min:number, max:number){
-            assert(min < max, Log.info.FUNC_SHOULD("min", "< max"));
-        })
         public static generateInteger(min:number, max:number) {
             return Math.floor(this.generateMinToMax(min, max));
         }
 
         @ensure(function(val){
-            assert(val >= 0);
+            it("result should >= 0", () => {
+                expect(val).gte(0);
+            });
         })
         public static mod(a:number, b:number) {
             var n = Math.floor(a / b);
@@ -51,10 +50,15 @@ module wd {
         }
 
         @require(function(a:number, b:number){
-            assert(a >= 0 && b >= 0, Log.info.FUNC_SHOULD("param", ">= 0"));
+            it("a,b should >= 0", () => {
+                expect(a).gte(0);
+                expect(b).gte(0);
+            });
         })
         @ensure(function(val){
-            assert(val >= 0);
+            it("result should >= 0", () => {
+                expect(val).gte(0);
+            });
         })
         public static maxFloorIntegralMultiple(a:number, b:number) {
             if(b == 0){

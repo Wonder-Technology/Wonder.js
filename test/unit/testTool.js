@@ -199,6 +199,8 @@ var testTool = (function () {
             wd.BufferTable.clearAll();
             wd.TextureCache.clearAll();
 
+            wd.DebugConfig.showDebugPanel = false;
+
 
             this.closeContractCheck();
         },

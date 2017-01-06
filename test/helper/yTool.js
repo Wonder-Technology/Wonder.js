@@ -261,14 +261,14 @@
             function encodeString(s) {
                 if (/["\\\x00-\x1f]/.test(s)) {
                     return '"' + s.replace(/([\x00-\x1f\\"])/g,
-                        function (a, b) {
-                            var c = m[b];
-                            if (c) {
-                                return c;
-                            }
-                            c = b.charCodeAt();
-                            return "\\u00" + Math.floor(c / 16).toString(16) + (c % 16).toString(16);
-                        }) + '"';
+                            function (a, b) {
+                                var c = m[b];
+                                if (c) {
+                                    return c;
+                                }
+                                c = b.charCodeAt();
+                                return "\\u00" + Math.floor(c / 16).toString(16) + (c % 16).toString(16);
+                            }) + '"';
                 }
                 return '"' + s + '"';
             };
@@ -683,14 +683,14 @@
                         _judgeAndShowLoadingImg(_timeCount, _timer, loading, whole, imgPath);
                     }, deferTime * 1000);
                 }).ajaxSuccess(function () {
-                        _timeCount++;    //计数加1，用来判断是否加载成功
-                        $(this).hide();
-                        $(whole).show();
-                    }).ajaxError(function (e, xhr, settings, exception) {
-                        _timeCount += 2;    //计数加2，用来判断是否加载失败
-                        $(this).html("加载失败：" + exception).show();
-                        $(whole).hide();
-                    });
+                    _timeCount++;    //计数加1，用来判断是否加载成功
+                    $(this).hide();
+                    $(whole).show();
+                }).ajaxError(function (e, xhr, settings, exception) {
+                    _timeCount += 2;    //计数加2，用来判断是否加载失败
+                    $(this).html("加载失败：" + exception).show();
+                    $(whole).hide();
+                });
             },
             /**
              * 设置单次ajax的事件，显示加载中、加载失败
@@ -1017,7 +1017,7 @@
         return {
             /*在当前鼠标位置的右边显示层*/
             showDivInRightPosition: function (e, id) {
-                var position = Tool.posiiton.mousePosition(e);
+                var position = Tool.posiiton.getMousePosition(e);
 
                 var top = position.y;
                 var left = position.x;
@@ -1557,7 +1557,7 @@
              }
 
              */
-            triggerEvent: function (oTarget, type) {
+            triggerEvent: function (oTarget, type, eventData) {
                 var evObj = null,
                     dom = null;
 
@@ -1617,6 +1617,11 @@
                     //此处使用通用事件
                     evObj = document.createEvent('Events');
                     evObj.initEvent(type, false, true);
+
+                    if(!!eventData){
+                        Tool.extend.extend(evObj, eventData);
+                    }
+
                     if (Tool.judge.isjQuery(oTarget)) {
                         oTarget.each(function () {
                             dom = this;
@@ -1652,39 +1657,70 @@
              如收件人：yang11,yang11,111111
              此处yang11重复！
              */
-            repeat: function (array) {
-                var new_array = array,
+            hasRepeatItem: function (array, isEqual) {
+                var new_array = this.extendDeep(array),
+                    isEqual = isEqual || function (a, b) {
+                            return a === b;
+                        },
                     first = null;
-                /*
-                 如果为第一次调用（即不是递归调用的），
-                 就赋值原数组array，并使new_array指向新数组。
-                 这样可防止修改原数组array（如删除元素）
-                 */
-                if (!arguments[1]) {
-                    new_array = this.clone(array);
-                }
 
-                if (new_array.length == 0) {
-                    return false;
-                }
-
-                first = new_array[0];
-
-                /*判断数组是否有重复的第一个元素*/
-                for (var i = 1; i < new_array.length; i++) {
-                    if (first == new_array[i]) {
-                        return true;    //退出for循环，返回函数返回值true
+                function _judge(array){
+                    if (array.length == 0) {
+                        return false;
                     }
-                    else {
-                        continue;
+
+                    first = array[0];
+
+                    /*判断数组是否有重复的第一个元素*/
+                    for (var i = 1; i < array.length; i++) {
+                        if (isEqual(first, array[i])) {
+                            return true;    //退出for循环，返回函数返回值true
+                        }
+                        else {
+                            continue;
+                        }
                     }
+                    array.shift();  //删除数组第一个元素
+
+                    return arguments.callee(array);
                 }
-                new_array.shift();  //删除数组第一个元素
-                /*
-                 递归，判断数组其他元素是否重复
-                 注意：此处要用return！
-                 */
-                return this.repeat(new_array, "next");
+
+                return _judge(new_array);
+            },    /*
+             判断数组中是否有重复项，有即返回true，否则返回false
+             发送给多人时，判断是否重复发给同一人
+             如收件人：yang11,yang11,111111
+             此处yang11重复！
+             */
+            hasRepeatItem: function (array, isEqual) {
+                var new_array = Tool.extend.extendDeep(array),
+                    isEqual = isEqual || function (a, b) {
+                            return a === b;
+                        },
+                    first = null;
+
+                function _judge(array){
+                    if (array.length == 0) {
+                        return false;
+                    }
+
+                    first = array[0];
+
+                    /*判断数组是否有重复的第一个元素*/
+                    for (var i = 1; i < array.length; i++) {
+                        if (isEqual(first, array[i])) {
+                            return true;
+                        }
+                        else {
+                            continue;
+                        }
+                    }
+                    array.shift();
+
+                    return arguments.callee(array);
+                }
+
+                return _judge(new_array);
             },
             /*返回一个新的数组，元素与array相同（地址不同）*/
             clone: function (array) {
@@ -1718,14 +1754,14 @@
             },
             getNoRepeatArr: function (arr, isEqual) {
                 var isEqual = isEqual || function (a, b) {
-                        return a === b;
-                    },
+                            return a === b;
+                        },
                     resultArr = [];
 
                 arr.forEach(function (ele) {
                     if (resultArr.contain(function (val) {
-                        return isEqual(val, ele);
-                    })) {
+                            return isEqual(val, ele);
+                        })) {
                         return;
                     }
 
@@ -1743,8 +1779,8 @@
                     originEle = null,
                     targetEle = null,
                     isEqual = isEqual || function (a, b) {
-                        return a === b;
-                    };
+                            return a === b;
+                        };
 
                 for (i = 0; i < len; i++) {
                     originEle = arr[i];
@@ -2283,7 +2319,7 @@
                 var tasks = steps.concat(),
                     time = time || [25, 25],
                     callback = callback || function () {
-                    };
+                        };
 
 
                 time = Tool.random.nToM(time[0], time[1]);
@@ -2342,7 +2378,7 @@
              //360下y坐标有问题！！
 
              */
-            mousePosition: function (ev) {
+            getMousePosition: function (ev) {
                 /*
                  这段代码不兼容360
 
@@ -2385,7 +2421,7 @@
                 return point;
 
             },
-            //获得obj到指定的被定为了的祖先元素parentObj的距离
+            //获得obj到指定的祖先元素parentObj的距离
             getToParentOffset: function (obj, parentObj) {
                 var left = 0, top = 0, position = null,
                     obj = $(obj),
@@ -2448,7 +2484,7 @@
          location.pathname： 返回URL的域名（域名IP）后的部分。
 
          例如 http://www.example.com/wordpress/返回/wordpress/，
-         又或则 http://127.0.0.1/depthCheck.html 返回/depthCheck.html，
+         又或则 http://127.0.0.1/index.html 返回/index.html，
          注意是带url的域名或域名IP
 
          在磁盘上随便建个Html文件进行location.pathname测试，如浏览器上的路径是： C:\Documents and Settings\Administrator\桌面\testjs.html， 这样，得到的结果是: /C:\Documents and Settings\Administrator\桌面\testjs.html
@@ -2611,3 +2647,4 @@
         Tool.extend.extend(global[YToolConfig.topNamespace], Top);
     }
 }());
+

@@ -5,10 +5,7 @@ module wd {
 
         private constructor(){super();}
 
-        public on(listener:{}|EventListener):void;
-
         public on(eventName:EEventName|string, handler:Function):void;
-        public on(dom:HTMLElement, listener:{}|EventListener):void;
 
         public on(eventName:EEventName|string, handler:Function, priority:number):void;
         public on(dom:HTMLElement, eventName:EEventName|string, handler:Function):void;
@@ -16,29 +13,12 @@ module wd {
         public on(dom:HTMLElement, eventName:EEventName|string, handler:Function, priority:number):void;
 
         public on(...args) {
-            if(args.length === 1){
-                let listener:EventListener = !(args[0] instanceof EventListener) ?  EventListener.create(args[0]): args[0];
-
-                listener.handlerDataList.forEach(function (handlerData:EventHandlerData) {
-                    EventHandlerFactory.createEventHandler(listener.eventType)
-                        .on(handlerData.eventName, handlerData.handler, listener.priority);
-                });
-            }
-            else if(args.length === 2 && JudgeUtils.isString(args[0])){
+            if(args.length === 2 && JudgeUtils.isString(args[0])){
                 let eventName = args[0],
                     handler = args[1];
 
                 EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName))
                     .on(eventName, handler);
-            }
-            else if(args.length === 2 && JudgeUtils.isDom(args[0])){
-                let dom = args[0],
-                    listener:EventListener = !(args[0] instanceof EventListener) ?  EventListener.create(args[0]): args[0];
-
-                listener.handlerDataList.forEach(function (handlerData:EventHandlerData) {
-                    EventHandlerFactory.createEventHandler(listener.eventType)
-                        .on(dom, handlerData.eventName, handlerData.handler, listener.priority);
-                });
             }
             else if(args.length === 3 && JudgeUtils.isString(args[0])){
                 let eventName = args[0],

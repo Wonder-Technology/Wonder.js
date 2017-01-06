@@ -6,12 +6,15 @@ from KeyFrameAnimationParser import *
 from CameraParser import *
 from LightParser import *
 from TransformParser import *
+from SkinSkeletonParser import *
 from fbx import *
 from globalDefine import *
 
 class Parser(object):
     def __init__(self, converter):
         self._converter = converter
+        self._fbxAllNodes = {}
+
 
     def parse(self, scene, fileUrl):
         output = {}
@@ -22,6 +25,7 @@ class Parser(object):
         self._cameraParser = CameraParser()
         self._lightParser = LightParser()
         self._transformParser = TransformParser()
+        self._skinSkeletonParser = SkinSkeletonParser()
 
         self._assetParser.parse(scene, output)
 
@@ -48,6 +52,8 @@ class Parser(object):
 
         output["samplers"] = {}
 
+        output["skins"] = {}
+
         sceneName = scene.GetName()
 
         if sceneName == "":
@@ -62,6 +68,8 @@ class Parser(object):
         }
 
         if node:
+            self._listNodes(node)
+
             self._keyFrameAnimationParser.parse(scene)
 
             for i in range(node.GetChildCount()):
@@ -86,17 +94,20 @@ class Parser(object):
         nodeAttribute = node.GetNodeAttribute()
 
         if nodeAttribute == None:
-            print ("not handle null node attribute")
-            pass
+            # if nodeId == "Object_86_monster":
+            #     print (node.EvaluateLocalTransform())
+            # print ("not handle null node attribute")
+            # pass
+            self._transformParser.parseCameraNode(nodeData, node)
         else:
             attributeType = nodeAttribute.GetAttributeType()
 
             if attributeType == FbxNodeAttribute.eNurbs or \
             attributeType == FbxNodeAttribute.eNurbsSurface or \
             attributeType == FbxNodeAttribute.ePatch:
+                self._transformParser.parseCameraNode(nodeData, node)
                 print ("not support attributeType:%s" % attributeType)
                 return
-
 
             if attributeType == FbxNodeAttribute.eMesh:
                 self._transformParser.parseBasicNode(nodeData, node)
@@ -106,10 +117,26 @@ class Parser(object):
                 data = self._handleNodeAttribute(output, node, nodeId, nodeData, "mesh", "meshes")
 
 
-                parseMesh(mesh, data)
+                self._skinSkeletonParser.checkHasSkin(mesh)
+
+                if self._skinSkeletonParser.hasSkin:
+                    self._skinSkeletonParser.createSkin(output)
+
+
+                parseMesh(mesh, data, self._skinSkeletonParser)
+
+
+                if self._skinSkeletonParser.hasSkin:
+                    self._skinSkeletonParser.parse(nodeData, self._fbxAllNodes)
+
+                self._skinSkeletonParser.reset()
 
                 self._materialParser.parse(mesh, data)
 
+            elif attributeType == FbxNodeAttribute.eSkeleton:
+                self._transformParser.parseBasicNode(nodeData, node)
+
+                self._skinSkeletonParser.setJointName(node, nodeData)
 
             elif attributeType == FbxNodeAttribute.eLight:
                 self._transformParser.parseBasicNode(nodeData, node)
@@ -124,6 +151,8 @@ class Parser(object):
 
                 self._cameraParser.parse(node, data)
 
+            else:
+                self._transformParser.parseCameraNode(nodeData, node)
 
         nodeData["children"] = []
 
@@ -148,3 +177,10 @@ class Parser(object):
         setName(attribute, data)
 
         return data
+
+    def _listNodes(self, node):
+        self._fbxAllNodes[getObjectId(node)] = node
+
+        for k in range(node.GetChildCount()):
+            self._listNodes(node.GetChild(k))
+

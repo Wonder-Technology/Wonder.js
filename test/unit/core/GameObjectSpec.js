@@ -455,4 +455,95 @@ describe("GameObject", function() {
             expect(gameObject.getComponent).not.toCalled();
         });
     });
+
+
+    describe("removeChild", function(){
+        var director;
+
+        beforeEach(function(){
+            sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+
+            director = wd.Director.getInstance();
+
+            director.scene.addChild(testTool.createCamera());
+        });
+
+        it("remove child", function(){
+            var child1 = GameObject.create();
+
+            gameObject.addChildren(child1);
+            gameObject.name = "gameObject";
+
+            director.scene.addChild(gameObject);
+
+            director._init();
+
+            gameObject.removeChild(child1);
+
+            expect(gameObject.getAllChildren().getCount()).toEqual(0);
+        });
+        it("remove its and its all children's components", function(){
+            var child1 = GameObject.create();
+            var child2 = GameObject.create();
+
+            var transform = wd.ThreeDTransform.create();
+            var skin = wd.SkinSkeletonAnimation.create();
+
+
+            child1.addComponent(transform);
+            child1.addComponent(skin);
+
+            var billboard = wd.Billboard.create();
+            var collider = new wd.Collider();
+            var lod = new wd.LOD();
+            var rigid = new wd.RigidBody();
+            var spacePartition = new wd.SpacePartition();
+            var threeDUI = new wd.ThreeDUI();
+            var twoDUI = new wd.TwoDUI();
+
+            var script = wd.Script.create();
+            sandbox.stub(wd.GlobalScriptUtils, "addScriptToEntityObject");
+
+
+            child2.addComponent(billboard);
+            child2.addComponent(script);
+
+
+            child1.addChildren(child2);
+
+            gameObject.addChildren(child1);
+            gameObject.name = "gameObject";
+
+            director.scene.addChild(gameObject);
+
+
+            var componentArr = [billboard, script, skin, lod, collider, rigid, spacePartition, threeDUI, twoDUI];
+
+            componentArr.forEach(function(component){
+                sandbox.stub(component, "init");
+
+                if(component.update){
+                    sandbox.stub(component, "update");
+                }
+            });
+
+
+
+            director._init();
+
+            gameObject.removeChild(child1);
+
+            expect(gameObject.getAllChildren().getCount()).toEqual(0);
+
+
+            director._loopBody(1);
+
+
+            componentArr.forEach(function(component){
+                if(component.update){
+                    expect(component.update).not.toCalled();
+                }
+            });
+        });
+    });
 });

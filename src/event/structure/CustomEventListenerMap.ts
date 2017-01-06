@@ -129,7 +129,7 @@ module wd{
                     eventName = args[1],
                     secondMap = null;
 
-                secondMap = this._targetRecordMap.getChild(this.buildFirstLevelKey(uid));
+                secondMap = <any>(this._targetRecordMap.getChild(this.buildFirstLevelKey(uid)));
 
                 if(!!secondMap){
                     secondMap.removeChild(this.buildSecondLevelKey(eventName));

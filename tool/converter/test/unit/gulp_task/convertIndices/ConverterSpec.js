@@ -19,20 +19,31 @@ describe("convertIndices->Converter", function(){
             return buildedJson.meshes.RootNode.primitives;
         }
 
-        function buildJson(positions, texCoords, normals, colors, verticeIndices, texCoordIndices, normalIndices, colorIndices, materialData) {
-            materialData = materialData || {material:"a", mode:4}
+        function buildJson(positions, texCoords, normals, colors, verticeIndices, texCoordIndices, normalIndices, colorIndices, materialData, otherData) {
+            var attributeData = {
+                                    "COLOR": colors,
+                                    "NORMAL": normals,
+                                    "POSITION": positions,
+                                    "TEXCOORD": texCoords
+                                },
+            materialData = materialData || {material:"a", mode:4};
+
+            if(!!otherData){
+                if(!!otherData.joints){
+                    attributeData["JOINT"] = otherData.joints;
+                }
+                if(!!otherData.weights){
+                    attributeData["WEIGHT"] = otherData.weights;
+                }
+            }
+
 
             return {
                 "meshes": {
                     "RootNode": {
                         "primitives": [
                             {
-                                "attributes": {
-                                    "COLOR": colors,
-                                    "NORMAL": normals,
-                                    "POSITION": positions,
-                                    "TEXCOORD": texCoords
-                                },
+                                "attributes": attributeData,
                                 "colorIndices": colorIndices,
                                 "normalIndices": normalIndices,
                                 "texCoordIndices": texCoordIndices,
@@ -78,6 +89,22 @@ describe("convertIndices->Converter", function(){
             )
         }
 
+        function getJoints(resultJson) {
+            var primitive = _getPrimitive(resultJson);
+
+            return testTool.getValues(
+                primitive.attributes.JOINT
+            )
+        }
+
+        function getWeights(resultJson) {
+            var primitive = _getPrimitive(resultJson);
+
+            return testTool.getValues(
+                primitive.attributes.WEIGHT
+            )
+        }
+
         function getIndices(resultJson) {
             var primitive = _getPrimitive(resultJson);
 
@@ -118,6 +145,72 @@ describe("convertIndices->Converter", function(){
         });
 
         describe("convert multi indices to single indices", function () {
+            it("require check: primitive->attribute->JOINT's length should === WEIGHT's length", function () {
+                expect(function(){
+                    var result = converter.convert(buildJson(
+                        [],
+                        [],
+                        [],
+                        [],
+
+
+
+                        [1,2,3],
+                        [],
+
+                        [],
+                        [],
+                        null,
+                        {
+                            joints:[
+                                0,0,0,0,
+                                1,2,1,3,
+                                1,0,0,0,
+                                0,1,0,2
+                            ],
+                            weights:[
+                                0.1,0.1,0.2,0.1,
+                                0.3,0.2,0.3,0.2,
+                                0.1,0.5,0.1,0.3,
+                                0.2,0.2,0.4,0.2,
+                                0.0,0.0,0.0,0.0
+                            ]
+                        }
+                    ));
+                }).toThrow("primitive->attribute->JOINT's length should === WEIGHT's length->expected 16 to equal 20");
+            });
+            it("ensure check: joint data should has weight data", function () {
+                expect(function(){
+                    var result = converter.convert(buildJson(
+                        [1, 2, 3,
+                            4, -1, -2,
+                            3, 2, 3,
+                            4, -1, -4],
+                        [1.0, 0.1,
+                            0.1, 0.2,
+                            0.2, 0.2,
+                            0.3, 0.5],
+                        [],
+                        [],
+
+
+
+                        [0, 1, 2, 1, 3, 2],
+                        [2, 0, 1, 2, 3, 1],
+                        [],
+                        [],
+                        null,
+                        {
+                            joints:[
+                                -1,1,-1,-1
+                            ],
+                            weights:[
+                                0.0,0.0,0.0,0.0
+                            ]
+                        }
+                    ));
+                }).toThrow("joint data should has weight data->expected false to be true");
+            });
             it("remain primitive->material,mode data", function () {
                 var result = converter.convert(buildJson(
                         [1, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -4],
@@ -149,24 +242,6 @@ describe("convertIndices->Converter", function(){
 
             describe("duplicate the vertex which has different attribute data", function () {
                 it("test one vertex has two different uvs", function() {
-                    // setObject({
-                    //     name: "a",
-                    //     vertices: ,
-                    //     morphTargets: [
-                    //         {
-                    //             name: "stand001",
-                    //             vertices: [1, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -4]
-                    //         },
-                    //         {
-                    //             name: "stand002",
-                    //             vertices: [3, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -4]
-                    //         }
-                    //     ],
-                    //     colors: [],
-                    //     uvs: ,
-                    //     verticeIndices: ,
-                    //     texCoordIndices:
-                    // })
                     var result = converter.convert(buildJson(
                         [1, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -4],
                         [1.0, 0.1, 0.1, 0.2, 0.2, 0.2, 0.3, 0.5],
@@ -184,6 +259,66 @@ describe("convertIndices->Converter", function(){
                     expect(getPositions(result)).toEqual(
                         [
                             1, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -4,
+                            4, -1, -2
+                        ]
+                    );
+
+                    expect(getTexCoords(result)).toEqual(
+                        [
+                            0.2, 0.2, 1, 0.1, 0.1, 0.2, 0.3, 0.5,
+                            0.2, 0.2
+                        ]
+                    );
+
+                    expect(getIndices(result)).toEqual(
+                        [
+                            0, 1, 2, 4, 3, 2
+                        ]
+                    );
+                });
+
+                it("test one vertex has two different uvs and joints,weights", function() {
+                    var result = converter.convert(buildJson(
+                        [1, 2, 3,
+                            4, -1, -2,
+                            3, 2, 3,
+                            4, -1, -4],
+                        [1.0, 0.1,
+                            0.1, 0.2,
+                            0.2, 0.2,
+                            0.3, 0.5],
+                        [],
+                        [],
+
+
+
+                        [0, 1, 2, 1, 3, 2],
+                        [2, 0, 1, 2, 3, 1],
+                        [],
+                        [],
+                        null,
+                        {
+                            joints:[
+                                0,0,0,0,
+                                1,2,1,3,
+                                1,0,0,0,
+                                0,1,0,2
+                            ],
+                            weights:[
+                                0.1,0.1,0.2,0.1,
+                                0.3,0.2,0.3,0.2,
+                                0.1,0.5,0.1,0.3,
+                                0.2,0.2,0.4,0.2
+                            ]
+                        }
+                    ));
+
+                    expect(getPositions(result)).toEqual(
+                        [
+                            1, 2, 3,
+                            4, -1, -2,
+                            3, 2, 3,
+                            4, -1, -4,
                             4, -1, -2
                         ]
                     );
@@ -206,6 +341,26 @@ describe("convertIndices->Converter", function(){
                         [
                             0.2, 0.2, 1, 0.1, 0.1, 0.2, 0.3, 0.5,
                             0.2, 0.2
+                        ]
+                    );
+
+                    expect(getJoints(result)).toEqual(
+                        [
+                            0, 0, 0, 0,
+                            1, 2, 1, 3,
+                            1, 0, 0, 0,
+                            0, 1, 0, 2,
+                            1, 2, 1, 3
+                        ]
+                    );
+
+                    expect(getWeights(result)).toEqual(
+                        [
+                            0.1, 0.1, 0.2, 0.1,
+                            0.3, 0.2, 0.3, 0.2,
+                            0.1, 0.5, 0.1, 0.3,
+                            0.2, 0.2, 0.4, 0.2,
+                            0.3, 0.2, 0.3, 0.2
                         ]
                     );
 

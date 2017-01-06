@@ -54,9 +54,7 @@ module wd {
             }
         }
 
-        public removeFromObject(entityObject:UIObject){
-            super.removeFromObject(entityObject);
-
+        public removeFromEngine(){
             TwoDUIEngine.getInstance().removeChild(this);
         }
 

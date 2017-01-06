@@ -1,3 +1,4 @@
+"use strict";
 var wdCb = require("wdcb");
 var path = require("path");
 module.exports = (function () {
@@ -10,4 +11,4 @@ module.exports = (function () {
         return wdCb.PathUtils.basename(filePath, wdCb.PathUtils.extname(filePath));
     };
     return ModelLoaderUtils;
-})();
+}());

@@ -6,8 +6,8 @@ module wd{
                 var count = 0;
 
                 Director.getInstance().scene.getChildren().forEach((child:EntityObject) => {
-                    if(child.hasComponent(SpacePartition)){
-                        count += child.getComponent<SpacePartition>(SpacePartition).getChildren().getCount();
+                    if(ClassUtils.hasComponent(child, "SpacePartition")){
+                        count += child.getComponent<any>(ClassUtils.getClass("SpacePartition")).getChildren().getCount();
                         return;
                     }
 
@@ -29,8 +29,10 @@ module wd{
         };
 
         private static _startLoopSubscription:wdFrp.IDisposable = null;
+        private static _panelBuilder:DebugPanelBuilder = null;
+        private static _updateCount:number = 0;
 
-        public static clear(){
+        public static resetData(){
             this.count.renderGameObjects = 0;
             this.count.drawCalls = 0;
         }
@@ -38,19 +40,53 @@ module wd{
         public static init(){
             var self = this;
 
+            this._panelBuilder = DebugPanelBuilder.create();
+
+            if(!DebugConfig.showDebugPanel) {
+                return;
+            }
+
+            this._panelBuilder.createDebugPanel();
+
+            this._panelBuilder.show();
+
             this._startLoopSubscription = EventManager.fromEvent(<any>EEngineEvent.STARTLOOP)
             .subscribe(() => {
-                if(DebugConfig.showDebugPanel){
-                    console.log(`totalGameObjects:${self.count.totalGameObjects}, renderGameObjects:${self.count.renderGameObjects}, drawCalls:${self.count.drawCalls}`);
-                    console.log(`fps:${self.during.fps}`);
+                self._updateDebugInfo();
 
-                    self.clear();
-                }
+                self.resetData();
             });
         }
 
         public static dispose(){
             this._startLoopSubscription.dispose();
+
+            this._panelBuilder.dispose();
         }
+
+        private static _updateDebugInfo(){
+            const UPDATE_RATE = 10;
+
+            if(this._updateCount === UPDATE_RATE){
+                this._updateCount = 0;
+            }
+            else{
+                if(this._updateCount === 0){
+                    this._panelBuilder.updateDebugInfo(this.count, this.during);
+                }
+
+                this._updateCount++;
+            }
+        }
+    }
+
+    export type DebugStatisticsCountData = {
+        totalGameObjects:number;
+        renderGameObjects:number;
+        drawCalls:number
+    }
+
+    export type DebugStatisticsDuringData = {
+        fps:number;
     }
 }

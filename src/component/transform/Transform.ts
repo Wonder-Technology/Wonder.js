@@ -58,6 +58,8 @@ module wd{
         public init(){
             var self = this;
 
+            this.clearCache();
+
             this._endLoopSubscription = EventManager.fromEvent(<any>EEngineEvent.ENDLOOP)
                 .subscribe(() => {
                     self._resetTransformFlag();

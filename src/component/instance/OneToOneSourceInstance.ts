@@ -113,7 +113,7 @@ module wd{
             var entityObject = this.entityObject;
 
             it("space partition not support instance", () => {
-                expect(entityObject.hasComponent(SpacePartition)).false;
+                expect(ClassUtils.hasComponent(entityObject, "SpacePartition")).false;
             });
             //todo more?
         })
@@ -184,7 +184,7 @@ module wd{
 
             source.forEachComponent((component:Component) => {
                 if(component instanceof OneToOneSourceInstance
-                    || (component instanceof GeometryLOD)){
+                || JudgeUtils.isClass(component, "GeometryLOD")){
                     return;
                 }
 

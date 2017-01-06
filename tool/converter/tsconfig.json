@@ -18,11 +18,14 @@
 		"../dts/node.d.ts",
 
 		"../ts/definition/typescript/decorator/contract.ts",
+		"../ts/definition/typescript/decorator/virtual.ts",
+
 		"../ts/Vector2.ts",
 		"../ts/Vector3.ts",
 		"../ts/Log.ts",
 		"../ts/ExtendUtils.ts",
 		"../ts/JudgeUtils.ts",
+		"../ts/FileUtils.ts",
 
 
 		"./dts/chalk.d.ts",
@@ -37,19 +40,23 @@
 		"./common/ModelLoaderUtils.ts",
 		"./common/PathUtils.ts",
 		"./common/DataUtils.ts",
+		"./common/Base64Utils.ts",
 
 
 		"./common/SingleModelConverter.ts",
 
-		"./md2/MD2ToWD.ts",
+		"./md2/MD2Towd.ts",
 		"./md2/MD2ObjectsConverter.ts",
 
 		"./obj/MaterialsConverter.ts",
 		"./obj/ObjectsConverter.ts",
-		"./obj/OBJToWD.ts",
-		"./fbx/FBXToWD.ts",
+		"./obj/OBJTowd.ts",
+		"./fbx/FBXTowd.ts",
 
-		"./gltf/GLTFToWD.ts",
+		"./gltf/GLTFTowd.ts",
+		"./gltf/GLTFAnimationUtils.ts",
+		"./gltf/GLTFLightUtils.ts",
+		"./gltf/GLTFMaterialUtils.ts",
 
 		"./Converter.ts",
 
@@ -59,6 +66,8 @@
 
 		"./gulp_task/filterPrimitiveData/Filter.ts",
 
+		"./gulp_task/removeAttributeData/Remover.ts",
+
 
 		"./gulp_task/compressToBinary/Utils.ts",
 		"./gulp_task/compressToBinary/CompressorManager.ts",
@@ -66,6 +75,7 @@
 		"./gulp_task/compressToBinary/AnimationCompressor.ts",
 		"./gulp_task/compressToBinary/AttributeCompressor.ts",
 		"./gulp_task/compressToBinary/IndiceCompressor.ts",
-		"./gulp_task/compressToBinary/MorphTargetCompressor.ts"
+		"./gulp_task/compressToBinary/MorphTargetCompressor.ts",
+		"./gulp_task/compressToBinary/SkinCompressor.ts"
 	]
 }

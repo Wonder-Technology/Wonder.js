@@ -91,6 +91,9 @@ module wd{
                 case EVariableType.SAMPLER_2D:
                     this._sender.sendNum1(name, data);
                     break;
+                case EVariableType.FLOAT_MAT4_ARRAY:
+                    this._sender.sendMatrix4Array(name, data);
+                    break;
                 case EVariableType.SAMPLER_ARRAY:
                     this._sender.sendSampleArray(name, data);
                     break;
@@ -163,6 +166,10 @@ module wd{
 
         public sendMatrix4(name:string, data:any){
             this._sender.sendMatrix4(name, data);
+        }
+
+        public sendMatrix4Array(name:string, data:Float32Array){
+            this._sender.sendMatrix4Array(name, data);
         }
 
         public sendSampleArray(name:string, data:any){

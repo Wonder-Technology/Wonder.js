@@ -3,14 +3,14 @@ module wd{
         STARTLOOP = <any>"wd_startLoop",
         ENDLOOP = <any>"wd_endLoop",
 
-        MOUSE_CLICK = <any>"wd_mouseclick",
-        MOUSE_DOWN = <any>"wd_mousedown",
-        MOUSE_UP = <any>"wd_mouseup",
-        MOUSE_MOVE = <any>"wd_mousemove",
-        MOUSE_OVER = <any>"wd_mouseover",
-        MOUSE_OUT = <any>"wd_mouseout",
-        MOUSE_WHEEL = <any>"wd_mousewheel",
-        MOUSE_DRAG = <any>"wd_mousedrag",
+        POINT_TAP = <any>"wd_pointtap",
+        POINT_DOWN = <any>"wd_pointdown",
+        POINT_UP = <any>"wd_pointup",
+        POINT_MOVE = <any>"wd_pointmove",
+        POINT_OVER = <any>"wd_pointover",
+        POINT_OUT = <any>"wd_pointout",
+        POINT_SCALE = <any>"wd_pointscale",
+        POINT_DRAG = <any>"wd_pointdrag",
 
         MATERIAL_CHANGE = <any>"wd_material_change",
         MATERIAL_COLOR_CHANGE = <any>"wd_material_color_change",
@@ -27,6 +27,11 @@ module wd{
         SHADOWMAP_LAYER_CHANGE = <any>"wd_shadowMap_layer_change",
 
         COMPONENT_CHANGE = <any>"wd_component_change",
+
+        AFTER_SCENEGRAPH_BUILD = <any>"wd_after_sceneGraph_build",
+
+        ANIMATION_STOP = <any>"wd_animation_stop",
+
 
         EXIT = <any>"wd_exit",
         ENTER = <any>"wd_enter"

@@ -7,13 +7,16 @@ module wd{
                 case EEventType.MOUSE:
                     handler = MouseEventHandler.getInstance();
                     break;
+                case EEventType.TOUCH:
+                    handler = TouchEventHandler.getInstance();
+                    break;
                 case EEventType.KEYBOARD:
                     handler = KeyboardEventHandler.getInstance();
                     break;
                 case EEventType.CUSTOM:
+                case EEventType.POINT:
                     handler = CustomEventHandler.getInstance();
                     break;
-                //todo more type
                 default :
                     Log.error(true, Log.info.FUNC_INVALID("eventType"));
                     break;

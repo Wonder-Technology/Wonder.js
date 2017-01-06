@@ -1,6 +1,5 @@
 describe("keyboard event", function () {
     var manager = null;
-    var Listener = null;
     var sandbox = null;
     var target = null;
     var fakeEvent = null;
@@ -25,7 +24,6 @@ describe("keyboard event", function () {
         };
         target =  wd.GameObject.create();
         manager = wd.EventManager;
-        Listener = wd.EventListener;
     });
     afterEach(function () {
         removeDom();
@@ -107,40 +105,6 @@ describe("keyboard event", function () {
             expect(sum).toEqual(1);
         });
 
-        it("listener", function(){
-            var eventTarget = null,
-                eventTarget2 = null,
-                sum = 0,
-                sum2 = 0;
-
-            manager.on({
-                    eventType: wd.EEventType.KEYBOARD,
-
-                    onKeyPress: function (e) {
-                        eventTarget = e;
-                        sum++;
-                    },
-                    onKeyUp: function(e){
-                        eventTarget2 = e;
-                        sum2++;
-                    }
-                });
-            manager.trigger(wd.KeyboardEvent.create(fakeEvent, wd.EEventName.KEYPRESS));
-            manager.trigger(wd.KeyboardEvent.create(fakeEvent, wd.EEventName.KEYUP));
-
-            expect(eventTarget).toBeInstanceOf(wd.KeyboardEvent);
-            expect(eventTarget.name).toEqual(wd.EEventName.KEYPRESS);
-            expect(eventTarget2).toBeInstanceOf(wd.KeyboardEvent);
-            expect(eventTarget2.name).toEqual(wd.EEventName.KEYUP);
-
-            manager.off(wd.EEventName.KEYPRESS);
-            manager.off(wd.EEventName.KEYUP);
-            manager.trigger(wd.KeyboardEvent.create(fakeEvent, wd.EEventName.KEYPRESS));
-            manager.trigger(wd.KeyboardEvent.create(fakeEvent, wd.EEventName.KEYUP));
-
-            expect(sum).toEqual(1);
-            expect(sum2).toEqual(1);
-        });
         it("priority", function(){
             var eventTarget = null,
                 eventTarget2 = null,

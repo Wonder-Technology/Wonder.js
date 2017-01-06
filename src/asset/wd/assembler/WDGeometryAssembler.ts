@@ -14,6 +14,10 @@ module wd{
             WDUtils.addData(geometry, "colors", component.colors);
             WDUtils.addData(geometry, "texCoords", component.texCoords);
 
+
+            WDUtils.addData(geometry, "jointIndices", component.jointIndices);
+            WDUtils.addData(geometry, "jointWeights", component.jointWeights);
+
             WDUtils.addData(geometry, "morphVertices", component.morphVertices);
             WDUtils.addData(geometry, "morphNormals", component.morphNormals);
 

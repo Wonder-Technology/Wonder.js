@@ -85,9 +85,7 @@ module wd {
             }
         }
 
-        public removeFromObject(entityObject:GameObject){
-            super.removeFromObject(entityObject);
-
+        public removeFromEngine(){
             PhysicsEngine.getInstance().removeChild(this);
 
         }

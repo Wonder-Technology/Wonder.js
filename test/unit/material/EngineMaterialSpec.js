@@ -39,7 +39,7 @@ describe("EngineMaterial", function() {
 
             it("if has animation component, add CommonMorphShaderLib and VerticeMorphShaderLib", function () {
                 var geo = wd.ModelGeometry.create();
-                sandbox.stub(geo, "hasAnimation").returns(true);
+                sandbox.stub(geo, "hasMorphAnimation").returns(true);
                 material.geometry = geo;
 
                 material.init();

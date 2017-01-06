@@ -8,6 +8,9 @@ class KeyFrameAnimationParser(object):
         self._animationName = None
         self._globalSetting = None
         self._timeMode = None
+        self._translationParameterIndex = 0
+        self._rotationParameterIndex = 0
+        self._scaleParameterIndex = 0
 
     def parse(self, scene):
         animationDatas = {}
@@ -30,6 +33,8 @@ class KeyFrameAnimationParser(object):
             animationDatas[self._animationName] = animationData
 
             self._parseAnimationStackData(animStack, scene.GetRootNode(), animationData)
+
+            self._resetWhenParseOneAnimationData()
 
             # self._parseLayers(animStack, scene.GetRootNode(), animationData)
             # DisplayAnimation(lAnimStack, pScene->GetRootNode(), true);
@@ -180,7 +185,8 @@ class KeyFrameAnimationParser(object):
                 raise AssertionError("exist TIME.len should equal timeList.len")
 
 
-        index = self._findParameterDataIndex(path, animationData)
+        # index = self._findParameterDataIndex(path, animationData)
+        index = self._findParameterDataIndex(path)
 
         samplerId = self._getSamplerId(path, index)
 
@@ -200,9 +206,11 @@ class KeyFrameAnimationParser(object):
 
         animationData["parameters"][parameterDataKey] = valueList
 
-        # if animationData["samplers"].has_key(samplerId):
-        #     print(samplerId)
+        if animationData["samplers"].has_key(samplerId):
+            print("exist samplerId: %s" % samplerId)
         # raise AssertionError("samplers->%s shouldn't be defined before" % samplerId)
+
+
 
         animationData["samplers"][samplerId] = {
             "input": "TIME",
@@ -222,19 +230,38 @@ class KeyFrameAnimationParser(object):
 
         return "%s_%s%d_sampler" % (self._animationName, path, index)
 
+    # def _findParameterDataIndex(self, path, animationData):
+    def _findParameterDataIndex(self, path):
+        if path == "translation":
+            index = self._translationParameterIndex
+            self._translationParameterIndex += 1
+            return index
+        elif path == "rotation":
+            index = self._rotationParameterIndex
+            self._rotationParameterIndex += 1
+            return index
+        if path == "scale":
+            index = self._scaleParameterIndex
+            self._scaleParameterIndex += 1
+            return index
+        #
+        # parameters = animationData["parameters"]
+        #
+        # index = 0
+        # key = path
+        #
+        # while True:
+        #     if not parameters.has_key(key):
+        #         break
+        #
+        #     index += 1
+        #     key += str(index)
+        #
+        # return index
 
-    def _findParameterDataIndex(self, path, animationData):
-        parameters = animationData["parameters"]
+    def _resetWhenParseOneAnimationData(self):
+        self._translationParameterIndex = 0
+        self._rotationParameterIndex = 0
+        self._scaleParameterIndex = 0
 
-        index = 0
-        key = path
-
-        while True:
-            if not parameters.has_key(key):
-                break
-
-            index += 1
-            key += str(index)
-
-        return index
 

@@ -38,7 +38,10 @@ var materialTool = (function () {
         init:function(material){
             if(!material.geometry){
                 material.geometry = {
-                    entityObject: wd.GameObject.create()
+                    entityObject: wd.GameObject.create(),
+                    hasColors:function(){
+                        return false;
+                    }
                 }
             }
 

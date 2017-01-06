@@ -42,17 +42,18 @@ module wd{
         @execOnlyOnce("_isInit")
         public init(){
             var geometryData = null,
-                {
-                    vertices,
-                    faces = [],
-                    texCoords,
-                    colors,
-                    morphVertices
-                    } = this.computeData();
+                // {
+                //     vertices,
+                //     faces = [],
+                //     texCoords,
+                //     colors,
+                //     morphVertices
+                //     } = this.computeData();
+                computedData = this.computeData();
 
             this.buffers = this.createBufferContainer();
 
-            geometryData = this.createGeometryData(vertices, faces, texCoords, colors, morphVertices);
+            geometryData = this.createGeometryData(computedData);
 
             this.buffers.geometryData = geometryData;
 
@@ -83,6 +84,10 @@ module wd{
         })
         public hasVertexNormals(){
             return this.buffers.geometryData.hasVertexNormals();
+        }
+
+        public hasColors(){
+            return this.buffers.geometryData.hasColors();
         }
 
         public isSmoothShading(){
@@ -140,12 +145,18 @@ module wd{
         }
 
         @virtual
-        protected createGeometryData(vertices:Array<number>, faces:Array<Face3>, texCoords:Array<number>, colors:Array<number>, morphVertices:wdCb.Hash<MorphTargetsData>):GeometryData{
-            return this.createBasicGeometryData(vertices, faces, texCoords, colors);
+        protected createGeometryData(computedData:GeometryDataType):GeometryData{
+            return this.createBasicGeometryData(computedData);
         }
 
-        protected createBasicGeometryData(vertices:Array<number>, faces:Array<Face3>, texCoords:Array<number>, colors:Array<number>){
-            var geometryData = BasicGeometryData.create(this);
+        protected createBasicGeometryData(computedData:GeometryDataType){
+            var {
+                    vertices,
+                    faces = [],
+                    texCoords,
+                    colors
+                } = computedData,
+                geometryData = BasicGeometryData.create(this);
 
             geometryData.vertices = vertices;
             geometryData.faces = faces;
@@ -161,7 +172,6 @@ module wd{
         faces?:Array<Face3>;
         texCoords?:Array<number>;
         colors?:Array<number>;
-        morphVertices?:wdCb.Hash<MorphTargetsData>;
     };
 }
 

@@ -1,11 +1,11 @@
 var fs = require("fs-extra"),
-    Converter = require("../../dist/converter/obj/OBJToWD"),
+    Converter = require("../../dist/converter/obj/OBJTowd"),
     path = require("path"),
     sinon = require("sinon");
 
 require("jasmine-before-all");
 
-describe("OBJToWD", function () {
+describe("OBJTowd", function () {
     var sandbox = null;
     var converter = null;
     var testFile1, testFile2;
@@ -16,7 +16,7 @@ describe("OBJToWD", function () {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        converter = Converter.OBJToWD.create("0.1.0");
+        converter = Converter.OBJTowd.create("0.1.0");
     });
     afterEach(function () {
         sandbox.restore();
@@ -48,7 +48,7 @@ describe("OBJToWD", function () {
         judge(testFile1, filePath1, function (json) {
             expect(json.asset).toEqual({
                 version: "0.1.0",
-                generator: "WonderJsOBJToWDConverter"
+                generator: "wdJsOBJToWDConverter"
             });
         }, done);
     });

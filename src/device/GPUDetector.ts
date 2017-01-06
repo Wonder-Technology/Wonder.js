@@ -13,6 +13,7 @@ module wd {
         public maxTextureSize:number = null;
         public maxCubemapTextureSize:number = null;
         public maxAnisotropy:number = null;
+        public maxBoneCount:number = null;
         public extensionCompressedTextureS3TC:any = null;
         public extensionTextureFilterAnisotropic:any = null;
         public extensionInstancedArrays:any = null;
@@ -49,6 +50,12 @@ module wd {
             this.maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);
             this.maxCubemapTextureSize = gl.getParameter(gl.MAX_CUBE_MAP_TEXTURE_SIZE);
             this.maxAnisotropy = this._getMaxAnisotropy();
+
+            this.maxBoneCount = this._getMaxBoneCount();
+
+            //todo use map instead
+            alert("maxBoneCount:" + this.maxBoneCount);
+
             this._detectPrecision();
         }
 
@@ -89,6 +96,29 @@ module wd {
             return extension;
         }
 
+        private _getMaxBoneCount(){
+            var gl = this.gl,
+                numUniforms:number = null,
+                maxBoneCount:number = null;
+
+            // Calculate a estimate of the maximum number of bones that can be uploaded to the GPU
+            // based on the number of available uniforms and the number of uniforms required for non-
+            // bone data.  This is based off of the Standard shader.  A user defined shader may have
+            // even less space available for bones so this calculated value can be overridden via
+            numUniforms = gl.getParameter(gl.MAX_VERTEX_UNIFORM_VECTORS);
+            numUniforms -= 4 * 4; // Model, view, projection and shadow matrices
+            // numUniforms -= 8;     // 8 lights max, each specifying a position vector
+            numUniforms -= 1;     // Eye position
+            numUniforms -= 4 * 4; // Up to 4 texture transforms
+
+            maxBoneCount = Math.floor(numUniforms / 4);
+
+            // Put a limit on the number of supported bones before skin partitioning must be performed
+            // Some GPUs have demonstrated performance issues if the number of vectors allocated to the
+            // skin matrix palette is left unbounded
+            return Math.min(maxBoneCount, 128);
+        }
+
         private _getMaxAnisotropy() {
             var extension = this.extensionTextureFilterAnisotropic,
                 gl = this.gl;
@@ -97,13 +127,20 @@ module wd {
         }
 
         private _detectPrecision() {
-            var gl = this.gl,
-                vertexShaderPrecisionHighpFloat = gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.HIGH_FLOAT),
+            var gl = this.gl;
+
+            if(!gl.getShaderPrecisionFormat){
+                this.precision = EGPUPrecision.HIGHP;
+
+                return;
+            }
+
+            let vertexShaderPrecisionHighpFloat = gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.HIGH_FLOAT),
                 vertexShaderPrecisionMediumpFloat = gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.MEDIUM_FLOAT),
-            //vertexShaderPrecisionLowpFloat = gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.LOW_FLOAT),
+                //vertexShaderPrecisionLowpFloat = gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.LOW_FLOAT),
                 fragmentShaderPrecisionHighpFloat = gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_FLOAT),
                 fragmentShaderPrecisionMediumpFloat = gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.MEDIUM_FLOAT),
-            //fragmentShaderPrecisionLowpFloat = gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.LOW_FLOAT),
+                //fragmentShaderPrecisionLowpFloat = gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.LOW_FLOAT),
                 highpAvailable = vertexShaderPrecisionHighpFloat.precision > 0 && fragmentShaderPrecisionHighpFloat.precision > 0,
                 mediumpAvailable = vertexShaderPrecisionMediumpFloat.precision > 0 && fragmentShaderPrecisionMediumpFloat.precision > 0;
 

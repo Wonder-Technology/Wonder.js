@@ -214,13 +214,7 @@ module wd{
 
             shader.addLib(CommonShaderLib.create());
 
-            if(GlobalGeometryUtils.hasAnimation(geometry)){
-                shader.addLib(CommonMorphShaderLib.create());
-                shader.addLib(VerticeMorphShaderLib.create());
-            }
-            else{
-                shader.addLib(VerticeCommonShaderLib.create());
-            }
+            ShaderLibUtils.addVerticeShaderLib(geometry, shader);
 
             InstanceUtils.addModelMatrixShaderLib(shader, gameObject);
 

@@ -62,7 +62,7 @@ describe("instance with basic material", function(){
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
-        wd.DebugStatistics.clear();
+        wd.DebugStatistics.resetData();
 
         device = wd.DeviceManager.getInstance();
 

@@ -11,9 +11,8 @@
 
     // list of files / patterns to load in the browser
     files: [
-        //'src/math/*.js',
-        'dist/wd.innerLib.js',
-        'dist/wd.debug.js',
+        'dist/wd.all.innerLib.js',
+        'dist/wd.all.debug.js',
 
         'lib/outer/cannon/cannon.js',
 
@@ -28,8 +27,16 @@
 
         'test/unit/**/BufferWriter.js',
 
-        'test/unit/**',
+        // 'test/unit/**',
 
+
+        // 'test/unit/**/GPUDetector*',
+
+        // 'test/unit/**/action/*',
+        // 'test/unit/**/command/*',
+        // 'test/unit/**/EntityObjectSpec*',
+        // 'test/unit/**/SceneDispatcherSpec*',
+        // 'test/unit/**/cloneSpec*',
 
 
         // 'test/unit/**/CustomProcedural*',
@@ -55,10 +62,9 @@
         // 'test/unit/**/oneToManyInstance*',
 
 
-        //'test/render/**',
+        // 'test/render/**',
 
 
-        // 'test/unit/**/cloneSpec*',
 
         // 'test/unit/**/grassMap*',
         // 'test/unit/**/GrassMap*',
@@ -121,11 +127,9 @@
 
         //'test/unit/**/VAOManager*',
         //
-        //'test/unit/**/action/*',
 
         //'test/unit/**/RenderUtils*',
 
-        // 'test/unit/**/command/*',
 
         //'test/unit/**/light/**',
 
@@ -174,7 +178,7 @@
 
         // 'test/unit/**/instanceScript*',
 
-        //'test/unit/**/instance_animation*',
+        // 'test/unit/**/instanceAnimation*',
 
         //'test/unit/**/instance_shadow_morph*',
         //'test/unit/**/instance_shadowSpec*',
@@ -191,10 +195,10 @@
         // 'test/unit/**/terrainMix*',
 
         //'test/unit/**/shaderLibSpec*',
-        //'test/unit/**/*ShaderLib*',
+        // 'test/unit/**/*Shader*',
         //'test/unit/**/ShaderLib*',
         //
-        //'test/unit/**/envMap*',
+        // 'test/unit/**/envMap*',
         //
         //'test/unit/texture/**',
         //'test/unit/**/compress*',
@@ -245,18 +249,18 @@
 
         //'test/unit/**/customShader*',
 
-        // 'test/unit/**/*animation*',
-        // 'test/unit/component/**/*Animation*.js',
-        // 'test/unit/component/**/morphAnimation*.js',
+        'test/unit/**/skin*',
+        'test/unit/**/*animation*',
+        'test/unit/component/**/*Animation*.js',
+        'test/unit/component/**/morphAnimation*.js',
 
         //'test/unit/**/GLTFParserSpec*',
         //'test/unit/**/GLTFAssemblerSpec*',
 
-        //'test/unit/**/Debug*',
+        // 'test/unit/**/Debug*',
 
-        // 'test/unit/**/EntityObjectSpec*',
 
-        //'test/unit/component/physics/**/eventSpec*',
+        // 'test/unit/component/physics/**/eventSpec*',
 
         // 'test/unit/**/OctreeSpec*',
         //'test/unit/**/CollisionDetectorSpec*',
@@ -277,27 +281,27 @@
         // 'test/unit/**/TransitionManagerSpec*',
 
 
-        //'test/unit/**/MainSpec*',
+        // 'test/unit/**/MainSpec*',
 
         // 'test/unit/component/event/eventSpec*',
 
-        //'test/unit/**/ui/**',
+        // 'test/unit/**/ui/**',
         // 'test/unit/**/UIObjectSpec*',
 
         // 'test/unit/**/ButtonSpec*',
-        //'test/unit/**/UIStateMachineSpec*',
+        // 'test/unit/**/UIStateMachineSpec*',
 
 
         // 'test/unit/**/*Asset*',
         //
-        //'test/unit/**/TwoDFontSpec*',
-        //'test/unit/**/PlainFontSpec*',
-        //'test/unit/**/UIRendererSpec*',
-        //'test/unit/**/TwoDBitmapFontSpec*',
-        //'test/unit/**/ThreeDBitmapFontSpec*',
-        //'test/unit/**/bitmapFont/**',
-        //'test/unit/**/multi*',
-        //'test/unit/**/Bitmap*',
+        // 'test/unit/**/TwoDFontSpec*',
+        // 'test/unit/**/PlainFontSpec*',
+        // 'test/unit/**/UIRendererSpec*',
+        // 'test/unit/**/TwoDBitmapFontSpec*',
+        // 'test/unit/**/ThreeDBitmapFontSpec*',
+        // 'test/unit/**/bitmapFont/**',
+        // 'test/unit/**/multi*',
+        // 'test/unit/**/Bitmap*',
         //
         //'test/unit/**/DirectorSpec*',
         //
@@ -314,8 +318,7 @@
         //
         //'test/unit/**/LightShaderLibSpec*',
         //
-        //'test/unit/**/SceneDispatcherSpec*',
-        //'test/unit/**/GameObjectSceneSpec*',
+        // 'test/unit/**/GameObjectSceneSpec*',
         //
         //'test/unit/**/MathUtils*',
         //'test/unit/**/rayPicking*',
@@ -350,44 +353,56 @@
         //'test/unit/**/physics/**/compound*',
         // 'test/unit/**/GameObjectSpec.js',
         //'test/unit/**/*Shape*.js',
-        //'test/unit/**/Arcball*',
+        // 'test/unit/**/Arcball*',
         //'test/unit/**/FlyCameraController*',
         // 'test/unit/**/scriptSpec.js',
       //
       //  'test/unit/**/*ControllerSpec.js',
       //'test/unit/core/Tran*.js',
+
+         // 'test/unit/asset/Image*',
+
+
       //  'test/unit/asset/*.js',
       //  'test/unit/asset/obj/*.js',
       //  'test/unit/asset/obj/OBJParserSpec.js',
       //  'test/unit/asset/loaderSpec.js',
-      //   'test/unit/asset/wd/WDParserSpec.js',
-      //   'test/unit/asset/wd/wd*.js',
-      //   'test/unit/asset/wd/WDAssemblerSpec.js',
-        //'test/unit/math/*.js',
+
+      //   'test/unit/**/WDParserSpec.js',
+      //   'test/unit/**/wd*.js',
+          // 'test/unit/**/wdParseSkin*.js',
+        // 'test/unit/**/WDAssemblerSpec.js',
+
+        // 'test/unit/math/*.js',
         //'test/unit/component/**/GeometrySpec.js',
         // 'test/unit/component/**/InstanceGeometrySpec.js',
         // 'test/unit/component/**/TerrainGeometrySpec.js',
-        //'test/unit/component/**/ModelGeometrySpec.js',
-        //'test/unit/**/CommonBufferContainerSpec.js',
+        // 'test/unit/component/**/ModelGeometrySpec.js',
+        // 'test/unit/**/CommonBufferContainerSpec.js',
         //'test/unit/**/MorphBufferContainerSpec.js',
-        //'test/unit/**/*BufferContainerSpec.js',
+        // 'test/unit/**/*BufferContainerSpec.js',
         // 'test/unit/**/morph*.js',
         // 'test/unit/**/*morph*.js',
         // 'test/unit/**/*Morph*.js',
         // 'test/unit/**/Morph*.js',
         //'test/unit/core/*.js',
-        //'test/unit/device/*.js',
+        // 'test/unit/device/*.js',
+
+        // 'test/unit/**/DomEventManager*',
+
         // 'test/unit/event/**',
         // 'test/unit/event/mouseEv*.js',
+        // 'test/unit/event/touchEv*.js',
         // 'test/unit/event/customEv*.js',
         // 'test/unit/event/keyboardEv*.js',
         // 'test/unit/event/domEv*.js',
-        //'test/unit/utils/**',
+        // 'test/unit/utils/**',
         //'test/unit/video/**',
 
         //{pattern: 'src/**/*.js.map', watched: false, included: false, served: true},
         //{pattern: 'src/**/*.ts', watched: false, included: false, served: true}
-        //{pattern: 'dist/wd.debug.js.map', watched: false, included: false, served: true, nocache:true},
+
+        {pattern: 'dist/wd.all.debug.js.map', watched: false, included: false, served: true, nocache:true},
 
         {pattern: 'test/res/**', watched: false, included: false, served: true}
     ],

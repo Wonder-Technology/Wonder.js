@@ -18,7 +18,7 @@ module wd{
                     gameObjectLevel = ELODState.INVISIBLE;
                 }
                 else{
-                    gameObjectLevel = (<GameObject>levelData.gameObject).clone();
+                    gameObjectLevel = <GameObject>(<GameObject>levelData.gameObject).clone();
                 }
 
                 target.addLevel(levelData.distanceBetweenCameraAndObject, gameObjectLevel, levelData.switchHandler);

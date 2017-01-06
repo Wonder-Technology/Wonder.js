@@ -9,12 +9,31 @@ module wd {
 
         public abstract getRenderList():wdCb.Collection<GameObject>;
 
-        public abstract getIntersectListWithRay(e:MouseEvent):wdCb.Collection<GameObject>;
+        public abstract getIntersectListWithRay(e:PointEvent):wdCb.Collection<GameObject>;
 
         public abstract getCollideObjects(shape:Shape):wdCb.Collection<GameObject>;
 
         public abstract getChildren():wdCb.Collection<GameObject>;
 
         public abstract update(elapsed:number):void;
+
+        @require(function(entityObject:GameObject){
+            it("SpacePartition component should add to GameObject", () => {
+                expect(entityObject).instanceOf(GameObject);
+            });
+        })
+        public addToObject(entityObject:GameObject, isShareComponent:boolean = false){
+            var engine:SpacePartitionEngine = SpacePartitionEngine.getInstance();
+
+            super.addToObject(entityObject, isShareComponent);
+
+            if(!engine.hasChild(this)){
+                engine.addChild(this);
+            }
+        }
+
+        public removeFromEngine(){
+            SpacePartitionEngine.getInstance().removeChild(this);
+        }
     }
 }

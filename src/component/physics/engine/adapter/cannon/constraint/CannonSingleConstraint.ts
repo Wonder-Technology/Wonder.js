@@ -10,7 +10,7 @@ module wd{
             this.constraintDataList.remove(entityObject);
         }
 
-        protected addToConstraintDataList(entityObject:GameObject, wonderConstraint:LockConstraint, cannonConstraint:CANNON.Constraint){
+        protected addToConstraintDataList(entityObject:GameObject, wdConstraint:LockConstraint, cannonConstraint:CANNON.Constraint){
             this.constraintDataList.add(entityObject, cannonConstraint);
         }
     }

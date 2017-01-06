@@ -3,7 +3,7 @@ var path = require("path");
 var glob = require("glob");
 var gulp = require("gulp");
 
-var tsconfigFilePath = require("./pathData.js");
+var tsconfigFilePathData = require("./pathData.js");
 
 /**
  * Given a recipe is found at `recipePath`, create a `tsconfig.json` sibling file with the glob resolved.
@@ -41,7 +41,9 @@ function handleRecipeFile(recipePath) {
     resultConfig.files = findFiles(recipePath, filesGlob);
 
     var resultTxt = JSON.stringify(resultConfig, null, "  ");
-    var resultPath = path.join(path.dirname(recipePath), "tsconfig.json");
+    // var resultPath = path.join(path.dirname(recipePath), "tsconfig.json");
+    var resultPath = recipePath;
+
     fs.writeFileSync(resultPath, resultTxt);
     //console.log("Updated " + resultPath);
 }
@@ -59,7 +61,11 @@ function findFiles(recipePath, filesGlob) {
 }
 
 gulp.task("parseTsconfigFilesGlob", function(done) {
-    handleRecipeFile(tsconfigFilePath);
+    for(var key in tsconfigFilePathData){
+        if(tsconfigFilePathData.hasOwnProperty(key)){
+            handleRecipeFile(tsconfigFilePathData[key]);
+        }
+    }
 
     done();
 });

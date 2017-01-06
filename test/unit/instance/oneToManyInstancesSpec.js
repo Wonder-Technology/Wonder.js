@@ -65,7 +65,7 @@ describe("one to many instance test", function(){
 
         testTool.openContractCheck(sandbox);
 
-        wd.DebugStatistics.clear();
+        wd.DebugStatistics.resetData();
 
         device = wd.DeviceManager.getInstance();
 

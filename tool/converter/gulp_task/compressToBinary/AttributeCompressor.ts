@@ -1,8 +1,5 @@
 import {DataRecord, SourceJsonData, SourceMorphTarget, TargetJsonData} from "./TypeDefinition";
 
-import chai = require("chai");
-
-import contract = require("../../../ts/definition/typescript/decorator/contract");
 
 import {Utils} from "./Utils";
 
@@ -10,10 +7,8 @@ import JudgeUtils = require("../../../ts/JudgeUtils")
 
 import Compressor = require("./Compressor");
 
-var it = contract.it,
-    ensure = contract.ensure;
-
-var expect = chai.expect;
+import {it, ensure} from "../../../ts/definition/typescript/decorator/contract"
+import {expect} from "chai"
 
 export = class AttributeCompressor extends Compressor.Compressor{
     public static create() {
@@ -39,7 +34,9 @@ export = class AttributeCompressor extends Compressor.Compressor{
                             POSITION,
                             NORMAL,
                             TEXCOORD,
-                            COLOR
+                            COLOR,
+                            JOINT,
+                            WEIGHT
                         } = primitiveData.attributes;
 
                     if (Utils.hasData(POSITION)) {
@@ -57,10 +54,14 @@ export = class AttributeCompressor extends Compressor.Compressor{
                     if (Utils.hasData(COLOR)) {
                         this._recordAttribute(COLOR, recordedAttributeArr, id, i, "COLOR", "VEC3");
                     }
-                    //
-                    // if (Utils.hasData(primitiveData.indices)) {
-                    //     this._recordIndice(primitiveData.indices, recordedIndiceArr, id, i, "SCALAR");
-                    // }
+
+                    if (Utils.hasData(JOINT)) {
+                        this._recordAttribute(JOINT, recordedAttributeArr, id, i, "JOINT", "VEC4");
+                    }
+
+                    if (Utils.hasData(WEIGHT)) {
+                        this._recordAttribute(WEIGHT, recordedAttributeArr, id, i, "WEIGHT", "VEC4");
+                    }
                 }
             }
         }
@@ -108,16 +109,6 @@ export = class AttributeCompressor extends Compressor.Compressor{
         // // }
 
         this.buildBufferViewsJsonHelper(json, bufferId, bufferViewId, length, offset, 34962);
-    }
-
-    public buildAccessorData(json:{
-        [id: string]: Object
-    }, mappingTable:Object, id:number) {
-        if(!this.isArrayEmpty(this.recordedArr)){
-            return this.buildAccessorDataHelper(json, mappingTable, id);
-        }
-
-        return 0;
     }
 
     private _recordAttribute(data: Array<number>, arr: Array<DataRecord>, meshId: string, primitiveIndex: number, attributeName: string, type: string) {

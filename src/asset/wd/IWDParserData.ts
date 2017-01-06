@@ -1,4 +1,21 @@
 module wd {
+    export type AccessorId = string;
+    export type NodeId = string;
+    export type MeshId = string;
+    export type MaterialId = string;
+    export type BufferId = string;
+    export type SamplerId = string;
+    export type ImageId = string;
+    export type TextureId = string;
+    export type CameraId = string;
+    export type LightId = string;
+
+    export type AnimationParameterId = string;
+    export type AnimationSamplerId = string;
+
+    export type SkinId = string;
+    export type JointName = string;
+
     export interface IWDJsonDataParser {
         asset: IWDAssetParser;
         scene: string;
@@ -40,6 +57,9 @@ module wd {
         };
         lights: {
             [id:string]: IWDLightParser
+        };
+        skins: {
+            [id:string]: IWDSkinParser
         }
     }
 
@@ -48,24 +68,27 @@ module wd {
     }
 
     export interface IWDSceneParser extends IWDChildRootPropertyParser {
-        nodes: Array<string>;
+        nodes: Array<NodeId>;
     }
 
 
 
     export interface IWDNodeParser extends IWDChildRootPropertyParser {
         children: Array<string>;
-        camera?: string;
-        // skin?: string;
-        // jointName?: string;
+        camera?: CameraId;
+
+        skin?: SkinId;
+        skeletons?:Array<NodeId>;
+        jointName?: JointName;
+
         matrix?: Array<number>;
-        mesh?: string;
+        mesh?: MeshId;
         // meshes?: Array<string>;
         rotation?: Array<number>;
         scale?: Array<number>;
         translation?: Array<number>;
 
-        light?:string;
+        light?:LightId;
 
         // extensions?:Object;
     }
@@ -81,26 +104,26 @@ module wd {
 
         morphTargets?: Array<IWDMorphTargetParser>;
 
-        indices?: string;
-        material: string;
+        indices?: AccessorId;
+        material: MaterialId;
         mode: number;
     }
 
     export interface IWDMorphTargetParser {
         name:string;
-        vertices:string;
-        normals?:string;
+        vertices:AccessorId;
+        normals?:AccessorId;
     }
 
     export interface IWDAttributeParser {
-        POSITION:string;
-        NORMAL?:string;
+        POSITION:AccessorId;
+        NORMAL?:AccessorId;
         // todo support multi TexCoords
-        TEXCOORD?:string;
-        COLOR?:string;
+        TEXCOORD?:AccessorId;
+        COLOR?:AccessorId;
 
-        // JOINT?:string;
-        // WEIGH?:string;
+        JOINT?:AccessorId;
+        WEIGH?:AccessorId;
     }
 
     export interface IWDAcccessorParser extends IWDChildRootPropertyParser {
@@ -108,7 +131,7 @@ module wd {
         byteOffset: number;
         // byteStride: number;
         count: number;
-        type: string;
+        type: "SCALAR"|"VEC2"|"VEC3"|"VEC4"|"MAT2"|"MAT3"|"MAT4";
         componentType: number;
 
         max?: Array<number>;
@@ -119,11 +142,11 @@ module wd {
         uri: string;
 
         byteLength: number;
-        type: string;
+        type: "arraybuffer"|"text";
     }
 
     export interface IWDBufferViewParser extends IWDChildRootPropertyParser {
-        buffer: string;
+        buffer: BufferId;
         byteOffset: number;
         byteLength: number;
 
@@ -155,8 +178,8 @@ module wd {
     }
 
     export interface IWDTextureParser extends IWDChildRootPropertyParser {
-        sampler: string;
-        source: string;
+        sampler: SamplerId;
+        source: ImageId;
 
         format?: number;
         internalFormat?: number;
@@ -189,37 +212,39 @@ module wd {
     export interface IWDMaterialValueParser{
         lightMap?:string;
 
-        diffuse?:Array<number>|string;
-        specular?:Array<number>|string;
-        emission?:Array<number>|string;
+        diffuse?:Array<number>|TextureId;
+        specular?:Array<number>|TextureId;
+        emission?:Array<number>|TextureId;
         shininess?:number;
 
-        normalMap?:string;
+        normalMap?:TextureId;
 
         transparency?:number;
     }
 
     export interface IWDAnimationParser extends IWDChildRootPropertyParser {
         channels?: IWDAnimationChannelParser[];
-        parameters?: Object;
+        parameters?: {
+            [id:string]: AccessorId;
+        };
         samplers?: {
             [id:string]: IWDAnimationSamplerParser
         };
     }
 
     export interface IWDAnimationSamplerParser{
-        input:string;
+        input:AnimationParameterId;
         interpolation:"LINEAR";
-        output:string;
+        output:AnimationParameterId;
     }
 
     export interface IWDAnimationChannelParser {
-        sampler: string;
+        sampler: AnimationSamplerId;
         target: IWDAnimationChannelTargetParser;
     }
 
     export interface IWDAnimationChannelTargetParser {
-        id: string;
+        id: NodeId;
         path: "translation"|"rotation"|"scale";
     }
 
@@ -264,6 +289,12 @@ module wd {
         //     quadraticAttenuation?:number;
         //     range?:number;
         // };
+    }
+
+    export interface IWDSkinParser extends IWDChildRootPropertyParser{
+        bindShapeMatrix?:Array<number>;
+        inverseBindMatrices: AccessorId;
+        jointNames:Array<JointName>;
     }
 }
 

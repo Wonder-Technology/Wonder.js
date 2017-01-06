@@ -3,6 +3,8 @@ describe("FlyCameraController", function () {
     var controller = null;
     var camera,cameraComponent,component;
 
+    var director;
+
     function prepareOrthoCamera(sandbox){
         camera = wd.GameObject.create();
 
@@ -234,6 +236,134 @@ describe("FlyCameraController", function () {
                 expect(result.moveSpeed).toEqual(controller.moveSpeed);
                 expect(result.rotateSpeed).toEqual(controller.rotateSpeed);
                 expect(result.zoomSpeed).toEqual(controller.zoomSpeed);
+            });
+        });
+    });
+
+    describe("test event", function(){
+        var fakeEvent;
+
+        function insertDom() {
+            $("body").append($("<canvas id='event-test'></canvas>"));
+        }
+
+        function removeDom() {
+            $("#event-test").remove();
+        }
+
+        function triggerDomEvent(eventName, dom, event){
+            eventTool.triggerDomEvent(eventName, dom || document.body, event || fakeEvent);
+        }
+
+        beforeEach(function(){
+            sandbox.stub(wd.EventTriggerDetectorUtils, "isInRect").returns(true);
+
+
+            insertDom();
+            prepareTool.createGL("event-test");
+
+
+
+            if(bowser.firefox){
+                expect().toPass();
+                return;
+            }
+
+            sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+
+            prepareOrthoCamera(sandbox);
+
+            director = wd.Director.getInstance();
+            director.scene.addChild(camera);
+        });
+        afterEach(function () {
+            wd.EventManager.off();
+
+            removeDom();
+        });
+
+        describe("dispose", function(){
+            describe("remove events", function(){
+                function judgePointEvent(eventType) {
+                    sandbox.stub(controller._control, "_changeRotation");
+
+
+
+                    fakeEvent = eventTool["buildFake" + eventType + "Event"](10, 10);
+
+
+
+
+
+                    director._init();
+
+                    var eventPrefix = eventType.toUpperCase();
+
+                    triggerDomEvent(wd.EEventName[eventPrefix + "DOWN"]);
+                    triggerDomEvent(wd.EEventName[eventPrefix + "MOVE"]);
+
+                    expect(controller._control._changeRotation).toCalledOnce();
+
+                    triggerDomEvent(wd.EEventName[eventPrefix + "UP"]);
+
+
+
+
+                    controller.dispose();
+
+
+                    triggerDomEvent(wd.EEventName[eventPrefix + "DOWN"]);
+                    triggerDomEvent(wd.EEventName[eventPrefix + "MOVE"]);
+                    triggerDomEvent(wd.EEventName[eventPrefix + "UP"]);
+
+
+                    expect(controller._control._changeRotation).toCalledOnce();
+                }
+
+                beforeEach(function(){
+                });
+
+                it("test keyboard event", function () {
+                    sandbox.stub(controller._control, "_move");
+                    sandbox.stub(controller._control, "zoom");
+
+
+
+                    fakeEvent = eventTool.buildFakeMouseEvent(10, 10);
+
+
+
+
+
+                    director._init();
+
+
+
+                    triggerDomEvent(wd.EEventName.KEYDOWN);
+
+
+                    expect(controller._control._move).toCalledOnce();
+                    expect(controller._control.zoom).toCalledOnce();
+                    expect(controller._control.zoom).toCalledAfter(controller._control._move);
+
+
+                    controller.dispose();
+
+
+
+                    triggerDomEvent(wd.EEventName.KEYDOWN);
+
+                    expect(controller._control._move).toCalledOnce();
+                    expect(controller._control.zoom).toCalledOnce();
+                });
+                it("test mouse event", function () {
+                    judgePointEvent("Mouse");
+                });
+                it("test touch event", function () {
+                    sandbox.stub(director.domEventManager._pointEventBinder, "_isSupportTouch").returns(true);
+
+                    judgePointEvent("Touch");
+                });
             });
         });
     });

@@ -48,6 +48,13 @@ module wd{
         protected addShaderLib(){
             var envMap = null;
 
+            if(this.geometry.hasColors()){
+                this.shader.addLib(BasicVertexColorShaderLib.create());
+            }
+            else{
+                this.shader.addLib(BasicMaterialColorShaderLib.create());
+            }
+
             this.shader.addLib(BasicShaderLib.create());
 
             this._setMapShaderLib();

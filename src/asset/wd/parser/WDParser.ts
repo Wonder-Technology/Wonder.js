@@ -13,12 +13,16 @@ module wd{
         private _imageMap:wdCb.Hash<HTMLImageElement> = null;
         private _json:IWDJsonDataParser = null;
         private _geometryParser = WDGeometryParser.create();
-        private _articulatedAnimationParser = WDArticulatedAnimationParser.create();
+        private _keyFrameAnimationParser = WDKeyFrameAnimationParser.create();
+        private _skinSkeletonAnimationAnimationParser = WDSkinSkeletonAnimationParser.create();
+        private _articulatedAnimationParser:WDArticulatedAnimationParser = WDArticulatedAnimationParser.create();
         private _transformParser:WDTransformParser = WDTransformParser.create();
+        private _skinSkeletonAnimationParser:WDSkinSkeletonParser = WDSkinSkeletonParser.create();
         private _cameraParser:WDCameraParser = WDCameraParser.create();
         private _lightParser:WDLightParser = WDLightParser.create();
+        private _skinSkeletonAnimationMap:wdCb.Hash<IWDSkinSkeletonAnimationAssembler> = wdCb.Hash.create<IWDSkinSkeletonAnimationAssembler>();
 
-        public parse(json:IWDJsonDataParser, arrayBufferMap:wdCb.Hash<any>, imageMap:wdCb.Hash<HTMLImageElement>):IWDParseDataAssembler{
+        public parse(json:IWDJsonDataParser, arrayBufferMap:wdCb.Hash<ArrayBuffer>, imageMap:wdCb.Hash<HTMLImageElement>):IWDParseDataAssembler{
             this._json = json;
 
             this._arrayBufferMap = arrayBufferMap;
@@ -31,7 +35,15 @@ module wd{
             this._parseObjects();
 
             if(json.animations){
-                this._articulatedAnimationParser.parse(json, this._data.objects, this._arrayBufferMap)
+                let {nodeWithAnimationMap, objectWithAnimationMap} = this._keyFrameAnimationParser.parse(json, this._data.objects, this._arrayBufferMap);
+
+                this._skinSkeletonAnimationMap.forEach((skinSkeletonAnimation:IWDSkinSkeletonAnimationAssembler) => {
+                    skinSkeletonAnimation.jointTransformData = this._skinSkeletonAnimationAnimationParser.parse(json, nodeWithAnimationMap, skinSkeletonAnimation.jointNames);
+                });
+
+                // this._skinSkeletonAnimationAnimationParser.removeJointAnimationData(nodeWithAnimationMap);
+
+                this._articulatedAnimationParser.parse(objectWithAnimationMap);
             }
 
             return this._data;
@@ -55,7 +67,13 @@ module wd{
                 json = this._json,
                 objects = wdCb.Collection.create<IWDObjectDataAssembler>();
             var parse = (nodeId:string, node:IWDNodeParser) => {
-                var object:IWDObjectDataAssembler = WDUtils.createObjectData();
+                var object:IWDObjectDataAssembler = null;
+
+                if(this._isJointNode(json, node)){
+                    return null;
+                }
+
+                object = WDUtils.createObjectData();
 
                 object.id = nodeId;
 
@@ -83,11 +101,11 @@ module wd{
                 }
 
                 if(node.light){
-                        object.components.addChild(self._lightParser.parse(self._json, node.light));
+                        object.components.addChild(self._lightParser.parse(json, node.light));
                 }
 
                 if(node.camera){
-                    object.components.addChild((self._cameraParser.parse(self._json, node.camera)));
+                    object.components.addChild((self._cameraParser.parse(json, node.camera)));
                 }
 
                 if(node.matrix){
@@ -97,9 +115,21 @@ module wd{
                     object.components.addChild(self._transformParser.parse(node.translation, node.rotation, node.scale));
                 }
 
+                if(node.skin && node.skeletons){
+                    let skinSkeletonAnimation:IWDSkinSkeletonAnimationAssembler = self._skinSkeletonAnimationParser.parse(json, node.skin, node.skeletons, object.name, self._arrayBufferMap);
+
+                    self._skinSkeletonAnimationMap.addChild(nodeId, skinSkeletonAnimation);
+
+                    object.components.addChild(skinSkeletonAnimation);
+                }
+
                 if(node.children){
                     for(let childId of node.children){
-                        object.children.addChild(parse(childId, json.nodes[childId]));
+                        let child = parse(childId, json.nodes[childId]);
+
+                        if(child !== null){
+                            object.children.addChild(child);
+                        }
                     }
                 }
 
@@ -113,10 +143,19 @@ module wd{
             }
 
             for(let nodeId of json.scenes[json.scene].nodes){
-                objects.addChild(parse(nodeId, json.nodes[nodeId]));
+                let child = parse(nodeId, json.nodes[nodeId]);
+
+                if(child !== null){
+                    objects.addChild(child);
+                }
             }
 
             this._data.objects = objects;
+        }
+
+        private _isJointNode(json:IWDJsonDataParser, node:IWDNodeParser){
+            return !!node.jointName
+                || (!!node.children && node.children.length > 0 && !!json.nodes[node.children[0]].jointName);
         }
     }
 }

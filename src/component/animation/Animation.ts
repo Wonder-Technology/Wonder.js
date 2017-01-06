@@ -11,7 +11,6 @@ module wd{
         }
 
         public entityObject:GameObject;
-        public isFrameChange:boolean = false;
 
         protected state:EAnimationState = EAnimationState.DEFAULT;
         protected pauseTime:number = null;
@@ -33,9 +32,7 @@ module wd{
             }
         }
 
-        public removeFromObject(entityObject:EntityObject){
-            super.removeFromObject(entityObject);
-
+        public removeFromEngine(){
             AnimationEngine.getInstance().removeChild(this);
         }
 
@@ -58,6 +55,8 @@ module wd{
 
         public stop(){
             this.state = EAnimationState.STOP;
+
+            EventManager.emit(this.entityObject, CustomEvent.create(<any>EEngineEvent.ANIMATION_STOP));
         }
 
         public update(elapsed:number){
@@ -75,28 +74,11 @@ module wd{
                 this.continueFromPausePoint(elapsed);
             }
 
-            this.handleBeforeJudgeWhetherCurrentFrameFinish(elapsed);
-
-            if(this.isCurrentFrameFinish(elapsed)){
-                this.handleWhenCurrentFrameFinish(elapsed)
-            }
-            else{
-                this.isFrameChange = false;
-            }
-
-            this.handleAfterJudgeWhetherCurrentFrameFinish(elapsed);
-
-            //this.computeInterpolation(elapsed);
-            //
-            //this.updateTargets();
+            this.handleUpdate(elapsed);
         }
 
         protected abstract handleWhenPause(elapsed:number):void;
-        protected abstract handleWhenCurrentFrameFinish(elapsed:number):void;
-        protected abstract handleBeforeJudgeWhetherCurrentFrameFinish(elapsed:number):void;
-        protected abstract handleAfterJudgeWhetherCurrentFrameFinish(elapsed:number):void;
-        protected abstract isCurrentFrameFinish(elapsed:number):boolean;
-        protected abstract resetAnim():void;
+        protected abstract handleUpdate(elapsed:number):void;
 
         protected getPauseTime(){
             return this.getCurrentTime();

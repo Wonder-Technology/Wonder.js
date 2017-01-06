@@ -1,51 +1,41 @@
 module wd {
     export class EventManager {
-        public static on(listener:{}|EventListener):void;
+        public static on(eventName:EEventName|EEngineEvent|string, handler:Function):void;
 
-        public static on(eventName:EEventName|string, handler:Function):void;
-        public static on(dom:HTMLElement, listener:{}|EventListener):void;
+        public static on(eventName:EEventName|EEngineEvent|string, handler:Function, priority:number):void;
+        public static on(target:EntityObject, eventName:EEventName|EEngineEvent|string, handler:Function):void;
+        public static on(dom:HTMLElement, eventName:EEventName|EEngineEvent|string, handler:Function):void;
 
-        public static on(eventName:EEventName|string, handler:Function, priority:number):void;
-        public static on(target:EntityObject, eventName:EEventName|string, handler:Function):void;
-        public static on(dom:HTMLElement, eventName:EEventName|string, handler:Function):void;
-
-        public static on(target:EntityObject, eventName:EEventName|string, handler:Function, priority:number):void;
-        public static on(dom:HTMLElement, eventName:EEventName|string, handler:Function, priority:number):void;
+        public static on(target:EntityObject, eventName:EEventName|EEngineEvent|string, handler:Function, priority:number):void;
+        public static on(dom:HTMLElement, eventName:EEventName|EEngineEvent|string, handler:Function, priority:number):void;
 
         @require(function(...args){
             if(args[0] instanceof EntityObject){
                 let eventName = args[1];
 
-                assert(EventTable.getEventType(eventName) === EEventType.CUSTOM, Log.info.FUNC_MUST_BE("event", "custom event"));
+                it("event must be custom event", () => {
+                    var eventType = EventTable.getEventType(eventName);
+
+                    expect(eventType === EEventType.CUSTOM || eventType === EEventType.POINT).true;
+                });
             }
             else if(JudgeUtils.isDom(args[0])){
                 let eventName = args[1],
                     eventType = EventTable.getEventType(eventName);
 
-                assert(eventType === EEventType.MOUSE || eventType === EEventType.KEYBOARD, Log.info.FUNC_MUST_BE("event", "dom event"));
+                it("event must be dom event", () => {
+                    expect(eventType === EEventType.TOUCH || eventType === EEventType.MOUSE || eventType === EEventType.KEYBOARD).true;
+                });
             }
         })
         public static on(...args) {
-            if(args.length === 1){
-                let listener = args[0],
-                    eventBinder = DomEventBinder.getInstance();
-
-                eventBinder.on(listener);
-            }
-            else if(args.length === 2 && JudgeUtils.isString(args[0])){
+            if(args.length === 2 && JudgeUtils.isString(args[0])){
                 let eventName = args[0],
                     handler = args[1],
                     priority = 1,
                     eventBinder = EventBinderFactory.createEventBinder(eventName);
 
                 eventBinder.on(eventName, handler, priority);
-            }
-            else if(args.length === 2 && JudgeUtils.isDom(args[0])){
-                let dom = args[0],
-                    listener = args[1],
-                    eventBinder = DomEventBinder.getInstance();
-
-                eventBinder.on(dom, listener);
             }
             else if(args.length === 3 && JudgeUtils.isString(args[0])){
                 let eventName = args[0],
@@ -95,29 +85,34 @@ module wd {
 
         public static off():void;
 
-        public static off(eventName:EEventName|string):void;
+        public static off(eventName:EEventName|EEngineEvent|string):void;
         public static off(target:EntityObject):void;
         public static off(dom:HTMLElement):void;
 
-        public static off(eventName:EEventName|string, handler:Function):void;
-        public static off(target:EntityObject, eventName:EEventName|string):void;
+        public static off(eventName:EEventName|EEngineEvent|string, handler:Function):void;
+        public static off(target:EntityObject, eventName:EEventName|EEngineEvent|string):void;
         public static off(dom:HTMLElement, eventName:EEventName):void;
 
-        public static off(target:EntityObject, eventName:EEventName|string, handler:Function):void;
+        public static off(target:EntityObject, eventName:EEventName|EEngineEvent|string, handler:Function):void;
         public static off(dom:HTMLElement, eventName:EEventName, handler:Function):void;
 
 
         @require(function(...args){
             if(args.length > 2 && args[0] instanceof EntityObject){
-                let eventName = args[1];
+                let eventName = args[1],
+                eventType = EventTable.getEventType(eventName);
 
-                assert(EventTable.getEventType(eventName) === EEventType.CUSTOM, Log.info.FUNC_MUST_BE("event", "custom event"));
+                it("event must be custom or point event", () => {
+                    expect(eventType === EEventType.CUSTOM || eventType === EEventType.POINT).true;
+                });
             }
             else if(args.length > 2 && JudgeUtils.isDom(args[0])){
                 let eventName = args[1],
                     eventType = EventTable.getEventType(eventName);
 
-                assert(eventType === EEventType.MOUSE || eventType === EEventType.KEYBOARD, Log.info.FUNC_MUST_BE("event", "dom event"));
+                it("event must be keyboard event", () => {
+                    expect(eventType === EEventType.KEYBOARD).true;
+                });
             }
         })
         public static off(...args) {
@@ -304,14 +299,14 @@ module wd {
             eventDispatcher.emit.apply(eventDispatcher, args);
         }
 
-        public static fromEvent(eventName:EEventName):wdFrp.FromEventPatternStream;
+        public static fromEvent(eventName:EEventName|EEngineEvent|string):wdFrp.FromEventPatternStream;
 
-        public static fromEvent(eventName:EEventName, priority:number):wdFrp.FromEventPatternStream;
-        public static fromEvent(target:EntityObject, eventName:EEventName):wdFrp.FromEventPatternStream;
-        public static fromEvent(dom:HTMLElement, eventName:EEventName):wdFrp.FromEventPatternStream;
+        public static fromEvent(eventName:EEventName|EEngineEvent|string, priority:number):wdFrp.FromEventPatternStream;
+        public static fromEvent(target:EntityObject, eventName:EEventName|EEngineEvent|string):wdFrp.FromEventPatternStream;
+        public static fromEvent(dom:HTMLElement, eventName:EEventName|EEngineEvent|string):wdFrp.FromEventPatternStream;
 
-        public static fromEvent(target:EntityObject, eventName:EEventName, priority:number):wdFrp.FromEventPatternStream;
-        public static fromEvent(dom:HTMLElement, eventName:EEventName, priority:number):wdFrp.FromEventPatternStream;
+        public static fromEvent(target:EntityObject, eventName:EEventName|EEngineEvent|string, priority:number):wdFrp.FromEventPatternStream;
+        public static fromEvent(dom:HTMLElement, eventName:EEventName|EEngineEvent|string, priority:number):wdFrp.FromEventPatternStream;
 
         public static fromEvent(...args):any {
             var addHandler = null,

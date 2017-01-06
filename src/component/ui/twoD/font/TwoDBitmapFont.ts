@@ -63,6 +63,8 @@ module wd {
             if(layoutDataList){
                 this._createAndAddFontCharUIObjects(layoutDataList, imageAsset);
             }
+
+            this.needFormat = false;
         }
 
         public dispose(){

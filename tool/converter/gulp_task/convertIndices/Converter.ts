@@ -2,20 +2,17 @@ import wdCb = require("wdcb");
 
 import Utils = require("./Utils")
 
-import chai = require("chai");
 
 import Vector3 = require("../../../ts/Vector3");
 
 import DataUtils = require("../../common/DataUtils");
 
-import contract = require("../../../ts/definition/typescript/decorator/contract");
+import {it, requireInNodejs, ensure} from "../../../ts/definition/typescript/decorator/contract"
+import {expect} from "chai"
 
 import ExtendUtils = require("../../../ts/ExtendUtils")
+import Log = wdCb.Log;
 
-var it = contract.it,
-    requireInNodejs = contract.requireInNodejs;
-
-var expect = chai.expect;
 
 export class Converter {
     public static create() {
@@ -24,34 +21,58 @@ export class Converter {
         return obj;
     }
 
+    @requireInNodejs(function(sourceJson:SourceJsonData){
+        this._iteratePrimitivesFunc(sourceJson, (primitiveData, id) => {
+            let len = primitiveData.verticeIndices.length;
+
+            if (primitiveData.texCoordIndices && primitiveData.texCoordIndices.length > 0) {
+                it(`id: ${id}, primitiveData.texCoordIndices.length:${primitiveData.texCoordIndices.length} !== primitiveData.verticeIndices.length:${len}`, () => {
+                    expect(primitiveData.texCoordIndices.length).equals(len);
+                });
+            }
+
+            if (primitiveData.normalIndices && primitiveData.normalIndices.length > 0) {
+                it(`id: ${id}, primitiveData.normalIndices.length:${primitiveData.normalIndices.length} !== primitiveData.verticeIndices.length:${len}`, () => {
+                    expect(primitiveData.normalIndices.length).equals(len);
+                });
+            }
+
+            if (primitiveData.colorIndices && primitiveData.colorIndices.length > 0) {
+                it(`id: ${id}, primitiveData.colorIndices.length:${primitiveData.colorIndices.length} !== primitiveData.verticeIndices.length:${len}`, () => {
+                    expect(primitiveData.colorIndices.length).equals(len);
+                });
+            }
+
+        });
+
+        it("primitive->attribute->JOINT's length should === WEIGHT's length", () => {
+            this._iteratePrimitivesFunc(sourceJson, (primitiveData) => {
+                if(Utils.hasData(primitiveData.attributes.JOINT)){
+                    expect(primitiveData.attributes.JOINT.length).equals(primitiveData.attributes.WEIGHT.length);
+                }
+            });
+        }, this);
+    })
+    @ensure(function(targetJson:TargetJsonData, sourceJson:SourceJsonData, isRemoveNullData:boolean){
+        it("joint data should has weight data", () => {
+            this._iteratePrimitivesFunc(targetJson, (primitiveData) => {
+                var joints = primitiveData.attributes.JOINT,
+                    weights = primitiveData.attributes.WEIGHT;
+
+                if(Utils.hasData(joints)){
+                    for(let i = 0, len = joints.length; i < len; i++){
+                        expect(
+                            (joints[i] >= 0 && weights[i] > 0)
+                            || (joints[i] < 0 && weights[i] == 0)
+                        ).true;
+                    }
+                }
+            });
+        }, this);
+    })
     /*!
      the texCoordIndices, normalIndices may not be corresponding to verticeIndices(so need duplicate vertex)
      */
-    @requireInNodejs(function(sourceJson:SourceJsonData){
-        it("each indice's count should be equal", () => {
-            for(let key in sourceJson.meshes) {
-                if (sourceJson.meshes.hasOwnProperty(key)) {
-                    let mesh = sourceJson.meshes[key];
-
-                    for (let primitiveData of mesh.primitives) {
-                        let len = primitiveData.verticeIndices.length;
-
-                        if (primitiveData.texCoordIndices && primitiveData.texCoordIndices.length > 0) {
-                            expect(primitiveData.texCoordIndices.length).equal(len);
-                        }
-
-                        if (primitiveData.normalIndices && primitiveData.normalIndices.length > 0) {
-                            expect(primitiveData.normalIndices.length).equal(len);
-                        }
-
-                        if (primitiveData.colorIndices && primitiveData.colorIndices.length > 0) {
-                            expect(primitiveData.colorIndices.length).equal(len);
-                        }
-                    }
-                }
-            }
-        });
-    })
     public convert(sourceJson:SourceJsonData, isRemoveNullData:boolean):TargetJsonData {
         var targetJson:TargetJsonData = ExtendUtils.extendDeep(sourceJson);
 
@@ -69,6 +90,7 @@ export class Converter {
                     }
 
                     this._duplicateVertex(primitiveData);
+
                     newPrimitives.push(this._parseObjectFromIndices(primitiveData));
                 }
 
@@ -117,21 +139,23 @@ export class Converter {
 
     private _hasNoIndiceData(primitiveData:SourcePrimitive)    {
         return !Utils.hasData(primitiveData.verticeIndices)
-        && !Utils.hasData(primitiveData.normalIndices)
-        && !Utils.hasData(primitiveData.texCoordIndices);
+            && !Utils.hasData(primitiveData.normalIndices)
+            && !Utils.hasData(primitiveData.texCoordIndices);
     }
     private _duplicateVertex(
         primitiveData:SourcePrimitive
     ){
-        var vertices = primitiveData.attributes.POSITION;
+        var vertices = primitiveData.attributes.POSITION,
+            morphTargets = primitiveData.morphTargets,
+            joints = primitiveData.attributes.JOINT,
+            weights = primitiveData.attributes.WEIGHT;
 
-        this._duplicateVertexWithDifferentAttributeData(vertices, primitiveData.morphTargets, primitiveData.verticeIndices, primitiveData.texCoordIndices);
-        this._duplicateVertexWithDifferentAttributeData(vertices, primitiveData.morphTargets, primitiveData.verticeIndices, primitiveData.normalIndices);
-        this._duplicateVertexWithDifferentAttributeData(vertices, primitiveData.morphTargets, primitiveData.verticeIndices, primitiveData.colorIndices);
+        this._duplicateVertexWithDifferentAttributeData(vertices, morphTargets, joints, weights, primitiveData.verticeIndices, primitiveData.texCoordIndices);
+        this._duplicateVertexWithDifferentAttributeData(vertices, morphTargets, joints, weights, primitiveData.verticeIndices, primitiveData.normalIndices);
+        this._duplicateVertexWithDifferentAttributeData(vertices, morphTargets, joints, weights, primitiveData.verticeIndices, primitiveData.colorIndices);
     }
 
-
-    private _duplicateVertexWithDifferentAttributeData(vertices:Array<number>, morphTargets:Array<MorphTarget>|undefined, verticeIndices:Array<number>, dataIndices:Array<number>) {
+    private _duplicateVertexWithDifferentAttributeData(vertices:Array<number>, morphTargets:Array<MorphTarget>|undefined, joints:Array<number>|undefined, weights:Array<number>|undefined, verticeIndices:Array<number>, dataIndices:Array<number>) {
         var arr:Array<number|undefined> = [],
             container = wdCb.Hash.create<wdCb.Collection<Array<number>>>();
 
@@ -139,15 +163,15 @@ export class Converter {
             return;
         }
 
-        for (var i = 0, len = verticeIndices.length; i < len; i++) {
-            var verticeIndex = verticeIndices[i];
+        for (let i = 0, len = verticeIndices.length; i < len; i++) {
+            let verticeIndex = verticeIndices[i];
 
             if (this._isSameVertexWithDifferentDataByCompareToFirstOne(arr, dataIndices[i], verticeIndex)) {
                 if (this._isDataIndiceEqualTheOneOfAddedVertex(container, verticeIndex, dataIndices[i])) {
                     verticeIndices[i] = this._getVerticeIndexOfAddedVertexByFindContainer(container, verticeIndex, dataIndices[i]);
                 }
                 else {
-                    this._addVertexData(vertices, morphTargets, verticeIndices, dataIndices, container, verticeIndex, i);
+                    this._addVertexData(vertices, morphTargets, joints, weights, verticeIndices, dataIndices, container, verticeIndex, i);
                 }
 
                 verticeIndex = verticeIndices[i];
@@ -181,7 +205,7 @@ export class Converter {
         return arr[verticeIndex] !== void 0 && arr[verticeIndex] !== texCoordIndex;
     }
 
-    private _addVertexData(vertices:Array<number>, morphTargets:Array<MorphTarget>|undefined, verticeIndices:Array<number>, dataIndices:Array<number>, container:wdCb.Hash<wdCb.Collection<Array<number>>>, verticeIndex:number, index:number) {
+    private _addVertexData(vertices:Array<number>, morphTargets:Array<MorphTarget>|undefined, joints:Array<number>|undefined, weights:Array<number>|undefined, verticeIndices:Array<number>, dataIndices:Array<number>, container:wdCb.Hash<wdCb.Collection<Array<number>>>, verticeIndex:number, index:number) {
         var verticeIndexOfAddedVertex = null;
 
         this._addThreeComponent(vertices, verticeIndex);
@@ -190,6 +214,14 @@ export class Converter {
             for(let frame of morphTargets){
                 this._addThreeComponent(frame.vertices, verticeIndex);
             }
+        }
+
+        if(joints !== void 0){
+            this._addFourComponent(joints, verticeIndex);
+        }
+
+        if(weights !== void 0){
+            this._addFourComponent(weights, verticeIndex);
         }
 
         verticeIndexOfAddedVertex = this._getVerticeIndexOfAddedVertex(vertices);
@@ -207,7 +239,16 @@ export class Converter {
         );
     }
 
-    private _getVerticeIndexOfAddedVertex(vertices) {
+    private _addFourComponent(data:Array<number>, index:number) {
+        data.push(
+            data[index * 4],
+            data[index * 4 + 1],
+            data[index * 4 + 2],
+            data[index * 4 + 3]
+        );
+    }
+
+    private _getVerticeIndexOfAddedVertex(vertices:Array<number>) {
         return vertices.length / 3 - 1;
     }
 
@@ -228,6 +269,8 @@ export class Converter {
             sourceTexCoords = attributes.TEXCOORD,
             sourceNormals = attributes.NORMAL,
             sourceColors = attributes.COLOR,
+            sourceJoints = attributes.JOINT,
+            sourceWeights = attributes.WEIGHT,
             material = primitiveData.material,
             mode = primitiveData.mode,
             name = primitiveData.name,
@@ -260,6 +303,14 @@ export class Converter {
         }
 
         attributes.POSITION = sourceVertices;
+
+        if (Utils.hasData(sourceJoints)) {
+            attributes.JOINT = sourceJoints;
+        }
+
+        if (Utils.hasData(sourceWeights)) {
+            attributes.WEIGHT = sourceWeights;
+        }
 
         if (!Utils.hasData(texCoordIndices)) {
             attributes.TEXCOORD = sourceTexCoords;
@@ -405,6 +456,18 @@ export class Converter {
         targetData[index * 2] = sourceData[indice * 2];
         targetData[index * 2 + 1] = sourceData[indice * 2 + 1];
     }
+
+    private _iteratePrimitivesFunc(sourceJson:SourceJsonData, func:Function) {
+        for(let key in sourceJson.meshes) {
+            if (sourceJson.meshes.hasOwnProperty(key)) {
+                let mesh = sourceJson.meshes[key];
+
+                for (let primitiveData of mesh.primitives) {
+                    func(primitiveData, key);
+                }
+            }
+        }
+    }
 }
 
 type SourceJsonData = {
@@ -456,5 +519,7 @@ type Attribute = {
     NORMAL?:Array<number>;
     TEXCOORD?:Array<number>;
     COLOR?:Array<number>;
+    JOINT?:Array<number>;
+    WEIGHT?:Array<number>;
 }
 

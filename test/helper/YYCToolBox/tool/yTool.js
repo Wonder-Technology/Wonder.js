@@ -1557,7 +1557,7 @@
              }
 
              */
-            triggerEvent: function (oTarget, type) {
+            triggerEvent: function (oTarget, type, eventData) {
                 var evObj = null,
                     dom = null;
 
@@ -1617,6 +1617,11 @@
                     //此处使用通用事件
                     evObj = document.createEvent('Events');
                     evObj.initEvent(type, false, true);
+
+                    if(!!eventData){
+                        Tool.extend.extend(evObj, eventData);
+                    }
+
                     if (Tool.judge.isjQuery(oTarget)) {
                         oTarget.each(function () {
                             dom = this;
@@ -2164,7 +2169,7 @@
 
                 var portionArr = numStr.split('.');
 
-                if (numStr.contain("e")) {
+                if (numStr.indexOf("e") > -1) {
                     return NaN;
                 }
 

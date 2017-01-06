@@ -45,7 +45,7 @@ describe("instance with shadow", function () {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
-        wd.DebugStatistics.clear();
+        wd.DebugStatistics.resetData();
 
         device = wd.DeviceManager.getInstance();
 

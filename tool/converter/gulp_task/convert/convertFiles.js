@@ -5,7 +5,7 @@ var path = require("path");
 
 var Converter = require("../../dist/converter/Converter");
 
-function convertFiles(sourceDir, destDir) {
+function convertFiles(isEmbedded, sourceDir, destDir) {
     var converter = Converter.create();
 
     return wdFrp.fromNodeCallback(fs.remove)(destDir)
@@ -17,7 +17,7 @@ function convertFiles(sourceDir, destDir) {
                         .concatMap(function (fileBuffer) {
                             var filePath = data.path;
 
-                            return converter.write(converter.convert(fileBuffer, filePath, sourceDir, destDir), sourceDir, destDir, filePath)
+                            return converter.write(converter.convert(fileBuffer, filePath, sourceDir, destDir), sourceDir, destDir, filePath, isEmbedded);
                         })
                 })
         );

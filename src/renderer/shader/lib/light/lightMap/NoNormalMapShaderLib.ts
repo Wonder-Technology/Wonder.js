@@ -11,7 +11,7 @@ module wd{
         public sendShaderVariables(program: Program, cmd:QuadCommand, material:LightMaterial){
         }
 
-        public setShaderDefinition(cmd:QuadCommand, material:TerrainMaterial){
+        public setShaderDefinition(cmd:QuadCommand, material:LightMaterial){
             var noNormalMap_light_fragment:GLSLChunk = null;
 
             super.setShaderDefinition(cmd, material);

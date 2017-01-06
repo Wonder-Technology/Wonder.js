@@ -245,6 +245,25 @@ module wd{
             gl.uniformMatrix4fv(pos,false, data.values);
         }
 
+        @require(function(name:string, data:Array<number>|Float32Array){
+            it(`data should be array, but actual is ${data}`, () => {
+                expect(JudgeUtils.isFloatArray(data) || JudgeUtils.isArrayExactly(data)).true;
+            });
+            it("name shouldn't be the first matrix of the array", () => {
+                expect(/\[0\]$/.test(name)).false;
+            });
+        })
+        public sendMatrix4Array(name:string, data:Array<number>|Float32Array){
+            var gl = DeviceManager.getInstance().gl,
+                pos = this.getUniformLocation(`${name}[0]`);
+
+            if(this._isUniformDataNotExistByLocation(pos)){
+                return;
+            }
+
+            gl.uniformMatrix4fv(pos,false, data);
+        }
+
         @require(function(name:string, data:Array<number>){
             assert(JudgeUtils.isArrayExactly(data), Log.info.FUNC_SHOULD("data", `be array, but actual is ${data}`));
 

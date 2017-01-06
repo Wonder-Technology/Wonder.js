@@ -22,7 +22,19 @@ module wd{
         }
 
         public static createAllLoader():wdCb.Collection<Loader>{
-            return wdCb.Collection.create<Loader>([JsLoader.getInstance(), GLSLLoader.getInstance(), WDLoader.getInstance(), TextureLoader.getInstance(), SoundLoader.getInstance(), VideoLoader.getInstance(), FontLoader.getInstance(), FntLoader.getInstance()]);
+            var loaderList = wdCb.Collection.create<Loader>([JsLoader.getInstance(), GLSLLoader.getInstance(), WDLoader.getInstance(), TextureLoader.getInstance(), FontLoader.getInstance(), FntLoader.getInstance()]),
+                soundLoader = this._getLoader("SoundLoader"),
+                videoLoader = this._getLoader("VideoLoader");
+
+            if(soundLoader !== null){
+                loaderList.addChild(soundLoader);
+            }
+
+            if(videoLoader !== null){
+                loaderList.addChild(videoLoader);
+            }
+
+            return loaderList;
         }
 
         private static _getLoaderByExtname(extname:string){
@@ -49,12 +61,12 @@ module wd{
                 case ".mp4":
                 case ".ogv":
                 case ".webm":
-                    loader = VideoLoader.getInstance();
+                    loader = this._getLoader("VideoLoader", extname);
                     break;
                 case ".ogg":
                 case ".mp3":
                 case ".wav":
-                    loader = SoundLoader.getInstance();
+                    loader = this._getLoader("SoundLoader", extname);
                     break;
                 case ".wd":
                     loader = WDLoader.getInstance();
@@ -74,6 +86,20 @@ module wd{
             }
 
             return loader;
+        }
+
+        private static _getLoader(className:string, extname?:string){
+            var _class = ClassUtils.getClass(className);
+
+            if(_class === void 0){
+                if(!!extname){
+                    Log.error(true, Log.info.FUNC_UNKNOW(`extname:${extname}`));
+                }
+
+                return null;
+            }
+
+            return _class.getInstance();
         }
     }
 }

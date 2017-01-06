@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>skin skeleton</title>
+
+    <!--<script src="../../../dist/wd.all.innerLib.js" type="text/javascript"></script>-->
+    <!--<script src="../../../dist/wd.all.debug.js" type="text/javascript"></script>-->
+    <script src="../../../dist/wd.custom.innerLib.js" type="text/javascript"></script>
+    <script src="../../../dist/wd.custom.debug.js" type="text/javascript"></script>
+</head>
+<body>
+<script>
+    window.onload = function () {
+        wd.Main.setConfig({
+            //open contract check
+            isTest: false,
+            screenSize: wd.EScreenSize.FULL
+        }).init();
+
+        wd.LoaderManager.getInstance().load([
+            {url: "./monster.wd", id: "model"}
+        ]).subscribe(null, null, function () {
+            initSample();
+        });
+
+                function initSample() {
+                    var director = wd.Director.getInstance();
+
+                    director.renderer.setClearColor(wd.Color.create("#aaaaff"));
+
+                    director.scene.addChildren(setModel());
+                    director.scene.addChild(createAmbientLight());
+                    director.scene.addChild(createDirectionLight(wd.Vector3.create(0, 500, 500)));
+                    director.scene.addChild(createCamera());
+
+                    director.start();
+                }
+
+                function setModel() {
+                    var models = wd.LoaderManager.getInstance().get("model").getChild("models");
+
+
+//
+                    wd.Director.getInstance().scheduler.scheduleFrame(function(){
+                        models.forEach(function(model){
+
+//                            model.transform.scale = wd.Vector3.create(100,100,100)
+
+                        if(model.hasComponent(wd.Animation)){
+                            model.getComponent(wd.Animation).play(0);
+                        }
+                        else {
+                            model.forEach(function (m) {
+                                if (m.hasComponent(wd.SkinSkeletonAnimation)) {
+                                    m.getComponent(wd.SkinSkeletonAnimation).play(0);
+                                }
+                            });
+                        }
+
+                        model.transform.translate(5,0,0)
+                        });
+                    }, 1);
+
+
+
+
+
+                    return models;
+                }
+
+
+        function createAmbientLight() {
+            var ambientLightComponent = wd.AmbientLight.create();
+            ambientLightComponent.color = wd.Color.create("rgb(30, 30, 30)");
+
+            var ambientLight = wd.GameObject.create();
+            ambientLight.addComponent(ambientLightComponent);
+
+            return ambientLight;
+        }
+
+        function createDirectionLight(pos) {
+//            var SHADOW_MAP_WIDTH = 1024,
+//                SHADOW_MAP_HEIGHT = 1024;
+
+            var directionLightComponent = wd.DirectionLight.create();
+            directionLightComponent.color = wd.Color.create("#ffffff");
+            directionLightComponent.intensity = 1;
+
+            var directionLight = wd.GameObject.create();
+            directionLight.addComponent(directionLightComponent);
+
+            directionLight.transform.position = pos;
+
+            return directionLight;
+        }
+
+        function createCamera() {
+            var camera = wd.GameObject.create(),
+                view = wd.Director.getInstance().view,
+                cameraComponent = wd.PerspectiveCamera.create();
+
+            cameraComponent.fovy = 60;
+            cameraComponent.aspect = view.width / view.height;
+            cameraComponent.near = 0.001;
+            cameraComponent.far = 10000;
+
+            var controller = wd.ArcballCameraController.create(cameraComponent);
+            controller.theta = Math.PI / 4;
+//            controller.distance = 2000;
+//            controller.distance = 10;
+            controller.distance = 100;
+
+            camera.addComponent(controller);
+
+            return camera;
+        }
+    };
+</script>
+</body>
+</html>
+

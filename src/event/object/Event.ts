@@ -4,12 +4,9 @@ module wd{
             this.name = eventName;
         }
 
-        protected abstract p_type:EEventType;
-        get type(){
-            return this.p_type;
-        }
+        public readonly abstract type:EEventType;
 
-        public name:EEventName = null;
+        public name:string|EEventName|EEngineEvent = null;
         //target is the actual target that received the event.
         public target:HTMLElement|EntityObject;
         //currentTarget is always the object listening for the event

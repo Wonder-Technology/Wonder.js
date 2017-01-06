@@ -5,8 +5,8 @@ module wd{
 
 		private constructor(){super();}
 
-        protected loadAsset(url:string, id:string):wdFrp.Stream;
-        protected loadAsset(url:Array<string>, id:string):wdFrp.Stream;
+        protected loadAsset(url:string, id:string, config:AssetConfigData):wdFrp.Stream;
+        protected loadAsset(url:Array<string>, id:string, config:AssetConfigData):wdFrp.Stream;
 
         protected loadAsset(...args):wdFrp.Stream {
             var urlArr = null;

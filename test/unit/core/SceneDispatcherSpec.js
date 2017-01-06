@@ -446,4 +446,24 @@ describe("SceneDispatcher", function() {
             //});
         });
     });
+
+    describe("fix bug", function(){
+        beforeEach(function(){
+
+        });
+
+        it("SceneDispatcher->getChildren() shouldn't change gameObjectScene,uiObjectScene->children", function(){
+            var gameObject = wd.GameObject.create();
+            var uiObject = wd.UIObject.create();
+
+            scene.addChild(gameObject);
+            scene.addChild(uiObject);
+
+            var children1 = scene.getChildren();
+            var children2 = scene.getChildren();
+
+            expect(scene.gameObjectScene.getChildren().getCount()).toEqual(1);
+            expect(scene.uiObjectScene.getChildren().getCount()).toEqual(1);
+        });
+    });
 });

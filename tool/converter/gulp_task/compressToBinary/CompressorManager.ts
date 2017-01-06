@@ -3,10 +3,8 @@ import {DataRecord, SourceJsonData, SourceMorphTarget, TargetJsonData} from "./T
 declare var Buffer:any;
 
 import path = require("path");
+import fs = require("fs");
 
-import chai = require("chai");
-
-import contract = require("../../../ts/definition/typescript/decorator/contract");
 
 import ExtendUtils = require("../../../ts/ExtendUtils")
 
@@ -14,17 +12,19 @@ import {Utils} from "./Utils";
 
 
 import BufferWriter = require("../../common/BufferWriter");
+import Base64Utils = require("../../common/Base64Utils");
 
 import Compressor = require("./Compressor");
 import AnimationCompressor = require("./AnimationCompressor");
 import AttributeCompressor = require("./AttributeCompressor");
 import MorphTargetCompressor = require("./MorphTargetCompressor");
+import SkinCompressor = require("./SkinCompressor");
 import IndiceCompressor = require("./IndiceCompressor");
 
-var it = contract.it,
-    ensure = contract.ensure;
+import {it, ensure} from "../../../ts/definition/typescript/decorator/contract"
+import {expect} from "chai"
 
-var expect = chai.expect;
+var base64Arraybuffer = require("base64-arraybuffer");
 
 export class CompressorManager {
     public static create() {
@@ -36,23 +36,28 @@ export class CompressorManager {
     private _animationCompressor:any = AnimationCompressor.create();
     private _attributeCompressor:any = AttributeCompressor.create();
     private _morphTargetCompressor:any = MorphTargetCompressor.create();
+    private _skinCompressor:any = SkinCompressor.create();
     private _indiceCompressor:any = IndiceCompressor.create();
 
-    public compress(fileName: string, binFileRelatedDir: string, sourceJson: SourceJsonData) {
+    public compress(fileName: string, binFileRelatedDir: string, sourceJson: SourceJsonData, absoluteSourceFileDir?:string, isEmbedded:boolean = false) {
         var targetJson: TargetJsonData = ExtendUtils.extendDeep(sourceJson);
 
         this._execAll("recordData", sourceJson);
 
         this._execAll("removeRepeatData");
 
-        let buffersData = this._buildBuffersArr(fileName, binFileRelatedDir);
+        let buffersData = this._buildBuffersArr(fileName, isEmbedded, binFileRelatedDir);
         let bufferViewsJson = this._buildBufferViewsJson(buffersData.id);
         let accessorsData = this._buildAccessorsJson();
 
         this._buildJson(targetJson, buffersData.json, bufferViewsJson, accessorsData);
 
+        if(isEmbedded){
+            this._convertImageToBase64(targetJson, absoluteSourceFileDir);
+        }
+
         return {
-            buffer: this._toBuffer(buffersData.arraybuffer),
+            buffer: buffersData.buffer,
             uri: buffersData.uri,
             json: targetJson
         }
@@ -67,6 +72,7 @@ export class CompressorManager {
     private _getAllCompressors(){
         return [
             this._animationCompressor,
+            this._skinCompressor,
             this._indiceCompressor,
             this._attributeCompressor,
             this._morphTargetCompressor
@@ -93,7 +99,7 @@ export class CompressorManager {
         return json;
     }
 
-    private _buildBuffersArr(fileName: string, binFileRelatedDir: string) {
+    private _buildBuffersArr(fileName: string, isEmbedded:boolean, binFileRelatedDir: string) {
         var json = {},
             uri: string = null,
             byteLength = this._getAllCompressors()
@@ -103,11 +109,21 @@ export class CompressorManager {
                 .reduce((previous, current) => {
                     return previous + current;
                 }),
-            bufferWriter = BufferWriter.create(byteLength);
+            bufferWriter = BufferWriter.create(byteLength),
+            returnData:any = {};
 
         this._execAll("buildBuffersArr", bufferWriter);
 
-        uri = path.join(binFileRelatedDir, `${fileName}.bin`);
+        if(isEmbedded){
+            uri = this._convertArrayBufferToBase64(bufferWriter.arraybuffer);
+
+            returnData["buffer"] = null;
+        }
+        else{
+            uri = path.join(binFileRelatedDir, `${fileName}.bin`);
+
+            returnData["buffer"] = this._toBuffer(bufferWriter.arraybuffer);
+        }
 
         json[fileName] = {
             byteLength: byteLength,
@@ -115,12 +131,15 @@ export class CompressorManager {
             uri: uri
         };
 
-        return {
-            id: fileName,
-            uri: uri,
-            arraybuffer: bufferWriter.arraybuffer,
-            json: json
-        }
+        returnData["id"] = fileName;
+        returnData["uri"] = uri;
+        returnData["json"] = json;
+
+        return returnData;
+    }
+
+    private _convertArrayBufferToBase64(buffer:any) {
+        return base64Arraybuffer.encode(buffer);
     }
 
     private _buildAccessorsJson() {
@@ -130,6 +149,10 @@ export class CompressorManager {
             accessorCount: number = null;
 
         this._animationCompressor.buildAccessorData(json, mappingTable, id);
+
+        accessorCount = this._skinCompressor.buildAccessorData(json, mappingTable, id);
+
+        id += accessorCount;
 
         accessorCount = this._indiceCompressor.buildAccessorData(json, mappingTable, id);
 
@@ -224,6 +247,28 @@ export class CompressorManager {
 
     private _parseWhere(where: string) {
         return where.split('%%');
+    }
+
+    private _convertImageToBase64(targetJson:TargetJsonData, absoluteSourceFileDir:string){
+        if(!targetJson.images){
+            return;
+        }
+
+        for(let id in targetJson.images) {
+            if (targetJson.images.hasOwnProperty(id)) {
+                let image = targetJson.images[id];
+
+                if(!!image.uri){
+                    let url = path.join(absoluteSourceFileDir,  image.uri);
+
+                    if(!fs.existsSync(url)){
+                        continue;
+                    }
+
+                    image.uri = Base64Utils.encode(url, `data:image/${path.extname(image.uri).slice(1)};base64, `);
+                }
+            }
+        }
     }
 }
 

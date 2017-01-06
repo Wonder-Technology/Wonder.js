@@ -1,19 +1,14 @@
 import {DataRecord, SourceJsonData, SourceMorphTarget, TargetJsonData} from "./TypeDefinition";
 
 
-import chai = require("chai");
-
-import contract = require("../../../ts/definition/typescript/decorator/contract");
-
 
 import JudgeUtils = require("../../../ts/JudgeUtils")
 
 import Compressor = require("./Compressor");
 
-var it = contract.it,
-    ensure = contract.ensure;
 
-var expect = chai.expect;
+import {it, ensure} from "../../../ts/definition/typescript/decorator/contract"
+import {expect} from "chai"
 
 export = class AnimationCompressor extends Compressor.Compressor{
     public static create() {

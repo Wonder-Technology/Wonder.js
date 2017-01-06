@@ -45,4 +45,38 @@ describe("Quaternion", function() {
             expect(getValues(target.sub(self).getEulerAngles())).toEqual([0, 0, 10]);
         });
     });
+
+    describe("slerp", function(){
+        var left,right;
+
+        beforeEach(function(){
+            left = Quaternion.create(2,3,2,4);
+            right = Quaternion.create(4,10,5,1);
+        });
+
+        it("change self", function(){
+            var qua = Quaternion.create(1,2,3,4);
+
+
+            qua.slerp(left, right, 0.5);
+
+            expect(qua).toEqual(Quaternion.create(3, 6.5, 3.5, 2.5));
+        });
+        it("if interpolation === 0, remain left", function () {
+            var qua = Quaternion.create(1,2,3,4);
+
+
+            qua.slerp(left, right, 0);
+
+            expect(qua).toEqual(left);
+        });
+        it("if interpolation === 1, remain right", function () {
+            var qua = Quaternion.create(1,2,3,4);
+
+
+            qua.slerp(left, right, 1);
+
+            expect(qua).toEqual(right);
+        });
+    });
 });

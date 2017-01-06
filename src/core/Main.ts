@@ -32,7 +32,6 @@ module wd{
                 }
             }
             }){
-            this.isTest = isTest;
             this.screenSize = screenSize;
             this._canvasId = canvasId;
             this._useDevicePixelRatio = useDevicePixelRatio;
@@ -47,15 +46,26 @@ module wd{
                 }, contextConfig.options)
             };
 
+            this._setIsTest(isTest);
+
             return this;
         }
 
-        private static init(){
+        public static init(){
             wd.DeviceManager.getInstance().createGL(this._canvasId, this._contextConfig, this._useDevicePixelRatio);
             wd.DeviceManager.getInstance().setScreen();
             GPUDetector.getInstance().detect();
 
             return this;
+        }
+
+        private static _setIsTest(isTestFromDebugConfig:boolean){
+            if(CompileConfig.closeContractTest){
+                this.isTest = false;
+            }
+            else{
+                this.isTest = isTestFromDebugConfig;
+            }
         }
     }
 

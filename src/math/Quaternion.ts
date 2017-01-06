@@ -396,6 +396,17 @@ module wd {
         }
 
         public slerp(left: Quaternion, right: Quaternion, amount: number): Quaternion {
+            if(amount === 0){
+                this.set(left.x, left.y, left.z, left.w);
+
+                return this;
+            }
+            else if(amount === 1){
+                this.set(right.x, right.y, right.z, right.w);
+
+                return this;
+            }
+
             var num2;
             var num3;
             var num = amount;
@@ -418,7 +429,9 @@ module wd {
                 num2 = flag ? ((-Math.sin(num * num5)) * num6) : ((Math.sin(num * num5)) * num6);
             }
 
-            return Quaternion.create((num3 * left.x) + (num2 * right.x), (num3 * left.y) + (num2 * right.y), (num3 * left.z) + (num2 * right.z), (num3 * left.w) + (num2 * right.w));
+            this.set((num3 * left.x) + (num2 * right.x), (num3 * left.y) + (num2 * right.y), (num3 * left.z) + (num2 * right.z), (num3 * left.w) + (num2 * right.w));
+
+            return this;
         }
     }
 }

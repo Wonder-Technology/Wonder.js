@@ -10,8 +10,8 @@ module wd {
 
         //public keyState:any = {};
 
-        public on(eventName:EEventName, handler:(event:MouseEvent) => void, priority:number);
-        public on(dom:HTMLElement, eventName:EEventName, handler:(event:MouseEvent) => void, priority:number);
+        public on(eventName:EEventName, handler:(event:KeyboardEvent) => void, priority:number);
+        public on(dom:HTMLElement, eventName:EEventName, handler:(event:KeyboardEvent) => void, priority:number);
 
         public on(...args) {
             var eventName = null,
@@ -34,7 +34,7 @@ module wd {
             this.handler(this.getDefaultDom(), eventName, handler, priority);
         }
 
-        protected triggerDomEvent(dom:HTMLElement, event:Event, eventName:EEventName){
+        protected triggerDomEvent(dom:HTMLElement, event:IKeyboardEventData, eventName:EEventName){
             var eventObj = this._createEventObject(dom, event, eventName);
 
             EventManager.trigger(dom, eventObj);

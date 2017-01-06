@@ -88,7 +88,7 @@ module wd {
                     result = this.getCustomData(args[1]);
                     break;
                 default:
-                    wdCb.Log.error(true, wdCb.Log.info.FUNC_UNKNOW(`EBufferDataType: ${type}`));
+                    result = this.getBuffer(type);
                     break;
             }
 
@@ -111,6 +111,13 @@ module wd {
 
         @virtual
         protected getCustomData(dataName:string){
+            return null;
+        }
+
+        @virtual
+        protected getBuffer(type:EBufferDataType){
+            Log.error(true, wdCb.Log.info.FUNC_UNKNOW(`EBufferDataType: ${type}`));
+
             return null;
         }
 
@@ -148,8 +155,8 @@ module wd {
         //    return true;
         //}
 
-        protected hasData(data:Array<number>) {
-            return data && data.length > 0;
+        protected hasData(data:Array<number>|null) {
+            return !!data && data.length > 0;
         }
 
         @cache(function(type:EBufferDataType){

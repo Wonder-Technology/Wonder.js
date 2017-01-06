@@ -33,9 +33,7 @@ module wd {
             }
         }
 
-        public removeFromObject(entityObject:EntityObject){
-            super.removeFromObject(entityObject);
-
+        public removeFromEngine(){
             CollisionEngine.getInstance().removeChild(this);
         }
 
@@ -75,7 +73,7 @@ module wd {
 
             collider = targetObject.getComponent<Collider>(Collider);
 
-            if(targetObject.hasComponent(RigidBody)){
+            if(ClassUtils.hasComponent(targetObject, "RigidBody")){
                 collider.updateShape();
             }
 

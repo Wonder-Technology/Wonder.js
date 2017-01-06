@@ -1,38 +1,22 @@
 var fs = require("fs");
 var gulp = require("gulp");
-var through = require("through-gulp");
 
-var tsconfigFilePath = require("./pathData.js");
+var tsconfigFilePathData = require("./pathData.js");
 
-gulp.task("removeTsconfigFiles", function() {
-    return gulp.src(tsconfigFilePath)
-        .pipe(through(function (file, encoding, callback) {
-            var tsconfig = null;
+gulp.task("removeTsconfigFiles", function(done) {
+    for(var key in tsconfigFilePathData) {
+        if (tsconfigFilePathData.hasOwnProperty(key)) {
+            var configPath = tsconfigFilePathData[key],
+                fileContent = fs.readFileSync(configPath).toString(),
+                tsconfig = null;
 
-            if (file.isNull()) {
-                this.emit("error", "file shouldn't be null");
+            tsconfig = JSON.parse(fileContent);
+            delete tsconfig.files;
 
-                return callback();
-            }
+            fs.writeFileSync(configPath, JSON.stringify(tsconfig, null, '\t'));
+        }
+    }
 
-            if (file.isBuffer()) {
-                tsconfig = JSON.parse(file.contents);
-                delete tsconfig.files;
-
-                fs.writeFileSync(file.path, JSON.stringify(tsconfig, null, '\t'));
-
-                this.push(file);
-
-                callback();
-            }
-
-            if (file.isStream()) {
-                this.emit("error", "Streaming not supported");
-
-                return callback();
-            }
-        }, function (callback) {
-            callback();
-        }));
+    done();
 });
 

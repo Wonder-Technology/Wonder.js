@@ -276,8 +276,8 @@ describe("PlainFont", function () {
 
 
 
-            sandbox.stub(font._fontClientHeightCache, "getChild");
-            sandbox.stub(font._fontClientHeightCache, "addChild");
+            sandbox.stub(font._drawer._fontClientHeightCache, "getChild");
+            sandbox.stub(font._drawer._fontClientHeightCache, "addChild");
 
             setPosition(0, 0);
 
@@ -520,7 +520,7 @@ describe("PlainFont", function () {
 
         it("if the new data equal old data, not dirty and not reformat text and not render text", function(){
             sandbox.stub(font, "reFormat");
-            sandbox.stub(font, "_drawSingleLine");
+            sandbox.stub(font._drawer, "_drawSingleLine");
 
             font.update();
 
@@ -670,12 +670,14 @@ describe("PlainFont", function () {
                 fontFamily: fontFamily,
                 xAlignment: xAlignment,
                 yAlignment: yAlignment,
+                _lineHeight: lineHeight
+            });
+            cloneTool.extend(font._drawer, {
                 _fillEnabled: fillEnabled,
                 _fillStyle: fillStyle,
                 _strokeEnabled: strokeEnabled,
                 _strokeStyle: strokeStyle,
-                _strokeSize: strokeSize,
-                _lineHeight: lineHeight
+                _strokeSize: strokeSize
             });
 
             var result = font.clone();
@@ -685,12 +687,32 @@ describe("PlainFont", function () {
             expect(result.fontFamily).toEqual(fontFamily);
             expect(result.xAlignment).toEqual(xAlignment);
             expect(result.yAlignment).toEqual(yAlignment);
-            expect(result._fillEnabled).toEqual(fillEnabled);
-            expect(result._fillStyle).toEqual(fillStyle);
-            expect(result._strokeEnabled).toEqual(strokeEnabled);
-            expect(result._strokeStyle).toEqual(strokeStyle);
-            expect(result._strokeSize).toEqual(strokeSize);
             expect(result._lineHeight).toEqual(lineHeight);
+            expect(result._drawer._fillEnabled).toEqual(fillEnabled);
+            expect(result._drawer._fillStyle).toEqual(fillStyle);
+            expect(result._drawer._strokeEnabled).toEqual(strokeEnabled);
+            expect(result._drawer._strokeStyle).toEqual(strokeStyle);
+            expect(result._drawer._strokeSize).toEqual(strokeSize);
+        });
+    });
+
+    describe("fix bug", function(){
+        beforeEach(function(){
+        });
+
+        it("if set text after init, the first update should re format", function(){
+            font = createFont();
+            sandbox.spy(font, "reFormat");
+
+            font.init();
+
+            expect(font.reFormat).not.toCalled();
+
+            font.text = "aaa";
+
+            font.update(1);
+
+            expect(font.reFormat).toCalledOnce();
         });
     });
 });

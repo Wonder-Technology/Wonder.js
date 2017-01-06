@@ -4,13 +4,13 @@ var path = require("path");
 var karma = require("karma").server;
 
 var karmaConfPath = path.join(process.cwd(), "test/karma.conf.js");
+var liteKarmaConfPath = path.join(process.cwd(), "test/liteKarma.conf.js");
 var ciKarmaConfPath = path.join(process.cwd(), "karma.conf.js");
-var renderTestkarmaConfPath = path.join(process.cwd(), "test/karmaRenderTest.conf.js");
-var renderTestToolkarmaConfPath = path.join(process.cwd(), "test/karmaRenderTool.conf.js");
+var renderTestkarmaConfPath = path.join(process.cwd(), "test/renderTestKarma.conf.js");
+var renderTestToolkarmaConfPath = path.join(process.cwd(), "test/renderToolKarma.conf.js");
 
 
-require("../compile/compileTs");
-require("../compile/combineInnerLib");
+require("../package/package");
 
 
 gulp.task("testByKarma", function (done) {
@@ -21,6 +21,16 @@ gulp.task("testByKarma", function (done) {
     }, done);
 });
 
+
+gulp.task("liteTestByKarma", function (done) {
+    karma.start({
+        configFile: liteKarmaConfPath
+    }, done);
+});
+
+
+
+
 gulp.task("testSingleRunByKarma", function (done) {
     karma.start({
         configFile: karmaConfPath,
@@ -30,23 +40,13 @@ gulp.task("testSingleRunByKarma", function (done) {
 });
 
 
-var tsFilePaths = ["src/*.ts", "src/**/*.ts"];
-var glslFilePaths = ["src/renderer/shader/chunk/glsl/**/*.glsl", "src/lib/**/*.glsl"];
+gulp.task("test", gulpSync.sync(["testByKarma"]));
 
 
-gulp.task("compileForTest", gulpSync.sync(["createInnerFile", "parseTsconfigFilesGlob", "compileTsDebugForTest", "changeDistFilePath", "removeTsconfigFiles"]));
-
-gulp.task("watchForTest", function(){
-    var totalPaths = tsFilePaths.concat(glslFilePaths);
-
-    gulp.watch(totalPaths, gulpSync.sync(["createShaderChunk", "compileForTest"]));
-});
+gulp.task("liteTest", gulpSync.sync(["liteTestByKarma"]));
 
 
-gulp.task("test", gulpSync.sync(["compileForTest", "watchForTest", "testByKarma"]));
 
-
-//gulp.task("renderTest", gulpSync.sync(["compileForTest", "watchForTest", "renderTestByKarma"]));
 gulp.task("renderTest", gulpSync.sync(["renderTestByKarma"]));
 
 gulp.task("renderTestTool", gulpSync.sync(["renderTestToolByKarma"]));
@@ -78,17 +78,4 @@ gulp.task("testInCI", function (done) {
     }, done);
 });
 
-var karmaSyncConfPath= path.join(process.cwd(), "test/karmaSync.conf.js");
 
-gulp.task("testSync", function (done) {
-    karma.start({
-        configFile: karmaSyncConfPath
-    }, done);
-});
-
-
-gulp.task("testRenderer", function (done) {
-    karma.start({
-        configFile: path.join(process.cwd(), "test/karmaRenderer.conf.js")
-    }, done);
-});

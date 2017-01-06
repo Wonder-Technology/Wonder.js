@@ -1,6 +1,5 @@
 describe("event", function () {
     var manager = null;
-    var Listener = null;
     var sandbox = null;
     var target = null;
 
@@ -19,7 +18,6 @@ describe("event", function () {
         prepareTool.createGL("event-test");
 
         manager = wd.EventManager;
-        Listener = wd.EventListener;
         target = wd.GameObject.create();
     });
     afterEach(function () {
@@ -299,36 +297,6 @@ describe("event", function () {
     //    });
     //});
     //
-    //describe("add listener", function () {
-    //    //it("way1", function () {
-    //    //    manager.on(dom,
-    //    //        {
-    //    //            event: Listener.MOUSE,
-    //    //            onClick: function (e) {
-    //    //                expect(e instanceof wd.Event).toBeTruthy();
-    //    //                expect(e.target.id).toEqual("event-test");
-    //    //                expect(e.mouseButton).toEqual(0);
-    //    //                expect(e.type).toEqual(MouseEvent.CLICK);
-    //    //            }
-    //    //        });
-    //    //
-    //    //    manager.trigger(dom, MouseEvent.CLICK);
-    //    //});
-    //    //it("way2", function () {
-    //    //    var listener = EventListener.create({
-    //    //        event: Listener.MOUSE,
-    //    //        onClick: function (e) {
-    //    //            expect(e instanceof wd.Event).toBeTruthy();
-    //    //            expect(e.target.id).toEqual("event-test");
-    //    //            expect(e.mouseButton).toEqual(0);
-    //    //            expect(e.type).toEqual(MouseEvent.CLICK);
-    //    //        }
-    //    //    });
-    //    //    manager.on(dom, listener);
-    //    //
-    //    //    manager.trigger(dom, MouseEvent.CLICK);
-    //    //});
-    //});
     //
     //describe("dispatch in event flow", function () {
     //    //var count = null,
@@ -443,10 +411,4 @@ describe("event", function () {
     //    });
     //});
     //
-    //it("e.target is what triggers the event dispatcher to trigger and e.currentTarget is what you assigned your listener to", function () {
-    //
-    //});
-    //it("can set listener priority of the same target", function () {
-    //
-    //});
 });

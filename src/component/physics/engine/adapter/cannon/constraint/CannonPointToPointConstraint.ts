@@ -35,8 +35,8 @@ module wd{
             return constraint;
         }
 
-        protected addToConstraintDataList(entityObject:GameObject, wonderConstraint:PointToPointConstraint, cannonConstraint:CANNON.Constraint){
-            this.constraintDataList.add(entityObject, wonderConstraint, cannonConstraint);
+        protected addToConstraintDataList(entityObject:GameObject, wdConstraint:PointToPointConstraint, cannonConstraint:CANNON.Constraint){
+            this.constraintDataList.add(entityObject, wdConstraint, cannonConstraint);
         }
     }
 }

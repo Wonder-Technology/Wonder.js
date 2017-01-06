@@ -240,27 +240,62 @@ describe("ModelGeometry", function() {
         it("deep clone morphVertices", function(){
             judgeCloneMorphData("morphVertices");
         });
-        it("clone other geometry data", function () {
-            var vertices = [1,2,3],
-                colors = [0.1,0.2,0.3],
-                texCoords = [0.3,0.1];
 
-            cloneTool.extend(geo, {
+        describe("clone other geometry data", function () {
+            it("test", function () {
+                var vertices = [1,2,3],
+                    colors = [0.1,0.2,0.3],
+                    texCoords = [0.3,0.1],
+                    jointIndices = [
+                        0,0,1,1,
+                        1,1,1,0,
+                        0,0,0,0
+                    ],
+                    jointWeights = [
+                        0,0,1,0,
+                        0.2,0.5,0.3,0,
+                        0,0,0,0
+                    ];
+
+
+                cloneTool.extend(geo, {
                     vertices: vertices,
                     colors: colors,
-                texCoords: texCoords
-            })
+                    texCoords: texCoords,
 
-            var result = geo.clone();
+                    jointIndices: jointIndices,
+                    jointWeights: jointWeights
+                })
 
-            expect(result.vertices).toEqual(vertices);
-            expect(result.vertices === vertices).toBeFalsy();
+                var result = geo.clone();
 
-            expect(result.colors).toEqual(colors);
-            expect(result.colors === colors).toBeFalsy();
+                expect(result.vertices).toEqual(vertices);
+                expect(result.vertices === vertices).toBeFalsy();
 
-            expect(result.texCoords).toEqual(texCoords);
-            expect(result.texCoords === texCoords).toBeFalsy();
+                expect(result.colors).toEqual(colors);
+                expect(result.colors === colors).toBeFalsy();
+
+                expect(result.texCoords).toEqual(texCoords);
+                expect(result.texCoords === texCoords).toBeFalsy();
+
+                expect(result.jointIndices).toEqual(jointIndices);
+                expect(result.jointIndices === jointIndices).toBeFalsy();
+
+                expect(result.jointWeights).toEqual(jointWeights);
+                expect(result.jointWeights === jointWeights).toBeFalsy();
+            });
+            it("if data === null, cloned data should === null", function () {
+                var colors = null;
+
+
+                cloneTool.extend(geo, {
+                    colors: colors
+                })
+
+                var result = geo.clone();
+
+                expect(result.colors).toBeNull();
+            });
         });
     });
 
@@ -465,7 +500,64 @@ describe("ModelGeometry", function() {
 
                 geo.merge(geo2, transform);
 
-                expect(geo.texCoords).toEqual([ 0.1, 0.1, 0.2, 0.2, 0.5, 0.5, 0.2, 0.2, 0.1, 0.1, 0.5, 0.5 ]);            });
+                expect(geo.texCoords).toEqual([ 0.1, 0.1, 0.2, 0.2, 0.5, 0.5, 0.2, 0.2, 0.1, 0.1, 0.5, 0.5 ]);
+            });
+            it("merge jointIndices", function () {
+                geo.jointIndices = [
+                    0, 0, 1, 1,
+                    1, 1, 1, 0,
+                    0, 0, 0, 0
+                ];
+                geo2.jointIndices = [
+                    1, 1, 1, 0,
+                    0, 0, 1, 1,
+                    0, 0, 0, 0
+                ];
+
+                var transform = wd.ThreeDTransform.create();
+                // 0, 0, 1, 1,
+                //     1, 1, 1, 0,
+                //     0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0 ]
+
+                geo.merge(geo2, transform);
+
+                expect(geo.jointIndices).toEqual([
+                    0, 0, 1, 1,
+                    1, 1, 1, 0,
+                    0, 0, 0, 0,
+
+                    1, 1, 1, 0,
+                    0, 0, 1, 1,
+                    0, 0, 0, 0
+                ]);
+            });
+            it("merge jointWeights", function () {
+                geo.jointWeights = [
+                    0, 0, 1, 0,
+                    0.2, 0.5, 0.3, 0,
+                    0, 0, 0, 0
+                ];
+                geo2.jointWeights = [
+                    0.2, 0.5, 0.3, 0,
+                    0, 0, 1, 0,
+                    0, 0, 0, 0
+                ];
+
+                var transform = wd.ThreeDTransform.create();
+
+
+                geo.merge(geo2, transform);
+
+                expect(geo.jointWeights).toEqual([
+                    0, 0, 1, 0,
+                    0.2, 0.5, 0.3, 0,
+                    0, 0, 0, 0,
+
+                    0.2, 0.5, 0.3, 0,
+                    0, 0, 1, 0,
+                    0, 0, 0, 0
+                ]);
+            });
         });
 
         describe("test merge CustomGeometry", function () {

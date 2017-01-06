@@ -9,7 +9,9 @@ module wd{
         public type:string = "vertice_morph";
 
         @require(function(program:Program, cmd:QuadCommand, material:EngineMaterial){
-            assert(cmd.target.hasComponent(MorphAnimation), Log.info.FUNC_SHOULD("entityObject", "has MorphAnimation component"));
+            it("entityObject should has MorphAnimation component", () => {
+                expect(cmd.target.hasComponent(MorphAnimation)).true;
+            });
         })
         public sendShaderVariables(program:Program, cmd:QuadCommand, material:EngineMaterial){
             var morphVerticeData = cmd.buffers.getChild(EBufferDataType.VERTICE);

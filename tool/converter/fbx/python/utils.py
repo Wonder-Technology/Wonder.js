@@ -52,7 +52,12 @@ def getAnimationId(animStack, forcePrefix = True, defaultName = "defaultAnimName
 
 def getTextureId(t, forcePrefix = True):
     if type(t) is FbxFileTexture:
-        texture_file = t.GetFileName()
+        try:
+            texture_file = t.GetFileName()
+        except:
+            texture_file = "defaultTexture.png"
+        # else:
+
         texture_id = getBaseName(texture_file).split(".")[0]
     else:
         texture_id = t.GetName()

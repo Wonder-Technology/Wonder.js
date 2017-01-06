@@ -9,7 +9,7 @@ describe("OneToOneSourceInstance", function(){
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
-        wd.DebugStatistics.clear();
+        wd.DebugStatistics.resetData();
 
         sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
 

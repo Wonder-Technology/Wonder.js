@@ -52,6 +52,11 @@ module wd{
             value:EVariableCategory.ENGINE
         };
 
+        public static u_color:ShaderVariable = {
+            type:EVariableType.VECTOR_3,
+            value:EVariableCategory.ENGINE
+        };
+
         public static u_mMatrix:ShaderVariable = {
             type:EVariableType.FLOAT_MAT4,
             value:EVariableCategory.ENGINE
@@ -580,6 +585,21 @@ module wd{
 
         public static u_lightColor:ShaderVariable = {
             type:EVariableType.VECTOR_3,
+            value:EVariableCategory.ENGINE
+        };
+
+        public static a_jointIndice:ShaderVariable = {
+            type:EVariableType.FLOAT_4,
+            value:EVariableCategory.ENGINE
+        };
+
+        public static a_jointWeight:ShaderVariable = {
+            type:EVariableType.FLOAT_4,
+            value:EVariableCategory.ENGINE
+        };
+
+        public static u_jointMatrices:ShaderVariable = {
+            type:EVariableType.FLOAT_MAT4_ARRAY,
             value:EVariableCategory.ENGINE
         };
     }

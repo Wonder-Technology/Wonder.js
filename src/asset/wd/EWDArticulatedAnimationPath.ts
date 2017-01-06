@@ -1,5 +1,5 @@
 module wd{
-    export enum EWDArticulatedAnimationPath{
+    export enum EWDKeyFrameAnimationPath{
         TRANSLATION = <any>"translation",
         ROTATION = <any>"rotation",
         SCALE = <any>"scale"

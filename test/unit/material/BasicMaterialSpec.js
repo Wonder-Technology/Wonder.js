@@ -57,6 +57,141 @@ describe("BasicMaterial", function () {
         expect(searchTool.searchString(/gl_FragColor\s=/g, material.shader.fsSource).count).toEqual(1);
     });
 
+    describe("add basic color shader lib", function(){
+        var colors,model,geo,material,director;
+
+        beforeEach(function(){
+
+        });
+
+        describe("if geometry has color data, add BasicVertexColorShaderLib shader lib", function () {
+            beforeEach(function(){
+                colors = [
+                    1, 0.1, 0,
+                    0, 0.2, 0,
+                    0, 0, 1
+                ];
+
+                model = wd.GameObject.create();
+                geo = wd.ModelGeometry.create();
+
+                geo.colors = colors;
+                geo.faces = testTool.createFaces([0,1,2]);
+
+
+                material = wd.BasicMaterial.create();
+
+                materialTool.prepareMap(sandbox, model, geo, material);
+
+
+
+                director = wd.Director.getInstance();
+
+
+
+
+                prepareTool.prepareForMap(sandbox);
+            });
+
+            it("send a_color", function () {
+                director._init();
+                program = shaderTool.getAndStubProgram(sandbox, material);
+
+
+                director._loopBody(1);
+
+                expect(program.sendAttributeBuffer.withArgs("a_color")).toCalledOnce();
+                expect(
+                    testTool.getValues(
+                        program.sendAttributeBuffer.withArgs("a_color").getCall(0).args[2].data,
+                        1
+                    )
+                ).toEqual(colors);
+            });
+
+            describe("test glsl", function () {
+                beforeEach(function(){
+                    director._init();
+                });
+
+                it("test vs source", function () {
+                    var source = material.shader.vsSource;
+
+                    expect(source).toContain("varying vec3 v_color;");
+                    expect(source).toContain("v_color = a_color;");
+                });
+                it("test fs source", function () {
+                    var source = material.shader.fsSource;
+
+                    expect(source).toContain("vec4 totalColor = vec4(v_color, 1.0);");
+                });
+
+            });
+        });
+
+        describe("else, add BasicMaterialColorShaderLib shader lib", function(){
+            var color = null;
+
+            beforeEach(function(){
+                color = wd.Color.create("rgb(0.1,0.2,0.3)");
+
+                model = wd.GameObject.create();
+                geo = wd.ModelGeometry.create();
+
+                geo.faces = testTool.createFaces([0,1,2]);
+
+
+                material = wd.BasicMaterial.create();
+                material.color = color;
+
+                materialTool.prepareMap(sandbox, model, geo, material);
+
+
+
+                director = wd.Director.getInstance();
+
+
+
+
+                prepareTool.prepareForMap(sandbox);
+            });
+
+            it("send u_color", function () {
+                director._init();
+                program = shaderTool.getAndStubProgram(sandbox, material);
+
+
+                director._loopBody(1);
+
+                expect(program.sendUniformData.withArgs("u_color")).toCalledOnce();
+                expect(
+                    testTool.getValues(
+                        program.sendUniformData.withArgs("u_color").getCall(0).args[2],
+                        1
+                    )
+                ).toEqual(
+                    testTool.getValues(
+                        color.toVector3(),
+                        1
+                    ));
+            });
+
+            describe("test glsl", function () {
+                beforeEach(function(){
+                    director._init();
+                });
+
+                it("test fs source", function () {
+                    var source = material.shader.fsSource;
+
+                    expect(source).toContain("vec4 totalColor = vec4(u_color, 1.0);");
+                });
+
+            });
+        });
+
+    });
+
     describe("set map shader lib", function () {
         var model, geo, material, director, program;
         var vertice, normals,texCoords;

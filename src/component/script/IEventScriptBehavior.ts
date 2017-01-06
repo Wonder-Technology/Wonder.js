@@ -1,12 +1,12 @@
 module wd{
     export interface IEventScriptBehavior extends IScriptBehavior{
-        onMouseDown?(e:MouseEvent);
-        onMouseUp?(e:MouseEvent);
-        onMouseMove?(e:MouseEvent);
-        onMouseOver?(e:MouseEvent);
-        onMouseOut?(e:MouseEvent);
-        onMouseWheel?(e:MouseEvent);
-        onMouseClick?(e:MouseEvent);
-        onMouseDrag?(e:MouseEvent);
+        onPointDown?(e:PointEvent);
+        onPointUp?(e:PointEvent);
+        onPointMove?(e:PointEvent);
+        onPointOver?(e:PointEvent);
+        onPointOut?(e:PointEvent);
+        onPointScale?(e:PointEvent);
+        onPointTap?(e:PointEvent);
+        onPointDrag?(e:PointEvent);
     }
 }

@@ -2,10 +2,10 @@ var gulp = require("gulp");
 var Converter = require("../../dist/converter/gulp_task/convertIndices/Converter").Converter;
 
 
-function convertMultiIndicesToSingleIndice(isRemoveNullData, file){
+function convertMultiIndicesToSingleIndice(isRemoveNullData, fileJson){
     var converter = Converter.create();
 
-    return converter.convert(JSON.parse(file.toString()), isRemoveNullData);
+    return converter.convert(fileJson, isRemoveNullData);
 }
 
 module.exports = convertMultiIndicesToSingleIndice;

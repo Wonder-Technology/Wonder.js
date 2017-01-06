@@ -31,8 +31,8 @@ module wd {
                     return;
                 }
 
-                entityObject.transform.position = CannonUtils.convertToWonderVector3(body.position);
-                entityObject.transform.rotation = CannonUtils.convertToWonderQuaternion(body.quaternion);
+                entityObject.transform.position = CannonUtils.convertTowdVector3(body.position);
+                entityObject.transform.rotation = CannonUtils.convertTowdQuaternion(body.quaternion);
             });
         }
 

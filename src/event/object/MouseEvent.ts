@@ -2,14 +2,15 @@ module wd {
     declare var document:any;
 
     export class MouseEvent extends DomEvent{
-        public static create(event:any, eventName:EEventName) {
+        public static create(event:IMouseEventData, eventName:EEventName) {
             var obj = new this(event, eventName);
 
             return obj;
         }
 
+        public event:IMouseEventData;
+
         private _location:Point = null;
-        //Get cursor location(related to document)
         get location():Point {
             var point:Point = null,
                 e = this.event;
@@ -37,7 +38,6 @@ module wd {
 
 
         private _locationInView:Point = null;
-        //Returns the current cursor location in screen coordinates(related to canvas)
         get locationInView():Point {
             var point:Point = null,
                 viewOffset:any = null;
@@ -62,7 +62,11 @@ module wd {
             var e = this.event,
                 mouseButton:number = null;
 
-            if (this._button) {
+            if(bowser.mobile){
+                return null;
+            }
+
+            if (this._button !== null) {
                 return this._button;
             }
 
@@ -112,6 +116,10 @@ module wd {
              */
             var e = this.event;
 
+            if(bowser.mobile){
+                return null;
+            }
+
             if (e.detail) {
                 return -1 * e.detail;
             }
@@ -126,11 +134,11 @@ module wd {
         get movementDelta(){
             var e = this.event,
                 dx = null,
-                wd = null;
+                dy = null;
 
             if(this._isPointerLocked()){
                 dx = e.movementX || e.webkitMovementX || e.mozMovementX || 0;
-                wd = e.movementY || e.webkitMovementY || e.mozMovementY || 0;
+                dy = e.movementY || e.webkitMovementY || e.mozMovementY || 0;
             }
             else{
                 let location = this.location,
@@ -139,28 +147,27 @@ module wd {
 
                 if(lastX === null && lastY === null){
                     dx = 0;
-                    wd = 0;
+                    dy = 0;
                 }
                 else{
                     dx = location.x - lastX;
-                    wd = location.y - lastY;
+                    dy = location.y - lastY;
                 }
             }
 
             return {
                 x: dx,
-                y: wd
+                y: dy
             }
         }
+
+        public readonly type:EEventType = EEventType.MOUSE;
 
         public lastX:number = null;
         public lastY:number = null;
 
-        protected p_type:EEventType = EEventType.MOUSE;
-
-
         public clone():MouseEvent{
-            var eventObj = MouseEvent.create(this.event, this.name);
+            var eventObj = MouseEvent.create(this.event, <EEventName>this.name);
 
             return <MouseEvent>this.copyMember(eventObj, this, ["target", "currentTarget", "isStopPropagation", "phase", "lastX", "lastY"]);
         }
@@ -170,3 +177,4 @@ module wd {
         }
     }
 }
+

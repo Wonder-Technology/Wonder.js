@@ -138,7 +138,7 @@ describe("articulated animation", function () {
                                 [
                                     {
                                         interpolationMethod:wd.EKeyFrameInterpolation.SWITCH,
-                                        target:wd.EArticulatedAnimationTarget.TEXTURE_OFFSET,
+                                        target:wd.EKeyFrameAnimationTarget.TEXTURE_OFFSET,
                                         data: [0,0,width,height],
                                         extra:{
                                             target:"map"
@@ -154,7 +154,7 @@ describe("articulated animation", function () {
                                 [
                                     {
                                         interpolationMethod:wd.EKeyFrameInterpolation.SWITCH,
-                                        target:wd.EArticulatedAnimationTarget.TEXTURE_OFFSET,
+                                        target:wd.EKeyFrameAnimationTarget.TEXTURE_OFFSET,
                                         data: [width,0,width,height],
                                         extra:{
                                             target:"map"
@@ -170,7 +170,7 @@ describe("articulated animation", function () {
                                 [
                                     {
                                         interpolationMethod:wd.EKeyFrameInterpolation.SWITCH,
-                                        target:wd.EArticulatedAnimationTarget.TEXTURE_OFFSET,
+                                        target:wd.EKeyFrameAnimationTarget.TEXTURE_OFFSET,
                                         data: [0,height,width,height],
                                         extra:{
                                             target:"map"
@@ -224,7 +224,7 @@ describe("articulated animation", function () {
                                 [
                                     {
                                         interpolationMethod:wd.EKeyFrameInterpolation.SWITCH,
-                                        target:wd.EArticulatedAnimationTarget.TEXTURE_OFFSET,
+                                        target:wd.EKeyFrameAnimationTarget.TEXTURE_OFFSET,
                                         data: [0,0,width,height],
                                         extra:{
                                             target:"diffuseMap"
@@ -240,7 +240,7 @@ describe("articulated animation", function () {
                                 [
                                     {
                                         interpolationMethod:wd.EKeyFrameInterpolation.SWITCH,
-                                        target:wd.EArticulatedAnimationTarget.TEXTURE_OFFSET,
+                                        target:wd.EKeyFrameAnimationTarget.TEXTURE_OFFSET,
                                         data: [width,0,width,height],
                                         extra:{
                                             target:"diffuseMap"
@@ -256,7 +256,7 @@ describe("articulated animation", function () {
                                 [
                                     {
                                         interpolationMethod:wd.EKeyFrameInterpolation.SWITCH,
-                                        target:wd.EArticulatedAnimationTarget.TEXTURE_OFFSET,
+                                        target:wd.EKeyFrameAnimationTarget.TEXTURE_OFFSET,
                                         data: [0,height,width,height],
                                         extra:{
                                             target:"diffuseMap"

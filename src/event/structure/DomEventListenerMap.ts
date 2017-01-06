@@ -6,7 +6,7 @@ module wd{
             return obj;
         }
 
-        private _targetListenerMap: wdCb.Hash<wdCb.Hash<wdCb.Collection<EventRegisterData>>> = wdCb.Hash.create<wdCb.Hash<wdCb.Collection<EventRegisterData>>>();
+        private _targetListenerMap: wdCb.Hash<wdCb.Hash<wdCb.Collection<DomEventRegisterData>>> = wdCb.Hash.create<wdCb.Hash<wdCb.Collection<DomEventRegisterData>>>();
 
         public hasChild(dom:HTMLElement, eventName:EEventName):boolean{
             var list:any = this._targetListenerMap.getChild(this.buildFirstLevelKey(dom));

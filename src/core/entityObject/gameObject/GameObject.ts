@@ -38,7 +38,7 @@ module wd {
         })
         public static merge(gameObjectArr:Array<GameObject>){
             var source:GameObject = gameObjectArr[0],
-            resultObject:GameObject = source.clone({
+            resultObject:GameObject = <GameObject>source.clone({
                 cloneChildren:false,
                 cloneGeometry:false
             }),
@@ -76,14 +76,18 @@ module wd {
         }
 
         public getSpacePartition(){
-            return this.getComponent<SpacePartition>(SpacePartition);
+            return this.getComponent<any>(ClassUtils.getClass("SpacePartition"));
         }
 
         public getGeometry():Geometry{
-            var lod:GeometryLOD = this.getComponent<GeometryLOD>(GeometryLOD);
+            var GeometryLOD = ClassUtils.getClass("GeometryLOD");
 
-            if(lod && lod.activeGeometry) {
-                return <any>lod.activeGeometry;
+            if(!!GeometryLOD){
+                let lod:any = this.getComponent<any>(GeometryLOD);
+
+                if(lod && lod.activeGeometry) {
+                    return <any>lod.activeGeometry;
+                }
             }
 
             return super.getGeometry();
@@ -94,7 +98,7 @@ module wd {
         }
 
         protected getRenderList(){
-            if(this.hasComponent(Octree)){
+            if(ClassUtils.hasComponent(this, "Octree")){
                 return this.getSpacePartition().getRenderList();
             }
 
@@ -102,7 +106,7 @@ module wd {
         }
 
         protected afterInitChildren(){
-            if(this.hasComponent(Octree)){
+            if(ClassUtils.hasComponent(this, "Octree")){
                 return this.getSpacePartition().build();
             }
         }

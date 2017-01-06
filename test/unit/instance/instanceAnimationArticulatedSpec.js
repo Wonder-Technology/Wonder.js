@@ -116,7 +116,7 @@ describe("instance+articulated animation", function () {
 
                     targets: wdCb.Collection.create(
                         [
-                            {interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,target:wd.EArticulatedAnimationTarget.TRANSLATION, data: wd.Vector3.create(0,0,0)}
+                            {interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,target:wd.EKeyFrameAnimationTarget.TRANSLATION, data: wd.Vector3.create(0,0,0)}
                         ]
                     )
                 },
@@ -125,7 +125,7 @@ describe("instance+articulated animation", function () {
 
                     targets: wdCb.Collection.create(
                         [
-                            {interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,target:wd.EArticulatedAnimationTarget.TRANSLATION, data: wd.Vector3.create(3,1,0)}
+                            {interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,target:wd.EKeyFrameAnimationTarget.TRANSLATION, data: wd.Vector3.create(3,1,0)}
                         ]
                     )
                 }
@@ -136,7 +136,7 @@ describe("instance+articulated animation", function () {
 
                     targets: wdCb.Collection.create(
                         [
-                            {interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,target:wd.EArticulatedAnimationTarget.SCALE, data: wd.Vector3.create(1,1,1)}
+                            {interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,target:wd.EKeyFrameAnimationTarget.SCALE, data: wd.Vector3.create(1,1,1)}
                         ]
                     )
                 },
@@ -145,7 +145,7 @@ describe("instance+articulated animation", function () {
 
                     targets: wdCb.Collection.create(
                         [
-                            {interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,target:wd.EArticulatedAnimationTarget.SCALE, data: wd.Vector3.create(2,2,2)}
+                            {interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,target:wd.EKeyFrameAnimationTarget.SCALE, data: wd.Vector3.create(2,2,2)}
                         ]
                     )
                 }

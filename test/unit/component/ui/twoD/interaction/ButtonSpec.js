@@ -39,6 +39,8 @@ describe("Button", function() {
 
         uiObject.addComponent(renderer);
 
+        uiObject.name = "uiObject";
+
 
         return uiObject;
     }
@@ -190,8 +192,8 @@ describe("Button", function() {
                             expect(font.text).toEqual("ccc");
                         });
                         it("fillText text", function(){
-                            expect(font._fillEnabled).toBeTruthy();
-                            expect(font._fillStyle).toEqual("#000000");
+                            expect(font._drawer._fillEnabled).toBeTruthy();
+                            expect(font._drawer._fillStyle).toEqual("#000000");
                         });
                         it("text->alignment is center", function(){
                             expect(font.xAlignment).toEqual(wd.EFontXAlignment.CENTER);
@@ -328,7 +330,7 @@ describe("Button", function() {
 
                         var font = getFontObject().getComponent(wd.PlainFont);
                         expect(font.text).toEqual("a");
-                        expect(font._fillEnabled).toBeTruthy();
+                        expect(font._drawer._fillEnabled).toBeTruthy();
                         expect(font.xAlignment).toEqual(wd.EFontXAlignment.CENTER);
                         expect(font.yAlignment).toEqual(wd.EFontYAlignment.MIDDLE);
                     });
@@ -377,132 +379,196 @@ describe("Button", function() {
 
             expect(image.render).toCalledBefore(plaintFont.render);
         });
+    });
+
+    describe("test event", function(){
+        var EEventName = wd.EEventName;
+        var State = wd.EUIState;
+        var EventManager = wd.EventManager;
+
+        var fakeEvent;
+        var triggerDetector;
+
+        function trigger(eventName, event){
+            eventTool.triggerDomEvent(eventName, document.body, event || fakeEvent);
+        }
+
+        function triggerOverEvent(eventType) {
+            trigger(EEventName[eventType.toUpperCase() + "MOVE"]);
+        }
+
+        function triggerOutEvent(eventType) {
+            triggerDetector.isTrigger.returns(false);
+            trigger(EEventName[eventType.toUpperCase() + "MOVE"]);
+        }
+
+        beforeEach(function(){
+            sandbox.stub(wd.DeviceManager.getInstance(), "view", {
+                x: 0,
+                y: 0,
+                width: 1000,
+                height: 800,
+                offset:{
+                    x:1,
+                    y:1
+                }
+            });
+
+
+
+            triggerDetector = wd.UIEventTriggerDetector.create();
+
+            sandbox.stub(triggerDetector, "isTrigger").returns(true);
+
+            uiObject.addComponent(triggerDetector);
+
+
+            director.scene.addChild(uiObject);
+        });
 
         describe("bind event", function(){
-            var EventManager = wd.EventManager;
-            var EEngineEvent = wd.EEngineEvent;
-            var State = wd.EUIState;
+            function judgePointEvent(eventType) {
+                describe("bind " + eventType + "down event", function(){
+                    it("if disabled, return", function(){
+                        button.disable();
+                        trigger(EEventName[eventType.toUpperCase() + "DOWN"]);
 
-            function trigger(engineEvent){
-                EventManager.trigger(uiObject, wd.CustomEvent.create(engineEvent));
+                        expect(button.currentState).toEqual(State.DISABLED);
+                    });
+                    it("else, change state to PRESSED", function () {
+                        trigger(EEventName[eventType.toUpperCase() + "DOWN"]);
+
+                        expect(button.currentState).toEqual(State.PRESSED);
+                    });
+
+                });
+
+                describe("bind " + eventType + "up event", function(){
+                    it("if disabled, return", function(){
+                        button.disable();
+                        trigger(EEventName[eventType.toUpperCase() + "UP"]);
+
+                        expect(button.currentState).toEqual(State.DISABLED);
+                    });
+                    it("else, back state", function () {
+                        trigger(EEventName[eventType.toUpperCase() + "DOWN"]);
+                        trigger(EEventName[eventType.toUpperCase() + "UP"]);
+
+                        expect(button.currentState).toEqual(State.NORMAL);
+                    });
+                });
+
+                describe("bind " + eventType + "over event", function(){
+                    it("if disabled, return", function(){
+                        button.disable();
+                        triggerOverEvent(eventType)
+
+                        expect(button.currentState).toEqual(State.DISABLED);
+                    });
+                    it("else, change state to HIGHLIGHT", function () {
+                        triggerOverEvent(eventType)
+
+                        expect(button.currentState).toEqual(State.HIGHLIGHT);
+                    });
+                });
             }
 
             beforeEach(function(){
-                button.init();
             });
 
-            describe("bind mousedown event", function(){
-                it("if disabled, return", function(){
-                    button.disable();
-                    trigger(EEngineEvent.MOUSE_DOWN);
+            describe("test mouse event", function(){
+                beforeEach(function(){
+                    fakeEvent = eventTool.buildFakeMouseEvent(10,10);
 
-                    expect(button.currentState).toEqual(State.DISABLED);
-                });
-                it("else, change state to PRESSED", function () {
-                    trigger(EEngineEvent.MOUSE_DOWN);
 
-                    expect(button.currentState).toEqual(State.PRESSED);
+                    director._init();
                 });
 
+                judgePointEvent("mouse");
             });
 
-            describe("bind mouseup event", function(){
-                it("if disabled, return", function(){
-                    button.disable();
-                    trigger(EEngineEvent.MOUSE_UP);
+            describe("test touch event", function(){
+                beforeEach(function(){
+                    sandbox.stub(director.domEventManager._pointEventBinder, "_isSupportTouch").returns(true);
 
-                    expect(button.currentState).toEqual(State.DISABLED);
+                    fakeEvent = eventTool.buildFakeTouchEvent(10, 10);
+
+                    director._init();
                 });
-                it("else, back state", function () {
-                    trigger(EEngineEvent.MOUSE_DOWN);
-                    trigger(EEngineEvent.MOUSE_UP);
 
-                    expect(button.currentState).toEqual(State.NORMAL);
-                });
-            });
 
-            describe("bind mouseover event", function(){
-                it("if disabled, return", function(){
-                    button.disable();
-                    trigger(EEngineEvent.MOUSE_OVER);
-
-                    expect(button.currentState).toEqual(State.DISABLED);
-                });
-                it("else, change state to HIGHLIGHT", function () {
-                    trigger(EEngineEvent.MOUSE_OVER);
-
-                    expect(button.currentState).toEqual(State.HIGHLIGHT);
-                });
-            });
-
-            describe("bind mousedown event", function(){
-                it("if disabled, return", function(){
-                    button.disable();
-                    trigger(EEngineEvent.MOUSE_OVER);
-
-                    expect(button.currentState).toEqual(State.DISABLED);
-                });
-                it("else, change state to PRESSED", function () {
-                    trigger(EEngineEvent.MOUSE_OVER);
-                    trigger(EEngineEvent.MOUSE_OUT);
-
-                    expect(button.currentState).toEqual(State.NORMAL);
-                });
+                judgePointEvent("touch");
             });
 
             describe("fix bug", function(){
                 it("if mouse over-> mouse down->mouse out, the button state should back to the origin state", function () {
-                    trigger(EEngineEvent.MOUSE_OVER);
-                    trigger(EEngineEvent.MOUSE_DOWN);
-                    trigger(EEngineEvent.MOUSE_OUT);
+                    triggerOverEvent("mouse")
+                    trigger(EEventName.MOUSEDOWN);
+                    triggerOutEvent("mouse")
 
                     expect(button.currentState).toEqual(State.NORMAL);
 
                 });
             });
-        })
-    });
-
-    describe("dispose", function(){
-        var EventManager = wd.EventManager;
-        var EEngineEvent = wd.EEngineEvent;
-        var State = wd.EUIState;
-
-        function trigger(engineEvent){
-            EventManager.trigger(uiObject, wd.CustomEvent.create(engineEvent));
-        }
-
-        beforeEach(function(){
-            button.init();
         });
 
-        describe("off event", function(){
+        describe("dispose", function(){
             beforeEach(function(){
-                sandbox.stub(button._stateMachine, "changeState");
-                sandbox.stub(button._stateMachine, "backState");
-
-                button.dispose();
             });
 
-            it("off mousedown event", function(){
-                trigger(EEngineEvent.MOUSE_DOWN);
+            describe("off event", function(){
+                function judgePointEvent(eventType) {
+                        it("off " + eventType + "down event", function(){
+                            trigger(EEventName[eventType.toUpperCase() + "DOWN"]);
 
-                expect(button._stateMachine.changeState).not.toCalled();
-            });
-            it("off mouseup event", function(){
-                trigger(EEngineEvent.MOUSE_UP);
+                            expect(button._stateMachine.changeState).not.toCalled();
+                        });
+                        it("off " + eventType + "up event", function(){
+                            trigger(EEventName[eventType.toUpperCase() + "UP"]);
 
-                expect(button._stateMachine.backState).not.toCalled();
-            });
-            it("off mouseover event", function(){
-                trigger(EEngineEvent.MOUSE_OVER);
+                            expect(button._stateMachine.backState).not.toCalled();
+                        });
+                        it("off " + eventType + "over event", function(){
+                            triggerOverEvent("" + eventType + "");
 
-                expect(button._stateMachine.changeState).not.toCalled();
-            });
-            it("off mouseout event", function(){
-                trigger(EEngineEvent.MOUSE_OUT);
+                            expect(button._stateMachine.changeState).not.toCalled();
+                        });
+                        it("off " + eventType + "out event", function(){
+                            triggerOutEvent("" + eventType + "");
 
-                expect(button._stateMachine.backState).not.toCalled();
+                            expect(button._stateMachine.backState).not.toCalled();
+                        });
+                }
+
+
+                beforeEach(function(){
+                    sandbox.stub(button._stateMachine, "changeState");
+                    sandbox.stub(button._stateMachine, "backState");
+                });
+
+                describe("test mouse event", function(){
+                    beforeEach(function(){
+                        director._init();
+
+                        button.dispose();
+                    });
+
+                    judgePointEvent("mouse");
+                });
+
+                describe("test touch event", function(){
+                    beforeEach(function(){
+                        sandbox.stub(director.domEventManager._pointEventBinder, "_isSupportTouch").returns(true);
+
+                        fakeEvent = eventTool.buildFakeTouchEvent(10, 10);
+
+                        director._init();
+
+                        button.dispose();
+                    });
+
+                    judgePointEvent("touch");
+                });
             });
         });
     });

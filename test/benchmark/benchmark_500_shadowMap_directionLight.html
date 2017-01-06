@@ -4,20 +4,20 @@
     <meta charset="UTF-8">
     <title>one direction shadowMap</title>
 
-    <script src="../../dist/wd.innerLib.js" type="text/javascript"></script>
-    <script src="../../dist/wd.debug.js" type="text/javascript"></script>
+    <script src="../../dist/Hilo3D.innerLib.js" type="text/javascript"></script>
+    <script src="../../dist/Hilo3D.debug.js" type="text/javascript"></script>
 </head>
 <body>
 
 <script>
     window.onload = function () {
-        wd.Main.setConfig({
+        Hilo3D.Main.setConfig({
             //open contract check
             isTest: false,
-            screenSize: wd.EScreenSize.FULL
+            screenSize: Hilo3D.EScreenSize.FULL
         }).init();
 
-        wd.LoaderManager.getInstance().load([
+        Hilo3D.LoaderManager.getInstance().load([
 //            {url: "../../examples/asset/texture/1.jpg", id: "texture"},
             {url: "../../examples/asset/texture/crate.gif", id: "ground"}
         ]).subscribe(null, null, function () {
@@ -25,7 +25,7 @@
         });
 
         function initSample() {
-            var director = wd.Director.getInstance();
+            var director = Hilo3D.Director.getInstance();
 
             var box = createBox();
             box.name = "box";
@@ -49,69 +49,69 @@
         }
 
         function createSphere() {
-            var material = wd.LightMaterial.create();
-            material.specularColor = wd.Color.create("#ffdd99");
+            var material = Hilo3D.LightMaterial.create();
+            material.specularColor = Hilo3D.Color.create("#ffdd99");
             material.shininess = 16;
-            material.diffuseMap = wd.TextureLoader.getInstance().get("texture").toTexture();
-            material.shading = wd.EShading.SMOOTH;
+            material.diffuseMap = Hilo3D.TextureLoader.getInstance().get("texture").toTexture();
+            material.shading = Hilo3D.EShading.SMOOTH;
 
 
-            var geometry = wd.SphereGeometry.create();
+            var geometry = Hilo3D.SphereGeometry.create();
             geometry.material = material;
             geometry.radius = 20;
             geometry.segment = 20;
 
 
-            var gameObject = wd.GameObject.create();
+            var gameObject = Hilo3D.GameObject.create();
 
-            gameObject.addComponent(wd.MeshRenderer.create());
+            gameObject.addComponent(Hilo3D.MeshRenderer.create());
             gameObject.addComponent(geometry);
 
 
 
-            var shadow = wd.Shadow.create();
+            var shadow = Hilo3D.Shadow.create();
             shadow.cast = true;
             shadow.receive = true;
 
             gameObject.addComponent(shadow);
 
 
-            gameObject.transform.translate(wd.Vector3.create(-30, 20, 0));
+            gameObject.transform.translate(Hilo3D.Vector3.create(-30, 20, 0));
 
             return gameObject;
         }
 
         function createBox(){
-            var material = wd.LightMaterial.create();
-            material.specularColor = wd.Color.create("#ffdd99");
-            material.color = wd.Color.create("#666666");
+            var material = Hilo3D.LightMaterial.create();
+            material.specularColor = Hilo3D.Color.create("#ffdd99");
+            material.color = Hilo3D.Color.create("#666666");
             material.shininess = 16;
 
 
-            var geometry = wd.BoxGeometry.create();
+            var geometry = Hilo3D.BoxGeometry.create();
             geometry.material = material;
             geometry.width = 10;
             geometry.height = 10;
             geometry.depth = 10;
 
 
-            var gameObject = wd.GameObject.create();
-            gameObject.addComponent(wd.MeshRenderer.create());
+            var gameObject = Hilo3D.GameObject.create();
+            gameObject.addComponent(Hilo3D.MeshRenderer.create());
             gameObject.addComponent(geometry);
 
 
-            gameObject.transform.translate(wd.Vector3.create(20, 10, 30));
-            gameObject.transform.eulerAngles = wd.Vector3.create(0, 45, 0);
+            gameObject.transform.translate(Hilo3D.Vector3.create(20, 10, 30));
+            gameObject.transform.eulerAngles = Hilo3D.Vector3.create(0, 45, 0);
 
 
-            var action = wd.RepeatForever.create(wd.CallFunc.create(function(gameObject){
+            var action = Hilo3D.RepeatForever.create(Hilo3D.CallFunc.create(function(gameObject){
                 gameObject.transform.rotate(0, 1, 0);
             }));
 
             gameObject.addComponent(action);
 
 
-            var shadow = wd.Shadow.create();
+            var shadow = Hilo3D.Shadow.create();
             shadow.cast = true;
             shadow.receive = true;
 
@@ -121,30 +121,30 @@
         }
 
         function createGround(){
-            var map = wd.LoaderManager.getInstance().get("ground").toTexture();
-            map.wrapS = wd.ETextureWrapMode.REPEAT;
-            map.wrapT = wd.ETextureWrapMode.REPEAT;
-            map.repeatRegion = wd.RectRegion.create(0.5, 0, 5, 5);
+            var map = Hilo3D.LoaderManager.getInstance().get("ground").toTexture();
+            map.wrapS = Hilo3D.ETextureWrapMode.REPEAT;
+            map.wrapT = Hilo3D.ETextureWrapMode.REPEAT;
+            map.repeatRegion = Hilo3D.RectRegion.create(0.5, 0, 5, 5);
 
 
-            var material = wd.LightMaterial.create();
-            material.specularColor = wd.Color.create("#ffdd99");
+            var material = Hilo3D.LightMaterial.create();
+            material.specularColor = Hilo3D.Color.create("#ffdd99");
             material.shininess = 32;
             material.diffuseMap = map;
 
 
-            var plane = wd.PlaneGeometry.create();
+            var plane = Hilo3D.PlaneGeometry.create();
             plane.width = 2000;
             plane.height = 2000;
             plane.material = material;
 
 
-            var gameObject = wd.GameObject.create();
-            gameObject.addComponent(wd.MeshRenderer.create());
+            var gameObject = Hilo3D.GameObject.create();
+            gameObject.addComponent(Hilo3D.MeshRenderer.create());
             gameObject.addComponent(plane);
 
 
-            var shadow = wd.Shadow.create();
+            var shadow = Hilo3D.Shadow.create();
             shadow.cast = false;
             shadow.receive = true;
 
@@ -155,10 +155,10 @@
         }
 
         function createAmbientLight() {
-            var ambientLightComponent = wd.AmbientLight.create();
-            ambientLightComponent.color = wd.Color.create("rgb(30, 30, 30)");
+            var ambientLightComponent = Hilo3D.AmbientLight.create();
+            ambientLightComponent.color = Hilo3D.Color.create("rgb(30, 30, 30)");
 
-            var ambientLight = wd.GameObject.create();
+            var ambientLight = Hilo3D.GameObject.create();
             ambientLight.addComponent(ambientLightComponent);
 
             return ambientLight;
@@ -168,8 +168,8 @@
             var SHADOW_MAP_WIDTH = 1024,
                     SHADOW_MAP_HEIGHT = 1024;
 
-            var directionLightComponent = wd.DirectionLight.create();
-            directionLightComponent.color = wd.Color.create("#ffffff");
+            var directionLightComponent = Hilo3D.DirectionLight.create();
+            directionLightComponent.color = Hilo3D.Color.create("#ffffff");
             directionLightComponent.intensity = 1;
             directionLightComponent.castShadow = true;
             directionLightComponent.shadowCameraLeft = -100;
@@ -184,25 +184,25 @@
             directionLightComponent.shadowMapHeight = SHADOW_MAP_HEIGHT;
 
 
-            var directionLight = wd.GameObject.create();
+            var directionLight = Hilo3D.GameObject.create();
             directionLight.addComponent(directionLightComponent);
 
-            directionLight.transform.translate(wd.Vector3.create(0, 50, 50));
+            directionLight.transform.translate(Hilo3D.Vector3.create(0, 50, 50));
 
             return directionLight;
         }
 
         function createCamera() {
-            var camera = wd.GameObject.create(),
-                    view = wd.Director.getInstance().view,
-                    cameraComponent = wd.PerspectiveCamera.create();
+            var camera = Hilo3D.GameObject.create(),
+                    view = Hilo3D.Director.getInstance().view,
+                    cameraComponent = Hilo3D.PerspectiveCamera.create();
 
             cameraComponent.fovy = 60;
             cameraComponent.aspect = view.width / view.height;
             cameraComponent.near = 0.1;
             cameraComponent.far = 1000;
 
-            var controller = wd.FlyCameraController.create(cameraComponent);
+            var controller = Hilo3D.FlyCameraController.create(cameraComponent);
 
             camera.addComponent(controller);
 

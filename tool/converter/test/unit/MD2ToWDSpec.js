@@ -1,12 +1,12 @@
 var fs = require("fs-extra"),
-    Converter = require("../../dist/converter/md2/MD2ToWD"),
+    Converter = require("../../dist/converter/md2/MD2Towd"),
     config = require("../../dist/converter/common/Config"),
     path = require("path"),
     sinon = require("sinon");
 
 require("jasmine-before-all");
 
-describe("MD2ToWD", function () {
+describe("MD2Towd", function () {
     var sandbox = null;
     var converter = null;
     var testFile, testFile2;
@@ -14,7 +14,7 @@ describe("MD2ToWD", function () {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        converter = Converter.MD2ToWD.create("0.1.0");
+        converter = Converter.MD2Towd.create("0.1.0");
     });
     afterEach(function () {
         sandbox.restore();
@@ -41,7 +41,7 @@ describe("MD2ToWD", function () {
         judge(testFile, filePath1, function (json) {
             expect(json.asset).toEqual({
                 version: "0.1.0",
-                generator: "WonderJsMD2ToWDConverter"
+                generator: "wdJsMD2ToWDConverter"
             });
         }, done);
     });

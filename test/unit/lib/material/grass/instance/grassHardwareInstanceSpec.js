@@ -276,7 +276,7 @@ describe("test grass hardware instance", function() {
                     instanceTool.judgeUnBindInstancesBuffer(offsetLocation1, 1);
                 });
                 it("test use drawElementsInstancedANGLE to draw", function () {
-                    wd.DebugStatistics.clear();
+                    wd.DebugStatistics.resetData();
 
                     rendererTool.renderGameObjectScene();
 

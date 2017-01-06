@@ -22,7 +22,10 @@ module wd {
         }
 
         protected addNormalShaderLib(){
-            if(GlobalGeometryUtils.hasAnimation(this.geometry) && !this.shader.hasLib(NormalMorphShaderLib)){
+            var NormalMorphShaderLib = ClassUtils.getClass("NormalMorphShaderLib");
+
+            if(GlobalGeometryUtils.hasMorphAnimation(this.geometry)
+                && NormalMorphShaderLib !== void 0 && !this.shader.hasLib(NormalMorphShaderLib)){
                 this._addShaderLibToTop(NormalMorphShaderLib.create());
             }
             else if(!this.shader.hasLib(NormalCommonShaderLib)){
@@ -39,13 +42,7 @@ module wd {
 
             InstanceUtils.addModelMatrixShaderLib(this.shader, this.geometry.entityObject);
 
-            if(GlobalGeometryUtils.hasAnimation(this.geometry)){
-                this.shader.addLib(CommonMorphShaderLib.create());
-                this.shader.addLib(VerticeMorphShaderLib.create());
-            }
-            else{
-                this.shader.addLib(VerticeCommonShaderLib.create());
-            }
+            ShaderLibUtils.addVerticeShaderLib(this.geometry, this.shader);
         }
 
         private _addShaderLibToTop(lib:ShaderLib){

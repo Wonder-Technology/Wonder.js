@@ -45,7 +45,7 @@ describe("instance with envMap for basic", function () {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
-        wd.DebugStatistics.clear();
+        wd.DebugStatistics.resetData();
 
         device = wd.DeviceManager.getInstance();
 

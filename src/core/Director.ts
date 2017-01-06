@@ -48,7 +48,7 @@ module wd{
         public scene:SceneDispatcher = null;
         public scheduler:Scheduler = null;
         public renderer:Renderer= null;
-        public domEventManager:DomEventManager = DomEventManager.create();
+        public domEventManager:any = DomEventManager.create();
 
         private _gameLoop:wdFrp.IDisposable = null;
         private _eventSubscription:wdFrp.IDisposable = null;
@@ -100,16 +100,24 @@ module wd{
 
         @execOnlyOnce("_isInitUIScene")
         public initUIObjectScene(){
-            var uiObjectScene:UIObjectScene = this.scene.uiObjectScene;
+            var uiObjectScene:any = this.scene.uiObjectScene;
 
             this._initDomEvent();
+
+            if(uiObjectScene === null){
+                return;
+            }
 
             uiObjectScene.onEnter();
             uiObjectScene.init();
         }
 
         public runUIObjectScene(elapsed:number){
-            var uiObjectScene:UIObjectScene = this.scene.uiObjectScene;
+            var uiObjectScene:any = this.scene.uiObjectScene;
+
+            if(uiObjectScene === null){
+                return;
+            }
 
             EventManager.trigger(CustomEvent.create(<any>EEngineEvent.STARTLOOP));
 
@@ -147,11 +155,15 @@ module wd{
         }
 
         private _init(){
+            var DebugStatistics = ClassUtils.getClass("DebugStatistics");
+
+            if(!!DebugStatistics){
+                DebugStatistics.init();
+            }
+
             this._initGameObjectScene();
 
             this.initUIObjectScene();
-
-            DebugStatistics.init();
         }
 
         private _initGameObjectScene(){
@@ -208,11 +220,13 @@ module wd{
 
             ScriptEngine.getInstance().execScriptWithData("update", elapsed);
 
-            ActionEngine.getInstance().update(elapsed);
+            ClassUtils.execSingletonMethod("ActionEngine", "update", elapsed);
 
             this.scene.gameObjectScene.update(elapsed);
 
-            this.scene.uiObjectScene.update(elapsed);
+            if(this.scene.uiObjectScene !== null){
+                this.scene.uiObjectScene.update(elapsed);
+            }
         }
 
         private _render(){
@@ -225,7 +239,9 @@ module wd{
                 this.renderer.render();
             }
 
-            this.scene.uiObjectScene.render();
+            if(this.scene.uiObjectScene !== null) {
+                this.scene.uiObjectScene.render();
+            }
         }
 
         @execOnlyOnce("_isInitDomEvent")

@@ -7,21 +7,21 @@ describe("event component", function () {
     var Event = (function () {
         function Event(entityObject) {
         }
-        Event.prototype.onMouseClick = function (e) {
+        Event.prototype.onPointTap = function (e) {
         };
-        Event.prototype.onMouseOver = function (e) {
+        Event.prototype.onPointOver = function (e) {
         };
-        Event.prototype.onMouseOut = function (e) {
+        Event.prototype.onPointOut = function (e) {
         };
-        Event.prototype.onMouseMove = function (e) {
+        Event.prototype.onPointMove = function (e) {
         };
-        Event.prototype.onMouseDown = function (e) {
+        Event.prototype.onPointDown = function (e) {
         };
-        Event.prototype.onMouseUp = function (e) {
+        Event.prototype.onPointUp = function (e) {
         };
-        Event.prototype.onMouseWheel = function (e) {
+        Event.prototype.onPointScale = function (e) {
         };
-        Event.prototype.onMouseDrag = function (e) {
+        Event.prototype.onPointDrag = function (e) {
         };
         return Event;
     }());
@@ -176,7 +176,8 @@ describe("event component", function () {
 
 
 
-                    var engineEvent = wd.EEngineEvent.MOUSE_CLICK;
+                    // var engineEvent = wd.EEngineEvent.POINT_TAP;
+                    var engineEvent = wd.EEngineEvent.POINT_TAP;
                     var eventName = wd.EEventName.CLICK;
 
 
@@ -269,7 +270,7 @@ describe("event component", function () {
 
 
 
-                    var engineEvent = wd.EEngineEvent.MOUSE_CLICK;
+                    var engineEvent = wd.EEngineEvent.POINT_TAP;
                     var eventName = wd.EEventName.CLICK;
 
 
@@ -334,7 +335,7 @@ describe("event component", function () {
 
 
 
-                var engineEvent = wd.EEngineEvent.MOUSE_CLICK;
+                var engineEvent = wd.EEngineEvent.POINT_TAP;
                 var eventName = wd.EEventName.CLICK;
 
 
@@ -376,12 +377,12 @@ describe("event component", function () {
             });
         });
 
-        describe("test trigger Scene mouse event and trigger EEngineEvent", function() {
+        describe("test trigger Scene point event and trigger script handler", function() {
             beforeEach(function () {
                 director.scene.addComponent(wd.Script.create(id));
             });
 
-            describe("test trigger onMouseMove,onMouseOver,onMouseOut", function () {
+            describe("test trigger onPointMove,onPointOver,onPointOut", function () {
                 function judgeEvent(test, fakeEvent, eventHandlerName, eventName, name) {
                     manager.trigger(document.body, wd.MouseEvent.create(fakeEvent, wd.EEventName[eventName]));
 
@@ -390,34 +391,34 @@ describe("event component", function () {
 
 
                     var event = test[eventHandlerName].args[0][0];
-                    expect(event.name).toEqual(name);
+                    expect(event.name).toEqual("wd_" + name);
                     expect(event.locationInView.x).toEqual(fakeEvent.pageX);
                     expect(event.locationInView.y).toEqual(fakeEvent.pageY);
                 }
 
-                it("when move onto view, trigger onMouseOver; then, when move on view, trigger onMouseMove; when move out view, trigger onMouseOut", function () {
+                it("when move onto view, trigger onPointOver; then, when move on view, trigger onPointMove; when move out view, trigger onPointOut", function () {
                     testSceneScript(function (test) {
-                        sandbox.spy(test, "onMouseMove");
-                        sandbox.spy(test, "onMouseOver");
-                        sandbox.spy(test, "onMouseOut");
+                        sandbox.spy(test, "onPointMove");
+                        sandbox.spy(test, "onPointOver");
+                        sandbox.spy(test, "onPointOut");
                     },
                     function (test) {
                         judgeEvent(test, {
                             pageX: 1,
                             pageY: 0
-                        }, "onMouseOver", "MOUSEMOVE", "mouseover");
+                        }, "onPointOver", "MOUSEMOVE", "pointover");
 
                         judgeEvent(test, {
                             pageX: 10,
                             pageY: 20
-                        }, "onMouseMove", "MOUSEMOVE", "mousemove");
+                        }, "onPointMove", "MOUSEMOVE", "pointmove");
                         judgeEvent(test, {
                             pageX: 1001,
                             pageY: 0
-                        }, "onMouseOut", "MOUSEMOVE", "mouseout");
+                        }, "onPointOut", "MOUSEMOVE", "pointout");
                     });
                 });
-                it("it should trigger scene->mouseoverand trigger scene->mousemove when mouseout object which is in scene range", function(){
+                it("it should trigger scene->mouseover and trigger scene->mousemove when mouseout object which is in scene range", function(){
                     var renderer = createUIRenderer();
                     var uiObject1 = createUIObject(renderer);
                     director.scene.addChild(uiObject1);
@@ -426,11 +427,11 @@ describe("event component", function () {
 
 
 
-                    inObject1FakeEvent = {
+                    var inObject1FakeEvent = {
                         pageX: 300,
                         pageY: 100
                     };
-                    outObject1FakeEvent = {
+                    var outObject1FakeEvent = {
                         pageX: 300 - 100 / 2 - 1,
                         pageY: 100
                     };
@@ -450,23 +451,23 @@ describe("event component", function () {
                     var sceneHandler = sandbox.stub();
                     var uiObject1Handler = sandbox.stub();
 
-                    wd.EventManager.on(director.scene, wd.EEngineEvent.MOUSE_MOVE, function (e) {
+                    wd.EventManager.on(director.scene, wd.EEngineEvent.POINT_MOVE, function (e) {
                         sceneHandler(e.name);
                     });
-                    wd.EventManager.on(director.scene, wd.EEngineEvent.MOUSE_OVER, function (e) {
+                    wd.EventManager.on(director.scene, wd.EEngineEvent.POINT_OVER, function (e) {
                         sceneHandler(e.name);
                     });
-                    wd.EventManager.on(director.scene, wd.EEngineEvent.MOUSE_OUT, function (e) {
+                    wd.EventManager.on(director.scene, wd.EEngineEvent.POINT_OUT, function (e) {
                         sceneHandler(e.name);
                     });
 
-                    wd.EventManager.on(uiObject1, wd.EEngineEvent.MOUSE_MOVE, function (e) {
+                    wd.EventManager.on(uiObject1, wd.EEngineEvent.POINT_MOVE, function (e) {
                         uiObject1Handler(e.name);
                     });
-                    wd.EventManager.on(uiObject1, wd.EEngineEvent.MOUSE_OVER, function (e) {
+                    wd.EventManager.on(uiObject1, wd.EEngineEvent.POINT_OVER, function (e) {
                         uiObject1Handler(e.name);
                     });
-                    wd.EventManager.on(uiObject1, wd.EEngineEvent.MOUSE_OUT, function (e) {
+                    wd.EventManager.on(uiObject1, wd.EEngineEvent.POINT_OUT, function (e) {
                         uiObject1Handler(e.name);
                     });
 
@@ -481,8 +482,8 @@ describe("event component", function () {
                     manager.trigger(wd.MouseEvent.create(inObject1FakeEvent, moveEventName));
 
                     expect(uiObject1Handler).toCalledBefore(sceneHandler);
-                    expect(uiObject1Handler).toCalledWith(wd.EEngineEvent.MOUSE_OVER);
-                    expect(sceneHandler).toCalledWith(wd.EEngineEvent.MOUSE_OVER);
+                    expect(uiObject1Handler).toCalledWith(wd.EEngineEvent.POINT_OVER);
+                    expect(sceneHandler).toCalledWith(wd.EEngineEvent.POINT_OVER);
 
 
 
@@ -491,15 +492,15 @@ describe("event component", function () {
 
 
                     expect(uiObject1Handler.secondCall).toCalledBefore(sceneHandler.secondCall);
-                    expect(uiObject1Handler.secondCall).toCalledWith(wd.EEngineEvent.MOUSE_OUT);
-                    expect(sceneHandler.secondCall).toCalledWith(wd.EEngineEvent.MOUSE_OUT);
-                    expect(sceneHandler.getCall(2)).toCalledWith(wd.EEngineEvent.MOUSE_OVER);
+                    expect(uiObject1Handler.secondCall).toCalledWith(wd.EEngineEvent.POINT_OUT);
+                    expect(sceneHandler.secondCall).toCalledWith(wd.EEngineEvent.POINT_OUT);
+                    expect(sceneHandler.getCall(2)).toCalledWith(wd.EEngineEvent.POINT_OVER);
                     expect(sceneHandler).toCalledThrice();
                 });
             });
         });
 
-        describe("test trigger UIObject mouse event script and trigger EEngineEvent by judge hitting RectTransform->width,height", function(){
+        describe("test trigger UIObject mouse event script and trigger point event by judge hitting RectTransform->width,height", function(){
             var uiObject;
 
             describe("test trigger single one", function(){
@@ -518,7 +519,7 @@ describe("event component", function () {
 
                 it("test not trigger", function(){
                     testScript(uiObject, "event", function(test){
-                        sandbox.spy(test, "onMouseClick");
+                        sandbox.spy(test, "onPointTap");
                     }, function(test){
                         fakeEvent = {
                             pageX: 300 - 200 / 2 - 1,
@@ -526,19 +527,20 @@ describe("event component", function () {
                         };
                         manager.trigger(document.body, wd.MouseEvent.create(fakeEvent, wd.EEventName.CLICK));
 
-                        expect(test.onMouseClick).not.toCalled();
+                        expect(test.onPointTap).not.toCalled();
                     }, function(test, time, gameObject){
                     });
                 });
 
                 describe("test trigger", function(){
-                    function judge(eventHandlerName, eventName){
+                    function judge(eventHandlerName, bindedEventName, triggeredEventName){
                         testScript(uiObject, "event", function(test, uiObject){
                             sandbox.spy(test, eventHandlerName);
 
-                            wd.EventManager.on(uiObject, wd.EEngineEvent[wd.EventTriggerTable.getScriptEngineEvent(wd.EEventName[eventName])], function(e){
+                            // wd.EventManager.on(uiObject, wd.EEngineEvent[wd.EventTriggerTable.getScriptEngineEvent(wd.EEventName[eventName])], function(e){
+                            wd.EventManager.on(uiObject, wd.EEventName[bindedEventName], function(e){
                                 expect(e).toBeInstanceOf(wd.CustomEvent);
-                                expect(e.userData).toBeInstanceOf(wd.MouseEvent);
+                                expect(e.userData).toBeInstanceOf(wd.PointEvent);
                             });
 
                         }, function(test){
@@ -546,7 +548,7 @@ describe("event component", function () {
                                 pageX: 300 - 200 / 2,
                                 pageY:100 - 100 / 2
                             };
-                            manager.trigger(wd.MouseEvent.create(fakeEvent, wd.EEventName[eventName]));
+                            manager.trigger(wd.MouseEvent.create(fakeEvent, wd.EEventName[triggeredEventName]));
 
 
                             expect(test[eventHandlerName]).toCalledOnce();
@@ -563,7 +565,7 @@ describe("event component", function () {
                     });
 
 
-                    describe("test trigger onMouseMove,onMouseOver,onMouseOut", function(){
+                    describe("test trigger onPointMove,onPointOver,onPointOut", function(){
                         function judgeEvent(test, fakeEvent, eventHandlerName, eventName, name){
                             manager.trigger(document.body, wd.MouseEvent.create(fakeEvent, wd.EEventName[eventName]));
 
@@ -572,7 +574,7 @@ describe("event component", function () {
 
 
                             var event = test[eventHandlerName].args[0][0];
-                            expect(event.name).toEqual(name);
+                            expect(event.name).toEqual("wd_" + name);
                             expect(event.locationInView.x).toEqual(fakeEvent.pageX);
                             expect(event.locationInView.y).toEqual(fakeEvent.pageY);
                         }
@@ -580,25 +582,25 @@ describe("event component", function () {
                         beforeEach(function(){
                         });
 
-                        it("when move onto entityObject, trigger onMouseOver; then, when move on entityObject, trigger onMouseMove; when move out entityObject, trigger onMouseOut", function(){
+                        it("when move onto entityObject, trigger onPointOver; then, when move on entityObject, trigger onPointMove; when move out entityObject, trigger onPointOut", function(){
                             testScript(uiObject, "event", function(test){
-                                sandbox.spy(test, "onMouseMove");
-                                sandbox.spy(test, "onMouseOver");
-                                sandbox.spy(test, "onMouseOut");
+                                sandbox.spy(test, "onPointMove");
+                                sandbox.spy(test, "onPointOver");
+                                sandbox.spy(test, "onPointOut");
                             }, function(test){
                                 judgeEvent(test, {
                                     pageX: 300 - 200 / 2,
                                     pageY:100 - 100 / 2
-                                }, "onMouseOver", "MOUSEMOVE", "mouseover");
+                                }, "onPointOver", "MOUSEMOVE", "pointover");
 
                                 judgeEvent(test, {
                                     pageX: 300 - 200 / 2 + 10,
                                     pageY:100 - 100 / 2
-                                }, "onMouseMove", "MOUSEMOVE", "mousemove");
+                                }, "onPointMove", "MOUSEMOVE", "pointmove");
                                 judgeEvent(test, {
                                     pageX: 300 - 200 / 2 - 1,
                                     pageY:100 - 100 / 2
-                                }, "onMouseOut", "MOUSEMOVE", "mouseout");
+                                }, "onPointOut", "MOUSEMOVE", "pointout");
 
 
 
@@ -607,65 +609,96 @@ describe("event component", function () {
                                     pageY:100 - 100 / 2
                                 }, wd.EEventName.MOUSEMOVE));
 
-                                expect(test.onMouseMove).not.toCalledTwice();
+                                expect(test.onPointMove).not.toCalledTwice();
 
                             }, function(test, time, gameObject){
                             });
                         });
                     });
 
-                    describe("test trigger onMouseDrag", function(){
+                    describe("test trigger onPointDrag", function(){
                         beforeEach(function(){
                         });
 
-                        it("test", function(){
+                        it("test trigger drag event", function(){
                             testScript(uiObject, "event", function(test){
-                                sandbox.spy(test, "onMouseMove");
-                                sandbox.spy(test, "onMouseDown");
-                                sandbox.spy(test, "onMouseUp");
-                                sandbox.spy(test, "onMouseDrag");
+                                sandbox.spy(test, "onPointMove");
+                                sandbox.spy(test, "onPointDown");
+                                sandbox.spy(test, "onPointUp");
+                                sandbox.spy(test, "onPointDrag");
                             }, function(test){
                                 fakeEvent = {
                                     pageX: 300 - 200 / 2,
                                     pageY:100 - 100 / 2
-                                }
+                                };
 
-                                manager.trigger(document, wd.MouseEvent.create(fakeEvent, wd.EEventName.MOUSEDOWN));
-                                manager.trigger(document, wd.MouseEvent.create(fakeEvent, wd.EEventName.MOUSEMOVE));
-                                manager.trigger(document, wd.MouseEvent.create(fakeEvent, wd.EEventName.MOUSEUP));
-
-
-                                expect(test.onMouseDrag).toCalledOnce();
+                                manager.trigger(wd.MouseEvent.create(fakeEvent, wd.EEventName.MOUSEDOWN));
+                                manager.trigger(wd.MouseEvent.create(fakeEvent, wd.EEventName.MOUSEMOVE));
+                                manager.trigger(wd.MouseEvent.create(fakeEvent, wd.EEventName.MOUSEUP));
 
 
-                                var event = test.onMouseDrag.args[0][0];
-                                expect(event.name).toEqual(wd.EEventName.MOUSEDRAG);
-                                expect(event.type).toEqual(wd.EEventType.MOUSE);
+                                expect(test.onPointDrag).toCalledOnce();
+
+
+                                var event = test.onPointDrag.args[0][0];
+                                expect(event.name).toEqual(wd.EEngineEvent.POINT_DRAG);
+                                expect(event.type).toEqual(wd.EEventType.POINT);
                                 expect(event.locationInView.x).toEqual(fakeEvent.pageX);
                                 expect(event.locationInView.y).toEqual(fakeEvent.pageY);
                             }, function(test, time, gameObject){
                             });
                         });
+                        it("trigger mousemove script handler during drag event is triggering", function () {
+                            testScript(uiObject, "event", function(test){
+                                sandbox.spy(test, "onPointMove");
+                                sandbox.spy(test, "onPointDown");
+                                sandbox.spy(test, "onPointUp");
+                                sandbox.spy(test, "onPointDrag");
+                            }, function(test){
+                                fakeEvent = {
+                                    pageX: 300 - 200 / 2,
+                                    pageY:100 - 100 / 2
+                                };
+
+                                manager.trigger(wd.MouseEvent.create(fakeEvent, wd.EEventName.MOUSEDOWN));
+                                manager.trigger(wd.MouseEvent.create(fakeEvent, wd.EEventName.MOUSEMOVE));
+
+
+
+                                expect(test.onPointDrag).toCalledOnce();
+                                expect(test.onPointMove).not.toCalled();
+
+
+
+                                manager.trigger(wd.MouseEvent.create(fakeEvent, wd.EEventName.MOUSEMOVE));
+
+
+
+                                expect(test.onPointDrag).toCalledTwice();
+                                expect(test.onPointMove).toCalledOnce();
+                            }, function(test, time, gameObject){
+                            });
+                        });
                     });
 
 
-                    it("test trigger onMouseClick", function(){
-                        judge("onMouseClick", "CLICK");
+                    it("test trigger onPointTap", function(){
+                        judge("onPointTap", "POINTTAP", "CLICK");
                     });
-                    it("test trigger onMouseDown", function(){
-                        judge("onMouseDown", "MOUSEDOWN");
+                    it("test trigger onPointDown", function(){
+                        judge("onPointDown", "POINTDOWN", "MOUSEDOWN");
                     });
-                    it("test trigger onMouseUp", function(){
-                        judge("onMouseUp", "MOUSEUP");
+                    it("test trigger onPointUp", function(){
+                        judge("onPointUp", "POINTUP", "MOUSEUP");
                     });
-                    it("test trigger onMouseWheel", function(){
-                        judge("onMouseWheel", "MOUSEWHEEL");
+                    it("test trigger onPointWheel", function(){
+                        judge("onPointScale", "POINTSCALE", "MOUSEWHEEL");
                     });
                 });
             });
         });
 
-        describe("test trigger GameObject mouse event script and trigger EEngineEvent by ray cast test", function(){
+        describe("test trigger GameObject point event script and trigger point event by ray cast test", function(){
             var gameObject;
 
             beforeEach(function(){
@@ -682,7 +715,7 @@ describe("event component", function () {
 
                 it("test not trigger", function () {
                     testScript(gameObject, "event", function (test) {
-                        sandbox.spy(test, "onMouseClick");
+                        sandbox.spy(test, "onPointTap");
                     }, function (test) {
                     }, function (test, time, gameObject) {
                         fakeEvent = {
@@ -692,17 +725,17 @@ describe("event component", function () {
 
                         manager.trigger(document.body, wd.MouseEvent.create(fakeEvent, wd.EEventName.CLICK));
 
-                        expect(test.onMouseClick).not.toCalled();
+                        expect(test.onPointTap).not.toCalled();
                     });
                 });
                 it("test trigger", function () {
                     testScript(gameObject, "event", function (test, gameObject) {
-                        sandbox.spy(test, "onMouseClick");
+                        sandbox.spy(test, "onPointTap");
 
 
-                        wd.EventManager.on(gameObject, wd.EEngineEvent["MOUSE_CLICK"], function(e){
+                        wd.EventManager.on(gameObject, wd.EEngineEvent.POINT_TAP, function(e){
                             expect(e).toBeInstanceOf(wd.CustomEvent);
-                            expect(e.userData).toBeInstanceOf(wd.MouseEvent);
+                            expect(e.userData).toBeInstanceOf(wd.PointEvent);
                         });
                     }, function (test) {
                     }, function (test, time, gameObject) {
@@ -712,8 +745,29 @@ describe("event component", function () {
                         };
                         manager.trigger(document.body, wd.MouseEvent.create(fakeEvent, wd.EEventName.CLICK));
 
-                        expect(test.onMouseClick).toCalledOnce();
+                        expect(test.onPointTap).toCalledOnce();
                     });
+                });
+            });
+
+            it("test trigger point event script by touch event", function () {
+                sandbox.stub(director.domEventManager._pointEventBinder, "_isSupportTouch").returns(true);
+
+                testScript(gameObject, "event", function (test, gameObject) {
+                    sandbox.spy(test, "onPointDown");
+
+
+                    wd.EventManager.on(gameObject, wd.EEngineEvent.POINT_DOWN, function(e){
+                        expect(e).toBeInstanceOf(wd.CustomEvent);
+                        expect(e.userData).toBeInstanceOf(wd.PointEvent);
+                    });
+                }, function (test) {
+                }, function (test, time, gameObject) {
+                    fakeEvent = eventTool.buildFakeTouchEvent(view.width / 2, view.height / 2);
+
+                    manager.trigger(document.body, wd.TouchEvent.create(fakeEvent, wd.EEventName.TOUCHDOWN));
+
+                    expect(test.onPointDown).toCalledOnce();
                 });
             });
         });
@@ -729,7 +783,7 @@ describe("event component", function () {
             describe("test Director->pause/resume event", function(){
                 it("if pause, not trigger event script handler", function(){
                     testScript(gameObject, "event", function (test) {
-                        sandbox.spy(test, "onMouseClick");
+                        sandbox.spy(test, "onPointTap");
                     }, function (test) {
                         fakeEvent = {
                             pageX: view.width / 2,
@@ -741,7 +795,7 @@ describe("event component", function () {
 
                         manager.trigger(document.body, wd.MouseEvent.create(fakeEvent, wd.EEventName.CLICK));
 
-                        expect(test.onMouseClick).not.toCalled();
+                        expect(test.onPointTap).not.toCalled();
 
 
 
@@ -749,7 +803,7 @@ describe("event component", function () {
 
                         manager.trigger(document.body, wd.MouseEvent.create(fakeEvent, wd.EEventName.CLICK));
 
-                        expect(test.onMouseClick).toCalledOnce();
+                        expect(test.onPointTap).toCalledOnce();
                     }, function (test, time, gameObject) {
                     });
                 });
@@ -758,7 +812,7 @@ describe("event component", function () {
             describe("test Director->start/stop event", function(){
                 it("if stop, remove event", function(){
                     testScript(gameObject, "event", function (test) {
-                        sandbox.spy(test, "onMouseClick");
+                        sandbox.spy(test, "onPointTap");
                     }, function (test) {
                         fakeEvent = {
                             pageX: view.width / 2,
@@ -769,7 +823,7 @@ describe("event component", function () {
 
                         manager.trigger(document.body, wd.MouseEvent.create(fakeEvent, wd.EEventName.CLICK));
 
-                        expect(test.onMouseClick).toCalledOnce();
+                        expect(test.onPointTap).toCalledOnce();
 
 
 
@@ -778,7 +832,7 @@ describe("event component", function () {
                         manager.trigger(document.body, wd.MouseEvent.create(fakeEvent, wd.EEventName.CLICK));
 
 
-                        expect(test.onMouseClick).not.toCalledTwice();
+                        expect(test.onPointTap).not.toCalledTwice();
                     }, function (test, time, gameObject) {
                     });
                 });
@@ -800,15 +854,18 @@ describe("event component", function () {
 
 
 
-                manager.trigger(document, wd.MouseEvent.create(fakeEvent, wd.EEventName.MOUSEDOWN));
-                manager.trigger(document, wd.MouseEvent.create(fakeEvent, wd.EEventName.MOUSEMOVE));
-
+                manager.trigger(wd.MouseEvent.create(fakeEvent, wd.EEventName.MOUSEDOWN));
 
                 expect(domEventManager._findTopGameObject.callCount).toEqual(1);
 
                 manager.trigger(wd.MouseEvent.create(fakeEvent, wd.EEventName.MOUSEMOVE));
 
-                expect(domEventManager._findTopGameObject.callCount).not.toEqual(2);
+
+                expect(domEventManager._findTopGameObject.callCount).toEqual(1 + 2);
+
+                manager.trigger(wd.MouseEvent.create(fakeEvent, wd.EEventName.MOUSEMOVE));
+
+                expect(domEventManager._findTopGameObject.callCount).toEqual(4);
             });
 
             it("if designate the triggerList, just use it and not to find triggerList", function () {
@@ -821,18 +878,18 @@ describe("event component", function () {
 
 
 
-                manager.trigger(document, wd.MouseEvent.create(fakeEvent, wd.EEventName.MOUSEDOWN));
-                manager.trigger(document, wd.MouseEvent.create(fakeEvent, wd.EEventName.MOUSEMOVE));
+                manager.trigger(wd.MouseEvent.create(fakeEvent, wd.EEventName.MOUSEDOWN));
+                manager.trigger(wd.MouseEvent.create(fakeEvent, wd.EEventName.MOUSEMOVE));
 
 
                 expect(director.domEventManager._findTopGameObject.callCount).toEqual(0);
-                expect(director.domEventManager._trigger).toCalledOnce();
+                expect(director.domEventManager._trigger.callCount).toEqual(3);
                 expect(director.domEventManager._trigger.args[0][1]).toEqual(director.scene);
 
                 manager.trigger(wd.MouseEvent.create(fakeEvent, wd.EEventName.MOUSEMOVE));
 
                 expect(director.domEventManager._findTopGameObject.callCount).toEqual(0);
-                expect(director.domEventManager._trigger).toCalledTwice();
+                expect(director.domEventManager._trigger.callCount).toEqual(3 + 2);
                 expect(director.domEventManager._trigger.args[1][1]).toEqual(director.scene);
             });
         });

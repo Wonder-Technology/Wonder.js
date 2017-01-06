@@ -91,12 +91,5 @@ module wd {
             return LoaderManager.getInstance().get(fntId);
         }
     }
-
-    export type LayoutCharData = {
-        position: Array<number>;
-        data: FntCharData;
-        index: number;
-        line: number;
-    };
 }
 

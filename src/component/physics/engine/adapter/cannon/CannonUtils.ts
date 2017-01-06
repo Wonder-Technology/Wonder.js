@@ -8,11 +8,11 @@ module wd {
             return new CANNON.Quaternion(rotation.x, rotation.y, rotation.z, rotation.w);
         }
 
-        public static convertToWonderVector3(v:CANNON.Vec3) {
+        public static convertTowdVector3(v:CANNON.Vec3) {
             return Vector3.create(v.x, v.y, v.z);
         }
 
-        public static convertToWonderQuaternion(r:CANNON.Quaternion){
+        public static convertTowdQuaternion(r:CANNON.Quaternion){
             return Quaternion.create(r.x, r.y, r.z, r.w);
         }
     }

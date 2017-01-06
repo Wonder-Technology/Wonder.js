@@ -18,13 +18,23 @@ describe("filterPrimitiveData->Filter", function(){
         function buildJson(positions, texCoords, normals, colors, indices, otherData) {
             otherData = otherData || {material:"a", mode:4}
 
-            var primitive = {
-                "attributes": {
+            var attributeData = {
                     "COLOR": colors,
                     "NORMAL": normals,
                     "POSITION": positions,
                     "TEXCOORD": texCoords
-                },
+                };
+
+            if(!!otherData.joints){
+                attributeData["JOINT"] = otherData.joints;
+            }
+
+            if(!!otherData.weights){
+                attributeData["WEIGHT"] = otherData.weights;
+            }
+
+            var primitive = {
+                "attributes": attributeData,
                 "indices": indices,
                 "material": otherData.material,
                 "mode": otherData.mode,
@@ -83,6 +93,22 @@ describe("filterPrimitiveData->Filter", function(){
 
             return testTool.getValues(
                 primitive.indices
+            )
+        }
+
+        function getJoints(resultJson) {
+            var primitive = _getPrimitive(resultJson);
+
+            return testTool.getValues(
+                primitive.attributes.JOINT
+            )
+        }
+
+        function getWeights(resultJson) {
+            var primitive = _getPrimitive(resultJson);
+
+            return testTool.getValues(
+                primitive.attributes.WEIGHT
             )
         }
 
@@ -215,6 +241,61 @@ describe("filterPrimitiveData->Filter", function(){
 
                     expect(getIndices(result)).toEqual([
                         0, 1, 2, 2, 1, 3
+                    ]);
+                });
+                it("remove attribute->JOINT,WEIGHT data", function(){
+                    var result = filter.filter(buildJson(
+                        [
+                        ],
+                        [
+                        ],
+                        [
+                        ],
+                        [
+                        ],
+
+
+
+                        [
+                            0,2,3
+                        ],
+
+                        {
+                            joints: [
+                                1,2,0,0,
+                                3,2,0,0,
+                                0,2,0,0,
+                                0,0,1,0
+                            ],
+                            weights:[
+                              0.1,0.2,0.3,0.4,
+                                0.2,0.1,0.3,0.4,
+                                0.3,0.0,0.3,0.4,
+                                0.25,0.25,0.5,0.0
+                            ],
+                            material:"mat",
+                            mode:4,
+                            name:"pName"
+                        }
+                    ));
+
+
+                    expect(getJoints(result)).toEqual([
+                        1,2,0,0,
+                        0,2,0,0,
+                        0,0,1,0
+                    ]);
+
+                    expect(getWeights(result)).toEqual([
+                              0.1,0.2,0.3,0.4,
+                                0.3,0.0,0.3,0.4,
+                                0.25,0.25,0.5,0.0
+
+                    ]);
+
+
+                    expect(getIndices(result)).toEqual([
+                        0, 1, 2
                     ]);
                 });
                 it("remove morphTargets", function () {

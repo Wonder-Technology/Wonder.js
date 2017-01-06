@@ -2,30 +2,20 @@ module wd{
     export abstract class Loader{
         private _container:wdCb.Hash<string> = wdCb.Hash.create<string>();
 
-        public load(url:string):wdFrp.Stream;
-        public load(url:Array<string>):wdFrp.Stream;
-        public load(url:string, id:string):wdFrp.Stream;
-        public load(url:Array<string>, id:string):wdFrp.Stream;
+        public load(url:string, id:string, config:AssetConfigData):wdFrp.Stream;
+        public load(url:Array<string>, id:string, config:AssetConfigData):wdFrp.Stream;
 
 
         public load(...args):wdFrp.Stream{
             var url = args[0],
                 id = null,
+                config:AssetConfigData = null,
                 self = this,
                 data = null,
                 stream = null;
 
-            if(args.length === 1){
-                if(JudgeUtils.isArrayExactly(url)){
-                    id = url.join("-");
-                }
-                else{
-                    id = url;
-                }
-            }
-            else{
-                id = args[1];
-            }
+            id = args[1];
+            config = args[2];
 
             data = this._container.getChild(id);
 
@@ -33,7 +23,7 @@ module wd{
                 stream = wdFrp.just(data);
             }
             else{
-                stream = this.loadAsset(url, id)
+                stream = this.loadAsset(url, id, config)
                     .do((data:any) => {
                             self._container.addChild(id, data);
                             LoaderManager.getInstance().add(id, self);
@@ -57,8 +47,8 @@ module wd{
             this._container.removeAllChildren();
         }
 
-        protected abstract loadAsset(url:string, id:string):wdFrp.Stream;
-        protected abstract loadAsset(url:Array<string>, id:string):wdFrp.Stream;
+        protected abstract loadAsset(url:string, id:string, config:AssetConfigData):wdFrp.Stream;
+        protected abstract loadAsset(url:Array<string>, id:string, config:AssetConfigData):wdFrp.Stream;
 
         private _errorHandle(path:string, err:string);
         private _errorHandle(path:Array<string>, err:string);

@@ -38,6 +38,11 @@ module wd{
 
         @virtual
         public removeFromObject(entityObject:EntityObject){
+            this.removeFromEngine();
+        }
+
+        @virtual
+        public removeFromEngine(){
         }
     }
 }

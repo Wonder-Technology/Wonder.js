@@ -6,7 +6,7 @@ module wd{
         	return obj;
         }
 
-        private _result:wdCb.Hash<IWDResultAssembler> = wdCb.Hash.create<IWDResultAssembler>();
+        private _result:wdCb.Hash<any> = wdCb.Hash.create<any>();
         private _geometryAssembler:WDGeometryAssembler = WDGeometryAssembler.create();
         private _transformAssembler:WDTransformAssembler = WDTransformAssembler.create();
         private _lightAssembler:WDLightAssembler = WDLightAssembler.create();
@@ -15,15 +15,17 @@ module wd{
             this._buildMetadata(parseData);
             this._buildModels(parseData);
 
+            EventManager.trigger(CustomEvent.create(<any>EEngineEvent.AFTER_SCENEGRAPH_BUILD));
+
             return this._result;
         }
 
         private _buildMetadata(parseData:IWDParseDataAssembler){
-            var metadata = wdCb.Hash.create<any>();
+            var metadata:IWDMetadataAssembler = <IWDMetadataAssembler>{};
 
             for(let i in parseData.metadata){
                 if(parseData.metadata.hasOwnProperty(i)){
-                    metadata.addChild(i, parseData.metadata[i]);
+                    metadata[i] = parseData.metadata[i];
                 }
             }
 
@@ -44,7 +46,7 @@ module wd{
                     model.addTag(<any>EWDTag.CONTAINER);
                 }
 
-                self._addComponentsFromWD(model, object.components);
+                self._addComponentsFromwd(model, object.components);
 
                 model.addComponent(MeshRenderer.create());
 
@@ -72,7 +74,7 @@ module wd{
             return object.isContainer;
         }
 
-        private _addComponentsFromWD(model:GameObject, components:wdCb.Collection<IWDComponentAssembler>){
+        private _addComponentsFromwd(model:GameObject, components:wdCb.Collection<IWDComponentAssembler>){
             var self = this;
 
             components.forEach((component:IWDComponentAssembler) => {
@@ -85,17 +87,32 @@ module wd{
                 else if(self._isLight(<IWDLightAssembler>component)){
                     model.addComponent(self._lightAssembler.createComponent(<IWDLightAssembler>component));
                 }
-                if(self._isGeometry(<IWDGeometryAssembler>component)){
+                else if(self._isGeometry(<IWDGeometryAssembler>component)){
                     let geometry = self._geometryAssembler.createComponent(<IWDGeometryAssembler>component);
 
                     model.addComponent(geometry);
 
                     if(!!geometry.morphVertices && geometry.morphVertices.getCount() > 0){
-                        model.addComponent(MorphAnimation.create());
+                        let MorphAnimation = ClassUtils.getClass("MorphAnimation");
+
+                        if(MorphAnimation !== void 0){
+                            model.addComponent(MorphAnimation.create());
+                        }
                     }
                 }
-                else if(self._isArticulatedAnimation(<IWDArticulatedAnimationAssembler>component)){
-                    model.addComponent(self._createArticulatedAnimation(<IWDArticulatedAnimationAssembler>component));
+                else if(self._isKeyFrameAnimation(<IWDKeyFrameAnimationAssembler>component)){
+                    let TransformArticulatedAnimation = ClassUtils.getClass("TransformArticulatedAnimation");
+
+                    if(TransformArticulatedAnimation !== void 0){
+                        model.addComponent(self._createKeyFrameAnimation(<IWDKeyFrameAnimationAssembler>component, TransformArticulatedAnimation));
+                    }
+                }
+                else if(self._isSkinSkeleton(<IWDSkinSkeletonAnimationAssembler>component)){
+                    let SkinSkeletonAnimation = ClassUtils.getClass("SkinSkeletonAnimation");
+
+                    if(SkinSkeletonAnimation !== void 0){
+                        model.addComponent(self._createSkinSkeletonAnimation(<IWDSkinSkeletonAnimationAssembler>component, SkinSkeletonAnimation));
+                    }
                 }
             });
         }
@@ -116,18 +133,34 @@ module wd{
             return !!component.material;
         }
 
-        private _isArticulatedAnimation(component:IWDArticulatedAnimationAssembler){
-            return WDUtils.isIWDArticulatedAnimationAssembler(component);
+        private _isKeyFrameAnimation(component:IWDKeyFrameAnimationAssembler){
+            return WDUtils.isIWDKeyFrameAnimationAssembler(component);
+        }
+
+        private _isSkinSkeleton(component:IWDSkinSkeletonAnimationAssembler){
+            return !!component.jointNames;
         }
 
         private _createCamera(component:IWDCameraAssembler){
             return BasicCameraController.create(component.camera);
         }
 
-        private _createArticulatedAnimation(component:IWDArticulatedAnimationAssembler){
+        private _createKeyFrameAnimation(component:IWDKeyFrameAnimationAssembler, TransformArticulatedAnimation:any){
              var anim = TransformArticulatedAnimation.create();
 
             anim.data = wdCb.Hash.create<wdCb.Collection<IWDKeyFrameDataAssembler>>(component);
+
+            return anim;
+        }
+
+        private _createSkinSkeletonAnimation(component:IWDSkinSkeletonAnimationAssembler, SkinSkeletonAnimation:any){
+            var anim = SkinSkeletonAnimation.create();
+
+            anim.bindShapeMatrix = component.bindShapeMatrix;
+            anim.inverseBindMatrices = component.inverseBindMatrices;
+            anim.boneMatrixMap = component.boneMatrixMap;
+            anim.jointNames = component.jointNames;
+            anim.jointTransformData = component.jointTransformData;
 
             return anim;
         }

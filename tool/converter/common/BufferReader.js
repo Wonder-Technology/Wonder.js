@@ -1,15 +1,15 @@
-// BinaryReader
-// Refactored by Vjeux <vjeuxx@gmail.com>
-// http://blog.vjeux.com/2010/javascript/javascript-binary-reader.html
+"use strict";
 module.exports = (function () {
     function BufferReader(buffer) {
         this._buffer = null;
         this._offset = 0;
         this._buffer = buffer;
     }
+    BufferReader.create = function (buffer) {
+        var obj = new this(buffer);
+        return obj;
+    };
     ;
-    //private _pos:number = 0;
-    /* Public */
     BufferReader.prototype.readInt8 = function () {
         var result = this._buffer.readInt8(this._offset, true);
         this._offset++;
@@ -45,13 +45,6 @@ module.exports = (function () {
         this._offset += 4;
         return result;
     };
-    //public readDouble() {
-    //    return this._decodeFloat(52, 11);
-    //}
-    //
-    //public readChar() {
-    //    return this.readString(1);
-    //}
     BufferReader.prototype.readString = function (length) {
         var stringArr = [];
         for (var j = 0; j < length; j++) {
@@ -61,14 +54,9 @@ module.exports = (function () {
     };
     BufferReader.prototype.seek = function (pos) {
         this._offset = pos;
-        //this._pos = pos;
-        //this._checkSize(0);
     };
-    //public getPosition() {
-    //    return this._pos;
-    //}
     BufferReader.prototype.getSize = function () {
         return this._buffer.length;
     };
     return BufferReader;
-})();
+}());

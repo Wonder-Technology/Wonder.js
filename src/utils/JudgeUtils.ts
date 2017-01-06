@@ -4,7 +4,6 @@ module wd {
             return !!obj && obj.offset && obj.width && obj.height && this.isFunction(obj.getContext);
         }
 
-
         public static isEqual(target1:any, target2:any){
             if((!target1 && target2) || (target1 && !target2)){
                 return false;
@@ -37,7 +36,7 @@ module wd {
         }
 
         public static isSpacePartitionObject(entityObject:EntityObject){
-            return entityObject.hasComponent(SpacePartition);
+            return ClassUtils.hasComponent(entityObject, "SpacePartition");
         }
 
         public static isSelf(self:Entity, entityObject:Entity){
@@ -54,6 +53,10 @@ module wd {
 
         public static isCollection(list:wdCb.Collection<any>){
             return list instanceof wdCb.Collection;
+        }
+
+        public static isClass(objInstance:any, className:string){
+            return objInstance.constructor.name === className;
         }
     }
 }

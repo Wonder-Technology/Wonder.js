@@ -6,7 +6,7 @@ module wd {
             return obj;
         }
 
-        public isTrigger(e:MouseEvent):boolean {
+        public isTrigger(e:PointEvent):boolean {
             var view:IView = DeviceManager.getInstance().view,
                 width = view.width,
                 height = view.height,

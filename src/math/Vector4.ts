@@ -92,6 +92,10 @@ module wd{
             return Vector3.create(this.values[0], this.values[1], this.values[2]);
         }
 
+        public lengthManhattan() {
+            return Math.abs(this.x) + Math.abs(this.y) + Math.abs(this.z) + Math.abs(this.w);
+        }
+
         public multiplyScalar(scalar:number) {
             this.x *= scalar;
             this.y *= scalar;
@@ -111,6 +115,8 @@ module wd{
             this.z = z;
             this.w = w;
         }
+
+
 
         protected copyHelper(vector4:Vector4):any{
             var result = vector4,

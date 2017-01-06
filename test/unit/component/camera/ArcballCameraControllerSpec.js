@@ -1,5 +1,6 @@
 describe("ArcballCameraController", function () {
     var sandbox = null;
+    var fakeEvent = null;
     var controller = null;
     var manager = null;
     var director;
@@ -30,8 +31,8 @@ describe("ArcballCameraController", function () {
         $("#event-test").remove();
     }
 
-    function triggerDomEvent(eventName, dom){
-        eventTool.triggerDomEvent(eventName, dom || document);
+    function triggerDomEvent(eventName, dom, event){
+        eventTool.triggerDomEvent(eventName, dom || document.body, event || fakeEvent);
     }
 
     function triggerKeyboardDomEvent(eventName){
@@ -156,56 +157,126 @@ describe("ArcballCameraController", function () {
         });
     });
 
-    describe("dispose", function(){
+    describe("test event", function(){
         beforeEach(function(){
             sandbox.stub(wd.EventTriggerDetectorUtils, "isInRect").returns(true);
-        });
 
-        it("remove events", function(){
             if(bowser.firefox){
                 expect().toPass();
                 return;
             }
 
             prepare(sandbox);
-            sandbox.stub(controller, "_changeOrbit");
-            sandbox.stub(controller, "_changeDistance");
-            sandbox.stub(controller, "_changeTarget");
 
-            var director = wd.Director.getInstance();
             director.scene.addChild(camera);
+        });
 
-            director._init();
+        describe("dispose", function(){
+            beforeEach(function(){
+            });
 
-            triggerDomEvent(wd.EEventName.MOUSEDOWN);
-            triggerDomEvent(wd.EEventName.MOUSEMOVE);
-            triggerDomEvent(wd.EEventName.MOUSEUP);
+            describe("remove events", function(){
+                beforeEach(function(){
+                });
 
-            expect(controller._changeOrbit).toCalledOnce();
-
-
-            triggerDomEvent(wd.EEventName.MOUSEWHEEL, document.body);
-
-            expect(controller._changeDistance).toCalledOnce();
-
-            triggerKeyboardDomEvent(wd.EEventName.KEYDOWN);
-
-            expect(controller._changeTarget).toCalledOnce();
+                it("test keyboard event", function () {
+                    sandbox.stub(controller, "_changeTarget");
 
 
-
-            controller.dispose();
-
-            triggerDomEvent(wd.EEventName.MOUSEDOWN);
-            triggerDomEvent(wd.EEventName.MOUSEMOVE);
-            triggerDomEvent(wd.EEventName.MOUSEUP);
-            triggerDomEvent(wd.EEventName.MOUSEWHEEL, document.body);
-            triggerKeyboardDomEvent(wd.EEventName.KEYDOWN);
+                    fakeEvent = eventTool.buildFakeMouseEvent(10, 10);
 
 
-            expect(controller._changeOrbit).toCalledOnce();
-            expect(controller._changeDistance).toCalledOnce();
-            expect(controller._changeTarget).toCalledOnce();
+                    director._init();
+
+
+                    triggerKeyboardDomEvent(wd.EEventName.KEYDOWN);
+
+                    expect(controller._changeTarget).toCalledOnce();
+
+
+                    controller.dispose();
+
+                    triggerKeyboardDomEvent(wd.EEventName.KEYDOWN);
+
+
+                    expect(controller._changeTarget).toCalledOnce();
+                });
+                it("test mouse event and keyboard", function () {
+                    sandbox.stub(controller, "_changeOrbit");
+                    sandbox.stub(controller, "_changeDistance");
+                    sandbox.stub(controller, "_changeTarget");
+
+
+
+                    fakeEvent = eventTool.buildFakeMouseEvent(10, 10);
+
+
+
+
+
+                    director._init();
+
+                    triggerDomEvent(wd.EEventName.MOUSEDOWN);
+                    triggerDomEvent(wd.EEventName.MOUSEMOVE);
+
+                    expect(controller._changeOrbit).toCalledOnce();
+
+                    triggerDomEvent(wd.EEventName.MOUSEUP);
+
+                    triggerDomEvent(wd.EEventName.MOUSEWHEEL, document.body);
+
+                    expect(controller._changeDistance).toCalledOnce();
+
+                    triggerKeyboardDomEvent(wd.EEventName.KEYDOWN);
+
+                    expect(controller._changeTarget).toCalledOnce();
+
+
+                    controller.dispose();
+
+                    triggerDomEvent(wd.EEventName.MOUSEDOWN);
+                    triggerDomEvent(wd.EEventName.MOUSEMOVE);
+                    triggerDomEvent(wd.EEventName.MOUSEUP);
+                    triggerDomEvent(wd.EEventName.MOUSEWHEEL, document.body);
+                    triggerKeyboardDomEvent(wd.EEventName.KEYDOWN);
+
+
+                    expect(controller._changeOrbit).toCalledOnce();
+                    expect(controller._changeDistance).toCalledOnce();
+                    expect(controller._changeTarget).toCalledOnce();
+                });
+                it("test touch event", function () {
+                    sandbox.stub(director.domEventManager._pointEventBinder, "_isSupportTouch").returns(true);
+
+                    sandbox.stub(controller, "_changeOrbit");
+
+
+                    fakeEvent = eventTool.buildFakeTouchEvent(10, 10);
+
+
+
+
+
+                    director._init();
+
+                    triggerDomEvent(wd.EEventName.TOUCHDOWN);
+                    triggerDomEvent(wd.EEventName.TOUCHMOVE);
+
+                    expect(controller._changeOrbit).toCalledOnce();
+
+                    triggerDomEvent(wd.EEventName.TOUCHUP);
+
+
+                    controller.dispose();
+
+                    triggerDomEvent(wd.EEventName.TOUCHDOWN);
+                    triggerDomEvent(wd.EEventName.TOUCHMOVE);
+                    triggerDomEvent(wd.EEventName.TOUCHUP);
+
+
+                    expect(controller._changeOrbit).toCalledOnce();
+                });
+            });
         });
     });
 
@@ -224,17 +295,12 @@ describe("ArcballCameraController", function () {
 
             prepare(sandbox);
 
-            manager.on(wd.EEventName.MOUSEDOWN, function(e){
-            });
-            manager.on(wd.EEventName.MOUSEMOVE, function(e){
-            });
-            manager.on(wd.EEventName.MOUSEUP, function(e){
+            manager.on(director.scene, wd.EEngineEvent.POINT_DRAG, function(e){
             });
 
 
             sandbox.stub(controller, "_changeOrbit");
 
-            var director = wd.Director.getInstance();
             director.scene.addChild(camera);
 
             director._init();
@@ -442,6 +508,65 @@ describe("ArcballCameraController", function () {
 
                     expect(testTool.getValues(controller.entityObject.transform.position)).not.toEqual(testTool.getValues(pos));
                 });
+            });
+        });
+
+
+        describe("the first drag event's movementDelta should === {x:0,y:0} during the second drag event", function(){
+            function judgePointEvent(pageX1, pageY1, pageX2, pageY2, eventType) {
+                var fakeEvent2;
+
+                if(eventType === "mouse"){
+                    fakeEvent = eventTool.buildFakeMouseEvent(pageX1, pageY1);
+                    fakeEvent2 = eventTool.buildFakeMouseEvent(pageX2, pageY2);
+                }
+                else{
+                    fakeEvent = eventTool.buildFakeTouchEvent(pageX1, pageY1);
+                    fakeEvent2 = eventTool.buildFakeTouchEvent(pageX2, pageY2);
+                }
+
+
+                director._init();
+
+
+                var eventTarget = null;
+
+                manager.on(director.scene, wd.EEngineEvent.POINT_DRAG,function (e) {
+                    eventTarget = e;
+                });
+
+
+
+                manager.trigger(wd[eventType[0].toUpperCase() + eventType.slice(1) + "Event"].create(fakeEvent, wd.EEventName[eventType.toUpperCase() + "DOWN"]));
+                manager.trigger(wd[eventType[0].toUpperCase() + eventType.slice(1) + "Event"].create(fakeEvent, wd.EEventName[eventType.toUpperCase() + "MOVE"]));
+
+                manager.trigger(wd[eventType[0].toUpperCase() + eventType.slice(1) + "Event"].create(fakeEvent, wd.EEventName[eventType.toUpperCase() + "UP"]));
+
+
+
+
+
+
+                manager.trigger(wd[eventType[0].toUpperCase() + eventType.slice(1) + "Event"].create(fakeEvent2, wd.EEventName[eventType.toUpperCase() + "DOWN"]));
+                manager.trigger(wd[eventType[0].toUpperCase() + eventType.slice(1) + "Event"].create(fakeEvent2, wd.EEventName[eventType.toUpperCase() + "MOVE"]));
+
+                expect(eventTarget.userData.movementDelta).toEqual({
+                    x:0,
+                    y:0
+                });
+            }
+
+            beforeEach(function(){
+            });
+
+            it("test mouse event", function(){
+                judgePointEvent(10, 10, 20,20, "mouse");
+            });
+            it("test touch event", function () {
+                //todo refactor
+                sandbox.stub(director.domEventManager._pointEventBinder, "_isSupportTouch").returns(true);
+
+                judgePointEvent(10, 10, 20,20, "touch");
             });
         });
     });

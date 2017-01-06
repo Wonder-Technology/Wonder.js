@@ -1,6 +1,6 @@
 module wd {
     export class MorphGeometryData extends GeometryData{
-        public static create(geometry:Geometry) {
+        public static create(geometry:ModelGeometry) {
             var obj = new this(geometry);
 
             return obj;

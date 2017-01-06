@@ -5,12 +5,12 @@ module wd {
         }
 
         private _blendType:EBlendType = null;
-        get blendType(){
-            return this._blendType;
-        }
         @cloneAttributeAsBasicType({
             order:1
         })
+        get blendType(){
+            return this._blendType;
+        }
         set blendType(blendType:EBlendType){
             if(blendType === null){
                 return;

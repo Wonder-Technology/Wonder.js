@@ -140,6 +140,9 @@ module wd{
         public removeChild(child:EntityObject){
             child.onExit();
 
+            child.getAllChildren().forEach((c:EntityObject) => c.removeAllComponentFromEngine());
+            child.removeAllComponentFromEngine();
+
             this._children.removeChild(child);
 
             child.parent = null;

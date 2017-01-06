@@ -60,9 +60,11 @@ export class Filter {
             newNormal = [],
             newTexCoord = [],
             newColor = [],
+            newJoint = [],
+            newWeight = [],
             newIndices = [],
             newMorphTargets = [],
-            newPrimitive = null,
+            newPrimitive:Primitive = null,
             index = 0,
             map = wdCb.Hash.create<number>();
 
@@ -83,6 +85,14 @@ export class Filter {
                         this._addAttributeData(newColor, attributes.COLOR, indice, 3);
                     }
 
+                    if(!!attributes.JOINT){
+                        this._addAttributeData(newJoint, attributes.JOINT, indice, 4);
+                    }
+
+                    if(!!attributes.WEIGHT){
+                        this._addAttributeData(newWeight, attributes.WEIGHT, indice, 4);
+                    }
+
                     map.addChild(String(indice), index);
 
                     index++;
@@ -100,7 +110,7 @@ export class Filter {
             }
         }
 
-        newPrimitive = {
+        newPrimitive = <any>{
             attributes:{
             },
             indices:newIndices
@@ -110,6 +120,8 @@ export class Filter {
         this._addData(newPrimitive.attributes, "NORMAL", newNormal);
         this._addData(newPrimitive.attributes, "TEXCOORD", newTexCoord);
         this._addData(newPrimitive.attributes, "COLOR", newColor);
+        this._addData(newPrimitive.attributes, "JOINT", newJoint);
+        this._addData(newPrimitive.attributes, "WEIGHT", newWeight);
 
         this._addData(newPrimitive, "morphTargets", newMorphTargets);
 
@@ -209,6 +221,8 @@ type Attribute = {
     NORMAL?:Array<number>;
     TEXCOORD?:Array<number>;
     COLOR?:Array<number>;
+    JOINT?:Array<number>;
+    WEIGHT?:Array<number>;
 }
 
 

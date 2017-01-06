@@ -1,19 +1,13 @@
 import {DataRecord, SourceJsonData, SourceMorphTarget, TargetJsonData} from "./TypeDefinition";
 
-import chai = require("chai");
-
-import contract = require("../../../ts/definition/typescript/decorator/contract");
-
 import {Utils} from "./Utils";
 
 import JudgeUtils = require("../../../ts/JudgeUtils")
 
 import Compressor = require("./Compressor");
 
-var it = contract.it,
-    ensure = contract.ensure;
-
-var expect = chai.expect;
+import {it, ensure} from "../../../ts/definition/typescript/decorator/contract"
+import {expect} from "chai"
 
 export = class IndiceCompressor extends Compressor.Compressor{
     public static create() {
@@ -61,16 +55,6 @@ export = class IndiceCompressor extends Compressor.Compressor{
 
     public buildBufferViewsJson(json:any, bufferId: string, bufferViewId:number, length:number, offset:number) {
         this.buildBufferViewsJsonHelper(json, bufferId, bufferViewId, length, offset, 34963);
-    }
-
-    public buildAccessorData(json:{
-        [id: string]: Object
-    }, mappingTable:Object, id:number) {
-        if(!this.isArrayEmpty(this.recordedArr)){
-            return this.buildAccessorDataHelper(json, mappingTable, id);
-        }
-
-        return 0;
     }
 
     private _recordIndice(data: Array<number>, arr: Array<DataRecord>, meshId: string, primitiveIndex: number, type: string) {

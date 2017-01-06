@@ -43,9 +43,10 @@ module wd {
         }
 
         @require(function(){
-            this.forEach((child:UIObject) => {
-                assert(child instanceof UIObject, Log.info.FUNC_MUST_BE("child", "UIObject"));
-                assert(child.hasComponent(TwoDUI), Log.info.FUNC_SHOULD("UIObject", "contain ui component"))
+            it("child must be UIObject", () => {
+                this.forEach((child:UIObject) => {
+                    expect(child).instanceof(UIObject);
+                });
             });
         })
         public render() {
@@ -80,20 +81,22 @@ module wd {
         }
 
         @require(function(uiObject:UIObject){
-            assert(uiObject.getComponentCount(UIRenderer) <= 1, Log.info.FUNC_SHOULD_NOT("uiObject", "contain more than 1 uiRenderer component"));
+            it("uiObject shouldn't contain more than 1 uiRenderer component", () => {
+                expect(uiObject.getComponentCount(UIRenderer)).lte(1);
+            });
         })
         private _getUIRenderer(uiObject:UIObject):UIRenderer{
             return UIRendererUtils.getUIRenderer(uiObject);
         }
 
         @ensure(function(){
-            var self = this;
+            it("should reset all UIRenderers->isClearCanvas", () => {
+                this.getAllChildren().forEach((child:EntityObject) => {
+                    var renderer = this._getUIRenderer(child);
 
-            this.getAllChildren().forEach((child:EntityObject) => {
-                var renderer = self._getUIRenderer(child);
-
-                assert(!renderer.isClearCanvas, Log.info.FUNC_SHOULD("reset all UIRenderers->isClearCanvas"));
-            });
+                    expect(renderer.isClearCanvas).false;
+                });
+            }, this);
         })
         private _resetAllRendererClearCanvasFlag(){
             var self = this;
@@ -105,13 +108,13 @@ module wd {
         }
 
         @ensure(function(){
-            var self = this;
+            it("should reset all UIRenderers->isClearCanvas", () => {
+                this.getAllChildren().forEach((child:EntityObject) => {
+                    var renderer = this._getUIRenderer(child);
 
-            this.getAllChildren().forEach((child:EntityObject) => {
-                var renderer = self._getUIRenderer(child);
-
-                assert(renderer.state === EUIRendererState.NORMAL, Log.info.FUNC_SHOULD("reset all UIRenderers->state"));
-            });
+                    expect(renderer.state).equals(EUIRendererState.NORMAL);
+                });
+            }, this);
         })
         private _resetAllRendererState(){
             var self = this;

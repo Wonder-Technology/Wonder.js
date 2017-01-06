@@ -2,8 +2,6 @@
  DeviceManager is responsible for global setting of gl
  */
 module wd {
-    declare var window:any;
-
     @singleton()
     export class DeviceManager {
         public static getInstance():any {}
@@ -406,7 +404,7 @@ module wd {
 
             this.contextConfig = contextConfig;
 
-            if(canvasId){
+            if(!!canvasId){
                 canvas = wdCb.DomQuery.create(this._getCanvasId(canvasId)).get(0);
             }
             else{
@@ -416,14 +414,20 @@ module wd {
             this.view = ViewWebGL.create(canvas);
 
             if(useDevicePixelRatio){
-                this.setPixelRatio(window.devicePixelRatio);
+                this.setPixelRatio(root.devicePixelRatio);
             }
 
             this.gl = this.view.getContext(contextConfig);
+
+            if(!this.gl){
+                wdCb.DomQuery.create("<p class='not-support-webgl'></p>").prependTo("body").get(0).innerText = "Your device doesn't support WebGL";
+            }
         }
 
         @require(function(){
-            assert(Main.screenSize !== null, Log.info.FUNC_NOT_EXIST("Main.screenSize"));
+            it("should exist Main.screenSize", () => {
+                expect(Main.screenSize).exist;
+            });
         })
         public setScreen(){
             var screenSize = Main.screenSize,
@@ -466,7 +470,9 @@ module wd {
         }
 
         @require(function(level:number){
-            assert(level > 0, Log.info.FUNC_SHOULD("level", `> 0, but actual is ${level}`))
+            it(`level should > 0, but actual is ${level}`, () => {
+                expect(level).greaterThan(0);
+            });
         })
         public setHardwareScaling(level:number){
             var width = this.view.width / level,

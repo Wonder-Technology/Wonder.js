@@ -25,7 +25,8 @@ module wd{
             this._clearCollisionTable();
 
             checkTargetList.forEach((gameObjectScene:GameObject) => {
-                if(gameObjectScene.hasComponent(RigidBody)){
+                // if(gameObjectScene.hasComponent(RigidBody)){
+                if(ClassUtils.hasComponent(gameObjectScene, "RigidBody")){
                     return;
                 }
 
@@ -44,7 +45,7 @@ module wd{
             var self = this;
 
             if(JudgeUtils.isSpacePartitionObject(sourceObject)){
-                let sourceSpacePartition:SpacePartition = sourceObject.getSpacePartition();
+                let sourceSpacePartition:any = sourceObject.getSpacePartition();
 
                 checkTargetList.forEach((targetObject:GameObject) => {
                     if(JudgeUtils.isSelf(sourceObject, targetObject)){
@@ -126,7 +127,7 @@ module wd{
             table.getChild(sourceKey).targetObjectMap.addChild(targetKey, targetObject);
         }
 
-        private _handleCollisionBetweenGameObjectAndSpacePartition(targetObjectCollider:Collider, spacePartition:SpacePartition) {
+        private _handleCollisionBetweenGameObjectAndSpacePartition(targetObjectCollider:Collider, spacePartition:any) {
             var targetObject = targetObjectCollider.entityObject,
                 self = this;
 
@@ -148,7 +149,7 @@ module wd{
             });
         }
 
-        private _handleCollisionBetweenSpacePartitionAndSpacePartition(sourceSpacePartition:SpacePartition, targetSpacePartition:SpacePartition){
+        private _handleCollisionBetweenSpacePartitionAndSpacePartition(sourceSpacePartition:any, targetSpacePartition:any){
             sourceSpacePartition.getChildren()
                 .forEach((sourceObject:GameObject) => {
                     var sourceCollider = sourceObject.getComponent<Collider>(Collider);
@@ -179,12 +180,12 @@ module wd{
         }
 
         private _triggerCollisionEventOfCollideObjectWhichHasRigidBody(collideObjects:wdCb.Collection<GameObject>, currentGameObject:GameObject, eventList:Array<string>){
-            if(!currentGameObject.hasComponent(RigidBody)){
+            if(!ClassUtils.hasComponent(currentGameObject, "RigidBody")){
                 return;
             }
 
             collideObjects.filter((gameObjectScene:GameObject) => {
-                    return gameObjectScene.hasComponent(RigidBody);
+                    return ClassUtils.hasComponent(gameObjectScene, "RigidBody");
                 })
                 .forEach((collideObject:GameObject) => {
                     for(let eventName of eventList){

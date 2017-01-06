@@ -7,6 +7,9 @@ module wd {
         TANGENT = <any>"TANGENT",
         COLOR = <any>"COLOR",
 
+        JOINT_INDICE = <any>"JOINT_INDICE",
+        JOINT_WEIGHT = <any>"JOINT_WEIGHT",
+
         CUSTOM = <any>"CUSTOM"
     }
 }

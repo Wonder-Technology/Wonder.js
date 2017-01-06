@@ -7,6 +7,15 @@ export type SourceJsonData = {
             primitives: Array<SourcePrimitive>
         }
     };
+    skins:{
+        [id:string]: SourceSkin
+    },
+}
+
+export type SourceSkin = {
+    bindShapeMatrix?:Array<number>;
+    inverseBindMatrices: Array<number>;
+    jointNames:Array<string>;
 }
 
 export type SourceAnimation = {
@@ -26,6 +35,8 @@ export type SourceAttribute = {
     NORMAL?:Array<number>;
     TEXCOORD?:Array<number>;
     COLOR?:Array<number>;
+    JOINT?:Array<number>;
+    WEIGHT?:Array<number>;
 }
 
 export type DataRecord = {
@@ -50,6 +61,11 @@ export type DataRecord = {
 // }
 
 export type TargetJsonData = {
+    images:{
+        [id:string]: {
+            uri:string
+        }
+    },
     animations:{
         [id:string]: Object
     },

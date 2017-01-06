@@ -1,5 +1,5 @@
 module wd{
-    export class MorphAnimation extends Animation{
+    export class MorphAnimation extends SingleLayerKeyFrameAnimation{
         public static create() {
         	var obj = new this();
 
@@ -54,7 +54,7 @@ module wd{
 
             this.frameCount = geometry.morphVertices.getChild(animName).getCount();
 
-            this.resetAnim();
+            this._resetAnim();
 
             this.state = EAnimationState.RUN;
         }
@@ -91,7 +91,7 @@ module wd{
             this._computeInterpolation(elapsed);
         }
 
-        protected resetAnim(){
+        private _resetAnim(){
             this._prevFrameEndTime = null;
             this.currentFrame = 0;
             this.pauseDuration = 0;
@@ -110,7 +110,5 @@ module wd{
             return this.currentFrame >= this.frameCount;
         }
     }
-
-    export type MorphTargetsData = wdCb.Collection<Array<number>>
 }
 

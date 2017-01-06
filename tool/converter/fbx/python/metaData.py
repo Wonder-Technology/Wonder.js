@@ -1,2 +1,2 @@
 version = "0.1.0"
-generator = "WonderJsFbxConverter"
+generator = "wdJsFbxConverter"
