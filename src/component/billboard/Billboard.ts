@@ -11,6 +11,9 @@ module wd{
         @cloneAttributeAsBasicType()
         public mode:EBillboardMode = EBillboardMode.ALL;
 
+        //todo test
+        public directionEulerAngles:Vector3 = null;
+
         public addToObject(entityObject:EntityObject, isShareComponent:boolean = false){
             var engine:BillboardEngine = BillboardEngine.getInstance();
 
@@ -31,7 +34,7 @@ module wd{
 
             if (this.mode !== EBillboardMode.NONE && camera) {
                 let objToCamProj = Vector3.create(),
-                //todo optimize:use global Temp class to reduce memory
+                    //todo optimize:use global Temp class to reduce memory
                     objTransform = this.entityObject.transform,
                     objPos = objTransform.position,
                     cameraPos = camera.transform.position,
@@ -42,12 +45,16 @@ module wd{
                 if (this.mode === EBillboardMode.ALL && isRotateAroundYAxis) {
                     this._rotateLocalByXAxis(camera, objToCamProj, cameraPos, objPos, objTransform);
                 }
+
+                if(this.directionEulerAngles !== null){
+                    objTransform.rotateLocal(this.directionEulerAngles);
+                }
             }
         }
 
         private _rotateByYAxis(camera:GameObject, objToCamProj:Vector3, cameraPos:Vector3, objPos:Vector3, objTransform:ThreeDTransform){
             var lookAt = Vector3.create(),
-            //todo optimize:use global Temp class to reduce memory
+                //todo optimize:use global Temp class to reduce memory
                 upAux = Vector3.create(),
                 angleCosine = null,
                 isRotateAroundYAxis = false;

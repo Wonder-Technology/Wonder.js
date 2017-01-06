@@ -1,4 +1,4 @@
-module wd{
+module Hilo3D{
     export class CommonShaderLib extends EngineShaderLib{
         public static create() {
             var obj = new this();
@@ -9,8 +9,28 @@ module wd{
         public type:string = "common";
 
         public sendShaderVariables(program:Program, cmd:QuadCommand, material:EngineMaterial){
-            this.sendUniformData(program, "u_vMatrix", cmd.vMatrix);
-            this.sendUniformData(program, "u_pMatrix", cmd.pMatrix);
+            var vMatrix = null,
+                pMatrix = null;
+
+            var entityObject = cmd.target;
+
+            if(entityObject.data && entityObject.data.vMatrix){
+                vMatrix = entityObject.data.vMatrix;
+            }
+            else{
+                vMatrix = cmd.vMatrix;
+            }
+
+            if(entityObject.data && entityObject.data.pMatrix){
+                pMatrix = entityObject.data.pMatrix;
+            }
+            else{
+                pMatrix = cmd.pMatrix;
+            }
+
+            this.sendUniformData(program, "u_vMatrix", vMatrix);
+
+            this.sendUniformData(program, "u_pMatrix", pMatrix);
         }
 
         public setShaderDefinition(cmd:QuadCommand, material:EngineMaterial){

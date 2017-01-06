@@ -14,6 +14,10 @@ module wd{
 
         public isPlayed:boolean = false;
 
+
+        //todo refactor
+        public timeLimit = 5000;
+
         protected startFrameDataMap:wdCb.Hash<any> = wdCb.Hash.create<any>();
         protected currentAnimData:wdCb.Collection<KeyFrameAnimationFrameData> = null;
         protected currentFrameData:KeyFrameAnimationFrameData = null;
@@ -27,6 +31,11 @@ module wd{
 
         public abstract saveZeroTimeFrameData():void;
         public abstract updateTargets(elapsed:number, pauseDuration:number):void;
+
+        //todo remove
+        public isTimeExceed5000(){
+            return this.currentFrameData.time > this.timeLimit;
+        }
 
         @ensure(function(){
             it(`should exist animation name:${this.currentAnimName}`, () => {
@@ -85,6 +94,19 @@ module wd{
             return this.currentAnimData !== null;
         }
 
+
+
+
+
+        //todo refactor
+        public setBeginElapsedTimeOfFirstFrame2(currentTime:number){
+            this._beginElapsedTimeOfFirstFrame = currentTime;
+        }
+
+
+
+
+
         public setBeginElapsedTimeOfFirstFrame(currentTime:number){
             if(this._beginElapsedTimeOfFirstFrame === null){
                 this._beginElapsedTimeOfFirstFrame = currentTime;
@@ -112,7 +134,18 @@ module wd{
             this._frameCount = this.currentAnimData.getCount();
         }
 
+
+
+        //todo refactor
+        private _isFirstPlay = true;
+
         public updateFrame(elapsed:number, pauseDuration:number){
+            if(this._isFirstPlay){
+                this.setBeginElapsedTimeOfFirstFrame2(elapsed);
+
+                this._isFirstPlay = false;
+            }
+
             this._updateCurrentFrameIndex(elapsed, pauseDuration);
 
             if(this._isFinishAllFrames()){

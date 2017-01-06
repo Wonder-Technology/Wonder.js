@@ -6,10 +6,38 @@ module wd{
             this.createControllerMap();
         }
 
+
+
+
+
+
+
+        public preparePlayOneTime(index:number){
+            this.playOneTime(index);
+
+            this.state = EAnimationState.DEFAULT;
+
+            this._isPreparePlayOneTime = true;
+        }
+
+        private _isPreparePlayOneTime:boolean = false;
+
+
+
+
+
+
+
         //todo refactor: add AnimationController class
         //todo specify args!
         public playOneTime(...args):void{
             this._isPlayOneTime = true;
+
+            if(this._isPreparePlayOneTime){
+                this._isPreparePlayOneTime = false;
+                this.state = EAnimationState.RUN;
+                return;
+            }
 
             this.play.apply(this, args);
         }
@@ -17,9 +45,18 @@ module wd{
         private _isPlayOneTime:boolean = false;
 
         protected handleUpdate(elapsed:number){
+            var isTimeExceed5000 = false;
+            var self = this;
+
             this.controllerList.forEach((controller:LayerKeyFrameController) => {
                 if(!controller.hasCurrentAnimData()){
                     return;
+                }
+
+                //todo remove
+                if(self._isPlayOneTime && controller.isTimeExceed5000()){
+                    isTimeExceed5000 = true;
+                    return wdCb.$BREAK;
                 }
 
                 this.handleBeforeJudgeWhetherCurrentFrameFinish(controller, elapsed);
@@ -30,6 +67,12 @@ module wd{
 
                 this.handleAfterJudgeWhetherCurrentFrameFinish(controller, elapsed);
             });
+
+            //todo remove
+            if(this._isPlayOneTime && isTimeExceed5000){
+                this.stop();
+                return;
+            }
 
             if(this._isPlayOneTime){
                 let isFinishAnimation = true;

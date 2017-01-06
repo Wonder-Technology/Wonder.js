@@ -58,6 +58,29 @@ module wd{
         @cloneAttributeAsCloneable()
         private _inverseNodeToRootMatrix:Matrix4 = null;
 
+
+
+
+        //todo refactor
+        private _timeLimit:number = 5000;
+        get timeLimit(){
+            return this._timeLimit;
+        }
+        set timeLimit(timeLimit:number){
+            var self = this;
+
+            if(!!this.controllerList){
+                this.controllerList.forEach((controller:JointKeyFrameController) =>
+                {
+                    controller.timeLimit = timeLimit;
+                });
+            }
+        }
+
+
+
+
+
         public initWhenCreate(){
             this._bindPreComputeEvent();
         }
@@ -195,8 +218,9 @@ module wd{
                 inverseNodeToRootMatrix = this._inverseNodeToRootMatrix,
                 bindShapeMatrix = this.bindShapeMatrix,
                 inverseBindMatrices = this.inverseBindMatrices,
- boneMatrixMap = this.boneMatrixMap,
+                boneMatrixMap = this.boneMatrixMap,
                 jointMatrices = this.jointMatrices;
+
 
             //todo optimize:reduce matrix mul count
             for(let jointName of this.jointNames){
@@ -210,9 +234,26 @@ module wd{
                     mat = inverseBindMatrices[index].clone();
                 }
 
+                //todo fix yuanbao!
+                if(jointName === "Object_91_pasted__joint12") {
+                    mat = Matrix4.create().translate(28,-3,-65);
+                    mat.scale(0.5,0.5,0.5)
+                }
+
+
+
+                // if(jointName === "Object_91_pasted__joint12") {
+                //     var a = 1;
+                //     mat = Matrix4.create()
+                //         .applyMatrix(inverseNodeToRootMatrix)
+                //         .cloneToArray(jointMatrices, len);
+                // }
+                // else{
                 mat.applyMatrix(boneMatrixMap.getChild(jointName).globalMatrix)
                     .applyMatrix(inverseNodeToRootMatrix)
                     .cloneToArray(jointMatrices, len);
+                // }
+
 
                 len += 16;
             }

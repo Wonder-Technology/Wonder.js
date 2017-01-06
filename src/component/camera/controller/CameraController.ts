@@ -28,6 +28,7 @@ module wd {
             return this.camera.pMatrix;
         }
         set pMatrix(pMatrix:Matrix4){
+            this.camera.isUserSpecifyThePMatrix = true;
             this.camera.pMatrix = pMatrix;
         }
 
@@ -105,11 +106,11 @@ module wd {
             var self = this;
 
             this._clearCacheSubscription = wdFrp.fromArray([
-                    EventManager.fromEvent(<any>EEngineEvent.ENDLOOP),
-                    EventManager.fromEvent(this.entityObject, <any>EEngineEvent.TRANSFORM_TRANSLATE),
-                    EventManager.fromEvent(this.entityObject, <any>EEngineEvent.TRANSFORM_ROTATE),
-                    EventManager.fromEvent(this.entityObject, <any>EEngineEvent.TRANSFORM_SCALE)
-                ])
+                EventManager.fromEvent(<any>EEngineEvent.ENDLOOP),
+                EventManager.fromEvent(this.entityObject, <any>EEngineEvent.TRANSFORM_TRANSLATE),
+                EventManager.fromEvent(this.entityObject, <any>EEngineEvent.TRANSFORM_ROTATE),
+                EventManager.fromEvent(this.entityObject, <any>EEngineEvent.TRANSFORM_SCALE)
+            ])
                 .mergeAll()
                 .subscribe(() => {
                     self._clearCache();

@@ -1,4 +1,4 @@
-module wd{
+module Hilo3D{
     declare var Image:any;
 
     export class Base64Utils{
@@ -7,7 +7,7 @@ module wd{
                 expect(base64.indexOf("data:image")).gt(-1);
             });
         })
-        public static createImageFromBase64(base64:string, filePath:string){
+        public static createImageFromBase64(base64:string){
             var image = new Image();
 
             image.src = base64;

@@ -45,6 +45,8 @@ module wd{
         @cloneAttributeAsCloneable()
         public pMatrix:Matrix4 = Matrix4.create();
         public entityObject:GameObject = null;
+        @cloneAttributeAsBasicType()
+        public isUserSpecifyThePMatrix:boolean = false;
 
         protected dirty:boolean = false;
 
@@ -63,7 +65,7 @@ module wd{
         @virtual
         public init(){
             if(this.dirty) {
-                this.updateProjectionMatrix();
+                this._updateProjectionMatrix();
                 this.dirty = false;
             }
         }
@@ -78,7 +80,7 @@ module wd{
 
         public update(elapsed:number){
             if(this.dirty){
-                this.updateProjectionMatrix();
+                this._updateProjectionMatrix();
 
                 this.dirty = false;
             }
@@ -88,6 +90,14 @@ module wd{
 
         protected getInvViewProjMat(){
             return this.pMatrix.clone().multiply(this.worldToCameraMatrix).invert();
+        }
+
+        private _updateProjectionMatrix(){
+            if(this.isUserSpecifyThePMatrix){
+                return;
+            }
+
+            this.updateProjectionMatrix();
         }
     }
 }

@@ -54,7 +54,7 @@ module wd {
             this.maxBoneCount = this._getMaxBoneCount();
 
             //todo use map instead
-            alert("maxBoneCount:" + this.maxBoneCount);
+            // alert("maxBoneCount:" + this.maxBoneCount);
 
             this._detectPrecision();
         }

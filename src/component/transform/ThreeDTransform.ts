@@ -15,8 +15,31 @@ module wd{
             this._localToWorldMatrixCache = result;
         })
         get localToWorldMatrix(){
+            //todo refactor
+            if(this._isUserSpecifyTheLocalToWorldMatrix){
+                return this._userLocalToWorldMatrix;
+            }
+
             return this.getMatrix<Matrix4>("sync", "_localToWorldMatrix");
         }
+
+        private _isUserSpecifyTheLocalToWorldMatrix:boolean = false;
+        private _userLocalToWorldMatrix = null;
+
+
+        public setLocalToWorldMatrix(matrix){
+            this._isUserSpecifyTheLocalToWorldMatrix = true;
+
+            this._userLocalToWorldMatrix = matrix;
+
+            this.clearCache();
+
+
+            //todo fix
+            this.setChildrenTransformState(ETransformState.ISTRANSLATE, true);
+        }
+
+
 
         @cacheGetter(function(){
             return this._normalMatrixCache !== null;
