@@ -77,6 +77,8 @@ export = class Converter {
                 return wdFrp.fromArray(resourceUrlArr)
                     .flatMap((resourceUrl:string) => {
                         if(!fs.existsSync(resourceUrl)){
+                            Log.warn(`resource url:${resourceUrl} not exist`);
+
                             return wdFrp.empty();
                         }
 
