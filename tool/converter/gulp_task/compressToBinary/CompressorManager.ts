@@ -1,7 +1,5 @@
 import {DataRecord, SourceJsonData, SourceMorphTarget, TargetJsonData} from "./TypeDefinition";
 
-declare var Buffer:any;
-
 import path = require("path");
 import fs = require("fs");
 
@@ -25,6 +23,7 @@ import {it, ensure} from "../../../ts/definition/typescript/decorator/contract"
 import {expect} from "chai"
 
 var base64Arraybuffer = require("base64-arraybuffer");
+var bufferFrom = require("buffer-from");
 
 export class CompressorManager {
     public static create() {
@@ -242,7 +241,7 @@ export class CompressorManager {
     }
 
     private _toBuffer(arraybuffer:ArrayBuffer) {
-        return Buffer.from(arraybuffer);
+        return bufferFrom(arraybuffer);
     }
 
     private _parseWhere(where: string) {

@@ -15,18 +15,18 @@ var GLTFLightUtils_1 = require("./GLTFLightUtils");
 var GLTFMaterialUtils_1 = require("./GLTFMaterialUtils");
 var describe = contract.describe, it = contract.it, requireInNodejs = contract.requireInNodejs, requireGetter = contract.requireGetter, requireSetter = contract.requireSetter, requireGetterAndSetter = contract.requireGetterAndSetter, ensure = contract.ensure, ensureGetter = contract.ensureGetter, ensureSetter = contract.ensureSetter, ensureGetterAndSetter = contract.ensureGetterAndSetter, invariant = contract.invariant;
 var expect = chai.expect;
-var GLTFTowd = (function () {
-    function GLTFTowd(version) {
+var GLTFToWD = (function () {
+    function GLTFToWD(version) {
         this.name = "wdJsGLTFToWDConverter";
         this.version = null;
         this.version = version;
     }
-    GLTFTowd.create = function (version) {
+    GLTFToWD.create = function (version) {
         var obj = null;
         obj = new this(version);
         return obj;
     };
-    GLTFTowd.prototype.convert = function (fileBuffer, filePath) {
+    GLTFToWD.prototype.convert = function (fileBuffer, filePath) {
         var resultJson = {}, fileContent = fileBuffer.toString();
         resultJson = ExtendUtils.extendDeep(json.parse(fileContent));
         this._convertAssets(resultJson);
@@ -41,14 +41,14 @@ var GLTFTowd = (function () {
         this._clean(resultJson);
         return wdFrp.just([resultJson]);
     };
-    GLTFTowd.prototype._convertAssets = function (resultJson) {
+    GLTFToWD.prototype._convertAssets = function (resultJson) {
         if (resultJson.asset) {
             var asset = resultJson.asset;
             asset.generator = this.name;
             asset.version = this.version;
         }
     };
-    GLTFTowd.prototype._convertCameras = function (resultJson) {
+    GLTFToWD.prototype._convertCameras = function (resultJson) {
         if (resultJson.cameras) {
             for (var name_1 in resultJson.cameras) {
                 if (resultJson.cameras.hasOwnProperty(name_1)) {
@@ -63,7 +63,7 @@ var GLTFTowd = (function () {
             }
         }
     };
-    GLTFTowd.prototype._convertPrimitives = function (resultJson) {
+    GLTFToWD.prototype._convertPrimitives = function (resultJson) {
         if (resultJson.meshes) {
             var meshes = resultJson.meshes;
             for (var name_2 in meshes) {
@@ -81,7 +81,7 @@ var GLTFTowd = (function () {
             }
         }
     };
-    GLTFTowd.prototype._convertNodes = function (resultJson) {
+    GLTFToWD.prototype._convertNodes = function (resultJson) {
         if (resultJson.nodes) {
             var nodes = resultJson.nodes;
             for (var name_3 in nodes) {
@@ -92,13 +92,13 @@ var GLTFTowd = (function () {
             }
         }
     };
-    GLTFTowd.prototype._convertToSingleMesh = function (node) {
+    GLTFToWD.prototype._convertToSingleMesh = function (node) {
         if (node.meshes) {
             node.mesh = node.meshes[0];
             delete node.meshes;
         }
     };
-    GLTFTowd.prototype._removePrimitiveAttributeKeyIndex = function (attributes) {
+    GLTFToWD.prototype._removePrimitiveAttributeKeyIndex = function (attributes) {
         for (var name_4 in attributes) {
             if (attributes.hasOwnProperty(name_4)) {
                 var result = name_4.match(/(\w+)_0+/);
@@ -109,19 +109,19 @@ var GLTFTowd = (function () {
             }
         }
     };
-    GLTFTowd.prototype._clean = function (resultJson) {
+    GLTFToWD.prototype._clean = function (resultJson) {
         delete resultJson.extensions;
     };
-    return GLTFTowd;
+    return GLTFToWD;
 }());
-exports.GLTFTowd = GLTFTowd;
+exports.GLTFToWD = GLTFToWD;
 __decorate([
     ensure(function (stream) {
         it("should return stream", function () {
             expect(stream).instanceOf(wdFrp.Stream);
         });
     })
-], GLTFTowd.prototype, "convert", null);
+], GLTFToWD.prototype, "convert", null);
 __decorate([
     requireInNodejs(function (node) {
         it("not support multi meshes", function () {
@@ -130,7 +130,7 @@ __decorate([
             }
         });
     })
-], GLTFTowd.prototype, "_convertToSingleMesh", null);
+], GLTFToWD.prototype, "_convertToSingleMesh", null);
 __decorate([
     requireInNodejs(function (attributes) {
         it("not support multi attribute datas(e.g. TEXCOORD_1)", function () {
@@ -141,4 +141,4 @@ __decorate([
             }
         }, this);
     })
-], GLTFTowd.prototype, "_removePrimitiveAttributeKeyIndex", null);
+], GLTFToWD.prototype, "_removePrimitiveAttributeKeyIndex", null);

@@ -20,21 +20,21 @@ var contract = require("../../ts/definition/typescript/decorator/contract");
 var chai = require("chai");
 var describe = contract.describe, it = contract.it, requireInNodejs = contract.requireInNodejs, requireGetter = contract.requireGetter, requireSetter = contract.requireSetter, requireGetterAndSetter = contract.requireGetterAndSetter, ensure = contract.ensure, ensureGetter = contract.ensureGetter, ensureSetter = contract.ensureSetter, ensureGetterAndSetter = contract.ensureGetterAndSetter, invariant = contract.invariant;
 var expect = chai.expect;
-var OBJTowd = (function (_super) {
-    __extends(OBJTowd, _super);
-    function OBJTowd() {
+var OBJToWD = (function (_super) {
+    __extends(OBJToWD, _super);
+    function OBJToWD() {
         var _this = _super.apply(this, arguments) || this;
         _this.name = "wdJsOBJToWDConverter";
         _this._objectsConverter = ObjectsConverter.create();
         _this._materialsConverter = MaterialsConverter_1.MaterialsConverter.create();
         return _this;
     }
-    OBJTowd.create = function (version) {
+    OBJToWD.create = function (version) {
         var obj = null;
         obj = new this(version);
         return obj;
     };
-    OBJTowd.prototype.convert = function (fileBuffer, filePath) {
+    OBJToWD.prototype.convert = function (fileBuffer, filePath) {
         var _this = this;
         var resultJson = {}, fileContent = fileBuffer.toString(), nodeName = ModelLoaderUtils.getNameByPath(filePath);
         this.convertSceneData(resultJson, nodeName);
@@ -49,19 +49,19 @@ var OBJTowd = (function (_super) {
         }
         return wdFrp.just([resultJson]);
     };
-    OBJTowd.prototype._convertObjects = function (resultJson, fileContent, nodeName) {
+    OBJToWD.prototype._convertObjects = function (resultJson, fileContent, nodeName) {
         return this._objectsConverter.convert(resultJson, fileContent, nodeName);
     };
-    OBJTowd.prototype._convertMaterials = function (resultJson, mtlFileContent) {
+    OBJToWD.prototype._convertMaterials = function (resultJson, mtlFileContent) {
         return this._materialsConverter.convert(resultJson, mtlFileContent);
     };
-    return OBJTowd;
+    return OBJToWD;
 }(SingleModelConverter_1.SingleModelConverter));
-exports.OBJTowd = OBJTowd;
+exports.OBJToWD = OBJToWD;
 __decorate([
     ensure(function (stream) {
         it("should return stream", function () {
             expect(stream).instanceOf(wdFrp.Stream);
         });
     })
-], OBJTowd.prototype, "convert", null);
+], OBJToWD.prototype, "convert", null);

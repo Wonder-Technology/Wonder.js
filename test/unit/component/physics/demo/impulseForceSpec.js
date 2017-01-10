@@ -60,13 +60,13 @@ describe("physics impulse/force demo", function () {
 
             director._init();
 
-            physicsTool.judgeValue(physicsTool.convertTowdVector3(rigidBody1.velocity), [1.667,0,0]);
-            physicsTool.judgeValue(physicsTool.convertTowdVector3(rigidBody1.angularVelocity), [0,0,-0.1]);
+            physicsTool.judgeValue(physicsTool.convertToWDVector3(rigidBody1.velocity), [1.667,0,0]);
+            physicsTool.judgeValue(physicsTool.convertToWDVector3(rigidBody1.angularVelocity), [0,0,-0.1]);
 
             director._loopBody(100);
 
-            physicsTool.judgeValue(physicsTool.convertTowdVector3(rigidBody1.velocity), [1.667,0,0]);
-            physicsTool.judgeValue(physicsTool.convertTowdVector3(rigidBody1.angularVelocity), [0,0,-0.1]);
+            physicsTool.judgeValue(physicsTool.convertToWDVector3(rigidBody1.velocity), [1.667,0,0]);
+            physicsTool.judgeValue(physicsTool.convertToWDVector3(rigidBody1.angularVelocity), [0,0,-0.1]);
         });
     });
 
@@ -97,13 +97,13 @@ describe("physics impulse/force demo", function () {
 
             director._init();
 
-            physicsTool.judgeValue(physicsTool.convertTowdVector3(rigidBody1.velocity), [0,0,0]);
-            physicsTool.judgeValue(physicsTool.convertTowdVector3(rigidBody1.angularVelocity), [0,0,0]);
+            physicsTool.judgeValue(physicsTool.convertToWDVector3(rigidBody1.velocity), [0,0,0]);
+            physicsTool.judgeValue(physicsTool.convertToWDVector3(rigidBody1.angularVelocity), [0,0,0]);
 
             director._loopBody(100);
 
-            physicsTool.judgeValue(physicsTool.convertTowdVector3(rigidBody1.velocity), [0.2,0,0]);
-            physicsTool.judgeValue(physicsTool.convertTowdVector3(rigidBody1.angularVelocity), [0,0,-0.012]);
+            physicsTool.judgeValue(physicsTool.convertToWDVector3(rigidBody1.velocity), [0.2,0,0]);
+            physicsTool.judgeValue(physicsTool.convertToWDVector3(rigidBody1.angularVelocity), [0,0,-0.012]);
         });
     });
 });

@@ -74,8 +74,8 @@ describe("physics damping demo", function () {
 
             physicsTool.judgePos(box1, [-9.544, 0, 0], 3);
             physicsTool.judgePos(box2, [9.518, 0, 0], 3);
-            physicsTool.judgeValue(physicsTool.convertTowdVector3(rigidBody1.velocity), [4.562, 0, 0]);
-            physicsTool.judgeValue(physicsTool.convertTowdVector3(rigidBody2.velocity), [-4.825, 0, 0]);
+            physicsTool.judgeValue(physicsTool.convertToWDVector3(rigidBody1.velocity), [4.562, 0, 0]);
+            physicsTool.judgeValue(physicsTool.convertToWDVector3(rigidBody2.velocity), [-4.825, 0, 0]);
         });
     });
 
@@ -103,8 +103,8 @@ describe("physics damping demo", function () {
             director._loopBody(100);
 
             physicsTool.judgePos(box1, [0,0,0], 3);
-            physicsTool.judgeValue(physicsTool.convertTowdVector3(rigidBody1.angularVelocity), [0, 0, 4.825]);
-            physicsTool.judgeValue(physicsTool.convertTowdVector3(rigidBody1.velocity), [0,0,0]);
+            physicsTool.judgeValue(physicsTool.convertToWDVector3(rigidBody1.angularVelocity), [0, 0, 4.825]);
+            physicsTool.judgeValue(physicsTool.convertToWDVector3(rigidBody1.velocity), [0,0,0]);
         });
     });
 });

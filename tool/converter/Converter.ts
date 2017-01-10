@@ -9,10 +9,10 @@ import JudgeUtils = require("../ts/JudgeUtils");
 import FileUtils = require("../ts/FileUtils");
 import PathUtils = require("./common/PathUtils");
 
-import {OBJTowd} from "./obj/OBJTowd";
-import {MD2Towd} from "./md2/MD2Towd";
-import {GLTFTowd} from "./gltf/GLTFTowd";
-import {FBXTowd} from "./fbx/FBXTowd";
+import {OBJToWD} from "./obj/OBJToWD";
+import {MD2ToWD} from "./md2/MD2ToWD";
+import {GLTFToWD} from "./gltf/GLTFToWD";
+import {FBXToWD} from "./fbx/FBXToWD";
 
 var nodeBase64Image = require("node-base64-image");
 
@@ -38,16 +38,16 @@ export = class Converter {
 
         switch (fileExtname.toLowerCase()) {
             case ".obj":
-                result = OBJTowd.create(this.version).convert(fileBuffer, filePath);
+                result = OBJToWD.create(this.version).convert(fileBuffer, filePath);
                 break;
             case ".md2":
-                result = MD2Towd.create(this.version).convert(fileBuffer, filePath);
+                result = MD2ToWD.create(this.version).convert(fileBuffer, filePath);
                 break;
             case ".gltf":
-                result = GLTFTowd.create(this.version).convert(fileBuffer, filePath);
+                result = GLTFToWD.create(this.version).convert(fileBuffer, filePath);
                 break;
             case ".fbx":
-                result = FBXTowd.create().convert(filePath, destDir);
+                result = FBXToWD.create().convert(filePath, destDir);
                 break;
             default:
                 result = wdFrp.empty();
@@ -74,7 +74,6 @@ export = class Converter {
             if(resourceUrlArr && resourceUrlArr.length > 0){
                 let stream:wdFrp.Stream = null;
 
-
                 return wdFrp.fromArray(resourceUrlArr)
                     .flatMap((resourceUrl:string) => {
                         if(!fs.existsSync(resourceUrl)){
@@ -82,15 +81,10 @@ export = class Converter {
                         }
 
                         if(isEmbedded && self._isImage(resourceUrl)){
-                        //     return self._convertImageToBase64Stream(resourceUrl);
                             return wdFrp.empty();
                         }
 
-                        // if(!isEmbedded || !self._isImage(resourceUrl)){
-                            return self._createCopyResourceStream(resourceUrl, sourceDir, destDir);
-                        // }
-
-                        // return wdFrp.empty();
+                        return self._createCopyResourceStream(resourceUrl, sourceDir, destDir);
                     })
                     .ignoreElements()
                     .concat(
@@ -100,9 +94,9 @@ export = class Converter {
 
             return wdFrp.fromNodeCallback(fs.outputJson)(resultRelativeFilePath, fileJson);
         })
-        .map(() => {
-            return resultRelativeFilePath;
-        })
+            .map(() => {
+                return resultRelativeFilePath;
+            })
     }
 
     private _getResourceUrlArr(resultJson:any, filePath:string) {
@@ -151,36 +145,6 @@ export = class Converter {
 
         return wdFrp.fromNodeCallback(fs.copy)(resourceUrl, targetResourceUrl);
     }
-
-    // private _convertImageToBase64Stream(resourceUrl:string){
-    //     // read binary data
-    //     var bitmap = fs.readFileSync(resourceUrl);
-    //     // convert binary data to base64 encoded string
-    //     return wdFrp.just(new Buffer(bitmap).toString('base64'))
-    //
-    //     // return new Buffer(bitmap).toString('base64');
-    //
-    //     // return wdFrp.fromNodeCallback(nodeBase64Image.encode)(resourceUrl, {
-    //     //    string:true
-    //     // });
-    //
-    //     // nodeBase64Image.encode(resourceUrl, {
-    //     //    string:true
-    //     // }, () => {
-    //     //
-    //     // });
-    //     //
-    //     // targetResourceUrl = this._getRelativeDestFilePath(sourceDir, destDir, resourceUrl);
-    //     // relativeUrl = path.relative(resourceUrl, targetResourceUrl);
-    //     //
-    //     // if(!fs.existsSync(resourceUrl)
-    //     //     || relativeUrl === "" || relativeUrl === "./"){
-    //     //     return wdFrp.empty();
-    //     // }
-    //     //
-    //     // return wdFrp.fromNodeCallback(fs.copy)(resourceUrl, targetResourceUrl);
-    // }
-
 
     private _getRelativeDestFilePath(sourceDir:string, destDir:string, sourceFilePath:string){
         return path.join(destDir, path.relative(sourceDir, sourceFilePath));

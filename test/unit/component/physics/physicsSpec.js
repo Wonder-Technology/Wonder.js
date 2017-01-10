@@ -102,7 +102,7 @@ describe("physics", function () {
                 director._loopBody(200);
 
                 physicsTool.judgeValue(rigidBody1[dataAttriName], [6, 0, 0]);
-                physicsTool.judgeValue(physicsTool.convertTowdVector3(getBody()[dataAttriName]), [6, 0, 0]);
+                physicsTool.judgeValue(physicsTool.convertToWDVector3(getBody()[dataAttriName]), [6, 0, 0]);
             }
 
             describe("change velocity", function(){
@@ -299,11 +299,11 @@ describe("physics", function () {
 
             function assert(position, rotation){
                 physicsTool.judgeValue(box1.transform.position, position.toArray());
-                physicsTool.judgeValue(physicsTool.convertTowdVector3(getBody().position), position.toArray());
+                physicsTool.judgeValue(physicsTool.convertToWDVector3(getBody().position), position.toArray());
 
 
                 physicsTool.judgeValue(box1.transform.rotation.getEulerAngles(), rotation.getEulerAngles().toArray());
-                physicsTool.judgeValue(physicsTool.convertTowdQuaternion(getBody().quaternion).getEulerAngles(), rotation.getEulerAngles().toArray());
+                physicsTool.judgeValue(physicsTool.convertToWDQuaternion(getBody().quaternion).getEulerAngles(), rotation.getEulerAngles().toArray());
             }
 
             beforeEach(function(){
@@ -382,7 +382,7 @@ describe("physics", function () {
                     director.scene.physics.gravity
                 )).toEqual([0, 10, 0]);
                 expect(testTool.getValues(
-                    physicsTool.convertTowdVector3(physicsTool.getWorld().gravity)
+                    physicsTool.convertToWDVector3(physicsTool.getWorld().gravity)
                 )).toEqual([0, 10, 0]);
             });
         });

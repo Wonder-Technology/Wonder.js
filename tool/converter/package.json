@@ -2,8 +2,12 @@
   "name": "converter",
   "version": "0.0.1",
   "devDependencies": {
+    "base64-arraybuffer": "^0.1.5",
+    "buffer-from": "^0.1.1",
     "buffer-to-arraybuffer": "0.0.4",
     "canvas": "^1.6.0",
-    "node-base64-image": "^1.0.3"
+    "node-base64-image": "^1.0.3",
+    "promise": "^7.1.1",
+    "relaxed-json": "^1.0.0"
   }
 }

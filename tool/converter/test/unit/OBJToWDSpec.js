@@ -1,11 +1,11 @@
 var fs = require("fs-extra"),
-    Converter = require("../../dist/converter/obj/OBJTowd"),
+    Converter = require("../../dist/converter/obj/OBJToWD"),
     path = require("path"),
     sinon = require("sinon");
 
 require("jasmine-before-all");
 
-describe("OBJTowd", function () {
+describe("OBJToWD", function () {
     var sandbox = null;
     var converter = null;
     var testFile1, testFile2;
@@ -16,7 +16,7 @@ describe("OBJTowd", function () {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        converter = Converter.OBJTowd.create("0.1.0");
+        converter = Converter.OBJToWD.create("0.1.0");
     });
     afterEach(function () {
         sandbox.restore();

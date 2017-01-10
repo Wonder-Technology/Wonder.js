@@ -31,7 +31,7 @@ var expect = chai.expect;
  *
  * this .gltf file should use KHR_materials_common extension
  */
-export class GLTFTowd {
+export class GLTFToWD {
     public static create(version: string) {
         var obj = null;
 

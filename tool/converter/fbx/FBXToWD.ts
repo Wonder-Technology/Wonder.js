@@ -13,7 +13,7 @@ var Promise = require("promise");
 var json = require("relaxed-json");
 
 
-export class FBXTowd{
+export class FBXToWD{
     public static create() {
         var obj = null;
 
@@ -32,8 +32,18 @@ export class FBXTowd{
             promise = new Promise(function (resolve, reject) {
                 var destFilePath = path.join(destDir, fileName + ".wd");
 
-                exec(`python fbx/python/converter.py ${filePath} ${destFilePath}`, function (err, stdout, stderr) {
+                exec(`python ${path.join(__dirname, "../../../", "fbx/python/converter.py")} ${filePath} ${destFilePath}`, function (err, stdout, stderr) {
+                    if(err){
+                        throw err;
+                    }
+
                     fs.readFile(destFilePath, function(err, buffer){
+                        if(err){
+                            throw err;
+                        }
+
+                        fs.removeSync(destFilePath);
+
                         resolve([json.parse(buffer.toString())]);
                     });
                 });

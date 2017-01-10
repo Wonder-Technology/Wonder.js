@@ -225,7 +225,7 @@ describe("parse wd Geometry", function(){
             it("normalize texCoord data", function(){
                 wdTool.setJson(json, {
                     "asset": {
-                        "generator": "wdJsGLTFTowdConverter"
+                        "generator": "wdJsGLTFToWDConverter"
                     },
                     "meshes": {
                         "geometry1": {

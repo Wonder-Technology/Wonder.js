@@ -27,7 +27,7 @@ var describe = contract.describe,
 
 var expect = chai.expect;
 
-export class OBJTowd extends SingleModelConverter{
+export class OBJToWD extends SingleModelConverter{
     public static create(version:string) {
         var obj = null;
 

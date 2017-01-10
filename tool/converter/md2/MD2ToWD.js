@@ -18,36 +18,36 @@ var chai = require("chai");
 var SingleModelConverter_1 = require("../common/SingleModelConverter");
 var describe = contract.describe, it = contract.it, requireInNodejs = contract.requireInNodejs, requireGetter = contract.requireGetter, requireSetter = contract.requireSetter, requireGetterAndSetter = contract.requireGetterAndSetter, ensure = contract.ensure, ensureGetter = contract.ensureGetter, ensureSetter = contract.ensureSetter, ensureGetterAndSetter = contract.ensureGetterAndSetter, invariant = contract.invariant;
 var expect = chai.expect;
-var MD2Towd = (function (_super) {
-    __extends(MD2Towd, _super);
-    function MD2Towd() {
+var MD2ToWD = (function (_super) {
+    __extends(MD2ToWD, _super);
+    function MD2ToWD() {
         var _this = _super.apply(this, arguments) || this;
         _this.name = "wdJsMD2ToWDConverter";
         _this._objectsConverter = ObjectsConverter.create();
         return _this;
     }
-    MD2Towd.create = function (version) {
+    MD2ToWD.create = function (version) {
         var obj = null;
         obj = new this(version);
         return obj;
     };
-    MD2Towd.prototype.convert = function (fileBuffer, filePath) {
+    MD2ToWD.prototype.convert = function (fileBuffer, filePath) {
         var resultJson = {}, nodeName = ModelLoaderUtils.getNameByPath(filePath);
         this.convertSceneData(resultJson, nodeName);
         resultJson.asset = this.convertAssetData();
         this._convertObjects(resultJson, fileBuffer, nodeName);
         return wdFrp.just([resultJson]);
     };
-    MD2Towd.prototype._convertObjects = function (resultJson, fileBuffer, filePath) {
+    MD2ToWD.prototype._convertObjects = function (resultJson, fileBuffer, filePath) {
         return this._objectsConverter.convert(resultJson, fileBuffer, filePath);
     };
-    return MD2Towd;
+    return MD2ToWD;
 }(SingleModelConverter_1.SingleModelConverter));
-exports.MD2Towd = MD2Towd;
+exports.MD2ToWD = MD2ToWD;
 __decorate([
     ensure(function (stream) {
         it("should return stream", function () {
             expect(stream).instanceOf(wdFrp.Stream);
         });
     })
-], MD2Towd.prototype, "convert", null);
+], MD2ToWD.prototype, "convert", null);

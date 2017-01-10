@@ -5,10 +5,10 @@ var wdFrp = require("wdfrp");
 var wdCb = require("wdcb");
 var JudgeUtils = require("../ts/JudgeUtils");
 var PathUtils = require("./common/PathUtils");
-var OBJTowd_1 = require("./obj/OBJTowd");
-var MD2Towd_1 = require("./md2/MD2Towd");
-var GLTFTowd_1 = require("./gltf/GLTFTowd");
-var FBXTowd_1 = require("./fbx/FBXTowd");
+var OBJToWD_1 = require("./obj/OBJToWD");
+var MD2ToWD_1 = require("./md2/MD2ToWD");
+var GLTFToWD_1 = require("./gltf/GLTFToWD");
+var FBXToWD_1 = require("./fbx/FBXToWD");
 module.exports = (function () {
     function Converter() {
         this.version = null;
@@ -26,16 +26,16 @@ module.exports = (function () {
         var fileExtname = path.extname(filePath), result = null;
         switch (fileExtname.toLowerCase()) {
             case ".obj":
-                result = OBJTowd_1.OBJTowd.create(this.version).convert(fileBuffer, filePath);
+                result = OBJToWD_1.OBJToWD.create(this.version).convert(fileBuffer, filePath);
                 break;
             case ".md2":
-                result = MD2Towd_1.MD2Towd.create(this.version).convert(fileBuffer, filePath);
+                result = MD2ToWD_1.MD2ToWD.create(this.version).convert(fileBuffer, filePath);
                 break;
             case ".gltf":
-                result = GLTFTowd_1.GLTFTowd.create(this.version).convert(fileBuffer, filePath);
+                result = GLTFToWD_1.GLTFToWD.create(this.version).convert(fileBuffer, filePath);
                 break;
             case ".fbx":
-                result = FBXTowd_1.FBXTowd.create().convert(filePath, destDir);
+                result = FBXToWD_1.FBXToWD.create().convert(filePath, destDir);
                 break;
             default:
                 result = wdFrp.empty();

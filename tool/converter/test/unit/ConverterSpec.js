@@ -36,9 +36,14 @@ describe("Converter", function () {
             testFile2 = fs.readFileSync(testPath2);
         });
 
-        function readJSON(resultFilePath){
+        function getResultFilePath(objFilePath) {
             var EXTNAME = ".wd";
-            var resultFilePath = resultFilePath.replace(/\.\w+$/, EXTNAME);
+
+            return objFilePath.replace(/\.\w+$/, EXTNAME);
+        }
+
+        function readJSON(resultFilePath){
+            var resultFilePath = getResultFilePath(resultFilePath);
 
             if(!fs.existsSync(resultFilePath)){
                 throw new Error(resultFilePath+" not exist");
@@ -66,7 +71,7 @@ describe("Converter", function () {
                     fs.removeSync(destDir);
 
                     done();
-                })
+                });
         });
 
         it("convert multi files, get the .wd file and relative resource files", function (done) {
@@ -96,6 +101,84 @@ describe("Converter", function () {
 
                     done();
                 })
+        });
+
+        describe("test embeded", function(){
+            it("not copy the embeded image files", function (done) {
+                converter.write(converter.convert(testFile, testPath1, sourceDir, destDir), sourceDir, destDir, testPath1, true)
+                    .subscribe(function (data) {
+                        console.log(data)
+                    }, null, function () {
+                        var resultFilePath = path.join(destDir, path.relative(sourceDir, testPath1));
+                        var resultJson = readJSON(resultFilePath);
+
+
+                        expect(fs.existsSync(path.resolve(path.dirname(resultFilePath), "1.jpg"))).toBeFalsy();
+                        expect(fs.existsSync(path.resolve(path.dirname(resultFilePath), "./resource/2.png"))).toBeFalsy();
+
+                        fs.removeSync(destDir);
+
+                        done();
+                    });
+            });
+            it("not copy the embeded bin files", function () {
+                //todo finish
+            });
+        });
+
+        describe("fix bug", function(){
+            beforeEach(function(){
+            });
+
+            describe("if source file is in sub dir, the target file should also in the corresponding dir", function () {
+                it("test obj", function(done){
+                    sourceDir = path.join(process.cwd(), "../res/");
+                    destDir = path.join(process.cwd(), "../dest_forTest");
+
+
+                    testPath1 = path.join(process.cwd(), "../res/obj/test.obj");
+
+
+                    converter.write(converter.convert(testFile, testPath1, sourceDir, destDir), sourceDir, destDir, testPath1)
+                        .subscribe(function (data) {
+                            console.log(data)
+                        }, null, function () {
+                            var resultFilePath = path.join(destDir, path.relative(sourceDir, testPath1));
+                            resultFilePath = getResultFilePath(resultFilePath);
+
+                            expect(fs.existsSync(resultFilePath)).toBeTruthy();
+                            expect(fs.existsSync(path.join(destDir, "test.wd"))).toBeFalsy();
+
+                            fs.removeSync(destDir);
+
+                            done();
+                        });
+                });
+                it("test fbx", function(done){
+                    sourceDir = path.join(process.cwd(), "../res");
+                    destDir = path.join(process.cwd(), "../dest_forTest");
+
+
+                    testPath1 = path.join(process.cwd(), "../res/fbx/JPN.fbx");
+
+                    testFile = fs.readFileSync(testPath1);
+
+                    converter.write(converter.convert(testFile, testPath1, sourceDir, destDir), sourceDir, destDir, testPath1)
+                        .subscribe(function (data) {
+                            console.log(data)
+                        }, null, function () {
+                            var resultFilePath = path.join(destDir, path.relative(sourceDir, testPath1));
+                            resultFilePath = getResultFilePath(resultFilePath);
+
+                            expect(fs.existsSync(resultFilePath)).toBeTruthy();
+                            expect(fs.existsSync(path.join(destDir, "JPN.wd"))).toBeFalsy();
+
+                            fs.removeSync(destDir);
+
+                            done();
+                        });
+                });
+            });
         });
     });
 });

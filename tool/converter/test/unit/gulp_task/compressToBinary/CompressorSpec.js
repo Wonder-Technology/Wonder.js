@@ -372,6 +372,16 @@ describe("compressToBinary->CompressorManager", function () {
                 return accessorData.count * getAccessorTypeSize(accessorData)
             }
 
+            function getArraybuffer(data) {
+                var arraybuffer = data.buffer.buffer;
+
+                if(arraybuffer){
+                    return arraybuffer;
+                }
+
+                return bufferToArraybuffer.bufferToArrayBuffer(data.buffer);
+            }
+
             function getAccessorTypeSize(accessor){
                 var type = accessor.type;
 
@@ -592,7 +602,8 @@ describe("compressToBinary->CompressorManager", function () {
 
                     // var reader = BufferReader.create(data.buffer);
 
-                    var arraybuffer = data.buffer.buffer;
+                    var arraybuffer = getArraybuffer(data);
+
 
                     // console.log(arraybuffer.buffer)
                     judgeIndice(arraybuffer, primitiveData, data.json);
@@ -634,7 +645,7 @@ describe("compressToBinary->CompressorManager", function () {
                     var data = compressorManager.compress("", "", fileJson);
 
 
-                    var arraybuffer = data.buffer.buffer;
+                    var arraybuffer = getArraybuffer(data);
 
                     judgeAnimation(arraybuffer, animData1, data.json, "animation_1", "TIME");
                     judgeAnimation(arraybuffer, animData1, data.json, "animation_1", "translation");
@@ -703,7 +714,7 @@ describe("compressToBinary->CompressorManager", function () {
 
                     // var reader = BufferReader.create(data.buffer);
 
-                    var arraybuffer = data.buffer.buffer;
+                    var arraybuffer = getArraybuffer(data);
 
                     var json = data.json;
 
@@ -1442,7 +1453,7 @@ describe("compressToBinary->CompressorManager", function () {
 
 
 
-                    var arraybuffer = data.buffer.buffer;
+                    var arraybuffer = getArraybuffer(data);
 
 
 
@@ -1635,7 +1646,7 @@ describe("compressToBinary->CompressorManager", function () {
                         var data = compressorManager.compress("wdFileName", "./", fileJson);
 
 
-                        var arraybuffer = data.buffer.buffer;
+                        var arraybuffer = getArraybuffer(data);
 
 
                         judgeAnimation(arraybuffer, animData1, data.json, "animation_1", "TIME");

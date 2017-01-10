@@ -13,15 +13,15 @@ var chai_1 = require("chai");
 var exec = require('child_process').exec;
 var Promise = require("promise");
 var path = require("path");
-var FBXTowd = (function () {
-    function FBXTowd() {
+var FBXToWD = (function () {
+    function FBXToWD() {
     }
-    FBXTowd.create = function () {
+    FBXToWD.create = function () {
         var obj = null;
         obj = new this();
         return obj;
     };
-    FBXTowd.prototype.convert = function (filePath, destDir) {
+    FBXToWD.prototype.convert = function (filePath, destDir) {
         var fileName = ModelLoaderUtils.getNameByPath(filePath), promise = new Promise(function (resolve, reject) {
             var destFilePath = path.join(destDir, fileName + ".wd");
             exec("python fbx/python/converter.py " + filePath + " " + destFilePath, function (err, stdout, stderr) {
@@ -32,13 +32,13 @@ var FBXTowd = (function () {
         });
         return wdFrp.fromPromise(promise);
     };
-    return FBXTowd;
+    return FBXToWD;
 }());
-exports.FBXTowd = FBXTowd;
+exports.FBXToWD = FBXToWD;
 __decorate([
     contract_1.ensure(function (stream) {
         contract_1.it("should return stream", function () {
             chai_1.expect(stream).instanceOf(wdFrp.Stream);
         });
     })
-], FBXTowd.prototype, "convert", null);
+], FBXToWD.prototype, "convert", null);

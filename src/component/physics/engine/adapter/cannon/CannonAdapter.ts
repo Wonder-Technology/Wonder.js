@@ -24,7 +24,7 @@ module wd {
         private _pointToPointConstraint:CannonPointToPointConstraint = null;
 
         public getGravity(gravity:number){
-            return CannonUtils.convertTowdVector3(this.world.gravity);
+            return CannonUtils.convertToWDVector3(this.world.gravity);
         }
 
         public setGravity( gravity:Vector3){
@@ -232,7 +232,7 @@ module wd {
                 return null;
             }
 
-            return CannonUtils.convertTowdVector3(body[dataName]);
+            return CannonUtils.convertToWDVector3(body[dataName]);
         }
 
         private _setVec3Data(obj:GameObject, dataName:string, data:Vector3){

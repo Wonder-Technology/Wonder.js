@@ -1,12 +1,12 @@
 var fs = require("fs-extra"),
-    Converter = require("../../dist/converter/gltf/GLTFTowd"),
+    Converter = require("../../dist/converter/gltf/GLTFToWD"),
     config = require("../../dist/converter/common/Config"),
     path = require("path"),
     sinon = require("sinon");
 
 require("jasmine-before-all");
 
-describe("GLTFTowd", function () {
+describe("GLTFToWD", function () {
     var sandbox = null;
     var converter = null;
     var testFile;
@@ -14,7 +14,7 @@ describe("GLTFTowd", function () {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        converter = Converter.GLTFTowd.create("0.1.0");
+        converter = Converter.GLTFToWD.create("0.1.0");
     });
     afterEach(function () {
         sandbox.restore();

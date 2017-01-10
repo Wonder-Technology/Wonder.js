@@ -45,15 +45,15 @@
 
 		"./common/SingleModelConverter.ts",
 
-		"./md2/MD2Towd.ts",
+		"./md2/MD2ToWD.ts",
 		"./md2/MD2ObjectsConverter.ts",
 
 		"./obj/MaterialsConverter.ts",
 		"./obj/ObjectsConverter.ts",
-		"./obj/OBJTowd.ts",
-		"./fbx/FBXTowd.ts",
+		"./obj/OBJToWD.ts",
+		"./fbx/FBXToWD.ts",
 
-		"./gltf/GLTFTowd.ts",
+		"./gltf/GLTFToWD.ts",
 		"./gltf/GLTFAnimationUtils.ts",
 		"./gltf/GLTFLightUtils.ts",
 		"./gltf/GLTFMaterialUtils.ts",

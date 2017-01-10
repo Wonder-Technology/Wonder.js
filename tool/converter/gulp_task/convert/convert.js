@@ -4,22 +4,6 @@ var fs = require("fs-extra");
 var path = require("path");
 
 gulp.task("convert", function (done) {
-    // console.log(process.cwd())
-    // nodeBase64Image.encode("./source/AR_cat_tex_JPN.png", {
-    //     string:true
-    // }, function(result){
-    //     console.log(arguments)
-    //     done()
-    // })
-
-
-    // console.log(fs.readFileSync("./source/AR_cat_tex_JPN.png"));
-
-   // console.log(base64_encode("./source/AR_cat_tex_JPN.png"));
-
-    // done();
-
-
     var convertFiles = require("./convertFiles");
 
     var convertMultiIndicesToSingleIndice = require("../convertIndices/convertMultiIndicesToSingleIndice");
@@ -30,15 +14,11 @@ gulp.task("convert", function (done) {
 
     var removeAttributeData = require("../removeAttributeData/removeAttributeData");
 
-
-
     var commandUtils = require("../../../../build/gulp_task/common/commandUtils");
-
 
     var Converter = require("../../dist/converter/Converter");
 
 
-    //todo support combine multi wd files to one file(according to command line param)
     var sourceDir = commandUtils.parseOption("--sourceDir") || "./source/",
         destDir = commandUtils.parseOption("--destDir") || "./dest/",
         isRemoveNullData = commandUtils.isDefinOption("--removeNullData") || true,
@@ -79,7 +59,7 @@ gulp.task("convert", function (done) {
         })
         .subscribe(function (dataArr) {
         }, function (e) {
-            console.log("error:", e);
+            console.log("error:", e.stack);
             done();
         }, function () {
             console.log("completed");
