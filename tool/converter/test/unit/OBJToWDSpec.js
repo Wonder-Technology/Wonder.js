@@ -1,5 +1,5 @@
 var fs = require("fs-extra"),
-    Converter = require("../../dist/converter/obj/OBJToWD"),
+    Converter = require("../../dist/converter/src/obj/OBJToWD"),
     path = require("path"),
     sinon = require("sinon");
 

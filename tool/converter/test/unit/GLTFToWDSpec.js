@@ -1,5 +1,5 @@
 var fs = require("fs-extra"),
-    Converter = require("../../dist/converter/gltf/GLTFToWD"),
+    Converter = require("../../dist/converter/src/gltf/GLTFToWD"),
     config = require("../../dist/converter/common/Config"),
     path = require("path"),
     sinon = require("sinon");

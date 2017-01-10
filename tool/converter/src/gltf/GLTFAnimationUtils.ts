@@ -1,6 +1,6 @@
 import wdCb = require("wdcb");
 
-import ExtendUtils = require("../../ts/ExtendUtils")
+import ExtendUtils = require("../../../ts/ExtendUtils")
 
 export class GLTFAnimationUtils{
     public static isJointAnimationSeparate(resultJson:any){

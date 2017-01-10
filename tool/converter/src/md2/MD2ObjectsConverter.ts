@@ -1,9 +1,9 @@
 import wdCb = require("wdcb");
-import Log = require("../../ts/Log");
-import Vector3 = require("../../ts/Vector3");
-import BufferReader = require("../common/BufferReader");
-import ModelLoaderUtils = require("../common/ModelLoaderUtils");
-import config = require("../common/Config");
+import Log = require("../../../ts/Log");
+import Vector3 = require("../../../ts/Vector3");
+import BufferReader = require("../../common/BufferReader");
+import ModelLoaderUtils = require("../../common/ModelLoaderUtils");
+import config = require("../../common/Config");
 
 export = class MD2ObjectsConverter {
     public static create() {

@@ -1,10 +1,10 @@
 import wdFrp = require("wdfrp");
-import ModelLoaderUtils = require("../common/ModelLoaderUtils");
+import ModelLoaderUtils = require("../../common/ModelLoaderUtils");
 import fs = require("fs-extra");
 import path = require("path");
 
 
-import {it, ensure} from "../../ts/definition/typescript/decorator/contract"
+import {it, ensure} from "../../../ts/definition/typescript/decorator/contract"
 import {expect} from "chai"
 
 
@@ -32,7 +32,7 @@ export class FBXToWD{
             promise = new Promise(function (resolve, reject) {
                 var destFilePath = path.join(destDir, fileName + ".wd");
 
-                exec(`python ${path.join(__dirname, "../../../", "fbx/python/converter.py")} ${filePath} ${destFilePath}`, function (err, stdout, stderr) {
+                exec(`python ${path.join(__dirname, "../../../../src/", "fbx/python/converter.py")} ${filePath} ${destFilePath}`, function (err, stdout, stderr) {
                     if(err){
                         throw err;
                     }

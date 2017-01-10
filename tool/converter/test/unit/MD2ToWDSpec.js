@@ -1,5 +1,5 @@
 var fs = require("fs-extra"),
-    Converter = require("../../dist/converter/md2/MD2ToWD"),
+    Converter = require("../../dist/converter/src/md2/MD2ToWD"),
     config = require("../../dist/converter/common/Config"),
     path = require("path"),
     sinon = require("sinon");

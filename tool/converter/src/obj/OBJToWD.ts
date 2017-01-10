@@ -3,14 +3,14 @@ import path = require("path");
 import wdFrp = require("wdfrp");
 import wdCb = require("wdcb");
 import ObjectsConverter = require("./ObjectsConverter");
-import ModelLoaderUtils = require("../common/ModelLoaderUtils");
+import ModelLoaderUtils = require("../../common/ModelLoaderUtils");
 
-import Log = require("../../ts/Log");
+import Log = require("../../../ts/Log");
 
 import {MaterialsConverter} from "./MaterialsConverter";
-import {SingleModelConverter} from "../common/SingleModelConverter";
+import {SingleModelConverter} from "../../common/SingleModelConverter";
 
-import contract = require("../../ts/definition/typescript/decorator/contract");
+import contract = require("../../../ts/definition/typescript/decorator/contract");
 import chai = require("chai");
 
 var describe = contract.describe,

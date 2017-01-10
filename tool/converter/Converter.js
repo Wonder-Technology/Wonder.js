@@ -5,10 +5,10 @@ var wdFrp = require("wdfrp");
 var wdCb = require("wdcb");
 var JudgeUtils = require("../ts/JudgeUtils");
 var PathUtils = require("./common/PathUtils");
-var OBJToWD_1 = require("./obj/OBJToWD");
-var MD2ToWD_1 = require("./md2/MD2ToWD");
-var GLTFToWD_1 = require("./gltf/GLTFToWD");
-var FBXToWD_1 = require("./fbx/FBXToWD");
+var OBJToWD_1 = require("./src/obj/OBJToWD");
+var MD2ToWD_1 = require("./src/md2/MD2ToWD");
+var GLTFToWD_1 = require("./src/gltf/GLTFToWD");
+var FBXToWD_1 = require("./src/fbx/FBXToWD");
 module.exports = (function () {
     function Converter() {
         this.version = null;

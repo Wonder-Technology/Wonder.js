@@ -1,7 +1,7 @@
-import Log = require("../../ts/Log");
+import Log = require("../../../ts/Log");
 import wdCb = require("wdcb");
 
-import ModelLoaderUtils = require("../common/ModelLoaderUtils");
+import ModelLoaderUtils = require("../../common/ModelLoaderUtils");
 
 export class MaterialsConverter {
     public static create() {

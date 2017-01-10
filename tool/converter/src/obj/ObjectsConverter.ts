@@ -1,8 +1,8 @@
 import wdCb = require("wdcb");
-import Log = require("../../ts/Log");
-import Vector2 = require("../../ts/Vector2");
-import Vector3 = require("../../ts/Vector3");
-import ModelLoaderUtils = require("../common/ModelLoaderUtils");
+import Log = require("../../../ts/Log");
+import Vector2 = require("../../../ts/Vector2");
+import Vector3 = require("../../../ts/Vector3");
+import ModelLoaderUtils = require("../../common/ModelLoaderUtils");
 
 //todo handle x,y,z,w case?
 const VERTEX_PATTERN = /v\s([\d|\.|\+|\-|e]+)( +[\d|\.|\+|\-|e]+)( +[\d|\.|\+|\-|e]+)/,

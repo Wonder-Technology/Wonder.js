@@ -9,10 +9,10 @@ import JudgeUtils = require("../ts/JudgeUtils");
 import FileUtils = require("../ts/FileUtils");
 import PathUtils = require("./common/PathUtils");
 
-import {OBJToWD} from "./obj/OBJToWD";
-import {MD2ToWD} from "./md2/MD2ToWD";
-import {GLTFToWD} from "./gltf/GLTFToWD";
-import {FBXToWD} from "./fbx/FBXToWD";
+import {OBJToWD} from "./src/obj/OBJToWD";
+import {MD2ToWD} from "./src/md2/MD2ToWD";
+import {GLTFToWD} from "./src/gltf/GLTFToWD";
+import {FBXToWD} from "./src/fbx/FBXToWD";
 
 var nodeBase64Image = require("node-base64-image");
 

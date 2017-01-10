@@ -1,12 +1,12 @@
 import wdFrp = require("wdfrp");
 import wdCb = require("wdcb");
 
-import ExtendUtils = require("../../ts/ExtendUtils")
+import ExtendUtils = require("../../../ts/ExtendUtils")
 
 var json = require("relaxed-json");
 
 
-import contract = require("../../ts/definition/typescript/decorator/contract");
+import contract = require("../../../ts/definition/typescript/decorator/contract");
 import chai = require("chai");
 import {GLTFAnimationUtils} from "./GLTFAnimationUtils";
 import {GLTFLightUtils} from "./GLTFLightUtils";

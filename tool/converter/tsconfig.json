@@ -44,19 +44,16 @@
 
 
 		"./common/SingleModelConverter.ts",
-
-		"./md2/MD2ToWD.ts",
-		"./md2/MD2ObjectsConverter.ts",
-
-		"./obj/MaterialsConverter.ts",
-		"./obj/ObjectsConverter.ts",
-		"./obj/OBJToWD.ts",
-		"./fbx/FBXToWD.ts",
-
-		"./gltf/GLTFToWD.ts",
-		"./gltf/GLTFAnimationUtils.ts",
-		"./gltf/GLTFLightUtils.ts",
-		"./gltf/GLTFMaterialUtils.ts",
+		"./src/md2/MD2ToWD.ts",
+		"./src/md2/MD2ObjectsConverter.ts",
+      "./src/obj/MaterialsConverter.ts",
+      "./src/obj/ObjectsConverter.ts",
+      "./src/obj/OBJToWD.ts",
+		"./src/fbx/FBXToWD.ts",
+		"./src/gltf/GLTFToWD.ts",
+		"./src/gltf/GLTFAnimationUtils.ts",
+		"./src/gltf/GLTFLightUtils.ts",
+		"./src/gltf/GLTFMaterialUtils.ts",
 
 		"./Converter.ts",
 

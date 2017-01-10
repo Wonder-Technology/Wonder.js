@@ -1,9 +1,9 @@
 import wdFrp = require("wdfrp");
-import ModelLoaderUtils = require("../common/ModelLoaderUtils");
+import ModelLoaderUtils = require("../../common/ModelLoaderUtils");
 import ObjectsConverter = require("./MD2ObjectsConverter");
-import contract = require("../../ts/definition/typescript/decorator/contract");
+import contract = require("../../../ts/definition/typescript/decorator/contract");
 import chai = require("chai");
-import {SingleModelConverter} from "../common/SingleModelConverter";
+import {SingleModelConverter} from "../../common/SingleModelConverter";
 
 var describe = contract.describe,
     it = contract.it,
