@@ -1140,7 +1140,7 @@ describe("compressToBinary->CompressorManager", function () {
                         }
                     });
 
-                    var sourceDir = path.join(process.cwd(), "../../../res/texture/");
+                    var sourceDir = path.join(__dirname, "../../../res/texture/");
                     var data = compressorManager.compress("wdFileName", "./", fileJson, sourceDir, true);
 
                     var json = data.json;
