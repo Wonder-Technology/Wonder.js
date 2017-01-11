@@ -40,19 +40,19 @@ var MODULE_TABLE = {
     action: {
         removeFunc: function (filePath) {
             return filePath.indexOf("action/") > -1
-                || filePath.indexOf("ActionEngine") > -1;
+                || filePath.indexOf("ActionComponentContainer") > -1;
         }
     },
     billboard: {
         removeFunc: function (filePath) {
             return filePath.indexOf("billboard/") > -1
-                || filePath.indexOf("BillboardEngine") > -1;
+                || filePath.indexOf("BillboardComponentContainer") > -1;
         }
     },
     lod: {
         removeFunc: function (filePath) {
             return filePath.indexOf("lod/") > -1
-                || filePath.indexOf("LODEngine") > -1;
+                || filePath.indexOf("LODComponentContainer") > -1;
         }
     },
     physics: {
@@ -60,14 +60,14 @@ var MODULE_TABLE = {
 
         removeFunc: function (filePath) {
             return filePath.indexOf("physics/") > -1
-                || filePath.indexOf("PhysicsEngine") > -1
+                || filePath.indexOf("PhysicsComponentContainer") > -1
                 || filePath.indexOf("rigidBody") > -1;
         }
     },
     spacePartition: {
         removeFunc: function (filePath) {
             return filePath.indexOf("space_partition/") > -1
-                || filePath.indexOf("SpacePartitionEngine") > -1;
+                || filePath.indexOf("SpacePartitionComponentContainer") > -1;
         }
     },
     ui: {
@@ -75,7 +75,7 @@ var MODULE_TABLE = {
 
         removeFunc: function (filePath) {
             return filePath.indexOf("ui/") > -1
-                || filePath.indexOf("UIEngine") > -1
+                || filePath.indexOf("UIComponentContainer") > -1
                 || filePath.indexOf("UIObject") > -1
                 || filePath.indexOf("UIObjectScene") > -1
                 || filePath.indexOf("UIRenderer") > -1
@@ -89,7 +89,7 @@ var MODULE_TABLE = {
         },
         removeFunc: function (filePath) {
             return filePath.indexOf("component/animation/") > -1
-                || filePath.indexOf("AnimationEngine") > -1
+                || filePath.indexOf("AnimationComponentContainer") > -1
                 || filePath.indexOf("component/geometry/data/Morph") > -1
                 || filePath.indexOf("component/geometry/data/Skin") > -1
                 || filePath.indexOf("MorphShaderLib") > -1

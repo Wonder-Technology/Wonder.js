@@ -145,15 +145,15 @@ var physicsTool = (function () {
         convertToWDQuaternion: function (r){
             return wd.Quaternion.create(r.x, r.y, r.z, r.w);
         },
-        getPhysicsEngineAdapter: function() {
-            return wd.PhysicsEngine.getInstance().physicsEngineAdapter;
+        getPhysicsComponentContainerAdapter: function() {
+            return wd.PhysicsComponentContainer.getInstance().physicsEngineAdapter;
         },
         getBody: function (obj){
-            return this.getPhysicsEngineAdapter()._gameObjectDataList.findBodyByGameObject(obj);
+            return this.getPhysicsComponentContainerAdapter()._gameObjectDataList.findBodyByGameObject(obj);
         },
 
         getWorld: function (){
-            return this.getPhysicsEngineAdapter().world;
+            return this.getPhysicsComponentContainerAdapter().world;
         }
     }
 })();

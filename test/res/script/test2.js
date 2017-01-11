@@ -4,7 +4,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-/// <reference path="../../../dist/Hilo3D.d.ts"/>
+/// <reference path="../../../dist/wd.all.d.ts"/>
 var sample;
 (function (sample) {
     var Test2 = (function () {
@@ -28,7 +28,7 @@ var sample;
         Test2.prototype.onDispose = function () {
         };
         Test2 = __decorate([
-            Hilo3D.script("test2")
+            wd.script("test2")
         ], Test2);
         return Test2;
     }());

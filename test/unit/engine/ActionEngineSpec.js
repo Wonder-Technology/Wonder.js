@@ -1,4 +1,4 @@
-describe("ActionEngine", function () {
+describe("ActionComponentContainer", function () {
     var sandbox = null;
     var Engine = null;
     var gameObject = null;
@@ -8,7 +8,7 @@ describe("ActionEngine", function () {
 
         gameObject = wd.GameObject.create();
 
-        Engine = wd.ActionEngine.getInstance();
+        Engine = wd.ActionComponentContainer.getInstance();
     });
     afterEach(function () {
         sandbox.restore();
@@ -39,7 +39,7 @@ describe("ActionEngine", function () {
                 prepare([action]);
             });
 
-            it("remove from ActionEngine", function(){
+            it("remove from ActionComponentContainer", function(){
                 expect(Engine.hasChild(action)).toBeFalsy();
             });
             it("remove from GameObject->components", function(){

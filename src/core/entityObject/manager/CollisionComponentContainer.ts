@@ -1,6 +1,6 @@
 module wd{
     @singleton()
-    export class CollisionEngine extends ComponentContainer{
+    export class CollisionComponentContainer extends ComponentContainer{
         public static getInstance():any {}
 
 		private constructor(){super();}

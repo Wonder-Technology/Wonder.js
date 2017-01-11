@@ -1,6 +1,6 @@
 module wd{
     @singleton()
-    export class AnimationEngine extends ComponentContainer{
+    export class AnimationComponentContainer extends ComponentContainer{
         public static getInstance():any {}
 
 		private constructor(){super();}

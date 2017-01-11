@@ -135,7 +135,7 @@ var testTool = (function () {
         },
         updateAction: function (elapsedTime, gameObject) {
             window.performance.now.returns(elapsedTime);
-            wd.ActionEngine.getInstance().update(elapsedTime);
+            wd.ActionComponentContainer.getInstance().update(elapsedTime);
         },
         getValues: function (values, digit) {
             var digit = digit === undefined ? 7 : digit;

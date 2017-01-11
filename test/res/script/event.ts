@@ -1,8 +1,8 @@
-/// <reference path="../../../dist/Hilo3D.d.ts"/>
+/// <reference path="../../../dist/wd.all.d.ts"/>
 module sample {
-    import IScriptBehavior = Hilo3D.IScriptBehavior;
-    @Hilo3D.script("event")
-    export class Event implements Hilo3D.IEventScriptBehavior{
+    import IScriptBehavior = wd.IScriptBehavior;
+    @wd.script("event")
+    export class Event implements wd.IEventScriptBehavior{
         constructor(entityObject) {
         }
 

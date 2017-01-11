@@ -1,14 +1,14 @@
 module wd{
     @singleton()
-    export class SpacePartitionEngine extends ComponentContainer{
+    export class LODComponentContainer extends ComponentContainer{
         public static getInstance():any {}
 
 		private constructor(){super();}
 
-        protected list:wdCb.Collection<SpacePartition>;
+        protected list:wdCb.Collection<LOD>;
 
         public update(elapsed:number){
-            this.list.forEach(function(child:SpacePartition){
+            this.list.forEach(function(child:LOD){
                 child.update(elapsed);
             });
         }

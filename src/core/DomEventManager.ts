@@ -224,7 +224,7 @@ module wd{
 
             event.getDataFromCustomEvent(customEvent);
 
-            ScriptEngine.getInstance().execEntityObjectEventScriptWithData(entityObject, handlerName, event);
+            ScriptComponentContainer.getInstance().execEntityObjectEventScriptWithData(entityObject, handlerName, event);
 
             if (!event.isStopPropagation && entityObject.bubbleParent) {
                 this._trigger(event.clone(), entityObject.bubbleParent, true);

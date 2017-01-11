@@ -23,7 +23,7 @@ module wd {
             });
         })
         public addToObject(entityObject:GameObject, isShareComponent:boolean = false){
-            var engine:SpacePartitionEngine = SpacePartitionEngine.getInstance();
+            var engine:SpacePartitionComponentContainer = SpacePartitionComponentContainer.getInstance();
 
             super.addToObject(entityObject, isShareComponent);
 
@@ -33,7 +33,7 @@ module wd {
         }
 
         public removeFromEngine(){
-            SpacePartitionEngine.getInstance().removeChild(this);
+            SpacePartitionComponentContainer.getInstance().removeChild(this);
         }
     }
 }

@@ -6,7 +6,7 @@ describe("CollisionDetector", function () {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
-        //detector = wd.CollisionEngine.getInstance()._collisionDetector;
+        //detector = wd.CollisionComponentContainer.getInstance()._collisionDetector;
         detector = Detector.create();
 
         sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
@@ -111,8 +111,8 @@ describe("CollisionDetector", function () {
                         box.update();
                     });
 
-                    wd.CollisionEngine.getInstance().update();
-                    wd.CollisionEngine.getInstance().detect();
+                    wd.CollisionComponentContainer.getInstance().update();
+                    wd.CollisionComponentContainer.getInstance().detect();
                 }
 
                 it("collide test1", function () {
@@ -174,8 +174,8 @@ describe("CollisionDetector", function () {
                         box1.update();
                         octreeContainer.update();
 
-                        wd.CollisionEngine.getInstance().update();
-                        wd.CollisionEngine.getInstance().detect();
+                        wd.CollisionComponentContainer.getInstance().update();
+                        wd.CollisionComponentContainer.getInstance().detect();
                     }
 
                     beforeEach(function () {
@@ -297,8 +297,8 @@ describe("CollisionDetector", function () {
                             octreeContainer.update();
                             octreeContainer2.update();
 
-                            wd.CollisionEngine.getInstance().update();
-                            wd.CollisionEngine.getInstance().detect();
+                            wd.CollisionComponentContainer.getInstance().update();
+                            wd.CollisionComponentContainer.getInstance().detect();
                         }
 
                         var box5 = createBox("box5");
@@ -366,8 +366,8 @@ describe("CollisionDetector", function () {
                         box1.update();
                         octreeContainer.update();
 
-                        wd.CollisionEngine.getInstance().update();
-                        wd.CollisionEngine.getInstance().detect();
+                        wd.CollisionComponentContainer.getInstance().update();
+                        wd.CollisionComponentContainer.getInstance().detect();
                     }
 
                     octreeContainer.addChildren([box2, box3, box4]);
@@ -400,8 +400,8 @@ describe("CollisionDetector", function () {
                     function updateAll(){
                         box1.update();
                         octreeContainer.update();
-                        wd.CollisionEngine.getInstance().update();
-                        wd.CollisionEngine.getInstance().detect();
+                        wd.CollisionComponentContainer.getInstance().update();
+                        wd.CollisionComponentContainer.getInstance().detect();
                     }
 
                     beforeEach(function(){

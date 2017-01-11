@@ -53,7 +53,7 @@ describe("script", function () {
         Test2.prototype.init = function () {
         };
         Test2.prototype.update = function (time) {
-            wd.ScriptEngine.getInstance().findScript(this.gameObject, "test").update(time);
+            wd.ScriptComponentContainer.getInstance().findScript(this.gameObject, "test").update(time);
         };
         Test2.prototype.onEnter = function () {
         };
@@ -237,7 +237,7 @@ describe("script", function () {
             director.scene.addChild(gameObject);
 
 
-            var test = wd.ScriptEngine.getInstance().findScript(gameObject, "test");
+            var test = wd.ScriptComponentContainer.getInstance().findScript(gameObject, "test");
             sandbox.stub(test, "init");
 
 
@@ -353,7 +353,7 @@ describe("script", function () {
         }, function(test, entityObject){
             expect(entityObject.scriptManager.hasChild(test)).toBeTruthy();
 
-            wd.ScriptEngine.getInstance().removeChild(entityObject, test);
+            wd.ScriptComponentContainer.getInstance().removeChild(entityObject, test);
 
             expect(entityObject.scriptManager.hasChild(test)).toBeFalsy();
         }, function(test, time, gameObject){

@@ -63,7 +63,7 @@ describe("rigid body dispose", function () {
         });
         it("unregistered its material", function () {
             director._init();
-            adapter = physicsTool.getPhysicsEngineAdapter();
+            adapter = physicsTool.getPhysicsComponentContainerAdapter();
 
             box1.dispose();
 
@@ -71,7 +71,7 @@ describe("rigid body dispose", function () {
         });
         it("remove body", function () {
             director._init();
-            adapter = physicsTool.getPhysicsEngineAdapter();
+            adapter = physicsTool.getPhysicsComponentContainerAdapter();
 
             box1.dispose();
 
@@ -118,7 +118,7 @@ describe("rigid body dispose", function () {
 
 
                 director._init();
-                adapter = physicsTool.getPhysicsEngineAdapter();
+                adapter = physicsTool.getPhysicsComponentContainerAdapter();
             });
 
             it("reset isRigidbodyChild tag", function () {
@@ -161,14 +161,14 @@ describe("rigid body dispose", function () {
             it("test remove lock constraint", function () {
                 rigidBody2.lockConstraint.connectedBody = rigidBody1;
                 director._init();
-                adapter = physicsTool.getPhysicsEngineAdapter();
+                adapter = physicsTool.getPhysicsComponentContainerAdapter();
 
                 judge(adapter._lockConstraintDataList);
             });
             it("test remove distance constraint", function () {
                 rigidBody2.distanceConstraint.connectedBody = rigidBody1;
                 director._init();
-                adapter = physicsTool.getPhysicsEngineAdapter();
+                adapter = physicsTool.getPhysicsComponentContainerAdapter();
 
                 judge(adapter._distanceConstraintDataList);
             });
@@ -179,7 +179,7 @@ describe("rigid body dispose", function () {
                 rigidBody2.hingeConstraint.pivotB = wd.Vector3.create(-5, -6, 0);
                 rigidBody2.hingeConstraint.axisB = wd.Vector3.create(1, 0, 0);
                 director._init();
-                adapter = physicsTool.getPhysicsEngineAdapter();
+                adapter = physicsTool.getPhysicsComponentContainerAdapter();
 
 
                 judge(adapter._hingeConstraintDataList);
@@ -199,7 +199,7 @@ describe("rigid body dispose", function () {
                 rigidBody2.pointToPointConstraintList.addChildren([constraint1, constraint2]);
 
                 director._init();
-                adapter = physicsTool.getPhysicsEngineAdapter();
+                adapter = physicsTool.getPhysicsComponentContainerAdapter();
 
 
                 judge(adapter._pointToPointConstraintDataList, 2);

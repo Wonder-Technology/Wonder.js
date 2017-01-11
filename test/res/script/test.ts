@@ -1,7 +1,7 @@
-/// <reference path="../../../dist/Hilo3D.d.ts"/>
+/// <reference path="../../../dist/wd.all.d.ts"/>
 module sample {
-    @Hilo3D.script("test")
-    export class Test implements Hilo3D.IScriptBehavior{
+    @wd.script("test")
+    export class Test implements wd.IScriptBehavior{
         constructor(gameObject) {
             this.a = 0;
             this.b = 0;

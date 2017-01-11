@@ -15,7 +15,7 @@ module wd{
         public directionEulerAngles:Vector3 = null;
 
         public addToObject(entityObject:EntityObject, isShareComponent:boolean = false){
-            var engine:BillboardEngine = BillboardEngine.getInstance();
+            var engine:BillboardComponentContainer = BillboardComponentContainer.getInstance();
 
             super.addToObject(entityObject, isShareComponent);
 
@@ -25,7 +25,7 @@ module wd{
         }
 
         public removeFromEngine(){
-            BillboardEngine.getInstance().removeChild(this);
+            BillboardComponentContainer.getInstance().removeChild(this);
         }
 
         //todo optimize

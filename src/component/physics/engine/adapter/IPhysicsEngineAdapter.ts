@@ -37,4 +37,3 @@ module wd {
         removeConstraints(obj:GameObject):void;
     }
 }
-

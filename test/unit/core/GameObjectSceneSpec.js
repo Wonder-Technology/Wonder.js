@@ -247,11 +247,11 @@ describe("GameObjectScene", function() {
                 sandbox.stub(wd.Director.getInstance().scene.physics, "enable", true);
 
                 scene.init();
-                sandbox.stub(wd.PhysicsEngine.getInstance().physicsEngineAdapter, "update");
+                sandbox.stub(wd.PhysicsComponentContainer.getInstance().physicsEngineAdapter, "update");
 
                 scene.update(elapsedTime);
 
-                expect(wd.PhysicsEngine.getInstance().physicsEngineAdapter.update).toCalledWith(elapsedTime);
+                expect(wd.PhysicsComponentContainer.getInstance().physicsEngineAdapter.update).toCalledWith(elapsedTime);
             });
             it("if currentCamera component exist, update it", function () {
                 var camera1 = testTool.createCamera(),

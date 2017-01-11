@@ -145,7 +145,7 @@ describe("transform articulated animation", function () {
 
                     anim.play(0);
 
-                    wd.AnimationEngine.getInstance().update(1);
+                    wd.AnimationComponentContainer.getInstance().update(1);
 
 
                     judgePos([0.3, 0.1, 0]);
@@ -180,7 +180,7 @@ describe("transform articulated animation", function () {
                 model.init();
 
 
-                wd.AnimationEngine.getInstance().update(1);
+                wd.AnimationComponentContainer.getInstance().update(1);
 
 
                 judgePos([0,0,0]);
@@ -213,7 +213,7 @@ describe("transform articulated animation", function () {
                     model.init();
 
 
-                    wd.AnimationEngine.getInstance().update(0);
+                    wd.AnimationComponentContainer.getInstance().update(0);
 
 
                     judgePos([3,1,0]);
@@ -270,21 +270,21 @@ describe("transform articulated animation", function () {
                     });
 
                     it("test not finish all keys", function () {
-                        wd.AnimationEngine.getInstance().update(1);
-                        wd.AnimationEngine.getInstance().update(21);
+                        wd.AnimationComponentContainer.getInstance().update(1);
+                        wd.AnimationComponentContainer.getInstance().update(21);
 
 
                         judgePos([3.1,1,0]);
                     });
                     it("test finish all keys", function () {
-                        wd.AnimationEngine.getInstance().update(11);
-                        wd.AnimationEngine.getInstance().update(31);
+                        wd.AnimationComponentContainer.getInstance().update(11);
+                        wd.AnimationComponentContainer.getInstance().update(31);
 
 
                         judgePos([3.8,1,0]);
                     });
                     it("test2 finish all keys", function () {
-                        wd.AnimationEngine.getInstance().update(31);
+                        wd.AnimationComponentContainer.getInstance().update(31);
 
 
                         judgePos([3.8,1,0]);
@@ -355,15 +355,15 @@ describe("transform articulated animation", function () {
 
                 describe("test interpolation", function(){
                     it("test1", function () {
-                        wd.AnimationEngine.getInstance().update(firstKeyTime/10);
+                        wd.AnimationComponentContainer.getInstance().update(firstKeyTime/10);
 
                         judgePos([0.2,0.1,0]);
                         judgeScale([1, 1.1, 1.2]);
                         judgeRotation([0.5, 2.2, 2.8]);
                     });
                     it("test2", function () {
-                        wd.AnimationEngine.getInstance().update(firstKeyTime/10);
-                        wd.AnimationEngine.getInstance().update(firstKeyTime/5);
+                        wd.AnimationComponentContainer.getInstance().update(firstKeyTime/10);
+                        wd.AnimationComponentContainer.getInstance().update(firstKeyTime/5);
 
                         judgePos([0.4,0.2,0]);
                         judgeScale([1, 1.2, 1.4]);
@@ -373,22 +373,22 @@ describe("transform articulated animation", function () {
 
                 describe("test finish first key", function () {
                     it("test1", function(){
-                        wd.AnimationEngine.getInstance().update(firstKeyTime);
+                        wd.AnimationComponentContainer.getInstance().update(firstKeyTime);
 
                         judgePos([2,1,0]);
                         judgeScale([1,2,3]);
                         judgeRotation([10,20,30]);
                     });
                     it("test2", function(){
-                        wd.AnimationEngine.getInstance().update(firstKeyTime * 0.9);
-                        wd.AnimationEngine.getInstance().update(firstKeyTime + 1);
+                        wd.AnimationComponentContainer.getInstance().update(firstKeyTime * 0.9);
+                        wd.AnimationComponentContainer.getInstance().update(firstKeyTime + 1);
 
                         judgePos([2.2,1,0]);
                         judgeScale([1,2,3.2]);
                         judgeRotation([10,20,32]);
                     });
                     it("test3", function(){
-                        wd.AnimationEngine.getInstance().update(firstKeyTime + 1);
+                        wd.AnimationComponentContainer.getInstance().update(firstKeyTime + 1);
 
                         judgePos([2.2,1,0]);
                         judgeScale([1,2,3.2]);
@@ -397,16 +397,16 @@ describe("transform articulated animation", function () {
                 });
 
                 it("test begin second key", function () {
-                    wd.AnimationEngine.getInstance().update(firstKeyTime);
-                    wd.AnimationEngine.getInstance().update(firstKeyTime + 1);
+                    wd.AnimationComponentContainer.getInstance().update(firstKeyTime);
+                    wd.AnimationComponentContainer.getInstance().update(firstKeyTime + 1);
 
                     judgePos([2.2,1,0]);
                     judgeScale([1,2,3.2]);
                     judgeRotation([10,20,32]);
                 });
                 it("test finish second key", function () {
-                    wd.AnimationEngine.getInstance().update(firstKeyTime);
-                    wd.AnimationEngine.getInstance().update(secondKeyTime);
+                    wd.AnimationComponentContainer.getInstance().update(firstKeyTime);
+                    wd.AnimationComponentContainer.getInstance().update(secondKeyTime);
 
                     judgePos([3,1,0]);
                     judgeScale([1,2,4]);
@@ -415,44 +415,44 @@ describe("transform articulated animation", function () {
 
                 describe("test finish all keys", function(){
                     beforeEach(function(){
-                        wd.AnimationEngine.getInstance().update(firstKeyTime + 1);
+                        wd.AnimationComponentContainer.getInstance().update(firstKeyTime + 1);
                     });
 
                     it("if just finish all keys, reach the end data", function () {
-                        wd.AnimationEngine.getInstance().update(secondKeyTime);
+                        wd.AnimationComponentContainer.getInstance().update(secondKeyTime);
 
                         judgePos([3,1,0]);
                         judgeScale([1,2,4]);
                         judgeRotation([10,20,40]);
                     });
                     it("if the elapsed exceed the last key->time, go back to the first key data", function () {
-                        wd.AnimationEngine.getInstance().update(secondKeyTime + 2);
+                        wd.AnimationComponentContainer.getInstance().update(secondKeyTime + 2);
 
                         judgePos([0,0,0]);
                         judgeScale([1,1,1]);
                         judgeRotation([0,0,0]);
                     });
                     it("test reach the next loop->first key", function () {
-                        wd.AnimationEngine.getInstance().update(secondKeyTime + 2);
-                        wd.AnimationEngine.getInstance().update(secondKeyTime + 3);
+                        wd.AnimationComponentContainer.getInstance().update(secondKeyTime + 2);
+                        wd.AnimationComponentContainer.getInstance().update(secondKeyTime + 3);
 
                         judgePos([0.6,0.3,0]);
                         judgeScale([1,1.3,1.6]);
                         judgeRotation([1.8,6.5,8.5]);
                     });
                     it("test reach the next loop->second key", function () {
-                        wd.AnimationEngine.getInstance().update(secondKeyTime + 1);
-                        wd.AnimationEngine.getInstance().update(secondKeyTime + firstKeyTime + 1);
+                        wd.AnimationComponentContainer.getInstance().update(secondKeyTime + 1);
+                        wd.AnimationComponentContainer.getInstance().update(secondKeyTime + firstKeyTime + 1);
 
                         judgePos([2.2,1,0]);
                         judgeScale([1,2,3.2]);
                         judgeRotation([10,20,32]);
                     });
                     it("test finish next loop", function () {
-                        wd.AnimationEngine.getInstance().update(secondKeyTime + 1);
-                        wd.AnimationEngine.getInstance().update(secondKeyTime + firstKeyTime + 1);
+                        wd.AnimationComponentContainer.getInstance().update(secondKeyTime + 1);
+                        wd.AnimationComponentContainer.getInstance().update(secondKeyTime + firstKeyTime + 1);
 
-                        wd.AnimationEngine.getInstance().update(secondKeyTime + secondKeyTime + 1);
+                        wd.AnimationComponentContainer.getInstance().update(secondKeyTime + secondKeyTime + 1);
 
                         judgePos([0,0,0]);
                         judgeScale([1,1,1]);

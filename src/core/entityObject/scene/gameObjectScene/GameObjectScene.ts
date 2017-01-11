@@ -58,7 +58,7 @@ module wd {
         private _cameraList:wdCb.Collection<GameObject> = wdCb.Collection.create<GameObject>();
 
         public init(){
-            ClassUtils.execSingletonMethod("PhysicsEngine", "initPhysicsEngineAdapter");
+            ClassUtils.execSingletonMethod("PhysicsComponentContainer", "initPhysicsComponentContainerAdapter");
 
             if(this.shadowManager){
                 this.shadowManager.init();
@@ -68,8 +68,8 @@ module wd {
 
             this.renderTargetRendererManager.init();
 
-            ClassUtils.execSingletonMethod("PhysicsEngine", "initBody");
-            ClassUtils.execSingletonMethod("PhysicsEngine", "initConstraint");
+            ClassUtils.execSingletonMethod("PhysicsComponentContainer", "initBody");
+            ClassUtils.execSingletonMethod("PhysicsComponentContainer", "initConstraint");
 
             return this;
         }
@@ -99,7 +99,7 @@ module wd {
             var currentCamera= this._getCurrentCameraComponent(),
                 shadowManager:any = this.shadowManager;
 
-            ClassUtils.execSingletonMethod("PhysicsEngine", "update", elapsed);
+            ClassUtils.execSingletonMethod("PhysicsComponentContainer", "update", elapsed);
 
             if(currentCamera){
                 currentCamera.update(elapsed);
@@ -107,20 +107,20 @@ module wd {
 
             shadowManager.update(elapsed);
 
-            ClassUtils.execSingletonMethod("LODEngine", "update", elapsed);
-            ClassUtils.execSingletonMethod("SpacePartitionEngine", "update", elapsed);
+            ClassUtils.execSingletonMethod("LODComponentContainer", "update", elapsed);
+            ClassUtils.execSingletonMethod("SpacePartitionComponentContainer", "update", elapsed);
 
-            ClassUtils.execSingletonMethod("AnimationEngine", "update", elapsed);
+            ClassUtils.execSingletonMethod("AnimationComponentContainer", "update", elapsed);
 
-            CollisionEngine.getInstance().update(elapsed);
+            CollisionComponentContainer.getInstance().update(elapsed);
 
-            ClassUtils.execSingletonMethod("ThreeDUIEngine", "update", elapsed);
+            ClassUtils.execSingletonMethod("ThreeDUIComponentContainer", "update", elapsed);
 
             super.update(elapsed);
 
-            CollisionEngine.getInstance().detect(elapsed);
+            CollisionComponentContainer.getInstance().detect(elapsed);
 
-            ClassUtils.execSingletonMethod("BillboardEngine", "update", elapsed);
+            ClassUtils.execSingletonMethod("BillboardComponentContainer", "update", elapsed);
         }
 
         public render(renderer:Renderer) {

@@ -7,7 +7,7 @@ module wd {
         }
 
         protected addBody() {
-            this.addBodyToPhysicsEngine("addStaticBody");
+            this.addBodyToPhysicsComponentContainer("addStaticBody");
         }
     }
 }

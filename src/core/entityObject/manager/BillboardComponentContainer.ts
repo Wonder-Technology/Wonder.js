@@ -1,6 +1,6 @@
 module wd{
     @singleton()
-    export class BillboardEngine extends ComponentContainer{
+    export class BillboardComponentContainer extends ComponentContainer{
         public static getInstance():any {}
 
 		private constructor(){super();}

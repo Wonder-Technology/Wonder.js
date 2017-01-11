@@ -124,7 +124,7 @@ describe("animation", function () {
             it("play,stop", function(){
                 anim.play("play");
 
-                wd.AnimationEngine.getInstance().update(1);
+                wd.AnimationComponentContainer.getInstance().update(1);
 
                 judgePos([0.2, 0.1, 0]);
 
@@ -134,7 +134,7 @@ describe("animation", function () {
 
 
 
-                wd.AnimationEngine.getInstance().update(2);
+                wd.AnimationComponentContainer.getInstance().update(2);
 
                 judgePos([0.2, 0.1, 0]);
 
@@ -147,7 +147,7 @@ describe("animation", function () {
 
 
 
-                wd.AnimationEngine.getInstance().update(4);
+                wd.AnimationComponentContainer.getInstance().update(4);
 
                 judgePos(
                     wd.Vector3.create().lerp(
@@ -162,7 +162,7 @@ describe("animation", function () {
                 beforeEach(function(){
                     anim.play("play");
 
-                    wd.AnimationEngine.getInstance().update(1);
+                    wd.AnimationComponentContainer.getInstance().update(1);
 
                     judgePos([0.2, 0.1, 0]);
 
@@ -173,7 +173,7 @@ describe("animation", function () {
 
 
 
-                    wd.AnimationEngine.getInstance().update(2);
+                    wd.AnimationComponentContainer.getInstance().update(2);
 
                     judgePos([0.2, 0.1, 0]);
 
@@ -183,7 +183,7 @@ describe("animation", function () {
                 });
 
                 it("test in first key", function () {
-                    wd.AnimationEngine.getInstance().update(4);
+                    wd.AnimationComponentContainer.getInstance().update(4);
 
                     judgePos(
                         wd.Vector3.create().lerp(
@@ -194,15 +194,15 @@ describe("animation", function () {
                     );
                 });
                 it("test switch to second key", function () {
-                    wd.AnimationEngine.getInstance().update(firstKeyTime + 2);
+                    wd.AnimationComponentContainer.getInstance().update(firstKeyTime + 2);
 
                     judgePos(
                         [2.2, 1, 0]
                     );
                 });
                 it("test finish all keys", function () {
-                    wd.AnimationEngine.getInstance().update(firstKeyTime + 2);
-                    wd.AnimationEngine.getInstance().update(secondKeyTime + 1);
+                    wd.AnimationComponentContainer.getInstance().update(firstKeyTime + 2);
+                    wd.AnimationComponentContainer.getInstance().update(secondKeyTime + 1);
 
                     judgePos(
                         [3, 1, 0]

@@ -287,11 +287,11 @@ describe("Director", function () {
             expect(startLoopHandler).toCalledOnce();
         });
         it("exec all scripts->onStartLoop", function () {
-            sandbox.stub(wd.ScriptEngine.getInstance(), "execScript");
+            sandbox.stub(wd.ScriptComponentContainer.getInstance(), "execScript");
 
             director.runUIObjectScene(1);
 
-            expect(wd.ScriptEngine.getInstance().execScript).toCalledWith("onStartLoop");
+            expect(wd.ScriptComponentContainer.getInstance().execScript).toCalledWith("onStartLoop");
         });
         it("invoke uiObjectScene->update", function () {
             director.runUIObjectScene(1);
@@ -299,11 +299,11 @@ describe("Director", function () {
             expect(scene.update).toCalledWith(1);
         });
         it("exec all scripts->onEndLoop", function () {
-            sandbox.stub(wd.ScriptEngine.getInstance(), "execScript");
+            sandbox.stub(wd.ScriptComponentContainer.getInstance(), "execScript");
 
             director.runUIObjectScene(1);
 
-            expect(wd.ScriptEngine.getInstance().execScript).toCalledWith("onEndLoop");
+            expect(wd.ScriptComponentContainer.getInstance().execScript).toCalledWith("onEndLoop");
         });
         it("trigger ENDLOOP", function () {
             var endLoopHandler = sandbox.stub();
@@ -364,12 +364,12 @@ describe("Director", function () {
         beforeEach(function(){
         });
 
-        it("update ActionEngine", function(){
-            sandbox.stub(wd.ActionEngine.getInstance(), "update");
+        it("update ActionComponentContainer", function(){
+            sandbox.stub(wd.ActionComponentContainer.getInstance(), "update");
 
             director._update(1);
 
-            expect(wd.ActionEngine.getInstance().update).toCalledWith(1);
+            expect(wd.ActionComponentContainer.getInstance().update).toCalledWith(1);
         });
     });
 

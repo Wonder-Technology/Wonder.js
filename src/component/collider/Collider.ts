@@ -24,7 +24,7 @@ module wd {
         }
 
         public addToObject(entityObject:EntityObject, isShareComponent:boolean = false){
-            var engine:CollisionEngine = CollisionEngine.getInstance();
+            var engine:CollisionComponentContainer = CollisionComponentContainer.getInstance();
 
             super.addToObject(entityObject, isShareComponent);
 
@@ -34,7 +34,7 @@ module wd {
         }
 
         public removeFromEngine(){
-            CollisionEngine.getInstance().removeChild(this);
+            CollisionComponentContainer.getInstance().removeChild(this);
         }
 
         public clone(){

@@ -1,6 +1,6 @@
 module wd{
     @singleton()
-    export class ScriptEngine{
+    export class ScriptComponentContainer{
         public static getInstance():any {}
 
         private constructor(){}
@@ -60,4 +60,3 @@ module wd{
         }
     }
 }
-

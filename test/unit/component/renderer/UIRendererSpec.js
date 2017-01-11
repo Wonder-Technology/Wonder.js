@@ -30,6 +30,8 @@ describe("UIRenderer", function () {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
+        $("canvas").remove();
+
         director = wd.Director.getInstance();
 
         sandbox.stub(wd.DeviceManager.getInstance(), "view", {
@@ -212,15 +214,22 @@ describe("UIRenderer", function () {
         it("the cloned one has new canvas", function () {
             renderer.zIndex = 10;
 
+            var canvasCount1 = $("canvas").length;
+
             var clonedUIObject = uiObject.clone();
+
+            var canvasCount2 = $("canvas").length;
 
             director.scene.addChild(clonedUIObject);
             director.scene.addChild(uiObject);
 
             director._init();
 
-            //webgl has one canvas, the two UIRenderer has two canvas
-            expect($("canvas").toArray().length).toEqual(1 + 2);
+
+            var canvasCount3 = $("canvas").length;
+
+            expect(canvasCount2).toEqual(canvasCount1 + 1);
+            expect(canvasCount3).toEqual(canvasCount2);
         });
     });
 });

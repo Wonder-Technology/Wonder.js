@@ -41,47 +41,47 @@ describe("articulated animation", function () {
                     });
 
                     it("if time reach next frame, just switch to the next frame->data ", function () {
-                        wd.AnimationEngine.getInstance().update(firstKeyTime+1);
+                        wd.AnimationComponentContainer.getInstance().update(firstKeyTime+1);
 
                         judgeIsSecondFrameSourceRegion();
                     });
                     it("else, remain the current frame->data", function () {
-                        wd.AnimationEngine.getInstance().update(firstKeyTime/2);
+                        wd.AnimationComponentContainer.getInstance().update(firstKeyTime/2);
                         judgeIsFirstFrameSourceRegion();
                     });
 
                     describe("test finish all keys", function(){
                         beforeEach(function(){
-                            wd.AnimationEngine.getInstance().update(firstKeyTime + 1);
+                            wd.AnimationComponentContainer.getInstance().update(firstKeyTime + 1);
                         });
 
                         it("if just finish all keys, reach the end data", function () {
-                            wd.AnimationEngine.getInstance().update(secondKeyTime);
+                            wd.AnimationComponentContainer.getInstance().update(secondKeyTime);
 
                             judgeIsSecondFrameSourceRegion();
                         });
                         it("if the elapsed exceed the last key->time and not reach the second key of the next loop, go to the first key data of the next loop", function () {
-                            wd.AnimationEngine.getInstance().update(secondKeyTime + firstKeyTime / 3);
+                            wd.AnimationComponentContainer.getInstance().update(secondKeyTime + firstKeyTime / 3);
 
                             judgeIsFirstFrameSourceRegion();
                         });
                         it("test reach the next loop->first key", function () {
-                            wd.AnimationEngine.getInstance().update(secondKeyTime + firstKeyTime / 3);
-                            wd.AnimationEngine.getInstance().update(secondKeyTime + firstKeyTime / 2);
+                            wd.AnimationComponentContainer.getInstance().update(secondKeyTime + firstKeyTime / 3);
+                            wd.AnimationComponentContainer.getInstance().update(secondKeyTime + firstKeyTime / 2);
 
                             judgeIsFirstFrameSourceRegion();
                         });
                         it("test exceed the next loop->first key", function () {
-                            wd.AnimationEngine.getInstance().update(secondKeyTime + firstKeyTime / 3);
-                            wd.AnimationEngine.getInstance().update(secondKeyTime + firstKeyTime + 1);
+                            wd.AnimationComponentContainer.getInstance().update(secondKeyTime + firstKeyTime / 3);
+                            wd.AnimationComponentContainer.getInstance().update(secondKeyTime + firstKeyTime + 1);
 
                             judgeIsSecondFrameSourceRegion();
                         });
                         it("test finish next loop", function () {
-                            wd.AnimationEngine.getInstance().update(secondKeyTime + 1);
-                            wd.AnimationEngine.getInstance().update(secondKeyTime + firstKeyTime + 1);
+                            wd.AnimationComponentContainer.getInstance().update(secondKeyTime + 1);
+                            wd.AnimationComponentContainer.getInstance().update(secondKeyTime + firstKeyTime + 1);
 
-                            wd.AnimationEngine.getInstance().update(secondKeyTime + secondKeyTime + 1);
+                            wd.AnimationComponentContainer.getInstance().update(secondKeyTime + secondKeyTime + 1);
 
                             judgeIsFirstFrameSourceRegion();
                         });
@@ -102,7 +102,7 @@ describe("articulated animation", function () {
                         model.init();
 
 
-                        wd.AnimationEngine.getInstance().update(0);
+                        wd.AnimationComponentContainer.getInstance().update(0);
 
 
                         judgeIsFirstFrameSourceRegion();
@@ -310,7 +310,7 @@ describe("articulated animation", function () {
 
 
                         expect(function () {
-                            wd.AnimationEngine.getInstance().update(0);
+                            wd.AnimationComponentContainer.getInstance().update(0);
                         }).toThrow("material should has the corresponding animated texture");
                     });
                     it("this animated texture should has 'sourceRegion' attribute", function(){
@@ -324,7 +324,7 @@ describe("articulated animation", function () {
 
 
                         expect(function () {
-                            wd.AnimationEngine.getInstance().update(0);
+                            wd.AnimationComponentContainer.getInstance().update(0);
                         }).toThrow("this animated texture should has 'sourceRegion' attribute");
                     });
                 });

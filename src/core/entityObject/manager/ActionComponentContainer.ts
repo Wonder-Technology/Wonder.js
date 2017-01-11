@@ -1,6 +1,6 @@
 module wd{
     @singleton()
-    export class ActionEngine extends ComponentContainer{
+    export class ActionComponentContainer extends ComponentContainer{
         public static getInstance():any {}
 
 		private constructor(){super();}

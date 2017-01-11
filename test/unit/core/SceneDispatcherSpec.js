@@ -223,13 +223,13 @@ describe("SceneDispatcher", function() {
         });
 
         describe("if component is Action", function(){
-            it("set action's target and add it to ActionEngine", function(){
+            it("set action's target and add it to ActionComponentContainer", function(){
                 var component = new wd.Action();
 
                 scene.addComponent(component);
 
                 expect(component.target).toEqual(scene);
-                expect(wd.ActionEngine.getInstance().hasChild(component)).toBeTruthy();
+                expect(wd.ActionComponentContainer.getInstance().hasChild(component)).toBeTruthy();
             });
         });
     });
@@ -253,13 +253,13 @@ describe("SceneDispatcher", function() {
         //});
 
         describe("if component is Action", function(){
-            it("remove it from ActionEngine", function(){
+            it("remove it from ActionComponentContainer", function(){
                 var component = new wd.Action();
                 scene.addComponent(component);
 
                 scene.removeComponent(component);
 
-                expect(wd.ActionEngine.getInstance().hasChild(component)).toBeFalsy();
+                expect(wd.ActionComponentContainer.getInstance().hasChild(component)).toBeFalsy();
             });
         });
     });

@@ -121,13 +121,13 @@ module wd{
 
             EventManager.trigger(CustomEvent.create(<any>EEngineEvent.STARTLOOP));
 
-            ScriptEngine.getInstance().execScript("onStartLoop");
+            ScriptComponentContainer.getInstance().execScript("onStartLoop");
 
             uiObjectScene.update(elapsed);
 
             uiObjectScene.render();
 
-            ScriptEngine.getInstance().execScript("onEndLoop");
+            ScriptComponentContainer.getInstance().execScript("onEndLoop");
 
             EventManager.trigger(CustomEvent.create(<any>EEngineEvent.ENDLOOP));
         }
@@ -204,13 +204,13 @@ module wd{
 
             EventManager.trigger(CustomEvent.create(<any>EEngineEvent.STARTLOOP));
 
-            ScriptEngine.getInstance().execScript("onStartLoop");
+            ScriptComponentContainer.getInstance().execScript("onStartLoop");
 
             this._update(elapsed);
 
             this._render();
 
-            ScriptEngine.getInstance().execScript("onEndLoop");
+            ScriptComponentContainer.getInstance().execScript("onEndLoop");
 
             EventManager.trigger(CustomEvent.create(<any>EEngineEvent.ENDLOOP));
         }
@@ -218,9 +218,9 @@ module wd{
         private _update(elapsed:number){
             this.scheduler.update(elapsed);
 
-            ScriptEngine.getInstance().execScriptWithData("update", elapsed);
+            ScriptComponentContainer.getInstance().execScriptWithData("update", elapsed);
 
-            ClassUtils.execSingletonMethod("ActionEngine", "update", elapsed);
+            ClassUtils.execSingletonMethod("ActionComponentContainer", "update", elapsed);
 
             this.scene.gameObjectScene.update(elapsed);
 

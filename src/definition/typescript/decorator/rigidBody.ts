@@ -5,7 +5,7 @@ module wd {
                 setter = descriptor.set;
 
             descriptor.get = function () {
-                let data = this.getPhysicsEngineAdapter()[`get${dataName}`](this.entityObject);
+                let data = this.getPhysicsComponentContainerAdapter()[`get${dataName}`](this.entityObject);
 
                 return data !== null ? data : this[`_${lowerFirstChar(dataName)}`];
             };
@@ -13,7 +13,7 @@ module wd {
             descriptor.set = function(val){
                 setter.call(this, val);
 
-                this.getPhysicsEngineAdapter()[`set${dataName}`](this.entityObject, val);
+                this.getPhysicsComponentContainerAdapter()[`set${dataName}`](this.entityObject, val);
             };
 
             return descriptor;
@@ -28,7 +28,7 @@ module wd {
                 setter = descriptor.set;
 
             descriptor.get = function () {
-                var physicsEngineAdapter:IPhysicsEngineAdapter = PhysicsEngine.getInstance().physicsEngineAdapter;
+                var physicsEngineAdapter:IPhysicsEngineAdapter = PhysicsComponentContainer.getInstance().physicsEngineAdapter;
 
                 if(isWorldDefined(physicsEngineAdapter)){
                     let data = physicsEngineAdapter[`get${dataName}`]();
@@ -40,7 +40,7 @@ module wd {
             };
 
             descriptor.set = function(val){
-                var physicsEngineAdapter:IPhysicsEngineAdapter = PhysicsEngine.getInstance().physicsEngineAdapter;
+                var physicsEngineAdapter:IPhysicsEngineAdapter = PhysicsComponentContainer.getInstance().physicsEngineAdapter;
 
                 setter.call(this, val);
 

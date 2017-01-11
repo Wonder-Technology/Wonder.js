@@ -64,7 +64,7 @@ module wd {
         public hitPoint:Vector3 = null;
 
         protected addBody() {
-            this.addBodyToPhysicsEngine("addDynamicBody", {
+            this.addBodyToPhysicsComponentContainer("addDynamicBody", {
                 mass: this.mass,
 
                 linearDamping: this.linearDamping,

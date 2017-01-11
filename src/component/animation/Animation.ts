@@ -23,7 +23,7 @@ module wd{
         public abstract play(animName:string, fps:number):void;
 
         public addToObject(entityObject:EntityObject, isShareComponent:boolean = false){
-            var engine:AnimationEngine = AnimationEngine.getInstance();
+            var engine:AnimationComponentContainer = AnimationComponentContainer.getInstance();
 
             super.addToObject(entityObject, isShareComponent);
 
@@ -33,7 +33,7 @@ module wd{
         }
 
         public removeFromEngine(){
-            AnimationEngine.getInstance().removeChild(this);
+            AnimationComponentContainer.getInstance().removeChild(this);
         }
 
         public clone(){

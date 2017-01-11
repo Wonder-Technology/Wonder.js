@@ -6,7 +6,7 @@ module wd{
         public abstract update(elapsed:number):void;
 
         public addToObject(entityObject:EntityObject, isShareComponent:boolean = false){
-            var engine:LODEngine = LODEngine.getInstance();
+            var engine:LODComponentContainer = LODComponentContainer.getInstance();
 
             super.addToObject(entityObject, isShareComponent);
 
@@ -16,7 +16,7 @@ module wd{
         }
 
         public removeFromEngine(){
-            LODEngine.getInstance().removeChild(this);
+            LODComponentContainer.getInstance().removeChild(this);
         }
     }
 }

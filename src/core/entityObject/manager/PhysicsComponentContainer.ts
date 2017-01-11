@@ -1,6 +1,6 @@
 module wd{
     @singleton()
-    export class PhysicsEngine extends ComponentContainer{
+    export class PhysicsComponentContainer extends ComponentContainer{
         public static getInstance():any {}
 
 		private constructor(){super();}
@@ -23,7 +23,7 @@ module wd{
             }
         }
 
-        public initPhysicsEngineAdapter(){
+        public initPhysicsComponentContainerAdapter(){
             var physics = Director.getInstance().scene.physics;
 
             this.physicsEngineAdapter = PhysicsEngineFactory.create(physics.enable, physics.engine);

@@ -1,7 +1,7 @@
 var scriptTool = (function () {
     function handlerAfterLoadedScript(entityObject){
-        wd.ScriptEngine.getInstance().execEntityObjectScriptOnlyOnce(entityObject, "onEnter");
-        wd.ScriptEngine.getInstance().execEntityObjectScriptOnlyOnce(entityObject, "init");
+        wd.ScriptComponentContainer.getInstance().execEntityObjectScriptOnlyOnce(entityObject, "onEnter");
+        wd.ScriptComponentContainer.getInstance().execEntityObjectScriptOnlyOnce(entityObject, "init");
     }
 
     return {
@@ -26,7 +26,7 @@ var scriptTool = (function () {
         //     entityObject.scriptManager.execScriptOnlyOnce = function(scriptHandlerName){
         //         if(scriptHandlerName === "onEnter"){
         //             //test = entityObject.scriptList.getChild(scriptName);
-        //             test = wd.ScriptEngine.getInstance().findScript(entityObject, scriptName);
+        //             test = wd.ScriptComponentContainer.getInstance().findScript(entityObject, scriptName);
         //             //if(test){
         //             judgeOnEnter(test, entityObject);
         //             //}
@@ -105,7 +105,7 @@ var scriptTool = (function () {
 
 
 
-            test1 = wd.ScriptEngine.getInstance().findScript(entityObject1, data1.scriptName);
+            test1 = wd.ScriptComponentContainer.getInstance().findScript(entityObject1, data1.scriptName);
 
 
             var execScript1 = entityObject1.scriptManager.execScriptOnlyOnce;
@@ -180,8 +180,8 @@ var scriptTool = (function () {
                 //script,script2->onEnter
                 if(count === 1){
                     //test = entityObject1.scriptList.getChild("test");
-                    test = wd.ScriptEngine.getInstance().findScript(entityObject1, data1.scriptName);
-                    test2 = wd.ScriptEngine.getInstance().findScript(entityObject1, data2.scriptName);
+                    test = wd.ScriptComponentContainer.getInstance().findScript(entityObject1, data1.scriptName);
+                    test2 = wd.ScriptComponentContainer.getInstance().findScript(entityObject1, data2.scriptName);
 
                     //if(test){
                     data1.judgeOnEnter(test, entityObject1);
@@ -279,8 +279,8 @@ var scriptTool = (function () {
 
             //test1 = entityObject1.scriptList.getChild(data1.scriptName);
             //test2 = entityObject1.scriptList.getChild(data2.scriptName);
-            test1 = wd.ScriptEngine.getInstance().findScript(entityObject1, data1.scriptName);
-            test2 = wd.ScriptEngine.getInstance().findScript(entityObject1, data2.scriptName);
+            test1 = wd.ScriptComponentContainer.getInstance().findScript(entityObject1, data1.scriptName);
+            test2 = wd.ScriptComponentContainer.getInstance().findScript(entityObject1, data2.scriptName);
 
 
             var execScript1 = entityObject1.scriptManager.execScriptOnlyOnce;
@@ -390,7 +390,7 @@ var scriptTool = (function () {
 
 
             //test1 = entityObject1.scriptList.getChild(data1.scriptName);
-            test1 = wd.ScriptEngine.getInstance().findScript(entityObject1, data1.scriptName);
+            test1 = wd.ScriptComponentContainer.getInstance().findScript(entityObject1, data1.scriptName);
 
 
             //var execScript1 = entityObject1.execScript;
@@ -434,7 +434,7 @@ var scriptTool = (function () {
             );
 
             //test2 = entityObject2.scriptList.getChild(data2.scriptName);
-            test2 = wd.ScriptEngine.getInstance().findScript(entityObject2, data2.scriptName);
+            test2 = wd.ScriptComponentContainer.getInstance().findScript(entityObject2, data2.scriptName);
 
 
             //var execScript2 = entityObject2.execScript;

@@ -54,7 +54,7 @@ module wd {
         public pointToPointConstraintList:PointToPointConstraintList = PointToPointConstraintList.create(this);
 
         public addToObject(entityObject:EntityObject, isShareComponent:boolean = false){
-            var engine:PhysicsEngine = PhysicsEngine.getInstance();
+            var engine:PhysicsComponentContainer = PhysicsComponentContainer.getInstance();
 
             super.addToObject(entityObject, isShareComponent);
 
@@ -64,7 +64,7 @@ module wd {
         }
 
         public addConstraint(){
-            var engineAdapter:IPhysicsEngineAdapter = this.getPhysicsEngineAdapter();
+            var engineAdapter:IPhysicsEngineAdapter = this.getPhysicsComponentContainerAdapter();
 
             if(this.lockConstraint && this.lockConstraint.connectedBody){
                 engineAdapter.addLockConstraint(this.entityObject, this.lockConstraint);
@@ -86,7 +86,7 @@ module wd {
         }
 
         public removeFromEngine(){
-            PhysicsEngine.getInstance().removeChild(this);
+            PhysicsComponentContainer.getInstance().removeChild(this);
 
         }
 
@@ -96,8 +96,8 @@ module wd {
             }, this);
         }
 
-        public getPhysicsEngineAdapter() {
-            return PhysicsEngine.getInstance().physicsEngineAdapter;
+        public getPhysicsComponentContainerAdapter() {
+            return PhysicsComponentContainer.getInstance().physicsEngineAdapter;
         }
 
         @execOnlyOnce("_initBody")
@@ -121,8 +121,8 @@ module wd {
                 assert(!!this.entityObject.getComponent(Collider).shape, Log.info.FUNC_SHOULD("create collider.shape before adding rigid body component"));
             }
         })
-        protected addBodyToPhysicsEngine(method:string, data:any = {}) {
-            var engineAdapter:IPhysicsEngineAdapter = this.getPhysicsEngineAdapter(),
+        protected addBodyToPhysicsComponentContainer(method:string, data:any = {}) {
+            var engineAdapter:IPhysicsEngineAdapter = this.getPhysicsComponentContainerAdapter(),
                 position = this.entityObject.transform.position,
                 rotation = this.entityObject.transform.rotation;
 
@@ -146,15 +146,15 @@ module wd {
         }
 
         private _onContact(collideObject:GameObject) {
-            ScriptEngine.getInstance().execEntityObjectScriptWithData(this.entityObject, "onContact", wdCb.Collection.create([collideObject]));
+            ScriptComponentContainer.getInstance().execEntityObjectScriptWithData(this.entityObject, "onContact", wdCb.Collection.create([collideObject]));
         }
 
         private _onCollisionStart(collideObject:GameObject) {
-            ScriptEngine.getInstance().execEntityObjectScriptWithData(this.entityObject, "onCollisionStart", wdCb.Collection.create([collideObject]));
+            ScriptComponentContainer.getInstance().execEntityObjectScriptWithData(this.entityObject, "onCollisionStart", wdCb.Collection.create([collideObject]));
         }
 
         private _onCollisionEnd() {
-            ScriptEngine.getInstance().execEntityObjectScript(this.entityObject, "onCollisionEnd");
+            ScriptComponentContainer.getInstance().execEntityObjectScript(this.entityObject, "onCollisionEnd");
         }
 
         private _isContainer(entityObject:GameObject){

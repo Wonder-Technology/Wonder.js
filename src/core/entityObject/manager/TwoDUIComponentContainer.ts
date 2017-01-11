@@ -1,6 +1,6 @@
 module wd{
     @singleton()
-    export class TwoDUIEngine extends UIEngine{
+    export class TwoDUIComponentContainer extends UIComponentContainer{
         public static getInstance():any {}
 
 		private constructor(){super();}

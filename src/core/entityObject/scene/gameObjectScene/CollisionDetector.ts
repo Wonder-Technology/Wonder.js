@@ -189,7 +189,7 @@ module wd{
                 })
                 .forEach((collideObject:GameObject) => {
                     for(let eventName of eventList){
-                        ScriptEngine.getInstance().execEntityObjectScriptWithData(collideObject, eventName, wdCb.Collection.create([currentGameObject]));
+                        ScriptComponentContainer.getInstance().execEntityObjectScriptWithData(collideObject, eventName, wdCb.Collection.create([currentGameObject]));
                     }
                 });
         }
@@ -200,13 +200,13 @@ module wd{
 
                 if(this._isCollisionStart(sourceObject)){
 
-                    ScriptEngine.getInstance().execEntityObjectScriptWithData(sourceObject, "onCollisionStart", targetObjects);
-                    ScriptEngine.getInstance().execEntityObjectScriptWithData(sourceObject, "onContact", targetObjects);
+                    ScriptComponentContainer.getInstance().execEntityObjectScriptWithData(sourceObject, "onCollisionStart", targetObjects);
+                    ScriptComponentContainer.getInstance().execEntityObjectScriptWithData(sourceObject, "onContact", targetObjects);
 
                     this._triggerCollisionEventOfCollideObjectWhichHasRigidBody(targetObjects, sourceObject, ["onCollisionStart", "onContact"]);
                 }
                 else{
-                    ScriptEngine.getInstance().execEntityObjectScriptWithData(sourceObject, "onContact", targetObjects);
+                    ScriptComponentContainer.getInstance().execEntityObjectScriptWithData(sourceObject, "onContact", targetObjects);
                     this._triggerCollisionEventOfCollideObjectWhichHasRigidBody(targetObjects, sourceObject, ["onContact"]);
                 }
 
@@ -225,7 +225,7 @@ module wd{
 
             this._lastCollisionTable.forEach(({sourceObject, targetObjectMap}) => {
                 if(!table.hasChild(String(sourceObject.uid))){
-                    ScriptEngine.getInstance().execEntityObjectScript(sourceObject, "onCollisionEnd");
+                    ScriptComponentContainer.getInstance().execEntityObjectScript(sourceObject, "onCollisionEnd");
                     this._triggerCollisionEventOfCollideObjectWhichHasRigidBody(targetObjectMap.toCollection(), sourceObject, ["onCollisionEnd"]);
 
                     sourceObject.removeTag(<any>ECollisionTag.COLLIDED);

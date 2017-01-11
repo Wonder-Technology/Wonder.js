@@ -94,25 +94,25 @@ module wd {
 
             this.afterInitChildren();
 
-            ScriptEngine.getInstance().execEntityObjectScriptOnlyOnce(this, "init");
+            ScriptComponentContainer.getInstance().execEntityObjectScriptOnlyOnce(this, "init");
 
             return this;
         }
 
         public onEnter() {
-            ScriptEngine.getInstance().execEntityObjectScriptOnlyOnce(this, "onEnter");
+            ScriptComponentContainer.getInstance().execEntityObjectScriptOnlyOnce(this, "onEnter");
 
             EventManager.trigger(this, CustomEvent.create(<any>EEngineEvent.ENTER));
         }
 
         public onExit() {
-            ScriptEngine.getInstance().execEntityObjectScriptOnlyOnce(this, "onExit");
+            ScriptComponentContainer.getInstance().execEntityObjectScriptOnlyOnce(this, "onExit");
 
             EventManager.trigger(this, CustomEvent.create(<any>EEngineEvent.EXIT));
         }
 
         public onDispose(){
-            ScriptEngine.getInstance().execEntityObjectScriptOnlyOnce(this, "onDispose");
+            ScriptComponentContainer.getInstance().execEntityObjectScriptOnlyOnce(this, "onDispose");
         }
 
         public dispose() {

@@ -39,7 +39,7 @@ module wd {
 
 
         protected addBody() {
-            this.addBodyToPhysicsEngine("addKinematicBody", {
+            this.addBodyToPhysicsComponentContainer("addKinematicBody", {
                 mass: this.mass,
                 velocity: this.velocity,
                 angularVelocity: this.angularVelocity

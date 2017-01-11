@@ -76,7 +76,7 @@ var prepareTool = (function () {
             return sphere;
         },
         addScript:function(gameObject, script, scriptName){
-            wd.ScriptEngine.getInstance().addChild(gameObject, scriptName || "scriptName", script);
+            wd.ScriptComponentContainer.getInstance().addChild(gameObject, scriptName || "scriptName", script);
         },
         prepareGeo: function(sandbox, model,geo,material,setMaterialFunc) {
             setMaterialFunc = setMaterialFunc || function(){};

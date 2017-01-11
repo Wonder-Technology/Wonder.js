@@ -25,7 +25,7 @@ describe("CallFunc", function () {
         gameObject.addComponent(action);
 
         action.start();
-        wd.ActionEngine.getInstance().update();
+        wd.ActionComponentContainer.getInstance().update();
 
         expect(context.name).toEqual("test");
         expect(context.a).toEqual(7);

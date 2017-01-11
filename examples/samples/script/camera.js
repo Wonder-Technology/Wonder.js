@@ -14,7 +14,7 @@ var sample;
         }
         Camera.prototype.init = function () {
             //var scene = wd.Director.getInstance().scene.scriptList.getChild("scene"),
-            var scene = wd.ScriptEngine.getInstance().findScript(wd.Director.getInstance().scene, "scene"), cameraComponent = this._gameObject.getComponent(wd.CameraController).camera;
+            var scene = wd.ScriptComponentContainer.getInstance().findScript(wd.Director.getInstance().scene, "scene"), cameraComponent = this._gameObject.getComponent(wd.CameraController).camera;
             alert("sceneScript.state is " + scene.state);
             alert("camera->fovy is " + cameraComponent.fovy);
         };

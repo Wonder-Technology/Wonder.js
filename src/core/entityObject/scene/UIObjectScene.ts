@@ -32,7 +32,7 @@ module wd {
         public update(elapsed:number){
             super.update(elapsed);
 
-            TwoDUIEngine.getInstance().update(elapsed);
+            TwoDUIComponentContainer.getInstance().update(elapsed);
         }
 
         public onDispose(){
@@ -73,7 +73,7 @@ module wd {
                 }
             });
 
-            TwoDUIEngine.getInstance().render();
+            TwoDUIComponentContainer.getInstance().render();
         }
 
         protected createTransform(){

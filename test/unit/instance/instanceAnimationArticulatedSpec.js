@@ -167,7 +167,7 @@ describe("instance+articulated animation", function () {
         modelAnim.play("play");
         modelInstanceAnim.play("run");
 
-        wd.AnimationEngine.getInstance().update(1);
+        wd.AnimationComponentContainer.getInstance().update(1);
 
 
         judgePos(model, [0.3, 0.1, 0]);
@@ -187,7 +187,7 @@ describe("instance+articulated animation", function () {
             modelAnim.play("play");
             modelInstanceAnim.play("run");
 
-            wd.AnimationEngine.getInstance().update(1);
+            wd.AnimationComponentContainer.getInstance().update(1);
 
 
             judgePos(model, [0.3, 0.1, 0]);
