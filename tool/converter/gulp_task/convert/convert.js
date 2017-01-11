@@ -19,6 +19,9 @@ gulp.task("convert", function (done) {
     var Converter = require("../../dist/converter/Converter");
 
 
+    var Log = require("../../../ts/Log");
+
+
     var sourceDir = commandUtils.parseOption("--sourceDir") || "./source/",
         destDir = commandUtils.parseOption("--destDir") || "./dest/",
         isRemoveNullData = commandUtils.isDefinOption("--removeNullData") || true,
@@ -35,7 +38,15 @@ gulp.task("convert", function (done) {
                 })
         })
         .filter(function(data){
-            return !_isConvertedFromGLTF(data[0]);
+            if(_isConvertedFromGLTF(data[0])){
+                if(isEmbedded){
+                    Log.warn("GLTF should use the embedded version");
+                }
+
+                return false;
+            }
+
+            return true;
         })
         .map(function(data){
             console.log("remove attribute data");
