@@ -59,6 +59,8 @@
 
 
 		"./gulp_task/convertIndices/Converter.ts",
+		"./gulp_task/convertIndices/DuplicateVertexUtils.ts",
+		"./gulp_task/convertIndices/ParseUtils.ts",
 		"./gulp_task/convertIndices/Utils.ts",
 
 		"./gulp_task/filterPrimitiveData/Filter.ts",
