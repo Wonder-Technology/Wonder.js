@@ -1285,7 +1285,7 @@
     }
   },
   "asset": {
-    "generator": "Hilo3DJsGLTFToHilo3DConverter",
+    "generator": "WonderJsGLTFToWDConverter",
     "premultipliedAlpha": true,
     "profile": {
       "api": "WebGL",

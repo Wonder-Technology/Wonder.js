@@ -2,7 +2,7 @@ module wd{
     declare var ArrayBuffer:any;
 
     @singleton()
-    export class wdLoader extends Loader{
+    export class WDLoader extends Loader{
         public static getInstance():any {}
 
         private constructor(){super();}
@@ -20,21 +20,21 @@ module wd{
             var url = args[0],
                 config:AssetConfigData = args[2],
                 self = this,
-                jsonData:IwdJsonDataParser = null;
+                jsonData:IWDJsonDataParser = null;
 
             return AjaxLoader.load(url, "json")
-                .flatMap((json:IwdJsonDataParser) => {
+                .flatMap((json:IWDJsonDataParser) => {
                     jsonData = json;
 
                     return self._createLoadAllAssetsStream(url, config, json);
                 })
                 .lastOrDefault()
                 .map(() => {
-                    return wdAssembler.create().build(wdParser.create().parse(jsonData, self._arrayBufferMap, self._imageMap));
+                    return WDAssembler.create().build(WDParser.create().parse(jsonData, self._arrayBufferMap, self._imageMap));
                 });
         }
 
-        private _createLoadAllAssetsStream(url:string, config:AssetConfigData, json:IwdJsonDataParser):wdFrp.Stream{
+        private _createLoadAllAssetsStream(url:string, config:AssetConfigData, json:IWDJsonDataParser):wdFrp.Stream{
             return wdFrp.fromArray([
                 this._createLoadBuffersStream(url, json),
                 this._createLoadImageAssetStream(url, config, json)
@@ -42,11 +42,11 @@ module wd{
                 .mergeAll();
         }
 
-        private _createLoadBuffersStream(filePath:string, json:IwdJsonDataParser):wdFrp.Stream{
+        private _createLoadBuffersStream(filePath:string, json:IWDJsonDataParser):wdFrp.Stream{
             var arrayBufferMap = this._arrayBufferMap;
 
             return this._createLoadAssetStream(filePath, json, json.buffers, (id, uri) =>{
-                    arrayBufferMap.addChild(id, wdUtils.decodeArrayBuffer(uri));
+                    arrayBufferMap.addChild(id, WDUtils.decodeArrayBuffer(uri));
                 }, (id, url) => {
                     return AjaxLoader.load(url, "arraybuffer")
                         .do((buffer:any) => {
@@ -59,7 +59,7 @@ module wd{
             );
         }
 
-        private _createLoadImageAssetStream(filePath:string, config:AssetConfigData, json:IwdJsonDataParser):wdFrp.Stream {
+        private _createLoadImageAssetStream(filePath:string, config:AssetConfigData, json:IWDJsonDataParser):wdFrp.Stream {
             var imageMap = this._imageMap;
 
             return this._createLoadAssetStream(filePath, json, json.images, (id, uri) =>{
@@ -74,7 +74,7 @@ module wd{
             );
         }
 
-        private _createLoadAssetStream(filePath:string, json:IwdJsonDataParser, datas:any, addBase64AssetFunc:(id:string, url:string) => void, loadStreamFunc:(id:string, url:string) => wdFrp.Stream):wdFrp.Stream{
+        private _createLoadAssetStream(filePath:string, json:IWDJsonDataParser, datas:any, addBase64AssetFunc:(id:string, url:string) => void, loadStreamFunc:(id:string, url:string) => wdFrp.Stream):wdFrp.Stream{
             var streamArr = [];
 
             if(datas){
@@ -84,7 +84,7 @@ module wd{
                     if(datas.hasOwnProperty(id)){
                         let data = datas[id];
 
-                        if(wdUtils.isBase64(data.uri)){
+                        if(WDUtils.isBase64(data.uri)){
                             addBase64AssetFunc(id, data.uri);
                         }
                         else{
@@ -100,3 +100,4 @@ module wd{
         }
     }
 }
+

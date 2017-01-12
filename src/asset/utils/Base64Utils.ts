@@ -1,4 +1,4 @@
-module Hilo3D{
+module wd{
     declare var Image:any;
 
     export class Base64Utils{

@@ -1,4 +1,4 @@
-module Hilo3D{
+module wd{
     export class CommonShaderLib extends EngineShaderLib{
         public static create() {
             var obj = new this();
