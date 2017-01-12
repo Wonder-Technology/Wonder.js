@@ -6,20 +6,7 @@ module wd{
             this.createControllerMap();
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
         //todo refactor: add AnimationController class
-        //todo specify args!
         public playOneTime(...args):void{
             this._isPlayOneTime = true;
 
@@ -58,20 +45,9 @@ module wd{
                 return;
             }
 
-            if(this._isPlayOneTime){
-                let isFinishAnimation = true;
-
-                this.controllerList.forEach((controller:LayerKeyFrameController) => {
-                    if(!controller.isFinishAnimation){
-                        isFinishAnimation = false;
-                        return wdCb.$BREAK;
-                    }
-                });
-
-                if(isFinishAnimation){
-                    this.stop();
-                    return;
-                }
+            if(this._isPlayOneTime && this._isAllControllerFinishAnimation()){
+                this.stop();
+                return;
             }
 
             this.handleAfterJudgeWhetherAllCurrentFrameFinish(elapsed);
@@ -84,6 +60,20 @@ module wd{
         protected abstract handleAfterJudgeWhetherCurrentFrameFinish(controller:LayerKeyFrameController, elapsed:number):void;
         protected abstract handleAfterJudgeWhetherAllCurrentFrameFinish(elapsed):void;
         protected abstract isCurrentFrameFinish(controller:LayerKeyFrameController, elapsed:number):boolean;
+
+        private _isAllControllerFinishAnimation()
+        {
+            var isFinishAnimation = true;
+
+            this.controllerList.forEach((controller: LayerKeyFrameController) => {
+                if (!controller.isFinishAnimation) {
+                    isFinishAnimation = false;
+                    return wdCb.$BREAK;
+                }
+            });
+
+            return isFinishAnimation;
+        }
     }
 }
 

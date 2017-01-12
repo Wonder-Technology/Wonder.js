@@ -1238,6 +1238,8 @@ describe("skin skeleton animation", function () {
                     director._loopBody(11);
 
 
+                    expect(anim.isStop).toBeTruthy();
+
 
                     var args = program.sendUniformData.withArgs("u_jointMatrices").getCall(2).args;
                     expect(args[1]).toEqual(wd.EVariableType.FLOAT_MAT4_ARRAY);
@@ -1253,6 +1255,7 @@ describe("skin skeleton animation", function () {
 
                     director._loopBody(17);
 
+                    expect(anim.isStop).toBeTruthy();
 
                     var args = program.sendUniformData.withArgs("u_jointMatrices").getCall(3).args;
                     expect(args[1]).toEqual(wd.EVariableType.FLOAT_MAT4_ARRAY);

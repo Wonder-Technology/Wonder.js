@@ -20,7 +20,7 @@ module wd{
 
         private _isResume:boolean = false;
 
-        public abstract play(animName:string, fps:number):void;
+        public abstract play(...args):void;
 
         public addToObject(entityObject:EntityObject, isShareComponent:boolean = false){
             var engine:AnimationComponentContainer = AnimationComponentContainer.getInstance();
