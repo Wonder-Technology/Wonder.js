@@ -2,6 +2,8 @@ module wd{
     export abstract class MultiLayerKeyFrameAnimation extends Animation{
         protected controllerList:wdCb.Collection<LayerKeyFrameController> = wdCb.Collection.create<LayerKeyFrameController>();
 
+        private _isPlayOneTime:boolean = false;
+
         public init(){
             this.createControllerMap();
         }
@@ -13,21 +15,12 @@ module wd{
             this.play.apply(this, args);
         }
 
-        private _isPlayOneTime:boolean = false;
-
         protected handleUpdate(elapsed:number){
-            var isTimeExceed5000 = false;
             var self = this;
 
             this.controllerList.forEach((controller:LayerKeyFrameController) => {
                 if(!controller.hasCurrentAnimData()){
                     return;
-                }
-
-                //todo remove
-                if(self._isPlayOneTime && controller.isTimeExceed5000()){
-                    isTimeExceed5000 = true;
-                    return wdCb.$BREAK;
                 }
 
                 this.handleBeforeJudgeWhetherCurrentFrameFinish(controller, elapsed);
@@ -38,12 +31,6 @@ module wd{
 
                 this.handleAfterJudgeWhetherCurrentFrameFinish(controller, elapsed);
             });
-
-            //todo remove
-            if(this._isPlayOneTime && isTimeExceed5000){
-                this.stop();
-                return;
-            }
 
             if(this._isPlayOneTime && this._isAllControllerFinishAnimation()){
                 this.stop();

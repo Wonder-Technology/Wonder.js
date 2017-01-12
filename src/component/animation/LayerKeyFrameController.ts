@@ -14,10 +14,6 @@ module wd{
 
         public isPlayed:boolean = false;
 
-
-        //todo refactor
-        public timeLimit = 5000;
-
         protected startFrameDataMap:wdCb.Hash<any> = wdCb.Hash.create<any>();
         protected currentAnimData:wdCb.Collection<KeyFrameAnimationFrameData> = null;
         protected currentFrameData:KeyFrameAnimationFrameData = null;
@@ -31,11 +27,6 @@ module wd{
 
         public abstract saveZeroTimeFrameData():void;
         public abstract updateTargets(elapsed:number, pauseDuration:number):void;
-
-        //todo remove
-        public isTimeExceed5000(){
-            return this.currentFrameData.time > this.timeLimit;
-        }
 
         @ensure(function(){
             it(`should exist animation name:${this.currentAnimName}`, () => {

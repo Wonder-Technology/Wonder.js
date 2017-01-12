@@ -58,29 +58,6 @@ module wd{
         @cloneAttributeAsCloneable()
         private _inverseNodeToRootMatrix:Matrix4 = null;
 
-
-
-
-        //todo refactor
-        private _timeLimit:number = 5000;
-        get timeLimit(){
-            return this._timeLimit;
-        }
-        set timeLimit(timeLimit:number){
-            var self = this;
-
-            if(!!this.controllerList){
-                this.controllerList.forEach((controller:JointKeyFrameController) =>
-                {
-                    controller.timeLimit = timeLimit;
-                });
-            }
-        }
-
-
-
-
-
         public initWhenCreate(){
             this._bindPreComputeEvent();
         }
