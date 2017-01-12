@@ -19,29 +19,12 @@ module wd{
             this.saveStartFrameData(this.currentAnimData.getChild(0));
         }
 
-        private _isFirst = true;
-
         public updateTargets(elapsed:number, pauseDuration:number):void{
             var self = this,
                 startFrameDataMap = this.startFrameDataMap,
                 position = GlobalTempMathClass.Vector3_1,
                 rotation = GlobalTempMathClass.Quaternion_1,
                 scale = GlobalTempMathClass.Vector3_Scale_1;
-
-            //todo refactor
-
-            if(this._isFirst){
-                this.setBeginElapsedTimeOfFirstFrame2(elapsed);
-
-                this._isFirst = false;
-            }
-
-
-
-
-
-
-
 
             this.currentFrameData.targets.forEach((target:KeyFrameAnimationFrameTargetData) => {
                 var endFrameData = target.data,
@@ -101,4 +84,3 @@ module wd{
         }
     }
 }
-

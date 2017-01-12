@@ -24,7 +24,6 @@ module wd{
         }
 
         protected abstract updateTarget(target:any, startFrameData:any, endFrameData:any, interpolation:number):void;
-
     }
 }
 

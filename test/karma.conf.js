@@ -249,10 +249,10 @@
 
         //'test/unit/**/customShader*',
 
-        // 'test/unit/**/skin*',
-        // 'test/unit/**/*animation*',
-        // 'test/unit/component/**/*Animation*.js',
-        // 'test/unit/component/**/morphAnimation*.js',
+        'test/unit/**/skin*',
+        'test/unit/**/*animation*',
+        'test/unit/component/**/*Animation*.js',
+        'test/unit/component/**/morphAnimation*.js',
 
         //'test/unit/**/GLTFParserSpec*',
         //'test/unit/**/GLTFAssemblerSpec*',
@@ -285,8 +285,8 @@
 
         // 'test/unit/component/event/eventSpec*',
 
-        'test/unit/**/ui/**',
-        'test/unit/**/UIObjectSpec*',
+        // 'test/unit/**/ui/**',
+        // 'test/unit/**/UIObjectSpec*',
 
         // 'test/unit/**/ButtonSpec*',
         // 'test/unit/**/UIStateMachineSpec*',
@@ -294,9 +294,9 @@
 
         // 'test/unit/**/*Asset*',
         //
-        'test/unit/**/TwoDFontSpec*',
-        'test/unit/**/PlainFontSpec*',
-        'test/unit/**/UIRendererSpec*',
+        // 'test/unit/**/TwoDFontSpec*',
+        // 'test/unit/**/PlainFontSpec*',
+        // 'test/unit/**/UIRendererSpec*',
         // 'test/unit/**/TwoDBitmapFontSpec*',
         // 'test/unit/**/ThreeDBitmapFontSpec*',
         // 'test/unit/**/bitmapFont/**',
@@ -324,7 +324,7 @@
         //'test/unit/**/rayPicking*',
         //'test/unit/**/AABBShapeSpec*',
         //'test/unit/**/SphereShapeSpec*',
-        'test/unit/**/collider/**',
+        // 'test/unit/**/collider/**',
         //'test/unit/**/ActionManagerSpec*',
         //'test/unit/**/TwoDShadow*Spec.js',
         //'test/unit/**/*CustomGeo*.js',
@@ -338,8 +338,8 @@
 
         //'test/unit/**/collider/optimizeSpec.js',
         //'test/unit/**/collider/*',
-        'test/unit/**/physics/*.js',
-        'test/unit/**/physics/**',
+        // 'test/unit/**/physics/*.js',
+        // 'test/unit/**/physics/**',
         //'test/unit/**/physics/physicsSpec*',
         //'test/unit/**/physics/dispose*',
         //'test/unit/**/physics/**/event*',

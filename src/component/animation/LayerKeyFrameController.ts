@@ -94,19 +94,6 @@ module wd{
             return this.currentAnimData !== null;
         }
 
-
-
-
-
-        //todo refactor
-        public setBeginElapsedTimeOfFirstFrame2(currentTime:number){
-            this._beginElapsedTimeOfFirstFrame = currentTime;
-        }
-
-
-
-
-
         public setBeginElapsedTimeOfFirstFrame(currentTime:number){
             if(this._beginElapsedTimeOfFirstFrame === null){
                 this._beginElapsedTimeOfFirstFrame = currentTime;
@@ -136,16 +123,8 @@ module wd{
 
 
 
-        //todo refactor
-        private _isFirstPlay = true;
 
         public updateFrame(elapsed:number, pauseDuration:number){
-            if(this._isFirstPlay){
-                this.setBeginElapsedTimeOfFirstFrame2(elapsed);
-
-                this._isFirstPlay = false;
-            }
-
             this._updateCurrentFrameIndex(elapsed, pauseDuration);
 
             if(this._isFinishAllFrames()){
@@ -164,6 +143,7 @@ module wd{
         }
 
         @require(function(elapsed:number, pauseDuration:number){
+            this._judgeBeginElapsedTime(elapsed, "_contract_isFirstUpdate1");
             it(`elapsed of current frame:${elapsed - this._beginElapsedTimeOfFirstFrame - pauseDuration} should >= 0`, () => {
                 expect(elapsed - this._beginElapsedTimeOfFirstFrame - pauseDuration).gte(0);
             });
@@ -191,6 +171,9 @@ module wd{
             });
         }
 
+        @require(function(elapsed:number, pauseDuration:number, interpolationMethod:EKeyFrameInterpolation){
+            this._judgeBeginElapsedTime(elapsed, "_contract_isFirstUpdate2");
+        })
         @ensure(function(interpolation:number, elapsed:number, interpolationMethod:EKeyFrameInterpolation){
             it(`interpolation:${interpolation} >= 0 && <= 1`, () => {
                 expect(interpolation >= 0 && interpolation <= 1).true;
@@ -246,6 +229,14 @@ module wd{
                 this._prevFrameData = this.currentFrameData;
                 this.updateCurrentFrameData();
             }while(!this._isFinishAllFrames() && this.isCurrentFrameFinish(elapsed, pauseDuration));
+        }
+
+        private _judgeBeginElapsedTime(elapsed:number, isFirstUpdateAttributeName:string){
+            it("the _beginElapsedTime should === elapsed at the first time of the update", () => {
+                if(this[isFirstUpdateAttributeName]){ expect(elapsed).equals(this._beginElapsedTimeOfFirstFrame);
+                    this[isFirstUpdateAttributeName] = false;
+                }
+            }, this);
         }
     }
 }

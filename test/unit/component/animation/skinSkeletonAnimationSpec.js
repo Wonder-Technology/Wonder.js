@@ -399,7 +399,7 @@ describe("skin skeleton animation", function () {
 
                         // anim.play(0);
 
-                        director._run(1);
+                        director._loopBody(1);
 
 
                         var args = program.sendUniformData.withArgs("u_jointMatrices").getCall(0).args;
@@ -484,7 +484,7 @@ describe("skin skeleton animation", function () {
 
                             anim.play(0);
 
-                            director._run(1);
+                            director._loopBody(1);
 
                             expect(testTool.getValues(
                                 program.sendAttributeBuffer.withArgs("a_position").getCall(0).args[2].data
@@ -658,10 +658,11 @@ describe("skin skeleton animation", function () {
 
                             anim.play(0);
 
-                            director._run(1);
+                            director._loopBody(0);
+                            director._loopBody(1);
 
                             expect(testTool.getValues(
-                                program.sendAttributeBuffer.withArgs("a_jointIndice").getCall(0).args[2].data
+                                program.sendAttributeBuffer.withArgs("a_jointIndice").getCall(1).args[2].data
                             )).toEqual(
                                 geo.jointIndices
                             );
@@ -981,37 +982,8 @@ describe("skin skeleton animation", function () {
 
                             anim.play(0);
 
-                            director._run(1);
-
-                            expect(testTool.getValues(
-                                program.sendAttributeBuffer.withArgs("a_jointIndice").getCall(0).args[2].data
-                            )).toEqual(
-                                geo.jointIndices
-                            );
-                            expect(testTool.getValues(
-                                program.sendAttributeBuffer.withArgs("a_jointWeight").getCall(0).args[2].data
-                            )).toEqual(
-                                geo.jointWeights
-                            );
-
-
-                            var args = program.sendUniformData.withArgs("u_jointMatrices").getCall(0).args;
-                            expect(args[1]).toEqual(wd.EVariableType.FLOAT_MAT4_ARRAY);
-                            expect(testTool.getValues(
-                                args[2],
-                                0
-                            )).toEqual(
-                                [ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 12, 25, 36, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 12, 23, 39, 1 ]
-                            );
-
-
-
-
-
-                            anim.play(1);
-
-                            director._run(2);
-
+                            director._loopBody(0);
+                            director._loopBody(1);
 
                             expect(testTool.getValues(
                                 program.sendAttributeBuffer.withArgs("a_jointIndice").getCall(1).args[2].data
@@ -1031,7 +1003,38 @@ describe("skin skeleton animation", function () {
                                 args[2],
                                 0
                             )).toEqual(
-                                [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 11, 22, 30, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 13, 25, 46, 1]
+                                [ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 12, 25, 36, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 12, 23, 39, 1 ]
+                            );
+
+
+
+
+
+                            anim.play(1);
+
+                            director._loopBody(2);
+                            director._loopBody(3);
+
+
+                            expect(testTool.getValues(
+                                program.sendAttributeBuffer.withArgs("a_jointIndice").getCall(3).args[2].data
+                            )).toEqual(
+                                geo.jointIndices
+                            );
+                            expect(testTool.getValues(
+                                program.sendAttributeBuffer.withArgs("a_jointWeight").getCall(3).args[2].data
+                            )).toEqual(
+                                geo.jointWeights
+                            );
+
+
+                            var args = program.sendUniformData.withArgs("u_jointMatrices").getCall(3).args;
+                            expect(args[1]).toEqual(wd.EVariableType.FLOAT_MAT4_ARRAY);
+                            expect(testTool.getValues(
+                                args[2],
+                                0
+                            )).toEqual(
+                                [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 11, 22, 30, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 12, 23, 39, 1]
                             );
                         });
                     });
@@ -1117,7 +1120,7 @@ describe("skin skeleton animation", function () {
 
                                 anim.play(0);
 
-                                director._run(1);
+                                director._loopBody(1);
                             }
 
                             beforeEach(function () {
