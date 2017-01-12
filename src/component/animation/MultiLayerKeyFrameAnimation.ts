@@ -12,16 +12,6 @@ module wd{
 
 
 
-        public preparePlayOneTime(index:number){
-            this.playOneTime(index);
-
-            this.state = EAnimationState.DEFAULT;
-
-            this._isPreparePlayOneTime = true;
-        }
-
-        private _isPreparePlayOneTime:boolean = false;
-
 
 
 
@@ -32,12 +22,6 @@ module wd{
         //todo specify args!
         public playOneTime(...args):void{
             this._isPlayOneTime = true;
-
-            if(this._isPreparePlayOneTime){
-                this._isPreparePlayOneTime = false;
-                this.state = EAnimationState.RUN;
-                return;
-            }
 
             this.play.apply(this, args);
         }
