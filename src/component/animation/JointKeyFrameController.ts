@@ -10,13 +10,62 @@ module wd{
         public jointName:string = null;
 
         @require(function(){
-            //todo handle not === 0
             it("first animation data->time should === 0", () => {
                 expect(this.currentAnimData.getChild(0).time).equals(0);
             }, this);
         })
         public saveZeroTimeFrameData(){
             this.saveStartFrameData(this.currentAnimData.getChild(0));
+        }
+
+        public getFirstFrameTime(){
+            return this.currentAnimData.getChild(0).time;
+        }
+
+        public addBoneMatrixAsTheFirstFrameWhoseTimeIsZero(boneMatrix:BoneMatrix){
+            var localMatrix = boneMatrix.localMatrix,
+                currentFirstFrame = this.currentAnimData.getChild(0),
+                targets = wdCb.Collection.create<KeyFrameAnimationFrameTargetData>(),
+                newFirstFrame:KeyFrameAnimationFrameData = {
+                time: 0,
+                targets: targets
+            };
+
+            currentFirstFrame.targets.forEach((data:KeyFrameAnimationFrameTargetData) => {
+                switch (data.target){
+                    case EKeyFrameAnimationTarget.TRANSLATION:
+                        targets.addChild(
+                            {
+                                interpolationMethod:EKeyFrameInterpolation.LINEAR,
+                                target:EKeyFrameAnimationTarget.TRANSLATION,
+                                data:localMatrix.getTranslation()
+                            }
+                        );
+                        break;
+                    case EKeyFrameAnimationTarget.ROTATION:
+                        targets.addChild(
+                            {
+                                interpolationMethod:EKeyFrameInterpolation.LINEAR,
+                                target:EKeyFrameAnimationTarget.ROTATION,
+                                data:localMatrix.getRotation()
+                            }
+                        );
+                        break;
+                    case EKeyFrameAnimationTarget.SCALE:
+                        targets.addChild(
+                            {
+                                interpolationMethod:EKeyFrameInterpolation.LINEAR,
+                                target:EKeyFrameAnimationTarget.SCALE,
+                                data:localMatrix.getScale()
+                            }
+                        );
+                        break;
+                    default:
+                        break;
+                }
+            });
+
+            this.currentAnimData.unShiftChild(newFirstFrame);
         }
 
         public updateTargets(elapsed:number, pauseDuration:number):void{

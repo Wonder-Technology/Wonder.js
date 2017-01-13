@@ -120,7 +120,13 @@ module wd{
                 controller.isPlayed = true;
 
                 controller.updateCurrentFrameData();
+
+                if(controller.getFirstFrameTime() > 0){
+                    controller.addBoneMatrixAsTheFirstFrameWhoseTimeIsZero(self.boneMatrixMap.getChild(controller.jointName));
+                }
+
                 controller.saveZeroTimeFrameData();
+
                 controller.setFrameCount();
             });
 
@@ -140,15 +146,9 @@ module wd{
 
                 jointNamesUsedInJointTransformData = jointNamesUsedInJointTransformData.removeRepeatItems();
 
-                if(jointNamesUsedInJointTransformData.getCount() !== this.jointNames.length){
-                    Log.warn("fail");
-
-                    return;
-                }
-
                 for(let name of this.jointNames){
                     if(!jointNamesUsedInJointTransformData.hasChild(name)){
-                        Log.warn("fail");
+                        Log.warn(`joint:${name} is not used in jointTransformData`);
                     }
                 }
             }, this);

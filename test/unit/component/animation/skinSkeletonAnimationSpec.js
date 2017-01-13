@@ -684,85 +684,6 @@ describe("skin skeleton animation", function () {
                         });
                     });
 
-                    it("if joint animation data->first frame->time > 0, contract error", function () {
-                        testTool.openContractCheck(sandbox);
-
-                        var bindShapeMatrix = Matrix4.create();
-                        bindShapeMatrix.translate(10, 20, 30);
-
-
-                        anim.bindShapeMatrix = bindShapeMatrix;
-
-
-                        anim.inverseBindMatrices = [
-                            Matrix4.create().translate(0, 2, 0)
-                        ];
-
-
-                        var boneAGlobalTransformMatrix4 = null;
-
-                        var mat = Matrix4.create();
-
-                        mat.rotate(45, wd.Vector3.up);
-
-
-                        boneAGlobalTransformMatrix4 = wd.BoneMatrix.create(mat);
-
-
-                        anim.boneMatrixMap = wdCb.Hash.create({
-                            "jointA": boneAGlobalTransformMatrix4
-                        });
-
-
-                        anim.jointNames = [
-                            "jointA"
-                        ];
-
-
-                        anim.jointTransformData = wdCb.Hash.create({
-                            "animation0": wdCb.Hash.create({
-                                "jointA": wdCb.Collection.create([
-                                    {
-                                        time: 5,
-
-                                        targets: wdCb.Collection.create(
-                                            [
-                                                {
-                                                    interpolationMethod: wd.EKeyFrameInterpolation.LINEAR,
-                                                    target: wd.EKeyFrameAnimationTarget.ROTATION,
-                                                    data: wd.Quaternion.create().setFromEulerAngles(wd.Vector3.create(2.5, 5, 10))
-                                                }
-                                            ]
-                                        )
-                                    },
-                                    {
-                                        time: 10,
-
-                                        targets: wdCb.Collection.create(
-                                            [
-                                                {
-                                                    interpolationMethod: wd.EKeyFrameInterpolation.LINEAR,
-                                                    target: wd.EKeyFrameAnimationTarget.ROTATION,
-                                                    data: wd.Quaternion.create().setFromEulerAngles(wd.Vector3.create(5, 10, 20))
-                                                }
-                                            ]
-                                        )
-                                    }
-                                ])
-                            })
-
-                        });
-
-                        director._init();
-
-                        setProgram(material);
-
-
-                        expect(function(){
-                            anim.play(0);
-                        }).toThrow("first animation data->time should === 0");
-                    });
-
                     describe("test play different animation", function(){
                         var boneAGlobalTransformMatrix4 = null,
                             boneBGlobalTransformMatrix4 = null;
@@ -1307,12 +1228,96 @@ describe("skin skeleton animation", function () {
         });
         
         describe("fix bug", function(){
+            function prepareForSimpleCompute() {
+                prepareAnim();
+
+                anim._inverseNodeToRootMatrix = Matrix4.create();
+
+
+                var bindShapeMatrix = Matrix4.create();
+
+
+                anim.bindShapeMatrix = bindShapeMatrix;
+
+
+                anim.inverseBindMatrices = [
+                    Matrix4.create()
+                ];
+
+
+                var mat = Matrix4.create();
+
+
+
+                boneAGlobalTransformMatrix4 = wd.BoneMatrix.create(mat);
+
+
+                anim.boneMatrixMap = wdCb.Hash.create({
+                    "jointA": boneAGlobalTransformMatrix4
+                });
+
+
+                anim.jointNames = [
+                    "jointA"
+                ];
+
+
+                anim.jointTransformData = wdCb.Hash.create({
+                    "animation0": wdCb.Hash.create({
+                        "jointA": wdCb.Collection.create([
+                            {
+                                time: 10,
+
+                                targets: wdCb.Collection.create(
+                                    [
+                                        {
+                                            interpolationMethod: wd.EKeyFrameInterpolation.LINEAR,
+                                            target: wd.EKeyFrameAnimationTarget.TRANSLATION,
+                                            data: wd.Vector3.create(5,0,0)
+                                        }
+                                    ]
+                                )
+                            },
+                            {
+                                time: 20,
+
+                                targets: wdCb.Collection.create(
+                                    [
+                                        {
+                                            interpolationMethod: wd.EKeyFrameInterpolation.LINEAR,
+                                            target: wd.EKeyFrameAnimationTarget.TRANSLATION,
+                                            data: wd.Vector3.create(10,0,0)
+                                        }
+                                    ]
+                                )
+                            }
+                        ])
+                    })
+                });
+            }
+
+            function judgeJointMatrices(callIndex, positionX) {
+                var args = program.sendUniformData.withArgs("u_jointMatrices").getCall(callIndex).args;
+
+                var targetJointMatrices = [ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 3, 0, 0, 1 ];
+                targetJointMatrices[12] = positionX;
+
+
+
+                expect(args[1]).toEqual(wd.EVariableType.FLOAT_MAT4_ARRAY);
+                expect(testTool.getValues(
+                    args[2],
+                    2
+                )).toEqual(
+                    targetJointMatrices
+                );
+            }
+
             beforeEach(function(){
             });
 
             it("should play the second time correctly after the stop of animation when play one time firstly", function () {
-                prepareAnim();
-                prepareSingleSkeleton();
+                prepareForSimpleCompute()
 
                 director._init();
 
@@ -1325,37 +1330,23 @@ describe("skin skeleton animation", function () {
 
 
                 var jointMatrices = [0.98, 0.17, -0.09, 0, -0.17, 0.99, 0.04, 0, 0.1, -0.02, 1, 0, 9.99, 22.79, 29.73, 1 ]
-                var jointMatrices_firstFrameData = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 11, 22, 30, 1 ];
+                var jointMatrices_firstFrameData = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 ];
 
 
                 director._loopBody(5);
 
 
 
-                var args = program.sendUniformData.withArgs("u_jointMatrices").getCall(1).args;
-                expect(args[1]).toEqual(wd.EVariableType.FLOAT_MAT4_ARRAY);
-                expect(testTool.getValues(
-                    args[2],
-                    2
-                )).toEqual(
-                    jointMatrices
-                );
+                judgeJointMatrices(1, 2.5)
 
 
                 director._loopBody(11);
 
 
 
-                var args = program.sendUniformData.withArgs("u_jointMatrices").getCall(2).args;
-                expect(args[1]).toEqual(wd.EVariableType.FLOAT_MAT4_ARRAY);
-                expect(testTool.getValues(
-                    args[2],
-                    2
-                )).toEqual(
-                    jointMatrices
-                );
 
 
+                judgeJointMatrices(2, 5.5)
 
 
 
@@ -1366,14 +1357,7 @@ describe("skin skeleton animation", function () {
                 director._loopBody(12);
 
 
-                var args = program.sendUniformData.withArgs("u_jointMatrices").getCall(3).args;
-                expect(args[1]).toEqual(wd.EVariableType.FLOAT_MAT4_ARRAY);
-                expect(testTool.getValues(
-                    args[2],
-                    2
-                )).toEqual(
-                    jointMatrices_firstFrameData
-                );
+                judgeJointMatrices(3, 0)
             });
             it("if model2 addChild(model1), and model2 is transformed between model1->skin animation component->bindPreComputeEvent and init, the model1's uMatrix should be affected by model2 after init", function () {
                 testTool.closeContractCheck();
@@ -1398,6 +1382,29 @@ describe("skin skeleton animation", function () {
                 model2.init();
 
                 expect(model.transform.position).toEqual(wd.Vector3.create(11,10,0));
+            });
+            it("if joint animation data->first frame->time > 0, joint animation data should add bone matrix data as the first frame data and set the time of it to be 0", function () {
+                prepareForSimpleCompute();
+
+
+                director._init();
+
+                setProgram(material);
+
+                anim.play(0);
+
+
+                director._loopBody(3);
+                director._loopBody(9);
+
+                judgeJointMatrices(1, (9 - 3) / 10 * 5);
+
+
+
+                director._loopBody(12);
+                director._loopBody(15);
+
+                judgeJointMatrices(3, 5 + (15 - 13) / 10 * (10 - 5));
             });
         });
     });

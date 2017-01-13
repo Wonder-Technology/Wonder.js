@@ -253,7 +253,7 @@
         'test/unit/**/*animation*',
         'test/unit/component/**/*Animation*.js',
         'test/unit/component/**/morphAnimation*.js',
-
+        //
         //'test/unit/**/GLTFParserSpec*',
         //'test/unit/**/GLTFAssemblerSpec*',
 
