@@ -137,8 +137,8 @@ module wd {
             return this._entityObjectManager.hasChild(child);
         }
 
-        public addChild(child:EntityObject):EntityObject {
-            this._entityObjectManager.addChild(child);
+        public addChild(child:EntityObject, removeComponentsFromEngine:boolean = true):EntityObject {
+            this._entityObjectManager.addChild(child, removeComponentsFromEngine);
 
             return this;
         }
@@ -193,8 +193,8 @@ module wd {
             return this._entityObjectManager.findChildrenByName(name);
         }
 
-        public removeChild(child:EntityObject):EntityObject {
-            this._entityObjectManager.removeChild(child);
+        public removeChild(child:EntityObject, removeComponentsFromEngine:boolean = true):EntityObject {
+            this._entityObjectManager.removeChild(child, removeComponentsFromEngine);
 
             return this;
         }

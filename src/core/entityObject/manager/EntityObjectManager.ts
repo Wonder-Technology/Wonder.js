@@ -29,9 +29,9 @@ module wd{
             return this._children.hasChild(child);
         }
 
-        public addChild(child:EntityObject){
+        public addChild(child:EntityObject, removeComponentsFromEngine:boolean = true){
             if (child.parent) {
-                child.parent.removeChild(child);
+                child.parent.removeChild(child, removeComponentsFromEngine);
             }
 
             child.parent = this._entityObject;
@@ -137,11 +137,14 @@ module wd{
             });
         }
 
-        public removeChild(child:EntityObject){
+        public removeChild(child:EntityObject, removeComponentsFromEngine:boolean = true){
             child.onExit();
 
-            child.getAllChildren().forEach((c:EntityObject) => c.removeAllComponentFromEngine());
-            child.removeAllComponentFromEngine();
+            //todo test
+            if(removeComponentsFromEngine){
+                child.getAllChildren().forEach((c:EntityObject) => c.removeAllComponentFromEngine());
+                child.removeAllComponentFromEngine();
+            }
 
             this._children.removeChild(child);
 

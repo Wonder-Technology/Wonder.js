@@ -58,7 +58,7 @@
         // 'test/unit/**/GameObjectLOD*',
         // 'test/unit/**/gameObjectLODSpace*',
 
-        // 'test/unit/**/OneToOneSourceInstance*',
+        'test/unit/**/OneToOneSourceInstance*',
         // 'test/unit/**/oneToManyInstance*',
 
 
@@ -163,6 +163,7 @@
         //'test/unit/renderer/*ShadowMap_*Spec.js',
         //
         // 'test/unit/**/instance/**',
+        'test/unit/**/instanceAnima*',
 
         // 'test/unit/**/instanceBasic*',
 

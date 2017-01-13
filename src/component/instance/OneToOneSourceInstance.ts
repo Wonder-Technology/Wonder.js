@@ -150,7 +150,7 @@ module wd{
                 sourceInstanceList.addChild(instance);
 
                 entityObject.forEach((child:GameObject) => {
-                    instance.addChild(clone(self._buildInstanceChildName(name, child.name), child));
+                    instance.addChild(clone(self._buildInstanceChildName(name, child.name), child), false);
                 });
 
                 return instance;

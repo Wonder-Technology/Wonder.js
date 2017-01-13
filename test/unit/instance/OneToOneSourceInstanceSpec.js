@@ -209,6 +209,29 @@ describe("OneToOneSourceInstance", function(){
             expect(box1Instance1.isVisible).toBeFalsy();
         });
 
+        describe("fix bug", function(){
+            beforeEach(function(){
+            });
+
+            it("the instance's component should be added to corresponding component container", function () {
+                box1.name = "box1";
+
+
+
+                var child = wd.GameObject.create();
+
+
+                child.addComponent(wd.DelayTime.create(100));
+
+                box1.addChild(child);
+
+
+
+                box1Instance1 = instanceTool.cloneInstance(box1, "instance1");
+
+                expect(wd.ActionComponentContainer.getInstance().list.getCount()).toEqual(2);
+            });
+        });
 
         //todo test more(clone scriptList? ...)
     });
