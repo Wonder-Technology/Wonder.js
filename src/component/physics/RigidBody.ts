@@ -54,12 +54,12 @@ module wd {
         public pointToPointConstraintList:PointToPointConstraintList = PointToPointConstraintList.create(this);
 
         public addToObject(entityObject:EntityObject, isShareComponent:boolean = false){
-            var engine:PhysicsComponentContainer = PhysicsComponentContainer.getInstance();
+            var container:PhysicsComponentContainer = PhysicsComponentContainer.getInstance();
 
             super.addToObject(entityObject, isShareComponent);
 
-            if(!engine.hasChild(this)){
-                engine.addChild(this);
+            if(!container.hasChild(this)){
+                container.addChild(this);
             }
         }
 
@@ -85,7 +85,7 @@ module wd {
             }
         }
 
-        public removeFromEngine(){
+        public removeFromComponentContainer(){
             PhysicsComponentContainer.getInstance().removeChild(this);
 
         }

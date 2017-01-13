@@ -137,8 +137,8 @@ module wd {
             return this._entityObjectManager.hasChild(child);
         }
 
-        public addChild(child:EntityObject, removeComponentsFromEngine:boolean = true):EntityObject {
-            this._entityObjectManager.addChild(child, removeComponentsFromEngine);
+        public addChild(child:EntityObject, removeComponentsFromComponentContainer:boolean = true):EntityObject {
+            this._entityObjectManager.addChild(child, removeComponentsFromComponentContainer);
 
             return this;
         }
@@ -193,8 +193,8 @@ module wd {
             return this._entityObjectManager.findChildrenByName(name);
         }
 
-        public removeChild(child:EntityObject, removeComponentsFromEngine:boolean = true):EntityObject {
-            this._entityObjectManager.removeChild(child, removeComponentsFromEngine);
+        public removeChild(child:EntityObject, removeComponentsFromComponentContainer:boolean = true):EntityObject {
+            this._entityObjectManager.removeChild(child, removeComponentsFromComponentContainer);
 
             return this;
         }
@@ -275,8 +275,8 @@ module wd {
             return this.componentManager.removeAllComponent();
         }
 
-        public removeAllComponentFromEngine(){
-            return this.componentManager.removeAllComponentFromEngine();
+        public removeAllComponentFromComponentContainer(){
+            return this.componentManager.removeAllComponentFromComponentContainer();
         }
 
         @virtual

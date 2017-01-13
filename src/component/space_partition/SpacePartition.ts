@@ -23,16 +23,16 @@ module wd {
             });
         })
         public addToObject(entityObject:GameObject, isShareComponent:boolean = false){
-            var engine:SpacePartitionComponentContainer = SpacePartitionComponentContainer.getInstance();
+            var container:SpacePartitionComponentContainer = SpacePartitionComponentContainer.getInstance();
 
             super.addToObject(entityObject, isShareComponent);
 
-            if(!engine.hasChild(this)){
-                engine.addChild(this);
+            if(!container.hasChild(this)){
+                container.addChild(this);
             }
         }
 
-        public removeFromEngine(){
+        public removeFromComponentContainer(){
             SpacePartitionComponentContainer.getInstance().removeChild(this);
         }
     }

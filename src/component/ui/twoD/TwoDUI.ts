@@ -45,16 +45,16 @@ module wd {
             expect(entityObject).instanceOf(UIObject);
         })
         public addToObject(entityObject:UIObject, isShareComponent:boolean = false){
-            var engine:TwoDUIComponentContainer = TwoDUIComponentContainer.getInstance();
+            var container:TwoDUIComponentContainer = TwoDUIComponentContainer.getInstance();
 
             super.addToObject(entityObject, isShareComponent);
 
-            if(!engine.hasChild(this)){
-                engine.addChild(this);
+            if(!container.hasChild(this)){
+                container.addChild(this);
             }
         }
 
-        public removeFromEngine(){
+        public removeFromComponentContainer(){
             TwoDUIComponentContainer.getInstance().removeChild(this);
         }
 

@@ -38,11 +38,11 @@ module wd{
 
         @virtual
         public removeFromObject(entityObject:EntityObject){
-            this.removeFromEngine();
+            this.removeFromComponentContainer();
         }
 
         @virtual
-        public removeFromEngine(){
+        public removeFromComponentContainer(){
         }
     }
 }

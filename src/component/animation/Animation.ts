@@ -23,16 +23,16 @@ module wd{
         public abstract play(...args):void;
 
         public addToObject(entityObject:EntityObject, isShareComponent:boolean = false){
-            var engine:AnimationComponentContainer = AnimationComponentContainer.getInstance();
+            var container:AnimationComponentContainer = AnimationComponentContainer.getInstance();
 
             super.addToObject(entityObject, isShareComponent);
 
-            if(!engine.hasChild(this)){
-                engine.addChild(this);
+            if(!container.hasChild(this)){
+                container.addChild(this);
             }
         }
 
-        public removeFromEngine(){
+        public removeFromComponentContainer(){
             AnimationComponentContainer.getInstance().removeChild(this);
         }
 

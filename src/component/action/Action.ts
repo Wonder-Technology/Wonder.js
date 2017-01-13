@@ -35,18 +35,18 @@ module wd{
 
 
         public addToObject(entityObject:EntityObject, isShareComponent:boolean = false){
-            var engine:ActionComponentContainer = ActionComponentContainer.getInstance();
+            var container:ActionComponentContainer = ActionComponentContainer.getInstance();
 
             super.addToObject(entityObject, isShareComponent);
 
             this.target = entityObject;
 
-            if(!engine.hasChild(this)){
-                engine.addChild(this);
+            if(!container.hasChild(this)){
+                container.addChild(this);
             }
         }
 
-        public removeFromEngine(){
+        public removeFromComponentContainer(){
             ActionComponentContainer.getInstance().removeChild(this);
         }
 

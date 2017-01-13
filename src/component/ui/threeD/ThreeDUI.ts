@@ -8,16 +8,16 @@ module wd {
             expect(entityObject).instanceOf(GameObject);
         })
         public addToObject(entityObject:GameObject, isShareComponent:boolean = false){
-            var engine:ThreeDUIComponentContainer = ThreeDUIComponentContainer.getInstance();
+            var container:ThreeDUIComponentContainer = ThreeDUIComponentContainer.getInstance();
 
             super.addToObject(entityObject, isShareComponent);
 
-            if(!engine.hasChild(this)){
-                engine.addChild(this);
+            if(!container.hasChild(this)){
+                container.addChild(this);
             }
         }
 
-        public removeFromEngine(){
+        public removeFromComponentContainer(){
             ThreeDUIComponentContainer.getInstance().removeChild(this);
         }
     }

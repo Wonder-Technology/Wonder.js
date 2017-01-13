@@ -15,16 +15,16 @@ module wd{
         public directionEulerAngles:Vector3 = null;
 
         public addToObject(entityObject:EntityObject, isShareComponent:boolean = false){
-            var engine:BillboardComponentContainer = BillboardComponentContainer.getInstance();
+            var container:BillboardComponentContainer = BillboardComponentContainer.getInstance();
 
             super.addToObject(entityObject, isShareComponent);
 
-            if(!engine.hasChild(this)){
-                engine.addChild(this);
+            if(!container.hasChild(this)){
+                container.addChild(this);
             }
         }
 
-        public removeFromEngine(){
+        public removeFromComponentContainer(){
             BillboardComponentContainer.getInstance().removeChild(this);
         }
 

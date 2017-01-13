@@ -24,16 +24,16 @@ module wd {
         }
 
         public addToObject(entityObject:EntityObject, isShareComponent:boolean = false){
-            var engine:CollisionComponentContainer = CollisionComponentContainer.getInstance();
+            var container:CollisionComponentContainer = CollisionComponentContainer.getInstance();
 
             super.addToObject(entityObject, isShareComponent);
 
-            if(!engine.hasChild(this)){
-                engine.addChild(this);
+            if(!container.hasChild(this)){
+                container.addChild(this);
             }
         }
 
-        public removeFromEngine(){
+        public removeFromComponentContainer(){
             CollisionComponentContainer.getInstance().removeChild(this);
         }
 
