@@ -35,11 +35,13 @@ module wd{
 
 
         public addToObject(entityObject:EntityObject, isShareComponent:boolean = false){
-            var container:ActionComponentContainer = ActionComponentContainer.getInstance();
-
             super.addToObject(entityObject, isShareComponent);
 
             this.target = entityObject;
+        }
+
+        public addToComponentContainer(){
+            var container:ActionComponentContainer = ActionComponentContainer.getInstance();
 
             if(!container.hasChild(this)){
                 container.addChild(this);

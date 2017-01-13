@@ -17,15 +17,13 @@ module wd {
 
         public abstract update(elapsed:number):void;
 
-        @require(function(entityObject:GameObject){
+        @require(function(){
             it("SpacePartition component should add to GameObject", () => {
-                expect(entityObject).instanceOf(GameObject);
-            });
+                expect(this.entityObject).instanceOf(GameObject);
+            }, this);
         })
-        public addToObject(entityObject:GameObject, isShareComponent:boolean = false){
+        public addToComponentContainer(){
             var container:SpacePartitionComponentContainer = SpacePartitionComponentContainer.getInstance();
-
-            super.addToObject(entityObject, isShareComponent);
 
             if(!container.hasChild(this)){
                 container.addChild(this);

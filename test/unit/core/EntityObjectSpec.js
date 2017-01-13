@@ -4,6 +4,13 @@ describe("EntityObject", function() {
     var EntityObject = null;
     var Vector3 = wd.Vector3;
 
+    function createEntityObject() {
+        var obj = new EntityObject();
+        obj.addComponent(wd.ThreeDTransform.create());
+
+        return obj;
+    }
+
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
         EntityObject = wd.EntityObject;
@@ -11,6 +18,7 @@ describe("EntityObject", function() {
     });
     afterEach(function () {
         sandbox.restore();
+        testTool.clearInstance(sandbox);
     });
 
     describe("initComponent", function(){
@@ -239,6 +247,82 @@ describe("EntityObject", function() {
         });
     });
 
+    describe("addChild", function(){
+        beforeEach(function(){
+        });
+
+        describe("test component container", function(){
+            beforeEach(function(){
+            });
+
+            it("not remove child's components from corresponding component container", function () {
+                var child1 = createEntityObject();
+
+                var action = wd.DelayTime.create(100);
+                child1.addComponent(action);
+
+                var parent1 = new EntityObject();
+                var parent2 = new EntityObject();
+
+                parent1.addChild(child1);
+                parent2.addChild(child1);
+
+                expect(wd.ActionComponentContainer.getInstance().list.getCount()).toEqual(1);
+                expect(wd.ActionComponentContainer.getInstance().hasChild(action)).toBeTruthy();
+            });
+            it("add child's components to corresponding component container if the container not contain", function(){
+                var child1 = createEntityObject();
+
+                var action = wd.DelayTime.create(100);
+                child1.addComponent(action);
+
+                var parent1 = new EntityObject();
+                var parent2 = new EntityObject();
+
+                parent1.addChild(child1);
+
+
+                parent1.removeChild(child1, true);
+
+
+                parent2.addChild(child1);
+
+                expect(wd.ActionComponentContainer.getInstance().list.getCount()).toEqual(1);
+                expect(wd.ActionComponentContainer.getInstance().hasChild(action)).toBeTruthy();
+            });
+        });
+
+
+        //todo test more
+    });
+
+    describe("removeChild", function(){
+        var director;
+
+        beforeEach(function(){
+            sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+
+            director = wd.Director.getInstance();
+
+            director.scene.addChild(testTool.createCamera());
+        });
+
+        it("remove child", function(){
+            var child1 = createEntityObject();
+
+            entityObject.addChildren(child1);
+            entityObject.name = "entityObject";
+
+            director.scene.addChild(entityObject);
+
+            director._init();
+
+            entityObject.removeChild(child1);
+
+            expect(entityObject.getAllChildren().getCount()).toEqual(0);
+        });
+    });
+
     describe("init", function(){
         beforeEach(function(){
 
@@ -304,3 +388,4 @@ describe("EntityObject", function() {
         //todo test more
     });
 });
+

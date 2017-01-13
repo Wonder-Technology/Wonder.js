@@ -34,7 +34,7 @@
 
         // 'test/unit/**/action/*',
         // 'test/unit/**/command/*',
-        // 'test/unit/**/EntityObjectSpec*',
+        'test/unit/**/EntityObjectSpec*',
         // 'test/unit/**/SceneDispatcherSpec*',
         // 'test/unit/**/cloneSpec*',
 
@@ -163,7 +163,7 @@
         //'test/unit/renderer/*ShadowMap_*Spec.js',
         //
         // 'test/unit/**/instance/**',
-        'test/unit/**/instanceAnima*',
+        // 'test/unit/**/instanceAnima*',
 
         // 'test/unit/**/instanceBasic*',
 
@@ -252,10 +252,10 @@
 
         // 'test/unit/**/textureArticulated*',
         // 'test/unit/**/transformArticulated*',
-        'test/unit/**/skin*',
-        'test/unit/**/*animation*',
-        'test/unit/component/**/*Animation*.js',
-        'test/unit/component/**/morphAnimation*.js',
+        // 'test/unit/**/skin*',
+        // 'test/unit/**/*animation*',
+        // 'test/unit/component/**/*Animation*.js',
+        // 'test/unit/component/**/morphAnimation*.js',
         //
         //'test/unit/**/GLTFParserSpec*',
         //'test/unit/**/GLTFAssemblerSpec*',
@@ -354,7 +354,7 @@
         //'test/unit/**/physics/**/bounce*',
         //'test/unit/**/physics/**/constraint*',
         //'test/unit/**/physics/**/compound*',
-        // 'test/unit/**/GameObjectSpec.js',
+        'test/unit/**/GameObjectSpec.js',
         //'test/unit/**/*Shape*.js',
         // 'test/unit/**/Arcball*',
         //'test/unit/**/FlyCameraController*',

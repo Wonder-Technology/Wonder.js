@@ -34,6 +34,12 @@ module wd{
                 this.entityObject.removeComponent(this);
             }
             this.entityObject = entityObject;
+
+            this.addToComponentContainer();
+        }
+
+        @virtual
+        public addToComponentContainer(){
         }
 
         @virtual

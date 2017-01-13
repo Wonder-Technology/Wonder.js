@@ -4,13 +4,13 @@ module wd {
         public update(elapsed:number){
         }
 
-        @require(function(entityObject:GameObject){
-            expect(entityObject).instanceOf(GameObject);
+        @require(function(){
+            it("ThreeDUI component should add to GameObject", () => {
+                expect(this.entityObject).instanceOf(GameObject);
+            }, this);
         })
-        public addToObject(entityObject:GameObject, isShareComponent:boolean = false){
+        public addToComponentContainer(){
             var container:ThreeDUIComponentContainer = ThreeDUIComponentContainer.getInstance();
-
-            super.addToObject(entityObject, isShareComponent);
 
             if(!container.hasChild(this)){
                 container.addChild(this);

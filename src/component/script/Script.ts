@@ -32,18 +32,18 @@ module wd{
         @cloneAttributeAsBasicType()
         public id:string = null;
 
-        @require(function(entityObject:EntityObject, isShareComponent:boolean = false){
+        @require(function(){
             it("script should be loaded", () => {
                 expect(LoaderManager.getInstance().get(this.id)).exist;
             }, this);
         })
-        public addToObject(entityObject:EntityObject, isShareComponent:boolean = false){
-            super.addToObject(entityObject, isShareComponent);
+        public addToComponentContainer(){
+            var data:ScriptFileData = LoaderManager.getInstance().get(this.id);
 
-            let data:ScriptFileData = LoaderManager.getInstance().get(this.id);
-
-            GlobalScriptUtils.addScriptToEntityObject(entityObject, data);
+            GlobalScriptUtils.addScriptToEntityObject(this.entityObject, data);
         }
+
+        //todo removeFromComponentContainer?
     }
 
     export type ScriptFileData = {

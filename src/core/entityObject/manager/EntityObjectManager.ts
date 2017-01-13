@@ -29,10 +29,13 @@ module wd{
             return this._children.hasChild(child);
         }
 
-        public addChild(child:EntityObject, removeComponentsFromComponentContainer:boolean = true){
+        public addChild(child:EntityObject){
             if (child.parent) {
-                child.parent.removeChild(child, removeComponentsFromComponentContainer);
+                child.parent.removeChild(child, false);
             }
+
+            child.getAllChildren().forEach((c:EntityObject) => c.addAllComponentToComponentContainer());
+            child.addAllComponentToComponentContainer();
 
             child.parent = this._entityObject;
 
@@ -140,7 +143,6 @@ module wd{
         public removeChild(child:EntityObject, removeComponentsFromComponentContainer:boolean = true){
             child.onExit();
 
-            //todo test
             if(removeComponentsFromComponentContainer){
                 child.getAllChildren().forEach((c:EntityObject) => c.removeAllComponentFromComponentContainer());
                 child.removeAllComponentFromComponentContainer();

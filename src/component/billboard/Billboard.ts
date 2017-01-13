@@ -14,10 +14,8 @@ module wd{
         //todo test
         public directionEulerAngles:Vector3 = null;
 
-        public addToObject(entityObject:EntityObject, isShareComponent:boolean = false){
+        public addToComponentContainer(){
             var container:BillboardComponentContainer = BillboardComponentContainer.getInstance();
-
-            super.addToObject(entityObject, isShareComponent);
 
             if(!container.hasChild(this)){
                 container.addChild(this);

@@ -468,64 +468,56 @@ describe("GameObject", function() {
             director.scene.addChild(testTool.createCamera());
         });
 
-        it("remove child", function(){
-            var child1 = GameObject.create();
-
-            gameObject.addChildren(child1);
-            gameObject.name = "gameObject";
-
-            director.scene.addChild(gameObject);
-
-            director._init();
-
-            gameObject.removeChild(child1);
-
-            expect(gameObject.getAllChildren().getCount()).toEqual(0);
-        });
-        it("remove its and its all children's components", function(){
+        it("stop its and its all children's components(not update in component container)", function(){
             var child1 = GameObject.create();
             var child2 = GameObject.create();
 
-            var transform = wd.ThreeDTransform.create();
             var skin = wd.SkinSkeletonAnimation.create();
 
 
-            child1.addComponent(transform);
-            child1.addComponent(skin);
-
             var billboard = wd.Billboard.create();
-            var collider = new wd.Collider();
-            var lod = new wd.LOD();
-            var rigid = new wd.RigidBody();
-            var spacePartition = new wd.SpacePartition();
+            var collider = wd.BoxCollider.create();
+            var lod = wd.GameObjectLOD.create();
+            var rigid = wd.KinematicRigidBody.create();
+            var spacePartition = wd.Octree.create();
+
+
             var threeDUI = new wd.ThreeDUI();
+
             var twoDUI = new wd.TwoDUI();
 
             var script = wd.Script.create();
             sandbox.stub(wd.GlobalScriptUtils, "addScriptToEntityObject");
 
 
-            child2.addComponent(billboard);
-            child2.addComponent(script);
 
 
             child1.addChildren(child2);
 
-            gameObject.addChildren(child1);
-            gameObject.name = "gameObject";
-
-            director.scene.addChild(gameObject);
-
 
             var componentArr = [billboard, script, skin, lod, collider, rigid, spacePartition, threeDUI, twoDUI];
 
-            componentArr.forEach(function(component){
+            componentArr.forEach(function(component, index){
+                if(index <= 2){
+                    child1.addComponent(component);
+                }
+                else{
+                    child2.addComponent(component);
+                }
+
                 sandbox.stub(component, "init");
 
                 if(component.update){
                     sandbox.stub(component, "update");
                 }
             });
+
+
+            gameObject.addChildren(child1);
+            gameObject.name = "gameObject";
+
+            director.scene.addChild(gameObject);
+
 
 
 
@@ -547,3 +539,4 @@ describe("GameObject", function() {
         });
     });
 });
+

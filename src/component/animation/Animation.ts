@@ -22,10 +22,8 @@ module wd{
 
         public abstract play(...args):void;
 
-        public addToObject(entityObject:EntityObject, isShareComponent:boolean = false){
+        public addToComponentContainer(){
             var container:AnimationComponentContainer = AnimationComponentContainer.getInstance();
-
-            super.addToObject(entityObject, isShareComponent);
 
             if(!container.hasChild(this)){
                 container.addChild(this);

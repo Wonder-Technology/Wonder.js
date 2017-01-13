@@ -23,10 +23,8 @@ module wd {
             this.buildBoundingRegion();
         }
 
-        public addToObject(entityObject:EntityObject, isShareComponent:boolean = false){
+        public addToComponentContainer(){
             var container:CollisionComponentContainer = CollisionComponentContainer.getInstance();
-
-            super.addToObject(entityObject, isShareComponent);
 
             if(!container.hasChild(this)){
                 container.addChild(this);

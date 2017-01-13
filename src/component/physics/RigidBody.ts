@@ -53,16 +53,6 @@ module wd {
         @cloneAttributeAsCloneable()
         public pointToPointConstraintList:PointToPointConstraintList = PointToPointConstraintList.create(this);
 
-        public addToObject(entityObject:EntityObject, isShareComponent:boolean = false){
-            var container:PhysicsComponentContainer = PhysicsComponentContainer.getInstance();
-
-            super.addToObject(entityObject, isShareComponent);
-
-            if(!container.hasChild(this)){
-                container.addChild(this);
-            }
-        }
-
         public addConstraint(){
             var engineAdapter:IPhysicsEngineAdapter = this.getPhysicsComponentContainerAdapter();
 
@@ -85,9 +75,16 @@ module wd {
             }
         }
 
+        public addToComponentContainer(){
+            var container:PhysicsComponentContainer = PhysicsComponentContainer.getInstance();
+
+            if(!container.hasChild(this)){
+                container.addChild(this);
+            }
+        }
+
         public removeFromComponentContainer(){
             PhysicsComponentContainer.getInstance().removeChild(this);
-
         }
 
         public dispose(){

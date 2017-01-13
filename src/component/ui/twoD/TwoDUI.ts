@@ -41,13 +41,13 @@ module wd {
             this.context = this.getContext();
         }
 
-        @require(function(entityObject:UIObject){
-            expect(entityObject).instanceOf(UIObject);
+        @require(function(){
+            it("ThreeDUI component should add to UIObject", () => {
+                expect(this.entityObject).instanceOf(UIObject);
+            }, this);
         })
-        public addToObject(entityObject:UIObject, isShareComponent:boolean = false){
+        public addToComponentContainer(){
             var container:TwoDUIComponentContainer = TwoDUIComponentContainer.getInstance();
-
-            super.addToObject(entityObject, isShareComponent);
 
             if(!container.hasChild(this)){
                 container.addChild(this);

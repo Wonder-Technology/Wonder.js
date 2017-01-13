@@ -137,8 +137,8 @@ module wd {
             return this._entityObjectManager.hasChild(child);
         }
 
-        public addChild(child:EntityObject, removeComponentsFromComponentContainer:boolean = true):EntityObject {
-            this._entityObjectManager.addChild(child, removeComponentsFromComponentContainer);
+        public addChild(child:EntityObject):EntityObject {
+            this._entityObjectManager.addChild(child);
 
             return this;
         }
@@ -273,6 +273,10 @@ module wd {
             this.componentDirty = true;
 
             return this.componentManager.removeAllComponent();
+        }
+
+        public addAllComponentToComponentContainer(){
+            return this.componentManager.addAllComponentToComponentContainer();
         }
 
         public removeAllComponentFromComponentContainer(){

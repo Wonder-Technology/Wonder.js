@@ -156,6 +156,10 @@ module wd{
             return this;
         }
 
+        public addAllComponentToComponentContainer(){
+            this._components.forEach((component:Component) => component.addToComponentContainer());
+        }
+
         public removeAllComponentFromComponentContainer(){
             this._components.forEach((component:Component) => component.removeFromComponentContainer());
         }
