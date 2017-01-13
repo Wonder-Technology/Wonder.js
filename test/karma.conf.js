@@ -249,6 +249,8 @@
 
         //'test/unit/**/customShader*',
 
+        // 'test/unit/**/textureArticulated*',
+        // 'test/unit/**/transformArticulated*',
         'test/unit/**/skin*',
         'test/unit/**/*animation*',
         'test/unit/component/**/*Animation*.js',

@@ -219,7 +219,7 @@ describe("transform articulated animation", function () {
                     judgePos([3,1,0]);
                 });
 
-                describe("test when one loop pass more than 1 frames(this may occur when fps is too low so that each loop's time is big)", function () {
+                describe("test when one step(update) exceed more than 1 frames(this may occur when fps is too low so that each loop's time is big)", function () {
                     beforeEach(function(){
                         anim.data = wdCb.Hash.create({
                             "play": wdCb.Collection.create([
@@ -278,16 +278,16 @@ describe("transform articulated animation", function () {
                     });
                     it("test finish all keys", function () {
                         wd.AnimationComponentContainer.getInstance().update(11);
-                        wd.AnimationComponentContainer.getInstance().update(31);
+                        wd.AnimationComponentContainer.getInstance().update(30);
 
 
-                        judgePos([3.8,1,0]);
+                        judgePos([4,1,0]);
                     });
                     it("test2 finish all keys", function () {
-                        wd.AnimationComponentContainer.getInstance().update(31);
+                        wd.AnimationComponentContainer.getInstance().update(30);
 
 
-                        judgePos([3.8,1,0]);
+                        judgePos([4,1,0]);
                     });
                 });
             });
@@ -436,17 +436,17 @@ describe("transform articulated animation", function () {
                         wd.AnimationComponentContainer.getInstance().update(secondKeyTime + 2);
                         wd.AnimationComponentContainer.getInstance().update(secondKeyTime + 3);
 
-                        judgePos([0.6,0.3,0]);
-                        judgeScale([1,1.3,1.6]);
-                        judgeRotation([1.8,6.5,8.5]);
+                        judgePos([0.2,0.1,0]);
+                        judgeScale([1,1.1,1.2]);
+                        judgeRotation([0.5, 2.2, 2.8]);
                     });
                     it("test reach the next loop->second key", function () {
                         wd.AnimationComponentContainer.getInstance().update(secondKeyTime + 1);
                         wd.AnimationComponentContainer.getInstance().update(secondKeyTime + firstKeyTime + 1);
 
-                        judgePos([2.2,1,0]);
-                        judgeScale([1,2,3.2]);
-                        judgeRotation([10,20,32]);
+                        judgePos([2,1,0]);
+                        judgeScale([1,2,3]);
+                        judgeRotation([10,20,30]);
                     });
                     it("test finish next loop", function () {
                         wd.AnimationComponentContainer.getInstance().update(secondKeyTime + 1);
@@ -454,9 +454,9 @@ describe("transform articulated animation", function () {
 
                         wd.AnimationComponentContainer.getInstance().update(secondKeyTime + secondKeyTime + 1);
 
-                        judgePos([0,0,0]);
-                        judgeScale([1,1,1]);
-                        judgeRotation([0,0,0]);
+                        judgePos([3,1,0]);
+                        judgeScale([1,2,4]);
+                        judgeRotation([10,20,40]);
                     });
                 });
             });

@@ -206,7 +206,7 @@ module wd{
             });
         })
         private _getBeginElapsedTimeOfFirstFrameWhenFinishAllFrames(elapsed:number){
-            return MathUtils.maxFloorIntegralMultiple(elapsed, this.currentAnimData.getChild(this._frameCount - 1).time);
+            return elapsed;
         }
 
         private _isFinishAllFrames(){

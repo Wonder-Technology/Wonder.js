@@ -1406,6 +1406,47 @@ describe("skin skeleton animation", function () {
 
                 judgeJointMatrices(3, 5 + (15 - 13) / 10 * (10 - 5));
             });
+            it("the time of the second loop should equal to the first and the later loop", function () {
+                prepareForSimpleCompute();
+
+
+                director._init();
+
+                setProgram(material);
+
+                anim.play(0);
+
+
+                //one animation loop's time === 20
+
+
+                // begin first loop(the begin elapsed time === 3)
+
+                director._loopBody(3);
+
+                director._loopBody(23);
+
+                judgeJointMatrices(1, 10);
+
+
+
+                director._loopBody(24);
+
+                judgeJointMatrices(2, 0);
+
+
+                //begin second loop(the begin elapsed time === 24)
+
+
+                director._loopBody(40);
+
+                judgeJointMatrices(3, 8);
+
+
+                director._loopBody(41);
+                director._loopBody(44);
+                judgeJointMatrices(5, 10);
+            });
         });
     });
 });

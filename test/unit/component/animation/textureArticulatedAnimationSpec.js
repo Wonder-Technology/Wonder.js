@@ -1,4 +1,4 @@
-describe("articulated animation", function () {
+describe("texture articulated animation", function () {
     var sandbox = null;
 
     beforeEach(function () {
@@ -52,7 +52,7 @@ describe("articulated animation", function () {
 
                     describe("test finish all keys", function(){
                         beforeEach(function(){
-                            wd.AnimationComponentContainer.getInstance().update(firstKeyTime + 1);
+                            wd.AnimationComponentContainer.getInstance().update(firstKeyTime);
                         });
 
                         it("if just finish all keys, reach the end data", function () {
@@ -72,8 +72,8 @@ describe("articulated animation", function () {
                             judgeIsFirstFrameSourceRegion();
                         });
                         it("test exceed the next loop->first key", function () {
-                            wd.AnimationComponentContainer.getInstance().update(secondKeyTime + firstKeyTime / 3);
-                            wd.AnimationComponentContainer.getInstance().update(secondKeyTime + firstKeyTime + 1);
+                            wd.AnimationComponentContainer.getInstance().update(secondKeyTime + 1);
+                            wd.AnimationComponentContainer.getInstance().update(secondKeyTime + firstKeyTime + 2);
 
                             judgeIsSecondFrameSourceRegion();
                         });
@@ -81,7 +81,7 @@ describe("articulated animation", function () {
                             wd.AnimationComponentContainer.getInstance().update(secondKeyTime + 1);
                             wd.AnimationComponentContainer.getInstance().update(secondKeyTime + firstKeyTime + 1);
 
-                            wd.AnimationComponentContainer.getInstance().update(secondKeyTime + secondKeyTime + 1);
+                            wd.AnimationComponentContainer.getInstance().update(secondKeyTime + secondKeyTime + 2);
 
                             judgeIsFirstFrameSourceRegion();
                         });
