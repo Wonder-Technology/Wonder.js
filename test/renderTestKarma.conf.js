@@ -51,7 +51,7 @@
             'test/render/test/**/instance*',
             //'test/render/test/**/hard*',
             // 'test/render/test/**/proce*',
-            // 'test/render/test/**/animation*',
+            'test/render/test/**/animation*',
             //'test/render/test/**/shadow*',
             //'test/render/test/**/threeDUI*',
             // 'test/render/test/**/model*',

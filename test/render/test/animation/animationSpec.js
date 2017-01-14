@@ -548,11 +548,122 @@ describe("animation", function () {
             it("test frame1", function (done) {
                 tester.compareAt(1, "animation/animation_translate_rotate_scale_frame1.png", done);
             });
-            it("test frame1000", function (done) {
+            it("test frame30", function (done) {
                 tester.compareAt(
                     {
                         frameIndex:30,
                         partialCorrectImagePath:"animation/animation_translate_rotate_scale_frame30.png",
+                        done:done
+                    }
+                );
+            });
+        });
+
+        describe("test skinSkeleton animation", function(){
+            var tester;
+
+            function body(wrapper){
+                wrapper.load([
+                    {url: "../../asset/model/wd/cesiumMan/Cesium_Man.wd", id: "model"}
+                ])
+                    .do(initSample);
+
+                function initSample() {
+                    var director = wd.Director.getInstance();
+
+                    director.renderer.setClearColor(wd.Color.create("#aaaaff"));
+
+                    director.scene.addChildren(setModel());
+                    director.scene.addChild(createAmbientLight());
+                    director.scene.addChild(createDirectionLight(wd.Vector3.create(0, 500, 500)));
+                    director.scene.addChild(createCamera());
+
+                    director.start();
+                }
+
+                function setModel() {
+                    var models = wd.LoaderManager.getInstance().get("model").getChild("models");
+
+
+                    wd.Director.getInstance().scheduler.scheduleFrame(function(){
+                        models.forEach(function(model){
+
+
+                            if(model.hasComponent(wd.Animation)){
+                                model.getComponent(wd.Animation).play(0);
+                            }
+                            else {
+                                model.forEach(function (m) {
+                                    if (m.hasComponent(wd.SkinSkeletonAnimation)) {
+                                        m.getComponent(wd.SkinSkeletonAnimation).play(0);
+                                    }
+                                });
+                            }
+                        });
+                    }, 1);
+
+                    return models;
+                }
+
+                function createAmbientLight() {
+                    var ambientLightComponent = wd.AmbientLight.create();
+                    ambientLightComponent.color = wd.Color.create("rgb(30, 30, 30)");
+
+                    var ambientLight = wd.GameObject.create();
+                    ambientLight.addComponent(ambientLightComponent);
+
+                    return ambientLight;
+                }
+
+                function createDirectionLight(pos) {
+                    var directionLightComponent = wd.DirectionLight.create();
+                    directionLightComponent.color = wd.Color.create("#ffffff");
+                    directionLightComponent.intensity = 1;
+
+                    var directionLight = wd.GameObject.create();
+                    directionLight.addComponent(directionLightComponent);
+
+                    directionLight.transform.position = pos;
+
+                    return directionLight;
+                }
+
+                function createCamera() {
+                    var camera = wd.GameObject.create(),
+                        view = wd.Director.getInstance().view,
+                        cameraComponent = wd.PerspectiveCamera.create();
+
+                    cameraComponent.fovy = 60;
+                    cameraComponent.aspect = view.width / view.height;
+                    cameraComponent.near = 0.001;
+                    cameraComponent.far = 10000;
+
+                    var controller = wd.ArcballCameraController.create(cameraComponent);
+                    controller.distance = 5;
+
+                    camera.addComponent(controller);
+
+                    return camera;
+                }
+            }
+
+            beforeEach(function (done) {
+                tester = SceneTester.create(sandbox);
+
+                renderTestTool.prepareContext();
+
+                tester.execBody(body, done);
+            });
+
+            it("test frame1", function (done) {
+                tester.compareAt(1, "animation/animation_skinSkeleton_frame1.png", done);
+            });
+            it("test frame1000", function (done) {
+                tester.compareAt(
+                    {
+                        frameIndex:1000,
+                        step:200,
+                        partialCorrectImagePath:"animation/animation_skinSkeleton_frame1000.png",
                         done:done
                     }
                 );
