@@ -44,8 +44,21 @@ module wd {
             cmd.drawMode = geometry.drawMode;
 
             cmd.mMatrix = target.transform.localToWorldMatrix;
-            cmd.vMatrix = cameraComponent.worldToCameraMatrix;
-            cmd.pMatrix = cameraComponent.pMatrix;
+
+
+            if(target.data && target.data.vMatrix) {
+                cmd.vMatrix = target.data.vMatrix;
+            }
+            else{
+                cmd.vMatrix = cameraComponent.worldToCameraMatrix;
+            }
+
+            if(target.data && target.data.pMatrix) {
+                cmd.pMatrix = target.data.pMatrix;
+            }
+            else{
+                cmd.pMatrix = cameraComponent.pMatrix;
+            }
 
             cmd.material = material;
 

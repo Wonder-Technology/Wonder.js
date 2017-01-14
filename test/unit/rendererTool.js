@@ -49,6 +49,7 @@ var rendererTool = {
         var quadCmd = new wd.QuadCommand();
         quadCmd.draw = sandbox.stub();
 
+        quadCmd.target = wd.GameObject.create();
 
         vertices = [1,2,3];
         //texCoords = [0.1,0.2];

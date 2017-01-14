@@ -18,9 +18,6 @@ describe("shaderLibSpec", function () {
         rendererTool.setFakeGeometry(material)
 
 
-        sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
-
-
 
 
         var cmd = rendererTool.createQuadCommand(sandbox);

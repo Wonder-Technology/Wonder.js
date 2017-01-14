@@ -9,28 +9,8 @@ module wd{
         public type:string = "common";
 
         public sendShaderVariables(program:Program, cmd:QuadCommand, material:EngineMaterial){
-            var vMatrix = null,
-                pMatrix = null;
-
-            var entityObject = cmd.target;
-
-            if(entityObject.data && entityObject.data.vMatrix){
-                vMatrix = entityObject.data.vMatrix;
-            }
-            else{
-                vMatrix = cmd.vMatrix;
-            }
-
-            if(entityObject.data && entityObject.data.pMatrix){
-                pMatrix = entityObject.data.pMatrix;
-            }
-            else{
-                pMatrix = cmd.pMatrix;
-            }
-
-            this.sendUniformData(program, "u_vMatrix", vMatrix);
-
-            this.sendUniformData(program, "u_pMatrix", pMatrix);
+            this.sendUniformData(program, "u_vMatrix", cmd.vMatrix);
+            this.sendUniformData(program, "u_pMatrix", cmd.pMatrix);
         }
 
         public setShaderDefinition(cmd:QuadCommand, material:EngineMaterial){

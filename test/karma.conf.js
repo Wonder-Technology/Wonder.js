@@ -195,9 +195,10 @@
         // 'test/unit/**/terrainLayer*',
         // 'test/unit/**/terrainMix*',
 
-        //'test/unit/**/shaderLibSpec*',
+        // 'test/unit/**/shaderLibSpec*',
         // 'test/unit/**/*Shader*',
-        //'test/unit/**/ShaderLib*',
+        // 'test/unit/**/ShaderLib*',
+        'test/unit/**/CommonShaderLib*',
         //
         // 'test/unit/**/envMap*',
         //
@@ -312,9 +313,9 @@
         //
         //'test/unit/**/ImageSpec*',
         //
-        'test/unit/**/ThreeDTransformSpec.js',
-        'test/unit/**/RectTransformSpec*',
-        'test/unit/**/TransformSpec*',
+        // 'test/unit/**/ThreeDTransformSpec.js',
+        // 'test/unit/**/RectTransformSpec*',
+        // 'test/unit/**/TransformSpec*',
         //'test/unit/**/component/**',
         //'test/unit/**/PanelSpec*',
         //
