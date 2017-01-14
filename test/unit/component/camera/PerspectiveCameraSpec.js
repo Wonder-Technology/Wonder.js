@@ -20,7 +20,7 @@ describe("PerspectiveCamera", function() {
         beforeEach(function(){
         });
 
-        it("shallow clone fovy,aspect,far,near", function () {
+        it("basic clone fovy,aspect,far,near", function () {
             var fovy = 1,
                 aspect = 0.5,
                 far = 1000,
@@ -41,7 +41,7 @@ describe("PerspectiveCamera", function() {
             expect(result.far).toEqual(far);
             expect(result.near).toEqual(near);
         });
-        it("clone pMatrix", function () {
+        it("clone pMatrix,_isUserSpecifyThePMatrix", function () {
             var pMatrix = wd.Matrix4.create().setTranslate(10,20,30);
             var origin = pMatrix.clone();
 
@@ -50,6 +50,8 @@ describe("PerspectiveCamera", function() {
             })
 
             var result = camera.clone();
+
+            expect(result._isUserSpecifyThePMatrix).toBeTruthy();
 
             camera.pMatrix.setTranslate(50,50,50);
 

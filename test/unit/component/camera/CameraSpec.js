@@ -31,6 +31,7 @@ describe("Camera", function() {
 
         expect(camera.cameraToWorldMatrix).toEqual(matrix);
     });
+    
     describe("worldToCameraMatrix", function () {
         it("return cameraToWorldMatrix.invert()", function () {
             var matrix = {};
@@ -52,6 +53,14 @@ describe("Camera", function() {
             camera.updateProjectionMatrix = sandbox.stub();
         });
 
+        it("if pMatrix is setted, not update", function () {
+            camera.dirty = true;
+            camera.pMatrix = wd.Matrix4.create();
+
+            camera.update();
+
+            expect(camera.updateProjectionMatrix).not.toCalled();
+        });
         it("if not dirty, do nothing", function(){
             camera.dirty = false;
 

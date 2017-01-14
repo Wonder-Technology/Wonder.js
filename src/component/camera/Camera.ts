@@ -33,15 +33,23 @@ module wd{
             this.dirty = true;
         }
 
-
+        private _pMatrix:Matrix4 = Matrix4.create();
         @cloneAttributeAsCloneable()
-        public pMatrix:Matrix4 = Matrix4.create();
+        get pMatrix(){
+            return this._pMatrix;
+        }
+        set pMatrix(pMatrix:Matrix4){
+            this._isUserSpecifyThePMatrix = true;
+
+            this._pMatrix = pMatrix;
+        }
+
         public entityObject:GameObject = null;
-        @cloneAttributeAsBasicType()
-        public isUserSpecifyThePMatrix:boolean = false;
 
         protected dirty:boolean = false;
 
+        @cloneAttributeAsBasicType()
+        private _isUserSpecifyThePMatrix:boolean = false;
 
         /**
          * @name convertScreenToWorld
@@ -85,7 +93,7 @@ module wd{
         }
 
         private _updateProjectionMatrix(){
-            if(this.isUserSpecifyThePMatrix){
+            if(this._isUserSpecifyThePMatrix){
                 return;
             }
 

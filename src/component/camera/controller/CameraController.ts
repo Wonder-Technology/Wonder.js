@@ -25,7 +25,6 @@ module wd {
             return this.camera.pMatrix;
         }
         set pMatrix(pMatrix:Matrix4){
-            this.camera.isUserSpecifyThePMatrix = true;
             this.camera.pMatrix = pMatrix;
         }
 

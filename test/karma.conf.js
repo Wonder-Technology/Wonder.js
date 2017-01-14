@@ -240,7 +240,7 @@
         // 'test/unit/**/lod/*',
 
         //'test/unit/**/CameraController*',
-        // 'test/unit/**/camera/**',
+        'test/unit/**/camera/**',
 
 
         // 'test/unit/**/*GeometryData*',
@@ -252,7 +252,7 @@
 
         // 'test/unit/**/textureArticulated*',
         // 'test/unit/**/transformArticulated*',
-        'test/unit/**/skin*/*',
+        // 'test/unit/**/skin*/*',
         // 'test/unit/**/*animation*',
         // 'test/unit/component/**/*Animation*.js',
         // 'test/unit/component/**/morphAnimation*.js',
@@ -324,7 +324,7 @@
         // 'test/unit/**/GameObjectSceneSpec*',
         //
         //'test/unit/**/MathUtils*',
-        //'test/unit/**/rayPicking*',
+        'test/unit/**/rayPicking*',
         //'test/unit/**/AABBShapeSpec*',
         //'test/unit/**/SphereShapeSpec*',
         // 'test/unit/**/collider/**',

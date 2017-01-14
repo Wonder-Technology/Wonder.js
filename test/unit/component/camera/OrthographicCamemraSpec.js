@@ -20,7 +20,7 @@ describe("OrthographicCamera", function() {
         beforeEach(function(){
         });
 
-        it("shallow clone left,right,top,bottom,far,near", function () {
+        it("basic clone left,right,top,bottom,far,near", function () {
             var left = 1,
                 right = 10,
                 top = 10,
