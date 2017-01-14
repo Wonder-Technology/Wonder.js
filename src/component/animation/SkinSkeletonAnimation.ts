@@ -198,7 +198,6 @@ module wd{
                 boneMatrixMap = this.boneMatrixMap,
                 jointMatrices = this.jointMatrices;
 
-
             //todo optimize:reduce matrix mul count
             for(let jointName of this.jointNames){
                 let index = this._jointOrderMap.getChild(jointName),
@@ -211,26 +210,9 @@ module wd{
                     mat = inverseBindMatrices[index].clone();
                 }
 
-                //todo fix yuanbao!
-                if(jointName === "Object_91_pasted__joint12") {
-                    mat = Matrix4.create().translate(28,-3,-65);
-                    mat.scale(0.5,0.5,0.5)
-                }
-
-
-
-                // if(jointName === "Object_91_pasted__joint12") {
-                //     var a = 1;
-                //     mat = Matrix4.create()
-                //         .applyMatrix(inverseNodeToRootMatrix)
-                //         .cloneToArray(jointMatrices, len);
-                // }
-                // else{
                 mat.applyMatrix(boneMatrixMap.getChild(jointName).globalMatrix)
                     .applyMatrix(inverseNodeToRootMatrix)
                     .cloneToArray(jointMatrices, len);
-                // }
-
 
                 len += 16;
             }

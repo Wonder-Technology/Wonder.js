@@ -82,20 +82,9 @@ module wd{
 
                 switch (target.target){
                     case EKeyFrameAnimationTarget.TRANSLATION:
-                        //todo clean
-                        // if(self.jointName === "Object_91_pasted__joint12"){
-                        //     position = Vector3.create(1.6, 6, 35);
-                        //     break;
-                        // }
                         position = position.clone().lerp(startFrameData, endFrameData, interpolation);
                         break;
                     case EKeyFrameAnimationTarget.ROTATION:
-                        //todo fix
-                        if(self.jointName === "Object_91_pasted__joint12"){
-                            rotation = Quaternion.create().setFromEulerAngles(Vector3.create(0,90,0));
-                            break;
-                        }
-
                         rotation = rotation.clone().slerp(startFrameData, endFrameData, interpolation);
                         break;
                     case EKeyFrameAnimationTarget.SCALE:
@@ -105,29 +94,6 @@ module wd{
                         break;
                 }
             });
-
-            // if(self.jointName === "Object_91_pasted__joint12") {
-            //     this.currentUpdatedTransformMatrix = Matrix4.create(new Float32Array([
-            //         2.095269,
-            //         0,
-            //         0,
-            //         0,
-            //         0,
-            //         2.143259,
-            //         0,
-            //         0,
-            //         0,
-            //         0,
-            //         2.095269,
-            //         0,
-            //         1.616112,
-            //         6.098962,
-            //         35.949429,
-            //         1
-            //     ]))
-            //     return;
-            // }
-
 
             this.currentUpdatedTransformMatrix.setTRS(position, rotation, scale);
         }
