@@ -41,7 +41,7 @@ describe("MD2ToWD", function () {
         judge(testFile, filePath1, function (json) {
             expect(json.asset).toEqual({
                 version: "0.1.0",
-                generator: "wdJsMD2ToWDConverter"
+                generator: "WonderJsMD2ToWDConverter"
             });
         }, done);
     });

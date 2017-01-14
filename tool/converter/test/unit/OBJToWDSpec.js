@@ -48,7 +48,7 @@ describe("OBJToWD", function () {
         judge(testFile1, filePath1, function (json) {
             expect(json.asset).toEqual({
                 version: "0.1.0",
-                generator: "wdJsOBJToWDConverter"
+                generator: "WonderJsOBJToWDConverter"
             });
         }, done);
     });

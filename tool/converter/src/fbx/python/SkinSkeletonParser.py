@@ -95,7 +95,6 @@ class SkinSkeletonParser:
     def parse(self, nodeData, fbxAllNodes):
         roots = []
 
-        nodeData["skeletons"] = roots
         nodeData["skin"] = self._currentSkinName
 
         lGLTFSkin = self._currentSkinData
@@ -108,7 +107,7 @@ class SkinSkeletonParser:
             lLink = lCluster.GetLink()
             lParent = lLink
             lRootFound = False
-            # if lParent == None or not lParent.GetName() in lGLTFSkin["joints"]:
+            # if lParent == None or not lParent.GetName() in lGLTFSkin["jointNames"]:
             #     if not lParent.GetName() in roots:
             #         roots.append(lLink.GetName())
             while not lParent == None:
@@ -127,14 +126,26 @@ class SkinSkeletonParser:
 
             if lRootFound:
                 if not self._getJointName(lParent) in roots:
-                    roots.append(self._getJointName(lParent))
+                    # roots.append(self._getJointName(lParent))
+                    roots.append(lParent)
             else:
                 # if IsSkeletonRoot not works well, try this way:
                 # which do not have a parent or its parent is not in skin
                 lParent = lLink.GetParent()
-                if lParent == None or not self._getJointName(lParent) in lGLTFSkin["joints"]:
-                    if not self._getJointName(lLink) in roots:
-                        roots.append(self._getJointName(lLink))
+
+                if lParent == None or not self._getJointName(lParent) in lGLTFSkin["jointNames"]:
+                    # if not self._getJointName(lLink) in roots:
+                    if not lLink in roots:
+                        # roots.append(self._getJointName(lLink))
+                        roots.append(lLink)
+
+
+        if len(roots) > 1:
+            roots = self._onlyRemainTopSkeleton(roots)
+
+
+        roots = self._convertToJointName(roots)
+
 
         # TODO support multi root skeletons
         if len(roots) > 1:
@@ -143,6 +154,7 @@ class SkinSkeletonParser:
         # lRootNodeTransform = lRootNode.GetParent().EvaluateGlobalTransform()
 
 
+        nodeData["skeletons"] = roots
 
 
         lClusterGlobalInitMatrix = FbxAMatrix()
@@ -187,3 +199,40 @@ class SkinSkeletonParser:
 
         return result
 
+    def _onlyRemainTopSkeleton(self, roots):
+        def _isParentJointName(link, targetJointName):
+            parent = link.GetParent()
+
+            if not parent:
+                return False
+
+            if self._getJointName(parent) == targetJointName:
+                return True
+
+            return _isParentJointName(parent, targetJointName)
+
+        results = []
+
+        for link1 in roots:
+            isLink2ParentOfLink1 = False
+
+            for link2 in roots:
+                if link2 == link1:
+                    continue
+
+                if _isParentJointName(link1, self._getJointName(link2)):
+                    isLink2ParentOfLink1 = True
+                    break
+
+            if not isLink2ParentOfLink1:
+                results.append(link1)
+
+        return results
+
+    def _convertToJointName(self, roots):
+        results = []
+
+        for link in roots:
+            results.append(self._getJointName(link))
+
+        return results

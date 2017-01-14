@@ -36,7 +36,7 @@ export class OBJToWD extends SingleModelConverter{
         return obj;
     }
 
-    public name:string = "wdJsOBJToWDConverter";
+    public name:string = "WonderJsOBJToWDConverter";
 
     private _objectsConverter:any = ObjectsConverter.create();
     private _materialsConverter:any = MaterialsConverter.create();

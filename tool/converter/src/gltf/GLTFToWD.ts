@@ -44,7 +44,7 @@ export class GLTFToWD {
         this.version = version;
     }
 
-    public name: string = "wdJsGLTFToWDConverter";
+    public name: string = "WonderJsGLTFToWDConverter";
     public version: string = null;
 
     @ensure(function (stream: wdFrp.Stream) {

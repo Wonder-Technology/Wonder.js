@@ -28,7 +28,7 @@ export class MD2ToWD extends SingleModelConverter{
         return obj;
     }
 
-    public name:string = "wdJsMD2ToWDConverter";
+    public name:string = "WonderJsMD2ToWDConverter";
 
     private _objectsConverter:any = ObjectsConverter.create();
 

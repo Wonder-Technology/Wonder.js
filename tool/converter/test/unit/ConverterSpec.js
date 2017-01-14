@@ -62,7 +62,7 @@ describe("Converter", function () {
 
                     expect(resultJson.asset).toEqual({
                         version: '0.8.0',
-                        generator: 'wdJsOBJToWDConverter'
+                        generator: 'WonderJsOBJToWDConverter'
                     });
 
                     expect(fs.existsSync(path.resolve(path.dirname(resultFilePath), "1.jpg"))).toBeTruthy();
