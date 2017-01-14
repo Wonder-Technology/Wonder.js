@@ -11,9 +11,6 @@ module wd{
         @cloneAttributeAsBasicType()
         public mode:EBillboardMode = EBillboardMode.ALL;
 
-        //todo test
-        public directionEulerAngles:Vector3 = null;
-
         public addToComponentContainer(){
             var container:BillboardComponentContainer = BillboardComponentContainer.getInstance();
 
@@ -42,10 +39,6 @@ module wd{
 
                 if (this.mode === EBillboardMode.ALL && isRotateAroundYAxis) {
                     this._rotateLocalByXAxis(camera, objToCamProj, cameraPos, objPos, objTransform);
-                }
-
-                if(this.directionEulerAngles !== null){
-                    objTransform.rotateLocal(this.directionEulerAngles);
                 }
             }
         }
@@ -134,4 +127,3 @@ module wd{
         }
     }
 }
-
