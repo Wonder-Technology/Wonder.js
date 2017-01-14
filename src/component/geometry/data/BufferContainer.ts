@@ -82,6 +82,9 @@ module wd {
 
         }
 
+        public init(){
+        }
+
         public dispose(){
             this.container.forEach((buffer:Buffer) => {
                 buffer.dispose();

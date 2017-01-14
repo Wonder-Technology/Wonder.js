@@ -20,21 +20,17 @@ describe("OrthographicCamera", function() {
         beforeEach(function(){
         });
 
-        it("basic clone left,right,top,bottom,far,near", function () {
+        it("clone left,right,top,bottom", function () {
             var left = 1,
                 right = 10,
                 top = 10,
-                bottom = -10,
-                far = 1000,
-                near = 0.1;
+                bottom = -10;
 
             cloneTool.extend(camera, {
                 left:left,
                 right:right,
                 top:top,
-                bottom:bottom,
-                far:far,
-                near:near
+                bottom:bottom
             })
 
             var result = camera.clone();
@@ -44,23 +40,6 @@ describe("OrthographicCamera", function() {
             expect(result.right).toEqual(right);
             expect(result.top).toEqual(top);
             expect(result.bottom).toEqual(bottom);
-            expect(result.far).toEqual(far);
-            expect(result.near).toEqual(near);
-        });
-        it("clone pMatrix", function () {
-            var pMatrix = wd.Matrix4.create().setTranslate(10,20,30);
-            var origin = pMatrix.clone();
-
-            cloneTool.extend(camera, {
-                pMatrix:pMatrix
-            })
-
-            var result = camera.clone();
-
-            camera.pMatrix.setTranslate(50,50,50);
-
-            expect(result === camera).toBeFalsy();
-            expect(testTool.getValues(result.pMatrix)).toEqual(testTool.getValues(origin));
         });
     });
 });

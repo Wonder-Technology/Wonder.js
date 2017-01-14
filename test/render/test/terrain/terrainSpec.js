@@ -254,7 +254,7 @@ describe("terrain", function () {
                         frameIndex:1,
                         partialCorrectImagePath:"terrain/terrain_layerTexture.png",
                         done:done,
-                        correctRate:0.94
+                        correctRate:0.93
                     }
                 );
             });

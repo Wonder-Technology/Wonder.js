@@ -41,7 +41,7 @@ module wd {
         }
 
         protected createCamera(camera:GameObject):GameObject{
-            var mirrorCameraComponent = null,
+            var mirrorCameraComponent:PerspectiveCamera = null,
                 plane = null,
                 cameraComponent:CameraController = camera.getComponent<CameraController>(CameraController),
                 mirrorCameraViewMatrix = null,
@@ -99,4 +99,3 @@ module wd {
         }
     }
 }
-

@@ -174,4 +174,3 @@ module wd{
         colors?:Array<number>;
     };
 }
-

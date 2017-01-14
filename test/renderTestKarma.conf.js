@@ -33,7 +33,7 @@
             'test/render/helper/*.js',
 
 
-            // 'test/render/test/**',
+            'test/render/test/**',
 
 
 
@@ -48,16 +48,16 @@
             // 'test/render/test/**/clone*',
             // 'test/render/test/lod/*',
 
-            'test/render/test/**/instance*',
+            // 'test/render/test/**/instance*',
             //'test/render/test/**/hard*',
             // 'test/render/test/**/proce*',
-            'test/render/test/**/animation*',
+            // 'test/render/test/**/animation*',
             //'test/render/test/**/shadow*',
             //'test/render/test/**/threeDUI*',
             // 'test/render/test/**/model*',
             // 'test/render/test/**/light*',
             //'test/render/test/**/texture*',
-            //'test/render/test/**/water*',
+            // 'test/render/test/**/water*',
 
             {pattern: 'dist/wd.all.debug.js.map', watched: false, included: false, served: true, nocache:true},
 

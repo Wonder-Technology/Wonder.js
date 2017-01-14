@@ -603,7 +603,12 @@ describe("light", function () {
             });
 
             it("test", function (done) {
-                tester.compareAt(1, "light/light_mirror.png", done);
+                 tester.compareAt({
+                     frameIndex: 1,
+                     partialCorrectImagePath: "light/light_mirror.png",
+                     correctRate: 0.97,
+                     done: done
+                 });
             });
         });
 

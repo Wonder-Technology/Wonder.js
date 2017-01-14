@@ -33,7 +33,13 @@ describe("Camera", function() {
     });
     
     describe("worldToCameraMatrix", function () {
-        it("return cameraToWorldMatrix.invert()", function () {
+        it("if already set worldToCameraMatrix, just return it", function () {
+            var matrix = {};
+            camera.worldToCameraMatrix = matrix;
+
+            expect(camera.worldToCameraMatrix).toEqual(matrix);
+        });
+        it("else, return cameraToWorldMatrix.invert()", function () {
             var matrix = {};
             var cameraToWorldMatrix = {
                 invert:sandbox.stub().returns(matrix)

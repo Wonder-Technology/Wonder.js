@@ -51,28 +51,6 @@ describe("BufferContainer", function() {
 
             expect(container.geometryData.dispose).toCalledOnce();
         });
-        it("unbind material_change event", function () {
-            container.entityObject = wd.GameObject.create();
-            container.init();
-            sandbox.stub(container, "removeCache");
-
-            wd.EventManager.trigger(container.entityObject, wd.CustomEvent.create(wd.EEngineEvent.MATERIAL_CHANGE));
-
-            expect(container.removeCache).toCalledOnce();
-
-
-
-
-            container.dispose();
-
-
-
-
-
-            wd.EventManager.trigger(container.entityObject, wd.CustomEvent.create(wd.EEngineEvent.MATERIAL_CHANGE));
-
-            expect(container.removeCache).not.toCalledTwice();
-        });
     });
 });
 

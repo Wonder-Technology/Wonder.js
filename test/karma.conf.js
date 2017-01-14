@@ -27,7 +27,7 @@
 
         'test/unit/**/BufferWriter.js',
 
-        'test/unit/**',
+        // 'test/unit/**',
 
 
         // 'test/unit/**/GPUDetector*',
@@ -241,7 +241,7 @@
         // 'test/unit/**/lod/*',
 
         //'test/unit/**/CameraController*',
-        // 'test/unit/**/camera/**',
+        'test/unit/**/camera/**',
 
 
         // 'test/unit/**/*GeometryData*',
