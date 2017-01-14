@@ -240,7 +240,7 @@
         // 'test/unit/**/lod/*',
 
         //'test/unit/**/CameraController*',
-        'test/unit/**/camera/**',
+        // 'test/unit/**/camera/**',
 
 
         // 'test/unit/**/*GeometryData*',
@@ -312,9 +312,9 @@
         //
         //'test/unit/**/ImageSpec*',
         //
-        //'test/unit/**/ThreeDTransformSpec.js',
-        // 'test/unit/**/RectTransformSpec*',
-        //'test/unit/**/TransformSpec*',
+        'test/unit/**/ThreeDTransformSpec.js',
+        'test/unit/**/RectTransformSpec*',
+        'test/unit/**/TransformSpec*',
         //'test/unit/**/component/**',
         //'test/unit/**/PanelSpec*',
         //
@@ -324,7 +324,7 @@
         // 'test/unit/**/GameObjectSceneSpec*',
         //
         //'test/unit/**/MathUtils*',
-        'test/unit/**/rayPicking*',
+        // 'test/unit/**/rayPicking*',
         //'test/unit/**/AABBShapeSpec*',
         //'test/unit/**/SphereShapeSpec*',
         // 'test/unit/**/collider/**',

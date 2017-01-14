@@ -138,6 +138,83 @@ describe("ThreeDTransform", function(){
         });
     });
 
+    describe("set localToWorldMatrix", function(){
+        var Matrix4 = wd.Matrix4;
+        var tra2;
+        var mat;
+
+        beforeEach(function(){
+            tra2 = Transform.create();
+
+            tra1.addChild(tra2);
+
+            mat = Matrix4.create().translate(1,2,3);
+        });
+        
+        it("if set localToWorldMatrix, get localToWorldMatrix should return the setted one", function(){
+            tra1.localToWorldMatrix = mat;
+
+            expect(tra1.localToWorldMatrix).toEqual(mat);
+        });
+        it("clear its and its children' cache", function () {
+            sandbox.stub(tra1, "clearCache");
+            sandbox.stub(tra2, "clearCache");
+
+            tra1.localToWorldMatrix = mat;
+
+            expect(tra1.clearCache).toCalledOnce();
+            expect(tra2.clearCache).toCalledOnce();
+        });
+        it("set its and its children's isTranslate,isScale,isRotate = true", function () {
+            tra1.localToWorldMatrix = mat;
+
+            expect(tra1.isTranslate).toBeTruthy();
+            expect(tra2.isTranslate).toBeTruthy();
+        });
+        it("set its and its children's dirtyLocal = true", function () {
+            tra1.localToWorldMatrix = mat;
+
+            expect(tra1.dirtyLocal).toBeTruthy();
+            expect(tra2.dirtyLocal).toBeTruthy();
+        });
+        it("trigger EEngineEvent.TRANSFORM_TRANSLATE,TRANSFORM_ROTATE,TRANSFORM_SCALE event", function () {
+            var entityObject1 = wd.GameObject.create();
+            tra1.entityObject = entityObject1;
+
+            var entityObject2 = wd.GameObject.create();
+            tra2.entityObject = entityObject2;
+
+            var sum1 = 0,
+                sum2 = 0;
+
+            wdFrp.fromArray([
+                wd.EventManager.fromEvent(entityObject1, wd.EEngineEvent.TRANSFORM_TRANSLATE),
+                wd.EventManager.fromEvent(entityObject1, wd.EEngineEvent.TRANSFORM_ROTATE),
+                wd.EventManager.fromEvent(entityObject1, wd.EEngineEvent.TRANSFORM_SCALE)
+            ]).subscribe(function(){
+                    sum1++;
+                });
+
+
+            wdFrp.fromArray([
+                wd.EventManager.fromEvent(entityObject2, wd.EEngineEvent.TRANSFORM_TRANSLATE),
+                wd.EventManager.fromEvent(entityObject2, wd.EEngineEvent.TRANSFORM_ROTATE),
+                wd.EventManager.fromEvent(entityObject2, wd.EEngineEvent.TRANSFORM_SCALE)
+            ]).subscribe(function(){
+                sum2++;
+            });
+
+
+
+
+            tra1.localToWorldMatrix = mat;
+
+
+            expect(sum1).toEqual(3);
+            expect(sum2).toEqual(3);
+        });
+    });
+    
     it("the change of parent before setted as parent will affect child", function(){
         var tra2 = Transform.create();
         tra2.translate(1,1,1);
@@ -787,6 +864,16 @@ describe("ThreeDTransform", function(){
 
                 judge();
             });
+        });
+
+        it("clone _isUserSpecifyTheLocalToWorldMatrix,_userLocalToWorldMatrix", function () {
+            var mat = wd.Matrix4.create().translate(1,10,20);
+
+            tra1.localToWorldMatrix = mat;
+
+            result = tra1.clone();
+
+            expect(result.localToWorldMatrix).toEqual(mat);
         });
 
         describe("test clone parent", function () {

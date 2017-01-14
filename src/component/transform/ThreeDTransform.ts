@@ -15,31 +15,19 @@ module wd{
             this._localToWorldMatrixCache = result;
         })
         get localToWorldMatrix(){
-            //todo refactor
             if(this._isUserSpecifyTheLocalToWorldMatrix){
                 return this._userLocalToWorldMatrix;
             }
 
             return this.getMatrix<Matrix4>("sync", "_localToWorldMatrix");
         }
-
-        private _isUserSpecifyTheLocalToWorldMatrix:boolean = false;
-        private _userLocalToWorldMatrix = null;
-
-
-        public setLocalToWorldMatrix(matrix){
+        set localToWorldMatrix(matrix:Matrix4){
             this._isUserSpecifyTheLocalToWorldMatrix = true;
 
             this._userLocalToWorldMatrix = matrix;
 
-            this.clearCache();
-
-
-            //todo fix
-            this.setChildrenTransformState(ETransformState.ISTRANSLATE, true);
+            this.isTransform = true;
         }
-
-
 
         @cacheGetter(function(){
             return this._normalMatrixCache !== null;
@@ -229,7 +217,10 @@ module wd{
         private _eulerAnglesCache:Vector3 = null;
         private _localEulerAnglesCache:Vector3 = null;
         private _normalMatrixCache:Matrix3 = null;
-
+        @cloneAttributeAsBasicType()
+        private _isUserSpecifyTheLocalToWorldMatrix:boolean = false;
+        @cloneAttributeAsCloneable()
+        private _userLocalToWorldMatrix = null;
 
         public sync(){
             if (this.dirtyLocal) {
@@ -424,8 +415,16 @@ module wd{
             this._localEulerAnglesCache = null;
         }
 
-        protected handleWhenSetTransformState(transformState:ETransformState):void{
+        protected handleWhenSetTransformState(transformState?:ETransformState):void{
             var eventName:string = null;
+
+            if(transformState === void 0){
+                EventManager.trigger(this.entityObject, CustomEvent.create(<any>EEngineEvent.TRANSFORM_TRANSLATE));
+                EventManager.trigger(this.entityObject, CustomEvent.create(<any>EEngineEvent.TRANSFORM_ROTATE));
+                EventManager.trigger(this.entityObject, CustomEvent.create(<any>EEngineEvent.TRANSFORM_SCALE));
+
+                return;
+            }
 
             switch (transformState){
                 case ETransformState.ISTRANSLATE:

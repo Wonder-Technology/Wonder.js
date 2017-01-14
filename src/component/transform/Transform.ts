@@ -12,6 +12,11 @@ module wd{
         get isTransform(){
             return this.isTranslate || this.isRotate || this.isScale;
         }
+        set isTransform(isTransform:boolean){
+            if(isTransform){
+                this._setGlobalTransformState(true);
+            }
+        }
 
         private _isTranslate:boolean = false;
         get isTranslate(){
@@ -80,18 +85,36 @@ module wd{
             this.children.removeChild(child);
         }
 
-        public setChildrenTransformState(transformState:ETransformState, state:boolean){
-            if(state){
-                this.children.forEach((child:Transform) => {
-                    child[transformState] = true;
-                });
+
+        public setChildrenTransformState(state:boolean);
+        public setChildrenTransformState(transformState:ETransformState, state:boolean);
+
+        public setChildrenTransformState(...args){
+            if(args.length === 1){
+                let state:boolean = args[0];
+
+                if(state){
+                    this.children.forEach((child:Transform) => {
+                        child.isTransform = true;
+                    });
+                }
+            }
+            else{
+                let transformState:ETransformState = args[0],
+                    state:boolean = args[1];
+
+                if(state){
+                    this.children.forEach((child:Transform) => {
+                        child[transformState] = true;
+                    });
+                }
             }
         }
 
         protected abstract clearCache():void;
 
         @virtual
-        protected handleWhenSetTransformState(transformState:ETransformState):void{
+        protected handleWhenSetTransformState(transformState?:ETransformState):void{
         }
 
         protected setParent(parent:Transform){
@@ -129,17 +152,43 @@ module wd{
             return this[matrixAttriName];
         }
 
-        private _setGlobalTransformState(transformState:ETransformState, state:boolean){
-            this[`_${transformState}`] = state;
 
-            if(state){
+        private _setGlobalTransformState(state:boolean);
+        private _setGlobalTransformState(transformState:ETransformState, state:boolean);
+
+        private _setGlobalTransformState(...args){
+            if(args.length === 1){
+                let state:boolean = args[0];
+
+                if(!state){
+                    return;
+                }
+
+                this._isTranslate = true;
+                this._isRotate = true;
+                this._isScale = true;
+
                 this.dirtyLocal = true;
                 this.clearCache();
-                this.handleWhenSetTransformState(transformState);
-            }
+                this.handleWhenSetTransformState();
 
-            if(state){
-                this.setChildrenTransformState(transformState, state);
+                this.setChildrenTransformState(state);
+            }
+            else{
+                let transformState:ETransformState = args[0],
+                    state:boolean = args[1];
+
+                this[`_${transformState}`] = state;
+
+                if(state){
+                    this.dirtyLocal = true;
+                    this.clearCache();
+                    this.handleWhenSetTransformState(transformState);
+                }
+
+                if(state){
+                    this.setChildrenTransformState(transformState, state);
+                }
             }
         }
 

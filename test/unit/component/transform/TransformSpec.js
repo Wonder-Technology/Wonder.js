@@ -101,9 +101,9 @@ describe("Transform", function(){
 
     describe("dispose", function(){
         it("unbind ENDLOOP event", function(){
-            tra1.init();
-
             tra1.clearCache = sandbox.stub();
+
+            tra1.init();
 
             tra1.isTranslate = true;
 
