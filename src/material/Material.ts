@@ -173,8 +173,6 @@ module wd {
         @cloneAttributeAsBasicType()
         public blendEquationSeparate:Array<EBlendEquation> = [EBlendEquation.ADD, EBlendEquation.ADD];
         @cloneAttributeAsBasicType()
-        public shading = EShading.FLAT;
-        @cloneAttributeAsBasicType()
         public geometry:Geometry = null;
 
         private _shaderManager:ShaderManager = ShaderManager.create(this);

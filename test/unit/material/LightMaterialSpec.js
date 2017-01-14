@@ -371,6 +371,16 @@ describe("LightMaterial", function() {
                 expect(result.lightMapIntensity).toEqual(lightMapIntensity);
                 expect(result.alphaTest).toEqual(alphaTest);
             });
+            it("clone shading", function () {
+                var shading = wd.EShading.SMOOTH;
+
+                material.shading = shading;
+
+
+                var result = material.clone();
+
+                expect(result.shading).toEqual(shading);
+            });
         });
     });
 });

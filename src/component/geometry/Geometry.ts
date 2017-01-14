@@ -91,7 +91,7 @@ module wd{
         }
 
         public isSmoothShading(){
-            return this._material.shading === EShading.SMOOTH;
+            return (<StandardLightMaterial>this._material).shading === EShading.SMOOTH;
         }
 
         public dispose(){

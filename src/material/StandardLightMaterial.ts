@@ -73,6 +73,8 @@ module wd{
         }
 
         @cloneAttributeAsBasicType()
+        public shading = EShading.FLAT;
+        @cloneAttributeAsBasicType()
         public opacity:number = 1.0;
         @cloneAttributeAsBasicType()
         public lightModel:ELightModel = ELightModel.PHONG;

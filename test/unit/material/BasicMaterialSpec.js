@@ -562,7 +562,6 @@ describe("BasicMaterial", function () {
                     alphaWrite = false,
                     polygonOffsetMode = wd.EPolygonOffsetMode.IN,
                     side = wd.ESide.BOTH,
-                    shading = wd.EShading.SMOOTH,
                 alphaToCoverage = true,
                     alphaTest = 0.2;
 
@@ -574,7 +573,6 @@ describe("BasicMaterial", function () {
                     alphaWrite: alphaWrite,
                     polygonOffsetMode: polygonOffsetMode,
                     side: side,
-                    shading: shading,
                     alphaToCoverage:alphaToCoverage,
                     alphaTest: alphaTest
                 });
@@ -589,7 +587,6 @@ describe("BasicMaterial", function () {
                 expect(result.alphaWrite).toEqual(alphaWrite);
                 expect(result.polygonOffsetMode).toEqual(polygonOffsetMode);
                 expect(result.side).toEqual(side);
-                expect(result.shading).toEqual(shading);
                 expect(result.alphaToCoverage).toEqual(alphaToCoverage);
                 expect(result.alphaTest).toEqual(alphaTest);
             });
