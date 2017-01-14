@@ -436,7 +436,7 @@ describe("one to one instance with spacePartition", function() {
 
                 director._loopBody(1);
 
-                expect(gl.bindBuffer.withArgs(gl.ARRAY_BUFFER, sinon.match.object).callCount).toEqual(9);
+                expect(gl.bindBuffer.withArgs(gl.ARRAY_BUFFER, sinon.match.object).callCount).toEqual(5);
                 expect(gl.bindBuffer.withArgs(gl.ELEMENT_ARRAY_BUFFER, sinon.match.object).callCount).toEqual(8);
             });
             it("send each instance's mMatrix data to glsl ", function () {

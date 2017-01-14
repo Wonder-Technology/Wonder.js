@@ -78,7 +78,7 @@ describe("PerspectiveCamera", function() {
                 wd.Vector3.up
             );
 
-            entityObject.transform.setLocalToWorldMatrix(mat);
+            entityObject.transform.localToWorldMatrix = mat;
 
             camera.entityObject = entityObject;
 

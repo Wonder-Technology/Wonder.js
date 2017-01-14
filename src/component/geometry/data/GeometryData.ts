@@ -222,10 +222,8 @@ module wd {
         private _colorCache:Array<number> = null;
         private _normalDirty:boolean = true;
         private _indiceDirty:boolean = true;
-        private _materialColorChangeSubscription:wdFrp.IDisposable = null;
 
         public dispose(){
-            this._materialColorChangeSubscription && this._materialColorChangeSubscription.dispose();
         }
 
         @ensure(function(){
