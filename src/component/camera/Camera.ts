@@ -20,7 +20,7 @@ module wd{
         }
         set near(near:number){
             this._near = near;
-            this.dirty = true;
+            this.pMatrixDirty = true;
         }
 
         private _far:number = null;
@@ -30,7 +30,7 @@ module wd{
         }
         set far(far:number){
             this._far = far;
-            this.dirty = true;
+            this.pMatrixDirty = true;
         }
 
         private _pMatrix:Matrix4 = Matrix4.create();
@@ -46,7 +46,7 @@ module wd{
 
         public entityObject:GameObject = null;
 
-        protected dirty:boolean = false;
+        protected pMatrixDirty:boolean = false;
 
         @cloneAttributeAsBasicType()
         private _isUserSpecifyThePMatrix:boolean = false;
@@ -64,9 +64,9 @@ module wd{
 
         @virtual
         public init(){
-            if(this.dirty) {
+            if(this.pMatrixDirty) {
                 this._updateProjectionMatrix();
-                this.dirty = false;
+                this.pMatrixDirty = false;
             }
         }
 
@@ -79,10 +79,10 @@ module wd{
         }
 
         public update(elapsed:number){
-            if(this.dirty){
+            if(this.pMatrixDirty){
                 this._updateProjectionMatrix();
 
-                this.dirty = false;
+                this.pMatrixDirty = false;
             }
         }
 

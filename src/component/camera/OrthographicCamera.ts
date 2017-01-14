@@ -13,7 +13,7 @@ module wd{
         }
         set left(left:number){
             this._left = left;
-            this.dirty = true;
+            this.pMatrixDirty = true;
         }
 
         private _right:number = null;
@@ -23,7 +23,7 @@ module wd{
         }
         set right(right:number){
             this._right = right;
-            this.dirty = true;
+            this.pMatrixDirty = true;
         }
 
         private _bottom:number = null;
@@ -33,7 +33,7 @@ module wd{
         }
         set bottom(bottom:number){
             this._bottom = bottom;
-            this.dirty = true;
+            this.pMatrixDirty = true;
         }
 
         private _top:number = null;
@@ -43,7 +43,7 @@ module wd{
         }
         set top(top:number){
             this._top = top;
-            this.dirty = true;
+            this.pMatrixDirty = true;
         }
 
         public convertScreenToWorld(screenX:number, screenY:number, distanceFromCamera:number):Vector3{

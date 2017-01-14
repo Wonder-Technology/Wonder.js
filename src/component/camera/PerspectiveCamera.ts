@@ -15,7 +15,7 @@ module wd{
         }
         set fovy(fovy:number){
             this._fovy = fovy;
-            this.dirty = true;
+            this.pMatrixDirty = true;
         }
 
         private _aspect:number = null;
@@ -25,7 +25,7 @@ module wd{
         }
         set aspect(aspect:number){
             this._aspect = aspect;
-            this.dirty = true;
+            this.pMatrixDirty = true;
         }
 
         public zoomIn(speed:number, min:number = 1){

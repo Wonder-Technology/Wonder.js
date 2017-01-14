@@ -54,22 +54,22 @@ describe("Camera", function() {
         });
 
         it("if pMatrix is setted, not update", function () {
-            camera.dirty = true;
+            camera.pMatrixDirty = true;
             camera.pMatrix = wd.Matrix4.create();
 
             camera.update();
 
             expect(camera.updateProjectionMatrix).not.toCalled();
         });
-        it("if not dirty, do nothing", function(){
-            camera.dirty = false;
+        it("if not pMatrixDirty, do nothing", function(){
+            camera.pMatrixDirty = false;
 
             camera.update();
 
             expect(camera.updateProjectionMatrix).not.toCalled();
         });
         it("else, updateProjectionMatrix", function () {
-            camera.dirty = true;
+            camera.pMatrixDirty = true;
 
             camera.update();
 
