@@ -9,16 +9,8 @@ module wd{
             return this.entityObject.transform.localToWorldMatrix;
         }
 
-        private _worldToCameraMatrix = null;
         get worldToCameraMatrix(){
-            if(this._worldToCameraMatrix){
-                return this._worldToCameraMatrix;
-            }
-
             return this.cameraToWorldMatrix.clone().invert();
-        }
-        set worldToCameraMatrix(matrix:Matrix4){
-            this._worldToCameraMatrix = matrix;
         }
 
         private _near:number = null;

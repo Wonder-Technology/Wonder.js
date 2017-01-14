@@ -20,9 +20,6 @@ module wd {
         get worldToCameraMatrix(){
             return this._getWorldToCameraMatrix();
         }
-        set worldToCameraMatrix(matrix:Matrix4){
-            this.camera.worldToCameraMatrix = matrix;
-        }
 
         get pMatrix(){
             return this.camera.pMatrix;
