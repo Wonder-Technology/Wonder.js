@@ -13,7 +13,6 @@ module wd {
         private _texCoordBuffer:ArrayBuffer = null;
         private _tangentBuffer:ArrayBuffer = null;
         private _indiceBuffer:ElementBuffer = null;
-        private _materialChangeSubscription:wdFrp.IDisposable = null;
 
         public abstract getBufferForRenderSort():Buffer;
 
@@ -26,19 +25,6 @@ module wd {
             this.getChild(EBufferDataType.INDICE);
             this.getChild(EBufferDataType.TEXCOORD);
         }
-
-        public init(){
-            var self = this;
-
-            this._materialChangeSubscription = EventManager.fromEvent(this.entityObject, <any>EEngineEvent.MATERIAL_CHANGE)
-            .subscribe(() => {
-                self.removeCache(EBufferDataType.COLOR);
-                self.geometryData.colorDirty = true;
-            });
-
-            this.geometryData.init();
-        }
-
 
         public removeCache(type:EBufferDataType);
         public removeCache(name:string);
@@ -102,8 +88,6 @@ module wd {
             });
 
             this.geometryData.dispose();
-
-            this._materialChangeSubscription && this._materialChangeSubscription.dispose();
         }
 
         protected abstract getVertice(type:EBufferDataType);

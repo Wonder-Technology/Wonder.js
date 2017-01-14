@@ -137,10 +137,6 @@ module wd {
                 return;
             }
 
-            if(this.geometry && this.geometry.entityObject){
-                EventManager.trigger(this.geometry.entityObject, CustomEvent.create(<any>EEngineEvent.MATERIAL_COLOR_CHANGE));
-            }
-
             this._color = color;
         }
 

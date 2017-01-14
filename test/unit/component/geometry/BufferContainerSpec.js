@@ -17,7 +17,6 @@ describe("BufferContainer", function() {
         it("create all buffers from GeometryData", function(){
             var geometryData = new wd.GeometryData();
             container.geometryData = geometryData;
-            sandbox.stub(geometryData, "init");
             sandbox.stub(container, "getChild");
 
             container.createBuffersFromGeometryData();
@@ -54,7 +53,6 @@ describe("BufferContainer", function() {
         });
         it("unbind material_change event", function () {
             container.entityObject = wd.GameObject.create();
-            sandbox.stub(container.geometryData, "init");
             container.init();
             sandbox.stub(container, "removeCache");
 

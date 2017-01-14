@@ -86,9 +86,7 @@ describe("Geometry", function() {
                 expect(geo.buffers.geometryData.indices).toEqual(jasmine.any(Array));
                 expect(geo.buffers.geometryData.normals).toEqual(jasmine.any(Array));
                 expect(geo.buffers.geometryData.texCoords).toEqual(jasmine.any(Array));
-                expect(geo.buffers.geometryData.colors).toEqual(
-                    [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ]
-                );
+                expect(geo.buffers.geometryData.colors).not.toBeExist();
             });
             it("not create buffers", function () {
                 geo.init();
@@ -283,11 +281,14 @@ describe("Geometry", function() {
             var data;
 
             beforeEach(function(){
-                geo.material.shading = wd.EShading.FLAT;
-                geo.material.color = wd.Color.create("rgb(1.0,0.0,0.0)");
+                // geo.material.shading = wd.EShading.FLAT;
+                // geo.material.color = wd.Color.create("rgb(1.0,0.0,0.0)");
 
                 geo.vertices = [1,-1,0, 0,1,0,0,0,1];
                 geo.faces = createFaces([0,2,1]);
+                geo.colors = [
+                    1,0.5,0, 0,0.2,0.2, 0,0,1
+                ];
 
                 geo.init();
 
@@ -308,42 +309,20 @@ describe("Geometry", function() {
 
                 expect(data.colors).toEqual(colors2);
             });
-            
-            describe("if change material.color", function(){
-                beforeEach(function(){
-                });
-                
-                it("if not set color data, return changed data from material", function(){
-                    geo.material.color = wd.Color.create("rgb(1.0,1.0,0.0)");
-
-                    expect(data.colors).toEqual([1, 1, 0, 1, 1, 0, 1, 1, 0]);
-                });
-                it("else, return setted color data", function () {
-                    var colors = [1,0,0.1, 1,1,1, 1,1,1];
-                    data.colors = colors;
-
-                    geo.material.color = wd.Color.create("rgb(1.0,1.0,0.0)");
-
-                    expect(data.colors).toEqual(colors);
-                });
-
-            });
-
-            it("if change material, return data from new material->color", function(){
-                var newMaterial = new wd.BasicMaterial();
-                newMaterial.color = wd.Color.create("rgb(1.0,1.0,0.0)");
-
-                geo.material = newMaterial;
-
-                expect(data.colors).toEqual([1, 1, 0, 1, 1, 0, 1, 1, 0]);
-            });
         });
 
         describe("else", function(){
             beforeEach(function(){
             });
 
-            //todo more test
+            it("return setted color data", function () {
+                expect(geo.colors).toBeNull();
+
+                var colors = [1,0,0.1];
+                geo.colors = colors;
+
+                expect(geo.colors).toEqual(colors);
+            });
         });
     });
 
@@ -443,35 +422,35 @@ describe("Geometry", function() {
             gameObject.init();
         });
 
-        describe('Geometry trigger its gameObject->"material change" event when change material', function(){
-            it('BufferContainer remove color cache when event triggered', function(){
-                var colors = geo.buffers.getChild(wd.EBufferDataType.COLOR);
-                sandbox.spy(colors, "resetData");
-
-                expect(testTool.getValues(colors.data)).toEqual(
-                    [ 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667 ]
-                );
-
-
-
-                var newMaterial = wd.BasicMaterial.create();
-                newMaterial.color = wd.Color.create("#222222");
-
-                geo.material = newMaterial;
-
-                newMaterial.init();
-
-
-
-                var newColors = geo.buffers.getChild(wd.EBufferDataType.COLOR);
-
-                expect(colors.resetData).toCalledOnce();
-
-                expect(testTool.getValues(newColors.data)).toEqual(
-                    [ 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333 ]
-                );
-            });
-        });
+        // describe('Geometry trigger its gameObject->"material change" event when change material', function(){
+        //     it('BufferContainer remove color cache when event triggered', function(){
+        //         var colors = geo.buffers.getChild(wd.EBufferDataType.COLOR);
+        //         sandbox.spy(colors, "resetData");
+        //
+        //         expect(testTool.getValues(colors.data)).toEqual(
+        //             [ 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667 ]
+        //         );
+        //
+        //
+        //
+        //         var newMaterial = wd.BasicMaterial.create();
+        //         newMaterial.color = wd.Color.create("#222222");
+        //
+        //         geo.material = newMaterial;
+        //
+        //         newMaterial.init();
+        //
+        //
+        //
+        //         var newColors = geo.buffers.getChild(wd.EBufferDataType.COLOR);
+        //
+        //         expect(colors.resetData).toCalledOnce();
+        //
+        //         expect(testTool.getValues(newColors.data)).toEqual(
+        //             [ 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333 ]
+        //         );
+        //     });
+        // });
 
         //it('just "init material" instead of "add to geometry and init material" when "change material", so that material->init is not related to geometry', function(){
         //    //var newMaterial = wd.BasicMaterial.create();

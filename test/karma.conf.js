@@ -245,7 +245,7 @@
 
 
         // 'test/unit/**/*GeometryData*',
-        //'test/unit/**/**BufferContainer*',
+        'test/unit/**/**BufferContainer*',
         //
         //'test/unit/**/Face3*',
 
@@ -378,13 +378,13 @@
         // 'test/unit/**/WDAssemblerSpec.js',
 
         // 'test/unit/math/*.js',
-        //'test/unit/component/**/GeometrySpec.js',
+        'test/unit/component/**/GeometrySpec.js',
         // 'test/unit/component/**/InstanceGeometrySpec.js',
         // 'test/unit/component/**/TerrainGeometrySpec.js',
-        // 'test/unit/component/**/ModelGeometrySpec.js',
-        // 'test/unit/**/CommonBufferContainerSpec.js',
-        //'test/unit/**/MorphBufferContainerSpec.js',
-        // 'test/unit/**/*BufferContainerSpec.js',
+        'test/unit/component/**/ModelGeometrySpec.js',
+        'test/unit/**/CommonBufferContainerSpec.js',
+        'test/unit/**/MorphBufferContainerSpec.js',
+        'test/unit/**/*BufferContainerSpec.js',
         // 'test/unit/**/morph*.js',
         // 'test/unit/**/*morph*.js',
         // 'test/unit/**/*Morph*.js',

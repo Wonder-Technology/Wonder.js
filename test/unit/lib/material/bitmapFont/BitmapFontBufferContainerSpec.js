@@ -88,6 +88,7 @@ describe("BitmapFontBufferContainer", function() {
             });
 
             it("create pages buffer", function(){
+                testTool.closeContractCheck(sandbox);
                 var pages = [1,2,3,1];
                 geometryData.pages = pages;
                 setGeometryCommonData();

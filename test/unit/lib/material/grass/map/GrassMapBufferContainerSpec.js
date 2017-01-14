@@ -88,6 +88,7 @@ describe("GrassMapBufferContainer", function() {
             });
 
             it("create quadIndex buffer", function(){
+                testTool.closeContractCheck(sandbox);
                 var quadIndices = [
                     0,0,0,0,
                     1,1,1,1,

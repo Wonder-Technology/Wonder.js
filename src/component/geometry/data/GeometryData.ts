@@ -173,7 +173,11 @@ module wd {
 
         private _colors:Array<number> = null;
         @ensureGetter(function (colors:Array<number>) {
-            assert(colors.length === this._vertices.length, Log.info.FUNC_SHOULD(`colors.length:${colors.length}`, `=== vertices.length:${this._vertices.length}`));
+            if(colors !== null && colors !== void 0){
+                it(`colors.length:${colors.length} should === vertices.length:${this._vertices.length}`, () => {
+                    expect(colors.length).equals(this._vertices.length);
+                });
+            }
         })
         @cacheGetter(function(){
             return !this.colorDirty && this._colorCache;
@@ -184,10 +188,6 @@ module wd {
             this.colorDirty = false;
         })
         get colors() {
-            // if(this._needGetColorsFromMaterial()){
-            //     return this._getColorsFromMaterial(this._vertices);
-            // }
-
             return this._colors;
         }
         set colors(colors:Array<number>) {
@@ -223,23 +223,6 @@ module wd {
         private _normalDirty:boolean = true;
         private _indiceDirty:boolean = true;
         private _materialColorChangeSubscription:wdFrp.IDisposable = null;
-
-        public init(){
-            var self = this;
-
-            //todo remove?
-            this._materialColorChangeSubscription =
-                wdFrp.fromArray([
-                        EventManager.fromEvent(this.geometry.entityObject, <any>EEngineEvent.MATERIAL_COLOR_CHANGE),
-                        EventManager.fromEvent(this.geometry.entityObject, <any>EEngineEvent.MATERIAL_CHANGE)
-                    ])
-                    .mergeAll()
-                    .subscribe(() => {
-                        if(self._needGetColorsFromMaterial()){
-                            self.colorDirty = true;
-                        }
-                    });
-        }
 
         public dispose(){
             this._materialColorChangeSubscription && this._materialColorChangeSubscription.dispose();
@@ -351,24 +334,6 @@ module wd {
             return normals;
         }
 
-        // private _getColorsFromMaterial(vertices:Array<number>) {
-        //     var arr = [],
-        //         i = 0,
-        //         color = this.geometry.material.color,
-        //         r = color.r,
-        //         g = color.g,
-        //         b = color.b,
-        //         len = null;
-        //
-        //     len = vertices.length / 3;
-        //
-        //     for (i = 0; i < len; i++) {
-        //         arr.push(r, g, b);
-        //     }
-        //
-        //     return arr;
-        // }
-
         private _fillEmptyData(data:Array<number>){
             for(let i = 0,len = data.length; i < len; i++){
                 if(isNaN(data[i])){
@@ -476,12 +441,6 @@ module wd {
             }
 
             return tangents;
-        }
-
-        private _needGetColorsFromMaterial(){
-            var colors = this._colors;
-
-            return !colors || colors.length === 0;
         }
     }
 }
