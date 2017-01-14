@@ -10,7 +10,11 @@ describe("touch event", function () {
     }
 
     function removeDom() {
-        $("#event-test").remove();
+        getCanvas().remove();
+    }
+
+    function getCanvas() {
+        return $("#event-test");
     }
 
     function buildFakeEvent(pageX, pageY) {
@@ -44,6 +48,8 @@ describe("touch event", function () {
 
 
         sandbox.stub(director.domEventManager._pointEventBinder, "_isSupportTouch").returns(true);
+
+        eventTool.setView(sandbox, getCanvas());
     });
     afterEach(function () {
         manager.off();

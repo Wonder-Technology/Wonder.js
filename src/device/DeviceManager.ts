@@ -398,7 +398,6 @@ module wd {
             gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
         }
 
-
         public createGL(canvasId:string, contextConfig:ContextConfigData, useDevicePixelRatio:boolean){
             var canvas = null;
 
@@ -420,7 +419,7 @@ module wd {
             this.gl = this.view.getContext(contextConfig);
 
             if(!this.gl){
-                wdCb.DomQuery.create("<p class='not-support-webgl'></p>").prependTo("body").get(0).innerText = "Your device doesn't support WebGL";
+                wdCb.DomQuery.create("<p class='not-support-webgl'></p>").prependTo("body").text("Your device doesn't support WebGL");
             }
         }
 

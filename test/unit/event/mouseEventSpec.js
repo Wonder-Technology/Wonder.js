@@ -10,7 +10,11 @@ describe("mouse event", function () {
     }
 
     function removeDom() {
-        $("#event-test").remove();
+        getCanvas().remove();
+    }
+
+    function getCanvas() {
+        return $("#event-test");
     }
 
     beforeEach(function () {
@@ -37,6 +41,9 @@ describe("mouse event", function () {
 
 
         sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+
+
+        eventTool.setView(sandbox, getCanvas());
     });
     afterEach(function () {
         removeDom();

@@ -264,10 +264,10 @@ describe("FlyCameraController", function () {
 
 
 
-            if(bowser.firefox){
-                expect().toPass();
-                return;
-            }
+            // if(bowser.firefox){
+            //     expect().toPass();
+            //     return;
+            // }
 
             sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
 
@@ -325,6 +325,7 @@ describe("FlyCameraController", function () {
                 }
 
                 beforeEach(function(){
+                    director = wd.Director.getInstance();
                 });
 
                 it("test keyboard event", function () {
@@ -338,10 +339,10 @@ describe("FlyCameraController", function () {
 
 
 
-
                     director._init();
 
 
+                    fakeEvent = null;
 
                     triggerDomEvent(wd.EEventName.KEYDOWN);
 

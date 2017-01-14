@@ -357,8 +357,8 @@
         //'test/unit/**/physics/**/compound*',
         // 'test/unit/**/GameObjectSpec.js',
         //'test/unit/**/*Shape*.js',
-        // 'test/unit/**/Arcball*',
-        //'test/unit/**/FlyCameraController*',
+        'test/unit/**/Arcball*',
+        'test/unit/**/FlyCameraController*',
         // 'test/unit/**/scriptSpec.js',
       //
       //  'test/unit/**/*ControllerSpec.js',
@@ -390,13 +390,13 @@
         // 'test/unit/**/*Morph*.js',
         // 'test/unit/**/Morph*.js',
         //'test/unit/core/*.js',
-        // 'test/unit/device/*.js',
+        'test/unit/device/*.js',
 
         // 'test/unit/**/DomEventManager*',
 
         // 'test/unit/event/**',
-        // 'test/unit/event/mouseEv*.js',
-        // 'test/unit/event/touchEv*.js',
+        'test/unit/event/mouseEv*.js',
+        'test/unit/event/touchEv*.js',
         // 'test/unit/event/customEv*.js',
         // 'test/unit/event/keyboardEv*.js',
         // 'test/unit/event/domEv*.js',

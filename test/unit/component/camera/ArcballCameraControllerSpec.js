@@ -69,11 +69,6 @@ describe("ArcballCameraController", function () {
         });
 
         it("set camera component's entityObject", function () {
-            if(bowser.firefox){
-                expect().toPass();
-                return;
-            }
-
             director._init();
 
             expect(component).toEqual(cameraComponent);
@@ -82,11 +77,6 @@ describe("ArcballCameraController", function () {
 
         describe("update entityObject's transform", function () {
             it("update position based on distance", function () {
-                if(bowser.firefox){
-                    expect().toPass();
-                    return;
-                }
-
                 controller.distance = 10;
 
                 director._init();
@@ -99,11 +89,6 @@ describe("ArcballCameraController", function () {
                 expect(testTool.getValues(component.entityObject.transform.position)).toEqual([0, 0, 10]);
             });
             it("update lookAt based on target", function () {
-                if(bowser.firefox){
-                    expect().toPass();
-                    return;
-                }
-
                 controller.target = wd.Vector3.create(10, 10, 10);
 
                 director._init();
@@ -125,11 +110,6 @@ describe("ArcballCameraController", function () {
         });
 
         it("if not change after init, not  update transform", function () {
-            if(bowser.firefox){
-                expect().toPass();
-                return;
-            }
-
             sandbox.spy(controller, "_updateTransform");
             controller.distance = 10;
 
@@ -139,11 +119,6 @@ describe("ArcballCameraController", function () {
             expect(controller._updateTransform).toCalledOnce();
         });
         it("else, update transform", function(){
-            if(bowser.firefox){
-                expect().toPass();
-                return;
-            }
-
             sandbox.spy(controller, "_updateTransform");
             controller.distance = 10;
 
@@ -160,11 +135,6 @@ describe("ArcballCameraController", function () {
     describe("test event", function(){
         beforeEach(function(){
             sandbox.stub(wd.EventTriggerDetectorUtils, "isInRect").returns(true);
-
-            if(bowser.firefox){
-                expect().toPass();
-                return;
-            }
 
             prepare(sandbox);
 
@@ -300,11 +270,6 @@ describe("ArcballCameraController", function () {
         });
 
         it("the event handler binded should not affected by other event handler binded on the same event", function(){
-            if(bowser.firefox){
-                expect().toPass();
-                return;
-            }
-
             prepare(sandbox);
 
             manager.on(director.scene, wd.EEngineEvent.POINT_DRAG, function(e){
@@ -333,11 +298,6 @@ describe("ArcballCameraController", function () {
             var director;
 
             beforeEach(function(){
-                if(bowser.firefox){
-                    expect().toPass();
-                    return;
-                }
-
                 prepare(sandbox);
 
                 director = wd.Director.getInstance();
@@ -349,11 +309,6 @@ describe("ArcballCameraController", function () {
 
             describe("test change distance attr", function(){
                 it("should update when change the distance attr", function(){
-                    if(bowser.firefox){
-                        expect().toPass();
-                        return;
-                    }
-
                     var distance = 110;
 
                     director._loopBody(1);
@@ -370,11 +325,6 @@ describe("ArcballCameraController", function () {
                     expect(controller.entityObject.transform.position.z).toEqual(distance);
                 });
                 it("distance shouldn't < minDistance", function(){
-                    if(bowser.firefox){
-                        expect().toPass();
-                        return;
-                    }
-
                     controller.minDistance = 120;
                     var distance = 110;
 
@@ -394,11 +344,6 @@ describe("ArcballCameraController", function () {
 
             describe("test change minDistance attr", function(){
                 it("if distance > minDistance, change distance", function(){
-                    if(bowser.firefox){
-                        expect().toPass();
-                        return;
-                    }
-
                     var distance = 110;
 
                     controller.distance = distance;
@@ -418,11 +363,6 @@ describe("ArcballCameraController", function () {
 
             describe("test change phi attr", function(){
                 it("should update when change the phi attr", function(){
-                    if(bowser.firefox){
-                        expect().toPass();
-                        return;
-                    }
-
                     controller.phi = Math.PI / 2;
 
                     director._loopBody(1);
@@ -443,11 +383,6 @@ describe("ArcballCameraController", function () {
 
             describe("test change theta attr", function(){
                 it("should update when change the theta attr", function(){
-                    if(bowser.firefox){
-                        expect().toPass();
-                        return;
-                    }
-
                     controller.theta = Math.PI / 2;
 
                     director._loopBody(1);
@@ -465,11 +400,6 @@ describe("ArcballCameraController", function () {
                     expect(testTool.getValues(controller.entityObject.transform.position)).not.toEqual(testTool.getValues(pos));
                 });
                 it("should constrain theta", function(){
-                    if(bowser.firefox){
-                        expect().toPass();
-                        return;
-                    }
-
                     controller.theta = Math.PI / 2;
 
 
@@ -484,11 +414,6 @@ describe("ArcballCameraController", function () {
 
             describe("test change thetaMargin attr", function(){
                 it("should constrain theta", function(){
-                    if(bowser.firefox){
-                        expect().toPass();
-                        return;
-                    }
-
                     controller.theta = Math.PI / 2;
 
                     controller.thetaMargin = Math.PI;
@@ -499,11 +424,6 @@ describe("ArcballCameraController", function () {
 
             describe("test change target attr", function(){
                 it("should update when change the target attr", function(){
-                    if(bowser.firefox){
-                        expect().toPass();
-                        return;
-                    }
-
                     controller.target = wd.Vector3.create(0,0,1);
 
                     director._loopBody(1);
