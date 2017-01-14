@@ -27,7 +27,7 @@
 
         'test/unit/**/BufferWriter.js',
 
-        // 'test/unit/**',
+        'test/unit/**',
 
 
         // 'test/unit/**/GPUDetector*',
@@ -241,7 +241,7 @@
         // 'test/unit/**/lod/*',
 
         //'test/unit/**/CameraController*',
-        'test/unit/**/camera/**',
+        // 'test/unit/**/camera/**',
 
 
         // 'test/unit/**/*GeometryData*',
@@ -449,7 +449,7 @@
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['Chrome'],
+    browsers: ['Firefox'],
 
 
     // Continuous Integration mode

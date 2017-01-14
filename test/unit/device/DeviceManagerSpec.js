@@ -240,6 +240,10 @@ describe("deviceManager", function() {
         });
 
         it("if not get gl, info not support webgl", function(){
+            if(bowser.firefox){
+                return;
+            }
+
             sandbox.stub(wd.ViewWebGL, "create").returns({
                 getContext: sandbox.stub().returns(null)
             });

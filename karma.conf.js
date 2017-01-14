@@ -11,7 +11,8 @@
 
         // list of files / patterns to load in the browser
         files: [
-            'dist/wd.all.js',
+            'dist/wd.all.innerLib.js',
+            'dist/wd.all.debug.js',
 
             'lib/outer/cannon/cannon.js',
 

@@ -284,6 +284,10 @@ describe("FlyCameraController", function () {
 
         describe("dispose", function(){
             describe("remove events", function(){
+                if(bowser.firefox){
+                    return;
+                }
+
                 function judgePointEvent(eventType) {
                     sandbox.stub(controller._control, "_changeRotation");
 

@@ -180,6 +180,10 @@ describe("ArcballCameraController", function () {
                 });
 
                 it("test keyboard event", function () {
+                    if(bowser.firefox){
+                        return;
+                    }
+
                     sandbox.stub(controller, "_changeTarget");
 
 
@@ -202,6 +206,10 @@ describe("ArcballCameraController", function () {
                     expect(controller._changeTarget).toCalledOnce();
                 });
                 it("test mouse event and keyboard", function () {
+                    if(bowser.firefox){
+                        return;
+                    }
+
                     sandbox.stub(controller, "_changeOrbit");
                     sandbox.stub(controller, "_changeDistance");
                     sandbox.stub(controller, "_changeTarget");
@@ -246,6 +254,10 @@ describe("ArcballCameraController", function () {
                     expect(controller._changeTarget).toCalledOnce();
                 });
                 it("test touch event", function () {
+                    if(bowser.firefox){
+                        return;
+                    }
+
                     sandbox.stub(director.domEventManager._pointEventBinder, "_isSupportTouch").returns(true);
 
                     sandbox.stub(controller, "_changeOrbit");
