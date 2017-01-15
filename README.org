@@ -57,6 +57,7 @@ Join us, We can create the amazing 3D world together!
 - Animation
   - Morph
   - Articulated
+  - Skin
 - Camera
   - Perspective,Orthographic Camera
   - Arcball Control
@@ -106,7 +107,7 @@ support .fbx,.obj,.md2,.gltf converter
 * Usage
 Include library in your html:
 #+BEGIN_SRC html
-  <script src="dist/wd.min.js"></script>
+  <script src="dist/wd.all.min.js"></script>
 #+END_SRC
 Here shows a spinning cube sample:
 #+BEGIN_SRC js
@@ -204,12 +205,12 @@ Here shows a spinning cube sample:
 #+END_SRC
 - debug
 
-  You can first include wd.innerLib.js file, then include wd.debug.js file in your html, then you can debug in engine ts
+  You can first include wd.all.innerLib.js file, then include wd.all.debug.js file in your html, then you can debug in engine ts
   file:
 
 #+BEGIN_SRC html
-  <script src="dist/wd.innerLib.js"></script>
-  <script src="dist/wd.debug.js"></script>
+  <script src="dist/wd.all.innerLib.js"></script>
+  <script src="dist/wd.all.debug.js"></script>
 #+END_SRC
 * License
 MIT Licence
