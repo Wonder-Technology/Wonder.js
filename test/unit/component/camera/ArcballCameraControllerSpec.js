@@ -39,6 +39,10 @@ describe("ArcballCameraController", function () {
         eventTool.triggerDomEvent(eventName, document.body);
     }
 
+    if(ciTool.isTestInCI()){
+        return;
+    }
+
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
         insertDom();
