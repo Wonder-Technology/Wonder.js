@@ -12,7 +12,7 @@ var sample;
             this._gameObject = null;
             this._gameObject = gameObject;
         }
-        RayPicking.prototype.onMouseDown = function (e) {
+        RayPicking.prototype.onPointDown = function (e) {
             this._handleSelect(this._gameObject);
         };
         RayPicking.prototype._handleSelect = function (selectedObj) {

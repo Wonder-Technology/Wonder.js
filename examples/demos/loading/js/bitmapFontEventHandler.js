@@ -12,10 +12,10 @@ var sample;
             this._entityObject = null;
             this._entityObject = entityObject;
         }
-        BitmapFontEventHandler.prototype.onMouseDown = function (e) {
+        BitmapFontEventHandler.prototype.onPointDown = function (e) {
             console.log("mousedown");
         };
-        BitmapFontEventHandler.prototype.onMouseClick = function (e) {
+        BitmapFontEventHandler.prototype.onPointTap = function (e) {
             console.log("click");
             this._entityObject.parent.dispose();
             scene.initSample();

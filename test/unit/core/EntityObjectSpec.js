@@ -247,6 +247,108 @@ describe("EntityObject", function() {
         });
     });
 
+    describe("addAllComponentToComponentContainer", function(){
+        beforeEach(function(){
+        });
+
+        it("add its components to component container", function(){
+                var child1 = createEntityObject();
+                var action = wd.DelayTime.create(100);
+                child1.addComponent(action);
+
+            child1.removeAllComponentFromComponentContainer();
+            child1.addAllComponentToComponentContainer();
+
+                expect(wd.ActionComponentContainer.getInstance().list.getCount()).toEqual(1);
+                expect(wd.ActionComponentContainer.getInstance().hasChild(action)).toBeTruthy();        });
+    });
+
+    describe("removeAllComponentFromComponentContainer", function(){
+        var director;
+
+        beforeEach(function(){
+            sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+
+            director = wd.Director.getInstance();
+
+            director.scene.addChild(testTool.createCamera());
+        });
+
+        it("remove its components from component container", function(){
+            var child1 = createEntityObject()
+            var child2 = createEntityObject()
+
+            var skin = wd.SkinSkeletonAnimation.create();
+
+
+            var billboard = wd.Billboard.create();
+            var collider = wd.BoxCollider.create();
+            var lod = wd.GameObjectLOD.create();
+            var rigid = wd.KinematicRigidBody.create();
+            var spacePartition = wd.Octree.create();
+
+
+            var threeDUI = new wd.ThreeDUI();
+
+
+            var script = wd.Script.create();
+            sandbox.stub(wd.GlobalScriptUtils, "addScriptToEntityObject");
+
+
+
+
+            child1.addChildren(child2);
+
+
+            var componentArr = [billboard, script, skin, lod, collider, rigid, spacePartition, threeDUI];
+
+            componentArr.forEach(function(component, index){
+                if(index <= 2){
+                    child1.addComponent(component);
+                }
+                else{
+                    child2.addComponent(component);
+                }
+
+                sandbox.stub(component, "init");
+
+                if(component.update){
+                    sandbox.stub(component, "update");
+                }
+            });
+
+
+            entityObject.addChildren(child1);
+            entityObject.name = "gameObject";
+
+            director.scene.addChild(entityObject);
+
+
+
+
+            director._init();
+
+
+            child1.removeAllComponentFromComponentContainer();
+            child2.removeAllComponentFromComponentContainer();
+            entityObject.removeChild(child1);
+
+
+
+            expect(entityObject.getAllChildren().getCount()).toEqual(0);
+
+
+            director._loopBody(1);
+
+
+            componentArr.forEach(function(component){
+                if(component.update){
+                    expect(component.update).not.toCalled();
+                }
+            });
+        });
+    });
+
     describe("addChild", function(){
         beforeEach(function(){
         });
@@ -270,28 +372,7 @@ describe("EntityObject", function() {
                 expect(wd.ActionComponentContainer.getInstance().list.getCount()).toEqual(1);
                 expect(wd.ActionComponentContainer.getInstance().hasChild(action)).toBeTruthy();
             });
-            it("add child's components to corresponding component container if the container not contain", function(){
-                var child1 = createEntityObject();
-
-                var action = wd.DelayTime.create(100);
-                child1.addComponent(action);
-
-                var parent1 = new EntityObject();
-                var parent2 = new EntityObject();
-
-                parent1.addChild(child1);
-
-
-                parent1.removeChild(child1, true);
-
-
-                parent2.addChild(child1);
-
-                expect(wd.ActionComponentContainer.getInstance().list.getCount()).toEqual(1);
-                expect(wd.ActionComponentContainer.getInstance().hasChild(action)).toBeTruthy();
-            });
         });
-
 
         //todo test more
     });

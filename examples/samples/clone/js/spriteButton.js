@@ -21,7 +21,7 @@ var sample;
             this._setText();
             this._setBackground();
         };
-        SpriteButtonScript.prototype.onMouseClick = function (e) {
+        SpriteButtonScript.prototype.onPointTap = function (e) {
             if (this._entityObject.getComponent(Button).isDisabled) {
                 return;
             }

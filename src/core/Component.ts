@@ -1,5 +1,13 @@
 module wd{
     export abstract class Component extends Entity{
+        get transform():Transform {
+            if(!this.entityObject) {
+                return null;
+            }
+
+            return this.entityObject.transform;
+        }
+
         public entityObject:EntityObject = null;
 
         @virtual
@@ -15,15 +23,6 @@ module wd{
             return CloneUtils.clone(this);
         }
 
-        public get transform():Transform {
-            if(!this.entityObject) {
-                return null;
-            }
-
-            return this.entityObject.transform;
-        }
-
-        //todo test
         @virtual
         public addToObject(entityObject:EntityObject, isShareComponent:boolean = false){
             if(isShareComponent){

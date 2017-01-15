@@ -12,28 +12,28 @@ var sample;
             this._entityObject = null;
             this._entityObject = entityObject;
         }
-        Image11EventHandler.prototype.onMouseClick = function (e) {
+        Image11EventHandler.prototype.onPointTap = function (e) {
             console.log("image11 " + e.name);
         };
-        Image11EventHandler.prototype.onMouseDown = function (e) {
+        Image11EventHandler.prototype.onPointDown = function (e) {
             console.log("image11 " + e.name);
         };
-        Image11EventHandler.prototype.onMouseUp = function (e) {
+        Image11EventHandler.prototype.onPointUp = function (e) {
             console.log("image11 " + e.name);
         };
-        Image11EventHandler.prototype.onMouseWheel = function (e) {
+        Image11EventHandler.prototype.onPointWheel = function (e) {
             console.log("image11 " + e.name);
         };
-        Image11EventHandler.prototype.onMouseMove = function (e) {
+        Image11EventHandler.prototype.onPointMove = function (e) {
             console.log("image11 " + e.name);
         };
-        Image11EventHandler.prototype.onMouseOver = function (e) {
+        Image11EventHandler.prototype.onPointOver = function (e) {
             console.log("image11 " + e.name);
         };
-        Image11EventHandler.prototype.onMouseOut = function (e) {
+        Image11EventHandler.prototype.onPointOut = function (e) {
             console.log("image11 " + e.name);
         };
-        Image11EventHandler.prototype.onMouseDrag = function (e) {
+        Image11EventHandler.prototype.onPointDrag = function (e) {
             console.log("image11 " + e.name);
         };
         Image11EventHandler = __decorate([

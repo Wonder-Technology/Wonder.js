@@ -193,8 +193,8 @@ module wd {
             return this._entityObjectManager.findChildrenByName(name);
         }
 
-        public removeChild(child:EntityObject, removeComponentsFromComponentContainer:boolean = true):EntityObject {
-            this._entityObjectManager.removeChild(child, removeComponentsFromComponentContainer);
+        public removeChild(child:EntityObject):EntityObject {
+            this._entityObjectManager.removeChild(child);
 
             return this;
         }

@@ -104,7 +104,6 @@ describe("OneToOneSourceInstance", function(){
 
                     expect(box1Instance1.getComponent(wd.Geometry) === box1.getComponent(wd.Geometry)).toBeTruthy();
                 });
-
                 it("shared component should be init only once", function(){
                     var geo = box1.getComponent(wd.Geometry);
 
@@ -116,6 +115,12 @@ describe("OneToOneSourceInstance", function(){
                     box1Instance1.init();
 
                     expect(geo.computeData).toCalledOnce();
+                });
+                it("should remain shared component's entityObject", function () {
+                    box1Instance1 = instanceTool.cloneInstance(box1, "instance1");
+
+                    expect(box1Instance1.getComponent(wd.Geometry).entityObject === box1).toBeTruthy();
+                    expect(box1.getComponent(wd.Geometry).entityObject === box1).toBeTruthy();
                 });
             });
 

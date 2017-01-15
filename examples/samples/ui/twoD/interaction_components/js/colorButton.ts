@@ -3,7 +3,7 @@ module sample {
     import Button = wd.Button;
     import PlainFont = wd.PlainFont;
     import UIObject = wd.UIObject;
-    import MouseEvent = wd.MouseEvent;
+    import PointEvent = wd.PointEvent;
     import EButtonObjectName = wd.EButtonObjectName;
     import LoaderManager = wd.LoaderManager;
     import Image = wd.Image;
@@ -22,7 +22,7 @@ module sample {
             this._setBackground();
         }
 
-        public onMouseClick(e:MouseEvent) {
+        public onPointTap(e:PointEvent) {
             if(this._entityObject.getComponent<Button>(Button).isDisabled){
                 return;
             }

@@ -31,11 +31,8 @@ module wd{
 
         public addChild(child:EntityObject){
             if (child.parent) {
-                child.parent.removeChild(child, false);
+                child.parent.removeChild(child);
             }
-
-            child.getAllChildren().forEach((c:EntityObject) => c.addAllComponentToComponentContainer());
-            child.addAllComponentToComponentContainer();
 
             child.parent = this._entityObject;
 
@@ -140,13 +137,8 @@ module wd{
             });
         }
 
-        public removeChild(child:EntityObject, removeComponentsFromComponentContainer:boolean = true){
+        public removeChild(child:EntityObject){
             child.onExit();
-
-            if(removeComponentsFromComponentContainer){
-                child.getAllChildren().forEach((c:EntityObject) => c.removeAllComponentFromComponentContainer());
-                child.removeAllComponentFromComponentContainer();
-            }
 
             this._children.removeChild(child);
 

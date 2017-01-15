@@ -1,7 +1,7 @@
 /// <reference path="../../../../dist/wd.d.ts"/>
 module sample {
     import EntityObject = wd.EntityObject;
-    import MouseEvent = wd.MouseEvent;
+    import PointEvent = wd.PointEvent;
 
     @wd.script("eventHandler")
     export class SceneEventHandler implements wd.IEventScriptBehavior {
@@ -11,35 +11,35 @@ module sample {
 
         private _entityObject:EntityObject = null;
 
-        public onMouseClick(e:MouseEvent) {
+        public onPointTap(e:PointEvent) {
             console.log(`scene ${e.name}`);
         }
 
-        public onMouseDown(e:MouseEvent){
+        public onPointDown(e:PointEvent){
             console.log(`scene ${e.name}`);
         }
 
-        public onMouseUp(e:MouseEvent){
+        public onPointUp(e:PointEvent){
             console.log(`scene ${e.name}`);
         }
 
-        public onMouseWheel(e:MouseEvent){
+        public onPointWheel(e:PointEvent){
             console.log(`scene ${e.name}`);
         }
 
-        public onMouseMove(e:MouseEvent) {
+        public onPointMove(e:PointEvent) {
             console.log(`scene ${e.name}`);
         }
 
-        public onMouseOver(e:MouseEvent) {
+        public onPointOver(e:PointEvent) {
             console.log(`scene ${e.name}`);
         }
 
-        public onMouseOut(e:MouseEvent) {
+        public onPointOut(e:PointEvent) {
             console.log(`scene ${e.name}`);
         }
 
-        public onMouseDrag(e:MouseEvent){
+        public onPointDrag(e:PointEvent){
             console.log(`scene ${e.name}`);
         }
     }

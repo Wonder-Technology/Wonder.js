@@ -188,8 +188,7 @@ module wd{
                     return;
                 }
 
-                if(component instanceof Geometry
-                    || component instanceof Script){
+                if(component instanceof Geometry){
                     instance.addComponent(component, true);
                 }
                 else{

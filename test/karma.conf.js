@@ -27,14 +27,14 @@
 
         'test/unit/**/BufferWriter.js',
 
-        'test/unit/**',
+        // 'test/unit/**',
 
 
         // 'test/unit/**/GPUDetector*',
 
         // 'test/unit/**/action/*',
         // 'test/unit/**/command/*',
-        // 'test/unit/**/EntityObjectSpec*',
+        'test/unit/**/EntityObjectSpec*',
         // 'test/unit/**/SceneDispatcherSpec*',
         // 'test/unit/**/cloneSpec*',
 
@@ -164,19 +164,20 @@
         //
         // 'test/unit/**/instance/**',
         // 'test/unit/**/instanceAnima*',
-
+        //
         // 'test/unit/**/instanceBasic*',
-
+        //
         // 'test/unit/**/instance/one*',
-
+        //
         // 'test/unit/**/instance/oneToManyInstanceSpacePartition*',
-
+        'test/unit/**/instance/oneToOneInstanceSpacePartition*',
+        //
         // 'test/unit/**/instance/*lod*',
-
+        //
         // 'test/unit/**/instance/*SourceInstance*',
         // 'test/unit/**/instance/instance_basic*',
-        //'test/unit/**/instance/instance_light*',
-
+        // 'test/unit/**/instance/instance_light*',
+        //
         // 'test/unit/**/instanceScript*',
 
         // 'test/unit/**/instanceAnimation*',
@@ -355,10 +356,10 @@
         //'test/unit/**/physics/**/bounce*',
         //'test/unit/**/physics/**/constraint*',
         //'test/unit/**/physics/**/compound*',
-        // 'test/unit/**/GameObjectSpec.js',
+        'test/unit/**/GameObjectSpec.js',
         //'test/unit/**/*Shape*.js',
-        'test/unit/**/Arcball*',
-        'test/unit/**/FlyCameraController*',
+        // 'test/unit/**/Arcball*',
+        // 'test/unit/**/FlyCameraController*',
         // 'test/unit/**/scriptSpec.js',
       //
       //  'test/unit/**/*ControllerSpec.js',
@@ -390,13 +391,13 @@
         // 'test/unit/**/*Morph*.js',
         // 'test/unit/**/Morph*.js',
         //'test/unit/core/*.js',
-        'test/unit/device/*.js',
+        // 'test/unit/device/*.js',
 
         // 'test/unit/**/DomEventManager*',
 
         // 'test/unit/event/**',
-        'test/unit/event/mouseEv*.js',
-        'test/unit/event/touchEv*.js',
+        // 'test/unit/event/mouseEv*.js',
+        // 'test/unit/event/touchEv*.js',
         // 'test/unit/event/customEv*.js',
         // 'test/unit/event/keyboardEv*.js',
         // 'test/unit/event/domEv*.js',
@@ -449,7 +450,7 @@
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['Firefox'],
+    browsers: ['Chrome'],
 
 
     // Continuous Integration mode

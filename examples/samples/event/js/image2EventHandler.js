@@ -12,28 +12,28 @@ var sample;
             this._entityObject = null;
             this._entityObject = entityObject;
         }
-        Image2EventHandler.prototype.onMouseClick = function (e) {
+        Image2EventHandler.prototype.onPointTap = function (e) {
             console.log("image2 " + e.name);
         };
-        Image2EventHandler.prototype.onMouseDown = function (e) {
+        Image2EventHandler.prototype.onPointDown = function (e) {
             console.log("image2 " + e.name);
         };
-        Image2EventHandler.prototype.onMouseUp = function (e) {
+        Image2EventHandler.prototype.onPointUp = function (e) {
             console.log("image2 " + e.name);
         };
-        Image2EventHandler.prototype.onMouseWheel = function (e) {
+        Image2EventHandler.prototype.onPointWheel = function (e) {
             console.log("image2 " + e.name);
         };
-        Image2EventHandler.prototype.onMouseMove = function (e) {
+        Image2EventHandler.prototype.onPointMove = function (e) {
             console.log("image2 " + e.name);
         };
-        Image2EventHandler.prototype.onMouseOver = function (e) {
+        Image2EventHandler.prototype.onPointOver = function (e) {
             console.log("image2 " + e.name);
         };
-        Image2EventHandler.prototype.onMouseOut = function (e) {
+        Image2EventHandler.prototype.onPointOut = function (e) {
             console.log("image2 " + e.name);
         };
-        Image2EventHandler.prototype.onMouseDrag = function (e) {
+        Image2EventHandler.prototype.onPointDrag = function (e) {
             console.log("image2 " + e.name);
         };
         Image2EventHandler = __decorate([

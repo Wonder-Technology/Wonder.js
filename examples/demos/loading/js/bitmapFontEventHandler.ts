@@ -3,7 +3,7 @@ module sample {
     declare var scene:any;
 
     import EntityObject = wd.EntityObject;
-    import MouseEvent = wd.MouseEvent;
+    import PointEvent = wd.PointEvent;
 
     @wd.script("bitmapFontEventHandler")
     export class BitmapFontEventHandler implements wd.IEventScriptBehavior {
@@ -14,11 +14,11 @@ module sample {
         private _entityObject:EntityObject = null;
 
 
-        public onMouseDown(e:MouseEvent) {
+        public onPointDown(e:PointEvent) {
             console.log("mousedown");
         }
 
-        public onMouseClick(e:MouseEvent) {
+        public onPointTap(e:PointEvent) {
             console.log("click");
             this._entityObject.parent.dispose();
 

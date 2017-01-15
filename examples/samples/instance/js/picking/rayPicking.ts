@@ -1,7 +1,7 @@
 /// <reference path="../../../../../dist/wd.d.ts"/>
 module sample {
     import GameObject = wd.GameObject;
-    import MouseEvent = wd.MouseEvent;
+    import PointEvent = wd.PointEvent;
 
     @wd.script("RayPicking")
     export class RayPicking implements wd.IScriptBehavior {
@@ -11,7 +11,7 @@ module sample {
 
         private _gameObject:GameObject = null;
 
-        public onMouseDown(e:MouseEvent){
+        public onPointDown(e:PointEvent){
             this._handleSelect(this._gameObject);
         }
 

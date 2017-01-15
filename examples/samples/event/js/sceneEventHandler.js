@@ -12,28 +12,28 @@ var sample;
             this._entityObject = null;
             this._entityObject = entityObject;
         }
-        SceneEventHandler.prototype.onMouseClick = function (e) {
+        SceneEventHandler.prototype.onPointTap = function (e) {
             console.log("scene " + e.name);
         };
-        SceneEventHandler.prototype.onMouseDown = function (e) {
+        SceneEventHandler.prototype.onPointDown = function (e) {
             console.log("scene " + e.name);
         };
-        SceneEventHandler.prototype.onMouseUp = function (e) {
+        SceneEventHandler.prototype.onPointUp = function (e) {
             console.log("scene " + e.name);
         };
-        SceneEventHandler.prototype.onMouseWheel = function (e) {
+        SceneEventHandler.prototype.onPointWheel = function (e) {
             console.log("scene " + e.name);
         };
-        SceneEventHandler.prototype.onMouseMove = function (e) {
+        SceneEventHandler.prototype.onPointMove = function (e) {
             console.log("scene " + e.name);
         };
-        SceneEventHandler.prototype.onMouseOver = function (e) {
+        SceneEventHandler.prototype.onPointOver = function (e) {
             console.log("scene " + e.name);
         };
-        SceneEventHandler.prototype.onMouseOut = function (e) {
+        SceneEventHandler.prototype.onPointOut = function (e) {
             console.log("scene " + e.name);
         };
-        SceneEventHandler.prototype.onMouseDrag = function (e) {
+        SceneEventHandler.prototype.onPointDrag = function (e) {
             console.log("scene " + e.name);
         };
         SceneEventHandler = __decorate([
