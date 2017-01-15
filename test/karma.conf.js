@@ -27,14 +27,14 @@
 
         'test/unit/**/BufferWriter.js',
 
-        // 'test/unit/**',
+        'test/unit/**',
 
 
         // 'test/unit/**/GPUDetector*',
 
         // 'test/unit/**/action/*',
         // 'test/unit/**/command/*',
-        'test/unit/**/EntityObjectSpec*',
+        // 'test/unit/**/EntityObjectSpec*',
         // 'test/unit/**/SceneDispatcherSpec*',
         // 'test/unit/**/cloneSpec*',
 
@@ -170,7 +170,7 @@
         // 'test/unit/**/instance/one*',
         //
         // 'test/unit/**/instance/oneToManyInstanceSpacePartition*',
-        'test/unit/**/instance/oneToOneInstanceSpacePartition*',
+        // 'test/unit/**/instance/oneToOneInstanceSpacePartition*',
         //
         // 'test/unit/**/instance/*lod*',
         //
@@ -356,7 +356,7 @@
         //'test/unit/**/physics/**/bounce*',
         //'test/unit/**/physics/**/constraint*',
         //'test/unit/**/physics/**/compound*',
-        'test/unit/**/GameObjectSpec.js',
+        // 'test/unit/**/GameObjectSpec.js',
         //'test/unit/**/*Shape*.js',
         // 'test/unit/**/Arcball*',
         // 'test/unit/**/FlyCameraController*',

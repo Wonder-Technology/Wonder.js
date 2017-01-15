@@ -2292,11 +2292,11 @@ declare module wd {
 
 declare module wd {
     abstract class Component extends Entity {
+        readonly transform: Transform;
         entityObject: EntityObject;
         init(): void;
         dispose(): void;
         clone(): any;
-        readonly transform: Transform;
         addToObject(entityObject: EntityObject, isShareComponent?: boolean): void;
         addToComponentContainer(): void;
         removeFromObject(entityObject: EntityObject): void;
@@ -2493,7 +2493,7 @@ declare module wd {
         findChildByTag(tag: string): any;
         findChildByName(name: string): any;
         findChildrenByName(name: string): wdCb.Collection<EntityObject>;
-        removeChild(child: EntityObject, removeComponentsFromComponentContainer?: boolean): EntityObject;
+        removeChild(child: EntityObject): EntityObject;
         removeAllChildren(): void;
         getComponent<T>(_class: any): T;
         getComponents(): wdCb.Collection<any>;
@@ -2582,7 +2582,7 @@ declare module wd {
         findChildByTag(tag: string): any;
         findChildByName(name: string): any;
         findChildrenByName(name: string): wdCb.Collection<EntityObject>;
-        removeChild(child: EntityObject, removeComponentsFromComponentContainer?: boolean): this;
+        removeChild(child: EntityObject): this;
         removeAllChildren(): void;
     }
 }
@@ -8580,13 +8580,14 @@ declare module wd {
     class ShaderChunk {
         static empty: GLSLChunk;
         static NULL: number;
-        static normal_morph_vertex: GLSLChunk;
-        static vertice_morph_vertex: GLSLChunk;
-        static vertice_skinSkeleton_vertex: GLSLChunk;
         static basic_materialColor_fragment: GLSLChunk;
         static basic_vertexColor_fragment: GLSLChunk;
         static basic_vertexColor_vertex: GLSLChunk;
         static end_basic_fragment: GLSLChunk;
+        static common_envMap_fragment: GLSLChunk;
+        static normal_morph_vertex: GLSLChunk;
+        static vertice_morph_vertex: GLSLChunk;
+        static vertice_skinSkeleton_vertex: GLSLChunk;
         static common_define: GLSLChunk;
         static common_fragment: GLSLChunk;
         static common_function: GLSLChunk;
@@ -8595,14 +8596,6 @@ declare module wd {
         static lowp_fragment: GLSLChunk;
         static mediump_fragment: GLSLChunk;
         static noNormalMap_light_fragment: GLSLChunk;
-        static common_envMap_fragment: GLSLChunk;
-        static lightCommon_fragment: GLSLChunk;
-        static lightCommon_vertex: GLSLChunk;
-        static lightEnd_fragment: GLSLChunk;
-        static light_common: GLSLChunk;
-        static light_fragment: GLSLChunk;
-        static light_setWorldPosition_vertex: GLSLChunk;
-        static light_vertex: GLSLChunk;
         static map_forBasic_fragment: GLSLChunk;
         static map_forBasic_vertex: GLSLChunk;
         static multi_map_forBasic_fragment: GLSLChunk;
@@ -8611,6 +8604,13 @@ declare module wd {
         static common_proceduralTexture_vertex: GLSLChunk;
         static skybox_fragment: GLSLChunk;
         static skybox_vertex: GLSLChunk;
+        static lightCommon_fragment: GLSLChunk;
+        static lightCommon_vertex: GLSLChunk;
+        static lightEnd_fragment: GLSLChunk;
+        static light_common: GLSLChunk;
+        static light_fragment: GLSLChunk;
+        static light_setWorldPosition_vertex: GLSLChunk;
+        static light_vertex: GLSLChunk;
         static basic_forBasic_envMap_fragment: GLSLChunk;
         static basic_forBasic_envMap_vertex: GLSLChunk;
         static forBasic_envMap_fragment: GLSLChunk;
@@ -8657,6 +8657,8 @@ declare module wd {
         static common_light: GLSLChunk;
         static mirror_fragment: GLSLChunk;
         static mirror_vertex: GLSLChunk;
+        static brick_proceduralTexture_fragment: GLSLChunk;
+        static cloud_proceduralTexture_fragment: GLSLChunk;
         static water_bump_fragment: GLSLChunk;
         static water_bump_vertex: GLSLChunk;
         static water_fragment: GLSLChunk;
@@ -8667,15 +8669,12 @@ declare module wd {
         static water_reflection_fragment: GLSLChunk;
         static water_refraction_fragment: GLSLChunk;
         static water_vertex: GLSLChunk;
-        static brick_proceduralTexture_fragment: GLSLChunk;
-        static cloud_proceduralTexture_fragment: GLSLChunk;
         static fire_proceduralTexture_fragment: GLSLChunk;
         static grass_proceduralTexture_fragment: GLSLChunk;
         static marble_proceduralTexture_fragment: GLSLChunk;
-        static road_proceduralTexture_fragment: GLSLChunk;
         static wood_proceduralTexture_fragment: GLSLChunk;
+        static road_proceduralTexture_fragment: GLSLChunk;
         static basic_bitmapFont_fragment: GLSLChunk;
-        static common_bitmapFont_vertex: GLSLChunk;
         static grass_batch_instance_vertex: GLSLChunk;
         static grass_common_instance_fragment: GLSLChunk;
         static grass_common_instance_vertex: GLSLChunk;
@@ -8692,6 +8691,7 @@ declare module wd {
         static terrain_mix_common_fragment: GLSLChunk;
         static terrain_mix_fragment: GLSLChunk;
         static terrain_mix_vertex: GLSLChunk;
+        static common_bitmapFont_vertex: GLSLChunk;
         static buildCubemapShadowMap_fragment: GLSLChunk;
         static buildCubemapShadowMap_vertex: GLSLChunk;
         static buildTwoDShadowMap_depthMap_fragment: GLSLChunk;
