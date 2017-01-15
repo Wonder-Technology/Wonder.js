@@ -991,6 +991,7 @@ declare module wdCb {
         css(property: string, value: string): void;
         attr(name: string): any;
         attr(name: string, value: string): any;
+        text(str?: string): string;
         private _isDomEleStr(eleStr);
         private _buildDom(eleStr);
         private _buildDom(dom);
@@ -2297,8 +2298,9 @@ declare module wd {
         clone(): any;
         readonly transform: Transform;
         addToObject(entityObject: EntityObject, isShareComponent?: boolean): void;
+        addToComponentContainer(): void;
         removeFromObject(entityObject: EntityObject): void;
-        removeFromEngine(): void;
+        removeFromComponentContainer(): void;
     }
 }
 
@@ -2491,7 +2493,7 @@ declare module wd {
         findChildByTag(tag: string): any;
         findChildByName(name: string): any;
         findChildrenByName(name: string): wdCb.Collection<EntityObject>;
-        removeChild(child: EntityObject): EntityObject;
+        removeChild(child: EntityObject, removeComponentsFromComponentContainer?: boolean): EntityObject;
         removeAllChildren(): void;
         getComponent<T>(_class: any): T;
         getComponents(): wdCb.Collection<any>;
@@ -2503,7 +2505,8 @@ declare module wd {
         removeComponent(component: Component): any;
         removeComponent(_class: Function): any;
         removeAllComponent(): wdCb.Collection<Component>;
-        removeAllComponentFromEngine(): void;
+        addAllComponentToComponentContainer(): void;
+        removeAllComponentFromComponentContainer(): void;
         render(renderer: Renderer, camera: GameObject): void;
         update(elapsed: number): void;
         getComponentCount(_class: Function): number;
@@ -2546,7 +2549,8 @@ declare module wd {
         addComponent(component: Component, isShareComponent?: boolean): this;
         removeComponent(component: Component): any;
         removeComponent(_class: Function): any;
-        removeAllComponentFromEngine(): void;
+        addAllComponentToComponentContainer(): void;
+        removeAllComponentFromComponentContainer(): void;
         getComponentCount(_class: Function): number;
         getGeometry(): Geometry;
         getRendererComponent(): RendererComponent;
@@ -2578,7 +2582,7 @@ declare module wd {
         findChildByTag(tag: string): any;
         findChildByName(name: string): any;
         findChildrenByName(name: string): wdCb.Collection<EntityObject>;
-        removeChild(child: EntityObject): this;
+        removeChild(child: EntityObject, removeComponentsFromComponentContainer?: boolean): this;
         removeAllChildren(): void;
     }
 }
@@ -2611,6 +2615,117 @@ declare module wd {
         removeChild(component: Component): void;
         removeAllChildren(): void;
         hasChild(component: Component): boolean;
+    }
+}
+
+declare module wd {
+    class ScriptComponentContainer {
+        static getInstance(): any;
+        private constructor();
+        private _scriptList;
+        addChild(entityObject: EntityObject, scriptName: string, classInstance: IScriptBehavior): void;
+        removeChild(entityObject: EntityObject, classInstance: IScriptBehavior): void;
+        removeAllChildren(): void;
+        findScript(entityObject: EntityObject, scriptName: string): IScriptBehavior;
+        execEntityObjectScript(entityObject: EntityObject, method: string): void;
+        execEntityObjectScriptOnlyOnce(entityObject: EntityObject, method: string): void;
+        execEntityObjectScriptWithData(entityObject: EntityObject, method: string, data: any): void;
+        execScript(method: string): void;
+        execScriptWithData(method: string, data: any): void;
+        execEntityObjectEventScriptWithData(entityObject: EntityObject, method: string, data: any): void;
+    }
+}
+
+declare module wd {
+    class CollisionComponentContainer extends ComponentContainer {
+        static getInstance(): any;
+        private constructor();
+        protected list: wdCb.Collection<Collider>;
+        private _collisionDetector;
+        update(elapsed: number): void;
+        detect(elapsed: number): void;
+    }
+}
+
+declare module wd {
+    class ActionComponentContainer extends ComponentContainer {
+        static getInstance(): any;
+        private constructor();
+        protected list: wdCb.Collection<Action>;
+        update(elapsed: number): void;
+    }
+}
+
+declare module wd {
+    class LODComponentContainer extends ComponentContainer {
+        static getInstance(): any;
+        private constructor();
+        protected list: wdCb.Collection<LOD>;
+        update(elapsed: number): void;
+    }
+}
+
+declare module wd {
+    class SpacePartitionComponentContainer extends ComponentContainer {
+        static getInstance(): any;
+        private constructor();
+        protected list: wdCb.Collection<SpacePartition>;
+        update(elapsed: number): void;
+    }
+}
+
+declare module wd {
+    class AnimationComponentContainer extends ComponentContainer {
+        static getInstance(): any;
+        private constructor();
+        protected list: wdCb.Collection<Animation>;
+        update(elapsed: number): void;
+    }
+}
+
+declare module wd {
+    class PhysicsComponentContainer extends ComponentContainer {
+        static getInstance(): any;
+        private constructor();
+        physicsEngineAdapter: IPhysicsEngineAdapter;
+        protected list: wdCb.Collection<RigidBody>;
+        removeChild(body: RigidBody): void;
+        initPhysicsComponentContainerAdapter(): void;
+        initBody(): void;
+        initConstraint(): void;
+        update(elapsed: number): void;
+    }
+}
+
+declare module wd {
+    class BillboardComponentContainer extends ComponentContainer {
+        static getInstance(): any;
+        private constructor();
+        update(elapsed: number): void;
+    }
+}
+
+declare module wd {
+    abstract class UIComponentContainer extends ComponentContainer {
+        update(elapsed: number): void;
+    }
+}
+
+declare module wd {
+    class ThreeDUIComponentContainer extends UIComponentContainer {
+        static getInstance(): any;
+        private constructor();
+        protected list: wdCb.Collection<ThreeDUI>;
+    }
+}
+
+declare module wd {
+    class TwoDUIComponentContainer extends UIComponentContainer {
+        static getInstance(): any;
+        private constructor();
+        protected list: wdCb.Collection<TwoDUI>;
+        render(): void;
+        private _isDirty(uiObject);
     }
 }
 
@@ -3012,7 +3127,6 @@ declare module wd {
         POINT_SCALE,
         POINT_DRAG,
         MATERIAL_CHANGE,
-        MATERIAL_COLOR_CHANGE,
         UI_WIDTH_CHANGE,
         UI_HEIGHT_CHANGE,
         TRANSFORM_TRANSLATE,
@@ -3636,117 +3750,6 @@ declare module wd {
 }
 
 declare module wd {
-    class ScriptEngine {
-        static getInstance(): any;
-        private constructor();
-        private _scriptList;
-        addChild(entityObject: EntityObject, scriptName: string, classInstance: IScriptBehavior): void;
-        removeChild(entityObject: EntityObject, classInstance: IScriptBehavior): void;
-        removeAllChildren(): void;
-        findScript(entityObject: EntityObject, scriptName: string): IScriptBehavior;
-        execEntityObjectScript(entityObject: EntityObject, method: string): void;
-        execEntityObjectScriptOnlyOnce(entityObject: EntityObject, method: string): void;
-        execEntityObjectScriptWithData(entityObject: EntityObject, method: string, data: any): void;
-        execScript(method: string): void;
-        execScriptWithData(method: string, data: any): void;
-        execEntityObjectEventScriptWithData(entityObject: EntityObject, method: string, data: any): void;
-    }
-}
-
-declare module wd {
-    class CollisionEngine extends ComponentContainer {
-        static getInstance(): any;
-        private constructor();
-        protected list: wdCb.Collection<Collider>;
-        private _collisionDetector;
-        update(elapsed: number): void;
-        detect(elapsed: number): void;
-    }
-}
-
-declare module wd {
-    class ActionEngine extends ComponentContainer {
-        static getInstance(): any;
-        private constructor();
-        protected list: wdCb.Collection<Action>;
-        update(elapsed: number): void;
-    }
-}
-
-declare module wd {
-    class LODEngine extends ComponentContainer {
-        static getInstance(): any;
-        private constructor();
-        protected list: wdCb.Collection<LOD>;
-        update(elapsed: number): void;
-    }
-}
-
-declare module wd {
-    class SpacePartitionEngine extends ComponentContainer {
-        static getInstance(): any;
-        private constructor();
-        protected list: wdCb.Collection<SpacePartition>;
-        update(elapsed: number): void;
-    }
-}
-
-declare module wd {
-    class AnimationEngine extends ComponentContainer {
-        static getInstance(): any;
-        private constructor();
-        protected list: wdCb.Collection<Animation>;
-        update(elapsed: number): void;
-    }
-}
-
-declare module wd {
-    class PhysicsEngine extends ComponentContainer {
-        static getInstance(): any;
-        private constructor();
-        physicsEngineAdapter: IPhysicsEngineAdapter;
-        protected list: wdCb.Collection<RigidBody>;
-        removeChild(body: RigidBody): void;
-        initPhysicsEngineAdapter(): void;
-        initBody(): void;
-        initConstraint(): void;
-        update(elapsed: number): void;
-    }
-}
-
-declare module wd {
-    class BillboardEngine extends ComponentContainer {
-        static getInstance(): any;
-        private constructor();
-        update(elapsed: number): void;
-    }
-}
-
-declare module wd {
-    abstract class UIEngine extends ComponentContainer {
-        update(elapsed: number): void;
-    }
-}
-
-declare module wd {
-    class ThreeDUIEngine extends UIEngine {
-        static getInstance(): any;
-        private constructor();
-        protected list: wdCb.Collection<ThreeDUI>;
-    }
-}
-
-declare module wd {
-    class TwoDUIEngine extends UIEngine {
-        static getInstance(): any;
-        private constructor();
-        protected list: wdCb.Collection<TwoDUI>;
-        render(): void;
-        private _isDirty(uiObject);
-    }
-}
-
-declare module wd {
     abstract class Action extends Component {
         readonly abstract isStop: boolean;
         readonly abstract isPause: boolean;
@@ -3763,7 +3766,8 @@ declare module wd {
         clone(): Action;
         reset(): void;
         addToObject(entityObject: EntityObject, isShareComponent?: boolean): void;
-        removeFromEngine(): void;
+        addToComponentContainer(): void;
+        removeFromComponentContainer(): void;
         init(): void;
         protected finish(): void;
     }
@@ -4017,9 +4021,9 @@ declare module wd {
         protected pauseDuration: number;
         protected frameCount: number;
         private _isResume;
-        abstract play(animName: string, fps: number): void;
-        addToObject(entityObject: EntityObject, isShareComponent?: boolean): void;
-        removeFromEngine(): void;
+        abstract play(...args: any[]): void;
+        addToComponentContainer(): void;
+        removeFromComponentContainer(): void;
         clone(): this;
         pause(): void;
         resume(): void;
@@ -4055,9 +4059,9 @@ declare module wd {
 declare module wd {
     abstract class MultiLayerKeyFrameAnimation extends Animation {
         protected controllerList: wdCb.Collection<LayerKeyFrameController>;
+        private _isPlayOneTime;
         init(): void;
         playOneTime(...args: any[]): void;
-        private _isPlayOneTime;
         protected handleUpdate(elapsed: number): void;
         protected abstract createControllerMap(): void;
         protected abstract handleWhenPause(elapsed: number): void;
@@ -4066,6 +4070,7 @@ declare module wd {
         protected abstract handleAfterJudgeWhetherCurrentFrameFinish(controller: LayerKeyFrameController, elapsed: number): void;
         protected abstract handleAfterJudgeWhetherAllCurrentFrameFinish(elapsed: any): void;
         protected abstract isCurrentFrameFinish(controller: LayerKeyFrameController, elapsed: number): boolean;
+        private _isAllControllerFinishAnimation();
     }
 }
 
@@ -4206,6 +4211,7 @@ declare module wd {
         private _getBeginElapsedTimeOfFirstFrameWhenFinishAllFrames(elapsed);
         private _isFinishAllFrames();
         private _updateCurrentFrameIndex(elapsed, pauseDuration);
+        private _judgeBeginElapsedTime(elapsed, isFirstUpdateAttributeName);
     }
 }
 
@@ -4215,6 +4221,8 @@ declare module wd {
         currentUpdatedTransformMatrix: Matrix4;
         jointName: string;
         saveZeroTimeFrameData(): void;
+        getFirstFrameTime(): number;
+        addBoneMatrixAsTheFirstFrameWhoseTimeIsZero(boneMatrix: BoneMatrix): void;
         updateTargets(elapsed: number, pauseDuration: number): void;
     }
 }
@@ -4261,8 +4269,8 @@ declare module wd {
         static create(): Billboard;
         entityObject: GameObject;
         mode: EBillboardMode;
-        addToObject(entityObject: EntityObject, isShareComponent?: boolean): void;
-        removeFromEngine(): void;
+        addToComponentContainer(): void;
+        removeFromComponentContainer(): void;
         update(elapsed: number): void;
         private _rotateByYAxis(camera, objToCamProj, cameraPos, objPos, objTransform);
         private _rotateLocalByXAxis(camera, objToCamProj, cameraPos, objPos, objTransform);
@@ -4282,8 +4290,8 @@ declare module wd {
         entityObject: GameObject;
         abstract addLevel(distanceBetweenCameraAndObject: any, targetLevel: any, ...args: any[]): void;
         abstract update(elapsed: number): void;
-        addToObject(entityObject: EntityObject, isShareComponent?: boolean): void;
-        removeFromEngine(): void;
+        addToComponentContainer(): void;
+        removeFromComponentContainer(): void;
     }
 }
 
@@ -4335,8 +4343,8 @@ declare module wd {
         abstract getCollideObjects(shape: Shape): wdCb.Collection<GameObject>;
         abstract getChildren(): wdCb.Collection<GameObject>;
         abstract update(elapsed: number): void;
-        addToObject(entityObject: GameObject, isShareComponent?: boolean): void;
-        removeFromEngine(): void;
+        addToComponentContainer(): void;
+        removeFromComponentContainer(): void;
     }
 }
 
@@ -4403,15 +4411,15 @@ declare module wd {
         distanceConstraint: DistanceConstraint;
         hingeConstraint: HingeConstraint;
         pointToPointConstraintList: PointToPointConstraintList;
-        addToObject(entityObject: EntityObject, isShareComponent?: boolean): void;
         addConstraint(): void;
-        removeFromEngine(): void;
+        addToComponentContainer(): void;
+        removeFromComponentContainer(): void;
         dispose(): void;
-        getPhysicsEngineAdapter(): any;
+        getPhysicsComponentContainerAdapter(): any;
         initBody(): void;
         initConstraint(): void;
         protected abstract addBody(): any;
-        protected addBodyToPhysicsEngine(method: string, data?: any): void;
+        protected addBodyToPhysicsComponentContainer(method: string, data?: any): void;
         private _onContact(collideObject);
         private _onCollisionStart(collideObject);
         private _onCollisionEnd();
@@ -4717,8 +4725,8 @@ declare module wd {
     class CannonUtils {
         static convertToCannonVector3(v: Vector3): CANNON.Vec3;
         static convertToCannonQuaternion(rotation: Quaternion): CANNON.Quaternion;
-        static convertTowdVector3(v: CANNON.Vec3): Vector3;
-        static convertTowdQuaternion(r: CANNON.Quaternion): Quaternion;
+        static convertToWDVector3(v: CANNON.Vec3): Vector3;
+        static convertToWDQuaternion(r: CANNON.Quaternion): Quaternion;
     }
 }
 
@@ -4946,8 +4954,8 @@ declare module wd {
 declare module wd {
     abstract class ThreeDUI extends Component {
         update(elapsed: number): void;
-        addToObject(entityObject: GameObject, isShareComponent?: boolean): void;
-        removeFromEngine(): void;
+        addToComponentContainer(): void;
+        removeFromComponentContainer(): void;
     }
 }
 
@@ -4992,8 +5000,8 @@ declare module wd {
         context: CanvasRenderingContext2D;
         update(elapsed: number): void;
         init(): void;
-        addToObject(entityObject: UIObject, isShareComponent?: boolean): void;
-        removeFromEngine(): void;
+        addToComponentContainer(): void;
+        removeFromComponentContainer(): void;
         render(): void;
         protected draw(): void;
         protected shouldNotRender(): boolean;
@@ -5485,7 +5493,7 @@ declare module wd {
         static addScript(scriptName: string, _class: Function): void;
         constructor(id?: string);
         id: string;
-        addToObject(entityObject: EntityObject, isShareComponent?: boolean): void;
+        addToComponentContainer(): void;
     }
     type ScriptFileData = {
         name: string;
@@ -5497,7 +5505,7 @@ declare module wd {
     abstract class Transform extends Component {
         protected p_parent: Transform;
         parent: Transform;
-        readonly isTransform: boolean;
+        isTransform: boolean;
         private _isTranslate;
         isTranslate: boolean;
         private _isRotate;
@@ -5514,11 +5522,13 @@ declare module wd {
         dispose(): void;
         addChild(child: Transform): void;
         removeChild(child: Transform): void;
-        setChildrenTransformState(transformState: ETransformState, state: boolean): void;
+        setChildrenTransformState(state: boolean): any;
+        setChildrenTransformState(transformState: ETransformState, state: boolean): any;
         protected abstract clearCache(): void;
-        protected handleWhenSetTransformState(transformState: ETransformState): void;
+        protected handleWhenSetTransformState(transformState?: ETransformState): void;
         protected setParent(parent: Transform): void;
         protected getMatrix<T>(syncMethod: string, matrixAttriName: string): T;
+        private _setGlobalTransformState(state);
         private _setGlobalTransformState(transformState, state);
         private _setLocalTransformState(transformState, state);
         private _resetTransformFlag();
@@ -5529,7 +5539,7 @@ declare module wd {
     class ThreeDTransform extends Transform {
         static create(): ThreeDTransform;
         private _localToWorldMatrix;
-        readonly localToWorldMatrix: Matrix4;
+        localToWorldMatrix: Matrix4;
         readonly normalMatrix: Matrix3;
         private _position;
         position: Vector3;
@@ -5561,6 +5571,8 @@ declare module wd {
         private _eulerAnglesCache;
         private _localEulerAnglesCache;
         private _normalMatrixCache;
+        private _isUserSpecifyTheLocalToWorldMatrix;
+        private _userLocalToWorldMatrix;
         sync(): void;
         translateLocal(translation: Vector3): any;
         translateLocal(x: number, y: number, z: number): any;
@@ -5577,7 +5589,7 @@ declare module wd {
         lookAt(target: Vector3, up: Vector3): any;
         lookAt(targetX: number, targetY: number, targetZ: number, upX: number, upY: number, upZ: number): any;
         protected clearCache(): void;
-        protected handleWhenSetTransformState(transformState: ETransformState): void;
+        protected handleWhenSetTransformState(transformState?: ETransformState): void;
     }
 }
 
@@ -6058,8 +6070,6 @@ declare module wd {
         private _colorCache;
         private _normalDirty;
         private _indiceDirty;
-        private _materialColorChangeSubscription;
-        init(): void;
         dispose(): void;
         computeFaceNormals(): void;
         computeVertexNormals(): void;
@@ -6071,7 +6081,6 @@ declare module wd {
         protected computeVertexNormalsHelper(vertices: Array<number>): any;
         private _fillEmptyData(data);
         private _calculateTangents(vertices, normals, texCoords, indices);
-        private _needGetColorsFromMaterial();
     }
 }
 
@@ -6120,14 +6129,13 @@ declare module wd {
         private _texCoordBuffer;
         private _tangentBuffer;
         private _indiceBuffer;
-        private _materialChangeSubscription;
         abstract getBufferForRenderSort(): Buffer;
         createBuffersFromGeometryData(): void;
-        init(): void;
         removeCache(type: EBufferDataType): any;
         removeCache(name: string): any;
         getChild(type: EBufferDataType): any;
         getChild(type: EBufferDataType, dataName: string): any;
+        init(): void;
         dispose(): void;
         protected abstract getVertice(type: EBufferDataType): any;
         protected abstract getNormal(type: EBufferDataType): any;
@@ -6210,9 +6218,11 @@ declare module wd {
         near: number;
         private _far;
         far: number;
+        private _pMatrix;
         pMatrix: Matrix4;
         entityObject: GameObject;
-        protected dirty: boolean;
+        protected pMatrixDirty: boolean;
+        private _isUserSpecifyThePMatrix;
         abstract convertScreenToWorld(screenX: number, screenY: number, distanceFromCamera: number): Vector3;
         abstract convertWorldToScreen(worldX: number, worldY: number, worldZ: number, screenWidth: number, screenHeight: number): Vector2;
         init(): void;
@@ -6221,6 +6231,7 @@ declare module wd {
         update(elapsed: number): void;
         protected abstract updateProjectionMatrix(): any;
         protected getInvViewProjMat(): Matrix4;
+        private _updateProjectionMatrix();
     }
 }
 
@@ -6260,7 +6271,7 @@ declare module wd {
     abstract class CameraController extends Component {
         constructor(cameraComponent: Camera);
         readonly cameraToWorldMatrix: Matrix4;
-        worldToCameraMatrix: Matrix4;
+        readonly worldToCameraMatrix: Matrix4;
         pMatrix: Matrix4;
         entityObject: GameObject;
         camera: Camera;
@@ -6482,8 +6493,8 @@ declare module wd {
         abstract createBoundingRegion(): any;
         abstract buildBoundingRegion(): any;
         init(): void;
-        addToObject(entityObject: EntityObject, isShareComponent?: boolean): void;
-        removeFromEngine(): void;
+        addToComponentContainer(): void;
+        removeFromComponentContainer(): void;
         clone(): this;
         update(elapsed: number): void;
         updateShape(): void;
@@ -8616,10 +8627,10 @@ declare module wd {
         static refraction_forLight_envMap_fragment: GLSLChunk;
         static modelMatrix_batch_instance_vertex: GLSLChunk;
         static normalMatrix_batch_instance_vertex: GLSLChunk;
-        static modelMatrix_noInstance_vertex: GLSLChunk;
-        static normalMatrix_noInstance_vertex: GLSLChunk;
         static modelMatrix_hardware_instance_vertex: GLSLChunk;
         static normalMatrix_hardware_instance_vertex: GLSLChunk;
+        static modelMatrix_noInstance_vertex: GLSLChunk;
+        static normalMatrix_noInstance_vertex: GLSLChunk;
         static diffuseMap_fragment: GLSLChunk;
         static diffuseMap_vertex: GLSLChunk;
         static emissionMap_fragment: GLSLChunk;
@@ -8740,7 +8751,6 @@ declare module wd {
         blend: boolean;
         blendFuncSeparate: Array<EBlendFunc>;
         blendEquationSeparate: Array<EBlendEquation>;
-        shading: EShading;
         geometry: Geometry;
         private _shaderManager;
         abstract getTextureForRenderSort(): Texture;
@@ -8787,6 +8797,7 @@ declare module wd {
         normalMap: ImageTexture;
         private _shininess;
         shininess: number;
+        shading: EShading;
         opacity: number;
         lightModel: ELightModel;
         specularColor: Color;
@@ -8995,7 +9006,7 @@ declare module wd {
 
 declare module wd {
     class Base64Utils {
-        static createImageFromBase64(base64: string, filePath: string): any;
+        static createImageFromBase64(base64: string): any;
     }
 }
 
@@ -11029,6 +11040,19 @@ declare module wd {
 }
 
 declare module wd {
+    class TerrainMaterial extends StandardLightMaterial {
+        static create(): TerrainMaterial;
+        layer: TerrainLayer;
+        mix: TerrainMix;
+        init(): void;
+        getTextureForRenderSort(): Texture;
+        protected addExtendShaderLib(): void;
+        protected addTopExtendShaderLib(): void;
+        protected addNormalRelatedShaderLib(): void;
+    }
+}
+
+declare module wd {
     class TerrainLayer {
         static create(): TerrainLayer;
         private _mapData;
@@ -11102,19 +11126,6 @@ declare module wd {
         type: string;
         sendShaderVariables(program: Program, cmd: QuadCommand, material: TerrainMaterial): void;
         setShaderDefinition(cmd: QuadCommand, material: TerrainMaterial): void;
-    }
-}
-
-declare module wd {
-    class TerrainMaterial extends StandardLightMaterial {
-        static create(): TerrainMaterial;
-        layer: TerrainLayer;
-        mix: TerrainMix;
-        init(): void;
-        getTextureForRenderSort(): Texture;
-        protected addExtendShaderLib(): void;
-        protected addTopExtendShaderLib(): void;
-        protected addNormalRelatedShaderLib(): void;
     }
 }
 

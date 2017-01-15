@@ -9476,6 +9476,20 @@ var wdCb;
                 }
             }
         };
+        DomQuery.prototype.text = function (str) {
+            var dom = this.get(0);
+            if (str !== void 0) {
+                if (dom.textContent !== void 0) {
+                    dom.textContent = str;
+                }
+                else {
+                    dom.innerText = str;
+                }
+            }
+            else {
+                return dom.textContent !== void 0 ? dom.textContent : dom.innerText;
+            }
+        };
         DomQuery.prototype._isDomEleStr = function (eleStr) {
             return eleStr.match(/<(\w+)[^>]*><\/\1>/) !== null;
         };

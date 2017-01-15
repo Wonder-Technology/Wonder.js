@@ -477,12 +477,12 @@ var wd;
         return function (target, name, descriptor) {
             var getter = descriptor.get, setter = descriptor.set;
             descriptor.get = function () {
-                var data = this.getPhysicsEngineAdapter()[("get" + dataName)](this.entityObject);
+                var data = this.getPhysicsComponentContainerAdapter()[("get" + dataName)](this.entityObject);
                 return data !== null ? data : this[("_" + lowerFirstChar(dataName))];
             };
             descriptor.set = function (val) {
                 setter.call(this, val);
-                this.getPhysicsEngineAdapter()[("set" + dataName)](this.entityObject, val);
+                this.getPhysicsComponentContainerAdapter()[("set" + dataName)](this.entityObject, val);
             };
             return descriptor;
         };
@@ -492,7 +492,7 @@ var wd;
         return function (target, name, descriptor) {
             var getter = descriptor.get, setter = descriptor.set;
             descriptor.get = function () {
-                var physicsEngineAdapter = wd.PhysicsEngine.getInstance().physicsEngineAdapter;
+                var physicsEngineAdapter = wd.PhysicsComponentContainer.getInstance().physicsEngineAdapter;
                 if (isWorldDefined(physicsEngineAdapter)) {
                     var data = physicsEngineAdapter[("get" + dataName)]();
                     return data !== null ? data : this[("_" + lowerFirstChar(dataName))];
@@ -500,7 +500,7 @@ var wd;
                 return getter.call(this);
             };
             descriptor.set = function (val) {
-                var physicsEngineAdapter = wd.PhysicsEngine.getInstance().physicsEngineAdapter;
+                var physicsEngineAdapter = wd.PhysicsComponentContainer.getInstance().physicsEngineAdapter;
                 setter.call(this, val);
                 if (isWorldDefined(physicsEngineAdapter)) {
                     physicsEngineAdapter[("set" + dataName)](val);
@@ -975,7 +975,7 @@ var wd;
         function GlobalScriptUtils() {
         }
         GlobalScriptUtils.addScriptToEntityObject = function (entityObject, data) {
-            wd.ScriptEngine.getInstance().addChild(entityObject, data.name, new data.class(entityObject));
+            wd.ScriptComponentContainer.getInstance().addChild(entityObject, data.name, new data.class(entityObject));
         };
         return GlobalScriptUtils;
     }());
@@ -3355,11 +3355,14 @@ var wd;
                 this.entityObject.removeComponent(this);
             }
             this.entityObject = entityObject;
+            this.addToComponentContainer();
+        };
+        Component.prototype.addToComponentContainer = function () {
         };
         Component.prototype.removeFromObject = function (entityObject) {
-            this.removeFromEngine();
+            this.removeFromComponentContainer();
         };
-        Component.prototype.removeFromEngine = function () {
+        Component.prototype.removeFromComponentContainer = function () {
         };
         __decorate([
             wd.virtual
@@ -3375,10 +3378,13 @@ var wd;
         ], Component.prototype, "addToObject", null);
         __decorate([
             wd.virtual
+        ], Component.prototype, "addToComponentContainer", null);
+        __decorate([
+            wd.virtual
         ], Component.prototype, "removeFromObject", null);
         __decorate([
             wd.virtual
-        ], Component.prototype, "removeFromEngine", null);
+        ], Component.prototype, "removeFromComponentContainer", null);
         return Component;
     }(wd.Entity));
     wd.Component = Component;
@@ -3742,10 +3748,10 @@ var wd;
                 return;
             }
             wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.STARTLOOP));
-            wd.ScriptEngine.getInstance().execScript("onStartLoop");
+            wd.ScriptComponentContainer.getInstance().execScript("onStartLoop");
             uiObjectScene.update(elapsed);
             uiObjectScene.render();
-            wd.ScriptEngine.getInstance().execScript("onEndLoop");
+            wd.ScriptComponentContainer.getInstance().execScript("onEndLoop");
             wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.ENDLOOP));
         };
         Director.prototype._startLoop = function () {
@@ -3795,16 +3801,16 @@ var wd;
         Director.prototype._run = function (elapsed) {
             this._timeController.tick(elapsed);
             wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.STARTLOOP));
-            wd.ScriptEngine.getInstance().execScript("onStartLoop");
+            wd.ScriptComponentContainer.getInstance().execScript("onStartLoop");
             this._update(elapsed);
             this._render();
-            wd.ScriptEngine.getInstance().execScript("onEndLoop");
+            wd.ScriptComponentContainer.getInstance().execScript("onEndLoop");
             wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.ENDLOOP));
         };
         Director.prototype._update = function (elapsed) {
             this.scheduler.update(elapsed);
-            wd.ScriptEngine.getInstance().execScriptWithData("update", elapsed);
-            wd.ClassUtils.execSingletonMethod("ActionEngine", "update", elapsed);
+            wd.ScriptComponentContainer.getInstance().execScriptWithData("update", elapsed);
+            wd.ClassUtils.execSingletonMethod("ActionComponentContainer", "update", elapsed);
             this.scene.gameObjectScene.update(elapsed);
             if (this.scene.uiObjectScene !== null) {
                 this.scene.uiObjectScene.update(elapsed);
@@ -4082,7 +4088,7 @@ var wd;
             customEvent.getDataFromDomEvent(event);
             wd.EventManager.trigger(entityObject, customEvent, notSetTarget);
             event.getDataFromCustomEvent(customEvent);
-            wd.ScriptEngine.getInstance().execEntityObjectEventScriptWithData(entityObject, handlerName, event);
+            wd.ScriptComponentContainer.getInstance().execEntityObjectEventScriptWithData(entityObject, handlerName, event);
             if (!event.isStopPropagation && entityObject.bubbleParent) {
                 this._trigger(event.clone(), entityObject.bubbleParent, true);
             }
@@ -4368,19 +4374,19 @@ var wd;
             this.componentManager.init();
             this._entityObjectManager.init();
             this.afterInitChildren();
-            wd.ScriptEngine.getInstance().execEntityObjectScriptOnlyOnce(this, "init");
+            wd.ScriptComponentContainer.getInstance().execEntityObjectScriptOnlyOnce(this, "init");
             return this;
         };
         EntityObject.prototype.onEnter = function () {
-            wd.ScriptEngine.getInstance().execEntityObjectScriptOnlyOnce(this, "onEnter");
+            wd.ScriptComponentContainer.getInstance().execEntityObjectScriptOnlyOnce(this, "onEnter");
             wd.EventManager.trigger(this, wd.CustomEvent.create(wd.EEngineEvent.ENTER));
         };
         EntityObject.prototype.onExit = function () {
-            wd.ScriptEngine.getInstance().execEntityObjectScriptOnlyOnce(this, "onExit");
+            wd.ScriptComponentContainer.getInstance().execEntityObjectScriptOnlyOnce(this, "onExit");
             wd.EventManager.trigger(this, wd.CustomEvent.create(wd.EEngineEvent.EXIT));
         };
         EntityObject.prototype.onDispose = function () {
-            wd.ScriptEngine.getInstance().execEntityObjectScriptOnlyOnce(this, "onDispose");
+            wd.ScriptComponentContainer.getInstance().execEntityObjectScriptOnlyOnce(this, "onDispose");
         };
         EntityObject.prototype.dispose = function () {
             this.onDispose();
@@ -4438,8 +4444,9 @@ var wd;
         EntityObject.prototype.findChildrenByName = function (name) {
             return this._entityObjectManager.findChildrenByName(name);
         };
-        EntityObject.prototype.removeChild = function (child) {
-            this._entityObjectManager.removeChild(child);
+        EntityObject.prototype.removeChild = function (child, removeComponentsFromComponentContainer) {
+            if (removeComponentsFromComponentContainer === void 0) { removeComponentsFromComponentContainer = true; }
+            this._entityObjectManager.removeChild(child, removeComponentsFromComponentContainer);
             return this;
         };
         EntityObject.prototype.removeAllChildren = function () {
@@ -4490,8 +4497,11 @@ var wd;
             this.componentDirty = true;
             return this.componentManager.removeAllComponent();
         };
-        EntityObject.prototype.removeAllComponentFromEngine = function () {
-            return this.componentManager.removeAllComponentFromEngine();
+        EntityObject.prototype.addAllComponentToComponentContainer = function () {
+            return this.componentManager.addAllComponentToComponentContainer();
+        };
+        EntityObject.prototype.removeAllComponentFromComponentContainer = function () {
+            return this.componentManager.removeAllComponentFromComponentContainer();
         };
         EntityObject.prototype.render = function (renderer, camera) {
             var rendererComponent = null;
@@ -4723,8 +4733,11 @@ var wd;
             }
             return this;
         };
-        ComponentManager.prototype.removeAllComponentFromEngine = function () {
-            this._components.forEach(function (component) { return component.removeFromEngine(); });
+        ComponentManager.prototype.addAllComponentToComponentContainer = function () {
+            this._components.forEach(function (component) { return component.addToComponentContainer(); });
+        };
+        ComponentManager.prototype.removeAllComponentFromComponentContainer = function () {
+            this._components.forEach(function (component) { return component.removeFromComponentContainer(); });
         };
         ComponentManager.prototype.getComponentCount = function (_class) {
             return this._components.filter(function (component) {
@@ -4810,8 +4823,10 @@ var wd;
         };
         EntityObjectManager.prototype.addChild = function (child) {
             if (child.parent) {
-                child.parent.removeChild(child);
+                child.parent.removeChild(child, false);
             }
+            child.getAllChildren().forEach(function (c) { return c.addAllComponentToComponentContainer(); });
+            child.addAllComponentToComponentContainer();
             child.parent = this._entityObject;
             child.transform.parent = this._entityObject.transform;
             this._children.addChild(child);
@@ -4890,10 +4905,13 @@ var wd;
                 return child.name.search(name) > -1;
             });
         };
-        EntityObjectManager.prototype.removeChild = function (child) {
+        EntityObjectManager.prototype.removeChild = function (child, removeComponentsFromComponentContainer) {
+            if (removeComponentsFromComponentContainer === void 0) { removeComponentsFromComponentContainer = true; }
             child.onExit();
-            child.getAllChildren().forEach(function (c) { return c.removeAllComponentFromEngine(); });
-            child.removeAllComponentFromEngine();
+            if (removeComponentsFromComponentContainer) {
+                child.getAllChildren().forEach(function (c) { return c.removeAllComponentFromComponentContainer(); });
+                child.removeAllComponentFromComponentContainer();
+            }
             this._children.removeChild(child);
             child.parent = null;
             return this;
@@ -5004,6 +5022,302 @@ var wd;
         return ComponentContainer;
     }());
     wd.ComponentContainer = ComponentContainer;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var ScriptComponentContainer = (function () {
+        function ScriptComponentContainer() {
+            this._scriptList = wdCb.Collection.create();
+        }
+        ScriptComponentContainer.getInstance = function () { };
+        ScriptComponentContainer.prototype.addChild = function (entityObject, scriptName, classInstance) {
+            entityObject.scriptManager.addChild(scriptName, classInstance);
+            this._scriptList.addChild(classInstance);
+        };
+        ScriptComponentContainer.prototype.removeChild = function (entityObject, classInstance) {
+            entityObject.scriptManager.removeChild(classInstance);
+            this._scriptList.removeChild(classInstance);
+        };
+        ScriptComponentContainer.prototype.removeAllChildren = function () {
+            this._scriptList.removeAllChildren();
+        };
+        ScriptComponentContainer.prototype.findScript = function (entityObject, scriptName) {
+            return entityObject.scriptManager.getChild(scriptName);
+        };
+        ScriptComponentContainer.prototype.execEntityObjectScript = function (entityObject, method) {
+            entityObject.scriptManager.execScript(method);
+        };
+        ScriptComponentContainer.prototype.execEntityObjectScriptOnlyOnce = function (entityObject, method) {
+            entityObject.scriptManager.execScriptOnlyOnce(method);
+        };
+        ScriptComponentContainer.prototype.execEntityObjectScriptWithData = function (entityObject, method, data) {
+            entityObject.scriptManager.execScriptWithData(method, data);
+        };
+        ScriptComponentContainer.prototype.execScript = function (method) {
+            this._scriptList.forEach(function (script) {
+                if (script[method]) {
+                    script[method]();
+                }
+            });
+        };
+        ScriptComponentContainer.prototype.execScriptWithData = function (method, data) {
+            this._scriptList.forEach(function (script) {
+                if (script[method]) {
+                    script[method](data);
+                }
+            });
+        };
+        ScriptComponentContainer.prototype.execEntityObjectEventScriptWithData = function (entityObject, method, data) {
+            entityObject.scriptManager.execEventScriptWithData(method, data);
+        };
+        ScriptComponentContainer = __decorate([
+            wd.singleton()
+        ], ScriptComponentContainer);
+        return ScriptComponentContainer;
+    }());
+    wd.ScriptComponentContainer = ScriptComponentContainer;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var CollisionComponentContainer = (function (_super) {
+        __extends(CollisionComponentContainer, _super);
+        function CollisionComponentContainer() {
+            _super.call(this);
+            this._collisionDetector = wd.CollisionDetector.create();
+        }
+        CollisionComponentContainer.getInstance = function () { };
+        CollisionComponentContainer.prototype.update = function (elapsed) {
+            this.list.forEach(function (child) {
+                child.update(elapsed);
+            });
+        };
+        CollisionComponentContainer.prototype.detect = function (elapsed) {
+            this._collisionDetector.update(elapsed);
+        };
+        CollisionComponentContainer = __decorate([
+            wd.singleton()
+        ], CollisionComponentContainer);
+        return CollisionComponentContainer;
+    }(wd.ComponentContainer));
+    wd.CollisionComponentContainer = CollisionComponentContainer;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var ActionComponentContainer = (function (_super) {
+        __extends(ActionComponentContainer, _super);
+        function ActionComponentContainer() {
+            _super.call(this);
+        }
+        ActionComponentContainer.getInstance = function () { };
+        ActionComponentContainer.prototype.update = function (elapsed) {
+            var removeQueue = [];
+            this.list.forEach(function (child) {
+                if (child.isFinish) {
+                    removeQueue.push(child);
+                    return;
+                }
+                if (child.isStop || child.isPause) {
+                    return;
+                }
+                child.update(elapsed);
+            });
+            for (var _i = 0, removeQueue_1 = removeQueue; _i < removeQueue_1.length; _i++) {
+                var child = removeQueue_1[_i];
+                child.entityObject.removeComponent(child);
+            }
+        };
+        ActionComponentContainer = __decorate([
+            wd.singleton()
+        ], ActionComponentContainer);
+        return ActionComponentContainer;
+    }(wd.ComponentContainer));
+    wd.ActionComponentContainer = ActionComponentContainer;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var LODComponentContainer = (function (_super) {
+        __extends(LODComponentContainer, _super);
+        function LODComponentContainer() {
+            _super.call(this);
+        }
+        LODComponentContainer.getInstance = function () { };
+        LODComponentContainer.prototype.update = function (elapsed) {
+            this.list.forEach(function (child) {
+                child.update(elapsed);
+            });
+        };
+        LODComponentContainer = __decorate([
+            wd.singleton()
+        ], LODComponentContainer);
+        return LODComponentContainer;
+    }(wd.ComponentContainer));
+    wd.LODComponentContainer = LODComponentContainer;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var SpacePartitionComponentContainer = (function (_super) {
+        __extends(SpacePartitionComponentContainer, _super);
+        function SpacePartitionComponentContainer() {
+            _super.call(this);
+        }
+        SpacePartitionComponentContainer.getInstance = function () { };
+        SpacePartitionComponentContainer.prototype.update = function (elapsed) {
+            this.list.forEach(function (child) {
+                child.update(elapsed);
+            });
+        };
+        SpacePartitionComponentContainer = __decorate([
+            wd.singleton()
+        ], SpacePartitionComponentContainer);
+        return SpacePartitionComponentContainer;
+    }(wd.ComponentContainer));
+    wd.SpacePartitionComponentContainer = SpacePartitionComponentContainer;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var AnimationComponentContainer = (function (_super) {
+        __extends(AnimationComponentContainer, _super);
+        function AnimationComponentContainer() {
+            _super.call(this);
+        }
+        AnimationComponentContainer.getInstance = function () { };
+        AnimationComponentContainer.prototype.update = function (elapsed) {
+            this.list.forEach(function (child) {
+                child.update(elapsed);
+            });
+        };
+        AnimationComponentContainer = __decorate([
+            wd.singleton()
+        ], AnimationComponentContainer);
+        return AnimationComponentContainer;
+    }(wd.ComponentContainer));
+    wd.AnimationComponentContainer = AnimationComponentContainer;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var PhysicsComponentContainer = (function (_super) {
+        __extends(PhysicsComponentContainer, _super);
+        function PhysicsComponentContainer() {
+            _super.call(this);
+            this.physicsEngineAdapter = wd.PhysicsEngineFactory.createNullAdapter();
+        }
+        PhysicsComponentContainer.getInstance = function () { };
+        PhysicsComponentContainer.prototype.removeChild = function (body) {
+            var physicsEngineAdapter = this.physicsEngineAdapter;
+            _super.prototype.removeChild.call(this, body);
+            if (physicsEngineAdapter) {
+                var entityObject = body.entityObject;
+                physicsEngineAdapter.removeGameObject(entityObject);
+                physicsEngineAdapter.removeConstraints(entityObject);
+            }
+        };
+        PhysicsComponentContainer.prototype.initPhysicsComponentContainerAdapter = function () {
+            var physics = wd.Director.getInstance().scene.physics;
+            this.physicsEngineAdapter = wd.PhysicsEngineFactory.create(physics.enable, physics.engine);
+            this.physicsEngineAdapter.init();
+        };
+        PhysicsComponentContainer.prototype.initBody = function () {
+            this.list.forEach(function (child) {
+                child.initBody();
+            });
+        };
+        PhysicsComponentContainer.prototype.initConstraint = function () {
+            this.list.forEach(function (child) {
+                child.initConstraint();
+            });
+        };
+        PhysicsComponentContainer.prototype.update = function (elapsed) {
+            var physics = wd.Director.getInstance().scene.physics;
+            if (physics.enable) {
+                this.physicsEngineAdapter.update(elapsed);
+            }
+        };
+        PhysicsComponentContainer = __decorate([
+            wd.singleton()
+        ], PhysicsComponentContainer);
+        return PhysicsComponentContainer;
+    }(wd.ComponentContainer));
+    wd.PhysicsComponentContainer = PhysicsComponentContainer;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var BillboardComponentContainer = (function (_super) {
+        __extends(BillboardComponentContainer, _super);
+        function BillboardComponentContainer() {
+            _super.call(this);
+        }
+        BillboardComponentContainer.getInstance = function () { };
+        BillboardComponentContainer.prototype.update = function (elapsed) {
+            this.list.forEach(function (child) {
+                child.update(elapsed);
+            });
+        };
+        BillboardComponentContainer = __decorate([
+            wd.singleton()
+        ], BillboardComponentContainer);
+        return BillboardComponentContainer;
+    }(wd.ComponentContainer));
+    wd.BillboardComponentContainer = BillboardComponentContainer;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var UIComponentContainer = (function (_super) {
+        __extends(UIComponentContainer, _super);
+        function UIComponentContainer() {
+            _super.apply(this, arguments);
+        }
+        UIComponentContainer.prototype.update = function (elapsed) {
+            this.list.forEach(function (child) {
+                child.update(elapsed);
+            });
+        };
+        UIComponentContainer = __decorate([
+            wd.singleton()
+        ], UIComponentContainer);
+        return UIComponentContainer;
+    }(wd.ComponentContainer));
+    wd.UIComponentContainer = UIComponentContainer;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var ThreeDUIComponentContainer = (function (_super) {
+        __extends(ThreeDUIComponentContainer, _super);
+        function ThreeDUIComponentContainer() {
+            _super.call(this);
+        }
+        ThreeDUIComponentContainer.getInstance = function () { };
+        ThreeDUIComponentContainer = __decorate([
+            wd.singleton()
+        ], ThreeDUIComponentContainer);
+        return ThreeDUIComponentContainer;
+    }(wd.UIComponentContainer));
+    wd.ThreeDUIComponentContainer = ThreeDUIComponentContainer;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
+    var TwoDUIComponentContainer = (function (_super) {
+        __extends(TwoDUIComponentContainer, _super);
+        function TwoDUIComponentContainer() {
+            _super.call(this);
+        }
+        TwoDUIComponentContainer.getInstance = function () { };
+        TwoDUIComponentContainer.prototype.render = function () {
+            var _this = this;
+            this.list.forEach(function (ui) {
+                var uiObject = ui.entityObject;
+                if (uiObject.isVisible && _this._isDirty(ui.entityObject))
+                    ui.render();
+            }, this);
+        };
+        TwoDUIComponentContainer.prototype._isDirty = function (uiObject) {
+            return uiObject.getComponent(wd.UIRenderer).state === wd.EUIRendererState.DIRTY;
+        };
+        TwoDUIComponentContainer = __decorate([
+            wd.singleton()
+        ], TwoDUIComponentContainer);
+        return TwoDUIComponentContainer;
+    }(wd.UIComponentContainer));
+    wd.TwoDUIComponentContainer = TwoDUIComponentContainer;
 })(wd || (wd = {}));
 var wd;
 (function (wd) {
@@ -5441,7 +5755,7 @@ var wd;
         };
         UIObjectScene.prototype.update = function (elapsed) {
             _super.prototype.update.call(this, elapsed);
-            wd.TwoDUIEngine.getInstance().update(elapsed);
+            wd.TwoDUIComponentContainer.getInstance().update(elapsed);
         };
         UIObjectScene.prototype.onDispose = function () {
             _super.prototype.onDispose.call(this);
@@ -5466,7 +5780,7 @@ var wd;
                     }
                 }
             });
-            wd.TwoDUIEngine.getInstance().render();
+            wd.TwoDUIComponentContainer.getInstance().render();
         };
         UIObjectScene.prototype.createTransform = function () {
             return null;
@@ -5739,14 +6053,14 @@ var wd;
             configurable: true
         });
         GameObjectScene.prototype.init = function () {
-            wd.ClassUtils.execSingletonMethod("PhysicsEngine", "initPhysicsEngineAdapter");
+            wd.ClassUtils.execSingletonMethod("PhysicsComponentContainer", "initPhysicsComponentContainerAdapter");
             if (this.shadowManager) {
                 this.shadowManager.init();
             }
             _super.prototype.init.call(this);
             this.renderTargetRendererManager.init();
-            wd.ClassUtils.execSingletonMethod("PhysicsEngine", "initBody");
-            wd.ClassUtils.execSingletonMethod("PhysicsEngine", "initConstraint");
+            wd.ClassUtils.execSingletonMethod("PhysicsComponentContainer", "initBody");
+            wd.ClassUtils.execSingletonMethod("PhysicsComponentContainer", "initConstraint");
             return this;
         };
         GameObjectScene.prototype.dispose = function () {
@@ -5766,19 +6080,19 @@ var wd;
         };
         GameObjectScene.prototype.update = function (elapsed) {
             var currentCamera = this._getCurrentCameraComponent(), shadowManager = this.shadowManager;
-            wd.ClassUtils.execSingletonMethod("PhysicsEngine", "update", elapsed);
+            wd.ClassUtils.execSingletonMethod("PhysicsComponentContainer", "update", elapsed);
             if (currentCamera) {
                 currentCamera.update(elapsed);
             }
             shadowManager.update(elapsed);
-            wd.ClassUtils.execSingletonMethod("LODEngine", "update", elapsed);
-            wd.ClassUtils.execSingletonMethod("SpacePartitionEngine", "update", elapsed);
-            wd.ClassUtils.execSingletonMethod("AnimationEngine", "update", elapsed);
-            wd.CollisionEngine.getInstance().update(elapsed);
-            wd.ClassUtils.execSingletonMethod("ThreeDUIEngine", "update", elapsed);
+            wd.ClassUtils.execSingletonMethod("LODComponentContainer", "update", elapsed);
+            wd.ClassUtils.execSingletonMethod("SpacePartitionComponentContainer", "update", elapsed);
+            wd.ClassUtils.execSingletonMethod("AnimationComponentContainer", "update", elapsed);
+            wd.CollisionComponentContainer.getInstance().update(elapsed);
+            wd.ClassUtils.execSingletonMethod("ThreeDUIComponentContainer", "update", elapsed);
             _super.prototype.update.call(this, elapsed);
-            wd.CollisionEngine.getInstance().detect(elapsed);
-            wd.ClassUtils.execSingletonMethod("BillboardEngine", "update", elapsed);
+            wd.CollisionComponentContainer.getInstance().detect(elapsed);
+            wd.ClassUtils.execSingletonMethod("BillboardComponentContainer", "update", elapsed);
         };
         GameObjectScene.prototype.render = function (renderer) {
             this.shadowManager.setShadowRenderListForCurrentLoop();
@@ -6019,7 +6333,7 @@ var wd;
                 .forEach(function (collideObject) {
                 for (var _i = 0, eventList_1 = eventList; _i < eventList_1.length; _i++) {
                     var eventName = eventList_1[_i];
-                    wd.ScriptEngine.getInstance().execEntityObjectScriptWithData(collideObject, eventName, wdCb.Collection.create([currentGameObject]));
+                    wd.ScriptComponentContainer.getInstance().execEntityObjectScriptWithData(collideObject, eventName, wdCb.Collection.create([currentGameObject]));
                 }
             });
         };
@@ -6029,12 +6343,12 @@ var wd;
                 var sourceObject = _a.sourceObject, targetObjectMap = _a.targetObjectMap;
                 var targetObjects = targetObjectMap.toCollection();
                 if (_this._isCollisionStart(sourceObject)) {
-                    wd.ScriptEngine.getInstance().execEntityObjectScriptWithData(sourceObject, "onCollisionStart", targetObjects);
-                    wd.ScriptEngine.getInstance().execEntityObjectScriptWithData(sourceObject, "onContact", targetObjects);
+                    wd.ScriptComponentContainer.getInstance().execEntityObjectScriptWithData(sourceObject, "onCollisionStart", targetObjects);
+                    wd.ScriptComponentContainer.getInstance().execEntityObjectScriptWithData(sourceObject, "onContact", targetObjects);
                     _this._triggerCollisionEventOfCollideObjectWhichHasRigidBody(targetObjects, sourceObject, ["onCollisionStart", "onContact"]);
                 }
                 else {
-                    wd.ScriptEngine.getInstance().execEntityObjectScriptWithData(sourceObject, "onContact", targetObjects);
+                    wd.ScriptComponentContainer.getInstance().execEntityObjectScriptWithData(sourceObject, "onContact", targetObjects);
                     _this._triggerCollisionEventOfCollideObjectWhichHasRigidBody(targetObjects, sourceObject, ["onContact"]);
                 }
                 if (!sourceObject.hasTag(ECollisionTag.COLLIDED)) {
@@ -6050,7 +6364,7 @@ var wd;
             this._lastCollisionTable.forEach(function (_a) {
                 var sourceObject = _a.sourceObject, targetObjectMap = _a.targetObjectMap;
                 if (!table.hasChild(String(sourceObject.uid))) {
-                    wd.ScriptEngine.getInstance().execEntityObjectScript(sourceObject, "onCollisionEnd");
+                    wd.ScriptComponentContainer.getInstance().execEntityObjectScript(sourceObject, "onCollisionEnd");
                     _this._triggerCollisionEventOfCollideObjectWhichHasRigidBody(targetObjectMap.toCollection(), sourceObject, ["onCollisionEnd"]);
                     sourceObject.removeTag(ECollisionTag.COLLIDED);
                 }
@@ -7014,7 +7328,6 @@ var wd;
         EEngineEvent[EEngineEvent["POINT_SCALE"] = "wd_pointscale"] = "POINT_SCALE";
         EEngineEvent[EEngineEvent["POINT_DRAG"] = "wd_pointdrag"] = "POINT_DRAG";
         EEngineEvent[EEngineEvent["MATERIAL_CHANGE"] = "wd_material_change"] = "MATERIAL_CHANGE";
-        EEngineEvent[EEngineEvent["MATERIAL_COLOR_CHANGE"] = "wd_material_color_change"] = "MATERIAL_COLOR_CHANGE";
         EEngineEvent[EEngineEvent["UI_WIDTH_CHANGE"] = "wd_ui_width_change"] = "UI_WIDTH_CHANGE";
         EEngineEvent[EEngineEvent["UI_HEIGHT_CHANGE"] = "wd_ui_height_change"] = "UI_HEIGHT_CHANGE";
         EEngineEvent[EEngineEvent["TRANSFORM_TRANSLATE"] = "wd_transform_translate"] = "TRANSFORM_TRANSLATE";
@@ -9233,302 +9546,6 @@ var wd;
 })(wd || (wd = {}));
 var wd;
 (function (wd) {
-    var ScriptEngine = (function () {
-        function ScriptEngine() {
-            this._scriptList = wdCb.Collection.create();
-        }
-        ScriptEngine.getInstance = function () { };
-        ScriptEngine.prototype.addChild = function (entityObject, scriptName, classInstance) {
-            entityObject.scriptManager.addChild(scriptName, classInstance);
-            this._scriptList.addChild(classInstance);
-        };
-        ScriptEngine.prototype.removeChild = function (entityObject, classInstance) {
-            entityObject.scriptManager.removeChild(classInstance);
-            this._scriptList.removeChild(classInstance);
-        };
-        ScriptEngine.prototype.removeAllChildren = function () {
-            this._scriptList.removeAllChildren();
-        };
-        ScriptEngine.prototype.findScript = function (entityObject, scriptName) {
-            return entityObject.scriptManager.getChild(scriptName);
-        };
-        ScriptEngine.prototype.execEntityObjectScript = function (entityObject, method) {
-            entityObject.scriptManager.execScript(method);
-        };
-        ScriptEngine.prototype.execEntityObjectScriptOnlyOnce = function (entityObject, method) {
-            entityObject.scriptManager.execScriptOnlyOnce(method);
-        };
-        ScriptEngine.prototype.execEntityObjectScriptWithData = function (entityObject, method, data) {
-            entityObject.scriptManager.execScriptWithData(method, data);
-        };
-        ScriptEngine.prototype.execScript = function (method) {
-            this._scriptList.forEach(function (script) {
-                if (script[method]) {
-                    script[method]();
-                }
-            });
-        };
-        ScriptEngine.prototype.execScriptWithData = function (method, data) {
-            this._scriptList.forEach(function (script) {
-                if (script[method]) {
-                    script[method](data);
-                }
-            });
-        };
-        ScriptEngine.prototype.execEntityObjectEventScriptWithData = function (entityObject, method, data) {
-            entityObject.scriptManager.execEventScriptWithData(method, data);
-        };
-        ScriptEngine = __decorate([
-            wd.singleton()
-        ], ScriptEngine);
-        return ScriptEngine;
-    }());
-    wd.ScriptEngine = ScriptEngine;
-})(wd || (wd = {}));
-var wd;
-(function (wd) {
-    var CollisionEngine = (function (_super) {
-        __extends(CollisionEngine, _super);
-        function CollisionEngine() {
-            _super.call(this);
-            this._collisionDetector = wd.CollisionDetector.create();
-        }
-        CollisionEngine.getInstance = function () { };
-        CollisionEngine.prototype.update = function (elapsed) {
-            this.list.forEach(function (child) {
-                child.update(elapsed);
-            });
-        };
-        CollisionEngine.prototype.detect = function (elapsed) {
-            this._collisionDetector.update(elapsed);
-        };
-        CollisionEngine = __decorate([
-            wd.singleton()
-        ], CollisionEngine);
-        return CollisionEngine;
-    }(wd.ComponentContainer));
-    wd.CollisionEngine = CollisionEngine;
-})(wd || (wd = {}));
-var wd;
-(function (wd) {
-    var ActionEngine = (function (_super) {
-        __extends(ActionEngine, _super);
-        function ActionEngine() {
-            _super.call(this);
-        }
-        ActionEngine.getInstance = function () { };
-        ActionEngine.prototype.update = function (elapsed) {
-            var removeQueue = [];
-            this.list.forEach(function (child) {
-                if (child.isFinish) {
-                    removeQueue.push(child);
-                    return;
-                }
-                if (child.isStop || child.isPause) {
-                    return;
-                }
-                child.update(elapsed);
-            });
-            for (var _i = 0, removeQueue_1 = removeQueue; _i < removeQueue_1.length; _i++) {
-                var child = removeQueue_1[_i];
-                child.entityObject.removeComponent(child);
-            }
-        };
-        ActionEngine = __decorate([
-            wd.singleton()
-        ], ActionEngine);
-        return ActionEngine;
-    }(wd.ComponentContainer));
-    wd.ActionEngine = ActionEngine;
-})(wd || (wd = {}));
-var wd;
-(function (wd) {
-    var LODEngine = (function (_super) {
-        __extends(LODEngine, _super);
-        function LODEngine() {
-            _super.call(this);
-        }
-        LODEngine.getInstance = function () { };
-        LODEngine.prototype.update = function (elapsed) {
-            this.list.forEach(function (child) {
-                child.update(elapsed);
-            });
-        };
-        LODEngine = __decorate([
-            wd.singleton()
-        ], LODEngine);
-        return LODEngine;
-    }(wd.ComponentContainer));
-    wd.LODEngine = LODEngine;
-})(wd || (wd = {}));
-var wd;
-(function (wd) {
-    var SpacePartitionEngine = (function (_super) {
-        __extends(SpacePartitionEngine, _super);
-        function SpacePartitionEngine() {
-            _super.call(this);
-        }
-        SpacePartitionEngine.getInstance = function () { };
-        SpacePartitionEngine.prototype.update = function (elapsed) {
-            this.list.forEach(function (child) {
-                child.update(elapsed);
-            });
-        };
-        SpacePartitionEngine = __decorate([
-            wd.singleton()
-        ], SpacePartitionEngine);
-        return SpacePartitionEngine;
-    }(wd.ComponentContainer));
-    wd.SpacePartitionEngine = SpacePartitionEngine;
-})(wd || (wd = {}));
-var wd;
-(function (wd) {
-    var AnimationEngine = (function (_super) {
-        __extends(AnimationEngine, _super);
-        function AnimationEngine() {
-            _super.call(this);
-        }
-        AnimationEngine.getInstance = function () { };
-        AnimationEngine.prototype.update = function (elapsed) {
-            this.list.forEach(function (child) {
-                child.update(elapsed);
-            });
-        };
-        AnimationEngine = __decorate([
-            wd.singleton()
-        ], AnimationEngine);
-        return AnimationEngine;
-    }(wd.ComponentContainer));
-    wd.AnimationEngine = AnimationEngine;
-})(wd || (wd = {}));
-var wd;
-(function (wd) {
-    var PhysicsEngine = (function (_super) {
-        __extends(PhysicsEngine, _super);
-        function PhysicsEngine() {
-            _super.call(this);
-            this.physicsEngineAdapter = wd.PhysicsEngineFactory.createNullAdapter();
-        }
-        PhysicsEngine.getInstance = function () { };
-        PhysicsEngine.prototype.removeChild = function (body) {
-            var physicsEngineAdapter = this.physicsEngineAdapter;
-            _super.prototype.removeChild.call(this, body);
-            if (physicsEngineAdapter) {
-                var entityObject = body.entityObject;
-                physicsEngineAdapter.removeGameObject(entityObject);
-                physicsEngineAdapter.removeConstraints(entityObject);
-            }
-        };
-        PhysicsEngine.prototype.initPhysicsEngineAdapter = function () {
-            var physics = wd.Director.getInstance().scene.physics;
-            this.physicsEngineAdapter = wd.PhysicsEngineFactory.create(physics.enable, physics.engine);
-            this.physicsEngineAdapter.init();
-        };
-        PhysicsEngine.prototype.initBody = function () {
-            this.list.forEach(function (child) {
-                child.initBody();
-            });
-        };
-        PhysicsEngine.prototype.initConstraint = function () {
-            this.list.forEach(function (child) {
-                child.initConstraint();
-            });
-        };
-        PhysicsEngine.prototype.update = function (elapsed) {
-            var physics = wd.Director.getInstance().scene.physics;
-            if (physics.enable) {
-                this.physicsEngineAdapter.update(elapsed);
-            }
-        };
-        PhysicsEngine = __decorate([
-            wd.singleton()
-        ], PhysicsEngine);
-        return PhysicsEngine;
-    }(wd.ComponentContainer));
-    wd.PhysicsEngine = PhysicsEngine;
-})(wd || (wd = {}));
-var wd;
-(function (wd) {
-    var BillboardEngine = (function (_super) {
-        __extends(BillboardEngine, _super);
-        function BillboardEngine() {
-            _super.call(this);
-        }
-        BillboardEngine.getInstance = function () { };
-        BillboardEngine.prototype.update = function (elapsed) {
-            this.list.forEach(function (child) {
-                child.update(elapsed);
-            });
-        };
-        BillboardEngine = __decorate([
-            wd.singleton()
-        ], BillboardEngine);
-        return BillboardEngine;
-    }(wd.ComponentContainer));
-    wd.BillboardEngine = BillboardEngine;
-})(wd || (wd = {}));
-var wd;
-(function (wd) {
-    var UIEngine = (function (_super) {
-        __extends(UIEngine, _super);
-        function UIEngine() {
-            _super.apply(this, arguments);
-        }
-        UIEngine.prototype.update = function (elapsed) {
-            this.list.forEach(function (child) {
-                child.update(elapsed);
-            });
-        };
-        UIEngine = __decorate([
-            wd.singleton()
-        ], UIEngine);
-        return UIEngine;
-    }(wd.ComponentContainer));
-    wd.UIEngine = UIEngine;
-})(wd || (wd = {}));
-var wd;
-(function (wd) {
-    var ThreeDUIEngine = (function (_super) {
-        __extends(ThreeDUIEngine, _super);
-        function ThreeDUIEngine() {
-            _super.call(this);
-        }
-        ThreeDUIEngine.getInstance = function () { };
-        ThreeDUIEngine = __decorate([
-            wd.singleton()
-        ], ThreeDUIEngine);
-        return ThreeDUIEngine;
-    }(wd.UIEngine));
-    wd.ThreeDUIEngine = ThreeDUIEngine;
-})(wd || (wd = {}));
-var wd;
-(function (wd) {
-    var TwoDUIEngine = (function (_super) {
-        __extends(TwoDUIEngine, _super);
-        function TwoDUIEngine() {
-            _super.call(this);
-        }
-        TwoDUIEngine.getInstance = function () { };
-        TwoDUIEngine.prototype.render = function () {
-            var _this = this;
-            this.list.forEach(function (ui) {
-                var uiObject = ui.entityObject;
-                if (uiObject.isVisible && _this._isDirty(ui.entityObject))
-                    ui.render();
-            }, this);
-        };
-        TwoDUIEngine.prototype._isDirty = function (uiObject) {
-            return uiObject.getComponent(wd.UIRenderer).state === wd.EUIRendererState.DIRTY;
-        };
-        TwoDUIEngine = __decorate([
-            wd.singleton()
-        ], TwoDUIEngine);
-        return TwoDUIEngine;
-    }(wd.UIEngine));
-    wd.TwoDUIEngine = TwoDUIEngine;
-})(wd || (wd = {}));
-var wd;
-(function (wd) {
     var Action = (function (_super) {
         __extends(Action, _super);
         function Action() {
@@ -9571,15 +9588,17 @@ var wd;
         };
         Action.prototype.addToObject = function (entityObject, isShareComponent) {
             if (isShareComponent === void 0) { isShareComponent = false; }
-            var engine = wd.ActionEngine.getInstance();
             _super.prototype.addToObject.call(this, entityObject, isShareComponent);
             this.target = entityObject;
-            if (!engine.hasChild(this)) {
-                engine.addChild(this);
+        };
+        Action.prototype.addToComponentContainer = function () {
+            var container = wd.ActionComponentContainer.getInstance();
+            if (!container.hasChild(this)) {
+                container.addChild(this);
             }
         };
-        Action.prototype.removeFromEngine = function () {
-            wd.ActionEngine.getInstance().removeChild(this);
+        Action.prototype.removeFromComponentContainer = function () {
+            wd.ActionComponentContainer.getInstance().removeChild(this);
         };
         Action.prototype.init = function () {
             this.start();
@@ -10534,16 +10553,14 @@ var wd;
             enumerable: true,
             configurable: true
         });
-        Animation.prototype.addToObject = function (entityObject, isShareComponent) {
-            if (isShareComponent === void 0) { isShareComponent = false; }
-            var engine = wd.AnimationEngine.getInstance();
-            _super.prototype.addToObject.call(this, entityObject, isShareComponent);
-            if (!engine.hasChild(this)) {
-                engine.addChild(this);
+        Animation.prototype.addToComponentContainer = function () {
+            var container = wd.AnimationComponentContainer.getInstance();
+            if (!container.hasChild(this)) {
+                container.addChild(this);
             }
         };
-        Animation.prototype.removeFromEngine = function () {
-            wd.AnimationEngine.getInstance().removeChild(this);
+        Animation.prototype.removeFromComponentContainer = function () {
+            wd.AnimationComponentContainer.getInstance().removeChild(this);
         };
         Animation.prototype.clone = function () {
             return wd.CloneUtils.clone(this);
@@ -10642,6 +10659,7 @@ var wd;
         };
         MultiLayerKeyFrameAnimation.prototype.handleUpdate = function (elapsed) {
             var _this = this;
+            var self = this;
             this.controllerList.forEach(function (controller) {
                 if (!controller.hasCurrentAnimData()) {
                     return;
@@ -10652,20 +10670,21 @@ var wd;
                 }
                 _this.handleAfterJudgeWhetherCurrentFrameFinish(controller, elapsed);
             });
-            if (this._isPlayOneTime) {
-                var isFinishAnimation_1 = true;
-                this.controllerList.forEach(function (controller) {
-                    if (!controller.isFinishAnimation) {
-                        isFinishAnimation_1 = false;
-                        return wdCb.$BREAK;
-                    }
-                });
-                if (isFinishAnimation_1) {
-                    this.stop();
-                    return;
-                }
+            if (this._isPlayOneTime && this._isAllControllerFinishAnimation()) {
+                this.stop();
+                return;
             }
             this.handleAfterJudgeWhetherAllCurrentFrameFinish(elapsed);
+        };
+        MultiLayerKeyFrameAnimation.prototype._isAllControllerFinishAnimation = function () {
+            var isFinishAnimation = true;
+            this.controllerList.forEach(function (controller) {
+                if (!controller.isFinishAnimation) {
+                    isFinishAnimation = false;
+                    return wdCb.$BREAK;
+                }
+            });
+            return isFinishAnimation;
         };
         return MultiLayerKeyFrameAnimation;
     }(wd.Animation));
@@ -10865,6 +10884,9 @@ var wd;
                 }
                 controller.isPlayed = true;
                 controller.updateCurrentFrameData();
+                if (controller.getFirstFrameTime() > 0) {
+                    controller.addBoneMatrixAsTheFirstFrameWhoseTimeIsZero(self.boneMatrixMap.getChild(controller.jointName));
+                }
                 controller.saveZeroTimeFrameData();
                 controller.setFrameCount();
             });
@@ -10975,14 +10997,10 @@ var wd;
                         });
                     });
                     jointNamesUsedInJointTransformData = jointNamesUsedInJointTransformData.removeRepeatItems();
-                    if (jointNamesUsedInJointTransformData.getCount() !== _this.jointNames.length) {
-                        wd.Log.warn("fail");
-                        return;
-                    }
                     for (var _i = 0, _a = _this.jointNames; _i < _a.length; _i++) {
                         var name_2 = _a[_i];
                         if (!jointNamesUsedInJointTransformData.hasChild(name_2)) {
-                            wd.Log.warn("fail");
+                            wd.Log.warn("joint:" + name_2 + " is not used in jointTransformData");
                         }
                     }
                 }, this);
@@ -11308,7 +11326,7 @@ var wd;
             return interpolation;
         };
         LayerKeyFrameController.prototype._getBeginElapsedTimeOfFirstFrameWhenFinishAllFrames = function (elapsed) {
-            return wd.MathUtils.maxFloorIntegralMultiple(elapsed, this.currentAnimData.getChild(this._frameCount - 1).time);
+            return elapsed;
         };
         LayerKeyFrameController.prototype._isFinishAllFrames = function () {
             return this._currentFrame >= this._frameCount;
@@ -11319,6 +11337,15 @@ var wd;
                 this._prevFrameData = this.currentFrameData;
                 this.updateCurrentFrameData();
             } while (!this._isFinishAllFrames() && this.isCurrentFrameFinish(elapsed, pauseDuration));
+        };
+        LayerKeyFrameController.prototype._judgeBeginElapsedTime = function (elapsed, isFirstUpdateAttributeName) {
+            var _this = this;
+            wd.it("the _beginElapsedTime should === elapsed at the first time of the update", function () {
+                if (_this[isFirstUpdateAttributeName]) {
+                    wd.expect(elapsed).equals(_this._beginElapsedTimeOfFirstFrame);
+                    _this[isFirstUpdateAttributeName] = false;
+                }
+            }, this);
         };
         __decorate([
             wd.ensure(function () {
@@ -11367,6 +11394,7 @@ var wd;
         __decorate([
             wd.require(function (elapsed, pauseDuration) {
                 var _this = this;
+                this._judgeBeginElapsedTime(elapsed, "_contract_isFirstUpdate1");
                 wd.it("elapsed of current frame:" + (elapsed - this._beginElapsedTimeOfFirstFrame - pauseDuration) + " should >= 0", function () {
                     wd.expect(elapsed - _this._beginElapsedTimeOfFirstFrame - pauseDuration).gte(0);
                 });
@@ -11386,6 +11414,9 @@ var wd;
             })
         ], LayerKeyFrameController.prototype, "saveStartFrameData", null);
         __decorate([
+            wd.require(function (elapsed, pauseDuration, interpolationMethod) {
+                this._judgeBeginElapsedTime(elapsed, "_contract_isFirstUpdate2");
+            }),
             wd.ensure(function (interpolation, elapsed, interpolationMethod) {
                 wd.it("interpolation:" + interpolation + " >= 0 && <= 1", function () {
                     wd.expect(interpolation >= 0 && interpolation <= 1).true;
@@ -11419,6 +11450,43 @@ var wd;
         };
         JointKeyFrameController.prototype.saveZeroTimeFrameData = function () {
             this.saveStartFrameData(this.currentAnimData.getChild(0));
+        };
+        JointKeyFrameController.prototype.getFirstFrameTime = function () {
+            return this.currentAnimData.getChild(0).time;
+        };
+        JointKeyFrameController.prototype.addBoneMatrixAsTheFirstFrameWhoseTimeIsZero = function (boneMatrix) {
+            var localMatrix = boneMatrix.localMatrix, currentFirstFrame = this.currentAnimData.getChild(0), targets = wdCb.Collection.create(), newFirstFrame = {
+                time: 0,
+                targets: targets
+            };
+            currentFirstFrame.targets.forEach(function (data) {
+                switch (data.target) {
+                    case wd.EKeyFrameAnimationTarget.TRANSLATION:
+                        targets.addChild({
+                            interpolationMethod: wd.EKeyFrameInterpolation.LINEAR,
+                            target: wd.EKeyFrameAnimationTarget.TRANSLATION,
+                            data: localMatrix.getTranslation()
+                        });
+                        break;
+                    case wd.EKeyFrameAnimationTarget.ROTATION:
+                        targets.addChild({
+                            interpolationMethod: wd.EKeyFrameInterpolation.LINEAR,
+                            target: wd.EKeyFrameAnimationTarget.ROTATION,
+                            data: localMatrix.getRotation()
+                        });
+                        break;
+                    case wd.EKeyFrameAnimationTarget.SCALE:
+                        targets.addChild({
+                            interpolationMethod: wd.EKeyFrameInterpolation.LINEAR,
+                            target: wd.EKeyFrameAnimationTarget.SCALE,
+                            data: localMatrix.getScale()
+                        });
+                        break;
+                    default:
+                        break;
+                }
+            });
+            this.currentAnimData.unShiftChild(newFirstFrame);
         };
         JointKeyFrameController.prototype.updateTargets = function (elapsed, pauseDuration) {
             var self = this, startFrameDataMap = this.startFrameDataMap, position = wd.GlobalTempMathClass.Vector3_1, rotation = wd.GlobalTempMathClass.Quaternion_1, scale = wd.GlobalTempMathClass.Vector3_Scale_1;
@@ -11602,16 +11670,14 @@ var wd;
             var obj = new this();
             return obj;
         };
-        Billboard.prototype.addToObject = function (entityObject, isShareComponent) {
-            if (isShareComponent === void 0) { isShareComponent = false; }
-            var engine = wd.BillboardEngine.getInstance();
-            _super.prototype.addToObject.call(this, entityObject, isShareComponent);
-            if (!engine.hasChild(this)) {
-                engine.addChild(this);
+        Billboard.prototype.addToComponentContainer = function () {
+            var container = wd.BillboardComponentContainer.getInstance();
+            if (!container.hasChild(this)) {
+                container.addChild(this);
             }
         };
-        Billboard.prototype.removeFromEngine = function () {
-            wd.BillboardEngine.getInstance().removeChild(this);
+        Billboard.prototype.removeFromComponentContainer = function () {
+            wd.BillboardComponentContainer.getInstance().removeChild(this);
         };
         Billboard.prototype.update = function (elapsed) {
             var camera = wd.Director.getInstance().scene.currentCamera;
@@ -11678,16 +11744,14 @@ var wd;
         function LOD() {
             _super.apply(this, arguments);
         }
-        LOD.prototype.addToObject = function (entityObject, isShareComponent) {
-            if (isShareComponent === void 0) { isShareComponent = false; }
-            var engine = wd.LODEngine.getInstance();
-            _super.prototype.addToObject.call(this, entityObject, isShareComponent);
-            if (!engine.hasChild(this)) {
-                engine.addChild(this);
+        LOD.prototype.addToComponentContainer = function () {
+            var container = wd.LODComponentContainer.getInstance();
+            if (!container.hasChild(this)) {
+                container.addChild(this);
             }
         };
-        LOD.prototype.removeFromEngine = function () {
-            wd.LODEngine.getInstance().removeChild(this);
+        LOD.prototype.removeFromComponentContainer = function () {
+            wd.LODComponentContainer.getInstance().removeChild(this);
         };
         return LOD;
     }(wd.Component));
@@ -11946,27 +12010,26 @@ var wd;
             _super.apply(this, arguments);
             this.isCollideEnable = true;
         }
-        SpacePartition.prototype.addToObject = function (entityObject, isShareComponent) {
-            if (isShareComponent === void 0) { isShareComponent = false; }
-            var engine = wd.SpacePartitionEngine.getInstance();
-            _super.prototype.addToObject.call(this, entityObject, isShareComponent);
-            if (!engine.hasChild(this)) {
-                engine.addChild(this);
+        SpacePartition.prototype.addToComponentContainer = function () {
+            var container = wd.SpacePartitionComponentContainer.getInstance();
+            if (!container.hasChild(this)) {
+                container.addChild(this);
             }
         };
-        SpacePartition.prototype.removeFromEngine = function () {
-            wd.SpacePartitionEngine.getInstance().removeChild(this);
+        SpacePartition.prototype.removeFromComponentContainer = function () {
+            wd.SpacePartitionComponentContainer.getInstance().removeChild(this);
         };
         __decorate([
             wd.cloneAttributeAsBasicType()
         ], SpacePartition.prototype, "isCollideEnable", void 0);
         __decorate([
-            wd.require(function (entityObject) {
+            wd.require(function () {
+                var _this = this;
                 wd.it("SpacePartition component should add to GameObject", function () {
-                    wd.expect(entityObject).instanceOf(wd.GameObject);
-                });
+                    wd.expect(_this.entityObject).instanceOf(wd.GameObject);
+                }, this);
             })
-        ], SpacePartition.prototype, "addToObject", null);
+        ], SpacePartition.prototype, "addToComponentContainer", null);
         return SpacePartition;
     }(wd.Component));
     wd.SpacePartition = SpacePartition;
@@ -12325,17 +12388,9 @@ var wd;
             enumerable: true,
             configurable: true
         });
-        RigidBody.prototype.addToObject = function (entityObject, isShareComponent) {
-            if (isShareComponent === void 0) { isShareComponent = false; }
-            var engine = wd.PhysicsEngine.getInstance();
-            _super.prototype.addToObject.call(this, entityObject, isShareComponent);
-            if (!engine.hasChild(this)) {
-                engine.addChild(this);
-            }
-        };
         RigidBody.prototype.addConstraint = function () {
             var _this = this;
-            var engineAdapter = this.getPhysicsEngineAdapter();
+            var engineAdapter = this.getPhysicsComponentContainerAdapter();
             if (this.lockConstraint && this.lockConstraint.connectedBody) {
                 engineAdapter.addLockConstraint(this.entityObject, this.lockConstraint);
             }
@@ -12351,16 +12406,22 @@ var wd;
                 }, this);
             }
         };
-        RigidBody.prototype.removeFromEngine = function () {
-            wd.PhysicsEngine.getInstance().removeChild(this);
+        RigidBody.prototype.addToComponentContainer = function () {
+            var container = wd.PhysicsComponentContainer.getInstance();
+            if (!container.hasChild(this)) {
+                container.addChild(this);
+            }
+        };
+        RigidBody.prototype.removeFromComponentContainer = function () {
+            wd.PhysicsComponentContainer.getInstance().removeChild(this);
         };
         RigidBody.prototype.dispose = function () {
             this._children.forEach(function (child) {
                 child.removeTag("isRigidbodyChild");
             }, this);
         };
-        RigidBody.prototype.getPhysicsEngineAdapter = function () {
-            return wd.PhysicsEngine.getInstance().physicsEngineAdapter;
+        RigidBody.prototype.getPhysicsComponentContainerAdapter = function () {
+            return wd.PhysicsComponentContainer.getInstance().physicsEngineAdapter;
         };
         RigidBody.prototype.initBody = function () {
             this.addBody();
@@ -12368,9 +12429,9 @@ var wd;
         RigidBody.prototype.initConstraint = function () {
             this.addConstraint();
         };
-        RigidBody.prototype.addBodyToPhysicsEngine = function (method, data) {
+        RigidBody.prototype.addBodyToPhysicsComponentContainer = function (method, data) {
             if (data === void 0) { data = {}; }
-            var engineAdapter = this.getPhysicsEngineAdapter(), position = this.entityObject.transform.position, rotation = this.entityObject.transform.rotation;
+            var engineAdapter = this.getPhysicsComponentContainerAdapter(), position = this.entityObject.transform.position, rotation = this.entityObject.transform.rotation;
             engineAdapter[method](this.entityObject, wdCb.ExtendUtils.extend({
                 position: position,
                 rotation: rotation,
@@ -12384,13 +12445,13 @@ var wd;
             }, data));
         };
         RigidBody.prototype._onContact = function (collideObject) {
-            wd.ScriptEngine.getInstance().execEntityObjectScriptWithData(this.entityObject, "onContact", wdCb.Collection.create([collideObject]));
+            wd.ScriptComponentContainer.getInstance().execEntityObjectScriptWithData(this.entityObject, "onContact", wdCb.Collection.create([collideObject]));
         };
         RigidBody.prototype._onCollisionStart = function (collideObject) {
-            wd.ScriptEngine.getInstance().execEntityObjectScriptWithData(this.entityObject, "onCollisionStart", wdCb.Collection.create([collideObject]));
+            wd.ScriptComponentContainer.getInstance().execEntityObjectScriptWithData(this.entityObject, "onCollisionStart", wdCb.Collection.create([collideObject]));
         };
         RigidBody.prototype._onCollisionEnd = function () {
-            wd.ScriptEngine.getInstance().execEntityObjectScript(this.entityObject, "onCollisionEnd");
+            wd.ScriptComponentContainer.getInstance().execEntityObjectScript(this.entityObject, "onCollisionEnd");
         };
         RigidBody.prototype._isContainer = function (entityObject) {
             var rigidBody = entityObject.getComponent(RigidBody);
@@ -12435,7 +12496,7 @@ var wd;
                     wd.assert(!!this.entityObject.getComponent(wd.Collider).shape, wd.Log.info.FUNC_SHOULD("create collider.shape before adding rigid body component"));
                 }
             })
-        ], RigidBody.prototype, "addBodyToPhysicsEngine", null);
+        ], RigidBody.prototype, "addBodyToPhysicsComponentContainer", null);
         return RigidBody;
     }(wd.Component));
     wd.RigidBody = RigidBody;
@@ -12510,7 +12571,7 @@ var wd;
             configurable: true
         });
         DynamicRigidBody.prototype.addBody = function () {
-            this.addBodyToPhysicsEngine("addDynamicBody", {
+            this.addBodyToPhysicsComponentContainer("addDynamicBody", {
                 mass: this.mass,
                 linearDamping: this.linearDamping,
                 angularDamping: this.angularDamping,
@@ -12599,7 +12660,7 @@ var wd;
             configurable: true
         });
         KinematicRigidBody.prototype.addBody = function () {
-            this.addBodyToPhysicsEngine("addKinematicBody", {
+            this.addBodyToPhysicsComponentContainer("addKinematicBody", {
                 mass: this.mass,
                 velocity: this.velocity,
                 angularVelocity: this.angularVelocity
@@ -12633,7 +12694,7 @@ var wd;
             return obj;
         };
         StaticRigidBody.prototype.addBody = function () {
-            this.addBodyToPhysicsEngine("addStaticBody");
+            this.addBodyToPhysicsComponentContainer("addStaticBody");
         };
         return StaticRigidBody;
     }(wd.RigidBody));
@@ -12673,7 +12734,7 @@ var wd;
             set: function (connectedBody) {
                 var engineAdapter = null;
                 this._connectedBody = connectedBody;
-                engineAdapter = this.rigidBody.getPhysicsEngineAdapter();
+                engineAdapter = this.rigidBody.getPhysicsComponentContainerAdapter();
                 engineAdapter.removeLockConstraint(this.rigidBody.entityObject);
                 this.rigidBody.addConstraint();
             },
@@ -12704,7 +12765,7 @@ var wd;
             set: function (connectedBody) {
                 var engineAdapter = null;
                 this._connectedBody = connectedBody;
-                engineAdapter = this.rigidBody.getPhysicsEngineAdapter();
+                engineAdapter = this.rigidBody.getPhysicsComponentContainerAdapter();
                 engineAdapter.removeDistanceConstraint(this.rigidBody.entityObject);
                 this.rigidBody.addConstraint();
             },
@@ -12741,7 +12802,7 @@ var wd;
             set: function (connectedBody) {
                 var engineAdapter = null;
                 this._connectedBody = connectedBody;
-                engineAdapter = this.rigidBody.getPhysicsEngineAdapter();
+                engineAdapter = this.rigidBody.getPhysicsComponentContainerAdapter();
                 engineAdapter.removeHingeConstraint(this.rigidBody.entityObject);
                 this.rigidBody.addConstraint();
             },
@@ -12819,7 +12880,7 @@ var wd;
         PointToPointConstraintList.prototype.addChild = function (constraint) {
             var engineAdapter = null;
             this._list.addChild(constraint);
-            engineAdapter = this._rigidBody.getPhysicsEngineAdapter();
+            engineAdapter = this._rigidBody.getPhysicsComponentContainerAdapter();
             engineAdapter.addPointToPointConstraint(this._rigidBody.entityObject, constraint);
         };
         PointToPointConstraintList.prototype.addChildren = function (arg) {
@@ -12840,7 +12901,7 @@ var wd;
         PointToPointConstraintList.prototype.removeChild = function (constraint) {
             var engineAdapter = null;
             this._list.removeChild(constraint);
-            engineAdapter = this._rigidBody.getPhysicsEngineAdapter();
+            engineAdapter = this._rigidBody.getPhysicsComponentContainerAdapter();
             engineAdapter.removePointToPointConstraint(constraint);
         };
         __decorate([
@@ -13049,8 +13110,8 @@ var wd;
                 if (entityObject.hasTag("isRigidbodyChild")) {
                     return;
                 }
-                entityObject.transform.position = wd.CannonUtils.convertTowdVector3(body.position);
-                entityObject.transform.rotation = wd.CannonUtils.convertTowdQuaternion(body.quaternion);
+                entityObject.transform.position = wd.CannonUtils.convertToWDVector3(body.position);
+                entityObject.transform.rotation = wd.CannonUtils.convertToWDQuaternion(body.quaternion);
             });
         };
         CannonGameObjectDataList.prototype.add = function (obj, body) {
@@ -13287,10 +13348,10 @@ var wd;
         CannonUtils.convertToCannonQuaternion = function (rotation) {
             return new CANNON.Quaternion(rotation.x, rotation.y, rotation.z, rotation.w);
         };
-        CannonUtils.convertTowdVector3 = function (v) {
+        CannonUtils.convertToWDVector3 = function (v) {
             return wd.Vector3.create(v.x, v.y, v.z);
         };
-        CannonUtils.convertTowdQuaternion = function (r) {
+        CannonUtils.convertToWDQuaternion = function (r) {
             return wd.Quaternion.create(r.x, r.y, r.z, r.w);
         };
         return CannonUtils;
@@ -13321,7 +13382,7 @@ var wd;
             return obj;
         };
         CannonAdapter.prototype.getGravity = function (gravity) {
-            return wd.CannonUtils.convertTowdVector3(this.world.gravity);
+            return wd.CannonUtils.convertToWDVector3(this.world.gravity);
         };
         CannonAdapter.prototype.setGravity = function (gravity) {
             this.world.gravity = wd.CannonUtils.convertToCannonVector3(gravity);
@@ -13465,7 +13526,7 @@ var wd;
             if (!body) {
                 return null;
             }
-            return wd.CannonUtils.convertTowdVector3(body[dataName]);
+            return wd.CannonUtils.convertToWDVector3(body[dataName]);
         };
         CannonAdapter.prototype._setVec3Data = function (obj, dataName, data) {
             var body = this._gameObjectDataList.findBodyByGameObject(obj);
@@ -14118,25 +14179,26 @@ var wd;
         }
         ThreeDUI.prototype.update = function (elapsed) {
         };
-        ThreeDUI.prototype.addToObject = function (entityObject, isShareComponent) {
-            if (isShareComponent === void 0) { isShareComponent = false; }
-            var engine = wd.ThreeDUIEngine.getInstance();
-            _super.prototype.addToObject.call(this, entityObject, isShareComponent);
-            if (!engine.hasChild(this)) {
-                engine.addChild(this);
+        ThreeDUI.prototype.addToComponentContainer = function () {
+            var container = wd.ThreeDUIComponentContainer.getInstance();
+            if (!container.hasChild(this)) {
+                container.addChild(this);
             }
         };
-        ThreeDUI.prototype.removeFromEngine = function () {
-            wd.ThreeDUIEngine.getInstance().removeChild(this);
+        ThreeDUI.prototype.removeFromComponentContainer = function () {
+            wd.ThreeDUIComponentContainer.getInstance().removeChild(this);
         };
         __decorate([
             wd.virtual
         ], ThreeDUI.prototype, "update", null);
         __decorate([
-            wd.require(function (entityObject) {
-                wd.expect(entityObject).instanceOf(wd.GameObject);
+            wd.require(function () {
+                var _this = this;
+                wd.it("ThreeDUI component should add to GameObject", function () {
+                    wd.expect(_this.entityObject).instanceOf(wd.GameObject);
+                }, this);
             })
-        ], ThreeDUI.prototype, "addToObject", null);
+        ], ThreeDUI.prototype, "addToComponentContainer", null);
         return ThreeDUI;
     }(wd.Component));
     wd.ThreeDUI = ThreeDUI;
@@ -14273,16 +14335,14 @@ var wd;
         TwoDUI.prototype.init = function () {
             this.context = this.getContext();
         };
-        TwoDUI.prototype.addToObject = function (entityObject, isShareComponent) {
-            if (isShareComponent === void 0) { isShareComponent = false; }
-            var engine = wd.TwoDUIEngine.getInstance();
-            _super.prototype.addToObject.call(this, entityObject, isShareComponent);
-            if (!engine.hasChild(this)) {
-                engine.addChild(this);
+        TwoDUI.prototype.addToComponentContainer = function () {
+            var container = wd.TwoDUIComponentContainer.getInstance();
+            if (!container.hasChild(this)) {
+                container.addChild(this);
             }
         };
-        TwoDUI.prototype.removeFromEngine = function () {
-            wd.TwoDUIEngine.getInstance().removeChild(this);
+        TwoDUI.prototype.removeFromComponentContainer = function () {
+            wd.TwoDUIComponentContainer.getInstance().removeChild(this);
         };
         TwoDUI.prototype.render = function () {
             var context = this.context;
@@ -14334,10 +14394,13 @@ var wd;
             wd.virtual
         ], TwoDUI.prototype, "update", null);
         __decorate([
-            wd.require(function (entityObject) {
-                wd.expect(entityObject).instanceOf(wd.UIObject);
+            wd.require(function () {
+                var _this = this;
+                wd.it("ThreeDUI component should add to UIObject", function () {
+                    wd.expect(_this.entityObject).instanceOf(wd.UIObject);
+                }, this);
             })
-        ], TwoDUI.prototype, "addToObject", null);
+        ], TwoDUI.prototype, "addToComponentContainer", null);
         __decorate([
             wd.require(function () {
                 wd.assert(this.context !== null, wd.Log.info.FUNC_SHOULD("set context"));
@@ -16411,25 +16474,22 @@ var wd;
                 class: _class
             });
         };
-        Script.prototype.addToObject = function (entityObject, isShareComponent) {
-            if (isShareComponent === void 0) { isShareComponent = false; }
-            _super.prototype.addToObject.call(this, entityObject, isShareComponent);
+        Script.prototype.addToComponentContainer = function () {
             var data = wd.LoaderManager.getInstance().get(this.id);
-            wd.GlobalScriptUtils.addScriptToEntityObject(entityObject, data);
+            wd.GlobalScriptUtils.addScriptToEntityObject(this.entityObject, data);
         };
         Script.scriptList = wdCb.Stack.create();
         __decorate([
             wd.cloneAttributeAsBasicType()
         ], Script.prototype, "id", void 0);
         __decorate([
-            wd.require(function (entityObject, isShareComponent) {
+            wd.require(function () {
                 var _this = this;
-                if (isShareComponent === void 0) { isShareComponent = false; }
                 wd.it("script should be loaded", function () {
                     wd.expect(wd.LoaderManager.getInstance().get(_this.id)).exist;
                 }, this);
             })
-        ], Script.prototype, "addToObject", null);
+        ], Script.prototype, "addToComponentContainer", null);
         return Script;
     }(wd.Component));
     wd.Script = Script;
@@ -16461,6 +16521,11 @@ var wd;
         Object.defineProperty(Transform.prototype, "isTransform", {
             get: function () {
                 return this.isTranslate || this.isRotate || this.isScale;
+            },
+            set: function (isTransform) {
+                if (isTransform) {
+                    this._setGlobalTransformState(true);
+                }
             },
             enumerable: true,
             configurable: true
@@ -16534,11 +16599,26 @@ var wd;
         Transform.prototype.removeChild = function (child) {
             this.children.removeChild(child);
         };
-        Transform.prototype.setChildrenTransformState = function (transformState, state) {
-            if (state) {
-                this.children.forEach(function (child) {
-                    child[transformState] = true;
-                });
+        Transform.prototype.setChildrenTransformState = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
+            }
+            if (args.length === 1) {
+                var state = args[0];
+                if (state) {
+                    this.children.forEach(function (child) {
+                        child.isTransform = true;
+                    });
+                }
+            }
+            else {
+                var transformState_1 = args[0], state = args[1];
+                if (state) {
+                    this.children.forEach(function (child) {
+                        child[transformState_1] = true;
+                    });
+                }
             }
         };
         Transform.prototype.handleWhenSetTransformState = function (transformState) {
@@ -16566,15 +16646,35 @@ var wd;
             });
             return this[matrixAttriName];
         };
-        Transform.prototype._setGlobalTransformState = function (transformState, state) {
-            this[("_" + transformState)] = state;
-            if (state) {
+        Transform.prototype._setGlobalTransformState = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
+            }
+            if (args.length === 1) {
+                var state = args[0];
+                if (!state) {
+                    return;
+                }
+                this._isTranslate = true;
+                this._isRotate = true;
+                this._isScale = true;
                 this.dirtyLocal = true;
                 this.clearCache();
-                this.handleWhenSetTransformState(transformState);
+                this.handleWhenSetTransformState();
+                this.setChildrenTransformState(state);
             }
-            if (state) {
-                this.setChildrenTransformState(transformState, state);
+            else {
+                var transformState = args[0], state = args[1];
+                this[("_" + transformState)] = state;
+                if (state) {
+                    this.dirtyLocal = true;
+                    this.clearCache();
+                    this.handleWhenSetTransformState(transformState);
+                }
+                if (state) {
+                    this.setChildrenTransformState(transformState, state);
+                }
             }
         };
         Transform.prototype._setLocalTransformState = function (transformState, state) {
@@ -16625,6 +16725,8 @@ var wd;
             this._eulerAnglesCache = null;
             this._localEulerAnglesCache = null;
             this._normalMatrixCache = null;
+            this._isUserSpecifyTheLocalToWorldMatrix = false;
+            this._userLocalToWorldMatrix = null;
         }
         ThreeDTransform.create = function () {
             var obj = new this();
@@ -16632,7 +16734,15 @@ var wd;
         };
         Object.defineProperty(ThreeDTransform.prototype, "localToWorldMatrix", {
             get: function () {
+                if (this._isUserSpecifyTheLocalToWorldMatrix) {
+                    return this._userLocalToWorldMatrix;
+                }
                 return this.getMatrix("sync", "_localToWorldMatrix");
+            },
+            set: function (matrix) {
+                this._isUserSpecifyTheLocalToWorldMatrix = true;
+                this._userLocalToWorldMatrix = matrix;
+                this.isTransform = true;
             },
             enumerable: true,
             configurable: true
@@ -16925,6 +17035,12 @@ var wd;
         };
         ThreeDTransform.prototype.handleWhenSetTransformState = function (transformState) {
             var eventName = null;
+            if (transformState === void 0) {
+                wd.EventManager.trigger(this.entityObject, wd.CustomEvent.create(wd.EEngineEvent.TRANSFORM_TRANSLATE));
+                wd.EventManager.trigger(this.entityObject, wd.CustomEvent.create(wd.EEngineEvent.TRANSFORM_ROTATE));
+                wd.EventManager.trigger(this.entityObject, wd.CustomEvent.create(wd.EEngineEvent.TRANSFORM_SCALE));
+                return;
+            }
             switch (transformState) {
                 case wd.ETransformState.ISTRANSLATE:
                     eventName = wd.EEngineEvent.TRANSFORM_TRANSLATE;
@@ -17016,6 +17132,12 @@ var wd;
         __decorate([
             wd.cloneAttributeAsCloneable()
         ], ThreeDTransform.prototype, "localScale", null);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], ThreeDTransform.prototype, "_isUserSpecifyTheLocalToWorldMatrix", void 0);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], ThreeDTransform.prototype, "_userLocalToWorldMatrix", void 0);
         return ThreeDTransform;
     }(wd.Transform));
     wd.ThreeDTransform = ThreeDTransform;
@@ -19522,7 +19644,6 @@ var wd;
             this._colorCache = null;
             this._normalDirty = true;
             this._indiceDirty = true;
-            this._materialColorChangeSubscription = null;
             this.geometry = geometry;
         }
         Object.defineProperty(GeometryData.prototype, "vertices", {
@@ -19653,22 +19774,7 @@ var wd;
             enumerable: true,
             configurable: true
         });
-        GeometryData.prototype.init = function () {
-            var self = this;
-            this._materialColorChangeSubscription =
-                wdFrp.fromArray([
-                    wd.EventManager.fromEvent(this.geometry.entityObject, wd.EEngineEvent.MATERIAL_COLOR_CHANGE),
-                    wd.EventManager.fromEvent(this.geometry.entityObject, wd.EEngineEvent.MATERIAL_CHANGE)
-                ])
-                    .mergeAll()
-                    .subscribe(function () {
-                    if (self._needGetColorsFromMaterial()) {
-                        self.colorDirty = true;
-                    }
-                });
-        };
         GeometryData.prototype.dispose = function () {
-            this._materialColorChangeSubscription && this._materialColorChangeSubscription.dispose();
         };
         GeometryData.prototype.computeFaceNormals = function () {
             var vertices = this._vertices;
@@ -19814,10 +19920,6 @@ var wd;
             }
             return tangents;
         };
-        GeometryData.prototype._needGetColorsFromMaterial = function () {
-            var colors = this._colors;
-            return !colors || colors.length === 0;
-        };
         __decorate([
             wd.requireGetter(function () {
                 wd.assert(this._faces.length > 0, wd.Log.info.FUNC_SHOULD("faces.count", "> 0"));
@@ -19887,7 +19989,12 @@ var wd;
         ], GeometryData.prototype, "indices", null);
         __decorate([
             wd.ensureGetter(function (colors) {
-                wd.assert(colors.length === this._vertices.length, wd.Log.info.FUNC_SHOULD("colors.length:" + colors.length, "=== vertices.length:" + this._vertices.length));
+                var _this = this;
+                if (colors !== null && colors !== void 0) {
+                    wd.it("colors.length:" + colors.length + " should === vertices.length:" + this._vertices.length, function () {
+                        wd.expect(colors.length).equals(_this._vertices.length);
+                    });
+                }
             }),
             wd.cacheGetter(function () {
                 return !this.colorDirty && this._colorCache;
@@ -20095,7 +20202,6 @@ var wd;
             this._texCoordBuffer = null;
             this._tangentBuffer = null;
             this._indiceBuffer = null;
-            this._materialChangeSubscription = null;
             this.entityObject = entityObject;
         }
         BufferContainer.prototype.createBuffersFromGeometryData = function () {
@@ -20105,15 +20211,6 @@ var wd;
             this.getChild(wd.EBufferDataType.COLOR);
             this.getChild(wd.EBufferDataType.INDICE);
             this.getChild(wd.EBufferDataType.TEXCOORD);
-        };
-        BufferContainer.prototype.init = function () {
-            var self = this;
-            this._materialChangeSubscription = wd.EventManager.fromEvent(this.entityObject, wd.EEngineEvent.MATERIAL_CHANGE)
-                .subscribe(function () {
-                self.removeCache(wd.EBufferDataType.COLOR);
-                self.geometryData.colorDirty = true;
-            });
-            this.geometryData.init();
         };
         BufferContainer.prototype.removeCache = function () {
             var args = [];
@@ -20156,12 +20253,13 @@ var wd;
             }
             return result;
         };
+        BufferContainer.prototype.init = function () {
+        };
         BufferContainer.prototype.dispose = function () {
             this.container.forEach(function (buffer) {
                 buffer.dispose();
             });
             this.geometryData.dispose();
-            this._materialChangeSubscription && this._materialChangeSubscription.dispose();
         };
         BufferContainer.prototype.getCustomData = function (dataName) {
             return null;
@@ -20566,9 +20664,10 @@ var wd;
             this._worldToCameraMatrix = null;
             this._near = null;
             this._far = null;
-            this.pMatrix = wd.Matrix4.create();
+            this._pMatrix = wd.Matrix4.create();
             this.entityObject = null;
-            this.dirty = false;
+            this.pMatrixDirty = false;
+            this._isUserSpecifyThePMatrix = false;
         }
         Object.defineProperty(Camera.prototype, "cameraToWorldMatrix", {
             get: function () {
@@ -20596,7 +20695,7 @@ var wd;
             },
             set: function (near) {
                 this._near = near;
-                this.dirty = true;
+                this.pMatrixDirty = true;
             },
             enumerable: true,
             configurable: true
@@ -20607,15 +20706,26 @@ var wd;
             },
             set: function (far) {
                 this._far = far;
-                this.dirty = true;
+                this.pMatrixDirty = true;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Camera.prototype, "pMatrix", {
+            get: function () {
+                return this._pMatrix;
+            },
+            set: function (pMatrix) {
+                this._isUserSpecifyThePMatrix = true;
+                this._pMatrix = pMatrix;
             },
             enumerable: true,
             configurable: true
         });
         Camera.prototype.init = function () {
-            if (this.dirty) {
-                this.updateProjectionMatrix();
-                this.dirty = false;
+            if (this.pMatrixDirty) {
+                this._updateProjectionMatrix();
+                this.pMatrixDirty = false;
             }
         };
         Camera.prototype.dispose = function () {
@@ -20624,19 +20734,28 @@ var wd;
             return wd.CloneUtils.clone(this);
         };
         Camera.prototype.update = function (elapsed) {
-            if (this.dirty) {
-                this.updateProjectionMatrix();
-                this.dirty = false;
+            if (this.pMatrixDirty) {
+                this._updateProjectionMatrix();
+                this.pMatrixDirty = false;
             }
         };
         Camera.prototype.getInvViewProjMat = function () {
             return this.pMatrix.clone().multiply(this.worldToCameraMatrix).invert();
+        };
+        Camera.prototype._updateProjectionMatrix = function () {
+            if (this._isUserSpecifyThePMatrix) {
+                return;
+            }
+            this.updateProjectionMatrix();
         };
         __decorate([
             wd.requireGetter(function () {
                 wd.assert(this.entityObject, wd.Log.info.FUNC_MUST_DEFINE("entityObject"));
             })
         ], Camera.prototype, "cameraToWorldMatrix", null);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], Camera.prototype, "_worldToCameraMatrix", void 0);
         __decorate([
             wd.cloneAttributeAsBasicType()
         ], Camera.prototype, "near", null);
@@ -20645,7 +20764,10 @@ var wd;
         ], Camera.prototype, "far", null);
         __decorate([
             wd.cloneAttributeAsCloneable()
-        ], Camera.prototype, "pMatrix", void 0);
+        ], Camera.prototype, "pMatrix", null);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], Camera.prototype, "_isUserSpecifyThePMatrix", void 0);
         __decorate([
             wd.virtual
         ], Camera.prototype, "init", null);
@@ -20677,7 +20799,7 @@ var wd;
             },
             set: function (left) {
                 this._left = left;
-                this.dirty = true;
+                this.pMatrixDirty = true;
             },
             enumerable: true,
             configurable: true
@@ -20688,7 +20810,7 @@ var wd;
             },
             set: function (right) {
                 this._right = right;
-                this.dirty = true;
+                this.pMatrixDirty = true;
             },
             enumerable: true,
             configurable: true
@@ -20699,7 +20821,7 @@ var wd;
             },
             set: function (bottom) {
                 this._bottom = bottom;
-                this.dirty = true;
+                this.pMatrixDirty = true;
             },
             enumerable: true,
             configurable: true
@@ -20710,7 +20832,7 @@ var wd;
             },
             set: function (top) {
                 this._top = top;
-                this.dirty = true;
+                this.pMatrixDirty = true;
             },
             enumerable: true,
             configurable: true
@@ -20761,7 +20883,7 @@ var wd;
             },
             set: function (fovy) {
                 this._fovy = fovy;
-                this.dirty = true;
+                this.pMatrixDirty = true;
             },
             enumerable: true,
             configurable: true
@@ -20772,7 +20894,7 @@ var wd;
             },
             set: function (aspect) {
                 this._aspect = aspect;
-                this.dirty = true;
+                this.pMatrixDirty = true;
             },
             enumerable: true,
             configurable: true
@@ -20833,9 +20955,6 @@ var wd;
         Object.defineProperty(CameraController.prototype, "worldToCameraMatrix", {
             get: function () {
                 return this._getWorldToCameraMatrix();
-            },
-            set: function (matrix) {
-                this.camera.worldToCameraMatrix = matrix;
             },
             enumerable: true,
             configurable: true
@@ -21503,8 +21622,18 @@ var wd;
             cmd.vaoManager = geometry.vaoManager;
             cmd.drawMode = geometry.drawMode;
             cmd.mMatrix = target.transform.localToWorldMatrix;
-            cmd.vMatrix = cameraComponent.worldToCameraMatrix;
-            cmd.pMatrix = cameraComponent.pMatrix;
+            if (target.data && target.data.vMatrix) {
+                cmd.vMatrix = target.data.vMatrix;
+            }
+            else {
+                cmd.vMatrix = cameraComponent.worldToCameraMatrix;
+            }
+            if (target.data && target.data.pMatrix) {
+                cmd.pMatrix = target.data.pMatrix;
+            }
+            else {
+                cmd.pMatrix = cameraComponent.pMatrix;
+            }
             cmd.material = material;
             cmd.blend = material.blend;
             return cmd;
@@ -21834,16 +21963,14 @@ var wd;
             this.boundingRegion.init();
             this.buildBoundingRegion();
         };
-        Collider.prototype.addToObject = function (entityObject, isShareComponent) {
-            if (isShareComponent === void 0) { isShareComponent = false; }
-            var engine = wd.CollisionEngine.getInstance();
-            _super.prototype.addToObject.call(this, entityObject, isShareComponent);
-            if (!engine.hasChild(this)) {
-                engine.addChild(this);
+        Collider.prototype.addToComponentContainer = function () {
+            var container = wd.CollisionComponentContainer.getInstance();
+            if (!container.hasChild(this)) {
+                container.addChild(this);
             }
         };
-        Collider.prototype.removeFromEngine = function () {
-            wd.CollisionEngine.getInstance().removeChild(this);
+        Collider.prototype.removeFromComponentContainer = function () {
+            wd.CollisionComponentContainer.getInstance().removeChild(this);
         };
         Collider.prototype.clone = function () {
             return wd.CloneUtils.clone(this);
@@ -29774,10 +29901,10 @@ var wd;
         ShaderChunk.refraction_forLight_envMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "if(!isRenderListEmpty(u_isRenderListEmpty)){\n    totalColor *= textureCube(u_samplerCube0, refract(inDir, flipNormal(normal), u_refractionRatio));\n}\n", };
         ShaderChunk.modelMatrix_batch_instance_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "mat4 mMatrix = u_mMatrix;\n", };
         ShaderChunk.normalMatrix_batch_instance_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "mat3 normalMatrix = u_normalMatrix;\n", };
-        ShaderChunk.modelMatrix_noInstance_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "mat4 mMatrix = u_mMatrix;\n", };
-        ShaderChunk.normalMatrix_noInstance_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "mat3 normalMatrix = u_normalMatrix;\n", };
         ShaderChunk.modelMatrix_hardware_instance_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "mat4 mMatrix = mat4(a_mVec4_0, a_mVec4_1, a_mVec4_2, a_mVec4_3);\n", };
         ShaderChunk.normalMatrix_hardware_instance_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "mat3 normalMatrix = mat3(a_normalVec4_0, a_normalVec4_1, a_normalVec4_2);\n", };
+        ShaderChunk.modelMatrix_noInstance_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "mat4 mMatrix = u_mMatrix;\n", };
+        ShaderChunk.normalMatrix_noInstance_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "mat3 normalMatrix = u_normalMatrix;\n", };
         ShaderChunk.diffuseMap_fragment = { top: "", define: "", varDeclare: "varying vec2 v_diffuseMapTexCoord;\n", funcDeclare: "", funcDefine: "vec4 getMaterialDiffuse() {\n        return texture2D(u_diffuseMapSampler, v_diffuseMapTexCoord);\n    }\n", body: "", };
         ShaderChunk.diffuseMap_vertex = { top: "", define: "", varDeclare: "varying vec2 v_diffuseMapTexCoord;\n", funcDeclare: "", funcDefine: "", body: "//todo optimize(combine, reduce compute numbers)\n    //todo BasicTexture extract textureMatrix\n    vec2 sourceTexCoord = a_texCoord * u_diffuseMapSourceRegion.zw + u_diffuseMapSourceRegion.xy;\n    v_diffuseMapTexCoord = sourceTexCoord * u_diffuseMapRepeatRegion.zw + u_diffuseMapRepeatRegion.xy;\n", };
         ShaderChunk.emissionMap_fragment = { top: "", define: "", varDeclare: "varying vec2 v_emissionMapTexCoord;\n", funcDeclare: "", funcDefine: "vec3 getMaterialEmission() {\n        return texture2D(u_emissionMapSampler, v_emissionMapTexCoord).rgb;\n    }\n", body: "", };
@@ -29887,7 +30014,6 @@ var wd;
             this.blend = false;
             this.blendFuncSeparate = null;
             this.blendEquationSeparate = [wd.EBlendEquation.ADD, wd.EBlendEquation.ADD];
-            this.shading = wd.EShading.FLAT;
             this.geometry = null;
             this._shaderManager = wd.ShaderManager.create(this);
         }
@@ -30022,9 +30148,6 @@ var wd;
                 if (this._color.isEqual(color)) {
                     return;
                 }
-                if (this.geometry && this.geometry.entityObject) {
-                    wd.EventManager.trigger(this.geometry.entityObject, wd.CustomEvent.create(wd.EEngineEvent.MATERIAL_COLOR_CHANGE));
-                }
                 this._color = color;
             },
             enumerable: true,
@@ -30132,9 +30255,6 @@ var wd;
         ], Material.prototype, "blendEquationSeparate", void 0);
         __decorate([
             wd.cloneAttributeAsBasicType()
-        ], Material.prototype, "shading", void 0);
-        __decorate([
-            wd.cloneAttributeAsBasicType()
         ], Material.prototype, "geometry", void 0);
         return Material;
     }());
@@ -30214,6 +30334,7 @@ var wd;
             this._emissionMap = null;
             this._normalMap = null;
             this._shininess = 32;
+            this.shading = wd.EShading.FLAT;
             this.opacity = 1.0;
             this.lightModel = wd.ELightModel.PHONG;
             this.specularColor = wd.Color.create("#ffffff");
@@ -30465,6 +30586,9 @@ var wd;
         __decorate([
             wd.cloneAttributeAsBasicType()
         ], StandardLightMaterial.prototype, "shininess", null);
+        __decorate([
+            wd.cloneAttributeAsBasicType()
+        ], StandardLightMaterial.prototype, "shading", void 0);
         __decorate([
             wd.cloneAttributeAsBasicType()
         ], StandardLightMaterial.prototype, "opacity", void 0);
@@ -31258,7 +31382,7 @@ var wd;
     var Base64Utils = (function () {
         function Base64Utils() {
         }
-        Base64Utils.createImageFromBase64 = function (base64, filePath) {
+        Base64Utils.createImageFromBase64 = function (base64) {
             var image = new Image();
             image.src = base64;
             return image;
@@ -32136,7 +32260,7 @@ var wd;
         WDLoader.prototype._createLoadImageAssetStream = function (filePath, config, json) {
             var imageMap = this._imageMap;
             return this._createLoadAssetStream(filePath, json, json.images, function (id, uri) {
-                imageMap.addChild(id, wd.Base64Utils.createImageFromBase64(uri, filePath));
+                imageMap.addChild(id, wd.Base64Utils.createImageFromBase64(uri));
             }, function (id, url) {
                 return wd.TextureLoader.getInstance().load(url, id, config)
                     .do(function (asset) {
@@ -34249,7 +34373,7 @@ var wd;
             }
             this.gl = this.view.getContext(contextConfig);
             if (!this.gl) {
-                wdCb.DomQuery.create("<p class='not-support-webgl'></p>").prependTo("body").get(0).innerText = "Your device doesn't support WebGL";
+                wdCb.DomQuery.create("<p class='not-support-webgl'></p>").prependTo("body").text("Your device doesn't support WebGL");
             }
         };
         DeviceManager.prototype.setScreen = function () {
@@ -34441,7 +34565,6 @@ var wd;
             this.maxCubemapTextureSize = gl.getParameter(gl.MAX_CUBE_MAP_TEXTURE_SIZE);
             this.maxAnisotropy = this._getMaxAnisotropy();
             this.maxBoneCount = this._getMaxBoneCount();
-            alert("maxBoneCount:" + this.maxBoneCount);
             this._detectPrecision();
         };
         GPUDetector.prototype._getExtension = function (name) {
@@ -37616,6 +37739,68 @@ var wd;
 })(wd || (wd = {}));
 var wd;
 (function (wd) {
+    var TerrainMaterial = (function (_super) {
+        __extends(TerrainMaterial, _super);
+        function TerrainMaterial() {
+            _super.apply(this, arguments);
+            this.layer = wd.TerrainLayer.create();
+            this.mix = wd.TerrainMix.create();
+        }
+        TerrainMaterial.create = function () {
+            var obj = new this();
+            obj.initWhenCreate();
+            return obj;
+        };
+        TerrainMaterial.prototype.init = function () {
+            if (this.layer.hasData()) {
+                this.layer.addMap(this.mapManager);
+            }
+            if (this.mix.hasData()) {
+                this.mix.addMap(this.mapManager);
+            }
+            _super.prototype.init.call(this);
+        };
+        TerrainMaterial.prototype.getTextureForRenderSort = function () {
+            if (this.layer.hasData()) {
+                return this.layer.getTextureForRenderSort();
+            }
+            if (this.mix.hasData()) {
+                return this.mix.getTextureForRenderSort();
+            }
+        };
+        TerrainMaterial.prototype.addExtendShaderLib = function () {
+            if (this.layer.hasData()) {
+                this.shader.addLib(wd.TerrainLayerShaderLib.create());
+            }
+            if (this.mix.hasData()) {
+                this.shader.addLib(wd.TerrainMixMapShaderLib.create());
+            }
+        };
+        TerrainMaterial.prototype.addTopExtendShaderLib = function () {
+            if (this.mix.hasData()) {
+                this.shader.addLib(wd.TerrainMixCommonShaderLib.create());
+            }
+        };
+        TerrainMaterial.prototype.addNormalRelatedShaderLib = function () {
+            if (this.mix.hasBumpMap()) {
+                this.shader.addLib(wd.TerrainMixBumpShaderLib.create());
+            }
+            else {
+                _super.prototype.addNormalRelatedShaderLib.call(this);
+            }
+        };
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], TerrainMaterial.prototype, "layer", void 0);
+        __decorate([
+            wd.cloneAttributeAsCloneable()
+        ], TerrainMaterial.prototype, "mix", void 0);
+        return TerrainMaterial;
+    }(wd.StandardLightMaterial));
+    wd.TerrainMaterial = TerrainMaterial;
+})(wd || (wd = {}));
+var wd;
+(function (wd) {
     var TerrainLayer = (function () {
         function TerrainLayer() {
             this._mapData = [];
@@ -37961,68 +38146,6 @@ var wd;
         return TerrainMixMapShaderLib;
     }(wd.EngineShaderLib));
     wd.TerrainMixMapShaderLib = TerrainMixMapShaderLib;
-})(wd || (wd = {}));
-var wd;
-(function (wd) {
-    var TerrainMaterial = (function (_super) {
-        __extends(TerrainMaterial, _super);
-        function TerrainMaterial() {
-            _super.apply(this, arguments);
-            this.layer = wd.TerrainLayer.create();
-            this.mix = wd.TerrainMix.create();
-        }
-        TerrainMaterial.create = function () {
-            var obj = new this();
-            obj.initWhenCreate();
-            return obj;
-        };
-        TerrainMaterial.prototype.init = function () {
-            if (this.layer.hasData()) {
-                this.layer.addMap(this.mapManager);
-            }
-            if (this.mix.hasData()) {
-                this.mix.addMap(this.mapManager);
-            }
-            _super.prototype.init.call(this);
-        };
-        TerrainMaterial.prototype.getTextureForRenderSort = function () {
-            if (this.layer.hasData()) {
-                return this.layer.getTextureForRenderSort();
-            }
-            if (this.mix.hasData()) {
-                return this.mix.getTextureForRenderSort();
-            }
-        };
-        TerrainMaterial.prototype.addExtendShaderLib = function () {
-            if (this.layer.hasData()) {
-                this.shader.addLib(wd.TerrainLayerShaderLib.create());
-            }
-            if (this.mix.hasData()) {
-                this.shader.addLib(wd.TerrainMixMapShaderLib.create());
-            }
-        };
-        TerrainMaterial.prototype.addTopExtendShaderLib = function () {
-            if (this.mix.hasData()) {
-                this.shader.addLib(wd.TerrainMixCommonShaderLib.create());
-            }
-        };
-        TerrainMaterial.prototype.addNormalRelatedShaderLib = function () {
-            if (this.mix.hasBumpMap()) {
-                this.shader.addLib(wd.TerrainMixBumpShaderLib.create());
-            }
-            else {
-                _super.prototype.addNormalRelatedShaderLib.call(this);
-            }
-        };
-        __decorate([
-            wd.cloneAttributeAsCloneable()
-        ], TerrainMaterial.prototype, "layer", void 0);
-        __decorate([
-            wd.cloneAttributeAsCloneable()
-        ], TerrainMaterial.prototype, "mix", void 0);
-        return TerrainMaterial;
-    }(wd.StandardLightMaterial));
-    wd.TerrainMaterial = TerrainMaterial;
 })(wd || (wd = {}));
 var wd;
 (function (wd) {
