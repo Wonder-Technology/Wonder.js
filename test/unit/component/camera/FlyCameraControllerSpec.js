@@ -262,13 +262,6 @@ describe("FlyCameraController", function () {
             insertDom();
             prepareTool.createGL("event-test");
 
-
-
-            // if(bowser.firefox){
-            //     expect().toPass();
-            //     return;
-            // }
-
             sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
 
             prepareOrthoCamera(sandbox);
@@ -284,10 +277,6 @@ describe("FlyCameraController", function () {
 
         describe("dispose", function(){
             describe("remove events", function(){
-                if(bowser.firefox){
-                    return;
-                }
-
                 function judgePointEvent(eventType) {
                     sandbox.stub(controller._control, "_changeRotation");
 

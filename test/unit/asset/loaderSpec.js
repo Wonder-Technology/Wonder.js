@@ -131,7 +131,10 @@ describe("loader", function () {
                 var png = wd.LoaderManager.getInstance().get("png");
 
                 expect(jpg.source.crossOrigin).toEqual("anonymous")
-                expect(png.source.crossOrigin).not.toBeExist();
+
+                if(!ciTool.isTestInCI()){
+                    expect(png.source.crossOrigin).not.toBeExist();
+                }
 
                 done();
             });

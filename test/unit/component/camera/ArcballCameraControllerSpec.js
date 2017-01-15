@@ -24,7 +24,7 @@ describe("ArcballCameraController", function () {
     }
 
     function insertDom() {
-        $("body").append($("<canvas id='event-test'></canvas>"));
+        $("html").append($("<canvas id='event-test'></canvas>"));
     }
 
     function removeDom() {
@@ -41,15 +41,14 @@ describe("ArcballCameraController", function () {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
+        insertDom();
+        prepareTool.createGL("event-test");
 
         testTool.openContractCheck(sandbox);
 
         director = wd.Director.getInstance();
 
         manager = wd.EventManager;
-
-        insertDom();
-        prepareTool.createGL("event-test");
     });
     afterEach(function () {
         wd.EventManager.off();
