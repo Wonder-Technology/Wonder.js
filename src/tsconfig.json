@@ -2,7 +2,7 @@
   "filesGlob": [
     "../lib/inner/!(Wonder*)/*.d.ts",
     "../lib/inner/Wonder-CommonLib/dist/wdCb.d.ts",
-    "../lib/inner/Wonder-FRP/dist/wdFrp.core.d.ts",
+    "../lib/inner/Wonder-FRP/dist/wdFrp.d.ts",
     "../lib/outer/**/*.d.ts",
     "config/DebugConfig.ts",
     "debug/DebugStatistics.ts",

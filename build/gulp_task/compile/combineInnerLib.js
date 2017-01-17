@@ -1,111 +1,33 @@
 var gulp = require("gulp");
-// var gulpSync = require("gulp-sync")(gulp);
 var path = require("path");
 var fs = require("fs-extra");
 var glob = require("glob");
 
 var distPath = null;
-// var combineDTsList = [
-//     "Wonder-CommonLib",
-//     "Wonder-FRP",
-//     "cannon"
-//     ],
-//     combineContentList = [
-//         "Wonder-CommonLib",
-//         "Wonder-FRP",
-//         "bowser",
-//         "rsvp",
-//         "chai"
-//     ];
-// var tsconfigPath = "src/tsconfig.json";
-
-// gulp.task("combineDefinitionFile", function(done){
-//     var wdFilePath = path.join(distPath, "wd.d.ts");
-//
-//     try{
-//         _combineInnerLibDTs(
-//             wdFilePath,
-//             path.join(process.cwd(), tsconfigPath),
-//             function(innerLibDtsPath){
-//                 var result = false;
-//
-//                 combineDTsList.forEach(function(dts){
-//                     if(innerLibDtsPath.indexOf(dts) > -1){
-//                         result = true;
-//                     }
-//                 })
-//
-//                 return result;
-//             }
-//         );
-//
-//         gulp.src(wdFilePath)
-//             .pipe(gulp.dest(distPath));
-//     }
-//     catch(e){
-//         console.log(e);
-//     }
-//     finally {
-//         done();
-//     }
-// });
 
 
-
-// gulp.task("combineContent", function(done){
-//     var wdFilePath = path.join(distPath, "wd.js");
-//
-//     try{
-//         _combineInnerLibContent(
-//             wdFilePath,
-//             path.join(process.cwd(), tsconfigPath),
-//             function(innerLibDtsPath){
-//                 var result = false;
-//
-//                 combineContentList.forEach(function(dts){
-//                     if(innerLibDtsPath.indexOf(dts) > -1){
-//                         result = true;
-//                     }
-//                 });
-//
-//                 return result;
-//             }
-//         );
-//
-//         _createInnerLibJs();
-//
-//         gulp.src(wdFilePath)
-//             .pipe(gulp.dest(distPath));
-//     }
-//     catch(e){
-//         console.log(e);
-//     }
-//     finally {
-//         done();
-//     }
-// });
-
-
-
+var requireInnerLibToContent = require("../../../lib/inner/Wonder-Package/build/gulp_task/package/requireInnerLibToContent").requireInnerLibToContent;
+var addModuleExports = require("../../../lib/inner/Wonder-Package/build/gulp_task/package/addModuleExports").addModuleExports;
 
 
 function _createInnerLibJs(wdInnerLibFilePath, tsconfigPath, combineContentList){
-    // fs.createFileSync( path.join(distPath, "wd.innerLib.js") );
     fs.createFileSync(wdInnerLibFilePath);
 
     _combineInnerLibContent(
-        // path.join(distPath, "wd.innerLib.js"),
         wdInnerLibFilePath,
-        // path.join(process.cwd(), tsconfigPath),
-         tsconfigPath,
+        tsconfigPath,
         function(innerLibDtsPath){
             var result = false;
 
-            combineContentList.forEach(function(dts){
-                if(innerLibDtsPath.indexOf(dts) > -1){
-                    result = true;
-                }
-            });
+            combineContentList
+                .map(function(data){
+                    return data.keyword;
+                })
+                .forEach(function(dts){
+                    if(innerLibDtsPath.indexOf(dts) > -1){
+                        result = true;
+                    }
+                });
 
             return result;
         }
@@ -116,26 +38,27 @@ function _combineInnerLibDTs(mainFilePath, tsconfigPath, filterFunc){
     _getInnerLibDTsPathArr(tsconfigPath)
         .filter(filterFunc)
         .forEach(function(innerLibDtsPath){
-        fs.writeFileSync(
-            mainFilePath,
-            fs.readFileSync(innerLibDtsPath, "utf8")
-            + "\n"
-            + fs.readFileSync(mainFilePath, "utf8")
-        );
-    });
+            fs.writeFileSync(
+                mainFilePath,
+                fs.readFileSync(innerLibDtsPath, "utf8")
+                + "\n"
+                + fs.readFileSync(mainFilePath, "utf8")
+            );
+        });
 }
+
 
 function _combineInnerLibContent(mainFilePath, tsconfigPath, filterFunc){
     _getInnerLibDTsPathArr(tsconfigPath)
         .filter(filterFunc)
         .forEach(function(innerLibDtsPath){
-        fs.writeFileSync(
-            mainFilePath,
-            fs.readFileSync(innerLibDtsPath.replace("d.ts", "js"), "utf8")
-            + "\n"
-            + fs.readFileSync(mainFilePath, "utf8")
-        );
-    });
+            fs.writeFileSync(
+                mainFilePath,
+                fs.readFileSync(innerLibDtsPath.replace("d.ts", "js"), "utf8")
+                + "\n"
+                + fs.readFileSync(mainFilePath, "utf8")
+            );
+        });
 }
 
 function _getInnerLibDTsPathArr(tsconfigPath){
@@ -143,8 +66,8 @@ function _getInnerLibDTsPathArr(tsconfigPath){
         files = null,
         resultArr = [];
 
-var tsconfigJson = JSON.parse(fs.readFileSync(tsconfigPath, "utf8").replace(/\/\/.+/g, "")),
-    files = [];
+    var tsconfigJson = JSON.parse(fs.readFileSync(tsconfigPath, "utf8").replace(/\/\/.+/g, "")),
+        files = [];
 
 
 
@@ -227,13 +150,16 @@ function _combineDefinitionFile(combineDTsList, tsconfigPath, wdFilePath, combin
     try {
         _combineInnerLibDTs(
             wdFilePath,
-            // path.join(process.cwd(), tsconfigPath),
             tsconfigPath,
             function (innerLibDtsPath) {
                 var result = false;
 
-                combineDTsList.forEach(function (dts) {
-                    if (innerLibDtsPath.indexOf(dts) > -1) {
+                combineDTsList
+                    .map(function(data){
+                        return data.keyword;
+                    })
+                    .forEach(function (data) {
+                    if (innerLibDtsPath.indexOf(data) > -1) {
                         result = true;
                     }
                 });
@@ -255,22 +181,16 @@ function _combineDefinitionFile(combineDTsList, tsconfigPath, wdFilePath, combin
 
 function _combineContent(tsconfigPath, combineContentList, wdFilePath, wdInnerLibFilePath, done) {
     try{
-        _combineInnerLibContent(
+        requireInnerLibToContent(
             wdFilePath,
-            // path.join(process.cwd(), tsconfigPath),
-            tsconfigPath,
-            function(innerLibDtsPath){
-                var result = false;
-
-                combineContentList.forEach(function(dts){
-                    if(innerLibDtsPath.indexOf(dts) > -1){
-                        result = true;
-                    }
-                });
-
-                return result;
-            }
+            combineContentList
         );
+
+        addModuleExports(
+            wdFilePath,
+            "{\n" +"wd:wd,\n" + "wdCb:wdCb,\n" + "wdFrp:wdFrp\n}"
+        );
+
 
         _createInnerLibJs(wdInnerLibFilePath, tsconfigPath, combineContentList);
 

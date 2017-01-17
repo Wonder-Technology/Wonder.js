@@ -17,6 +17,7 @@
     "glob": "^7.0.4",
     "glob-stream": "^5.0.0",
     "gulp": "^3.9.0",
+    "gulp-browserify": "^0.5.1",
     "gulp-concat": "^2.6.0",
     "gulp-header": "^1.8.2",
     "gulp-rename": "^1.2.2",

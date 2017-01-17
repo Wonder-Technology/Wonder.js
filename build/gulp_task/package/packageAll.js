@@ -23,6 +23,9 @@ var createShaderChunk = require("../createInnerFile/ShaderChunk/create").createS
 var addBanner =  require("../compile/addBanner").addBanner;
 
 
+var browserify = require("../../../lib/inner/Wonder-Package/build/gulp_task/package/browserify").browserify;
+
+
 
 var manageExcludeLibData = require("./manageExcludeLibData");
 var getExcludeLibData = manageExcludeLibData.getExcludeLibData;
@@ -105,6 +108,9 @@ gulp.task("all_combineInnerLib", function(done) {
 });
 
 
+gulp.task("all_browserify", function() {
+    return browserify(wdFilePath, distPath, "wd");
+});
 
 
 gulp.task("packageAll", gulpSync.sync([
@@ -116,6 +122,7 @@ gulp.task("packageAll", gulpSync.sync([
     "all_compileTsDebug",
     "changeDistFilePath",
     "all_combineInnerLib",
+    "all_browserify",
     "all_compress",
     "all_addBanner",
     "removeTsconfigFiles",

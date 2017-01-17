@@ -26,6 +26,8 @@ var createShaderChunk = require("../createInnerFile/ShaderChunk/create").createS
 var addBanner =  require("../compile/addBanner").addBanner;
 
 
+var browserify = require("../../../lib/inner/Wonder-Package/build/gulp_task/package/browserify").browserify;
+
 
 
 
@@ -54,7 +56,7 @@ var filterFilesGlob = manageExcludeModuleData.filterFilesGlob;
 
 
 var manageExcludeLibData = require("./manageExcludeLibData");
-var getExcludeLibData = manageExcludeLibData.getExcludeLibData;
+var getExcludeLibDataByCustomPackage = manageExcludeLibData.getExcludeLibDataByCustomPackage;
 
 
 
@@ -116,7 +118,7 @@ gulp.task("custom_addBanner", function() {
 
 gulp.task("custom_combineInnerLib", function(done) {
     var excludeLibsStr = commandUtils.parseOption("--excludeLibs") || "",
-        data = getExcludeLibData(excludeLibsStr, getExcludeModuleData(commandUtils.parseOption("--excludeModules") || "").removeLibArr),
+        data = getExcludeLibDataByCustomPackage(excludeLibsStr, getExcludeModuleData(commandUtils.parseOption("--excludeModules") || "").removeLibArr),
         tsconfigPath = custom_tsconfigFilePath;
 
     return combineInnerLib(data.combineDTsList, data.combineContentList, tsconfigPath, wdDefinitionFilePath, wdFilePath, wdInnerLibFilePath, distPath, done);
@@ -149,6 +151,9 @@ function _closeContrackTest(filePath) {
     fs.writeFileSync(filePath, fileContent);
 }
 
+gulp.task("custom_browserify", function() {
+    return browserify(wdFilePath, distPath, "wd");
+});
 
 
 gulp.task("packageCustom", gulpSync.sync([
@@ -160,6 +165,7 @@ gulp.task("packageCustom", gulpSync.sync([
     "custom_compileTsDebug",
     "changeDistFilePath",
     "custom_combineInnerLib",
+    "custom_browserify",
     "custom_compress",
     "custom_addBanner",
     "removeTsconfigFiles"
