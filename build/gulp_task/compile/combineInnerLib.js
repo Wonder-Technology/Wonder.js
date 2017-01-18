@@ -5,9 +5,11 @@ var glob = require("glob");
 
 var distPath = null;
 
+var wonderPackage = require("wonder-package");
 
-var requireInnerLibToContent = require("../../../lib/inner/Wonder-Package/build/gulp_task/package/requireInnerLibToContent").requireInnerLibToContent;
-var addModuleExports = require("../../../lib/inner/Wonder-Package/build/gulp_task/package/addModuleExports").addModuleExports;
+var addModuleExports = wonderPackage.addModuleExports;
+var requireInnerLibToContent = wonderPackage.requireInnerLibToContent;
+
 
 
 function _createInnerLibJs(wdInnerLibFilePath, tsconfigPath, combineContentList){

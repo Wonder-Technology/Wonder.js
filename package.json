@@ -51,6 +51,7 @@
   },
   "dependencies": {
     "wonder-commonlib": "^0.1.0",
-    "wonder-frp": "^0.1.1"
+    "wonder-frp": "^0.1.1",
+    "wonder-package": "^0.1.0"
   }
 }

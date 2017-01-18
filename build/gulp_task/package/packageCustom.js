@@ -26,7 +26,10 @@ var createShaderChunk = require("../createInnerFile/ShaderChunk/create").createS
 var addBanner =  require("../compile/addBanner").addBanner;
 
 
-var browserify = require("../../../lib/inner/Wonder-Package/build/gulp_task/package/browserify").browserify;
+var wonderPackage = require("wonder-package");
+
+var browserify = wonderPackage.browserify;
+
 
 
 
