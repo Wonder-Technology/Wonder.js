@@ -3,12 +3,12 @@ var gulpHeader = require("gulp-header");
 var path = require("path");
 
 var bowerConfig = require("../../../bower.json");
-// var author = bowerConfig.authors[0];
+var author = bowerConfig.authors[0];
 
 var banner = ['/*!',
         ' * <%= bowerConfig.name %> - <%= bowerConfig.description %>',
         ' * @version v<%= bowerConfig.version %>',
-        // ' * @author ' + author,
+        ' * @author ' + author,
         ' * @link <%= bowerConfig.homepage %>',
         ' * @license <%= bowerConfig.license %>',
         ' */',
