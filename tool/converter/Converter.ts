@@ -2,8 +2,8 @@ import fs = require("fs-extra");
 import path = require("path");
 import through = require("through2");
 import gutil = require("gulp-util");
-import wdFrp = require("wdfrp");
-import wdCb = require("wdcb");
+import wdCb = require("wonder-commonlib");
+import wdFrp = require("wonder-frp");
 import Log = require("../ts/Log");
 import JudgeUtils = require("../ts/JudgeUtils");
 import FileUtils = require("../ts/FileUtils");
@@ -13,8 +13,6 @@ import {OBJToWD} from "./src/obj/OBJToWD";
 import {MD2ToWD} from "./src/md2/MD2ToWD";
 import {GLTFToWD} from "./src/gltf/GLTFToWD";
 import {FBXToWD} from "./src/fbx/FBXToWD";
-
-var nodeBase64Image = require("node-base64-image");
 
 export = class Converter {
     public static create() {

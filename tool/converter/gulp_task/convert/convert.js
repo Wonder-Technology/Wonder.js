@@ -1,5 +1,5 @@
 var gulp = require("gulp");
-var wdFrp = require("wdfrp");
+var wdFrp = require("wonder-frp");
 var fs = require("fs-extra");
 var path = require("path");
 

@@ -1,4 +1,4 @@
-import wdCb = require("wdcb");
+import wdCb = require("wonder-commonlib");
 
 // import Utils = require("./Utils")
 

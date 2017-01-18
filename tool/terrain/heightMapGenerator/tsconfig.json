@@ -11,8 +11,8 @@
 		"experimentalDecorators": true
 	},
 	"files": [
-		"../../../node_modules/wdcb/dist/wdCb.node.d.ts",
-		"../../../node_modules/wdfrp/dist/wdFrp.node.d.ts",
+		"../../../node_modules/wonder-commonlib/dist/wdCb.node.d.ts",
+		"../../../node_modules/wonder-frp/dist/wdFrp.node.d.ts",
 		"../../../lib/inner/chai/chai.d.ts",
 
 		"../../dts/node.d.ts",

@@ -1,8 +1,8 @@
 "use strict";
 var fs = require("fs-extra");
 var path = require("path");
-var wdFrp = require("wdfrp");
-var wdCb = require("wdcb");
+var wdFrp = require("wonder-frp");
+var wdCb = require("wonder-commonlib");
 var JudgeUtils = require("../ts/JudgeUtils");
 var PathUtils = require("./common/PathUtils");
 var OBJToWD_1 = require("./src/obj/OBJToWD");

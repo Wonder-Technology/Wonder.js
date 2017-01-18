@@ -1,4 +1,4 @@
-import wdCb = require("wdcb");
+import wdCb = require("wonder-commonlib");
 
 const MAX_ARRAY_INDEX = Math.pow(2, 53) - 1;
 

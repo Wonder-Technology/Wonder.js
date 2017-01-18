@@ -4,7 +4,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var wdCb = require("wdcb");
+var wdCb = require("wonder-commonlib");
 var MAX_ARRAY_INDEX = Math.pow(2, 53) - 1;
 module.exports = (function (_super) {
     __extends(JudgeUtils, _super);

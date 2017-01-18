@@ -1,6 +1,6 @@
 var gs = require("glob-stream");
 var fs = require("fs-extra");
-var wdFrp = require("wdfrp");
+var wdFrp = require("wonder-frp");
 var path = require("path");
 
 var Converter = require("../../dist/converter/Converter");

@@ -1,4 +1,4 @@
-import wdCb = require("wdcb");
+import wdCb = require("wonder-commonlib");
 import Log = require("../../../ts/Log");
 import Vector2 = require("../../../ts/Vector2");
 import Vector3 = require("../../../ts/Vector3");

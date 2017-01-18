@@ -1,7 +1,7 @@
 import fs = require("fs-extra");
 import path = require("path");
-import wdFrp = require("wdfrp");
-import wdCb = require("wdcb");
+import wdFrp = require("wonder-frp");
+import wdCb = require("wonder-commonlib");
 import ObjectsConverter = require("./ObjectsConverter");
 import ModelLoaderUtils = require("../../common/ModelLoaderUtils");
 

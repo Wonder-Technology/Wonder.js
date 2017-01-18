@@ -1,5 +1,5 @@
 "use strict";
-var wdCb = require("wdcb");
+var wdCb = require("wonder-commonlib");
 var path = require("path");
 module.exports = (function () {
     function ModelLoaderUtils() {

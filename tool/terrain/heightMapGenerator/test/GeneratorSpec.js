@@ -3,7 +3,7 @@ var fs = require("fs-extra"),
     path = require("path"),
     Canvas = require("canvas"),
     sinon = require("sinon");
-var wdFrp = require("wdfrp");
+var wdFrp = require("wonder-frp");
 
 var Image = Canvas.Image;
 

@@ -61,7 +61,7 @@ describe("Converter", function () {
                     var resultJson = readJSON(resultFilePath);
 
                     expect(resultJson.asset).toEqual({
-                        version: '0.8.0',
+                        version: jasmine.any(String),
                         generator: 'WonderJsOBJToWDConverter'
                     });
 

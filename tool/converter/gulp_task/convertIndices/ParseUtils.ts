@@ -1,6 +1,6 @@
 import {SourceJsonData, SourcePrimitive, TargetJsonData, TargetPrimitive, MorphTarget, Attribute} from "./TypeDefinition";
 
-import wdCb = require("wdcb");
+import wdCb = require("wonder-commonlib");
 
 import Utils = require("./Utils")
 

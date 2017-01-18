@@ -5,7 +5,7 @@ import Fault = require("./src/Fault");
 import MDP = require("./src/MDP");
 import fs = require("fs");
 import path = require("path");
-import wdFrp = require("wdfrp");
+import wdFrp = require("wonder-frp");
 
 export = class Generator{
     public static create() {

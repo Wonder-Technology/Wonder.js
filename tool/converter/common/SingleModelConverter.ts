@@ -1,4 +1,4 @@
-import wdFrp = require("wdfrp");
+import wdFrp = require("wonder-frp");
 
 export abstract class SingleModelConverter {
     constructor(version:string) {

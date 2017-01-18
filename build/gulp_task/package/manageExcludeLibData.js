@@ -1,4 +1,4 @@
-var wdCb = require("wdcb");
+var wdCb = require("wonder-commonlib");
 var arrayUtils = require("../common/arrayUtils");
 
 
@@ -7,12 +7,12 @@ var ExcludeLib = {
     WD_COMMONLIB: {
         variableName: "wdCb",
         keyword: "Wonder-CommonLib",
-        path: "../lib/inner/Wonder-CommonLib/dist/wdCb.node.js"
+        path: "wonder-commonlib"
     },
     WD_FRP: {
         variableName: "wdFrp",
         keyword: "Wonder-FRP",
-        path: "../lib/inner/Wonder-FRP/dist/wdFrp.node.js"
+        path: "wonder-frp"
     },
     BOWSER: {
         variableName: "bowser",

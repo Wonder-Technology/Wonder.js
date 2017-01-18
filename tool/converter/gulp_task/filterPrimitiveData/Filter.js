@@ -1,5 +1,5 @@
 "use strict";
-var wdCb = require("wdcb");
+var wdCb = require("wonder-commonlib");
 var DataUtils = require("../../common/DataUtils");
 var ExtendUtils = require("../../../ts/ExtendUtils");
 var JudgeUtils = require("../../../ts/JudgeUtils");

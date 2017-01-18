@@ -1,5 +1,5 @@
 import Log = require("../../../ts/Log");
-import wdCb = require("wdcb");
+import wdCb = require("wonder-commonlib");
 
 import ModelLoaderUtils = require("../../common/ModelLoaderUtils");
 

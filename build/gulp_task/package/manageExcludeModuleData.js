@@ -1,6 +1,6 @@
 var arrayUtils = require("../common/arrayUtils");
 
-var wdCb = require("wdcb");
+var wdCb = require("wonder-commonlib");
 
 
 var GLSLPath = require("./manageAllGLSLPaths").GLSLPath;

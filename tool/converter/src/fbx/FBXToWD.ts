@@ -1,4 +1,4 @@
-import wdFrp = require("wdfrp");
+import wdFrp = require("wonder-frp");
 import ModelLoaderUtils = require("../../common/ModelLoaderUtils");
 import fs = require("fs-extra");
 import path = require("path");

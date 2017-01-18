@@ -47,8 +47,10 @@
     "tryit": "^1.0.1",
     "typescript": "^2.1.1",
     "vinyl": "^0.4.6",
-    "vinyl-bufferstream": "^1.0.1",
-    "wdcb": "^0.1.6",
-    "wdfrp": "^0.1.7"
+    "vinyl-bufferstream": "^1.0.1"
+  },
+  "dependencies": {
+    "wonder-commonlib": "^0.1.0",
+    "wonder-frp": "^0.1.1"
   }
 }
