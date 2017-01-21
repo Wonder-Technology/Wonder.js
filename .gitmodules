@@ -1,6 +1,0 @@
-[submodule "lib/inner/Wonder-CommonLib"]
-	path = lib/inner/Wonder-CommonLib
-	url = https://github.com/yyc-git/Wonder-CommonLib.git
-[submodule "lib/inner/Wonder-FRP"]
-	path = lib/inner/Wonder-FRP
-	url = https://github.com/yyc-git/Wonder-FRP.git

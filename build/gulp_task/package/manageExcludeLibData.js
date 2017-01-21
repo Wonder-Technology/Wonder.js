@@ -6,12 +6,12 @@ var arrayUtils = require("../common/arrayUtils");
 var ExcludeLib = {
     WD_COMMONLIB: {
         variableName: "wdCb",
-        keyword: "Wonder-CommonLib",
+        keyword: "wonder-commonlib",
         path: "wonder-commonlib"
     },
     WD_FRP: {
         variableName: "wdFrp",
-        keyword: "Wonder-FRP",
+        keyword: "wonder-frp",
         path: "wonder-frp"
     },
     BOWSER: {

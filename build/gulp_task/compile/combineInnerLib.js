@@ -161,10 +161,10 @@ function _combineDefinitionFile(combineDTsList, tsconfigPath, wdFilePath, combin
                         return data.keyword;
                     })
                     .forEach(function (data) {
-                    if (innerLibDtsPath.indexOf(data) > -1) {
-                        result = true;
-                    }
-                });
+                        if (innerLibDtsPath.indexOf(data) > -1) {
+                            result = true;
+                        }
+                    });
 
                 return result;
             }
