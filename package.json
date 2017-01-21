@@ -48,11 +48,11 @@
     "tryit": "^1.0.1",
     "typescript": "^2.1.1",
     "vinyl": "^0.4.6",
-    "vinyl-bufferstream": "^1.0.1"
+    "vinyl-bufferstream": "^1.0.1",
+    "wonder-package": "^0.1.0"
   },
   "dependencies": {
     "wonder-commonlib": "^0.1.0",
-    "wonder-frp": "^0.1.1",
-    "wonder-package": "^0.1.0"
+    "wonder-frp": "^0.1.3"
   }
 }
