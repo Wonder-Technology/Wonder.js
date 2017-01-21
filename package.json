@@ -49,7 +49,7 @@
     "typescript": "^2.1.1",
     "vinyl": "^0.4.6",
     "vinyl-bufferstream": "^1.0.1",
-    "wonder-package": "^0.1.0"
+    "wonder-package": "^0.1.4"
   },
   "dependencies": {
     "wonder-commonlib": "^0.1.0",
