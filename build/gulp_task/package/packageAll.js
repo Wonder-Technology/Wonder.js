@@ -113,7 +113,7 @@ gulp.task("all_combineInnerLib", function(done) {
 
 
 gulp.task("all_browserify", function() {
-    return browserify(wdFilePath, distPath, "wd");
+    return browserify(wdFilePath, distPath, "wonderjs");
 });
 
 

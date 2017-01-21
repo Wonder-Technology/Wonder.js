@@ -155,7 +155,7 @@ function _closeContrackTest(filePath) {
 }
 
 gulp.task("custom_browserify", function() {
-    return browserify(wdFilePath, distPath, "wd");
+    return browserify(wdFilePath, distPath, "wonderjs");
 });
 
 
