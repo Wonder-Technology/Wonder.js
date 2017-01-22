@@ -176,20 +176,25 @@ describe("loader", function () {
     });
 
     describe("load sound", function(){
-        if(bowser.firefox){
-            return;
-        }
+        var current, total;
 
-        it("load the can-play asset", function(done){
-           var current = [],
-               total = [];
+        beforeEach(function(){
+            current = [];
+            total = [];
 
             sandbox.stub(wd.SoundUtils, "getMimeStr");
 
-            //not support .ogg sound
-            wd.SoundUtils.getMimeStr.withArgs("ogg").returns(null);
-            wd.SoundUtils.getMimeStr.withArgs("mp3").returns("audio/mpeg");
+            if(bowser.firefox){
+                wd.SoundUtils.getMimeStr.withArgs("ogg").returns("audio/mp3");
+                wd.SoundUtils.getMimeStr.withArgs("mp3").returns(null);
+            }
+            else if(bowser.chrome){
+                wd.SoundUtils.getMimeStr.withArgs("ogg").returns(null);
+                wd.SoundUtils.getMimeStr.withArgs("mp3").returns("audio/mpeg");
+            }
+        });
 
+        it("load the can-play asset", function(done){
            wd.LoaderManager.getInstance().load([
                {url: [testTool.resPath + "test/res/sound/b.ogg",testTool.resPath + "test/res/sound/a.mp3"], id: "sound1"}
            ]).subscribe(function(data){
@@ -204,21 +209,18 @@ describe("loader", function () {
                var sound = wd.LoaderManager.getInstance().get("sound1");
 
                expect(sound).toBeInstanceOf(wd.BaseAudio);
-               expect(sound.url).toEqual(testTool.resPath + "test/res/sound/a.mp3");
+
+               if(bowser.firefox){
+                   expect(sound.url).toEqual(testTool.resPath + "test/res/sound/b.ogg");
+               }
+               else if(bowser.chrome){
+                   expect(sound.url).toEqual(testTool.resPath + "test/res/sound/a.mp3");
+               }
 
                done();
            });
         });
         it("if the current asset can't be loaded, skip it and load the next", function (done) {
-           var current = [],
-               total = [];
-
-            sandbox.stub(wd.SoundUtils, "getMimeStr");
-
-            //not support .ogg sound
-            wd.SoundUtils.getMimeStr.withArgs("ogg").returns(null);
-            wd.SoundUtils.getMimeStr.withArgs("mp3").returns("audio/mpeg");
-
            wd.LoaderManager.getInstance().load([
                {url: testTool.resPath + "test/res/sound/b.ogg", id: "sound1"},
                {url: testTool.resPath + "test/res/sound/a.mp3", id: "sound2"}
@@ -231,14 +233,25 @@ describe("loader", function () {
                expect(current).toEqual([1, 2]);
                expect(total).toEqual([2, 2]);
 
-               var sound1 = wd.LoaderManager.getInstance().get("sound1");
+               if(bowser.firefox){
+                   var sound1 = wd.LoaderManager.getInstance().get("sound1");
 
-               expect(sound1).toBeNull();
+                   expect(sound1.url).toEqual(testTool.resPath + "test/res/sound/b.ogg");
 
-               var sound2 = wd.LoaderManager.getInstance().get("sound2");
-               expect(sound2).toBeInstanceOf(wd.BaseAudio);
+                   var sound2 = wd.LoaderManager.getInstance().get("sound2");
 
-               expect(sound2.url).toEqual(testTool.resPath + "test/res/sound/a.mp3");
+                   expect(sound2).toBeNull();
+               }
+               else if(bowser.chrome){
+                   var sound1 = wd.LoaderManager.getInstance().get("sound1");
+
+                   expect(sound1).toBeNull();
+
+                   var sound2 = wd.LoaderManager.getInstance().get("sound2");
+
+                   expect(sound2).toBeInstanceOf(wd.BaseAudio);
+                   expect(sound2.url).toEqual(testTool.resPath + "test/res/sound/a.mp3");
+               }
 
                done();
            });
@@ -362,6 +375,10 @@ describe("loader", function () {
     });
 
     describe("if XXXLoader class not exist, not load corresponding asset", function () {
+        if(bowser.firefox){
+            return;
+        }
+
         var SoundLoader;
 
         function judge(done, url) {

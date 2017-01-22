@@ -7,6 +7,8 @@ module wd{
             switch (mimeType) {
                 case "mp3":
                     return "audio/mpeg";
+                   case "ogg":
+                       return "audio/ogg";
 //                    case "vorbis":
 //                        mimeStr = "audio/ogg; codecs="vorbis"";
 //                        break;

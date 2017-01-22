@@ -27,7 +27,7 @@
 
         'test/unit/**/BufferWriter.js',
 
-        'test/unit/**',
+        // 'test/unit/**',
 
 
         // 'test/unit/**/GPUDetector*',
@@ -371,7 +371,7 @@
       //  'test/unit/asset/*.js',
       //  'test/unit/asset/obj/*.js',
       //  'test/unit/asset/obj/OBJParserSpec.js',
-      //  'test/unit/asset/loaderSpec.js',
+       'test/unit/asset/loaderSpec.js',
 
       //   'test/unit/**/WDParserSpec.js',
       //   'test/unit/**/wd*.js',
