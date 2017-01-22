@@ -68,6 +68,10 @@ module wd{
                 stream = null,
                 self = this;
 
+            if(loader === null){
+                return wdFrp.empty();
+            }
+
             if(!loader.has(id)){
                 self.assetCount ++;
             }
@@ -85,6 +89,10 @@ module wd{
 
         private _createLoadSingleAssetStream(url:string, id:string, config:AssetConfigData){
             var loader = this._getLoader(EAssetType.UNKNOW, url);
+
+            if(loader === null){
+                return wdFrp.empty();
+            }
 
             return loader.load(url, id, config);
         }

@@ -37,22 +37,46 @@ describe("EngineMaterial", function() {
                 expect(material.shader.libs.getChild(0)).toEqual(jasmine.any(wd.CommonShaderLib));
             });
 
-            it("if has animation component, add CommonMorphShaderLib and VerticeMorphShaderLib", function () {
-                var geo = wd.ModelGeometry.create();
-                sandbox.stub(geo, "hasMorphAnimation").returns(true);
-                material.geometry = geo;
+            describe("if has morph data", function(){
+                beforeEach(function(){
+                    var geo = wd.ModelGeometry.create();
+                    sandbox.stub(geo, "hasMorphData").returns(true);
+                    material.geometry = geo;
+                });
 
-                material.init();
+                // it("if CommonMorphShaderLib class not exist, not add CommonMorphShaderLib", function () {
+                //     var CommonMorphShaderLib = wd.CommonMorphShaderLib;
+                //     delete wd.CommonMorphShaderLib;
+                //
+                //     material.init();
+                //
+                //     expect(material.shader.hasLib(CommonMorphShaderLib)).toBeFalsy();
+                //
+                //     wd.CommonMorphShaderLib = CommonMorphShaderLib;
+                // });
+                // it("if VerticeMorphShaderLib class not exist, not add VerticeMorphShaderLib", function () {
+                //     var VerticeMorphShaderLib = wd.VerticeMorphShaderLib;
+                //     delete wd.VerticeMorphShaderLib;
+                //
+                //     material.init();
+                //
+                //     expect(material.shader.hasLib(VerticeMorphShaderLib)).toBeFalsy();
+                //
+                //     wd.VerticeMorphShaderLib = VerticeMorphShaderLib;
+                // });
+                it("add CommonMorphShaderLib and VerticeMorphShaderLib", function () {
+                    material.init();
 
-                expect(material.shader.hasLib(wd.CommonMorphShaderLib)).toBeTruthy();
-                expect(material.shader.hasLib(wd.VerticeMorphShaderLib)).toBeTruthy();
+                    expect(material.shader.hasLib(wd.CommonMorphShaderLib)).toBeTruthy();
+                    expect(material.shader.hasLib(wd.VerticeMorphShaderLib)).toBeTruthy();
+                });
             });
+
             it("else, add VerticeCommonShaderLib", function () {
                 material.init();
 
                 expect(material.shader.hasLib(wd.VerticeCommonShaderLib)).toBeTruthy();
             });
-
         });
     });
 });

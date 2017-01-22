@@ -269,6 +269,24 @@ describe("Director", function () {
         });
     });
 
+    describe("init debug", function(){
+        beforeEach(function(){
+        });
+
+        it("if DebugStatistics class not exist, use empty class instead", function(){
+            var DebugStatistics = wd.DebugStatistics;
+            delete wd.DebugStatistics;
+
+            sandbox.stub(wd.EmptyDebugStatistics, "init");
+
+            director._init();
+
+            expect(wd.EmptyDebugStatistics.init).toCalledOnce();
+
+            wd.DebugStatistics = DebugStatistics;
+        });
+    });
+
     describe("runUIObjectScene", function(){
         var scene;
 

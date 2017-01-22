@@ -1,11 +1,11 @@
 module wd{
     export class RenderUtils{
         public static getGameObjectRenderList(sourceList:wdCb.Collection<GameObject>){
-            var renderList = [];
+            var renderList = [],
+                GameObjectLOD:any = ClassUtils.getClass("GameObjectLOD");
 
             sourceList.forEach((child:GameObject) => {
-                var GameObjectLOD:any = ClassUtils.getClass("GameObjectLOD"),
-                    activeGameObject:GameObject = null;
+                var activeGameObject:GameObject = null;
 
                 if(GameObjectLOD !== void 0){
                     let gameObjectLOD = child.getComponent<any>(GameObjectLOD);
@@ -32,11 +32,11 @@ module wd{
         }
 
         public static getGameObjectRenderListForOctree(sourceList:wdCb.Collection<GameObject>){
-            var renderList = [];
+            var renderList = [],
+                GameObjectLOD:any = ClassUtils.getClass("GameObjectLOD");
 
             sourceList.forEach((child:GameObject) => {
-                var GameObjectLOD:any = ClassUtils.getClass("GameObjectLOD"),
-                    activeGameObject:GameObject = null;
+                var activeGameObject:GameObject = null;
 
                 if(GameObjectLOD !== void 0){
                     let gameObjectLOD = child.getComponent<any>(GameObjectLOD);

@@ -60,7 +60,6 @@ module wd {
                 this.updateShape();
                 this.updateDebugObjectFromShape(this.shape);
             }
-            // else if(!this.entityObject.hasComponent(RigidBody)){
             else if(!ClassUtils.hasComponent(this.entityObject, "RigidBody")){
                 this.updateShape();
             }

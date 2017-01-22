@@ -61,12 +61,12 @@ module wd{
                 case ".mp4":
                 case ".ogv":
                 case ".webm":
-                    loader = this._getLoader("VideoLoader", extname);
+                    loader = this._getLoader("VideoLoader");
                     break;
                 case ".ogg":
                 case ".mp3":
                 case ".wav":
-                    loader = this._getLoader("SoundLoader", extname);
+                    loader = this._getLoader("SoundLoader");
                     break;
                 case ".wd":
                     loader = WDLoader.getInstance();
@@ -88,14 +88,10 @@ module wd{
             return loader;
         }
 
-        private static _getLoader(className:string, extname?:string){
+        private static _getLoader(className:string){
             var _class = ClassUtils.getClass(className);
 
             if(_class === void 0){
-                if(!!extname){
-                    Log.error(true, Log.info.FUNC_UNKNOW(`extname:${extname}`));
-                }
-
                 return null;
             }
 
@@ -103,3 +99,4 @@ module wd{
         }
     }
 }
+

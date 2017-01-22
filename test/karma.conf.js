@@ -308,7 +308,7 @@
         // 'test/unit/**/multi*',
         // 'test/unit/**/Bitmap*',
         //
-        //'test/unit/**/DirectorSpec*',
+        // 'test/unit/**/DirectorSpec*',
         //
         //'test/unit/**/ProgressBarSpec*',
         //
@@ -384,7 +384,7 @@
         // 'test/unit/component/**/TerrainGeometrySpec.js',
         // 'test/unit/component/**/ModelGeometrySpec.js',
         // 'test/unit/**/CommonBufferContainerSpec.js',
-        //'test/unit/**/MorphBufferContainerSpec.js',
+        // 'test/unit/**/MorphBufferContainerSpec.js',
         // 'test/unit/**/*BufferContainerSpec.js',
         // 'test/unit/**/morph*.js',
         // 'test/unit/**/*morph*.js',

@@ -176,15 +176,11 @@ describe("loader", function () {
     });
 
     describe("load sound", function(){
+        if(bowser.firefox){
+            return;
+        }
+
         it("load the can-play asset", function(done){
-            if(bowser.firefox){
-                expect().toPass();
-
-                done();
-
-                return;
-            }
-
            var current = [],
                total = [];
 
@@ -214,14 +210,6 @@ describe("loader", function () {
            });
         });
         it("if the current asset can't be loaded, skip it and load the next", function (done) {
-            if(bowser.firefox){
-                expect().toPass();
-
-                done();
-
-                return;
-            }
-
            var current = [],
                total = [];
 
@@ -255,9 +243,7 @@ describe("loader", function () {
                done();
            });
         });
-        // it("test load error", function(done){
-        //
-        // });
+
     });
 
     describe("load font asset", function(){
@@ -372,6 +358,55 @@ describe("loader", function () {
                 });
             });
 
+        });
+    });
+
+    describe("if XXXLoader class not exist, not load corresponding asset", function () {
+        var SoundLoader;
+
+        function judge(done, url) {
+            var current = [],
+                total = [];
+
+            sandbox.stub(wd.SoundUtils, "getMimeStr");
+
+            wd.SoundUtils.getMimeStr.withArgs("mp3").returns("audio/mpeg");
+
+            wd.LoaderManager.getInstance().load([
+                {url: url, id: "sound1"}
+            ]).subscribe(function(data){
+                current.push(data.currentLoadedCount);
+                total.push(data.assetCount);
+            }, function(err){
+                console.log(err);
+                expect().toFail();
+
+                done();
+            }, function(){
+                expect(current).toEqual([]);
+                expect(total).toEqual([]);
+
+                var sound = wd.LoaderManager.getInstance().get("sound1");
+
+                expect(sound).toBeNull();
+
+                done();
+            });
+        }
+
+        beforeEach(function(){
+            SoundLoader = wd.SoundLoader;
+            delete wd.SoundLoader;
+        });
+        afterEach(function(){
+            wd.SoundLoader = SoundLoader;
+        });
+
+        it("test single asset", function (done) {
+            judge(done, testTool.resPath + "test/res/sound/a.mp3");
+        });
+        it("test multi assets", function (done) {
+            judge(done, [testTool.resPath + "test/res/sound/a.mp3"]);
         });
     });
 });

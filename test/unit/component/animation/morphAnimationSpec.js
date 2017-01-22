@@ -208,55 +208,79 @@ describe("morph animation", function () {
         describe("test morph vertices and normals sended in multi frames", function(){
             beforeEach(function(){
                 anim.play("play", fps);
+            });
+
+            it("if MorphAnimation class not exist, not send morph data", function () {
+                var MorphAnimation = wd.MorphAnimation;
+                delete wd.MorphAnimation;
+                geo.morphVertices = null;
+
+
                 director._init();
 
                 setProgram(material);
-            });
 
-            it("test interpolation", function () {
                 director._run(duration / 100);
 
 
-                expect(program.sendUniformData.withArgs("u_interpolation").firstCall.args[2]).toEqual(0.01);
+                expect(program.sendUniformData.withArgs("u_interpolation")).not.toCalled();
 
-                judgeFirstFrameState(0);
-
-
-
-
-                director._run(duration);
-
-
-                expect(program.sendUniformData.withArgs("u_interpolation").secondCall.args[2]).toEqual(1);
-
-                judgeFirstFrameState(1);
+                wd.MorphAnimation = MorphAnimation;
             });
 
-            describe("test finish first frame", function () {
-                it("test1", function(){
-                    director._run(duration + 1);
+            describe("else", function(){
+                beforeEach(function(){
+                    director._init();
+
+                    setProgram(material);
+                });
+
+                it("test interpolation", function () {
+                    director._run(duration / 100);
 
 
                     expect(program.sendUniformData.withArgs("u_interpolation").firstCall.args[2]).toEqual(0.01);
 
-                    judgeSecondFrameState(0);
-                });
-                it("test2", function(){
-                    director._run(duration * 0.9);
-
-
-                    expect(program.sendUniformData.withArgs("u_interpolation").firstCall.args[2]).toEqual(0.9);
                     judgeFirstFrameState(0);
 
 
-                    director._run(duration * 1.1);
 
-                    expect(testTool.getValues(
-                        program.sendUniformData.withArgs("u_interpolation").secondCall.args[2]), 1).toEqual(0.1);
 
-                    judgeSecondFrameState(1);
+                    director._run(duration);
+
+
+                    expect(program.sendUniformData.withArgs("u_interpolation").secondCall.args[2]).toEqual(1);
+
+                    judgeFirstFrameState(1);
+                });
+
+                describe("test finish first frame", function () {
+                    it("test1", function(){
+                        director._run(duration + 1);
+
+
+                        expect(program.sendUniformData.withArgs("u_interpolation").firstCall.args[2]).toEqual(0.01);
+
+                        judgeSecondFrameState(0);
+                    });
+                    it("test2", function(){
+                        director._run(duration * 0.9);
+
+
+                        expect(program.sendUniformData.withArgs("u_interpolation").firstCall.args[2]).toEqual(0.9);
+                        judgeFirstFrameState(0);
+
+
+                        director._run(duration * 1.1);
+
+                        expect(testTool.getValues(
+                            program.sendUniformData.withArgs("u_interpolation").secondCall.args[2]), 1).toEqual(0.1);
+
+                        judgeSecondFrameState(1);
+                    });
                 });
             });
+
         });
 
         describe("test animation control", function(){

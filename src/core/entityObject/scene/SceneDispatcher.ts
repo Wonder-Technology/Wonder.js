@@ -100,7 +100,7 @@ module wd {
 
             let UIObjectScene = ClassUtils.getClass("UIObjectScene");
 
-            if(!!UIObjectScene){
+            if(UIObjectScene !== void 0){
                 this.uiObjectScene = UIObjectScene.create();
             }
         }

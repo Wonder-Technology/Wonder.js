@@ -205,9 +205,11 @@ describe("skin skeleton animation", function () {
         function prepareAnim(){
             model = wd.GameObject.create();
 
-            anim = wd.SkinSkeletonAnimation.create();
+            if(!!wd.SkinSkeletonAnimation){
+                anim = wd.SkinSkeletonAnimation.create();
 
-            model.addComponent(anim);
+                model.addComponent(anim);
+            }
 
             geo = wd.ModelGeometry.create();
 
@@ -247,6 +249,49 @@ describe("skin skeleton animation", function () {
 
         beforeEach(function(){
             sandbox.stub(window.performance, "now").returns(0);
+        });
+
+        it("if SkinSkeletonAnimation class not exist, not send skin data", function () {
+            var SkinSkeletonAnimation = wd.SkinSkeletonAnimation;
+            delete wd.SkinSkeletonAnimation;
+
+            model = wd.GameObject.create();
+
+            geo = geometryTool.createGeometryWithFakeGeometryData();
+
+            material = geo.material;
+
+
+            prepareTool.prepareGeo(sandbox, model, geo, material);
+
+
+            director = wd.Director.getInstance();
+
+
+            geo.jointIndices = [
+                1, 0, 0, 0,
+                1, 2, 0, 0,
+                2, 1, 0, 0
+            ];
+            geo.jointWeights = [
+                1, 0, 0, 0,
+                0.5, 0.5, 0, 0,
+                0.2, 0.8, 0, 0
+            ];
+
+            director._init();
+
+            program = skinSkeletonTool.setProgram(sandbox, material);
+
+
+
+            director._loopBody(0);
+
+
+
+            expect(program.sendUniformData.withArgs("u_jointMatrices")).not.toCalled();
+
+            wd.SkinSkeletonAnimation = SkinSkeletonAnimation;
         });
 
         describe("test animation control", function(){

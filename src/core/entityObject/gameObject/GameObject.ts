@@ -98,7 +98,7 @@ module wd {
         }
 
         protected getRenderList(){
-            if(ClassUtils.hasComponent(this, "Octree")){
+            if(ClassUtils.hasComponent(this, "SpacePartition")){
                 return this.getSpacePartition().getRenderList();
             }
 
@@ -106,7 +106,7 @@ module wd {
         }
 
         protected afterInitChildren(){
-            if(ClassUtils.hasComponent(this, "Octree")){
+            if(ClassUtils.hasComponent(this, "SpacePartition")){
                 return this.getSpacePartition().build();
             }
         }

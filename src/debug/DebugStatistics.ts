@@ -1,6 +1,5 @@
 module wd{
-    //todo use ui component to draw debug panel!
-    export class DebugStatistics{
+    export class DebugStatistics implements IDebugStatistics{
         public static count = {
             get totalGameObjects(){
                 var count = 0;

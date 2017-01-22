@@ -48,12 +48,29 @@ module wd{
 
         private _merger:ModelGeometryMerger = ModelGeometryMerger.create();
 
-        public hasMorphAnimation(){
-            return this._hasMorphTargets() && (this.entityObject && ClassUtils.hasComponent(this.entityObject, "MorphAnimation"));
+        @ensure(function(hasData){
+            if(hasData) {
+                it("entityObject with ModelGeometry should add MorphAnimation component", () => {
+                    expect(ClassUtils.hasComponent(this.entityObject, "MorphAnimation")).true;
+                }, this);
+            }
+        })
+        public hasMorphData(){
+            return this.morphVertices && this.morphVertices.getCount() > 0;
         }
 
-        public hasSkinSkeletonAnimation(){
-            return this._hasJoinData() && (this.entityObject && ClassUtils.hasComponent(this.entityObject, "SkinSkeletonAnimation"));
+        @ensure(function(hasData){
+            if(hasData) {
+                it("entityObject with ModelGeometry should add SkinSkeletonAnimation component", () => {
+                    expect(ClassUtils.hasComponent(this.entityObject, "SkinSkeletonAnimation")).true;
+                }, this);
+                it("jointIndices and jointWeights should has data", () => {
+                    expect(this.jointWeights && this.jointWeights.length > 0);
+                });
+            }
+        })
+        public hasSkinSkeletonData(){
+            return this.jointIndices && this.jointIndices.length > 0;
         }
 
         @require(function(){
@@ -84,7 +101,7 @@ module wd{
         protected computeNormals(){
             super.computeNormals();
 
-            if(this._hasMorphTargets()){
+            if(this.hasMorphData()){
                 if(this.isSmoothShading()){
                     if(!this.hasMorphVertexNormals()){
                         this.computeMorphNormals();
@@ -110,24 +127,16 @@ module wd{
             };
         }
 
-        @require(function(){
-            if(this.hasMorphAnimation()) {
-                it("entityObject with ModelGeometry should add MorphAnimation component", () => {
-                    ClassUtils.hasComponent(this.entityObject, "MorphAnimation");
-                }, this);
-            }
-        })
         protected createBufferContainer():BufferContainer{
-            if(this.hasMorphAnimation()){
+            if(this.hasMorphData()){
                 let MorphBufferContainer = ClassUtils.getClass("MorphBufferContainer"),
                     MorphAnimation = ClassUtils.getClass("MorphAnimation");
 
                 return MorphBufferContainer.create(this.entityObject, this.entityObject.getComponent<any>(MorphAnimation));
             }
 
-            if(this.hasSkinSkeletonAnimation()){
-                let SkinSkeletonBufferContainer = ClassUtils.getClass("SkinSkeletonBufferContainer"),
-                    SkinSkeletonAnimation = ClassUtils.getClass("SkinSkeletonAnimation");
+            if(this.hasSkinSkeletonData()){
+                let SkinSkeletonBufferContainer = ClassUtils.getClass("SkinSkeletonBufferContainer");
 
                 return SkinSkeletonBufferContainer.create(this.entityObject);
             }
@@ -136,7 +145,7 @@ module wd{
         }
 
         protected createGeometryData(computedData:ModelGeometryDataType):GeometryData{
-            if(this.hasMorphAnimation()){
+            if(this.hasMorphData()){
                 let {
                         vertices,
                         faces = [],
@@ -156,7 +165,7 @@ module wd{
                 return geometryData;
             }
 
-            if(this.hasSkinSkeletonAnimation()){
+            if(this.hasSkinSkeletonData()){
                 let {
                         vertices,
                         faces = [],
@@ -179,23 +188,6 @@ module wd{
             }
 
             return this.createBasicGeometryData(<GeometryDataType>computedData);
-        }
-
-        private _hasMorphTargets(){
-            return this.morphVertices && this.morphVertices.getCount() > 0;
-        }
-
-        @ensure(function(hasJoinData:boolean){
-            it("jointIndices and jointWeights should has data", () => {
-                if(!hasJoinData){
-                    return;
-                }
-
-                expect(this.jointWeights && this.jointWeights.length > 0);
-            });
-        })
-        private _hasJoinData(){
-            return this.jointIndices && this.jointIndices.length > 0;
         }
 
         private _getDeepCloneMorphData(source:wdCb.Hash<wdCb.Collection<Array<number>>>){

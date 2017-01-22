@@ -155,11 +155,9 @@ module wd{
         }
 
         private _init(){
-            var DebugStatistics = ClassUtils.getClass("DebugStatistics");
+            var DebugStatistics = ClassUtils.getClassOrEmpty("DebugStatistics", "EmptyDebugStatistics");
 
-            if(!!DebugStatistics){
-                DebugStatistics.init();
-            }
+            DebugStatistics.init();
 
             this._initGameObjectScene();
 

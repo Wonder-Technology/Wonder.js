@@ -1,16 +1,16 @@
 module wd{
     export class GlobalGeometryUtils{
-        public static hasMorphAnimation(geometry:Geometry){
+        public static hasMorphData(geometry:Geometry){
             if(geometry instanceof ModelGeometry){
-                return (<ModelGeometry>geometry).hasMorphAnimation();
+                return (<ModelGeometry>geometry).hasMorphData();
             }
 
             return false;
         }
 
-        public static hasSkinSkeletonAnimation(geometry:Geometry){
+        public static hasSkinSkeletonData(geometry:Geometry){
             if(geometry instanceof ModelGeometry){
-                return (<ModelGeometry>geometry).hasSkinSkeletonAnimation();
+                return (<ModelGeometry>geometry).hasSkinSkeletonData();
             }
 
             return false;

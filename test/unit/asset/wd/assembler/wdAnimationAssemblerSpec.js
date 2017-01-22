@@ -11,6 +11,10 @@ describe("wd animation assembler", function () {
         return wdAssemblerTool.getComponent(data, _class);
     }
 
+    function hasComponent(data, className){
+        return wdAssemblerTool.hasComponent(data, className);
+    }
+
     function setComponent(animData){
         wdAssemblerTool.setComponent(parseData, animData);
     }
@@ -23,6 +27,7 @@ describe("wd animation assembler", function () {
         };
     });
     afterEach(function () {
+        testTool.clearInstance(sandbox);
         sandbox.restore();
     });
 
@@ -83,12 +88,30 @@ describe("wd animation assembler", function () {
                         expect(component.morphVertices).toEqual(morphVertices);
                         expect(component.morphNormals).toEqual(morphNormals);
                     });
-                    it("add MorphAnimation component", function () {
-                        var data = builder.build(parseData);
+
+                    describe("test MorphAnimation", function(){
+                        beforeEach(function(){
+                        });
+
+                        it("add component", function () {
+                            var data = builder.build(parseData);
 
 
-                        var component = getComponent(data, wd.MorphAnimation);
-                        expect(component).toBeExist();
+                            var component = getComponent(data, wd.MorphAnimation);
+                            expect(component).toBeExist();
+                        });
+                        it("if class not exist, not add it", function () {
+                            var MorphAnimation = wd.MorphAnimation;
+                            delete wd.MorphAnimation;
+
+                            var data = builder.build(parseData);
+
+
+                            expect(hasComponent(data, "MorphAnimation")).toBeFalsy();
+
+
+                            wd.MorphAnimation = MorphAnimation;
+                        });
                     });
                 });
 
@@ -127,33 +150,53 @@ describe("wd animation assembler", function () {
                 });
 
                 describe("add animation component", function(){
-                    it("add ArticulatedAnimation component", function(){
-                        var animData = {
-                            "animation_0": wdCb.Collection.create([
-                                {
-                                    time: 1000,
-                                    interpolationMethod: wd.EKeyFrameInterpolation.LINEAR,
-                                    targets: wdCb.Collection.create([
-                                        {
-                                            target: wd.EKeyFrameAnimationTarget.TRANSLATION,
-                                            data: wd.Vector3.create(1, 1, 0)
-                                        }
-                                    ])
-                                }
-                            ])
-                        };
-                        setComponent(animData);
+                    describe("test TransformArticulatedAnimation", function(){
+                        var animData;
+
+                        function prepare() {
+                            animData = {
+                                "animation_0": wdCb.Collection.create([
+                                    {
+                                        time: 1000,
+                                        interpolationMethod: wd.EKeyFrameInterpolation.LINEAR,
+                                        targets: wdCb.Collection.create([
+                                            {
+                                                target: wd.EKeyFrameAnimationTarget.TRANSLATION,
+                                                data: wd.Vector3.create(1, 1, 0)
+                                            }
+                                        ])
+                                    }
+                                ])
+                            };
+                            setComponent(animData);
+                        }
+
+                        beforeEach(function(){
+                            prepare();
+                        });
+
+                        it("add component", function(){
+                            var data = builder.build(parseData);
 
 
-                        var data = builder.build(parseData);
+                            var component = getComponent(data, wd.TransformArticulatedAnimation);
+                            expect(component.data).toBeInstanceOf(wdCb.Hash);
+                            expect(component.data.getChildren()).toEqual(animData);
+                        });
+                        it("if class not exist, not add it", function () {
+                            var TransformArticulatedAnimation = wd.TransformArticulatedAnimation;
+                            delete wd.TransformArticulatedAnimation;
+
+                            var data = builder.build(parseData);
 
 
-                        var component = getComponent(data, wd.ArticulatedAnimation);
-                        expect(component.data).toBeInstanceOf(wdCb.Hash);
-                        expect(component.data.getChildren()).toEqual(animData);
+                            expect(hasComponent(data, "TransformArticulatedAnimation")).toBeFalsy();
+
+                            wd.TransformArticulatedAnimation = TransformArticulatedAnimation;
+                        });
                     });
 
-                    describe("add SkinSkeletonAnimation component", function(){
+                    describe("test SkinSkeletonAnimation", function(){
                         var skinSkeletonComponent;
 
                         beforeEach(function(){
@@ -241,46 +284,63 @@ describe("wd animation assembler", function () {
                             }
                         });
 
-                        it("test component", function () {
-                            setComponent(skinSkeletonComponent);
+                        describe("add component", function(){
+                            it("test component", function () {
+                                setComponent(skinSkeletonComponent);
 
 
-                            var data = builder.build(parseData);
+                                var data = builder.build(parseData);
 
 
-                            var component = getComponent(data, wd.SkinSkeletonAnimation);
-                            expect(component).toBeExist();
-                            expect(component.bindShapeMatrix).toEqual(skinSkeletonComponent.bindShapeMatrix);
-                            expect(component.inverseBindMatrices).toEqual(skinSkeletonComponent.inverseBindMatrices);
-                            expect(component.boneMatrixMap).toEqual(skinSkeletonComponent.boneMatrixMap);
-                            expect(component.jointNames).toEqual(skinSkeletonComponent.jointNames);
-                            expect(component.jointTransformData).toEqual(skinSkeletonComponent.jointTransformData);
+                                var component = getComponent(data, wd.SkinSkeletonAnimation);
+                                expect(component).toBeExist();
+                                expect(component.bindShapeMatrix).toEqual(skinSkeletonComponent.bindShapeMatrix);
+                                expect(component.inverseBindMatrices).toEqual(skinSkeletonComponent.inverseBindMatrices);
+                                expect(component.boneMatrixMap).toEqual(skinSkeletonComponent.boneMatrixMap);
+                                expect(component.jointNames).toEqual(skinSkeletonComponent.jointNames);
+                                expect(component.jointTransformData).toEqual(skinSkeletonComponent.jointTransformData);
+                            });
+                            it("inverseNodeToRootMatrix shouldn't be affected by the anim->entityObject's transform change after scene graph has been builded", function () {
+                                var matrix = Matrix4.create().translate(1, 2, 3);
+                                var componentData = Collection.create([
+                                    skinSkeletonComponent,
+                                    {
+                                        matrix: matrix
+                                    }
+                                ])
+                                setComponent(componentData);
+
+
+                                var data = builder.build(parseData);
+
+
+
+
+                                var model = wdAssemblerTool.getSingleModel(data);
+
+                                model.transform.translate(10,200,1);
+
+                                model.init();
+
+                                var component = getComponent(data, wd.SkinSkeletonAnimation);
+                                expect(component).toBeExist();
+                                expect(component._inverseNodeToRootMatrix).toEqual(matrix.clone().invert());
+                            });
                         });
-                        it("inverseNodeToRootMatrix shouldn't be affected by the anim->entityObject's transform change after scene graph has been builded", function () {
-                            var matrix = Matrix4.create().translate(1, 2, 3);
-                            var componentData = Collection.create([
-                                skinSkeletonComponent,
-                                {
-                                    matrix: matrix
-                                }
-                            ])
-                            setComponent(componentData);
+
+                        it("if class not exist, not add it", function () {
+                            var SkinSkeletonAnimation = wd.SkinSkeletonAnimation;
+                            delete wd.SkinSkeletonAnimation;
+
+                                setComponent(skinSkeletonComponent);
 
 
-                            var data = builder.build(parseData);
+                                var data = builder.build(parseData);
 
 
+                            expect(hasComponent(data, "SkinSkeletonAnimation")).toBeFalsy();
 
-
-                            var model = wdAssemblerTool.getSingleModel(data);
-
-                            model.transform.translate(10,200,1);
-
-                            model.init();
-
-                            var component = getComponent(data, wd.SkinSkeletonAnimation);
-                            expect(component).toBeExist();
-                            expect(component._inverseNodeToRootMatrix).toEqual(matrix.clone().invert());
+                            wd.SkinSkeletonAnimation = SkinSkeletonAnimation;
                         });
                     });
                 });

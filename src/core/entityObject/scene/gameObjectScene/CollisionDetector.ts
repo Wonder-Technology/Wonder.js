@@ -25,7 +25,6 @@ module wd{
             this._clearCollisionTable();
 
             checkTargetList.forEach((gameObjectScene:GameObject) => {
-                // if(gameObjectScene.hasComponent(RigidBody)){
                 if(ClassUtils.hasComponent(gameObjectScene, "RigidBody")){
                     return;
                 }

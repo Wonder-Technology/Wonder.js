@@ -24,8 +24,8 @@ module wd {
         protected addNormalShaderLib(){
             var NormalMorphShaderLib = ClassUtils.getClass("NormalMorphShaderLib");
 
-            if(GlobalGeometryUtils.hasMorphAnimation(this.geometry)
-                && NormalMorphShaderLib !== void 0 && !this.shader.hasLib(NormalMorphShaderLib)){
+            if(GlobalGeometryUtils.hasMorphData(this.geometry)
+                && !this.shader.hasLib(NormalMorphShaderLib)){
                 this._addShaderLibToTop(NormalMorphShaderLib.create());
             }
             else if(!this.shader.hasLib(NormalCommonShaderLib)){

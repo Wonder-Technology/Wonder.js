@@ -1,13 +1,18 @@
 module wd{
     export class ShaderLibUtils{
         public static addVerticeShaderLib(geometry:Geometry, shader:Shader){
-            if(GlobalGeometryUtils.hasMorphAnimation(geometry)){
-                shader.addLib(ClassUtils.getClass("CommonMorphShaderLib").create());
-                shader.addLib(ClassUtils.getClass("VerticeMorphShaderLib").create());
+            if(GlobalGeometryUtils.hasMorphData(geometry)){
+                let CommonMorphShaderLib = ClassUtils.getClass("CommonMorphShaderLib"),
+                    VerticeMorphShaderLib = ClassUtils.getClass("VerticeMorphShaderLib");
+
+                shader.addLib(CommonMorphShaderLib.create());
+                shader.addLib(VerticeMorphShaderLib.create());
             }
-            else if(GlobalGeometryUtils.hasSkinSkeletonAnimation(geometry)){
+            else if(GlobalGeometryUtils.hasSkinSkeletonData(geometry)){
+                let VerticeSkinSkeletonShaderLib = ClassUtils.getClass("VerticeSkinSkeletonShaderLib");
+
                 shader.addLib(VerticeCommonShaderLib.create());
-                shader.addLib(ClassUtils.getClass("VerticeSkinSkeletonShaderLib").create());
+                shader.addLib(VerticeSkinSkeletonShaderLib.create());
             }
             else{
                 shader.addLib(VerticeCommonShaderLib.create());

@@ -36,6 +36,9 @@ var wdAssemblerTool = (function () {
         },
         getComponent: function (data, _class){
             return this.getSingleModel(data).getComponent(_class)
+        },
+        hasComponent: function (data, className){
+            return wd.ClassUtils.hasComponent(this.getSingleModel(data), className);
         }
     }
 })()
