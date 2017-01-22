@@ -211,10 +211,6 @@ describe("touch event", function () {
 
 
                 describe("test on/off", function(){
-                    if(bowser.firefox){
-                        return;
-                    }
-
                     var eventTarget = null,
                         sum = null;
                     var handler1;

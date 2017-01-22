@@ -57,10 +57,6 @@ describe("mouse event", function () {
         });
 
         describe("eventName", function(){
-            if(bowser.firefox){
-                return;
-            }
-
             it("on/off", function(){
                 var eventTarget = null,
                     sum = 0;

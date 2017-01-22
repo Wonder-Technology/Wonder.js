@@ -49,11 +49,6 @@ describe("BasicMaterial", function () {
 
         expect(searchTool.searchString(/gl_Position\s=/g, material.shader.vsSource).count).toEqual(1);
 
-        if(bowser.firefox){
-            expect().toPass();
-            return;
-        }
-
         expect(searchTool.searchString(/gl_FragColor\s=/g, material.shader.fsSource).count).toEqual(1);
     });
 

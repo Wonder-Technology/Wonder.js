@@ -674,11 +674,6 @@ describe("instance with basic material", function(){
                 judge4();
             });
             it("vs glsl should contain u_mMatrix", function () {
-                if(bowser.firefox){
-                    expect().toPass();
-                    return;
-                }
-
                 judge5();
             });
 
@@ -716,19 +711,9 @@ describe("instance with basic material", function(){
                     judge3();
                 });
                 it("vs glsl should contain u_mMatrix", function () {
-                    if(bowser.firefox){
-                        expect().toPass();
-                        return;
-                    }
-
                     judge4();
                 });
                 it("vs glsl should contain u_mMatrix", function () {
-                    if(bowser.firefox){
-                        expect().toPass();
-                        return;
-                    }
-
                     judge5();
                 });
             });
