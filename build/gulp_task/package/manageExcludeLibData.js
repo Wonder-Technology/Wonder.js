@@ -3,6 +3,7 @@ var arrayUtils = require("../common/arrayUtils");
 
 
 
+//todo remove keyword
 var ExcludeLib = {
     WD_COMMONLIB: {
         variableName: "wdCb",
@@ -17,26 +18,22 @@ var ExcludeLib = {
     BOWSER: {
         variableName: "bowser",
         keyword: "bowser",
-        path: "../lib/inner/bowser/bowser.js"
+        path: "bowser"
     },
     CHAI: {
         variableName: "chai",
         keyword: "chai",
-        /*!
-        not use chai in inner lib.
-        because it's error! use nodejs->chai instead
-         */
         path: "chai"
     },
     RSVP: {
         variableName: "RSVP",
         keyword: "rsvp",
-        path: "../lib/inner/rsvp/rsvp.js"
+        path: "rsvp"
     },
     CANNON:{
         variableName: "CANNON",
         keyword: "cannon",
-        path: "../lib/outer/cannon/cannon.js"
+        path: "cannon"
     }
 };
 

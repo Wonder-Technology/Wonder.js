@@ -102,6 +102,7 @@ gulp.task("all_addBanner", function() {
 
 
 
+//todo rename
 gulp.task("all_combineInnerLib", function(done) {
     var data = getExcludeLibData([
             ExcludeLib.CANNON
@@ -110,6 +111,72 @@ gulp.task("all_combineInnerLib", function(done) {
 
     return combineInnerLib(data.combineDTsList, data.combineContentList, tsconfigPath, wdDefinitionFilePath, wdFilePath, wdInnerLibFilePath, distPath, done);
 });
+
+//todo move to package
+var browserify = require('browserify');
+var wdFrp = require("wonder-frp");
+var rsvp = require("rsvp");
+
+function _buildSteam(variableName, moduleName, combineContentList) {
+    return wdFrp.fromPromise(new rsvp.Promise(function(resolve, reject){
+        var b = browserify(require.resolve(moduleName), {
+            standalone:variableName
+        });
+
+        /*!
+        not contain other lib's source
+         */
+        combineContentList.forEach(function(d){
+            b.exclude(d.path);
+        });
+
+        b.bundle(function(err, file){
+            if(err){
+                reject(err);
+                return;
+            }
+
+            resolve(file.toString());
+        });
+    }));
+}
+
+gulp.task("all_combineInnerLib2", function(done) {
+    //todo refactor with all_combineInnerLib
+    var data = getExcludeLibData([
+        // ExcludeLib.WD_COMMONLIB,
+        // ExcludeLib.WD_FRP,
+        // ExcludeLib.BOWSER,
+        // ExcludeLib.CHAI,
+        // ExcludeLib.RSVP,
+
+            ExcludeLib.CANNON
+        ]);
+
+    var streamArr = [];
+
+    data.combineContentList
+        .forEach(function(d){
+            streamArr.push(_buildSteam(d.variableName, d.path, data.combineContentList));
+        });
+
+    var str = "";
+
+    wdFrp.fromArray(streamArr)
+        .concatAll()
+        .subscribe(function(content){
+            /*!
+            fix browserify bug
+             */
+            str += content.replace("typeof=", "typeof require ==");
+        }, function(e){
+            console.log(e)
+        }, function(){
+            fs.writeFileSync(wdInnerLibFilePath, str);
+            done();
+        });
+});
+
 
 
 gulp.task("all_browserify", function() {
@@ -126,6 +193,11 @@ gulp.task("packageAll", gulpSync.sync([
     "all_compileTsDebug",
     "changeDistFilePath",
     "all_combineInnerLib",
+
+
+    "all_combineInnerLib2",
+
+
     "all_browserify",
     "all_compress",
     "all_addBanner",
