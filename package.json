@@ -9,8 +9,8 @@
   },
   "devDependencies": {
     "base64-arraybuffer": "^0.1.5",
+    "browserify": "^13.3.0",
     "buffer-to-arraybuffer": "0.0.4",
-    "chai": "^3.5.0",
     "codecov.io": "^0.1.6",
     "del": "^1.2.0",
     "express": "^4.13.3",
@@ -52,7 +52,17 @@
     "wonder-package": "^0.1.4"
   },
   "dependencies": {
+    "@types/bowser": "^1.0.30",
+    "@types/cannon": "^0.1.0",
+    "@types/chai": "^3.4.34",
+    "@types/rsvp": "^3.0.0",
+    "@types/wonder-commonlib": "^0.1.0",
+    "@types/wonder-frp": "^0.1.0",
+    "bowser": "^1.6.0",
+    "cannon": "^0.6.2",
+    "chai": "^3.5.0",
+    "rsvp": "^3.3.3",
     "wonder-commonlib": "^0.1.0",
-    "wonder-frp": "^0.1.5"
+    "wonder-frp": "^0.1.6"
   }
 }

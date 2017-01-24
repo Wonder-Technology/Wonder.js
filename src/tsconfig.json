@@ -1,8 +1,5 @@
 {
   "filesGlob": [
-    "../lib/**/*.d.ts",
-    "../node_modules/wonder-commonlib/dist/wdCb.node.d.ts",
-    "../node_modules/wonder-frp/dist/wdFrp.node.d.ts",
     "config/DebugConfig.ts",
     "debug/IDebugStatistics.ts",
     "debug/DebugStatistics.ts",
