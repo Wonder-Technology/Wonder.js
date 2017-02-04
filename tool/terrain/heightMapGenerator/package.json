@@ -3,5 +3,11 @@
   "version": "0.0.1",
   "devDependencies": {
     "canvas": "^1.6.0"
+  },
+  "dependencies": {
+    "@types/chai": "^3.4.34",
+    "@types/node": "^7.0.5",
+    "@types/wonder-commonlib": "^0.1.1",
+    "@types/wonder-frp": "^0.1.1"
   }
 }

@@ -11,12 +11,8 @@
 		"experimentalDecorators": true
 	},
 	"files": [
-		"../../../node_modules/wonder-commonlib/dist/wdCb.node.d.ts",
-		"../../../node_modules/wonder-frp/dist/wdFrp.node.d.ts",
-		"../../../lib/inner/chai/chai.d.ts",
-
-		"../../dts/node.d.ts",
 		"../../dts/commonTs.d.ts",
+		"./dts/node-canvas.d.ts",
 
 		"../../ts/definition/typescript/decorator/contract.ts",
 		"../../ts/Vector2.ts",
@@ -27,7 +23,6 @@
 		"../../ts/test/TestTool.ts",
 
 
-		"./dts/node-canvas.d.ts",
 
 		"./src/Fault.ts",
 		"./src/MDP.ts",
