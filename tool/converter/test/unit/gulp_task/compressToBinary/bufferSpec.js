@@ -346,6 +346,7 @@ describe("compress", function(){
 
 
 
+
                 var arraybuffer = tool.getArraybuffer(Base64Utils.decode(data.uri));
 
 

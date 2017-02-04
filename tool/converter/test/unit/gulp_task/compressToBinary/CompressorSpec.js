@@ -23,18 +23,12 @@ describe("compressToBinary->CompressorManager", function () {
 
         describe("generate one binary buffer", function () {
             it("buffer should be Buffer type", function () {
+                var primitiveData = tool.getPrimitiveData();
                 tool.setFileJson(fileJson, {
                     "meshes": {
                         "geometry1": {
                             "primitives": [
-                                {
-                                    "attributes": {
-                                        "NORMAL": [],
-                                        "POSITION": [],
-                                        "TEXCOORD": []
-                                    },
-                                    "indices": []
-                                }
+                                primitiveData
                             ]
                         }
                     }

@@ -293,7 +293,9 @@ var tool = (function () {
                 return arraybuffer;
             }
 
-            return bufferToArraybuffer.bufferToArrayBuffer(data.buffer);
+            if(data instanceof Buffer){
+                return bufferToArraybuffer.bufferToArrayBuffer(data);
+            }
         },
 
         getSkinInverseBindMatrices: function () {
