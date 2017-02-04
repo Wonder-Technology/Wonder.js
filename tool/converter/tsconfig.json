@@ -11,13 +11,6 @@
 		"experimentalDecorators": true
 	},
 	"files": [
-		"../../node_modules/wonder-commonlib/dist/wdCb.node.d.ts",
-		"../../node_modules/wonder-frp/dist/wdFrp.node.d.ts",
-		//todo use npm
-		"../../lib/inner/chai/chai.d.ts",
-
-		"../dts/node.d.ts",
-
 		"../ts/definition/typescript/decorator/contract.ts",
 		"../ts/definition/typescript/decorator/virtual.ts",
 
@@ -27,13 +20,6 @@
 		"../ts/ExtendUtils.ts",
 		"../ts/JudgeUtils.ts",
 		"../ts/FileUtils.ts",
-
-
-		"./dts/chalk.d.ts",
-		"./dts/fs-extra.d.ts",
-		"./dts/gulp-util.d.ts",
-		"./dts/through2.d.ts",
-		"./dts/vinyl.d.ts",
 
 		"./common/BufferReader.ts",
 		"./common/BufferWriter.ts",
