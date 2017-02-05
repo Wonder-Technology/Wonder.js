@@ -6,18 +6,6 @@ module wd {
             return obj;
         }
 
-        get ambientLight():GameObject {
-            return this._lightManager.ambientLight;
-        }
-
-        get directionLights(): wdCb.Collection<GameObject>{
-            return this._lightManager.directionLights;
-        }
-
-        get pointLights(): wdCb.Collection<GameObject>{
-            return this._lightManager.pointLights;
-        }
-
         private _currentCamera:GameObject = null;
         get currentCamera():any{
             return this._currentCamera || this._cameraList.getChild(0);
@@ -42,101 +30,26 @@ module wd {
             }
         }
 
-        get isUseShader(){
-            return this.currentShaderType !== null;
-        }
-
-        public side:ESide = null;
-        public shadowMap = ShadowMapModel.create(this);
-        public physics = ClassUtils.createClassInstance("PhysicsConfig");
-        public glslData:wdCb.Hash<any> = wdCb.Hash.create<any>();
-        public currentShaderType:EShaderTypeOfScene = null;
-        public renderTargetRendererManager:RenderTargetRendererManager = RenderTargetRendererManager.create();
-        public shadowManager:any = ClassUtils.createClassInstanceOrEmpty("ShadowManager", "EmptyShadowManager", this);
-
-        private _lightManager:LightManager = LightManager.create();
         private _cameraList:wdCb.Collection<GameObject> = wdCb.Collection.create<GameObject>();
 
-        public init(){
-            ClassUtils.execSingletonMethod("PhysicsComponentContainer", "initPhysicsComponentContainerAdapter");
-
-            if(this.shadowManager){
-                this.shadowManager.init();
-            }
-
-            super.init();
-
-            this.renderTargetRendererManager.init();
-
-            ClassUtils.execSingletonMethod("PhysicsComponentContainer", "initBody");
-            ClassUtils.execSingletonMethod("PhysicsComponentContainer", "initConstraint");
-
-            return this;
-        }
-
-        public dispose(){
-            super.dispose();
-
-            this.shadowManager.dispose();
-            this.renderTargetRendererManager.dispose();
-        }
-
         public addChild(child:GameObject):GameObject{
-            var cameraList = this._getCameras(child),
-                lightList = this._getLights(child);
+            var cameraList = this._getCameras(child);
 
             if(cameraList.getCount() > 0){
                 this._cameraList.addChildren(cameraList);
-            }
-            if(lightList.getCount() > 0){
-                this._lightManager.addChildren(lightList);
             }
 
             return <GameObject>super.addChild(child);
         }
 
         public update(elapsed:number){
-            var currentCamera= this._getCurrentCameraComponent(),
-                shadowManager:any = this.shadowManager;
-
-            ClassUtils.execSingletonMethod("PhysicsComponentContainer", "update", elapsed);
+            var currentCamera= this._getCurrentCameraComponent();
 
             if(currentCamera){
                 currentCamera.update(elapsed);
             }
 
-            shadowManager.update(elapsed);
-
-            ClassUtils.execSingletonMethod("LODComponentContainer", "update", elapsed);
-            ClassUtils.execSingletonMethod("SpacePartitionComponentContainer", "update", elapsed);
-
-            ClassUtils.execSingletonMethod("AnimationComponentContainer", "update", elapsed);
-
-            CollisionComponentContainer.getInstance().update(elapsed);
-
-            ClassUtils.execSingletonMethod("ThreeDUIComponentContainer", "update", elapsed);
-
             super.update(elapsed);
-
-            CollisionComponentContainer.getInstance().detect(elapsed);
-
-            ClassUtils.execSingletonMethod("BillboardComponentContainer", "update", elapsed);
-        }
-
-        public render(renderer:Renderer) {
-            this.shadowManager.setShadowRenderListForCurrentLoop();
-
-            this.renderTargetRendererManager.render(renderer, this.currentCamera);
-
-            super.render(renderer, this.currentCamera);
-        }
-
-        public useShaderType(type:EShaderTypeOfScene){
-            this.currentShaderType = type;
-        }
-
-        public unUseShader(){
-            this.currentShaderType = null;
         }
 
         protected getRenderList(){
@@ -149,10 +62,6 @@ module wd {
 
         private _getCameras(gameObject:GameObject){
             return this._find(gameObject, this._isCamera);
-        }
-
-        private _getLights(gameObject:GameObject){
-            return this._find(gameObject, this._isLight);
         }
 
         private _find(gameObject:GameObject, judgeFunc){
@@ -177,62 +86,12 @@ module wd {
             return child.hasComponent(CameraController);
         }
 
-        private _isLight(child:GameObject){
-            return child.hasComponent(Light);
-        }
-
         private _getCurrentCameraComponent():CameraController{
             if(!this.currentCamera){
                 return null;
             }
 
             return this.currentCamera.getComponent(CameraController);
-        }
-    }
-
-    export class ShadowMapModel{
-        public static create(scene:GameObjectScene) {
-        	var obj = new this(scene);
-
-        	return obj;
-        }
-
-        constructor(scene:GameObjectScene){
-            this._scene = scene;
-        }
-
-        private _scene:GameObjectScene = null;
-
-        private _enable:boolean = true;
-        get enable(){
-            return this._enable;
-        }
-        set enable(enable:boolean){
-            this._enable = enable;
-
-            //todo send event if need
-        }
-
-        private _softType:EShadowMapSoftType = EShadowMapSoftType.NONE;
-        get softType(){
-            return this._softType;
-        }
-        set softType(softType:EShadowMapSoftType){
-            if(softType !== this._softType){
-                EventManager.broadcast(this._scene, CustomEvent.create(<any>EEngineEvent.SHADOWMAP_SOFTTYPE_CHANGE));
-
-                this._softType = softType;
-            }
-        }
-
-        public shadowLayerList:any = ClassUtils.createClassInstance("ShadowLayerList", this);
-
-        public getTwoDShadowMapDataMap(layer:string) {
-            return this._scene.shadowManager.getTwoDShadowMapDataMap(layer);
-        }
-
-        public getCubemapShadowMapDataMap(layer:string){
-            return this._scene.shadowManager.getCubemapShadowMapDataMap(layer);
         }
     }
 }

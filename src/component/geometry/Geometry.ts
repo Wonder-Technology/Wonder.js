@@ -10,9 +10,9 @@ module wd{
                 this._material = material;
                 this._material.geometry = this;
 
-                if(this.entityObject){
-                    EventManager.trigger(this.entityObject, CustomEvent.create(<any>EEngineEvent.MATERIAL_CHANGE));
-                }
+                // if(this.entityObject){
+                    // EventManager.trigger(this.entityObject, CustomEvent.create(<any>EEngineEvent.MATERIAL_CHANGE));
+                // }
             }
         }
 
@@ -26,7 +26,7 @@ module wd{
 
         public entityObject:GameObject;
         public buffers:BufferContainer = null;
-        public vaoManager:VAOManager = !!GPUDetector.getInstance().extensionVAO ? VAOManager.create() : null;
+        // public vaoManager:VAOManager = !!GPUDetector.getInstance().extensionVAO ? VAOManager.create() : null;
         @cloneAttributeAsBasicType()
         public drawMode:EDrawMode = EDrawMode.TRIANGLES;
 
@@ -61,60 +61,60 @@ module wd{
 
             this._material.init();
 
-            this.computeNormals();
+            // this.computeNormals();
 
-            this.vaoManager && this.vaoManager.init();
+            // this.vaoManager && this.vaoManager.init();
         }
 
-        @require(function(){
-            it("must define buffers->geometryData", () => {
-                expect(this.buffers).exist;
-                expect(this.buffers.geometryData).exist;
-            });
-        })
-        public hasFaceNormals(){
-            return this.buffers.geometryData.hasFaceNormals();
-        }
+        // @require(function(){
+        //     it("must define buffers->geometryData", () => {
+        //         expect(this.buffers).exist;
+        //         expect(this.buffers.geometryData).exist;
+        //     });
+        // })
+        // public hasFaceNormals(){
+        //     return this.buffers.geometryData.hasFaceNormals();
+        // }
 
-        @require(function(){
-            it("must define buffers->geometryData", () => {
-                expect(this.buffers).exist;
-                expect(this.buffers.geometryData).exist;
-            });
-        })
-        public hasVertexNormals(){
-            return this.buffers.geometryData.hasVertexNormals();
-        }
-
-        public hasColors(){
-            return this.buffers.geometryData.hasColors();
-        }
-
-        public isSmoothShading(){
-            return (<StandardLightMaterial>this._material).shading === EShading.SMOOTH;
-        }
+        // @require(function(){
+        //     it("must define buffers->geometryData", () => {
+        //         expect(this.buffers).exist;
+        //         expect(this.buffers.geometryData).exist;
+        //     });
+        // })
+        // public hasVertexNormals(){
+        //     return this.buffers.geometryData.hasVertexNormals();
+        // }
+        //
+        // public hasColors(){
+        //     return this.buffers.geometryData.hasColors();
+        // }
+        //
+        // public isSmoothShading(){
+        //     return (<StandardLightMaterial>this._material).shading === EShading.SMOOTH;
+        // }
 
         public dispose(){
             this.buffers.dispose();
 
             this._material.dispose();
 
-            this.vaoManager && this.vaoManager.dispose();
+            // this.vaoManager && this.vaoManager.dispose();
         }
 
-        @require(function(){
-            it("must define buffers->geometryData", () => {
-                expect(this.buffers).exist;
-                expect(this.buffers.geometryData).exist;
-            });
-        })
-        public computeFaceNormals() {
-            this.buffers.geometryData.computeFaceNormals();
-        }
-
-        public computeVertexNormals(){
-            this.buffers.geometryData.computeVertexNormals();
-        }
+        // @require(function(){
+        //     it("must define buffers->geometryData", () => {
+        //         expect(this.buffers).exist;
+        //         expect(this.buffers.geometryData).exist;
+        //     });
+        // })
+        // public computeFaceNormals() {
+        //     this.buffers.geometryData.computeFaceNormals();
+        // }
+        //
+        // public computeVertexNormals(){
+        //     this.buffers.geometryData.computeVertexNormals();
+        // }
 
         @require(function(){
             it("not exist buffers", () => {
@@ -125,19 +125,19 @@ module wd{
             this.buffers.createBuffersFromGeometryData();
         }
 
-        @virtual
-        protected computeNormals(){
-            if(this.isSmoothShading()){
-                if(!this.hasVertexNormals()){
-                    this.computeVertexNormals();
-                }
-            }
-            else{
-                if(!this.hasFaceNormals()){
-                    this.computeFaceNormals();
-                }
-            }
-        }
+        // @virtual
+        // protected computeNormals(){
+        //     if(this.isSmoothShading()){
+        //         if(!this.hasVertexNormals()){
+        //             this.computeVertexNormals();
+        //         }
+        //     }
+        //     else{
+        //         if(!this.hasFaceNormals()){
+        //             this.computeFaceNormals();
+        //         }
+        //     }
+        // }
 
         @virtual
         protected createBufferContainer():BufferContainer{
@@ -152,16 +152,16 @@ module wd{
         protected createBasicGeometryData(computedData:GeometryDataType){
             var {
                     vertices,
-                    faces = [],
-                    texCoords,
-                    colors
+                    faces = []
+                    // texCoords,
+                    // colors
                 } = computedData,
                 geometryData = BasicGeometryData.create(this);
 
             geometryData.vertices = vertices;
             geometryData.faces = faces;
-            geometryData.texCoords = texCoords;
-            geometryData.colors = colors;
+            // geometryData.texCoords = texCoords;
+            // geometryData.colors = colors;
 
             return geometryData;
         }
@@ -170,7 +170,7 @@ module wd{
     export type GeometryDataType = {
         vertices:Array<number>;
         faces?:Array<Face3>;
-        texCoords?:Array<number>;
-        colors?:Array<number>;
+        // texCoords?:Array<number>;
+        // colors?:Array<number>;
     };
 }

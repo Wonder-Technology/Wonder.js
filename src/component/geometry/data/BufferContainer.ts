@@ -9,9 +9,9 @@ module wd {
         protected entityObject:GameObject = null;
         protected container:wdCb.Hash<Buffer> = wdCb.Hash.create<Buffer>();
 
-        private _colorBuffer:ArrayBuffer = null;
-        private _texCoordBuffer:ArrayBuffer = null;
-        private _tangentBuffer:ArrayBuffer = null;
+        // private _colorBuffer:ArrayBuffer = null;
+        // private _texCoordBuffer:ArrayBuffer = null;
+        // private _tangentBuffer:ArrayBuffer = null;
         private _indiceBuffer:ElementBuffer = null;
 
         public abstract getBufferForRenderSort():Buffer;
@@ -19,11 +19,11 @@ module wd {
         @virtual
         public createBuffersFromGeometryData(){
             this.getChild(EBufferDataType.VERTICE);
-            this.getChild(EBufferDataType.NORMAL);
-            this.getChild(EBufferDataType.TANGENT);
-            this.getChild(EBufferDataType.COLOR);
+            // this.getChild(EBufferDataType.NORMAL);
+            // this.getChild(EBufferDataType.TANGENT);
+            // this.getChild(EBufferDataType.COLOR);
             this.getChild(EBufferDataType.INDICE);
-            this.getChild(EBufferDataType.TEXCOORD);
+            // this.getChild(EBufferDataType.TEXCOORD);
         }
 
         public removeCache(type:EBufferDataType);
@@ -55,26 +55,26 @@ module wd {
                 case EBufferDataType.VERTICE:
                     result = this.getVertice(type);
                     break;
-                case EBufferDataType.NORMAL:
-                    result = this.getNormal(type);
-                    break;
-                case EBufferDataType.TANGENT:
-                    result = this._getTangent(type);
-                    break;
-                case EBufferDataType.COLOR:
-                    result = this._getColor(type);
-                    break;
+                // case EBufferDataType.NORMAL:
+                //     result = this.getNormal(type);
+                //     break;
+                // case EBufferDataType.TANGENT:
+                //     result = this._getTangent(type);
+                //     break;
+                // case EBufferDataType.COLOR:
+                //     result = this._getColor(type);
+                //     break;
                 case EBufferDataType.INDICE:
                     result = this._getIndice(type);
                     break;
-                case EBufferDataType.TEXCOORD:
-                    result = this._getTexCoord(type);
-                    break;
-                case EBufferDataType.CUSTOM:
-                    result = this.getCustomData(args[1]);
-                    break;
+                // case EBufferDataType.TEXCOORD:
+                //     result = this._getTexCoord(type);
+                //     break;
+                // case EBufferDataType.CUSTOM:
+                //     result = this.getCustomData(args[1]);
+                //     break;
                 default:
-                    result = this.getBuffer(type);
+                    // result = this.getBuffer(type);
                     break;
             }
 
@@ -94,19 +94,19 @@ module wd {
         }
 
         protected abstract getVertice(type:EBufferDataType);
-        protected abstract getNormal(type:EBufferDataType);
+        // protected abstract getNormal(type:EBufferDataType);
 
-        @virtual
-        protected getCustomData(dataName:string){
-            return null;
-        }
+        // @virtual
+        // protected getCustomData(dataName:string){
+        //     return null;
+        // }
 
-        @virtual
-        protected getBuffer(type:EBufferDataType){
-            Log.error(true, wdCb.Log.info.FUNC_UNKNOW(`EBufferDataType: ${type}`));
-
-            return null;
-        }
+        // @virtual
+        // protected getBuffer(type:EBufferDataType){
+        //     Log.error(true, wdCb.Log.info.FUNC_UNKNOW(`EBufferDataType: ${type}`));
+        //
+        //     return null;
+        // }
 
         protected createOnlyOnceAndUpdateArrayBuffer(bufferAttriName:string, data:Array<number>, size:number, type:EBufferType = EBufferType.FLOAT, offset:number = 0, usage:EBufferUsage = EBufferUsage.STATIC_DRAW){
             var buffer:ArrayBuffer = this[bufferAttriName];
@@ -146,47 +146,47 @@ module wd {
             return !!data && data.length > 0;
         }
 
-        @cache(function(type:EBufferDataType){
-            return this.container.hasChild(<any>type) && !this._needReCalcuteTangent(type);
-        }, function(type){
-            return this.container.getChild(<any>type)
-        }, function(result, type){
-            this.container.addChild(<any>type, result);
-        })
-        private _getTangent(type){
-            var geometryData = null;
-
-            geometryData = this.geometryData[BufferDataTable.getGeometryDataName(type)];
-
-            if(!this.hasData(geometryData)){
-                return null;
-            }
-
-            this.createOnlyOnceAndUpdateArrayBuffer("_tangentBuffer", geometryData, 3);
-
-            return this._tangentBuffer;
-        }
-
-        @cache(function(type:EBufferDataType){
-            return this.container.hasChild(<any>type);
-        }, function(type){
-            return this.container.getChild(<any>type)
-        }, function(result, type){
-            this.container.addChild(<any>type, result);
-        })
-        private _getColor(type) {
-            var geometryData = null;
-
-            geometryData = this.geometryData[BufferDataTable.getGeometryDataName(type)];
-
-            if(!this.hasData(geometryData)){
-                return null;
-            }
-
-            this.createOnlyOnceAndUpdateArrayBuffer("_colorBuffer", geometryData, 3);
-
-            return this._colorBuffer;
-        }
+        // @cache(function(type:EBufferDataType){
+        //     return this.container.hasChild(<any>type) && !this._needReCalcuteTangent(type);
+        // }, function(type){
+        //     return this.container.getChild(<any>type)
+        // }, function(result, type){
+        //     this.container.addChild(<any>type, result);
+        // })
+        // private _getTangent(type){
+        //     var geometryData = null;
+        //
+        //     geometryData = this.geometryData[BufferDataTable.getGeometryDataName(type)];
+        //
+        //     if(!this.hasData(geometryData)){
+        //         return null;
+        //     }
+        //
+        //     this.createOnlyOnceAndUpdateArrayBuffer("_tangentBuffer", geometryData, 3);
+        //
+        //     return this._tangentBuffer;
+        // }
+        //
+        // @cache(function(type:EBufferDataType){
+        //     return this.container.hasChild(<any>type);
+        // }, function(type){
+        //     return this.container.getChild(<any>type)
+        // }, function(result, type){
+        //     this.container.addChild(<any>type, result);
+        // })
+        // private _getColor(type) {
+        //     var geometryData = null;
+        //
+        //     geometryData = this.geometryData[BufferDataTable.getGeometryDataName(type)];
+        //
+        //     if(!this.hasData(geometryData)){
+        //         return null;
+        //     }
+        //
+        //     this.createOnlyOnceAndUpdateArrayBuffer("_colorBuffer", geometryData, 3);
+        //
+        //     return this._colorBuffer;
+        // }
 
         @cache(function(type:EBufferDataType){
             return this.container.hasChild(<any>type);
@@ -209,30 +209,30 @@ module wd {
             return this._indiceBuffer;
         }
 
-        @cache(function(type:EBufferDataType){
-            return this.container.hasChild(<any>type);
-        }, function(type){
-            return this.container.getChild(<any>type)
-        }, function(result, type){
-            this.container.addChild(<any>type, result);
-        })
-        private _getTexCoord(type){
-            var geometryData = null,
-                isCreatBuffer:boolean = null;
-
-            geometryData = this.geometryData[BufferDataTable.getGeometryDataName(type)];
-
-            if(!this.hasData(geometryData)){
-                return null;
-            }
-
-            this.createOnlyOnceAndUpdateArrayBuffer("_texCoordBuffer", geometryData, 2);
-
-            return this._texCoordBuffer;
-        }
-
-        private _needReCalcuteTangent(type:EBufferDataType){
-            return this.geometryData.tangentDirty && type === EBufferDataType.TANGENT;
-        }
+        // @cache(function(type:EBufferDataType){
+        //     return this.container.hasChild(<any>type);
+        // }, function(type){
+        //     return this.container.getChild(<any>type)
+        // }, function(result, type){
+        //     this.container.addChild(<any>type, result);
+        // })
+        // private _getTexCoord(type){
+        //     var geometryData = null,
+        //         isCreatBuffer:boolean = null;
+        //
+        //     geometryData = this.geometryData[BufferDataTable.getGeometryDataName(type)];
+        //
+        //     if(!this.hasData(geometryData)){
+        //         return null;
+        //     }
+        //
+        //     this.createOnlyOnceAndUpdateArrayBuffer("_texCoordBuffer", geometryData, 2);
+        //
+        //     return this._texCoordBuffer;
+        // }
+        //
+        // private _needReCalcuteTangent(type:EBufferDataType){
+        //     return this.geometryData.tangentDirty && type === EBufferDataType.TANGENT;
+        // }
     }
 }

@@ -4,12 +4,12 @@ module wd{
     //todo remove <any>
     _table.addChild(<any>EBufferDataType.VERTICE, "vertices");
     _table.addChild(<any>EBufferDataType.INDICE, "indices");
-    _table.addChild(<any>EBufferDataType.NORMAL, "normals");
-    _table.addChild(<any>EBufferDataType.TEXCOORD, "texCoords");
-    _table.addChild(<any>EBufferDataType.COLOR, "colors");
-    _table.addChild(<any>EBufferDataType.TANGENT, "tangents");
-    _table.addChild(<any>EBufferDataType.JOINT_INDICE, "jointIndices");
-    _table.addChild(<any>EBufferDataType.JOINT_WEIGHT, "jointWeights");
+    // _table.addChild(<any>EBufferDataType.NORMAL, "normals");
+    // _table.addChild(<any>EBufferDataType.TEXCOORD, "texCoords");
+    // _table.addChild(<any>EBufferDataType.COLOR, "colors");
+    // _table.addChild(<any>EBufferDataType.TANGENT, "tangents");
+    // _table.addChild(<any>EBufferDataType.JOINT_INDICE, "jointIndices");
+    // _table.addChild(<any>EBufferDataType.JOINT_WEIGHT, "jointWeights");
 
     export class BufferDataTable{
         @ensure(function(result, type:EBufferDataType){

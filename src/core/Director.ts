@@ -46,19 +46,15 @@ module wd{
         }
 
         public scene:SceneDispatcher = null;
-        public scheduler:Scheduler = null;
         public renderer:Renderer= null;
-        public domEventManager:any = DomEventManager.create();
 
         private _gameLoop:wdFrp.IDisposable = null;
-        private _eventSubscription:wdFrp.IDisposable = null;
         private _gameState:EGameState = EGameState.NORMAL;
         private _timeController:DirectorTimeController= DirectorTimeController.create();
 
 
         public initWhenCreate(){
             this.scene = SceneDispatcher.create();
-            this.scheduler = Scheduler.create();
             this.renderer = WebGLRenderer.create();
         }
 
@@ -72,8 +68,6 @@ module wd{
             this._gameLoop && this._gameLoop.dispose();
             this._gameState = EGameState.STOP;
             this._timeController.stop();
-            this.scheduler.stop();
-            this._eventSubscription && this._eventSubscription.dispose();
         }
 
         public pause(){
@@ -83,53 +77,17 @@ module wd{
 
             this._gameState = EGameState.PAUSE;
             this._timeController.pause();
-            this.scheduler.pause();
         }
 
         public resume(){
             this._gameState = EGameState.NORMAL;
             this._timeController.resume();
-            this.scheduler.resume();
         }
 
         //todo add dispose
 
         public getDeltaTime(){
             return this._timeController.deltaTime;
-        }
-
-        @execOnlyOnce("_isInitUIScene")
-        public initUIObjectScene(){
-            var uiObjectScene:any = this.scene.uiObjectScene;
-
-            this._initDomEvent();
-
-            if(uiObjectScene === null){
-                return;
-            }
-
-            uiObjectScene.onEnter();
-            uiObjectScene.init();
-        }
-
-        public runUIObjectScene(elapsed:number){
-            var uiObjectScene:any = this.scene.uiObjectScene;
-
-            if(uiObjectScene === null){
-                return;
-            }
-
-            EventManager.trigger(CustomEvent.create(<any>EEngineEvent.STARTLOOP));
-
-            ScriptComponentContainer.getInstance().execScript("onStartLoop");
-
-            uiObjectScene.update(elapsed);
-
-            uiObjectScene.render();
-
-            ScriptComponentContainer.getInstance().execScript("onEndLoop");
-
-            EventManager.trigger(CustomEvent.create(<any>EEngineEvent.ENDLOOP));
         }
 
         private _startLoop() {
@@ -155,28 +113,18 @@ module wd{
         }
 
         private _init(){
-            var DebugStatistics = ClassUtils.getClassOrEmpty("DebugStatistics", "EmptyDebugStatistics");
-
-            DebugStatistics.init();
-
             this._initGameObjectScene();
-
-            this.initUIObjectScene();
         }
 
         private _initGameObjectScene(){
             var gameObjectScene:GameObjectScene = this.scene.gameObjectScene;
 
-            this._initDomEvent();
-
-            gameObjectScene.onEnter();
             gameObjectScene.init();
 
             //todo not put here?
             this.renderer.init();
 
             this._timeController.start();
-            this.scheduler.start();
         }
 
         private _buildLoopStream(){
@@ -200,31 +148,13 @@ module wd{
         private _run(elapsed:number){
             this._timeController.tick(elapsed);
 
-            EventManager.trigger(CustomEvent.create(<any>EEngineEvent.STARTLOOP));
-
-            ScriptComponentContainer.getInstance().execScript("onStartLoop");
-
             this._update(elapsed);
 
             this._render();
-
-            ScriptComponentContainer.getInstance().execScript("onEndLoop");
-
-            EventManager.trigger(CustomEvent.create(<any>EEngineEvent.ENDLOOP));
         }
 
         private _update(elapsed:number){
-            this.scheduler.update(elapsed);
-
-            ScriptComponentContainer.getInstance().execScriptWithData("update", elapsed);
-
-            ClassUtils.execSingletonMethod("ActionComponentContainer", "update", elapsed);
-
             this.scene.gameObjectScene.update(elapsed);
-
-            if(this.scene.uiObjectScene !== null){
-                this.scene.uiObjectScene.update(elapsed);
-            }
         }
 
         private _render(){
@@ -236,15 +166,6 @@ module wd{
                 this.renderer.webglState = BasicState.create();
                 this.renderer.render();
             }
-
-            if(this.scene.uiObjectScene !== null) {
-                this.scene.uiObjectScene.render();
-            }
-        }
-
-        @execOnlyOnce("_isInitDomEvent")
-        private _initDomEvent(){
-            this._eventSubscription = this.domEventManager.initDomEvent();
         }
     }
 }

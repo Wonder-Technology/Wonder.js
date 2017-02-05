@@ -17,39 +17,40 @@ module wd{
         get shader(){
             var scene:SceneDispatcher = Director.getInstance().scene;
 
-            return scene.isUseShader ? this._otherShaderMap.getChild(<any>scene.currentShaderType) : this._mainShader;
+            // return scene.isUseShader ? this._otherShaderMap.getChild(<any>scene.currentShaderType) : this._mainShader;
+            return this._mainShader;
         }
 
-        get mapManager(){
-            return this.shader.mapManager;
-        }
+        // get mapManager(){
+        //     return this.shader.mapManager;
+        // }
 
         private _material:Material = null;
         //private _sceneShader:Shader = null;
         //private _unUseSceneShaderSubscription:wdFrp.IDisposable = null;
-        private _otherShaderMap:wdCb.Hash<Shader> = wdCb.Hash.create<Shader>();
+        // private _otherShaderMap:wdCb.Hash<Shader> = wdCb.Hash.create<Shader>();
         private _mainShader:Shader = null;
 
         public setShader(shader:Shader){
             this._mainShader = shader;
 
-            this._mainShader.mapManager.material = this._material;
+            // this._mainShader.mapManager.material = this._material;
         }
 
         public init(){
             var material = this._material;
 
-            this._otherShaderMap.forEach((shader:Shader) => {
-                shader.init(material);
-            });
+            // this._otherShaderMap.forEach((shader:Shader) => {
+            //     shader.init(material);
+            // });
 
             this._mainShader.init(material);
         }
 
         public dispose(){
-            this._otherShaderMap.forEach((shader:Shader) => {
-                shader.dispose();
-            });
+            // this._otherShaderMap.forEach((shader:Shader) => {
+            //     shader.dispose();
+            // });
 
             this._mainShader.dispose();
         }
@@ -58,16 +59,16 @@ module wd{
             this.shader.update(quadCmd, this._material);
         }
 
-        public addShader(shaderKey:EShaderTypeOfScene, shader:Shader){
-            this._otherShaderMap.addChild(<any>shaderKey, shader);
-        }
+        // public addShader(shaderKey:EShaderTypeOfScene, shader:Shader){
+        //     this._otherShaderMap.addChild(<any>shaderKey, shader);
+        // }
 
-        public hasShader(shaderKey:EShaderTypeOfScene){
-            return this._otherShaderMap.hasChild(<any>shaderKey);
-        }
+        // public hasShader(shaderKey:EShaderTypeOfScene){
+        //     return this._otherShaderMap.hasChild(<any>shaderKey);
+        // }
 
-        public getShader(shaderKey:EShaderTypeOfScene){
-            return this._otherShaderMap.getChild(<any>shaderKey);
-        }
+        // public getShader(shaderKey:EShaderTypeOfScene){
+        //     return this._otherShaderMap.getChild(<any>shaderKey);
+        // }
     }
 }

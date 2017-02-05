@@ -66,13 +66,13 @@ module wd{
 
         public libDirty:boolean = false;
         public definitionDataDirty:boolean = false;
-        public mapManager:MapManager = MapManager.create();
+        // public mapManager:MapManager = MapManager.create();
 
         protected libs:wdCb.Collection<ShaderLib> = wdCb.Collection.create<ShaderLib>();
         protected sourceBuilder:ShaderSourceBuilder = this.createShaderSourceBuilder();
 
         private _programCache:Program = null;
-        private _instanceStateCache:InstanceState = null;
+        // private _instanceStateCache:InstanceState = null;
 
         public abstract update(cmd:RenderCommand, material:Material);
 
@@ -96,7 +96,7 @@ module wd{
 
             this.judgeRefreshShader(null, material);
 
-            this.mapManager.init();
+            // this.mapManager.init();
         }
 
         public dispose(){
@@ -107,7 +107,7 @@ module wd{
                 lib.dispose();
             });
 
-            this.mapManager.dispose();
+            // this.mapManager.dispose();
 
             this._clearAllCache();
         }
@@ -200,84 +200,13 @@ module wd{
             this.libs.sort(func, true);
         }
 
-        @ensure(function({
-            isModelMatrixInstance,
-            isNormalMatrixInstance,
-            isHardwareInstance,
-            isBatchInstance
-        }){
-            if(isNormalMatrixInstance) {
-                it("if is normalMatrixInstance, should also be modelMatrixInstance", () => {
-                    expect(isModelMatrixInstance).true;
-                });
-            }
-
-            it("shouldn't both be hardware insstance and batch instance", () => {
-                expect(isHardwareInstance && isBatchInstance).false;
-            });
-        })
-        @cache(function(){
-            return this._instanceStateCache;
-        }, function(){
-            return this._instanceStateCache;
-        }, function(instanceState:InstanceState){
-            this._instanceStateCache = instanceState;
-        })
-        public getInstanceState(){
-            var isModelMatrixInstance = false,
-                isNormalMatrixInstance = false,
-                isHardwareInstance = false,
-                isBatchInstance = false;
-
-            this.libs.forEach((lib:ShaderLib) => {
-                if(!(lib instanceof InstanceShaderLib)){
-                    return;
-                }
-
-                if(lib instanceof NormalMatrixHardwareInstanceShaderLib){
-                    isNormalMatrixInstance = true;
-                    isHardwareInstance = true;
-
-                    return wdCb.$BREAK;
-                }
-
-                if(lib instanceof NormalMatrixBatchInstanceShaderLib){
-                    isNormalMatrixInstance = true;
-                    isBatchInstance = true;
-
-                    return wdCb.$BREAK;
-                }
-
-                if(lib instanceof ModelMatrixHardwareInstanceShaderLib){
-                    isModelMatrixInstance = true;
-                    isHardwareInstance = true;
-
-                    return;
-                }
-
-                if(lib instanceof ModelMatrixBatchInstanceShaderLib){
-                    isModelMatrixInstance = true;
-                    isBatchInstance = true;
-
-                    return;
-                }
-            });
-
-            return {
-                isModelMatrixInstance:isModelMatrixInstance,
-                isNormalMatrixInstance:isNormalMatrixInstance,
-                isHardwareInstance:isHardwareInstance,
-                isBatchInstance:isBatchInstance
-            }
-        }
-
         protected abstract createShaderSourceBuilder():ShaderSourceBuilder;
         protected abstract buildDefinitionData(cmd:RenderCommand, material:Material):void;
 
 
         protected judgeRefreshShader(cmd:RenderCommand, material:Material){
             if(this.libDirty){
-                this._instanceStateCache = null;
+                // this._instanceStateCache = null;
                 this.buildDefinitionData(cmd, material);
             }
 
@@ -345,7 +274,7 @@ module wd{
 
         private _clearAllCache(){
             this._programCache = null;
-            this._instanceStateCache = null;
+            // this._instanceStateCache = null;
         }
     }
 
@@ -355,11 +284,11 @@ module wd{
         textureId?:string;
     }
 
-    type InstanceState = {
-        isModelMatrixInstance:boolean;
-        isNormalMatrixInstance:boolean;
-        isHardwareInstance:boolean;
-        isBatchInstance:boolean
-    }
+    // type InstanceState = {
+    //     isModelMatrixInstance:boolean;
+    //     isNormalMatrixInstance:boolean;
+    //     isHardwareInstance:boolean;
+    //     isBatchInstance:boolean
+    // }
 }
 

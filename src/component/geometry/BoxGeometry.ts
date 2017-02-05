@@ -43,14 +43,14 @@ module wd{
                 [ 5, 0, 6 ]  // LEFT
             ];
 
-            var faceNormals = [
-                [  0,  0,  1 ], // FRONT
-                [  0,  0, -1 ], // BACK
-                [  0,  1,  0 ], // TOP
-                [  0, -1,  0 ], // BOTTOM
-                [  1,  0,  0 ], // RIGHT
-                [ -1,  0,  0 ]  // LEFT
-            ];
+            // var faceNormals = [
+            //     [  0,  0,  1 ], // FRONT
+            //     [  0,  0, -1 ], // BACK
+            //     [  0,  1,  0 ], // TOP
+            //     [  0, -1,  0 ], // BOTTOM
+            //     [  1,  0,  0 ], // RIGHT
+            //     [ -1,  0,  0 ]  // LEFT
+            // ];
             var corners = [
                 Vector3.create(-width, -height, depth),
                 Vector3.create( width, -height, depth),
@@ -63,8 +63,8 @@ module wd{
             ];
 
             var vertices = [];
-            var normals = [];
-            var texCoords = [];
+            // var normals = [];
+            // var texCoords = [];
             var indices = [];
 
             function generateFace(side, uSegments, vSegments) {
@@ -86,8 +86,8 @@ module wd{
                         v = j / vSegments;
 
                         vertices.push(r.x, r.y, r.z);
-                        normals.push(faceNormals[side][0], faceNormals[side][1], faceNormals[side][2]);
-                        texCoords.push(u, v);
+                        // normals.push(faceNormals[side][0], faceNormals[side][1], faceNormals[side][2]);
+                        // texCoords.push(u, v);
 
                         if ((i < uSegments) && (j < vSegments)) {
                             indices.push(offset + j + i * (uSegments + 1),       offset + j + (i + 1) * (uSegments + 1),     offset + j + i * (uSegments + 1) + 1);
@@ -108,8 +108,9 @@ module wd{
             return {
                 vertices: vertices,
                 //todo direct add to faces, remove indices,normals
-                faces: GeometryUtils.convertToFaces(indices, normals),
-                texCoords: texCoords
+                // faces: GeometryUtils.convertToFaces(indices, normals)
+                faces: GeometryUtils.convertToFaces(indices)
+                // texCoords: texCoords
             };
         }
     }

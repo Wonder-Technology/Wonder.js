@@ -15,7 +15,6 @@ module wd{
         private _entityObject:EntityObject = null;
         private _components:wdCb.Collection<any> = wdCb.Collection.create<any>();
         private _rendererComponent:RendererComponent = null;
-        private _collider:Collider = null;
         private _geometry:Geometry = null;
 
         public init(){
@@ -111,9 +110,6 @@ module wd{
             if(component instanceof RendererComponent){
                 this._rendererComponent = component;
             }
-            else if(component instanceof Collider){
-                this._collider = component;
-            }
             else if(component instanceof Geometry){
                 this._geometry = component;
             }
@@ -156,13 +152,13 @@ module wd{
             return this;
         }
 
-        public addAllComponentToComponentContainer(){
-            this._components.forEach((component:Component) => component.addToComponentContainer());
-        }
-
-        public removeAllComponentFromComponentContainer(){
-            this._components.forEach((component:Component) => component.removeFromComponentContainer());
-        }
+        // public addAllComponentToComponentContainer(){
+        //     this._components.forEach((component:Component) => component.addToComponentContainer());
+        // }
+        //
+        // public removeAllComponentFromComponentContainer(){
+        //     this._components.forEach((component:Component) => component.removeFromComponentContainer());
+        // }
 
         public getComponentCount(_class:Function){
             return this._components.filter((component:Component) => {
@@ -186,15 +182,6 @@ module wd{
         })
         public getRendererComponent():RendererComponent{
             return this._rendererComponent;
-        }
-
-        @require(function(){
-            it("entityObject shouldn't contain more than 1 collider", () => {
-                expect(this.getComponentCount(Collider)).lessThan(2);
-            });
-        })
-        public getCollider():Collider{
-            return this._collider;
         }
 
         private _removeComponentHandler(component:Component){

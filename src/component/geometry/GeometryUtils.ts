@@ -69,17 +69,17 @@ module wd {
             }
         }
 
-        public static mergeFace(source:Array<Face3>, target:Array<Face3>){
-            if(!target){
-                return source;
-            }
-
-            for(let face of target){
-                source.push(face.clone());
-            }
-
-            return source;
-        }
+        // public static mergeFace(source:Array<Face3>, target:Array<Face3>){
+        //     if(!target){
+        //         return source;
+        //     }
+        //
+        //     for(let face of target){
+        //         source.push(face.clone());
+        //     }
+        //
+        //     return source;
+        // }
     }
 }
 

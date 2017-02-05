@@ -31,18 +31,18 @@ module wd{
                     preserveDrawingBuffer:false
                 }
             }
-            }){
+        }){
             this.screenSize = screenSize;
             this._canvasId = canvasId;
             this._useDevicePixelRatio = useDevicePixelRatio;
             this._contextConfig = {
                 options:wdCb.ExtendUtils.extend({
-                        alpha:true,
-                        depth:true,
-                        stencil:false,
-                        antialias:true,
-                        premultipliedAlpha:true,
-                        preserveDrawingBuffer:false
+                    alpha:true,
+                    depth:true,
+                    stencil:false,
+                    antialias:true,
+                    premultipliedAlpha:true,
+                    preserveDrawingBuffer:false
                 }, contextConfig.options)
             };
 
@@ -80,3 +80,4 @@ module wd{
         }
     }
 }
+

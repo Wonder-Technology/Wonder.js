@@ -341,14 +341,9 @@ module wd{
             BufferTable.lastBindedArrayBufferListUidStr = this._toSendBuffersUidStr;
 
         })
-        public sendAllBufferData(vaoManager:VAOManager){
+        // public sendAllBufferData(vaoManager:VAOManager){
+        public sendAllBufferData(){
             var toSendBufferArr = this._toSendBufferArr;
-
-            if(vaoManager){
-                vaoManager.sendAllBufferData(this._toSendBuffersUidStr, toSendBufferArr);
-
-                return;
-            }
 
             for(let pos = 0, len = toSendBufferArr.length; pos < len; pos++){
                 let buffer = toSendBufferArr[pos];

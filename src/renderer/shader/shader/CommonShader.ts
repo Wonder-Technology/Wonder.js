@@ -19,8 +19,8 @@ module wd{
                 lib.sendShaderVariables(program, cmd, material);
             });
 
-            this.mapManager.bindAndUpdate();
-            this.mapManager.sendData(program);
+            // this.mapManager.bindAndUpdate();
+            // this.mapManager.sendData(program);
         }
     }
 }

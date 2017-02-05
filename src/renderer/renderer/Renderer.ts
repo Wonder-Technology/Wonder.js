@@ -8,7 +8,7 @@ module wd{
             this._webglState = webglState;
         }
 
-        public skyboxCommand:QuadCommand = null;
+        // public skyboxCommand:QuadCommand = null;
 
         public abstract addCommand(command:RenderCommand):void;
         public abstract hasCommand():boolean;

@@ -8,9 +8,10 @@ module wd{
             return obj;
         }
 
-        public getTextureForRenderSort():Texture{
-            return this.mapList.getChild(0);
-        }
+        // public getTextureForRenderSort():Texture{
+        //     // return this.mapList.getChild(0);
+        //     return null;
+        // }
     }
 }
 
