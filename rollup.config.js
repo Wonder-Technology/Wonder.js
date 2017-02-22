@@ -1,20 +1,26 @@
 // import typescript from "wonder-rollup-plugin-typescript";
 import nodeResolve from "rollup-plugin-node-resolve";
 import commonjs from "rollup-plugin-commonjs";
+import includePaths from "rollup-plugin-includepaths";
 
 export default {
     entry: "./dist/es2015/index.js",
     indent: "\t",
     plugins: [
-        nodeResolve(
-            {
-            }),
+        nodeResolve({
+            skip:[
+                "wonder-commonlib"
+            ]
+        }),
         commonjs({
-            // sourceMap: false,
             namedExports: {
                 "./node_modules/bowser/src/bowser.js": ["version", "chrome","msie", "firefox", "mobile"],
                 "./node_modules/wonder-expect.js/index.js": ["expect"]
             }
+        }),
+        includePaths({
+            paths: ["./node_modules"],
+            extensions: [".js"]
         })
 
         // typescript({
