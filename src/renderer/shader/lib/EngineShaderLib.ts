@@ -12,7 +12,7 @@ import { require, assert, it } from "../../../definition/typescript/decorator/co
 import { Log } from "../../../utils/Log";
 import { GLSLChunk, ShaderChunk } from "../chunk/ShaderChunk";
 import { JudgeUtils } from "../../../utils/JudgeUtils";
-import { expect } from "chai";
+import expect from "wonder-expect.js";
 import { PathUtils } from "wonder-commonlib/dist/es2015/utils/PathUtils";
 import { SourceDefine } from "../sourceBuilder/ShaderSourceBuilder";
 

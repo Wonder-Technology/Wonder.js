@@ -9,7 +9,7 @@ import { Color } from "../structure/Color";
 import { DomQuery } from "wonder-commonlib/dist/es2015/utils/DomQuery";
 import { root } from "../definition/Variable";
 import { require, it, ensure } from "../definition/typescript/decorator/contract";
-import { expect } from "chai";
+import expect from "wonder-expect.js";
 import { EScreenSize } from "./EScreenSize";
 
 /*!

@@ -9,7 +9,7 @@ import { Component } from "../../Component";
 import { ComponentInitOrderTable } from "../../../component/data/ComponentInitOrderTable";
 import { JudgeUtils } from "../../../utils/JudgeUtils";
 import { require, it } from "../../../definition/typescript/decorator/contract";
-import { expect } from "chai";
+import expect from "wonder-expect.js";
 
 @registerClass("ComponentManager")
 export class ComponentManager {

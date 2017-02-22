@@ -6,7 +6,7 @@ import { ElementBuffer } from "../../../renderer/buffer/ElementBuffer";
 import { virtual } from "../../../definition/typescript/decorator/virtual";
 import { EBufferDataType } from "../../../renderer/buffer/EBufferDataType";
 import { require, it } from "../../../definition/typescript/decorator/contract";
-import { expect } from "chai";
+import expect from "wonder-expect.js";
 import { EBufferType } from "../../../renderer/buffer/EBufferType";
 import { EBufferUsage } from "../../../renderer/buffer/EBufferUsage";
 import { ArrayBuffer } from "../../../renderer/buffer/ArrayBuffer";

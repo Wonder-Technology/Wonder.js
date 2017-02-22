@@ -40,6 +40,8 @@
     "promise": "^7.1.1",
     "pump": "^1.0.1",
     "relaxed-json": "^1.0.0",
+    "rollup-plugin-commonjs": "^7.0.0",
+    "rollup-plugin-node-resolve": "^2.0.0",
     "sinon": "^1.14.1",
     "stream-assert": "^2.0.2",
     "strip-bom": "^1.0.0",
@@ -49,21 +51,22 @@
     "typescript": "^2.1.1",
     "vinyl": "^0.4.6",
     "vinyl-bufferstream": "^1.0.1",
-    "wonder-package": "^0.1.4"
+    "wonder-package": "^0.1.4",
+    "wonder-rollup-plugin-typescript": "^0.1.1"
   },
   "dependencies": {
     "@types/bowser": "^1.0.30",
     "@types/cannon": "^0.1.0",
-    "@types/chai": "^3.4.34",
+    "@types/expect.js": "^0.3.29",
     "@types/node": "^7.0.5",
     "@types/rsvp": "^3.0.0",
     "@types/wonder-commonlib": "^0.1.0",
     "@types/wonder-frp": "^0.1.0",
     "bowser": "^1.6.0",
     "cannon": "^0.6.2",
-    "chai": "^3.5.0",
     "rsvp": "^3.3.3",
     "wonder-commonlib": "^0.1.0",
+    "wonder-expect.js": "^0.1.0",
     "wonder-frp": "^0.1.6"
   }
 }

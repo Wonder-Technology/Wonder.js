@@ -6,7 +6,7 @@ import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 import { BufferContainer } from "./data/BufferContainer";
 import { EDrawMode } from "../../renderer/EDrawMode";
 import { ensure, it, require } from "../../definition/typescript/decorator/contract";
-import { expect } from "chai";
+import expect from "wonder-expect.js";
 import { execOnlyOnce } from "../../definition/typescript/decorator/control";
 import { virtual } from "../../definition/typescript/decorator/virtual";
 import { BasicBufferContainer } from "./data/BasicBufferContainer";

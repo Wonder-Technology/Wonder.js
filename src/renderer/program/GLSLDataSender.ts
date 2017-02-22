@@ -8,7 +8,7 @@ import { JudgeUtils } from "../../utils/JudgeUtils";
 import { Log } from "../../utils/Log";
 import { Matrix3 } from "../../math/Matrix3";
 import { Matrix4 } from "../../math/Matrix4";
-import { expect } from "chai";
+import expect from "wonder-expect.js";
 import { ArrayUtils } from "../../utils/ArrayUtils";
 import { cache } from "../../definition/typescript/decorator/cache";
 import { BufferTable } from "../../core/entityObject/scene/cache/BufferTable";

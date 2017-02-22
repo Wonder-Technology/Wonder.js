@@ -4,7 +4,7 @@ import { EEngineEvent } from "./EEngineEvent";
 import { EntityObject } from "../core/entityObject/EntityObject";
 import { require, it, assert } from "../definition/typescript/decorator/contract";
 import { EventTable } from "./object/EventTable";
-import { expect } from "chai";
+import expect from "wonder-expect.js";
 import { EEventType } from "./object/EEventType";
 import { JudgeUtils } from "../utils/JudgeUtils";
 import { EventBinderFactory } from "./factory/EventBinderFactory";

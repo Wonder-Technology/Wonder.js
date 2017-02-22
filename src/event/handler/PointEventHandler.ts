@@ -2,7 +2,7 @@ import { DomEventHandler } from "./DomEventHandler";
 import { EEventName } from "../object/EventNameHandler";
 import { DomEvent } from "../object/DomEvent";
 import { require, it } from "../../definition/typescript/decorator/contract";
-import { expect } from "chai";
+import expect from "wonder-expect.js";
 import { JudgeUtils } from "../../utils/JudgeUtils";
 import { IEventData } from "../interface/IEventData";
 import { EventManager } from "../EventManager";
