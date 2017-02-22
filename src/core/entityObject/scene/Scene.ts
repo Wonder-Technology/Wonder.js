@@ -1,5 +1,4 @@
-module wd {
-    export abstract class Scene extends EntityObject {
-    }
-}
+import { EntityObject } from "../EntityObject";
 
+export abstract class Scene extends EntityObject {
+}

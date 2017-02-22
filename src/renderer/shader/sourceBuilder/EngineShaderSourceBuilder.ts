@@ -1,311 +1,323 @@
-module wd{
-    //todo add custom define
-    export class EngineShaderSourceBuilder extends ShaderSourceBuilder{
-        public static create() {
-        	var obj = new this();
+import { registerClass } from "../../../definition/typescript/decorator/registerClass";
+import { ShaderSourceBuilder, SourceDefine } from "./ShaderSourceBuilder";
+import { Collection } from "wonder-commonlib/dist/es2015/Collection";
+import { require, assert } from "../../../definition/typescript/decorator/contract";
+import { EngineShaderLib } from "../lib/EngineShaderLib";
+import { Log } from "../../../utils/Log";
+import { ShaderSnippet } from "../snippet/ShaderSnippet";
+import { GPUDetector, EGPUPrecision } from "../../../device/GPUDetector";
+import { ShaderChunk } from "../chunk/ShaderChunk";
+import { ShaderData } from "../shader/Shader";
+import { VariableTypeTable } from "../variable/VariableTypeTable";
+import { EVariableType } from "../variable/EVariableType";
 
-        	return obj;
+//todo add custom define
+@registerClass("EngineShaderSourceBuilder")
+export class EngineShaderSourceBuilder extends ShaderSourceBuilder {
+    public static create() {
+        var obj = new this();
+
+        return obj;
+    }
+
+    public vsSourceTop: string = "";
+    public vsSourceDefine: string = "";
+    public vsSourceVarDeclare: string = "";
+    public vsSourceFuncDeclare: string = "";
+    public vsSourceFuncDefine: string = "";
+    public vsSourceBody: string = "";
+
+    public fsSourceTop: string = "";
+    public fsSourceDefine: string = "";
+    public fsSourceVarDeclare: string = "";
+    public fsSourceFuncDeclare: string = "";
+    public fsSourceFuncDefine: string = "";
+    public fsSourceBody: string = "";
+
+    public vsSourceDefineList: Collection<SourceDefine> = Collection.create<SourceDefine>();
+    public fsSourceDefineList: Collection<SourceDefine> = Collection.create<SourceDefine>();
+
+    public vsSourceExtensionList: Collection<string> = Collection.create<string>();
+    public fsSourceExtensionList: Collection<string> = Collection.create<string>();
+
+    @require(function(libs: Collection<EngineShaderLib>) {
+        assert(this.vsSource === null, Log.info.FUNC_SHOULD("vsSource", "be null"));
+        assert(this.fsSource === null, Log.info.FUNC_SHOULD("fsSource", "be null"));
+    })
+    public build(libs: Collection<EngineShaderLib>) {
+        this._readLibSource(libs);
+
+        if (this.vsSource === null) {
+            this._buildVsSource();
+        }
+        if (this.fsSource === null) {
+            this._buildFsSource();
         }
 
-        public vsSourceTop:string = "";
-        public vsSourceDefine:string = "";
-        public vsSourceVarDeclare:string = "";
-        public vsSourceFuncDeclare:string = "";
-        public vsSourceFuncDefine:string = "";
-        public vsSourceBody:string = "";
+        this.convertAttributesData();
+    }
 
-        public fsSourceTop:string = "";
-        public fsSourceDefine:string = "";
-        public fsSourceVarDeclare:string = "";
-        public fsSourceFuncDeclare:string = "";
-        public fsSourceFuncDefine:string = "";
-        public fsSourceBody:string = "";
+    public clearShaderDefinition() {
+        this.attributes.removeAllChildren();
+        this.uniforms.removeAllChildren();
+        this.vsSourceDefineList.removeAllChildren();
+        this.fsSourceDefineList.removeAllChildren();
 
-        public vsSourceDefineList:wdCb.Collection<SourceDefine> = wdCb.Collection.create<SourceDefine>();
-        public fsSourceDefineList:wdCb.Collection<SourceDefine> = wdCb.Collection.create<SourceDefine>();
+        this.vsSourceTop = "";
+        this.vsSourceDefine = "";
+        this.vsSourceVarDeclare = "";
+        this.vsSourceFuncDeclare = "";
+        this.vsSourceFuncDefine = "";
+        this.vsSourceBody = "";
+        this.vsSource = null;
 
-        public vsSourceExtensionList:wdCb.Collection<string> = wdCb.Collection.create<string>();
-        public fsSourceExtensionList:wdCb.Collection<string> = wdCb.Collection.create<string>();
+        this.fsSourceTop = "";
+        this.fsSourceDefine = "";
+        this.fsSourceVarDeclare = "";
+        this.fsSourceFuncDeclare = "";
+        this.fsSourceFuncDefine = "";
+        this.fsSourceBody = "";
+        this.fsSource = null;
+    }
 
-        @require(function(libs:wdCb.Collection<EngineShaderLib>){
-            assert(this.vsSource === null, Log.info.FUNC_SHOULD("vsSource", "be null"));
-            assert(this.fsSource === null, Log.info.FUNC_SHOULD("fsSource", "be null"));
-        })
-        public build(libs:wdCb.Collection<EngineShaderLib>){
-            this._readLibSource(libs);
+    private _readLibSource(libs: Collection<EngineShaderLib>) {
+        var setSourceLibs = libs.filter((lib: EngineShaderLib) => {
+            return lib.vsSource !== null || lib.fsSource !== null;
+        });
 
-            if(this.vsSource === null){
-                this._buildVsSource();
-            }
-            if(this.fsSource === null){
-                this._buildFsSource();
-            }
+        this._judgeAndSetVsSource(setSourceLibs);
+        this._judgeAndSetFsSource(setSourceLibs);
 
-            this.convertAttributesData();
+        this._judgeAndSetPartSource(libs);
+    }
+
+    private _judgeAndSetVsSource(setSourceLibs: Collection<EngineShaderLib>) {
+        var setVsSourceLib = setSourceLibs.findOne((lib: EngineShaderLib) => {
+            return lib.vsSource !== null;
+        });
+
+        if (setVsSourceLib) {
+            this.vsSource = setVsSourceLib.vsSource;
         }
+    }
 
-        public clearShaderDefinition(){
-            this.attributes.removeAllChildren();
-            this.uniforms.removeAllChildren();
-            this.vsSourceDefineList.removeAllChildren();
-            this.fsSourceDefineList.removeAllChildren();
+    private _judgeAndSetFsSource(setSourceLibs: Collection<EngineShaderLib>) {
+        var setFsSourceLib = setSourceLibs.findOne((lib: EngineShaderLib) => {
+            return lib.fsSource !== null;
+        });
 
-            this.vsSourceTop = "";
-            this.vsSourceDefine = "";
-            this.vsSourceVarDeclare = "";
-            this.vsSourceFuncDeclare = "";
-            this.vsSourceFuncDefine = "";
-            this.vsSourceBody = "";
-            this.vsSource = null;
-
-            this.fsSourceTop = "";
-            this.fsSourceDefine = "";
-            this.fsSourceVarDeclare = "";
-            this.fsSourceFuncDeclare = "";
-            this.fsSourceFuncDefine = "";
-            this.fsSourceBody = "";
-            this.fsSource = null;
+        if (setFsSourceLib) {
+            this.fsSource = setFsSourceLib.fsSource;
         }
+    }
 
-        private _readLibSource(libs:wdCb.Collection<EngineShaderLib>){
-            var setSourceLibs = libs.filter((lib:EngineShaderLib) => {
-                return lib.vsSource !== null || lib.fsSource !== null;
-            });
+    private _judgeAndSetPartSource(libs: Collection<EngineShaderLib>) {
+        var vsSource = this.vsSource,
+            fsSource = this.fsSource,
+            attributes = this.attributes,
+            uniforms = this.uniforms,
+            vsSourceDefineList = this.vsSourceDefineList,
+            fsSourceDefineList = this.fsSourceDefineList,
+            vsSourceExtensionList = this.vsSourceExtensionList,
+            fsSourceExtensionList = this.fsSourceExtensionList,
+            vsSourceTop = "",
+            vsSourceDefine = "",
+            vsSourceVarDeclare = "",
+            vsSourceFuncDeclare = "",
+            vsSourceFuncDefine = "",
+            vsSourceBody = "",
+            fsSourceTop = "",
+            fsSourceDefine = "",
+            fsSourceVarDeclare = "",
+            fsSourceFuncDeclare = "",
+            fsSourceFuncDefine = "",
+            fsSourceBody = "";
 
-            this._judgeAndSetVsSource(setSourceLibs);
-            this._judgeAndSetFsSource(setSourceLibs);
+        libs.forEach((lib: EngineShaderLib) => {
+            attributes.addChildren(lib.attributes);
+            uniforms.addChildren(lib.uniforms);
 
-            this._judgeAndSetPartSource(libs);
-        }
+            if (vsSource === null) {
+                vsSourceTop += lib.vsSourceTop;
+                vsSourceDefine += lib.vsSourceDefine;
+                vsSourceVarDeclare += lib.vsSourceVarDeclare;
+                vsSourceFuncDeclare += lib.vsSourceFuncDeclare;
+                vsSourceFuncDefine += lib.vsSourceFuncDefine;
+                vsSourceBody += lib.vsSourceBody;
 
-        private _judgeAndSetVsSource(setSourceLibs:wdCb.Collection<EngineShaderLib>){
-            var setVsSourceLib = setSourceLibs.findOne((lib:EngineShaderLib) => {
-                return lib.vsSource !== null;
-            });
-
-            if(setVsSourceLib){
-                this.vsSource = setVsSourceLib.vsSource;
-            }
-        }
-
-        private _judgeAndSetFsSource(setSourceLibs:wdCb.Collection<EngineShaderLib>){
-            var setFsSourceLib = setSourceLibs.findOne((lib:EngineShaderLib) => {
-                return lib.fsSource !== null;
-            });
-
-            if(setFsSourceLib){
-                this.fsSource = setFsSourceLib.fsSource;
-            }
-        }
-
-        private _judgeAndSetPartSource(libs:wdCb.Collection<EngineShaderLib>){
-            var vsSource = this.vsSource,
-                fsSource = this.fsSource,
-                attributes = this.attributes,
-                uniforms = this.uniforms,
-                vsSourceDefineList = this.vsSourceDefineList,
-                fsSourceDefineList = this.fsSourceDefineList,
-                vsSourceExtensionList = this.vsSourceExtensionList,
-                fsSourceExtensionList = this.fsSourceExtensionList,
-                vsSourceTop = "",
-                vsSourceDefine = "",
-                vsSourceVarDeclare = "",
-                vsSourceFuncDeclare = "",
-                vsSourceFuncDefine = "",
-                vsSourceBody = "",
-                fsSourceTop = "",
-                fsSourceDefine = "",
-                fsSourceVarDeclare = "",
-                fsSourceFuncDeclare = "",
-                fsSourceFuncDefine = "",
-                fsSourceBody = "";
-
-            libs.forEach((lib:EngineShaderLib) => {
-                attributes.addChildren(lib.attributes);
-                uniforms.addChildren(lib.uniforms);
-
-                if(vsSource === null){
-                    vsSourceTop += lib.vsSourceTop;
-                    vsSourceDefine += lib.vsSourceDefine;
-                    vsSourceVarDeclare += lib.vsSourceVarDeclare;
-                    vsSourceFuncDeclare += lib.vsSourceFuncDeclare;
-                    vsSourceFuncDefine += lib.vsSourceFuncDefine;
-                    vsSourceBody += lib.vsSourceBody;
-
-                    vsSourceDefineList.addChildren(lib.vsSourceDefineList);
-                    vsSourceExtensionList.addChildren(lib.vsSourceExtensionList);
-                }
-
-                if(fsSource === null){
-                    fsSourceTop += lib.fsSourceTop;
-                    fsSourceDefine += lib.fsSourceDefine;
-                    fsSourceVarDeclare += lib.fsSourceVarDeclare;
-                    fsSourceFuncDeclare += lib.fsSourceFuncDeclare;
-                    fsSourceFuncDefine += lib.fsSourceFuncDefine;
-                    fsSourceBody += lib.fsSourceBody;
-
-                    fsSourceDefineList.addChildren(lib.fsSourceDefineList);
-                    fsSourceExtensionList.addChildren(lib.fsSourceExtensionList);
-                }
-            });
-
-            if(vsSource === null){
-                this.vsSourceTop = vsSourceTop;
-                this.vsSourceDefine = vsSourceDefine;
-                this.vsSourceVarDeclare = vsSourceVarDeclare;
-                this.vsSourceFuncDeclare = vsSourceFuncDeclare;
-                this.vsSourceFuncDefine = vsSourceFuncDefine;
-                this.vsSourceBody = vsSourceBody;
+                vsSourceDefineList.addChildren(lib.vsSourceDefineList);
+                vsSourceExtensionList.addChildren(lib.vsSourceExtensionList);
             }
 
-            if(fsSource === null){
-                this.fsSourceTop = fsSourceTop;
-                this.fsSourceDefine = fsSourceDefine;
-                this.fsSourceVarDeclare = fsSourceVarDeclare;
-                this.fsSourceFuncDeclare = fsSourceFuncDeclare;
-                this.fsSourceFuncDefine = fsSourceFuncDefine;
-                this.fsSourceBody = fsSourceBody;
+            if (fsSource === null) {
+                fsSourceTop += lib.fsSourceTop;
+                fsSourceDefine += lib.fsSourceDefine;
+                fsSourceVarDeclare += lib.fsSourceVarDeclare;
+                fsSourceFuncDeclare += lib.fsSourceFuncDeclare;
+                fsSourceFuncDefine += lib.fsSourceFuncDefine;
+                fsSourceBody += lib.fsSourceBody;
+
+                fsSourceDefineList.addChildren(lib.fsSourceDefineList);
+                fsSourceExtensionList.addChildren(lib.fsSourceExtensionList);
             }
+        });
+
+        if (vsSource === null) {
+            this.vsSourceTop = vsSourceTop;
+            this.vsSourceDefine = vsSourceDefine;
+            this.vsSourceVarDeclare = vsSourceVarDeclare;
+            this.vsSourceFuncDeclare = vsSourceFuncDeclare;
+            this.vsSourceFuncDefine = vsSourceFuncDefine;
+            this.vsSourceBody = vsSourceBody;
         }
 
-        private _buildVsSource(){
-            this.vsSource = this._buildVsSourceTop() + this._buildVsSourceDefine() + this._buildVsSourceVarDeclare() + this._buildVsSourceFuncDeclare() + this._buildVsSourceFuncDefine() + this._buildVsSourceBody();
+        if (fsSource === null) {
+            this.fsSourceTop = fsSourceTop;
+            this.fsSourceDefine = fsSourceDefine;
+            this.fsSourceVarDeclare = fsSourceVarDeclare;
+            this.fsSourceFuncDeclare = fsSourceFuncDeclare;
+            this.fsSourceFuncDefine = fsSourceFuncDefine;
+            this.fsSourceBody = fsSourceBody;
         }
+    }
 
-        private _buildFsSource(){
-            this.fsSource = this._buildFsSourceTop() + this._buildFsSourceDefine() + this._buildFsSourceVarDeclare() + this._buildFsSourceFuncDeclare() + this._buildFsSourceFuncDefine() + this._buildFsSourceBody();
-        }
+    private _buildVsSource() {
+        this.vsSource = this._buildVsSourceTop() + this._buildVsSourceDefine() + this._buildVsSourceVarDeclare() + this._buildVsSourceFuncDeclare() + this._buildVsSourceFuncDefine() + this._buildVsSourceBody();
+    }
 
-        private _buildVsSourceTop(){
-            return this._buildVsSourceExtension() + this._getPrecisionSource() + this.vsSourceTop;
-        }
+    private _buildFsSource() {
+        this.fsSource = this._buildFsSourceTop() + this._buildFsSourceDefine() + this._buildFsSourceVarDeclare() + this._buildFsSourceFuncDeclare() + this._buildFsSourceFuncDefine() + this._buildFsSourceBody();
+    }
 
-        private _buildVsSourceDefine(){
-            return this._buildSourceDefine(this.vsSourceDefineList) + this.vsSourceDefine;
-        }
+    private _buildVsSourceTop() {
+        return this._buildVsSourceExtension() + this._getPrecisionSource() + this.vsSourceTop;
+    }
 
-        private _buildVsSourceExtension(){
-            return this._buildSourceExtension(this.vsSourceExtensionList);
-        }
+    private _buildVsSourceDefine() {
+        return this._buildSourceDefine(this.vsSourceDefineList) + this.vsSourceDefine;
+    }
 
-        private _buildVsSourceVarDeclare(){
-            return this._generateAttributeSource() + this._generateUniformSource(this.vsSourceVarDeclare, this.vsSourceFuncDefine, this.vsSourceBody) + this.vsSourceVarDeclare;
-        }
+    private _buildVsSourceExtension() {
+        return this._buildSourceExtension(this.vsSourceExtensionList);
+    }
 
-        private _buildVsSourceFuncDeclare(){
-            return this.vsSourceFuncDeclare;
-        }
+    private _buildVsSourceVarDeclare() {
+        return this._generateAttributeSource() + this._generateUniformSource(this.vsSourceVarDeclare, this.vsSourceFuncDefine, this.vsSourceBody) + this.vsSourceVarDeclare;
+    }
 
-        private _buildVsSourceFuncDefine(){
-            return this.vsSourceFuncDefine;
-        }
+    private _buildVsSourceFuncDeclare() {
+        return this.vsSourceFuncDeclare;
+    }
 
-        private _buildVsSourceBody(){
-            return ShaderSnippet.main_begin + this.vsSourceBody + ShaderSnippet.main_end;
-        }
+    private _buildVsSourceFuncDefine() {
+        return this.vsSourceFuncDefine;
+    }
 
-        private _buildFsSourceTop(){
-            return this._buildFsSourceExtension() + this._getPrecisionSource() + this.fsSourceTop;
-        }
+    private _buildVsSourceBody() {
+        return ShaderSnippet.main_begin + this.vsSourceBody + ShaderSnippet.main_end;
+    }
 
-        private _buildFsSourceDefine(){
-            return this._buildSourceDefine(this.fsSourceDefineList) + this.fsSourceDefine;
-        }
+    private _buildFsSourceTop() {
+        return this._buildFsSourceExtension() + this._getPrecisionSource() + this.fsSourceTop;
+    }
 
-        private _buildFsSourceExtension(){
-            return this._buildSourceExtension(this.fsSourceExtensionList);
-        }
+    private _buildFsSourceDefine() {
+        return this._buildSourceDefine(this.fsSourceDefineList) + this.fsSourceDefine;
+    }
 
-        private _buildFsSourceVarDeclare(){
-            return this._generateUniformSource(this.fsSourceVarDeclare, this.fsSourceFuncDefine, this.fsSourceBody) + this.fsSourceVarDeclare;
-        }
+    private _buildFsSourceExtension() {
+        return this._buildSourceExtension(this.fsSourceExtensionList);
+    }
 
-        private _buildFsSourceFuncDeclare(){
-            return this.fsSourceFuncDeclare;
-        }
+    private _buildFsSourceVarDeclare() {
+        return this._generateUniformSource(this.fsSourceVarDeclare, this.fsSourceFuncDefine, this.fsSourceBody) + this.fsSourceVarDeclare;
+    }
 
-        private _buildFsSourceFuncDefine(){
-            return this.fsSourceFuncDefine;
-        }
+    private _buildFsSourceFuncDeclare() {
+        return this.fsSourceFuncDeclare;
+    }
 
-        private _buildFsSourceBody(){
-            return ShaderSnippet.main_begin + this.fsSourceBody + ShaderSnippet.main_end;
-        }
+    private _buildFsSourceFuncDefine() {
+        return this.fsSourceFuncDefine;
+    }
 
-        private _buildSourceDefine(defineList:wdCb.Collection<SourceDefine>){
-            var result = "";
+    private _buildFsSourceBody() {
+        return ShaderSnippet.main_begin + this.fsSourceBody + ShaderSnippet.main_end;
+    }
 
-            defineList.forEach((sourceDefine:SourceDefine) => {
-                if(sourceDefine.value === void 0){
-                    result += `#define ${sourceDefine.name}\n`;
-                }
-                else{
-                    result += `#define ${sourceDefine.name} ${sourceDefine.value}\n`;
-                }
-            });
+    private _buildSourceDefine(defineList: Collection<SourceDefine>) {
+        var result = "";
 
-            return result;
-        }
-
-        private _buildSourceExtension(extensionList:wdCb.Collection<string>){
-            var result = "";
-
-            extensionList.forEach((name:string) => {
-                result += `#extension ${name} : enable\n`;
-            });
-
-            return result;
-        }
-
-        private _getPrecisionSource(){
-            var precision = GPUDetector.getInstance().precision,
-                result = null;
-
-            switch (precision){
-                case EGPUPrecision.HIGHP:
-                    result = ShaderChunk.highp_fragment.top;
-                    break;
-                case EGPUPrecision.MEDIUMP:
-                    result = ShaderChunk.mediump_fragment.top;
-                    break;
-                case EGPUPrecision.LOWP:
-                    result = ShaderChunk.lowp_fragment.top;
-                    break;
-                default:
-                    result = "";
-                    break;
+        defineList.forEach((sourceDefine: SourceDefine) => {
+            if (sourceDefine.value === void 0) {
+                result += `#define ${sourceDefine.name}\n`;
             }
+            else {
+                result += `#define ${sourceDefine.name} ${sourceDefine.value}\n`;
+            }
+        });
 
-            return result;
+        return result;
+    }
+
+    private _buildSourceExtension(extensionList: Collection<string>) {
+        var result = "";
+
+        extensionList.forEach((name: string) => {
+            result += `#extension ${name} : enable\n`;
+        });
+
+        return result;
+    }
+
+    private _getPrecisionSource() {
+        var precision = GPUDetector.getInstance().precision,
+            result = null;
+
+        switch (precision) {
+            case EGPUPrecision.HIGHP:
+                result = ShaderChunk.highp_fragment.top;
+                break;
+            case EGPUPrecision.MEDIUMP:
+                result = ShaderChunk.mediump_fragment.top;
+                break;
+            case EGPUPrecision.LOWP:
+                result = ShaderChunk.lowp_fragment.top;
+                break;
+            default:
+                result = "";
+                break;
         }
 
-        private _generateAttributeSource(){
-            var result = "";
+        return result;
+    }
 
-            this.attributes.filter((data:ShaderData, key:string) => {
-                return !!data;
-            }).forEach((data:ShaderData, key:string) => {
-                result += `attribute ${VariableTypeTable.getVariableType(data.type)} ${key};\n`;
-            });
+    private _generateAttributeSource() {
+        var result = "";
 
-            return result;
-        }
+        this.attributes.filter((data: ShaderData, key: string) => {
+            return !!data;
+        }).forEach((data: ShaderData, key: string) => {
+            result += `attribute ${VariableTypeTable.getVariableType(data.type)} ${key};\n`;
+        });
 
-        private _generateUniformSource(sourceVarDeclare:string, sourceFuncDefine:string, sourceBody:string){
-            var result = "",
-                self = this;
+        return result;
+    }
 
-            this.uniforms.filter((data:ShaderData, key:string) => {
-                return !!data && data.type !== EVariableType.STRUCTURE && data.type !== EVariableType.STRUCTURES && !self._isExistInSource(key, sourceVarDeclare) && (self._isExistInSource(key, sourceFuncDefine) || self._isExistInSource(key, sourceBody));
-            }).forEach((data:ShaderData, key:string) => {
-                result += `uniform ${VariableTypeTable.getVariableType(data.type)} ${key};\n`;
-            });
+    private _generateUniformSource(sourceVarDeclare: string, sourceFuncDefine: string, sourceBody: string) {
+        var result = "",
+            self = this;
 
-            return result;
-        }
+        this.uniforms.filter((data: ShaderData, key: string) => {
+            return !!data && data.type !== EVariableType.STRUCTURE && data.type !== EVariableType.STRUCTURES && !self._isExistInSource(key, sourceVarDeclare) && (self._isExistInSource(key, sourceFuncDefine) || self._isExistInSource(key, sourceBody));
+        }).forEach((data: ShaderData, key: string) => {
+            result += `uniform ${VariableTypeTable.getVariableType(data.type)} ${key};\n`;
+        });
 
-        private _isExistInSource(key:string, source:string){
-            return source.indexOf(key) !== -1;
-        }
+        return result;
+    }
+
+    private _isExistInSource(key: string, source: string) {
+        return source.indexOf(key) !== -1;
     }
 }

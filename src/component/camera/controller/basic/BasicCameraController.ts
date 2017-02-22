@@ -1,9 +1,12 @@
-module wd {
-    export class BasicCameraController extends CameraController {
-        public static create(cameraComponent:Camera) {
-            var obj = new this(cameraComponent);
+import { registerClass } from "../../../../definition/typescript/decorator/registerClass";
+import { CameraController } from "../CameraController";
+import { Camera } from "../../Camera";
 
-            return obj;
-        }
+@registerClass("BasicCameraController")
+export class BasicCameraController extends CameraController {
+    public static create(cameraComponent: Camera) {
+        var obj = new this(cameraComponent);
+
+        return obj;
     }
 }

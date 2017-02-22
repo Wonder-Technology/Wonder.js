@@ -1,24 +1,29 @@
-module wd{
-    export class BasicShaderLib extends EngineShaderLib{
-        public static create() {
-            var obj = new this();
+import { registerClass } from "../../../../definition/typescript/decorator/registerClass";
+import { EngineShaderLib } from "../EngineShaderLib";
+import { Program } from "../../../program/Program";
+import { QuadCommand } from "../../../command/QuadCommand";
+import { BasicMaterial } from "../../../../material/BasicMaterial";
+import { ShaderSnippet } from "../../snippet/ShaderSnippet";
 
-            return obj;
-        }
+@registerClass("BasicShaderLib")
+export class BasicShaderLib extends EngineShaderLib {
+    public static create() {
+        var obj = new this();
 
-        public type:string = "basic";
+        return obj;
+    }
 
-        public sendShaderVariables(program: Program, cmd:QuadCommand, material:BasicMaterial){
-            this.sendUniformData(program, "u_opacity", material.opacity);
-        }
+    public type: string = "basic";
 
-        public setShaderDefinition(cmd:QuadCommand, material:BasicMaterial){
-            super.setShaderDefinition(cmd, material);
+    public sendShaderVariables(program: Program, cmd: QuadCommand, material: BasicMaterial) {
+        this.sendUniformData(program, "u_opacity", material.opacity);
+    }
 
-            this.addUniformVariable(["u_opacity"]);
+    public setShaderDefinition(cmd: QuadCommand, material: BasicMaterial) {
+        super.setShaderDefinition(cmd, material);
 
-            this.vsSourceBody = ShaderSnippet.setPos_mvp;
-        }
+        this.addUniformVariable(["u_opacity"]);
+
+        this.vsSourceBody = ShaderSnippet.setPos_mvp;
     }
 }
-

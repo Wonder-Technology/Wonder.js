@@ -1,161 +1,171 @@
-module wd{
-    /*!
-    start from 0, so its max is 32
-     */
-    // const RENDER_GROUP_MAX = 31,
-    //     RENDER_PRIORITY_MAX = 31,
-    //     /*!
-    //     shader id start from 1, so its max is 1024
-    //      */
-    //     SHADER_ID_MAX = 1024,
-    //     TEXTURE_ID_MAX = 1024,
-    //     BUFFER_ID_MAX = 1024,
-    //
-    //     TOTAL_BIT = 30,
-    //     RENDER_GROUP_MOVE_LEFT_BIT = TOTAL_BIT - 5,
-    //     RENDER_PRIORITY_MOVE_LEFT_BIT = TOTAL_BIT - 5 - 5,
-    //     SHADER_ID_MOVE_LEFT_BIT = TOTAL_BIT - 5 - 5 - 10;
+import { registerClass } from "../../definition/typescript/decorator/registerClass";
+import { Renderer } from "./Renderer";
+import { Collection } from "wonder-commonlib/dist/es2015/Collection";
+import { RenderCommand } from "../command/RenderCommand";
+import { Color } from "../../structure/Color";
+import { ensure, assert, require } from "../../definition/typescript/decorator/contract";
+import { Log } from "../../utils/Log";
+import { DeviceManager, ESide } from "../../device/DeviceManager";
+import { WebGLState } from "../state/WebGLState";
+import { ExtendUtils } from "wonder-commonlib/dist/es2015/utils/ExtendUtils";
 
-    export class WebGLRenderer extends Renderer{
-        public static create():WebGLRenderer {
-            var obj = new this();
+/*!
+start from 0, so its max is 32
+ */
+// const RENDER_GROUP_MAX = 31,
+//     RENDER_PRIORITY_MAX = 31,
+//     /*!
+//     shader id start from 1, so its max is 1024
+//      */
+//     SHADER_ID_MAX = 1024,
+//     TEXTURE_ID_MAX = 1024,
+//     BUFFER_ID_MAX = 1024,
+//
+//     TOTAL_BIT = 30,
+//     RENDER_GROUP_MOVE_LEFT_BIT = TOTAL_BIT - 5,
+//     RENDER_PRIORITY_MOVE_LEFT_BIT = TOTAL_BIT - 5 - 5,
+//     SHADER_ID_MOVE_LEFT_BIT = TOTAL_BIT - 5 - 5 - 10;
 
-            return obj;
-        }
+@registerClass("WebGLRenderer")
+export class WebGLRenderer extends Renderer {
+    public static create(): WebGLRenderer {
+        var obj = new this();
 
-        private _commandQueue:wdCb.Collection<RenderCommand> = wdCb.Collection.create<RenderCommand>();
+        return obj;
+    }
 
-        private _clearOptions:any = {
-            color:Color.create("#000000")
-        };
+    private _commandQueue: Collection<RenderCommand> = Collection.create<RenderCommand>();
 
-        @ensure(function(){
-            assert(!this._commandQueue.hasRepeatItems(), Log.info.FUNC_SHOULD_NOT("has duplicate render command"));
-        })
-        public addCommand(command:RenderCommand){
-            this._commandQueue.addChild(command);
+    private _clearOptions: any = {
+        color: Color.create("#000000")
+    };
 
-            command.init();
-        }
+    @ensure(function() {
+        assert(!this._commandQueue.hasRepeatItems(), Log.info.FUNC_SHOULD_NOT("has duplicate render command"));
+    })
+    public addCommand(command: RenderCommand) {
+        this._commandQueue.addChild(command);
 
-        public hasCommand(){
-            // return this._commandQueue.getCount() > 0 || !!this.skyboxCommand;
-            return this._commandQueue.getCount() > 0;
-        }
+        command.init();
+    }
 
-        public clear(){
-            DeviceManager.getInstance().clear(this._clearOptions);
-        }
+    public hasCommand() {
+        // return this._commandQueue.getCount() > 0 || !!this.skyboxCommand;
+        return this._commandQueue.getCount() > 0;
+    }
 
-        @require(function(){
-            assert(!!this.webglState, Log.info.FUNC_MUST_DEFINE("webglState"));
-        })
-        public render(){
-            var deviceManager:DeviceManager = DeviceManager.getInstance(),
-                webglState:WebGLState = this.webglState;
-                // transparentCommandArr:Array<RenderCommand> = [],
-                // opaqueQuadCommandArr:Array<QuadCommand> = [];
+    public clear() {
+        DeviceManager.getInstance().clear(this._clearOptions);
+    }
 
-            this._commandQueue.forEach((command:RenderCommand) => {
-                command.webglState = webglState;
+    @require(function() {
+        assert(!!this.webglState, Log.info.FUNC_MUST_DEFINE("webglState"));
+    })
+    public render() {
+        var deviceManager: DeviceManager = DeviceManager.getInstance(),
+            webglState: WebGLState = this.webglState;
+        // transparentCommandArr:Array<RenderCommand> = [],
+        // opaqueQuadCommandArr:Array<QuadCommand> = [];
 
-                /*!
-                //todo optimize: if all commands->blendType === EBlendType.ADDITIVE, sort the transparentCommandArr as the opaque command arr(but it's not necessarily because many rendering effects do not fall into this category?)
-                 However, if the blending is additive-only, then this is not needed. In the case of our game Oort Online, the “effects” pass only contains geometries rendered with additive blending, which is correct no matter the order; this means that we can employ more efficient sorting for this group.
-                 */
-                // if(command.blend){
-                //     //todo optimize: sort command here
-                //     transparentCommandArr.push(command);
-                // }
-                // else if(command instanceof QuadCommand){
-                //     this._buildOpaqueCommandSortId(command);
-                //
-                //     opaqueQuadCommandArr.push(command);
-                // }
-                // else{
-                    command.execute();
-                // }
-            }, this);
+        this._commandQueue.forEach((command: RenderCommand) => {
+            command.webglState = webglState;
 
-            // if(opaqueQuadCommandArr.length > 0){
-            //     this._sortOpaqueQuadCommand(opaqueQuadCommandArr);
-            //
-            //     for(let command of opaqueQuadCommandArr){
-            //         command.execute();
-            //     }
+            /*!
+            //todo optimize: if all commands->blendType === EBlendType.ADDITIVE, sort the transparentCommandArr as the opaque command arr(but it's not necessarily because many rendering effects do not fall into this category?)
+             However, if the blending is additive-only, then this is not needed. In the case of our game Oort Online, the “effects” pass only contains geometries rendered with additive blending, which is correct no matter the order; this means that we can employ more efficient sorting for this group.
+             */
+            // if(command.blend){
+            //     //todo optimize: sort command here
+            //     transparentCommandArr.push(command);
             // }
+            // else if(command instanceof QuadCommand){
+            //     this._buildOpaqueCommandSortId(command);
             //
-            // if(transparentCommandArr.length > 0){
-            //     deviceManager.depthWrite = false;
-            //
-            //     this._renderSortedTransparentCommands(<Array<QuadCommand>>transparentCommandArr);
-            //
-            //     deviceManager.depthWrite = true;
+            //     opaqueQuadCommandArr.push(command);
             // }
-
-            // if(this.skyboxCommand){
-            //     deviceManager.depthFunc = EDepthFunction.LEQUAL;
-            //     this.skyboxCommand.webglState = webglState;
-            //     this.skyboxCommand.execute();
-            //     deviceManager.depthFunc = EDepthFunction.LESS;
+            // else{
+            command.execute();
             // }
+        }, this);
 
-            this._clearCommand();
-            this.webglState = null;
-        }
-
-        public init(){
-            var deviceManager = DeviceManager.getInstance();
-
-            deviceManager.depthTest = true;
-            deviceManager.blend = false;
-            deviceManager.setColorWrite(true, true, true, true);
-            deviceManager.side = ESide.FRONT;
-            deviceManager.depthWrite = true;
-        }
-
-        public setClearColor(color:Color){
-            this._setClearOptions({
-                color:color
-            });
-        }
-
-        // @require(function(transparentCommandArr:Array<RenderCommand>){
-        //     assert(!!Director.getInstance().scene.currentCamera, Log.info.FUNC_NOT_EXIST("current camera"));
+        // if(opaqueQuadCommandArr.length > 0){
+        //     this._sortOpaqueQuadCommand(opaqueQuadCommandArr);
         //
-        //     for (let command of transparentCommandArr){
-        //         assert(command instanceof QuadCommand, Log.info.FUNC_MUST_BE("transparent command", "QuadCommand"));
-        //     }
-        // })
-        // private _renderSortedTransparentCommands(transparentCommandArr:Array<QuadCommand>) {
-        //     var self = this;
-        //
-        //     for (let command of SortUtils.insertSort(transparentCommandArr, (a:QuadCommand, b:QuadCommand) => {
-        //         return self._getObjectZDistanceInCameraCoordinate(a) < self._getObjectZDistanceInCameraCoordinate(b);
-        //         })){
+        //     for(let command of opaqueQuadCommandArr){
         //         command.execute();
         //     }
         // }
         //
-        // private _getObjectZDistanceInCameraCoordinate(cmd:QuadCommand){
-        //     return cmd.mMatrix.applyMatrix(cmd.vMatrix, true).getTranslation().z;
+        // if(transparentCommandArr.length > 0){
+        //     deviceManager.depthWrite = false;
+        //
+        //     this._renderSortedTransparentCommands(<Array<QuadCommand>>transparentCommandArr);
+        //
+        //     deviceManager.depthWrite = true;
         // }
 
-        private _clearCommand(){
-            this._commandQueue.forEach((command:RenderCommand) => {
-                command.dispose();
-            });
+        // if(this.skyboxCommand){
+        //     deviceManager.depthFunc = EDepthFunction.LEQUAL;
+        //     this.skyboxCommand.webglState = webglState;
+        //     this.skyboxCommand.execute();
+        //     deviceManager.depthFunc = EDepthFunction.LESS;
+        // }
 
-            this._commandQueue.removeAllChildren();
+        this._clearCommand();
+        this.webglState = null;
+    }
 
-            // if(this.skyboxCommand){
-            //     this.skyboxCommand.dispose();
-            //     this.skyboxCommand = null;
-            // }
-        }
+    public init() {
+        var deviceManager = DeviceManager.getInstance();
 
-        private _setClearOptions(clearOptions:any){
-            wdCb.ExtendUtils.extend(this._clearOptions, clearOptions);
-        }
+        deviceManager.depthTest = true;
+        deviceManager.blend = false;
+        deviceManager.setColorWrite(true, true, true, true);
+        deviceManager.side = ESide.FRONT;
+        deviceManager.depthWrite = true;
+    }
+
+    public setClearColor(color: Color) {
+        this._setClearOptions({
+            color: color
+        });
+    }
+
+    // @require(function(transparentCommandArr:Array<RenderCommand>){
+    //     assert(!!Director.getInstance().scene.currentCamera, Log.info.FUNC_NOT_EXIST("current camera"));
+    //
+    //     for (let command of transparentCommandArr){
+    //         assert(command instanceof QuadCommand, Log.info.FUNC_MUST_BE("transparent command", "QuadCommand"));
+    //     }
+    // })
+    // private _renderSortedTransparentCommands(transparentCommandArr:Array<QuadCommand>) {
+    //     var self = this;
+    //
+    //     for (let command of SortUtils.insertSort(transparentCommandArr, (a:QuadCommand, b:QuadCommand) => {
+    //         return self._getObjectZDistanceInCameraCoordinate(a) < self._getObjectZDistanceInCameraCoordinate(b);
+    //         })){
+    //         command.execute();
+    //     }
+    // }
+    //
+    // private _getObjectZDistanceInCameraCoordinate(cmd:QuadCommand){
+    //     return cmd.mMatrix.applyMatrix(cmd.vMatrix, true).getTranslation().z;
+    // }
+
+    private _clearCommand() {
+        this._commandQueue.forEach((command: RenderCommand) => {
+            command.dispose();
+        });
+
+        this._commandQueue.removeAllChildren();
+
+        // if(this.skyboxCommand){
+        //     this.skyboxCommand.dispose();
+        //     this.skyboxCommand = null;
+        // }
+    }
+
+    private _setClearOptions(clearOptions: any) {
+        ExtendUtils.extend(this._clearOptions, clearOptions);
     }
 }

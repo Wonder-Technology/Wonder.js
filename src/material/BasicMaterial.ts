@@ -1,17 +1,18 @@
-module wd{
-    export class BasicMaterial extends StandardBasicMaterial{
-        public static create() {
-            var obj = new this();
+import { registerClass } from "../definition/typescript/decorator/registerClass";
+import { StandardBasicMaterial } from "./StandardBasicMaterial";
 
-            obj.initWhenCreate();
+@registerClass("BasicMaterial")
+export class BasicMaterial extends StandardBasicMaterial {
+    public static create() {
+        var obj = new this();
 
-            return obj;
-        }
+        obj.initWhenCreate();
 
-        // public getTextureForRenderSort():Texture{
-        //     // return this.mapList.getChild(0);
-        //     return null;
-        // }
+        return obj;
     }
-}
 
+    // public getTextureForRenderSort():Texture{
+    //     // return this.mapList.getChild(0);
+    //     return null;
+    // }
+}

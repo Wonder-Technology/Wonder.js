@@ -1,26 +1,31 @@
-module wd{
-    export class CommonShader extends EngineShader{
-        public static create(){
-        	var obj = new this();
+import { registerClass } from "../../../definition/typescript/decorator/registerClass";
+import { EngineShader } from "./EngineShader";
+import { QuadCommand } from "../../command/QuadCommand";
+import { Material } from "../../../material/Material";
+import { EngineShaderLib } from "../lib/EngineShaderLib";
 
-        	return obj;
-        }
+@registerClass("CommonShader")
+export class CommonShader extends EngineShader {
+    public static create() {
+        var obj = new this();
 
-        public update(cmd:QuadCommand, material:Material){
-            var program = null;
+        return obj;
+    }
 
-            this.judgeRefreshShader(cmd, material);
+    public update(cmd: QuadCommand, material: Material) {
+        var program = null;
 
-            program = this.program;
+        this.judgeRefreshShader(cmd, material);
 
-            program.use();
+        program = this.program;
 
-            this.libs.forEach((lib:EngineShaderLib) => {
-                lib.sendShaderVariables(program, cmd, material);
-            });
+        program.use();
 
-            // this.mapManager.bindAndUpdate();
-            // this.mapManager.sendData(program);
-        }
+        this.libs.forEach((lib: EngineShaderLib) => {
+            lib.sendShaderVariables(program, cmd, material);
+        });
+
+        // this.mapManager.bindAndUpdate();
+        // this.mapManager.sendData(program);
     }
 }

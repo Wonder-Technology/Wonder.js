@@ -1,41 +1,43 @@
-module wd{
-    export class ArrayUtils extends wdCb.ArrayUtils{
-        public static hasRepeatItems(arr:Array<any>){
-            var noRepeatArr = [],
-                hasRepeat:boolean = false;
+import { registerClass } from "../definition/typescript/decorator/registerClass";
+import { ArrayUtils as ArrayUtils$ } from "wonder-commonlib/dist/es2015/utils/ArrayUtils";
 
-            for(let item of arr){
-                if(!item){
-                    continue;
-                }
+@registerClass("ArrayUtils")
+export class ArrayUtils extends ArrayUtils$ {
+    public static hasRepeatItems(arr: Array<any>) {
+        var noRepeatArr = [],
+            hasRepeat: boolean = false;
 
-                if (this.contain(noRepeatArr, item)) {
-                    hasRepeat = true;
-
-                    break;
-                }
-
-                noRepeatArr.push(item);
+        for (let item of arr) {
+            if (!item) {
+                continue;
             }
 
-            return hasRepeat;
-        }
+            if (this.contain(noRepeatArr, item)) {
+                hasRepeat = true;
 
-        public static contain(arr:Array<any>, item:any):boolean {
-            var c:any = null;
-
-            for (let i = 0, len = arr.length; i < len; i++) {
-                c = arr[i];
-
-                if (item.uid && c.uid && item.uid == c.uid) {
-                    return true;
-                }
-                else if(item === c){
-                    return true;
-                }
+                break;
             }
 
-            return false;
+            noRepeatArr.push(item);
         }
+
+        return hasRepeat;
+    }
+
+    public static contain(arr: Array<any>, item: any): boolean {
+        var c: any = null;
+
+        for (let i = 0, len = arr.length; i < len; i++) {
+            c = arr[i];
+
+            if (item.uid && c.uid && item.uid == c.uid) {
+                return true;
+            }
+            else if (item === c) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

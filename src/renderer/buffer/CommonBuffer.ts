@@ -1,24 +1,25 @@
-module wd{
-    export abstract class CommonBuffer extends Buffer{
-        public type:EBufferType = null;
-        public count:number = null;
-        public usage:EBufferUsage = null;
+import { Buffer } from "./Buffer";
+import { EBufferType } from "./EBufferType";
+import { EBufferUsage } from "./EBufferUsage";
+import { DeviceManager } from "../../device/DeviceManager";
 
-        protected resetBufferData(glBufferTargetStr:string, typedData:any, offset:number = 0){
-            var gl = DeviceManager.getInstance().gl;
+export abstract class CommonBuffer extends Buffer {
+    public type: EBufferType = null;
+    public count: number = null;
+    public usage: EBufferUsage = null;
 
-            if(this.usage === EBufferUsage.STATIC_DRAW && offset === 0){
-                /*!
-                 change to DYNAMIC_DRAW
-                 */
-                gl.bufferData(gl[glBufferTargetStr], typedData, gl.DYNAMIC_DRAW);
+    protected resetBufferData(glBufferTargetStr: string, typedData: any, offset: number = 0) {
+        var gl = DeviceManager.getInstance().gl;
 
-                return;
-            }
+        if (this.usage === EBufferUsage.STATIC_DRAW && offset === 0) {
+            /*!
+             change to DYNAMIC_DRAW
+             */
+            gl.bufferData(gl[glBufferTargetStr], typedData, gl.DYNAMIC_DRAW);
 
-            gl.bufferSubData(gl[glBufferTargetStr], offset, typedData);
+            return;
         }
+
+        gl.bufferSubData(gl[glBufferTargetStr], offset, typedData);
     }
 }
-
-

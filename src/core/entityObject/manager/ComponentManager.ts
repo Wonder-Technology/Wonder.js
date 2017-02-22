@@ -1,191 +1,203 @@
-module wd{
-    export class ComponentManager{
-        public static create(entityObject:EntityObject) {
-        	var obj = new this(entityObject);
+import { registerClass } from "../../../definition/typescript/decorator/registerClass";
+import { EntityObject } from "../EntityObject";
+import { Transform } from "../../../component/transform/Transform";
+import { Collection } from "wonder-commonlib/dist/es2015/Collection";
+import { RendererComponent } from "../../../component/renderer/RendererComponent";
+import { Geometry } from "../../../component/geometry/Geometry";
+import { SortUtils } from "../../../utils/SortUtils";
+import { Component } from "../../Component";
+import { ComponentInitOrderTable } from "../../../component/data/ComponentInitOrderTable";
+import { JudgeUtils } from "../../../utils/JudgeUtils";
+import { require, it } from "../../../definition/typescript/decorator/contract";
+import { expect } from "chai";
 
-        	return obj;
+@registerClass("ComponentManager")
+export class ComponentManager {
+    public static create(entityObject: EntityObject) {
+        var obj = new this(entityObject);
+
+        return obj;
+    }
+
+    constructor(entityObject: EntityObject) {
+        this._entityObject = entityObject;
+    }
+
+    public transform: Transform = null;
+
+    private _entityObject: EntityObject = null;
+    private _components: Collection<any> = Collection.create<any>();
+    private _rendererComponent: RendererComponent = null;
+    private _geometry: Geometry = null;
+
+    public init() {
+        for (let component of SortUtils.insertSort(this._components.getChildren(), (a: Component, b: Component) => {
+            return ComponentInitOrderTable.getOrder(a) < ComponentInitOrderTable.getOrder(b);
+        })) {
+            component.init();
         }
+    }
 
-        constructor(entityObject:EntityObject){
-            this._entityObject = entityObject;
+    public dispose() {
+        var components = this.removeAllComponent();
+
+        components.forEach((component: Component) => {
+            component.dispose();
+        });
+
+        this._components.removeAllChildren();
+    }
+
+    public removeAllComponent() {
+        var result = Collection.create<Component>();
+
+        this._components.forEach((component: Component) => {
+            this._removeComponentHandler(component);
+
+            result.addChild(component)
+        }, this);
+
+        //this._componentDirty = true;
+
+        return result;
+    }
+
+    public getComponent<T>(_class: any): T {
+        return this._components.findOne((component: Component) => {
+            return component instanceof _class;
+        });
+    }
+
+    public getComponents() {
+        return this._components;
+    }
+
+    public findComponentByUid(uid: number) {
+        return this._components.findOne((component: Component) => {
+            return component.uid === uid;
+        });
+    }
+
+    public forEachComponent(func: (component: Component) => void) {
+        this._components.forEach(func);
+
+        return this;
+    }
+
+    public hasComponent(component: Component): boolean;
+    public hasComponent(_class: Function): boolean;
+
+    public hasComponent(...args) {
+        var result: boolean = null;
+
+        if (JudgeUtils.isComponenet(args[0])) {
+            let component = args[0];
+
+            result = this._components.hasChild(component);
         }
+        else {
+            let _class = args[0];
 
-        public transform:Transform = null;
-
-        private _entityObject:EntityObject = null;
-        private _components:wdCb.Collection<any> = wdCb.Collection.create<any>();
-        private _rendererComponent:RendererComponent = null;
-        private _geometry:Geometry = null;
-
-        public init(){
-            for(let component of SortUtils.insertSort(this._components.getChildren(), (a:Component, b:Component) => {
-                return ComponentInitOrderTable.getOrder(a) < ComponentInitOrderTable.getOrder(b);
-            })) {
-                component.init();
-            }
-        }
-
-        public dispose(){
-            var components = this.removeAllComponent();
-
-            components.forEach((component:Component) => {
-                component.dispose();
-            });
-
-            this._components.removeAllChildren();
-        }
-
-        public removeAllComponent(){
-            var result = wdCb.Collection.create<Component>();
-
-            this._components.forEach((component:Component) => {
-                this._removeComponentHandler(component);
-
-                result.addChild(component)
-            }, this);
-
-            //this._componentDirty = true;
-
-            return result;
-        }
-
-        public getComponent<T>(_class:any):T{
-            return this._components.findOne((component:Component) => {
+            result = this._components.hasChildWithFunc((component) => {
                 return component instanceof _class;
             });
         }
 
-        public getComponents(){
-            return this._components;
+        return result;
+    }
+
+    @require(function(component: Component, isShareComponent: boolean = false) {
+        if (!component) {
+            return;
         }
 
-        public findComponentByUid(uid:number){
-            return this._components.findOne((component:Component) => {
-                return component.uid === uid;
-            });
+        it("should not add the component which is already added", () => {
+            expect(this.hasComponent(component)).false;
+        });
+    })
+    public addComponent(component: Component, isShareComponent: boolean = false) {
+        if (!component) {
+            return;
         }
 
-        public forEachComponent(func:(component:Component) => void){
-            this._components.forEach(func);
+        if (component instanceof RendererComponent) {
+            this._rendererComponent = component;
+        }
+        else if (component instanceof Geometry) {
+            this._geometry = component;
+        }
+        else if (component instanceof Transform) {
+            if (this.transform) {
+                this.removeComponent(this.transform);
+            }
 
-            return this;
+            this.transform = component;
         }
 
-        public hasComponent(component:Component):boolean;
-        public hasComponent(_class:Function):boolean;
+        component.addToObject(this._entityObject, isShareComponent);
 
-        public hasComponent(...args){
-            var result:boolean = null;
+        this._components.addChild(component);
 
-            if(JudgeUtils.isComponenet(args[0])){
-                let component = args[0];
+        return this;
+    }
 
-                result = this._components.hasChild(component);
-            }
-            else{
-                let _class = args[0];
+    public removeComponent(component: Component);
+    public removeComponent(_class: Function);
 
-                result = this._components.hasChildWithFunc((component) => {
-                    return component instanceof _class;
-                });
-            }
+    public removeComponent(...args) {
+        var component: Component = null;
 
-            return result;
+        if (args[0] instanceof Component) {
+            component = <Component>args[0];
+        }
+        else {
+            component = this.getComponent<any>(<Function>args[0]);
         }
 
-        @require(function(component:Component, isShareComponent:boolean = false){
-            if(!component){
-                return;
-            }
+        if (component) {
+            this._components.removeChild(component);
 
-            it("should not add the component which is already added", () => {
-                expect(this.hasComponent(component)).false;
-            });
-        })
-        public addComponent(component:Component, isShareComponent:boolean = false){
-            if(!component){
-                return;
-            }
-
-            if(component instanceof RendererComponent){
-                this._rendererComponent = component;
-            }
-            else if(component instanceof Geometry){
-                this._geometry = component;
-            }
-            else if(component instanceof Transform){
-                if(this.transform){
-                    this.removeComponent(this.transform);
-                }
-
-                this.transform = component;
-            }
-
-            component.addToObject(this._entityObject, isShareComponent);
-
-            this._components.addChild(component);
-
-            return this;
+            this._removeComponentHandler(component);
         }
 
-        public removeComponent(component:Component);
-        public removeComponent(_class:Function);
+        //this._componentDirty = true;
 
-        public removeComponent(...args){
-            var component:Component = null;
+        return this;
+    }
 
-            if(args[0] instanceof Component){
-                component = <Component>args[0];
-            }
-            else{
-                component = this.getComponent<any>(<Function>args[0]);
-            }
+    // public addAllComponentToComponentContainer(){
+    //     this._components.forEach((component:Component) => component.addToComponentContainer());
+    // }
+    //
+    // public removeAllComponentFromComponentContainer(){
+    //     this._components.forEach((component:Component) => component.removeFromComponentContainer());
+    // }
 
-            if(component){
-                this._components.removeChild(component);
+    public getComponentCount(_class: Function) {
+        return this._components.filter((component: Component) => {
+            return component instanceof _class;
+        }).getCount();
+    }
 
-                this._removeComponentHandler(component);
-            }
+    @require(function() {
+        it("entityObject shouldn't contain more than 1 geometry component", () => {
+            expect(this.getComponentCount(Geometry)).lessThan(2);
+        });
+    })
+    public getGeometry(): Geometry {
+        return this._geometry;
+    }
 
-            //this._componentDirty = true;
+    @require(function() {
+        it("entityObject shouldn't contain more than 1 rendererComponent", () => {
+            expect(this.getComponentCount(RendererComponent)).lessThan(2);
+        });
+    })
+    public getRendererComponent(): RendererComponent {
+        return this._rendererComponent;
+    }
 
-            return this;
-        }
-
-        // public addAllComponentToComponentContainer(){
-        //     this._components.forEach((component:Component) => component.addToComponentContainer());
-        // }
-        //
-        // public removeAllComponentFromComponentContainer(){
-        //     this._components.forEach((component:Component) => component.removeFromComponentContainer());
-        // }
-
-        public getComponentCount(_class:Function){
-            return this._components.filter((component:Component) => {
-                return component instanceof _class;
-            }).getCount();
-        }
-
-        @require(function(){
-            it("entityObject shouldn't contain more than 1 geometry component", () => {
-                expect(this.getComponentCount(Geometry)).lessThan(2);
-            });
-        })
-        public getGeometry():Geometry{
-            return this._geometry;
-        }
-
-        @require(function(){
-            it("entityObject shouldn't contain more than 1 rendererComponent", () => {
-                expect(this.getComponentCount(RendererComponent)).lessThan(2);
-            });
-        })
-        public getRendererComponent():RendererComponent{
-            return this._rendererComponent;
-        }
-
-        private _removeComponentHandler(component:Component){
-            component.removeFromObject(this._entityObject);
-        }
+    private _removeComponentHandler(component: Component) {
+        component.removeFromObject(this._entityObject);
     }
 }

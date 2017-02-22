@@ -1,53 +1,57 @@
-module wd{
-    export abstract class Component extends Entity{
-        get transform():Transform {
-            if(!this.entityObject) {
-                return null;
-            }
+import { Entity } from "./Entity";
+import { Transform } from "../component/transform/Transform";
+import { EntityObject } from "./entityObject/EntityObject";
+import { virtual } from "../definition/typescript/decorator/virtual";
+import { CloneUtils } from "../definition/typescript/decorator/clone";
 
-            return this.entityObject.transform;
+export abstract class Component extends Entity {
+    get transform(): Transform {
+        if (!this.entityObject) {
+            return null;
         }
 
-        public entityObject:EntityObject = null;
+        return this.entityObject.transform;
+    }
 
-        @virtual
-        public init(){
+    public entityObject: EntityObject = null;
+
+    @virtual
+    public init() {
+    }
+
+    @virtual
+    public dispose() {
+    }
+
+    @virtual
+    public clone(): any {
+        return CloneUtils.clone(this);
+    }
+
+    @virtual
+    public addToObject(entityObject: EntityObject, isShareComponent: boolean = false) {
+        if (isShareComponent) {
+            return;
         }
 
-        @virtual
-        public dispose(){
+        if (this.entityObject) {
+            this.entityObject.removeComponent(this);
         }
+        this.entityObject = entityObject;
 
-        @virtual
-        public clone():any{
-            return CloneUtils.clone(this);
-        }
+        this.addToComponentContainer();
+    }
 
-        @virtual
-        public addToObject(entityObject:EntityObject, isShareComponent:boolean = false){
-            if(isShareComponent){
-                return;
-            }
+    @virtual
+    public addToComponentContainer() {
+    }
 
-            if(this.entityObject) {
-                this.entityObject.removeComponent(this);
-            }
-            this.entityObject = entityObject;
+    @virtual
+    public removeFromObject(entityObject: EntityObject) {
+        this.removeFromComponentContainer();
+    }
 
-            this.addToComponentContainer();
-        }
-
-        @virtual
-        public addToComponentContainer(){
-        }
-
-        @virtual
-        public removeFromObject(entityObject:EntityObject){
-            this.removeFromComponentContainer();
-        }
-
-        @virtual
-        public removeFromComponentContainer(){
-        }
+    @virtual
+    public removeFromComponentContainer() {
     }
 }

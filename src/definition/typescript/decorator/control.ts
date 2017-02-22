@@ -1,22 +1,19 @@
-module wd {
-    export function execOnlyOnce(flagName:string) {
-        return function (target, name, descriptor) {
-            var value = descriptor.value;
+export function execOnlyOnce(flagName: string) {
+    return function(target, name, descriptor) {
+        var value = descriptor.value;
 
-            descriptor.value = function (...args) {
-                var result = null;
+        descriptor.value = function(...args) {
+            var result = null;
 
-                if (this[flagName]) {
-                    return;
-                }
+            if (this[flagName]) {
+                return;
+            }
 
-                this[flagName] = true;
+            this[flagName] = true;
 
-                return value.apply(this, args);
-            };
+            return value.apply(this, args);
+        };
 
-            return descriptor;
-        }
+        return descriptor;
     }
 }
-

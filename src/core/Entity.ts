@@ -1,38 +1,38 @@
-module wd {
-    export abstract class Entity {
-        private static _count:number = 1;
+import { Collection } from "wonder-commonlib/dist/es2015/Collection";
 
-        constructor() {
-            this.uid = Entity._count;
-            Entity._count += 1;
-        }
+export abstract class Entity {
+    private static _count: number = 1;
 
-        public uid:number = null;
-        public data:any = null;
+    constructor() {
+        this.uid = Entity._count;
+        Entity._count += 1;
+    }
 
-        private _tagList:wdCb.Collection<string> = wdCb.Collection.create<string>();
+    public uid: number = null;
+    public data: any = null;
+
+    private _tagList: Collection<string> = Collection.create<string>();
 
 
-        public addTag(tag:string) {
-            this._tagList.addChild(tag);
-        }
+    public addTag(tag: string) {
+        this._tagList.addChild(tag);
+    }
 
-        public removeTag(tag:string) {
-            this._tagList.removeChild(tag);
-        }
+    public removeTag(tag: string) {
+        this._tagList.removeChild(tag);
+    }
 
-        public getTagList() {
-            return this._tagList;
-        }
+    public getTagList() {
+        return this._tagList;
+    }
 
-        public hasTag(tag:string) {
-            return this._tagList.hasChild(tag);
-        }
+    public hasTag(tag: string) {
+        return this._tagList.hasChild(tag);
+    }
 
-        public containTag(tag:string) {
-            return this._tagList.hasChildWithFunc((t:string) => {
-                return t.indexOf(tag) > -1;
-            })
-        }
+    public containTag(tag: string) {
+        return this._tagList.hasChildWithFunc((t: string) => {
+            return t.indexOf(tag) > -1;
+        })
     }
 }

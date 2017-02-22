@@ -1,5 +1,3 @@
-module wd{
-    export enum EScreenSize{
-        FULL
-    }
+export enum EScreenSize {
+    FULL
 }

@@ -1,25 +1,31 @@
-module wd{
-    export abstract class EngineShader extends Shader{
-        protected sourceBuilder:EngineShaderSourceBuilder;
-        protected libs:wdCb.Collection<EngineShaderLib>;
+import { Shader } from "./Shader";
+import { EngineShaderSourceBuilder } from "../sourceBuilder/EngineShaderSourceBuilder";
+import { Collection } from "wonder-commonlib/dist/es2015/Collection";
+import { EngineShaderLib } from "../lib/EngineShaderLib";
+import { RenderCommand } from "../../command/RenderCommand";
+import { Material } from "../../../material/Material";
+import { ShaderSourceBuilder } from "../sourceBuilder/ShaderSourceBuilder";
 
-        protected buildDefinitionData(cmd:RenderCommand, material:Material){
-            this.libs.forEach((lib:EngineShaderLib) => {
-                lib.setShaderDefinition(cmd, material);
-            });
+export abstract class EngineShader extends Shader {
+    protected sourceBuilder: EngineShaderSourceBuilder;
+    protected libs: Collection<EngineShaderLib>;
 
-            this.sourceBuilder.clearShaderDefinition();
+    protected buildDefinitionData(cmd: RenderCommand, material: Material) {
+        this.libs.forEach((lib: EngineShaderLib) => {
+            lib.setShaderDefinition(cmd, material);
+        });
 
-            this.sourceBuilder.build(this.libs);
+        this.sourceBuilder.clearShaderDefinition();
 
-            this.attributes = this.sourceBuilder.attributes;
-            this.uniforms = this.sourceBuilder.uniforms;
-            this.vsSource = this.sourceBuilder.vsSource;
-            this.fsSource = this.sourceBuilder.fsSource;
-        }
+        this.sourceBuilder.build(this.libs);
 
-        protected createShaderSourceBuilder():ShaderSourceBuilder{
-            return EngineShaderSourceBuilder.create();
-        }
+        this.attributes = this.sourceBuilder.attributes;
+        this.uniforms = this.sourceBuilder.uniforms;
+        this.vsSource = this.sourceBuilder.vsSource;
+        this.fsSource = this.sourceBuilder.fsSource;
+    }
+
+    protected createShaderSourceBuilder(): ShaderSourceBuilder {
+        return EngineShaderSourceBuilder.create();
     }
 }

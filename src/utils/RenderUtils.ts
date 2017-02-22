@@ -1,23 +1,25 @@
-module wd{
-    export class RenderUtils{
-        public static getGameObjectRenderList(sourceList:wdCb.Collection<GameObject>){
-            var renderList = [];
-                // GameObjectLOD:any = ClassUtils.getClass("GameObjectLOD");
+import { registerClass } from "../definition/typescript/decorator/registerClass";
+import { Collection } from "wonder-commonlib/dist/es2015/Collection";
+import { GameObject } from "../core/entityObject/gameObject/GameObject";
 
-            sourceList.forEach((child:GameObject) => {
-                var activeGameObject:GameObject = null;
+@registerClass("RenderUtils")
+export class RenderUtils {
+    public static getGameObjectRenderList(sourceList: Collection<GameObject>) {
+        var renderList = [];
+        // GameObjectLOD:any = ClassUtils.getClass("GameObjectLOD");
 
-                activeGameObject = child;
+        sourceList.forEach((child: GameObject) => {
+            var activeGameObject: GameObject = null;
 
-                // if(activeGameObject.isVisible && !InstanceUtils.isObjectInstance(activeGameObject)){
-                    if(activeGameObject.isVisible){
-                    renderList.push(activeGameObject);
-                }
-            });
+            activeGameObject = child;
 
-            //todo optimize:use temp Collection
-            return wdCb.Collection.create<GameObject>(renderList);
-        }
+            // if(activeGameObject.isVisible && !InstanceUtils.isObjectInstance(activeGameObject)){
+            if (activeGameObject.isVisible) {
+                renderList.push(activeGameObject);
+            }
+        });
+
+        //todo optimize:use temp Collection
+        return Collection.create<GameObject>(renderList);
     }
 }
-

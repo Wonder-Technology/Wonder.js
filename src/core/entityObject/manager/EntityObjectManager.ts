@@ -1,156 +1,160 @@
-module wd{
-    export class EntityObjectManager{
-        public static create(entityObject:EntityObject) {
-            var obj = new this(entityObject);
+import { registerClass } from "../../../definition/typescript/decorator/registerClass";
+import { EntityObject } from "../EntityObject";
+import { Collection } from "wonder-commonlib/dist/es2015/Collection";
+import { JudgeUtils } from "../../../utils/JudgeUtils";
 
-            return obj;
+@registerClass("EntityObjectManager")
+export class EntityObjectManager {
+    public static create(entityObject: EntityObject) {
+        var obj = new this(entityObject);
+
+        return obj;
+    }
+
+    constructor(entityObject: EntityObject) {
+        this._entityObject = entityObject;
+    }
+
+    private _entityObject: EntityObject = null;
+    private _children: Collection<any> = Collection.create<any>();
+
+    public init() {
+        this.forEach((child: EntityObject) => {
+            child.init();
+        });
+    }
+
+    public dispose() {
+        this.forEach((child: EntityObject) => {
+            child.dispose();
+        });
+    }
+
+    public hasChild(child: EntityObject): boolean {
+        return this._children.hasChild(child);
+    }
+
+    public addChild(child: EntityObject) {
+        if (child.parent) {
+            child.parent.removeChild(child);
         }
 
-        constructor(entityObject:EntityObject){
-            this._entityObject = entityObject;
-        }
+        child.parent = this._entityObject;
 
-        private _entityObject:EntityObject = null;
-        private _children:wdCb.Collection<any> = wdCb.Collection.create<any>();
+        child.transform.parent = this._entityObject.transform;
 
-        public init(){
-            this.forEach((child:EntityObject) => {
-                child.init();
-            });
-        }
+        this._children.addChild(child);
 
-        public dispose(){
-            this.forEach((child:EntityObject) => {
-                child.dispose();
-            });
-        }
+        /*!
+         no need to sort!
+         because WebGLRenderer enable depth test, it will sort when needed(just as WebGLRenderer->renderSortedTransparentCommands sort the commands)
+         */
 
-        public hasChild(child:EntityObject):boolean {
-            return this._children.hasChild(child);
-        }
+        // child.onEnter();
 
-        public addChild(child:EntityObject){
-            if (child.parent) {
-                child.parent.removeChild(child);
+        return this;
+    }
+
+    public addChildren(children: EntityObject);
+    public addChildren(children: Array<EntityObject>);
+    public addChildren(children: Collection<EntityObject>);
+
+    public addChildren(...args) {
+        if (JudgeUtils.isArray(args[0])) {
+            let children: Array<EntityObject> = args[0];
+
+            for (let child of children) {
+                this.addChild(child);
             }
+        }
+        else if (JudgeUtils.isCollection(args[0])) {
+            let children: Collection<EntityObject> = args[0];
 
-            child.parent = this._entityObject;
-
-            child.transform.parent = this._entityObject.transform;
-
-            this._children.addChild(child);
-
-            /*!
-             no need to sort!
-             because WebGLRenderer enable depth test, it will sort when needed(just as WebGLRenderer->renderSortedTransparentCommands sort the commands)
-             */
-
-            child.onEnter();
-
-            return this;
+            children.forEach((child: EntityObject) => {
+                this.addChild(child);
+            });
+        }
+        else {
+            this.addChild(args[0]);
         }
 
-        public addChildren(children:EntityObject);
-        public addChildren(children:Array<EntityObject>);
-        public addChildren(children:wdCb.Collection<EntityObject>);
+        return this;
+    }
 
-        public addChildren(...args) {
-            if(JudgeUtils.isArray(args[0])){
-                let children:Array<EntityObject> = args[0];
+    public forEach(func: (entityObject: EntityObject, index: number) => void) {
+        this._children.forEach(func);
 
-                for (let child of children){
-                    this.addChild(child);
-                }
-            }
-            else if(JudgeUtils.isCollection(args[0])){
-                let children:wdCb.Collection<EntityObject> = args[0];
+        return this;
+    }
 
-                children.forEach((child:EntityObject) => {
-                    this.addChild(child);
-                });
-            }
-            else{
-                this.addChild(args[0]);
-            }
+    public filter(func: (entityObject: EntityObject) => boolean) {
+        return this._children.filter(func);
+    }
 
-            return this;
-        }
+    public sort(func: (a: EntityObject, b: EntityObject) => any, isSortSelf = false) {
+        return this._children.sort(func, isSortSelf);
+    }
 
-        public forEach(func:(entityObject:EntityObject, index:number) => void){
-            this._children.forEach(func);
+    public getChildren() {
+        return this._children;
+    }
 
-            return this;
-        }
+    public getAllChildren() {
+        var result = Collection.create<EntityObject>();
+        var getChildren = (entityObject: EntityObject) => {
+            result.addChildren(entityObject.getChildren());
 
-        public filter(func:(entityObject:EntityObject) => boolean){
-            return this._children.filter(func);
-        }
-
-        public sort(func:(a:EntityObject, b:EntityObject) => any, isSortSelf = false){
-            return this._children.sort(func, isSortSelf);
-        }
-
-        public getChildren(){
-            return this._children;
-        }
-
-        public getAllChildren(){
-            var result = wdCb.Collection.create<EntityObject>();
-            var getChildren = (entityObject:EntityObject) => {
-                result.addChildren(entityObject.getChildren());
-
-                entityObject.forEach((child:EntityObject) => {
-                    getChildren(child);
-                });
-            }
-
-            getChildren(this._entityObject);
-
-            return result;
-        }
-
-        public getChild(index:number){
-            return this._children.getChild(index);
-        }
-
-        public findChildByUid(uid:number){
-            return this._children.findOne((child:EntityObject) => {
-                return child.uid === uid;
+            entityObject.forEach((child: EntityObject) => {
+                getChildren(child);
             });
         }
 
-        public findChildByTag(tag:string){
-            return this._children.findOne((child:EntityObject) => {
-                return child.hasTag(tag);
-            });
-        }
+        getChildren(this._entityObject);
 
-        public findChildByName(name:string){
-            return this._children.findOne((child:EntityObject) => {
-                return child.name.search(name) > -1;
-            });
-        }
+        return result;
+    }
 
-        public findChildrenByName(name:string):wdCb.Collection<EntityObject>{
-            return this._children.filter((child:EntityObject) => {
-                return child.name.search(name) > -1;
-            });
-        }
+    public getChild(index: number) {
+        return this._children.getChild(index);
+    }
 
-        public removeChild(child:EntityObject){
-            child.onExit();
+    public findChildByUid(uid: number) {
+        return this._children.findOne((child: EntityObject) => {
+            return child.uid === uid;
+        });
+    }
 
-            this._children.removeChild(child);
+    public findChildByTag(tag: string) {
+        return this._children.findOne((child: EntityObject) => {
+            return child.hasTag(tag);
+        });
+    }
 
-            child.parent = null;
+    public findChildByName(name: string) {
+        return this._children.findOne((child: EntityObject) => {
+            return child.name.search(name) > -1;
+        });
+    }
 
-            return this;
-        }
+    public findChildrenByName(name: string): Collection<EntityObject> {
+        return this._children.filter((child: EntityObject) => {
+            return child.name.search(name) > -1;
+        });
+    }
 
-        public removeAllChildren(){
-            this._children.forEach((child:EntityObject) => {
-                this.removeChild(child);
-            }, this);
-        }
+    public removeChild(child: EntityObject) {
+        // child.onExit();
+
+        this._children.removeChild(child);
+
+        child.parent = null;
+
+        return this;
+    }
+
+    public removeAllChildren() {
+        this._children.forEach((child: EntityObject) => {
+            this.removeChild(child);
+        }, this);
     }
 }

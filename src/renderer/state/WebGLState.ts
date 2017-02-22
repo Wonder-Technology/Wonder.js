@@ -1,11 +1,11 @@
-module wd{
-    export abstract class WebGLState{
-        public abstract setState(material:Material):void;
+import { Material } from "../../material/Material";
 
-        protected getSide(material:Material){
-            var scene:SceneDispatcher = Director.getInstance().scene;
+export abstract class WebGLState {
+    public abstract setState(material: Material): void;
 
-            return scene.side ? scene.side : material.side;
-        }
-    }
+    // protected getSide(material:Material){
+    //     var scene:SceneDispatcher = Director.getInstance().scene;
+    //
+    //     return scene.side ? scene.side : material.side;
+    // }
 }

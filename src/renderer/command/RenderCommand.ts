@@ -1,41 +1,49 @@
-module wd {
-    export abstract class RenderCommand {
-        private _webglState:WebGLState = null;
-        get webglState(){
-            return this._webglState ? this._webglState : BasicState.create();
-        }
-        set webglState(webglState:WebGLState){
-            this._webglState = webglState;
-        }
+import { WebGLState } from "../state/WebGLState";
+import { BasicState } from "../state/BasicState";
+import { EDrawMode } from "../EDrawMode";
+import { virtual } from "../../definition/typescript/decorator/virtual";
+import { ElementBuffer } from "../buffer/ElementBuffer";
+import { DeviceManager } from "../../device/DeviceManager";
+import { BufferTable } from "../../core/entityObject/scene/cache/BufferTable";
+import { GlUtils } from "../GlUtils";
+import { ArrayBuffer } from "../buffer/ArrayBuffer";
 
-        public drawMode:EDrawMode = EDrawMode.TRIANGLES;
-        // public blend:boolean = false;
-        // public vaoManager:VAOManager = null;
+export abstract class RenderCommand {
+    private _webglState: WebGLState = null;
+    get webglState() {
+        return this._webglState ? this._webglState : BasicState.create();
+    }
+    set webglState(webglState: WebGLState) {
+        this._webglState = webglState;
+    }
 
-        public abstract execute():void;
+    public drawMode: EDrawMode = EDrawMode.TRIANGLES;
+    // public blend:boolean = false;
+    // public vaoManager:VAOManager = null;
 
-        @virtual
-        public init() {
-        }
+    public abstract execute(): void;
 
-        @virtual
-        public dispose() {
-        }
+    @virtual
+    public init() {
+    }
 
-        protected drawElements(indexBuffer:ElementBuffer){
-            var startOffset:number = 0,
-                gl = DeviceManager.getInstance().gl;
+    @virtual
+    public dispose() {
+    }
 
-            BufferTable.bindIndexBuffer(indexBuffer);
+    protected drawElements(indexBuffer: ElementBuffer) {
+        var startOffset: number = 0,
+            gl = DeviceManager.getInstance().gl;
 
-            GlUtils.drawElements(gl[this.drawMode], indexBuffer.count, gl[indexBuffer.type], indexBuffer.typeSize * startOffset);
-        }
+        BufferTable.bindIndexBuffer(indexBuffer);
 
-        protected drawArray(vertexBuffer:ArrayBuffer){
-            var startOffset:number = 0,
-                gl = DeviceManager.getInstance().gl;
+        GlUtils.drawElements(gl[this.drawMode], indexBuffer.count, gl[indexBuffer.type], indexBuffer.typeSize * startOffset);
+    }
 
-            GlUtils.drawArrays(gl[this.drawMode], startOffset, vertexBuffer.count);
-        }
+    protected drawArray(vertexBuffer: ArrayBuffer) {
+        var startOffset: number = 0,
+            gl = DeviceManager.getInstance().gl;
+
+        GlUtils.drawArrays(gl[this.drawMode], startOffset, vertexBuffer.count);
     }
 }

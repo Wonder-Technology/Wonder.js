@@ -1,13 +1,13 @@
-module wd{
-    export abstract class Buffer extends Entity{
-        public buffer:any = null;
+import { Entity } from "../../core/Entity";
+import { DeviceManager } from "../../device/DeviceManager";
 
-        public abstract resetData(data:any, ...args):void;
+export abstract class Buffer extends Entity {
+    public buffer: any = null;
 
-        public dispose(){
-            DeviceManager.getInstance().gl.deleteBuffer(this.buffer);
-            delete this.buffer;
-        }
+    public abstract resetData(data: any, ...args): void;
+
+    public dispose() {
+        DeviceManager.getInstance().gl.deleteBuffer(this.buffer);
+        delete this.buffer;
     }
 }
-

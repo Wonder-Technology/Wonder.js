@@ -55,6 +55,7 @@
     "@types/bowser": "^1.0.30",
     "@types/cannon": "^0.1.0",
     "@types/chai": "^3.4.34",
+    "@types/node": "^7.0.5",
     "@types/rsvp": "^3.0.0",
     "@types/wonder-commonlib": "^0.1.0",
     "@types/wonder-frp": "^0.1.0",

@@ -1,17 +1,21 @@
-module wd{
-    export class EndShaderLib extends EngineShaderLib{
-        public static create() {
-            var obj = new this();
+import { registerClass } from "../../../../definition/typescript/decorator/registerClass";
+import { EngineShaderLib } from "../EngineShaderLib";
+import { Program } from "../../../program/Program";
+import { QuadCommand } from "../../../command/QuadCommand";
+import { EngineMaterial } from "../../../../material/EngineMaterial";
 
-            return obj;
-        }
+@registerClass("EndShaderLib")
+export class EndShaderLib extends EngineShaderLib {
+    public static create() {
+        var obj = new this();
 
-        public type:string = "end";
+        return obj;
+    }
 
-        public sendShaderVariables(program:Program, cmd:QuadCommand, material:EngineMaterial){
-            // program.sendAllBufferData(cmd.vaoManager);
-            program.sendAllBufferData();
-        }
+    public type: string = "end";
+
+    public sendShaderVariables(program: Program, cmd: QuadCommand, material: EngineMaterial) {
+        // program.sendAllBufferData(cmd.vaoManager);
+        program.sendAllBufferData();
     }
 }
-

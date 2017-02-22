@@ -1,38 +1,43 @@
-module wd {
-    export class GameObject extends EntityObject{
-        public static create() {
-            var obj = new this();
+import { registerClass } from "../../../definition/typescript/decorator/registerClass";
+import { EntityObject } from "../EntityObject";
+import { ThreeDTransform } from "../../../component/transform/ThreeDTransform";
+import { cloneAttributeAsBasicType } from "../../../definition/typescript/decorator/clone";
+import { Collection } from "wonder-commonlib/dist/es2015/Collection";
+import { RenderUtils } from "../../../utils/RenderUtils";
 
-            obj.initWhenCreate();
+@registerClass("GameObject")
+export class GameObject extends EntityObject {
+    public static create() {
+        var obj = new this();
 
-            return obj;
-        }
+        obj.initWhenCreate();
 
-        public transform:ThreeDTransform;
-        public parent:GameObject;
+        return obj;
+    }
 
-        @cloneAttributeAsBasicType()
-        public renderGroup:number = 0;
-        @cloneAttributeAsBasicType()
-        public renderPriority:number = 0;
-        @cloneAttributeAsBasicType()
-        public isVisible:boolean = true;
+    public transform: ThreeDTransform;
+    public parent: GameObject;
 
-        protected children:wdCb.Collection<GameObject>;
+    @cloneAttributeAsBasicType()
+    public renderGroup: number = 0;
+    @cloneAttributeAsBasicType()
+    public renderPriority: number = 0;
+    @cloneAttributeAsBasicType()
+    public isVisible: boolean = true;
 
-        public initWhenCreate(){
-            super.initWhenCreate();
+    protected children: Collection<GameObject>;
 
-            this.name = `gameObject${String(this.uid)}`;
-        }
+    public initWhenCreate() {
+        super.initWhenCreate();
 
-        protected createTransform(){
-            return ThreeDTransform.create();
-        }
+        this.name = `gameObject${String(this.uid)}`;
+    }
 
-        protected getRenderList(){
-            return RenderUtils.getGameObjectRenderList(this.getChildren());
-        }
+    protected createTransform() {
+        return ThreeDTransform.create();
+    }
+
+    protected getRenderList() {
+        return RenderUtils.getGameObjectRenderList(this.getChildren());
     }
 }
-
