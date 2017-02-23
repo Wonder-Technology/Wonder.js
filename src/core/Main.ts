@@ -1,26 +1,15 @@
 import { registerClass } from "../definition/typescript/decorator/registerClass";
-import { Main as Main$ } from "wonder-frp/dist/es2015/core/Main";
 import { DebugConfig } from "../config/DebugConfig";
 import { EScreenSize } from "../device/EScreenSize";
 import { ExtendUtils } from "wonder-commonlib/dist/es2015/utils/ExtendUtils";
 import { DeviceManager } from "../device/DeviceManager";
 import { GPUDetector } from "../device/GPUDetector";
 import { CompileConfig } from "../config/CompileConfig";
+import {MainData, ContextConfigData} from "./data/MainData";
+import {RectRegion} from "../structure/RectRegion";
 
 @registerClass("Main")
 export class Main {
-    private static _isTest: boolean = false;
-    static get isTest() {
-        return this._isTest;
-    }
-    static set isTest(isTest: boolean) {
-        this._isTest = isTest;
-
-        Main$.isTest = isTest;
-    }
-
-    public static screenSize: any = null;
-
     private static _canvasId: string = null;
     private static _contextConfig: ContextConfigData = null;
     private static _useDevicePixelRatio: boolean = null;
@@ -41,7 +30,7 @@ export class Main {
             }
         }
         }) {
-        this.screenSize = screenSize;
+        MainData.screenSize = <EScreenSize&RectRegion>screenSize;
         this._canvasId = canvasId;
         this._useDevicePixelRatio = useDevicePixelRatio;
         this._contextConfig = {
@@ -70,21 +59,10 @@ export class Main {
 
     private static _setIsTest(isTestFromDebugConfig: boolean) {
         if (CompileConfig.closeContractTest) {
-            this.isTest = false;
+            MainData.isTest = false;
         }
         else {
-            this.isTest = isTestFromDebugConfig;
+            MainData.isTest = isTestFromDebugConfig;
         }
-    }
-}
-
-export type ContextConfigData = {
-    options: {
-        alpha: boolean;
-        depth: boolean;
-        stencil: boolean;
-        antialias: boolean;
-        premultipliedAlpha: boolean;
-        preserveDrawingBuffer: boolean;
     }
 }

@@ -1,4 +1,4 @@
-// import typescript from "wonder-rollup-plugin-typescript";
+import typescript from "wonder-rollup-plugin-typescript";
 import nodeResolve from "rollup-plugin-node-resolve";
 import commonjs from "rollup-plugin-commonjs";
 import includePaths from "rollup-plugin-includepaths";
@@ -7,9 +7,15 @@ export default {
     entry: "./dist/es2015/index.js",
     indent: "\t",
     plugins: [
+        // typescript({
+        //     tsconfig:false,
+        //     typescript:require("typescript")
+        // }),
+
         nodeResolve({
             skip:[
-                "wonder-commonlib"
+                "wonder-commonlib",
+                "wonder-frp"
             ]
         }),
         commonjs({
@@ -23,10 +29,6 @@ export default {
             extensions: [".js"]
         })
 
-        // typescript({
-        //     tsconfig:false,
-        //     typescript:require("typescript")
-        // }),
         // commonjs({
         //     shouldExports: {
         //         // left-hand side can be an absolute path, a path

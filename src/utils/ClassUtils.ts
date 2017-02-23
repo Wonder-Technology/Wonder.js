@@ -1,8 +1,6 @@
-import { registerClass } from "../definition/typescript/decorator/registerClass";
 import { ensure, it } from "../definition/typescript/decorator/contract";
 import expect from "wonder-expect.js";
 
-@registerClass("ClassUtils")
 export class ClassUtils {
     private static _classMap: ClassMapData = {};
 

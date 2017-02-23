@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <title></title>
 
-    <script src="../../../dist/wd.all.innerLib.js" type="text/javascript"></script>
-    <script src="../../../dist/wd.all.debug.js" type="text/javascript"></script>
+    <script src="../../../dist/wd.js" type="text/javascript"></script>
 </head>
 <body>
 
 <script>
     window.onload = function () {
         wd.Main.setConfig({
+            isTest:true,
             screenSize: wd.EScreenSize.FULL
         }).init();
 
@@ -62,7 +62,7 @@
 
             camera.addComponent(controller);
 
-            camera.transform.translate(wd.Vector3.create(0, 0, 20));
+            camera.transform.translate(wd.Vector3.create(0, 0, 40));
 
             return camera;
         }

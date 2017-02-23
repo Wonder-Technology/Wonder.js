@@ -3,7 +3,7 @@ import { singleton } from "../definition/typescript/decorator/singleton";
 import { Log } from "../utils/Log";
 import { Vector2 } from "../math/Vector2";
 import { IView, ViewWebGL } from "../structure/View";
-import { ContextConfigData, Main } from "../core/Main";
+import { ContextConfigData,MainData } from "../core/data/MainData";
 import { RectRegion } from "../structure/RectRegion";
 import { Color } from "../structure/Color";
 import { DomQuery } from "wonder-commonlib/dist/es2015/utils/DomQuery";
@@ -438,12 +438,12 @@ export class DeviceManager {
     }
 
     @require(function() {
-        it("should exist Main.screenSize", () => {
-            expect(Main.screenSize).exist;
+        it("should exist MainData.screenSize", () => {
+            expect(MainData.screenSize).exist;
         });
     })
     public setScreen() {
-        var screenSize = Main.screenSize,
+        var screenSize = MainData.screenSize,
             x = null,
             y = null,
             width = null,

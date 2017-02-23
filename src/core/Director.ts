@@ -1,3 +1,6 @@
+import "wonder-frp/dist/es2015/stream/ConcatStream";
+import "wonder-frp/dist/es2015/stream/IgnoreElementsStream";
+import "wonder-frp/dist/es2015/extend/root";
 import { registerClass } from "../definition/typescript/decorator/registerClass";
 import { singleton } from "../definition/typescript/decorator/singleton";
 import { DeviceManager } from "../device/DeviceManager";
@@ -105,6 +108,8 @@ export class Director {
     private _startLoop() {
         var self = this;
 
+        // console.log(IgnoreElementsStream, ConcatStream);
+
         this._gameLoop = this._buildInitStream()
             .ignoreElements()
             .concat(this._buildLoopStream())
@@ -115,6 +120,10 @@ export class Director {
                  so it need polyfill
                  */
                 self._loopBody(time);
+            // }, (e) => {
+            //     console.error(e);
+            //     throw e;
+            // });
             });
     }
 

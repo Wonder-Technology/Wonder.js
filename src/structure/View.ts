@@ -1,5 +1,5 @@
 import { registerClass } from "../definition/typescript/decorator/registerClass";
-import { ContextConfigData } from "../core/Main";
+import { ContextConfigData } from "../core/data/MainData";
 
 @registerClass("ViewWebGL")
 export class ViewWebGL implements IView {

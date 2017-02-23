@@ -51,7 +51,7 @@ export abstract class Geometry extends Component {
         var geometryData = this.buffers.geometryData;
 
         it(`faces.count should be be ${geometryData.indices.length / 3}, but actual is ${geometryData.faces.length}`, () => {
-            expect(geometryData.faces.length * 3).equals(geometryData.indices.length);
+            expect(geometryData.faces.length * 3).equal(geometryData.indices.length);
         });
     })
     @execOnlyOnce("_isInit")

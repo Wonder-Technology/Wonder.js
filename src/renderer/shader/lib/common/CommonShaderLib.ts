@@ -18,13 +18,15 @@ export class CommonShaderLib extends EngineShaderLib {
     public sendShaderVariables(program: Program, cmd: QuadCommand, material: EngineMaterial) {
         this.sendUniformData(program, "u_vMatrix", cmd.vMatrix);
         this.sendUniformData(program, "u_pMatrix", cmd.pMatrix);
+        this.sendUniformData(program, "u_mMatrix", cmd.mMatrix);
     }
 
     public setShaderDefinition(cmd: QuadCommand, material: EngineMaterial) {
         super.setShaderDefinition(cmd, material);
 
         //todo use VariableLib.xxx?
-        this.addUniformVariable(["u_vMatrix", "u_pMatrix"]);
+        // this.addUniformVariable(["u_vMatrix", "u_pMatrix"]);
+        this.addUniformVariable(["u_vMatrix", "u_pMatrix", "u_mMatrix"]);
 
         this.vsSourceDefine = ShaderChunk.common_define.define + ShaderChunk.common_vertex.define;
         this.vsSourceFuncDefine = ShaderChunk.common_function.funcDefine + ShaderChunk.common_vertex.funcDefine;

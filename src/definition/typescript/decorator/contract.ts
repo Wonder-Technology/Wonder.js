@@ -1,6 +1,6 @@
 import { Log } from "../../../utils/Log";
 import { CompileConfig } from "../../../config/CompileConfig";
-import { Main } from "../../../core/Main";
+import { MainData } from "../../../core/data/MainData";
 
 var _describeContext = null;
 
@@ -49,7 +49,7 @@ export function require(inFunc) {
             let value = descriptor.value;
 
             descriptor.value = function(args) {
-                if (Main.isTest) {
+                if (MainData.isTest) {
                     inFunc.apply(this, arguments);
                 }
 
@@ -69,7 +69,7 @@ export function ensure(outFunc) {
             descriptor.value = function(args) {
                 var result = value.apply(this, arguments);
 
-                if (Main.isTest) {
+                if (MainData.isTest) {
 
                     var params = [result];
 
@@ -95,7 +95,7 @@ export function requireGetterAndSetter(inGetterFunc, inSetterFunc) {
                 setter = descriptor.set;
 
             descriptor.get = function() {
-                if (Main.isTest) {
+                if (MainData.isTest) {
                     inGetterFunc.call(this);
                 }
 
@@ -103,7 +103,7 @@ export function requireGetterAndSetter(inGetterFunc, inSetterFunc) {
             };
 
             descriptor.set = function(val) {
-                if (Main.isTest) {
+                if (MainData.isTest) {
                     inSetterFunc.call(this, val);
                 }
 
@@ -121,7 +121,7 @@ export function requireGetter(inFunc) {
             let getter = descriptor.get;
 
             descriptor.get = function() {
-                if (Main.isTest) {
+                if (MainData.isTest) {
                     inFunc.call(this);
                 }
 
@@ -140,7 +140,7 @@ export function requireSetter(inFunc) {
             let setter = descriptor.set;
 
             descriptor.set = function(val) {
-                if (Main.isTest) {
+                if (MainData.isTest) {
                     inFunc.call(this, val);
                 }
 
@@ -161,7 +161,7 @@ export function ensureGetterAndSetter(outGetterFunc, outSetterFunc) {
             descriptor.get = function() {
                 var result = getter.call(this);
 
-                if (Main.isTest) {
+                if (MainData.isTest) {
                     outGetterFunc.call(this, result);
                 }
 
@@ -171,7 +171,7 @@ export function ensureGetterAndSetter(outGetterFunc, outSetterFunc) {
             descriptor.set = function(val) {
                 var result = setter.call(this, val);
 
-                if (Main.isTest) {
+                if (MainData.isTest) {
                     let params = [result, val];
                     outSetterFunc.apply(this, params);
                 }
@@ -190,7 +190,7 @@ export function ensureGetter(outFunc) {
             descriptor.get = function() {
                 var result = getter.call(this);
 
-                if (Main.isTest) {
+                if (MainData.isTest) {
                     outFunc.call(this, result);
                 }
 
@@ -210,7 +210,7 @@ export function ensureSetter(outFunc) {
             descriptor.set = function(val) {
                 var result = setter.call(this, val);
 
-                if (Main.isTest) {
+                if (MainData.isTest) {
                     let params = [result, val];
                     outFunc.apply(this, params);
                 }
@@ -224,7 +224,7 @@ export function ensureSetter(outFunc) {
 export function invariant(func) {
     return function(target) {
         if (CompileConfig.isCompileTest) {
-            if (Main.isTest) {
+            if (MainData.isTest) {
                 func(target);
             }
         }

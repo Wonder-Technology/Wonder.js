@@ -1,3 +1,4 @@
+import "wonder-frp/dist/es2015/stream/MergeAllStream";
 import { Component } from "../../../core/Component";
 import { Camera } from "../Camera";
 import { cacheGetter } from "../../../definition/typescript/decorator/cache";
