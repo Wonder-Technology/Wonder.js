@@ -1,42 +1,28 @@
 import typescript from "wonder-rollup-plugin-typescript";
 import nodeResolve from "rollup-plugin-node-resolve";
 import commonjs from "rollup-plugin-commonjs";
-import includePaths from "rollup-plugin-includepaths";
 
 export default {
-    entry: "./dist/es2015/index.js",
+    // entry: "./dist/es2015/index.js",
+    entry: "./src/index.ts",
     indent: "\t",
     plugins: [
-        // typescript({
-        //     tsconfig:false,
-        //     typescript:require("typescript")
-        // }),
-
+        typescript({
+            tsconfig:false,
+            typescript:require("typescript")
+        }),
         nodeResolve({
             skip:[
-                "wonder-commonlib",
-                "wonder-frp"
-            ]
+            ],
+            extensions: [".js", ".ts"]
         }),
         commonjs({
             namedExports: {
                 "./node_modules/bowser/src/bowser.js": ["version", "chrome","msie", "firefox", "mobile"],
                 "./node_modules/wonder-expect.js/index.js": ["expect"]
-            }
-        }),
-        includePaths({
-            paths: ["./node_modules"],
-            extensions: [".js"]
+            },
+            extensions: [".js", ".ts"]
         })
-
-        // commonjs({
-        //     shouldExports: {
-        //         // left-hand side can be an absolute path, a path
-        //         // relative to the current directory, or the name
-        //         // of a module in node_modules
-        //         "node_modules/chai/index.js": ["should"]
-        //     }
-        // }),
     ],
     sourceMap: true,
     targets: [
