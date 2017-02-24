@@ -2,6 +2,7 @@ import { registerClass } from "../../../../definition/typescript/decorator/regis
 import { EngineShaderLib } from "../EngineShaderLib";
 import { QuadCommand } from "../../../command/QuadCommand";
 import { StandardBasicMaterial } from "../../../../material/StandardBasicMaterial";
+import { GLSLChunk, end_basic_fragment } from "../../chunk/ShaderChunk";
 
 @registerClass("EndBasicShaderLib")
 export class EndBasicShaderLib extends EngineShaderLib {
@@ -11,7 +12,8 @@ export class EndBasicShaderLib extends EngineShaderLib {
         return obj;
     }
 
-    public type: string = "end_basic";
+    public vsChunk: GLSLChunk = null;
+    public fsChunk: GLSLChunk = end_basic_fragment;
 
     public setShaderDefinition(cmd: QuadCommand, material: StandardBasicMaterial) {
         super.setShaderDefinition(cmd, material);

@@ -5,6 +5,7 @@ import { QuadCommand } from "../../../command/QuadCommand";
 import { EngineMaterial } from "../../../../material/EngineMaterial";
 import { ArrayBuffer } from "../../../buffer/ArrayBuffer";
 import { EBufferDataType } from "../../../buffer/EBufferDataType";
+import { GLSLChunk } from "../../chunk/ShaderChunk";
 
 @registerClass("VerticeCommonShaderLib")
 export class VerticeCommonShaderLib extends EngineShaderLib {
@@ -14,7 +15,8 @@ export class VerticeCommonShaderLib extends EngineShaderLib {
         return obj;
     }
 
-    public type: string = "vertice_common";
+    public vsChunk: GLSLChunk = null;
+    public fsChunk: GLSLChunk = null;
 
     public sendShaderVariables(program: Program, cmd: QuadCommand, material: EngineMaterial) {
         this._sendAttributeVariables(program, cmd);

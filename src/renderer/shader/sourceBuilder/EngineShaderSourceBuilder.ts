@@ -4,9 +4,9 @@ import { Collection } from "wonder-commonlib/dist/es2015/Collection";
 import { require, assert } from "../../../definition/typescript/decorator/contract";
 import { EngineShaderLib } from "../lib/EngineShaderLib";
 import { Log } from "../../../utils/Log";
-import { ShaderSnippet } from "../snippet/ShaderSnippet";
+import { main_begin, main_end } from "../snippet/ShaderSnippet";
 import { GPUDetector, EGPUPrecision } from "../../../device/GPUDetector";
-import { ShaderChunk } from "../chunk/ShaderChunk";
+import { lowp_fragment, mediump_fragment, highp_fragment } from "../chunk/ShaderChunk";
 import { ShaderData } from "../shader/Shader";
 import { VariableTypeTable } from "../variable/VariableTypeTable";
 import { EVariableType } from "../variable/EVariableType";
@@ -214,7 +214,7 @@ export class EngineShaderSourceBuilder extends ShaderSourceBuilder {
     }
 
     private _buildVsSourceBody() {
-        return ShaderSnippet.main_begin + this.vsSourceBody + ShaderSnippet.main_end;
+        return main_begin + this.vsSourceBody + main_end;
     }
 
     private _buildFsSourceTop() {
@@ -242,7 +242,7 @@ export class EngineShaderSourceBuilder extends ShaderSourceBuilder {
     }
 
     private _buildFsSourceBody() {
-        return ShaderSnippet.main_begin + this.fsSourceBody + ShaderSnippet.main_end;
+        return main_begin + this.fsSourceBody + main_end;
     }
 
     private _buildSourceDefine(defineList: Collection<SourceDefine>) {
@@ -276,13 +276,13 @@ export class EngineShaderSourceBuilder extends ShaderSourceBuilder {
 
         switch (precision) {
             case EGPUPrecision.HIGHP:
-                result = ShaderChunk.highp_fragment.top;
+                result = highp_fragment.top;
                 break;
             case EGPUPrecision.MEDIUMP:
-                result = ShaderChunk.mediump_fragment.top;
+                result = mediump_fragment.top;
                 break;
             case EGPUPrecision.LOWP:
-                result = ShaderChunk.lowp_fragment.top;
+                result = lowp_fragment.top;
                 break;
             default:
                 result = "";

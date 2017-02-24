@@ -3,7 +3,7 @@ import { EngineShaderLib } from "../EngineShaderLib";
 import { Program } from "../../../program/Program";
 import { QuadCommand } from "../../../command/QuadCommand";
 import { EngineMaterial } from "../../../../material/EngineMaterial";
-import { ShaderChunk } from "../../chunk/ShaderChunk";
+import { common_vertex, common_fragment, GLSLChunk, common_define, common_function } from "../../chunk/ShaderChunk";
 
 @registerClass("CommonShaderLib")
 export class CommonShaderLib extends EngineShaderLib {
@@ -13,7 +13,8 @@ export class CommonShaderLib extends EngineShaderLib {
         return obj;
     }
 
-    public type: string = "common";
+    public vsChunk: GLSLChunk = common_vertex;
+    public fsChunk: GLSLChunk = common_fragment;
 
     public sendShaderVariables(program: Program, cmd: QuadCommand, material: EngineMaterial) {
         this.sendUniformData(program, "u_vMatrix", cmd.vMatrix);
@@ -28,10 +29,10 @@ export class CommonShaderLib extends EngineShaderLib {
         // this.addUniformVariable(["u_vMatrix", "u_pMatrix"]);
         this.addUniformVariable(["u_vMatrix", "u_pMatrix", "u_mMatrix"]);
 
-        this.vsSourceDefine = ShaderChunk.common_define.define + ShaderChunk.common_vertex.define;
-        this.vsSourceFuncDefine = ShaderChunk.common_function.funcDefine + ShaderChunk.common_vertex.funcDefine;
+        this.vsSourceDefine = common_define.define + common_vertex.define;
+        this.vsSourceFuncDefine = common_function.funcDefine + common_vertex.funcDefine;
 
-        this.fsSourceDefine = ShaderChunk.common_define.define + ShaderChunk.common_fragment.define;
-        this.fsSourceFuncDefine = ShaderChunk.common_function.funcDefine + ShaderChunk.common_fragment.funcDefine;
+        this.fsSourceDefine = common_define.define + common_fragment.define;
+        this.fsSourceFuncDefine = common_function.funcDefine + common_fragment.funcDefine;
     }
 }

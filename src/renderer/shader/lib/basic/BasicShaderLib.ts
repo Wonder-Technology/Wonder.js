@@ -3,7 +3,8 @@ import { EngineShaderLib } from "../EngineShaderLib";
 import { Program } from "../../../program/Program";
 import { QuadCommand } from "../../../command/QuadCommand";
 import { BasicMaterial } from "../../../../material/BasicMaterial";
-import { ShaderSnippet } from "../../snippet/ShaderSnippet";
+import { setPos_mvp } from "../../snippet/ShaderSnippet";
+import { GLSLChunk } from "../../chunk/ShaderChunk";
 
 @registerClass("BasicShaderLib")
 export class BasicShaderLib extends EngineShaderLib {
@@ -13,7 +14,8 @@ export class BasicShaderLib extends EngineShaderLib {
         return obj;
     }
 
-    public type: string = "basic";
+    public vsChunk: GLSLChunk = null;
+    public fsChunk: GLSLChunk = null;
 
     public sendShaderVariables(program: Program, cmd: QuadCommand, material: BasicMaterial) {
         this.sendUniformData(program, "u_opacity", material.opacity);
@@ -24,6 +26,6 @@ export class BasicShaderLib extends EngineShaderLib {
 
         this.addUniformVariable(["u_opacity"]);
 
-        this.vsSourceBody = ShaderSnippet.setPos_mvp;
+        this.vsSourceBody = setPos_mvp;
     }
 }

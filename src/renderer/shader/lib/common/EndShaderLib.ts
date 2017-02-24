@@ -3,6 +3,7 @@ import { EngineShaderLib } from "../EngineShaderLib";
 import { Program } from "../../../program/Program";
 import { QuadCommand } from "../../../command/QuadCommand";
 import { EngineMaterial } from "../../../../material/EngineMaterial";
+import { GLSLChunk, end_basic_fragment } from "../../chunk/ShaderChunk";
 
 @registerClass("EndShaderLib")
 export class EndShaderLib extends EngineShaderLib {
@@ -12,7 +13,8 @@ export class EndShaderLib extends EngineShaderLib {
         return obj;
     }
 
-    public type: string = "end";
+    public vsChunk: GLSLChunk = null;
+    public fsChunk: GLSLChunk = end_basic_fragment;
 
     public sendShaderVariables(program: Program, cmd: QuadCommand, material: EngineMaterial) {
         // program.sendAllBufferData(cmd.vaoManager);

@@ -8,97 +8,19 @@ var Parser = require("./parser").GLSLParser;
 
 var PLUGIN_NAME = "ShaderChunk";
 
-// var glslPathArr = ["src/renderer/shader/chunk/glsl/**/*.glsl", "extension/**/*.glsl"];
 var destFilePath = "src/renderer/shader/chunk/ShaderChunk.ts";
-
-//
-// gulp.task("createShaderChunk", function(){
-//     var result = "";
-//
-//     function buildEmpty(){
-//         return 'public static empty:GLSLChunk = {top:"", define:"", varDeclare:"", funcDeclare:"", funcDefine:"", body:""}\n';
-//     }
-//
-//     function buildDefine(){
-//         return 'public static NULL:number = -1.0;\n';
-//     }
-//
-//     //todo typescript refactor
-//     result = [
-//         'module wd{',
-//     'export class ShaderChunk{'
-//     ].join("\n");
-//
-//
-//
-//     result += buildEmpty();
-//     result += buildDefine();
-//
-//
-//     return gulp.src(glslPathArr)
-//         .pipe(through(function (file, encoding, callback) {
-//         var fileContent = null,
-//             filePath = null,
-//             parser = new Parser();
-//
-//         if (file.isNull()) {
-//             this.emit("error", new gutil.PluginError(PLUGIN_NAME, 'Streaming not supported'));
-//             return callback();
-//         }
-//         if (file.isBuffer()) {
-//             fileContent = file.contents.toString();
-//
-//             ////todo how to remove the last "\n\n;"?
-//             fileContent = fileContent.split("\n").join("\\n").replace("\\n\\n", "\\n");
-//
-//
-//
-//             filePath = file.path;
-//
-//             result += 'public static '
-//             + path.basename(filePath, path.extname(filePath))
-//             + ':GLSLChunk = '
-//             + parser.parse(fileContent);
-//
-//             return callback();
-//         }
-//         //todo support stream
-//         if (file.isStream()) {
-//             this.emit("error", new gutil.PluginError(PLUGIN_NAME, 'Streaming not supported'));
-//             return callback();
-//         }
-//     }, function (callback) {
-//             result += '}\n';
-//
-//             result += 'export type GLSLChunk = {top?:string;define?:string;varDeclare?:string;funcDeclare?:string;funcDefine?:string;body?:string;}\n';
-//             result += '}';
-//
-//             fs.writeFileSync(destFilePath, result);
-//
-//         callback();
-//     }));
-// });
-
 
 
 function createShaderChunk(glslPathArr) {
     var result = "";
 
     function buildEmpty(){
-        return 'public static empty:GLSLChunk = {top:"", define:"", varDeclare:"", funcDeclare:"", funcDefine:"", body:""}\n';
+        return 'export const empty:GLSLChunk = {top:"", define:"", varDeclare:"", funcDeclare:"", funcDefine:"", body:""};\n';
     }
 
     function buildDefine(){
-        return 'public static NULL:number = -1.0;\n';
+        return 'export const NULL:number = -1.0;\n';
     }
-
-    //todo typescript refactor
-    result = [
-        'module wd{',
-        'export class ShaderChunk{'
-    ].join("\n");
-
-
 
     result += buildEmpty();
     result += buildDefine();
@@ -124,7 +46,7 @@ function createShaderChunk(glslPathArr) {
 
                 filePath = file.path;
 
-                result += 'public static '
+                result += 'export const '
                     + path.basename(filePath, path.extname(filePath))
                     + ':GLSLChunk = '
                     + parser.parse(fileContent);
@@ -137,10 +59,7 @@ function createShaderChunk(glslPathArr) {
                 return callback();
             }
         }, function (callback) {
-            result += '}\n';
-
             result += 'export type GLSLChunk = {top?:string;define?:string;varDeclare?:string;funcDeclare?:string;funcDefine?:string;body?:string;}\n';
-            result += '}';
 
             fs.writeFileSync(destFilePath, result);
 

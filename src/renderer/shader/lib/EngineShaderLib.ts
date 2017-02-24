@@ -10,16 +10,17 @@ import { Program } from "../../program/Program";
 import { EVariableType } from "../variable/EVariableType";
 import { require, assert, it } from "../../../definition/typescript/decorator/contract";
 import { Log } from "../../../utils/Log";
-import { GLSLChunk, ShaderChunk } from "../chunk/ShaderChunk";
+import { GLSLChunk, empty } from "../chunk/ShaderChunk";
 import { JudgeUtils } from "../../../utils/JudgeUtils";
 import expect from "wonder-expect.js";
 import { PathUtils } from "wonder-commonlib/dist/es2015/utils/PathUtils";
-import { SourceDefine } from "../sourceBuilder/ShaderSourceBuilder";
+// import { SourceDefine } from "../sourceBuilder/ShaderSourceBuilder";
 
 export abstract class EngineShaderLib extends ShaderLib {
     public shader: EngineShader;
 
-    public type: string = null;
+    public abstract vsChunk: GLSLChunk;
+    public abstract fsChunk: GLSLChunk;
 
     public attributes: Hash<ShaderVariable> = Hash.create<ShaderVariable>();
     public uniforms: Hash<ShaderVariable> = Hash.create<ShaderVariable>();
@@ -69,21 +70,21 @@ export abstract class EngineShaderLib extends ShaderLib {
     }
 
     protected getVsChunk();
-    protected getVsChunk(type: string);
+    protected getVsChunk(chunk: GLSLChunk);
 
     protected getVsChunk(...args) {
-        var type = args.length === 0 ? this.type : args[0];
+        var chunk = args.length === 0 ? this.vsChunk : args[0];
 
-        return this._getChunk(type, EShaderLibType.vs);
+        return this._getChunk(chunk, EShaderLibType.vs);
     }
 
     protected getFsChunk();
-    protected getFsChunk(type: string);
+    protected getFsChunk(chunk: GLSLChunk);
 
     protected getFsChunk(...args) {
-        var type = args.length === 0 ? this.type : args[0];
+        var chunk = args.length === 0 ? this.fsChunk : args[0];
 
-        return this._getChunk(type, EShaderLibType.fs);
+        return this._getChunk(chunk, EShaderLibType.fs);
     }
 
     @require(function() {
@@ -158,26 +159,14 @@ export abstract class EngineShaderLib extends ShaderLib {
         this.fsSource = null;
     }
 
-    private _getChunk(type: string, sourceType: EShaderLibType) {
+    private _getChunk(chunk: GLSLChunk | null, sourceType: EShaderLibType) {
         var key = null;
 
-        if (!type) {
-            return null;
+        if (chunk === null) {
+            return empty;
         }
 
-        if (type.indexOf(".glsl") > -1) {
-            key = `${PathUtils.basename(type, ".glsl")}`;
-        }
-        else {
-            if (sourceType === EShaderLibType.vs) {
-                key = `${type}_vertex`;
-            }
-            else {
-                key = `${type}_fragment`;
-            }
-        }
-
-        return ShaderChunk[key] ? ShaderChunk[key] : ShaderChunk.empty;
+        return chunk;
     }
 
     private _setSource(chunk: GLSLChunk, sourceType: EShaderLibType, operator: string) {

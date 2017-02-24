@@ -26,8 +26,6 @@ export abstract class ShaderSourceBuilder {
         });
     })
     protected convertAttributesData() {
-        var self = this;
-
         this.attributes
             .filter((data: ShaderData) => {
                 return data.value !== EVariableCategory.ENGINE && JudgeUtils.isArrayExactly(data.value);

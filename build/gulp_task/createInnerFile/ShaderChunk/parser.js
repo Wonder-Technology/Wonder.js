@@ -36,12 +36,12 @@ GLSLParser.prototype.parse= function(content){
         }
     }
 
-    //remove last ","
-    if(result.substring((-1)) === ","){
+    /*!remove last ","*/
+    if(result.slice(-1) === ","){
         result = result.slice(0, -1);
     }
 
-    result += '}\n';
+    result += '};\n';
 
     return result;
 };
