@@ -12,6 +12,9 @@ import { WebGLRenderer } from "../renderer/renderer/WebGLRenderer";
 import { callFunc, intervalRequest } from "wonder-frp/dist/es2015/global/Operator";
 import { GameObjectScene } from "./entityObject/scene/gameObjectScene/GameObjectScene";
 import { BasicState } from "../renderer/state/BasicState";
+import {EventManager} from "../event/EventManager";
+import {CustomEvent} from "../event/object/CustomEvent";
+import {EEngineEvent} from "../event/EEngineEvent";
 
 enum EGameState {
     NORMAL,
@@ -169,9 +172,13 @@ export class Director {
     private _run(elapsed: number) {
         this._timeController.tick(elapsed);
 
+        EventManager.trigger(CustomEvent.create(<any>EEngineEvent.STARTLOOP));
+
         this._update(elapsed);
 
         this._render();
+
+        EventManager.trigger(CustomEvent.create(<any>EEngineEvent.ENDLOOP));
     }
 
     private _update(elapsed: number) {
