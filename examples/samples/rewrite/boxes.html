@@ -5,6 +5,7 @@
     <title></title>
 
     <script src="../../../dist/wd.js" type="text/javascript"></script>
+    <!--<script src="../../../mine/Wonder.js/dist/wd.all.js" type="text/javascript"></script>-->
 </head>
 <body>
 
@@ -20,7 +21,13 @@
         function initSample() {
             var director = wd.Director.getInstance();
 
-            director.scene.addChild(createBox());
+            var box = createBox();
+            var box2 = box.clone();
+            box2.transform.translate(20,0,0)
+
+            director.scene.addChildren([
+                box, box2
+            ])
 
             director.scene.addChild(createCamera());
 

@@ -34,7 +34,7 @@ var searchCloneAttributeMembers = (obj: any) => {
 };
 
 var getAllCloneAttributeMembers = (obj: any) => {
-    const IS_GATHERED_ATTRIBUTE_NAME = `__decorator_clone_isGathered_${ClassUtils.getClassName(obj)}_cloneAttributeMembers`;
+    const IS_GATHERED_ATTRIBUTE_NAME = `__decorator_clone_isGathered_${ClassUtils.getClassNameByInstance(obj)}_cloneAttributeMembers`;
     var result = Collection.create<CloneMemberData>();
     var gather = (obj: any) => {
         if (!obj) {
@@ -77,7 +77,7 @@ var initCloneAttributeMembers = (obj: any) => {
 };
 
 var buildMemberContainerAttributeName = (obj: any) => {
-    return `__decorator_clone_${ClassUtils.getClassName(obj)}_cloneAttributeMembers`;
+    return `__decorator_clone_${ClassUtils.getClassNameByInstance(obj)}_cloneAttributeMembers`;
 };
 
 var generateCloneableMember = (cloneType: CloneType, ...cloneDataArr) => {
@@ -124,19 +124,18 @@ export function cloneAttributeAsCustomType(cloneFunc: (source: any, target: any,
 }
 
 @registerClass("CloneUtils")
-@registerClass("CloneUtils")
 export class CloneUtils {
     @require(function(source: any, cloneData: any = null, createDataArr: Array<any> = null) {
         if (createDataArr) {
             assert(JudgeUtils.isArrayExactly(createDataArr), Log.info.FUNC_MUST_BE("param:createDataArr", "be arr"));
         }
     })
-    public static clone<T>(source: T, cloneData: any = null, createDataArr: Array<any> = null, target: any = null): T {
-        var cloneAttributeMembers: Collection<CloneMemberData> = getAllCloneAttributeMembers(source)
+    public static clone<T>(sourceInstance: T, cloneData: any = null, createDataArr: Array<any> = null, target: any = null): T {
+        var cloneAttributeMembers: Collection<CloneMemberData> = getAllCloneAttributeMembers(sourceInstance)
             .sort((memberDataA: any, memberDataB: any) => {
                 return memberDataA.configData.order - memberDataB.configData.order;
             }),
-            className = ClassUtils.getClassName(source);
+            className = ClassUtils.getClassNameByInstance(sourceInstance);
 
         if (target === null) {
             if (createDataArr) {
@@ -159,22 +158,22 @@ export class CloneUtils {
 
             switch (cloneType) {
                 case CloneType.CLONEABLE:
-                    if (source[memberName] !== null && source[memberName] !== void 0) {
+                    if (sourceInstance[memberName] !== null && sourceInstance[memberName] !== void 0) {
                         if (target[memberName] !== null) {
-                            target[memberName] = source[memberName].clone(target[memberName]);
+                            target[memberName] = sourceInstance[memberName].clone(target[memberName]);
                         }
                         else {
-                            target[memberName] = source[memberName].clone();
+                            target[memberName] = sourceInstance[memberName].clone();
                         }
                     }
                     break;
                 case CloneType.BASIC:
-                    target[memberName] = source[memberName];
+                    target[memberName] = sourceInstance[memberName];
                     break;
                 case CloneType.CUSTOM:
                     let cloneFunc = memberData.cloneFunc;
 
-                    cloneFunc.call(target, source, target, memberName, cloneData);
+                    cloneFunc.call(target, sourceInstance, target, memberName, cloneData);
                     break;
             }
         });
