@@ -5,8 +5,8 @@ import { ExtendUtils } from "wonder-commonlib/dist/es2015/utils/ExtendUtils";
 import { DeviceManager } from "../device/DeviceManager";
 import { GPUDetector } from "../device/GPUDetector";
 import { CompileConfig } from "../config/CompileConfig";
-import {MainData, ContextConfigData} from "./data/MainData";
-import {RectRegion} from "../structure/RectRegion";
+import { MainData, ContextConfigData } from "./data/MainData";
+import { RectRegion } from "../structure/RectRegion";
 
 @registerClass("Main")
 export class Main {
@@ -30,7 +30,7 @@ export class Main {
             }
         }
         }) {
-        MainData.screenSize = <EScreenSize&RectRegion>screenSize;
+        MainData.screenSize = <EScreenSize & RectRegion>screenSize;
         this._canvasId = canvasId;
         this._useDevicePixelRatio = useDevicePixelRatio;
         this._contextConfig = {

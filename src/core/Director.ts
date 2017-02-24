@@ -12,9 +12,9 @@ import { WebGLRenderer } from "../renderer/renderer/WebGLRenderer";
 import { callFunc, intervalRequest } from "wonder-frp/dist/es2015/global/Operator";
 import { GameObjectScene } from "./entityObject/scene/gameObjectScene/GameObjectScene";
 import { BasicState } from "../renderer/state/BasicState";
-import {EventManager} from "../event/EventManager";
-import {CustomEvent} from "../event/object/CustomEvent";
-import {EEngineEvent} from "../event/EEngineEvent";
+import { EventManager } from "../event/EventManager";
+import { CustomEvent } from "../event/object/CustomEvent";
+import { EEngineEvent } from "../event/EEngineEvent";
 
 enum EGameState {
     NORMAL,
@@ -123,10 +123,10 @@ export class Director {
                  so it need polyfill
                  */
                 self._loopBody(time);
-            // }, (e) => {
-            //     console.error(e);
-            //     throw e;
-            // });
+                // }, (e) => {
+                //     console.error(e);
+                //     throw e;
+                // });
             });
     }
 

@@ -321,3 +321,4 @@ export class EngineShaderSourceBuilder extends ShaderSourceBuilder {
         return source.indexOf(key) !== -1;
     }
 }
+

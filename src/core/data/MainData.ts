@@ -1,7 +1,7 @@
-import {EScreenSize} from "../../device/EScreenSize";
-import {Main} from "wonder-frp/dist/es2015/core/Main";
-import {RectRegion} from "../../structure/RectRegion";
-export class MainData{
+import { EScreenSize } from "../../device/EScreenSize";
+import { Main } from "wonder-frp/dist/es2015/core/Main";
+import { RectRegion } from "../../structure/RectRegion";
+export class MainData {
     private static _isTest: boolean = false;
     static get isTest() {
         return this._isTest;
@@ -12,7 +12,7 @@ export class MainData{
         Main.isTest = MainData.isTest;
     }
 
-    public static screenSize: EScreenSize&RectRegion = null;
+    public static screenSize: EScreenSize & RectRegion = null;
 }
 
 export type ContextConfigData = {

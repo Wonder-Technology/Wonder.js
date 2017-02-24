@@ -18,7 +18,7 @@ export class ClassUtils {
         this._classMap[className] = _class;
     }
 
-    public static addClassNameAttributeToClass(className:string, _class:any){
+    public static addClassNameAttributeToClass(className: string, _class: any) {
         _class["className"] = className;
     }
 

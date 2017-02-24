@@ -3,7 +3,7 @@ import { singleton } from "../definition/typescript/decorator/singleton";
 import { Log } from "../utils/Log";
 import { Vector2 } from "../math/Vector2";
 import { IView, ViewWebGL } from "../structure/View";
-import { ContextConfigData,MainData } from "../core/data/MainData";
+import { ContextConfigData, MainData } from "../core/data/MainData";
 import { RectRegion } from "../structure/RectRegion";
 import { Color } from "../structure/Color";
 import { DomQuery } from "wonder-commonlib/dist/es2015/utils/DomQuery";
