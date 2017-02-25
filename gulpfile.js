@@ -52,8 +52,6 @@ gulp.task("generateDTS", function(done) {
 });
 
 gulp.task("rollup", function(done) {
-    require("./build/rollup/removeSharedDependences").removeSharedDependences();
-
     package.rollup(path.join(process.cwd(), "./rollup.config.js"), done);
 });
 
