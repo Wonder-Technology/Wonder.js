@@ -1,6 +1,0 @@
-node_modules
-.DS_Store
-.swap
-.orig
-.log
-test/gulpfile.js

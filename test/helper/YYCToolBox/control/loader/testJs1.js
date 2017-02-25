@@ -1,1 +1,0 @@
-﻿window.testJs1 = 100;

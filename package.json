@@ -1,7 +1,10 @@
 {
-  "name": "wonder",
-  "version": "0.9.0",
-  "author": "Yuanchao Yang <395976266@qq.com>",
+  "name": "wonder.js",
+  "version": "0.0.3",
+  "authors": "Yuanchao Yang <395976266@qq.com>",
+  "description": "3d webgl engine",
+  "homepage": "https://github.com/yyc-git/Wonder.js",
+  "license": "MIT",
   "scripts": {
     "start": "node ./server/app.js",
     "test": "karma start karma.conf.js --single-run --browsers Firefox",
@@ -14,7 +17,6 @@
     "codecov.io": "^0.1.6",
     "del": "^1.2.0",
     "express": "^4.13.3",
-    "fs-extra": "^0.22.1",
     "glob": "^7.0.4",
     "glob-stream": "^5.0.0",
     "gulp": "^3.9.0",
@@ -41,7 +43,6 @@
     "pump": "^1.0.1",
     "relaxed-json": "^1.0.0",
     "rollup-plugin-commonjs": "^7.0.0",
-    "rollup-plugin-includepaths": "^0.1.8",
     "rollup-plugin-node-resolve": "^2.0.0",
     "sinon": "^1.14.1",
     "stream-assert": "^2.0.2",
@@ -49,25 +50,22 @@
     "through-gulp": "^0.3.8",
     "through2": "^2.0.0",
     "tryit": "^1.0.1",
-    "typescript": "^2.1.1",
+    "typescript": "^2.3.0-dev.20170224",
     "vinyl": "^0.4.6",
     "vinyl-bufferstream": "^1.0.1",
-    "wonder-package": "^0.1.4",
+    "wonder-package": "^0.1.21",
     "wonder-rollup-plugin-typescript": "^0.1.1"
   },
   "dependencies": {
     "@types/bowser": "^1.0.30",
-    "@types/cannon": "^0.1.0",
     "@types/expect.js": "^0.3.29",
     "@types/node": "^7.0.5",
-    "@types/rsvp": "^3.0.0",
     "@types/wonder-commonlib": "^0.1.0",
     "@types/wonder-frp": "^0.1.0",
-    "cannon": "^0.6.2",
-    "rsvp": "^3.3.3",
     "bowser": "^1.6.0",
-    "wonder-expect.js": "^0.1.0",
+    "fs-extra": "^0.22.1",
     "wonder-commonlib": "^0.1.6",
-    "wonder-frp": "^0.1.10"
+    "wonder-expect.js": "^0.1.0",
+    "wonder-frp": "^0.1.12"
   }
 }
