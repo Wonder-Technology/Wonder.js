@@ -1,4 +1,4 @@
-export function cacheGetter(judgeFunc: () => boolean, returnCacheValueFunc: () => any, setCacheFunc: (returnVal) => void) {
+export function cacheGetter(judgeFunc: () => boolean, returnCacheValueFunc: () => any, setCacheFunc: (returnVal: any) => void) {
     return function(target, name, descriptor) {
         var getter = descriptor.get;
 
@@ -20,7 +20,7 @@ export function cacheGetter(judgeFunc: () => boolean, returnCacheValueFunc: () =
     }
 }
 
-export function cache(judgeFunc: (...args) => boolean, returnCacheValueFunc: (...args) => any, setCacheFunc: (...returnVal) => void) {
+export function cache(judgeFunc: any, returnCacheValueFunc: any, setCacheFunc: any) {
     return function(target, name, descriptor) {
         var value = descriptor.value;
 
