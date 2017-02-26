@@ -43,7 +43,7 @@ export function it(message: string, func: Function, context?: any) {
     }
 }
 
-export function require(inFunc) {
+export function requireCheck(inFunc) {
     return function(target, name, descriptor) {
         if (CompileConfig.isCompileTest) {
             let value = descriptor.value;

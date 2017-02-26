@@ -1,6 +1,6 @@
 import { Hash } from "wonder-commonlib/dist/es2015/Hash";
 import { ShaderData } from "../shader/Shader";
-import { require, assert } from "../../../definition/typescript/decorator/contract";
+import { requireCheck, assert } from "../../../definition/typescript/decorator/contract";
 import { JudgeUtils } from "../../../utils/JudgeUtils";
 import { Log } from "../../../utils/Log";
 import { EVariableCategory } from "../variable/EVariableCategory";
@@ -20,7 +20,7 @@ export abstract class ShaderSourceBuilder {
         this.clearShaderDefinition();
     }
 
-    @require(function() {
+    @requireCheck(function() {
         this.attributes.forEach((data: ShaderData) => {
             assert(!JudgeUtils.isFloatArray(data.value), Log.info.FUNC_SHOULD_NOT("attribute->value", "be Float array"));
         });

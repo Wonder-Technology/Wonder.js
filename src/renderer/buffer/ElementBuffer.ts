@@ -2,7 +2,7 @@ import { registerClass } from "../../definition/typescript/decorator/registerCla
 import { CommonBuffer } from "./CommonBuffer";
 import { EBufferType } from "./EBufferType";
 import { EBufferUsage } from "./EBufferUsage";
-import { ensureGetter, assert, require } from "../../definition/typescript/decorator/contract";
+import { ensureGetter, assert, requireCheck } from "../../definition/typescript/decorator/contract";
 import { Log } from "../../utils/Log";
 import { DeviceManager } from "../../device/DeviceManager";
 import { BufferTable } from "../../core/entityObject/scene/cache/BufferTable";
@@ -58,7 +58,7 @@ export class ElementBuffer extends CommonBuffer {
         return this.buffer;
     }
 
-    @require(function(data: Array<number>, type: EBufferType = null, offset: number = 0) {
+    @requireCheck(function(data: Array<number>, type: EBufferType = null, offset: number = 0) {
         assert(this.buffer, Log.info.FUNC_MUST("create gl buffer"));
     })
     public resetData(data: Array<number>, type: EBufferType = null, offset: number = 0) {
@@ -108,7 +108,7 @@ export class ElementBuffer extends CommonBuffer {
         return isNeed32Bits;
     }
 
-    @require(function(isNeed32Bits: boolean, type: EBufferType) {
+    @requireCheck(function(isNeed32Bits: boolean, type: EBufferType) {
         if (type !== null) {
             if (isNeed32Bits) {
                 assert(type === EBufferType.UNSIGNED_INT, Log.info.FUNC_MUST_BE("type", `UNSIGNED_SHORT, but actual is ${type}`));

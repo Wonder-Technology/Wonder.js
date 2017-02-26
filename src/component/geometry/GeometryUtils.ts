@@ -1,6 +1,6 @@
 import { registerClass } from "../../definition/typescript/decorator/registerClass";
 import { Face3 } from "../../structure/Face3";
-import { require, assert } from "../../definition/typescript/decorator/contract";
+import { requireCheck, assert } from "../../definition/typescript/decorator/contract";
 import { Collection } from "wonder-commonlib/dist/es2015/Collection";
 import { Hash } from "wonder-commonlib/dist/es2015/Hash";
 import { JudgeUtils } from "../../utils/JudgeUtils";
@@ -34,7 +34,7 @@ export class GeometryUtils {
         return faces;
     }
 
-    @require(function(data) {
+    @requireCheck(function(data) {
         if (data) {
             assert(data instanceof Collection || data instanceof Hash || JudgeUtils.isArrayExactly(data), Log.info.FUNC_SHOULD("data", "be Array or Collection or Hash"));
         }
@@ -53,7 +53,7 @@ export class GeometryUtils {
         );
     }
 
-    @require(function(dataArr: Array<number>, iterator: (v: Vector3) => void) {
+    @requireCheck(function(dataArr: Array<number>, iterator: (v: Vector3) => void) {
         assert(dataArr.length % 3 === 0, Log.info.FUNC_SHOULD("dataArr.length", "times of three"));
     })
     public static iterateThreeComponent(dataArr: Array<number>, iterator: (v: Vector3) => void) {

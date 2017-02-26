@@ -1,5 +1,5 @@
 import { registerClass } from "../definition/typescript/decorator/registerClass";
-import { require, it, ensure } from "../definition/typescript/decorator/contract";
+import { requireCheck, it, ensure } from "../definition/typescript/decorator/contract";
 import expect from "wonder-expect.js";
 
 @registerClass("MathUtils")
@@ -23,7 +23,7 @@ export class MathUtils {
         return Math.random();
     }
 
-    @require(function(min: number, max: number) {
+    @requireCheck(function(min: number, max: number) {
         it("min should <= max", () => {
             expect(min).lte(max);
         });
@@ -53,7 +53,7 @@ export class MathUtils {
         return a;
     }
 
-    @require(function(a: number, b: number) {
+    @requireCheck(function(a: number, b: number) {
         it("a,b should >= 0", () => {
             expect(a).gte(0);
             expect(b).gte(0);

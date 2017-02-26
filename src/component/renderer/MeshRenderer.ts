@@ -2,7 +2,7 @@ import { registerClass } from "../../definition/typescript/decorator/registerCla
 import { RendererComponent } from "./RendererComponent";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 import { Renderer } from "../../renderer/renderer/Renderer";
-import { require, it } from "../../definition/typescript/decorator/contract";
+import { requireCheck, it } from "../../definition/typescript/decorator/contract";
 import { Geometry } from "../geometry/Geometry";
 import { CameraController } from "../camera/controller/CameraController";
 import expect from "wonder-expect.js";
@@ -30,7 +30,7 @@ export class MeshRenderer extends RendererComponent {
         renderer.addCommand(this.createDrawCommand(target, geometry, camera));
     }
 
-    @require(function(target: GameObject, geometry: Geometry, camera: GameObject) {
+    @requireCheck(function(target: GameObject, geometry: Geometry, camera: GameObject) {
         var controller = camera.getComponent<CameraController>(CameraController);
 
         it("camera must add Camera Component", () => {

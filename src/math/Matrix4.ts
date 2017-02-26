@@ -1,7 +1,7 @@
 import { registerClass } from "../definition/typescript/decorator/registerClass";
 import { Matrix3 } from "./Matrix3";
 import { Log } from "../utils/Log";
-import { require, it, assert } from "../definition/typescript/decorator/contract";
+import { requireCheck, it, assert } from "../definition/typescript/decorator/contract";
 import expect from "wonder-expect.js";
 import { Vector3 } from "./Vector3";
 import { Vector4 } from "./Vector4";
@@ -273,7 +273,7 @@ export class Matrix4 {
      * @param z The Z coordinate of vector of rotation axis.
      * @return this
      */
-    @require(function(angle: number, x: number, y: number, z: number) {
+    @requireCheck(function(angle: number, x: number, y: number, z: number) {
         it("axis's component shouldn't all be zero", () => {
             expect(x === 0 && y === 0 && z === 0).false;
         });
@@ -496,7 +496,7 @@ export class Matrix4 {
         return this;
     }
 
-    @require(function(left: number, right: number, bottom: number, top: number, near: number, far: number) {
+    @requireCheck(function(left: number, right: number, bottom: number, top: number, near: number, far: number) {
         assert(left !== right && bottom !== top && near !== far, Log.info.FUNC_MUST_NOT_BE("frustum", "null"));
     })
     public setOrtho(left: number, right: number, bottom: number, top: number, near: number, far: number): Matrix4 {
@@ -546,7 +546,7 @@ export class Matrix4 {
      * @param far The distances to the farther depth clipping plane. This value must be plus value.
      * @return this
      */
-    @require(function(fovy: number, aspect: number, near: number, far: number) {
+    @requireCheck(function(fovy: number, aspect: number, near: number, far: number) {
         assert(near !== far && aspect !== 0, Log.info.FUNC_MUST_NOT_BE("frustum", "null"));
         assert(near > 0, Log.info.FUNC_MUST("near", "> 0"));
         assert(far > 0, Log.info.FUNC_MUST("far", "> 0"));

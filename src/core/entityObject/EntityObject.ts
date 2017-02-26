@@ -58,7 +58,7 @@ export abstract class EntityObject extends Entity {
         this.addComponent(this.createTransform());
     }
 
-    // @require(function(config:CloneEntityObjectConfigData = <any>{}){
+    // @requireCheck(function(config:CloneEntityObjectConfigData = <any>{}){
     //     it("if has OneToManySourceInstance component, not support share geometry", () => {
     //         if(config.shareGeometry){
     //             expect(this.hasComponent(OneToManySourceInstance)).false;

@@ -8,7 +8,7 @@ import { DeviceManager } from "../../device/DeviceManager";
 import { BufferTable } from "../../core/entityObject/scene/cache/BufferTable";
 import { EVariableType } from "../shader/variable/EVariableType";
 import { Log } from "../../utils/Log";
-import { require, assert } from "../../definition/typescript/decorator/contract";
+import { requireCheck, assert } from "../../definition/typescript/decorator/contract";
 import { ArrayBuffer } from "../buffer/ArrayBuffer";
 import { Shader } from "../shader/shader/Shader";
 
@@ -117,7 +117,7 @@ export class Program extends Entity {
         }
     }
 
-    @require(function(name: string, type: EVariableType, buffer: ArrayBuffer) {
+    @requireCheck(function(name: string, type: EVariableType, buffer: ArrayBuffer) {
         assert(buffer instanceof ArrayBuffer, Log.info.FUNC_MUST_BE("ArrayBuffer"));
 
         assert(type === EVariableType.BUFFER, Log.info.FUNC_SHOULD("type", `be EVariableType.BUFFER, but actual is ${type}`));

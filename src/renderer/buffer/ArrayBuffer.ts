@@ -5,7 +5,7 @@ import { EBufferUsage } from "./EBufferUsage";
 import { DeviceManager } from "../../device/DeviceManager";
 import { Log } from "../../utils/Log";
 import { BufferTable } from "../../core/entityObject/scene/cache/BufferTable";
-import { require, assert } from "../../definition/typescript/decorator/contract";
+import { requireCheck, assert } from "../../definition/typescript/decorator/contract";
 
 @registerClass("ArrayBuffer")
 export class ArrayBuffer extends CommonBuffer {
@@ -50,7 +50,7 @@ export class ArrayBuffer extends CommonBuffer {
         return this.buffer;
     }
 
-    @require(function(data: Array<number>, size: number = this.size, type: EBufferType = this.type, offset: number = 0) {
+    @requireCheck(function(data: Array<number>, size: number = this.size, type: EBufferType = this.type, offset: number = 0) {
         assert(this.buffer, Log.info.FUNC_MUST("create gl buffer"));
     })
     public resetData(data: Array<number>, size: number = this.size, type: EBufferType = this.type, offset: number = 0) {

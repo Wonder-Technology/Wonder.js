@@ -1,5 +1,5 @@
 import { ClassUtils } from "../../../utils/ClassUtils";
-import { assert, require } from "./contract";
+import { assert, requireCheck } from "./contract";
 import { Log } from "../../../utils/Log";
 import { registerClass } from "./registerClass";
 import { JudgeUtils } from "../../../utils/JudgeUtils";
@@ -125,7 +125,7 @@ export function cloneAttributeAsCustomType(cloneFunc: (source: any, target: any,
 
 @registerClass("CloneUtils")
 export class CloneUtils {
-    @require(function(source: any, cloneData: any = null, createDataArr: Array<any> = null) {
+    @requireCheck(function(source: any, cloneData: any = null, createDataArr: Array<any> = null) {
         if (createDataArr) {
             assert(JudgeUtils.isArrayExactly(createDataArr), Log.info.FUNC_MUST_BE("param:createDataArr", "be arr"));
         }

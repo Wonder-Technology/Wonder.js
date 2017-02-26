@@ -8,7 +8,7 @@ import { SortUtils } from "../../../utils/SortUtils";
 import { Component } from "../../Component";
 import { ComponentInitOrderTable } from "../../../component/data/ComponentInitOrderTable";
 import { JudgeUtils } from "../../../utils/JudgeUtils";
-import { require, it } from "../../../definition/typescript/decorator/contract";
+import { requireCheck, it } from "../../../definition/typescript/decorator/contract";
 import expect from "wonder-expect.js";
 
 @registerClass("ComponentManager")
@@ -106,7 +106,7 @@ export class ComponentManager {
         return result;
     }
 
-    @require(function(component: Component, isShareComponent: boolean = false) {
+    @requireCheck(function(component: Component, isShareComponent: boolean = false) {
         if (!component) {
             return;
         }
@@ -179,7 +179,7 @@ export class ComponentManager {
         }).getCount();
     }
 
-    @require(function() {
+    @requireCheck(function() {
         it("entityObject shouldn't contain more than 1 geometry component", () => {
             expect(this.getComponentCount(Geometry)).lessThan(2);
         });
@@ -188,7 +188,7 @@ export class ComponentManager {
         return this._geometry;
     }
 
-    @require(function() {
+    @requireCheck(function() {
         it("entityObject shouldn't contain more than 1 rendererComponent", () => {
             expect(this.getComponentCount(RendererComponent)).lessThan(2);
         });

@@ -3,7 +3,7 @@ import { Program } from "./Program";
 import { ArrayBuffer } from "../buffer/ArrayBuffer";
 import { DeviceManager } from "../../device/DeviceManager";
 import { Color } from "../../structure/Color";
-import { require, assert, it } from "../../definition/typescript/decorator/contract";
+import { requireCheck, assert, it } from "../../definition/typescript/decorator/contract";
 import { JudgeUtils } from "../../utils/JudgeUtils";
 import { Log } from "../../utils/Log";
 import { Matrix3 } from "../../math/Matrix3";
@@ -215,7 +215,7 @@ export class GLSLDataSender {
         gl.uniform3f(pos, r, g, b);
     }
 
-    @require(function(name: string, data: number) {
+    @requireCheck(function(name: string, data: number) {
         assert(JudgeUtils.isNumber(data), Log.info.FUNC_MUST_BE("data", "be number"));
     })
     public sendNum1(name: string, data: number) {
@@ -260,7 +260,7 @@ export class GLSLDataSender {
         gl.uniformMatrix4fv(pos, false, data.values);
     }
 
-    @require(function(name: string, data: Array<number> | Float32Array) {
+    @requireCheck(function(name: string, data: Array<number> | Float32Array) {
         it(`data should be array, but actual is ${data}`, () => {
             expect(JudgeUtils.isFloatArray(data) || JudgeUtils.isArrayExactly(data)).true;
         });
@@ -279,7 +279,7 @@ export class GLSLDataSender {
         gl.uniformMatrix4fv(pos, false, data);
     }
 
-    @require(function(name: string, data: Array<number>) {
+    @requireCheck(function(name: string, data: Array<number>) {
         assert(JudgeUtils.isArrayExactly(data), Log.info.FUNC_SHOULD("data", `be array, but actual is ${data}`));
 
         for (let unit of data) {
@@ -346,7 +346,7 @@ export class GLSLDataSender {
 
     private _toSendBuffersUidStr: string = "";
 
-    @require(function() {
+    @requireCheck(function() {
         assert(!ArrayUtils.hasRepeatItems(this._toSendBufferArr), Log.info.FUNC_SHOULD_NOT("_toSendBufferArr", "has repeat buffer"));
     })
     @cache(function() {

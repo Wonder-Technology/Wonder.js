@@ -1,5 +1,5 @@
 import { registerClass } from "../definition/typescript/decorator/registerClass";
-import { require, it } from "../definition/typescript/decorator/contract";
+import { requireCheck, it } from "../definition/typescript/decorator/contract";
 import { EVariableType } from "../renderer/shader/variable/EVariableType";
 import expect from "wonder-expect.js";
 import { JudgeUtils } from "./JudgeUtils";
@@ -9,7 +9,7 @@ import { Log } from "./Log";
 
 @registerClass("BufferUtils")
 export class BufferUtils {
-    @require(function(type: EVariableType, value: Array<any>) {
+    @requireCheck(function(type: EVariableType, value: Array<any>) {
         it(`value:${value} should be array`, () => {
             expect(JudgeUtils.isArrayExactly(value)).true;
         });

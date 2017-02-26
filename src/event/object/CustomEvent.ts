@@ -59,7 +59,7 @@ export class CustomEvent extends Event {
         return <CustomEvent>this.copyMember(eventObj, this, ["target", "currentTarget", "isStopPropagation", "phase"]);
     }
 
-    //@require(function(event:PointEvent){
+    //@requireCheck(function(event:PointEvent){
     //    if(event.target){
     //        assert(event.target instanceof EntityObject, Log.info.FUNC_MUST_BE("target", "EntityObject"));
     //    }

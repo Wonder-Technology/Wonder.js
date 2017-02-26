@@ -5,7 +5,7 @@ import { JudgeUtils } from "../../utils/JudgeUtils";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 import { BufferContainer } from "./data/BufferContainer";
 import { EDrawMode } from "../../renderer/EDrawMode";
-import { ensure, it, require } from "../../definition/typescript/decorator/contract";
+import { ensure, it, requireCheck } from "../../definition/typescript/decorator/contract";
 import expect from "wonder-expect.js";
 import { execOnlyOnce } from "../../definition/typescript/decorator/control";
 import { virtual } from "../../definition/typescript/decorator/virtual";
@@ -81,7 +81,7 @@ export abstract class Geometry extends Component {
         // this.vaoManager && this.vaoManager.init();
     }
 
-    // @require(function(){
+    // @requireCheck(function(){
     //     it("must define buffers->geometryData", () => {
     //         expect(this.buffers).exist;
     //         expect(this.buffers.geometryData).exist;
@@ -91,7 +91,7 @@ export abstract class Geometry extends Component {
     //     return this.buffers.geometryData.hasFaceNormals();
     // }
 
-    // @require(function(){
+    // @requireCheck(function(){
     //     it("must define buffers->geometryData", () => {
     //         expect(this.buffers).exist;
     //         expect(this.buffers.geometryData).exist;
@@ -117,7 +117,7 @@ export abstract class Geometry extends Component {
         // this.vaoManager && this.vaoManager.dispose();
     }
 
-    // @require(function(){
+    // @requireCheck(function(){
     //     it("must define buffers->geometryData", () => {
     //         expect(this.buffers).exist;
     //         expect(this.buffers.geometryData).exist;
@@ -131,7 +131,7 @@ export abstract class Geometry extends Component {
     //     this.buffers.geometryData.computeVertexNormals();
     // }
 
-    @require(function() {
+    @requireCheck(function() {
         it("not exist buffers", () => {
             expect(this.buffers).exist;
         });

@@ -33,7 +33,7 @@ export { Main } from "./core/Main";
 export { MainData } from "./core/data/MainData";
 export { cacheGetter, cache, cacheBufferForBufferContainer, cacheBufferForBufferContainerWithFuncParam } from "./definition/typescript/decorator/cache";
 export { cloneAttributeAsBasicType, cloneAttributeAsCloneable, cloneAttributeAsCustomType, CloneUtils, CloneType } from "./definition/typescript/decorator/clone";
-export { assert, describe, it, require, ensure, requireGetterAndSetter, requireGetter, requireSetter, ensureGetterAndSetter, ensureGetter, ensureSetter, invariant } from "./definition/typescript/decorator/contract";
+export { assert, describe, it, requireCheck, ensure, requireGetterAndSetter, requireGetter, requireSetter, ensureGetterAndSetter, ensureGetter, ensureSetter, invariant } from "./definition/typescript/decorator/contract";
 export { execOnlyOnce } from "./definition/typescript/decorator/control";
 export { registerClass } from "./definition/typescript/decorator/registerClass";
 export { singleton } from "./definition/typescript/decorator/singleton";

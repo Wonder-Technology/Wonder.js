@@ -3,7 +3,7 @@ import { Renderer } from "./Renderer";
 import { Collection } from "wonder-commonlib/dist/es2015/Collection";
 import { RenderCommand } from "../command/RenderCommand";
 import { Color } from "../../structure/Color";
-import { ensure, assert, require } from "../../definition/typescript/decorator/contract";
+import { ensure, assert, requireCheck } from "../../definition/typescript/decorator/contract";
 import { Log } from "../../utils/Log";
 import { DeviceManager, ESide } from "../../device/DeviceManager";
 import { WebGLState } from "../state/WebGLState";
@@ -58,7 +58,7 @@ export class WebGLRenderer extends Renderer {
         DeviceManager.getInstance().clear(this._clearOptions);
     }
 
-    @require(function() {
+    @requireCheck(function() {
         assert(!!this.webglState, Log.info.FUNC_MUST_DEFINE("webglState"));
     })
     public render() {
@@ -131,7 +131,7 @@ export class WebGLRenderer extends Renderer {
         });
     }
 
-    // @require(function(transparentCommandArr:Array<RenderCommand>){
+    // @requireCheck(function(transparentCommandArr:Array<RenderCommand>){
     //     assert(!!Director.getInstance().scene.currentCamera, Log.info.FUNC_NOT_EXIST("current camera"));
     //
     //     for (let command of transparentCommandArr){

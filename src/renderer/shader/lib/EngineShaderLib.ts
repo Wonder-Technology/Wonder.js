@@ -8,7 +8,7 @@ import { RenderCommand } from "../../command/RenderCommand";
 import { Material } from "../../../material/Material";
 import { Program } from "../../program/Program";
 import { EVariableType } from "../variable/EVariableType";
-import { require, assert, it } from "../../../definition/typescript/decorator/contract";
+import { requireCheck, assert, it } from "../../../definition/typescript/decorator/contract";
 import { Log } from "../../../utils/Log";
 import { GLSLChunk, empty } from "../chunk/ShaderChunk";
 import { JudgeUtils } from "../../../utils/JudgeUtils";
@@ -62,7 +62,7 @@ export abstract class EngineShaderLib extends ShaderLib {
         program.sendAttributeBuffer(name, EVariableType.BUFFER, data);
     }
 
-    @require(function(program: Program, name: string, data: any) {
+    @requireCheck(function(program: Program, name: string, data: any) {
         assert(!!VariableLib[name], `${name} should exist in VariableLib`);
     })
     protected sendUniformData(program: Program, name: string, data: any) {
@@ -87,7 +87,7 @@ export abstract class EngineShaderLib extends ShaderLib {
         return this._getChunk(chunk, EShaderLibType.fs);
     }
 
-    @require(function() {
+    @requireCheck(function() {
         assert(this.vsSource === null, Log.info.FUNC_SHOULD("vsSource", "be null"));
     })
     protected setVsSource(vs: GLSLChunk | string, operator: string = "=") {
@@ -99,7 +99,7 @@ export abstract class EngineShaderLib extends ShaderLib {
         }
     }
 
-    @require(function() {
+    @requireCheck(function() {
         assert(this.fsSource === null, Log.info.FUNC_SHOULD("fsSource", "be null"));
     })
     protected setFsSource(fs: GLSLChunk | string, operator: string = "=") {
@@ -119,7 +119,7 @@ export abstract class EngineShaderLib extends ShaderLib {
         this._addVariable(this.uniforms, variableArr);
     }
 
-    @require(function(target: Hash<ShaderVariable>, variableArr: Array<string>) {
+    @requireCheck(function(target: Hash<ShaderVariable>, variableArr: Array<string>) {
         variableArr.forEach((variable: string) => {
             it("should exist in VariableLib", function() {
                 expect(VariableLib[variable]).exist;

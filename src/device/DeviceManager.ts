@@ -8,7 +8,7 @@ import { RectRegion } from "../structure/RectRegion";
 import { Color } from "../structure/Color";
 import { DomQuery } from "wonder-commonlib/dist/es2015/utils/DomQuery";
 import { root } from "../definition/Variable";
-import { require, it, ensure } from "../definition/typescript/decorator/contract";
+import { requireCheck, it, ensure } from "../definition/typescript/decorator/contract";
 import expect from "wonder-expect.js";
 import { EScreenSize } from "./EScreenSize";
 
@@ -437,7 +437,7 @@ export class DeviceManager {
         }
     }
 
-    @require(function() {
+    @requireCheck(function() {
         it("should exist MainData.screenSize", () => {
             expect(MainData.screenSize).exist;
         });
@@ -482,7 +482,7 @@ export class DeviceManager {
         this.setViewport(0, 0, width, height);
     }
 
-    @require(function(level: number) {
+    @requireCheck(function(level: number) {
         it(`level should > 0, but actual is ${level}`, () => {
             expect(level).greaterThan(0);
         });

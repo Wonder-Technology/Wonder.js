@@ -2,7 +2,7 @@ import { registerClass } from "../definition/typescript/decorator/registerClass"
 import { EEventName } from "./object/EventNameHandler";
 import { EEngineEvent } from "./EEngineEvent";
 import { EntityObject } from "../core/entityObject/EntityObject";
-import { require, it, assert } from "../definition/typescript/decorator/contract";
+import { requireCheck, it, assert } from "../definition/typescript/decorator/contract";
 import { EventTable } from "./object/EventTable";
 import expect from "wonder-expect.js";
 import { EEventType } from "./object/EEventType";
@@ -32,7 +32,7 @@ export class EventManager {
     public static on(target: EntityObject, eventName: EEventName | EEngineEvent | string, handler: Function, priority: number): void;
     public static on(dom: HTMLElement, eventName: EEventName | EEngineEvent | string, handler: Function, priority: number): void;
 
-    @require(function(...args) {
+    @requireCheck(function(...args) {
         if (args[0] instanceof EntityObject) {
             let eventName = args[1];
 
@@ -120,7 +120,7 @@ export class EventManager {
     public static off(dom: HTMLElement, eventName: EEventName, handler: Function): void;
 
 
-    @require(function(...args) {
+    @requireCheck(function(...args) {
         if (args.length > 2 && args[0] instanceof EntityObject) {
             let eventName = args[1],
                 eventType = EventTable.getEventType(eventName);
@@ -214,7 +214,7 @@ export class EventManager {
     public static trigger(target: EntityObject, event: Event, userData: any, notSetTarget: boolean): void;
 
 
-    @require(function(...args) {
+    @requireCheck(function(...args) {
         if (args.length === 2 && args[0] instanceof Event) {
             let event = args[0];
 
@@ -301,7 +301,7 @@ export class EventManager {
     public static broadcast(target: EntityObject, event: Event);
     public static broadcast(target: EntityObject, event: Event, userData: any);
 
-    @require(function(target: EntityObject, eventObject: Event, userData?: any) {
+    @requireCheck(function(target: EntityObject, eventObject: Event, userData?: any) {
         assert(eventObject instanceof CustomEvent, Log.info.FUNC_MUST_BE("eventObject", "CustomEvent"));
     })
     public static broadcast(...args) {
@@ -313,7 +313,7 @@ export class EventManager {
     public static emit(target: EntityObject, event: Event);
     public static emit(target: EntityObject, event: Event, userData: any);
 
-    @require(function(target: EntityObject, eventObject: Event, userData?: any) {
+    @requireCheck(function(target: EntityObject, eventObject: Event, userData?: any) {
         assert(eventObject instanceof CustomEvent, Log.info.FUNC_MUST_BE("eventObject", "CustomEvent"));
     })
     public static emit(...args) {
@@ -381,7 +381,7 @@ export class EventManager {
         return fromEventPattern(addHandler, removeHandler);
     }
 
-    @require(function(target: EntityObject, parent: any) {
+    @requireCheck(function(target: EntityObject, parent: any) {
         assert(target instanceof EntityObject, "only EntityObject can setBubleParent");
     })
     public static setBubbleParent(target: EntityObject, parent: any) {

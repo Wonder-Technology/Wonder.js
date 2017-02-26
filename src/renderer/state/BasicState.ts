@@ -10,7 +10,7 @@ export class BasicState extends WebGLState {
         return obj;
     }
 
-    // @require(function(material:Material){
+    // @requireCheck(function(material:Material){
     //     if(material.blendFuncSeparate && material.blendEquationSeparate){
     //     }
     //     else{

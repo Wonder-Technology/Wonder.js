@@ -1,7 +1,7 @@
 import { registerClass } from "../../../definition/typescript/decorator/registerClass";
 import { ShaderSourceBuilder, SourceDefine } from "./ShaderSourceBuilder";
 import { Collection } from "wonder-commonlib/dist/es2015/Collection";
-import { require, assert } from "../../../definition/typescript/decorator/contract";
+import { requireCheck, assert } from "../../../definition/typescript/decorator/contract";
 import { EngineShaderLib } from "../lib/EngineShaderLib";
 import { Log } from "../../../utils/Log";
 import { main_begin, main_end } from "../snippet/ShaderSnippet";
@@ -40,7 +40,7 @@ export class EngineShaderSourceBuilder extends ShaderSourceBuilder {
     public vsSourceExtensionList: Collection<string> = Collection.create<string>();
     public fsSourceExtensionList: Collection<string> = Collection.create<string>();
 
-    @require(function(libs: Collection<EngineShaderLib>) {
+    @requireCheck(function(libs: Collection<EngineShaderLib>) {
         assert(this.vsSource === null, Log.info.FUNC_SHOULD("vsSource", "be null"));
         assert(this.fsSource === null, Log.info.FUNC_SHOULD("fsSource", "be null"));
     })

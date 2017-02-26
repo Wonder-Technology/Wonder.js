@@ -5,7 +5,7 @@ import { Buffer } from "../../../renderer/buffer/Buffer";
 import { ElementBuffer } from "../../../renderer/buffer/ElementBuffer";
 import { virtual } from "../../../definition/typescript/decorator/virtual";
 import { EBufferDataType } from "../../../renderer/buffer/EBufferDataType";
-import { require, it } from "../../../definition/typescript/decorator/contract";
+import { requireCheck, it } from "../../../definition/typescript/decorator/contract";
 import expect from "wonder-expect.js";
 import { EBufferType } from "../../../renderer/buffer/EBufferType";
 import { EBufferUsage } from "../../../renderer/buffer/EBufferUsage";
@@ -51,7 +51,7 @@ export abstract class BufferContainer {
     public getChild(type: EBufferDataType);
     public getChild(type: EBufferDataType, dataName: string);
 
-    @require(function(...args) {
+    @requireCheck(function(...args) {
         it("test arguments", function() {
             if (args.length === 2) {
                 let dataName = args[1];
