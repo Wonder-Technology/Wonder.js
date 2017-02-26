@@ -1,18 +1,17 @@
 {
-	"compilerOptions": {
-		"target": "es5",
-		"module": "es2015",
-		"moduleResolution":"Node",
-		//"listFiles":true,
-		"noImplicitAny": false,
-		"sourceMap": true,
-		"outDir": "../dist/es2015",
-		"declaration": true,
-		"noEmitOnError": true,
-		"removeComments": true,
-		"experimentalDecorators": true
-	},
-	"files": [
-		"./index.ts"
-	]
+  "compilerOptions": {
+    "target": "es5",
+    "module": "es2015",
+    "moduleResolution": "Node",
+    "noImplicitAny": false,
+    "sourceMap": true,
+    "outDir": "../dist/es2015",
+    "declaration": true,
+    "noEmitOnError": true,
+    "removeComments": true,
+    "experimentalDecorators": true
+  },
+  "files": [
+    "./index.ts"
+  ]
 }
