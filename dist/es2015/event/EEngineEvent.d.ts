@@ -1,0 +1,15 @@
+export declare enum EEngineEvent {
+    STARTLOOP,
+    ENDLOOP,
+    POINT_TAP,
+    POINT_DOWN,
+    POINT_UP,
+    POINT_MOVE,
+    POINT_OVER,
+    POINT_OUT,
+    POINT_SCALE,
+    POINT_DRAG,
+    TRANSFORM_TRANSLATE,
+    TRANSFORM_ROTATE,
+    TRANSFORM_SCALE,
+}

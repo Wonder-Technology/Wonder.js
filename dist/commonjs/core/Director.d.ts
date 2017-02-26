@@ -1,0 +1,37 @@
+import "wonder-frp/dist/commonjs/stream/ConcatStream";
+import "wonder-frp/dist/commonjs/stream/IgnoreElementsStream";
+import "wonder-frp/dist/commonjs/extend/root";
+import { SceneDispatcher } from "./entityObject/scene/SceneDispatcher";
+import { Renderer } from "../renderer/renderer/Renderer";
+export declare class Director {
+    static getInstance(): any;
+    private constructor();
+    readonly gameTime: number;
+    readonly fps: number;
+    readonly isNormal: boolean;
+    readonly isStop: boolean;
+    readonly isPause: boolean;
+    readonly isTimeChange: boolean;
+    readonly elapsed: number;
+    readonly view: any;
+    scene: SceneDispatcher;
+    renderer: Renderer;
+    private _gameLoop;
+    private _gameState;
+    private _timeController;
+    initWhenCreate(): void;
+    start(): void;
+    stop(): void;
+    pause(): void;
+    resume(): void;
+    getDeltaTime(): number;
+    private _startLoop();
+    private _buildInitStream();
+    private _init();
+    private _initGameObjectScene();
+    private _buildLoopStream();
+    private _loopBody(time);
+    private _run(elapsed);
+    private _update(elapsed);
+    private _render();
+}

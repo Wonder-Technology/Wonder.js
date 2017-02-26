@@ -1,6 +1,6 @@
 {
   "name": "wonder.js",
-  "version": "0.0.4",
+  "version": "1.0.0-alpha.1",
   "authors": "Yuanchao Yang <395976266@qq.com>",
   "description": "3d webgl engine",
   "homepage": "https://github.com/yyc-git/Wonder.js",

@@ -1,0 +1,38 @@
+import { Program } from "./Program";
+import { ArrayBuffer } from "../buffer/ArrayBuffer";
+import { Color } from "../../structure/Color";
+import { Matrix3 } from "../../math/Matrix3";
+import { Matrix4 } from "../../math/Matrix4";
+export declare class GLSLDataSender {
+    static create(program: Program): GLSLDataSender;
+    constructor(program: Program);
+    private _program;
+    private _uniformCache;
+    private _vertexAttribHistory;
+    private _getUniformLocationCache;
+    private _toSendBufferArr;
+    sendFloat1(name: string, data: any): void;
+    sendFloat2(name: string, data: any): void;
+    sendFloat3(name: string, data: any): void;
+    sendFloat4(name: string, data: any): void;
+    sendVector2(name: string, data: any): void;
+    sendVector3(name: string, data: any): void;
+    sendVector4(name: string, data: any): void;
+    sendColor3(name: string, data: Color): void;
+    sendNum1(name: string, data: number): void;
+    sendMatrix3(name: string, data: Matrix3): void;
+    sendMatrix4(name: string, data: Matrix4): void;
+    sendMatrix4Array(name: string, data: Array<number> | Float32Array): void;
+    sendSampleArray(name: string, data: Array<number>): void;
+    getUniformLocation(name: string): any;
+    addBufferToToSendList(pos: number, buffer: ArrayBuffer): void;
+    private _toSendBuffersUidStr;
+    sendAllBufferData(): void;
+    clearBufferList(): void;
+    sendBuffer(pos: number, buffer: ArrayBuffer): void;
+    disableVertexAttribArray(): void;
+    clearAllCache(): void;
+    dispose(): void;
+    private _recordUniformData(name, data);
+    private _isUniformDataNotExistByLocation(pos);
+}

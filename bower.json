@@ -1,29 +1,31 @@
 {
-  "name": "wonder",
-  "version": "0.9.0",
+  "name": "wonder.js",
+  "version": "1.0.0-alpha.1",
   "homepage": "https://github.com/yyc-git/Wonder.js",
   "authors": [
     "Yuanchao Yang <395976266@qq.com>"
   ],
-  "description": "3d html5 game engine",
+  "description": "3d webgl engine",
   "keywords": [
     "wonder",
     "wonderjs",
     "wonder.js",
     "webgl",
     "3d",
-    "engine",
-    "html5",
-    "javascript"
+    "webgl",
+    "engine"
   ],
   "license": "MIT",
   "main": "dist/wd.js",
   "ignore": [
-    "**/.*",
+    ".idea",
+    ".DS_Store",
     "build",
     "examples",
-    "lib",
     "src",
-    "test"
+    "test",
+    "reference",
+    "mine",
+    "server"
   ]
 }

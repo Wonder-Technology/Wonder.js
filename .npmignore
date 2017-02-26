@@ -1,0 +1,10 @@
+.idea/
+.DS_Store
+bower_components/
+test/
+src/
+build/
+reference/
+mine/
+server/
+examples/

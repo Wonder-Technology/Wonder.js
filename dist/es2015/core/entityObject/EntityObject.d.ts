@@ -1,0 +1,55 @@
+/// <reference types="wonder-commonlib" />
+import { Entity } from "../Entity";
+import { Hash } from "wonder-commonlib/dist/es2015/Hash";
+import { Collection } from "wonder-commonlib/dist/es2015/Collection";
+import { CustomEventRegisterData } from "../../event/binder/CustomEventRegister";
+import { ComponentManager } from "./manager/ComponentManager";
+import { Component } from "../Component";
+import { Geometry } from "../../component/geometry/Geometry";
+import { Renderer } from "../../renderer/renderer/Renderer";
+import { GameObject } from "./gameObject/GameObject";
+import { Transform } from "../../component/transform/Transform";
+export declare abstract class EntityObject extends Entity {
+    private _bubbleParent;
+    bubbleParent: EntityObject;
+    componentDirty: boolean;
+    readonly transform: Transform;
+    name: string;
+    parent: EntityObject;
+    customEventMap: Hash<Collection<CustomEventRegisterData>>;
+    protected componentManager: ComponentManager;
+    private _hasComponentCache;
+    private _getComponentCache;
+    private _componentChangeSubscription;
+    private _entityObjectManager;
+    initWhenCreate(): void;
+    clone(config?: CloneEntityObjectConfigData): any;
+    init(): this;
+    dispose(): void;
+    hasChild(child: EntityObject): boolean;
+    addChild(child: EntityObject): EntityObject;
+    getChildren(): Collection<any>;
+    removeChild(child: EntityObject): EntityObject;
+    forEach(func: (entityObject: EntityObject, index: number) => void): this;
+    getComponent<T>(_class: any): T;
+    hasComponent(component: Component): boolean;
+    hasComponent(_class: Function): boolean;
+    addComponent(component: Component, isShareComponent?: boolean): this;
+    removeComponent(component: Component): any;
+    removeComponent(_class: Function): any;
+    forEachComponent(func: (component: Component) => void): this;
+    render(renderer: Renderer, camera: GameObject): void;
+    update(elapsed: number): void;
+    clearCache(): void;
+    getGeometry(): Geometry;
+    protected abstract createTransform(): Transform;
+    protected afterInitChildren(): void;
+    protected getRenderList(): Collection<any>;
+    private _getHasComponentCacheKey(...args);
+    private _cloneChildren(result);
+}
+export declare type CloneEntityObjectConfigData = {
+    cloneChildren?: boolean;
+    shareGeometry?: boolean;
+    cloneGeometry?: boolean;
+};

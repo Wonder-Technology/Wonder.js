@@ -1,0 +1,12 @@
+export declare function assert(cond: boolean, message?: string): void;
+export declare function describe(message: string, func: Function, preCondition?: Function, context?: any): void;
+export declare function it(message: string, func: Function, context?: any): void;
+export declare function requireCheck(inFunc: any): (target: any, name: any, descriptor: any) => any;
+export declare function ensure(outFunc: any): (target: any, name: any, descriptor: any) => any;
+export declare function requireGetterAndSetter(inGetterFunc: any, inSetterFunc: any): (target: any, name: any, descriptor: any) => any;
+export declare function requireGetter(inFunc: any): (target: any, name: any, descriptor: any) => any;
+export declare function requireSetter(inFunc: any): (target: any, name: any, descriptor: any) => any;
+export declare function ensureGetterAndSetter(outGetterFunc: any, outSetterFunc: any): (target: any, name: any, descriptor: any) => any;
+export declare function ensureGetter(outFunc: any): (target: any, name: any, descriptor: any) => any;
+export declare function ensureSetter(outFunc: any): (target: any, name: any, descriptor: any) => any;
+export declare function invariant(func: any): (target: any) => void;
