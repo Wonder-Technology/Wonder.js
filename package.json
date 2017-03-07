@@ -12,6 +12,7 @@
   },
   "devDependencies": {
     "codecov.io": "^0.1.6",
+    "del": "^2.2.2",
     "express": "^4.13.3",
     "glob": "^7.0.4",
     "gulp": "^3.9.0",
