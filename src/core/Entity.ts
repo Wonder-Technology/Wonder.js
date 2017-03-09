@@ -1,5 +1,3 @@
-import { Collection } from "wonder-commonlib/dist/es2015/Collection";
-
 export abstract class Entity {
     private static _count: number = 1;
 
@@ -11,28 +9,31 @@ export abstract class Entity {
     public uid: number = null;
     public data: any = null;
 
-    private _tagList: Collection<string> = Collection.create<string>();
-
+    private _tagList: Array<string> = [];
 
     public addTag(tag: string) {
-        this._tagList.addChild(tag);
+        this._tagList.push(tag);
     }
 
     public removeTag(tag: string) {
-        this._tagList.removeChild(tag);
+        this._tagList.splice(this._tagList.indexOf(tag), 1);
     }
 
     public getTagList() {
         return this._tagList;
     }
 
-    public hasTag(tag: string) {
-        return this._tagList.hasChild(tag);
+    public hasTag(targetTag: string) {
+        return this._tagList.indexOf(targetTag) > -1;
     }
 
-    public containTag(tag: string) {
-        return this._tagList.hasChildWithFunc((t: string) => {
-            return t.indexOf(tag) > -1;
-        })
+    public containTag(targetTag: string) {
+        for(let tag of this._tagList){
+            if(tag.indexOf(targetTag) > -1){
+                return true;
+            }
+        }
+
+        return false;
     }
 }
