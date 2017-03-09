@@ -21,7 +21,6 @@ export abstract class Entity {
     }
 
     public uid: number = null;
-    public data: any = null;
 
     private _tagList: Array<string> = [];
 
