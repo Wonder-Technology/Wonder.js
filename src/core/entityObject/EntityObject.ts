@@ -119,6 +119,7 @@ export abstract class EntityObject extends Entity {
     }
 
     public dispose() {
+        super.dispose();
         // this.onDispose();
 
         if (this.parent) {
