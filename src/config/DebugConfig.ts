@@ -1,5 +1,5 @@
-export var DebugConfig = {
+export const DebugConfig = {
     isTest: false,
     debugCollision: false,
     showDebugPanel: false
-}
+};

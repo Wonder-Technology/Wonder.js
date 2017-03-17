@@ -102,7 +102,7 @@ export class MeshRenderer extends RendererComponent {
         // else{
         cmd = SingleDrawCommand.create();
 
-        cmd.normalMatrix = this.entityObject.transform.normalMatrix;
+        // cmd.normalMatrix = this.entityObject.transform.normalMatrix;
         // }
 
         return cmd;

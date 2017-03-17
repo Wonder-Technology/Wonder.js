@@ -126,13 +126,14 @@ export class ComponentManager {
         else if (component instanceof Geometry) {
             this._geometry = component;
         }
-        else if (component instanceof Transform) {
-            if (this.transform) {
-                this.removeComponent(this.transform);
-            }
-
-            this.transform = component;
-        }
+        //todo fix
+        // else if (component instanceof Transform) {
+        //     if (this.transform) {
+        //         this.removeComponent(this.transform);
+        //     }
+        //
+        //     this.transform = component;
+        // }
 
         component.addToObject(this._entityObject, isShareComponent);
 

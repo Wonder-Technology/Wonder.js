@@ -1,6 +1,6 @@
-import {EntitySystem} from "./EntitySystem";
-import {requireCheck, it} from "../definition/typescript/decorator/contract";
-import {virtual} from "../definition/typescript/decorator/virtual";
+import { EntitySystem } from "./EntitySystem";
+import { requireCheck, it } from "../definition/typescript/decorator/contract";
+import { virtual } from "../definition/typescript/decorator/virtual";
 
 const ENTITY_INDEX_BITS = 22,
     ENTITY_INDEX_MASK = (1 << ENTITY_INDEX_BITS) - 1,
@@ -24,7 +24,7 @@ export abstract class Entity {
 
     private _tagList: Array<string> = [];
 
-    @requireCheck(function (index:number, generation:number) {
+    @requireCheck(function(index: number, generation: number) {
         it("index should in the range", () => {
             expect(index).lessThan(1 << ENTITY_INDEX_BITS);
         });
@@ -33,7 +33,7 @@ export abstract class Entity {
         });
     })
     //todo need test
-    public buildUID(index:number, generation:number){
+    public buildUID(index: number, generation: number) {
         this.uid = generation << ENTITY_INDEX_BITS + index;
     }
 

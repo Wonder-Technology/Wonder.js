@@ -356,6 +356,8 @@ export class Quaternion {
         this.y = y;
         this.z = z;
         this.w = w;
+
+        return this;
     }
 
     public sub(quat: Quaternion) {

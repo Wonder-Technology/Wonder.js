@@ -15,6 +15,7 @@ import { BasicState } from "../renderer/state/BasicState";
 import { EventManager } from "../event/EventManager";
 import { CustomEvent } from "../event/object/CustomEvent";
 import { EEngineEvent } from "../event/EEngineEvent";
+import {ThreeDTransformSystem} from "../component/transform/ThreeDTransformSystem";
 
 enum EGameState {
     NORMAL,
@@ -69,7 +70,7 @@ export class Director {
     private _gameLoop: IDisposable = null;
     private _gameState: EGameState = EGameState.NORMAL;
     private _timeController: DirectorTimeController = DirectorTimeController.create();
-
+    // private _transformSystem: ThreeDTransformSystem = ThreeDTransformSystem.create();
 
     public initWhenCreate() {
         this.scene = SceneDispatcher.create();
@@ -183,6 +184,8 @@ export class Director {
 
     private _update(elapsed: number) {
         this.scene.gameObjectScene.update(elapsed);
+
+        ThreeDTransformSystem.getInstance().update(elapsed);
     }
 
     private _render() {

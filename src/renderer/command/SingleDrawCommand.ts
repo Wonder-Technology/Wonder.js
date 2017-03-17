@@ -1,6 +1,5 @@
 import { registerClass } from "../../definition/typescript/decorator/registerClass";
 import { QuadCommand } from "./QuadCommand";
-import { Matrix3 } from "../../math/Matrix3";
 import { Material } from "../../material/Material";
 import { ArrayBuffer } from "../buffer/ArrayBuffer";
 import { ElementBuffer } from "../buffer/ElementBuffer";
@@ -14,7 +13,7 @@ export class SingleDrawCommand extends QuadCommand {
         return obj;
     }
 
-    public normalMatrix: Matrix3 = null;
+    // public normalMatrix: Matrix3 = null;
 
     protected draw(material: Material) {
         var vertexBuffer: ArrayBuffer = null,

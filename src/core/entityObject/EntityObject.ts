@@ -55,7 +55,8 @@ export abstract class EntityObject extends Entity {
 
     @virtual
     public initWhenCreate() {
-        this.addComponent(this.createTransform());
+        //todo fix
+        // this.addComponent(this.createTransform());
     }
 
     // @requireCheck(function(config:CloneEntityObjectConfigData = <any>{}){
