@@ -106,5 +106,27 @@ export class DataUtils {
     public static createQuaternionByIndex(qua:Quaternion, dataArr: Float32Array, index: number){
         return this.setQuaternionByIndex(qua, dataArr, index);
     }
+
+    public static cleanArrayItem(arr:Array<any>, index:number){
+        arr[index] = void 0;
+    }
+
+    public static removeArrayItemBySwap(arr:Array<any>, index:number, swapItemIndex:number){
+        arr[index] = arr[swapItemIndex];
+
+        arr.pop();
+    }
+
+    public static cleanTypeArrayItem(dataArr:Float32Array, index:number, length:number){
+        for(let i = 0; i < length; i++){
+            dataArr[index + i] = void 0;
+        }
+    }
+
+    public static removeTypeArrayItemBySwap(dataArr:Float32Array, index:number, swapItemIndex:number, length:number){
+        for(let i = 0; i < length; i++){
+            dataArr[index + i] = dataArr[swapItemIndex + i];
+        }
+    }
 }
 

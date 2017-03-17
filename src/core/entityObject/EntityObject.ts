@@ -18,6 +18,10 @@ import { Transform } from "../../component/transform/Transform";
 import { ensure, it } from "../../definition/typescript/decorator/contract";
 import expect from "wonder-expect.js";
 import { JudgeUtils } from "../../utils/JudgeUtils";
+import {DataOrientedComponent} from "../../component/DataOrientedComponent";
+import {DataOrientedComponentTypeIdManager} from "../../component/DataOrientedComponentTypeIdManager";
+import {SortUtils} from "../../utils/SortUtils";
+import {ComponentInitOrderTable} from "../../component/data/ComponentInitOrderTable";
 
 export abstract class EntityObject extends Entity {
     private _bubbleParent: EntityObject = null;
@@ -55,8 +59,7 @@ export abstract class EntityObject extends Entity {
 
     @virtual
     public initWhenCreate() {
-        //todo fix
-        // this.addComponent(this.createTransform());
+        this.addDataOrientedComponent(this.createTransform());
     }
 
     // @requireCheck(function(config:CloneEntityObjectConfigData = <any>{}){
@@ -110,6 +113,16 @@ export abstract class EntityObject extends Entity {
         //     });
 
         this.componentManager.init();
+
+        //todo test
+        for (let component of SortUtils.insertSort(this._componentMap.toArray(), (a: Component, b: Component) => {
+            return ComponentInitOrderTable.getOrder(a) < ComponentInitOrderTable.getOrder(b);
+        })) {
+            component.init();
+        }
+
+
+
         this._entityObjectManager.init();
 
         this.afterInitChildren();
@@ -221,6 +234,40 @@ export abstract class EntityObject extends Entity {
 
         return this;
     }
+
+
+
+
+
+
+    //todo refactor
+    private _componentMap:Hash<DataOrientedComponent> = Hash.create<DataOrientedComponent>();
+
+    public addDataOrientedComponent(component: DataOrientedComponent) {
+        component.addToObject(this);
+
+        this._componentMap.addChild(DataOrientedComponentTypeIdManager.getTypeIdFromComponent(component), component);
+
+        return this;
+    }
+
+    public getDataOrientedComponent<T extends DataOrientedComponent>(_class: T): T {
+        return this._componentMap.getChild(DataOrientedComponentTypeIdManager.getTypeIdFromClass(_class)) as T;
+    }
+
+    public removeDataOrientedComponent(component: DataOrientedComponent){
+        //todo optimize Hash->removeChild: not return data; not judge param
+        this._componentMap.removeChild(DataOrientedComponentTypeIdManager.getTypeIdFromComponent(component));
+
+        component.removeFromObject(this);
+
+        return this;
+    }
+
+
+
+
+
 
     @virtual
     public render(renderer: Renderer, camera: GameObject): void {

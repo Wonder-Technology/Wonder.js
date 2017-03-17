@@ -8,6 +8,7 @@
 import {DataOrientedComponent} from "../DataOrientedComponent";
 import {ThreeDTransformSystem} from "./ThreeDTransformSystem";
 
+//todo refactor:not import on ThreeDTransformSystem
 export abstract class Transform extends DataOrientedComponent {
     // protected p_parent: Transform = null;
     // @cloneAttributeAsBasicType()
@@ -20,10 +21,12 @@ export abstract class Transform extends DataOrientedComponent {
         ThreeDTransformSystem.getInstance().setParent(this.indexInArrayBuffer, parent.indexInArrayBuffer);
     }
 
-    constructor(){
-        super();
-
+    public addToSystem(){
         ThreeDTransformSystem.getInstance().addComponent(this);
+    }
+
+    public removeFromSystem(){
+        ThreeDTransformSystem.getInstance().removeComponent(this.indexInArrayBuffer);
     }
 
     // get isTransform() {
@@ -88,11 +91,12 @@ export abstract class Transform extends DataOrientedComponent {
     //         });
     // }
     //
-    // public dispose() {
-    //     super.dispose();
-    //
-    //     this._endLoopSubscription && this._endLoopSubscription.dispose();
-    // }
+    public dispose() {
+        super.dispose();
+
+        // this._endLoopSubscription && this._endLoopSubscription.dispose();
+        ThreeDTransformSystem.getInstance().removeComponent(this.indexInArrayBuffer);
+    }
     //
     // public addChild(child: Transform) {
     //     this.children.addChild(child);

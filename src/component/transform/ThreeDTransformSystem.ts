@@ -30,10 +30,57 @@ export class ThreeDTransformSystem {
     }
 
     public addComponent(transform:ThreeDTransform){
-        var indexInArrayBuffer = this._generateIndexInArrayBuffer();
+        var indexInArrayBuffer = this._generateNotUsedIndexInArrayBuffer();
 
         transform.indexInArrayBuffer = indexInArrayBuffer;
         this._data.transforms[indexInArrayBuffer] = transform;
+    }
+
+    public removeComponent(indexInArrayBuffer:number){
+        if(this._isNotDirty(indexInArrayBuffer)){
+            this._removeFromNormalList(indexInArrayBuffer);
+
+            return;
+        }
+
+        this._removeFromDirtyList(indexInArrayBuffer);
+    }
+
+    private _removeFromNormalList(indexInArrayBuffer:number){
+        var data = this._data;
+
+        DataUtils.cleanArrayItem(data.transforms, indexInArrayBuffer);
+
+        DataUtils.cleanTypeArrayItem(data.parents, indexInArrayBuffer, 1);
+        DataUtils.cleanTypeArrayItem(data.firstChildren, indexInArrayBuffer, 1);
+        DataUtils.cleanTypeArrayItem(data.nextSiblings, indexInArrayBuffer, 1);
+        DataUtils.cleanTypeArrayItem(data.localToWorldMatrices, indexInArrayBuffer, 16);
+        DataUtils.cleanTypeArrayItem(data.localPositions, indexInArrayBuffer, 3);
+        DataUtils.cleanTypeArrayItem(data.localRotations, indexInArrayBuffer, 4);
+        DataUtils.cleanTypeArrayItem(data.localScales, indexInArrayBuffer, 3);
+
+        this._notUsedIndexArray.push(indexInArrayBuffer);
+    }
+
+    @ensure(function (returnVal, indexInArrayBuffer:number) {
+        it("firstDirtyIndex should <= count", () => {
+            expect(this._firstDirtyIndex).lte(this._data.count);
+        }, this);
+    })
+    private _removeFromDirtyList(indexInArrayBuffer:number){
+        var data = this._data;
+
+        DataUtils.removeArrayItemBySwap(data.transforms, indexInArrayBuffer, data.transforms.length - 1);
+
+        DataUtils.removeTypeArrayItemBySwap(data.parents, indexInArrayBuffer, data.parents.length - 1, 1);
+        DataUtils.removeTypeArrayItemBySwap(data.firstChildren, indexInArrayBuffer, data.firstChildren.length - 1, 1);
+        DataUtils.removeTypeArrayItemBySwap(data.nextSiblings, indexInArrayBuffer, data.nextSiblings.length - 1, 1);
+        DataUtils.removeTypeArrayItemBySwap(data.localToWorldMatrices, indexInArrayBuffer, data.localToWorldMatrices.length - 16, 16);
+        DataUtils.removeTypeArrayItemBySwap(data.localPositions, indexInArrayBuffer, data.localPositions.length - 3, 3);
+        DataUtils.removeTypeArrayItemBySwap(data.localRotations, indexInArrayBuffer, data.localRotations.length - 4, 4);
+        DataUtils.removeTypeArrayItemBySwap(data.localScales, indexInArrayBuffer, data.localScales.length - 3, 3);
+
+        this._firstDirtyIndex += 1;
     }
 
     public getParent(indexInArrayBuffer:number){
@@ -107,7 +154,7 @@ export class ThreeDTransformSystem {
         }, this);
     })
     private _addToDirtyList(indexInArrayBuffer:number){
-        this._firstDirtyIndex += 1;
+        this._firstDirtyIndex -= 1;
         this._notUsedIndexArray.push(indexInArrayBuffer);
         this._swap(indexInArrayBuffer, this._firstDirtyIndex);
     }
@@ -189,7 +236,7 @@ export class ThreeDTransformSystem {
     }
 
     private _moveFromDirtyListToNormalList(index:number){
-        this._swap(this._generateIndexInNormalList(), index);
+        this._swap(this._generateNotUsedIndexInNormalList(), index);
     }
 
     @ensure(function (indexInArrayBuffer:number) {
@@ -198,7 +245,7 @@ export class ThreeDTransformSystem {
             expect(indexInArrayBuffer).lessThan(this._firstDirtyIndex);
         }, this);
     })
-    private _generateIndexInArrayBuffer(){
+    private _generateNotUsedIndexInArrayBuffer(){
         var result = this._indexInArrayBuffer;
 
         if(result >= this._firstDirtyIndex){
@@ -216,7 +263,7 @@ export class ThreeDTransformSystem {
             expect(indexInArrayBuffer).lessThan(this._firstDirtyIndex);
         }, this);
     })
-    private _generateIndexInNormalList(){
+    private _generateNotUsedIndexInNormalList(){
         var index = this._notUsedIndexArray.pop();
 
         if(this._isValidIndex(index)){
