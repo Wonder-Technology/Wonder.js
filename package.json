@@ -27,7 +27,8 @@
     "rollup-plugin-node-resolve": "^2.0.0",
     "typescript": "^2.3.0-dev.20170224",
     "wonder-package": "^0.1.26",
-    "wonder-rollup-plugin-typescript": "^0.1.1"
+    "wonder-rollup-plugin-typescript": "^0.1.1",
+    "wonder-tool-generate_es2015_index": "^0.1.2"
   },
   "dependencies": {
     "@types/bowser": "^1.0.30",
@@ -37,7 +38,7 @@
     "@types/wonder-frp": "^0.2.0",
     "bowser": "^1.6.0",
     "wonder-commonlib": "^0.1.8",
-    "wonder-expect.js": "^0.1.0",
+    "wonder-expect.js": "^0.1.1",
     "wonder-frp": "^0.1.16"
   }
 }

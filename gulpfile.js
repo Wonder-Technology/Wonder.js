@@ -32,6 +32,20 @@ var createShaderChunk = require("./build/gulp_task/createInnerFile/ShaderChunk/c
 require("./build/gulp_task/clean/clean");
 
 
+var generateIndex = require("wonder-tool-generate_es2015_index").generate;
+var ts = require("typescript");
+
+gulp.task("generateIndex", function(done) {
+    var rootDir = path.join(process.cwd(), "src"),
+        destDir = "./src/";
+
+    generateIndex("/", rootDir, ["*.ts", "**/*.ts"], destDir, {
+        target: ts.ScriptTarget.ES5,
+        module: ts.ModuleKind.System
+    });
+
+    done();
+});
 
 
 gulp.task("compileTsES2015", function(done) {
@@ -74,7 +88,7 @@ gulp.task("createShaderChunk", function() {
 
 
 
-gulp.task("build", gulpSync.sync(["clean", "createShaderChunk", "compileTsES2015", "compileTsCommonjs", "generateDTS", "generateDTS", "rollup", "formatTs"]));
+gulp.task("build", gulpSync.sync(["clean", "createShaderChunk", "generateIndex", "compileTsES2015", "compileTsCommonjs", "generateDTS", "generateDTS", "rollup", "formatTs"]));
 
 
 
