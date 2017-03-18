@@ -2,7 +2,7 @@ import { registerClass } from "../definition/typescript/decorator/registerClass"
 import { Matrix3 } from "./Matrix3";
 import { Log } from "../utils/Log";
 import { requireCheck, it, assert } from "../definition/typescript/decorator/contract";
-import expect from "wonder-expect.js";
+import {expect} from "wonder-expect.js";
 import { Vector3 } from "./Vector3";
 import { Vector4 } from "./Vector4";
 import { Quaternion } from "./Quaternion";

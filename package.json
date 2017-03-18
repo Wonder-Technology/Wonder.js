@@ -32,13 +32,13 @@
   },
   "dependencies": {
     "@types/bowser": "^1.0.30",
-    "@types/expect.js": "^0.3.29",
     "@types/node": "^7.0.5",
     "@types/wonder-commonlib": "^0.2.0",
+    "@types/wonder-expect.js": "^0.1.2",
     "@types/wonder-frp": "^0.2.0",
     "bowser": "^1.6.0",
     "wonder-commonlib": "^0.1.8",
-    "wonder-expect.js": "^0.1.1",
+    "wonder-expect.js": "^0.1.4",
     "wonder-frp": "^0.1.16"
   }
 }

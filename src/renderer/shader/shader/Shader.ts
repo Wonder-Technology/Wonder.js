@@ -1,7 +1,7 @@
 import { Hash } from "wonder-commonlib/dist/es2015/Hash";
 import { ensureGetter, it, ensure } from "../../../definition/typescript/decorator/contract";
 import { Program } from "../../program/Program";
-import expect from "wonder-expect.js";
+import {expect} from "wonder-expect.js";
 import { cacheGetter } from "../../../definition/typescript/decorator/cache";
 import { ProgramTable } from "../../../core/entityObject/scene/cache/ProgramTable";
 import { Collection } from "wonder-commonlib/dist/es2015/Collection";

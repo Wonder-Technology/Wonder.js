@@ -5,7 +5,7 @@ import { Renderer } from "../../renderer/renderer/Renderer";
 import { requireCheck, it } from "../../definition/typescript/decorator/contract";
 import { Geometry } from "../geometry/Geometry";
 import { CameraController } from "../camera/controller/CameraController";
-import expect from "wonder-expect.js";
+import {expect} from "wonder-expect.js";
 import { QuadCommand } from "../../renderer/command/QuadCommand";
 import { Material } from "../../material/Material";
 import { SingleDrawCommand } from "../../renderer/command/SingleDrawCommand";

@@ -466,3 +466,4 @@ export class ThreeDTransform extends Transform {
     //     EventManager.trigger(this.entityObject, CustomEvent.create(eventName));
     // }
 }
+

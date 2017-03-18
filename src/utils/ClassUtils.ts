@@ -1,5 +1,5 @@
 import { ensure, it } from "../definition/typescript/decorator/contract";
-import expect from "wonder-expect.js";
+import {expect} from "wonder-expect.js";
 
 export class ClassUtils {
     private static _classMap: ClassMapData = {};

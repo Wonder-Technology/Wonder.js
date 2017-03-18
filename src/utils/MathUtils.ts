@@ -1,6 +1,6 @@
 import { registerClass } from "../definition/typescript/decorator/registerClass";
 import { requireCheck, it, ensure } from "../definition/typescript/decorator/contract";
-import expect from "wonder-expect.js";
+import {expect} from "wonder-expect.js";
 
 @registerClass("MathUtils")
 export class MathUtils {

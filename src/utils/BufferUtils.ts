@@ -1,7 +1,7 @@
 import { registerClass } from "../definition/typescript/decorator/registerClass";
 import { requireCheck, it } from "../definition/typescript/decorator/contract";
 import { EVariableType } from "../renderer/shader/variable/EVariableType";
-import expect from "wonder-expect.js";
+import {expect} from "wonder-expect.js";
 import { JudgeUtils } from "./JudgeUtils";
 import { ArrayBuffer } from "../renderer/buffer/ArrayBuffer";
 import { EBufferType } from "../renderer/buffer/EBufferType";

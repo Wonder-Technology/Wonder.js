@@ -16,7 +16,7 @@ import { Renderer } from "../../renderer/renderer/Renderer";
 import { GameObject } from "./gameObject/GameObject";
 import { Transform } from "../../component/transform/Transform";
 import { ensure, it } from "../../definition/typescript/decorator/contract";
-import expect from "wonder-expect.js";
+import {expect} from "wonder-expect.js";
 import { JudgeUtils } from "../../utils/JudgeUtils";
 import {DataOrientedComponent} from "../../component/DataOrientedComponent";
 import {DataOrientedComponentTypeIdManager} from "../../component/DataOrientedComponentTypeIdManager";

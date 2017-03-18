@@ -12,7 +12,7 @@ import { requireCheck, assert, it } from "../../../definition/typescript/decorat
 import { Log } from "../../../utils/Log";
 import { GLSLChunk, empty } from "../chunk/ShaderChunk";
 import { JudgeUtils } from "../../../utils/JudgeUtils";
-import expect from "wonder-expect.js";
+import {expect} from "wonder-expect.js";
 import { PathUtils } from "wonder-commonlib/dist/es2015/utils/PathUtils";
 // import { SourceDefine } from "../sourceBuilder/ShaderSourceBuilder";
 

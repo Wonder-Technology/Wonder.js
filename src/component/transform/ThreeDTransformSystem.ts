@@ -3,7 +3,7 @@ import {GlobalTempData} from "../../definition/GlobalTempData";
 import {DataUtils} from "../../utils/DataUtils";
 import {singleton} from "../../definition/typescript/decorator/singleton";
 import {requireCheck, it, ensure} from "../../definition/typescript/decorator/contract";
-import expect from "wonder-expect.js";
+import {expect} from "wonder-expect.js";
 import {ThreeDTransform} from "./ThreeDTransform";
 import {Matrix4} from "../../math/Matrix4";
 import {Vector3} from "../../math/Vector3";

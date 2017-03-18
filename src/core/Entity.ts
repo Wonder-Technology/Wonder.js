@@ -1,6 +1,7 @@
 import { EntitySystem } from "./EntitySystem";
 import { requireCheck, it } from "../definition/typescript/decorator/contract";
 import { virtual } from "../definition/typescript/decorator/virtual";
+import {expect} from "wonder-expect.js";
 
 const ENTITY_INDEX_BITS = 22,
     ENTITY_INDEX_MASK = (1 << ENTITY_INDEX_BITS) - 1,

@@ -4,7 +4,7 @@ import { ITouchEventData, ITouchData } from "../interface/IEventData";
 import { EEventName } from "./EventNameHandler";
 import { Point } from "../../structure/Point";
 import { ensureGetter, it } from "../../definition/typescript/decorator/contract";
-import expect from "wonder-expect.js";
+import {expect} from "wonder-expect.js";
 import { DeviceManager } from "../../device/DeviceManager";
 import { EEventType } from "./EEventType";
 

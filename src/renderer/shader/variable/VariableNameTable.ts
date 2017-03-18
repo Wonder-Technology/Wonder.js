@@ -1,7 +1,7 @@
 import { registerClass } from "../../../definition/typescript/decorator/registerClass";
 import { Hash } from "wonder-commonlib/dist/es2015/Hash";
 import { ensure, it } from "../../../definition/typescript/decorator/contract";
-import expect from "wonder-expect.js";
+import {expect} from "wonder-expect.js";
 
 const _table = Hash.create<string>();
 
