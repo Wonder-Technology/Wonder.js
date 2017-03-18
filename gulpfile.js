@@ -30,6 +30,7 @@ var createShaderChunk = require("./build/gulp_task/createInnerFile/ShaderChunk/c
 
 
 require("./build/gulp_task/clean/clean");
+require("./build/gulp_task/test/test");
 
 
 var generateIndex = require("wonder-tool-generate_es2015_index").generate;

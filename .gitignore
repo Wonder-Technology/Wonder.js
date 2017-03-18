@@ -13,3 +13,4 @@ tool/**/dist/
 tool/**/source/
 tool/**/dest/
 *.pyc
+dist/wd.forTest.js
