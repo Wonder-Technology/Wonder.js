@@ -26,9 +26,9 @@ export class GLSLDataSender {
     }
 
     private _program: Program = null;
-    private _uniformCache: Object = {};
+    private _uniformCache: object = {};
     private _vertexAttribHistory: Array<boolean> = [];
-    private _getUniformLocationCache: Object = {};
+    private _getUniformLocationCache: object = {};
     private _toSendBufferArr: Array<ArrayBuffer> = [];
 
     public sendFloat1(name: string, data: any) {
