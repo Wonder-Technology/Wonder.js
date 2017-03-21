@@ -4,6 +4,7 @@ import {EntityObject} from "../core/entityObject/EntityObject";
 
 export abstract class DataOrientedComponent extends Entity {
     public indexInArrayBuffer:number = null;
+    public isAddedToEntityObject:boolean = false;
     public entityObject: EntityObject = null;
 
     @virtual
@@ -16,6 +17,8 @@ export abstract class DataOrientedComponent extends Entity {
 
     @virtual
     public addToObject(entityObject: EntityObject) {
+        this.isAddedToEntityObject = true;
+
         if(this.entityObject !== null){
             this.entityObject.removeDataOrientedComponent(this);
         }
@@ -27,6 +30,8 @@ export abstract class DataOrientedComponent extends Entity {
 
     @virtual
     public removeFromObject(entityObject: EntityObject) {
+        this.isAddedToEntityObject = false;
+
         this.removeFromSystem();
     }
 

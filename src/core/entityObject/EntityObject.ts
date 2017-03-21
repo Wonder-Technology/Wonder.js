@@ -20,8 +20,8 @@ import {expect} from "wonder-expect.js";
 import { JudgeUtils } from "../../utils/JudgeUtils";
 import {DataOrientedComponent} from "../../component/DataOrientedComponent";
 import {DataOrientedComponentTypeIdManager} from "../../component/DataOrientedComponentTypeIdManager";
-import {SortUtils} from "../../utils/SortUtils";
-import {ComponentInitOrderTable} from "../../component/data/ComponentInitOrderTable";
+// import {SortUtils} from "../../utils/SortUtils";
+// import {ComponentInitOrderTable} from "../../component/data/ComponentInitOrderTable";
 
 export abstract class EntityObject extends Entity {
     private _bubbleParent: EntityObject = null;
@@ -115,11 +115,14 @@ export abstract class EntityObject extends Entity {
         this.componentManager.init();
 
         //todo test
-        for (let component of SortUtils.insertSort(this._componentMap.toArray(), (a: Component, b: Component) => {
-            return ComponentInitOrderTable.getOrder(a) < ComponentInitOrderTable.getOrder(b);
-        })) {
+        // for (let component of SortUtils.insertSort(this._componentMap.toArray(), (a: Component, b: Component) => {
+        //     return ComponentInitOrderTable.getOrder(a) < ComponentInitOrderTable.getOrder(b);
+        // })) {
+        //     component.init();
+        // }
+        this._componentMap.forEach((component:DataOrientedComponent) => {
             component.init();
-        }
+        });
 
 
 

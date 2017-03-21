@@ -10,15 +10,16 @@ import {ThreeDTransformSystem} from "./ThreeDTransformSystem";
 
 //todo refactor:not import on ThreeDTransformSystem
 export abstract class Transform extends DataOrientedComponent {
+    public selfParent: Transform = null;
     // protected p_parent: Transform = null;
     // @cloneAttributeAsBasicType()
     get parent() {
         // return this.p_parent;
-        return ThreeDTransformSystem.getInstance().getParent(this.indexInArrayBuffer);
+        return ThreeDTransformSystem.getInstance().getParent(this);
     }
     set parent(parent: Transform) {
         // this.setParent(parent);
-        ThreeDTransformSystem.getInstance().setParent(this.indexInArrayBuffer, parent.indexInArrayBuffer);
+        ThreeDTransformSystem.getInstance().setParent(this, parent);
     }
 
     public addToSystem(){
@@ -90,7 +91,12 @@ export abstract class Transform extends DataOrientedComponent {
     //             self._resetTransformFlag();
     //         });
     // }
-    //
+
+
+    public init() {
+        ThreeDTransformSystem.getInstance().update(null);
+    }
+
     public dispose() {
         super.dispose();
 

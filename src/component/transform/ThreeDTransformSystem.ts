@@ -5,6 +5,7 @@ import {singleton} from "../../definition/typescript/decorator/singleton";
 import {requireCheck, it, ensure} from "../../definition/typescript/decorator/contract";
 import {expect} from "wonder-expect.js";
 import {ThreeDTransform} from "./ThreeDTransform";
+import {Transform} from "./Transform";
 import {Matrix4} from "../../math/Matrix4";
 import {Vector3} from "../../math/Vector3";
 
@@ -34,6 +35,9 @@ export class ThreeDTransformSystem {
 
         transform.indexInArrayBuffer = indexInArrayBuffer;
         this._data.transforms[indexInArrayBuffer] = transform;
+
+        this._addSelfData(transform.indexInArrayBuffer);
+        this._addItAndItsChildrenToDirtyList(transform.indexInArrayBuffer);
     }
 
     public removeComponent(indexInArrayBuffer:number){
@@ -46,49 +50,20 @@ export class ThreeDTransformSystem {
         this._removeFromDirtyList(indexInArrayBuffer);
     }
 
-    private _removeFromNormalList(indexInArrayBuffer:number){
-        var data = this._data;
-
-        DataUtils.cleanArrayItem(data.transforms, indexInArrayBuffer);
-
-        DataUtils.cleanTypeArrayItem(data.parents, indexInArrayBuffer, 1);
-        DataUtils.cleanTypeArrayItem(data.firstChildren, indexInArrayBuffer, 1);
-        DataUtils.cleanTypeArrayItem(data.nextSiblings, indexInArrayBuffer, 1);
-        DataUtils.cleanTypeArrayItem(data.localToWorldMatrices, indexInArrayBuffer, 16);
-        DataUtils.cleanTypeArrayItem(data.localPositions, indexInArrayBuffer, 3);
-        DataUtils.cleanTypeArrayItem(data.localRotations, indexInArrayBuffer, 4);
-        DataUtils.cleanTypeArrayItem(data.localScales, indexInArrayBuffer, 3);
-
-        this._notUsedIndexArray.push(indexInArrayBuffer);
-    }
-
-    @ensure(function (returnVal, indexInArrayBuffer:number) {
-        it("firstDirtyIndex should <= count", () => {
-            expect(this._firstDirtyIndex).lte(this._data.count);
-        }, this);
+    @requireCheck(function (transform:ThreeDTransform) {
+        this._forbiddenAccessTransformDataBeforeAddToEntityObject(transform);
     })
-    private _removeFromDirtyList(indexInArrayBuffer:number){
-        var data = this._data;
-
-        DataUtils.removeArrayItemBySwap(data.transforms, indexInArrayBuffer, data.transforms.length - 1);
-
-        DataUtils.removeTypeArrayItemBySwap(data.parents, indexInArrayBuffer, data.parents.length - 1, 1);
-        DataUtils.removeTypeArrayItemBySwap(data.firstChildren, indexInArrayBuffer, data.firstChildren.length - 1, 1);
-        DataUtils.removeTypeArrayItemBySwap(data.nextSiblings, indexInArrayBuffer, data.nextSiblings.length - 1, 1);
-        DataUtils.removeTypeArrayItemBySwap(data.localToWorldMatrices, indexInArrayBuffer, data.localToWorldMatrices.length - 16, 16);
-        DataUtils.removeTypeArrayItemBySwap(data.localPositions, indexInArrayBuffer, data.localPositions.length - 3, 3);
-        DataUtils.removeTypeArrayItemBySwap(data.localRotations, indexInArrayBuffer, data.localRotations.length - 4, 4);
-        DataUtils.removeTypeArrayItemBySwap(data.localScales, indexInArrayBuffer, data.localScales.length - 3, 3);
-
-        this._firstDirtyIndex += 1;
+    public getParent(transform:ThreeDTransform){
+        return this._data.transforms[this._data.parents[transform.indexInArrayBuffer]];
     }
 
-    public getParent(indexInArrayBuffer:number){
-        return this._data.transforms[this._data.parents[indexInArrayBuffer]];
-    }
-
-    public setParent(indexInArrayBuffer:number, parentIndexInArrayBuffer: number){
-        var data = this._data,
+    @requireCheck(function (transform:ThreeDTransform) {
+        this._forbiddenAccessTransformDataBeforeAddToEntityObject(transform);
+    })
+    public setParent(transform:ThreeDTransform, parent: ThreeDTransform){
+        var indexInArrayBuffer = transform.indexInArrayBuffer,
+            parentIndexInArrayBuffer = parent.indexInArrayBuffer,
+            data = this._data,
             parents = data.parents,
             currentParentIndexInArrayBuffer = parents[indexInArrayBuffer];
 
@@ -107,33 +82,54 @@ export class ThreeDTransformSystem {
         this._addItAndItsChildrenToDirtyList(indexInArrayBuffer);
     }
 
+    @requireCheck(function (transform:ThreeDTransform) {
+        this._forbiddenAccessTransformDataBeforeAddToEntityObject(transform);
+    })
     //todo add cache
-    public getLocalToWorldMatrix(indexInArrayBuffer:number, mat:Matrix4 = Matrix4.create()){
-        return DataUtils.createMatrix4ByIndex(mat, this._data.localToWorldMatrices, indexInArrayBuffer);
+    public getLocalToWorldMatrix(transform:ThreeDTransform, mat:Matrix4 = Matrix4.create()){
+        return DataUtils.createMatrix4ByIndex(mat, this._data.localToWorldMatrices, transform.indexInArrayBuffer);
     }
 
-    public getPosition(indexInArrayBuffer:number){
-        return this.getLocalToWorldMatrix(indexInArrayBuffer, GlobalTempData.matrix4_1).getTranslation();
+    @requireCheck(function (transform:ThreeDTransform) {
+        this._forbiddenAccessTransformDataBeforeAddToEntityObject(transform);
+    })
+    public getPosition(transform:ThreeDTransform){
+        return this.getLocalToWorldMatrix(transform, GlobalTempData.matrix4_1).getTranslation();
     }
 
-    public setPosition(indexInArrayBuffer:number, position:Vector3){
-        var parentIndex = this._data.parents[indexInArrayBuffer];
+    @requireCheck(function (transform:ThreeDTransform) {
+        this._forbiddenAccessTransformDataBeforeAddToEntityObject(transform);
+    })
+    public setPosition(transform:ThreeDTransform, position:Vector3){
+        var indexInArrayBuffer = transform.indexInArrayBuffer,
+            data = this._data,
+            parentIndex = data.parents[indexInArrayBuffer];
 
         if(this._isValidIndex(parentIndex)){
-            DataUtils.setVectors(this._data.localPositions, position, indexInArrayBuffer);
+            DataUtils.setVectors(data.localPositions, position, indexInArrayBuffer);
         }
         else{
-            DataUtils.setVectors(this._data.localPositions, this.getLocalToWorldMatrix(parentIndex, GlobalTempData.matrix4_1).invert().multiplyPoint(position), indexInArrayBuffer);
+            DataUtils.setVectors(data.localPositions, this.getLocalToWorldMatrix(data.transforms[parentIndex], GlobalTempData.matrix4_1).invert().multiplyPoint(position), indexInArrayBuffer);
         }
 
         this._addItAndItsChildrenToDirtyList(indexInArrayBuffer);
     }
 
-    public getLocalPosition(indexInArrayBuffer:number){
+    @requireCheck(function (transform:ThreeDTransform) {
+        this._forbiddenAccessTransformDataBeforeAddToEntityObject(transform);
+    })
+    public getLocalPosition(transform:ThreeDTransform){
+        var indexInArrayBuffer = transform.indexInArrayBuffer;
+
         return DataUtils.createVector3ByIndex(Vector3.create(), this._data.localPositions, indexInArrayBuffer);
     }
 
-    public setLocalPosition(indexInArrayBuffer:number, position:Vector3){
+    @requireCheck(function (transform:ThreeDTransform) {
+        this._forbiddenAccessTransformDataBeforeAddToEntityObject(transform);
+    })
+    public setLocalPosition(transform:ThreeDTransform, position:Vector3){
+        var indexInArrayBuffer = transform.indexInArrayBuffer;
+
         DataUtils.setVectors(this._data.localPositions, position, indexInArrayBuffer);
 
         this._addItAndItsChildrenToDirtyList(indexInArrayBuffer);
@@ -354,5 +350,68 @@ export class ThreeDTransformSystem {
         while(this._isValidIndex(nextSibling));
 
         nextSiblings[lastNextSibling] = indexInArrayBuffer;
+    }
+
+    private _removeFromNormalList(indexInArrayBuffer:number){
+        var data = this._data;
+
+        DataUtils.cleanArrayItem(data.transforms, indexInArrayBuffer);
+
+        DataUtils.cleanTypeArrayItem(data.parents, indexInArrayBuffer, 1);
+        DataUtils.cleanTypeArrayItem(data.firstChildren, indexInArrayBuffer, 1);
+        DataUtils.cleanTypeArrayItem(data.nextSiblings, indexInArrayBuffer, 1);
+        DataUtils.cleanTypeArrayItem(data.localToWorldMatrices, indexInArrayBuffer, 16);
+        DataUtils.cleanTypeArrayItem(data.localPositions, indexInArrayBuffer, 3);
+        DataUtils.cleanTypeArrayItem(data.localRotations, indexInArrayBuffer, 4);
+        DataUtils.cleanTypeArrayItem(data.localScales, indexInArrayBuffer, 3);
+
+        this._notUsedIndexArray.push(indexInArrayBuffer);
+    }
+
+    @ensure(function (returnVal, indexInArrayBuffer:number) {
+        it("firstDirtyIndex should <= count", () => {
+            expect(this._firstDirtyIndex).lte(this._data.count);
+        }, this);
+    })
+    private _removeFromDirtyList(indexInArrayBuffer:number){
+        var data = this._data;
+
+        DataUtils.removeArrayItemBySwap(data.transforms, indexInArrayBuffer, data.transforms.length - 1);
+
+        DataUtils.removeTypeArrayItemBySwap(data.parents, indexInArrayBuffer, data.parents.length - 1, 1);
+        DataUtils.removeTypeArrayItemBySwap(data.firstChildren, indexInArrayBuffer, data.firstChildren.length - 1, 1);
+        DataUtils.removeTypeArrayItemBySwap(data.nextSiblings, indexInArrayBuffer, data.nextSiblings.length - 1, 1);
+        DataUtils.removeTypeArrayItemBySwap(data.localToWorldMatrices, indexInArrayBuffer, data.localToWorldMatrices.length - 16, 16);
+        DataUtils.removeTypeArrayItemBySwap(data.localPositions, indexInArrayBuffer, data.localPositions.length - 3, 3);
+        DataUtils.removeTypeArrayItemBySwap(data.localRotations, indexInArrayBuffer, data.localRotations.length - 4, 4);
+        DataUtils.removeTypeArrayItemBySwap(data.localScales, indexInArrayBuffer, data.localScales.length - 3, 3);
+
+        this._firstDirtyIndex += 1;
+    }
+
+    private _addSelfData(indexInArrayBuffer:number){
+        var data = this._data;
+        // localToWorldMatrices = data.localToWorldMatrices,
+        // localPositions = data.localPositions,
+        // localRotations = data.localRotations,
+        // localScales = data.localScales;
+
+        // DataUtils.setMatrices(data.localToWorldMatrices, transform.selfLocalToWorldMatrix, indexInArrayBuffer);
+
+        // DataUtils.setVectors(data.localPositions, transform.selfLocalPosition, indexInArrayBuffer);
+        // DataUtils.setQuaternions(data.localRotations, transform.selfLocalRotation, indexInArrayBuffer);
+        // DataUtils.setVectors(data.localScales, transform.selfLocalScale, indexInArrayBuffer);
+
+        DataUtils.setMatrices(data.localToWorldMatrices, GlobalTempData.matrix4_1.setIdentity(), indexInArrayBuffer);
+
+        DataUtils.setVectors(data.localPositions, GlobalTempData.vector3_1.set(0,0,0), indexInArrayBuffer);
+        DataUtils.setQuaternions(data.localRotations, GlobalTempData.quaternion_1.set(0,0,0,1), indexInArrayBuffer);
+        DataUtils.setVectors(data.localScales, GlobalTempData.vector3_1.set(1,1,1), indexInArrayBuffer);
+    }
+
+    private _forbiddenAccessTransformDataBeforeAddToEntityObject(transform:ThreeDTransform){
+        it("shouldn't access transform data before add to entityObject", () => {
+            expect(transform.isAddedToEntityObject).true;
+        });
     }
 }

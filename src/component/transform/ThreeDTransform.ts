@@ -4,7 +4,7 @@ import { Transform } from "./Transform";
 // import { cacheGetter } from "../../definition/typescript/decorator/cache";
 import { Vector3 } from "../../math/Vector3";
 // import { cloneAttributeAsCloneable, cloneAttributeAsBasicType } from "../../definition/typescript/decorator/clone";
-// import { Quaternion } from "../../math/Quaternion";
+import { Quaternion } from "../../math/Quaternion";
 // import { Collection } from "wonder-commonlib/dist/es2015/Collection";
 // import { Matrix3 } from "../../math/Matrix3";
 // import { ETransformState } from "./ETransformState";
@@ -13,6 +13,7 @@ import { Vector3 } from "../../math/Vector3";
 // import { EEngineEvent } from "../../event/EEngineEvent";
 // import { Log } from "../../utils/Log";
 import {ThreeDTransformSystem} from "./ThreeDTransformSystem";
+import {Matrix4} from "../../math/Matrix4";
 
 @registerClass("ThreeDTransform")
 export class ThreeDTransform extends Transform {
@@ -22,6 +23,7 @@ export class ThreeDTransform extends Transform {
         return obj;
     }
 
+    // public selfLocalToWorldMatrix:Matrix4 = Matrix4.create();
     // private _localToWorldMatrix: Matrix4 = null;
     // @cacheGetter(function() {
     //     return this._localToWorldMatrixCache !== null;
@@ -36,7 +38,7 @@ export class ThreeDTransform extends Transform {
         //
 
         // return this.getMatrix<Matrix4>("sync", "_localToWorldMatrix");
-        return ThreeDTransformSystem.getInstance().getLocalToWorldMatrix(this.indexInArrayBuffer);
+        return ThreeDTransformSystem.getInstance().getLocalToWorldMatrix(this);
     }
     // set localToWorldMatrix(matrix: Matrix4) {
         // this._isUserSpecifyTheLocalToWorldMatrix = true;
@@ -57,6 +59,7 @@ export class ThreeDTransform extends Transform {
     //     return this.localToWorldMatrix.invertTo3x3().transpose();
     // }
 
+    // public selfPosition:Vector3 = Vector3.create();
     // private _position: Vector3 = Vector3.create();
     // @cloneAttributeAsCloneable()
     // @cacheGetter(function() {
@@ -70,7 +73,7 @@ export class ThreeDTransform extends Transform {
         // this._position = this.localToWorldMatrix.getTranslation();
         //
         // return this._position;
-        return ThreeDTransformSystem.getInstance().getPosition(this.indexInArrayBuffer);
+        return ThreeDTransformSystem.getInstance().getPosition(this);
     }
     set position(position: Vector3) {
         // if (this.p_parent === null) {
@@ -81,7 +84,7 @@ export class ThreeDTransform extends Transform {
         // }
         //
         // this.isTranslate = true;
-        ThreeDTransformSystem.getInstance().setPosition(this.indexInArrayBuffer, position);
+        ThreeDTransformSystem.getInstance().setPosition(this, position);
     }
 
     // private _rotation: Quaternion = Quaternion.create(0, 0, 0, 1);
@@ -156,20 +159,23 @@ export class ThreeDTransform extends Transform {
     //     this.isRotate = true;
     // }
     //
+
+    // public selfLocalPosition:Vector3 = Vector3.create();
     // private _localPosition: Vector3 = Vector3.create(0, 0, 0);
     // @cloneAttributeAsCloneable()
     get localPosition() {
         // return this._localPosition;
 
-        return ThreeDTransformSystem.getInstance().getLocalPosition(this.indexInArrayBuffer);
+        return ThreeDTransformSystem.getInstance().getLocalPosition(this);
     }
     set localPosition(position: Vector3) {
         // this._localPosition = position;
         //
         // this.isLocalTranslate = true;
-        ThreeDTransformSystem.getInstance().setLocalPosition(this.indexInArrayBuffer, position);
+        ThreeDTransformSystem.getInstance().setLocalPosition(this, position);
     }
-    //
+
+    // public selfLocalRotation: Quaternion = Quaternion.create(0, 0, 0, 1);
     // private _localRotation: Quaternion = Quaternion.create(0, 0, 0, 1);
     // @cloneAttributeAsCloneable()
     // get localRotation() {
@@ -199,7 +205,8 @@ export class ThreeDTransform extends Transform {
     //
     //     this.isLocalRotate = true;
     // }
-    //
+
+    // public selfLocalScale: Vector3 = Vector3.create(1, 1, 1);
     // private _localScale: Vector3 = Vector3.create(1, 1, 1);
     // @cloneAttributeAsCloneable()
     // get localScale() {
@@ -466,4 +473,3 @@ export class ThreeDTransform extends Transform {
     //     EventManager.trigger(this.entityObject, CustomEvent.create(eventName));
     // }
 }
-
