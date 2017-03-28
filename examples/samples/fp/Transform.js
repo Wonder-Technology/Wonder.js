@@ -8,7 +8,7 @@ var Transform = (function () {
         return new this();
     };
     Transform.prototype.setPosition = function (position) {
-        setPosition(this, position);
+        setPosition(this.indexInArrayBuffer, position);
     };
     Transform.prototype.add = function (tra) {
         this._children.push(tra);

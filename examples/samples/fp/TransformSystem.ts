@@ -1,7 +1,6 @@
 import flow from "lodash-es/flow";
-import {List} from "immutable";
+// import {List} from "immutable";
 import {TransformData} from "./TransformData";
-import {Transform} from "./Transform";
 import curry from "lodash-es/curry";
 import range from "lodash-es/range";
 import {LogicWorld, world} from "./LogicWorld";
@@ -10,7 +9,6 @@ import forEach from "lodash-es/forEach";
 
 
 var _data: TransformData = TransformData.of();
-// var _dirtyList = List();
 var _dirtyList = [];
 
 /*! side effect */
@@ -41,8 +39,6 @@ export var transform = (indexInArrayBuffer) => {
         return calcute(index - 1, result + positions[index]);
     };
 
-    // _dirtyList.push(tra);
-
     return calcute(indexInArrayBuffer, 0);
 }
 
@@ -63,10 +59,7 @@ export var transformData = (world: LogicWorld, data: any) => {
         return calcute(index - 1, result + positions[index]);
     };
 
-    /*! side effect */
-    // _(range(0, getTransformCount(world) - 1))
     forEach(range(0, getTransformCount(world) - 1), (value, index) => {
-        // .forEach((value, index) => {
         pushToDirtyList(value);
         setPosition(value, calcute(value, 0));
     });
@@ -76,9 +69,7 @@ export var transformData = (world: LogicWorld, data: any) => {
 
 
 /*! side effect */
-// var clean = (dirtyList:List, tra:Transform) => {
 var clean = (dirtyList: any, indexInArrayBuffer) => {
-    // return dirtyList.remove(tra.indexInArrayBuffer);
     dirtyList[indexInArrayBuffer] = void 0;
 }
 
@@ -86,11 +77,11 @@ var cleanDirty = curry(clean)(_dirtyList);
 
 //todo refactor
 var cleanAllDirty = (world: LogicWorld) => {
-    // chain(range(0, getTransformCount(world) - 1)).forEach((value, index) => {
     forEach(range(0, getTransformCount(world) - 1), (value, index) => {
         cleanDirty(value);
     });
 }
+
 
 
 export var updateTransform = flow(curryRight(transformData)(_data), cleanAllDirty);

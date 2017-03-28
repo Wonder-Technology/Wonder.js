@@ -1,8 +1,6 @@
 import {Transform} from "./Transform";
-import curry from "lodash-es/curry";
 import {updateTransform} from "./TransformSystem";
 import flow from "lodash-es/flow";
-// import {flow} from "lodash-es/flow";
 
 export class LogicWorld{
     public static of() {
@@ -39,5 +37,4 @@ export var updateAll = flow(updateTransform, updateOther);
 
 export var updateLogicWorld = (world:LogicWorld, elapsed:number) => {
     updateAll(world);
-    // updateTransform(world)
 };

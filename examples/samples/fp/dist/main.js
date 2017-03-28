@@ -1089,10 +1089,10 @@
 	        return obj;
 	    };
 	    TransformData.prototype.initWhenCreate = function () {
-	        var buffer = this._buffer, count = COUNT;
+	        var count = COUNT;
 	        this.length = Float32Array.BYTES_PER_ELEMENT * 1;
 	        this._buffer = new ArrayBuffer(count * this.length);
-	        this.positions = new Float32Array(buffer, 0, count);
+	        this.positions = new Float32Array(this._buffer, 0, count);
 	    };
 	    return TransformData;
 	}());
@@ -2933,7 +2933,7 @@
 	        return new this();
 	    };
 	    Transform.prototype.setPosition = function (position) {
-	        setPosition(this, position);
+	        setPosition(this.indexInArrayBuffer, position);
 	    };
 	    Transform.prototype.add = function (tra) {
 	        this._children.push(tra);
@@ -2972,9 +2972,9 @@
 
 	var init = function () {
 	    var parent = Transform.of();
-	    parent.setPosition(1);
+	    parent.setPosition(2);
 	    var child = Transform.of();
-	    child.setPosition(2);
+	    child.setPosition(4);
 	    var tra2 = Transform.of();
 	    tra2.setPosition(10);
 	    parent.add(child);
@@ -2983,6 +2983,8 @@
 	    updateLogicWorld(world, 1);
 	    updateLogicWorld(world, 2);
 	    console.log(getPosition(parent.indexInArrayBuffer));
+	    console.log(getPosition(child.indexInArrayBuffer));
+	    console.log(getPosition(tra2.indexInArrayBuffer));
 	};
 
 	exports.init = init;

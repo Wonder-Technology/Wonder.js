@@ -13,7 +13,7 @@ export class Transform{
     //todo refactor:remove
     public setPosition(position:number){
         // this._data[this.indexInArrayBuffer] = position;
-        setPosition(this, position);
+        setPosition(this.indexInArrayBuffer, position);
     }
 
     public add(tra:Transform){
