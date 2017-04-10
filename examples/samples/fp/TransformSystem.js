@@ -52,5 +52,20 @@ var cleanAllDirty = function (world) {
         cleanDirty(value);
     });
 };
-export var updateTransform = flow(curryRight(transformData)(_data), cleanAllDirty);
+var worker = new Worker("./transformWorker.js");
+setPosition(_data.length - 1, 3);
+console.log(_data.buffer);
+var computeInWorker = function () {
+    worker.onmessage = function (msg) {
+        showWorkerData(msg.data.data);
+    };
+    worker.postMessage({
+        buffer: _data.buffer,
+        offset: 0
+    });
+};
+var showWorkerData = function (data) {
+    console.log(JSON.stringify(data));
+};
+export var updateTransform = flow(curryRight(transformData)(_data), cleanAllDirty, computeInWorker);
 //# sourceMappingURL=TransformSystem.js.map

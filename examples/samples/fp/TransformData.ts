@@ -13,16 +13,16 @@ export class TransformData{
 
     public positions:Float32Array = null;
     public length:number = null;
-
-    private _buffer:ArrayBuffer = null;
+    public buffer:SharedArrayBuffer = null;
 
     public initWhenCreate(){
         var count = COUNT;
 
         this.length = Float32Array.BYTES_PER_ELEMENT * 1;
-        this._buffer = new ArrayBuffer(count * this.length);
+        // this._buffer = new ArrayBuffer(count * this.length);
+        this.buffer = new SharedArrayBuffer(count * this.length);
 
-        this.positions = new Float32Array(this._buffer, 0, count);
+        this.positions = new Float32Array(<any>this.buffer, 0, count);
     }
 }
 

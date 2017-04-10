@@ -84,4 +84,37 @@ var cleanAllDirty = (world: LogicWorld) => {
 
 
 
-export var updateTransform = flow(curryRight(transformData)(_data), cleanAllDirty);
+
+
+
+
+
+
+var worker = new Worker("./transformWorker.js");
+
+var computeInWorker = () => {
+    worker.onmessage = (msg) => {
+        showWorkerData(msg.data.data);
+    }
+
+
+
+    worker.postMessage({
+        buffer:_data.buffer,
+        offset:0
+    });
+
+}
+
+var showWorkerData = (data) => {
+    console.log(JSON.stringify(data));
+}
+
+
+
+
+
+
+
+
+export var updateTransform = flow(curryRight(transformData)(_data), cleanAllDirty, computeInWorker);

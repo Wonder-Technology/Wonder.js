@@ -2,7 +2,7 @@ var TransformData = (function () {
     function TransformData() {
         this.positions = null;
         this.length = null;
-        this._buffer = null;
+        this.buffer = null;
     }
     TransformData.of = function () {
         var obj = new this();
@@ -12,8 +12,8 @@ var TransformData = (function () {
     TransformData.prototype.initWhenCreate = function () {
         var count = COUNT;
         this.length = Float32Array.BYTES_PER_ELEMENT * 1;
-        this._buffer = new ArrayBuffer(count * this.length);
-        this.positions = new Float32Array(this._buffer, 0, count);
+        this.buffer = new SharedArrayBuffer(count * this.length);
+        this.positions = new Float32Array(this.buffer, 0, count);
     };
     return TransformData;
 }());

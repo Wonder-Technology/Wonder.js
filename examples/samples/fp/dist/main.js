@@ -1081,7 +1081,7 @@
 	    function TransformData() {
 	        this.positions = null;
 	        this.length = null;
-	        this._buffer = null;
+	        this.buffer = null;
 	    }
 	    TransformData.of = function () {
 	        var obj = new this();
@@ -1091,8 +1091,8 @@
 	    TransformData.prototype.initWhenCreate = function () {
 	        var count = COUNT;
 	        this.length = Float32Array.BYTES_PER_ELEMENT * 1;
-	        this._buffer = new ArrayBuffer(count * this.length);
-	        this.positions = new Float32Array(this._buffer, 0, count);
+	        this.buffer = new SharedArrayBuffer(count * this.length);
+	        this.positions = new Float32Array(this.buffer, 0, count);
 	    };
 	    return TransformData;
 	}());
@@ -2922,7 +2922,22 @@
 	        cleanDirty(value);
 	    });
 	};
-	var updateTransform = flow(curryRight(transformData)(_data), cleanAllDirty);
+	var worker = new Worker("./transformWorker.js");
+	setPosition(_data.length - 1, 3);
+	console.log(_data.buffer);
+	var computeInWorker = function () {
+	    worker.onmessage = function (msg) {
+	        showWorkerData(msg.data.data);
+	    };
+	    worker.postMessage({
+	        buffer: _data.buffer,
+	        offset: 0
+	    });
+	};
+	var showWorkerData = function (data) {
+	    console.log(JSON.stringify(data));
+	};
+	var updateTransform = flow(curryRight(transformData)(_data), cleanAllDirty, computeInWorker);
 
 	var Transform = (function () {
 	    function Transform() {

@@ -35,6 +35,8 @@ export var updateAll = flow(updateTransform, updateOther);
 
 
 
+
+
 export var updateLogicWorld = (world:LogicWorld, elapsed:number) => {
     updateAll(world);
 };
