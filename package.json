@@ -7,16 +7,33 @@
   "license": "MIT",
   "scripts": {
     "start": "node ./server/app.js",
-    "test": "karma start karma.conf.js --single-run --browsers Firefox",
+    "test": "jest",
     "codecov": "cat test/coverage/*/lcov.info | codecov"
   },
+  "jest": {
+    "automock": false,
+    "transform": {
+      ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "setupTestFrameworkScriptFile": "<rootDir>/test/helper/jest/specHelper.js",
+    "testMatch": [
+      "<rootDir>/test/unit/jest/sum1Spec.ts"
+    ],
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ]
+  },
   "devDependencies": {
+    "@types/jest": "^19.2.2",
     "codecov.io": "^0.1.6",
     "del": "^2.2.2",
     "express": "^4.13.3",
     "glob": "^7.0.4",
     "gulp": "^3.9.0",
     "gulp-sync": "^0.1.4",
+    "jest": "^19.0.2",
     "karma": "^0.13.22",
     "karma-chrome-launcher": "^0.2.0",
     "karma-coverage": "^0.5.3",
@@ -25,6 +42,8 @@
     "karma-jasmine": "^0.3.6",
     "rollup-plugin-commonjs": "^7.0.0",
     "rollup-plugin-node-resolve": "^2.0.0",
+    "sinon": "^2.1.0",
+    "ts-jest": "^19.0.8",
     "typescript": "^2.3.0-dev.20170224",
     "wonder-package": "^0.1.26",
     "wonder-rollup-plugin-typescript": "^0.1.1",
