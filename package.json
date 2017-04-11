@@ -17,7 +17,7 @@
     },
     "setupTestFrameworkScriptFile": "<rootDir>/test/helper/jest/specHelper.js",
     "testMatch": [
-      "<rootDir>/test/unit/jest/sum1Spec.ts"
+      "<rootDir>/test/unit/**/*Spec.ts"
     ],
     "moduleFileExtensions": [
       "ts",
@@ -34,6 +34,7 @@
     "gulp": "^3.9.0",
     "gulp-sync": "^0.1.4",
     "jest": "^19.0.2",
+    "jsverify": "^0.8.2",
     "karma": "^0.13.22",
     "karma-chrome-launcher": "^0.2.0",
     "karma-coverage": "^0.5.3",
@@ -45,6 +46,7 @@
     "sinon": "^2.1.0",
     "ts-jest": "^19.0.8",
     "typescript": "^2.3.0-dev.20170224",
+    "util": "^0.10.3",
     "wonder-package": "^0.1.26",
     "wonder-rollup-plugin-typescript": "^0.1.1",
     "wonder-tool-generate_es2015_index": "^0.1.2"

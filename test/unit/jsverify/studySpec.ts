@@ -1,0 +1,45 @@
+import * as jsc from "jsverify";
+import {isNumber} from "util";
+
+describe("study jsverify", () => {
+    describe("basic jsverify usage", () => {
+        jsc.property("(b && b) === b", jsc.bool, b => (b && b) === b);
+
+        jsc.property("boolean fn thrice", jsc.fn(jsc.bool), jsc.bool, (f, b) =>
+            f(f(f(b))) === f(b)
+        );
+
+        it("async evaluation has no effect on pure computation", done => {
+            const property = jsc.forall(jsc.fn(jsc.nat), jsc.json, jsc.nat(20), (f, x, t) => {
+                const sync = f(x);
+                return new Promise(resolve => {
+                    setTimeout(() => resolve(f(x)), t);
+                }).then(val => val === sync);
+            });
+
+            jsc.assert(property)
+                .then(val => val ? done(val) : done())
+                .catch(error => done(error));
+        });
+
+        // You may simply return a promise with mocha
+        jsc.property("async evaluation...", jsc.fun(jsc.nat), jsc.json, jsc.nat(20), (f, x, t) => {
+            const sync = f(x);
+
+            return new Promise(resolve => {
+                setTimeout(() => resolve(f(x)), t);
+            }).then(val => val === sync);
+        });
+    });
+
+    describe("jsc.fn(param)", () => {
+        it("the param should be return-value's type", () => {
+            jsc.assert(
+                jsc.forall(jsc.fn(jsc.nat), jsc.bool, (f, b) => {
+                    return isNumber(f(b));
+                })
+            );
+        });
+    });
+});
+
