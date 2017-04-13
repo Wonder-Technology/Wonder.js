@@ -1,4 +1,13 @@
+import "wonder-frp/dist/es2015/extend/root";
 import { getWebGLContext, initShaders } from "./lib/cuon-utils";
+import { intervalRequest } from "wonder-frp/dist/es2015/global/Operator";
+var AAA = (function () {
+    function AAA() {
+    }
+    AAA.a = function () { };
+    return AAA;
+}());
+export { AAA };
 var VSHADER_SOURCE = 'attribute vec4 a_Position;\n' +
     'void main() {\n' +
     '  gl_Position = a_Position;\n' +
@@ -6,7 +15,13 @@ var VSHADER_SOURCE = 'attribute vec4 a_Position;\n' +
 var FSHADER_SOURCE = 'void main() {\n' +
     '  gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);\n' +
     '}\n';
-export var main = function () {
+export var start = function () {
+    intervalRequest()
+        .subscribe(function (time) {
+        _loopBody(time);
+    });
+};
+var _loopBody = function (time) {
     var canvas = document.getElementById('webgl');
     var gl = getWebGLContext(canvas);
     if (!gl) {

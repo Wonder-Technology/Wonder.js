@@ -1,4 +1,10 @@
+import "wonder-frp/dist/es2015/extend/root";
 import {getWebGLContext, initShaders} from "./lib/cuon-utils";
+import {intervalRequest} from "wonder-frp/dist/es2015/global/Operator";
+
+export class AAA{
+    public static a(){}
+}
 
 var VSHADER_SOURCE =
     'attribute vec4 a_Position;\n' +
@@ -12,7 +18,15 @@ var FSHADER_SOURCE =
     '  gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);\n' +
     '}\n';
 
-export var main = () => {
+
+export var start = () => {
+    intervalRequest()
+        .subscribe((time) => {
+            _loopBody(time);
+        });
+}
+
+var _loopBody = (time:number) => {
     // Retrieve <canvas> element
     var canvas = document.getElementById('webgl');
 
