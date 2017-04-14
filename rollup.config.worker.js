@@ -1,18 +1,11 @@
 import typescript from "wonder-rollup-plugin-typescript";
 import nodeResolve from "rollup-plugin-node-resolve";
 import commonjs from "rollup-plugin-commonjs";
-// import bundleWorker from 'rollup-plugin-bundle-worker';
-// import fileAsBlob from 'rollup-plugin-file-as-blob';
 
 export default {
-    entry: "./examples/samples/quad/main.ts",
+    entry: "./examples/samples/quad/renderWorker.ts",
     indent: "\t",
     plugins: [
-        // bundleWorker(),
-        // fileAsBlob({
-        //     include: './examples/samples/quad/renderWorker.js'
-        // }),
-
         typescript({
             tsconfig:false,
             typescript:require("typescript")
@@ -35,7 +28,7 @@ export default {
             sourceMap: true,
             format: "umd",
             moduleName: "quad",
-            dest: "./examples/samples/quad/dist/main.js"
+            dest: "./examples/samples/quad/dist/renderWorker.js"
         }
     ]
 };

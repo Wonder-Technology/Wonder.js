@@ -58,8 +58,8 @@
     "@types/wonder-expect.js": "^0.1.2",
     "@types/wonder-frp": "^0.2.0",
     "bowser": "^1.6.0",
-    "wonder-commonlib": "^0.1.8",
+    "wonder-commonlib": "^0.1.9",
     "wonder-expect.js": "^0.1.4",
-    "wonder-frp": "^0.1.16"
+    "wonder-frp": "^0.1.17"
   }
 }
