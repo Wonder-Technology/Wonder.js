@@ -1,9 +1,12 @@
+import "wonder-frp/dist/es2015/stream/FilterStream";
+import "wonder-frp/dist/es2015/stream/MapStream";
 import "wonder-frp/dist/es2015/extend/root";
 import { getWebGLContext, initShaders } from "./lib/cuon-utils";
 import { intervalRequest } from "wonder-frp/dist/es2015/global/Operator";
 import flow from "lodash-es/flow";
 import { Matrix4 } from "../../../src/math/Matrix4";
 var gl = null, n = null;
+var gameLoop = null;
 var position = null;
 var VSHADER_SOURCE = 'attribute vec4 a_Position;\n' +
     'uniform mat4 u_ModelMatrix;\n' +
@@ -14,7 +17,7 @@ var FSHADER_SOURCE = 'void main() {\n' +
     '  gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);\n' +
     '}\n';
 var _startLoop = function () {
-    intervalRequest()
+    gameLoop = intervalRequest()
         .subscribe(function (time) {
         _loopBody(time);
     });
@@ -44,7 +47,36 @@ var _getNewPosition = function (time) {
     var delta = (time % 1000 - 500) / 1000;
     return delta;
 };
-var _update = flow(_updateAction);
+var _beginRecord = function (time) {
+    recordData.beginTime = time;
+};
+var _stopRecord = function (time) {
+    recordData.endTime = time;
+    stop();
+};
+var RecordData = (function () {
+    function RecordData() {
+    }
+    RecordData.create = function () {
+        var obj = new this();
+        return obj;
+    };
+    return RecordData;
+}());
+var recordData = RecordData.create();
+var isBeginRecord = false, isEndRecord = false;
+var _record = function (time) {
+    if (isBeginRecord) {
+        isBeginRecord = false;
+        _beginRecord(time);
+    }
+    if (isEndRecord) {
+        isEndRecord = false;
+        _stopRecord(time);
+    }
+    return time;
+};
+var _update = flow(_record, _updateAction);
 var _render = function (time) {
     _sendData(gl);
     gl.clearColor(0, 0, 0, 1);
@@ -89,4 +121,31 @@ var _initUniformBuffers = function (gl) {
 };
 var _loopBody = flow(_update, _render);
 export var start = flow(_init, _startLoop);
+export var beginRecord = function (time) {
+    isBeginRecord = true;
+    isEndRecord = false;
+};
+export var endRecord = function (time) {
+    isBeginRecord = false;
+    isEndRecord = true;
+};
+export var stop = function () {
+    gameLoop.dispose();
+};
+export var rePlay = function () {
+    var startTime = null;
+    gameLoop = intervalRequest()
+        .map(function (time) {
+        if (startTime === null) {
+            startTime = time;
+        }
+        return time - (startTime - recordData.beginTime);
+    })
+        .filter(function (time) {
+        return time <= recordData.endTime;
+    })
+        .subscribe(function (time) {
+        _loopBody(time);
+    });
+};
 //# sourceMappingURL=main.js.map

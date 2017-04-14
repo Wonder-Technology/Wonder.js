@@ -17,7 +17,7 @@
 	    return c > 3 && r && Object.defineProperty(target, key, r), r;
 	}
 
-	var JudgeUtils$1 = (function () {
+	var JudgeUtils = (function () {
 	    function JudgeUtils() {
 	    }
 	    JudgeUtils.isArray = function (arr) {
@@ -67,187 +67,22 @@
 	    return JudgeUtils;
 	}());
 	if (typeof /./ != 'function' && typeof Int8Array != 'object') {
-	    JudgeUtils$1.isFunction = function (func) {
+	    JudgeUtils.isFunction = function (func) {
 	        return typeof func == 'function';
 	    };
 	}
 	else {
-	    JudgeUtils$1.isFunction = function (func) {
+	    JudgeUtils.isFunction = function (func) {
 	        return Object.prototype.toString.call(func) === "[object Function]";
 	    };
 	}
 
-	var JudgeUtils$$1 = (function (_super) {
-	    __extends(JudgeUtils$$1, _super);
-	    function JudgeUtils$$1() {
-	        return _super !== null && _super.apply(this, arguments) || this;
-	    }
-	    JudgeUtils$$1.isPromise = function (obj) {
-	        return !!obj
-	            && !_super.isFunction.call(this, obj.subscribe)
-	            && _super.isFunction.call(this, obj.then);
-	    };
-	    JudgeUtils$$1.isEqual = function (ob1, ob2) {
-	        return ob1.uid === ob2.uid;
-	    };
-	    JudgeUtils$$1.isIObserver = function (i) {
-	        return i.next && i.error && i.completed;
-	    };
-	    return JudgeUtils$$1;
-	}(JudgeUtils$1));
-
 	var root;
-	if (JudgeUtils$$1.isNodeJs() && typeof global != "undefined") {
+	if (JudgeUtils.isNodeJs() && typeof global != "undefined") {
 	    root = global;
 	}
 	else {
 	    root = window;
-	}
-
-	root.requestNextAnimationFrame = (function () {
-	    var originalRequestAnimationFrame = undefined, wrapper = undefined, callback = undefined, geckoVersion = null, userAgent = root.navigator && root.navigator.userAgent, index = 0, self = this;
-	    wrapper = function (time) {
-	        time = root.performance.now();
-	        self.callback(time);
-	    };
-	    if (root.requestAnimationFrame) {
-	        return requestAnimationFrame;
-	    }
-	    if (root.webkitRequestAnimationFrame) {
-	        originalRequestAnimationFrame = root.webkitRequestAnimationFrame;
-	        root.webkitRequestAnimationFrame = function (callback, element) {
-	            self.callback = callback;
-	            return originalRequestAnimationFrame(wrapper, element);
-	        };
-	    }
-	    if (root.msRequestAnimationFrame) {
-	        originalRequestAnimationFrame = root.msRequestAnimationFrame;
-	        root.msRequestAnimationFrame = function (callback) {
-	            self.callback = callback;
-	            return originalRequestAnimationFrame(wrapper);
-	        };
-	    }
-	    if (root.mozRequestAnimationFrame) {
-	        index = userAgent.indexOf('rv:');
-	        if (userAgent.indexOf('Gecko') != -1) {
-	            geckoVersion = userAgent.substr(index + 3, 3);
-	            if (geckoVersion === '2.0') {
-	                root.mozRequestAnimationFrame = undefined;
-	            }
-	        }
-	    }
-	    return root.webkitRequestAnimationFrame ||
-	        root.mozRequestAnimationFrame ||
-	        root.oRequestAnimationFrame ||
-	        root.msRequestAnimationFrame ||
-	        function (callback, element) {
-	            var start, finish;
-	            root.setTimeout(function () {
-	                start = root.performance.now();
-	                callback(start);
-	                finish = root.performance.now();
-	                self.timeout = 1000 / 60 - (finish - start);
-	            }, self.timeout);
-	        };
-	}());
-	root.cancelNextRequestAnimationFrame = root.cancelRequestAnimationFrame
-	    || root.webkitCancelAnimationFrame
-	    || root.webkitCancelRequestAnimationFrame
-	    || root.mozCancelRequestAnimationFrame
-	    || root.oCancelRequestAnimationFrame
-	    || root.msCancelRequestAnimationFrame
-	    || clearTimeout;
-
-	function initShaders(gl, vshader, fshader) {
-	    var program = createProgram(gl, vshader, fshader);
-	    if (!program) {
-	        console.log('Failed to create program');
-	        return false;
-	    }
-	    gl.useProgram(program);
-	    gl.program = program;
-	    return true;
-	}
-	function createProgram(gl, vshader, fshader) {
-	    var vertexShader = loadShader(gl, gl.VERTEX_SHADER, vshader);
-	    var fragmentShader = loadShader(gl, gl.FRAGMENT_SHADER, fshader);
-	    if (!vertexShader || !fragmentShader) {
-	        return null;
-	    }
-	    var program = gl.createProgram();
-	    if (!program) {
-	        return null;
-	    }
-	    gl.attachShader(program, vertexShader);
-	    gl.attachShader(program, fragmentShader);
-	    gl.linkProgram(program);
-	    var linked = gl.getProgramParameter(program, gl.LINK_STATUS);
-	    if (!linked) {
-	        var error = gl.getProgramInfoLog(program);
-	        console.log('Failed to link program: ' + error);
-	        gl.deleteProgram(program);
-	        gl.deleteShader(fragmentShader);
-	        gl.deleteShader(vertexShader);
-	        return null;
-	    }
-	    return program;
-	}
-	function loadShader(gl, type, source) {
-	    var shader = gl.createShader(type);
-	    if (shader == null) {
-	        console.log('unable to create shader');
-	        return null;
-	    }
-	    gl.shaderSource(shader, source);
-	    gl.compileShader(shader);
-	    var compiled = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
-	    if (!compiled) {
-	        var error = gl.getShaderInfoLog(shader);
-	        console.log('Failed to compile shader: ' + error);
-	        gl.deleteShader(shader);
-	        return null;
-	    }
-	    return shader;
-	}
-	function getWebGLContext(canvas) {
-	    var gl = setupWebGL(canvas);
-	    if (!gl)
-	        return null;
-	    return gl;
-	}
-	var setupWebGL = function (canvas) {
-	    if (canvas.addEventListener) {
-	        canvas.addEventListener("webglcontextcreationerror", function (event) {
-	            throw new Error(event.statusMessage);
-	        }, false);
-	    }
-	    var context = create3DContext(canvas);
-	    if (!context) {
-	        throw new Error("error");
-	    }
-	    return context;
-	};
-	var create3DContext = function (canvas) {
-	    var names = ["webgl", "experimental-webgl", "webkit-3d", "moz-webgl"];
-	    var context = null;
-	    for (var ii = 0; ii < names.length; ++ii) {
-	        try {
-	            context = canvas.getContext(names[ii]);
-	        }
-	        catch (e) { }
-	        if (context) {
-	            break;
-	        }
-	    }
-	    return context;
-	};
-
-	var root$1;
-	if (JudgeUtils$1.isNodeJs() && typeof global != "undefined") {
-	    root$1 = global;
-	}
-	else {
-	    root$1 = window;
 	}
 
 	var Log = (function () {
@@ -259,7 +94,7 @@
 	            messages[_i] = arguments[_i];
 	        }
 	        if (!this._exec("log", messages)) {
-	            root$1.alert(messages.join(","));
+	            root.alert(messages.join(","));
 	        }
 	        this._exec("trace", messages);
 	    };
@@ -298,8 +133,8 @@
 	    };
 	    Log._exec = function (consoleMethod, args, sliceBegin) {
 	        if (sliceBegin === void 0) { sliceBegin = 0; }
-	        if (root$1.console && root$1.console[consoleMethod]) {
-	            root$1.console[consoleMethod].apply(root$1.console, Array.prototype.slice.call(args, sliceBegin));
+	        if (root.console && root.console[consoleMethod]) {
+	            root.console[consoleMethod].apply(root.console, Array.prototype.slice.call(args, sliceBegin));
 	            return true;
 	        }
 	        return false;
@@ -535,7 +370,7 @@
 	        return this;
 	    };
 	    List.prototype.addChildren = function (arg) {
-	        if (JudgeUtils$1.isArray(arg)) {
+	        if (JudgeUtils.isArray(arg)) {
 	            var children = arg;
 	            this.children = this.children.concat(children);
 	        }
@@ -572,7 +407,7 @@
 	    };
 	    List.prototype.removeChildHelper = function (arg) {
 	        var result = null;
-	        if (JudgeUtils$1.isFunction(arg)) {
+	        if (JudgeUtils.isFunction(arg)) {
 	            var func = arg;
 	            result = this._removeChild(this.children, func);
 	        }
@@ -679,7 +514,7 @@
 	        var property = null, destination = {};
 	        this.extendDeep(source, destination, function (item, property) {
 	            return property.slice(0, 1) !== "_"
-	                && !JudgeUtils$1.isFunction(item);
+	                && !JudgeUtils.isFunction(item);
 	        });
 	        return destination;
 	    };
@@ -710,7 +545,7 @@
 	            target = Collection.create();
 	        }
 	        else if (args.length === 1) {
-	            if (JudgeUtils$1.isBoolean(args[0])) {
+	            if (JudgeUtils.isBoolean(args[0])) {
 	                target = Collection.create();
 	                isDeep = args[0];
 	            }
@@ -800,6 +635,25 @@
 	    return Collection;
 	}(List));
 
+	var JudgeUtils$1 = (function (_super) {
+	    __extends(JudgeUtils$$1, _super);
+	    function JudgeUtils$$1() {
+	        return _super !== null && _super.apply(this, arguments) || this;
+	    }
+	    JudgeUtils$$1.isPromise = function (obj) {
+	        return !!obj
+	            && !_super.isFunction.call(this, obj.subscribe)
+	            && _super.isFunction.call(this, obj.then);
+	    };
+	    JudgeUtils$$1.isEqual = function (ob1, ob2) {
+	        return ob1.uid === ob2.uid;
+	    };
+	    JudgeUtils$$1.isIObserver = function (i) {
+	        return i.next && i.error && i.completed;
+	    };
+	    return JudgeUtils$$1;
+	}(JudgeUtils));
+
 	var SubjectObserver = (function () {
 	    function SubjectObserver() {
 	        this.observers = Collection.create();
@@ -829,7 +683,7 @@
 	    };
 	    SubjectObserver.prototype.removeChild = function (observer) {
 	        this.observers.removeChild(function (ob) {
-	            return JudgeUtils$$1.isEqual(ob, observer);
+	            return JudgeUtils$1.isEqual(ob, observer);
 	        });
 	    };
 	    SubjectObserver.prototype.dispose = function () {
@@ -1284,7 +1138,7 @@
 	    };
 	    Stream.prototype.concat = function () {
 	        var args = null;
-	        if (JudgeUtils$$1.isArray(arguments[0])) {
+	        if (JudgeUtils$1.isArray(arguments[0])) {
 	            args = arguments[0];
 	        }
 	        else {
@@ -1298,11 +1152,11 @@
 	        for (var _i = 0; _i < arguments.length; _i++) {
 	            args[_i] = arguments[_i];
 	        }
-	        if (JudgeUtils$$1.isNumber(args[0])) {
+	        if (JudgeUtils$1.isNumber(args[0])) {
 	            var maxConcurrent = args[0];
 	            return ClassMapUtils.getClass("MergeStream").create(this, maxConcurrent);
 	        }
-	        if (JudgeUtils$$1.isArray(args[0])) {
+	        if (JudgeUtils$1.isArray(args[0])) {
 	            args = arguments[0];
 	        }
 	        else {
@@ -1347,6 +1201,313 @@
 	    })
 	], Stream.prototype, "takeLast", null);
 
+	var BaseStream = (function (_super) {
+	    __extends(BaseStream, _super);
+	    function BaseStream() {
+	        return _super !== null && _super.apply(this, arguments) || this;
+	    }
+	    BaseStream.prototype.subscribe = function (arg1, onError, onCompleted) {
+	        var observer = null;
+	        if (this.handleSubject(arg1)) {
+	            return;
+	        }
+	        observer = arg1 instanceof Observer
+	            ? AutoDetachObserver.create(arg1)
+	            : AutoDetachObserver.create(arg1, onError, onCompleted);
+	        observer.setDisposable(this.buildStream(observer));
+	        return observer;
+	    };
+	    BaseStream.prototype.buildStream = function (observer) {
+	        _super.prototype.buildStream.call(this, observer);
+	        return this.subscribeCore(observer);
+	    };
+	    return BaseStream;
+	}(Stream));
+
+	var FilterObserver = (function (_super) {
+	    __extends(FilterObserver, _super);
+	    function FilterObserver(prevObserver, predicate, source) {
+	        var _this = _super.call(this, null, null, null) || this;
+	        _this.prevObserver = null;
+	        _this.source = null;
+	        _this.i = 0;
+	        _this.predicate = null;
+	        _this.prevObserver = prevObserver;
+	        _this.predicate = predicate;
+	        _this.source = source;
+	        return _this;
+	    }
+	    FilterObserver.create = function (prevObserver, predicate, source) {
+	        return new this(prevObserver, predicate, source);
+	    };
+	    FilterObserver.prototype.onNext = function (value) {
+	        try {
+	            if (this.predicate(value, this.i++, this.source)) {
+	                this.prevObserver.next(value);
+	            }
+	        }
+	        catch (e) {
+	            this.prevObserver.error(e);
+	        }
+	    };
+	    FilterObserver.prototype.onError = function (error) {
+	        this.prevObserver.error(error);
+	    };
+	    FilterObserver.prototype.onCompleted = function () {
+	        this.prevObserver.completed();
+	    };
+	    return FilterObserver;
+	}(Observer));
+
+	function registerClass(className) {
+	    return function (target) {
+	        ClassMapUtils.addClassMap(className, target);
+	    };
+	}
+
+	var FilterStream = FilterStream_1 = (function (_super) {
+	    __extends(FilterStream, _super);
+	    function FilterStream(source, predicate, thisArg) {
+	        var _this = _super.call(this, null) || this;
+	        _this.predicate = null;
+	        _this._source = null;
+	        _this._source = source;
+	        _this.predicate = FunctionUtils.bind(thisArg, predicate);
+	        return _this;
+	    }
+	    FilterStream.create = function (source, predicate, thisArg) {
+	        var obj = new this(source, predicate, thisArg);
+	        return obj;
+	    };
+	    FilterStream.prototype.subscribeCore = function (observer) {
+	        return this._source.subscribe(this.createObserver(observer));
+	    };
+	    FilterStream.prototype.internalFilter = function (predicate, thisArg) {
+	        return this.createStreamForInternalFilter(this._source, this._innerPredicate(predicate, this), thisArg);
+	    };
+	    FilterStream.prototype.createObserver = function (observer) {
+	        return FilterObserver.create(observer, this.predicate, this);
+	    };
+	    FilterStream.prototype.createStreamForInternalFilter = function (source, innerPredicate, thisArg) {
+	        return FilterStream_1.create(source, innerPredicate, thisArg);
+	    };
+	    FilterStream.prototype._innerPredicate = function (predicate, self) {
+	        var _this = this;
+	        return function (value, i, o) {
+	            return self.predicate(value, i, o) && predicate.call(_this, value, i, o);
+	        };
+	    };
+	    return FilterStream;
+	}(BaseStream));
+	FilterStream = FilterStream_1 = __decorate([
+	    registerClass("FilterStream")
+	], FilterStream);
+	var FilterStream_1;
+
+	var MapObserver = (function (_super) {
+	    __extends(MapObserver, _super);
+	    function MapObserver(currentObserver, selector) {
+	        var _this = _super.call(this, null, null, null) || this;
+	        _this._currentObserver = null;
+	        _this._selector = null;
+	        _this._currentObserver = currentObserver;
+	        _this._selector = selector;
+	        return _this;
+	    }
+	    MapObserver.create = function (currentObserver, selector) {
+	        return new this(currentObserver, selector);
+	    };
+	    MapObserver.prototype.onNext = function (value) {
+	        var result = null;
+	        try {
+	            result = this._selector(value);
+	        }
+	        catch (e) {
+	            this._currentObserver.error(e);
+	        }
+	        finally {
+	            this._currentObserver.next(result);
+	        }
+	    };
+	    MapObserver.prototype.onError = function (error) {
+	        this._currentObserver.error(error);
+	    };
+	    MapObserver.prototype.onCompleted = function () {
+	        this._currentObserver.completed();
+	    };
+	    return MapObserver;
+	}(Observer));
+
+	var MapStream = (function (_super) {
+	    __extends(MapStream, _super);
+	    function MapStream(source, selector) {
+	        var _this = _super.call(this, null) || this;
+	        _this._source = null;
+	        _this._selector = null;
+	        _this._source = source;
+	        _this.scheduler = _this._source.scheduler;
+	        _this._selector = selector;
+	        return _this;
+	    }
+	    MapStream.create = function (source, selector) {
+	        var obj = new this(source, selector);
+	        return obj;
+	    };
+	    MapStream.prototype.subscribeCore = function (observer) {
+	        return this._source.buildStream(MapObserver.create(observer, this._selector));
+	    };
+	    return MapStream;
+	}(BaseStream));
+	MapStream = __decorate([
+	    registerClass("MapStream")
+	], MapStream);
+
+	var root$1;
+	if (JudgeUtils$1.isNodeJs() && typeof global != "undefined") {
+	    root$1 = global;
+	}
+	else {
+	    root$1 = window;
+	}
+
+	root$1.requestNextAnimationFrame = (function () {
+	    var originalRequestAnimationFrame = undefined, wrapper = undefined, callback = undefined, geckoVersion = null, userAgent = root$1.navigator && root$1.navigator.userAgent, index = 0, self = this;
+	    wrapper = function (time) {
+	        time = root$1.performance.now();
+	        self.callback(time);
+	    };
+	    if (root$1.requestAnimationFrame) {
+	        return requestAnimationFrame;
+	    }
+	    if (root$1.webkitRequestAnimationFrame) {
+	        originalRequestAnimationFrame = root$1.webkitRequestAnimationFrame;
+	        root$1.webkitRequestAnimationFrame = function (callback, element) {
+	            self.callback = callback;
+	            return originalRequestAnimationFrame(wrapper, element);
+	        };
+	    }
+	    if (root$1.msRequestAnimationFrame) {
+	        originalRequestAnimationFrame = root$1.msRequestAnimationFrame;
+	        root$1.msRequestAnimationFrame = function (callback) {
+	            self.callback = callback;
+	            return originalRequestAnimationFrame(wrapper);
+	        };
+	    }
+	    if (root$1.mozRequestAnimationFrame) {
+	        index = userAgent.indexOf('rv:');
+	        if (userAgent.indexOf('Gecko') != -1) {
+	            geckoVersion = userAgent.substr(index + 3, 3);
+	            if (geckoVersion === '2.0') {
+	                root$1.mozRequestAnimationFrame = undefined;
+	            }
+	        }
+	    }
+	    return root$1.webkitRequestAnimationFrame ||
+	        root$1.mozRequestAnimationFrame ||
+	        root$1.oRequestAnimationFrame ||
+	        root$1.msRequestAnimationFrame ||
+	        function (callback, element) {
+	            var start, finish;
+	            root$1.setTimeout(function () {
+	                start = root$1.performance.now();
+	                callback(start);
+	                finish = root$1.performance.now();
+	                self.timeout = 1000 / 60 - (finish - start);
+	            }, self.timeout);
+	        };
+	}());
+	root$1.cancelNextRequestAnimationFrame = root$1.cancelRequestAnimationFrame
+	    || root$1.webkitCancelAnimationFrame
+	    || root$1.webkitCancelRequestAnimationFrame
+	    || root$1.mozCancelRequestAnimationFrame
+	    || root$1.oCancelRequestAnimationFrame
+	    || root$1.msCancelRequestAnimationFrame
+	    || clearTimeout;
+
+	function initShaders(gl, vshader, fshader) {
+	    var program = createProgram(gl, vshader, fshader);
+	    if (!program) {
+	        console.log('Failed to create program');
+	        return false;
+	    }
+	    gl.useProgram(program);
+	    gl.program = program;
+	    return true;
+	}
+	function createProgram(gl, vshader, fshader) {
+	    var vertexShader = loadShader(gl, gl.VERTEX_SHADER, vshader);
+	    var fragmentShader = loadShader(gl, gl.FRAGMENT_SHADER, fshader);
+	    if (!vertexShader || !fragmentShader) {
+	        return null;
+	    }
+	    var program = gl.createProgram();
+	    if (!program) {
+	        return null;
+	    }
+	    gl.attachShader(program, vertexShader);
+	    gl.attachShader(program, fragmentShader);
+	    gl.linkProgram(program);
+	    var linked = gl.getProgramParameter(program, gl.LINK_STATUS);
+	    if (!linked) {
+	        var error = gl.getProgramInfoLog(program);
+	        console.log('Failed to link program: ' + error);
+	        gl.deleteProgram(program);
+	        gl.deleteShader(fragmentShader);
+	        gl.deleteShader(vertexShader);
+	        return null;
+	    }
+	    return program;
+	}
+	function loadShader(gl, type, source) {
+	    var shader = gl.createShader(type);
+	    if (shader == null) {
+	        console.log('unable to create shader');
+	        return null;
+	    }
+	    gl.shaderSource(shader, source);
+	    gl.compileShader(shader);
+	    var compiled = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
+	    if (!compiled) {
+	        var error = gl.getShaderInfoLog(shader);
+	        console.log('Failed to compile shader: ' + error);
+	        gl.deleteShader(shader);
+	        return null;
+	    }
+	    return shader;
+	}
+	function getWebGLContext(canvas) {
+	    var gl = setupWebGL(canvas);
+	    if (!gl)
+	        return null;
+	    return gl;
+	}
+	var setupWebGL = function (canvas) {
+	    if (canvas.addEventListener) {
+	        canvas.addEventListener("webglcontextcreationerror", function (event) {
+	            throw new Error(event.statusMessage);
+	        }, false);
+	    }
+	    var context = create3DContext(canvas);
+	    if (!context) {
+	        throw new Error("error");
+	    }
+	    return context;
+	};
+	var create3DContext = function (canvas) {
+	    var names = ["webgl", "experimental-webgl", "webkit-3d", "moz-webgl"];
+	    var context = null;
+	    for (var ii = 0; ii < names.length; ++ii) {
+	        try {
+	            context = canvas.getContext(names[ii]);
+	        }
+	        catch (e) { }
+	        if (context) {
+	            break;
+	        }
+	    }
+	    return context;
+	};
+
 	var Scheduler = (function () {
 	    function Scheduler() {
 	        this._requestLoopId = null;
@@ -1373,7 +1534,7 @@
 	        action(initial);
 	    };
 	    Scheduler.prototype.publishInterval = function (observer, initial, interval, action) {
-	        return root.setInterval(function () {
+	        return root$1.setInterval(function () {
 	            initial = action(initial);
 	        }, interval);
 	    };
@@ -1383,12 +1544,12 @@
 	            if (isEnd) {
 	                return;
 	            }
-	            self._requestLoopId = root.requestNextAnimationFrame(loop);
+	            self._requestLoopId = root$1.requestNextAnimationFrame(loop);
 	        };
-	        this._requestLoopId = root.requestNextAnimationFrame(loop);
+	        this._requestLoopId = root$1.requestNextAnimationFrame(loop);
 	    };
 	    Scheduler.prototype.publishTimeout = function (observer, time, action) {
-	        return root.setTimeout(function () {
+	        return root$1.setTimeout(function () {
 	            action(time);
 	            observer.completed();
 	        }, time);
@@ -1421,7 +1582,7 @@
 	            this.handleSubject(subject);
 	            return;
 	        }
-	        else if (JudgeUtils$$1.isIObserver(args[0])) {
+	        else if (JudgeUtils$1.isIObserver(args[0])) {
 	            observer = AutoDetachObserver.create(args[0]);
 	        }
 	        else {
@@ -1432,29 +1593,6 @@
 	        return observer;
 	    };
 	    return AnonymousStream;
-	}(Stream));
-
-	var BaseStream = (function (_super) {
-	    __extends(BaseStream, _super);
-	    function BaseStream() {
-	        return _super !== null && _super.apply(this, arguments) || this;
-	    }
-	    BaseStream.prototype.subscribe = function (arg1, onError, onCompleted) {
-	        var observer = null;
-	        if (this.handleSubject(arg1)) {
-	            return;
-	        }
-	        observer = arg1 instanceof Observer
-	            ? AutoDetachObserver.create(arg1)
-	            : AutoDetachObserver.create(arg1, onError, onCompleted);
-	        observer.setDisposable(this.buildStream(observer));
-	        return observer;
-	    };
-	    BaseStream.prototype.buildStream = function (observer) {
-	        _super.prototype.buildStream.call(this, observer);
-	        return this.subscribeCore(observer);
-	    };
-	    return BaseStream;
 	}(Stream));
 
 	var FromArrayStream = (function (_super) {
@@ -1563,7 +1701,7 @@
 	            return count + 1;
 	        });
 	        return SingleDisposable.create(function () {
-	            root.clearInterval(id);
+	            root$1.clearInterval(id);
 	        });
 	    };
 	    return IntervalStream;
@@ -1588,7 +1726,7 @@
 	            return self._isEnd;
 	        });
 	        return SingleDisposable.create(function () {
-	            root.cancelNextRequestAnimationFrame(self.scheduler.requestLoopId);
+	            root$1.cancelNextRequestAnimationFrame(self.scheduler.requestLoopId);
 	            self._isEnd = true;
 	        });
 	    };
@@ -1614,7 +1752,7 @@
 	            observer.next(time);
 	        });
 	        return SingleDisposable.create(function () {
-	            root.clearTimeout(id);
+	            root$1.clearTimeout(id);
 	        });
 	    };
 	    return TimeoutStream;
@@ -1679,12 +1817,6 @@
 	    };
 	    return DeferStream;
 	}(BaseStream));
-
-	function registerClass(className) {
-	    return function (target) {
-	        ClassMapUtils.addClassMap(className, target);
-	    };
-	}
 
 	var Operator = (function () {
 	    function Operator() {
@@ -5993,6 +6125,7 @@
 
 	var gl = null;
 	var n = null;
+	var gameLoop = null;
 	var position = null;
 	var VSHADER_SOURCE = 'attribute vec4 a_Position;\n' +
 	    'uniform mat4 u_ModelMatrix;\n' +
@@ -6003,7 +6136,7 @@
 	    '  gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);\n' +
 	    '}\n';
 	var _startLoop = function () {
-	    intervalRequest()
+	    gameLoop = intervalRequest()
 	        .subscribe(function (time) {
 	        _loopBody(time);
 	    });
@@ -6033,7 +6166,37 @@
 	    var delta = (time % 1000 - 500) / 1000;
 	    return delta;
 	};
-	var _update = flow(_updateAction);
+	var _beginRecord = function (time) {
+	    recordData.beginTime = time;
+	};
+	var _stopRecord = function (time) {
+	    recordData.endTime = time;
+	    stop();
+	};
+	var RecordData = (function () {
+	    function RecordData() {
+	    }
+	    RecordData.create = function () {
+	        var obj = new this();
+	        return obj;
+	    };
+	    return RecordData;
+	}());
+	var recordData = RecordData.create();
+	var isBeginRecord = false;
+	var isEndRecord = false;
+	var _record = function (time) {
+	    if (isBeginRecord) {
+	        isBeginRecord = false;
+	        _beginRecord(time);
+	    }
+	    if (isEndRecord) {
+	        isEndRecord = false;
+	        _stopRecord(time);
+	    }
+	    return time;
+	};
+	var _update = flow(_record, _updateAction);
 	var _render = function (time) {
 	    _sendData(gl);
 	    gl.clearColor(0, 0, 0, 1);
@@ -6080,8 +6243,39 @@
 	};
 	var _loopBody = flow(_update, _render);
 	var start = flow(_init, _startLoop);
+	var beginRecord = function (time) {
+	    isBeginRecord = true;
+	    isEndRecord = false;
+	};
+	var endRecord = function (time) {
+	    isBeginRecord = false;
+	    isEndRecord = true;
+	};
+	var stop = function () {
+	    gameLoop.dispose();
+	};
+	var rePlay = function () {
+	    var startTime = null;
+	    gameLoop = intervalRequest()
+	        .map(function (time) {
+	        if (startTime === null) {
+	            startTime = time;
+	        }
+	        return time - (startTime - recordData.beginTime);
+	    })
+	        .filter(function (time) {
+	        return time <= recordData.endTime;
+	    })
+	        .subscribe(function (time) {
+	        _loopBody(time);
+	    });
+	};
 
 	exports.start = start;
+	exports.beginRecord = beginRecord;
+	exports.endRecord = endRecord;
+	exports.stop = stop;
+	exports.rePlay = rePlay;
 
 	Object.defineProperty(exports, '__esModule', { value: true });
 

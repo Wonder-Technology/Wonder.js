@@ -1,3 +1,5 @@
+import "wonder-frp/dist/es2015/stream/FilterStream";
+import "wonder-frp/dist/es2015/stream/MapStream";
 import "wonder-frp/dist/es2015/extend/root";
 import {getWebGLContext, initShaders} from "./lib/cuon-utils";
 import {intervalRequest} from "wonder-frp/dist/es2015/global/Operator";
@@ -8,6 +10,7 @@ var gl:WebGLRenderingContext = null,
     n = null;
 
 
+var gameLoop = null;
 
 var position:number = null;
 
@@ -25,12 +28,16 @@ var FSHADER_SOURCE =
     '}\n';
 
 
+/*! side effect */
 var _startLoop = () => {
-    intervalRequest()
+    gameLoop = intervalRequest()
         .subscribe((time) => {
             _loopBody(time);
         });
 }
+
+
+
 
 /*! side effect */
 var _init = () => {
@@ -73,8 +80,52 @@ var _getNewPosition = (time:number) => {
 }
 
 
+var _beginRecord = (time) => {
+    recordData.beginTime = time;
+}
+
 /*! side effect */
-var _update = flow(_updateAction);
+var _stopRecord = (time) => {
+    recordData.endTime = time;
+
+    stop();
+}
+
+
+
+
+class RecordData{
+    public static create() {
+        var obj = new this();
+
+        return obj;
+    }
+
+    public beginTime;
+    public endTime;
+}
+
+var recordData = RecordData.create();
+var isBeginRecord = false,
+    isEndRecord = false;
+
+var _record = (time:number) => {
+    if(isBeginRecord){
+        isBeginRecord = false;
+        _beginRecord(time);
+    }
+
+    if(isEndRecord){
+        isEndRecord = false;
+        _stopRecord(time);
+    }
+
+    return time;
+}
+
+
+/*! side effect */
+var _update = flow(_record, _updateAction);
 
 
 
@@ -158,3 +209,40 @@ var _loopBody = flow(_update, _render);
 
 export var start = flow(_init, _startLoop);
 
+
+
+/*! side effect */
+export var beginRecord = (time) => {
+    isBeginRecord = true;
+    isEndRecord = false;
+}
+
+/*! side effect */
+export var endRecord = (time) => {
+    isBeginRecord = false;
+    isEndRecord = true;
+}
+
+export var stop = () => {
+    gameLoop.dispose();
+}
+
+/*! side effect */
+export var rePlay = () => {
+    var startTime = null;
+
+    gameLoop = intervalRequest()
+        .map((time) => {
+            if(startTime === null){
+                startTime = time;
+            }
+
+            return time - (startTime - recordData.beginTime);
+        })
+        .filter((time) => {
+            return time <= recordData.endTime
+        })
+        .subscribe((time) => {
+            _loopBody(time);
+        });
+}
