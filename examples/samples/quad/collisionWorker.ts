@@ -1,3 +1,5 @@
+import {hideLog, log} from "./debug";
+
 onmessage = (e) => {
     var position:number = e.data.position;
 
@@ -6,7 +8,7 @@ onmessage = (e) => {
 
 
 
-    // console.log("receive collision in worker: ", position)
+    // log("receive collision in worker: ", position)
 
     if(_isCollide(position)){
         isCollide = true;
@@ -26,3 +28,7 @@ onmessage = (e) => {
 var _isCollide = (position) => {
     return position > 0.2;
 }
+
+
+
+hideLog();

@@ -4,6 +4,7 @@ import "wonder-frp/dist/es2015/extend/root";
 import {intervalRequest} from "wonder-frp/dist/es2015/global/Operator";
 import flow from "lodash-es/flow";
 import {actionWorkerFilePath, collisionWorkerFilePath, renderWorkerFilePath} from "./workerFilePath";
+import {hideLog, log} from "./debug";
 
 
 var renderWorker;
@@ -16,6 +17,8 @@ var gameLoop = null;
 var position:number = null;
 
 var positionUpdatedByAction = null;
+
+var positionUpdatedBySet = null;
 
 var collisionData = {
     isCollide: null,
@@ -113,6 +116,11 @@ var _record = (time:number) => {
 
 
 
+/*!
+here show two generate data way(action worker; set position), one limit data way(collision worker).
+
+limit way should get generated data in highest priority way(set-position > action-worker)
+ */
 
 
 
@@ -127,12 +135,20 @@ var _sendDataToActionWorker = (time) => {
 
 
 var _sendDataToCollisionWorker = (time) => {
-    // console.log("send collision pos:", position)
     collisionWorker.postMessage({
-        position:positionUpdatedByAction
+        position:_getHighPriorityGeneratedPosition()
     });
 
     return time;
+}
+
+var _getHighPriorityGeneratedPosition = () => {
+    if(positionUpdatedBySet !== null){
+        // log("positionUpdatedBySet:", positionUpdatedBySet);
+        return positionUpdatedBySet;
+    }
+
+    return positionUpdatedByAction;
 }
 
 
@@ -144,6 +160,12 @@ var _sendDataToLogicWorker = flow(_sendDataToActionWorker, _sendDataToCollisionW
 var _sync = (time) => {
     if(collisionData.isCollide){
         position = collisionData.position;
+        positionUpdatedBySet = null;
+    }
+    else if(positionUpdatedBySet !== null){
+        position = positionUpdatedBySet;
+
+        positionUpdatedBySet = null;
     }
     else{
         position = positionUpdatedByAction;
@@ -168,7 +190,7 @@ var _update = flow(_record, _sendDataToLogicWorker, _sync);
 var _sendTimeToRenderWorker = (time) => {
     if(position > 0.2){
         // if( !collisionData.isCollide && collisionData.position)
-        console.log("err", collisionData, position)
+        // log("err", collisionData, position)
     }
 
     renderWorker.postMessage({
@@ -225,3 +247,14 @@ export var rePlay = () => {
             _loopBody(time);
         });
 }
+
+
+/*! side effect */
+export var setPos = (pos) => {
+    positionUpdatedBySet = Number(pos);
+}
+
+
+
+
+// hideLog();

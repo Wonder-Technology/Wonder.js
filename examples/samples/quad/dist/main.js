@@ -2854,12 +2854,25 @@
 	var collisionWorkerFilePath = "./dist/collisionWorker.js";
 	var actionWorkerFilePath = "./dist/actionWorker.js";
 
+	var _isShowLog = true;
+
+	var log = function () {
+	    var msgArr = [];
+	    for (var _i = 0; _i < arguments.length; _i++) {
+	        msgArr[_i] = arguments[_i];
+	    }
+	    if (_isShowLog) {
+	        console.log(msgArr.join(""));
+	    }
+	};
+
 	var renderWorker;
 	var collisionWorker;
 	var actionWorker;
 	var gameLoop = null;
 	var position = null;
 	var positionUpdatedByAction = null;
+	var positionUpdatedBySet = null;
 	var collisionData = {
 	    isCollide: null,
 	    position: null
@@ -2882,7 +2895,6 @@
 	    collisionWorker = new Worker(collisionWorkerFilePath);
 	    collisionWorker.onmessage = function (msg) {
 	        collisionData = msg.data;
-	        console.log("receive collision message: ", collisionData);
 	    };
 	    actionWorker = new Worker(actionWorkerFilePath);
 	    actionWorker.onmessage = function (msg) {
@@ -2927,14 +2939,26 @@
 	};
 	var _sendDataToCollisionWorker = function (time) {
 	    collisionWorker.postMessage({
-	        position: positionUpdatedByAction
+	        position: _getHighPriorityGeneratedPosition()
 	    });
 	    return time;
+	};
+	var _getHighPriorityGeneratedPosition = function () {
+	    if (positionUpdatedBySet !== null) {
+	        log("positionUpdatedBySet:", positionUpdatedBySet);
+	        return positionUpdatedBySet;
+	    }
+	    return positionUpdatedByAction;
 	};
 	var _sendDataToLogicWorker = flow(_sendDataToActionWorker, _sendDataToCollisionWorker);
 	var _sync = function (time) {
 	    if (collisionData.isCollide) {
 	        position = collisionData.position;
+	        positionUpdatedBySet = null;
+	    }
+	    else if (positionUpdatedBySet !== null) {
+	        position = positionUpdatedBySet;
+	        positionUpdatedBySet = null;
 	    }
 	    else {
 	        position = positionUpdatedByAction;
@@ -2944,7 +2968,6 @@
 	var _update = flow(_record, _sendDataToLogicWorker, _sync);
 	var _sendTimeToRenderWorker = function (time) {
 	    if (position > 0.2) {
-	        console.log("err", collisionData, position);
 	    }
 	    renderWorker.postMessage({
 	        renderData: {
@@ -2983,12 +3006,16 @@
 	        _loopBody(time);
 	    });
 	};
+	var setPos = function (pos) {
+	    positionUpdatedBySet = Number(pos);
+	};
 
 	exports.start = start;
 	exports.beginRecord = beginRecord;
 	exports.endRecord = endRecord;
 	exports.stop = stop;
 	exports.rePlay = rePlay;
+	exports.setPos = setPos;
 
 	Object.defineProperty(exports, '__esModule', { value: true });
 
