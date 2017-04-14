@@ -3,10 +3,13 @@ import "wonder-frp/dist/es2015/stream/MapStream";
 import "wonder-frp/dist/es2015/extend/root";
 import { intervalRequest } from "wonder-frp/dist/es2015/global/Operator";
 import flow from "lodash-es/flow";
-import { renderWorkerFilePath } from "./workerFilePath";
+import { actionWorkerFilePath, renderWorkerFilePath } from "./workerFilePath";
 var renderWorker;
+var collisionWorker;
+var actionWorker;
 var gameLoop = null;
 var position = null;
+var positionUpdatedByAction = null, positionUpdatedByCollision = null;
 var _startLoop = function () {
     gameLoop = intervalRequest()
         .subscribe(function (time) {
@@ -22,14 +25,10 @@ var _init = function () {
     var offscreen = canvas.transferControlToOffscreen();
     renderWorker = new Worker(renderWorkerFilePath);
     renderWorker.postMessage({ canvas: offscreen }, [offscreen]);
-};
-var _updateAction = function (time) {
-    position = _getNewPosition(time);
-    return time;
-};
-var _getNewPosition = function (time) {
-    var delta = (time % 1000 - 500) / 1000;
-    return delta;
+    actionWorker = new Worker(actionWorkerFilePath);
+    actionWorker.onmessage = function (msg) {
+        positionUpdatedByAction = msg.data.position;
+    };
 };
 var _beginRecord = function (time) {
     recordData.beginTime = time;
@@ -60,7 +59,17 @@ var _record = function (time) {
     }
     return time;
 };
-var _update = flow(_record, _updateAction);
+var _sendDataToActionWorker = function (time) {
+    actionWorker.postMessage({
+        time: time
+    });
+    return time;
+};
+var _sendDataToLogicWorker = flow(_sendDataToActionWorker);
+var _sync = function (time) {
+    position = positionUpdatedByAction;
+};
+var _update = flow(_record, _sendDataToLogicWorker, _sync);
 var _sendTimeToRenderWorker = function (time) {
     renderWorker.postMessage({
         renderData: {

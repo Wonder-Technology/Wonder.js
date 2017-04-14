@@ -3,15 +3,24 @@ import "wonder-frp/dist/es2015/stream/MapStream";
 import "wonder-frp/dist/es2015/extend/root";
 import {intervalRequest} from "wonder-frp/dist/es2015/global/Operator";
 import flow from "lodash-es/flow";
-import {renderWorkerFilePath} from "./workerFilePath";
+import {actionWorkerFilePath, collisionWorkerFilePath, renderWorkerFilePath} from "./workerFilePath";
 
 
 var renderWorker;
+var collisionWorker;
+var actionWorker;
 
 
 var gameLoop = null;
 
 var position:number = null;
+
+var positionUpdatedByAction = null;
+
+var collisionData = {
+    isCollide: null,
+    position: null
+}
 
 
 /*! side effect */
@@ -37,23 +46,28 @@ var _init = () => {
     var offscreen = (<any>canvas).transferControlToOffscreen();
     renderWorker = new Worker(renderWorkerFilePath);
     renderWorker.postMessage({ canvas: offscreen }, [offscreen]);
+
+
+
+    collisionWorker = new Worker(collisionWorkerFilePath);
+
+    collisionWorker.onmessage = (msg) => {
+        collisionData = msg.data;
+        // console.log("receive collision message: ", collisionData)
+    };
+
+
+
+
+    actionWorker = new Worker(actionWorkerFilePath);
+
+    actionWorker.onmessage = (msg) => {
+        positionUpdatedByAction = msg.data.position;
+    };
 }
+
 
 /*! side effect */
-var _updateAction = (time:number) => {
-    position = _getNewPosition(time);
-
-    return time;
-}
-
-
-var _getNewPosition = (time:number) => {
-    var delta = (time % 1000 - 500) / 1000;
-
-    return delta;
-}
-
-
 var _beginRecord = (time) => {
     recordData.beginTime = time;
 }
@@ -102,13 +116,61 @@ var _record = (time:number) => {
 
 
 
+
+var _sendDataToActionWorker = (time) => {
+    actionWorker.postMessage({
+        time: time
+    });
+
+    return time;
+}
+
+
+var _sendDataToCollisionWorker = (time) => {
+    // console.log("send collision pos:", position)
+    collisionWorker.postMessage({
+        position:positionUpdatedByAction
+    });
+
+    return time;
+}
+
+
+var _sendDataToLogicWorker = flow(_sendDataToActionWorker, _sendDataToCollisionWorker);
+
+
+
 /*! side effect */
-var _update = flow(_record, _updateAction);
+var _sync = (time) => {
+    if(collisionData.isCollide){
+        position = collisionData.position;
+    }
+    else{
+        position = positionUpdatedByAction;
+    }
+
+    return time;
+}
+
+
+
+
+
+
+/*! side effect */
+var _update = flow(_record, _sendDataToLogicWorker, _sync);
+
+
 
 
 
 
 var _sendTimeToRenderWorker = (time) => {
+    if(position > 0.2){
+        // if( !collisionData.isCollide && collisionData.position)
+        console.log("err", collisionData, position)
+    }
+
     renderWorker.postMessage({
         renderData: {
             position:position
@@ -163,13 +225,3 @@ export var rePlay = () => {
             _loopBody(time);
         });
 }
-
-
-
-
-
-
-
-
-
-

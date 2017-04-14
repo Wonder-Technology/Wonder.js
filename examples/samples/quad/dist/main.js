@@ -81,8 +81,14 @@
 	if (JudgeUtils.isNodeJs() && typeof global != "undefined") {
 	    root = global;
 	}
-	else {
+	else if (typeof window != "undefined") {
 	    root = window;
+	}
+	else if (typeof self != "undefined") {
+	    root = self;
+	}
+	else {
+	    Log.error("no avaliable root!");
 	}
 
 	var Log = (function () {
@@ -1366,8 +1372,14 @@
 	if (JudgeUtils$1.isNodeJs() && typeof global != "undefined") {
 	    root$1 = global;
 	}
-	else {
+	else if (typeof window != "undefined") {
 	    root$1 = window;
+	}
+	else if (typeof self != "undefined") {
+	    root$1 = self;
+	}
+	else {
+	    Log.error("no avaliable root!");
 	}
 
 	root$1.requestNextAnimationFrame = (function () {
@@ -2839,10 +2851,19 @@
 	var flow = createFlow();
 
 	var renderWorkerFilePath = "./dist/renderWorker.js";
+	var collisionWorkerFilePath = "./dist/collisionWorker.js";
+	var actionWorkerFilePath = "./dist/actionWorker.js";
 
 	var renderWorker;
+	var collisionWorker;
+	var actionWorker;
 	var gameLoop = null;
 	var position = null;
+	var positionUpdatedByAction = null;
+	var collisionData = {
+	    isCollide: null,
+	    position: null
+	};
 	var _startLoop = function () {
 	    gameLoop = intervalRequest()
 	        .subscribe(function (time) {
@@ -2858,14 +2879,15 @@
 	    var offscreen = canvas.transferControlToOffscreen();
 	    renderWorker = new Worker(renderWorkerFilePath);
 	    renderWorker.postMessage({ canvas: offscreen }, [offscreen]);
-	};
-	var _updateAction = function (time) {
-	    position = _getNewPosition(time);
-	    return time;
-	};
-	var _getNewPosition = function (time) {
-	    var delta = (time % 1000 - 500) / 1000;
-	    return delta;
+	    collisionWorker = new Worker(collisionWorkerFilePath);
+	    collisionWorker.onmessage = function (msg) {
+	        collisionData = msg.data;
+	        console.log("receive collision message: ", collisionData);
+	    };
+	    actionWorker = new Worker(actionWorkerFilePath);
+	    actionWorker.onmessage = function (msg) {
+	        positionUpdatedByAction = msg.data.position;
+	    };
 	};
 	var _beginRecord = function (time) {
 	    recordData.beginTime = time;
@@ -2897,8 +2919,33 @@
 	    }
 	    return time;
 	};
-	var _update = flow(_record, _updateAction);
+	var _sendDataToActionWorker = function (time) {
+	    actionWorker.postMessage({
+	        time: time
+	    });
+	    return time;
+	};
+	var _sendDataToCollisionWorker = function (time) {
+	    collisionWorker.postMessage({
+	        position: positionUpdatedByAction
+	    });
+	    return time;
+	};
+	var _sendDataToLogicWorker = flow(_sendDataToActionWorker, _sendDataToCollisionWorker);
+	var _sync = function (time) {
+	    if (collisionData.isCollide) {
+	        position = collisionData.position;
+	    }
+	    else {
+	        position = positionUpdatedByAction;
+	    }
+	    return time;
+	};
+	var _update = flow(_record, _sendDataToLogicWorker, _sync);
 	var _sendTimeToRenderWorker = function (time) {
+	    if (position > 0.2) {
+	        console.log("err", collisionData, position);
+	    }
 	    renderWorker.postMessage({
 	        renderData: {
 	            position: position
