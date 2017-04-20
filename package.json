@@ -20,9 +20,9 @@
       "<rootDir>/test/unit/**/*Spec.ts"
     ],
     "moduleFileExtensions": [
+      "js",
       "ts",
-      "tsx",
-      "js"
+      "tsx"
     ]
   },
   "devDependencies": {
