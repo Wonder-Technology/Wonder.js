@@ -1,6 +1,7 @@
 import { Log } from "../../../utils/Log";
 import { CompileConfig } from "../../../config/CompileConfig";
-import { MainData } from "../../../core/data/MainData";
+import { getIsTest } from "../../../core/MainSystem";
+import { MainData } from "../../../core/MainData";
 
 var _describeContext = null;
 
@@ -49,7 +50,7 @@ export function requireCheck(inFunc) {
             let value = descriptor.value;
 
             descriptor.value = function(args) {
-                if (MainData.isTest) {
+                if (getIsTest(MainData)) {
                     inFunc.apply(this, arguments);
                 }
 
@@ -61,6 +62,23 @@ export function requireCheck(inFunc) {
     }
 }
 
+export function requireCheckFunc(checkFunc: Function, bodyFunc:Function) {
+    if (!CompileConfig.isCompileTest) {
+        return bodyFunc;
+    }
+
+    return (...paramArr) => {
+        if (!getIsTest(MainData)) {
+            return bodyFunc.apply(null, paramArr);
+        }
+
+        checkFunc.apply(null, paramArr);
+
+        return bodyFunc.apply(null, paramArr);
+    }
+}
+
+
 export function ensure(outFunc) {
     return function(target, name, descriptor) {
         if (CompileConfig.isCompileTest) {
@@ -69,7 +87,7 @@ export function ensure(outFunc) {
             descriptor.value = function(args) {
                 var result = value.apply(this, arguments);
 
-                if (MainData.isTest) {
+                if (getIsTest(MainData)) {
 
                     var params = [result];
 
@@ -88,6 +106,24 @@ export function ensure(outFunc) {
     }
 }
 
+export function ensureFunc(checkFunc: Function, bodyFunc:Function) {
+    if (!CompileConfig.isCompileTest) {
+        return bodyFunc;
+    }
+
+    return (...paramArr) => {
+        if (!getIsTest(MainData)) {
+            return bodyFunc.apply(null, paramArr);
+        }
+
+        let result = bodyFunc.apply(null, paramArr);
+
+        checkFunc.apply(null, [result].concat(paramArr));
+
+        return result;
+    }
+}
+
 export function requireGetterAndSetter(inGetterFunc, inSetterFunc) {
     return function(target, name, descriptor) {
         if (CompileConfig.isCompileTest) {
@@ -95,7 +131,7 @@ export function requireGetterAndSetter(inGetterFunc, inSetterFunc) {
                 setter = descriptor.set;
 
             descriptor.get = function() {
-                if (MainData.isTest) {
+                if (getIsTest(MainData)) {
                     inGetterFunc.call(this);
                 }
 
@@ -103,7 +139,7 @@ export function requireGetterAndSetter(inGetterFunc, inSetterFunc) {
             };
 
             descriptor.set = function(val) {
-                if (MainData.isTest) {
+                if (getIsTest(MainData)) {
                     inSetterFunc.call(this, val);
                 }
 
@@ -121,7 +157,7 @@ export function requireGetter(inFunc) {
             let getter = descriptor.get;
 
             descriptor.get = function() {
-                if (MainData.isTest) {
+                if (getIsTest(MainData)) {
                     inFunc.call(this);
                 }
 
@@ -140,7 +176,7 @@ export function requireSetter(inFunc) {
             let setter = descriptor.set;
 
             descriptor.set = function(val) {
-                if (MainData.isTest) {
+                if (getIsTest(MainData)) {
                     inFunc.call(this, val);
                 }
 
@@ -161,7 +197,7 @@ export function ensureGetterAndSetter(outGetterFunc, outSetterFunc) {
             descriptor.get = function() {
                 var result = getter.call(this);
 
-                if (MainData.isTest) {
+                if (getIsTest(MainData)) {
                     outGetterFunc.call(this, result);
                 }
 
@@ -171,7 +207,7 @@ export function ensureGetterAndSetter(outGetterFunc, outSetterFunc) {
             descriptor.set = function(val) {
                 var result = setter.call(this, val);
 
-                if (MainData.isTest) {
+                if (getIsTest(MainData)) {
                     let params = [result, val];
                     outSetterFunc.apply(this, params);
                 }
@@ -190,7 +226,7 @@ export function ensureGetter(outFunc) {
             descriptor.get = function() {
                 var result = getter.call(this);
 
-                if (MainData.isTest) {
+                if (getIsTest(MainData)) {
                     outFunc.call(this, result);
                 }
 
@@ -210,7 +246,7 @@ export function ensureSetter(outFunc) {
             descriptor.set = function(val) {
                 var result = setter.call(this, val);
 
-                if (MainData.isTest) {
+                if (getIsTest(MainData)) {
                     let params = [result, val];
                     outFunc.apply(this, params);
                 }
@@ -224,7 +260,7 @@ export function ensureSetter(outFunc) {
 export function invariant(func) {
     return function(target) {
         if (CompileConfig.isCompileTest) {
-            if (MainData.isTest) {
+            if (getIsTest(MainData)) {
                 func(target);
             }
         }

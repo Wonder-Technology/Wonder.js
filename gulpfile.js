@@ -26,7 +26,7 @@ var glslFilePaths = config.glslFilePaths;
 
 
 
-var createShaderChunk = require("./build/gulp_task/createInnerFile/ShaderChunk/create").createShaderChunk;
+// var createShaderChunk = require("./build/gulp_task/createInnerFile/ShaderChunk/create").createShaderChunk;
 
 
 require("./build/gulp_task/clean/clean");
@@ -96,5 +96,13 @@ gulp.task("build", gulpSync.sync(["clean", "createShaderChunk", "generateIndex",
 gulp.task("watch", function(){
     var totalPaths = tsFilePaths.concat(glslFilePaths);
 
-    gulp.watch(totalPaths, gulpSync.sync(["createShaderChunk", "compileTsES2015", "rollup"]));
+    // gulp.watch(totalPaths, gulpSync.sync(["createShaderChunk", "compileTsES2015", "rollup"]));
+    // gulp.watch(totalPaths, gulpSync.sync(["compileTsES2015", "rollup"]));
+    gulp.watch(totalPaths, gulpSync.sync(["compileTsES2015"]));
+});
+
+gulp.task("watchCjs", function(){
+    var totalPaths = tsFilePaths.concat(glslFilePaths);
+
+    gulp.watch(totalPaths, gulpSync.sync(["compileTsCommonjs"]));
 });

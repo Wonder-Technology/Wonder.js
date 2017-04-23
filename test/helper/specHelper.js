@@ -217,24 +217,6 @@ jasmine.getEnv().beforeEach(function () {
      modify existed matcher
      */
     jasmine.addMatchers({
-        toBeTruthy: function () {
-            return {
-                compare: function (actual) {
-                    return {
-                        pass: actual === true
-                    }
-                }
-            };
-        },
-        toBeFalsy: function () {
-            return {
-                compare: function (actual) {
-                    return {
-                        pass: actual === false
-                    }
-                }
-            };
-        },
         toThrow: function () {
             return {
                 compare: function (actual, expectedMsg) {

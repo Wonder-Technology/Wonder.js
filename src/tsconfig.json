@@ -8,6 +8,10 @@
     "outDir": "../dist/es2015",
     "declaration": true,
     "noEmitOnError": true,
+    "typeRoots": [
+      "../node_modules/@types/",
+      "./types"
+    ],
     "removeComments": true,
     "experimentalDecorators": true
   },

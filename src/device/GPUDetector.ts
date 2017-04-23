@@ -1,7 +1,9 @@
 import { registerClass } from "../definition/typescript/decorator/registerClass";
 import { singleton } from "../definition/typescript/decorator/singleton";
-import { DeviceManager } from "./DeviceManager";
+// import { DeviceManager } from "./DeviceManager";
 import { Log } from "../utils/Log";
+import { getGL } from "./DeviceManagerSystem";
+import { DeviceManagerData } from "./DeviceManagerData";
 
 @singleton()
 @registerClass("GPUDetector")
@@ -11,7 +13,7 @@ export class GPUDetector {
     private constructor() { }
 
     get gl() {
-        return DeviceManager.getInstance().gl;
+        return getGL(DeviceManagerData);
     }
 
     public maxTextureUnit: number = null;
