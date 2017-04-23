@@ -286,13 +286,13 @@ jasmine.getEnv().beforeEach(function () {
                         exception = e;
                     }
                     finally {
-                        if(exception){
-                            result = false;
+                        if(exception && exception.message === expected){
+                            result = true;
 
                             resultMsg = "expect not to be error, but actual is error";
                         }
                         else{
-                            result = true;
+                            result = false;
                         }
 
                         return {

@@ -15,7 +15,7 @@
     "transform": {
       ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
     },
-    "setupTestFrameworkScriptFile": "<rootDir>/test/helper/jest/specHelper.js",
+    "setupTestFrameworkScriptFile": "<rootDir>/test/helper/specHelper.js",
     "testMatch": [
       "<rootDir>/test/unit/**/*Spec.ts"
     ],
@@ -27,6 +27,7 @@
   },
   "devDependencies": {
     "@types/jest": "^19.2.2",
+    "@types/jquery": "^2.0.41",
     "codecov.io": "^0.1.6",
     "del": "^2.2.2",
     "express": "^4.13.3",
@@ -34,6 +35,7 @@
     "gulp": "^3.9.0",
     "gulp-sync": "^0.1.4",
     "jest": "^19.0.2",
+    "jquery": "^3.2.1",
     "jsverify": "^0.8.2",
     "karma": "^0.13.22",
     "karma-chrome-launcher": "^0.2.0",
@@ -60,6 +62,8 @@
     "bowser": "^1.6.0",
     "wonder-commonlib": "^0.1.9",
     "wonder-expect.js": "^0.1.4",
-    "wonder-frp": "^0.1.17"
+    "wonder-fantasy-land": "^0.1.0",
+    "wonder-frp": "^0.1.17",
+    "wonder-lodash": "^0.1.2"
   }
 }
