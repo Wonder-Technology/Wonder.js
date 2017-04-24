@@ -15,7 +15,6 @@ export { DeviceManagerData } from "./device/DeviceManagerData";
 export { getGL, setGL, setContextConfig, setPixelRatio, getViewport, setViewport, setPixelRatioAndCanvas, createGL, setViewportOfGL, setScreen } from "./device/DeviceManagerSystem";
 export { EScreenSize } from "./device/EScreenSize";
 export { GPUDetector, EGPUPrecision } from "./device/GPUDetector";
-export { detect } from "./device/GPUDetectorSystem";
 export { DEG_TO_RAD, RAD_TO_DEG } from "./math/Global";
 export { Matrix3 } from "./math/Matrix3";
 export { Matrix4 } from "./math/Matrix4";

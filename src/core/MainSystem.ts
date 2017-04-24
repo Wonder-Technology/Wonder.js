@@ -11,6 +11,7 @@ import { chain } from "../utils/functionalUtils";
 import { Main } from "wonder-frp/dist/es2015/core/Main";
 import { it, requireCheckFunc } from "../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
+import { GPUDetector } from "../device/GPUDetector";
 
 var _canvasId: string = null,
     _useDevicePixelRatio: boolean = null,
@@ -47,7 +48,6 @@ export var setConfig = (closeContractTest: boolean, {
         }
     }
 }) => {
-
     return IO.of(() => {
         MainData.screenSize = <EScreenSize & RectRegion>screenSize;
         _canvasId = canvasId;
@@ -79,7 +79,10 @@ export var init = requireCheckFunc(() => {
     })
 }, () => {
     return IO.of(() => {
-        return flow(createGL, chain(setScreen), chain(setPixelRatioAndCanvas(_useDevicePixelRatio)))(_canvasId, _contextConfig).run();
+        flow(createGL, chain(setScreen), chain(setPixelRatioAndCanvas(_useDevicePixelRatio)))(_canvasId, _contextConfig).run();
+
+        //todo extract GPUDetectorSystem
+        GPUDetector.getInstance().detect();
     });
 });
 

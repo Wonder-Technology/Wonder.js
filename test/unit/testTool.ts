@@ -58,8 +58,8 @@ export var testTool = (function () {
 
 
 
-                getParameter: sandbox.stub(),
-                getExtension: sandbox.stub(),
+                getParameter: sandbox.stub().returns(null),
+                getExtension: sandbox.stub().returns(null),
 
                 scissor: sandbox.stub(),
                 viewport: sandbox.stub(),
