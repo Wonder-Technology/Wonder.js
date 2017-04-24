@@ -134,6 +134,20 @@ export var testTool = (function () {
                 clear: sandbox.stub()
             };
         },
+        stubGetter: function (sinon, object, attri:string, getterFunc) {
+            if(object[attri] === void 0){
+                object[attri] = null;
+            }
+
+            sinon.stub(object, attri).get(getterFunc);
+        },
+        stubSetter: function (sinon, object, attri, setterFunc) {
+            if(object[attri] === void 0){
+                object[attri] = null;
+            }
+
+            sinon.stub(object, attri).set(setterFunc);
+        },
         clearInstance: function (sandbox) {
             // wd.EventManager.off();
             //

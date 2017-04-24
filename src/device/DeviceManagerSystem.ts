@@ -3,7 +3,7 @@ import { DomQuery } from "wonder-commonlib/dist/es2015/utils/DomQuery";
 import { ensureFunc, it, requireCheckFunc } from "../definition/typescript/decorator/contract";
 import {
     getContext, initCanvas, setX, setY, setStyleWidth, setStyleHeight,
-    setWidth, setHeight
+    setWidth, setHeight, setCanvas
 } from "../structure/ViewSystem";
 import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
 import curry from "wonder-lodash/curry";
@@ -13,8 +13,9 @@ import { EScreenSize } from "./EScreenSize";
 import { root } from "../definition/Variable";
 import flow from "wonder-lodash/flow";
 import { RectRegion } from "../structure/RectRegion";
-import { chain } from "../utils/functionalUtils";
+import { chain, map } from "../utils/functionalUtils";
 import { DeviceManagerData } from "./DeviceManagerData";
+import forEach from "wonder-lodash/forEach";
 
 export var getGL = (DeviceManagerData: any) => {
     return DeviceManagerData.gl;
@@ -48,47 +49,47 @@ export var setViewport = (DeviceManagerData: any, x: number, y: number, width: n
     });
 }
 
-var _getCanvas = (DomQuery: any, canvasId: string) => {
-    if (canvasId !== "") {
-        return DomQuery.create(_getCanvasId(canvasId)).get(0);
+var _getCanvas = (DomQuery: any, domId: string) => {
+    if (domId !== "") {
+        return DomQuery.create(_getCanvasId(domId)).get(0);
     }
 
-    return DomQuery.create("<canvas></canvas>").prependTo("body").get(0);
+    return DomQuery.create("<dom></dom>").prependTo("body").get(0);
 }
 
 var _getCanvasId = ensureFunc((id: string) => {
-    it("canvas id should be #string", () => {
+    it("dom id should be #string", () => {
         expect(/#[^#]+/.test(id)).true;
     });
-}, (canvasId: string) => {
-    if (canvasId.indexOf('#') > -1) {
-        return canvasId;
+}, (domId: string) => {
+    if (domId.indexOf('#') > -1) {
+        return domId;
     }
 
-    return `#${canvasId}`;
+    return `#${domId}`;
 });
 
-export var setPixelRatioAndCanvas = curry((useDevicePixelRatio:boolean, canvas: HTMLCanvasElement) => {
+export var setPixelRatioAndCanvas = curry((useDevicePixelRatio: boolean, dom: HTMLCanvasElement) => {
     return IO.of(() => {
-        if(useDevicePixelRatio){
+        if (useDevicePixelRatio) {
             let pixelRatio = root.devicePixelRatio;
 
             setPixelRatio(DeviceManagerData, pixelRatio).run();
 
-            canvas.width = Math.round(canvas.width * pixelRatio);
-            canvas.height = Math.round(canvas.height * pixelRatio);
+            dom.width = Math.round(dom.width * pixelRatio);
+            dom.height = Math.round(dom.height * pixelRatio);
         }
 
-        return canvas;
+        return dom;
     });
 })
 
-export var createGL = (canvasId: string, config: ContextConfigData) => {
+export var createGL = (domId: string, config: ContextConfigData) => {
     return IO.of(() => {
-        var canvas = _getCanvas(DomQuery, canvasId),
+        var dom = _getCanvas(DomQuery, domId),
             gl = null;
 
-        gl = getContext(config, canvas);
+        gl = getContext(config, dom);
 
         setGL(DeviceManagerData, gl).run();
         setContextConfig(DeviceManagerData, config).run();
@@ -97,7 +98,7 @@ export var createGL = (canvasId: string, config: ContextConfigData) => {
             DomQuery.create("<p class='not-support-webgl'></p>").prependTo("body").text("Your device doesn't support WebGL");
         }
 
-        return canvas;
+        return dom;
     });
 }
 
@@ -114,7 +115,7 @@ export var setViewportOfGL = (x: number, y: number, width: number, height: numbe
     return IO.of(() => {
         var viewport = getViewport(DeviceManagerData);
 
-        if (viewport.x === x && viewport.y === y && viewport.width === width && viewport.height === height) {
+        if (viewport !== null && viewport.x === x && viewport.y === y && viewport.width === width && viewport.height === height) {
             return;
         }
 
@@ -131,8 +132,8 @@ var _getScreenSize = () => {
     });
 }
 
-var _setBodyByScreenSize = () => {
-    return IO.of((screenSize: EScreenSize) => {
+var _setBodyByScreenSize = (screenSize: EScreenSize) => {
+    return IO.of(() => {
         if (screenSize === EScreenSize.FULL) {
             DomQuery.create("body").css("margin", "0");
         }
@@ -176,7 +177,7 @@ var _getScreenData = (screenSize: EScreenSize | RectRegion) => {
     };
 }
 
-var _setScreenData = curry((canvas: HTMLCanvasElement, {
+var _setScreenData = curry((dom: HTMLCanvasElement, {
     x,
     y,
     width,
@@ -184,13 +185,23 @@ var _setScreenData = curry((canvas: HTMLCanvasElement, {
     styleWidth,
     styleHeight
 }) => {
-    return flow(setX(x, canvas), chain(setY(y, canvas)), chain(setWidth(width, canvas)), chain(setHeight(height, canvas)), chain(setStyleWidth(styleWidth, canvas)), chain(setStyleHeight(styleHeight)), chain(setViewportOfGL(0, 0, width, height)));
+    return IO.of(() => {
+        forEach(
+            [setX(x, dom), setY(y, dom), setWidth(width, dom), setHeight(height, dom), setStyleWidth(styleWidth, dom), setStyleHeight(styleHeight, dom), setViewportOfGL(0, 0, width, height)],
+            (io:IO) => io.run()
+        );
+
+        return dom;
+    });
 })
 
-flow(initCanvas, chain(_getScreenSize), chain(_setBodyByScreenSize), chain(_getScreenData), chain(_setScreenData));
-
-export var setScreen = requireCheckFunc((canvas: HTMLCanvasElement) => {
+export var setScreen = requireCheckFunc((dom: HTMLCanvasElement) => {
     it("should exist MainData.screenSize", () => {
         expect(getScreenSize(MainData)).exist;
     });
-}, flow(initCanvas, chain(_getScreenSize), chain(_setBodyByScreenSize), chain(_getScreenData), chain(_setScreenData)));
+}, (dom: HTMLCanvasElement) => {
+    var setScreenDataWithDom = _setScreenData(dom);
+
+    return flow(initCanvas, chain(setCanvas), chain(_getScreenSize), chain(_setBodyByScreenSize), map(_getScreenData), chain(setScreenDataWithDom))(dom);
+});
+

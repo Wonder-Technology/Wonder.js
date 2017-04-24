@@ -4,7 +4,7 @@ import { ExtendUtils } from "wonder-commonlib/dist/es2015/utils/ExtendUtils";
 import { CompileConfig } from "../config/CompileConfig";
 import { MainData } from "./MainData";
 import { RectRegion } from "../structure/RectRegion";
-import { createGL, setPixelRatioAndCanvas } from "../device/DeviceManagerSystem";
+import { createGL, setPixelRatioAndCanvas, setScreen } from "../device/DeviceManagerSystem";
 import flow from "wonder-lodash/flow";
 import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
 import { chain } from "../utils/functionalUtils";
@@ -79,7 +79,7 @@ export var init = requireCheckFunc(() => {
     })
 }, () => {
     return IO.of(() => {
-        return flow(createGL, chain(setPixelRatioAndCanvas(_useDevicePixelRatio)))(_canvasId, _contextConfig).run();
+        return flow(createGL, chain(setScreen), chain(setPixelRatioAndCanvas(_useDevicePixelRatio)))(_canvasId, _contextConfig).run();
     });
 });
 
@@ -98,7 +98,7 @@ export type ContextConfigData = {
 export type MainConfigData = {
     canvasId?: string;
     isTest?: boolean;
-    screenSize?: EScreenSize;
+    screenSize?: any;
     useDevicePixelRatio?: boolean;
     contextConfig?: ContextConfigData;
 }

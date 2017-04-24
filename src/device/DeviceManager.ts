@@ -1,22 +1,10 @@
 import { registerClass } from "../definition/typescript/decorator/registerClass";
 import { singleton } from "../definition/typescript/decorator/singleton";
-// import { Log } from "../utils/Log";
-// import { Vector2 } from "../math/Vector2";
-// import { IView } from "../structure/ViewSystem";
-// import { RectRegion } from "../structure/RectRegion";
-// import { Color } from "../structure/Color";
-// import { DomQuery } from "wonder-commonlib/dist/es2015/utils/DomQuery";
-// import { root } from "../definition/Variable";
-// import { requireCheck, it, ensure } from "../definition/typescript/decorator/contract";
-// import {expect} from "wonder-expect.js";
-// import { EScreenSize } from "./EScreenSize";
-import { ContextConfigData, getScreenSize } from "../core/MainSystem";
-import { createGL, getGL, setScreen } from "./DeviceManagerSystem";
-import { MainData } from "../core/MainData";
-import { it, requireCheck } from "../definition/typescript/decorator/contract";
-import { expect } from "wonder-expect.js";
+import { ContextConfigData } from "../core/MainSystem";
+import { createGL, getGL, getViewport, setGL, setScreen } from "./DeviceManagerSystem";
 import { DeviceManagerData } from "./DeviceManagerData";
-// import { MainData } from "../core/MainData";
+import { View } from "../structure/View";
+import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
 
 /*!
  DeviceManager is responsible for global setting of gl
@@ -29,6 +17,15 @@ export class DeviceManager {
     get gl() {
         return getGL(DeviceManagerData);
     }
+    set gl(gl: WebGLRenderingContext) {
+        setGL(DeviceManagerData, gl).run();
+    }
+
+    get viewport(){
+        return getViewport(DeviceManagerData);
+    }
+
+    public view: View = View.create();
 
     private constructor() { }
 

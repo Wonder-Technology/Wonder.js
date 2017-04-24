@@ -1,5 +1,5 @@
 import { ensure, it } from "../definition/typescript/decorator/contract";
-import {expect} from "wonder-expect.js";
+import { expect } from "wonder-expect.js";
 
 export class ClassUtils {
     private static _classMap: ClassMapData = {};
@@ -20,7 +20,7 @@ export class ClassUtils {
             expect(className !== "").true
         });
     })
-    public static getClassNameByClass(_class:any) {
+    public static getClassNameByClass(_class: any) {
         return _class["className"];
     }
 

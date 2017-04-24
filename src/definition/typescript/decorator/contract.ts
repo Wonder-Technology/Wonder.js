@@ -62,7 +62,7 @@ export function requireCheck(inFunc) {
     }
 }
 
-export function requireCheckFunc(checkFunc: Function, bodyFunc:Function) {
+export function requireCheckFunc(checkFunc: Function, bodyFunc: Function) {
     if (!CompileConfig.isCompileTest) {
         return bodyFunc;
     }
@@ -77,7 +77,6 @@ export function requireCheckFunc(checkFunc: Function, bodyFunc:Function) {
         return bodyFunc.apply(null, paramArr);
     }
 }
-
 
 export function ensure(outFunc) {
     return function(target, name, descriptor) {
@@ -106,7 +105,7 @@ export function ensure(outFunc) {
     }
 }
 
-export function ensureFunc(checkFunc: Function, bodyFunc:Function) {
+export function ensureFunc(checkFunc: Function, bodyFunc: Function) {
     if (!CompileConfig.isCompileTest) {
         return bodyFunc;
     }
