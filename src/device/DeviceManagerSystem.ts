@@ -21,21 +21,27 @@ export var getGL = (DeviceManagerData: any) => {
     return DeviceManagerData.gl;
 }
 
-export var setGL = (DeviceManagerData: any, gl: WebGLRenderingContext) => {
+export var setGL = curry((gl: WebGLRenderingContext, DeviceManagerData: any) => {
     return IO.of(() => {
         DeviceManagerData.gl = gl;
-    });
-}
 
-export var setContextConfig = (DeviceManagerData: any, contextConfig: ContextConfigData) => {
+        return DeviceManagerData;
+    });
+})
+
+export var setContextConfig = curry((contextConfig: ContextConfigData, DeviceManagerData: any) => {
     return IO.of(() => {
         DeviceManagerData.contextConfig = contextConfig;
-    });
-}
 
-export var setPixelRatio = (DeviceManagerData: any, pixelRatio: number) => {
+        return DeviceManagerData;
+    });
+})
+
+export var setPixelRatio = (pixelRatio: number, DeviceManagerData: any) => {
     return IO.of(() => {
         DeviceManagerData.pixelRatio = pixelRatio;
+
+        return DeviceManagerData;
     });
 }
 
@@ -43,9 +49,11 @@ export var getViewport = (DeviceManagerData: any) => {
     return DeviceManagerData.viewport;
 }
 
-export var setViewport = (DeviceManagerData: any, x: number, y: number, width: number, height: number) => {
+export var setViewport = (x: number, y: number, width: number, height: number, DeviceManagerData: any,) => {
     return IO.of(() => {
         DeviceManagerData.viewport = RectRegion.create(x, y, width, height);
+
+        return DeviceManagerData;
     });
 }
 
@@ -74,7 +82,7 @@ export var setPixelRatioAndCanvas = curry((useDevicePixelRatio: boolean, dom: HT
         if (useDevicePixelRatio) {
             let pixelRatio = root.devicePixelRatio;
 
-            setPixelRatio(DeviceManagerData, pixelRatio).run();
+            setPixelRatio(pixelRatio, DeviceManagerData,).run();
 
             dom.width = Math.round(dom.width * pixelRatio);
             dom.height = Math.round(dom.height * pixelRatio);
@@ -87,12 +95,9 @@ export var setPixelRatioAndCanvas = curry((useDevicePixelRatio: boolean, dom: HT
 export var createGL = (domId: string, config: ContextConfigData) => {
     return IO.of(() => {
         var dom = _getCanvas(DomQuery, domId),
-            gl = null;
+            gl = getContext(config, dom);
 
-        gl = getContext(config, dom);
-
-        setGL(DeviceManagerData, gl).run();
-        setContextConfig(DeviceManagerData, config).run();
+        flow(setGL(gl), chain(setContextConfig(config)))(DeviceManagerData).run();
 
         if (!gl) {
             DomQuery.create("<p class='not-support-webgl'></p>").prependTo("body").text("Your device doesn't support WebGL");
@@ -119,7 +124,7 @@ export var setViewportOfGL = (x: number, y: number, width: number, height: numbe
             return;
         }
 
-        setViewport(DeviceManagerData, x, y, width, height).run();
+        setViewport(x, y, width, height, DeviceManagerData,).run();
 
         getGL(DeviceManagerData).viewport(x, y, width, height);
     });
@@ -188,7 +193,7 @@ var _setScreenData = curry((dom: HTMLCanvasElement, {
     return IO.of(() => {
         forEach(
             [setX(x, dom), setY(y, dom), setWidth(width, dom), setHeight(height, dom), setStyleWidth(styleWidth, dom), setStyleHeight(styleHeight, dom), setViewportOfGL(0, 0, width, height)],
-            (io:IO) => io.run()
+            (io: IO) => io.run()
         );
 
         return dom;
