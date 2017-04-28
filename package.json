@@ -32,7 +32,7 @@
     "del": "^2.2.2",
     "express": "^4.13.3",
     "glob": "^7.0.4",
-    "gulp": "^3.9.0",
+    "gulp": "^3.9.1",
     "gulp-sync": "^0.1.4",
     "jest": "^19.0.2",
     "jquery": "^3.2.1",
@@ -57,12 +57,12 @@
     "@types/bowser": "^1.0.30",
     "@types/node": "^7.0.5",
     "@types/wonder-commonlib": "^0.2.0",
-    "@types/wonder-expect.js": "^0.1.2",
     "@types/wonder-frp": "^0.2.0",
     "bowser": "^1.6.0",
+    "immutable": "^3.8.1",
     "wonder-commonlib": "^0.1.9",
     "wonder-expect.js": "^0.1.4",
-    "wonder-fantasy-land": "^0.1.0",
+    "wonder-fantasy-land": "^0.1.1",
     "wonder-frp": "^0.1.17",
     "wonder-lodash": "^0.1.2"
   }

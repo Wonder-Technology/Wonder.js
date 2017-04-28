@@ -2,8 +2,9 @@ import {
     getCanvas, getHeight, getStyleHeight, getStyleWidth, getWidth, setHeight, setStyleWidth, getX, setX, getY, setY,
     setWidth, setCanvas, setStyleHeight
 } from "./ViewSystem";
-import { ViewData } from "./ViewData";
 import { registerClass } from "../definition/typescript/decorator/registerClass";
+import { getState } from "../core/DirectorSystem";
+import { DirectorData } from "../core/DirectorData";
 
 @registerClass("View")
 export class View {
@@ -14,7 +15,7 @@ export class View {
     }
 
     get dom() {
-        return getCanvas(ViewData);
+        return getCanvas(getState(DirectorData));
     }
     set dom(dom:HTMLCanvasElement){
         setCanvas(dom).run();

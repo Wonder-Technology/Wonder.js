@@ -3,58 +3,43 @@ import { DomQuery } from "wonder-commonlib/dist/es2015/utils/DomQuery";
 import { ensureFunc, it, requireCheckFunc } from "../definition/typescript/decorator/contract";
 import {
     getContext, initCanvas, setX, setY, setStyleWidth, setStyleHeight,
-    setWidth, setHeight, setCanvas
+    setWidth, setHeight, setCanvas, getCanvas
 } from "../structure/ViewSystem";
 import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
 import curry from "wonder-lodash/curry";
 import { expect } from "wonder-expect.js";
-import { MainData } from "../core/MainData";
 import { EScreenSize } from "./EScreenSize";
-import { root } from "../definition/Variable";
 import flow from "wonder-lodash/flow";
 import { RectRegion } from "../structure/RectRegion";
-import { chain, map } from "../utils/functionalUtils";
-import { DeviceManagerData } from "./DeviceManagerData";
-import forEach from "wonder-lodash/forEach";
+import { chain } from "../utils/functionalUtils";
+import { DirectorData } from "../core/DirectorData";
+import { getRootProperty } from "../utils/rootUtils";
+import { Map } from "immutable";
+import { trace } from "../utils/debugUtils";
+import { isValueExist } from "../utils/stateUtils";
 
-export var getGL = (DeviceManagerData: any) => {
-    return DeviceManagerData.gl;
+export var getGL = (state: Map<any, any>):WebGLRenderingContext => {
+    return state.getIn(["DeviceManager", "gl"]);
 }
 
-export var setGL = curry((gl: WebGLRenderingContext, DeviceManagerData: any) => {
-    return IO.of(() => {
-        DeviceManagerData.gl = gl;
-
-        return DeviceManagerData;
-    });
+export var setGL = curry((gl: WebGLRenderingContext, state: Map<any, any>) => {
+    return state.setIn(["DeviceManager", "gl"], gl);
 })
 
-export var setContextConfig = curry((contextConfig: ContextConfigData, DeviceManagerData: any) => {
-    return IO.of(() => {
-        DeviceManagerData.contextConfig = contextConfig;
-
-        return DeviceManagerData;
-    });
+export var setContextConfig = curry((contextConfig: Map<string, any>, state: Map<any, any>) => {
+    return state.setIn(["DeviceManager", "contextConfig"], contextConfig);
 })
 
-export var setPixelRatio = (pixelRatio: number, DeviceManagerData: any) => {
-    return IO.of(() => {
-        DeviceManagerData.pixelRatio = pixelRatio;
-
-        return DeviceManagerData;
-    });
+export var setPixelRatio = (pixelRatio: number, state: Map<any, any>) => {
+    return state.setIn(["DeviceManager", "pixelRatio"], pixelRatio);
 }
 
-export var getViewport = (DeviceManagerData: any) => {
-    return DeviceManagerData.viewport;
+export var getViewport = (state:Map<any, any>) => {
+    return state.getIn(["DeviceManager", "viewport"]);
 }
 
-export var setViewport = (x: number, y: number, width: number, height: number, DeviceManagerData: any,) => {
-    return IO.of(() => {
-        DeviceManagerData.viewport = RectRegion.create(x, y, width, height);
-
-        return DeviceManagerData;
-    });
+export var setViewport = (x: number, y: number, width: number, height: number, state: Map<any, any>) => {
+        return state.setIn(["DeviceManager", "viewport"], RectRegion.create(x, y, width, height));
 }
 
 var _getCanvas = (DomQuery: any, domId: string) => {
@@ -77,33 +62,32 @@ var _getCanvasId = ensureFunc((id: string) => {
     return `#${domId}`;
 });
 
-export var setPixelRatioAndCanvas = curry((useDevicePixelRatio: boolean, dom: HTMLCanvasElement) => {
+export var setPixelRatioAndCanvas = curry((useDevicePixelRatio:boolean, state: Map<any, any>) => {
     return IO.of(() => {
-        if (useDevicePixelRatio) {
-            let pixelRatio = root.devicePixelRatio;
-
-            setPixelRatio(pixelRatio, DeviceManagerData,).run();
-
-            dom.width = Math.round(dom.width * pixelRatio);
-            dom.height = Math.round(dom.height * pixelRatio);
+        if(!useDevicePixelRatio){
+            return state;
         }
 
-        return dom;
+        let pixelRatio:number = getRootProperty("devicePixelRatio").run(),
+            dom = getCanvas(state);
+
+        dom.width = Math.round(dom.width * pixelRatio);
+        dom.height = Math.round(dom.height * pixelRatio);
+
+        return setPixelRatio(pixelRatio, state);
     });
 })
 
-export var createGL = (domId: string, config: ContextConfigData) => {
+export var createGL = (canvasId:string, contextConfig:Map<string, any>, state:Map<any, any>) => {
     return IO.of(() => {
-        var dom = _getCanvas(DomQuery, domId),
-            gl = getContext(config, dom);
-
-        flow(setGL(gl), chain(setContextConfig(config)))(DeviceManagerData).run();
+        var dom = _getCanvas(DomQuery, canvasId),
+            gl = getContext(contextConfig, dom);
 
         if (!gl) {
             DomQuery.create("<p class='not-support-webgl'></p>").prependTo("body").text("Your device doesn't support WebGL");
         }
 
-        return dom;
+        return flow(setGL(gl), setContextConfig(contextConfig), setCanvas(dom))(state);
     });
 }
 
@@ -116,26 +100,20 @@ export var createGL = (domId: string, config: ContextConfigData) => {
  * @param {Number} w The width of the viewport in pixels.
  * @param {Number} h The height of the viewport in pixels.
  */
-export var setViewportOfGL = (x: number, y: number, width: number, height: number) => {
+export var setViewportOfGL = curry((x: number, y: number, width: number, height: number, state:Map<any, any>) => {
     return IO.of(() => {
-        var viewport = getViewport(DeviceManagerData);
+        var gl = getGL(state),
+            viewport = getViewport(state);
 
-        if (viewport !== null && viewport.x === x && viewport.y === y && viewport.width === width && viewport.height === height) {
-            return;
+        if (isValueExist(viewport) && viewport.x === x && viewport.y === y && viewport.width === width && viewport.height === height) {
+            return state;
         }
 
-        setViewport(x, y, width, height, DeviceManagerData,).run();
+        gl.viewport(x, y, width, height);
 
-        getGL(DeviceManagerData).viewport(x, y, width, height);
+        return setViewport(x, y, width, height, state);
     });
-}
-
-
-var _getScreenSize = () => {
-    return IO.of(() => {
-        return getScreenSize(MainData);
-    });
-}
+})
 
 var _setBodyByScreenSize = (screenSize: EScreenSize) => {
     return IO.of(() => {
@@ -148,41 +126,43 @@ var _setBodyByScreenSize = (screenSize: EScreenSize) => {
 }
 
 var _getScreenData = (screenSize: EScreenSize | RectRegion) => {
-    var x = null,
-        y = null,
-        width = null,
-        height = null,
-        styleWidth = null,
-        styleHeight = null;
+    return IO.of(() => {
+        var x = null,
+            y = null,
+            width = null,
+            height = null,
+            styleWidth = null,
+            styleHeight = null;
 
-    if (screenSize === EScreenSize.FULL) {
-        x = 0;
-        y = 0;
-        width = root.innerWidth;
-        height = root.innerHeight;
-        styleWidth = "100%";
-        styleHeight = "100%";
-    }
-    else {
-        x = (screenSize as RectRegion).x || 0;
-        y = (screenSize as RectRegion).y || 0;
-        width = (screenSize as RectRegion).width || root.innerWidth;
-        height = (screenSize as RectRegion).height || root.innerHeight;
-        styleWidth = `${width}px`;
-        styleHeight = `${height}px`;
-    }
+        if (screenSize === EScreenSize.FULL) {
+            x = 0;
+            y = 0;
+            width = getRootProperty("innerWidth").run();
+            height = getRootProperty("innerHeight").run();
+            styleWidth = "100%";
+            styleHeight = "100%";
+        }
+        else {
+            x = (screenSize as RectRegion).x || 0;
+            y = (screenSize as RectRegion).y || 0;
+            width = (screenSize as RectRegion).width || getRootProperty("innerWidth").run();
+            height = (screenSize as RectRegion).height || getRootProperty("innerHeight").run();
+            styleWidth = `${width}px`;
+            styleHeight = `${height}px`;
+        }
 
-    return {
-        x: x,
-        y: y,
-        width: width,
-        height: height,
-        styleWidth: styleWidth,
-        styleHeight: styleHeight
-    };
+        return {
+            x: x,
+            y: y,
+            width: width,
+            height: height,
+            styleWidth: styleWidth,
+            styleHeight: styleHeight
+        };
+    });
 }
 
-var _setScreenData = curry((dom: HTMLCanvasElement, {
+var _setScreenData = curry((state:Map<any, any>, {
     x,
     y,
     width,
@@ -191,22 +171,21 @@ var _setScreenData = curry((dom: HTMLCanvasElement, {
     styleHeight
 }) => {
     return IO.of(() => {
-        forEach(
-            [setX(x, dom), setY(y, dom), setWidth(width, dom), setHeight(height, dom), setStyleWidth(styleWidth, dom), setStyleHeight(styleHeight, dom), setViewportOfGL(0, 0, width, height)],
-            (io: IO) => io.run()
-        );
+        flow(setX(x), chain(setY(y)), chain(setWidth(width)), chain(setHeight(height)), chain(setStyleWidth(styleWidth)), chain(setStyleHeight(styleHeight)))(getCanvas(state)).run();
 
-        return dom;
+        return setViewportOfGL(0, 0, width, height, state).run();
     });
 })
 
-export var setScreen = requireCheckFunc((dom: HTMLCanvasElement) => {
+export var setScreen = requireCheckFunc((state:Map<any, any>) => {
     it("should exist MainData.screenSize", () => {
-        expect(getScreenSize(MainData)).exist;
+        expect(getScreenSize(DirectorData.state)).exist;
     });
-}, (dom: HTMLCanvasElement) => {
-    var setScreenDataWithDom = _setScreenData(dom);
+}, (state:Map<any, any>) => {
+    var dom:HTMLCanvasElement = getCanvas(state);
 
-    return flow(initCanvas, chain(setCanvas), chain(_getScreenSize), chain(_setBodyByScreenSize), map(_getScreenData), chain(setScreenDataWithDom))(dom);
+    initCanvas(dom).run();
+
+    return flow(_setBodyByScreenSize, chain(_getScreenData), chain(_setScreenData(state)))(getScreenSize(state));
 });
 

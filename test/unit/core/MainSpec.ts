@@ -4,7 +4,6 @@ import { fromArray } from "wonder-frp/dist/commonjs/global/Operator";
 import { testTool } from "../testTool";
 import { DeviceManager } from "../../../dist/commonjs/device/DeviceManager";
 import { Main } from "../../../dist/commonjs/core/Main";
-import { GPUDetector } from "../../../dist/commonjs/device/GPUDetector";
 import { DomQuery } from "wonder-commonlib/dist/commonjs/utils/DomQuery";
 import { DebugConfig } from "../../../dist/commonjs/config/DebugConfig";
 import { EScreenSize } from "../../../dist/commonjs/device/EScreenSize";
@@ -75,10 +74,6 @@ describe("Main", () =>  {
             gl = DeviceManager.getInstance().gl;
 
             device = DeviceManager.getInstance();
-
-            sandbox.stub(device, "setScreen");
-            // sandbox.stub(GPUDetector.getInstance(), "detect");
-
 
             canvasDom = {
                 style:{},

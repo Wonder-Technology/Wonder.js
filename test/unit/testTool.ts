@@ -1,6 +1,4 @@
-import { setIsTest } from "../../dist/commonjs/core/MainSystem";
-import { MainData, MainData } from "../../dist/commonjs/core/MainData";
-
+import { Main } from "../../dist/commonjs/core/Main";
 export var testTool = (function () {
     return {
         buildFakeGl: function (sandbox) {
@@ -172,7 +170,7 @@ export var testTool = (function () {
         },
 
         openContractCheck: function (sandbox, isInit) {
-            setIsTest(MainData, true).run();
+            Main.isTest = true;
 
             if(isInit !== false){
                 this.initForTest(sandbox);
@@ -189,7 +187,7 @@ export var testTool = (function () {
         },
 
         closeContractCheck: function () {
-            setIsTest(MainData, false).run();
+            Main.isTest = false;
         }
     }
 }());
