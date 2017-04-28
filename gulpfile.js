@@ -102,7 +102,7 @@ gulp.task("watch", function(){
     gulp.watch(totalPaths, gulpSync.sync(["compileTsES2015"]));
 });
 
-gulp.task("watchCjs", function(){
+gulp.task("watchForTest", function(){
     var totalPaths = tsFilePaths.concat(glslFilePaths);
 
     gulp.watch(totalPaths, gulpSync.sync(["compileTsCommonjs"]));
