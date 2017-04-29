@@ -9,9 +9,8 @@ import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
 import curry from "wonder-lodash/curry";
 import { expect } from "wonder-expect.js";
 import { EScreenSize } from "./EScreenSize";
-import flow from "wonder-lodash/flow";
 import { RectRegion } from "../structure/RectRegion";
-import { chain } from "../utils/functionalUtils";
+import { chain, compose } from "../utils/functionalUtils";
 import { DirectorData } from "../core/DirectorData";
 import { getRootProperty } from "../utils/rootUtils";
 import { Map } from "immutable";
@@ -23,6 +22,7 @@ export var getGL = (state: Map<any, any>):WebGLRenderingContext => {
 }
 
 export var setGL = curry((gl: WebGLRenderingContext, state: Map<any, any>) => {
+
     return state.setIn(["DeviceManager", "gl"], gl);
 })
 
@@ -86,8 +86,7 @@ export var createGL = (canvasId:string, contextConfig:Map<string, any>, state:Ma
         if (!gl) {
             DomQuery.create("<p class='not-support-webgl'></p>").prependTo("body").text("Your device doesn't support WebGL");
         }
-
-        return flow(setGL(gl), setContextConfig(contextConfig), setCanvas(dom))(state);
+        return compose(setCanvas(dom), setContextConfig(contextConfig), setGL(gl))(state);
     });
 }
 
@@ -171,7 +170,7 @@ var _setScreenData = curry((state:Map<any, any>, {
     styleHeight
 }) => {
     return IO.of(() => {
-        flow(setX(x), chain(setY(y)), chain(setWidth(width)), chain(setHeight(height)), chain(setStyleWidth(styleWidth)), chain(setStyleHeight(styleHeight)))(getCanvas(state)).run();
+        compose(chain(setStyleWidth(styleWidth)), chain(setStyleHeight(styleHeight)), chain(setHeight(height)), chain(setWidth(width)), chain(setY(y)), setX(x))(getCanvas(state)).run();
 
         return setViewportOfGL(0, 0, width, height, state).run();
     });
@@ -186,6 +185,6 @@ export var setScreen = requireCheckFunc((state:Map<any, any>) => {
 
     initCanvas(dom).run();
 
-    return flow(_setBodyByScreenSize, chain(_getScreenData), chain(_setScreenData(state)))(getScreenSize(state));
+    return compose(chain(_setScreenData(state)), chain(_getScreenData), _setBodyByScreenSize)(getScreenSize(state));
 });
 

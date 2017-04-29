@@ -3,9 +3,8 @@ import { EScreenSize } from "../device/EScreenSize";
 import { ExtendUtils } from "wonder-commonlib/dist/es2015/utils/ExtendUtils";
 import { CompileConfig } from "../config/CompileConfig";
 import { createGL, setPixelRatioAndCanvas, setScreen } from "../device/DeviceManagerSystem";
-import flow from "wonder-lodash/flow";
 import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
-import { chain, map } from "../utils/functionalUtils";
+import { chain, compose, map } from "../utils/functionalUtils";
 import { Main } from "wonder-frp/dist/es2015/core/Main";
 import { it, requireCheckFunc } from "../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
@@ -87,7 +86,7 @@ export var init = requireCheckFunc((gameState: Map<string, any>, configState: Ma
         expect(configState.get("useDevicePixelRatio")).exist;
     })
 }, (gameState: Map<string, any>, configState: Map<any, any>) => {
-    return flow(createGL, chain(setScreen), chain(setPixelRatioAndCanvas(configState.get("useDevicePixelRatio"))), map(detect))(configState.get("canvasId"), configState.get("contextConfig"), gameState);
+    return compose(map(detect), chain(setPixelRatioAndCanvas(configState.get("useDevicePixelRatio"))), chain(setScreen), createGL,)(configState.get("canvasId"), configState.get("contextConfig"), gameState);
 });
 
 
