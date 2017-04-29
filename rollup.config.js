@@ -32,7 +32,8 @@ export default {
         commonjs({
             namedExports: {
                 "./node_modules/bowser/src/bowser.js": ["version", "chrome","msie", "firefox", "mobile"],
-                "./node_modules/wonder-expect.js/index.js": ["expect"]
+                "./node_modules/wonder-expect.js/index.js": ["expect"],
+                "./node_modules/immutable/dist/immutable.js": ["fromJS", "Map"]
             },
             extensions: [".js", ".ts"]
         })

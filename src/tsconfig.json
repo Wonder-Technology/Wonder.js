@@ -10,7 +10,7 @@
     "noEmitOnError": true,
     "typeRoots": [
       "../node_modules/@types/",
-      "./types"
+      "../types"
     ],
     "removeComments": true,
     "experimentalDecorators": true

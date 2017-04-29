@@ -99,11 +99,11 @@ gulp.task("watch", function(){
 
     // gulp.watch(totalPaths, gulpSync.sync(["createShaderChunk", "compileTsES2015", "rollup"]));
     // gulp.watch(totalPaths, gulpSync.sync(["compileTsES2015", "rollup"]));
-    gulp.watch(totalPaths, gulpSync.sync(["compileTsES2015"]));
+    gulp.watch(totalPaths, gulpSync.sync(["generateIndex", "compileTsES2015"]));
 });
 
 gulp.task("watchForTest", function(){
     var totalPaths = tsFilePaths.concat(glslFilePaths);
 
-    gulp.watch(totalPaths, gulpSync.sync(["compileTsCommonjs"]));
+    gulp.watch(totalPaths, gulpSync.sync(["generateIndex", "compileTsCommonjs"]));
 });
