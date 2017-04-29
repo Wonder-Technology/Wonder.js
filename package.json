@@ -51,7 +51,7 @@
     "util": "^0.10.3",
     "wonder-package": "^0.1.26",
     "wonder-rollup-plugin-typescript": "^0.1.1",
-    "wonder-tool-generate_es2015_index": "^0.1.2"
+    "wonder-tool-generate_es2015_index": "^0.1.4"
   },
   "dependencies": {
     "@types/bowser": "^1.0.30",

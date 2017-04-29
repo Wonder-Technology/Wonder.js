@@ -43,6 +43,8 @@ gulp.task("generateIndex", function(done) {
     generateIndex("/", rootDir, ["*.ts", "**/*.ts"], destDir, {
         target: ts.ScriptTarget.ES5,
         module: ts.ModuleKind.System
+    }, {
+        exclude: ["System.ts", ".d.ts"]
     });
 
     done();
