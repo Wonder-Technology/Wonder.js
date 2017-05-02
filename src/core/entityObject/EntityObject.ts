@@ -1,7 +1,7 @@
 import { Entity } from "../Entity";
 // import { cloneAttributeAsBasicType, CloneUtils } from "../../definition/typescript/decorator/clone";
 import { Hash } from "wonder-commonlib/dist/es2015/Hash";
-// import { Collection } from "wonder-commonlib/dist/es2015/Collection";
+import { Collection } from "wonder-commonlib/dist/es2015/Collection";
 // import { CustomEventRegisterData } from "../../event/binder/CustomEventRegister";
 // import { ComponentManager } from "./manager/ComponentManager";
 // import { IDisposable } from "wonder-frp/dist/es2015/Disposable/IDisposable";
@@ -16,10 +16,11 @@ import { virtual } from "../../definition/typescript/decorator/virtual";
 // import { GameObject } from "./gameObject/GameObject";
 import { Transform } from "../../component/transform/Transform";
 import { ensure, it } from "../../definition/typescript/decorator/contract";
-import {expect} from "wonder-expect.js";
+import { expect } from "wonder-expect.js";
 import { JudgeUtils } from "../../utils/JudgeUtils";
-import {DataOrientedComponent} from "../../component/DataOrientedComponent";
-import {DataOrientedComponentTypeIdManager} from "../../component/DataOrientedComponentTypeIdManager";
+import { DataOrientedComponent } from "../../component/DataOrientedComponent";
+import { DataOrientedComponentTypeIdManager } from "../../component/DataOrientedComponentTypeIdManager";
+import { Map } from "immutable";
 // import {SortUtils} from "../../utils/SortUtils";
 // import {ComponentInitOrderTable} from "../../component/data/ComponentInitOrderTable";
 
@@ -47,6 +48,7 @@ export abstract class EntityObject extends Entity {
     public name: string = null;
     // @cloneAttributeAsBasicType()
     public parent: EntityObject = null;
+    public transform: Transform = null;
 
     // public customEventMap: Hash<Collection<CustomEventRegisterData>> = Hash.create<Collection<CustomEventRegisterData>>();
 
@@ -59,7 +61,11 @@ export abstract class EntityObject extends Entity {
 
     @virtual
     public initWhenCreate() {
-        this.addDataOrientedComponent(this.createTransform());
+        var transform = this.createTransform();
+
+        this.addComponent(transform);
+
+        this.transform = transform;
     }
 
     // @requireCheck(function(config:CloneEntityObjectConfigData = <any>{}){
@@ -104,7 +110,7 @@ export abstract class EntityObject extends Entity {
     //     return result;
     // }
 
-    public init() {
+    public init(state: Map<any, any>) {
         // var self = this;
 
         // this._componentChangeSubscription = EventManager.fromEvent(this, <any>EEngineEvent.COMPONENT_CHANGE)
@@ -120,19 +126,20 @@ export abstract class EntityObject extends Entity {
         // })) {
         //     component.init();
         // }
-        this._componentMap.forEach((component:DataOrientedComponent) => {
-            component.init();
+
+        var resultState = state;
+
+        this._componentMap.forEach((component: DataOrientedComponent) => {
+            resultState = component.init(resultState);
         });
 
-
-
-        this._entityObjectManager.init();
+        resultState = this._entityObjectManager.init(resultState);
 
         // this.afterInitChildren();
 
         // ScriptComponentContainer.getInstance().execEntityObjectScriptOnlyOnce(this, "init");
 
-        return this;
+        return resultState;
     }
 
     public dispose() {
@@ -244,26 +251,26 @@ export abstract class EntityObject extends Entity {
 
 
     //todo refactor
-    private _componentMap:Hash<DataOrientedComponent> = Hash.create<DataOrientedComponent>();
+    private _componentMap: Hash<DataOrientedComponent> = Hash.create<DataOrientedComponent>();
 
     // public addDataOrientedComponent(component: DataOrientedComponent) {
     public addComponent(component: DataOrientedComponent) {
         component.addToObject(this);
 
-        this._componentMap.addChild(DataOrientedComponentTypeIdManager.getTypeIdFromComponent(component), component);
+        this._componentMap.addChild(String(DataOrientedComponentTypeIdManager.getTypeIdFromComponent(component)), component);
 
         return this;
     }
 
     // public getDataOrientedComponent<T extends DataOrientedComponent>(_class: T): T {
     public getComponent<T extends DataOrientedComponent>(_class: T): T {
-        return this._componentMap.getChild(DataOrientedComponentTypeIdManager.getTypeIdFromClass(_class)) as T;
+        return this._componentMap.getChild(String(DataOrientedComponentTypeIdManager.getTypeIdFromClass(_class))) as T;
     }
 
     // public removeDataOrientedComponent(component: DataOrientedComponent){
-    public removeComponent(component: DataOrientedComponent){
+    public removeComponent(component: DataOrientedComponent) {
         //todo optimize Hash->removeChild: not return data; not judge param
-        this._componentMap.removeChild(DataOrientedComponentTypeIdManager.getTypeIdFromComponent(component));
+        this._componentMap.removeChild(String(DataOrientedComponentTypeIdManager.getTypeIdFromComponent(component)));
 
         component.removeFromObject(this);
 

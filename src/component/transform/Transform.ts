@@ -5,30 +5,25 @@
 // import { EventManager } from "../../event/EventManager";
 // import { EEngineEvent } from "../../event/EEngineEvent";
 // import { virtual } from "../../definition/typescript/decorator/virtual";
-import {DataOrientedComponent} from "../DataOrientedComponent";
-import {ThreeDTransformSystem} from "./ThreeDTransformSystem";
+import { DataOrientedComponent } from "../DataOrientedComponent";
+// import { addComponent, getParent, removeComponent, update } from "./ThreeDTransformSystem";
+// import { Map } from "immutable";
 
 //todo refactor:not import on ThreeDTransformSystem
 export abstract class Transform extends DataOrientedComponent {
-    public selfParent: Transform = null;
-    // protected p_parent: Transform = null;
-    // @cloneAttributeAsBasicType()
-    get parent() {
-        // return this.p_parent;
-        return ThreeDTransformSystem.getInstance().getParent(this);
-    }
-    set parent(parent: Transform) {
-        // this.setParent(parent);
-        ThreeDTransformSystem.getInstance().setParent(this, parent);
-    }
-
-    public addToSystem(){
-        ThreeDTransformSystem.getInstance().addComponent(this);
-    }
-
-    public removeFromSystem(){
-        ThreeDTransformSystem.getInstance().removeComponent(this.indexInArrayBuffer);
-    }
+    public abstract parent:Transform = null;
+    // public selfParent: Transform = null;
+    // // protected p_parent: Transform = null;
+    // // @cloneAttributeAsBasicType()
+    // get parent() {
+    //     // return this.p_parent;
+    //     return getParent(this, ThreeDTransformData);
+    // }
+    // set parent(parent: Transform) {
+    //     // this.setParent(parent);
+    //     // return setParent(this, parent, ThreeDTransformData);
+    //     //todo finish
+    // }
 
     // get isTransform() {
     //     return this.isTranslate || this.isRotate || this.isScale;
@@ -81,7 +76,7 @@ export abstract class Transform extends DataOrientedComponent {
     //
     // private _endLoopSubscription: IDisposable = null;
     //
-    // public init() {
+    // public init(state: Map<any, any>) {
     //     var self = this;
     //
     //     this.clearCache();
@@ -92,17 +87,12 @@ export abstract class Transform extends DataOrientedComponent {
     //         });
     // }
 
-
-    public init() {
-        ThreeDTransformSystem.getInstance().update(null);
-    }
-
-    public dispose() {
-        super.dispose();
-
-        // this._endLoopSubscription && this._endLoopSubscription.dispose();
-        ThreeDTransformSystem.getInstance().removeComponent(this.indexInArrayBuffer);
-    }
+    // public dispose() {
+    //     super.dispose();
+    //
+    //     this._endLoopSubscription && this._endLoopSubscription.dispose();
+    //     return removeComponent(this, ThreeDTransformData);
+    // }
     //
     // public addChild(child: Transform) {
     //     this.children.addChild(child);
@@ -236,3 +226,4 @@ export abstract class Transform extends DataOrientedComponent {
     //     this.isRotate = false;
     // }
 }
+

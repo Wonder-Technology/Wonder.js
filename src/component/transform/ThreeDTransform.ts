@@ -5,6 +5,14 @@ import { Transform } from "./Transform";
 import { Vector3 } from "../../math/Vector3";
 // import { cloneAttributeAsCloneable, cloneAttributeAsBasicType } from "../../definition/typescript/decorator/clone";
 import { Quaternion } from "../../math/Quaternion";
+import { ThreeDTransformData } from "./ThreeDTransformData";
+import {
+    getLocalPosition, getLocalToWorldMatrix, getPosition, init, initData, setLocalPosition,
+    setPosition
+} from "./ThreeDTransformSystem";
+import { addComponent, getParent, removeComponent } from "./ThreeDTransformSystem";
+import { Map } from "immutable";
+import { GlobalTempData } from "../../definition/GlobalTempData";
 // import { Collection } from "wonder-commonlib/dist/es2015/Collection";
 // import { Matrix3 } from "../../math/Matrix3";
 // import { ETransformState } from "./ETransformState";
@@ -12,8 +20,7 @@ import { Quaternion } from "../../math/Quaternion";
 // import { CustomEvent } from "../../event/object/CustomEvent";
 // import { EEngineEvent } from "../../event/EEngineEvent";
 // import { Log } from "../../utils/Log";
-import {ThreeDTransformSystem} from "./ThreeDTransformSystem";
-import {Matrix4} from "../../math/Matrix4";
+// import {Matrix4} from "../../math/Matrix4";
 
 @registerClass("ThreeDTransform")
 export class ThreeDTransform extends Transform {
@@ -38,7 +45,7 @@ export class ThreeDTransform extends Transform {
         //
 
         // return this.getMatrix<Matrix4>("sync", "_localToWorldMatrix");
-        return ThreeDTransformSystem.getInstance().getLocalToWorldMatrix(this);
+        return getLocalToWorldMatrix(this, ThreeDTransformData);
     }
     // set localToWorldMatrix(matrix: Matrix4) {
         // this._isUserSpecifyTheLocalToWorldMatrix = true;
@@ -73,7 +80,7 @@ export class ThreeDTransform extends Transform {
         // this._position = this.localToWorldMatrix.getTranslation();
         //
         // return this._position;
-        return ThreeDTransformSystem.getInstance().getPosition(this);
+        return getPosition(this, ThreeDTransformData);
     }
     set position(position: Vector3) {
         // if (this.p_parent === null) {
@@ -84,7 +91,7 @@ export class ThreeDTransform extends Transform {
         // }
         //
         // this.isTranslate = true;
-        ThreeDTransformSystem.getInstance().setPosition(this, position);
+        setPosition(this, position, GlobalTempData, ThreeDTransformData).run();
     }
 
     // private _rotation: Quaternion = Quaternion.create(0, 0, 0, 1);
@@ -166,13 +173,13 @@ export class ThreeDTransform extends Transform {
     get localPosition() {
         // return this._localPosition;
 
-        return ThreeDTransformSystem.getInstance().getLocalPosition(this);
+        return getLocalPosition(this, ThreeDTransformData);
     }
     set localPosition(position: Vector3) {
         // this._localPosition = position;
         //
         // this.isLocalTranslate = true;
-        ThreeDTransformSystem.getInstance().setLocalPosition(this, position);
+        setLocalPosition(this, position, ThreeDTransformData).run();
     }
 
     // public selfLocalRotation: Quaternion = Quaternion.create(0, 0, 0, 1);
@@ -250,6 +257,34 @@ export class ThreeDTransform extends Transform {
     // // private _isUserSpecifyTheLocalToWorldMatrix: boolean = false;
     // // @cloneAttributeAsCloneable()
     // // private _userLocalToWorldMatrix = null;
+
+
+
+    // public selfParent: Transform = null;
+    // protected p_parent: Transform = null;
+    // @cloneAttributeAsBasicType()
+    get parent() {
+        // return this.p_parent;
+        return getParent(this, ThreeDTransformData);
+    }
+    set parent(parent: ThreeDTransform) {
+        // this.setParent(parent);
+        // return setParent(this, parent, ThreeDTransformData);
+        //todo finish
+    }
+
+    public addToSystem() {
+        addComponent(this, ThreeDTransformData).run();
+    }
+
+    public removeFromSystem() {
+        removeComponent(this, GlobalTempData, ThreeDTransformData).run();
+    }
+
+    public init(state: Map<any, any>) {
+        return init(GlobalTempData, ThreeDTransformData, state).run();
+    }
+
     //
     // public sync() {
     //     if (this.dirtyLocal) {
@@ -473,3 +508,5 @@ export class ThreeDTransform extends Transform {
     //     EventManager.trigger(this.entityObject, CustomEvent.create(eventName));
     // }
 }
+
+initData(GlobalTempData, ThreeDTransformData).run();
