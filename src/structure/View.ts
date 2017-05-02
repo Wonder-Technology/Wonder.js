@@ -17,7 +17,7 @@ export class View {
     get dom() {
         return getCanvas(getState(DirectorData));
     }
-    set dom(dom:HTMLCanvasElement){
+    set dom(dom: HTMLCanvasElement) {
         setCanvas(dom).run();
     }
 

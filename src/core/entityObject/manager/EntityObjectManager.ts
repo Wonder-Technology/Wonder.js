@@ -2,6 +2,7 @@ import { registerClass } from "../../../definition/typescript/decorator/register
 import { EntityObject } from "../EntityObject";
 import { Collection } from "wonder-commonlib/dist/es2015/Collection";
 import { JudgeUtils } from "../../../utils/JudgeUtils";
+import { Map } from "immutable";
 
 @registerClass("EntityObjectManager")
 export class EntityObjectManager {
@@ -18,10 +19,14 @@ export class EntityObjectManager {
     private _entityObject: EntityObject = null;
     private _children: Collection<any> = Collection.create<any>();
 
-    public init() {
+    public init(state: Map<any, any>) {
+        var resultState = state;
+
         this.forEach((child: EntityObject) => {
-            child.init();
+            resultState = child.init(resultState);
         });
+
+        return resultState;
     }
 
     public dispose() {

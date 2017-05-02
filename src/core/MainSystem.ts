@@ -11,16 +11,15 @@ import { expect } from "wonder-expect.js";
 import { fromJS, Map } from "immutable";
 import { detect } from "../device/GPUDetectorSystem";
 import { trace } from "../utils/debugUtils";
+import { getIsTest as getIsTestInUtils } from "../utils/MainUtils";
 
-export var getIsTest = (state: Map<any, any>) => {
-    return state.getIn(["Main", "isTest"]);
-}
+export var getIsTest = getIsTestInUtils;
 
 export var setIsTest = (isTest: boolean, state: Map<any, any>) => {
     return state.setIn(["Main", "isTest"], isTest);
 }
 
-export var setLibIsTest = (isTest:boolean) => {
+export var setLibIsTest = (isTest: boolean) => {
     return IO.of(() => {
         Main.isTest = isTest;
     });
@@ -86,7 +85,7 @@ export var init = requireCheckFunc((gameState: Map<string, any>, configState: Ma
         expect(configState.get("useDevicePixelRatio")).exist;
     })
 }, (gameState: Map<string, any>, configState: Map<any, any>) => {
-    return compose(map(detect), chain(setPixelRatioAndCanvas(configState.get("useDevicePixelRatio"))), chain(setScreen), createGL,)(configState.get("canvasId"), configState.get("contextConfig"), gameState);
+    return compose(map(detect), chain(setPixelRatioAndCanvas(configState.get("useDevicePixelRatio"))), chain(setScreen), createGL, )(configState.get("canvasId"), configState.get("contextConfig"), gameState);
 });
 
 

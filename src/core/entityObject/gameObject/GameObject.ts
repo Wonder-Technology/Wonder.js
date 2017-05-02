@@ -1,9 +1,9 @@
 import { registerClass } from "../../../definition/typescript/decorator/registerClass";
 import { EntityObject } from "../EntityObject";
 import { ThreeDTransform } from "../../../component/transform/ThreeDTransform";
-import { cloneAttributeAsBasicType } from "../../../definition/typescript/decorator/clone";
+// import { cloneAttributeAsBasicType } from "../../../definition/typescript/decorator/clone";
 import { Collection } from "wonder-commonlib/dist/es2015/Collection";
-import { RenderUtils } from "../../../utils/RenderUtils";
+// import { RenderUtils } from "../../../utils/RenderUtils";
 
 @registerClass("GameObject")
 export class GameObject extends EntityObject {

@@ -3,7 +3,7 @@ import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
 import curry from "wonder-lodash/curry";
 import { Map } from "immutable";
 
-export var getCanvas = (state: Map<any, any>):HTMLCanvasElement => {
+export var getCanvas = (state: Map<any, any>): HTMLCanvasElement => {
     return state.getIn(["View", "dom"]);
 }
 
@@ -92,7 +92,7 @@ export var initCanvas = (dom: HTMLCanvasElement) => {
 }
 
 export var getContext = (contextConfig: Map<string, any>, dom: HTMLCanvasElement): WebGLRenderingContext => {
-    var options:ContextConfigOptionsData = contextConfig.get("options").toObject();
+    var options: ContextConfigOptionsData = contextConfig.get("options").toObject();
 
     return (dom.getContext("webgl", options) || dom.getContext("experimental-webgl", options)) as WebGLRenderingContext;
 }

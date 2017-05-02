@@ -17,7 +17,7 @@ import { Map } from "immutable";
 import { trace } from "../utils/debugUtils";
 import { isValueExist } from "../utils/stateUtils";
 
-export var getGL = (state: Map<any, any>):WebGLRenderingContext => {
+export var getGL = (state: Map<any, any>): WebGLRenderingContext => {
     return state.getIn(["DeviceManager", "gl"]);
 }
 
@@ -34,12 +34,12 @@ export var setPixelRatio = (pixelRatio: number, state: Map<any, any>) => {
     return state.setIn(["DeviceManager", "pixelRatio"], pixelRatio);
 }
 
-export var getViewport = (state:Map<any, any>) => {
+export var getViewport = (state: Map<any, any>) => {
     return state.getIn(["DeviceManager", "viewport"]);
 }
 
 export var setViewport = (x: number, y: number, width: number, height: number, state: Map<any, any>) => {
-        return state.setIn(["DeviceManager", "viewport"], RectRegion.create(x, y, width, height));
+    return state.setIn(["DeviceManager", "viewport"], RectRegion.create(x, y, width, height));
 }
 
 var _getCanvas = (DomQuery: any, domId: string) => {
@@ -62,13 +62,13 @@ var _getCanvasId = ensureFunc((id: string) => {
     return `#${domId}`;
 });
 
-export var setPixelRatioAndCanvas = curry((useDevicePixelRatio:boolean, state: Map<any, any>) => {
+export var setPixelRatioAndCanvas = curry((useDevicePixelRatio: boolean, state: Map<any, any>) => {
     return IO.of(() => {
-        if(!useDevicePixelRatio){
+        if (!useDevicePixelRatio) {
             return state;
         }
 
-        let pixelRatio:number = getRootProperty("devicePixelRatio").run(),
+        let pixelRatio: number = getRootProperty("devicePixelRatio").run(),
             dom = getCanvas(state);
 
         dom.width = Math.round(dom.width * pixelRatio);
@@ -78,7 +78,7 @@ export var setPixelRatioAndCanvas = curry((useDevicePixelRatio:boolean, state: M
     });
 })
 
-export var createGL = (canvasId:string, contextConfig:Map<string, any>, state:Map<any, any>) => {
+export var createGL = (canvasId: string, contextConfig: Map<string, any>, state: Map<any, any>) => {
     return IO.of(() => {
         var dom = _getCanvas(DomQuery, canvasId),
             gl = getContext(contextConfig, dom);
@@ -99,7 +99,7 @@ export var createGL = (canvasId:string, contextConfig:Map<string, any>, state:Ma
  * @param {Number} w The width of the viewport in pixels.
  * @param {Number} h The height of the viewport in pixels.
  */
-export var setViewportOfGL = curry((x: number, y: number, width: number, height: number, state:Map<any, any>) => {
+export var setViewportOfGL = curry((x: number, y: number, width: number, height: number, state: Map<any, any>) => {
     return IO.of(() => {
         var gl = getGL(state),
             viewport = getViewport(state);
@@ -161,7 +161,7 @@ var _getScreenData = (screenSize: EScreenSize | RectRegion) => {
     });
 }
 
-var _setScreenData = curry((state:Map<any, any>, {
+var _setScreenData = curry((state: Map<any, any>, {
     x,
     y,
     width,
@@ -176,12 +176,12 @@ var _setScreenData = curry((state:Map<any, any>, {
     });
 })
 
-export var setScreen = requireCheckFunc((state:Map<any, any>) => {
+export var setScreen = requireCheckFunc((state: Map<any, any>) => {
     it("should exist MainData.screenSize", () => {
         expect(getScreenSize(DirectorData.state)).exist;
     });
-}, (state:Map<any, any>) => {
-    var dom:HTMLCanvasElement = getCanvas(state);
+}, (state: Map<any, any>) => {
+    var dom: HTMLCanvasElement = getCanvas(state);
 
     initCanvas(dom).run();
 

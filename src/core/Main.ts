@@ -1,6 +1,6 @@
 import { getIsTest, init, MainConfigData, setConfig, setIsTest, setLibIsTest } from "./MainSystem";
 import { CompileConfig } from "../config/CompileConfig";
-import {Map} from "immutable";
+import { Map } from "immutable";
 import { DirectorData } from "./DirectorData";
 import { getState, setState } from "./DirectorSystem";
 
@@ -17,9 +17,9 @@ export class Main {
     private static _configState: Map<any, any> = null;
 
     public static setConfig(configState: MainConfigData) {
-         this._configState = setConfig(CompileConfig.closeContractTest, configState).run();
+        this._configState = setConfig(CompileConfig.closeContractTest, configState).run();
 
-         setState(getState(DirectorData).set("Main", this._configState.get("Main")), DirectorData).run();
+        setState(getState(DirectorData).set("Main", this._configState.get("Main")), DirectorData).run();
 
         return this;
     }

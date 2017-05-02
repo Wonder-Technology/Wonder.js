@@ -15,12 +15,12 @@ export class SceneDispatcher extends EntityObject {
         return obj;
     }
 
-    get currentCamera(): GameObject {
-        return this.gameObjectScene.currentCamera;
-    }
-    set currentCamera(arg: GameObject) {
-        this.gameObjectScene.currentCamera = arg;
-    }
+    // get currentCamera(): GameObject {
+    //     return this.gameObjectScene.currentCamera;
+    // }
+    // set currentCamera(arg: GameObject) {
+    //     this.gameObjectScene.currentCamera = arg;
+    // }
 
     public name: string = `scene${String(this.uid)}`;
 

@@ -5,9 +5,9 @@ import { requireSetter, assert } from "../../../../definition/typescript/decorat
 import { JudgeUtils } from "../../../../utils/JudgeUtils";
 import { Log } from "../../../../utils/Log";
 import { Collection } from "wonder-commonlib/dist/es2015/Collection";
-import { Renderer } from "../../../../renderer/renderer/Renderer";
-import { RenderUtils } from "../../../../utils/RenderUtils";
-import { CameraController } from "../../../../component/camera/controller/CameraController";
+// import { Renderer } from "../../../../renderer/renderer/Renderer";
+// import { RenderUtils } from "../../../../utils/RenderUtils";
+// import { CameraController } from "../../../../component/camera/controller/CameraController";
 
 @registerClass("GameObjectScene")
 export class GameObjectScene extends Scene {

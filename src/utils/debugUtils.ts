@@ -2,10 +2,10 @@ import curry from "wonder-lodash/curry";
 
 /*! side effect */
 export var trace = curry((tag: string, x: any) => {
-    try{
+    try {
         console.log(`log:${tag}: ${x}`)
     }
-    catch(e){
+    catch (e) {
         console.trace(`tag:${tag}; message:${e.message}`);
         throw e;
     }

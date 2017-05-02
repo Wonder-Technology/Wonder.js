@@ -1,7 +1,7 @@
 import { Log } from "../../../utils/Log";
 import { CompileConfig } from "../../../config/CompileConfig";
-import { getIsTest } from "../../../core/MainSystem";
 import { DirectorData } from "../../../core/DirectorData";
+import { getIsTest } from "../../../utils/MainUtils";
 
 var _describeContext = null;
 

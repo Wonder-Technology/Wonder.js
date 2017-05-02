@@ -26,7 +26,7 @@ export class DeviceManager {
         setGL(gl, getState(DirectorData));
     }
 
-    get viewport(){
+    get viewport() {
         return getViewport(getState(DirectorData));
     }
 
