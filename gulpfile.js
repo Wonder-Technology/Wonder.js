@@ -107,5 +107,5 @@ gulp.task("watch", function(){
 gulp.task("watchForTest", function(){
     var totalPaths = tsFilePaths.concat(glslFilePaths);
 
-    gulp.watch(totalPaths, gulpSync.sync(["generateIndex", "compileTsCommonjs"]));
+    gulp.watch(totalPaths, gulpSync.sync(["generateIndex", "compileTsES2015", "rollup"]));
 });
