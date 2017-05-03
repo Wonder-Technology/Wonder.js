@@ -9,9 +9,9 @@ import { DataOrientedComponent } from "../DataOrientedComponent";
 // import { addComponent, getParent, removeComponent, update } from "./ThreeDTransformSystem";
 // import { Map } from "immutable";
 
-//todo refactor:not import on ThreeDTransformSystem
 export abstract class Transform extends DataOrientedComponent {
-    public abstract parent:Transform = null;
+    public abstract parent:Transform;
+
     // public selfParent: Transform = null;
     // // protected p_parent: Transform = null;
     // // @cloneAttributeAsBasicType()

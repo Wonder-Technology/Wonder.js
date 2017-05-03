@@ -8,7 +8,7 @@ import { Quaternion } from "../../math/Quaternion";
 import { ThreeDTransformData } from "./ThreeDTransformData";
 import {
     createIndexInArrayBuffer,
-    getLocalPosition, getLocalToWorldMatrix, getPosition, init, initData, setLocalPosition,
+    getLocalPosition, getLocalToWorldMatrix, getPosition, init, initData, setLocalPosition, setParent,
     setPosition
 } from "./ThreeDTransformSystem";
 import { addComponent, getParent, disposeComponent } from "./ThreeDTransformSystem";
@@ -273,8 +273,7 @@ export class ThreeDTransform extends Transform {
     }
     set parent(parent: ThreeDTransform) {
         // this.setParent(parent);
-        // return setParent(this, parent, ThreeDTransformData);
-        //todo finish
+        setParent(this, parent, ThreeDTransformData).run();
     }
 
     public addToSystem() {

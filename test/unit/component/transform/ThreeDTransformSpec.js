@@ -19,8 +19,10 @@ describe("ThreeDTransform", function(){
         ThreeDTransformData = wd.ThreeDTransformData,
         GlobalTempData = wd.GlobalTempData;
     var initData = wd.initThreeDTransform;
-    var updateTransform = wd.updateTransform;
-    var director = wd.Director;
+    var director;
+    var updateSystem;
+
+    var defaultPos;
 
 
     function getValues(values, digit){
@@ -42,13 +44,20 @@ describe("ThreeDTransform", function(){
 
         obj1 = GameObject.create();
         tra1 = obj1.transform;
+        tra1.name = "tra1";
 
         obj2 = GameObject.create();
         tra2 = obj2.transform;
+        tra2.name = "tra2";
 
         tra3 = ThreeDTransform.create();
+        tra3.name = "tra3";
 
         director = wd.Director.getInstance();
+
+        updateSystem = director._updateSystem;
+
+        defaultPos = Vector3.create(0,0,0);
     });
     afterEach(function() {
         sandbox.restore();
@@ -71,15 +80,62 @@ describe("ThreeDTransform", function(){
         // });
     });
 
-    //todo test
     describe("set parent", function(){
         beforeEach(function(){
-
         });
 
-        it("if set parent before add to entityObject, contract error", function() {
+        describe("the change of parent before setted as parent will affect child", function(){
+            it("test one(parent)-one(child)", function () {
+                var pos = Vector3.create(1,1,1);
+                tra2.position = pos;
+                tra1.parent = tra2;
 
+                updateSystem(null, null);
+
+                expect(tra2.position).toEqual(pos);
+                expect(tra2.localPosition).toEqual(pos);
+                expect(tra1.position).toEqual(pos);
+                expect(tra1.localPosition).toEqual(defaultPos);
+            });
+            it("test one(parent)-two(child)", function () {
+                var pos = Vector3.create(10,10,10);
+                tra2.position = pos;
+                tra1.parent = tra2;
+
+                var pos2 = Vector3.create(2,2,2);
+                tra3.position = pos2;
+
+                tra3.parent = tra2;
+
+
+                updateSystem(null, null);
+
+                expect(tra2.position).toEqual(pos);
+                expect(tra2.localPosition).toEqual(pos);
+                expect(tra1.position).toEqual(pos);
+                expect(tra1.localPosition).toEqual(defaultPos);
+
+                expect(tra3.position).toEqual(pos2.clone().add(pos));
+                expect(tra3.localPosition).toEqual(pos2);
+            });
         });
+        it("if set parent to be null, remove its current parent", function () {
+            var pos = Vector3.create(1,1,1);
+            tra2.position = pos;
+            tra1.parent = tra2;
+
+            updateSystem(null, null);
+
+            tra1.parent = null;
+
+            updateSystem(null, null);
+
+            expect(tra2.position).toEqual(pos);
+            expect(tra2.localPosition).toEqual(pos);
+            expect(tra1.position).toEqual(defaultPos);
+            expect(tra1.localPosition).toEqual(defaultPos);
+        });
+        //todo test sibling!
     });
 
     describe("get localToWorldMatrix", function(){

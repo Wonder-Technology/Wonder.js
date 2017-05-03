@@ -40,13 +40,15 @@ export class EntityObjectManager {
     }
 
     public addChild(child: EntityObject) {
-        if (child.parent) {
+        if (!!child.parent) {
             child.parent.removeChild(child);
         }
 
         child.parent = this._entityObject;
 
-        child.transform.parent = this._entityObject.transform;
+        if(!!this._entityObject.transform){
+            child.transform.parent = this._entityObject.transform;
+        }
 
         this._children.addChild(child);
 
