@@ -15,15 +15,18 @@ import { virtual } from "../../definition/typescript/decorator/virtual";
 // import { Renderer } from "../../renderer/renderer/Renderer";
 // import { GameObject } from "./gameObject/GameObject";
 import { Transform } from "../../component/transform/Transform";
-import { ensure, it } from "../../definition/typescript/decorator/contract";
+import { ensure, it, requireCheck } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { JudgeUtils } from "../../utils/JudgeUtils";
 import { DataOrientedComponent } from "../../component/DataOrientedComponent";
 import { DataOrientedComponentTypeIdManager } from "../../component/DataOrientedComponentTypeIdManager";
 import { Map } from "immutable";
+import { registerClass } from "../../definition/typescript/decorator/registerClass";
+import { addComponent, hasComponent } from "./EntityObjectSystem";
 // import {SortUtils} from "../../utils/SortUtils";
 // import {ComponentInitOrderTable} from "../../component/data/ComponentInitOrderTable";
 
+@registerClass("EntityObject")
 export abstract class EntityObject extends Entity {
     // private _bubbleParent: EntityObject = null;
     // @cloneAttributeAsBasicType()
@@ -63,9 +66,10 @@ export abstract class EntityObject extends Entity {
     public initWhenCreate() {
         var transform = this.createTransform();
 
-        this.addComponent(transform);
-
-        this.transform = transform;
+        if(!!transform){
+            this.addComponent(transform);
+            this.transform = transform;
+        }
     }
 
     // @requireCheck(function(config:CloneEntityObjectConfigData = <any>{}){
@@ -253,13 +257,9 @@ export abstract class EntityObject extends Entity {
     //todo refactor
     private _componentMap: Hash<DataOrientedComponent> = Hash.create<DataOrientedComponent>();
 
-    // public addDataOrientedComponent(component: DataOrientedComponent) {
+
     public addComponent(component: DataOrientedComponent) {
-        component.addToObject(this);
-
-        this._componentMap.addChild(String(DataOrientedComponentTypeIdManager.getTypeIdFromComponent(component)), component);
-
-        return this;
+        return addComponent(component, this, this._componentMap, DataOrientedComponentTypeIdManager).run();
     }
 
     // public getDataOrientedComponent<T extends DataOrientedComponent>(_class: T): T {
@@ -267,12 +267,26 @@ export abstract class EntityObject extends Entity {
         return this._componentMap.getChild(String(DataOrientedComponentTypeIdManager.getTypeIdFromClass(_class))) as T;
     }
 
+    public hasComponent(component: DataOrientedComponent) {
+        return hasComponent(component, this._componentMap, DataOrientedComponentTypeIdManager);
+    }
+
     // public removeDataOrientedComponent(component: DataOrientedComponent){
-    public removeComponent(component: DataOrientedComponent) {
+    // public removeComponent(component: DataOrientedComponent) {
+    //     //todo optimize Hash->removeChild: not return data; not judge param
+    //     this._componentMap.removeChild(String(DataOrientedComponentTypeIdManager.getTypeIdFromComponent(component)));
+    //
+    //     component.removeFromObject(this);
+    //
+    //     return this;
+    // }
+
+
+    public disposeComponent(component: DataOrientedComponent) {
         //todo optimize Hash->removeChild: not return data; not judge param
         this._componentMap.removeChild(String(DataOrientedComponentTypeIdManager.getTypeIdFromComponent(component)));
 
-        component.removeFromObject(this);
+        component.dispose();
 
         return this;
     }
@@ -358,3 +372,4 @@ export abstract class EntityObject extends Entity {
 //     shareGeometry?: boolean;
 //     cloneGeometry?: boolean;
 // }
+

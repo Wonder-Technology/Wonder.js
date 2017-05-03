@@ -27,7 +27,7 @@
     "karma-jasmine": "^0.3.6",
     "rollup-plugin-commonjs": "^7.0.0",
     "rollup-plugin-node-resolve": "^2.0.0",
-    "typescript": "^2.3.0-dev.20170224",
+    "typescript": "^2.3.2",
     "util": "^0.10.3",
     "wonder-package": "^0.1.26",
     "wonder-rollup-plugin-typescript": "^0.1.1",
@@ -41,7 +41,7 @@
     "bowser": "^1.6.0",
     "immutable": "^3.8.1",
     "wonder-commonlib": "^0.1.9",
-    "wonder-expect.js": "^0.1.4",
+    "wonder-expect.js": "^0.1.5",
     "wonder-fantasy-land": "^0.1.1",
     "wonder-frp": "^0.1.17",
     "wonder-lodash": "^0.1.2"

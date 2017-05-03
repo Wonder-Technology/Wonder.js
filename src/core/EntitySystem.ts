@@ -2,6 +2,7 @@ import { Entity } from "./Entity";
 import { Queue } from "wonder-commonlib/dist/es2015/Queue";
 import { singleton } from "../definition/typescript/decorator/singleton";
 import { registerClass } from "../definition/typescript/decorator/registerClass";
+import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
 
 @singleton(false)
 @registerClass("EntitySystem")
@@ -43,5 +44,15 @@ export class EntitySystem {
         this._generationArr[index] += 1;
         this._freeIndiceQueue.push(index);
     }
+
+    public resetUid(){
+        this._freeIndiceQueue.clear();
+        this._generationArr = [];
+    }
 }
 
+export var resetUid = () => {
+    return IO.of(() => {
+        EntitySystem.getInstance().resetUid();
+    });
+}

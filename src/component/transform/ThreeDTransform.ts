@@ -7,12 +7,14 @@ import { Vector3 } from "../../math/Vector3";
 import { Quaternion } from "../../math/Quaternion";
 import { ThreeDTransformData } from "./ThreeDTransformData";
 import {
+    createIndexInArrayBuffer,
     getLocalPosition, getLocalToWorldMatrix, getPosition, init, initData, setLocalPosition,
     setPosition
 } from "./ThreeDTransformSystem";
-import { addComponent, getParent, removeComponent } from "./ThreeDTransformSystem";
+import { addComponent, getParent, disposeComponent } from "./ThreeDTransformSystem";
 import { Map } from "immutable";
 import { GlobalTempData } from "../../definition/GlobalTempData";
+import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
 // import { Collection } from "wonder-commonlib/dist/es2015/Collection";
 // import { Matrix3 } from "../../math/Matrix3";
 // import { ETransformState } from "./ETransformState";
@@ -26,6 +28,8 @@ import { GlobalTempData } from "../../definition/GlobalTempData";
 export class ThreeDTransform extends Transform {
     public static create() {
         var obj = new this();
+
+        obj.initWhenCreate();
 
         return obj;
     }
@@ -277,12 +281,16 @@ export class ThreeDTransform extends Transform {
         addComponent(this, ThreeDTransformData).run();
     }
 
-    public removeFromSystem() {
-        removeComponent(this, GlobalTempData, ThreeDTransformData).run();
+    public disposeFromSystem() {
+        disposeComponent(this, GlobalTempData, ThreeDTransformData).run();
     }
 
     public init(state: Map<any, any>) {
         return init(GlobalTempData, ThreeDTransformData, state).run();
+    }
+
+    public initWhenCreate(){
+        createIndexInArrayBuffer(this, ThreeDTransformData).run();
     }
 
     //

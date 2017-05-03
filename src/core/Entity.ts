@@ -35,7 +35,7 @@ export abstract class Entity {
     })
     //todo need test
     public buildUID(index: number, generation: number) {
-        this.uid = generation << ENTITY_INDEX_BITS + index;
+        this.uid = (generation << ENTITY_INDEX_BITS) + index;
     }
 
     @virtual

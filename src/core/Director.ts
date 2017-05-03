@@ -137,7 +137,7 @@ export class Director {
     private _update(elapsed: number, state: Map<any, any>) {
         // this.scene.gameObjectScene.update(elapsed);
 
-        var resultState = updateTransform(elapsed, GlobalTempData, ThreeDTransformData, state);
+        var resultState = updateTransform(elapsed, GlobalTempData, ThreeDTransformData, state).run();
 
         return resultState;
     }

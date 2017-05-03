@@ -7,8 +7,8 @@ export class ThreeDTransformData {
     }
 
     //todo check:is this affect performance when with buffer data?
-    public static transforms: Array<ThreeDTransform> = [];
-    public static transformIndexInArrayBufferTable: object = {};
+    public static transforms: Array<ThreeDTransform> = null;
+    public static transformIndexInArrayBufferTable: object = null;
     public static localToWorldMatrices: Float32Array = null;
     public static localPositions: Float32Array = null;
     public static localRotations: Float32Array = null;
@@ -19,7 +19,7 @@ export class ThreeDTransformData {
     public static size: number = null;
     public static firstDirtyIndex: number = null;
     public static indexInArrayBuffer: number = null;
-    public static notUsedIndexArray: Array<number> = [];
+    public static notUsedIndexArray: Array<number> = null;
     public static buffer: ArrayBuffer = null;
 }
 

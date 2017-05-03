@@ -2,8 +2,12 @@ import { Entity } from "../core/Entity";
 import { virtual } from "../definition/typescript/decorator/virtual";
 import { EntityObject } from "../core/entityObject/EntityObject";
 import { Map } from "immutable";
+import { error, Log } from "../utils/Log";
+import { ClassUtils } from "../utils/ClassUtils";
+import { registerClass } from "../definition/typescript/decorator/registerClass";
 
 //todo rename to Component?
+@registerClass("DataOrientedComponent")
 export abstract class DataOrientedComponent extends Entity {
     // public indexInArrayBuffer:number = null;
     // public isAddedToEntityObject: boolean = false;
@@ -16,16 +20,14 @@ export abstract class DataOrientedComponent extends Entity {
 
     @virtual
     public dispose() {
+        this.disposeFromSystem();
     }
 
     @virtual
     public addToObject(entityObject: EntityObject) {
         // this.isAddedToEntityObject = true;
 
-        if (this.entityObject !== null) {
-            // this.entityObject.removeDataOrientedComponent(this);
-            this.entityObject.removeComponent(this);
-        }
+        error(this.entityObject !== null, Log.info.FUNC_SHOULD_NOT(`component: ${ClassUtils.getClassNameByInstance(this)}`, "already be added to one entityObject"));
 
         this.entityObject = entityObject;
 
@@ -33,17 +35,10 @@ export abstract class DataOrientedComponent extends Entity {
     }
 
     @virtual
-    public removeFromObject(entityObject: EntityObject) {
-        // this.isAddedToEntityObject = false;
-
-        this.removeFromSystem();
-    }
-
-    @virtual
     public addToSystem() {
     }
 
     @virtual
-    public removeFromSystem() {
+    public disposeFromSystem() {
     }
 }

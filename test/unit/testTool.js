@@ -1,5 +1,6 @@
-import { Main } from "../../dist/commonjs/core/Main";
-export var testTool = (function () {
+var Main = wd.Main;
+
+var testTool = (function () {
     return {
         buildFakeGl: function (sandbox) {
             return {
@@ -132,30 +133,34 @@ export var testTool = (function () {
                 clear: sandbox.stub()
             };
         },
-        stubGetter: function (sinon, object, attri:string, getterFunc) {
+        stubGetter: function (sinon, object, attri, getterFunc) {
             if(object[attri] === void 0){
                 object[attri] = null;
             }
 
-            sinon.stub(object, attri).get(getterFunc);
+            sinon.stub(object, attri, {
+                get: getterFunc
+            });
         },
         stubSetter: function (sinon, object, attri, setterFunc) {
             if(object[attri] === void 0){
                 object[attri] = null;
             }
 
-            sinon.stub(object, attri).set(setterFunc);
+            sinon.stub(object, attri, {
+                set: setterFunc
+            });
         },
         clearInstance: function (sandbox) {
             // wd.EventManager.off();
             //
-            // for (var i in wd) {
-            //     if (wd.hasOwnProperty(i)) {
-            //         if (wd[i]) {
-            //             wd[i]._instance = null;
-            //         }
-            //     }
-            // }
+            for (var i in wd) {
+                if (wd.hasOwnProperty(i)) {
+                    if (wd[i]) {
+                        wd[i]._instance = null;
+                    }
+                }
+            }
             //
             // wd.Entity.uid = 0;
             //
@@ -172,7 +177,7 @@ export var testTool = (function () {
         openContractCheck: function (sandbox, isInit) {
             Main.isTest = true;
 
-            if(isInit !== false){
+            if(isInit){
                 this.initForTest(sandbox);
             }
         },

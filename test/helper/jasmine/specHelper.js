@@ -179,8 +179,8 @@ beforeEach(function () {
                     if (expected) {
                         return {
                             pass: YE.assert.calls.any() === true
-                                && YE.assert.calls.mostRecent().args[0] === false
-                                && YE.assert.calls.mostRecent().args[1] === expected
+                            && YE.assert.calls.mostRecent().args[0] === false
+                            && YE.assert.calls.mostRecent().args[1] === expected
                         }
                     }
 
@@ -486,14 +486,14 @@ beforeEach(function () {
                 function encodeString(s) {
                     if (/["\\\x00-\x1f]/.test(s)) {
                         return '"' + s.replace(/([\x00-\x1f\\"])/g,
-                            function (a, b) {
-                                var c = m[b];
-                                if (c) {
-                                    return c;
-                                }
-                                c = b.charCodeAt();
-                                return "\\u00" + Math.floor(c / 16).toString(16) + (c % 16).toString(16);
-                            }) + '"';
+                                function (a, b) {
+                                    var c = m[b];
+                                    if (c) {
+                                        return c;
+                                    }
+                                    c = b.charCodeAt();
+                                    return "\\u00" + Math.floor(c / 16).toString(16) + (c % 16).toString(16);
+                                }) + '"';
                     }
                     return '"' + s + '"';
                 };

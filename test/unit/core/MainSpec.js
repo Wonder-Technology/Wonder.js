@@ -1,62 +1,57 @@
-import { CompileConfig } from "../../../dist/commonjs/config/CompileConfig";
-import * as sinon from "sinon";
-import { fromArray } from "wonder-frp/dist/commonjs/global/Operator";
-import { testTool } from "../testTool";
-import { DeviceManager } from "../../../dist/commonjs/device/DeviceManager";
-import { Main } from "../../../dist/commonjs/core/Main";
-import { DomQuery } from "wonder-commonlib/dist/commonjs/utils/DomQuery";
-import { DebugConfig } from "../../../dist/commonjs/config/DebugConfig";
-import { EScreenSize } from "../../../dist/commonjs/device/EScreenSize";
-import { RectRegion } from "../../../dist/commonjs/structure/RectRegion";
-
-declare var window;
-
-describe("Main", () =>  {
+describe("Main", function() {
     var sandbox = null;
+    var CompileConfig = wd.CompileConfig,
+        fromArray = wd.fromArray,
+        DeviceManager = wd.DeviceManager,
+        Main = wd.Main,
+        DomQuery = wd.DomQuery,
+        DebugConfig = wd.DebugConfig,
+        EScreenSize = wd.EScreenSize,
+        RectRegion = wd.RectRegion;
 
-    beforeEach(() =>  {
+    beforeEach(function() {
         sandbox = sinon.sandbox.create();
     });
-    afterEach(() =>  {
+    afterEach(function() {
         testTool.clearInstance(sandbox);
         sandbox.restore();
     });
 
-    describe("isTest", () => {
-        describe("if it's true", () => {
-            beforeEach(() => {
+    describe("isTest", function(){
+        describe("if it's true", function(){
+            beforeEach(function(){
             });
 
-            it("it will open wd-frp contract check", () => {
+            it("it will open wd-frp contract check", function(){
                 sandbox.stub(Main, "isTest", false);
 
-                expect(() => {
+                expect(function(){
                     fromArray([1, 2]).take(-1);
                 }).not.toThrow();
 
                 sandbox.stub(Main, "isTest", true);
 
-                expect(() => {
+                expect(function(){
                     fromArray([1, 2]).take(-1);
                 }).toThrow();
             });
-            it("it will open wonder.js contract check", () => {
+            it("it will open wonder.js contract check", function(){
                 sandbox.stub(Main, "isTest", false);
 
-                expect(() => {
+                expect(function(){
                     Main.init();
                 }).not.toThrow("should set config before");
 
                 sandbox.stub(Main, "isTest", true);
 
-                expect(() => {
+                expect(function(){
                     Main.init("should set config before");
                 }).toThrow();
             });
         });
     });
 
-    describe("test set config data", () => {
+    describe("test set config data", function(){
         var gl;
         var device;
         var canvasDom;
@@ -68,7 +63,7 @@ describe("Main", () =>  {
                 };
         }
 
-        beforeEach(() => {
+        beforeEach(function(){
             DeviceManager.getInstance().gl = testTool.buildFakeGl(sandbox);
 
             gl = DeviceManager.getInstance().gl;
@@ -83,17 +78,17 @@ describe("Main", () =>  {
             };
         });
 
-        describe("test set canvas id", () => {
-            beforeEach(() => {
+        describe("test set canvas id", function(){
+            beforeEach(function(){
                 sandbox.stub(DomQuery, "create");
 
                 DomQuery.create.withArgs("#a").returns(buildFakeDomQuery(canvasDom));
                 DomQuery.create.withArgs("body").returns(buildFakeDomQuery(canvasDom));
             });
-            afterEach(() => {
+            afterEach(function(){
             });
 
-            it("support pass canvas id", () => {
+            it("support pass canvas id", function(){
                 Main.setConfig({
                     canvasId:"a"
                 });
@@ -101,7 +96,7 @@ describe("Main", () =>  {
 
                 expect(device.gl).toBeDefined();
             });
-            it("support pass #canvasId", () => {
+            it("support pass #canvasId", function(){
                 Main.setConfig({
                     canvasId:"#a"
                 });
@@ -111,13 +106,13 @@ describe("Main", () =>  {
             });
         });
 
-        describe("set context config data", () => {
-            beforeEach(() => {
+        describe("set context config data", function(){
+            beforeEach(function(){
                 sandbox.stub(DomQuery, "create").returns(buildFakeDomQuery(canvasDom));
             });
 
-            describe("set webgl context options", () => {
-                it("test default value", () => {
+            describe("set webgl context options", function(){
+                it("test default value", function(){
                     Main.setConfig({
                         canvasId:"a"
                     });
@@ -134,7 +129,7 @@ describe("Main", () =>  {
                     });
                 });
 
-                it("can set webgl context options", () => {
+                it("can set webgl context options", function(){
                     Main.setConfig({
                         canvasId:"a",
                         contextConfig:{
@@ -161,12 +156,12 @@ describe("Main", () =>  {
             });
         });
 
-        describe("set useDevicePixelRatio", () => {
+        describe("set useDevicePixelRatio", function(){
             var devicePixelRatio;
             var screenWidth,
                 screenHeight;
 
-            beforeEach(() => {
+            beforeEach(function(){
                 sandbox.stub(DomQuery, "create").returns(buildFakeDomQuery(canvasDom));
 
                 devicePixelRatio = 2;
@@ -176,7 +171,7 @@ describe("Main", () =>  {
                 screenHeight = 60;
             });
 
-            it("if true, set pixelRatio", () => {
+            it("if true, set pixelRatio", function(){
                 Main.setConfig({
                     screenSize:RectRegion.create(0,0,screenWidth,screenHeight),
                     canvasId:"a",
@@ -187,7 +182,7 @@ describe("Main", () =>  {
                 expect(canvasDom.width).toEqual(screenWidth * devicePixelRatio);
                 expect(canvasDom.height).toEqual(screenHeight * devicePixelRatio);
             });
-            it("else, not set it", () => {
+            it("else, not set it", function(){
                 Main.setConfig({
                     screenSize:RectRegion.create(0,0,screenWidth,screenHeight),
                     canvasId:"a",
@@ -200,11 +195,11 @@ describe("Main", () =>  {
             });
         });
 
-        describe("set isTest", () => {
-            beforeEach(() => {
+        describe("set isTest", function(){
+            beforeEach(function(){
             });
 
-            it("if CompileConfig.closeContractTest === true, set isTest to be false", () => {
+            it("if CompileConfig.closeContractTest === true, set isTest to be false", function(){
                 sandbox.stub(CompileConfig, "closeContractTest", true);
 
                 Main.setConfig({
@@ -214,12 +209,12 @@ describe("Main", () =>  {
                 expect(Main.isTest).toBeFalsy();
             });
 
-            describe("else", () => {
-                beforeEach(() => {
+            describe("else", function(){
+                beforeEach(function(){
                     sandbox.stub(CompileConfig, "closeContractTest", false);
                 });
 
-                it("if not set by config, set isTest = DebugConfig.isTest", () => {
+                it("if not set by config, set isTest = DebugConfig.isTest", function(){
                     sandbox.stub(DebugConfig, "isTest", true);
 
                     Main.setConfig({
@@ -227,7 +222,7 @@ describe("Main", () =>  {
 
                     expect(Main.isTest).toBeTruthy();
                 });
-                it("else,, set isTest by config", () =>  {
+                it("else,, set isTest by config", function() {
                     sandbox.stub(DebugConfig, "isTest", true);
 
                     Main.setConfig({
@@ -239,28 +234,28 @@ describe("Main", () =>  {
             });
         });
 
-        describe("setScreen", () => {
+        describe("setScreen", function(){
             var fakeDomQuery;
 
-            beforeEach(() => {
+            beforeEach(function(){
                 fakeDomQuery = buildFakeDomQuery(canvasDom);
 
                 sandbox.stub(DomQuery, "create").returns(fakeDomQuery);
 
-                testTool.stubGetter(sinon, canvasDom, "clientWidth", () => {
+                testTool.stubGetter(sinon, canvasDom, "clientWidth", function(){
                     return canvasDom.width;
                 });
-                testTool.stubGetter(sinon, canvasDom, "clientHeight", () => {
+                testTool.stubGetter(sinon, canvasDom, "clientHeight", function(){
                     return canvasDom.height;
                 });
 
                 sandbox.stub(window, "innerWidth", 100);
                 sandbox.stub(window, "innerHeight", 200);
             });
-            afterEach(() => {
+            afterEach(function(){
             });
 
-            it("support full screen", () => {
+            it("support full screen", function(){
                 var view = device.view;
 
                 Main.setConfig({
@@ -283,7 +278,7 @@ describe("Main", () =>  {
                 expect(device.gl.viewport).toCalledWith(0, 0, view.width, view.height);
                 expect(device.gl.viewport).toCalledWith(0, 0, sinon.match.number, sinon.match.number);
             });
-            it("support custom screen size and position", () => {
+            it("support custom screen size and position", function(){
                 var view = device.view;
 
                 Main.setConfig({
