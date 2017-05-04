@@ -36,16 +36,17 @@ describe("Main", function() {
                 }).toThrow();
             });
             it("it will open wonder.js contract check", function(){
+                var meg = "configState should exist";
                 sandbox.stub(Main, "isTest", false);
 
                 expect(function(){
                     Main.init();
-                }).not.toThrow("should set config before");
+                }).not.toThrow(meg);
 
                 sandbox.stub(Main, "isTest", true);
 
                 expect(function(){
-                    Main.init("should set config before");
+                    Main.init(meg);
                 }).toThrow();
             });
         });

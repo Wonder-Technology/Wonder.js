@@ -176,15 +176,17 @@ var _setScreenData = curry((state: Map<any, any>, {
     });
 })
 
-export var setScreen = requireCheckFunc((state: Map<any, any>) => {
-    it("should exist MainData.screenSize", () => {
-        expect(getScreenSize(DirectorData.state)).exist;
-    });
-}, (state: Map<any, any>) => {
-    var dom: HTMLCanvasElement = getCanvas(state);
+export var setScreen = (state: Map<any, any>) => {
+    return IO.of(requireCheckFunc((state: Map<any, any>) => {
+        it("should exist MainData.screenSize", () => {
+            expect(getScreenSize(DirectorData.state)).exist;
+        });
+    }, () => {
+        var dom: HTMLCanvasElement = getCanvas(state);
 
-    initCanvas(dom).run();
+        initCanvas(dom).run();
 
-    return compose(chain(_setScreenData(state)), chain(_getScreenData), _setBodyByScreenSize)(getScreenSize(state));
-});
+        return compose(chain(_setScreenData(state)), chain(_getScreenData), _setBodyByScreenSize)(getScreenSize(state)).run()
+    }));
+};
 

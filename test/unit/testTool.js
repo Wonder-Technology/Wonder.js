@@ -135,7 +135,11 @@ var testTool = (function () {
         },
         stubGetter: function (sinon, object, attri, getterFunc) {
             if(object[attri] === void 0){
-                object[attri] = null;
+                Object.defineProperty(object, attri, {
+                    configurable: true,
+                    enumerable: true,
+                    get: getterFunc
+                })
             }
 
             sinon.stub(object, attri, {
@@ -144,7 +148,11 @@ var testTool = (function () {
         },
         stubSetter: function (sinon, object, attri, setterFunc) {
             if(object[attri] === void 0){
-                object[attri] = null;
+                Object.defineProperty(object, attri, {
+                    configurable: true,
+                    enumerable: true,
+                    set: setterFunc
+                })
             }
 
             sinon.stub(object, attri, {

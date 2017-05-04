@@ -3,6 +3,8 @@ import { CompileConfig } from "../config/CompileConfig";
 import { Map } from "immutable";
 import { DirectorData } from "./DirectorData";
 import { getState, setState } from "./DirectorSystem";
+import { requireCheck } from "../definition/typescript/decorator/contract";
+import { expect } from "wonder-expect.js";
 
 export class Main {
     static get isTest() {
@@ -24,6 +26,11 @@ export class Main {
         return this;
     }
 
+    @requireCheck(() => {
+        it("configState should exist", () => {
+            expect(Main._configState).exist;
+        });
+    })
     public static init() {
         setState(init(getState(DirectorData), this._configState.get("config")).run(), DirectorData).run();
 

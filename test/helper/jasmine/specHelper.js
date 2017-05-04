@@ -286,10 +286,10 @@ beforeEach(function () {
                         exception = e;
                     }
                     finally {
-                        if(exception){
+                        if(exception && exception.message === expected){
                             result = false;
 
-                            resultMsg = "expect not to be error, but actual is error";
+                            resultMsg = "expect not to be error: " + expected + ", but actual is error: " + exception.message;
                         }
                         else{
                             result = true;

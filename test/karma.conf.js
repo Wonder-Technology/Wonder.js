@@ -24,8 +24,8 @@
 
         // 'test/unit/**/BufferWriter.js',
 
-        // 'test/unit/**',
-        'test/unit/**/ThreeD*',
+        'test/unit/**',
+        // 'test/unit/**/ThreeD*',
         // 'test/unit/**/EntitySpec*',
 
         {pattern: 'dist/wd.js.map', watched: false, included: false, served: true, nocache:true}
