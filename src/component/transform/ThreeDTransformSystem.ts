@@ -183,7 +183,7 @@ export var setPosition = (transform:ThreeDTransform,  position:Vector3, GlobalTe
             vec3IndexInArrayBuffer = _getVector3DataIndexInArrayBuffer(_getTransformIndexInArrayBufferTable(transform, ThreeTransformData));
 
         if(_isRelationDataExist(parent)){
-            DataUtils.setVectors(ThreeDTransformData.localPositions, getLocalToWorldMatrix(ThreeDTransformData.transforms[parent.indexInArrayBuffer], GlobalTempData.matrix4_1).invert().multiplyPoint(position), vec3IndexInArrayBuffer);
+            DataUtils.setVectors(ThreeDTransformData.localPositions, getLocalToWorldMatrix(ThreeDTransformData.transforms[parent.indexInArrayBuffer], ThreeTransformData).invert().multiplyPoint(position), vec3IndexInArrayBuffer);
         }
         else{
             DataUtils.setVectors(ThreeDTransformData.localPositions, position, vec3IndexInArrayBuffer);

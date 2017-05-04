@@ -321,8 +321,51 @@ describe("ThreeDTransform", function(){
 
         });
 
-        it("", function(){
+        it("compute all transforms' datas when update", function(){
+            var pos = Vector3.create(1,2,3);
+            var pos2 = Vector3.create(10,2,3);
 
+            tra2.parent = tra1;
+
+            tra1.position = pos.clone();
+            tra2.position = pos2.clone();
+
+
+            expect(tra1.position).toEqual(defaultPos);
+            expect(tra2.position).toEqual(defaultPos);
+
+            updateSystem(null, null);
+
+            expect(tra1.position).toEqual(pos);
+            expect(tra2.position).toEqual(pos.clone().add(pos2));
+        });
+
+        describe("before update, can only get the old transform data(last update version)", function(){
+            it("test get position", function () {
+                var pos = Vector3.create(1,2,3);
+                var pos2 = Vector3.create(10,2,3);
+                tra1.position = pos.clone();
+
+                updateSystem(null, null);
+
+                tra1.position = pos2.clone();
+
+                expect(tra1.position).toEqual(pos);
+            });
+        });
+
+        describe("before update, can get the newest local data", function(){
+            it("test get local position", function () {
+                var pos = Vector3.create(1,2,3);
+                var pos2 = Vector3.create(10,2,3);
+                tra1.localPosition = pos.clone();
+
+                updateSystem(null, null);
+
+                tra1.localPosition = pos2.clone();
+
+                expect(tra1.localPosition).toEqual(pos2);
+            });
         });
     });
 
