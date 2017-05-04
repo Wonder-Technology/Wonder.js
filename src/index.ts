@@ -2,7 +2,7 @@ export {DataOrientedComponent} from "./component/DataOrientedComponent";
 export {DataOrientedComponentTypeIdManager} from "./component/DataOrientedComponentTypeIdManager";
 export {ETransformState} from "./component/transform/ETransformState";
 export {ThreeDTransform} from "./component/transform/ThreeDTransform";
-export {ThreeDTransformData} from "./component/transform/ThreeDTransformData";
+export {ThreeDTransformData,ThreeDTransformRelationData} from "./component/transform/ThreeDTransformData";
 export {Transform} from "./component/transform/Transform";
 export {CompileConfig} from "./config/CompileConfig";
 export {DataBufferConfig} from "./config/DataBufferConfig";

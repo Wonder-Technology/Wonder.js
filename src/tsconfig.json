@@ -1,11 +1,11 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "module": "commonjs",
+    "module": "es2015",
     "moduleResolution": "Node",
     "noImplicitAny": false,
     "sourceMap": true,
-    "outDir": "../dist/commonjs",
+    "outDir": "../dist/es2015",
     "declaration": true,
     "noEmitOnError": true,
     "typeRoots": [
