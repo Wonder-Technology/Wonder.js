@@ -27,14 +27,14 @@ export class ThreeDTransformData {
     public static buffer: ArrayBuffer = null;
 }
 
-export class ThreeDTransformRelationData{
+export class ThreeDTransformRelationData {
     public static create() {
-    	var obj = new this();
+        var obj = new this();
 
-    	return obj;
+        return obj;
     }
 
-    public indexInArrayBuffer:number = null;
+    public indexInArrayBuffer: number = null;
     public parent: ThreeDTransformRelationData = null;
-    public children:Array<ThreeDTransformRelationData> = null;
+    public children: Array<ThreeDTransformRelationData> = null;
 }

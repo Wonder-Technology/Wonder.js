@@ -7,11 +7,11 @@ import { requireCheck } from "../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 
 /*! side effect */
-var _setValue = (dataArr:Float32Array, increment:number, startIndex:number, target:any) => {
+var _setValue = (dataArr: Float32Array, increment: number, startIndex: number, target: any) => {
     dataArr[startIndex + increment] = target;
 }
 
-export var moveTo = curry((dataArr:Array<any>|Uint16Array, sourceIndex:number, targetIndex:number, length:number, resetValFunc:(dataArr:Array<any>|Uint16Array, sourceIndex:number) => IO, ThreeDTransformData:any) => {
+export var moveTo = curry((dataArr: Array<any> | Uint16Array, sourceIndex: number, targetIndex: number, length: number, resetValFunc: (dataArr: Array<any> | Uint16Array, sourceIndex: number) => IO, ThreeDTransformData: any) => {
     return IO.of(() => {
         for (let i = 0; i < length; i++) {
             let newIndex1 = sourceIndex + i,
@@ -30,7 +30,7 @@ export class DataUtils {
     public static setMatrices(dataArr: Float32Array, mat: Matrix4, index: number) {
         var values = mat.values;
 
-        for(let i = 0; i <= 15; i++){
+        for (let i = 0; i <= 15; i++) {
             _setValue(dataArr, i, index, values[i]);
         }
     }
@@ -61,7 +61,7 @@ export class DataUtils {
     public static setVectors(dataArr: Float32Array, vec: Vector3, index: number) {
         var values = vec.values;
 
-        for(let i = 0; i <= 2; i++){
+        for (let i = 0; i <= 2; i++) {
             _setValue(dataArr, i, index, values[i]);
         }
     }
@@ -133,7 +133,7 @@ export class DataUtils {
     //     arr.pop();
     // }
 
-    public static removeSingleItemInTypeArray(dataArr: Uint16Array, index: number, resetValFunc:(dataArr:Uint16Array, sourceIndex:number) => IO) {
+    public static removeSingleItemInTypeArray(dataArr: Uint16Array, index: number, resetValFunc: (dataArr: Uint16Array, sourceIndex: number) => IO) {
         resetValFunc(dataArr, index).run();
     }
 

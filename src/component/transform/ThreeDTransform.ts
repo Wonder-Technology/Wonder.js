@@ -22,7 +22,7 @@ import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
 // import { CustomEvent } from "../../event/object/CustomEvent";
 // import { EEngineEvent } from "../../event/EEngineEvent";
 // import { Log } from "../../utils/Log";
-import {Matrix4} from "../../math/Matrix4";
+import { Matrix4 } from "../../math/Matrix4";
 
 @registerClass("ThreeDTransform")
 export class ThreeDTransform extends Transform {
@@ -52,11 +52,11 @@ export class ThreeDTransform extends Transform {
         return getLocalToWorldMatrix(this, ThreeDTransformData);
     }
     // set localToWorldMatrix(matrix: Matrix4) {
-        // this._isUserSpecifyTheLocalToWorldMatrix = true;
+    // this._isUserSpecifyTheLocalToWorldMatrix = true;
 
-        // this._userLocalToWorldMatrix = matrix;
+    // this._userLocalToWorldMatrix = matrix;
 
-        // this.isTransform = true;
+    // this.isTransform = true;
     // }
 
     // @cacheGetter(function() {
@@ -288,7 +288,7 @@ export class ThreeDTransform extends Transform {
         return init(GlobalTempData, ThreeDTransformData, state).run();
     }
 
-    public initWhenCreate(){
+    public initWhenCreate() {
         createIndexInArrayBuffer(this, ThreeDTransformData).run();
     }
 

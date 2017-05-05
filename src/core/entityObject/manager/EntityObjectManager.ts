@@ -46,7 +46,7 @@ export class EntityObjectManager {
 
         child.parent = this._entityObject;
 
-        if(!!this._entityObject.transform){
+        if (!!this._entityObject.transform) {
             child.transform.parent = this._entityObject.transform;
         }
 

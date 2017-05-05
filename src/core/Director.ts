@@ -5,13 +5,13 @@ import { registerClass } from "../definition/typescript/decorator/registerClass"
 import { singleton } from "../definition/typescript/decorator/singleton";
 // import { DeviceManager } from "../device/DeviceManager";
 import { SceneDispatcher } from "./entityObject/scene/SceneDispatcher";
-// import { Renderer } from "../renderer/renderer/Renderer";
+import { Renderer } from "../renderer/renderer/Renderer";
 import { IDisposable } from "wonder-frp/dist/es2015/Disposable/IDisposable";
 import { DirectorTimeController } from "../utils/time/DirectorTimeController";
-// import { WebGLRenderer } from "../renderer/renderer/WebGLRenderer";
+import { WebGLRenderer } from "../renderer/renderer/WebGLRenderer";
 import { callFunc, intervalRequest } from "wonder-frp/dist/es2015/global/Operator";
 import { GameObjectScene } from "./entityObject/scene/gameObjectScene/GameObjectScene";
-// import { BasicState } from "../renderer/state/BasicState";
+import { BasicState } from "../renderer/state/BasicState";
 // import { EventManager } from "../event/EventManager";
 // import { CustomEvent } from "../event/object/CustomEvent";
 // import { EEngineEvent } from "../event/EEngineEvent";
@@ -22,16 +22,22 @@ import { ThreeDTransformData } from "../component/transform/ThreeDTransformData"
 import { Map } from "immutable";
 import { compose } from "../utils/functionalUtils";
 import { GlobalTempData } from "../definition/GlobalTempData";
+import { DeviceManager } from "../device/DeviceManager";
+
 
 @singleton(true)
 @registerClass("Director")
 export class Director {
     public static getInstance(): any { };
 
+    get view() {
+        return DeviceManager.getInstance().view;
+    }
+
     private constructor() { }
 
     public scene: SceneDispatcher = null;
-    // public renderer: Renderer = null;
+    public renderer: Renderer = null;
 
     private _gameLoop: IDisposable = null;
     // private _gameState: EGameState = EGameState.NORMAL;
@@ -40,7 +46,7 @@ export class Director {
 
     public initWhenCreate() {
         this.scene = SceneDispatcher.create();
-        // this.renderer = WebGLRenderer.create();
+        this.renderer = WebGLRenderer.create();
     }
 
     public start() {
@@ -93,7 +99,7 @@ export class Director {
         gameObjectScene.init(resultState);
 
         //todo not put here?
-        // this.renderer.init();
+        this.renderer.init();
 
         // this._timeController.start();
 
@@ -127,7 +133,7 @@ export class Director {
 
         var resultState = this._update(elapsed, state);
 
-        // this._render();
+        this._render();
 
         // EventManager.trigger(CustomEvent.create(<any>EEngineEvent.ENDLOOP));
 
@@ -135,11 +141,22 @@ export class Director {
     }
 
     private _update(elapsed: number, state: Map<any, any>) {
-        // this.scene.gameObjectScene.update(elapsed);
+        this.scene.gameObjectScene.update(elapsed);
 
         var resultState = this._updateSystem(elapsed, state);
 
         return resultState;
+    }
+
+    private _render() {
+        this.scene.gameObjectScene.render(this.renderer);
+
+        this.renderer.clear();
+
+        if (this.renderer.hasCommand()) {
+            this.renderer.webglState = BasicState.create();
+            this.renderer.render();
+        }
     }
 
     private _updateSystem(elapsed: number, state: Map<any, any>){

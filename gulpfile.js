@@ -26,7 +26,7 @@ var glslFilePaths = config.glslFilePaths;
 
 
 
-// var createShaderChunk = require("./build/gulp_task/createInnerFile/ShaderChunk/create").createShaderChunk;
+var createShaderChunk = require("./build/gulp_task/createInnerFile/ShaderChunk/create").createShaderChunk;
 
 
 require("./build/gulp_task/clean/clean");
@@ -91,8 +91,8 @@ gulp.task("createShaderChunk", function() {
 
 
 
-// gulp.task("build", gulpSync.sync(["clean", "createShaderChunk", "generateIndex", "compileTsES2015", "compileTsCommonjs", "generateDTS", "rollup", "formatTs"]));
-gulp.task("build", gulpSync.sync(["clean", "generateIndex", "compileTsES2015", "compileTsCommonjs", "generateDTS", "rollup", "formatTs"]));
+gulp.task("build", gulpSync.sync(["clean", "createShaderChunk", "generateIndex", "compileTsES2015", "compileTsCommonjs", "generateDTS", "rollup", "formatTs"]));
+// gulp.task("build", gulpSync.sync(["clean", "generateIndex", "compileTsES2015", "compileTsCommonjs", "generateDTS", "rollup", "formatTs"]));
 
 
 

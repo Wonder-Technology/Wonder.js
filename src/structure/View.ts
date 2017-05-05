@@ -1,66 +1,96 @@
-import {
-    getCanvas, getHeight, getStyleHeight, getStyleWidth, getWidth, setHeight, setStyleWidth, getX, setX, getY, setY,
-    setWidth, setCanvas, setStyleHeight
-} from "./ViewSystem";
 import { registerClass } from "../definition/typescript/decorator/registerClass";
-import { getState } from "../core/DirectorSystem";
-import { DirectorData } from "../core/DirectorData";
+import { ContextConfigData } from "../core/data/MainData";
 
-@registerClass("View")
-export class View {
-    public static create() {
-        var obj = new this();
+@registerClass("ViewWebGL")
+export class ViewWebGL implements IView {
+    public static create(view: any) {
+        var obj = new this(view);
 
         return obj;
     }
 
-    get dom() {
-        return getCanvas(getState(DirectorData));
+    constructor(dom: any) {
+        this._dom = dom;
     }
-    set dom(dom: HTMLCanvasElement) {
-        setCanvas(dom).run();
+
+    get offset() {
+        var view = this._dom,
+            offset = { x: view.offsetLeft, y: view.offsetTop };
+
+        while (view = view.offsetParent) {
+            offset.x += view.offsetLeft;
+            offset.y += view.offsetTop;
+        }
+
+        return offset;
+    }
+
+    private _dom: any = null;
+    get dom() {
+        return this._dom;
     }
 
     get width() {
-        return getWidth(this.dom);
+        return this._dom.clientWidth;
     }
     set width(width: number) {
-        setWidth(width, this.dom).run();
+        this._dom.width = width;
     }
 
     get height() {
-        return getHeight(this.dom);
+        return this._dom.clientHeight;
     }
     set height(height: number) {
-        setHeight(height, this.dom).run();
+        this._dom.height = height;
     }
 
     get styleWidth() {
-        return getStyleWidth(this.dom);
+        return this._dom.style.width;
     }
     set styleWidth(styleWidth: string) {
-        setStyleWidth(styleWidth, this.dom).run();
+        this._dom.style.width = styleWidth;
     }
 
     get styleHeight() {
-        return getStyleHeight(this.dom);
+        return this._dom.style.height;
     }
     set styleHeight(styleHeight: string) {
-        setStyleHeight(styleHeight, this.dom).run();
+        this._dom.style.height = styleHeight;
     }
 
     get x() {
-        return getX(this.dom);
+        return Number(this._dom.style.left.slice(0, -2));
     }
     set x(x: number) {
-        setX(x, this.dom).run();
+        this._dom.style.left = `${x}px`;
     }
 
     get y() {
-        return getY(this.dom);
+        return Number(this._dom.style.top.slice(0, -2));
     }
     set y(y: number) {
-        setY(y, this.dom).run();
+        this._dom.style.top = `${y}px`;
     }
+
+    public initCanvas() {
+        this._dom.style.cssText = "position:absolute;left:0;top:0;";
+    }
+
+    public getContext(contextConfig: ContextConfigData): WebGLRenderingContext {
+        return this._dom.getContext("webgl", contextConfig.options) || this._dom.getContext("experimental-webgl", contextConfig.options);
+    }
+}
+
+export interface IView {
+    offset: { x: number, y: number };
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    styleWidth: string;
+    styleHeight: string;
+    dom: any;
+    getContext(contextConfig: ContextConfigData): WebGLRenderingContext;
+    initCanvas(): void;
 }
 
