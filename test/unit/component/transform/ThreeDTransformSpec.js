@@ -257,28 +257,28 @@ describe("ThreeDTransform", function(){
                 beforeEach(function(){
                     pos = Vector3.create(1,2,3);
 
-                    director.scene.addChild(obj1);
-                    director.scene.addChild(obj2);
+                    // director.scene.addChild(obj1);
+                    // director.scene.addChild(obj2);
                 });
 
                 it("reset its transform data after dispose", function(){
-                    director._loopBody(0, null);
+                    updateSystem(null, null);
                     tra1.localPosition = pos.clone();
 
                     tra1.dispose();
-                    director._loopBody(0, null);
+                    updateSystem(null, null);
 
                     expect(tra1.position).toEqual(Vector3.create(0,0,0));
                 });
                 it("the dispose of one transform shouldn't affect other transform data", function () {
                     var pos2 = Vector3.create(10,2,3);
-                    director._loopBody(0, null);
+                    updateSystem(null, null);
                     tra1.localPosition = pos.clone();
                     tra2.localPosition = pos2.clone();
 
 
                     tra1.dispose();
-                    director._loopBody(0, null);
+                    updateSystem(null, null);
 
                     expect(tra2.position).toEqual(pos2);
                 });
@@ -290,13 +290,13 @@ describe("ThreeDTransform", function(){
                 beforeEach(function(){
                     pos = Vector3.create(1,2,3);
 
-                    director.scene.addChild(obj1);
-                    director.scene.addChild(obj2);
+                    // director.scene.addChild(obj1);
+                    // director.scene.addChild(obj2);
                 });
 
                 it("reset its transform data after dispose", function(){
                     tra1.localPosition = pos.clone();
-                    director._loopBody(0, null);
+                    updateSystem(null, null);
 
                     tra1.dispose();
 
@@ -306,7 +306,7 @@ describe("ThreeDTransform", function(){
                     var pos2 = Vector3.create(10,2,3);
                     tra1.localPosition = pos.clone();
                     tra2.localPosition = pos2.clone();
-                    director._loopBody(0, null);
+                    updateSystem(null, null);
 
                     tra1.dispose();
 
