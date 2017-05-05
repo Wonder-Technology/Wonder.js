@@ -27,6 +27,7 @@
     "karma-jasmine": "^0.3.8",
     "rollup-plugin-commonjs": "^7.0.0",
     "rollup-plugin-node-resolve": "^2.0.0",
+    "through-gulp": "^0.5.0",
     "typescript": "^2.3.2",
     "util": "^0.10.3",
     "wonder-package": "^0.1.26",
