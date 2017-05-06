@@ -40,7 +40,7 @@ describe("ThreeDTransform", function(){
             return 10;
         });
 
-        initData(GlobalTempData, ThreeDTransformData).run();
+        initData(GlobalTempData, ThreeDTransformData);
 
         obj1 = GameObject.create();
         tra1 = obj1.transform;

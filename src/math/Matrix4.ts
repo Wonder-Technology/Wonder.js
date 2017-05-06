@@ -15,49 +15,35 @@ declare var Math: any;
  */
 @registerClass("Matrix4")
 export class Matrix4 {
-    // public static create(mat: Float32Array): Matrix4;
-    // public static create(): Matrix4;
+    public static create(mat: Float32Array): Matrix4;
+    public static create(): Matrix4;
 
-    // public static create(...args): Matrix4 {
-    public static create(): Matrix4 {
+    public static create(...args): Matrix4 {
         var m = null;
 
-        // if (args.length === 0) {
+        if (args.length === 0) {
             m = new this();
-        // }
-        // else {
-        //     m = new this(args[0]);
-        // }
+        }
+        else {
+            m = new this(args[0]);
+        }
 
         return m;
     }
 
-    // constructor(mat: Float32Array);
-    // constructor();
+    constructor(mat: Float32Array);
+    constructor();
 
-    // constructor(...args) {
-        constructor() {
-        // if (args.length === 1) {
-        //     this.values = args[0];
-        // }
-        // else {
+    constructor(...args) {
+        if (args.length === 1) {
+            this.values = args[0];
+        }
+        else {
             this.values = new Float32Array([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]);
-        // }
-
-        // this._matrixArr = [];
+        }
     }
 
     public values: Float32Array = null;
-
-    // private _matrixArr: Array<Float32Array> = null;
-    //
-    // public push() {
-    //     this._matrixArr.push(this.values);
-    // }
-    //
-    // public pop() {
-    //     this.values = this._matrixArr.pop();
-    // }
 
     public set(initialM11: number, initialM12: number, initialM13: number, initialM14: number,
         initialM21: number, initialM22: number, initialM23: number, initialM24: number,
@@ -75,9 +61,7 @@ export class Matrix4 {
             values = matrix.values;
         }
         else {
-            values = [
-                args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13], args[14], args[15]
-            ];
+            values = args;
         }
 
         te[0] = values[0];

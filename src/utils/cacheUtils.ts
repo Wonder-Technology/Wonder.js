@@ -1,14 +1,14 @@
-import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
-
-export var cacheFunc = <T>(hasCacheFunc:() => boolean, getCacheFunc: () => T, setCacheFunc:IO, bodyFunc:() => T) => {
-    return () => {
-        if(hasCacheFunc()){
-            return getCacheFunc();
+export var cacheFunc = <T>(hasCacheFunc:(...args) => boolean, getCacheFunc: (...args) => T, setCacheFunc:(...args) => void, bodyFunc:(...args) => T) => {
+    return (...args) => {
+        if(hasCacheFunc.apply(null, args)){
+            return getCacheFunc.apply(null, args);
         }
 
-        let result = bodyFunc();
+        let result = bodyFunc.apply(null, args);
 
-        setCacheFunc.run(result);
+        args.push(result);
+
+        setCacheFunc.apply(null, args);
 
         return result;
     }

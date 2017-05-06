@@ -49,7 +49,7 @@ export class ThreeDTransform extends Transform {
         //
 
         // return this.getMatrix<Matrix4>("sync", "_localToWorldMatrix");
-        return getLocalToWorldMatrix(this, ThreeDTransformData).run();
+        return getLocalToWorldMatrix(this, ThreeDTransformData, this.tempLocalToWorldMatrix);
     }
     // set localToWorldMatrix(matrix: Matrix4) {
     // this._isUserSpecifyTheLocalToWorldMatrix = true;
@@ -84,7 +84,7 @@ export class ThreeDTransform extends Transform {
         // this._position = this.localToWorldMatrix.getTranslation();
         //
         // return this._position;
-        return getPosition(this, ThreeDTransformData).run();
+        return getPosition(this, ThreeDTransformData);
     }
     set position(position: Vector3) {
         // if (this.p_parent === null) {
@@ -95,7 +95,7 @@ export class ThreeDTransform extends Transform {
         // }
         //
         // this.isTranslate = true;
-        setPosition(this, position, GlobalTempData, ThreeDTransformData).run();
+        setPosition(this, position, GlobalTempData, ThreeDTransformData);
         // setPosition(this, position, GlobalTempData, ThreeDTransformData);
     }
 
@@ -178,13 +178,13 @@ export class ThreeDTransform extends Transform {
     get localPosition() {
         // return this._localPosition;
 
-        return getLocalPosition(this, ThreeDTransformData).run();
+        return getLocalPosition(this, ThreeDTransformData);
     }
     set localPosition(position: Vector3) {
         // this._localPosition = position;
         //
         // this.isLocalTranslate = true;
-        setLocalPosition(this, position, ThreeDTransformData).run();
+        setLocalPosition(this, position, ThreeDTransformData);
     }
 
     // public selfLocalRotation: Quaternion = Quaternion.create(0, 0, 0, 1);
@@ -274,7 +274,7 @@ export class ThreeDTransform extends Transform {
     }
     set parent(parent: ThreeDTransform) {
         // this.setParent(parent);
-        setParent(this, parent, ThreeDTransformData).run();
+        setParent(this, parent, ThreeDTransformData);
     }
 
     public localToWorldMatrixCache: Matrix4 = null;
@@ -286,19 +286,19 @@ export class ThreeDTransform extends Transform {
     public isTranslate:boolean = false;
 
     public addToSystem() {
-        addComponent(this, ThreeDTransformData).run();
+        addComponent(this, ThreeDTransformData);
     }
 
     public disposeFromSystem() {
-        disposeComponent(this, GlobalTempData, ThreeDTransformData).run();
+        disposeComponent(this, GlobalTempData, ThreeDTransformData);
     }
 
     public init(state: Map<any, any>) {
-        return init(GlobalTempData, ThreeDTransformData, state).run();
+        return init(GlobalTempData, ThreeDTransformData, state);
     }
 
     public initWhenCreate() {
-        createIndexInArrayBuffer(this, ThreeDTransformData).run();
+        createIndexInArrayBuffer(this, ThreeDTransformData);
     }
 
     //
@@ -525,4 +525,4 @@ export class ThreeDTransform extends Transform {
     // }
 }
 
-initData(GlobalTempData, ThreeDTransformData).run();
+initData(GlobalTempData, ThreeDTransformData);
