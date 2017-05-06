@@ -1,5 +1,6 @@
 import { DataBufferConfig } from "../../config/DataBufferConfig";
 import { ThreeDTransform } from "./ThreeDTransform";
+import { Matrix4 } from "../../math/Matrix4";
 
 export class ThreeDTransformData {
     static get count() {
@@ -24,6 +25,8 @@ export class ThreeDTransformData {
     public static firstDirtyIndex: number = null;
     public static indexInArrayBuffer: number = null;
     public static notUsedIndexArray: Array<number> = null;
+    // public static localToWorldMatrixPool:Array<Matrix4> = null;
+
     public static buffer: ArrayBuffer = null;
 }
 

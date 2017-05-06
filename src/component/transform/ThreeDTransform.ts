@@ -1,7 +1,7 @@
 import { registerClass } from "../../definition/typescript/decorator/registerClass";
 import { Transform } from "./Transform";
 // import { Matrix4 } from "../../math/Matrix4";
-// import { cacheGetter } from "../../definition/typescript/decorator/cache";
+import { cacheGetter } from "../../definition/typescript/decorator/cache";
 import { Vector3 } from "../../math/Vector3";
 // import { cloneAttributeAsCloneable, cloneAttributeAsBasicType } from "../../definition/typescript/decorator/clone";
 import { Quaternion } from "../../math/Quaternion";
@@ -49,7 +49,7 @@ export class ThreeDTransform extends Transform {
         //
 
         // return this.getMatrix<Matrix4>("sync", "_localToWorldMatrix");
-        return getLocalToWorldMatrix(this, ThreeDTransformData);
+        return getLocalToWorldMatrix(this, ThreeDTransformData).run();
     }
     // set localToWorldMatrix(matrix: Matrix4) {
     // this._isUserSpecifyTheLocalToWorldMatrix = true;
@@ -84,7 +84,7 @@ export class ThreeDTransform extends Transform {
         // this._position = this.localToWorldMatrix.getTranslation();
         //
         // return this._position;
-        return getPosition(this, ThreeDTransformData);
+        return getPosition(this, ThreeDTransformData).run();
     }
     set position(position: Vector3) {
         // if (this.p_parent === null) {
@@ -96,6 +96,7 @@ export class ThreeDTransform extends Transform {
         //
         // this.isTranslate = true;
         setPosition(this, position, GlobalTempData, ThreeDTransformData).run();
+        // setPosition(this, position, GlobalTempData, ThreeDTransformData);
     }
 
     // private _rotation: Quaternion = Quaternion.create(0, 0, 0, 1);
@@ -177,7 +178,7 @@ export class ThreeDTransform extends Transform {
     get localPosition() {
         // return this._localPosition;
 
-        return getLocalPosition(this, ThreeDTransformData);
+        return getLocalPosition(this, ThreeDTransformData).run();
     }
     set localPosition(position: Vector3) {
         // this._localPosition = position;
@@ -275,6 +276,14 @@ export class ThreeDTransform extends Transform {
         // this.setParent(parent);
         setParent(this, parent, ThreeDTransformData).run();
     }
+
+    public localToWorldMatrixCache: Matrix4 = null;
+    public tempLocalToWorldMatrix: Matrix4 = Matrix4.create();
+    public positionCache: Vector3 = null;
+    public tempPosition: Vector3 = Vector3.create();
+    public localPositionCache: Vector3 = null;
+    public tempLocalPosition: Vector3 = Vector3.create();
+    public isTranslate:boolean = false;
 
     public addToSystem() {
         addComponent(this, ThreeDTransformData).run();
@@ -478,12 +487,12 @@ export class ThreeDTransform extends Transform {
     //
     // protected clearCache() {
     //     this._localToWorldMatrixCache = null;
-    //     this._normalMatrixCache = null;
-    //     this._positionCache = null;
-    //     this._rotationCache = null;
-    //     this._scaleCache = null;
-    //     this._eulerAnglesCache = null;
-    //     this._localEulerAnglesCache = null;
+        // this._normalMatrixCache = null;
+        // this._positionCache = null;
+        // this._rotationCache = null;
+        // this._scaleCache = null;
+        // this._eulerAnglesCache = null;
+        // this._localEulerAnglesCache = null;
     // }
     //
     // protected handleWhenSetTransformState(transformState?: ETransformState): void {

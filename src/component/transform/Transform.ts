@@ -1,5 +1,5 @@
 // import { cloneAttributeAsBasicType } from "../../definition/typescript/decorator/clone";
-// import { ETransformState } from "./ETransformState";
+import { ETransformState } from "./ETransformState";
 // import { Collection } from "wonder-commonlib/dist/es2015/Collection";
 // import { IDisposable } from "wonder-frp/dist/es2015/Disposable/IDisposable";
 // import { EventManager } from "../../event/EventManager";
@@ -182,14 +182,14 @@ export abstract class Transform extends DataOrientedComponent {
     //         }
     //
     //         this._isTranslate = true;
-    //         this._isRotate = true;
-    //         this._isScale = true;
+    //         // this._isRotate = true;
+    //         // this._isScale = true;
     //
-    //         this.dirtyLocal = true;
+    //         // this.dirtyLocal = true;
     //         this.clearCache();
-    //         this.handleWhenSetTransformState();
+    //         // this.handleWhenSetTransformState();
     //
-    //         this.setChildrenTransformState(state);
+    //         // this.setChildrenTransformState(state);
     //     }
     //     else {
     //         let transformState: ETransformState = args[0],
@@ -198,14 +198,14 @@ export abstract class Transform extends DataOrientedComponent {
     //         this[`_${transformState}`] = state;
     //
     //         if (state) {
-    //             this.dirtyLocal = true;
+    //             // this.dirtyLocal = true;
     //             this.clearCache();
-    //             this.handleWhenSetTransformState(transformState);
+    //             // this.handleWhenSetTransformState(transformState);
     //         }
     //
-    //         if (state) {
-    //             this.setChildrenTransformState(transformState, state);
-    //         }
+    //         // if (state) {
+    //         //     this.setChildrenTransformState(transformState, state);
+    //         // }
     //     }
     // }
     //
@@ -222,8 +222,8 @@ export abstract class Transform extends DataOrientedComponent {
     //
     // private _resetTransformFlag() {
     //     this.isTranslate = false;
-    //     this.isScale = false;
-    //     this.isRotate = false;
+    //     // this.isScale = false;
+    //     // this.isRotate = false;
     // }
 }
 

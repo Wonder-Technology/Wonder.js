@@ -17,11 +17,25 @@
 
         var director = wd.Director.getInstance();
 
+        var boxes = createBoxes();
 
-        director.scene.addChildren(createBoxes());
+        director.scene.addChildren(boxes);
 
         director.scene.addChild(createCamera());
 
+        setInterval(function(){
+            boxes.forEach(function(box){
+                var pos = box.transform.position;
+                var localPos = box.transform.localPosition;
+
+                if(pos.x >= 500){
+                    box.transform.localPosition = wd.Vector3.create(100,localPos.y,localPos.z);
+                }
+                else if(pos.x < 500){
+                    box.transform.position = pos.add(wd.Vector3.create(10,0,0));
+                }
+            })
+        }, 30)
 
         director.start();
 
@@ -34,7 +48,7 @@
                 var box = createBox();
 
                 var scale = Math.random() * 0.8 + 0.6;
-                box.transform.scale = wd.Vector3.create(scale, scale, scale);
+//                box.transform.scale = wd.Vector3.create(scale, scale, scale);
                 box.transform.position = wd.Vector3.create(Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize)
 
                 resultArr.push(box);
@@ -64,8 +78,8 @@
 
         function createCamera() {
             var camera = wd.GameObject.create(),
-                    view = wd.Director.getInstance().view,
-                    cameraComponent = wd.PerspectiveCamera.create();
+                view = wd.Director.getInstance().view,
+                cameraComponent = wd.PerspectiveCamera.create();
 
             cameraComponent.fovy = 60;
             cameraComponent.aspect = view.width / view.height;
@@ -76,7 +90,8 @@
 
             camera.addComponent(controller);
 
-            camera.transform.translate(wd.Vector3.create(0, 0, 1500));
+//            camera.transform.translate(wd.Vector3.create(0, 0, 1500));
+            camera.transform.position = wd.Vector3.create(0, 0, 1500);
 
             return camera;
         }
@@ -84,3 +99,4 @@
 </script>
 </body>
 </html>
+

@@ -11,21 +11,6 @@ var _setValue = (dataArr: Float32Array, increment: number, startIndex: number, t
     dataArr[startIndex + increment] = target;
 }
 
-export var moveTo = curry((dataArr: Array<any> | Uint16Array, sourceIndex: number, targetIndex: number, length: number, resetValFunc: (dataArr: Array<any> | Uint16Array, sourceIndex: number) => IO, ThreeDTransformData: any) => {
-    return IO.of(() => {
-        for (let i = 0; i < length; i++) {
-            let newIndex1 = sourceIndex + i,
-                newIndex2 = targetIndex + i;
-
-            dataArr[newIndex2] = dataArr[newIndex1];
-
-            resetValFunc(dataArr, newIndex1).run();
-        }
-
-        return ThreeDTransformData;
-    });
-})
-
 export class DataUtils {
     public static setMatrices(dataArr: Float32Array, mat: Matrix4, index: number) {
         var values = mat.values;

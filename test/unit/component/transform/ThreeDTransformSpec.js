@@ -65,6 +65,157 @@ describe("ThreeDTransform", function(){
         testTool.clearInstance();
     });
 
+    describe("test cache", function(){
+        var matrix;
+
+        function judgeCache(stubFunc, getAttr, judgeStubFunc){
+            stubFunc();
+
+            var m1 = tra1[getAttr];
+            var m2 = tra1[getAttr];
+
+            expect(m1 === m2).toBeTruthy();
+            judgeStubFunc();
+        }
+
+        // function judgeClearCache(getMethod, getAttr){
+        //     sandbox.stub(tra1, getMethod).returns(matrix);
+        //     var m1 = tra1[getAttr];
+        //
+        //     wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.ENDLOOP));
+        //
+        //     var m2 = tra1[getAttr];
+        //
+        //     expect(m1 === m2).toBeTruthy();
+        //     expect(tra1[getMethod]).toCalledTwice();
+        // }
+
+        beforeEach(function(){
+            matrix = wd.Matrix4.create();
+        });
+
+        // it("normalMatrix(getter)", function(){
+        //     judgeCache(function(){
+        //         sandbox.spy(tra1.localToWorldMatrix, "invertTo3x3");
+        //     }, "normalMatrix", function(){
+        //         expect(tra1.localToWorldMatrix.invertTo3x3).toCalledOnce();
+        //     });
+        // });
+        it("localToWorldMatrix(getter)", function(){
+            judgeCache(function(){
+                sandbox.stub(wd.DataUtils, "createMatrix4ByIndex");
+            }, "localToWorldMatrix", function(){
+                expect(wd.DataUtils.createMatrix4ByIndex).toCalledOnce();
+            });
+        });
+        it("position(getter)", function(){
+            judgeCache(function(){
+            }, "position", function(){
+            });
+        });
+        it("localPosition(getter)", function(){
+            judgeCache(function(){
+                sandbox.stub(wd.DataUtils, "createVector3ByIndex");
+            }, "localPosition", function(){
+                expect(wd.DataUtils.createVector3ByIndex).toCalledOnce();
+            });
+        });
+        // it("rotation(getter)", function(){
+        //     judgeCache(function(){
+        //         sandbox.stub(tra1._rotation, "setFromMatrix");
+        //     }, "rotation", function(){
+        //         expect(tra1._rotation.setFromMatrix).toCalledOnce();
+        //     });
+        // });
+        // it("scale(getter)", function(){
+        //     judgeCache(function(){
+        //         sandbox.stub(tra1.localToWorldMatrix, "getScale");
+        //     }, "scale", function(){
+        //         expect(tra1.localToWorldMatrix.getScale).toCalledOnce();
+        //     });
+        // });
+        // it("eulerAngles(getter)", function(){
+        //     judgeCache(function(){
+        //         sandbox.stub(tra1.localToWorldMatrix, "getEulerAngles");
+        //     }, "eulerAngles", function(){
+        //         expect(tra1.localToWorldMatrix.getEulerAngles).toCalledOnce();
+        //     });
+        // });
+        // it("localEulerAngles(getter)", function(){
+        //     judgeCache(function(){
+        //         sandbox.stub(tra1._localRotation, "getEulerAngles");
+        //     }, "localEulerAngles", function(){
+        //         expect(tra1._localRotation.getEulerAngles).toCalledOnce();
+        //     });
+        // });
+
+        describe("test clear cache", function(){
+            beforeEach(function(){
+            });
+
+            it("test clear localToWorldMatrix cache", function () {
+                tra1.position = Vector3.create(0,0,1);
+                updateSystem(null, null);
+                var m1 = tra1.localToWorldMatrix.clone();
+
+                tra1.position = Vector3.create(1,2,3);
+                updateSystem(null, null);
+
+                var m2 = tra1.localToWorldMatrix.clone()
+
+                expect(getValues(m1)).not.toEqual(getValues(m2));
+            });
+            // it("test clear normalMatrix cache", function () {
+            //     var m1 = tra1.normalMatrix;
+            //
+            //     tra1.position = Vector3.create(1,2,3);
+            //
+            //     var m2 = tra1.normalMatrix;
+            //
+            //     expect(m1 === m2).toBeFalsy();
+            // });
+            it("clear position cache", function () {
+                tra1.position = Vector3.create(0,0,1);
+                updateSystem(null, null);
+                var pos = tra1.position.clone();
+
+                tra1.position = Vector3.create(1,2,3);
+                updateSystem(null, null);
+
+                var pos2 = tra1.position.clone();
+
+                expect(getValues(pos)).not.toEqual(getValues(pos2));
+            });
+            it("clear localPosition cache", function () {
+                tra1.localPosition = Vector3.create(0,0,2);
+                updateSystem(null, null);
+                var localPos = tra1.localPosition.clone();
+
+                tra1.localPosition = Vector3.create(1,0,2);
+                updateSystem(null, null);
+
+                var localPos2 = tra1.localPosition.clone();
+
+                expect(getValues(localPos)).not.toEqual(getValues(localPos2));
+            });
+            //it("clear position,rotation,scale,eulerAngles,localEulerAngles cache", function () {
+            //    var m1 = tra1.position;
+            //    var m2 = tra1.rotation;
+            //    var m3 = tra1.scale;
+            //    var m4 = tra1.eulerAngles;
+            //    var m5 = tra1.localEulerAngles;
+            //
+            //    wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.ENDLOOP));
+            //
+            //    expect(tra1._positionCache).toBeNull();
+            //    expect(tra1._rotationCache).toBeNull();
+            //    expect(tra1._scaleCache).toBeNull();
+            //    expect(tra1._eulerAnglesCache).toBeNull();
+            //    expect(tra1._localEulerAnglesCache).toBeNull();
+            //});
+        });
+    });
+
     describe("get parent", function(){
         beforeEach(function(){
 
@@ -84,41 +235,41 @@ describe("ThreeDTransform", function(){
         beforeEach(function(){
         });
 
-        describe("the change of parent before setted as parent will affect child", function(){
-            it("test one(parent)-one(child)", function () {
-                var pos = Vector3.create(1,1,1);
-                tra2.position = pos;
-                tra1.parent = tra2;
-
-                updateSystem(null, null);
-
-                expect(tra2.position).toEqual(pos);
-                expect(tra2.localPosition).toEqual(pos);
-                expect(tra1.position).toEqual(pos);
-                expect(tra1.localPosition).toEqual(defaultPos);
-            });
-            it("test one(parent)-two(child)", function () {
-                var pos = Vector3.create(10,10,10);
-                tra2.position = pos;
-                tra1.parent = tra2;
-
-                var pos2 = Vector3.create(2,2,2);
-                tra3.position = pos2;
-
-                tra3.parent = tra2;
-
-
-                updateSystem(null, null);
-
-                expect(tra2.position).toEqual(pos);
-                expect(tra2.localPosition).toEqual(pos);
-                expect(tra1.position).toEqual(pos);
-                expect(tra1.localPosition).toEqual(defaultPos);
-
-                expect(tra3.position).toEqual(pos2.clone().add(pos));
-                expect(tra3.localPosition).toEqual(pos2);
-            });
-        });
+        // describe("the change of parent before setted as parent will affect child", function(){
+        //     it("test one(parent)-one(child)", function () {
+        //         var pos = Vector3.create(1,1,1);
+        //         tra2.position = pos;
+        //         tra1.parent = tra2;
+        //
+        //         updateSystem(null, null);
+        //
+        //         expect(tra2.position).toEqual(pos);
+        //         expect(tra2.localPosition).toEqual(pos);
+        //         expect(tra1.position).toEqual(pos);
+        //         expect(tra1.localPosition).toEqual(defaultPos);
+        //     });
+        //     it("test one(parent)-two(child)", function () {
+        //         var pos = Vector3.create(10,10,10);
+        //         tra2.position = pos;
+        //         tra1.parent = tra2;
+        //
+        //         var pos2 = Vector3.create(2,2,2);
+        //         tra3.position = pos2;
+        //
+        //         tra3.parent = tra2;
+        //
+        //
+        //         updateSystem(null, null);
+        //
+        //         expect(tra2.position).toEqual(pos);
+        //         expect(tra2.localPosition).toEqual(pos);
+        //         expect(tra1.position).toEqual(pos);
+        //         expect(tra1.localPosition).toEqual(defaultPos);
+        //
+        //         expect(tra3.position).toEqual(pos2.clone().add(pos));
+        //         expect(tra3.localPosition).toEqual(pos2);
+        //     });
+        // });
 
         describe("if set parent to be null, remove its current parent", function () {
             it("test one(parent)-one(child)", function () {
@@ -242,7 +393,7 @@ describe("ThreeDTransform", function(){
         });
         //todo more
     });
-    
+
     describe("dispose component", function(){
         beforeEach(function(){
         });
@@ -250,7 +401,7 @@ describe("ThreeDTransform", function(){
         describe("remove related data in ThreeDTransformData", () => {
             beforeEach(() => {
             });
-            
+
             describe("test if dirty", () => {
                 var pos;
 
