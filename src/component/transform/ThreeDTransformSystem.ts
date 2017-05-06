@@ -116,7 +116,13 @@ var _getOrSetRelationItem = (indexInArrayBuffer: number, relations: Array<ThreeD
     return data;
 }
 
-export var setParent = (transform: ThreeDTransform, parent: ThreeDTransform, ThreeDTransformData: any) => {
+var _isTransformEqual = (tra1:ThreeDTransform, tra2:ThreeDTransform) => tra1.uid === tra2.uid;
+
+export var setParent = requireCheckFunc((transform: ThreeDTransform, parent: ThreeDTransform, ThreeDTransformData: any) => {
+    it("parent should not be self", () => {
+        expect(_isTransformEqual(transform, parent)).false;
+    });
+}, (transform: ThreeDTransform, parent: ThreeDTransform, ThreeDTransformData: any) => {
     var indexInArrayBuffer = _getTransformIndexInArrayBufferTable(transform, ThreeDTransformData),
         parentIndexInArrayBuffer: number = null,
         relationData = _getOrSetRelationItem(indexInArrayBuffer, ThreeDTransformData.relations),
@@ -146,7 +152,7 @@ export var setParent = (transform: ThreeDTransform, parent: ThreeDTransform, Thr
     _addToParent(relationData, parentIndexInArrayBuffer, ThreeDTransformData);
 
     _addItAndItsChildrenToDirtyList(indexInArrayBuffer, ThreeDTransformData);
-}
+})
 
 var _createEmptyRelationItem = (indexInArrayBuffer: number) => {
     var data = ThreeDTransformRelationData.create();
@@ -329,46 +335,59 @@ var _addToDirtyList = requireCheckFunc((indexInArrayBuffer: number, ThreeDTransf
     it("firstDirtyIndex should <= count", () => {
         expect(ThreeDTransformData.firstDirtyIndex).lte(ThreeDTransformData.count);
     });
-    it("target index should not be used", () => {
-        var targetDirtyIndex = _minusFirstDirtyIndex(ThreeDTransformData.firstDirtyIndex);
-
-        expect(_isIndexUsed(targetDirtyIndex, ThreeDTransformData)).false;
-    });
+    // it("target index should not be used", () => {
+    //     var targetDirtyIndex = _minusFirstDirtyIndex(ThreeDTransformData.firstDirtyIndex);
+    //
+    //     expect(_isIndexUsed(targetDirtyIndex, ThreeDTransformData)).false;
+    // });
 },(indexInArrayBuffer: number, ThreeDTransformData: any) => {
     let targetDirtyIndex = _minusFirstDirtyIndex(ThreeDTransformData.firstDirtyIndex);
 
     ThreeDTransformData.firstDirtyIndex = targetDirtyIndex;
 
-    // if (_isIndexUsed(targetDirtyIndex, ThreeDTransformData)) {
-    //     _swap(indexInArrayBuffer, targetDirtyIndex, ThreeDTransformData);
-    // }
-    // else {
-    _moveToIndex(indexInArrayBuffer, targetDirtyIndex, ThreeDTransformData);
+    if (_isIndexUsed(targetDirtyIndex, ThreeDTransformData)) {
+        _swap(indexInArrayBuffer, targetDirtyIndex, ThreeDTransformData);
+    }
+    else {
+        _moveToIndex(indexInArrayBuffer, targetDirtyIndex, ThreeDTransformData);
 
     // if (_isIndexCollectedToNotUsed(targetDirtyIndex, ThreeDTransformData)) {
     //     ThreeDTransformData.notUsedIndexArray = _removeIndexInNotUsedArr(targetDirtyIndex, ThreeDTransformData);
     // }
-    // }
+    }
 
     return targetDirtyIndex;
     // }));
 })
 
-var _isDirtyIndex = (indexInArrayBuffer:number, firstDirtyIndex:number) => indexInArrayBuffer >= firstDirtyIndex;
+// var _isDirtyIndex = (indexInArrayBuffer:number, firstDirtyIndex:number) => indexInArrayBuffer >= firstDirtyIndex;
 
 var _getNotUsedIndexFromArr = (ThreeDTransformData:any) => {
-    var firstDirtyIndex = ThreeDTransformData.firstDirtyIndex,
-        notUsedIndexArray = ThreeDTransformData.notUsedIndexArray;
+    var notUsedIndexArray = ThreeDTransformData.notUsedIndexArray;
     var getFunc = (i:number) => {
-        if(_isDirtyIndex(i, firstDirtyIndex)){
-            return getFunc(notUsedIndexArray.pop());
+        if(!_isValidArrayValue(i)){
+            return void 0;
+        }
+
+        if(_isIndexUsed(i, ThreeDTransformData)){
+            return getFunc(_getNotUsedIndex(notUsedIndexArray));
         }
 
         return i;
     }
 
-    return getFunc(notUsedIndexArray.pop());
+    /*!
+
+     */
+    return getFunc(_getNotUsedIndex(notUsedIndexArray));
 }
+
+var _getNotUsedIndex = (notUsedIndexArray: Array<number>) => {
+    /*!
+    optimize: return the first one to ensure that the result index be as much remote from firDirtyIndex as possible(so that it can reduce swap when add to dirty list)
+     */
+    return notUsedIndexArray.shift();
+};
 
 var _addNotUsedIndex = (index: number, notUsedIndexArray: Array<number>) => {
     notUsedIndexArray.push(index);
@@ -466,7 +485,12 @@ var _swapRelationItemIndex = (relationDataArr: Array<ThreeDTransformRelationData
     relationDataArr[index2].indexInArrayBuffer = temp;
 }
 
-var _swap = (index1: number, index2: number, ThreeDTransformData: any) => {
+var _swap = requireCheckFunc((index1: number, index2: number, ThreeDTransformData: any) => {
+   it("source index and target index should be used", () => {
+       expect(_isIndexUsed(index1, ThreeDTransformData)).true;
+       expect(_isIndexUsed(index2, ThreeDTransformData)).true;
+   });
+}, (index1: number, index2: number, ThreeDTransformData: any) => {
     if (index1 === index2) {
         return ThreeDTransformData;
     }
@@ -506,7 +530,7 @@ var _swap = (index1: number, index2: number, ThreeDTransformData: any) => {
     DataUtils.swap(ThreeDTransformData.localScales, vec3SourceIndex, vec3TargetIndex, vec3Size);
 
     return ThreeDTransformData;
-}
+})
 
 // var _resetIndexInTypeArr = (dataArr: Uint16Array, index: number) => {
 //     return IO.of(() => {
@@ -558,9 +582,6 @@ var _moveToIndex = ensureFunc((returnVal, sourceIndex: number, targetIndex: numb
         expect(_isIndexUsed(sourceIndex, ThreeDTransformData)).false;
     });
 }, requireCheckFunc((sourceIndex: number, targetIndex: number, ThreeDTransformData: any) => {
-    it("source index should not === target index", () => {
-        expect(sourceIndex).not.equal(targetIndex);
-    });
     it("source index should be used", () => {
         expect(_isIndexUsed(sourceIndex, ThreeDTransformData)).true;
     });
@@ -568,7 +589,11 @@ var _moveToIndex = ensureFunc((returnVal, sourceIndex: number, targetIndex: numb
         expect(_isIndexUsed(targetIndex, ThreeDTransformData)).false;
     });
 },(sourceIndex: number, targetIndex: number, ThreeDTransformData: any) => {
-    var mat4SourceIndex = _getMatrix4DataIndexInArrayBuffer(sourceIndex),
+    if(sourceIndex === targetIndex){
+        return ThreeDTransformData;
+    }
+
+    let mat4SourceIndex = _getMatrix4DataIndexInArrayBuffer(sourceIndex),
         mat4TargetIndex = _getMatrix4DataIndexInArrayBuffer(targetIndex),
         mat4Size = _getMatrix4DataSize(),
         vec3SourceIndex = _getVector3DataIndexInArrayBuffer(sourceIndex),
@@ -667,9 +692,9 @@ var _moveFromDirtyListToNormalList = (index: number, ThreeDTransformData: any) =
 }
 
 var _checkGeneratedNotUsedIndex = (ThreeDTransformData: any, indexInArrayBuffer: number) => {
-    it("notUsedIndexArray shouldn't contain the index", () => {
-        expect(ThreeDTransformData.notUsedIndexArray.indexOf(indexInArrayBuffer)).equal(-1);
-    });
+    // it("notUsedIndexArray shouldn't contain the index", () => {
+    //     expect(ThreeDTransformData.notUsedIndexArray.indexOf(indexInArrayBuffer)).equal(-1);
+    // });
     it("indexInArrayBuffer should < firstDirtyIndex", () => {
         expect(indexInArrayBuffer).exist;
         expect(indexInArrayBuffer).lessThan(ThreeDTransformData.firstDirtyIndex);

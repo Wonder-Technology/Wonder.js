@@ -235,41 +235,41 @@ describe("ThreeDTransform", function(){
         beforeEach(function(){
         });
 
-        // describe("the change of parent before setted as parent will affect child", function(){
-        //     it("test one(parent)-one(child)", function () {
-        //         var pos = Vector3.create(1,1,1);
-        //         tra2.position = pos;
-        //         tra1.parent = tra2;
-        //
-        //         updateSystem(null, null);
-        //
-        //         expect(tra2.position).toEqual(pos);
-        //         expect(tra2.localPosition).toEqual(pos);
-        //         expect(tra1.position).toEqual(pos);
-        //         expect(tra1.localPosition).toEqual(defaultPos);
-        //     });
-        //     it("test one(parent)-two(child)", function () {
-        //         var pos = Vector3.create(10,10,10);
-        //         tra2.position = pos;
-        //         tra1.parent = tra2;
-        //
-        //         var pos2 = Vector3.create(2,2,2);
-        //         tra3.position = pos2;
-        //
-        //         tra3.parent = tra2;
-        //
-        //
-        //         updateSystem(null, null);
-        //
-        //         expect(tra2.position).toEqual(pos);
-        //         expect(tra2.localPosition).toEqual(pos);
-        //         expect(tra1.position).toEqual(pos);
-        //         expect(tra1.localPosition).toEqual(defaultPos);
-        //
-        //         expect(tra3.position).toEqual(pos2.clone().add(pos));
-        //         expect(tra3.localPosition).toEqual(pos2);
-        //     });
-        // });
+        describe("the change of parent before setted as parent will affect child", function(){
+            it("test one(parent)-one(child)", function () {
+                var pos = Vector3.create(1,1,1);
+                tra2.position = pos;
+                tra1.parent = tra2;
+
+                updateSystem(null, null);
+
+                expect(tra2.position).toEqual(pos);
+                expect(tra2.localPosition).toEqual(pos);
+                expect(tra1.position).toEqual(pos);
+                expect(tra1.localPosition).toEqual(defaultPos);
+            });
+            it("test one(parent)-two(child)", function () {
+                var pos = Vector3.create(10,10,10);
+                tra2.position = pos;
+                tra1.parent = tra2;
+
+                var pos2 = Vector3.create(2,2,2);
+                tra3.position = pos2;
+
+                tra3.parent = tra2;
+
+
+                updateSystem(null, null);
+
+                expect(tra2.position).toEqual(pos);
+                expect(tra2.localPosition).toEqual(pos);
+                expect(tra1.position).toEqual(pos);
+                expect(tra1.localPosition).toEqual(defaultPos);
+
+                expect(tra3.position).toEqual(pos2.clone().add(pos));
+                expect(tra3.localPosition).toEqual(pos2);
+            });
+        });
 
         describe("if set parent to be null, remove its current parent", function () {
             it("test one(parent)-one(child)", function () {
@@ -329,6 +329,23 @@ describe("ThreeDTransform", function(){
             expect(tra2.localPosition).toEqual(pos);
             expect(tra1.position).toEqual(pos);
             expect(tra1.localPosition).toEqual(defaultPos);
+        });
+
+        describe("fix bug", function() {
+            beforeEach(function(){
+            });
+
+            it("description:if dirty parent first, dirty child second, the ThreeDTransformData.transforms[childIndex] will === undefined", function(){
+                var pos = Vector3.create(1,1,1);
+
+                tra2.position = pos;
+                tra1.parent = tra2;
+
+                updateSystem(null, null);
+
+                expect(tra2.position).toEqual(pos);
+                expect(tra1.position).toEqual(pos);
+            });
         });
     });
 

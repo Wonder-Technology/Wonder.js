@@ -23,19 +23,97 @@
 
         director.scene.addChild(createCamera());
 
+//        setInterval(function(){
+//            boxes.forEach(function(box){
+//                var pos = box.transform.position;
+//                var localPos = box.transform.localPosition;
+//
+//                if(pos.x >= 500){
+//                    box.transform.localPosition = wd.Vector3.create(100,localPos.y,localPos.z);
+//                }
+//                else if(pos.x < 500){
+//                    box.transform.position = pos.add(wd.Vector3.create(10,0,0));
+//                }
+//            })
+//        }, 30)
+
+
+//        for(var i = 1, len = boxes.length; i < len; i++){
+//            var box = boxes[i];
+////            var pos = box.transform.position;
+////            var localPos = box.transform.localPosition;
+////
+////            if(pos.x >= 500){
+////                box.transform.parent = boxes[i + 1];
+//            box.transform.parent = boxes[0].transform;
+////                box.transform.localPosition = wd.Vector3.create(100,localPos.y,localPos.z);
+////            }
+////            else if(pos.x < 500){
+////                box.transform.parent = boxes[i - 1];
+////                box.transform.position = pos.add(wd.Vector3.create(10,0,0));
+////            }
+//        }
+        for(var i = 1, len = 10; i < len; i++){
+            var box = boxes[i];
+
+//            for(var j = 0; j < 5; j++){
+                box.transform.parent = boxes[i - 1].transform;
+//            }
+        }
+//
+//        for(var i = 11, len = boxes.length - 1; i < len; i++){
+////                for(var i = 1, len = 3; i < len; i++){
+//            var box = boxes[i];
+////            var pos = box.transform.position;
+////            var localPos = box.transform.localPosition;
+//
+//            box.transform.parent = boxes[getRandomParentIndex(10)].transform;
+//
+//        }
+
+        function getRandomParentIndex(num){
+            return Math.floor(Math.random() * num);
+        }
+
         setInterval(function(){
-            boxes.forEach(function(box){
+//            for(var i = 11, len = boxes.length - 1; i < len; i++){
+////                for(var i = 1, len = 3; i < len; i++){
+//                var box = boxes[i];
+//
+//                box.transform.parent = boxes[getRandomParentIndex(10)].transform;
+//            }
+
+            for(var i = 0, len = boxes.length - 1; i < len; i++){
+//                for(var i = 1, len = 3; i < len; i++){
+                var box = boxes[i];
                 var pos = box.transform.position;
                 var localPos = box.transform.localPosition;
 
+//                box.transform.parent = boxes[getRandomParentIndex(10)].transform;
+
                 if(pos.x >= 500){
+//                    box.transform.parent = boxes[i + 1].transform;
+//                    box.transform.parent = boxes[getRandomParentIndex()].transform;
+//                    box.transform.localPosition = wd.Vector3.create(100,localPos.y,localPos.z);
                     box.transform.localPosition = wd.Vector3.create(100,localPos.y,localPos.z);
                 }
                 else if(pos.x < 500){
+//                    box.transform.parent = boxes[i - 1].transform;
                     box.transform.position = pos.add(wd.Vector3.create(10,0,0));
                 }
-            })
+            }
         }, 30)
+
+
+        setInterval(function(){
+            for(var i = 11, len = boxes.length - 1; i < len; i++){
+//                for(var i = 1, len = 3; i < len; i++){
+                var box = boxes[i];
+
+                box.transform.parent = boxes[getRandomParentIndex(10)].transform;
+            }
+        }, 300)
+
 
         director.start();
 
@@ -44,7 +122,7 @@
             var resultArr = [],
                 playgroundSize = 500;
 
-            for (var index = 0; index < 5000; index++) {
+            for (var index = 0; index < 3000; index++) {
                 var box = createBox();
 
                 var scale = Math.random() * 0.8 + 0.6;
