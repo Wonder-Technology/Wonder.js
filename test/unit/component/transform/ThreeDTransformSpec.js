@@ -169,17 +169,38 @@ describe("ThreeDTransform", function(){
             expect(getValues(pos)).toEqual(getValues(pos2));
             expect(wd.DataUtils.createVector3ByIndex).toCalledOnce();
         });
+        it("test parent and children cache", function () {
+            sandbox.spy(wd.DataUtils, "createVector3ByIndex");
+            tra1.parent = tra2;
 
-        describe("test clear cache", function(){
-            beforeEach(function(){
+            tra1.localPosition = Vector3.create(0,0,1);
+            tra2.localPosition = Vector3.create(4,0,1);
+
+            updateSystem(null, null);
+            var pos = tra1.localPosition.clone();
+            var pos2 = tra2.localPosition.clone();
+
+            expect(wd.DataUtils.createVector3ByIndex).toCalledTwice();
+
+            updateSystem(null, null);
+            var pos3 = tra1.localPosition.clone();
+            var pos4 = tra2.localPosition.clone();
+
+            expect(getValues(pos)).toEqual(getValues(pos3));
+            expect(getValues(pos2)).toEqual(getValues(pos4));
+            expect(wd.DataUtils.createVector3ByIndex).toCalledTwice();
+        });
+
+        describe("test clear cache", function() {
+            beforeEach(function () {
             });
 
             it("test clear localToWorldMatrix cache", function () {
-                tra1.position = Vector3.create(0,0,1);
+                tra1.position = Vector3.create(0, 0, 1);
                 updateSystem(null, null);
                 var m1 = tra1.localToWorldMatrix.clone();
 
-                tra1.position = Vector3.create(1,2,3);
+                tra1.position = Vector3.create(1, 2, 3);
                 updateSystem(null, null);
 
                 var m2 = tra1.localToWorldMatrix.clone()
@@ -196,11 +217,11 @@ describe("ThreeDTransform", function(){
             //     expect(m1 === m2).toBeFalsy();
             // });
             it("clear position cache", function () {
-                tra1.position = Vector3.create(0,0,1);
+                tra1.position = Vector3.create(0, 0, 1);
                 updateSystem(null, null);
                 var pos = tra1.position.clone();
 
-                tra1.position = Vector3.create(1,2,3);
+                tra1.position = Vector3.create(1, 2, 3);
                 updateSystem(null, null);
 
                 var pos2 = tra1.position.clone();
@@ -208,11 +229,11 @@ describe("ThreeDTransform", function(){
                 expect(getValues(pos)).not.toEqual(getValues(pos2));
             });
             it("clear localPosition cache", function () {
-                tra1.localPosition = Vector3.create(0,0,2);
+                tra1.localPosition = Vector3.create(0, 0, 2);
                 updateSystem(null, null);
                 var localPos = tra1.localPosition.clone();
 
-                tra1.localPosition = Vector3.create(1,0,2);
+                tra1.localPosition = Vector3.create(1, 0, 2);
                 updateSystem(null, null);
 
                 var localPos2 = tra1.localPosition.clone();
@@ -238,8 +259,8 @@ describe("ThreeDTransform", function(){
             it("test batch set", function () {
                 var batchTransformDatas = [];
                 batchTransformDatas.push({
-                    uid:tra1.uid,
-                    position:Vector3.create(0,0,1)
+                    uid: tra1.uid,
+                    position: Vector3.create(0, 0, 1)
                 });
 
                 wd.ThreeDTransform.setBatchTransformDatas(batchTransformDatas);
@@ -248,12 +269,11 @@ describe("ThreeDTransform", function(){
                 var pos = tra1.position.clone();
 
 
-
                 batchTransformDatas = [];
 
                 batchTransformDatas.push({
-                    uid:tra1.uid,
-                    position:Vector3.create(1,2,3)
+                    uid: tra1.uid,
+                    position: Vector3.create(1, 2, 3)
                 });
 
                 wd.ThreeDTransform.setBatchTransformDatas(batchTransformDatas);
@@ -261,8 +281,29 @@ describe("ThreeDTransform", function(){
                 var pos2 = tra1.position.clone();
 
 
-
                 expect(getValues(pos)).not.toEqual(getValues(pos2));
+            });
+            it("test clear parent and children cache", function () {
+                sandbox.spy(wd.DataUtils, "createVector3ByIndex");
+                tra1.parent = tra2;
+
+                tra1.localPosition = Vector3.create(0, 0, 1);
+                tra2.localPosition = Vector3.create(4, 0, 1);
+
+                updateSystem(null, null);
+                var pos = tra1.localPosition.clone();
+                var pos2 = tra2.localPosition.clone();
+
+
+                tra1.localPosition = Vector3.create(1, 0, 1);
+                tra2.localPosition = Vector3.create(7, 1, 1);
+                updateSystem(null, null);
+                var pos3 = tra1.localPosition.clone();
+                var pos4 = tra2.localPosition.clone();
+
+                expect(getValues(pos)).not.toEqual(getValues(pos3));
+                expect(getValues(pos2)).not.toEqual(getValues(pos4));
+                expect(wd.DataUtils.createVector3ByIndex.callCount).toEqual(4);
             });
         });
     });
