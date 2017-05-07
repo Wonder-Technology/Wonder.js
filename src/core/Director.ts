@@ -159,8 +159,8 @@ export class Director {
         }
     }
 
-    private _updateSystem(elapsed: number, state: Map<any, any>){
-        var resultState = updateTransform(elapsed, GlobalTempData, ThreeDTransformData, state).run();
+    private _updateSystem(elapsed: number, state: Map<any, any>) {
+        var resultState = updateTransform(elapsed, GlobalTempData, ThreeDTransformData, state);
 
         return resultState;
     }
