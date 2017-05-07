@@ -17,6 +17,7 @@ export {GameObjectScene} from "./core/entityObject/scene/gameObjectScene/GameObj
 export {Scene} from "./core/entityObject/scene/Scene";
 export {SceneDispatcher} from "./core/entityObject/scene/SceneDispatcher";
 export {Main} from "./core/Main";
+export {MainData} from "./core/MainData";
 export {GlobalTempData} from "./definition/GlobalTempData";
 export {assert,describe,it,requireCheck,requireCheckFunc,ensure,ensureFunc,requireGetterAndSetter,requireGetter,requireSetter,ensureGetterAndSetter,ensureGetter,ensureSetter,invariant} from "./definition/typescript/decorator/contract";
 export {execOnlyOnce} from "./definition/typescript/decorator/control";
@@ -45,7 +46,6 @@ export {trace} from "./utils/debugUtils";
 export {compose,chain,map} from "./utils/functionalUtils";
 export {JudgeUtils,isUndefined,isNotUndefined} from "./utils/JudgeUtils";
 export {Log,error} from "./utils/Log";
-export {getIsTest} from "./utils/MainUtils";
 export {getRootProperty} from "./utils/rootUtils";
 export {isValueExist} from "./utils/stateUtils";
 export {CommonTimeController} from "./utils/time/CommonTimeController";

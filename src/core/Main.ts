@@ -4,14 +4,15 @@ import { Map } from "immutable";
 import { DirectorData } from "./DirectorData";
 import { getState, setState } from "./DirectorSystem";
 import { requireCheck } from "../definition/typescript/decorator/contract";
+import { MainData } from "./MainData";
 import { expect } from "wonder-expect.js";
 
 export class Main {
     static get isTest() {
-        return getIsTest(DirectorData.state);
+        return getIsTest(MainData);
     }
     static set isTest(isTest: boolean) {
-        setState(setIsTest(isTest, getState(DirectorData)), DirectorData).run();
+        setIsTest(isTest, MainData);
 
         setLibIsTest(isTest).run();
     }
@@ -19,7 +20,7 @@ export class Main {
     private static _configState: Map<any, any> = null;
 
     public static setConfig(configState: MainConfigData) {
-        this._configState = setConfig(CompileConfig.closeContractTest, configState).run();
+        this._configState = setConfig(CompileConfig.closeContractTest, MainData, configState).run();
 
         setState(getState(DirectorData).set("Main", this._configState.get("Main")), DirectorData).run();
 
