@@ -275,11 +275,9 @@ export class ThreeDTransform extends Transform {
     // protected p_parent: Transform = null;
     // @cloneAttributeAsBasicType()
     get parent() {
-        // return this.p_parent;
         return getParent(this, ThreeDTransformData);
     }
     set parent(parent: ThreeDTransform) {
-        // this.setParent(parent);
         setParent(this, parent, ThreeDTransformData);
     }
 
@@ -289,11 +287,6 @@ export class ThreeDTransform extends Transform {
     public tempPosition: Vector3 = Vector3.create();
     public localPositionCache: Vector3 = null;
     public tempLocalPosition: Vector3 = Vector3.create();
-    public isTranslate:boolean = false;
-
-    // public setBatchPositions(batchData:Array<BatchPositionData>){
-    //     setBatchPositions(batchData, GlobalTempData, ThreeDTransformData);
-    // }
 
     public addToSystem() {
         addComponent(this, ThreeDTransformData);
