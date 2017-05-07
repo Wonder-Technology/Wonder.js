@@ -1,9 +1,13 @@
 import { Log } from "../../../utils/Log";
 import { CompileConfig } from "../../../config/CompileConfig";
 import { DirectorData } from "../../../core/DirectorData";
-import { getIsTest } from "../../../utils/MainUtils";
+import { MainData } from "../../../core/MainData";
 
 var _describeContext = null;
+
+var getIsTest = () => {
+    return MainData.isTest;
+}
 
 export function assert(cond: boolean, message: string = "contract error") {
     Log.error(!cond, message);
@@ -50,7 +54,7 @@ export function requireCheck(inFunc) {
             let value = descriptor.value;
 
             descriptor.value = function(args) {
-                if (getIsTest(DirectorData.state)) {
+                if (getIsTest()) {
                     inFunc.apply(this, arguments);
                 }
 
@@ -68,7 +72,7 @@ export function requireCheckFunc(checkFunc: Function, bodyFunc: Function) {
     }
 
     return (...paramArr) => {
-        if (!getIsTest(DirectorData.state)) {
+        if (!getIsTest()) {
             return bodyFunc.apply(null, paramArr);
         }
 
@@ -86,7 +90,7 @@ export function ensure(outFunc) {
             descriptor.value = function(args) {
                 var result = value.apply(this, arguments);
 
-                if (getIsTest(DirectorData.state)) {
+                if (getIsTest()) {
 
                     var params = [result];
 
@@ -111,7 +115,7 @@ export function ensureFunc(checkFunc: Function, bodyFunc: Function) {
     }
 
     return (...paramArr) => {
-        if (!getIsTest(DirectorData.state)) {
+        if (!getIsTest()) {
             return bodyFunc.apply(null, paramArr);
         }
 
@@ -130,7 +134,7 @@ export function requireGetterAndSetter(inGetterFunc, inSetterFunc) {
                 setter = descriptor.set;
 
             descriptor.get = function() {
-                if (getIsTest(DirectorData.state)) {
+                if (getIsTest()) {
                     inGetterFunc.call(this);
                 }
 
@@ -138,7 +142,7 @@ export function requireGetterAndSetter(inGetterFunc, inSetterFunc) {
             };
 
             descriptor.set = function(val) {
-                if (getIsTest(DirectorData.state)) {
+                if (getIsTest()) {
                     inSetterFunc.call(this, val);
                 }
 
@@ -156,7 +160,7 @@ export function requireGetter(inFunc) {
             let getter = descriptor.get;
 
             descriptor.get = function() {
-                if (getIsTest(DirectorData.state)) {
+                if (getIsTest()) {
                     inFunc.call(this);
                 }
 
@@ -175,7 +179,7 @@ export function requireSetter(inFunc) {
             let setter = descriptor.set;
 
             descriptor.set = function(val) {
-                if (getIsTest(DirectorData.state)) {
+                if (getIsTest()) {
                     inFunc.call(this, val);
                 }
 
@@ -196,7 +200,7 @@ export function ensureGetterAndSetter(outGetterFunc, outSetterFunc) {
             descriptor.get = function() {
                 var result = getter.call(this);
 
-                if (getIsTest(DirectorData.state)) {
+                if (getIsTest()) {
                     outGetterFunc.call(this, result);
                 }
 
@@ -206,7 +210,7 @@ export function ensureGetterAndSetter(outGetterFunc, outSetterFunc) {
             descriptor.set = function(val) {
                 var result = setter.call(this, val);
 
-                if (getIsTest(DirectorData.state)) {
+                if (getIsTest()) {
                     let params = [result, val];
                     outSetterFunc.apply(this, params);
                 }
@@ -225,7 +229,7 @@ export function ensureGetter(outFunc) {
             descriptor.get = function() {
                 var result = getter.call(this);
 
-                if (getIsTest(DirectorData.state)) {
+                if (getIsTest()) {
                     outFunc.call(this, result);
                 }
 
@@ -245,7 +249,7 @@ export function ensureSetter(outFunc) {
             descriptor.set = function(val) {
                 var result = setter.call(this, val);
 
-                if (getIsTest(DirectorData.state)) {
+                if (getIsTest()) {
                     let params = [result, val];
                     outFunc.apply(this, params);
                 }
@@ -259,7 +263,7 @@ export function ensureSetter(outFunc) {
 export function invariant(func) {
     return function(target) {
         if (CompileConfig.isCompileTest) {
-            if (getIsTest(DirectorData.state)) {
+            if (getIsTest()) {
                 func(target);
             }
         }

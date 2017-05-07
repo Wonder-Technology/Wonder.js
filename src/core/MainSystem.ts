@@ -11,12 +11,17 @@ import { expect } from "wonder-expect.js";
 import { fromJS, Map } from "immutable";
 import { detect } from "../device/GPUDetectorSystem";
 import { trace } from "../utils/debugUtils";
-import { getIsTest as getIsTestInUtils } from "../utils/MainUtils";
+import { MainData } from "./MainData";
+// import { getIsTest as getIsTestInUtils } from "../utils/MainUtils";
 
-export var getIsTest = getIsTestInUtils;
+export var getIsTest = (MainData:any) => {
+    return MainData.isTest;
+}
 
-export var setIsTest = (isTest: boolean, state: Map<any, any>) => {
-    return state.setIn(["Main", "isTest"], isTest);
+export var setIsTest = (isTest: boolean, MainData:any) => {
+    return IO.of(() => {
+        MainData.isTest = isTest;
+    });
 }
 
 export var setLibIsTest = (isTest: boolean) => {
@@ -29,7 +34,7 @@ export var getScreenSize = (state: Map<any, any>) => {
     return state.getIn(["Main", "screenSize"]);
 }
 
-export var setConfig = (closeContractTest: boolean, {
+export var setConfig = (closeContractTest: boolean, MainData:any, {
     canvasId = "",
     isTest = DebugConfig.isTest,
     screenSize = EScreenSize.FULL,
@@ -57,9 +62,10 @@ export var setConfig = (closeContractTest: boolean, {
             setLibIsTest(isTest).run();
         }
 
+        setIsTest(_isTest, MainData).run();
+
         return fromJS({
             Main: {
-                isTest: _isTest,
                 screenSize: screenSize
             },
             config: {
