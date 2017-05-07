@@ -53,13 +53,13 @@
 ////                box.transform.position = pos.add(wd.Vector3.create(10,0,0));
 ////            }
 //        }
-        for(var i = 1, len = 10; i < len; i++){
-            var box = boxes[i];
-
-//            for(var j = 0; j < 5; j++){
-                box.transform.parent = boxes[i - 1].transform;
-//            }
-        }
+//        for(var i = 1, len = 10; i < len; i++){
+//            var box = boxes[i];
+//
+////            for(var j = 0; j < 5; j++){
+//                box.transform.parent = boxes[i - 1].transform;
+////            }
+//        }
 //
 //        for(var i = 11, len = boxes.length - 1; i < len; i++){
 ////                for(var i = 1, len = 3; i < len; i++){
@@ -83,36 +83,48 @@
 //                box.transform.parent = boxes[getRandomParentIndex(10)].transform;
 //            }
 
+            var batchTransformDatas = [];
+
             for(var i = 0, len = boxes.length - 1; i < len; i++){
-//                for(var i = 1, len = 3; i < len; i++){
                 var box = boxes[i];
                 var pos = box.transform.position;
                 var localPos = box.transform.localPosition;
 
-//                box.transform.parent = boxes[getRandomParentIndex(10)].transform;
+                var uid = box.transform.uid;
+                var data = {uid:uid};
 
                 if(pos.x >= 500){
-//                    box.transform.parent = boxes[i + 1].transform;
-//                    box.transform.parent = boxes[getRandomParentIndex()].transform;
-//                    box.transform.localPosition = wd.Vector3.create(100,localPos.y,localPos.z);
-                    box.transform.localPosition = wd.Vector3.create(100,localPos.y,localPos.z);
+                    data.localPosition = wd.Vector3.create(100,localPos.y,localPos.z);
                 }
                 else if(pos.x < 500){
-//                    box.transform.parent = boxes[i - 1].transform;
-                    box.transform.position = pos.add(wd.Vector3.create(10,0,0));
+                    data.position = pos.add(wd.Vector3.create(10,0,0));
                 }
+
+                batchTransformDatas.push(data);
             }
+
+            wd.ThreeDTransform.setBatchTransformDatas(batchTransformDatas);
+            wd.ThreeDTransform.setBatchTransformDatas(batchTransformDatas);
+            wd.ThreeDTransform.setBatchTransformDatas(batchTransformDatas);
+            wd.ThreeDTransform.setBatchTransformDatas(batchTransformDatas);
+            wd.ThreeDTransform.setBatchTransformDatas(batchTransformDatas);
+            wd.ThreeDTransform.setBatchTransformDatas(batchTransformDatas);
+            wd.ThreeDTransform.setBatchTransformDatas(batchTransformDatas);
+            wd.ThreeDTransform.setBatchTransformDatas(batchTransformDatas);
+            wd.ThreeDTransform.setBatchTransformDatas(batchTransformDatas);
+            wd.ThreeDTransform.setBatchTransformDatas(batchTransformDatas);
+            wd.ThreeDTransform.setBatchTransformDatas(batchTransformDatas);
         }, 30)
 
 
-        setInterval(function(){
-            for(var i = 11, len = boxes.length - 1; i < len; i++){
-//                for(var i = 1, len = 3; i < len; i++){
-                var box = boxes[i];
-
-                box.transform.parent = boxes[getRandomParentIndex(10)].transform;
-            }
-        }, 300)
+//        setInterval(function(){
+//            for(var i = 11, len = boxes.length - 1; i < len; i++){
+////                for(var i = 1, len = 3; i < len; i++){
+//                var box = boxes[i];
+//
+//                box.transform.parent = boxes[getRandomParentIndex(10)].transform;
+//            }
+//        }, 300)
 
 
         director.start();

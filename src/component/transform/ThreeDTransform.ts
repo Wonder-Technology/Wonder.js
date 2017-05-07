@@ -8,7 +8,9 @@ import { Quaternion } from "../../math/Quaternion";
 import { ThreeDTransformData } from "./ThreeDTransformData";
 import {
     createIndexInArrayBuffer,
-    getLocalPosition, getLocalToWorldMatrix, getPosition, init, initData, setLocalPosition, setParent,
+    getLocalPosition, getLocalToWorldMatrix, getPosition, init, initData, setBatchDatas,
+    setLocalPosition,
+    setParent,
     setPosition
 } from "./ThreeDTransformSystem";
 import { addComponent, getParent, disposeComponent } from "./ThreeDTransformSystem";
@@ -32,6 +34,10 @@ export class ThreeDTransform extends Transform {
         obj.initWhenCreate();
 
         return obj;
+    }
+
+    public static setBatchTransformDatas(batchData:Array<BatchTransformData>) {
+        setBatchDatas(batchData, GlobalTempData, ThreeDTransformData);
     }
 
     // public selfLocalToWorldMatrix:Matrix4 = Matrix4.create();
@@ -285,6 +291,10 @@ export class ThreeDTransform extends Transform {
     public tempLocalPosition: Vector3 = Vector3.create();
     public isTranslate:boolean = false;
 
+    // public setBatchPositions(batchData:Array<BatchPositionData>){
+    //     setBatchPositions(batchData, GlobalTempData, ThreeDTransformData);
+    // }
+
     public addToSystem() {
         addComponent(this, ThreeDTransformData);
     }
@@ -523,6 +533,12 @@ export class ThreeDTransform extends Transform {
     //
     //     EventManager.trigger(this.entityObject, CustomEvent.create(eventName));
     // }
+}
+
+export interface BatchTransformData{
+    uid:number;
+    position:Vector3;
+    localPosition:Vector3;
 }
 
 initData(GlobalTempData, ThreeDTransformData);

@@ -4,7 +4,7 @@ import curry from "wonder-lodash/curry";
 import forEach from "wonder-lodash/forEach";
 import filter from "wonder-lodash/filter";
 import { ensureFunc, it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
-import { ThreeDTransform } from "./ThreeDTransform";
+import { BatchTransformData, ThreeDTransform } from "./ThreeDTransform";
 import { Map } from "immutable";
 import { expect } from "wonder-expect.js";
 import { DataUtils } from "../../utils/DataUtils";
@@ -21,6 +21,11 @@ export var init = (GlobalTempData: any, ThreeDTransformData: any, state: Map<any
 var _getTransformIndexInArrayBufferTable = (transform: ThreeDTransform, ThreeDTransformData: any) => {
     return ThreeDTransformData.transformIndexInArrayBufferTable[transform.uid];
 }
+
+var _getTransformIndexInArrayBufferTableByUid = (uid:number, ThreeDTransformData: any) => {
+    return ThreeDTransformData.transformIndexInArrayBufferTable[uid];
+}
+
 
 var _setTransformIndexInArrayBufferTable = (transform: ThreeDTransform, indexInArrayBuffer: number, ThreeDTransformData: any) => {
     ThreeDTransformData.transformIndexInArrayBufferTable[transform.uid] = indexInArrayBuffer;
@@ -165,8 +170,17 @@ var _createEmptyRelationItem = (indexInArrayBuffer: number) => {
 
 
 var _markIsTranslate = (transform: ThreeDTransform, isTranslate:boolean) => {
+    if(!transform){
+        return;
+    }
     transform.isTranslate = isTranslate;
 }
+// var _markIsTranslate2 = (uid:number, isTranslate:boolean) => {
+//     // if(!transform){
+//     //     return;
+//     // }
+//     ThreeDTransformData.isTranslateTable[uid] = isTranslate;
+// }
 //
 // var _getLocalToWorldMatrixCache = (transform: ThreeDTransform) => {
 //     return transform.localToWorldMatrixCache;
@@ -222,22 +236,118 @@ export var getPosition = cacheFunc((transform: ThreeDTransform, ThreeTransformDa
     return transform.tempPosition.set(localToWorldMatrices[index + 12], localToWorldMatrices[index + 13], localToWorldMatrices[index + 14]);
 })
 
-export var setPosition = (transform: ThreeDTransform, position: Vector3, GlobalTempData: any, ThreeTransformData: any) => {
-    var indexInArrayBuffer = _getTransformIndexInArrayBufferTable(transform, ThreeTransformData),
-        parent: ThreeDTransformRelationData = _getRelationData(ThreeDTransformData.relations[indexInArrayBuffer], "parent"),
-        vec3IndexInArrayBuffer = _getVector3DataIndexInArrayBuffer(_getTransformIndexInArrayBufferTable(transform, ThreeTransformData));
-
+var _setPositionData = (indexInArrayBuffer:number, parent:ThreeDTransformRelationData, vec3IndexInArrayBuffer:number, position: Vector3, GlobalTempData: any, ThreeTransformData: any) => {
     if (_isRelationDataExist(parent)) {
         DataUtils.setVectors(ThreeDTransformData.localPositions, getLocalToWorldMatrix(ThreeDTransformData.transforms[parent.indexInArrayBuffer], ThreeTransformData, GlobalTempData.matrix4_1).invert().multiplyPoint(position), vec3IndexInArrayBuffer);
     }
     else {
         DataUtils.setVectors(ThreeDTransformData.localPositions, position, vec3IndexInArrayBuffer);
     }
+}
+
+export var setPosition = (transform: ThreeDTransform, position: Vector3, GlobalTempData: any, ThreeTransformData: any) => {
+    var indexInArrayBuffer = _getTransformIndexInArrayBufferTable(transform, ThreeTransformData),
+        parent: ThreeDTransformRelationData = _getRelationData(ThreeDTransformData.relations[indexInArrayBuffer], "parent"),
+        vec3IndexInArrayBuffer = _getVector3DataIndexInArrayBuffer(indexInArrayBuffer);
+
+    _setPositionData(indexInArrayBuffer, parent, vec3IndexInArrayBuffer, position, GlobalTempData, ThreeTransformData);
 
     _markIsTranslate(transform, true);
 
     return _addItAndItsChildrenToDirtyList(indexInArrayBuffer, ThreeTransformData);
 }
+
+var _setBatchTransformData = curry((batchData:Array<BatchTransformData>, GlobalTempData: any, ThreeTransformData: any) => {
+    for(let data of batchData) {
+        let indexInArrayBuffer = ThreeDTransformData.transformIndexInArrayBufferTable[data.uid],
+            parent: ThreeDTransformRelationData = _getRelationData(ThreeDTransformData.relations[indexInArrayBuffer], "parent"),
+            vec3IndexInArrayBuffer = _getVector3DataIndexInArrayBuffer(indexInArrayBuffer),
+            {position, localPosition} = data;
+
+        if(localPosition){
+            _setLocalPositionData(localPosition, vec3IndexInArrayBuffer, ThreeTransformData);
+        }
+
+        if(position){
+            _setPositionData(indexInArrayBuffer, parent, vec3IndexInArrayBuffer, position, GlobalTempData, ThreeTransformData);
+        }
+    }
+
+    return ThreeTransformData;
+})
+
+var _getAllTransfomrsNotDirtyIndexArr = curry((batchData:Array<BatchTransformData>, ThreeTransformData:any) => {
+    var notDirtyIndexArr = [];
+    var _getNotDirtyIndex = (indexInArrayBuffer, notDirtyIndexArr, ThreeDTransformData) => {
+        var relationData = _getOrSetRelationItem(indexInArrayBuffer, ThreeDTransformData.relations);
+
+        if (_isNotDirty(indexInArrayBuffer, ThreeDTransformData.firstDirtyIndex)) {
+            notDirtyIndexArr.push(indexInArrayBuffer);
+        }
+
+        forEach(relationData.children, (child: ThreeDTransformRelationData) => {
+            _getNotDirtyIndex(child.indexInArrayBuffer, notDirtyIndexArr, ThreeDTransformData)
+        })
+    }
+
+    for(let data of batchData){
+        let indexInArrayBuffer = _getTransformIndexInArrayBufferTableByUid(data.uid, ThreeDTransformData);
+
+        _getNotDirtyIndex(indexInArrayBuffer, notDirtyIndexArr, ThreeDTransformData);
+    }
+
+    return notDirtyIndexArr;
+});
+
+var _addBatchToDirtyListByChangeTypeArrData = curry((ThreeTransformData: any, notDirtyIndexArr:Array<number>) => {
+    var targetDirtyIndex = ThreeDTransformData.firstDirtyIndex;
+
+    for(let indexInArrayBuffer of notDirtyIndexArr){
+        targetDirtyIndex = _minusFirstDirtyIndex(targetDirtyIndex);
+
+        if (_isIndexUsed(targetDirtyIndex, ThreeDTransformData)) {
+            _swapTypeArrData(indexInArrayBuffer, targetDirtyIndex, ThreeDTransformData);
+        }
+        else {
+            _moveTypeArrDataToIndex(indexInArrayBuffer, targetDirtyIndex, ThreeDTransformData);
+        }
+    }
+
+    return notDirtyIndexArr;
+})
+
+
+var _addBatchToDirtyListByChangeReferenceData = curry((ThreeTransformData: any, notDirtyIndexArr:Array<number>) => {
+    var targetDirtyIndex = ThreeDTransformData.firstDirtyIndex;
+
+    for(let indexInArrayBuffer of notDirtyIndexArr){
+        _markIsTranslate(ThreeTransformData.transforms[indexInArrayBuffer], true);
+
+        targetDirtyIndex = _minusFirstDirtyIndex(targetDirtyIndex);
+
+        if (_isIndexUsed(targetDirtyIndex, ThreeDTransformData)) {
+            _swapReferenceData(indexInArrayBuffer, targetDirtyIndex, ThreeDTransformData);
+        }
+        else {
+            _moveReferenceDataToIndex(indexInArrayBuffer, targetDirtyIndex, ThreeDTransformData);
+        }
+    }
+
+    return targetDirtyIndex;
+})
+
+export var setBatchDatas = (batchData:Array<BatchTransformData>, GlobalTempData: any, ThreeTransformData: any) => {
+    compose(
+        (targetDirtyIndex:number) => {
+            ThreeDTransformData.firstDirtyIndex = targetDirtyIndex
+        },
+        _addBatchToDirtyListByChangeReferenceData(ThreeTransformData),
+        _addBatchToDirtyListByChangeTypeArrData(ThreeTransformData),
+        _getAllTransfomrsNotDirtyIndexArr(batchData),
+        _setBatchTransformData(batchData, GlobalTempData)
+    )(ThreeTransformData);
+}
+
 
 export var getLocalPosition =
     cacheFunc((transform: ThreeDTransform, ThreeTransformData: any) => {
@@ -254,7 +364,7 @@ export var setLocalPosition = (transform: ThreeDTransform, position: Vector3, Th
     var indexInArrayBuffer = _getTransformIndexInArrayBufferTable(transform, ThreeTransformData),
         vec3IndexInArrayBuffer = _getVector3DataIndexInArrayBuffer(indexInArrayBuffer);
 
-    DataUtils.setVectors(ThreeDTransformData.localPositions, position, vec3IndexInArrayBuffer);
+    _setLocalPositionData(position, vec3IndexInArrayBuffer, ThreeTransformData);
 
     _markIsTranslate(transform, true);
 
@@ -274,14 +384,17 @@ var _clearCache = curry((ThreeDTransformData: any, state: Map<any, any>) => {
         transforms = ThreeDTransformData.transforms;
 
     for (let i = ThreeDTransformData.firstDirtyIndex; i < count; i++) {
-        let transform = transforms[i];
+        let transform = transforms[i],
+            isTranslate = transform.isTranslate;
 
-        if(transform.isTranslate){
+
+        if(isTranslate){
             transform.localToWorldMatrixCache = null;
             transform.positionCache = null;
             transform.localPositionCache = null;
 
             transform.isTranslate = false;
+            // ThreeDTransformData.isTranslateTable[transform.uid] = false;
         }
 
         //todo clean more cache!
@@ -351,9 +464,9 @@ var _addToDirtyList = requireCheckFunc((indexInArrayBuffer: number, ThreeDTransf
     else {
         _moveToIndex(indexInArrayBuffer, targetDirtyIndex, ThreeDTransformData);
 
-    // if (_isIndexCollectedToNotUsed(targetDirtyIndex, ThreeDTransformData)) {
-    //     ThreeDTransformData.notUsedIndexArray = _removeIndexInNotUsedArr(targetDirtyIndex, ThreeDTransformData);
-    // }
+        // if (_isIndexCollectedToNotUsed(targetDirtyIndex, ThreeDTransformData)) {
+        //     ThreeDTransformData.notUsedIndexArray = _removeIndexInNotUsedArr(targetDirtyIndex, ThreeDTransformData);
+        // }
     }
 
     return targetDirtyIndex;
@@ -364,27 +477,37 @@ var _addToDirtyList = requireCheckFunc((indexInArrayBuffer: number, ThreeDTransf
 
 var _getNotUsedIndexFromArr = (ThreeDTransformData:any) => {
     var notUsedIndexArray = ThreeDTransformData.notUsedIndexArray;
-    var getFunc = (i:number) => {
-        if(!_isValidArrayValue(i)){
-            return void 0;
-        }
+    // var getFunc = (i:number) => {
+    //     if(i === null || i === void 0){
+    //         console.log(i)
+    //         return void 0;
+    //     }
+    //     // if(!_isValidArrayValue(i)){
+    //     //     return void 0;
+    //     // }
+    //
+    //     if(_isIndexUsed(i, ThreeDTransformData)){
+    //         return getFunc(_getNotUsedIndex(notUsedIndexArray));
+    //     }
+    //
+    //     return i;
+    // }
+    //
+    // return getFunc(_getNotUsedIndex(notUsedIndexArray));
 
-        if(_isIndexUsed(i, ThreeDTransformData)){
-            return getFunc(_getNotUsedIndex(notUsedIndexArray));
-        }
+    var i = null;
 
-        return i;
+    do{
+        i = _getNotUsedIndex(notUsedIndexArray);
     }
+    while(_isValidArrayValue(i) && _isIndexUsed(i, ThreeDTransformData))
 
-    /*!
-
-     */
-    return getFunc(_getNotUsedIndex(notUsedIndexArray));
+    return i;
 }
 
 var _getNotUsedIndex = (notUsedIndexArray: Array<number>) => {
     /*!
-    optimize: return the first one to ensure that the result index be as much remote from firDirtyIndex as possible(so that it can reduce swap when add to dirty list)
+     optimize: return the first one to ensure that the result index be as much remote from firDirtyIndex as possible(so that it can reduce swap when add to dirty list)
      */
     return notUsedIndexArray.shift();
 };
@@ -486,10 +609,43 @@ var _swapRelationItemIndex = (relationDataArr: Array<ThreeDTransformRelationData
 }
 
 var _swap = requireCheckFunc((index1: number, index2: number, ThreeDTransformData: any) => {
-   it("source index and target index should be used", () => {
-       expect(_isIndexUsed(index1, ThreeDTransformData)).true;
-       expect(_isIndexUsed(index2, ThreeDTransformData)).true;
-   });
+    it("source index and target index should be used", () => {
+        expect(_isIndexUsed(index1, ThreeDTransformData)).true;
+        expect(_isIndexUsed(index2, ThreeDTransformData)).true;
+    });
+}, (index1: number, index2: number, ThreeDTransformData: any) => {
+    _swapTypeArrData(index1, index2, ThreeDTransformData);
+    _swapReferenceData(index1, index2, ThreeDTransformData);
+
+    return ThreeDTransformData;
+})
+
+
+var _swapReferenceData = requireCheckFunc((index1: number, index2: number, ThreeDTransformData: any) => {
+    it("source index and target index should be used", () => {
+        expect(_isIndexUsed(index1, ThreeDTransformData)).true;
+        expect(_isIndexUsed(index2, ThreeDTransformData)).true;
+    });
+}, (index1: number, index2: number, ThreeDTransformData: any) => {
+    if (index1 === index2) {
+        return ThreeDTransformData;
+    }
+
+    _setTransformIndexInArrayBufferTable(ThreeDTransformData.transforms[index1], index2, ThreeDTransformData);
+    _setTransformIndexInArrayBufferTable(ThreeDTransformData.transforms[index2], index1, ThreeDTransformData);
+
+    _swapIndexInRelationItemArr(index1, index2, ThreeDTransformData.relations);
+
+    DataUtils.swap(ThreeDTransformData.transforms, index1, index2, 1);
+
+    return ThreeDTransformData;
+})
+
+var _swapTypeArrData = requireCheckFunc((index1: number, index2: number, ThreeDTransformData: any) => {
+    it("source index and target index should be used", () => {
+        expect(_isIndexUsed(index1, ThreeDTransformData)).true;
+        expect(_isIndexUsed(index2, ThreeDTransformData)).true;
+    });
 }, (index1: number, index2: number, ThreeDTransformData: any) => {
     if (index1 === index2) {
         return ThreeDTransformData;
@@ -505,25 +661,6 @@ var _swap = requireCheckFunc((index1: number, index2: number, ThreeDTransformDat
         quaTargetIndex = _getQuaternionDataIndexInArrayBuffer(index2),
         quaSize = _getQuaternionDataSize();
 
-    _setTransformIndexInArrayBufferTable(ThreeDTransformData.transforms[index1], index2, ThreeDTransformData);
-    _setTransformIndexInArrayBufferTable(ThreeDTransformData.transforms[index2], index1, ThreeDTransformData);
-
-    // compose(
-    //     chain(_setTransformIndexInArrayBufferTable(ThreeDTransformData.transforms[index2], index1)),
-    //     _setTransformIndexInArrayBufferTable(ThreeDTransformData.transforms[index1], index2)
-    // )(ThreeDTransformData);
-
-    // forEach([
-    //     _swapIndexInRelationItemArr(index1, index2, ThreeDTransformData.parents),
-    //     _swapIndexInRelationItemArr(index1, index2, ThreeDTransformData.firstChildren),
-    //     _swapIndexInRelationItemArr(index1, index2, ThreeDTransformData.nextSiblings)
-    // ], (io:IO) => {
-    //     io;
-    // });
-    _swapIndexInRelationItemArr(index1, index2, ThreeDTransformData.relations);
-
-    DataUtils.swap(ThreeDTransformData.transforms, index1, index2, 1);
-
     DataUtils.swap(ThreeDTransformData.localToWorldMatrices, mat4SourceIndex, mat4TargetIndex, mat4Size);
     DataUtils.swap(ThreeDTransformData.localPositions, vec3SourceIndex, vec3TargetIndex, vec3Size);
     DataUtils.swap(ThreeDTransformData.localRotations, quaSourceIndex, quaTargetIndex, quaSize);
@@ -531,6 +668,7 @@ var _swap = requireCheckFunc((index1: number, index2: number, ThreeDTransformDat
 
     return ThreeDTransformData;
 })
+
 
 // var _resetIndexInTypeArr = (dataArr: Uint16Array, index: number) => {
 //     return IO.of(() => {
@@ -589,6 +727,54 @@ var _moveToIndex = ensureFunc((returnVal, sourceIndex: number, targetIndex: numb
         expect(_isIndexUsed(targetIndex, ThreeDTransformData)).false;
     });
 },(sourceIndex: number, targetIndex: number, ThreeDTransformData: any) => {
+    _moveTypeArrDataToIndex(sourceIndex, targetIndex, ThreeDTransformData);
+    _moveReferenceDataToIndex(sourceIndex, targetIndex, ThreeDTransformData);
+
+    return ThreeDTransformData;
+}))
+
+
+var _moveReferenceDataToIndex = ensureFunc((returnVal, sourceIndex: number, targetIndex: number, ThreeDTransformData: any) => {
+    it("source index should not be used", () => {
+        expect(_isIndexUsed(sourceIndex, ThreeDTransformData)).false;
+    });
+}, requireCheckFunc((sourceIndex: number, targetIndex: number, ThreeDTransformData: any) => {
+    it("source index should be used", () => {
+        expect(_isIndexUsed(sourceIndex, ThreeDTransformData)).true;
+    });
+    it("target index should not be used", () => {
+        expect(_isIndexUsed(targetIndex, ThreeDTransformData)).false;
+    });
+},(sourceIndex: number, targetIndex: number, ThreeDTransformData: any) => {
+    if(sourceIndex === targetIndex){
+        return ThreeDTransformData;
+    }
+
+    _setTransformIndexInArrayBufferTable(ThreeDTransformData.transforms[sourceIndex], targetIndex, ThreeDTransformData);
+    _moveToArr(ThreeDTransformData.transforms, sourceIndex, targetIndex, 1)
+
+    if (_isRelationItemExist(ThreeDTransformData.relations[sourceIndex])) {
+        _moveRelationItemTo(sourceIndex, targetIndex, ThreeDTransformData);
+    }
+
+    _addNotUsedIndex(sourceIndex, ThreeDTransformData.notUsedIndexArray);
+
+    return ThreeDTransformData;
+}))
+
+
+var _moveTypeArrDataToIndex = ensureFunc((returnVal, sourceIndex: number, targetIndex: number, ThreeDTransformData: any) => {
+    it("source index should not be used", () => {
+        expect(_isIndexUsed(sourceIndex, ThreeDTransformData)).false;
+    });
+}, requireCheckFunc((sourceIndex: number, targetIndex: number, ThreeDTransformData: any) => {
+    it("source index should be used", () => {
+        expect(_isIndexUsed(sourceIndex, ThreeDTransformData)).true;
+    });
+    it("target index should not be used", () => {
+        expect(_isIndexUsed(targetIndex, ThreeDTransformData)).false;
+    });
+},(sourceIndex: number, targetIndex: number, ThreeDTransformData: any) => {
     if(sourceIndex === targetIndex){
         return ThreeDTransformData;
     }
@@ -603,37 +789,19 @@ var _moveToIndex = ensureFunc((returnVal, sourceIndex: number, targetIndex: numb
         quaTargetIndex = _getQuaternionDataIndexInArrayBuffer(targetIndex),
         quaSize = _getQuaternionDataSize();
 
-    _setTransformIndexInArrayBufferTable(ThreeDTransformData.transforms[sourceIndex], targetIndex, ThreeDTransformData);
-
-    _moveToArr(ThreeDTransformData.transforms, sourceIndex, targetIndex, 1)
     _moveToTypeArr(ThreeDTransformData.localToWorldMatrices, mat4SourceIndex, mat4TargetIndex, mat4Size)
     _moveToTypeArr(ThreeDTransformData.localPositions, vec3SourceIndex, vec3TargetIndex, vec3Size)
     _moveToTypeArr(ThreeDTransformData.localRotations, quaSourceIndex, quaTargetIndex, quaSize)
     _moveToTypeArr(ThreeDTransformData.localScales, vec3SourceIndex, vec3TargetIndex, vec3Size)
 
-
-
-    // compose(
-    //     chain(moveTo(ThreeDTransformData.localScales, vec3SourceIndex, vec3TargetIndex, vec3Size, _resetFloatValInTypeArr)),
-    //     chain(moveTo(ThreeDTransformData.localRotations, quaSourceIndex, quaTargetIndex, quaSize, _resetFloatValInTypeArr)),
-    //     chain(moveTo(ThreeDTransformData.localPositions, vec3SourceIndex, vec3TargetIndex, vec3Size, _resetFloatValInTypeArr)),
-    //     chain(moveTo(ThreeDTransformData.localToWorldMatrices, mat4SourceIndex, mat4TargetIndex, mat4Size, _resetFloatValInTypeArr)),
-    //     moveTo(ThreeDTransformData.transforms, sourceIndex, targetIndex, 1, _resetValInArr)
-    //     // _setTransformIndexInArrayBufferTable(ThreeDTransformData.transforms[sourceIndex], targetIndex)
-    // )(ThreeDTransformData);
-
-    if (_isRelationItemExist(ThreeDTransformData.relations[sourceIndex])) {
-        _moveRelationItemTo(sourceIndex, targetIndex, ThreeDTransformData);
-    }
-
-    _addNotUsedIndex(sourceIndex, ThreeDTransformData.notUsedIndexArray);
-
     return ThreeDTransformData;
 }))
+
 
 var _transform = (index: number, GlobalTempData: any, ThreeDTransformData: any) => {
     var vec3Index = _getVector3DataIndexInArrayBuffer(index),
         quaIndex = _getQuaternionDataIndexInArrayBuffer(index),
+        mat4Index = _getMatrix4DataIndexInArrayBuffer(index),
         mat = GlobalTempData.matrix4_2.setTRS(
             DataUtils.setVector3ByIndex(GlobalTempData.vector3_1, ThreeDTransformData.localPositions, vec3Index),
             DataUtils.setQuaternionByIndex(GlobalTempData.quaternion_1, ThreeDTransformData.localRotations, quaIndex),
@@ -646,14 +814,14 @@ var _transform = (index: number, GlobalTempData: any, ThreeDTransformData: any) 
 
         return _setLocalToWorldMatricesData(DataUtils.setMatrix4ByIndex(GlobalTempData.matrix4_1, ThreeDTransformData.localToWorldMatrices, _getMatrix4DataIndexInArrayBuffer(parentIndex))
                 .multiply(mat),
-            index,
+            mat4Index,
             ThreeDTransformData
         );
     }
 
     return _setLocalToWorldMatricesData(
         mat,
-        index,
+        mat4Index,
         ThreeDTransformData
     );
 }
@@ -872,35 +1040,36 @@ var _getVector3DataIndexInArrayBuffer = (indexInArrayBuffer: number) => indexInA
 
 var _getQuaternionDataIndexInArrayBuffer = (indexInArrayBuffer: number) => indexInArrayBuffer * _getQuaternionDataSize();
 
-var _setLocalToWorldMatricesData = curry((mat: Matrix4, indexInArrayBuffer: number, ThreeDTransformData: any) => {
-    DataUtils.setMatrices(ThreeDTransformData.localToWorldMatrices, mat, _getMatrix4DataIndexInArrayBuffer(indexInArrayBuffer));
-})
+var _setLocalToWorldMatricesData = (mat: Matrix4, mat4IndexInArrayBuffer: number, ThreeDTransformData: any) => {
+    DataUtils.setMatrices(ThreeDTransformData.localToWorldMatrices, mat, mat4IndexInArrayBuffer);
+}
 
-var _setLocalPositionData = curry((pos: Vector3, indexInArrayBuffer: number, ThreeDTransformData: any) => {
-    DataUtils.setVectors(ThreeDTransformData.localPositions, pos, _getVector3DataIndexInArrayBuffer(indexInArrayBuffer));
-
-    return ThreeDTransformData;
-})
-
-var _setLocalRotationData = curry((qua: Quaternion, indexInArrayBuffer: number, ThreeDTransformData: any) => {
-    DataUtils.setQuaternions(ThreeDTransformData.localRotations, qua, _getQuaternionDataIndexInArrayBuffer(indexInArrayBuffer));
+var _setLocalPositionData = (position: Vector3, vec3IndexInArrayBuffer: number, ThreeDTransformData: any) => {
+    DataUtils.setVectors(ThreeDTransformData.localPositions, position, vec3IndexInArrayBuffer);
 
     return ThreeDTransformData;
-})
+}
 
-var _setLocalScaleData = curry((scale: Vector3, indexInArrayBuffer: number, ThreeDTransformData: any) => {
-    DataUtils.setVectors(ThreeDTransformData.localScales, scale, _getVector3DataIndexInArrayBuffer(indexInArrayBuffer));
+var _setLocalRotationData = (qua: Quaternion, quaIndexInArrayBuffer: number, ThreeDTransformData: any) => {
+    DataUtils.setQuaternions(ThreeDTransformData.localRotations, qua, quaIndexInArrayBuffer);
 
     return ThreeDTransformData;
-})
+}
+
+var _setLocalScaleData = (scale: Vector3, vec3IndexInArrayBuffer: number, ThreeDTransformData: any) => {
+    DataUtils.setVectors(ThreeDTransformData.localScales, scale, vec3IndexInArrayBuffer);
+
+    return ThreeDTransformData;
+}
 
 
-var _setTransformItemInTypeArr = (indexInArrayBuffer: number, mat: Matrix4, qua: Quaternion, positionVec: Vector3, scaleVec: Vector3, ThreeDTransformData: any) => compose(
-    _setLocalToWorldMatricesData(mat, indexInArrayBuffer),
-    _setLocalRotationData(qua, indexInArrayBuffer),
-    _setLocalPositionData(positionVec, indexInArrayBuffer),
-    _setLocalScaleData(scaleVec, indexInArrayBuffer)
-)(ThreeDTransformData);
+var _setTransformItemInTypeArr = (indexInArrayBuffer: number, mat: Matrix4, qua: Quaternion, positionVec: Vector3, scaleVec: Vector3, ThreeDTransformData: any) => {
+    _setLocalRotationData(qua, _getQuaternionDataIndexInArrayBuffer(indexInArrayBuffer), ThreeDTransformData);
+    _setLocalPositionData(positionVec, _getVector3DataIndexInArrayBuffer(indexInArrayBuffer), ThreeDTransformData);
+    _setLocalScaleData(scaleVec, _getVector3DataIndexInArrayBuffer(indexInArrayBuffer), ThreeDTransformData);
+
+    _setLocalToWorldMatricesData(mat, _getMatrix4DataIndexInArrayBuffer(indexInArrayBuffer), ThreeDTransformData);
+}
 
 
 
