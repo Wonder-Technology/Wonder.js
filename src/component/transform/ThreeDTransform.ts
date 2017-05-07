@@ -1,7 +1,6 @@
 import { registerClass } from "../../definition/typescript/decorator/registerClass";
 import { Transform } from "./Transform";
 // import { Matrix4 } from "../../math/Matrix4";
-import { cacheGetter } from "../../definition/typescript/decorator/cache";
 import { Vector3 } from "../../math/Vector3";
 // import { cloneAttributeAsCloneable, cloneAttributeAsBasicType } from "../../definition/typescript/decorator/clone";
 import { Quaternion } from "../../math/Quaternion";

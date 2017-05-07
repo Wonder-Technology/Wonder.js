@@ -38,8 +38,6 @@ export {empty,NULL,basic_materialColor_fragment,end_basic_fragment,common_define
 export {RectRegion} from "./structure/RectRegion";
 export {View} from "./structure/View";
 export {initThreeDTransform,DomQuery,fromArray,resetEntityUid} from "./test/forUnitTest";
-export {ArrayUtils} from "./utils/ArrayUtils";
-export {BufferUtils} from "./utils/BufferUtils";
 export {cacheFunc} from "./utils/cacheUtils";
 export {ClassUtils} from "./utils/ClassUtils";
 export {DataUtils} from "./utils/DataUtils";

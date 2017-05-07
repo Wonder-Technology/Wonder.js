@@ -142,16 +142,16 @@ export class Director {
         return resultState;
     }
 
-    private _render() {
-        this.scene.gameObjectScene.render(this.renderer);
-
-        this.renderer.clear();
-
-        if (this.renderer.hasCommand()) {
-            this.renderer.webglState = BasicState.create();
-            this.renderer.render();
-        }
-    }
+    // private _render() {
+    //     this.scene.gameObjectScene.render(this.renderer);
+    //
+    //     this.renderer.clear();
+    //
+    //     if (this.renderer.hasCommand()) {
+    //         this.renderer.webglState = BasicState.create();
+    //         this.renderer.render();
+    //     }
+    // }
 
     private _updateSystem(elapsed: number, state: Map<any, any>) {
         var resultState = updateTransform(elapsed, GlobalTempData, ThreeDTransformData, state);
