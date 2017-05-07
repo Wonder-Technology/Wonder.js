@@ -45,7 +45,7 @@ export class EntitySystem {
         this._freeIndiceQueue.push(index);
     }
 
-    public resetUid() {
+    public resetUid(){
         this._freeIndiceQueue.clear();
         this._generationArr = [];
     }

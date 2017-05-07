@@ -1,7 +1,9 @@
 import { registerClass } from "../definition/typescript/decorator/registerClass";
 import { singleton } from "../definition/typescript/decorator/singleton";
-import { DeviceManager } from "./DeviceManager";
+// import { DeviceManager } from "./DeviceManager";
 import { Log } from "../utils/Log";
+import { getGL } from "./DeviceManagerSystem";
+import { Map } from "immutable";
 
 @singleton()
 @registerClass("GPUDetector")
@@ -9,10 +11,6 @@ export class GPUDetector {
     public static getInstance(): any { }
 
     private constructor() { }
-
-    get gl() {
-        return DeviceManager.getInstance().gl;
-    }
 
     public maxTextureUnit: number = null;
     public maxTextureSize: number = null;
@@ -31,42 +29,44 @@ export class GPUDetector {
     private _isDetected: boolean = false;
 
     //todo test
-    public detect() {
+    public detect(state: Map<any, any>) {
         this._isDetected = true;
 
-        this._detectExtension();
-        this._detectCapabilty();
+        this._detectExtension(state);
+        this._detectCapabilty(state);
+
+        return state;
     }
 
-    private _detectExtension() {
-        this.extensionCompressedTextureS3TC = this._getExtension("WEBGL_compressed_texture_s3tc");
-        this.extensionTextureFilterAnisotropic = this._getExtension("EXT_texture_filter_anisotropic");
-        this.extensionInstancedArrays = this._getExtension("ANGLE_instanced_arrays");
-        this.extensionUintIndices = this._getExtension("element_index_uint");
-        this.extensionDepthTexture = this._getExtension("depth_texture");
-        this.extensionVAO = this._getExtension("vao");
-        this.extensionStandardDerivatives = this._getExtension("standard_derivatives");
+    private _detectExtension(state: Map<any, any>) {
+        this.extensionCompressedTextureS3TC = this._getExtension("WEBGL_compressed_texture_s3tc", state);
+        this.extensionTextureFilterAnisotropic = this._getExtension("EXT_texture_filter_anisotropic", state);
+        this.extensionInstancedArrays = this._getExtension("ANGLE_instanced_arrays", state);
+        this.extensionUintIndices = this._getExtension("element_index_uint", state);
+        this.extensionDepthTexture = this._getExtension("depth_texture", state);
+        this.extensionVAO = this._getExtension("vao", state);
+        this.extensionStandardDerivatives = this._getExtension("standard_derivatives", state);
     }
 
-    private _detectCapabilty() {
-        var gl = this.gl;
+    private _detectCapabilty(state: Map<any, any>) {
+        var gl = getGL(state);
 
         this.maxTextureUnit = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
         this.maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);
         this.maxCubemapTextureSize = gl.getParameter(gl.MAX_CUBE_MAP_TEXTURE_SIZE);
-        this.maxAnisotropy = this._getMaxAnisotropy();
+        this.maxAnisotropy = this._getMaxAnisotropy(state);
 
-        this.maxBoneCount = this._getMaxBoneCount();
+        this.maxBoneCount = this._getMaxBoneCount(state);
 
         //todo use map instead
         // alert("maxBoneCount:" + this.maxBoneCount);
 
-        this._detectPrecision();
+        this._detectPrecision(state);
     }
 
-    private _getExtension(name: string) {
+    private _getExtension(name: string, state: Map<any, any>) {
         var extension,
-            gl = this.gl;
+            gl = getGL(state);
 
         switch (name) {
             case "EXT_texture_filter_anisotropic":
@@ -101,8 +101,8 @@ export class GPUDetector {
         return extension;
     }
 
-    private _getMaxBoneCount() {
-        var gl = this.gl,
+    private _getMaxBoneCount(state: Map<any, any>) {
+        var gl = getGL(state),
             numUniforms: number = null,
             maxBoneCount: number = null;
 
@@ -124,15 +124,15 @@ export class GPUDetector {
         return Math.min(maxBoneCount, 128);
     }
 
-    private _getMaxAnisotropy() {
+    private _getMaxAnisotropy(state: Map<any, any>) {
         var extension = this.extensionTextureFilterAnisotropic,
-            gl = this.gl;
+            gl = getGL(state);
 
         return extension !== null ? gl.getParameter(extension.MAX_TEXTURE_MAX_ANISOTROPY_EXT) : 0;
     }
 
-    private _detectPrecision() {
-        var gl = this.gl;
+    private _detectPrecision(state: Map<any, any>) {
+        var gl = getGL(state);
 
         if (!gl.getShaderPrecisionFormat) {
             this.precision = EGPUPrecision.HIGHP;

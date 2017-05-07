@@ -6,7 +6,7 @@ export class Log extends Log$ {
 }
 
 
-export var error = (cond: boolean, ...messages): void => {
+export var error = (cond:boolean, ...messages): void => {
     if (cond) {
         /*!
          console.error will not interrupt, it will throw error and continue exec the left statements

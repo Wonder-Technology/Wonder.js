@@ -1,0 +1,18 @@
+import { ThreeDTransform } from "./ThreeDTransform";
+import { IO } from "wonder-fantasy-land/dist/commonjs/types/IO";
+import { Map } from "immutable";
+import { Matrix4 } from "../../math/Matrix4";
+import { Vector3 } from "../../math/Vector3";
+export declare var init: (GlobalTempData: any, ThreeDTransformData: any, state: Map<any, any>) => any;
+export declare var createIndexInArrayBuffer: (transform: ThreeDTransform, ThreeDTransformData: any) => IO;
+export declare var addComponent: (transform: ThreeDTransform, ThreeDTransformData: any) => any;
+export declare var disposeComponent: (transform: ThreeDTransform, GlobalTempData: any, ThreeDTransformData: any) => IO;
+export declare var getParent: Function;
+export declare var setParent: (transform: ThreeDTransform, parent: ThreeDTransform, ThreeDTransformData: any) => IO;
+export declare var getLocalToWorldMatrix: (transform: ThreeDTransform, ThreeTransformData: any) => Matrix4;
+export declare var getPosition: (transform: ThreeDTransform, ThreeTransformData: any) => Vector3;
+export declare var setPosition: (transform: ThreeDTransform, position: Vector3, GlobalTempData: any, ThreeTransformData: any) => IO;
+export declare var getLocalPosition: (transform: ThreeDTransform, ThreeTransformData: any) => Vector3;
+export declare var setLocalPosition: (transform: ThreeDTransform, position: Vector3, ThreeTransformData: any) => IO;
+export declare var update: (elapsed: number, GlobalTempData: any, ThreeDTransformData: any, state: Map<any, any>) => any;
+export declare var initData: (GlobalTempData: any, ThreeDTransformData: any) => IO;

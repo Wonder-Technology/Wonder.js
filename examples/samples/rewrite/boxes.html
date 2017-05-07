@@ -22,9 +22,8 @@
             var director = wd.Director.getInstance();
 
             var box = createBox();
-//            var box2 = box.clone();
-            var box2 = createBox();
-            box2.transform.position = wd.Vector3.create(20,0,0);
+            var box2 = box.clone();
+            box2.transform.translate(20,0,0)
 
             director.scene.addChildren([
                 box, box2
@@ -51,8 +50,7 @@
 
             gameObject.addComponent(wd.MeshRenderer.create());
 
-//            gameObject.transform.translate(-8, -8, 0);
-            gameObject.transform.position = wd.Vector3.create(-8, -8, 0);
+            gameObject.transform.translate(-8, -8, 0);
 
             return gameObject;
         }
@@ -71,8 +69,7 @@
 
             camera.addComponent(controller);
 
-//            camera.transform.translate(wd.Vector3.create(0, 0, 40));
-            camera.transform.position = wd.Vector3.create(0, 0, 40);
+            camera.transform.translate(wd.Vector3.create(0, 0, 40));
 
             return camera;
         }

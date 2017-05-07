@@ -10,7 +10,7 @@ import { DataOrientedComponent } from "../DataOrientedComponent";
 // import { Map } from "immutable";
 
 export abstract class Transform extends DataOrientedComponent {
-    public abstract parent: Transform;
+    public abstract parent:Transform;
 
     // public selfParent: Transform = null;
     // // protected p_parent: Transform = null;

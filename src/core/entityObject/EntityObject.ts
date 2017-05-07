@@ -1,19 +1,19 @@
 import { Entity } from "../Entity";
-import { cloneAttributeAsBasicType, CloneUtils } from "../../definition/typescript/decorator/clone";
+// import { cloneAttributeAsBasicType, CloneUtils } from "../../definition/typescript/decorator/clone";
 import { Hash } from "wonder-commonlib/dist/es2015/Hash";
 import { Collection } from "wonder-commonlib/dist/es2015/Collection";
-import { CustomEventRegisterData } from "../../event/binder/CustomEventRegister";
-import { ComponentManager } from "./manager/ComponentManager";
+// import { CustomEventRegisterData } from "../../event/binder/CustomEventRegister";
+// import { ComponentManager } from "./manager/ComponentManager";
 // import { IDisposable } from "wonder-frp/dist/es2015/Disposable/IDisposable";
 import { EntityObjectManager } from "./manager/EntityObjectManager";
 import { virtual } from "../../definition/typescript/decorator/virtual";
 // import { ExtendUtils } from "wonder-commonlib/dist/es2015/utils/ExtendUtils";
-import { Component } from "../Component";
-import { Geometry } from "../../component/geometry/Geometry";
+// import { Component } from "../Component";
+// import { Geometry } from "../../component/geometry/Geometry";
 // import { EventManager } from "../../event/EventManager";
-import { cache } from "../../definition/typescript/decorator/cache";
-import { Renderer } from "../../renderer/renderer/Renderer";
-import { GameObject } from "./gameObject/GameObject";
+// import { cache } from "../../definition/typescript/decorator/cache";
+// import { Renderer } from "../../renderer/renderer/Renderer";
+// import { GameObject } from "./gameObject/GameObject";
 import { Transform } from "../../component/transform/Transform";
 import { ensure, it, requireCheck } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
@@ -28,20 +28,20 @@ import { addComponent, hasComponent } from "./EntityObjectSystem";
 
 @registerClass("EntityObject")
 export abstract class EntityObject extends Entity {
-    private _bubbleParent: EntityObject = null;
-    @cloneAttributeAsBasicType()
-    get bubbleParent() {
-        return this._bubbleParent ? this._bubbleParent : this.parent;
-    }
-    set bubbleParent(bubbleParent: EntityObject) {
-        this._bubbleParent = bubbleParent;
-    }
+    // private _bubbleParent: EntityObject = null;
+    // @cloneAttributeAsBasicType()
+    // get bubbleParent() {
+    //     return this._bubbleParent ? this._bubbleParent : this.parent;
+    // }
+    // set bubbleParent(bubbleParent: EntityObject) {
+    //     this._bubbleParent = bubbleParent;
+    // }
 
-    set componentDirty(componentDirty: boolean) {
-        if (componentDirty === true) {
-            this.clearCache();
-        }
-    }
+    // set componentDirty(componentDirty: boolean) {
+    //     if (componentDirty === true) {
+    //         this.clearCache();
+    //     }
+    // }
 
     // get transform() {
     //     return this.componentManager.transform;
@@ -53,12 +53,12 @@ export abstract class EntityObject extends Entity {
     public parent: EntityObject = null;
     public transform: Transform = null;
 
-    public customEventMap: Hash<Collection<CustomEventRegisterData>> = Hash.create<Collection<CustomEventRegisterData>>();
+    // public customEventMap: Hash<Collection<CustomEventRegisterData>> = Hash.create<Collection<CustomEventRegisterData>>();
 
-    protected componentManager: ComponentManager = ComponentManager.create(this);
+    // protected componentManager: ComponentManager = ComponentManager.create(this);
 
-    private _hasComponentCache: Hash<boolean> = Hash.create<boolean>();
-    private _getComponentCache: Hash<boolean> = Hash.create<boolean>();
+    // private _hasComponentCache: Hash<boolean> = Hash.create<boolean>();
+    // private _getComponentCache: Hash<boolean> = Hash.create<boolean>();
     // private _componentChangeSubscription: IDisposable = null;
     private _entityObjectManager: EntityObjectManager = EntityObjectManager.create(this);
 
@@ -66,8 +66,8 @@ export abstract class EntityObject extends Entity {
     public initWhenCreate() {
         var transform = this.createTransform();
 
-        if (!!transform) {
-            this.addDataOrientedComponent(transform);
+        if(!!transform){
+            this.addComponent(transform);
             this.transform = transform;
         }
     }
@@ -122,7 +122,7 @@ export abstract class EntityObject extends Entity {
         //         self._onComponentChange();
         //     });
 
-        this.componentManager.init();
+        // this.componentManager.init();
 
         //todo test
         // for (let component of SortUtils.insertSort(this._componentMap.toArray(), (a: Component, b: Component) => {
@@ -159,7 +159,7 @@ export abstract class EntityObject extends Entity {
 
         // this._componentChangeSubscription && this._componentChangeSubscription.dispose();
 
-        this.componentManager.dispose();
+        // this.componentManager.dispose();
         this._entityObjectManager.dispose();
 
         // EventManager.off(this);
@@ -191,63 +191,63 @@ export abstract class EntityObject extends Entity {
         return this;
     }
 
-    @cache(function(_class: any) {
-        return this._getComponentCache.hasChild(_class.name);
-    }, function(_class: any) {
-        return this._getComponentCache.getChild(_class.name);
-    }, function(result, _class: any) {
-        this._getComponentCache.addChild(_class.name, result);
-    })
-    public getComponent<T>(_class: any): T {
-        return this.componentManager.getComponent<T>(_class);
-    }
-
-    public hasComponent(component: Component): boolean;
-    public hasComponent(_class: Function): boolean;
-
-    /*!
-     not use @cache,
-     here judge return data of "getChild", so it don't need to invoke "hasChild"
-     */
-    public hasComponent(...args) {
-        var key = this._getHasComponentCacheKey(args[0]),
-            result = this._hasComponentCache.getChild(key);
-
-        if (result !== void 0) {
-            return result;
-        }
-
-        result = this.componentManager.hasComponent(args[0]);
-
-        this._hasComponentCache.addChild(key, result);
-
-        return result;
-    }
-
-    public addComponent(component: Component, isShareComponent: boolean = false) {
-        this.componentManager.addComponent(component, isShareComponent);
-
-        this.componentDirty = true;
-
-        return this;
-    }
-
-    public removeComponent(component: Component);
-    public removeComponent(_class: Function);
-
-    public removeComponent(...args) {
-        this.componentManager.removeComponent(args[0]);
-
-        this.componentDirty = true;
-
-        return this;
-    }
-
-    public forEachComponent(func: (component: Component) => void) {
-        this.componentManager.forEachComponent(func);
-
-        return this;
-    }
+    // @cache(function(_class: any) {
+    //     return this._getComponentCache.hasChild(_class.name);
+    // }, function(_class: any) {
+    //     return this._getComponentCache.getChild(_class.name);
+    // }, function(result, _class: any) {
+    //     this._getComponentCache.addChild(_class.name, result);
+    // })
+    // public getComponent<T>(_class: any): T {
+    //     return this.componentManager.getComponent<T>(_class);
+    // }
+    //
+    // public hasComponent(component: Component): boolean;
+    // public hasComponent(_class: Function): boolean;
+    //
+    // /*!
+    //  not use @cache,
+    //  here judge return data of "getChild", so it don't need to invoke "hasChild"
+    //  */
+    // public hasComponent(...args) {
+    //     var key = this._getHasComponentCacheKey(args[0]),
+    //         result = this._hasComponentCache.getChild(key);
+    //
+    //     if (result !== void 0) {
+    //         return result;
+    //     }
+    //
+    //     result = this.componentManager.hasComponent(args[0]);
+    //
+    //     this._hasComponentCache.addChild(key, result);
+    //
+    //     return result;
+    // }
+    //
+    // public addComponent(component: Component, isShareComponent: boolean = false) {
+    //     this.componentManager.addComponent(component, isShareComponent);
+    //
+    //     this.componentDirty = true;
+    //
+    //     return this;
+    // }
+    //
+    // public removeComponent(component: Component);
+    // public removeComponent(_class: Function);
+    //
+    // public removeComponent(...args) {
+    //     this.componentManager.removeComponent(args[0]);
+    //
+    //     this.componentDirty = true;
+    //
+    //     return this;
+    // }
+    //
+    // public forEachComponent(func: (component: Component) => void) {
+    //     this.componentManager.forEachComponent(func);
+    //
+    //     return this;
+    // }
 
 
 
@@ -258,23 +258,23 @@ export abstract class EntityObject extends Entity {
     private _componentMap: Hash<DataOrientedComponent> = Hash.create<DataOrientedComponent>();
 
 
-    public addDataOrientedComponent(component: DataOrientedComponent) {
+    public addComponent(component: DataOrientedComponent) {
         return addComponent(component, this, this._componentMap, DataOrientedComponentTypeIdManager).run();
     }
 
-    // public getDataOrientedDataOrientedComponent<T extends DataOrientedDataOrientedComponent>(_class: T): T {
-    public getDataOrientedComponent<T extends DataOrientedComponent>(_class: T): T {
+    // public getDataOrientedComponent<T extends DataOrientedComponent>(_class: T): T {
+    public getComponent<T extends DataOrientedComponent>(_class: T): T {
         return this._componentMap.getChild(String(DataOrientedComponentTypeIdManager.getTypeIdFromClass(_class))) as T;
     }
 
-    public hasDataOrientedComponent(component: DataOrientedComponent) {
+    public hasComponent(component: DataOrientedComponent) {
         return hasComponent(component, this._componentMap, DataOrientedComponentTypeIdManager);
     }
 
-    // public removeDataOrientedDataOrientedComponent(component: DataOrientedDataOrientedComponent){
-    // public removeDataOrientedComponent(component: DataOrientedDataOrientedComponent) {
+    // public removeDataOrientedComponent(component: DataOrientedComponent){
+    // public removeComponent(component: DataOrientedComponent) {
     //     //todo optimize Hash->removeChild: not return data; not judge param
-    //     this._componentMap.removeChild(String(DataOrientedDataOrientedComponentTypeIdManager.getTypeIdFromDataOrientedComponent(component)));
+    //     this._componentMap.removeChild(String(DataOrientedComponentTypeIdManager.getTypeIdFromComponent(component)));
     //
     //     component.removeFromObject(this);
     //
@@ -282,7 +282,7 @@ export abstract class EntityObject extends Entity {
     // }
 
 
-    public disposeDataOrientedComponent(component: DataOrientedComponent) {
+    public disposeComponent(component: DataOrientedComponent) {
         //todo optimize Hash->removeChild: not return data; not judge param
         this._componentMap.removeChild(String(DataOrientedComponentTypeIdManager.getTypeIdFromComponent(component)));
 
@@ -297,19 +297,19 @@ export abstract class EntityObject extends Entity {
 
 
     @virtual
-    public render(renderer: Renderer, camera: GameObject): void {
-        var rendererComponent = null;
-
-        rendererComponent = this.componentManager.getRendererComponent();
-
-        if (rendererComponent) {
-            rendererComponent.render(renderer, this, camera);
-        }
-
-        this.getRenderList().forEach((child: EntityObject) => {
-            child.render(renderer, camera);
-        });
-    }
+    // public render(renderer: Renderer, camera: GameObject): void {
+    //     var rendererComponent = null;
+    //
+    //     rendererComponent = this.componentManager.getRendererComponent();
+    //
+    //     if (rendererComponent) {
+    //         rendererComponent.render(renderer, this, camera);
+    //     }
+    //
+    //     this.getRenderList().forEach((child: EntityObject) => {
+    //         child.render(renderer, camera);
+    //     });
+    // }
 
     public update(elapsed: number): void {
         this.forEach((child: EntityObject) => {
@@ -317,15 +317,15 @@ export abstract class EntityObject extends Entity {
         });
     }
 
-    public clearCache() {
-        this._hasComponentCache.removeAllChildren();
-        this._getComponentCache.removeAllChildren();
-    }
+    // public clearCache() {
+    //     this._hasComponentCache.removeAllChildren();
+    //     this._getComponentCache.removeAllChildren();
+    // }
 
-    @virtual
-    public getGeometry() {
-        return this.componentManager.getGeometry();
-    }
+    // @virtual
+    // public getGeometry() {
+    //     return this.componentManager.getGeometry();
+    // }
     //
     protected abstract createTransform(): Transform;
     //
@@ -333,28 +333,28 @@ export abstract class EntityObject extends Entity {
     // protected afterInitChildren() {
     // }
 
-    @virtual
-    protected getRenderList() {
-        return this.getChildren();
-    }
+    // @virtual
+    // protected getRenderList() {
+    //     return this.getChildren();
+    // }
 
-    @ensure(function(key: string) {
-        it(`key:${key} be string`, () => {
-            expect(JudgeUtils.isString(key)).true;
-        });
-    })
-    private _getHasComponentCacheKey(...args) {
-        if (JudgeUtils.isComponenet(args[0])) {
-            let component: Component = args[0];
-
-            return String(component.uid);
-        }
-        else {
-            let _class: any = args[0];
-
-            return _class.name;
-        }
-    }
+    // @ensure(function(key: string) {
+    //     it(`key:${key} be string`, () => {
+    //         expect(JudgeUtils.isString(key)).true;
+    //     });
+    // })
+    // private _getHasComponentCacheKey(...args) {
+    //     if (JudgeUtils.isComponenet(args[0])) {
+    //         let component: Component = args[0];
+    //
+    //         return String(component.uid);
+    //     }
+    //     else {
+    //         let _class: any = args[0];
+    //
+    //         return _class.name;
+    //     }
+    // }
 
     // private _cloneChildren(result: EntityObject) {
     //     this.forEach((child: EntityObject) => {

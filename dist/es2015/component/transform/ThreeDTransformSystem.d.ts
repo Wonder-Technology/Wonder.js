@@ -1,0 +1,17 @@
+import { BatchTransformData, ThreeDTransform } from "./ThreeDTransform";
+import { Map } from "immutable";
+import { Vector3 } from "../../math/Vector3";
+export declare var init: (GlobalTempData: any, ThreeDTransformData: any, state: Map<any, any>) => any;
+export declare var createIndexInArrayBuffer: (transform: ThreeDTransform, ThreeDTransformData: any) => void;
+export declare var addComponent: (transform: ThreeDTransform, ThreeDTransformData: any) => any;
+export declare var disposeComponent: (transform: ThreeDTransform, GlobalTempData: any, ThreeDTransformData: any) => any;
+export declare var getParent: (transform: ThreeDTransform, ThreeDTransformData: any) => any;
+export declare var setParent: Function;
+export declare var getLocalToWorldMatrix: (...args: any[]) => any;
+export declare var getPosition: (...args: any[]) => any;
+export declare var setPosition: (transform: ThreeDTransform, position: Vector3, GlobalTempData: any, ThreeTransformData: any) => any;
+export declare var setBatchDatas: (batchData: BatchTransformData[], GlobalTempData: any, ThreeTransformData: any) => void;
+export declare var getLocalPosition: (...args: any[]) => any;
+export declare var setLocalPosition: (transform: ThreeDTransform, position: Vector3, ThreeTransformData: any) => any;
+export declare var update: (elapsed: number, GlobalTempData: any, ThreeDTransformData: any, state: Map<any, any>) => any;
+export declare var initData: (GlobalTempData: any, ThreeDTransformData: any) => void;

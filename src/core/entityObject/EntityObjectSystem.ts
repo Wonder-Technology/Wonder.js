@@ -5,14 +5,14 @@ import { it, requireCheckFunc } from "../../definition/typescript/decorator/cont
 import { expect } from "wonder-expect.js";
 import { EntityObject } from "./EntityObject";
 
-export var addComponent = requireCheckFunc((component: DataOrientedComponent, entityObject: EntityObject, componentMap: Hash<DataOrientedComponent>, DataOrientedComponentTypeIdManager: any) => {
+export var addComponent = requireCheckFunc((component: DataOrientedComponent, entityObject:EntityObject, componentMap:Hash<DataOrientedComponent>, DataOrientedComponentTypeIdManager:any) => {
     it("component should exist", () => {
         expect(component).exist;
     });
     it("shouldn't has this type of component", () => {
         expect(hasComponent(component, componentMap, DataOrientedComponentTypeIdManager)).false;
     });
-}, (component: DataOrientedComponent, entityObject: EntityObject, componentMap: Hash<DataOrientedComponent>, DataOrientedComponentTypeIdManager: any) => {
+}, (component: DataOrientedComponent, entityObject:EntityObject, componentMap:Hash<DataOrientedComponent>, DataOrientedComponentTypeIdManager:any) => {
     return IO.of(() => {
         component.addToObject(entityObject);
 
@@ -22,6 +22,6 @@ export var addComponent = requireCheckFunc((component: DataOrientedComponent, en
     });
 })
 
-export var hasComponent = (component: DataOrientedComponent, componentMap: Hash<DataOrientedComponent>, DataOrientedComponentTypeIdManager: any) => {
+export var hasComponent = (component: DataOrientedComponent, componentMap:Hash<DataOrientedComponent>, DataOrientedComponentTypeIdManager:any) => {
     return componentMap.hasChild(DataOrientedComponentTypeIdManager.getTypeIdFromComponent(component));
 }
