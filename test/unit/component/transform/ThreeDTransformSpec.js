@@ -148,6 +148,27 @@ describe("ThreeDTransform", function(){
         //         expect(tra1._localRotation.getEulerAngles).toCalledOnce();
         //     });
         // });
+        it("test batch set", function () {
+            sandbox.spy(wd.DataUtils, "createVector3ByIndex");
+            var batchTransformDatas = [];
+            batchTransformDatas.push({
+                uid:tra1.uid,
+                localPosition:Vector3.create(0,0,1)
+            });
+
+            wd.ThreeDTransform.setBatchTransformDatas(batchTransformDatas);
+
+            updateSystem(null, null);
+            var pos = tra1.localPosition.clone();
+
+
+            updateSystem(null, null);
+            var pos2 = tra1.localPosition.clone();
+
+
+            expect(getValues(pos)).toEqual(getValues(pos2));
+            expect(wd.DataUtils.createVector3ByIndex).toCalledOnce();
+        });
 
         describe("test clear cache", function(){
             beforeEach(function(){
@@ -213,6 +234,36 @@ describe("ThreeDTransform", function(){
             //    expect(tra1._eulerAnglesCache).toBeNull();
             //    expect(tra1._localEulerAnglesCache).toBeNull();
             //});
+
+            it("test batch set", function () {
+                var batchTransformDatas = [];
+                batchTransformDatas.push({
+                    uid:tra1.uid,
+                    position:Vector3.create(0,0,1)
+                });
+
+                wd.ThreeDTransform.setBatchTransformDatas(batchTransformDatas);
+
+                updateSystem(null, null);
+                var pos = tra1.position.clone();
+
+
+
+                batchTransformDatas = [];
+
+                batchTransformDatas.push({
+                    uid:tra1.uid,
+                    position:Vector3.create(1,2,3)
+                });
+
+                wd.ThreeDTransform.setBatchTransformDatas(batchTransformDatas);
+                updateSystem(null, null);
+                var pos2 = tra1.position.clone();
+
+
+
+                expect(getValues(pos)).not.toEqual(getValues(pos2));
+            });
         });
     });
 
@@ -534,6 +585,38 @@ describe("ThreeDTransform", function(){
 
                 expect(tra1.localPosition).toEqual(pos2);
             });
+        });
+    });
+
+    describe("batch set transform datas", function() {
+        beforeEach(function(){
+        });
+
+        it("set local position before set position", function(){
+            var batchTransformDatas = [];
+            var pos = Vector3.create(1,2,3);
+            var pos2 = Vector3.create(10,2,3);
+            var pos3 = Vector3.create(5,5,1);
+
+            tra1.parent = tra2;
+
+            batchTransformDatas.push({
+                uid:tra1.uid,
+                localPosition:pos.clone(),
+                position:pos2.clone()
+            });
+            batchTransformDatas.push({
+                uid:tra2.uid,
+                position:pos3.clone()
+            });
+
+            wd.ThreeDTransform.setBatchTransformDatas(batchTransformDatas);
+            updateSystem(null, null);
+
+            expect(tra1.localPosition).toEqual(pos2.clone());
+            expect(tra1.position).toEqual(pos3.clone().add(pos2))
+            expect(tra2.localPosition).toEqual(pos3.clone());
+            expect(tra2.position).toEqual(pos3.clone());
         });
     });
 
