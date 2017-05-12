@@ -24,11 +24,10 @@
 
         // 'test/unit/**/BufferWriter.js',
 
-        // 'test/unit/**',
-        'test/unit/**/ThreeD*',
-        // 'test/unit/**/EntitySpec*',
-        'test/unit/**/GameObject*',
-        'test/unit/**/Scene*',
+        'test/unit/**',
+        // 'test/unit/**/ThreeD*',
+        // 'test/unit/**/GameObject*',
+        // 'test/unit/**/Scene*',
 
         {pattern: 'dist/wd.js.map', watched: false, included: false, served: true, nocache:true}
 
