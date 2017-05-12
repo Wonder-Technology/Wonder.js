@@ -4,13 +4,13 @@ import "wonder-frp/dist/es2015/extend/root";
 import { registerClass } from "../definition/typescript/decorator/registerClass";
 import { singleton } from "../definition/typescript/decorator/singleton";
 // import { DeviceManager } from "../device/DeviceManager";
-import { SceneDispatcher } from "./entityObject/scene/SceneDispatcher";
+// import { SceneDispatcher } from "./entityObject/scene/SceneDispatcher";
 // import { Renderer } from "../renderer/renderer/Renderer";
 import { IDisposable } from "wonder-frp/dist/es2015/Disposable/IDisposable";
 import { DirectorTimeController } from "../utils/time/DirectorTimeController";
 // import { WebGLRenderer } from "../renderer/renderer/WebGLRenderer";
 import { callFunc, intervalRequest } from "wonder-frp/dist/es2015/global/Operator";
-import { GameObjectScene } from "./entityObject/scene/gameObjectScene/GameObjectScene";
+// import { GameObjectScene } from "./entityObject/scene/gameObjectScene/GameObjectScene";
 // import { BasicState } from "../renderer/state/BasicState";
 // import { EventManager } from "../event/EventManager";
 // import { CustomEvent } from "../event/object/CustomEvent";
@@ -20,8 +20,10 @@ import { getState, setState } from "./DirectorSystem";
 import { DirectorData } from "./DirectorData";
 import { ThreeDTransformData } from "../component/transform/ThreeDTransformData";
 import { Map } from "immutable";
-import { compose } from "../utils/functionalUtils";
 import { GlobalTempData } from "../definition/GlobalTempData";
+import { Scene } from "./entityObject/scene/Scene";
+import { GameObjectData } from "./entityObject/gameObject/GameObjectData";
+import { create } from "./entityObject/scene/SceneSystem";
 
 @singleton(true)
 @registerClass("Director")
@@ -30,7 +32,8 @@ export class Director {
 
     private constructor() { }
 
-    public scene: SceneDispatcher = null;
+    // public scene: SceneDispatcher = null;
+    public scene: Scene = create(GameObjectData);
     // public renderer: Renderer = null;
 
     private _gameLoop: IDisposable = null;
@@ -39,7 +42,7 @@ export class Director {
     // private _transformSystem: ThreeDTransformSystem = ThreeDTransformSystem.create();
 
     public initWhenCreate() {
-        this.scene = SceneDispatcher.create();
+        // this.scene = SceneDispatcher.create();
         // this.renderer = WebGLRenderer.create();
     }
 
@@ -80,19 +83,9 @@ export class Director {
     private _init(state: Map<any, any>) {
         var resultState = state;
 
-        resultState = this._initGameObjectScene(resultState);
-        // resultState = this._initSystem(resultState);
+        // resultState = this._initGameObjectScene(resultState);
+        resultState = this._initSystem(resultState);
 
-        return resultState;
-    }
-
-    private _initGameObjectScene(state: Map<any, any>) {
-        var resultState = state,
-            gameObjectScene: GameObjectScene = this.scene.gameObjectScene;
-
-        gameObjectScene.init(resultState);
-
-        //todo not put here?
         // this.renderer.init();
 
         // this._timeController.start();
@@ -100,9 +93,18 @@ export class Director {
         return resultState;
     }
 
-    // private _initSystem(state: Map<any, any>){
-    //     return initTransform(GlobalTempData, ThreeDTransformData, state).run();
+    // private _initGameObjectScene(state: Map<any, any>) {
+    //     var resultState = state,
+    //         gameObjectScene: GameObjectScene = this.scene.gameObjectScene;
+    //
+    //     gameObjectScene.init(resultState);
+    //
+    //     return resultState;
     // }
+
+    private _initSystem(state: Map<any, any>){
+        return initTransform(GlobalTempData, ThreeDTransformData, state);
+    }
 
     private _buildLoopStream() {
         return intervalRequest();

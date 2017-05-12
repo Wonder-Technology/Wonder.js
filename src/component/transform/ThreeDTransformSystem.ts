@@ -1,4 +1,4 @@
-import { ThreeDTransformData, ThreeDTransformRelationData } from "./ThreeDTransformData";
+import { ThreeDTransformData, TransformMap } from "./ThreeDTransformData";
 import { compose } from "../../utils/functionalUtils";
 import curry from "wonder-lodash/curry";
 import forEach from "wonder-lodash/forEach";
@@ -13,87 +13,120 @@ import { Matrix4 } from "../../math/Matrix4";
 import { Vector3 } from "../../math/Vector3";
 import { Quaternion } from "../../math/Quaternion";
 import { cacheFunc } from "../../utils/cacheUtils";
+import { IDataOrientedComponent } from "../DataOrientedComponent";
+import { addAddComponentHandle as addAddComponentHandleToMap, addDisposeHandle as addDisposeHandleToMap } from "../DataOrientedComponentSystem";
+import { deleteVal, isValidMapValue } from "../../utils/objectUtils";
+import { GameObject } from "../../core/entityObject/gameObject/GameObject";
+
+export var addAddComponentHandle = (_class: any, ThreeDTransformData:any) => {
+    addAddComponentHandleToMap(_class, addComponent(ThreeDTransformData));
+}
+
+export var addDisposeHandle = (_class: any, GlobalTempData:any, ThreeDTransformData:any) => {
+    addDisposeHandleToMap(_class, disposeComponent(GlobalTempData, ThreeDTransformData));
+}
+
+export var create = (ThreeDTransformData:any) => {
+    var transform = new ThreeDTransform(),
+        index = _createIndexInArrayBuffer(ThreeDTransformData),
+        uid = _buildUID(ThreeDTransformData);
+
+    transform.index = index;
+    transform.uid = uid;
+
+    return compose(
+        _setTransformMap(index, transform),
+        _createTempData(uid)
+    )(ThreeDTransformData)
+}
+
+var _buildUID = (ThreeDTransformData:any) => {
+    ThreeDTransformData.uid += 1;
+
+    return ThreeDTransformData.uid;
+}
+
+var _createIndexInArrayBuffer = (ThreeDTransformData:any) => {
+    return _generateNotUsedIndexInArrayBuffer(ThreeDTransformData);
+}
+
+
+var _createTempData = curry((uid:number, ThreeDTransformData:any,) => {
+    ThreeDTransformData.tempPositionMap[uid] = Vector3.create();
+    ThreeDTransformData.tempLocalPositionMap[uid] = Vector3.create();
+    ThreeDTransformData.tempLocalToWorldMatrixMap[uid] = Matrix4.create();
+
+    return ThreeDTransformData;
+})
 
 export var init = (GlobalTempData: any, ThreeDTransformData: any, state: Map<any, any>) => {
     return update(null, GlobalTempData, ThreeDTransformData, state);
 }
 
-var _getTransformIndexInArrayBufferTable = (transform: ThreeDTransform, ThreeDTransformData: any) => {
-    return ThreeDTransformData.transformIndexInArrayBufferTable[transform.uid];
-}
+export var addComponent = curry((ThreeDTransformData: any, transform: ThreeDTransform, gameObject:GameObject) => {
+    var indexInArrayBuffer = transform.index,
+        uid = transform.uid;
 
-var _getTransformIndexInArrayBufferTableByUid = (uid:number, ThreeDTransformData: any) => {
-    return ThreeDTransformData.transformIndexInArrayBufferTable[uid];
-}
+    ThreeDTransformData.gameObjectMap[uid] = gameObject;
 
-var _setTransformIndexInArrayBufferTable = (transform: ThreeDTransform, indexInArrayBuffer: number, ThreeDTransformData: any) => {
-    ThreeDTransformData.transformIndexInArrayBufferTable[transform.uid] = indexInArrayBuffer;
-
-    return ThreeDTransformData;
-}
-
-var _setTransforms = curry((transform: ThreeDTransform, indexInArrayBuffer: number, ThreeDTransformData: any) => {
-    ThreeDTransformData.transforms[indexInArrayBuffer] = transform;
-
-    return ThreeDTransformData;
+    return _addItAndItsChildrenToDirtyList(indexInArrayBuffer, uid, ThreeDTransformData);
 })
 
-export var createIndexInArrayBuffer = (transform: ThreeDTransform, ThreeDTransformData) => {
-    var indexInArrayBuffer = _generateNotUsedIndexInArrayBuffer(ThreeDTransformData);
+export var disposeComponent = curry((GlobalTempData:any, ThreeDTransformData:any, transform: ThreeDTransform) => {
+    var indexInArrayBuffer = transform.index,
+        uid = transform.uid;
 
-    _setTransformIndexInArrayBufferTable(transform, indexInArrayBuffer, ThreeDTransformData);
-    _setTransforms(transform, indexInArrayBuffer, ThreeDTransformData);
-}
-
-export var addComponent = (transform: ThreeDTransform, ThreeDTransformData: any) => {
-    var indexInArrayBuffer = _getTransformIndexInArrayBufferTable(transform, ThreeDTransformData);
-
-    return _addItAndItsChildrenToDirtyList(indexInArrayBuffer, ThreeDTransformData);
-}
-
-export var disposeComponent = (transform: ThreeDTransform, GlobalTempData: any, ThreeDTransformData: any) => {
-    var indexInArrayBuffer = _getTransformIndexInArrayBufferTable(transform, ThreeDTransformData);
+    deleteVal(uid, ThreeDTransformData.gameObjectMap);
 
     if (_isNotDirty(indexInArrayBuffer, ThreeDTransformData.firstDirtyIndex)) {
-        return _disposeFromNormalList(indexInArrayBuffer, GlobalTempData, ThreeDTransformData);
+        return _disposeFromNormalList(indexInArrayBuffer, uid, GlobalTempData, ThreeDTransformData);
     }
 
-    return _disposeFromDirtyList(indexInArrayBuffer, GlobalTempData, ThreeDTransformData);
-}
+    return _disposeFromDirtyList(indexInArrayBuffer, uid, GlobalTempData, ThreeDTransformData);
+})
 
 export var getParent = (transform: ThreeDTransform, ThreeDTransformData: any) => {
-    var relationData = ThreeDTransformData.relations[_getTransformIndexInArrayBufferTable(transform, ThreeDTransformData)];
+    var parent = _getParent(transform.uid, ThreeDTransformData);
 
-    if (_isRelationItemExist(relationData)) {
-        return relationData.parent;
+    if(isValidMapValue(parent)){
+        return parent;
     }
 
     return null;
 }
 
-var _getRelationData = (relationData: ThreeDTransformRelationData, dataName: string) => {
-    if (!_isRelationItemExist(relationData)) {
-        return null;
-    }
 
-    let data = relationData[dataName];
-
-    return _isRelationDataExist(data) ? data : null;
+var _getChildren = (uid:number, ThreeDTransformData:any) => {
+    return ThreeDTransformData.childrenMap[uid];
 }
 
-var _getOrSetRelationItem = (indexInArrayBuffer: number, relations: Array<ThreeDTransformRelationData>) => {
-    var data = relations[indexInArrayBuffer];
+var _addChild = (uid:number, child:ThreeDTransform, ThreeDTransform:any) => {
+    var children = _getChildren(uid, ThreeDTransformData);
 
-    if (!_isRelationItemExist(data)) {
-        data = _createEmptyRelationItem(indexInArrayBuffer);
-
-        relations[indexInArrayBuffer] = data;
-
-        return data;
+    if (isValidMapValue(children)) {
+        children.push(child);
     }
-
-    return data;
+    else {
+        _setChildren(uid, [child], ThreeDTransformData);
+    }
 }
+
+var _setChildren = (uid:number, children:Array<ThreeDTransform>, ThreeDTransform:any) => {
+    ThreeDTransformData.childrenMap[uid] = children;
+}
+
+var _getParent = requireCheckFunc ((uid: string, ThreeDTransformData:any) => {
+    it("uid should exist", () => {
+        expect(uid).exist;
+    });
+}, (uid: string, ThreeDTransformData:any) => {
+    return ThreeDTransformData.parentMap[uid];
+})
+
+var _setParent = (uid:number, parent:ThreeDTransform, ThreeDTransformData:any) => {
+    ThreeDTransformData.parentMap[uid] = parent;
+}
+
 
 var _isTransformEqual = (tra1:ThreeDTransform, tra2:ThreeDTransform) => tra1.uid === tra2.uid;
 
@@ -104,78 +137,70 @@ export var setParent = requireCheckFunc((transform: ThreeDTransform, parent: Thr
         }
     });
 }, (transform: ThreeDTransform, parent: ThreeDTransform, ThreeDTransformData: any) => {
-    var indexInArrayBuffer = _getTransformIndexInArrayBufferTable(transform, ThreeDTransformData),
+    var indexInArrayBuffer = transform.index,
+        uid = transform.uid,
         parentIndexInArrayBuffer: number = null,
-        relationData = _getOrSetRelationItem(indexInArrayBuffer, ThreeDTransformData.relations),
-        currentParent = relationData.parent,
-        isCurrentParentExisit = _isRelationDataExist(currentParent);
+        currentParent:ThreeDTransform = _getParent(uid, ThreeDTransformData),
+        isCurrentParentExisit = _isParentExist(currentParent);
 
     if (parent === null) {
         if (isCurrentParentExisit) {
-            _removeRelationItemFromParent(currentParent, relationData);
+            _removeRelationFromParent(currentParent, uid, ThreeDTransformData);
 
-            _addItAndItsChildrenToDirtyList(indexInArrayBuffer, ThreeDTransformData);
+            _addItAndItsChildrenToDirtyList(indexInArrayBuffer, uid, ThreeDTransformData);
         }
 
         return;
     }
 
-    parentIndexInArrayBuffer = _getTransformIndexInArrayBufferTable(parent, ThreeDTransformData);
+    parentIndexInArrayBuffer = parent.index;
 
     if (isCurrentParentExisit) {
-        if (_isNotChangeParent(currentParent.indexInArrayBuffer, parentIndexInArrayBuffer)) {
+        if (_isNotChangeParent(currentParent.index, parentIndexInArrayBuffer)) {
             return;
         }
 
-        _removeRelationItemFromParent(currentParent, relationData);
+        _removeRelationFromParent(currentParent, uid, ThreeDTransformData);
     }
 
-    _addToParent(relationData, parentIndexInArrayBuffer, ThreeDTransformData);
+    _addToParent(uid, transform, parent, ThreeDTransformData);
 
-    _addItAndItsChildrenToDirtyList(indexInArrayBuffer, ThreeDTransformData);
+    _addItAndItsChildrenToDirtyList(indexInArrayBuffer, uid, ThreeDTransformData);
 })
 
-var _createEmptyRelationItem = (indexInArrayBuffer: number) => {
-    var data = ThreeDTransformRelationData.create();
-
-    data.indexInArrayBuffer = indexInArrayBuffer;
-
-    return data;
+var _getIsTranslate = (uid:number, ThreeDTransform:any) => {
+    return ThreeDTransformData.isTranslateMap[uid];
 }
 
-var _getIsTranslate = (indexInArrayBuffer:number, ThreeDTransform:any) => {
-    return ThreeDTransformData.isTranslateTable[indexInArrayBuffer];
-}
-
-var _setIsTranslate = requireCheckFunc ((indexInArrayBuffer:number, isTranslate:boolean, ThreeDTransform:any) => {
+var _setIsTranslate = requireCheckFunc ((uid:number, isTranslate:boolean, ThreeDTransform:any) => {
     // it("indexInArrayBuffer should be used", () => {
     //     expect(_isIndexUsed(indexInArrayBuffer)).true;
     // });
-}, (indexInArrayBuffer:number, isTranslate:boolean, ThreeDTransform:any) => {
-    ThreeDTransformData.isTranslateTable[indexInArrayBuffer] = isTranslate;
+}, (uid:number, isTranslate:boolean, ThreeDTransform:any) => {
+    ThreeDTransformData.isTranslateMap[uid] = isTranslate;
 })
 
-export var getLocalToWorldMatrix = cacheFunc((transform: ThreeDTransform, ThreeTransformData: any, mat:Matrix4) => {
-    return transform.localToWorldMatrixCache !== null;
-}, (transform: ThreeDTransform, ThreeTransformData: any, mat:Matrix4) => {
-    return transform.localToWorldMatrixCache;
-}, (transform: ThreeDTransform, ThreeTransformData: any, mat:Matrix4, returnedMat:Matrix4) => {
-    transform.localToWorldMatrixCache = returnedMat;
-}, (transform: ThreeDTransform, ThreeTransformData: any, mat:Matrix4) => {
-    return DataUtils.createMatrix4ByIndex(mat, ThreeDTransformData.localToWorldMatrices, _getMatrix4DataIndexInArrayBuffer(_getTransformIndexInArrayBufferTable(transform, ThreeTransformData)));
+export var getLocalToWorldMatrix = cacheFunc((transform: IDataOrientedComponent, mat:Matrix4, ThreeTransformData: any) => {
+    return isValidMapValue(ThreeTransformData.localPositionCacheMap[transform.uid]);
+}, (transform:IDataOrientedComponent, mat:Matrix4, ThreeTransformData: any) => {
+    return ThreeTransformData.localPositionCacheMap[transform.uid];
+}, (transform: IDataOrientedComponent, mat:Matrix4, ThreeTransformData: any, returnedMat:Matrix4) => {
+    ThreeTransformData.localPositionCacheMap[transform.uid] = returnedMat;
+}, (transform: IDataOrientedComponent, mat:Matrix4, ThreeTransformData: any) => {
+    return DataUtils.createMatrix4ByIndex(mat, ThreeDTransformData.localToWorldMatrices, _getMatrix4DataIndexInArrayBuffer(transform.index));
 })
 
-export var getPosition = cacheFunc((transform: ThreeDTransform, ThreeTransformData: any) => {
-    return transform.positionCache !== null;
-}, (transform: ThreeDTransform, ThreeTransformData: any) => {
-    return transform.positionCache;
-}, (transform: ThreeDTransform, ThreeTransformData: any, position:Vector3) => {
-    transform.positionCache = position;
-}, (transform: ThreeDTransform, ThreeTransformData: any) => {
-    var index = _getMatrix4DataIndexInArrayBuffer(_getTransformIndexInArrayBufferTable(transform, ThreeTransformData)),
+export var getPosition = cacheFunc((transform:ThreeDTransform, ThreeTransformData: any) => {
+    return isValidMapValue(ThreeTransformData.positionCacheMap[transform.uid]);
+}, (transform:ThreeDTransform, ThreeTransformData: any) => {
+    return ThreeTransformData.positionCacheMap[transform.uid];
+}, (transform:ThreeDTransform, ThreeTransformData: any, position:Vector3) => {
+    ThreeTransformData.positionCacheMap[transform.uid] = position;
+}, (transform:ThreeDTransform, ThreeTransformData: any) => {
+    var indexInArrayBuffer = _getMatrix4DataIndexInArrayBuffer(transform.index),
         localToWorldMatrices = ThreeTransformData.localToWorldMatrices;
 
-    return transform.tempPosition.set(localToWorldMatrices[index + 12], localToWorldMatrices[index + 13], localToWorldMatrices[index + 14]);
+    return ThreeTransformData.tempPositionMap[transform.uid].set(localToWorldMatrices[indexInArrayBuffer + 12], localToWorldMatrices[indexInArrayBuffer + 13], localToWorldMatrices[indexInArrayBuffer + 14]);
 })
 
 // export var getTransformDataContainerFromPool = (pool:Array<Matrix4|Vector3>, i:number, createContainerFunc:() => Matrix4|Vector3) => {
@@ -190,31 +215,56 @@ export var getPosition = cacheFunc((transform: ThreeDTransform, ThreeTransformDa
 //     return container;
 // }
 
-var _setPositionData = (indexInArrayBuffer:number, parent:ThreeDTransformRelationData, vec3IndexInArrayBuffer:number, position: Vector3, GlobalTempData: any, ThreeTransformData: any) => {
-    if (_isRelationDataExist(parent)) {
-        DataUtils.setVectors(ThreeDTransformData.localPositions, getLocalToWorldMatrix(ThreeDTransformData.transforms[parent.indexInArrayBuffer], ThreeTransformData, GlobalTempData.matrix4_3).invert().multiplyPoint(position), vec3IndexInArrayBuffer);
+var _getUID = requireCheckFunc ((indexInArrayBuffer:number, ThreeDTransformData:any) => {
+    it("indexInArrayBuffer should exist", () => {
+        expect(indexInArrayBuffer).exist;
+    });
+    it("transform should exist", () => {
+        expect(ThreeDTransformData.transformMap[indexInArrayBuffer]).exist;
+    });
+}, (indexInArrayBuffer:number, ThreeDTransformData:any) => {
+    return ThreeDTransformData.transformMap[indexInArrayBuffer].uid;
+})
+
+var _setTransformMap = curry((indexInArrayBuffer:number, transform:ThreeDTransform, ThreeDTransformData:any) => {
+    ThreeDTransformData.transformMap[indexInArrayBuffer] = transform;
+
+    return transform;
+})
+
+var _setPositionData = (indexInArrayBuffer:number, parent:ThreeDTransform, vec3IndexInArrayBuffer:number, position: Vector3, GlobalTempData: any, ThreeTransformData: any) => {
+    if (_isParentExist(parent)) {
+        let indexInArrayBuffer = parent.index;
+
+        DataUtils.setVectors(ThreeDTransformData.localPositions, getLocalToWorldMatrix({
+            uid:_getUID(indexInArrayBuffer, ThreeDTransformData),
+            index:indexInArrayBuffer
+        }, GlobalTempData.matrix4_3, ThreeTransformData).invert().multiplyPoint(position), vec3IndexInArrayBuffer);
     }
     else {
         DataUtils.setVectors(ThreeDTransformData.localPositions, position, vec3IndexInArrayBuffer);
     }
 }
 
-export var setPosition = (transform: ThreeDTransform, position: Vector3, GlobalTempData: any, ThreeTransformData: any) => {
-    var indexInArrayBuffer = _getTransformIndexInArrayBufferTable(transform, ThreeTransformData),
-        parent: ThreeDTransformRelationData = _getRelationData(ThreeDTransformData.relations[indexInArrayBuffer], "parent"),
+export var setPosition = (transform:ThreeDTransform, position: Vector3, GlobalTempData: any, ThreeTransformData: any) => {
+    var indexInArrayBuffer = transform.index,
+        uid = transform.uid,
+        parent = _getParent(uid, ThreeDTransformData),
         vec3IndexInArrayBuffer = _getVector3DataIndexInArrayBuffer(indexInArrayBuffer);
 
     _setPositionData(indexInArrayBuffer, parent, vec3IndexInArrayBuffer, position, GlobalTempData, ThreeTransformData);
 
-    _setIsTranslate(indexInArrayBuffer, true, ThreeTransformData);
+    _setIsTranslate(uid, true, ThreeTransformData);
 
-    return _addItAndItsChildrenToDirtyList(indexInArrayBuffer, ThreeTransformData);
+    return _addItAndItsChildrenToDirtyList(indexInArrayBuffer, uid, ThreeTransformData);
 }
 
 var _setBatchTransformData = curry((batchData:Array<BatchTransformData>, GlobalTempData: any, ThreeTransformData: any) => {
     for(let data of batchData) {
-        let indexInArrayBuffer = ThreeDTransformData.transformIndexInArrayBufferTable[data.uid],
-            parent: ThreeDTransformRelationData = _getRelationData(ThreeDTransformData.relations[indexInArrayBuffer], "parent"),
+        let transform = data.transform,
+            indexInArrayBuffer = transform.index,
+            uid = transform.uid,
+            parent = _getParent(uid, ThreeDTransformData),
             vec3IndexInArrayBuffer = _getVector3DataIndexInArrayBuffer(indexInArrayBuffer),
             {position, localPosition} = data;
 
@@ -237,11 +287,9 @@ var _isTranslate = (data:BatchTransformData) => {
 var _getAllTransfomrsNotDirtyIndexArrAndMarkTransform = curry((batchData:Array<BatchTransformData>, ThreeTransformData:any) => {
     var notDirtyIndexArr = [],
         firstDirtyIndex = ThreeDTransformData.firstDirtyIndex;
-    var _getNotDirtyIndex = (indexInArrayBuffer, notDirtyIndexArr, isTranslate:boolean, ThreeDTransformData) => {
-        var relationData = _getOrSetRelationItem(indexInArrayBuffer, ThreeDTransformData.relations);
-
+    var _getNotDirtyIndex = (indexInArrayBuffer, uid, notDirtyIndexArr, isTranslate:boolean, ThreeDTransformData) => {
         if(isTranslate){
-            _setIsTranslate(indexInArrayBuffer, true, ThreeDTransformData);
+            _setIsTranslate(uid, true, ThreeDTransformData);
         }
 
         if (_isNotDirty(indexInArrayBuffer, firstDirtyIndex)) {
@@ -250,15 +298,16 @@ var _getAllTransfomrsNotDirtyIndexArrAndMarkTransform = curry((batchData:Array<B
             firstDirtyIndex = _minusFirstDirtyIndex(firstDirtyIndex);
         }
 
-        forEach(relationData.children, (child: ThreeDTransformRelationData) => {
-            _getNotDirtyIndex(child.indexInArrayBuffer, notDirtyIndexArr, isTranslate, ThreeDTransformData)
+        forEach(_getChildren(uid, ThreeDTransformData), (child: ThreeDTransform) => {
+            _getNotDirtyIndex(child.index, child.uid, notDirtyIndexArr, isTranslate, ThreeDTransformData)
         })
     }
 
     for(let data of batchData){
-        let indexInArrayBuffer = _getTransformIndexInArrayBufferTableByUid(data.uid, ThreeDTransformData);
+        let transform = data.transform,
+            indexInArrayBuffer = transform.index;
 
-        _getNotDirtyIndex(indexInArrayBuffer, notDirtyIndexArr, _isTranslate(data), ThreeDTransformData);
+        _getNotDirtyIndex(indexInArrayBuffer, transform.uid, notDirtyIndexArr, _isTranslate(data), ThreeDTransformData);
     }
 
     return [notDirtyIndexArr, firstDirtyIndex];
@@ -287,9 +336,9 @@ var _addBatchToDirtyListByChangeTypeArrData = curry((ThreeTransformData: any, ta
 })
 
 
-var _addBatchToDirtyListByChangeReferenceData = curry((ThreeTransformData: any, targetDirtyIndex:number, notDirtyIndexArr:Array<number>) => {
-    return _addBatchToDirtyList(ThreeTransformData,targetDirtyIndex, _swapArrayData, (sourceIndex: number, targetIndex: number, ThreeDTransformData: any) => {
-        _moveArrayDataToIndex(sourceIndex, targetIndex, ThreeDTransformData);
+var _addBatchToDirtyListByChangeMapData = curry((ThreeTransformData: any, targetDirtyIndex:number, notDirtyIndexArr:Array<number>) => {
+    return _addBatchToDirtyList(ThreeTransformData,targetDirtyIndex, _swapTransformMapData, (sourceIndex: number, targetIndex: number, ThreeDTransformData: any) => {
+        _moveMapDataToIndex(sourceIndex, targetIndex, ThreeDTransformData);
         _addNotUsedIndex(sourceIndex, ThreeDTransformData.notUsedIndexArray);
     }, notDirtyIndexArr);
 })
@@ -297,7 +346,7 @@ var _addBatchToDirtyListByChangeReferenceData = curry((ThreeTransformData: any, 
 
 export var setBatchDatas = (batchData:Array<BatchTransformData>, GlobalTempData: any, ThreeTransformData: any) => {
     compose(
-        _addBatchToDirtyListByChangeReferenceData(ThreeTransformData, ThreeDTransformData.firstDirtyIndex),
+        _addBatchToDirtyListByChangeMapData(ThreeTransformData, ThreeDTransformData.firstDirtyIndex),
         _addBatchToDirtyListByChangeTypeArrData(ThreeTransformData, ThreeDTransformData.firstDirtyIndex),
         ([noDirtyIndex, targetDirtyIndex]) => {
             ThreeDTransformData.firstDirtyIndex = targetDirtyIndex;
@@ -311,25 +360,26 @@ export var setBatchDatas = (batchData:Array<BatchTransformData>, GlobalTempData:
 
 
 export var getLocalPosition =
-    cacheFunc((transform: ThreeDTransform, ThreeTransformData: any) => {
-        return transform.localPositionCache !== null;
-    }, (transform: ThreeDTransform, ThreeTransformData: any) => {
-        return transform.localPositionCache;
-    }, (transform: ThreeDTransform, ThreeTransformData: any, position:Vector3) => {
-        transform.localPositionCache = position;
-    }, (transform: ThreeDTransform, ThreeTransformData: any) => {
-        return DataUtils.createVector3ByIndex(transform.tempLocalPosition, ThreeDTransformData.localPositions, _getVector3DataIndexInArrayBuffer(_getTransformIndexInArrayBufferTable(transform, ThreeTransformData)));
+    cacheFunc((transform:ThreeDTransform, ThreeTransformData: any) => {
+        return isValidMapValue(ThreeTransformData.localPositionCacheMap[transform.uid]);
+    }, (transform:ThreeDTransform, ThreeTransformData: any) => {
+        return ThreeTransformData.localPositionCacheMap[transform.uid];
+    }, (transform:ThreeDTransform, ThreeTransformData: any, position:Vector3) => {
+        ThreeTransformData.localPositionCacheMap[transform.uid] = position;
+    }, (transform:ThreeDTransform, ThreeTransformData: any) => {
+        return DataUtils.createVector3ByIndex(ThreeTransformData.tempLocalPositionMap[transform.uid], ThreeDTransformData.localPositions, _getVector3DataIndexInArrayBuffer(transform.index));
     })
 
-export var setLocalPosition = (transform: ThreeDTransform, position: Vector3, ThreeTransformData: any) => {
-    var indexInArrayBuffer = _getTransformIndexInArrayBufferTable(transform, ThreeTransformData),
+export var setLocalPosition = (transform:ThreeDTransform, position: Vector3, ThreeTransformData: any) => {
+    var indexInArrayBuffer = transform.index,
+        uid = transform.uid,
         vec3IndexInArrayBuffer = _getVector3DataIndexInArrayBuffer(indexInArrayBuffer);
 
     _setLocalPositionData(position, vec3IndexInArrayBuffer, ThreeTransformData);
 
-    _setIsTranslate(indexInArrayBuffer, true, ThreeTransformData);
+    _setIsTranslate(uid, true, ThreeTransformData);
 
-    return _addItAndItsChildrenToDirtyList(indexInArrayBuffer, ThreeTransformData);
+    return _addItAndItsChildrenToDirtyList(indexInArrayBuffer, uid, ThreeTransformData);
 }
 
 export var update = (elapsed: number, GlobalTempData: any, ThreeDTransformData: any, state: Map<any, any>) => {
@@ -342,18 +392,22 @@ export var update = (elapsed: number, GlobalTempData: any, ThreeDTransformData: 
 
 var _clearCache = curry((ThreeDTransformData: any, state: Map<any, any>) => {
     var count = ThreeDTransformData.count,
-        transforms = ThreeDTransformData.transforms;
+        positionCacheMap = ThreeDTransformData.positionCacheMap,
+        localPositionCacheMap = ThreeDTransformData.localPositionCacheMap,
+        localToWorldMatrixCacheMap = ThreeDTransformData.localToWorldMatrixCacheMap;
+
+        // transforms = ThreeDTransformData.transforms;
 
     for (let i = ThreeDTransformData.firstDirtyIndex; i < count; i++) {
-        let transform = transforms[i],
-            isTranslate = _getIsTranslate(i, ThreeDTransformData);
+        let uid = _getUID(i, ThreeDTransformData),
+            isTranslate = _getIsTranslate(uid, ThreeDTransformData);
 
         if(isTranslate){
-            transform.localToWorldMatrixCache = null;
-            transform.positionCache = null;
-            transform.localPositionCache = null;
+            deleteVal(uid, positionCacheMap);
+            deleteVal(uid, localPositionCacheMap);
+            deleteVal(uid, localToWorldMatrixCacheMap);
 
-            _setIsTranslate(i, false, ThreeDTransformData);
+            _setIsTranslate(uid, false, ThreeDTransformData);
         }
 
         //todo clean more cache!
@@ -365,30 +419,31 @@ var _isNotChangeParent = (currentParentIndexInArrayBuffer: number, newParentInde
 }
 
 var _isIndexUsed = ensureFunc((isExist: boolean, indexInArrayBuffer: number, ThreeDTransformData: any) => {
-    it("if(or not) exist data, the transform and its indexInArrayBuffer should be(or not) setted to data container;relation item should(or not) exist", () => {
-        if (isExist) {
-            expect(_isValidArrayValue(ThreeDTransformData.transforms[indexInArrayBuffer])).true;
-            expect(_getTransformIndexInArrayBufferTable(ThreeDTransformData.transforms[indexInArrayBuffer], ThreeDTransformData)).equal(indexInArrayBuffer);
-
-            expect(_isRelationItemExist(ThreeDTransformData.relations[indexInArrayBuffer])).true;
-        }
-        else {
-            expect(_isValidArrayValue(ThreeDTransformData.transforms[indexInArrayBuffer])).false;
-
-            expect(_isRelationItemExist(ThreeDTransformData.relations[indexInArrayBuffer])).false;
-        }
-    });
+    // it("if(or not) exist data, the transform and its indexInArrayBuffer should be(or not) setted to data container;relation item should(or not) exist", () => {
+    //     if (isExist) {
+            // expect(_isValidArrayValue(ThreeDTransformData.transforms[indexInArrayBuffer])).true;
+            // expect(_getTransformIndexInArrayBufferTable(ThreeDTransformData.transforms[indexInArrayBuffer], ThreeDTransformData)).equal(indexInArrayBuffer);
+    //
+    //         expect(_isRelationItemExist(ThreeDTransformData.relationMap[indexInArrayBuffer])).true;
+    //     }
+    //     else {
+    //         // expect(_isValidArrayValue(ThreeDTransformData.transforms[indexInArrayBuffer])).false;
+    //
+    //         expect(_isRelationItemExist(ThreeDTransformData.relationMap[indexInArrayBuffer])).false;
+    //     }
+    // });
 }, (indexInArrayBuffer: number, ThreeDTransformData: any) => {
-    return _isValidArrayValue(ThreeDTransformData.transforms[indexInArrayBuffer]);
+    return isValidMapValue(ThreeDTransformData.transformMap[indexInArrayBuffer]);
+    // return _isValidArrayValue(ThreeDTransformData.transforms[indexInArrayBuffer]);
 })
 
-var _isRelationDataExist = (relationData: ThreeDTransformRelationData | Array<ThreeDTransformRelationData>) => relationData !== null;
+// var _isRelationExist = (relationData: ThreeDTransform|void 0) => isUndefined(relationData);
 
-var _isRelationItemExist = (relationData: ThreeDTransformRelationData) => _isValidArrayValue(relationData);
+// var _isRelationItemExist = (relationData: ThreeDTransformRelationData) => _isValidArrayValue(relationData);
 
-var _removeRelationParent = (relations: ThreeDTransformRelationData) => {
-    relations.parent = null;
-}
+// var _removeRelationParent = (relationMap: ThreeDTransformRelationData) => {
+//     relationMap.parent = null;
+// }
 
 var _addToDirtyList = requireCheckFunc((indexInArrayBuffer: number, ThreeDTransformData: any) => {
     it("firstDirtyIndex should <= count", () => {
@@ -455,14 +510,13 @@ var _updateDirtyList = curry((GlobalTempData: any, ThreeDTransformData: any, sta
 })
 
 var _sortParentBeforeChildInDirtyList = (ThreeDTransformData: any) => {
-    var relations = ThreeDTransformData.relations,
-        count = ThreeDTransformData.count;
+    var count = ThreeDTransformData.count;
 
     for (let i = ThreeDTransformData.firstDirtyIndex; i < count; i++) {
-        let parent = relations[i].parent;
+        let parent = _getParent(_getUID(i, ThreeDTransformData), ThreeDTransformData);
 
-        if (_isRelationDataExist(parent)) {
-            let parentIndex = parent.indexInArrayBuffer;
+        if (_isParentExist(parent)) {
+            let parentIndex = parent.index;
 
             if (parentIndex > i) {
                 _swap(parentIndex, i, ThreeDTransformData);
@@ -471,46 +525,37 @@ var _sortParentBeforeChildInDirtyList = (ThreeDTransformData: any) => {
     }
 }
 
+var _changeTypeArrData = (sourceIndex: number, targetIndex: number, changeFunc:(arr:Float32Array, sourceIndex:number, targetIndex:number, size:number) => void, ThreeDTransformData: any) => {
+    if (sourceIndex === targetIndex) {
+        return ThreeDTransformData;
+    }
 
-var _moveRelationItemTo = ensureFunc((resultVal, sourceIndex: number, targetIndex: number, ThreeDTransformData: any) => {
-    it("source relation item should be removed", () => {
-        expect(_isValidArrayValue(ThreeDTransformData.relations[sourceIndex])).false;
-    });
-}, requireCheckFunc((sourceIndex: number, targetIndex: number, ThreeDTransformData: any) => {
-    it("source relation should exist", () => {
-        expect(_isRelationItemExist(ThreeDTransformData.relations[sourceIndex])).true;
-    });
-    it("target relation should not exist", () => {
-        expect(_isRelationItemExist(ThreeDTransformData.relations[targetIndex])).false;
-    });
-},(sourceIndex: number, targetIndex: number, ThreeDTransformData: any) => {
-    var dataArr = ThreeDTransformData.relations;
+    let mat4SourceIndex = _getMatrix4DataIndexInArrayBuffer(sourceIndex),
+        mat4TargetIndex = _getMatrix4DataIndexInArrayBuffer(targetIndex),
+        mat4Size = _getMatrix4DataSize(),
+        vec3SourceIndex = _getVector3DataIndexInArrayBuffer(sourceIndex),
+        vec3TargetIndex = _getVector3DataIndexInArrayBuffer(targetIndex),
+        vec3Size = _getVector3DataSize(),
+        quaSourceIndex = _getQuaternionDataIndexInArrayBuffer(sourceIndex),
+        quaTargetIndex = _getQuaternionDataIndexInArrayBuffer(targetIndex),
+        quaSize = _getQuaternionDataSize();
 
-    dataArr[targetIndex] = dataArr[sourceIndex];
-    dataArr[targetIndex].indexInArrayBuffer = targetIndex;
-
-    _resetValInArr(dataArr, sourceIndex);
+    changeFunc(ThreeDTransformData.localToWorldMatrices, mat4SourceIndex, mat4TargetIndex, mat4Size);
+    changeFunc(ThreeDTransformData.localPositions, vec3SourceIndex, vec3TargetIndex, vec3Size);
+    changeFunc(ThreeDTransformData.localRotations, quaSourceIndex, quaTargetIndex, quaSize);
+    changeFunc(ThreeDTransformData.localScales, vec3SourceIndex, vec3TargetIndex, vec3Size);
 
     return ThreeDTransformData;
-}));
+}
 
-var _swapIndexInRelationItemArr = requireCheckFunc((index1: number, index2: number, relationDataArr: Array<ThreeDTransformRelationData>) => {
-    it("the two ones should not point to each other", () => {
-        expect(relationDataArr[index1].indexInArrayBuffer === index2 && relationDataArr[index2].indexInArrayBuffer === index1).false;
-    });
-},(index1: number, index2: number, relationDataArr: Array<ThreeDTransformRelationData>) => {
-    _swapRelationItemIndex(relationDataArr, index1, index2);
+var _changeMapData = (sourceIndex: number, targetIndex: number, changeFunc:(transformMap: TransformMap, sourceIndex: number, targetIndex: number) => void, ThreeDTransformData: any) => {
+    if(sourceIndex === targetIndex){
+        return ThreeDTransformData;
+    }
 
-    DataUtils.swap(relationDataArr, index1, index2, 1);
-})
+    changeFunc(ThreeDTransformData.transformMap, sourceIndex, targetIndex);
 
-var _swapRelationItemIndex = (relationDataArr: Array<ThreeDTransformRelationData>, index1: number, index2: number) => {
-    let temp = relationDataArr[index1].indexInArrayBuffer;
-
-    relationDataArr[index1].indexInArrayBuffer = relationDataArr[index2].indexInArrayBuffer;
-
-
-    relationDataArr[index2].indexInArrayBuffer = temp;
+    return ThreeDTransformData;
 }
 
 var _swap = requireCheckFunc((index1: number, index2: number, ThreeDTransformData: any) => {
@@ -520,60 +565,27 @@ var _swap = requireCheckFunc((index1: number, index2: number, ThreeDTransformDat
     });
 }, (index1: number, index2: number, ThreeDTransformData: any) => {
     _swapTypeArrData(index1, index2, ThreeDTransformData);
-    _swapArrayData(index1, index2, ThreeDTransformData);
+    _swapTransformMapData(index1, index2, ThreeDTransformData);
 
     return ThreeDTransformData;
 })
 
-
-var _swapArrayData = requireCheckFunc((index1: number, index2: number, ThreeDTransformData: any) => {
+var _swapTransformMapData = requireCheckFunc((index1: number, index2: number, ThreeDTransformData: any) => {
     it("source index and target index should be used", () => {
         expect(_isIndexUsed(index1, ThreeDTransformData)).true;
         expect(_isIndexUsed(index2, ThreeDTransformData)).true;
     });
 }, (index1: number, index2: number, ThreeDTransformData: any) => {
-    if (index1 === index2) {
-        return ThreeDTransformData;
-    }
-
-    _setTransformIndexInArrayBufferTable(ThreeDTransformData.transforms[index1], index2, ThreeDTransformData);
-    _setTransformIndexInArrayBufferTable(ThreeDTransformData.transforms[index2], index1, ThreeDTransformData);
-
-    _swapIndexInRelationItemArr(index1, index2, ThreeDTransformData.relations);
-
-    DataUtils.swap(ThreeDTransformData.isTranslateTable, index1, index2, 1);
-
-    DataUtils.swap(ThreeDTransformData.transforms, index1, index2, 1);
-
-    return ThreeDTransformData;
+    return _changeMapData(index1, index2, _swapTransformMap, ThreeDTransformData);
 })
 
 var _swapTypeArrData = (index1: number, index2: number, ThreeDTransformData: any) => {
-    if (index1 === index2) {
-        return ThreeDTransformData;
-    }
-
-    let mat4SourceIndex = _getMatrix4DataIndexInArrayBuffer(index1),
-        mat4TargetIndex = _getMatrix4DataIndexInArrayBuffer(index2),
-        mat4Size = _getMatrix4DataSize(),
-        vec3SourceIndex = _getVector3DataIndexInArrayBuffer(index1),
-        vec3TargetIndex = _getVector3DataIndexInArrayBuffer(index2),
-        vec3Size = _getVector3DataSize(),
-        quaSourceIndex = _getQuaternionDataIndexInArrayBuffer(index1),
-        quaTargetIndex = _getQuaternionDataIndexInArrayBuffer(index2),
-        quaSize = _getQuaternionDataSize();
-
-    DataUtils.swap(ThreeDTransformData.localToWorldMatrices, mat4SourceIndex, mat4TargetIndex, mat4Size);
-    DataUtils.swap(ThreeDTransformData.localPositions, vec3SourceIndex, vec3TargetIndex, vec3Size);
-    DataUtils.swap(ThreeDTransformData.localRotations, quaSourceIndex, quaTargetIndex, quaSize);
-    DataUtils.swap(ThreeDTransformData.localScales, vec3SourceIndex, vec3TargetIndex, vec3Size);
-
-    return ThreeDTransformData;
+    return _changeTypeArrData(index1, index2, _swapTypeArr, ThreeDTransformData);
 }
 
-var _resetValInArr = (dataArr: Array<any>, index: number) => {
-    dataArr[index] = void 0;
-}
+// var _resetValInArr = (dataArr: Array<any>, index: number) => {
+//     dataArr[index] = void 0;
+// }
 
 var _moveToTypeArr = (dataArr: Uint16Array, sourceIndex: number, targetIndex: number, length: number
 ) => {
@@ -589,16 +601,38 @@ var _moveToTypeArr = (dataArr: Uint16Array, sourceIndex: number, targetIndex: nu
     return ThreeDTransformData;
 };
 
-
-var _moveToArr = (dataArr: Array<any>, sourceIndex: number, targetIndex: number, length: number) => {
+var _swapTypeArr = (dataArr: any, index1: number, index2: number, length: number) => {
     for (let i = 0; i < length; i++) {
-        let newIndex1 = sourceIndex + i,
-            newIndex2 = targetIndex + i;
+        let newIndex1 = index1 + i,
+            newIndex2 = index2 + i,
+            temp = dataArr[newIndex2];
 
         dataArr[newIndex2] = dataArr[newIndex1];
 
-        dataArr[newIndex1] = void 0;
+        dataArr[newIndex1] = temp;
     }
+}
+
+var _swapTransformMap = (transformMap: TransformMap, sourceIndex: number, targetIndex: number) => {
+    var sourceTransform = transformMap[sourceIndex],
+        targetTransform = transformMap[targetIndex];
+
+    sourceTransform.index = targetIndex;
+    targetTransform.index = sourceIndex;
+
+    transformMap[targetIndex] = sourceTransform;
+    transformMap[sourceIndex] = targetTransform;
+
+    return ThreeDTransformData;
+}
+
+var _moveToTransformMap = (transformMap: TransformMap, sourceIndex: number, targetIndex: number) => {
+    var sourceTransform = transformMap[sourceIndex];
+
+    sourceTransform.index = targetIndex;
+    transformMap[targetIndex] = sourceTransform;
+
+    deleteVal(sourceIndex, transformMap);
 
     return ThreeDTransformData;
 }
@@ -617,14 +651,14 @@ var _moveToIndex = ensureFunc((returnVal, sourceIndex: number, targetIndex: numb
     });
 },(sourceIndex: number, targetIndex: number, ThreeDTransformData: any) => {
     _moveTypeArrDataToIndex(sourceIndex, targetIndex, ThreeDTransformData);
-    _moveArrayDataToIndex(sourceIndex, targetIndex, ThreeDTransformData);
+    _moveMapDataToIndex(sourceIndex, targetIndex, ThreeDTransformData);
 
     _addNotUsedIndex(sourceIndex, ThreeDTransformData.notUsedIndexArray);
 
     return ThreeDTransformData;
 }))
 
-var _moveArrayDataToIndex = ensureFunc((returnVal, sourceIndex: number, targetIndex: number, ThreeDTransformData: any) => {
+var _moveMapDataToIndex = ensureFunc((returnVal, sourceIndex: number, targetIndex: number, ThreeDTransformData: any) => {
     it("source index should not be used", () => {
         expect(_isIndexUsed(sourceIndex, ThreeDTransformData)).false;
     });
@@ -636,44 +670,12 @@ var _moveArrayDataToIndex = ensureFunc((returnVal, sourceIndex: number, targetIn
         expect(_isIndexUsed(targetIndex, ThreeDTransformData)).false;
     });
 },(sourceIndex: number, targetIndex: number, ThreeDTransformData: any) => {
-    if(sourceIndex === targetIndex){
-        return ThreeDTransformData;
-    }
-
-    _setTransformIndexInArrayBufferTable(ThreeDTransformData.transforms[sourceIndex], targetIndex, ThreeDTransformData);
-    _moveToArr(ThreeDTransformData.transforms, sourceIndex, targetIndex, 1);
-
-    _moveToArr(ThreeDTransformData.isTranslateTable, sourceIndex, targetIndex, 1);
-
-    if (_isRelationItemExist(ThreeDTransformData.relations[sourceIndex])) {
-        _moveRelationItemTo(sourceIndex, targetIndex, ThreeDTransformData);
-    }
-
-    return ThreeDTransformData;
+    return _changeMapData(sourceIndex, targetIndex, _moveToTransformMap, ThreeDTransformData);
 }))
 
 
 var _moveTypeArrDataToIndex = (sourceIndex: number, targetIndex: number, ThreeDTransformData: any) => {
-    if(sourceIndex === targetIndex){
-        return ThreeDTransformData;
-    }
-
-    let mat4SourceIndex = _getMatrix4DataIndexInArrayBuffer(sourceIndex),
-        mat4TargetIndex = _getMatrix4DataIndexInArrayBuffer(targetIndex),
-        mat4Size = _getMatrix4DataSize(),
-        vec3SourceIndex = _getVector3DataIndexInArrayBuffer(sourceIndex),
-        vec3TargetIndex = _getVector3DataIndexInArrayBuffer(targetIndex),
-        vec3Size = _getVector3DataSize(),
-        quaSourceIndex = _getQuaternionDataIndexInArrayBuffer(sourceIndex),
-        quaTargetIndex = _getQuaternionDataIndexInArrayBuffer(targetIndex),
-        quaSize = _getQuaternionDataSize();
-
-    _moveToTypeArr(ThreeDTransformData.localToWorldMatrices, mat4SourceIndex, mat4TargetIndex, mat4Size)
-    _moveToTypeArr(ThreeDTransformData.localPositions, vec3SourceIndex, vec3TargetIndex, vec3Size)
-    _moveToTypeArr(ThreeDTransformData.localRotations, quaSourceIndex, quaTargetIndex, quaSize)
-    _moveToTypeArr(ThreeDTransformData.localScales, vec3SourceIndex, vec3TargetIndex, vec3Size)
-
-    return ThreeDTransformData;
+    return _changeTypeArrData(sourceIndex, targetIndex, _moveToTypeArr, ThreeDTransformData);
 }
 
 
@@ -686,10 +688,10 @@ var _transform = (index: number, GlobalTempData: any, ThreeDTransformData: any) 
             DataUtils.setQuaternionByIndex(GlobalTempData.quaternion_1, ThreeDTransformData.localRotations, quaIndex),
             DataUtils.setVector3ByIndex(GlobalTempData.vector3_2, ThreeDTransformData.localScales, vec3Index)
         ),
-        parent = ThreeDTransformData.relations[index].parent;
+        parent = _getParent(_getUID(index, ThreeDTransformData), ThreeDTransformData);
 
-    if (_isRelationDataExist(parent)) {
-        let parentIndex = parent.indexInArrayBuffer;
+    if (_isParentExist(parent)) {
+        let parentIndex = parent.index;
 
         return _setLocalToWorldMatricesData(DataUtils.setMatrix4ByIndex(GlobalTempData.matrix4_1, ThreeDTransformData.localToWorldMatrices, _getMatrix4DataIndexInArrayBuffer(parentIndex))
                 .multiply(mat),
@@ -771,17 +773,16 @@ var _generateNotUsedIndexInNormalList = ensureFunc((indexInArrayBuffer:number, T
     return index;
 })
 
-var _addItAndItsChildrenToDirtyList = (rootIndexInArrayBuffer: number, ThreeDTransformData: any) => {
-    var indexInArraybuffer: number = rootIndexInArrayBuffer,
-        relationData = _getOrSetRelationItem(indexInArraybuffer, ThreeDTransformData.relations);
+var _addItAndItsChildrenToDirtyList = (rootIndexInArrayBuffer: number, uid:number, ThreeDTransformData: any) => {
+    var indexInArraybuffer: number = rootIndexInArrayBuffer;
 
     if (_isNotDirty(indexInArraybuffer, ThreeDTransformData.firstDirtyIndex)) {
         _addToDirtyList(indexInArraybuffer, ThreeDTransformData);
     }
 
-    forEach(relationData.children, (child: ThreeDTransformRelationData) => {
-        _addItAndItsChildrenToDirtyList(child.indexInArrayBuffer, ThreeDTransformData)
-    })
+    forEach(_getChildren(uid, ThreeDTransformData), (child: ThreeDTransform) => {
+        _addItAndItsChildrenToDirtyList(child.index, child.uid, ThreeDTransformData);
+    });
 
     return ThreeDTransformData;
 }
@@ -790,35 +791,41 @@ var _isValidArrayValue = (val: any) => {
     return isNotUndefined(val);
 }
 
+var _isParentExist = (parent:ThreeDTransform) => isNotUndefined(parent);
 
-var _removeRelationItemFromParent = (parent: ThreeDTransformRelationData, target: ThreeDTransformRelationData) => {
-    _removeRelationParent(target);
+var _removeRelationFromParent = (parent: ThreeDTransform, targetUID: number, ThreeDTransformData:any) => {
+    var parentUID = parent.uid,
+        children = _getChildren(parentUID, ThreeDTransformData);
 
-    if (!_isRelationDataExist(parent.children)) {
+    deleteVal(targetUID, ThreeDTransformData.parentMap);
+
+    if (!isValidMapValue(children)) {
         return;
     }
 
-    parent.children = filter(parent.children, (item: ThreeDTransformRelationData) => {
-        return item !== target;
-    });
+    _setChildren(parentUID, filter(children, (transform:ThreeDTransform) => {
+        return transform.uid !== targetUID;
+    }), ThreeDTransformData);
 }
 
-var _addToParent = requireCheckFunc((childRelationItem: ThreeDTransformRelationData, parentIndexInArrayBuffer: number, ThreeDTransformData: any) => {
+var _addToParent = requireCheckFunc((targetUID:number, target:ThreeDTransform, parent:ThreeDTransform, ThreeDTransformData: any) => {
     it("the child one should not has parent", () => {
-        expect(_isRelationDataExist(childRelationItem.parent)).false;
+        expect(isValidMapValue(_getParent(targetUID, ThreeDTransformData))).false;
     });
-},(childRelationItem: ThreeDTransformRelationData, parentIndexInArrayBuffer: number, ThreeDTransformData: any) => {
-    var parentRelationItem = _getOrSetRelationItem(parentIndexInArrayBuffer, ThreeDTransformData.relations),
-        children = parentRelationItem.children;
+    it("parent should not already has the child", () => {
+        var parentUID = parent.uid,
+            children = _getChildren(parentUID, ThreeDTransformData);
 
-    childRelationItem.parent = parentRelationItem;
+        if(isValidMapValue(children)){
+            expect(children.indexOf(target)).equal(-1);
+        }
+    });
+},(targetUID:number, target:ThreeDTransform, parent:ThreeDTransform, ThreeDTransformData: any) => {
+    var parentUID = parent.uid;
 
-    if (_isRelationDataExist(children)) {
-        children.push(childRelationItem);
-    }
-    else {
-        parentRelationItem.children = [childRelationItem];
-    }
+    _setParent(targetUID, parent, ThreeDTransformData);
+
+    _addChild(parentUID, target, ThreeDTransformData);
 })
 
 var _addFirstDirtyIndex = ensureFunc((firstDirtyIndex: number) => {
@@ -837,43 +844,37 @@ var _minusFirstDirtyIndex = ensureFunc((firstDirtyIndex: number) => {
     return firstDirtyIndex - 1;
 })
 
-var _disposeItemInDataContainer = curry((indexInArrayBuffer: number, GlobalTempData: any, ThreeDTransformData: any) => {
+var _disposeItemInDataContainer = curry((indexInArrayBuffer: number, uid:number, GlobalTempData: any, ThreeDTransformData: any) => {
     var mat = GlobalTempData.matrix4_1.setIdentity(),
         positionVec = GlobalTempData.vector3_1.set(0, 0, 0),
         qua = GlobalTempData.quaternion_1.set(0, 0, 0, 1),
         scaleVec = GlobalTempData.vector3_2.set(1, 1, 1);
 
-    _setTransformItemInTypeArr(indexInArrayBuffer, mat, qua, positionVec, scaleVec, ThreeDTransformData);
+    _setTransformDataInTypeArr(indexInArrayBuffer, mat, qua, positionVec, scaleVec, ThreeDTransformData);
 
-    DataUtils.removeItemInArray(ThreeDTransformData.transforms, indexInArrayBuffer);
-
-    _removeRelationItem(indexInArrayBuffer, ThreeDTransformData);
+    _removeRelationData(uid, ThreeDTransformData);
 
     return ThreeDTransformData;
 })
 
-var _removeRelationItem = (indexInArrayBuffer: number, ThreeDTransformData: any) => {
-    var relations = ThreeDTransformData.relations,
-        relationData = relations[indexInArrayBuffer];
+var _removeRelationData = (uid:number, ThreeDTransformData: any) => {
+    deleteVal(uid, ThreeDTransformData.childrenMap);
 
+    let parent = _getParent(uid, ThreeDTransformData);
 
-    _resetValInArr(relations, indexInArrayBuffer);
-
-    let parent = relationData.parent;
-
-    if (_isRelationDataExist(parent)) {
-        _removeRelationItemFromParent(parent, relationData);
+    if (_isParentExist(parent)) {
+        _removeRelationFromParent(parent, uid, ThreeDTransformData);
     }
 }
 
-var _disposeFromNormalList = (indexInArrayBuffer: number, GlobalTempData: any, ThreeDTransformData: any) => {
+var _disposeFromNormalList = (indexInArrayBuffer: number, uid:number, GlobalTempData: any, ThreeDTransformData: any) => {
     _addNotUsedIndex(indexInArrayBuffer, ThreeDTransformData.notUsedIndexArray);
 
-    return _disposeItemInDataContainer(indexInArrayBuffer, GlobalTempData, ThreeDTransformData);
+    return _disposeItemInDataContainer(indexInArrayBuffer, uid, GlobalTempData, ThreeDTransformData);
 }
 
 
-var _disposeFromDirtyList = (indexInArrayBuffer: number, GlobalTempData: any, ThreeDTransformData: any) => {
+var _disposeFromDirtyList = (indexInArrayBuffer: number, uid:number, GlobalTempData: any, ThreeDTransformData: any) => {
     var firstDirtyIndex = ThreeDTransformData.firstDirtyIndex;
 
     _swap(indexInArrayBuffer, firstDirtyIndex, ThreeDTransformData);
@@ -882,12 +883,12 @@ var _disposeFromDirtyList = (indexInArrayBuffer: number, GlobalTempData: any, Th
         (ThreeDTransformData) => {
             ThreeDTransformData.firstDirtyIndex = _addFirstDirtyIndex(ThreeDTransformData);
         },
-        _disposeItemInDataContainer(firstDirtyIndex, GlobalTempData)
+        _disposeItemInDataContainer(firstDirtyIndex, uid, GlobalTempData)
     )(ThreeDTransformData)
 }
 
 // var _forbiddenAccessTransformDataBeforeAddToEntityObject = (transform: ThreeDTransform, ThreeDTransformData:any) => {
-//     it("should access transform data after added to entityObject", () => {
+//     it("should access transform data after added to gameObject", () => {
 //         expect(_isValidTableValue(_getTransformIndexInArrayBufferTable(transform, ThreeDTransformData))).true;
 //         expect(ThreeDTransformData.transforms[_getTransformIndexInArrayBufferTable(transform, ThreeDTransformData)] === transform).true;
 //     });
@@ -928,7 +929,7 @@ var _setLocalScaleData = (scale: Vector3, vec3IndexInArrayBuffer: number, ThreeD
 }
 
 
-var _setTransformItemInTypeArr = (indexInArrayBuffer: number, mat: Matrix4, qua: Quaternion, positionVec: Vector3, scaleVec: Vector3, ThreeDTransformData: any) => {
+var _setTransformDataInTypeArr = (indexInArrayBuffer: number, mat: Matrix4, qua: Quaternion, positionVec: Vector3, scaleVec: Vector3, ThreeDTransformData: any) => {
     _setLocalRotationData(qua, _getQuaternionDataIndexInArrayBuffer(indexInArrayBuffer), ThreeDTransformData);
     _setLocalPositionData(positionVec, _getVector3DataIndexInArrayBuffer(indexInArrayBuffer), ThreeDTransformData);
     _setLocalScaleData(scaleVec, _getVector3DataIndexInArrayBuffer(indexInArrayBuffer), ThreeDTransformData);
@@ -946,7 +947,7 @@ var _addDefaultTransformData = (GlobalTempData: any, ThreeDTransformData: any) =
         scaleVec = GlobalTempData.vector3_2.set(1, 1, 1);
 
     for (let i = _getStartIndexInArrayBuffer(); i < count; i++) {
-        _setTransformItemInTypeArr(i, mat, qua, positionVec, scaleVec, ThreeDTransformData);
+        _setTransformDataInTypeArr(i, mat, qua, positionVec, scaleVec, ThreeDTransformData);
     }
 }
 
@@ -964,22 +965,36 @@ export var initData = (GlobalTempData: any, ThreeDTransformData: any) => {
 
     buffer = ThreeDTransformData.buffer;
 
-    ThreeDTransformData.relations = [];
-
     ThreeDTransformData.localToWorldMatrices = new Float32Array(buffer, 0, count * _getMatrix4DataSize());
     ThreeDTransformData.localPositions = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * _getMatrix4DataSize(), count * _getVector3DataSize());
     ThreeDTransformData.localRotations = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * (_getMatrix4DataSize() + _getVector3DataSize()), count * _getQuaternionDataSize());
     ThreeDTransformData.localScales = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * (_getMatrix4DataSize() + _getVector3DataSize() + _getQuaternionDataSize()), count * _getVector3DataSize());
 
 
-    ThreeDTransformData.transforms = [];
-    ThreeDTransformData.transformIndexInArrayBufferTable = [];
     ThreeDTransformData.notUsedIndexArray = [];
 
-    ThreeDTransformData.isTranslateTable = [];
+
+    ThreeDTransformData.parentMap = {};
+    ThreeDTransformData.childrenMap = {};
+
+    ThreeDTransformData.isTranslateMap = {};
+
+    ThreeDTransformData.positionCacheMap = {};
+    ThreeDTransformData.localPositionCacheMap = {};
+    ThreeDTransformData.localToWorldMatrixCacheMap = {};
+
+    ThreeDTransformData.tempPositionMap = {};
+    ThreeDTransformData.tempLocalPositionMap = {};
+    ThreeDTransformData.tempLocalToWorldMatrixMap = {};
+
+    ThreeDTransformData.transformMap = {};
+
+    ThreeDTransformData.gameObjectMap = {};
 
     ThreeDTransformData.firstDirtyIndex = ThreeDTransformData.count;
     ThreeDTransformData.indexInArrayBuffer = _getStartIndexInArrayBuffer();
+
+    ThreeDTransformData.uid = 0;
 
     _addDefaultTransformData(GlobalTempData, ThreeDTransformData);
 }

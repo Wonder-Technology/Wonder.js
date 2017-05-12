@@ -1,0 +1,26 @@
+var gameObjectTool = (function () {
+    return {
+        create: wd.createGameObject,
+        hasComponent : wd.hasGameObjectComponent,
+        getComponent : wd.getGameObjectComponent,
+        getTransform : wd.getGameObjectTransform,
+        isAlive : wd.isGameObjectAlive,
+        dispose: wd.disposeGameObject,
+        disposeComponent: wd.disposeGameObjectComponent,
+        addComponent : wd.addGameObjectComponent,
+        has: wd.hasGameObject,
+        add: wd.addGameObject,
+        remove: wd.removeGameObject,
+
+        resetData: function(){
+            var GameObjectData = wd.GameObjectData;
+
+            GameObjectData.freeIndiceQueue = [];
+            GameObjectData.generationArr = [];
+
+            GameObjectData.componentMap = {};
+            GameObjectData.parentMap = {};
+            GameObjectData.childrenMap = {};
+        }
+    }
+})()

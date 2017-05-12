@@ -75,8 +75,14 @@
                     var pos = box.transform.position;
                     var localPos = box.transform.localPosition;
 
-                    var uid = box.transform.uid;
-                    var data = {uid:uid};
+//                    var uid = box.transform.uid;
+                    var data = {
+//                        uid:uid,
+//                        index: box.transform.index
+                        transform: box.transform
+                    };
+
+                    data.index = box.transform.index;
 
                     if(pos.x >= 500){
                         data.localPosition = wd.Vector3.create(100,localPos.y,localPos.z);

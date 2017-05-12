@@ -179,6 +179,12 @@ var testTool = (function () {
                 set: setterFunc
             });
         },
+        clear: function(sandbox){
+            this.clearInstance(sandbox);
+            this.clearComponentData();
+
+            gameObjectTool.resetData();
+        },
         clearInstance: function (sandbox) {
             // wd.EventManager.off();
             //
@@ -200,6 +206,10 @@ var testTool = (function () {
             //
             //
             this.closeContractCheck();
+        },
+
+        clearComponentData: function(){
+            wd.initThreeDTransform(wd.GlobalTempData, wd.ThreeDTransformData);
         },
 
         openContractCheck: function (sandbox, isInit) {
