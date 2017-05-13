@@ -38,6 +38,7 @@ export {View} from "./structure/View";
 export {initThreeDTransform,DomQuery,fromArray} from "./test/forUnitTest";
 export {cacheFunc} from "./utils/cacheUtils";
 export {ClassUtils} from "./utils/ClassUtils";
+export {checkGameObjectShouldAlive} from "./utils/contractUtils";
 export {DataUtils} from "./utils/DataUtils";
 export {trace} from "./utils/debugUtils";
 export {compose,chain,map} from "./utils/functionalUtils";

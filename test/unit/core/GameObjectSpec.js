@@ -5,9 +5,9 @@ describe("GameObject", function() {
     function shouldAlive(gameObject, testFunc) {
         gameObjectTool.dispose(gameObject);
 
-        var result = testFunc(gameObject);
-
-        expect(result === null || result === false).toBeTruthy();
+        expect(function () {
+            testFunc(gameObject)
+        }).toThrow("gameObject is diposed, should release it");
     }
 
     beforeEach(function(){
@@ -40,6 +40,12 @@ describe("GameObject", function() {
 
             expect(gameObjectTool.isAlive(gameObject)).toBeFalsy();
         });
+        it("if dispose, its all referenced gameObjects should not work", function () {
+
+        });
+        it("if dispose, its all components should be disposed", function () {
+
+        });
     });
 
     describe("addComponent", function() {
@@ -47,7 +53,7 @@ describe("GameObject", function() {
 
         });
 
-        it("if gameObject not alive, return null", function() {
+        it("if gameObject not alive, error", function() {
             shouldAlive(gameObject, function (gameObject) {
                 return gameObjectTool.addComponent(gameObject, transformTool.create());
             })
