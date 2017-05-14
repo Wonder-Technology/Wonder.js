@@ -1,5 +1,5 @@
 import { ClassUtils } from "../utils/ClassUtils";
-import { DataOrientedComponent } from "./DataOrientedComponent";
+import { Component } from "./Component";
 
 var _generateTypeId = () => {
     var result = _typeId;
@@ -13,7 +13,7 @@ export var getTypeIdFromClass = (_class: any) => {
     return _table[ClassUtils.getClassNameByClass(_class)];
 }
 
-export var getTypeIdFromComponent = (component: DataOrientedComponent) => {
+export var getTypeIdFromComponent = (component: Component) => {
     return _table[ClassUtils.getClassNameByInstance(component)];
 }
 

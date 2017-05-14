@@ -11,10 +11,10 @@ import {
 } from "./ThreeDTransformSystem";
 import { getParent, disposeComponent } from "./ThreeDTransformSystem";
 import { GlobalTempData } from "../../definition/GlobalTempData";
-import { DataOrientedComponent } from "../DataOrientedComponent";
+import { Component } from "../Component";
 
 @registerClass("ThreeDTransform")
-export class ThreeDTransform extends DataOrientedComponent{
+export class ThreeDTransform extends Component{
 }
 
 

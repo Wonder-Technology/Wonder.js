@@ -5,8 +5,8 @@ import {
     isAlive, removeChild
 } from "./GameObjectSystem";
 import { GameObjectData } from "./GameObjectData";
-import { DataOrientedComponent } from "../../../component/DataOrientedComponent";
-import { getTypeIdFromClass } from "../../../component/DataOrientedComponentTypeIdManager";
+import { Component } from "../../../component/Component";
+import { getTypeIdFromClass } from "../../../component/ComponentTypeIdManager";
 import { ThreeDTransformData } from "../../../component/transform/ThreeDTransformData";
 import { create as createThreeDTransform } from "../../../component/transform/ThreeDTransformSystem";
 import { requireCheckFunc } from "../../../definition/typescript/decorator/contract";
@@ -21,7 +21,7 @@ export var createGameObject = () => create(createThreeDTransform(ThreeDTransform
 
 export var addGameObjectComponent = requireCheckFunc((gameObject:GameObject, child:GameObject) => {
     checkGameObjectShouldAlive(gameObject, GameObjectData);
-},(gameObject:GameObject, component: DataOrientedComponent) => {
+},(gameObject:GameObject, component: Component) => {
     addComponent(gameObject, component, GameObjectData);
 })
 
@@ -33,7 +33,7 @@ export var disposeGameObject = requireCheckFunc((gameObject:GameObject, child:Ga
 
 export var disposeGameObjectComponent = requireCheckFunc((gameObject:GameObject, child:GameObject) => {
     checkGameObjectShouldAlive(gameObject, GameObjectData);
-},(gameObject:GameObject, component: DataOrientedComponent) => {
+},(gameObject:GameObject, component: Component) => {
     disposeComponent(gameObject, component, GameObjectData);
 })
 

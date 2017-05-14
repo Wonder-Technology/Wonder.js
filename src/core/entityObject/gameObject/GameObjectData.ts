@@ -1,5 +1,5 @@
 import { GameObject } from "./GameObject";
-import { DataOrientedComponent } from "../../../component/DataOrientedComponent";
+import { Component } from "../../../component/Component";
 
 export class GameObjectData{
     public static uid:number = 0;
@@ -19,7 +19,7 @@ export type GameObjectIsAliveMap = {
 
 export type GameObjectComponentMap = {
     [uid:string]:{
-        [typeId:string]:DataOrientedComponent;
+        [typeId:string]:Component;
     }
 }
 

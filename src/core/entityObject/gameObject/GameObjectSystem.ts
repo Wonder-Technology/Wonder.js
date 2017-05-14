@@ -1,6 +1,6 @@
 import { GameObject, IUIDEntity } from "./GameObject";
-import { DataOrientedComponent } from "../../../component/DataOrientedComponent";
-import { getTypeIdFromClass, getTypeIdFromComponent } from "../../../component/DataOrientedComponentTypeIdManager";
+import { Component } from "../../../component/Component";
+import { getTypeIdFromClass, getTypeIdFromComponent } from "../../../component/ComponentTypeIdManager";
 import { deleteVal, isValidMapValue } from "../../../utils/objectUtils";
 import { create as createThreeDTransform, setParent } from "../../../component/transform/ThreeDTransformSystem";
 import { GameObjectData, GameObjectParentMap } from "./GameObjectData";
@@ -10,7 +10,7 @@ import { ThreeDTransform } from "../../../component/transform/ThreeDTransform";
 import filter from "wonder-lodash/filter";
 import forEach from "wonder-lodash/forEach";
 import { isNotUndefined } from "../../../utils/JudgeUtils";
-import { execHandle } from "../../../component/DataOrientedComponentSystem";
+import { execHandle } from "../../../component/ComponentSystem";
 
 export var create = (transform:ThreeDTransform, GameObjectData:any) => {
     var gameObject:GameObject = new GameObject(),
@@ -87,11 +87,11 @@ var _disposeAllComponents = (gameObject:GameObject, GameObjectData:any) => {
     }
 }
 
-export var addComponent = requireCheckFunc((gameObject:GameObject, component: DataOrientedComponent, GameObjectData:any) => {
+export var addComponent = requireCheckFunc((gameObject:GameObject, component: Component, GameObjectData:any) => {
     it("should not has this type of component, please dispose it", () => {
         expect(hasComponent(gameObject, getTypeIdFromComponent(component), GameObjectData)).false;
     });
-}, (gameObject:GameObject, component: DataOrientedComponent, GameObjectData:any) => {
+}, (gameObject:GameObject, component: Component, GameObjectData:any) => {
     var uid = gameObject.uid,
         typeID = getTypeIdFromComponent(component),
         data = GameObjectData.componentMap[uid];
@@ -110,7 +110,7 @@ export var addComponent = requireCheckFunc((gameObject:GameObject, component: Da
     data[typeID] = component;
 })
 
-var _removeComponent = (typeID:string, gameObject:GameObject, component: DataOrientedComponent, GameObjectData:any) => {
+var _removeComponent = (typeID:string, gameObject:GameObject, component: Component, GameObjectData:any) => {
     var uid = gameObject.uid,
         data = GameObjectData.componentMap[uid];
 
@@ -119,11 +119,11 @@ var _removeComponent = (typeID:string, gameObject:GameObject, component: DataOri
     }
 }
 
-// export var removeComponent = (gameObject:GameObject, component: DataOrientedComponent, GameObjectData:any) => {
+// export var removeComponent = (gameObject:GameObject, component: Component, GameObjectData:any) => {
 //     _removeComponent(getTypeIdFromComponent(component), gameObject, component, GameObjectData);
 // }
 
-export var disposeComponent = (gameObject:GameObject, component: DataOrientedComponent, GameObjectData:any) => {
+export var disposeComponent = (gameObject:GameObject, component: Component, GameObjectData:any) => {
     var typeID = getTypeIdFromComponent(component);
 
     _removeComponent(typeID, gameObject, component, GameObjectData);
@@ -156,7 +156,7 @@ var _isParentExist = (parent:GameObject) => isNotUndefined(parent);
 
 var _isChildrenExist = (children:Array<GameObject>) => isNotUndefined(children);
 
-var _isComponentExist = (component:DataOrientedComponent) => component !== null;
+var _isComponentExist = (component:Component) => component !== null;
 
 var _isGameObjectEqual = (gameObject1:GameObject, gameObject2:GameObject) => gameObject1.uid === gameObject2.uid;
 
@@ -229,3 +229,4 @@ export var hasChild = (gameObject:GameObject, child:GameObject, GameObjectData:a
 
     return _isGameObjectEqual(parent, gameObject);
 }
+

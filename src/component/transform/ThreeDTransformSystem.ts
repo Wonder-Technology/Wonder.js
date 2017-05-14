@@ -13,8 +13,8 @@ import { Matrix4 } from "../../math/Matrix4";
 import { Vector3 } from "../../math/Vector3";
 import { Quaternion } from "../../math/Quaternion";
 import { cacheFunc } from "../../utils/cacheUtils";
-import { IDataOrientedComponent } from "../DataOrientedComponent";
-import { addAddComponentHandle as addAddComponentHandleToMap, addDisposeHandle as addDisposeHandleToMap } from "../DataOrientedComponentSystem";
+import { IComponent } from "../Component";
+import { addAddComponentHandle as addAddComponentHandleToMap, addDisposeHandle as addDisposeHandleToMap } from "../ComponentSystem";
 import { deleteVal, isValidMapValue } from "../../utils/objectUtils";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 
@@ -178,15 +178,15 @@ var _setIsTranslate = requireCheckFunc ((uid:number, isTranslate:boolean, ThreeD
     ThreeDTransformData.isTranslateMap[uid] = isTranslate;
 })
 
-export var getLocalToWorldMatrix = requireCheckFunc((transform: IDataOrientedComponent, mat:Matrix4, ThreeTransformData: any) => {
+export var getLocalToWorldMatrix = requireCheckFunc((transform: IComponent, mat:Matrix4, ThreeTransformData: any) => {
     _checkTransformShouldAlive(transform, ThreeTransformData);
-}, cacheFunc((transform: IDataOrientedComponent, mat:Matrix4, ThreeTransformData: any) => {
+}, cacheFunc((transform: IComponent, mat:Matrix4, ThreeTransformData: any) => {
     return isValidMapValue(ThreeTransformData.localPositionCacheMap[transform.uid]);
-}, (transform:IDataOrientedComponent, mat:Matrix4, ThreeTransformData: any) => {
+}, (transform:IComponent, mat:Matrix4, ThreeTransformData: any) => {
     return ThreeTransformData.localPositionCacheMap[transform.uid];
-}, (transform: IDataOrientedComponent, mat:Matrix4, ThreeTransformData: any, returnedMat:Matrix4) => {
+}, (transform: IComponent, mat:Matrix4, ThreeTransformData: any, returnedMat:Matrix4) => {
     ThreeTransformData.localPositionCacheMap[transform.uid] = returnedMat;
-}, (transform: IDataOrientedComponent, mat:Matrix4, ThreeTransformData: any) => {
+}, (transform: IComponent, mat:Matrix4, ThreeTransformData: any) => {
     return DataUtils.createMatrix4ByIndex(mat, ThreeDTransformData.localToWorldMatrices, _getMatrix4DataIndexInArrayBuffer(transform.index));
 }))
 
