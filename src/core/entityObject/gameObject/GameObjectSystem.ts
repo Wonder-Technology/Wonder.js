@@ -12,22 +12,13 @@ import forEach from "wonder-lodash/forEach";
 import { isNotUndefined } from "../../../utils/JudgeUtils";
 import { execHandle } from "../../../component/DataOrientedComponentSystem";
 
-const MINIMUM_FREE_INDICES = 1024,
-    ENTITY_INDEX_BITS = 22,
-    ENTITY_INDEX_MASK = (1 << ENTITY_INDEX_BITS) - 1,
-    ENTITY_GENERATION_BITS = 8,
-    ENTITY_GENERATION_MASK = (1 << ENTITY_GENERATION_BITS) - 1;
-
-export var getIndex = (uid:number) => uid & ENTITY_INDEX_MASK;
-
-export var getGeneration = (uid:number) => (uid >> ENTITY_INDEX_BITS) & ENTITY_GENERATION_MASK;
-
 export var create = (transform:ThreeDTransform, GameObjectData:any) => {
     var gameObject:GameObject = new GameObject(),
-        freeIndiceQueue:Array<number> = GameObjectData.freeIndiceQueue,
-        generationArr:Array<number> = GameObjectData.generationArr;
+        uid = _buildUID(GameObjectData);
 
-    gameObject.uid = _buildUID(freeIndiceQueue, generationArr);
+    gameObject.uid = uid;
+
+    GameObjectData.isAliveMap[uid] = true;
 
     if(!!transform){
         addComponent(gameObject, transform, GameObjectData);
@@ -36,43 +27,19 @@ export var create = (transform:ThreeDTransform, GameObjectData:any) => {
     return gameObject;
 }
 
-var _buildUID = (freeIndiceQueue:Array<number>, generationArr:Array<number>) => {
-    var index: number = null,
-        generation: number = null;
-
-    if (freeIndiceQueue.length > MINIMUM_FREE_INDICES) {
-        index = freeIndiceQueue.shift();
-
-        generation = generationArr[index];
-    }
-    else {
-        generation = 0;
-        generationArr.push(generation);
-
-        index = generationArr.length - 1;
-    }
-
-    return _buildUIDFromIndexAndGeneration(index, generation);
+var _buildUID = (GameObjectData:any) => {
+    return GameObjectData.uid++;
 }
 
-var _buildUIDFromIndexAndGeneration = (index: number, generation: number) => (generation << ENTITY_INDEX_BITS) + index;
-
 export var isAlive = (entity:IUIDEntity, GameObjectData:any) => {
-    var uid = entity.uid,
-        generationArr:Array<number> = GameObjectData.generationArr;
-
-    return generationArr[getIndex(uid)] === getGeneration(uid);
+    return GameObjectData.isAliveMap[entity.uid] === true;
 }
 
 export var dispose = requireCheckFunc((entity:IUIDEntity, GameObjectData:any) => {
 }, (entity:IUIDEntity, ThreeDTransformData:any, GameObjectData:any) => {
-    var uid = entity.uid,
-        index = getIndex(uid),
-        freeIndiceQueue:Array<number> = GameObjectData.freeIndiceQueue,
-        generationArr:Array<number> = GameObjectData.generationArr;
+    var uid = entity.uid;
 
-    generationArr[index] += 1;
-    freeIndiceQueue.push(index);
+    deleteVal(uid, GameObjectData.isAliveMap);
 
     let parent = _getParent(uid, GameObjectData);
 

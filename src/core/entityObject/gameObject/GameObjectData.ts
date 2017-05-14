@@ -2,14 +2,19 @@ import { GameObject } from "./GameObject";
 import { DataOrientedComponent } from "../../../component/DataOrientedComponent";
 
 export class GameObjectData{
-    public static freeIndiceQueue:Array<number> = [];
-    public static generationArr:Array<number> = [];
+    public static uid:number = 0;
+
+    public static isAliveMap:GameObjectIsAliveMap = {};
 
     public static componentMap:GameObjectComponentMap = {};
     public static parentMap:GameObjectParentMap = {};
     public static childrenMap:GameObjectChildrenMap = {};
 
     //todo add name,tag map
+}
+
+export type GameObjectIsAliveMap = {
+    [uid:string]:boolean;
 }
 
 export type GameObjectComponentMap = {

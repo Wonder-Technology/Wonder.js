@@ -15,8 +15,12 @@ var gameObjectTool = (function () {
         resetData: function(){
             var GameObjectData = wd.GameObjectData;
 
-            GameObjectData.freeIndiceQueue = [];
-            GameObjectData.generationArr = [];
+            // GameObjectData.freeIndiceQueue = [];
+            // GameObjectData.generationArr = [];
+
+            GameObjectData.uid = 0;
+
+            GameObjectData.isAliveMap = {};
 
             GameObjectData.componentMap = {};
             GameObjectData.parentMap = {};
