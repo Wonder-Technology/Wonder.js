@@ -254,19 +254,11 @@ export var removeChild = requireCheckFunc((gameObject:GameObject, child:GameObje
 })
 
 export var hasChild = (gameObject:GameObject, child:GameObject, GameObjectData:any) => {
-    var children = _getChildren(gameObject.uid, GameObjectData);
+    var parent = _getParent(child.uid, GameObjectData);
 
-    if(!_isChildrenExist(children)){
+    if(!_isParentExist(parent)){
         return false;
     }
 
-    for(let i = 0, len = children.length; i < len; i++){
-        let c = children[i];
-
-        if(_isGameObjectEqual(c, child)){
-            return true;
-        }
-    }
-
-    return false;
+    return _isGameObjectEqual(parent, gameObject);
 }
