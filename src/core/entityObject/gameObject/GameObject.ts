@@ -68,9 +68,11 @@ export var addGameObjectComponent = requireCheckFunc((gameObject:GameObject, chi
     addComponent(gameObject, component, GameObjectData);
 })
 
-export var disposeGameObject = (gameObject:GameObject) => {
-    dispose(gameObject, GameObjectData);
-}
+export var disposeGameObject = requireCheckFunc((gameObject:GameObject, child:GameObject) => {
+    checkGameObjectShouldAlive(gameObject, GameObjectData);
+},(gameObject:GameObject) => {
+    dispose(gameObject, ThreeDTransformData, GameObjectData);
+})
 
 export var disposeGameObjectComponent = requireCheckFunc((gameObject:GameObject, child:GameObject) => {
     checkGameObjectShouldAlive(gameObject, GameObjectData);

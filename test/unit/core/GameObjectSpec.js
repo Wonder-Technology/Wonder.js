@@ -2,6 +2,8 @@ describe("GameObject", function() {
     var sandbox = null;
     var gameObject;
 
+    var GameObjectData = wd.GameObjectData;
+
     function shouldAlive(gameObject, testFunc) {
         gameObjectTool.dispose(gameObject);
 
@@ -30,21 +32,54 @@ describe("GameObject", function() {
     });
 
     describe("dispose", function() {
+        var parent,child,child11;
+
         beforeEach(function(){
+            parent = gameObjectTool.create();
+            gameObjectTool.add(parent, gameObject);
+
+            child = gameObjectTool.create();
+            gameObjectTool.add(gameObject, child);
+
+            child11 = gameObjectTool.create();
+            gameObjectTool.add(child, child11);
+
+            testTool.closeContractCheck();
         });
 
-        it("use uid as a weak reference, so only remove uid to make isAlive() return false", function(){
+        it("should not alive", function(){
             expect(gameObjectTool.isAlive(gameObject)).toBeTruthy();
 
             gameObjectTool.dispose(gameObject);
 
             expect(gameObjectTool.isAlive(gameObject)).toBeFalsy();
         });
-        it("if dispose, its all referenced gameObjects should not work", function () {
 
+        it("its parent should remove it", function () {
+            var child2 = gameObjectTool.create();
+            gameObjectTool.add(parent, child2);
+
+            gameObjectTool.dispose(gameObject);
+
+            expect(gameObjectTool.has(parent, gameObject)).toBeFalsy();
+            expect(gameObjectTool.has(parent, child2)).toBeTruthy();
         });
-        it("if dispose, its all components should be disposed", function () {
+        it("should remove children", function () {
+            gameObjectTool.dispose(gameObject);
 
+            expect(gameObjectTool.has(gameObject, child)).toBeFalsy();
+            expect(gameObjectTool.has(child, child11)).toBeFalsy();
+        });
+        it("its all components should be disposed", function () {
+            var tra = gameObjectTool.getTransform(gameObject),
+                tra1 = gameObjectTool.getTransform(child),
+                tra11 = gameObjectTool.getTransform(child11);
+
+            gameObjectTool.dispose(gameObject);
+
+            transformTool.isNotAlive(tra);
+            transformTool.isNotAlive(tra1);
+            transformTool.isNotAlive(tra11);
         });
     });
 
@@ -136,7 +171,7 @@ describe("GameObject", function() {
 
             gameObjectTool.disposeComponent(gameObject, gameObjectTool.getComponent(gameObject, wd.ThreeDTransform));
 
-            expect(transformTool.getPosition(transform)).toEqual(wd.Vector3.create(0,0,0));
+            transformTool.isNotAlive(transform);
         });
     });
 

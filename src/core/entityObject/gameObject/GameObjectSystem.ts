@@ -65,17 +65,60 @@ export var isAlive = (entity:IUIDEntity, GameObjectData:any) => {
 }
 
 export var dispose = requireCheckFunc((entity:IUIDEntity, GameObjectData:any) => {
-    it("gameObject should alive", () => {
-        expect(isAlive(entity, GameObjectData)).true;
-    });
-}, (entity:IUIDEntity, GameObjectData:any) => {
-    var index = getIndex(entity.uid),
+}, (entity:IUIDEntity, ThreeDTransformData:any, GameObjectData:any) => {
+    var uid = entity.uid,
+        index = getIndex(uid),
         freeIndiceQueue:Array<number> = GameObjectData.freeIndiceQueue,
         generationArr:Array<number> = GameObjectData.generationArr;
 
     generationArr[index] += 1;
     freeIndiceQueue.push(index);
+
+    let parent = _getParent(uid, GameObjectData);
+
+    if(_isParentExist(parent)){
+        _removeFromChildrenMap(parent.uid, uid, GameObjectData);
+    }
+
+    _diposeAllDatas(entity, GameObjectData);
 })
+
+var _removeFromChildrenMap = (parentUID:number, childUID:number, GameObjectData:any) => {
+    _setChildren(parentUID, filter(_getChildren(parentUID, GameObjectData), (gameObject:GameObject) => {
+        return gameObject.uid !== childUID;
+    }), GameObjectData);
+}
+
+var _diposeAllDatas = (gameObject:GameObject, GameObjectData:any) => {
+    let uid = gameObject.uid,
+        children = _getChildren(uid, GameObjectData);
+
+    _disposeAllComponents(gameObject, GameObjectData);
+    _disposeMapDatas(uid, GameObjectData);
+
+    forEach(children, (child:GameObject) => {
+        _diposeAllDatas(child, GameObjectData);
+    })
+}
+
+var _disposeMapDatas = (uid:number, GameObjectData:any) => {
+    deleteVal(uid, GameObjectData.childrenMap);
+    deleteVal(uid, GameObjectData.parentMap);
+    deleteVal(uid, GameObjectData.componentMap);
+}
+
+var _disposeAllComponents = (gameObject:GameObject, GameObjectData:any) => {
+    var components = GameObjectData.componentMap[gameObject.uid];
+
+    //todo optimize?
+    for(let typeID in components){
+        if(components.hasOwnProperty(typeID)){
+            let component = components[typeID];
+
+            execHandle(component, "disposeHandleMap");
+        }
+    }
+}
 
 export var addComponent = requireCheckFunc((gameObject:GameObject, component: DataOrientedComponent, GameObjectData:any) => {
     it("should not has this type of component, please dispose it", () => {
@@ -195,7 +238,11 @@ export var addChild = requireCheckFunc ((gameObject:GameObject, child:GameObject
     _addChild(uid, child, GameObjectData);
 })
 
-export var removeChild = (gameObject:GameObject, child:GameObject, ThreeDTransformData:any, GameObjectData:any) => {
+export var removeChild = requireCheckFunc((gameObject:GameObject, child:GameObject, ThreeDTransformData:any, GameObjectData:any) => {
+    it("child should has transform component", () => {
+        expect(getTransform(child, GameObjectData)).exist;
+    });
+},(gameObject:GameObject, child:GameObject, ThreeDTransformData:any, GameObjectData:any) => {
     var uid = gameObject.uid,
         childUID = child.uid;
 
@@ -203,10 +250,8 @@ export var removeChild = (gameObject:GameObject, child:GameObject, ThreeDTransfo
 
     setParent(getTransform(child, GameObjectData), null, ThreeDTransformData);
 
-    _setChildren(uid, filter(_getChildren(uid, GameObjectData), (gameObject:GameObject) => {
-        return gameObject.uid !== childUID;
-    }), GameObjectData);
-}
+    _removeFromChildrenMap(uid, childUID, GameObjectData);
+})
 
 export var hasChild = (gameObject:GameObject, child:GameObject, GameObjectData:any) => {
     var children = _getChildren(gameObject.uid, GameObjectData);

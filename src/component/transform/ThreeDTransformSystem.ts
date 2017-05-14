@@ -76,8 +76,6 @@ export var disposeComponent = curry((GlobalTempData:any, ThreeDTransformData:any
     var indexInArrayBuffer = transform.index,
         uid = transform.uid;
 
-    deleteVal(uid, ThreeDTransformData.gameObjectMap);
-
     if (_isNotDirty(indexInArrayBuffer, ThreeDTransformData.firstDirtyIndex)) {
         return _disposeFromNormalList(indexInArrayBuffer, uid, GlobalTempData, ThreeDTransformData);
     }
@@ -180,7 +178,9 @@ var _setIsTranslate = requireCheckFunc ((uid:number, isTranslate:boolean, ThreeD
     ThreeDTransformData.isTranslateMap[uid] = isTranslate;
 })
 
-export var getLocalToWorldMatrix = cacheFunc((transform: IDataOrientedComponent, mat:Matrix4, ThreeTransformData: any) => {
+export var getLocalToWorldMatrix = requireCheckFunc((transform: IDataOrientedComponent, mat:Matrix4, ThreeTransformData: any) => {
+    _checkTransformShouldAlive(transform, ThreeTransformData);
+}, cacheFunc((transform: IDataOrientedComponent, mat:Matrix4, ThreeTransformData: any) => {
     return isValidMapValue(ThreeTransformData.localPositionCacheMap[transform.uid]);
 }, (transform:IDataOrientedComponent, mat:Matrix4, ThreeTransformData: any) => {
     return ThreeTransformData.localPositionCacheMap[transform.uid];
@@ -188,9 +188,11 @@ export var getLocalToWorldMatrix = cacheFunc((transform: IDataOrientedComponent,
     ThreeTransformData.localPositionCacheMap[transform.uid] = returnedMat;
 }, (transform: IDataOrientedComponent, mat:Matrix4, ThreeTransformData: any) => {
     return DataUtils.createMatrix4ByIndex(mat, ThreeDTransformData.localToWorldMatrices, _getMatrix4DataIndexInArrayBuffer(transform.index));
-})
+}))
 
-export var getPosition = cacheFunc((transform:ThreeDTransform, ThreeTransformData: any) => {
+export var getPosition = requireCheckFunc((transform:ThreeDTransform, ThreeTransformData: any) => {
+    _checkTransformShouldAlive(transform, ThreeTransformData);
+}, cacheFunc((transform:ThreeDTransform, ThreeTransformData: any) => {
     return isValidMapValue(ThreeTransformData.positionCacheMap[transform.uid]);
 }, (transform:ThreeDTransform, ThreeTransformData: any) => {
     return ThreeTransformData.positionCacheMap[transform.uid];
@@ -201,19 +203,17 @@ export var getPosition = cacheFunc((transform:ThreeDTransform, ThreeTransformDat
         localToWorldMatrices = ThreeTransformData.localToWorldMatrices;
 
     return ThreeTransformData.tempPositionMap[transform.uid].set(localToWorldMatrices[indexInArrayBuffer + 12], localToWorldMatrices[indexInArrayBuffer + 13], localToWorldMatrices[indexInArrayBuffer + 14]);
-})
+}))
 
-// export var getTransformDataContainerFromPool = (pool:Array<Matrix4|Vector3>, i:number, createContainerFunc:() => Matrix4|Vector3) => {
-//     var container = pool[i];
-//
-//     if(!_isValidArrayValue(container)){
-//         container = createContainerFunc();
-//
-//         pool[i] = container;
-//     }
-//
-//     return container;
-// }
+var _isAlive = (transform:ThreeDTransform, ThreeTransformData: any) => {
+    return isValidMapValue(ThreeTransformData.transformMap[transform.index]);
+}
+
+var _checkTransformShouldAlive = (transform:ThreeDTransform, ThreeTransformData: any) => {
+    it("transform should alive", () => {
+        expect(_isAlive(transform, ThreeTransformData)).true;
+    });
+}
 
 var _getUID = requireCheckFunc ((indexInArrayBuffer:number, ThreeDTransformData:any) => {
     it("indexInArrayBuffer should exist", () => {
@@ -246,7 +246,9 @@ var _setPositionData = (indexInArrayBuffer:number, parent:ThreeDTransform, vec3I
     }
 }
 
-export var setPosition = (transform:ThreeDTransform, position: Vector3, GlobalTempData: any, ThreeTransformData: any) => {
+export var setPosition = requireCheckFunc((transform:ThreeDTransform, position: Vector3, GlobalTempData: any, ThreeTransformData: any) => {
+    _checkTransformShouldAlive(transform, ThreeTransformData);
+}, (transform:ThreeDTransform, position: Vector3, GlobalTempData: any, ThreeTransformData: any) => {
     var indexInArrayBuffer = transform.index,
         uid = transform.uid,
         parent = _getParent(uid, ThreeDTransformData),
@@ -257,7 +259,7 @@ export var setPosition = (transform:ThreeDTransform, position: Vector3, GlobalTe
     _setIsTranslate(uid, true, ThreeTransformData);
 
     return _addItAndItsChildrenToDirtyList(indexInArrayBuffer, uid, ThreeTransformData);
-}
+})
 
 var _setBatchTransformData = curry((batchData:Array<BatchTransformData>, GlobalTempData: any, ThreeTransformData: any) => {
     for(let data of batchData) {
@@ -344,7 +346,11 @@ var _addBatchToDirtyListByChangeMapData = curry((ThreeTransformData: any, target
 })
 
 
-export var setBatchDatas = (batchData:Array<BatchTransformData>, GlobalTempData: any, ThreeTransformData: any) => {
+export var setBatchDatas = requireCheckFunc((batchData:Array<BatchTransformData>, GlobalTempData: any, ThreeTransformData: any) => {
+    for(let data of batchData) {
+        _checkTransformShouldAlive(data.transform, ThreeTransformData);
+    }
+}, (batchData:Array<BatchTransformData>, GlobalTempData: any, ThreeTransformData: any) => {
     compose(
         _addBatchToDirtyListByChangeMapData(ThreeTransformData, ThreeDTransformData.firstDirtyIndex),
         _addBatchToDirtyListByChangeTypeArrData(ThreeTransformData, ThreeDTransformData.firstDirtyIndex),
@@ -356,21 +362,24 @@ export var setBatchDatas = (batchData:Array<BatchTransformData>, GlobalTempData:
         _getAllTransfomrsNotDirtyIndexArrAndMarkTransform(batchData),
         _setBatchTransformData(batchData, GlobalTempData)
     )(ThreeTransformData);
-}
+})
 
 
-export var getLocalPosition =
-    cacheFunc((transform:ThreeDTransform, ThreeTransformData: any) => {
-        return isValidMapValue(ThreeTransformData.localPositionCacheMap[transform.uid]);
-    }, (transform:ThreeDTransform, ThreeTransformData: any) => {
-        return ThreeTransformData.localPositionCacheMap[transform.uid];
-    }, (transform:ThreeDTransform, ThreeTransformData: any, position:Vector3) => {
-        ThreeTransformData.localPositionCacheMap[transform.uid] = position;
-    }, (transform:ThreeDTransform, ThreeTransformData: any) => {
-        return DataUtils.createVector3ByIndex(ThreeTransformData.tempLocalPositionMap[transform.uid], ThreeDTransformData.localPositions, _getVector3DataIndexInArrayBuffer(transform.index));
-    })
+export var getLocalPosition = requireCheckFunc((transform:ThreeDTransform, ThreeTransformData: any) => {
+    _checkTransformShouldAlive(transform, ThreeTransformData);
+}, cacheFunc((transform:ThreeDTransform, ThreeTransformData: any) => {
+    return isValidMapValue(ThreeTransformData.localPositionCacheMap[transform.uid]);
+}, (transform:ThreeDTransform, ThreeTransformData: any) => {
+    return ThreeTransformData.localPositionCacheMap[transform.uid];
+}, (transform:ThreeDTransform, ThreeTransformData: any, position:Vector3) => {
+    ThreeTransformData.localPositionCacheMap[transform.uid] = position;
+}, (transform:ThreeDTransform, ThreeTransformData: any) => {
+    return DataUtils.createVector3ByIndex(ThreeTransformData.tempLocalPositionMap[transform.uid], ThreeDTransformData.localPositions, _getVector3DataIndexInArrayBuffer(transform.index));
+}))
 
-export var setLocalPosition = (transform:ThreeDTransform, position: Vector3, ThreeTransformData: any) => {
+export var setLocalPosition = requireCheckFunc((transform:ThreeDTransform, position: Vector3, ThreeTransformData: any) => {
+    _checkTransformShouldAlive(transform, ThreeTransformData);
+}, (transform:ThreeDTransform, position: Vector3, ThreeTransformData: any) => {
     var indexInArrayBuffer = transform.index,
         uid = transform.uid,
         vec3IndexInArrayBuffer = _getVector3DataIndexInArrayBuffer(indexInArrayBuffer);
@@ -380,7 +389,7 @@ export var setLocalPosition = (transform:ThreeDTransform, position: Vector3, Thr
     _setIsTranslate(uid, true, ThreeTransformData);
 
     return _addItAndItsChildrenToDirtyList(indexInArrayBuffer, uid, ThreeTransformData);
-}
+})
 
 export var update = (elapsed: number, GlobalTempData: any, ThreeDTransformData: any, state: Map<any, any>) => {
     return compose(
@@ -853,9 +862,22 @@ var _disposeItemInDataContainer = curry((indexInArrayBuffer: number, uid:number,
     _setTransformDataInTypeArr(indexInArrayBuffer, mat, qua, positionVec, scaleVec, ThreeDTransformData);
 
     _removeRelationData(uid, ThreeDTransformData);
+    _disposeMapDatas(indexInArrayBuffer, uid, ThreeDTransformData);
 
     return ThreeDTransformData;
 })
+
+var _disposeMapDatas = (indexInArrayBuffer:number, uid:number, ThreeDTransformData:any) => {
+    deleteVal(uid, ThreeDTransformData.isTranslateMap);
+    deleteVal(uid, ThreeDTransformData.positionCacheMap);
+    deleteVal(uid, ThreeDTransformData.localPositionCacheMap);
+    deleteVal(uid, ThreeDTransformData.localToWorldMatrixCacheMap);
+    deleteVal(uid, ThreeDTransformData.tempLocalToWorldMatrixMap);
+    deleteVal(uid, ThreeDTransformData.tempPositionMap);
+    deleteVal(uid, ThreeDTransformData.tempLocalPositionMap);
+    deleteVal(indexInArrayBuffer, ThreeDTransformData.transformMap);
+    deleteVal(uid, ThreeDTransformData.gameObjectMap);
+}
 
 var _removeRelationData = (uid:number, ThreeDTransformData: any) => {
     deleteVal(uid, ThreeDTransformData.childrenMap);

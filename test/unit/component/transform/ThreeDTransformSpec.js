@@ -492,16 +492,53 @@ describe("ThreeDTransform", function () {
             beforeEach(() => {
             });
 
-            //todo test remove arr data in ThreeDTransformData
+            it("clear all map datas", function () {
+                transformTool.setLocalPosition(tra1, Vector3.create(1,2,3));
+                transformTool.dispose(tra1);
+
+                var uid = tra1.uid,
+                    index = tra1.index;
+                expect(ThreeDTransformData.isTranslateMap[uid]).toBeUndefined();
+                expect(ThreeDTransformData.positionCacheMap[uid]).toBeUndefined();
+                expect(ThreeDTransformData.localPositionCacheMap[uid]).toBeUndefined();
+                expect(ThreeDTransformData.localToWorldMatrixCacheMap[uid]).toBeUndefined();
+                expect(ThreeDTransformData.tempLocalToWorldMatrixMap[uid]).toBeUndefined();
+                expect(ThreeDTransformData.tempPositionMap[uid]).toBeUndefined();
+                expect(ThreeDTransformData.tempLocalPositionMap[uid]).toBeUndefined();
+                expect(ThreeDTransformData.transformMap[index]).toBeUndefined();
+                expect(ThreeDTransformData.gameObjectMap[uid]).toBeUndefined();
+            });
+            it("if set/get transform data after dispose, error", function () {
+                var errorMsg = "transform should alive";
+                var pos = Vector3.create(1,2,3);
+                updateSystem(null, null);
+                transformTool.setLocalPosition(tra1, pos.clone());
+
+                transformTool.dispose(tra1);
+                updateSystem(null, null);
+
+                expect(function(){
+                    transformTool.getPosition(tra1);
+                }).toThrow(errorMsg);
+                expect(function(){
+                    transformTool.getLocalToWorldMatrix(tra1);
+                }).toThrow(errorMsg);
+                expect(function(){
+                    transformTool.getLocalPosition(tra1);
+                }).toThrow(errorMsg);
+                expect(function(){
+                    transformTool.setPosition(tra1, pos.clone());
+                }).toThrow(errorMsg);
+                expect(function(){
+                    transformTool.setLocalPosition(tra1, pos.clone());
+                }).toThrow(errorMsg);
+            });
 
             describe("test if dirty", () => {
                 var pos;
 
                 beforeEach(function(){
                     pos = Vector3.create(1,2,3);
-
-                    // director.scene.addChild(obj1);
-                    // director.scene.addChild(obj2);
                 });
 
                 it("reset its transform data after dispose", function(){
@@ -511,7 +548,9 @@ describe("ThreeDTransform", function () {
                     transformTool.dispose(tra1);
                     updateSystem(null, null);
 
-                    expect(transformTool.getPosition(tra1)).toEqual(Vector3.create(0,0,0));
+                    expect(getValues(ThreeDTransformData.localPositions)).toEqual([
+                        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+                    ])
                 });
                 it("the dispose of one transform shouldn't affect other transform data", function () {
                     var pos2 = Vector3.create(10,2,3);
@@ -539,11 +578,13 @@ describe("ThreeDTransform", function () {
 
                 it("reset its transform data after dispose", function(){
                     transformTool.setLocalPosition(tra1, pos.clone());
-                    updateSystem(null, null);
 
                     transformTool.dispose(tra1);
+                    updateSystem(null, null);
 
-                    expect(transformTool.getPosition(tra1)).toEqual(Vector3.create(0,0,0));
+                    expect(getValues(ThreeDTransformData.localPositions)).toEqual([
+                        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+                    ])
                 });
                 it("the dispose of one transform shouldn't affect other transform data", function () {
                     var pos2 = Vector3.create(10,2,3);

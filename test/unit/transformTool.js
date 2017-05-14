@@ -9,7 +9,18 @@ var transformTool = (function () {
         getParent: wd.getThreeDTransformParent,
         setParent: wd.setThreeDTransformParent,
         dispose: wd.disposeThreeDTransform,
-        create: wd.createThreeDTransform
+        create: wd.createThreeDTransform,
+
+        isAlive: function(transform){
+            expect(function(){
+                this.getPosition(transform)
+            }).not.toThrow();
+        },
+        isNotAlive: function(transform){
+            expect(function(){
+                this.getPosition(transform)
+            }).toThrow();
+        }
     }
 })()
 

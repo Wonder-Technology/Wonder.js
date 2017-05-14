@@ -1,4 +1,5 @@
 import { GameObject } from "./GameObject";
+import { DataOrientedComponent } from "../../../component/DataOrientedComponent";
 
 export class GameObjectData{
     public static freeIndiceQueue:Array<number> = [];
@@ -13,7 +14,7 @@ export class GameObjectData{
 
 export type GameObjectComponentMap = {
     [uid:string]:{
-        [typeId:string]:number;
+        [typeId:string]:DataOrientedComponent;
     }
 }
 
