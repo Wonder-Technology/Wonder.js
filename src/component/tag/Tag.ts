@@ -2,7 +2,7 @@ import { registerClass } from "../../definition/typescript/decorator/registerCla
 import { Component } from "../Component";
 import {
     addAddComponentHandle, addTag as addTagSystemTag, removeTag as removeTagSystemTag, create,
-    findGameObjectsByTag as findTagSystemTagGameObjectsByTag, initData
+    findGameObjectsByTag as findTagSystemTagGameObjectsByTag, initData, addDisposeHandle
 } from "./TagSystem";
 import { TagData } from "./TagData";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
@@ -28,5 +28,6 @@ export var findGameObjectsByTag = (tag:string) => {
 }
 
 addAddComponentHandle(Tag, TagData);
+addDisposeHandle(Tag, TagData);
 
 initData(TagData);

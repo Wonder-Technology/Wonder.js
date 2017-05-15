@@ -18,7 +18,6 @@ describe("ThreeDTransform", function () {
         Vector3 = wd.Vector3,
         ThreeDTransformData = wd.ThreeDTransformData,
         GlobalTempData = wd.GlobalTempData;
-    // var initData = wd.initThreeDTransform;
     var director;
     var updateSystem;
 
@@ -40,7 +39,7 @@ describe("ThreeDTransform", function () {
             return 10;
         });
 
-        // initData(GlobalTempData, ThreeDTransformData);
+        transformTool.resetData();
 
         obj1 = gameObjectTool.create();
         tra1 = gameObjectTool.getTransform(obj1);
@@ -65,7 +64,6 @@ describe("ThreeDTransform", function () {
         testTool.clear(sandbox);
     });
 
-    //todo pass
     describe("build uid", function() {
         beforeEach(function () {
             testTool.clear(sandbox);
@@ -522,7 +520,7 @@ describe("ThreeDTransform", function () {
                 expect(ThreeDTransformData.gameObjectMap[uid]).toBeUndefined();
             });
             it("if set/get transform data after dispose, error", function () {
-                var errorMsg = "transform should alive";
+                var errorMsg = "should alive";
                 var pos = Vector3.create(1,2,3);
                 updateSystem(null, null);
                 transformTool.setLocalPosition(tra1, pos.clone());

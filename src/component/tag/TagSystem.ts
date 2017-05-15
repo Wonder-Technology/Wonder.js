@@ -2,12 +2,20 @@ import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 import { Tag } from "./Tag";
 import { ensureFunc, it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
-import { addAddComponentHandle as addAddComponentHandleToMap } from "../ComponentSystem";
+import {
+    addAddComponentHandle as addAddComponentHandleToMap, addDisposeHandle as addDisposeHandleToMap,
+    checkComponentShouldAlive
+} from "../ComponentSystem";
 import forEach from "wonder-lodash/forEach";
 import curry from "wonder-lodash/curry";
+import { deleteVal, isValidMapValue } from "../../utils/objectUtils";
 
 export var addAddComponentHandle = (_class: any, TagData:any) => {
     addAddComponentHandleToMap(_class, addComponent(TagData));
+}
+
+export var addDisposeHandle = (_class: any, TagData:any) => {
+    addDisposeHandleToMap(_class, disposeComponent(TagData));
 }
 
 export var create = ensureFunc((tag:Tag, slotCount:number, TagData:any) => {
@@ -16,11 +24,11 @@ export var create = ensureFunc((tag:Tag, slotCount:number, TagData:any) => {
             expect(count).exist;
         }
     });
-    it("used slot array should has no hole", () => {
-        for(let count of TagData.usedSlotCountMap){
-            expect(count).exist;
-        }
-    });
+    // it("used slot array should has no hole", () => {
+    //     for(let count of TagData.usedSlotCountMap){
+    //         expect(count).exist;
+    //     }
+    // });
 }, (slotCount:number, TagData:any)  => {
     var tag = new Tag(),
         index = _generateIndex(TagData);
@@ -59,6 +67,8 @@ var _generateIndex = (TagData: any) => {
 }
 
 export var addTag = requireCheckFunc((tagComponent:Tag, tag:string, TagData:any) => {
+    checkTagShouldAlive(tagComponent, TagData);
+
     it("tag should not already be added", () => {
         var index = tagComponent.index,
             indexInArray = _convertTagIndexToIndexInArray(index, TagData),
@@ -83,7 +93,7 @@ export var addTag = requireCheckFunc((tagComponent:Tag, tag:string, TagData:any)
 
         _setSlotCount(index, slotCount, slotCountMap);
 
-        _updateIndexInArrayBufferMap(index, slotCount, TagData);
+        _updateIndexInArrayBufferMap(index, increasedSlotCount, TagData);
 
         TagData.lastIndexInArrayBuffer = _updateIndexMap(indexInArray, index, increasedSlotCount, TagData);
     }
@@ -94,12 +104,12 @@ export var addTag = requireCheckFunc((tagComponent:Tag, tag:string, TagData:any)
     _setUsedSlotCount(index, currentUsedSlotCount + 1, usedSlotCountMap);
 })
 
-var _updateIndexInArrayBufferMap = (startIndex:number, allocatedSlotCount:number, TagData:any) => {
+var _updateIndexInArrayBufferMap = (startIndex:number, increasedSlotCount:number, TagData:any) => {
     var size = TagData.size,
         indexInArrayBufferMap = TagData.indexInArrayBufferMap;
 
-    for(let i = startIndex; i < size; i++){
-        _setIndexInArrayBufferMap(i, allocatedSlotCount, indexInArrayBufferMap);
+    for(let i = startIndex + 1; i <= size; i++){
+        indexInArrayBufferMap[i] += increasedSlotCount;
     }
 }
 
@@ -119,6 +129,8 @@ var _updateIndexMap = (indexInArray:number, index:number, increasedSlotCount:num
 
 //todo optimize: collect redundant allocated slot count
 export var removeTag = requireCheckFunc((tagComponent:Tag, tag:string, TagData:any) => {
+    checkTagShouldAlive(tagComponent, TagData);
+
     it("current used slot count should >= 0", () => {
         var index = tagComponent.index,
             usedSlotCountMap = TagData.usedSlotCountMap;
@@ -198,13 +210,34 @@ var _convertIndexInArrayToTagIndex = (indexInArrayBuffer:number, TagData:any) =>
     return TagData.indexMap[indexInArrayBuffer];
 }
 
-// export var removeComponent = () => {
-//
-// }
-//
-// export var disposeComponent = () => {
-//
-// }
+export var checkTagShouldAlive = (tag:Tag, TagData:any) => {
+    checkComponentShouldAlive(tag, TagData, (tag:Tag, TagData:any) => {
+        return isValidMapValue(TagData.usedSlotCountMap[tag.index]);
+    })
+}
+
+//todo optimize: if there are too many tagArray->holes, pack tagArray to remove holes
+export var disposeComponent = ensureFunc(curry((returnVal, TagData:any, tag:Tag) => {
+    it("size should >= 0", () => {
+        expect(TagData.size).gte(0);
+    });
+}), curry((TagData:any, tag:Tag) => {
+    var index = tag.index,
+        indexInArrayBuffer = _convertTagIndexToIndexInArray(index, TagData),
+        currentSlotCount = _getSlotCount(index, TagData.slotCountMap),
+        tagArray = TagData.tagArray;
+
+    for(let i = indexInArrayBuffer, count = indexInArrayBuffer + currentSlotCount; i < count; i++){
+        tagArray[i] = void 0;
+
+        deleteVal(i, TagData.indexMap);
+    }
+
+    TagData.size -= 1;
+
+    deleteVal(index, TagData.usedSlotCountMap);
+    deleteVal(index, TagData.gameObjectMap);
+}))
 
 export var findGameObjectsByTag = (targetTag:string, TagData:any) => {
     var gameObjectArr:Array<GameObject> = [],

@@ -2,6 +2,8 @@ import { ComponentData } from "./ComponentData";
 import { Component } from "./Component";
 import { getTypeIdFromClass, getTypeIdFromComponent } from "./ComponentTypeIdManager";
 import { GameObject } from "../core/entityObject/gameObject/GameObject";
+import { expect } from "wonder-expect.js";
+import { it } from "../definition/typescript/decorator/contract";
 
 
 var _addHandle = (_class:any, handleMap:object, handle:(component:Component, ...args) => void) => {
@@ -27,4 +29,10 @@ export var execHandle = (component:Component, handleMapName:string, args?:Array<
     else{
         handle(component);
     }
+}
+
+export var checkComponentShouldAlive = (component:Component, data:any, isAlive:(component:Component, data:any) => boolean) => {
+    it("component should alive", () => {
+        expect(isAlive(component, data)).true;
+    });
 }

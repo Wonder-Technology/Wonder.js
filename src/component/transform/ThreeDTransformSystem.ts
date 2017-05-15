@@ -13,7 +13,10 @@ import { Matrix4 } from "../../math/Matrix4";
 import { Vector3 } from "../../math/Vector3";
 import { Quaternion } from "../../math/Quaternion";
 import { cacheFunc } from "../../utils/cacheUtils";
-import { addAddComponentHandle as addAddComponentHandleToMap, addDisposeHandle as addDisposeHandleToMap } from "../ComponentSystem";
+import {
+    addAddComponentHandle as addAddComponentHandleToMap, addDisposeHandle as addDisposeHandleToMap,
+    checkComponentShouldAlive
+} from "../ComponentSystem";
 import { deleteVal, isValidMapValue } from "../../utils/objectUtils";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 
@@ -202,13 +205,9 @@ export var getPosition = requireCheckFunc((transform:ThreeDTransform, ThreeTrans
     return ThreeTransformData.tempPositionMap[transform.uid].set(localToWorldMatrices[indexInArrayBuffer + 12], localToWorldMatrices[indexInArrayBuffer + 13], localToWorldMatrices[indexInArrayBuffer + 14]);
 }))
 
-var _isAlive = (transform:ThreeDTransform, ThreeTransformData: any) => {
-    return isValidMapValue(ThreeTransformData.transformMap[transform.index]);
-}
-
 var _checkTransformShouldAlive = (transform:ThreeDTransform, ThreeTransformData: any) => {
-    it("transform should alive", () => {
-        expect(_isAlive(transform, ThreeTransformData)).true;
+    checkComponentShouldAlive(transform, ThreeTransformData, (transform:ThreeDTransform, ThreeTransformData: any) => {
+        return isValidMapValue(ThreeTransformData.transformMap[transform.index]);
     });
 }
 
