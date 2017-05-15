@@ -4,7 +4,7 @@ import curry from "wonder-lodash/curry";
 import forEach from "wonder-lodash/forEach";
 import filter from "wonder-lodash/filter";
 import { ensureFunc, it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
-import { BatchTransformData, ThreeDTransform } from "./ThreeDTransform";
+import { BatchTransformData, IThreeDTransform, ThreeDTransform } from "./ThreeDTransform";
 import { Map } from "immutable";
 import { expect } from "wonder-expect.js";
 import { DataUtils } from "../../utils/DataUtils";
@@ -13,7 +13,6 @@ import { Matrix4 } from "../../math/Matrix4";
 import { Vector3 } from "../../math/Vector3";
 import { Quaternion } from "../../math/Quaternion";
 import { cacheFunc } from "../../utils/cacheUtils";
-import { IComponent } from "../Component";
 import { addAddComponentHandle as addAddComponentHandleToMap, addDisposeHandle as addDisposeHandleToMap } from "../ComponentSystem";
 import { deleteVal, isValidMapValue } from "../../utils/objectUtils";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
@@ -28,7 +27,7 @@ export var addDisposeHandle = (_class: any, GlobalTempData:any, ThreeDTransformD
 
 export var create = (ThreeDTransformData:any) => {
     var transform = new ThreeDTransform(),
-        index = _createIndexInArrayBuffer(ThreeDTransformData),
+        index = _generateIndexInArrayBuffer(ThreeDTransformData),
         uid = _buildUID(ThreeDTransformData);
 
     transform.index = index;
@@ -41,12 +40,10 @@ export var create = (ThreeDTransformData:any) => {
 }
 
 var _buildUID = (ThreeDTransformData:any) => {
-    ThreeDTransformData.uid += 1;
-
-    return ThreeDTransformData.uid;
+    return ThreeDTransformData.uid++;
 }
 
-var _createIndexInArrayBuffer = (ThreeDTransformData:any) => {
+var _generateIndexInArrayBuffer = (ThreeDTransformData:any) => {
     return _generateNotUsedIndexInArrayBuffer(ThreeDTransformData);
 }
 
@@ -178,15 +175,15 @@ var _setIsTranslate = requireCheckFunc ((uid:number, isTranslate:boolean, ThreeD
     ThreeDTransformData.isTranslateMap[uid] = isTranslate;
 })
 
-export var getLocalToWorldMatrix = requireCheckFunc((transform: IComponent, mat:Matrix4, ThreeTransformData: any) => {
+export var getLocalToWorldMatrix = requireCheckFunc((transform: IThreeDTransform, mat:Matrix4, ThreeTransformData: any) => {
     _checkTransformShouldAlive(transform, ThreeTransformData);
-}, cacheFunc((transform: IComponent, mat:Matrix4, ThreeTransformData: any) => {
+}, cacheFunc((transform: IThreeDTransform, mat:Matrix4, ThreeTransformData: any) => {
     return isValidMapValue(ThreeTransformData.localPositionCacheMap[transform.uid]);
-}, (transform:IComponent, mat:Matrix4, ThreeTransformData: any) => {
+}, (transform:IThreeDTransform, mat:Matrix4, ThreeTransformData: any) => {
     return ThreeTransformData.localPositionCacheMap[transform.uid];
-}, (transform: IComponent, mat:Matrix4, ThreeTransformData: any, returnedMat:Matrix4) => {
+}, (transform: IThreeDTransform, mat:Matrix4, ThreeTransformData: any, returnedMat:Matrix4) => {
     ThreeTransformData.localPositionCacheMap[transform.uid] = returnedMat;
-}, (transform: IComponent, mat:Matrix4, ThreeTransformData: any) => {
+}, (transform: IThreeDTransform, mat:Matrix4, ThreeTransformData: any) => {
     return DataUtils.createMatrix4ByIndex(mat, ThreeDTransformData.localToWorldMatrices, _getMatrix4DataIndexInArrayBuffer(transform.index));
 }))
 

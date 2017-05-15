@@ -14,9 +14,14 @@ import { GlobalTempData } from "../../definition/GlobalTempData";
 import { Component } from "../Component";
 
 @registerClass("ThreeDTransform")
-export class ThreeDTransform extends Component{
+export class ThreeDTransform extends Component implements IThreeDTransform{
+    public uid:number = null;
 }
 
+export interface IThreeDTransform{
+    index:number;
+    uid:number;
+}
 
 export interface BatchTransformData{
     // uid:number;

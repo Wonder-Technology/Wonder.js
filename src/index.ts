@@ -1,6 +1,8 @@
 export {Component} from "./component/Component";
 export {ComponentData} from "./component/ComponentData";
 export {getTypeIdFromClass,getTypeIdFromComponent} from "./component/ComponentTypeIdManager";
+export {Tag,createTag,addTag,findGameObjectsByTag} from "./component/tag/Tag";
+export {TagData} from "./component/tag/TagData";
 export {ThreeDTransform,createThreeDTransform,getThreeDTransformPosition,setThreeDTransformPosition,getThreeDTransformLocalToWorldMatrix,getThreeDTransformLocalPosition,setThreeDTransformLocalPosition,setThreeDTransformBatchTransformDatas,getThreeDTransformParent,setThreeDTransformParent,disposeThreeDTransform} from "./component/transform/ThreeDTransform";
 export {ThreeDTransformData,ThreeDTransformRelationData} from "./component/transform/ThreeDTransformData";
 export {CompileConfig} from "./config/CompileConfig";
@@ -33,7 +35,7 @@ export {Vector4} from "./math/Vector4";
 export {empty,NULL,basic_materialColor_fragment,end_basic_fragment,common_define,common_fragment,common_function,common_vertex,highp_fragment,lowp_fragment,mediump_fragment} from "./renderer/shader/chunk/ShaderChunk";
 export {RectRegion} from "./structure/RectRegion";
 export {View} from "./structure/View";
-export {initThreeDTransform,DomQuery,fromArray} from "./test/forUnitTest";
+export {initThreeDTransformData,DomQuery,fromArray,initTagData} from "./test/forUnitTest";
 export {cacheFunc} from "./utils/cacheUtils";
 export {ClassUtils} from "./utils/ClassUtils";
 export {checkGameObjectShouldAlive} from "./utils/contractUtils";

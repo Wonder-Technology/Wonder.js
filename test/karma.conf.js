@@ -24,7 +24,8 @@
 
         // 'test/unit/**/BufferWriter.js',
 
-        'test/unit/**',
+        // 'test/unit/**',
+        'test/unit/**/Tag*',
         // 'test/unit/**/ThreeD*',
         // 'test/unit/**/GameObject*',
         // 'test/unit/**/Scene*',

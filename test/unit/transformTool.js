@@ -11,6 +11,9 @@ var transformTool = (function () {
         dispose: wd.disposeThreeDTransform,
         create: wd.createThreeDTransform,
 
+        resetData: function(){
+            wd.initThreeDTransformData(wd.GlobalTempData, wd.ThreeDTransformData);
+        },
         isAlive: function(transform){
             expect(function(){
                 this.getPosition(transform)

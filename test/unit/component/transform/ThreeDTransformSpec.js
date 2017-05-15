@@ -18,7 +18,7 @@ describe("ThreeDTransform", function () {
         Vector3 = wd.Vector3,
         ThreeDTransformData = wd.ThreeDTransformData,
         GlobalTempData = wd.GlobalTempData;
-    var initData = wd.initThreeDTransform;
+    // var initData = wd.initThreeDTransform;
     var director;
     var updateSystem;
 
@@ -40,7 +40,7 @@ describe("ThreeDTransform", function () {
             return 10;
         });
 
-        initData(GlobalTempData, ThreeDTransformData);
+        // initData(GlobalTempData, ThreeDTransformData);
 
         obj1 = gameObjectTool.create();
         tra1 = gameObjectTool.getTransform(obj1);
@@ -63,6 +63,19 @@ describe("ThreeDTransform", function () {
         sandbox.restore();
 
         testTool.clear(sandbox);
+    });
+
+    //todo pass
+    describe("build uid", function() {
+        beforeEach(function () {
+            testTool.clear(sandbox);
+        });
+
+        it("uid start from 0", function () {
+            var tra = transformTool.create();
+
+            expect(tra.uid).toEqual(0);
+        });
     });
 
     describe("test cache", function(){

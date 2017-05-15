@@ -1,12 +1,6 @@
 import { registerClass } from "../definition/typescript/decorator/registerClass";
 
 @registerClass("Component")
-export class Component implements IComponent{
-    public uid:number = null;
+export class Component{
     public index:number = null;
-}
-
-export interface IComponent{
-    uid:number;
-    index:number;
 }
