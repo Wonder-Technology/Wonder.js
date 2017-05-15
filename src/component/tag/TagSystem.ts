@@ -1,6 +1,6 @@
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 import { Tag } from "./Tag";
-import { ensureFunc, requireCheckFunc } from "../../definition/typescript/decorator/contract";
+import { ensureFunc, it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { addAddComponentHandle as addAddComponentHandleToMap } from "../ComponentSystem";
 import forEach from "wonder-lodash/forEach";
@@ -58,7 +58,17 @@ var _generateIndex = (TagData: any) => {
     return TagData.index++;
 }
 
-export var addTag = (tagComponent:Tag, tag:string, TagData:any) => {
+export var addTag = requireCheckFunc((tagComponent:Tag, tag:string, TagData:any) => {
+    it("tag should not already be added", () => {
+        var index = tagComponent.index,
+            indexInArray = _convertTagIndexToIndexInArray(index, TagData),
+            tagArray = TagData.tagArray,
+            slotCountMap = TagData.slotCountMap,
+            currentSlotCount = _getSlotCount(index, slotCountMap);
+
+        expect(tagArray.slice(indexInArray, indexInArray + currentSlotCount).indexOf(tag) > -1).false;
+    });
+}, (tagComponent:Tag, tag:string, TagData:any) => {
     var index = tagComponent.index,
         indexInArray = _convertTagIndexToIndexInArray(index, TagData),
         slotCountMap = TagData.slotCountMap,
@@ -82,7 +92,7 @@ export var addTag = (tagComponent:Tag, tag:string, TagData:any) => {
     }
 
     _setUsedSlotCount(index, currentUsedSlotCount + 1, usedSlotCountMap);
-}
+})
 
 var _updateIndexInArrayBufferMap = (startIndex:number, allocatedSlotCount:number, TagData:any) => {
     var size = TagData.size,
@@ -107,9 +117,37 @@ var _updateIndexMap = (indexInArray:number, index:number, increasedSlotCount:num
     return lastIndexInArrayBuffer;
 }
 
-// export var removeTag = (tagComponent:Tag, tag:string, TagData:any) => {
-//
-// }
+//todo optimize: collect redundant allocated slot count
+export var removeTag = requireCheckFunc((tagComponent:Tag, tag:string, TagData:any) => {
+    it("current used slot count should >= 0", () => {
+        var index = tagComponent.index,
+            usedSlotCountMap = TagData.usedSlotCountMap;
+
+        expect(_getUsedSlotCount(index, usedSlotCountMap)).gte(0);
+    });
+}, (tagComponent:Tag, tag:string, TagData:any) => {
+    var index = tagComponent.index,
+        indexInArray = _convertTagIndexToIndexInArray(index, TagData),
+        usedSlotCountMap = TagData.usedSlotCountMap,
+        tagArray = TagData.tagArray,
+        currentUsedSlotCount = _getUsedSlotCount(index, usedSlotCountMap),
+        newUsedSlotCount = currentUsedSlotCount;
+
+    for(let i = indexInArray, count = indexInArray + currentUsedSlotCount; i < count; i++){
+        if(tagArray[i] === tag){
+            tagArray[i] = void 0;
+            newUsedSlotCount = currentUsedSlotCount - 1;
+
+            break;
+        }
+    }
+
+    if(newUsedSlotCount <= 0){
+        newUsedSlotCount = 0;
+    }
+
+    _setUsedSlotCount(index, newUsedSlotCount, usedSlotCountMap);
+})
 
 export var addComponent = curry((TagData:any, tagComponent:Tag, gameObject:GameObject) => {
     TagData.gameObjectMap[tagComponent.index] = gameObject;

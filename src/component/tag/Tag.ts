@@ -1,7 +1,7 @@
 import { registerClass } from "../../definition/typescript/decorator/registerClass";
 import { Component } from "../Component";
 import {
-    addAddComponentHandle, addTag as addTagSystemTag, create,
+    addAddComponentHandle, addTag as addTagSystemTag, removeTag as removeTagSystemTag, create,
     findGameObjectsByTag as findTagSystemTagGameObjectsByTag, initData
 } from "./TagSystem";
 import { TagData } from "./TagData";
@@ -17,6 +17,10 @@ export var createTag = (slotCount:number = 4) => {
 
 export var addTag = (tagComponent:Tag, tag:string) => {
     addTagSystemTag(tagComponent, tag, TagData);
+}
+
+export var removeTag = (tagComponent:Tag, tag:string) => {
+    removeTagSystemTag(tagComponent, tag, TagData);
 }
 
 export var findGameObjectsByTag = (tag:string) => {
