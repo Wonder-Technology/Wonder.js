@@ -14,7 +14,7 @@ export class TagData{
     public static gameObjectMap:TagGameObjectMap = null;
 
     public static index:number = null;
-    public static size:number = null;
+    public static count:number = null;
 }
 
 export type TagGameObjectMap = {

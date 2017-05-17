@@ -35,7 +35,7 @@ export var create = ensureFunc((tag:Tag, slotCount:number, TagData:any) => {
 
     tag.index = index;
 
-    TagData.size += 1;
+    TagData.count += 1;
 
     _setSlotCount(index, slotCount, TagData.slotCountMap);
     _setUsedSlotCount(index, 0, TagData.usedSlotCountMap);
@@ -105,10 +105,10 @@ export var addTag = requireCheckFunc((tagComponent:Tag, tag:string, TagData:any)
 })
 
 var _updateIndexInArrayBufferMap = (startIndex:number, increasedSlotCount:number, TagData:any) => {
-    var size = TagData.size,
+    var count = TagData.count,
         indexInArrayBufferMap = TagData.indexInArrayBufferMap;
 
-    for(let i = startIndex + 1; i <= size; i++){
+    for(let i = startIndex + 1; i <= count; i++){
         indexInArrayBufferMap[i] += increasedSlotCount;
     }
 }
@@ -218,8 +218,8 @@ export var checkTagShouldAlive = (tag:Tag, TagData:any) => {
 
 //todo optimize: if there are too many tagArray->holes, pack tagArray to remove holes
 export var disposeComponent = ensureFunc(curry((returnVal, TagData:any, tag:Tag) => {
-    it("size should >= 0", () => {
-        expect(TagData.size).gte(0);
+    it("count should >= 0", () => {
+        expect(TagData.count).gte(0);
     });
 }), curry((TagData:any, tag:Tag) => {
     var index = tag.index,
@@ -233,7 +233,7 @@ export var disposeComponent = ensureFunc(curry((returnVal, TagData:any, tag:Tag)
         deleteVal(i, TagData.indexMap);
     }
 
-    TagData.size -= 1;
+    TagData.count -= 1;
 
     deleteVal(index, TagData.usedSlotCountMap);
     deleteVal(index, TagData.gameObjectMap);
@@ -262,5 +262,5 @@ export var initData = (TagData:any) => {
 
     TagData.lastIndexInArrayBuffer = 0;
     TagData.index = 0;
-    TagData.size = 0;
+    TagData.count = 0;
 }
