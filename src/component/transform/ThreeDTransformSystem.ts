@@ -977,7 +977,7 @@ var _getStartIndexInArrayBuffer = () => 1;
 export var initData = (GlobalTempData: any, ThreeDTransformData: any) => {
     var buffer: ArrayBuffer = null,
         count = ThreeDTransformData.count,
-        size = Uint16Array.BYTES_PER_ELEMENT * 3 + Float32Array.BYTES_PER_ELEMENT * (16 + 3 + 4 + 3);
+        size = Float32Array.BYTES_PER_ELEMENT * (16 + 3 + 4 + 3);
 
     ThreeDTransformData.buffer = new ArrayBuffer(count * size);
 
