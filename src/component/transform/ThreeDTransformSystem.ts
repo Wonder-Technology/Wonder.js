@@ -530,7 +530,7 @@ var _sortParentBeforeChildInDirtyList = (ThreeDTransformData: any) => {
     }
 }
 
-var _changeTypeArrData = (sourceIndex: number, targetIndex: number, changeFunc:(arr:Float32Array, sourceIndex:number, targetIndex:number, size:number) => void, ThreeDTransformData: any) => {
+var _changeTypeArrData = (sourceIndex: number, targetIndex: number, changeFunc:(arr:Float32Array, sourceIndex:number, targetIndex:number, length:number) => void, ThreeDTransformData: any) => {
     if (sourceIndex === targetIndex) {
         return ThreeDTransformData;
     }
@@ -976,10 +976,10 @@ var _getStartIndexInArrayBuffer = () => 1;
 
 export var initData = (GlobalTempData: any, ThreeDTransformData: any) => {
     var buffer: ArrayBuffer = null,
-        count = ThreeDTransformData.count;
+        count = ThreeDTransformData.count,
+        size = Uint16Array.BYTES_PER_ELEMENT * 3 + Float32Array.BYTES_PER_ELEMENT * (16 + 3 + 4 + 3);
 
-    ThreeDTransformData.size = Uint16Array.BYTES_PER_ELEMENT * 3 + Float32Array.BYTES_PER_ELEMENT * (16 + 3 + 4 + 3);
-    ThreeDTransformData.buffer = new ArrayBuffer(count * ThreeDTransformData.size);
+    ThreeDTransformData.buffer = new ArrayBuffer(count * size);
 
     buffer = ThreeDTransformData.buffer;
 

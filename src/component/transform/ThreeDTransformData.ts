@@ -14,7 +14,6 @@ export class ThreeDTransformData {
     public static localRotations: Float32Array = null;
     public static localScales: Float32Array = null;
 
-    public static size: number = null;
     public static firstDirtyIndex: number = null;
     public static indexInArrayBuffer: number = null;
     public static notUsedIndexArray: Array<number> = null;
