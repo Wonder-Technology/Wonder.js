@@ -11,6 +11,8 @@ import filter from "wonder-lodash/filter";
 import forEach from "wonder-lodash/forEach";
 import { isNotUndefined } from "../../../utils/JudgeUtils";
 import { execHandle } from "../../../component/ComponentSystem";
+import { Geometry } from "../../../component/geometry/Geometry";
+import { Material } from "../../../component/renderComponent/material/Material";
 
 export var create = (transform:ThreeDTransform, GameObjectData:any) => {
     var gameObject:GameObject = new GameObject(),
@@ -150,6 +152,14 @@ export var hasComponent = (gameObject:GameObject, componentTypeID:string, GameOb
 
 export var getTransform = (gameObject:GameObject, GameObjectData:any) => {
     return getComponent(gameObject, getTypeIdFromClass(ThreeDTransform), GameObjectData);
+}
+
+export var getGeometry = (gameObject:GameObject, GameObjectData:any) => {
+    return getComponent(gameObject, getTypeIdFromClass(Geometry), GameObjectData);
+}
+
+export var getMaterial = (gameObject:GameObject, GameObjectData:any) => {
+    return getComponent(gameObject, getTypeIdFromClass(Material), GameObjectData);
 }
 
 var _isParentExist = (parent:GameObject) => isNotUndefined(parent);

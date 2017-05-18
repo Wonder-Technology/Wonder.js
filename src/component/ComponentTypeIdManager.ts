@@ -21,3 +21,5 @@ var _typeId = 1;
 const _table = {};
 
 _table["ThreeDTransform"] = _generateTypeId();
+_table["Geometry"] = _generateTypeId();
+_table["Material"] = _generateTypeId();

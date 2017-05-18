@@ -24,6 +24,9 @@ import { GlobalTempData } from "../definition/GlobalTempData";
 import { Scene } from "./entityObject/scene/Scene";
 import { GameObjectData } from "./entityObject/gameObject/GameObjectData";
 import { create } from "./entityObject/scene/SceneSystem";
+import { init as initBoxGeometry } from "../component/geometry/BoxGeometrySystem";
+import { BoxGeometryData } from "../component/geometry/BoxGeometryData";
+import { clear, init as initRenderer, render } from "../renderer/render/WebGLRenderSystem";
 
 @singleton(true)
 @registerClass("Director")
@@ -86,6 +89,8 @@ export class Director {
         // resultState = this._initGameObjectScene(resultState);
         resultState = this._initSystem(resultState);
 
+        resultState = this._initRenderer(resultState);
+
         // this.renderer.init();
 
         // this._timeController.start();
@@ -103,7 +108,17 @@ export class Director {
     // }
 
     private _initSystem(state: Map<any, any>){
-        return initTransform(GlobalTempData, ThreeDTransformData, state);
+        var resultState = initTransform(GlobalTempData, ThreeDTransformData, state);
+
+        resultState = initBoxGeometry(BoxGeometryData, state);
+
+        return resultState;
+    }
+
+    private _initRenderer(state: Map<any, any>){
+        var resultState = initRenderer(state);
+
+        return resultState;
     }
 
     private _buildLoopStream() {
@@ -129,7 +144,7 @@ export class Director {
 
         var resultState = this._update(elapsed, state);
 
-        // this._render();
+        resultState = this._render(state);
 
         // EventManager.trigger(CustomEvent.create(<any>EEngineEvent.ENDLOOP));
 
@@ -144,16 +159,24 @@ export class Director {
         return resultState;
     }
 
-    // private _render() {
-    //     this.scene.gameObjectScene.render(this.renderer);
-    //
-    //     this.renderer.clear();
-    //
-    //     if (this.renderer.hasCommand()) {
-    //         this.renderer.webglState = BasicState.create();
-    //         this.renderer.render();
-    //     }
-    // }
+    private _render(state: Map<any, any>) {
+        var resultState = state;
+
+        // this.scene.gameObjectScene.render(this.renderer);
+        //
+        // this.renderer.clear();
+        //
+        // if (this.renderer.hasCommand()) {
+        //     this.renderer.webglState = BasicState.create();
+        //     this.renderer.render();
+        // }
+
+        resultState = clear(state);
+
+        resultState = render(state);
+
+        return resultState
+    }
 
     private _updateSystem(elapsed: number, state: Map<any, any>) {
         var resultState = updateTransform(elapsed, GlobalTempData, ThreeDTransformData, state);
