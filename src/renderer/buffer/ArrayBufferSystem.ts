@@ -1,7 +1,6 @@
 import { isValidMapValue } from "../../utils/objectUtils";
 import { getVertices } from "../../component/geometry/GeometrySystem";
 import { EBufferType } from "../enum/EBufferType";
-import { ArrayBufferData } from "./ArrayBufferData";
 
 export var getOrCreateBuffer = (gl:WebGLRenderingContext, geometryIndex:number, bufferType:string, GeometryData:any, ArrayBufferData:any) => {
     var buffer = ArrayBufferData.buffers[geometryIndex];
@@ -42,5 +41,3 @@ export var initData = (ArrayBufferData:any) => {
     ArrayBufferData.buffers = [];
     ArrayBufferData.bufferDataMap = {};
 }
-
-initData(ArrayBufferData);

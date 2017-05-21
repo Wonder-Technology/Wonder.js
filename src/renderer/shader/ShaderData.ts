@@ -1,4 +1,5 @@
 import { ISendAttributeConfig, ISendUniformConfig } from "../data/shaderLib_generator";
+
 export class ShaderData{
     public static index:number = null;
     public static count:number = null;
@@ -10,7 +11,7 @@ export class ShaderData{
     public static uniformLocationMap:UniformLocationMap = null;
 
     public static sendAttributeConfigMap:SendAttributeConfigMap = null;
-    public static sendUniformConfigMap = null;
+    public static sendUniformConfigMap:SendUniformConfigMap = null;
 
     public static lastUsedProgram:WebGLProgram = null;
 

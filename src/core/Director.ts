@@ -15,7 +15,9 @@ import { callFunc, intervalRequest } from "wonder-frp/dist/es2015/global/Operato
 // import { EventManager } from "../event/EventManager";
 // import { CustomEvent } from "../event/object/CustomEvent";
 // import { EEngineEvent } from "../event/EEngineEvent";
-import { init as initTransform, update as updateTransform } from "../component/transform/ThreeDTransformSystem";
+import {
+    init as initTransform, initData as initThreeDTransformData, addAddComponentHandle as addThreeDTransformAddComponentHandle, addDisposeHandle as addThreeDTransformDisposeHandle, update as updateTransform
+} from "../component/transform/ThreeDTransformSystem";
 import { getState, setState } from "./DirectorSystem";
 import { DirectorData } from "./DirectorData";
 import { ThreeDTransformData } from "../component/transform/ThreeDTransformData";
@@ -24,9 +26,25 @@ import { GlobalTempData } from "../definition/GlobalTempData";
 import { Scene } from "./entityObject/scene/Scene";
 import { GameObjectData } from "./entityObject/gameObject/GameObjectData";
 import { create } from "./entityObject/scene/SceneSystem";
-import { init as initGeometry } from "../component/geometry/GeometrySystem";
+import { addAddComponentHandle as addGeometryAddComponentHandle, addDisposeHandle as addGeometryDisposeHandle, init as initGeometry, initData as initGeometryData } from "../component/geometry/GeometrySystem";
 import { clear, init as initRenderer, render } from "../renderer/render/WebGLRenderSystem";
 import { GeometryData } from "../component/geometry/GeometryData";
+import { initData as initShaderData } from "../renderer/shader/ShaderSystem";
+import { ShaderData } from "../renderer/shader/ShaderData";
+import { Geometry } from "../component/geometry/Geometry";
+import { DataBufferConfig } from "../config/DataBufferConfig";
+import { initData as initMaterialData } from "../component/renderComponent/material/MaterialSystem";
+import { MaterialData } from "../component/renderComponent/material/MaterialData";
+import { initData as initMeshRendererData } from "../component/renderComponent/renderer/MeshRendererSystem";
+import { MeshRendererData } from "../component/renderComponent/renderer/MeshRendererData";
+import { initData as initTagData, addAddComponentHandle as addTagAddComponentHandle, addDisposeHandle as addTagDisposeHandle } from "../component/tag/TagSystem";
+import { TagData } from "../component/tag/TagData";
+import { Tag } from "../component/tag/Tag";
+import { ThreeDTransform } from "../component/transform/ThreeDTransform";
+import { initData as initIndexBufferData } from "../renderer/buffer/IndexBufferSystem";
+import { IndexBufferData } from "../renderer/buffer/IndexBufferData";
+import { initData as initArrayBufferData } from "../renderer/buffer/ArrayBufferSystem";
+import { ArrayBufferData } from "../renderer/buffer/ArrayBufferData";
 
 @singleton(true)
 @registerClass("Director")
@@ -184,3 +202,25 @@ export class Director {
         return resultState;
     }
 }
+
+initShaderData(ShaderData);
+
+initGeometryData(DataBufferConfig, GeometryData);
+addGeometryAddComponentHandle(Geometry, GeometryData);
+addGeometryDisposeHandle(Geometry, GeometryData);
+
+initMaterialData(MaterialData);
+
+initMeshRendererData(MeshRendererData);
+
+initTagData(TagData);
+addTagAddComponentHandle(Tag, TagData);
+addTagDisposeHandle(Tag, TagData);
+
+initThreeDTransformData(GlobalTempData, ThreeDTransformData);
+addThreeDTransformAddComponentHandle(ThreeDTransform, ThreeDTransformData);
+addThreeDTransformDisposeHandle(ThreeDTransform, GlobalTempData, ThreeDTransformData);
+
+initArrayBufferData(ArrayBufferData);
+
+initIndexBufferData(IndexBufferData);

@@ -25,7 +25,10 @@
         // 'test/unit/**/BufferWriter.js',
 
         // 'test/unit/**',
-        'test/unit/**/Tag*',
+        // 'test/unit/**/Tag*',
+        'test/unit/**/Geometry*',
+        'test/unit/**/BoxGeometry*',
+        // 'test/unit/**/Main*',
         // 'test/unit/**/ThreeD*',
         // 'test/unit/**/GameObject*',
         // 'test/unit/**/Scene*',

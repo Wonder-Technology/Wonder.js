@@ -1,6 +1,5 @@
 import { isValidMapValue } from "../../utils/objectUtils";
 import { getIndexType, getIndexTypeSize, getIndices } from "../../component/geometry/GeometrySystem";
-import { IndexBufferData } from "./IndexBufferData";
 
 export var getOrCreateBuffer = (gl:WebGLRenderingContext, geometryIndex:number, GeometryData:any, IndexBufferData:any) => {
     var buffer = IndexBufferData.buffers[geometryIndex];
@@ -44,5 +43,3 @@ export var getTypeSize = (GeometryData:any) => {
 export var initData = (IndexBufferData:any) => {
     IndexBufferData.buffers = [];
 }
-
-initData(IndexBufferData);

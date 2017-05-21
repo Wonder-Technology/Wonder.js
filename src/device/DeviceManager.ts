@@ -11,6 +11,8 @@ import { getCanvas } from "../structure/ViewSystem";
 import { fromJS } from "immutable";
 import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
 
+//todo change to function
+
 /*!
  DeviceManager is responsible for global setting of gl
  */
@@ -22,9 +24,9 @@ export class DeviceManager {
     get gl() {
         return getGL(getState(DirectorData));
     }
-    set gl(gl: WebGLRenderingContext) {
-        setGL(gl, getState(DirectorData));
-    }
+    // set gl(gl: WebGLRenderingContext) {
+    //     setGL(gl, getState(DirectorData));
+    // }
 
     get viewport() {
         return getViewport(getState(DirectorData));
@@ -46,4 +48,8 @@ export class DeviceManager {
     public setScreen() {
         return setScreen(getState(DirectorData));
     }
+}
+
+export var setDeviceManagerGL = (gl:WebGLRenderingContext) => {
+    return setGL(gl, getState(DirectorData));
 }

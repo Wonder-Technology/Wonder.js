@@ -52,7 +52,7 @@ describe("ThreeDTransform", function () {
         tra3 = transformTool.create();
         tra3.name = "tra3";
 
-        director = wd.Director.getInstance();
+        director = directorTool.getDirector();
 
         updateSystem = director._updateSystem;
 

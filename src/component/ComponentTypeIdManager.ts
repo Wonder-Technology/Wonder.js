@@ -1,25 +1,35 @@
 import { ClassUtils } from "../utils/ClassUtils";
 import { Component } from "./Component";
 
-var _generateTypeId = () => {
-    var result = _typeId;
+var _generateTypeID = () => {
+    var result = _typeID;
 
-    _typeId += 1;
+    _typeID += 1;
 
     return String(result);
 }
 
-export var getTypeIdFromClass = (_class: any) => {
+export var getTypeIDFromClass = (_class: any) => {
     return _table[ClassUtils.getClassNameByClass(_class)];
 }
 
-export var getTypeIdFromComponent = (component: Component) => {
+export var getTypeIDFromComponent = (component: Component) => {
     return _table[ClassUtils.getClassNameByInstance(component)];
 }
 
-var _typeId = 1;
+var _addTypeID = (componentClassNameArr:Array<string>, table:object) => {
+    var id = _generateTypeID();
+
+    for(let className of componentClassNameArr){
+        table[className] = id;
+    }
+}
+
+var _typeID = 1;
 const _table = {};
 
-_table["ThreeDTransform"] = _generateTypeId();
-_table["Geometry"] = _generateTypeId();
-_table["Material"] = _generateTypeId();
+_addTypeID(["ThreeDTransform"], _table);
+_addTypeID(["Geometry", "BoxGeometry"], _table);
+_addTypeID(["Material", "BasicMaterial"], _table);
+_addTypeID(["MeshRenderer"], _table);
+_addTypeID(["Tag"], _table);

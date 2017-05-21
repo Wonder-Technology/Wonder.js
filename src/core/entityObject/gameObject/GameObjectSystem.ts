@@ -1,6 +1,6 @@
 import { GameObject, IUIDEntity } from "./GameObject";
 import { Component } from "../../../component/Component";
-import { getTypeIdFromClass, getTypeIdFromComponent } from "../../../component/ComponentTypeIdManager";
+import { getTypeIDFromClass, getTypeIDFromComponent } from "../../../component/ComponentTypeIDManager";
 import { deleteVal, isValidMapValue } from "../../../utils/objectUtils";
 import { create as createThreeDTransform, setParent } from "../../../component/transform/ThreeDTransformSystem";
 import { GameObjectData, GameObjectParentMap } from "./GameObjectData";
@@ -91,11 +91,11 @@ var _disposeAllComponents = (gameObject:GameObject, GameObjectData:any) => {
 
 export var addComponent = requireCheckFunc((gameObject:GameObject, component: Component, GameObjectData:any) => {
     it("should not has this type of component, please dispose it", () => {
-        expect(hasComponent(gameObject, getTypeIdFromComponent(component), GameObjectData)).false;
+        expect(hasComponent(gameObject, getTypeIDFromComponent(component), GameObjectData)).false;
     });
 }, (gameObject:GameObject, component: Component, GameObjectData:any) => {
     var uid = gameObject.uid,
-        typeID = getTypeIdFromComponent(component),
+        typeID = getTypeIDFromComponent(component),
         data = GameObjectData.componentMap[uid];
 
     execHandle(component, "addComponentHandleMap", [component, gameObject]);
@@ -122,11 +122,11 @@ var _removeComponent = (typeID:string, gameObject:GameObject, component: Compone
 }
 
 // export var removeComponent = (gameObject:GameObject, component: Component, GameObjectData:any) => {
-//     _removeComponent(getTypeIdFromComponent(component), gameObject, component, GameObjectData);
+//     _removeComponent(getTypeIDFromComponent(component), gameObject, component, GameObjectData);
 // }
 
 export var disposeComponent = (gameObject:GameObject, component: Component, GameObjectData:any) => {
-    var typeID = getTypeIdFromComponent(component);
+    var typeID = getTypeIDFromComponent(component);
 
     _removeComponent(typeID, gameObject, component, GameObjectData);
 
@@ -151,15 +151,15 @@ export var hasComponent = (gameObject:GameObject, componentTypeID:string, GameOb
 }
 
 export var getTransform = (gameObject:GameObject, GameObjectData:any) => {
-    return getComponent(gameObject, getTypeIdFromClass(ThreeDTransform), GameObjectData);
+    return getComponent(gameObject, getTypeIDFromClass(ThreeDTransform), GameObjectData);
 }
 
 export var getGeometry = (gameObject:GameObject, GameObjectData:any) => {
-    return getComponent(gameObject, getTypeIdFromClass(Geometry), GameObjectData);
+    return getComponent(gameObject, getTypeIDFromClass(Geometry), GameObjectData);
 }
 
 export var getMaterial = (gameObject:GameObject, GameObjectData:any) => {
-    return getComponent(gameObject, getTypeIdFromClass(Material), GameObjectData);
+    return getComponent(gameObject, getTypeIDFromClass(Material), GameObjectData);
 }
 
 var _isParentExist = (parent:GameObject) => isNotUndefined(parent);

@@ -1,9 +1,9 @@
 import { BoxGeometry, BoxGeometryConfigData } from "./BoxGeometry";
-// import { BoxGeometryConfigData } from "./BoxGeometryData";
 import { ensureFunc, it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { Vector3 } from "../../math/Vector3";
 import { create as createGeometry } from "./GeometrySystem";
+import { ExtendUtils } from "wonder-commonlib/dist/es2015/utils/ExtendUtils";
 
 export var create = (GeometryData: any) => {
     var geometry = new BoxGeometry();
@@ -11,6 +11,8 @@ export var create = (GeometryData: any) => {
     geometry = createGeometry(geometry, GeometryData);
 
     GeometryData.computeDataFuncMap[geometry.index] = _computeData;
+
+    setConfigData(geometry, {}, GeometryData);
 
     return geometry;
 }
@@ -105,11 +107,7 @@ var _computeData = (index: number, GeometryData: any) => {
 
     return {
         vertices: vertices,
-        //todo direct add to faces, remove indices,normals
-        // faces: GeometryUtils.convertToFaces(indices, normals)
-        // faces: GeometryUtils.convertToFaces(indices)
         indices: indices
-        // texCoords: texCoords
     };
 }
 
@@ -127,16 +125,17 @@ var _getConfigData = ensureFunc((data: BoxGeometryConfigData) => {
     return GeometryData.configDataMap[index];
 })
 
-export var setData = requireCheckFunc((geometry: BoxGeometry, data: BoxGeometryConfigData, GeometryData: any) => {
-    it("should set all config data", () => {
-        expect(data.width).exist;
-        expect(data.height).exist;
-        expect(data.depth).exist;
-        expect(data.widthSegments).exist;
-        expect(data.heightSegments).exist;
-        expect(data.depthSegments).exist;
-    })
+export var setConfigData = requireCheckFunc((geometry: BoxGeometry, data: BoxGeometryConfigData, GeometryData: any) => {
 }, (geometry: BoxGeometry, data: BoxGeometryConfigData, GeometryData: any) => {
-    GeometryData.configDataMap[geometry.index] = data;
+    GeometryData.configDataMap[geometry.index] = ExtendUtils.extend({
+            width:10,
+            height:10,
+            depth:10,
+            widthSegments:1,
+            heightSegments:1,
+            depthSegments:1
+        },
+        data
+    );
 })
 

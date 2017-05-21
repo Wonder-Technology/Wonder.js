@@ -6,7 +6,7 @@ import {
 } from "./GameObjectSystem";
 import { GameObjectData } from "./GameObjectData";
 import { Component } from "../../../component/Component";
-import { getTypeIdFromClass } from "../../../component/ComponentTypeIdManager";
+import { getTypeIDFromClass } from "../../../component/ComponentTypeIDManager";
 import { ThreeDTransformData } from "../../../component/transform/ThreeDTransformData";
 import { create as createThreeDTransform } from "../../../component/transform/ThreeDTransformSystem";
 import { requireCheckFunc } from "../../../definition/typescript/decorator/contract";
@@ -40,7 +40,7 @@ export var disposeGameObjectComponent = requireCheckFunc((gameObject:GameObject,
 export var getGameObjectComponent = requireCheckFunc((gameObject:GameObject, child:GameObject) => {
     checkGameObjectShouldAlive(gameObject, GameObjectData);
 },(gameObject:GameObject, _class:any) => {
-    return getComponent(gameObject, getTypeIdFromClass(_class), GameObjectData);
+    return getComponent(gameObject, getTypeIDFromClass(_class), GameObjectData);
 })
 
 export var getGameObjectTransform = (gameObject:GameObject) => {
@@ -50,7 +50,7 @@ export var getGameObjectTransform = (gameObject:GameObject) => {
 export var hasGameObjectComponent = requireCheckFunc((gameObject:GameObject, child:GameObject) => {
     checkGameObjectShouldAlive(gameObject, GameObjectData);
 },(gameObject:GameObject, _class:any) => {
-    return hasComponent(gameObject, getTypeIdFromClass(_class), GameObjectData);
+    return hasComponent(gameObject, getTypeIDFromClass(_class), GameObjectData);
 })
 
 export var isGameObjectAlive = (gameObject:GameObject) => {

@@ -65,10 +65,6 @@ describe("Main", function() {
         }
 
         beforeEach(function(){
-            DeviceManager.getInstance().gl = testTool.buildFakeGl(sandbox);
-
-            gl = DeviceManager.getInstance().gl;
-
             device = DeviceManager.getInstance();
 
             canvasDom = {

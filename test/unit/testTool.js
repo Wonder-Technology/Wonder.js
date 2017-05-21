@@ -210,6 +210,7 @@ var testTool = (function () {
             gameObjectTool.resetData();
             transformTool.resetData();
             tagTool.resetData();
+            geometryTool.resetData();
         },
 
         openContractCheck: function (sandbox, isInit) {

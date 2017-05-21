@@ -2,9 +2,8 @@ import { registerClass } from "../../definition/typescript/decorator/registerCla
 import { Vector3 } from "../../math/Vector3";
 import { ThreeDTransformData } from "./ThreeDTransformData";
 import {
-    addAddComponentHandle,
-    addDisposeHandle, create,
-    getLocalPosition, getLocalToWorldMatrix, getPosition, initData, setBatchDatas,
+    create,
+    getLocalPosition, getLocalToWorldMatrix, getPosition, setBatchDatas,
     setLocalPosition,
     setParent,
     setPosition
@@ -72,9 +71,3 @@ export var setThreeDTransformParent = (transform:ThreeDTransform, parent:ThreeDT
 export var disposeThreeDTransform = (transform:ThreeDTransform) => {
     disposeComponent(GlobalTempData, ThreeDTransformData, transform);
 }
-
-initData(GlobalTempData, ThreeDTransformData);
-
-addAddComponentHandle(ThreeDTransform, ThreeDTransformData);
-addDisposeHandle(ThreeDTransform, GlobalTempData, ThreeDTransformData);
-

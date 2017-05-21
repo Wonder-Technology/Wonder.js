@@ -1,13 +1,13 @@
 import { ComponentData } from "./ComponentData";
 import { Component } from "./Component";
-import { getTypeIdFromClass, getTypeIdFromComponent } from "./ComponentTypeIdManager";
+import { getTypeIDFromClass, getTypeIDFromComponent } from "./ComponentTypeIDManager";
 import { GameObject } from "../core/entityObject/gameObject/GameObject";
 import { expect } from "wonder-expect.js";
 import { it } from "../definition/typescript/decorator/contract";
 
 
 var _addHandle = (_class:any, handleMap:object, handle:(component:Component, ...args) => void) => {
-    var typeID = getTypeIdFromClass(_class);
+    var typeID = getTypeIDFromClass(_class);
 
     handleMap[typeID] = handle;
 }
@@ -21,7 +21,7 @@ export var addDisposeHandle = (_class:any, handle:(component:Component) => void)
 }
 
 export var execHandle = (component:Component, handleMapName:string, args?:Array<any>) => {
-    var handle = ComponentData[handleMapName][getTypeIdFromComponent(component)];
+    var handle = ComponentData[handleMapName][getTypeIDFromComponent(component)];
 
     if(!!args){
         handle.apply(null, args);

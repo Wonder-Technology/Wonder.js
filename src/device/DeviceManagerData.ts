@@ -1,6 +1,8 @@
 import { Color } from "../structure/Color";
 
 export class DeviceManagerData{
+    public static gl:WebGLRenderingContext = null;
+
     public static clearColor:Color = null;
 
     public static writeRed:boolean = null;

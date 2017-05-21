@@ -1,15 +1,18 @@
 import { registerClass } from "../../definition/typescript/decorator/registerClass";
 import { Geometry } from "./Geometry";
+import { create, setConfigData } from "./BoxGeometrySystem";
+import { GeometryData } from "./GeometryData";
 
 @registerClass("BoxGeometry")
 export class BoxGeometry extends Geometry{
+}
 
-    // public verticesIndex:number = null;
-    // public indicesIndex:number = null;
+export var createBoxGeometry = () => {
+    return create(GeometryData);
+}
 
-    //todo add this?
-    // public vertexBufferIndex:number = null;
-    // public indexBufferIndex:number = null;
+export var setBoxGeometryConfigData = (geometry:BoxGeometry, data:BoxGeometryConfigData) => {
+    setConfigData(geometry, data, GeometryData);
 }
 
 export type BoxGeometryConfigDataMap = {
