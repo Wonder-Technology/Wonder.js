@@ -5,8 +5,8 @@ export class GeometryData{
     public static index:number = null;
     public static count:number = null;
 
-    public static verticesMap:Array<Float32Array> = null;
-    public static IndicesMap:Array<Uint16Array> | Array<Uint32Array> = null;
+    public static verticesMap:GeometryVerticesMap = null;
+    public static indicesMap:GeometryIndicesMap = null;
     // public static vertices:Float32Array = null;
     //todo can specify whether to use 16 or 32 in render config file
     // public static indices:Uint16Array | Uint32Array = null;
@@ -31,9 +31,9 @@ export class GeometryData{
     public static drawModeMap:DrawModeMap = null;
 }
 
-// export type GeometryVerticesMap = {
-//     [index:number]: Array
-// }
+export type GeometryVerticesMap = Array<Float32Array>
+
+export type GeometryIndicesMap = Array<Uint16Array> | Array<Uint32Array>
 
 // export type GeometryVerticesIndexMap = {
 //     [index:number]: number

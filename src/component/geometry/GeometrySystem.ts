@@ -11,6 +11,8 @@ import {
 import { deleteBySwap } from "../../utils/arrayUtils";
 import curry from "wonder-lodash/curry";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
+import { EDrawMode } from "../../renderer/enum/EDrawMode";
+import { GeometryComputeDataFuncMap, GeometryIndicesMap, GeometryVerticesMap } from "./GeometryData";
 
 export var addAddComponentHandle = (_class: any, GeometryData:any) => {
     addAddComponentHandleToMap(_class, addComponent(GeometryData));
@@ -38,6 +40,8 @@ export var create = requireCheckFunc((geometry:Geometry, GeometryData: any) => {
 
     GeometryData.count += 1;
 
+    setDrawMode(geometry.index, EDrawMode.TRIANGLES, GeometryData);
+
     return geometry;
 })
 
@@ -47,37 +51,41 @@ var _generateIndex = (BoxGeometryData: any) => {
 }
 
 export var init = (GeometryData: any, state:Map<any, any>) => {
-        var computeDataFuncMap = GeometryData.computeDataFuncMap,
-            verticesMap = GeometryData.verticesMap,
-            indicesMap = GeometryData.indicesMap,
-            isIndicesBufferNeed32Bits = _checkIsIndicesBufferNeed32BitsByData(GeometryData);
+    var computeDataFuncMap = GeometryData.computeDataFuncMap,
+        verticesMap = GeometryData.verticesMap,
+        indicesMap = GeometryData.indicesMap,
+        isIndicesBufferNeed32Bits = isIndicesBufferNeed32BitsByData(GeometryData);
 
     for (let i = 0, count = GeometryData.count; i < count; i++) {
-        let computeDataFunc = computeDataFuncMap[i],
-            {
-            vertices,
-            indices
-        } = computeDataFunc(i, GeometryData);
-
-        verticesMap[i] = new Float32Array(vertices);
-
-        if(isIndicesBufferNeed32Bits){
-            indicesMap[i] = new Uint32Array(indices);
-        }
-        else{
-            indicesMap[i] = new Uint16Array(indices);
-        }
+        initGeometry(i, isIndicesBufferNeed32Bits, computeDataFuncMap, verticesMap, indicesMap, GeometryData);
     }
 
     return state;
+}
+
+export var initGeometry = (index:number, isIndicesBufferNeed32Bits:boolean, computeDataFuncMap:GeometryComputeDataFuncMap, verticesMap:GeometryVerticesMap, indicesMap:GeometryIndicesMap, GeometryData:any) => {
+    var computeDataFunc = computeDataFuncMap[index],
+        {
+            vertices,
+            indices
+        } = computeDataFunc(index, GeometryData);
+
+    verticesMap[index] = new Float32Array(vertices);
+
+    if(isIndicesBufferNeed32Bits){
+        indicesMap[index] = new Uint32Array(indices);
+    }
+    else{
+        indicesMap[index] = new Uint16Array(indices);
+    }
 }
 
 export var getDrawMode = (index:number, GeometryData:any) => {
     return GeometryData.drawModeMap[index];
 }
 
-export var setDrawMode = () => {
-
+export var setDrawMode = (index:number, drawMode:EDrawMode, GeometryData:any) => {
+    GeometryData.drawModeMap[index] = drawMode;
 }
 
 export var getVerticesCount = (index:number, GeometryData:any) => {
@@ -147,6 +155,10 @@ export var disposeComponent = ensureFunc(curry((returnVal, GeometryData:any, geo
     deleteVal(index, GeometryData.drawModeMap);
 }))
 
+export var getConfigData = (index:number, GeometryData: any) => {
+    return GeometryData.configDataMap[index];
+}
+
 export var initData = (DataBufferConfig: any, GeometryData: any) => {
     var isIndicesBufferNeed32Bits = _checkIsIndicesBufferNeed32BitsByConfig(DataBufferConfig),
         count = GeometryData.count,
@@ -189,6 +201,6 @@ var _checkIsIndicesBufferNeed32BitsByConfig = (DataBufferConfig: any) => {
     return GPUDetector.getInstance().extensionUintIndices === true;
 }
 
-var _checkIsIndicesBufferNeed32BitsByData = (GeometryData:any) => {
+export var isIndicesBufferNeed32BitsByData = (GeometryData:any) => {
     return GeometryData.indexType === EBufferType.UNSIGNED_INT;
 }

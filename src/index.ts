@@ -2,7 +2,7 @@ export {Component} from "./component/Component";
 export {ComponentData} from "./component/ComponentData";
 export {getTypeIDFromClass,getTypeIDFromComponent} from "./component/ComponentTypeIdManager";
 export {BoxGeometry,createBoxGeometry,setBoxGeometryConfigData} from "./component/geometry/BoxGeometry";
-export {Geometry,getDrawMode,setDrawMode,getVertices,getIndices} from "./component/geometry/Geometry";
+export {Geometry,getDrawMode,setDrawMode,getVertices,getIndices,getGeometryConfigData,initGeometry} from "./component/geometry/Geometry";
 export {GeometryData} from "./component/geometry/GeometryData";
 export {BasicMaterial} from "./component/renderComponent/material/BasicMaterial";
 export {Material} from "./component/renderComponent/material/Material";

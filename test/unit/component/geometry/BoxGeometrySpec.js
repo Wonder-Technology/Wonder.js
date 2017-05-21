@@ -26,8 +26,8 @@ describe("BoxGeometry", function () {
         beforeEach(function () {
         });
 
-        it("test with 2 segemets", function () {
-            boxGeometryTool.setData(geo, {
+        it("test with 2 segements", function () {
+            boxGeometryTool.setConfigData(geo, {
                 width: 10,
                 height: 20,
                 depth: 30,
@@ -62,12 +62,19 @@ describe("BoxGeometry", function () {
 
     describe("setConfigData", function () {
         beforeEach(function () {
-
         });
 
         it("set default data when create", function () {
             director._init();
 
+            expect(geometryTool.getConfigData(geo)).toEqual({
+                width: 10,
+                height: 10,
+                depth: 10,
+                widthSegments: 1,
+                heightSegments: 1,
+                depthSegments: 1
+            });
             expect(testTool.getValues(
                 geometryTool.getVertices(geo)
             )).toEqual(
@@ -75,7 +82,6 @@ describe("BoxGeometry", function () {
                     -10, -10, 10, -10, 10, 10, 10, -10, 10, 10, 10, 10, 10, -10, -10, 10, 10, -10, -10, -10, -10, -10, 10, -10, -10, 10, 10, -10, 10, -10, 10, 10, 10, 10, 10, -10, 10, -10, 10, 10, -10, -10, -10, -10, 10, -10, -10, -10, 10, -10, 10, 10, 10, 10, 10, -10, -10, 10, 10, -10, -10, -10, -10, -10, 10, -10, -10, -10, 10, -10, 10, 10
                 ]
             )
-
             expect(testTool.getValues(
                 geometryTool.getIndices(geo)
             )).toEqual(
@@ -85,7 +91,7 @@ describe("BoxGeometry", function () {
             );
         });
         it("if not pass full data, use default data", function () {
-            boxGeometryTool.setData(geo, {
+            boxGeometryTool.setConfigData(geo, {
                 width: 10,
                 widthSegments: 2,
                 depthSegments: 2
@@ -93,6 +99,14 @@ describe("BoxGeometry", function () {
 
             director._init();
 
+            expect(geometryTool.getConfigData(geo)).toEqual({
+                width: 10,
+                height: 10,
+                depth: 10,
+                widthSegments: 2,
+                heightSegments: 1,
+                depthSegments: 2
+            });
             expect(testTool.getValues(
                 geometryTool.getVertices(geo)
             )).toEqual(

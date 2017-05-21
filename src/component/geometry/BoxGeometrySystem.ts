@@ -2,17 +2,20 @@ import { BoxGeometry, BoxGeometryConfigData } from "./BoxGeometry";
 import { ensureFunc, it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { Vector3 } from "../../math/Vector3";
-import { create as createGeometry } from "./GeometrySystem";
+import { create as createGeometry, setDrawMode } from "./GeometrySystem";
 import { ExtendUtils } from "wonder-commonlib/dist/es2015/utils/ExtendUtils";
 
 export var create = (GeometryData: any) => {
-    var geometry = new BoxGeometry();
+    var geometry = new BoxGeometry(),
+        index:number = null;
 
     geometry = createGeometry(geometry, GeometryData);
 
-    GeometryData.computeDataFuncMap[geometry.index] = _computeData;
+    index = geometry.index;
 
-    setConfigData(geometry, {}, GeometryData);
+    setConfigData(index, {}, GeometryData);
+
+    GeometryData.computeDataFuncMap[index] = _computeData;
 
     return geometry;
 }
@@ -125,9 +128,8 @@ var _getConfigData = ensureFunc((data: BoxGeometryConfigData) => {
     return GeometryData.configDataMap[index];
 })
 
-export var setConfigData = requireCheckFunc((geometry: BoxGeometry, data: BoxGeometryConfigData, GeometryData: any) => {
-}, (geometry: BoxGeometry, data: BoxGeometryConfigData, GeometryData: any) => {
-    GeometryData.configDataMap[geometry.index] = ExtendUtils.extend({
+export var setConfigData = (index:number, data: BoxGeometryConfigData, GeometryData: any) => {
+    GeometryData.configDataMap[index] = ExtendUtils.extend({
             width:10,
             height:10,
             depth:10,
@@ -137,5 +139,5 @@ export var setConfigData = requireCheckFunc((geometry: BoxGeometry, data: BoxGeo
         },
         data
     );
-})
+}
 

@@ -12,7 +12,7 @@ export var createBoxGeometry = () => {
 }
 
 export var setBoxGeometryConfigData = (geometry:BoxGeometry, data:BoxGeometryConfigData) => {
-    setConfigData(geometry, data, GeometryData);
+    setConfigData(geometry.index, data, GeometryData);
 }
 
 export type BoxGeometryConfigDataMap = {
@@ -20,10 +20,10 @@ export type BoxGeometryConfigDataMap = {
 }
 
 export type BoxGeometryConfigData = {
-    width:number;
-    height:number;
-    depth:number;
-    widthSegments:number;
-    heightSegments:number;
-    depthSegments:number;
+    width?:number;
+    height?:number;
+    depth?:number;
+    widthSegments?:number;
+    heightSegments?:number;
+    depthSegments?:number;
 }
