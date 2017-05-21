@@ -5,7 +5,7 @@ export class MaterialData{
     public static count:number = null;
 
     public static shaderMap:ShaderMap = null;
-    public static materialTypeMap = null;
+    public static materialClassNameMap = null;
 }
 
 export type ShaderMap = {

@@ -1,9 +1,8 @@
 import { registerClass } from "../../definition/typescript/decorator/registerClass";
-import { Component } from "../Component";
+import { Geometry } from "./Geometry";
 
 @registerClass("BoxGeometry")
-export class BoxGeometry extends Component{
-    public index:number = null;
+export class BoxGeometry extends Geometry{
 
     // public verticesIndex:number = null;
     // public indicesIndex:number = null;
@@ -11,4 +10,17 @@ export class BoxGeometry extends Component{
     //todo add this?
     // public vertexBufferIndex:number = null;
     // public indexBufferIndex:number = null;
+}
+
+export type BoxGeometryConfigDataMap = {
+    [index:number]: BoxGeometryConfigData
+}
+
+export type BoxGeometryConfigData = {
+    width:number;
+    height:number;
+    depth:number;
+    widthSegments:number;
+    heightSegments:number;
+    depthSegments:number;
 }

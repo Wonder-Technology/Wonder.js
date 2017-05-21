@@ -4,11 +4,11 @@ import { Map } from "immutable";
 import map from "wonder-lodash/map";
 import forEach from "wonder-lodash/forEach";
 import { RenderCommand } from "./RenderCommand";
-import { getDrawMode } from "../../component/geometry/GeometryDataSystem";
 import { getGeometry, getMaterial } from "../../core/entityObject/gameObject/GameObjectSystem";
 import { it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { getShader } from "../../component/renderComponent/material/MaterialSystem";
+import { getDrawMode } from "../../component/geometry/GeometrySystem";
 
 export var createRenderCommands = curry(requireCheckFunc((state:Map<any, any>, GameObjectData:any, MaterialData:any, renderGameObjectArray:Array<GameObject>) => {
     forEach(renderGameObjectArray, (gameObject:GameObject) => {

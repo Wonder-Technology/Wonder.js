@@ -2,70 +2,52 @@ import forEach from "wonder-lodash/forEach";
 import curry from "wonder-lodash/curry";
 import { RenderCommand } from "../command/RenderCommand";
 import { Map } from "immutable";
-import { use } from "../shader/ProgramSystem";
-import { sendAttributeData, sendUniformData } from "../shader/ShaderSystem";
-import { getBuffer as getIndexBuffer } from "../buffer/IndexBufferSystem";
-import { getBuffer as getVertexBuffer } from "../buffer/VertexBufferSystem";
+import { bindIndexBuffer, sendAttributeData, sendUniformData, use } from "../shader/ShaderSystem";
+import { getType, getTypeSize } from "../buffer/IndexBufferSystem";
+import { getGL } from "../../device/DeviceManagerSystem";
+import { getDrawMode, getIndicesCount, getVerticesCount, hasIndices } from "../../component/geometry/GeometrySystem";
 
-var _drawElements = () => {
-
-}
-
-var _drawArray = () => {
-
-}
-
-export var draw = curry((state:Map<any, any>, ShaderData:any, renderCommandArray:Array<RenderCommand>) => {
+export var draw = curry((state:Map<any, any>, ShaderData:any, GeometryData:any, ArrayBufferData:any, IndexBufferData:any, renderCommandArray:Array<RenderCommand>) => {
     forEach(renderCommandArray, (renderCommand:RenderCommand) => {
-        var shaderIndex = renderCommand.shaderIndex;
+        var shaderIndex = renderCommand.shaderIndex,
+            geometryIndex = renderCommand.geometryIndex,
+            gl = getGL(state);
 
-        use(state, shaderIndex, ShaderData);
+        use(gl, shaderIndex, ShaderData);
 
         //todo set state
 
-        sendAttributeData();
-        sendUniformData();
+        sendAttributeData(gl, shaderIndex, geometryIndex, ShaderData, GeometryData, ArrayBufferData);
+        sendUniformData(gl, shaderIndex, ShaderData, renderCommand);
 
-        let indexBuffer = getIndexBuffer();
+        if(hasIndices(geometryIndex, GeometryData)){
+            bindIndexBuffer(gl, geometryIndex, ShaderData, GeometryData, IndexBufferData);
 
-        if (indexBuffer) {
-            _drawElements(indexBuffer);
+            _drawElements(gl, geometryIndex, GeometryData);
         }
-        else {
-            _drawArray(getVertexBuffer());
+        else{
+            _drawArray(gl, geometryIndex, GeometryData);
         }
     })
-    // for each command:
-    //     get shader index
-    //
-    //
-    //     use program
-    //
-    //     set state
-    //
-    //
-    //     get all send data from shader
-    //
-    //     get or create attribute buffer
-    //
-    //     bind attribute buffer
-    //
-    //     send attribute buffer data:
-    //         send by compile data
-    //
-    //
-    //
-    //     send uniform data:
-    //         get all send data from shader
-    //         send by compile data
-    //
-    //
-    //
-    //     get or create index buffer
-    //
-    //     bind index buffer
-    //
-    //     // send index buffer data
-    //
-    //     draw element
+
+    return state;
 })
+
+var _drawElements = (gl:WebGLRenderingContext, geometryIndex:number, GeometryData:any) => {
+    var startOffset: number = 0,
+        drawMode = getDrawMode(geometryIndex, GeometryData),
+        count = getIndicesCount(geometryIndex, GeometryData),
+        type = getType(GeometryData),
+        typeSize = getTypeSize(GeometryData);
+
+    gl.drawElements(gl[drawMode], count, gl[type], typeSize * startOffset);
+}
+
+var _drawArray = (gl:WebGLRenderingContext, geometryIndex:number, GeometryData:any) => {
+    var startOffset: number = 0,
+        drawMode = getDrawMode(geometryIndex, GeometryData),
+        count = getVerticesCount(geometryIndex, GeometryData);
+
+    gl.drawArrays(gl[drawMode], startOffset, count);
+}
+

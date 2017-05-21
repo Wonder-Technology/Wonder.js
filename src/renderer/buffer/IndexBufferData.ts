@@ -1,4 +1,4 @@
 export class IndexBufferData{
-    public static indexBuffers:Array<WebGLBuffer> = null;
+    public static buffers:Array<WebGLBuffer> = null;
 }
 

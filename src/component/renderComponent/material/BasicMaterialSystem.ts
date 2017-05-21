@@ -13,6 +13,8 @@ export var create = (ShaderData:any, MaterialData: any) => {
 
     MaterialData.shaderMap[index] = _createShader(ShaderData);
 
+    MaterialData.materialClassNameMap[index] = "BasicMaterial";
+
     return material;
 }
 

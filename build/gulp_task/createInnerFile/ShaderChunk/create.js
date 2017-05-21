@@ -59,7 +59,7 @@ function createShaderChunk(glslPathArr) {
                 return callback();
             }
         }, function (callback) {
-            result += 'export type GLSLChunk = {top?:string;define?:string;varDeclare?:string;funcDeclare?:string;funcDefine?:string;body?:string;}\n';
+            result += 'export type GLSLChunk = {top:string;define:string;varDeclare:string;funcDeclare:string;funcDefine:string;body:string;}\n';
 
             fs.writeFileSync(destFilePath, result);
 

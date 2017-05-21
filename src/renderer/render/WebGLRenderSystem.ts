@@ -9,42 +9,28 @@ import { init as initMaterial } from "../../component/renderComponent/material/M
 import { MaterialData } from "../../component/renderComponent/material/MaterialData";
 import { GameObjectData } from "../../core/entityObject/gameObject/GameObjectData";
 import { ShaderData } from "../shader/ShaderData";
-
-// var _sortCommands = () => {
-//
-// }
-
-// var _getRenderList = () => {
-//
-// }
-//
-// var _getVisibleRenderList = () => {
-//
-// }
+import { material_config } from "../data/material_config";
+import { shaderLib_generator } from "../data/shaderLib_generator";
+import { GeometryData } from "../../component/geometry/GeometryData";
+import { ArrayBufferData } from "../buffer/ArrayBufferData";
+import { IndexBufferData } from "../buffer/IndexBufferData";
+import { clear as clearGLBuffer, getGL } from "../../device/DeviceManagerSystem";
+import { render_config } from "../data/render_config";
+import { DeviceManagerData } from "../../device/DeviceManagerData";
 
 export var init = (state: Map<any, any>) => {
-    // add shader lib
-    //
-    // init shader
-    // compile:
-    // build shader source(vs, fs)
-    // compile shader source
-    //
-    //
-    //
-    // store all attribute, uniform position
-
-
-    initMaterial(MaterialData);
+    initMaterial(state, material_config, shaderLib_generator, ShaderData, MaterialData);
 }
 
 export var clear = (state: Map<any, any>) => {
+    clearGLBuffer(getGL(state), render_config.render_setting.clearColor, DeviceManagerData);
 
+    return state;
 }
 
 export var render = (state: Map<any, any>) => {
-    compose(
-        draw(state, ShaderData),
+    return compose(
+        draw(state, ShaderData, GeometryData, ArrayBufferData, IndexBufferData),
         sortRenderCommands(state),
         createRenderCommands(state, GameObjectData, MaterialData),
         getRenderList(state)

@@ -16,6 +16,7 @@ import { getRootProperty } from "../utils/rootUtils";
 import { Map } from "immutable";
 import { trace } from "../utils/debugUtils";
 import { isValueExist } from "../utils/stateUtils";
+import { Color } from "../structure/Color";
 
 export var getGL = (state: Map<any, any>): WebGLRenderingContext => {
     return state.getIn(["DeviceManager", "gl"]);
@@ -190,3 +191,60 @@ export var setScreen = (state: Map<any, any>) => {
     }));
 };
 
+
+export var clear = (gl:WebGLRenderingContext, color:Color, DeviceManagerData:any) => {
+    _setClearColor(gl, color, DeviceManagerData);
+
+    setColorWrite(gl, true, true, true, true, DeviceManagerData);
+
+    /*! optimize in ANGLE:
+     (need more verify:set color mask all false before clear?
+     so here not do the recommendation)
+
+
+     Recommendation: Do Not Perform Clears with Scissors or Masks Enabled
+     (<<WebGL Insights>> -> chapter 1)
+
+     One of the subtle differences between the Direct3D APIs and the GL APIs is that in the former, clear calls ignore scissors and masks, while the latter applies both to clears [Koch 12]. This means that if a clear is performed with the scissors test enabled, or with a color or stencil mask in use, ANGLE must draw a quad with the requested clear values, rather than using clear. This introduces some state management overhead, as ANGLE must switch out all the cached state such as shaders, sampler and texture bindings, and vertex data related to the draw call stream. It then must set up all the appropriate state for the clear, perform the clear itself, and then reset all of the affected state back to its prior settings once the clear is complete. If multiple draw buffers are currently in use, using WEBGL_draw_ buffers, then the performance implications of this emulated clear are com- pounded, as the draw must be performed once for each target. Clearing buffers without scissors or masks enabled avoids this overhead.
+     */
+
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
+}
+
+
+var _setClearColor = (gl:WebGLRenderingContext, color: Color, DeviceManagerData:any) => {
+    var clearColor = DeviceManagerData.clearColor;
+
+    if (clearColor && clearColor.isEqual(color)) {
+        return;
+    }
+
+    gl.clearColor(color.r, color.g, color.b, color.a);
+
+    DeviceManagerData.clearColor = color;
+}
+
+/**
+ * @function
+ * @name setColorWrite
+ * @description Enables or disables writes to the color buffer. Once this state
+ * is set, it persists until it is changed. By default, color writes are enabled
+ * for all color channels.
+ * @param {Boolean} writeRed true to enable writing  of the red channel and false otherwise.
+ * @param {Boolean} writeGreen true to enable writing  of the green channel and false otherwise.
+ * @param {Boolean} writeBlue true to enable writing  of the blue channel and false otherwise.
+ * @param {Boolean} writeAlpha true to enable writing  of the alpha channel and false otherwise.
+ */
+export var setColorWrite = (gl:WebGLRenderingContext, writeRed:boolean, writeGreen:boolean, writeBlue:boolean, writeAlpha:boolean, DeviceManagerData:any) => {
+    if (DeviceManagerData.writeRed !== writeRed
+        || DeviceManagerData.writeGreen !== writeGreen
+        || DeviceManagerData.writeBlue !== writeBlue
+        || DeviceManagerData.writeAlpha !== writeAlpha) {
+        gl.colorMask(writeRed, writeGreen, writeBlue, writeAlpha);
+
+        DeviceManagerData.writeRed = writeRed;
+        DeviceManagerData.writeGreen = writeGreen;
+        DeviceManagerData.writeBlue = writeBlue;
+        DeviceManagerData.writeAlpha = writeAlpha;
+    }
+}
