@@ -24,9 +24,9 @@ import { GlobalTempData } from "../definition/GlobalTempData";
 import { Scene } from "./entityObject/scene/Scene";
 import { GameObjectData } from "./entityObject/gameObject/GameObjectData";
 import { create } from "./entityObject/scene/SceneSystem";
-import { init as initBoxGeometry } from "../component/geometry/BoxGeometrySystem";
-import { BoxGeometryData } from "../component/geometry/BoxGeometryData";
+import { init as initGeometry } from "../component/geometry/GeometrySystem";
 import { clear, init as initRenderer, render } from "../renderer/render/WebGLRenderSystem";
+import { GeometryData } from "../component/geometry/GeometryData";
 
 @singleton(true)
 @registerClass("Director")
@@ -110,7 +110,7 @@ export class Director {
     private _initSystem(state: Map<any, any>){
         var resultState = initTransform(GlobalTempData, ThreeDTransformData, state);
 
-        resultState = initBoxGeometry(BoxGeometryData, state);
+        resultState = initGeometry(GeometryData, state);
 
         return resultState;
     }

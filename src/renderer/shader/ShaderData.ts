@@ -1,3 +1,4 @@
+import { ISendAttributeConfig, ISendUniformConfig } from "../data/shaderLib_generator";
 export class ShaderData{
     public static index:number = null;
     public static count:number = null;
@@ -20,22 +21,11 @@ export class ShaderData{
 }
 
 export type SendAttributeConfigMap = {
-    [index:number]: Array<SendAttributeConfig>
-}
-
-export type SendAttributeConfig = {
-    name:string;
-    buffer:string;
+    [index:number]: Array<ISendAttributeConfig>
 }
 
 export type SendUniformConfigMap = {
-    [index:number]: Array<SendUniformConfig>
-}
-
-export type SendUniformConfig = {
-    name:string;
-    field:string;
-    type:"mat4";
+    [index:number]: Array<ISendUniformConfig>
 }
 
 export type ProgramMap = {

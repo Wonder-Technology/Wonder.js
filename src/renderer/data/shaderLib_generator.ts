@@ -79,6 +79,6 @@ export interface ISendAttributeConfig{
 
 export interface ISendUniformConfig{
     name:string;
-    value:string;
-    from?:string;
+    field:string;
+    type:"mat4";
 }

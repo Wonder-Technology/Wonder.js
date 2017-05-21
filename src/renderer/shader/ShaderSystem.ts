@@ -3,14 +3,17 @@ import { expect } from "wonder-expect.js";
 import { Shader } from "./Shader";
 import { IMaterialConfig, MaterialShaderLibConfig } from "../data/material_config";
 import forEach from "wonder-lodash/forEach";
-import { IGLSLConfig, IShaderLibContentGenerator, IShaderLibGenerator } from "../data/shaderLib_generator";
+import {
+    IGLSLConfig, ISendAttributeConfig, ISendUniformConfig, IShaderLibContentGenerator,
+    IShaderLibGenerator
+} from "../data/shaderLib_generator";
 import { isNotUndefined } from "../../utils/JudgeUtils";
 import { isValidMapValue } from "../../utils/objectUtils";
 import { getGL } from "../../device/DeviceManagerSystem";
 import { Map } from "immutable";
 import { Log } from "../../utils/Log";
 import {
-    AttributeLocationMap, SendAttributeConfig, SendAttributeConfigMap, SendUniformConfig, SendUniformConfigMap,
+    AttributeLocationMap, SendAttributeConfigMap, SendUniformConfigMap,
     UniformLocationMap
 } from "./ShaderData";
 import { hasDuplicateItems } from "../../utils/arrayUtils";
@@ -278,7 +281,7 @@ var _addSendAttributeConfig = ensureFunc((returnVal, shaderIndex: number, materi
         expect(sendAttributeConfigMap[shaderIndex]).not.exist;
     });
 }, (shaderIndex: number, materialShaderLibConfig: MaterialShaderLibConfig, shaderLibData: IShaderLibContentGenerator, sendAttributeConfigMap: SendAttributeConfigMap) => {
-    var sendDataArr: Array<SendAttributeConfig> = [];
+    var sendDataArr: Array<ISendAttributeConfig> = [];
 
     forEach(materialShaderLibConfig, (shaderLibName: string) => {
         sendDataArr = sendDataArr.concat(shaderLibData[shaderLibName].send.attribute);
@@ -296,7 +299,7 @@ var _addSendUniformConfig = ensureFunc((returnVal, shaderIndex: number, material
         expect(sendUniformConfigMap[shaderIndex]).not.exist;
     });
 }, (shaderIndex: number, materialShaderLibConfig: MaterialShaderLibConfig, shaderLibData: IShaderLibContentGenerator, sendUniformConfigMap: SendUniformConfigMap) => {
-    var sendDataArr: Array<SendUniformConfig> = [];
+    var sendDataArr: Array<ISendUniformConfig> = [];
 
     forEach(materialShaderLibConfig, (shaderLibName: string) => {
         sendDataArr = sendDataArr.concat(shaderLibData[shaderLibName].send.uniform);
@@ -318,7 +321,7 @@ export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, 
         attributeLocationMap = ShaderData.attributeLocationMap,
         lastBindedArrayBuffer = ShaderData.lastBindedArrayBuffer;
 
-    forEach(sendDataArr, (sendData: SendAttributeConfig) => {
+    forEach(sendDataArr, (sendData: ISendAttributeConfig) => {
         var buffer = getOrCreateArrayBuffer(gl, geometryIndex, sendData.buffer, GeometryData, ArrayBufferData),
             pos = _getAttribLocation(sendData.name, attributeLocationMap);
 
@@ -341,10 +344,10 @@ export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, 
 export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, ShaderData: any, renderCommand:RenderCommand) => {
     var sendDataArr = ShaderData.sendUniformConfigMap[shaderIndex];
 
-    forEach(sendDataArr, (sendData: SendUniformConfig) => {
+    forEach(sendDataArr, (sendData: ISendUniformConfig) => {
         var name = sendData.name,
             field = sendData.field,
-            type = sendData.type;
+            type = sendData.type as any;
 
         switch (type) {
             case EVariableType.MAT4:
@@ -391,12 +394,12 @@ var _sendBuffer = (gl: WebGLRenderingContext, pos: number, buffer: WebGLBuffer, 
 }
 
 var _sendMatrix4 = (gl:WebGLRenderingContext, name: string, data: Matrix4, ShaderData:any) => {
-    _sendUniformData(gl, name, data, ShaderData, (pos, data) => {
+    _sendUniformData<Matrix4>(gl, name, data, ShaderData, (pos, data) => {
         gl.uniformMatrix4fv(pos, false, data.values);
     })
 }
 
-var _sendUniformData = (gl:WebGLRenderingContext, name: string, data: Matrix4, ShaderData:any, sendFunc:(pos:WebGLUniformLocation, data:Float32Array) => void) => {
+var _sendUniformData = <T>(gl:WebGLRenderingContext, name: string, data: T, ShaderData:any, sendFunc:(pos:WebGLUniformLocation, data:T) => void) => {
     var pos = _getUniformLocation(name, ShaderData.uniformLocationMap);
 
     if (_isUniformLocationNotExist(pos)) {

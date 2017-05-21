@@ -19,7 +19,9 @@ import { render_config } from "../data/render_config";
 import { DeviceManagerData } from "../../device/DeviceManagerData";
 
 export var init = (state: Map<any, any>) => {
-    initMaterial(state, material_config, shaderLib_generator, ShaderData, MaterialData);
+    initMaterial(state, material_config, shaderLib_generator as any, ShaderData, MaterialData);
+
+    return state;
 }
 
 export var clear = (state: Map<any, any>) => {

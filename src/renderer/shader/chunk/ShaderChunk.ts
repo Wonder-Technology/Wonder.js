@@ -10,3 +10,4 @@ export const highp_fragment: GLSLChunk = { top: "precision highp float;\nprecisi
 export const lowp_fragment: GLSLChunk = { top: "precision lowp float;\nprecision lowp int;\n", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "" };
 export const mediump_fragment: GLSLChunk = { top: "precision mediump float;\nprecision mediump int;\n", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "" };
 export type GLSLChunk = { top?: string; define?: string; varDeclare?: string; funcDeclare?: string; funcDefine?: string; body?: string; }
+
