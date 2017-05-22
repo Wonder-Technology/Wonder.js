@@ -26,7 +26,7 @@ var glslFilePaths = config.glslFilePaths;
 
 
 
-// var createShaderChunk = require("./build/gulp_task/createInnerFile/ShaderChunk/create").createShaderChunk;
+var createShaderChunk = require("./build/gulp_task/createInnerFile/ShaderChunk/create").createShaderChunk;
 
 
 require("./build/gulp_task/clean/clean");
