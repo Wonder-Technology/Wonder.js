@@ -13,3 +13,7 @@ export type AddComponentHandleMap = {
 export type DisposeHandleMap = {
     [typeID:string]:(component:Component) => void;
 }
+
+export type ComponentGameObjectMap = {
+    [index:number]: GameObject;
+}

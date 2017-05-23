@@ -2,15 +2,16 @@ import { registerClass } from "../../definition/typescript/decorator/registerCla
 import { Vector3 } from "../../math/Vector3";
 import { ThreeDTransformData } from "./ThreeDTransformData";
 import {
-    create,
-    getLocalPosition, getLocalToWorldMatrix, getPosition, setBatchDatas,
+    create, getGameObject,
+    getLocalPosition, getLocalToWorldMatrix, getPosition, getTempLocalToWorldMatrix, setBatchDatas,
     setLocalPosition,
     setParent,
     setPosition
 } from "./ThreeDTransformSystem";
-import { getParent, disposeComponent } from "./ThreeDTransformSystem";
+import { getParent } from "./ThreeDTransformSystem";
 import { GlobalTempData } from "../../definition/GlobalTempData";
 import { Component } from "../Component";
+import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 
 @registerClass("ThreeDTransform")
 export class ThreeDTransform extends Component implements IThreeDTransform{
@@ -45,7 +46,7 @@ export var setThreeDTransformPosition = (transform:ThreeDTransform, position:Vec
 }
 
 export var getThreeDTransformLocalToWorldMatrix = (transform:ThreeDTransform) => {
-    return getLocalToWorldMatrix(transform, ThreeDTransformData.tempLocalToWorldMatrixMap[String(transform.uid)], ThreeDTransformData);
+    return getLocalToWorldMatrix(transform, getTempLocalToWorldMatrix(transform, ThreeDTransformData), ThreeDTransformData);
 }
 
 export var getThreeDTransformLocalPosition = (transform:ThreeDTransform) => {
@@ -68,6 +69,6 @@ export var setThreeDTransformParent = (transform:ThreeDTransform, parent:ThreeDT
     setParent(transform, parent, ThreeDTransformData);
 }
 
-export var disposeThreeDTransform = (transform:ThreeDTransform) => {
-    disposeComponent(GlobalTempData, ThreeDTransformData, transform);
+export var getThreeDTransformGameObject = (component:ThreeDTransform) => {
+    return getGameObject(component.index, ThreeDTransformData);
 }

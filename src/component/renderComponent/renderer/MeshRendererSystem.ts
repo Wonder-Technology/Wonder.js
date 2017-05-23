@@ -5,6 +5,18 @@ import { it, requireCheckFunc } from "../../../definition/typescript/decorator/c
 import { deleteBySwap } from "../../../utils/arrayUtils";
 import { expect } from "wonder-expect.js";
 import { Map } from "immutable";
+import {
+    addAddComponentHandle as addAddComponentHandleToMap, addComponentToGameObjectMap,
+    addDisposeHandle as addDisposeHandleToMap, getComponentGameObject
+} from "../../ComponentSystem";
+
+export var addAddComponentHandle = (_class: any, MaterialData:any) => {
+    addAddComponentHandleToMap(_class, addComponent(MaterialData));
+}
+
+export var addDisposeHandle = (_class: any, MaterialData:any) => {
+    addDisposeHandleToMap(_class, disposeComponent(MaterialData));
+}
 
 export var create = requireCheckFunc((MeshRendererData: any) => {
     it("MeshRendererData.index should === MeshRendererData.count", () => {
@@ -51,7 +63,13 @@ export var disposeComponent = curry((MeshRendererData:any, component:MeshRendere
 
     MeshRendererData.count -= 1;
     MeshRendererData.index -= 1;
+
+    deleteBySwap(MeshRendererData.gameObjectMap, component.index);
 })
+
+export var getGameObject = (index:number, Data:any) => {
+    return getComponentGameObject(Data.gameObjectMap, index);
+}
 
 export var getRenderList = curry((state:Map<any, any>, MeshRendererData:any) => {
     return MeshRendererData.renderGameObjectArray;
@@ -59,6 +77,7 @@ export var getRenderList = curry((state:Map<any, any>, MeshRendererData:any) => 
 
 export var initData = (MeshRendererData: any) => {
     MeshRendererData.renderGameObjectArray = [];
+    MeshRendererData.gameObjectMap = {};
     MeshRendererData.index = 0;
     MeshRendererData.count = 0;
 }

@@ -4,21 +4,9 @@ var tagTool = (function () {
         addTag : wd.addTag,
         removeTag : wd.removeTag,
         findGameObjectsByTag: wd.findGameObjectsByTag,
+        getGameObject:wd.getTagGameObject,
 
         resetData: function(){
-            // var TagData = wd.TagData;
-            //
-            // // TagData.freeIndiceQueue = [];
-            // // TagData.generationArr = [];
-            //
-            // TagData.uid = 0;
-            //
-            // TagData.isAliveMap = {};
-            //
-            // TagData.componentMap = {};
-            // TagData.parentMap = {};
-            // TagData.childrenMap = {};
-
             wd.initTagData(wd.TagData);
         }
     }

@@ -15,7 +15,7 @@ import { Quaternion } from "../../math/Quaternion";
 import { cacheFunc } from "../../utils/cacheUtils";
 import {
     addAddComponentHandle as addAddComponentHandleToMap, addDisposeHandle as addDisposeHandleToMap,
-    checkComponentShouldAlive
+    checkComponentShouldAlive, getComponentGameObject
 } from "../ComponentSystem";
 import { deleteVal, isValidMapValue } from "../../utils/objectUtils";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
@@ -82,6 +82,10 @@ export var disposeComponent = curry((GlobalTempData:any, ThreeDTransformData:any
 
     return _disposeFromDirtyList(indexInArrayBuffer, uid, GlobalTempData, ThreeDTransformData);
 })
+
+export var getGameObject = (index:number, Data:any) => {
+    return getComponentGameObject(Data.gameObjectMap, index);
+}
 
 export var getParent = (transform: ThreeDTransform, ThreeDTransformData: any) => {
     var parent = _getParent(transform.uid, ThreeDTransformData);
@@ -967,6 +971,10 @@ var _addDefaultTransformData = (GlobalTempData: any, ThreeDTransformData: any) =
     for (let i = _getStartIndexInArrayBuffer(); i < count; i++) {
         _setTransformDataInTypeArr(i, mat, qua, positionVec, scaleVec, ThreeDTransformData);
     }
+}
+
+export var getTempLocalToWorldMatrix = (transform:ThreeDTransform, ThreeDTransformData:any) => {
+    return ThreeDTransformData.tempLocalToWorldMatrixMap[String(transform.uid)];
 }
 
 /*!

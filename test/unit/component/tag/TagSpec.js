@@ -243,8 +243,15 @@ describe("Tag", function() {
             gameObjectTool.addComponent(gameObject1, tag1);
         });
 
+        it("remove from gameObject", function () {
+            gameObjectTool.disposeComponent(gameObject1, tag1);
+
+            expect(gameObjectTool.hasComponent(gameObject1, wd.Tag)).toBeFalsy();
+            expect(tagTool.getGameObject(tag1)).toBeUndefined();
+        });
+
         describe("dispose component", function(){
-            it("test1", function () {
+            it("find no related gameObjects of disposed tag", function () {
                 gameObjectTool.disposeComponent(gameObject1, tag1);
 
                 expect(tagTool.findGameObjectsByTag("aaa")).toEqual([]);

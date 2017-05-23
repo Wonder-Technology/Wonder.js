@@ -2,9 +2,11 @@ import { registerClass } from "../../definition/typescript/decorator/registerCla
 import { GeometryData } from "./GeometryData";
 import {
     getDrawMode as getGeometryDrawMode, setDrawMode as setGeometryDrawMode, getVertices as getGeometryVertices,
-    getIndices as getGeometryIndices, getConfigData, initGeometry as initGeometrySystem, isIndicesBufferNeed32BitsByData,
+    getIndices as getGeometryIndices, getConfigData, initGeometry as initGeometrySystem,
+    isIndicesBufferNeed32BitsByData, getGameObject,
 } from "./GeometrySystem";
 import { EDrawMode } from "../../renderer/enum/EDrawMode";
+import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 
 @registerClass("Geometry")
 export abstract class Geometry{
@@ -33,4 +35,8 @@ export var getGeometryConfigData = (geometry:Geometry) => {
 
 export var initGeometry = (geometry:Geometry) => {
     initGeometrySystem(geometry.index, isIndicesBufferNeed32BitsByData(GeometryData), GeometryData.computeDataFuncMap, GeometryData.verticesMap, GeometryData.indicesMap, GeometryData);
+}
+
+export var getGeometryGameObject = (geometry:Geometry) => {
+    return getGameObject(geometry.index, GeometryData);
 }

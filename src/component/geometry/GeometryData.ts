@@ -1,5 +1,6 @@
 import { EDrawMode } from "../../renderer/enum/EDrawMode";
 import { EBufferType } from "../../renderer/enum/EBufferType";
+import { ComponentGameObjectMap } from "../ComponentData";
 
 export class GeometryData{
     public static index:number = null;
@@ -27,6 +28,8 @@ export class GeometryData{
     public static configDataMap:object = null;
 
     public static computeDataFuncMap:GeometryComputeDataFuncMap = null;
+
+    public static gameObjectMap:ComponentGameObjectMap = null;
 
     public static drawModeMap:DrawModeMap = null;
 }

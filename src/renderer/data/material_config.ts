@@ -1,4 +1,4 @@
-export var material_config = {
+export const material_config = {
     // "materials": {
     "BasicMaterial": {
         // "createdShader": [
@@ -8,7 +8,12 @@ export var material_config = {
             // "mainShader": {
             // "type": "common",
             "shaderLib": [
-                "CommonShaderLib"
+                "CommonShaderLib",
+                "VerticeCommonShaderLib",
+                "BasicMaterialColorShaderLib",
+                "BasicShaderLib",
+                "EndBasicShaderLib",
+                "EndShaderLib"
             ]
             // }
         }

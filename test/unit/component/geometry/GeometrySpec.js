@@ -66,7 +66,7 @@ describe("Geometry", function () {
             ]);
         });
         it("not create buffers", function () {
-            var gl = testTool.buildFakeGl(sandbox);
+            var gl = glslTool.buildFakeGl(sandbox);
             deviceManagerTool.setGL(gl);
 
             director._init();
@@ -115,6 +115,10 @@ describe("Geometry", function () {
         });
         it("remove draw mode", function () {
             expect(geometryTool.getDrawMode(geo)).toBeUndefined();
+        });
+        it("remove from gameObject", function () {
+            expect(gameObjectTool.hasComponent(gameObject, wd.Geometry)).toBeFalsy();
+            expect(geometryTool.getGameObject(geo)).toBeUndefined();
         });
         it("test gameObject add new geometry after dispose old one", function () {
             geo = boxGeometryTool.create();

@@ -7,6 +7,7 @@ var geometryTool = (function () {
         setDrawMode:wd.setDrawMode,
         getConfigData:wd.getGeometryConfigData,
         initGeometry:wd.initGeometry,
+        getGameObject:wd.getGeometryGameObject,
 
         resetData: function(){
             wd.initGeometryData(wd.DataBufferConfig, wd.GeometryData);

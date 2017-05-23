@@ -32,7 +32,7 @@ describe("Scene", function() {
 
             var childTran = gameObjectTool.getTransform(child);
 
-            expect(transformTool.getParent(childTran)).toBeNull();
+            expect(threeDTransformTool.getParent(childTran)).toBeNull();
         });
     });
 });

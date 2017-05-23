@@ -7,7 +7,7 @@ import { getType, getTypeSize } from "../buffer/IndexBufferSystem";
 import { getGL } from "../../device/DeviceManagerSystem";
 import { getDrawMode, getIndicesCount, getVerticesCount, hasIndices } from "../../component/geometry/GeometrySystem";
 
-export var draw = curry((state:Map<any, any>, ShaderData:any, GeometryData:any, ArrayBufferData:any, IndexBufferData:any, renderCommandArray:Array<RenderCommand>) => {
+export var draw = curry((state:Map<any, any>, MaterialData:any, ShaderData:any, GeometryData:any, ArrayBufferData:any, IndexBufferData:any, renderCommandArray:Array<RenderCommand>) => {
     forEach(renderCommandArray, (renderCommand:RenderCommand) => {
         var shaderIndex = renderCommand.shaderIndex,
             geometryIndex = renderCommand.geometryIndex,
@@ -18,7 +18,7 @@ export var draw = curry((state:Map<any, any>, ShaderData:any, GeometryData:any, 
         //todo set state
 
         sendAttributeData(gl, shaderIndex, geometryIndex, ShaderData, GeometryData, ArrayBufferData);
-        sendUniformData(gl, shaderIndex, ShaderData, renderCommand);
+        sendUniformData(gl, shaderIndex, MaterialData, ShaderData, renderCommand);
 
         if(hasIndices(geometryIndex, GeometryData)){
             bindIndexBuffer(gl, geometryIndex, ShaderData, GeometryData, IndexBufferData);

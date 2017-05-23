@@ -1,4 +1,5 @@
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
+import { ComponentGameObjectMap } from "../ComponentData";
 
 export class TagData{
     public static tagArray:Array<string> = null;
@@ -11,12 +12,8 @@ export class TagData{
 
     public static lastIndexInArrayBuffer:number = null;
 
-    public static gameObjectMap:TagGameObjectMap = null;
+    public static gameObjectMap:ComponentGameObjectMap = null;
 
     public static index:number = null;
     public static count:number = null;
-}
-
-export type TagGameObjectMap = {
-    [index:number]: GameObject;
 }

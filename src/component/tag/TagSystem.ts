@@ -3,8 +3,9 @@ import { Tag } from "./Tag";
 import { ensureFunc, it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import {
-    addAddComponentHandle as addAddComponentHandleToMap, addDisposeHandle as addDisposeHandleToMap,
-    checkComponentShouldAlive
+    addAddComponentHandle as addAddComponentHandleToMap, addComponentToGameObjectMap,
+    addDisposeHandle as addDisposeHandleToMap,
+    checkComponentShouldAlive, getComponentGameObject
 } from "../ComponentSystem";
 import forEach from "wonder-lodash/forEach";
 import curry from "wonder-lodash/curry";
@@ -161,8 +162,8 @@ export var removeTag = requireCheckFunc((tagComponent:Tag, tag:string, TagData:a
     _setUsedSlotCount(index, newUsedSlotCount, usedSlotCountMap);
 })
 
-export var addComponent = curry((TagData:any, tagComponent:Tag, gameObject:GameObject) => {
-    TagData.gameObjectMap[tagComponent.index] = gameObject;
+export var addComponent = curry((TagData:any, component:Tag, gameObject:GameObject) => {
+    addComponentToGameObjectMap(TagData.gameObjectMap, component.index, gameObject);
 })
 
 var _getSlotCount = (index:number, slotCountMap:Array<number>) => {
@@ -238,6 +239,10 @@ export var disposeComponent = ensureFunc(curry((returnVal, TagData:any, tag:Tag)
     deleteVal(index, TagData.usedSlotCountMap);
     deleteVal(index, TagData.gameObjectMap);
 }))
+
+export var getGameObject = (index:number, Data:any) => {
+    return getComponentGameObject(Data.gameObjectMap, index);
+}
 
 export var findGameObjectsByTag = (targetTag:string, TagData:any) => {
     var gameObjectArr:Array<GameObject> = [],

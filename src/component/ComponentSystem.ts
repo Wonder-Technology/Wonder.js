@@ -1,4 +1,4 @@
-import { ComponentData } from "./ComponentData";
+import { ComponentData, ComponentGameObjectMap } from "./ComponentData";
 import { Component } from "./Component";
 import { getTypeIDFromClass, getTypeIDFromComponent } from "./ComponentTypeIDManager";
 import { GameObject } from "../core/entityObject/gameObject/GameObject";
@@ -35,4 +35,12 @@ export var checkComponentShouldAlive = (component:Component, data:any, isAlive:(
     it("component should alive", () => {
         expect(isAlive(component, data)).true;
     });
+}
+
+export var addComponentToGameObjectMap = (gameObjectMap:ComponentGameObjectMap, index:number, gameObject:GameObject) => {
+    gameObjectMap[index] = gameObject;
+}
+
+export var getComponentGameObject = (gameObjectMap:ComponentGameObjectMap, index:number) => {
+    return gameObjectMap[index];
 }

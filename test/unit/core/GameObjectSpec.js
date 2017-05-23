@@ -77,9 +77,9 @@ describe("GameObject", function() {
 
             gameObjectTool.dispose(gameObject);
 
-            transformTool.isNotAlive(tra);
-            transformTool.isNotAlive(tra1);
-            transformTool.isNotAlive(tra11);
+            threeDTransformTool.isNotAlive(tra);
+            threeDTransformTool.isNotAlive(tra1);
+            threeDTransformTool.isNotAlive(tra11);
         });
     });
 
@@ -90,12 +90,12 @@ describe("GameObject", function() {
 
         it("if gameObject not alive, error", function() {
             shouldAlive(gameObject, function (gameObject) {
-                return gameObjectTool.addComponent(gameObject, transformTool.create());
+                return gameObjectTool.addComponent(gameObject, threeDTransformTool.create());
             })
         });
         it("if alreay has this type of component, error", function () {
             expect(function(){
-               gameObjectTool.addComponent(gameObject, transformTool.create());
+               gameObjectTool.addComponent(gameObject, threeDTransformTool.create());
             }).toThrow("should not has this type of component, please dispose it");
         });
     });
@@ -135,11 +135,11 @@ describe("GameObject", function() {
 
         });
 
-        it("if gameObject not alive, return null", function() {
-            shouldAlive(gameObject, function (gameObject) {
-                return gameObjectTool.hasComponent(gameObject, wd.ThreeDTransform);
-            })
-        });
+        // it("if gameObject not alive, return null", function() {
+        //     shouldAlive(gameObject, function (gameObject) {
+        //         return gameObjectTool.hasComponent(gameObject, wd.ThreeDTransform);
+        //     })
+        // });
         it("if has component, return true", function(){
             expect(gameObjectTool.hasComponent(gameObject, wd.ThreeDTransform)).toBeTruthy();
         });
@@ -167,11 +167,11 @@ describe("GameObject", function() {
         it("dispose component", function () {
             var transform = gameObjectTool.getTransform(gameObject);
             var pos = wd.Vector3.create(1,2,3);
-            transformTool.setPosition(transform, pos);
+            threeDTransformTool.setPosition(transform, pos);
 
             gameObjectTool.disposeComponent(gameObject, gameObjectTool.getComponent(gameObject, wd.ThreeDTransform));
 
-            transformTool.isNotAlive(transform);
+            threeDTransformTool.isNotAlive(transform);
         });
     });
 
@@ -245,7 +245,7 @@ describe("GameObject", function() {
             var childTran = gameObjectTool.getTransform(gameObject);
             var parentTran = gameObjectTool.getTransform(parent);
 
-            expect(transformTool.getParent(childTran)).toEqual(parentTran);
+            expect(threeDTransformTool.getParent(childTran)).toEqual(parentTran);
         });
         it("add child", function () {
             var parent = gameObjectTool.create();
@@ -299,7 +299,7 @@ describe("GameObject", function() {
 
             gameObjectTool.remove(parent, gameObject);
 
-            expect(transformTool.getParent(childTran)).toBeNull();
+            expect(threeDTransformTool.getParent(childTran)).toBeNull();
         });
         it("remove child", function () {
             var parent = gameObjectTool.create();

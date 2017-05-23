@@ -71,7 +71,7 @@ describe("Main", function() {
                 style:{},
                 width:1,
                 height:2,
-                getContext:sandbox.stub().returns(testTool.buildFakeGl(sandbox))
+                getContext:sandbox.stub().returns(glslTool.buildFakeGl(sandbox))
             };
         });
 

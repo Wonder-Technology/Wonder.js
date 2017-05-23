@@ -17,6 +17,7 @@ import { IndexBufferData } from "../buffer/IndexBufferData";
 import { clear as clearGLBuffer, getGL } from "../../device/DeviceManagerSystem";
 import { render_config } from "../data/render_config";
 import { DeviceManagerData } from "../../device/DeviceManagerData";
+import { ThreeDTransformData } from "../../component/transform/ThreeDTransformData";
 
 export var init = (state: Map<any, any>) => {
     initMaterial(state, material_config, shaderLib_generator as any, ShaderData, MaterialData);
@@ -32,9 +33,9 @@ export var clear = (state: Map<any, any>) => {
 
 export var render = (state: Map<any, any>) => {
     return compose(
-        draw(state, ShaderData, GeometryData, ArrayBufferData, IndexBufferData),
+        draw(state, MaterialData, ShaderData, GeometryData, ArrayBufferData, IndexBufferData),
         sortRenderCommands(state),
-        createRenderCommands(state, GameObjectData, MaterialData),
+        createRenderCommands(state, GameObjectData, ThreeDTransformData, MaterialData, GeometryData),
         getRenderList(state)
     )(MeshRendererData)
 }

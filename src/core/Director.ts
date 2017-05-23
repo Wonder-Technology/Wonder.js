@@ -33,9 +33,16 @@ import { initData as initShaderData } from "../renderer/shader/ShaderSystem";
 import { ShaderData } from "../renderer/shader/ShaderData";
 import { Geometry } from "../component/geometry/Geometry";
 import { DataBufferConfig } from "../config/DataBufferConfig";
-import { initData as initMaterialData } from "../component/renderComponent/material/MaterialSystem";
+import {
+    addAddComponentHandle as addMaterialAddComponentHandle, addDisposeHandle as addMaterialDisposeHandle,
+    initData as initMaterialData
+} from "../component/renderComponent/material/MaterialSystem";
 import { MaterialData } from "../component/renderComponent/material/MaterialData";
-import { initData as initMeshRendererData } from "../component/renderComponent/renderer/MeshRendererSystem";
+import {
+    addAddComponentHandle as addMeshRendererAddComponentHandle,
+    addDisposeHandle as addMeshRendererDisposeHandle,
+    initData as initMeshRendererData
+} from "../component/renderComponent/renderer/MeshRendererSystem";
 import { MeshRendererData } from "../component/renderComponent/renderer/MeshRendererData";
 import { initData as initTagData, addAddComponentHandle as addTagAddComponentHandle, addDisposeHandle as addTagDisposeHandle } from "../component/tag/TagSystem";
 import { TagData } from "../component/tag/TagData";
@@ -45,6 +52,8 @@ import { initData as initIndexBufferData } from "../renderer/buffer/IndexBufferS
 import { IndexBufferData } from "../renderer/buffer/IndexBufferData";
 import { initData as initArrayBufferData } from "../renderer/buffer/ArrayBufferSystem";
 import { ArrayBufferData } from "../renderer/buffer/ArrayBufferData";
+import { Material } from "../component/renderComponent/material/Material";
+import { MeshRenderer } from "../component/renderComponent/renderer/MeshRenderer";
 
 @singleton(true)
 @registerClass("Director")
@@ -210,8 +219,12 @@ addGeometryAddComponentHandle(Geometry, GeometryData);
 addGeometryDisposeHandle(Geometry, GeometryData);
 
 initMaterialData(MaterialData);
+addMaterialAddComponentHandle(Material, MaterialData);
+addMaterialDisposeHandle(Material, MaterialData);
 
 initMeshRendererData(MeshRendererData);
+addMeshRendererAddComponentHandle(MeshRenderer, MeshRendererData);
+addMeshRendererDisposeHandle(Tag, TagData);
 
 initTagData(TagData);
 addTagAddComponentHandle(Tag, TagData);

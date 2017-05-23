@@ -10,6 +10,9 @@ export class ShaderData{
     public static attributeLocationMap:AttributeLocationMap = null;
     public static uniformLocationMap:UniformLocationMap = null;
 
+    public static uniformCacheMap:UniformCacheMap = null;
+
+
     public static sendAttributeConfigMap:SendAttributeConfigMap = null;
     public static sendUniformConfigMap:SendUniformConfigMap = null;
 
@@ -34,9 +37,21 @@ export type ProgramMap = {
 }
 
 export type AttributeLocationMap = {
-    [name:string]:number;
+    [index:number]: AttributeShaderLocationMap
 }
 
 export type UniformLocationMap = {
+    [index:number]: UniformShaderLocationMap
+}
+
+export type AttributeShaderLocationMap = {
+    [name:string]:number;
+}
+
+export type UniformShaderLocationMap = {
     [name:string]:WebGLUniformLocation;
+}
+
+export type UniformCacheMap = {
+    [name:string]: any;
 }

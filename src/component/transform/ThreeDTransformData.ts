@@ -1,6 +1,7 @@
 import { DataBufferConfig } from "../../config/DataBufferConfig";
 import { ThreeDTransform } from "./ThreeDTransform";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
+import { ComponentGameObjectMap } from "../ComponentData";
 
 export class ThreeDTransformData {
     static get count() {
@@ -37,7 +38,7 @@ export class ThreeDTransformData {
 
     public static uid:number = null;
 
-    public static gameObjectMap:TransformGameObjectMap = null;
+    public static gameObjectMap:ComponentGameObjectMap = null;
 
     public static buffer: ArrayBuffer = null;
 }
@@ -64,8 +65,4 @@ export type ChildrenMap = {
 
 export type TransformMap = {
     [uid:string]: ThreeDTransform;
-}
-
-export type TransformGameObjectMap = {
-    [uid:string]: GameObject;
 }

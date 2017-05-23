@@ -6,7 +6,8 @@ import { Map } from "immutable";
 import { EBufferType } from "../../renderer/enum/EBufferType";
 import { deleteVal, isNotValidMapValue } from "../../utils/objectUtils";
 import {
-    addAddComponentHandle as addAddComponentHandleToMap, addDisposeHandle as addDisposeHandleToMap
+    addAddComponentHandle as addAddComponentHandleToMap, addComponentToGameObjectMap,
+    addDisposeHandle as addDisposeHandleToMap, getComponentGameObject
 } from "../ComponentSystem";
 import { deleteBySwap } from "../../utils/arrayUtils";
 import curry from "wonder-lodash/curry";
@@ -127,8 +128,8 @@ export var hasIndices = (index:number, GeometryData:any) => {
     return indices.length > 0;
 }
 
-export var addComponent = curry((GeometryData:any, geometryComponent:Geometry, gameObject:GameObject) => {
-    GeometryData.gameObjectMap[geometryComponent.index] = gameObject;
+export var addComponent = curry((GeometryData:any, component:Geometry, gameObject:GameObject) => {
+    addComponentToGameObjectMap(GeometryData.gameObjectMap, component.index, gameObject);
 })
 
 export var disposeComponent = ensureFunc(curry((returnVal, GeometryData:any, geometry:Geometry) => {
@@ -153,7 +154,12 @@ export var disposeComponent = ensureFunc(curry((returnVal, GeometryData:any, geo
     deleteVal(index, GeometryData.configDataMap);
     deleteVal(index, GeometryData.computeDataFuncMap);
     deleteVal(index, GeometryData.drawModeMap);
+    deleteVal(index, GeometryData.gameObjectMap);
 }))
+
+export var getGameObject = (index:number, Data:any) => {
+    return getComponentGameObject(Data.gameObjectMap, index);
+}
 
 export var getConfigData = (index:number, GeometryData: any) => {
     return GeometryData.configDataMap[index];

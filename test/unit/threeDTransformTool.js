@@ -1,4 +1,4 @@
-var transformTool = (function () {
+var threeDTransformTool = (function () {
     return {
         setPosition:wd.setThreeDTransformPosition,
         getPosition:wd.getThreeDTransformPosition,
@@ -8,8 +8,9 @@ var transformTool = (function () {
         setBatchTransformDatas: wd.setThreeDTransformBatchTransformDatas,
         getParent: wd.getThreeDTransformParent,
         setParent: wd.setThreeDTransformParent,
-        dispose: wd.disposeThreeDTransform,
+        // dispose: wd.disposeThreeDTransform,
         create: wd.createThreeDTransform,
+        getGameObject:wd.getThreeDTransformGameObject,
 
         resetData: function(){
             wd.initThreeDTransformData(wd.GlobalTempData, wd.ThreeDTransformData);

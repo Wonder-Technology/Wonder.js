@@ -19,25 +19,25 @@ export class GameObject implements IUIDEntity{
 
 export var createGameObject = () => create(createThreeDTransform(ThreeDTransformData), GameObjectData);
 
-export var addGameObjectComponent = requireCheckFunc((gameObject:GameObject, child:GameObject) => {
+export var addGameObjectComponent = requireCheckFunc((gameObject:GameObject, component: Component) => {
     checkGameObjectShouldAlive(gameObject, GameObjectData);
 },(gameObject:GameObject, component: Component) => {
     addComponent(gameObject, component, GameObjectData);
 })
 
-export var disposeGameObject = requireCheckFunc((gameObject:GameObject, child:GameObject) => {
+export var disposeGameObject = requireCheckFunc((gameObject:GameObject) => {
     checkGameObjectShouldAlive(gameObject, GameObjectData);
 },(gameObject:GameObject) => {
     dispose(gameObject, ThreeDTransformData, GameObjectData);
 })
 
-export var disposeGameObjectComponent = requireCheckFunc((gameObject:GameObject, child:GameObject) => {
+export var disposeGameObjectComponent = requireCheckFunc((gameObject:GameObject, component: Component) => {
     checkGameObjectShouldAlive(gameObject, GameObjectData);
 },(gameObject:GameObject, component: Component) => {
     disposeComponent(gameObject, component, GameObjectData);
 })
 
-export var getGameObjectComponent = requireCheckFunc((gameObject:GameObject, child:GameObject) => {
+export var getGameObjectComponent = requireCheckFunc((gameObject:GameObject, _class:any) => {
     checkGameObjectShouldAlive(gameObject, GameObjectData);
 },(gameObject:GameObject, _class:any) => {
     return getComponent(gameObject, getTypeIDFromClass(_class), GameObjectData);
@@ -47,8 +47,8 @@ export var getGameObjectTransform = (gameObject:GameObject) => {
     return getTransform(gameObject, GameObjectData);
 }
 
-export var hasGameObjectComponent = requireCheckFunc((gameObject:GameObject, child:GameObject) => {
-    checkGameObjectShouldAlive(gameObject, GameObjectData);
+export var hasGameObjectComponent = requireCheckFunc((gameObject:GameObject, _class:any) => {
+    // checkGameObjectShouldAlive(gameObject, GameObjectData);
 },(gameObject:GameObject, _class:any) => {
     return hasComponent(gameObject, getTypeIDFromClass(_class), GameObjectData);
 })

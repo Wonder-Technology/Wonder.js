@@ -23,7 +23,6 @@ export var getGL = (state: Map<any, any>): WebGLRenderingContext => {
 }
 
 export var setGL = curry((gl: WebGLRenderingContext, state: Map<any, any>) => {
-
     return state.setIn(["DeviceManager", "gl"], gl);
 })
 

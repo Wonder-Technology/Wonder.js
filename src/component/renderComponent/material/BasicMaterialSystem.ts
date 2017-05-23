@@ -1,28 +1,18 @@
 import { BasicMaterial } from "./BasicMaterial";
-import { Color } from "../../../structure/Color";
-import { create as createShader } from "../../../renderer/shader/ShaderSystem";
+import { create as createMaterial, initMaterial as initMaterialSystem } from "./MaterialSystem";
+import { IMaterialConfig } from "../../../renderer/data/material_config";
+import { IShaderLibGenerator } from "../../../renderer/data/shaderLib_generator";
+import { Map } from "immutable";
 
-//todo refactor: with MeshRenderer
 export var create = (ShaderData:any, MaterialData: any) => {
-    var material = new BasicMaterial(),
-        index = _generateIndex(MaterialData);
+    var material = new BasicMaterial();
 
-    material.index = index;
-
-    MaterialData.count += 1;
-
-    MaterialData.shaderMap[index] = _createShader(ShaderData);
-
-    MaterialData.materialClassNameMap[index] = "BasicMaterial";
+    material = createMaterial(material, "BasicMaterial", ShaderData, MaterialData);
 
     return material;
 }
 
-var _createShader = (ShaderData:any) => {
-    return createShader(ShaderData);
-}
-
-export var setColor = (material:BasicMaterial, color:Color, BasicMaterialData:any) => {
-
+export var initMaterial = (state: Map<any, any>, materialIndex:number, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, ShaderData:any, MaterialData:any) => {
+    initMaterialSystem(state, materialIndex, material_config, shaderLib_generator, MaterialData.materialClassNameMap, ShaderData, MaterialData);
 }
 
