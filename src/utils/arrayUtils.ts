@@ -6,6 +6,8 @@ export var deleteBySwap = (array:Array<any>, index:number) => {
     array[index] = temp;
 
     array.pop();
+
+    return last;
 }
 
 export var hasDuplicateItems = (arr: Array<any>) => {

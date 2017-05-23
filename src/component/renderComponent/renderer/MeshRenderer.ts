@@ -1,6 +1,6 @@
 import { RenderComponent } from "../RenderComponent";
 import { registerClass } from "../../../definition/typescript/decorator/registerClass";
-import { create, getGameObject } from "./MeshRendererSystem";
+import { create, getGameObject, getRenderList } from "./MeshRendererSystem";
 import { MeshRendererData } from "./MeshRendererData";
 import { GameObject } from "../../../core/entityObject/gameObject/GameObject";
 
@@ -15,4 +15,8 @@ export var createMeshRenderer = () => {
 
 export var getMeshRendererGameObject = (component:MeshRenderer) => {
     return getGameObject(component.index, MeshRendererData);
+}
+
+export var getMeshRendererRenderList = () => {
+    return getRenderList(null, MeshRendererData);
 }

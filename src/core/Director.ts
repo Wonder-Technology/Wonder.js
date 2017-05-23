@@ -224,7 +224,7 @@ addMaterialDisposeHandle(Material, MaterialData);
 
 initMeshRendererData(MeshRendererData);
 addMeshRendererAddComponentHandle(MeshRenderer, MeshRendererData);
-addMeshRendererDisposeHandle(Tag, TagData);
+addMeshRendererDisposeHandle(MeshRenderer, MeshRendererData);
 
 initTagData(TagData);
 addTagAddComponentHandle(Tag, TagData);

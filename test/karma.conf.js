@@ -24,7 +24,8 @@
 
         // 'test/unit/**/BufferWriter.js',
 
-        'test/unit/**',
+        // 'test/unit/**',
+        'test/unit/**/MeshRenderer*',
         // 'test/unit/**/Tag*',
         // 'test/unit/**/Geometry*',
         // 'test/unit/**/BoxGeometry*',

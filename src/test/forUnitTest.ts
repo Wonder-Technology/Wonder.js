@@ -6,6 +6,8 @@ import { initData as initGeometryDataSystem } from "../component/geometry/Geomet
 import { initData as initMaterialDataSystem } from "../component/renderComponent/material/MaterialSystem";
 import { initData as initShaderDataSystem } from "../renderer/shader/ShaderSystem";
 import { initData as initMeshRendererDataSystem } from "../component/renderComponent/renderer/MeshRendererSystem";
+import { createState as createStateUtils } from "../utils/stateUtils";
+import { Map } from "immutable";
 
 export var initThreeDTransformData = initThreeDTransformDataSystem;
 
@@ -22,3 +24,5 @@ export var initMaterialData = initMaterialDataSystem;
 export var initShaderData = initShaderDataSystem;
 
 export var initMeshRendererData = initMeshRendererDataSystem;
+
+export var createState = createStateUtils;

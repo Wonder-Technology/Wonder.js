@@ -44,7 +44,7 @@ gulp.task("generateIndex", function(done) {
         target: ts.ScriptTarget.ES5,
         module: ts.ModuleKind.System
     }, {
-        exclude: ["System.ts", ".d.ts"]
+        exclude: ["System.ts", ".d.ts", "Utils.ts"]
     });
 
     done();
