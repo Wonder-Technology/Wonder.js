@@ -14,11 +14,11 @@ import {
 } from "./programSystem";
 import { RenderCommand } from "../command/RenderCommand";
 import { addSendAttributeConfig, addSendUniformConfig } from "./glslSenderSystem";
+import { generateComponentIndex } from "../../component/ComponentSystem";
 
-//todo refactor: with Shader
 export var create = (ShaderData: any) => {
     var shader = new Shader(),
-        index = _generateIndex(ShaderData);
+        index = generateComponentIndex(ShaderData);
 
     shader.index = index;
 
@@ -27,11 +27,6 @@ export var create = (ShaderData: any) => {
     ShaderData.uniformCacheMap[index] = {};
 
     return shader;
-}
-
-//todo extract
-var _generateIndex = (ShaderData: any) => {
-    return ShaderData.index++;
 }
 
 export var init = (state: Map<any, any>, materialIndex:number, shaderIndex: number, materialClassName: string, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, ShaderData: any) => {

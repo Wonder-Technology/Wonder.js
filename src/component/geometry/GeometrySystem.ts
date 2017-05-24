@@ -7,13 +7,14 @@ import { EBufferType } from "../../renderer/enum/EBufferType";
 import { deleteVal, isNotValidMapValue } from "../../utils/objectUtils";
 import {
     addAddComponentHandle as addAddComponentHandleToMap, addComponentToGameObjectMap,
-    addDisposeHandle as addDisposeHandleToMap, getComponentGameObject
+    addDisposeHandle as addDisposeHandleToMap, generateComponentIndex, getComponentGameObject
 } from "../ComponentSystem";
 import { deleteBySwap } from "../../utils/arrayUtils";
 import curry from "wonder-lodash/curry";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 import { EDrawMode } from "../../renderer/enum/EDrawMode";
 import { GeometryComputeDataFuncMap, GeometryIndicesMap, GeometryVerticesMap } from "./GeometryData";
+import { checkIndexShouldEqualCount } from "../utils/contractUtils";
 
 export var addAddComponentHandle = (_class: any, GeometryData:any) => {
     addAddComponentHandleToMap(_class, addComponent(GeometryData));
@@ -23,19 +24,10 @@ export var addDisposeHandle = (_class: any, GeometryData:any) => {
     addDisposeHandleToMap(_class, disposeComponent(GeometryData));
 }
 
-//todo refactor: extract with MeshRenderer
 export var create = requireCheckFunc((geometry:Geometry, GeometryData: any) => {
-    it("GeometryData.index should === GeometryData.count", () => {
-        expect(GeometryData.index).equal(GeometryData.count);
-    });
-    it("GeometryData.index should >= 0", () => {
-        expect(GeometryData.index).gte(0);
-    });
-    it("GeometryData.count should >= 0", () => {
-        expect(GeometryData.count).gte(0);
-    });
+    checkIndexShouldEqualCount(GeometryData);
 }, (geometry:Geometry, GeometryData: any) => {
-    var index = _generateIndex(GeometryData);
+    var index = generateComponentIndex(GeometryData);
 
     geometry.index = index;
 
@@ -45,11 +37,6 @@ export var create = requireCheckFunc((geometry:Geometry, GeometryData: any) => {
 
     return geometry;
 })
-
-//todo refactor: extract with MeshRenderer
-var _generateIndex = (BoxGeometryData: any) => {
-    return BoxGeometryData.index++;
-}
 
 export var init = (GeometryData: any, state:Map<any, any>) => {
     var computeDataFuncMap = GeometryData.computeDataFuncMap,
@@ -90,13 +77,10 @@ export var setDrawMode = (index:number, drawMode:EDrawMode, GeometryData:any) =>
 }
 
 export var getVerticesCount = (index:number, GeometryData:any) => {
-    // return GeometryData.verticesCountMap[index];
-
     return getVertices(index, GeometryData).length;
 }
 
 export var getIndicesCount = (index:number, GeometryData:any) => {
-    // return GeometryData.indicesCountMap[index];
     return getIndices(index, GeometryData).length;
 }
 
@@ -109,12 +93,10 @@ export var getIndexTypeSize = (GeometryData:any) => {
 }
 
 export var getVertices = (index:number, GeometryData:any) => {
-    // return GeometryData.vertices.subarray(GeometryData.verticesIndexMap[index], GeometryData.verticesCountMap[index]);
     return GeometryData.verticesMap[index];
 }
 
 export var getIndices = (index:number, GeometryData:any) => {
-    // return GeometryData.indices.subarray(GeometryData.indicesIndexMap[index], GeometryData.indicesCountMap[index]);
     return GeometryData.indicesMap[index];
 }
 
@@ -133,15 +115,7 @@ export var addComponent = curry((GeometryData:any, component:Geometry, gameObjec
 })
 
 export var disposeComponent = ensureFunc(curry((returnVal, GeometryData:any, geometry:Geometry) => {
-    it("count should >= 0", () => {
-        expect(GeometryData.count).gte(0);
-    });
-    it("index should >= 0", () => {
-        expect(GeometryData.index).gte(0);
-    });
-    it("index should === count", () => {
-        expect(GeometryData.index).equal(GeometryData.count);
-    });
+    checkIndexShouldEqualCount(GeometryData);
 }), curry((GeometryData:any, geometry:Geometry) => {
     var index = geometry.index;
 

@@ -78,9 +78,6 @@ export var registerProgram = (shaderIndex: number, ShaderData: any, program: Web
 }
 
 export var getProgram = ensureFunc((program: WebGLProgram) => {
-    // it("program should exist", () => {
-    //     expect(program).exist;
-    // });
 }, (shaderIndex: number, ShaderData: any) => {
     return ShaderData.programMap[shaderIndex];
 })

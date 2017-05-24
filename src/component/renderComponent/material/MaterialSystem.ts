@@ -8,7 +8,7 @@ import { expect } from "wonder-expect.js";
 import { Material } from "./Material";
 import {
     addAddComponentHandle as addAddComponentHandleToMap, addComponentToGameObjectMap,
-    addDisposeHandle as addDisposeHandleToMap, getComponentGameObject
+    addDisposeHandle as addDisposeHandleToMap, generateComponentIndex, getComponentGameObject
 } from "../../ComponentSystem";
 import curry from "wonder-lodash/curry";
 import { GameObject } from "../../../core/entityObject/gameObject/GameObject";
@@ -23,7 +23,6 @@ export var addDisposeHandle = (_class: any, MaterialData:any) => {
     addDisposeHandleToMap(_class, disposeComponent(MaterialData));
 }
 
-//todo refactor: extract with MeshRenderer
 export var create = requireCheckFunc((material:Material, className:string, MaterialData: any) => {
     it("MaterialData.index should >= 0", () => {
         expect(MaterialData.index).gte(0);
@@ -32,7 +31,7 @@ export var create = requireCheckFunc((material:Material, className:string, Mater
         expect(MaterialData.count).gte(0);
     });
 }, (material:Material, className:string, MaterialData: any) => {
-    var index = _generateIndex(MaterialData);
+    var index = generateComponentIndex(MaterialData);
 
     material.index = index;
 
@@ -45,11 +44,6 @@ export var create = requireCheckFunc((material:Material, className:string, Mater
 
     return material;
 })
-
-//todo refactor: extract with MeshRenderer
-var _generateIndex = (MaterialData: any) => {
-    return MaterialData.index++;
-}
 
 export var init = requireCheckFunc((state: Map<any, any>, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, ShaderData:any, MaterialData:any) => {
     it("index should === count", () => {

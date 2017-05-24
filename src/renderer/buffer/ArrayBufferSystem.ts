@@ -1,12 +1,12 @@
-import { isValidMapValue } from "../../utils/objectUtils";
 import { getVertices } from "../../component/geometry/GeometrySystem";
 import { EBufferType } from "../enum/EBufferType";
+import { isBufferExist } from "./bufferUtils";
 
 export var getOrCreateBuffer = (gl:WebGLRenderingContext, geometryIndex:number, bufferType:string, GeometryData:any, ArrayBufferData:any) => {
     var buffers = ArrayBufferData.buffers,
         buffer = buffers[geometryIndex];
 
-    if(_isBufferExist(buffer)){
+    if(isBufferExist(buffer)){
         return buffer;
     }
 
@@ -24,8 +24,6 @@ export var getOrCreateBuffer = (gl:WebGLRenderingContext, geometryIndex:number, 
     return buffer;
 }
 
-var _isBufferExist = (buffer:WebGLBuffer) => isValidMapValue(buffer);
-
 var _initBuffer = (gl:WebGLRenderingContext, data: Float32Array, buffer:WebGLBuffer, ArrayBufferData:any) => {
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
 
@@ -36,8 +34,6 @@ var _initBuffer = (gl:WebGLRenderingContext, data: Float32Array, buffer:WebGLBuf
 
 var _resetBindedBuffer = (gl:WebGLRenderingContext, ArrayBufferData:any) => {
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
-
-    // ShaderD.lastBindedArrayBuffer = null;
 }
 
 export var initData = (ArrayBufferData:any) => {

@@ -1,11 +1,11 @@
-import { isValidMapValue } from "../../utils/objectUtils";
 import { getIndexType, getIndexTypeSize, getIndices } from "../../component/geometry/GeometrySystem";
+import { isBufferExist } from "./bufferUtils";
 
 export var getOrCreateBuffer = (gl:WebGLRenderingContext, geometryIndex:number, GeometryData:any, IndexBufferData:any) => {
     var buffers = IndexBufferData.buffers,
         buffer = buffers[geometryIndex];
 
-    if(_isBufferExist(buffer)){
+    if(isBufferExist(buffer)){
         return buffer;
     }
 
@@ -18,9 +18,6 @@ export var getOrCreateBuffer = (gl:WebGLRenderingContext, geometryIndex:number, 
     return buffer;
 }
 
-//todo refactor with ArrayBufferSystem
-var _isBufferExist = (buffer:WebGLBuffer) => isValidMapValue(buffer);
-
 var _initBuffer = (gl:WebGLRenderingContext, data: Uint16Array | Uint32Array, buffer:WebGLBuffer, IndexBufferData:any) => {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
 
@@ -31,8 +28,6 @@ var _initBuffer = (gl:WebGLRenderingContext, data: Uint16Array | Uint32Array, bu
 
 var _resetBindedBuffer = (gl:WebGLRenderingContext, IndexBufferData:any) => {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
-
-    // IndexBufferData.lastBindedIndexBuffer = null;
 }
 
 export var getType = (GeometryData:any) => {

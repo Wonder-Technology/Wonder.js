@@ -5,7 +5,7 @@ import { expect } from "wonder-expect.js";
 import {
     addAddComponentHandle as addAddComponentHandleToMap, addComponentToGameObjectMap,
     addDisposeHandle as addDisposeHandleToMap,
-    checkComponentShouldAlive, getComponentGameObject
+    checkComponentShouldAlive, generateComponentIndex, getComponentGameObject
 } from "../ComponentSystem";
 import forEach from "wonder-lodash/forEach";
 import curry from "wonder-lodash/curry";
@@ -32,7 +32,7 @@ export var create = ensureFunc((tag:Tag, slotCount:number, TagData:any) => {
     // });
 }, (slotCount:number, TagData:any)  => {
     var tag = new Tag(),
-        index = _generateIndex(TagData);
+        index = generateComponentIndex(TagData);
 
     tag.index = index;
 
@@ -61,10 +61,6 @@ var _initIndexMap = (index:number, slotCount:number, TagData:any) => {
     for(let i = lastIndexInArrayBuffer, count = i + slotCount; i < count; i++){
         indexMap[i] = index;
     }
-}
-
-var _generateIndex = (TagData: any) => {
-    return TagData.index++;
 }
 
 export var addTag = requireCheckFunc((tagComponent:Tag, tag:string, TagData:any) => {

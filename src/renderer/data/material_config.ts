@@ -1,12 +1,6 @@
 export const material_config = {
-    // "materials": {
     "BasicMaterial": {
-        // "createdShader": [
-        //     "mainShader"
-        // ],
         "shader": {
-            // "mainShader": {
-            // "type": "common",
             "shaderLib": [
                 "CommonShaderLib",
                 "VerticeCommonShaderLib",
@@ -15,16 +9,12 @@ export const material_config = {
                 "EndBasicShaderLib",
                 "EndShaderLib"
             ]
-            // }
         }
     }
-    // }
 }
 
 export interface IMaterialConfig {
-    // materials: {
     [materialClassName: string]: IMaterialContentConfig
-    // }
 }
 
 export interface IMaterialContentConfig {

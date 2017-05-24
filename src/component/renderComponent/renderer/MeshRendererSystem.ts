@@ -7,9 +7,10 @@ import { expect } from "wonder-expect.js";
 import { Map } from "immutable";
 import {
     addAddComponentHandle as addAddComponentHandleToMap, addComponentToGameObjectMap,
-    addDisposeHandle as addDisposeHandleToMap, getComponentGameObject
+    addDisposeHandle as addDisposeHandleToMap, generateComponentIndex, getComponentGameObject
 } from "../../ComponentSystem";
 import { deleteBySwap as deleteObjectBySwap, deleteVal } from "../../../utils/objectUtils";
+import { checkIndexShouldEqualCount } from "../../utils/contractUtils";
 
 export var addAddComponentHandle = (_class: any, MaterialData:any) => {
     addAddComponentHandleToMap(_class, addComponent(MaterialData));
@@ -20,18 +21,10 @@ export var addDisposeHandle = (_class: any, MaterialData:any) => {
 }
 
 export var create = requireCheckFunc((MeshRendererData: any) => {
-    it("MeshRendererData.index should === MeshRendererData.count", () => {
-        expect(MeshRendererData.index).equal(MeshRendererData.count);
-    });
-    it("MeshRendererData.index should >= 0", () => {
-        expect(MeshRendererData.index).gte(0);
-    });
-    it("MeshRendererData.count should >= 0", () => {
-        expect(MeshRendererData.count).gte(0);
-    });
+    checkIndexShouldEqualCount(MeshRendererData);
 }, (MeshRendererData: any) => {
     var renderer = new MeshRenderer(),
-        index = _generateIndex(MeshRendererData);
+        index = generateComponentIndex(MeshRendererData);
 
     renderer.index = index;
 
@@ -41,10 +34,6 @@ export var create = requireCheckFunc((MeshRendererData: any) => {
 
     return renderer;
 })
-
-var _generateIndex = (MeshRendererData: any) => {
-    return MeshRendererData.index++;
-}
 
 var _setRenderGameObjectArray = requireCheckFunc((index:number, gameObject:GameObject, renderGameObjectArray:Array<GameObject>) => {
     it("should not exist gameObject", function () {

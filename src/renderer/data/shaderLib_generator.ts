@@ -23,7 +23,6 @@ export const shaderLib_generator = {
             },
             "send": {
                 "uniform": [
-                    //todo add more
                     {
                         "name": "u_mMatrix",
                         "field": "mMatrix",

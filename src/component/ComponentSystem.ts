@@ -5,7 +5,6 @@ import { GameObject } from "../core/entityObject/gameObject/GameObject";
 import { expect } from "wonder-expect.js";
 import { it } from "../definition/typescript/decorator/contract";
 
-
 var _addHandle = (_class:any, handleMap:object, handle:(component:Component, ...args) => void) => {
     var typeID = getTypeIDFromClass(_class);
 
@@ -43,4 +42,8 @@ export var addComponentToGameObjectMap = (gameObjectMap:ComponentGameObjectMap, 
 
 export var getComponentGameObject = (gameObjectMap:ComponentGameObjectMap, index:number) => {
     return gameObjectMap[index];
+}
+
+export var generateComponentIndex = (ComponentData: any) => {
+    return ComponentData.index++;
 }
