@@ -1,16 +1,16 @@
 import { MeshRenderer } from "./MeshRenderer";
-import { GameObject } from "../../../core/entityObject/gameObject/GameObject";
+import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 import curry from "wonder-lodash/curry";
-import { it, requireCheckFunc } from "../../../definition/typescript/decorator/contract";
-import { deleteBySwap } from "../../../utils/arrayUtils";
+import { it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
+import { deleteBySwap } from "../../utils/arrayUtils";
 import { expect } from "wonder-expect.js";
 import { Map } from "immutable";
 import {
     addAddComponentHandle as addAddComponentHandleToMap, addComponentToGameObjectMap,
     addDisposeHandle as addDisposeHandleToMap, generateComponentIndex, getComponentGameObject
-} from "../../ComponentSystem";
-import { deleteBySwap as deleteObjectBySwap, deleteVal } from "../../../utils/objectUtils";
-import { checkIndexShouldEqualCount } from "../../utils/contractUtils";
+} from "../ComponentSystem";
+import { deleteBySwap as deleteObjectBySwap, deleteVal } from "../../utils/objectUtils";
+import { checkIndexShouldEqualCount } from "../utils/contractUtils";
 
 export var addAddComponentHandle = (_class: any, MaterialData:any) => {
     addAddComponentHandleToMap(_class, addComponent(MaterialData));

@@ -7,7 +7,7 @@ import { RenderCommand } from "./RenderCommand";
 import { getGeometry, getMaterial, getTransform } from "../../core/entityObject/gameObject/GameObjectSystem";
 import { it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
-import { getShader } from "../../component/renderComponent/material/MaterialSystem";
+import { getShader } from "../../component/material/MaterialSystem";
 import { getDrawMode } from "../../component/geometry/GeometrySystem";
 import { getLocalToWorldMatrix, getTempLocalToWorldMatrix } from "../../component/transform/ThreeDTransformSystem";
 

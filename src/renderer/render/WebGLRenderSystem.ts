@@ -1,12 +1,12 @@
 import { Map } from "immutable";
-import { getRenderList } from "../../component/renderComponent/renderer/MeshRendererSystem";
-import { MeshRendererData } from "../../component/renderComponent/renderer/MeshRendererData";
+import { getRenderList } from "../../component/renderer/MeshRendererSystem";
+import { MeshRendererData } from "../../component/renderer/MeshRendererData";
 import { compose } from "../../utils/functionalUtils";
 import { createRenderCommands } from "../command/RenderCommandSystem";
 import { sortRenderCommands } from "../sort/SortRenderCommandSystem";
 import { draw } from "../draw/DrawRenderCommandSystem";
-import { init as initMaterial } from "../../component/renderComponent/material/MaterialSystem";
-import { MaterialData } from "../../component/renderComponent/material/MaterialData";
+import { init as initMaterial } from "../../component/material/MaterialSystem";
+import { MaterialData } from "../../component/material/MaterialData";
 import { GameObjectData } from "../../core/entityObject/gameObject/GameObjectData";
 import { ShaderData } from "../shader/ShaderData";
 import { material_config } from "../data/material_config";

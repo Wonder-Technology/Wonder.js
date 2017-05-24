@@ -1,10 +1,10 @@
 import { BasicMaterial } from "./BasicMaterial";
 import { create as createMaterial, initMaterial as initMaterialSystem } from "./MaterialSystem";
-import { IMaterialConfig } from "../../../renderer/data/material_config";
-import { IShaderLibGenerator } from "../../../renderer/data/shaderLib_generator";
+import { IMaterialConfig } from "../../renderer/data/material_config";
+import { IShaderLibGenerator } from "../../renderer/data/shaderLib_generator";
 import { Map } from "immutable";
-import { create as createShader } from "../../../renderer/shader/ShaderSystem";
-import { isValidMapValue } from "../../../utils/objectUtils";
+import { create as createShader } from "../../renderer/shader/ShaderSystem";
+import { isValidMapValue } from "../../utils/objectUtils";
 
 export var create = (ShaderData:any, MaterialData: any) => {
     var material = new BasicMaterial(),

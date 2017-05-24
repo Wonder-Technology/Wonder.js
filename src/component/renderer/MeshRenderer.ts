@@ -1,11 +1,11 @@
-import { RenderComponent } from "../RenderComponent";
-import { registerClass } from "../../../definition/typescript/decorator/registerClass";
+import { registerClass } from "../../definition/typescript/decorator/registerClass";
 import { create, getGameObject, getRenderList } from "./MeshRendererSystem";
 import { MeshRendererData } from "./MeshRendererData";
-import { GameObject } from "../../../core/entityObject/gameObject/GameObject";
+import { GameObject } from "../../core/entityObject/gameObject/GameObject";
+import { Component } from "../Component";
 
 @registerClass("MeshRenderer")
-export class MeshRenderer extends RenderComponent{
+export class MeshRenderer extends Component{
     public index:number = null;
 }
 

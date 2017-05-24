@@ -1,18 +1,18 @@
-import { init as initShader } from "../../../renderer/shader/ShaderSystem";
-import { IMaterialConfig } from "../../../renderer/data/material_config";
-import { IShaderLibGenerator } from "../../../renderer/data/shaderLib_generator";
+import { init as initShader } from "../../renderer/shader/ShaderSystem";
+import { IMaterialConfig } from "../../renderer/data/material_config";
+import { IShaderLibGenerator } from "../../renderer/data/shaderLib_generator";
 import { Map } from "immutable";
-import { ensureFunc, it, requireCheckFunc } from "../../../definition/typescript/decorator/contract";
-import { Color } from "../../../structure/Color";
+import { ensureFunc, it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
+import { Color } from "../../structure/Color";
 import { expect } from "wonder-expect.js";
 import { Material } from "./Material";
 import {
     addAddComponentHandle as addAddComponentHandleToMap, addComponentToGameObjectMap,
     addDisposeHandle as addDisposeHandleToMap, generateComponentIndex, getComponentGameObject
-} from "../../ComponentSystem";
+} from "../ComponentSystem";
 import curry from "wonder-lodash/curry";
-import { GameObject } from "../../../core/entityObject/gameObject/GameObject";
-import { deleteVal, isValidMapValue } from "../../../utils/objectUtils";
+import { GameObject } from "../../core/entityObject/gameObject/GameObject";
+import { deleteVal, isValidMapValue } from "../../utils/objectUtils";
 import { MaterialClassNameMap } from "./MaterialData";
 
 export var addAddComponentHandle = (_class: any, MaterialData:any) => {

@@ -1,15 +1,15 @@
-import { RenderComponent } from "../RenderComponent";
-import { registerClass } from "../../../definition/typescript/decorator/registerClass";
+import { registerClass } from "../../definition/typescript/decorator/registerClass";
 import {
     getAlphaTest, getColor, getGameObject, getOpacity, getShader, setAlphaTest, setColor,
     setOpacity
 } from "./MaterialSystem";
-import { Color } from "../../../structure/Color";
+import { Color } from "../../structure/Color";
 import { MaterialData } from "./MaterialData";
-import { GameObject } from "../../../core/entityObject/gameObject/GameObject";
+import { GameObject } from "../../core/entityObject/gameObject/GameObject";
+import { Component } from "../Component";
 
 @registerClass("Material")
-export class Material extends RenderComponent{
+export class Material extends Component{
     public index:number = null;
 }
 

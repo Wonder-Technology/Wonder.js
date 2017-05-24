@@ -4,12 +4,11 @@ export {getTypeIDFromClass,getTypeIDFromComponent} from "./component/ComponentTy
 export {BoxGeometry,createBoxGeometry,setBoxGeometryConfigData} from "./component/geometry/BoxGeometry";
 export {Geometry,getDrawMode,setDrawMode,getVertices,getIndices,getGeometryConfigData,initGeometry,getGeometryGameObject} from "./component/geometry/Geometry";
 export {GeometryData} from "./component/geometry/GeometryData";
-export {BasicMaterial,createBasicMaterial,initBasicMaterial} from "./component/renderComponent/material/BasicMaterial";
-export {Material,getMaterialColor,setMaterialColor,getMaterialOpacity,setMaterialOpacity,getMaterialAlphaTest,setMaterialAlphaTest,getMaterialGameObject,getMaterialShader} from "./component/renderComponent/material/Material";
-export {MaterialData} from "./component/renderComponent/material/MaterialData";
-export {RenderComponent} from "./component/renderComponent/RenderComponent";
-export {MeshRenderer,createMeshRenderer,getMeshRendererGameObject,getMeshRendererRenderList} from "./component/renderComponent/renderer/MeshRenderer";
-export {MeshRendererData} from "./component/renderComponent/renderer/MeshRendererData";
+export {BasicMaterial,createBasicMaterial,initBasicMaterial} from "./component/material/BasicMaterial";
+export {Material,getMaterialColor,setMaterialColor,getMaterialOpacity,setMaterialOpacity,getMaterialAlphaTest,setMaterialAlphaTest,getMaterialGameObject,getMaterialShader} from "./component/material/Material";
+export {MaterialData} from "./component/material/MaterialData";
+export {MeshRenderer,createMeshRenderer,getMeshRendererGameObject,getMeshRendererRenderList} from "./component/renderer/MeshRenderer";
+export {MeshRendererData} from "./component/renderer/MeshRendererData";
 export {Tag,createTag,addTag,removeTag,findGameObjectsByTag,getTagGameObject} from "./component/tag/Tag";
 export {TagData} from "./component/tag/TagData";
 export {ThreeDTransform,createThreeDTransform,getThreeDTransformPosition,setThreeDTransformPosition,getThreeDTransformLocalToWorldMatrix,getThreeDTransformLocalPosition,setThreeDTransformLocalPosition,setThreeDTransformBatchTransformDatas,getThreeDTransformParent,setThreeDTransformParent,getThreeDTransformGameObject} from "./component/transform/ThreeDTransform";

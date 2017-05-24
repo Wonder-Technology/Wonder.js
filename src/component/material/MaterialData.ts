@@ -1,6 +1,6 @@
-import { Shader } from "../../../renderer/shader/Shader";
-import { Color } from "../../../structure/Color";
-import { ComponentGameObjectMap } from "../../ComponentData";
+import { Shader } from "../../renderer/shader/Shader";
+import { Color } from "../../structure/Color";
+import { ComponentGameObjectMap } from "../ComponentData";
 
 export class MaterialData{
     public static index:number = null;

@@ -3,7 +3,7 @@ import { fromArray as fromArrayFromFrp, Operator } from "wonder-frp/dist/es2015/
 import { initData as initThreeDTransformDataSystem } from "../component/transform/ThreeDTransformSystem";
 import { initData as initTagDataSystem } from "../component/tag/TagSystem";
 import { initData as initGeometryDataSystem } from "../component/geometry/GeometrySystem";
-import { initData as initMaterialDataSystem } from "../component/renderComponent/material/MaterialSystem";
+import { initData as initMaterialDataSystem } from "../component/material/MaterialSystem";
 import {
     initData as initShaderDataSystem,
     sendAttributeData as sendAttributeDataSystem, sendUniformData as sendUniformDataSystem,
@@ -13,7 +13,7 @@ import {
 import {
     disableVertexAttribArray as disableVertexAttribArraySystem
 } from "../renderer/shader/programSystem";
-import { initData as initMeshRendererDataSystem } from "../component/renderComponent/renderer/MeshRendererSystem";
+import { initData as initMeshRendererDataSystem } from "../component/renderer/MeshRendererSystem";
 import { createState as createStateUtils } from "../utils/stateUtils";
 import { Map } from "immutable";
 import { initData as initArrayBufferDataSystem } from "../renderer/buffer/ArrayBufferSystem";

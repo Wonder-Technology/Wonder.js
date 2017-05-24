@@ -36,14 +36,14 @@ import { DataBufferConfig } from "../config/DataBufferConfig";
 import {
     addAddComponentHandle as addMaterialAddComponentHandle, addDisposeHandle as addMaterialDisposeHandle,
     initData as initMaterialData
-} from "../component/renderComponent/material/MaterialSystem";
-import { MaterialData } from "../component/renderComponent/material/MaterialData";
+} from "../component/material/MaterialSystem";
+import { MaterialData } from "../component/material/MaterialData";
 import {
     addAddComponentHandle as addMeshRendererAddComponentHandle,
     addDisposeHandle as addMeshRendererDisposeHandle,
     initData as initMeshRendererData
-} from "../component/renderComponent/renderer/MeshRendererSystem";
-import { MeshRendererData } from "../component/renderComponent/renderer/MeshRendererData";
+} from "../component/renderer/MeshRendererSystem";
+import { MeshRendererData } from "../component/renderer/MeshRendererData";
 import { initData as initTagData, addAddComponentHandle as addTagAddComponentHandle, addDisposeHandle as addTagDisposeHandle } from "../component/tag/TagSystem";
 import { TagData } from "../component/tag/TagData";
 import { Tag } from "../component/tag/Tag";
@@ -52,8 +52,8 @@ import { initData as initIndexBufferData } from "../renderer/buffer/IndexBufferS
 import { IndexBufferData } from "../renderer/buffer/IndexBufferData";
 import { initData as initArrayBufferData } from "../renderer/buffer/ArrayBufferSystem";
 import { ArrayBufferData } from "../renderer/buffer/ArrayBufferData";
-import { Material } from "../component/renderComponent/material/Material";
-import { MeshRenderer } from "../component/renderComponent/renderer/MeshRenderer";
+import { Material } from "../component/material/Material";
+import { MeshRenderer } from "../component/renderer/MeshRenderer";
 
 @singleton(true)
 @registerClass("Director")

@@ -4,7 +4,7 @@ import {
     UniformShaderLocationMap
 } from "./ShaderData";
 import { hasDuplicateItems } from "../../utils/arrayUtils";
-import { getColor, getOpacity } from "../../component/renderComponent/material/MaterialSystem";
+import { getColor, getOpacity } from "../../component/material/MaterialSystem";
 import { Vector3 } from "../../math/Vector3";
 import { isConfigDataExist } from "../utils/renderConfigUtils";
 import { error } from "../../utils/Log";

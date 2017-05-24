@@ -12,7 +12,7 @@ import forEach from "wonder-lodash/forEach";
 import { isNotUndefined } from "../../../utils/JudgeUtils";
 import { execHandle } from "../../../component/ComponentSystem";
 import { Geometry } from "../../../component/geometry/Geometry";
-import { Material } from "../../../component/renderComponent/material/Material";
+import { Material } from "../../../component/material/Material";
 
 export var create = (transform:ThreeDTransform, GameObjectData:any) => {
     var gameObject:GameObject = new GameObject(),

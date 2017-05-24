@@ -2,9 +2,9 @@ import {
     basic_materialColor_fragment, end_basic_fragment, common_define, common_fragment, common_function, common_vertex,
     GLSLChunk
 } from "../shader/chunk/ShaderChunk";
-import { getAlphaTest, isPropertyExist } from "../../component/renderComponent/material/MaterialSystem";
+import { getAlphaTest, isPropertyExist } from "../../component/material/MaterialSystem";
 import { setPos_mvp } from "../shader/snippet/ShaderSnippet";
-import { MaterialData } from "../../component/renderComponent/material/MaterialData";
+import { MaterialData } from "../../component/material/MaterialData";
 
 export const shaderLib_generator = {
     "shaderLibs": {

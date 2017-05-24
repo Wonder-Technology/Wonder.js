@@ -1,5 +1,5 @@
-import { GameObject } from "../../../core/entityObject/gameObject/GameObject";
-import { ComponentGameObjectMap } from "../../ComponentData";
+import { GameObject } from "../../core/entityObject/gameObject/GameObject";
+import { ComponentGameObjectMap } from "../ComponentData";
 import { MeshRenderer } from "./MeshRenderer";
 
 export class MeshRendererData{
