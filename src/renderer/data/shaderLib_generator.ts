@@ -47,7 +47,8 @@ export const shaderLib_generator = {
                 "attribute": [
                     {
                         "name": "a_position",
-                        "buffer": "vertice"
+                        "buffer": "vertice",
+                        "type": "vec3"
                     }
                 ]
             }
@@ -81,7 +82,7 @@ export const shaderLib_generator = {
                         "name": "u_opacity",
                         "from": "material",
                         "field": "opacity",
-                        "type": "float_1"
+                        "type": "float"
                     }
                 ]
             }
@@ -172,11 +173,12 @@ export interface IShaderLibSendConfig {
 export interface ISendAttributeConfig{
     name:string;
     buffer:string;
+    type:"vec3";
 }
 
 export interface ISendUniformConfig{
     name:string;
     field:string;
-    type: "float_1" | "vec3" | "mat4";
+    type: "float" | "vec3" | "mat4";
     from?: "cmd" | "material";
 }

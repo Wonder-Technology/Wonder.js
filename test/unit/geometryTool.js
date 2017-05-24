@@ -9,6 +9,18 @@ var geometryTool = (function () {
         initGeometry:wd.initGeometry,
         getGameObject:wd.getGeometryGameObject,
 
+        setIndices: function (index, data) {
+          wd.GeometryData.indicesMap[index] = data;
+        },
+        setVertices: function (index, data) {
+            wd.GeometryData.verticesMap[index] = data;
+        },
+        setIndexType: function (type) {
+            wd.GeometryData.indexType = type;
+        },
+        setIndexTypeSize: function (size) {
+            wd.GeometryData.indexTypeSize = size;
+        },
         resetData: function(){
             wd.initGeometryData(wd.DataBufferConfig, wd.GeometryData);
         }

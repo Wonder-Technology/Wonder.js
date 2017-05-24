@@ -7,8 +7,7 @@ import {
     IGLSLConfig, IGLSLFuncConfig, ISendAttributeConfig, ISendUniformConfig, IShaderLibContentGenerator,
     IShaderLibGenerator, IShaderLibSendConfig
 } from "../data/shaderLib_generator";
-import { isNotUndefined } from "../../utils/JudgeUtils";
-import { isValidMapValue } from "../../utils/objectUtils";
+import { deleteVal, isValidMapValue } from "../../utils/objectUtils";
 import { getGL } from "../../device/DeviceManagerSystem";
 import { Map } from "immutable";
 import { error, Log } from "../../utils/Log";
@@ -28,6 +27,7 @@ import { ExtendUtils } from "wonder-commonlib/dist/es2015/utils/ExtendUtils";
 import { EGPUPrecision, GPUDetector } from "../../device/GPUDetector";
 import { getColor, getOpacity } from "../../component/renderComponent/material/MaterialSystem";
 import { Vector3 } from "../../math/Vector3";
+import { compose, filterArray, forEachArray } from "../../utils/functionalUtils";
 
 //todo refactor: with Shader
 export var create = (ShaderData: any) => {
@@ -37,6 +37,8 @@ export var create = (ShaderData: any) => {
     shader.index = index;
 
     ShaderData.count += 1;
+
+    ShaderData.uniformCacheMap[index] = {};
 
     return shader;
 }
@@ -192,7 +194,7 @@ var _initShader = (program: WebGLProgram, vsSource: string, fsSource: string, gl
 }
 
 var _linkProgram = ensureFunc((returnVal, gl: WebGLRenderingContext, program: WebGLProgram) => {
-    it(`link program error ${gl.getProgramInfoLog(program)}`, () => {
+    it(`link program error:${gl.getProgramInfoLog(program)}`, () => {
         expect(gl.getProgramParameter(program, gl.LINK_STATUS)).true;
     })
 }, (gl: WebGLRenderingContext, program: WebGLProgram) => {
@@ -213,12 +215,6 @@ var _compileShader = (gl: WebGLRenderingContext, glslSource: string, shader: Web
         Log.log("source:\n", glslSource);
     }
 }
-
-// var _initShaderLibs = (index:number, materialClassName:string, material_config) => {
-//     var shaderConfig = _getShaderConfig(materialClassName, material_config);
-//
-//      shaderConfig.shaderLib
-// }
 
 var _buildGLSLSource = requireCheckFunc((materialIndex:number, materialShaderLibConfig: MaterialShaderLibConfig, shaderLibData: IShaderLibContentGenerator) => {
     // var materialData = material_config.materials[materialClassName];
@@ -316,11 +312,69 @@ var _buildGLSLSource = requireCheckFunc((materialIndex:number, materialShaderLib
     vsBody += main_end;
     fsBody += main_end;
 
+    vsTop += _generateAttributeSource(materialShaderLibConfig, shaderLibData);
+    vsTop += _generateUniformSource(materialShaderLibConfig, shaderLibData, vsVarDeclare, vsFuncDefine, vsBody);
+    fsTop += _generateUniformSource(materialShaderLibConfig, shaderLibData, fsVarDeclare, fsFuncDefine, fsBody);
+
     return {
         vsSource: vsTop + vsDefine + vsVarDeclare + vsFuncDeclare + vsFuncDefine + vsBody,
         fsSource: fsTop + fsDefine + fsVarDeclare + fsFuncDeclare + fsFuncDefine + fsBody
     }
 })
+
+var _generateAttributeSource = (materialShaderLibConfig:MaterialShaderLibConfig, shaderLibData: IShaderLibContentGenerator) => {
+    var result = "";
+
+    forEach(materialShaderLibConfig, (shaderLibName: string) => {
+        var sendData = shaderLibData[shaderLibName].send,
+            attributeData = null;
+
+        if (!_isConfigDataExist(sendData) || !_isConfigDataExist(sendData.attribute)) {
+            return;
+        }
+
+        attributeData = sendData.attribute;
+
+        forEach(attributeData, (data: ISendAttributeConfig) => {
+            result += `attribute ${data.type} ${data.name};\n`;
+        });
+    });
+
+    return result;
+}
+
+var _generateUniformSource = (materialShaderLibConfig:MaterialShaderLibConfig, shaderLibData: IShaderLibContentGenerator, sourceVarDeclare: string, sourceFuncDefine: string, sourceBody: string) => {
+    var result = "",
+        generateFunc = compose(
+            forEachArray((data: ISendAttributeConfig) => {
+                result += `uniform ${data.type} ${data.name};\n`;
+            }),
+            filterArray((data: ISendAttributeConfig) => {
+                var name = data.name;
+
+                return _isInSource(name, sourceVarDeclare) || _isInSource(name,sourceFuncDefine) || _isInSource(name, sourceBody);
+            })
+        );
+
+    forEach(materialShaderLibConfig, (shaderLibName: string) => {
+        var sendData = shaderLibData[shaderLibName].send,
+            uniformData = null;
+
+        if (!_isConfigDataExist(sendData) || !_isConfigDataExist(sendData.uniform)) {
+            return;
+        }
+
+        uniformData = sendData.uniform;
+
+        generateFunc(uniformData);
+    });
+
+    return result;
+}
+
+var _isInSource = (key: string, source: string) => {
+    return source.indexOf(key) > -1;
+}
 
 var _isConfigDataExist = (configData:any) => {
     return isValidMapValue(configData);
@@ -375,10 +429,6 @@ var _getFuncGLSLPartData = (glslConfig: IGLSLConfig, partName: string) => {
     return glslConfig[partName];
 }
 
-// var _buildShaderGLSLSource = (glslConfig:IGLSLConfig, top:string, varDeclare:string, funcDeclare:string, funcDefine:string, body:string) => {
-//     top += glslConfig.top || "";
-// }
-
 var _addSendAttributeConfig = ensureFunc((returnVal, shaderIndex: number, materialShaderLibConfig: MaterialShaderLibConfig, shaderLibData: IShaderLibContentGenerator, sendAttributeConfigMap: SendAttributeConfigMap) => {
     it("sendAttributeConfigMap should not has duplicate attribute name", () => {
         expect(hasDuplicateItems(sendAttributeConfigMap[shaderIndex])).false;
@@ -423,14 +473,6 @@ var _addSendUniformConfig = ensureFunc((returnVal, shaderIndex: number, material
     sendUniformConfigMap[shaderIndex] = sendDataArr;
 }))
 
-// var _getShaderConfig = requireCheckFunc((materialClassName: string, material_config) => {
-//     it("materialClassName should be defined in material_config", () => {
-//         expect(material_config[materialClassName]).exist;
-//     })
-// }, (materialClassName: string, material_config) => {
-//     return material_config[materialClassName].shader;
-// })
-
 export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, geometryIndex: number, ShaderData: any, GeometryData: any, ArrayBufferData: any) => {
     var sendDataArr = ShaderData.sendAttributeConfigMap[shaderIndex],
         attributeLocationMap = ShaderData.attributeLocationMap[shaderIndex],
@@ -473,10 +515,10 @@ export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, Ma
                 _sendMatrix4(gl, name, data, uniformLocationMap);
                 break;
             case EVariableType.VEC3:
-                _sendVector3(gl, name ,data, uniformCacheMap, uniformLocationMap);
+                _sendVector3(gl, shaderIndex, name ,data, uniformCacheMap, uniformLocationMap);
                 break;
-            case EVariableType.FLOAT_1:
-                _sendFloat1(gl, name ,data, uniformCacheMap, uniformLocationMap);
+            case EVariableType.FLOAT:
+                _sendFloat1(gl, shaderIndex, name ,data, uniformCacheMap, uniformLocationMap);
                 break;
             default:
                 Log.error(true, Log.info.FUNC_INVALID("EVariableType:", type));
@@ -529,7 +571,7 @@ var _getAttribLocation = ensureFunc((pos: number, name: string, attributeLocatio
     return attributeLocationMap[name];
 })
 
-var _getUniformLocation = ensureFunc((pos: number, name: string, attributeLocationMap: UniformLocationMap) => {
+var _getUniformLocation = ensureFunc((pos: number, name: string, uniformLocationMap: UniformLocationMap) => {
     it(`${name}'s uniform location should exist in map`, () => {
         expect(isValidMapValue(pos)).true;
     });
@@ -560,40 +602,44 @@ var _sendMatrix4 = (gl:WebGLRenderingContext, name: string, data: Matrix4, unifo
     })
 }
 
-var _sendVector3 = (gl:WebGLRenderingContext, name: string, data: Vector3, uniformCacheMap:UniformCacheMap, uniformLocationMap:UniformShaderLocationMap) => {
-    var recordedData: any = _getUniformCache(name, uniformCacheMap);
+var _sendVector3 = (gl:WebGLRenderingContext, shaderIndex:number, name: string, data: Vector3, uniformCacheMap:UniformCacheMap, uniformLocationMap:UniformShaderLocationMap) => {
+    var recordedData: any = _getUniformCache(shaderIndex, name, uniformCacheMap);
 
-    if (recordedData && recordedData[0] == data.x && recordedData[1] == data.y && recordedData[2] == data.z) {
+    if (recordedData && recordedData.x == data.x && recordedData.y == data.y && recordedData.z == data.z) {
         return;
     }
 
-    _setUniformCache(name, data, uniformCacheMap);
+    _setUniformCache(shaderIndex, name, data, uniformCacheMap);
 
     _sendUniformData<Vector3>(gl, name, data, uniformLocationMap, (pos, data) => {
         gl.uniform3f(pos, data.x, data.y, data.z);
     })
 }
 
-var _sendFloat1 = (gl:WebGLRenderingContext, name: string, data: number, uniformCacheMap:UniformCacheMap, uniformLocationMap:UniformShaderLocationMap) => {
-    var recordedData: any = _getUniformCache(name, uniformCacheMap);
+var _sendFloat1 = requireCheckFunc ((gl:WebGLRenderingContext, shaderIndex:number, name: string, data: number, uniformCacheMap:UniformCacheMap, uniformLocationMap:UniformShaderLocationMap) => {
+    it("data should be number", () => {
+        expect(data).be.a("number");
+    });
+}, (gl:WebGLRenderingContext, shaderIndex:number, name: string, data: number, uniformCacheMap:UniformCacheMap, uniformLocationMap:UniformShaderLocationMap) => {
+    var recordedData: any = _getUniformCache(shaderIndex, name, uniformCacheMap);
 
     if (recordedData === data) {
         return;
     }
 
-    _setUniformCache(name, data, uniformCacheMap);
+    _setUniformCache(shaderIndex, name, data, uniformCacheMap);
 
     _sendUniformData<number>(gl, name, data, uniformLocationMap, (pos, data) => {
         gl.uniform1f(pos, data);
     })
+})
+
+var _getUniformCache = (shaderIndex:number, name:string, uniformCacheMap:UniformCacheMap) => {
+    return uniformCacheMap[shaderIndex][name];
 }
 
-var _getUniformCache = (name:string, uniformCacheMap:UniformCacheMap) => {
-    return uniformCacheMap[name];
-}
-
-var _setUniformCache = (name:string, data:any, uniformCacheMap:UniformCacheMap) => {
-    uniformCacheMap[name] = data;
+var _setUniformCache = (shaderIndex:number, name:string, data:any, uniformCacheMap:UniformCacheMap) => {
+    uniformCacheMap[shaderIndex][name] = data;
 }
 
 var _sendUniformData = <T>(gl:WebGLRenderingContext, name: string, data: T, uniformLocationMap:UniformShaderLocationMap, sendFunc:(pos:WebGLUniformLocation, data:T) => void) => {
@@ -626,14 +672,6 @@ export var bindIndexBuffer = (gl: WebGLRenderingContext, geometryIndex: number, 
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
 }
 
-// export var getProgram = (index:number, ShaderData:any) => {
-//     return ShaderData.programMap[index];
-// }
-
-
-// export var use = (state: Map<any, any>, shaderIndex: number, ShaderData: any) => {
-//
-// }
 export var use = requireCheckFunc((gl: WebGLRenderingContext, shaderIndex: number, ShaderData: any) => {
     it("program should exist", () => {
         expect(_getProgram(shaderIndex, ShaderData)).exist;
@@ -641,7 +679,6 @@ export var use = requireCheckFunc((gl: WebGLRenderingContext, shaderIndex: numbe
 }, (gl: WebGLRenderingContext, shaderIndex: number, ShaderData: any) => {
     var program = _getProgram(shaderIndex, ShaderData);
 
-    // if (JudgeUtils.isEqual(this, ProgramTable.lastUsedProgram)) {
     if (ShaderData.lastUsedProgram === program) {
         return;
     }
@@ -650,11 +687,10 @@ export var use = requireCheckFunc((gl: WebGLRenderingContext, shaderIndex: numbe
 
     gl.useProgram(program);
 
-    // this._sender.disableVertexAttribArray();
     disableVertexAttribArray(gl, ShaderData);
 
-    //todo optimize
-    // BufferTable.lastBindedArrayBufferListUidStr = null;
+    ShaderData.lastBindedArrayBuffer = null;
+    ShaderData.lastBindedIndexBuffer = null;
 })
 
 export var disableVertexAttribArray = requireCheckFunc((gl: WebGLRenderingContext, ShaderData: any) => {
@@ -681,9 +717,24 @@ export var disableVertexAttribArray = requireCheckFunc((gl: WebGLRenderingContex
     ShaderData.vertexAttribHistory = [];
 })
 
-export var dispose = () => {
-    //todo directly remove from map
+export var dispose = (gl: WebGLRenderingContext, shaderIndex:number, ShaderData: any) => {
+    //todo finish
+
+    // _disposeProgram(gl, ShaderData.programMap[shaderIndex]);
+    // deleteVal(shaderIndex, ShaderData.programMap);
+
+
+    // deleteVal(shaderIndex, ShaderData.attributeLocationMap);
+    // deleteVal(shaderIndex, ShaderData.uniformLocationMap);
+    // deleteVal(shaderIndex, ShaderData.sendAttributeConfigMap);
+    // deleteVal(shaderIndex, ShaderData.sendUniformConfigMap);
+    // deleteVal(shaderIndex, ShaderData.vertexAttribHistory);
+    // deleteVal(shaderIndex, ShaderData.shaderMap);
 }
+
+// var _disposeProgram = (gl:WebGLRenderingContext, program:WebGLProgram) => {
+//     gl.deleteProgram(this.glProgram);
+// }
 
 export var initData = (ShaderData: any) => {
     ShaderData.index = 0;
@@ -694,6 +745,8 @@ export var initData = (ShaderData: any) => {
     ShaderData.uniformLocationMap = {};
     ShaderData.sendAttributeConfigMap = {};
     ShaderData.sendUniformConfigMap = {};
-    ShaderData.vertexAttribHistory = []
+    ShaderData.vertexAttribHistory = [];
     ShaderData.uniformCacheMap = {};
+    ShaderData.shaderMap = {};
+    ShaderData.isInitMap = {};
 }

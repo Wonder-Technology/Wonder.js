@@ -8,6 +8,14 @@ var glslTool = (function () {
             console.log(source);
             return false;
         },
+        notContain: function(source, target){
+            if(source.indexOf(target) > -1){
+                console.log(source);
+                return false;
+            }
+
+            return true;
+        },
         containSpecifyCount: function(source, target, count){
             var result = null;
 
@@ -94,9 +102,15 @@ var glslTool = (function () {
 
                 LINK_STATUS: LINK_STATUS,
 
+                VERTEX_SHADER: "VERTEX_SHADER",
+                FRAGMENT_SHADER: "FRAGMENT_SHADER",
+                COMPILE_STATUS: "COMPILE_STATUS",
+
 
                 // getActiveAttrib: sandbox.stub().returns(null),
                 // getActiveUniform: sandbox.stub().returns(null),
+
+                getShaderInfoLog: sandbox.stub().returns(null),
 
                 getParameter: sandbox.stub().returns(null),
                 getExtension: sandbox.stub().returns(null),

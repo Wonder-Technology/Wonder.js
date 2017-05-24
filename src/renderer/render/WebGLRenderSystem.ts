@@ -14,7 +14,7 @@ import { shaderLib_generator } from "../data/shaderLib_generator";
 import { GeometryData } from "../../component/geometry/GeometryData";
 import { ArrayBufferData } from "../buffer/ArrayBufferData";
 import { IndexBufferData } from "../buffer/IndexBufferData";
-import { clear as clearGLBuffer, getGL } from "../../device/DeviceManagerSystem";
+import { clear as clearGL, getGL } from "../../device/DeviceManagerSystem";
 import { render_config } from "../data/render_config";
 import { DeviceManagerData } from "../../device/DeviceManagerData";
 import { ThreeDTransformData } from "../../component/transform/ThreeDTransformData";
@@ -26,7 +26,7 @@ export var init = (state: Map<any, any>) => {
 }
 
 export var clear = (state: Map<any, any>) => {
-    clearGLBuffer(getGL(state), render_config.render_setting.clearColor, DeviceManagerData);
+    clearGL(getGL(state), render_config.render_setting.clearColor, DeviceManagerData);
 
     return state;
 }

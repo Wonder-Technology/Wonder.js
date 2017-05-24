@@ -83,6 +83,9 @@ var testTool = (function () {
             materialTool.resetData();
             shaderTool.resetData();
             meshRendererTool.resetData();
+            arrayBufferTool.resetData();
+            indexBufferTool.resetData();
+            deviceManagerTool.resetData();
         },
 
         openContractCheck: function (sandbox, isInit) {

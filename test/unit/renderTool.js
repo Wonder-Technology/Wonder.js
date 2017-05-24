@@ -1,0 +1,4 @@
+var renderTool = (function () {
+    return {
+    }
+})();

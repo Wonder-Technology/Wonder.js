@@ -1,4 +1,5 @@
 import { ISendAttributeConfig, ISendUniformConfig } from "../data/shaderLib_generator";
+import { Shader } from "./Shader";
 
 export class ShaderData{
     public static index:number = null;
@@ -15,6 +16,9 @@ export class ShaderData{
 
     public static sendAttributeConfigMap:SendAttributeConfigMap = null;
     public static sendUniformConfigMap:SendUniformConfigMap = null;
+
+    public static shaderMap:ShaderShaderMap = null;
+    public static isInitMap:ShaderIsInitMap = null;
 
     public static lastUsedProgram:WebGLProgram = null;
 
@@ -53,5 +57,15 @@ export type UniformShaderLocationMap = {
 }
 
 export type UniformCacheMap = {
-    [name:string]: any;
+    [index:number]:{
+        [name:string]: any;
+    }
+}
+
+export type ShaderShaderMap = {
+    [materialClassName:string]: Shader
+}
+
+export type ShaderIsInitMap = {
+    [index:number]: boolean
 }

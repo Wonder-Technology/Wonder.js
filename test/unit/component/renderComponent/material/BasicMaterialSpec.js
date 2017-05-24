@@ -16,19 +16,10 @@ describe("BasicMaterial", function () {
 
         testTool.openContractCheck(sandbox);
 
-        material = basicMaterialTool.create();
-
-        obj = gameObjectTool.create();
-
-        gameObjectTool.addComponent(obj, material);
-        gameObjectTool.addComponent(obj, meshRendererTool.create());
-
-
-        geo = boxGeometryTool.create();
-        gameObjectTool.addComponent(obj, geo);
-
-        director = directorTool.getDirector();
-
+        var data = sceneTool.prepareGameObjectAndAddToScene();
+        obj = data.gameObject;
+        geo = data.geometry;
+        material = data.material;
 
         state = stateTool.createAndSetFakeGLState(sandbox);
 
@@ -48,9 +39,40 @@ describe("BasicMaterial", function () {
         expect(glslTool.containSpecifyCount(fs, "gl_FragColor =", 1)).toBeTruthy();
     });
 
+    describe("test send indices buffer data", function () {
+        var buffer;
+
+        beforeEach(function () {
+            buffer = {b:1};
+
+            gl.createBuffer.onCall(1).returns(buffer);
+        });
+
+        it("create buffer and init it when first get", function () {
+            directorTool.init(state);
+
+            var data = geometryTool.getIndices(geo);
+
+
+            directorTool.loopBody(state);
+
+            expect(gl.createBuffer).toCalledTwice();
+            expect(gl.bindBuffer.withArgs(gl.ELEMENT_ARRAY_BUFFER, buffer).callCount).toEqual(2);
+            expect(gl.bufferData.withArgs(gl.ELEMENT_ARRAY_BUFFER, data, gl.STATIC_DRAW)).toCalledOnce();
+            expect(gl.bindBuffer.withArgs(gl.ELEMENT_ARRAY_BUFFER, null)).toCalledOnce();
+        });
+        it("not create buffer after first get", function () {
+            directorTool.init(state);
+
+            directorTool.loopBody(state);
+            directorTool.loopBody(state);
+
+            expect(gl.createBuffer).toCalledTwice();
+        });
+    });
+
     describe("add shader libs", function () {
         beforeEach(function () {
-            sceneTool.addGameObject(obj);
         });
 
         describe("add CommonShaderLib", function () {
@@ -96,8 +118,45 @@ describe("BasicMaterial", function () {
             beforeEach(function () {
             });
 
-            it("send a_position", function () {
-                shaderLibTool.judgeSendAttribute(sinon, gl, state, "a_position", 3);
+            describe("send a_position", function () {
+                var name,size,pos;
+                var buffer;
+
+                beforeEach(function () {
+                    name = "a_position";
+                    size = 3;
+
+                    pos = 10;
+
+                    gl.getAttribLocation.withArgs(sinon.match.any, name).returns(pos);
+
+                    buffer = {a:1};
+
+                    gl.createBuffer.onCall(0).returns(buffer);
+                });
+
+                it("create buffer and init it when first get", function () {
+                    directorTool.init(state);
+
+                    var data = geometryTool.getVertices(geo);
+
+
+                    directorTool.loopBody(state);
+
+                    expect(gl.createBuffer).toCalledTwice();
+                    expect(gl.bindBuffer.withArgs(gl.ARRAY_BUFFER, buffer).callCount).toEqual(2);
+                    expect(gl.bufferData.withArgs(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW)).toCalledOnce();
+                    expect(gl.bindBuffer.withArgs(gl.ARRAY_BUFFER, null)).toCalledOnce();
+                    expect(gl.vertexAttribPointer.withArgs(pos,size,"FLOAT",false,0,0)).toCalledOnce();
+                });
+                it("not create buffer after first get", function () {
+                    directorTool.init(state);
+
+                    directorTool.loopBody(state);
+                    directorTool.loopBody(state);
+
+                    expect(gl.createBuffer).toCalledTwice();
+                });
             });
         });
 

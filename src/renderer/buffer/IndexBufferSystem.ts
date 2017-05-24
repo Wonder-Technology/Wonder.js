@@ -2,13 +2,16 @@ import { isValidMapValue } from "../../utils/objectUtils";
 import { getIndexType, getIndexTypeSize, getIndices } from "../../component/geometry/GeometrySystem";
 
 export var getOrCreateBuffer = (gl:WebGLRenderingContext, geometryIndex:number, GeometryData:any, IndexBufferData:any) => {
-    var buffer = IndexBufferData.buffers[geometryIndex];
+    var buffers = IndexBufferData.buffers,
+        buffer = buffers[geometryIndex];
 
     if(_isBufferExist(buffer)){
         return buffer;
     }
 
     buffer = gl.createBuffer();
+
+    buffers[geometryIndex] = buffer;
 
     _initBuffer(gl, getIndices(geometryIndex, GeometryData), buffer, IndexBufferData);
 
@@ -29,7 +32,7 @@ var _initBuffer = (gl:WebGLRenderingContext, data: Uint16Array | Uint32Array, bu
 var _resetBindedBuffer = (gl:WebGLRenderingContext, IndexBufferData:any) => {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
 
-    IndexBufferData.lastBindedIndexBuffer = null;
+    // IndexBufferData.lastBindedIndexBuffer = null;
 }
 
 export var getType = (GeometryData:any) => {

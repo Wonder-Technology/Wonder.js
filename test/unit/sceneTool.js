@@ -9,6 +9,26 @@ var sceneTool = (function () {
         },
         removeGameObject: function(gameObj){
             wd.removeSceneChild(_getScene(), gameObj);
+        },
+        prepareGameObjectAndAddToScene: function() {
+            var material = basicMaterialTool.create();
+
+            var obj = gameObjectTool.create();
+
+            gameObjectTool.addComponent(obj, material);
+            gameObjectTool.addComponent(obj, meshRendererTool.create());
+
+
+            var geo = boxGeometryTool.create();
+            gameObjectTool.addComponent(obj, geo);
+
+            sceneTool.addGameObject(obj);
+
+            return {
+                gameObject:obj,
+                geometry:geo,
+                material:material
+            }
         }
     }
 })()

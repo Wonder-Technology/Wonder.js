@@ -59,7 +59,7 @@ export {main_begin,main_end,setPos_mvp} from "./renderer/shader/snippet/ShaderSn
 export {Color} from "./structure/Color";
 export {RectRegion} from "./structure/RectRegion";
 export {View} from "./structure/View";
-export {initThreeDTransformData,DomQuery,fromArray,initTagData,initGeometryData,initMaterialData,initShaderData,initMeshRendererData} from "./test/forUnitTest";
+export {initThreeDTransformData,DomQuery,fromArray,initTagData,initGeometryData,initMaterialData,initShaderData,initMeshRendererData,initArrayBufferData,initIndexBufferData,initDeviceManagerData,createState,useProgram,sendAttributeData,sendUniformData,disableVertexAttribArray,DataUtils} from "./test/forUnitTest";
 export {Log,error} from "./utils/Log";
 export {CommonTimeController} from "./utils/time/CommonTimeController";
 export {DirectorTimeController} from "./utils/time/DirectorTimeController";

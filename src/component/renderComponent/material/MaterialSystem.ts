@@ -6,7 +6,6 @@ import { ensureFunc, it, requireCheckFunc } from "../../../definition/typescript
 import { Color } from "../../../structure/Color";
 import { expect } from "wonder-expect.js";
 import { Material } from "./Material";
-import { create as createShader } from "../../../renderer/shader/ShaderSystem";
 import {
     addAddComponentHandle as addAddComponentHandleToMap, addComponentToGameObjectMap,
     addDisposeHandle as addDisposeHandleToMap, getComponentGameObject
@@ -25,25 +24,24 @@ export var addDisposeHandle = (_class: any, MaterialData:any) => {
 }
 
 //todo refactor: extract with MeshRenderer
-export var create = requireCheckFunc((material:Material, className:string, ShaderData:any, MaterialData: any) => {
+export var create = requireCheckFunc((material:Material, className:string, MaterialData: any) => {
     it("MaterialData.index should >= 0", () => {
         expect(MaterialData.index).gte(0);
     });
     it("MaterialData.count should >= 0", () => {
         expect(MaterialData.count).gte(0);
     });
-}, (material:Material, className:string, ShaderData:any, MaterialData: any) => {
+}, (material:Material, className:string, MaterialData: any) => {
     var index = _generateIndex(MaterialData);
 
     material.index = index;
 
     MaterialData.count += 1;
 
-    MaterialData.shaderMap[index] = _createShader(ShaderData);
-
     MaterialData.materialClassNameMap[index] = className;
 
     setColor(index, Color.create("#ffffff"), MaterialData);
+    setOpacity(index, 1, MaterialData);
 
     return material;
 })
@@ -51,10 +49,6 @@ export var create = requireCheckFunc((material:Material, className:string, Shade
 //todo refactor: extract with MeshRenderer
 var _generateIndex = (MaterialData: any) => {
     return MaterialData.index++;
-}
-
-var _createShader = (ShaderData:any) => {
-    return createShader(ShaderData);
 }
 
 export var init = requireCheckFunc((state: Map<any, any>, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, ShaderData:any, MaterialData:any) => {
@@ -71,9 +65,16 @@ export var init = requireCheckFunc((state: Map<any, any>, material_config:IMater
 
 export var initMaterial = (state: Map<any, any>, index:number, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, materialClassNameMap:MaterialClassNameMap, ShaderData:any, MaterialData:any) => {
     var shader = getShader(index, MaterialData),
-        materialClassName = materialClassNameMap[index];
+        isInitMap = ShaderData.isInitMap,
+        shaderIndex = shader.index;
 
-    initShader(state, index, shader.index, materialClassName, material_config, shaderLib_generator, ShaderData);
+    if(isInitMap[shaderIndex] === true){
+        return;
+    }
+
+    isInitMap[shaderIndex] = true;
+
+    initShader(state, index, shaderIndex, materialClassNameMap[index], material_config, shaderLib_generator, ShaderData);
 }
 
 export var getShader = (materialIndex:number, MaterialData:any) => {
@@ -130,6 +131,8 @@ export var disposeComponent = ensureFunc(curry((returnVal, MaterialData:any, com
     deleteVal(index, MaterialData.opacityMap);
     deleteVal(index, MaterialData.alphaTestMap);
     deleteVal(index, MaterialData.gameObjectMap);
+
+    //not dispose shader(for reuse shader)
 }))
 
 export var getGameObject = (index:number, Data:any) => {
