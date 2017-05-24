@@ -5,10 +5,14 @@ import { initData as initTagDataSystem } from "../component/tag/TagSystem";
 import { initData as initGeometryDataSystem } from "../component/geometry/GeometrySystem";
 import { initData as initMaterialDataSystem } from "../component/renderComponent/material/MaterialSystem";
 import {
-    disableVertexAttribArray as disableVertexAttribArraySystem, initData as initShaderDataSystem,
+    initData as initShaderDataSystem,
     sendAttributeData as sendAttributeDataSystem, sendUniformData as sendUniformDataSystem,
     use
 } from "../renderer/shader/ShaderSystem";
+
+import {
+    disableVertexAttribArray as disableVertexAttribArraySystem
+} from "../renderer/shader/programSystem";
 import { initData as initMeshRendererDataSystem } from "../component/renderComponent/renderer/MeshRendererSystem";
 import { createState as createStateUtils } from "../utils/stateUtils";
 import { Map } from "immutable";
