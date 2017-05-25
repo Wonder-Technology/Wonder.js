@@ -76,30 +76,45 @@ describe("Main", function() {
         });
 
         describe("test set canvas id", function(){
-            beforeEach(function(){
-                sandbox.stub(DomQuery, "create");
+            describe("if pass canvas id", function() {
+                beforeEach(function(){
+                    sandbox.stub(DomQuery, "create");
 
-                DomQuery.create.withArgs("#a").returns(buildFakeDomQuery(canvasDom));
-                DomQuery.create.withArgs("body").returns(buildFakeDomQuery(canvasDom));
-            });
-            afterEach(function(){
+                    DomQuery.create.withArgs("#a").returns(buildFakeDomQuery(canvasDom));
+                    DomQuery.create.withArgs("body").returns(buildFakeDomQuery(canvasDom));
+                });
+
+                it("support pass canvas id", function(){
+                    Main.setConfig({
+                        canvasId:"a"
+                    });
+                    Main.init();
+
+                    expect(device.gl).toBeDefined();
+                });
+                it("support pass #canvasId", function(){
+                    Main.setConfig({
+                        canvasId:"#a"
+                    });
+                    Main.init();
+
+                    expect(device.gl).toBeDefined();
+                });
             });
 
-            it("support pass canvas id", function(){
+            it("if not pass canvas id, create canvas and prepend to body", function () {
+                var dom = buildFakeDomQuery(canvasDom);
+                dom.prependTo = sandbox.stub().returns({
+                    get:sandbox.stub().returns(canvasDom)
+                });
+                sandbox.stub(DomQuery, "create").returns(dom);
+
                 Main.setConfig({
-                    canvasId:"a"
                 });
                 Main.init();
 
-                expect(device.gl).toBeDefined();
-            });
-            it("support pass #canvasId", function(){
-                Main.setConfig({
-                    canvasId:"#a"
-                });
-                Main.init();
-
-                expect(device.gl).toBeDefined();
+                expect(DomQuery.create).toCalledWith("<canvas></canvas>");
+                expect(dom.prependTo).toCalledWith("body");
             });
         });
 

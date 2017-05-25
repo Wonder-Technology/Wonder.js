@@ -64,6 +64,7 @@ import { CameraControllerData } from "../component/camera/CameraControllerData";
 import { SceneData } from "./entityObject/scene/SceneData";
 import { initData as initCameraControllerData } from "../component/camera/CameraControllerSystem";
 import { CameraController } from "../component/camera/CameraController";
+import { DeviceManager } from "../device/DeviceManager";
 
 @singleton(true)
 @registerClass("Director")
@@ -71,6 +72,10 @@ export class Director {
     public static getInstance(): any { };
 
     private constructor() { }
+
+    get view() {
+        return DeviceManager.getInstance().view;
+    }
 
     // public scene: SceneDispatcher = null;
     public scene: Scene = create(GameObjectData);

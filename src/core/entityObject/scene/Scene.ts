@@ -1,5 +1,5 @@
 import { GameObject } from "../gameObject/GameObject";
-import { requireCheckFunc } from "../../../definition/typescript/decorator/contract";
+import { it, requireCheckFunc } from "../../../definition/typescript/decorator/contract";
 import { isAlive } from "../gameObject/GameObjectSystem";
 import { GameObjectData } from "../gameObject/GameObjectData";
 import { addChild, removeChild } from "./SceneSystem";

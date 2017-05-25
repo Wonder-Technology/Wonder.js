@@ -1,6 +1,6 @@
 import forEach from "wonder-lodash/forEach";
 import { isConfigDataExist } from "../utils/renderConfigUtils";
-import { ensureFunc, requireCheckFunc } from "../../definition/typescript/decorator/contract";
+import { ensureFunc, it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { MaterialShaderLibConfig } from "../data/material_config";
 import {
     ISendAttributeConfig, ISendUniformConfig, IShaderLibContentGenerator,

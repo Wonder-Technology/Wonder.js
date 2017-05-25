@@ -5,7 +5,14 @@
     <title></title>
 
     <script src="../../../dist/wd.js" type="text/javascript"></script>
-    <!--<script src="../../../mine/Wonder.js/dist/wd.all.js" type="text/javascript"></script>-->
+    <script src="../../js/tool/threeDTransformTool.js"></script>
+    <script src="../../js/tool/materialTool.js"></script>
+    <script src="../../js/tool/basicMaterialTool.js"></script>
+    <script src="../../js/tool/boxGeometryTool.js"></script>
+    <script src="../../js/tool/gameObjectTool.js"></script>
+    <script src="../../js/tool/cameraControllerTool.js"></script>
+    <script src="../../js/tool/meshRendererTool.js"></script>
+    <script src="../../js/tool/sceneTool.js"></script>
 </head>
 <body>
 
@@ -21,57 +28,69 @@
         function initSample() {
             var director = wd.Director.getInstance();
 
-            var box = createBox();
-            var box2 = box.clone();
-            box2.transform.translate(20,0,0)
+            var box2 = createBox();
+//            var box2 = box.clone();
+//            box2.transform.translate(20,0,0)
 
-            director.scene.addChildren([
-                box, box2
-            ])
+            var transform2 = gameObjectTool.getTransform(box2);
 
-            director.scene.addChild(createCamera());
+            threeDTransformTool.setPosition(transform2, wd.Vector3.create(20, 0, 0));
+
+//            director.scene.addChildren([
+//                box, box2
+//            ])
+
+//            sceneTool.addGameObject(box);
+            sceneTool.addGameObject(box2);
+            sceneTool.addGameObject(createCamera());
 
             director.start();
         }
 
         function createBox() {
-            var material = wd.BasicMaterial.create();
-            material.color = wd.Color.create("rgb(1.0,0.0,1.0)");
+            var material = basicMaterialTool.create();
 
-            var geometry = wd.BoxGeometry.create();
-            geometry.material = material;
-            geometry.width = 5;
-            geometry.height = 5;
-            geometry.depth = 5;
+            materialTool.setColor(material, wd.Color.create("rgb(1.0,0.0,1.0)"));
+
+            var obj = gameObjectTool.create();
+
+            gameObjectTool.addComponent(obj, material);
+            gameObjectTool.addComponent(obj, meshRendererTool.create());
 
 
-            var gameObject = wd.GameObject.create();
-            gameObject.addComponent(geometry);
+            var geo = boxGeometryTool.create();
 
-            gameObject.addComponent(wd.MeshRenderer.create());
+            boxGeometryTool.setConfigData(geo, {
+                width:5,
+                height:5,
+                depth:5
+            })
 
-            gameObject.transform.translate(-8, -8, 0);
+            gameObjectTool.addComponent(obj, geo);
 
-            return gameObject;
+
+            return obj;
         }
 
         function createCamera() {
-            var camera = wd.GameObject.create(),
-                    view = wd.Director.getInstance().view,
-                    cameraComponent = wd.PerspectiveCamera.create();
+            var view = wd.Director.getInstance().view;
 
-            cameraComponent.fovy = 60;
-            cameraComponent.aspect = view.width / view.height;
-            cameraComponent.near = 0.1;
-            cameraComponent.far = 1000;
+            var cameraObj = gameObjectTool.create();
+            var cameraController = cameraControllerTool.create();
 
-            var controller = wd.BasicCameraController.create(cameraComponent);
+            cameraControllerTool.setCameraNear(cameraController, 0.1);
+            cameraControllerTool.setCameraFar(cameraController, 1000);
+            cameraControllerTool.setPerspectiveCameraFovy(cameraController, 60);
+            cameraControllerTool.setPerspectiveCameraAspect(cameraController, view.width / view.height);
 
-            camera.addComponent(controller);
+            gameObjectTool.addComponent(cameraObj, cameraController);
 
-            camera.transform.translate(wd.Vector3.create(0, 0, 40));
 
-            return camera;
+            var transform = gameObjectTool.getTransform(cameraObj);
+
+            threeDTransformTool.setPosition(transform, wd.Vector3.create(0,0, 40));
+
+            return cameraObj;
         }
     }
 </script>

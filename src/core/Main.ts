@@ -3,7 +3,7 @@ import { CompileConfig } from "../config/CompileConfig";
 import { Map } from "immutable";
 import { DirectorData } from "./DirectorData";
 import { getState, setState } from "./DirectorSystem";
-import { requireCheck } from "../definition/typescript/decorator/contract";
+import { it, requireCheck } from "../definition/typescript/decorator/contract";
 import { MainData } from "./MainData";
 import { expect } from "wonder-expect.js";
 

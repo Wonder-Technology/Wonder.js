@@ -47,7 +47,7 @@ var _getCanvas = (DomQuery: any, domId: string) => {
         return DomQuery.create(_getCanvasId(domId)).get(0);
     }
 
-    return DomQuery.create("<dom></dom>").prependTo("body").get(0);
+    return DomQuery.create("<canvas></canvas>").prependTo("body").get(0);
 }
 
 var _getCanvasId = ensureFunc((id: string) => {
