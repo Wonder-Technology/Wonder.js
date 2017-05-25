@@ -50,10 +50,6 @@ export var addToDirtyList = ensureFunc((index:number, CameraControllerData: any)
 })
 
 export var init = (PerspectiveCameraData:any, CameraData:any, CameraControllerData:any, state: Map<any, any>) => {
-    // for(let i = 0, count = CameraControllerData.count; i < count; i++){
-    //     for(let i = 0, count = CameraControllerData.count; i < count; i++){
-    //todo refactor MaterialSystem
-
     _forEachDirtyList(CameraControllerData.dirtyIndexArray, (dirtyIndex:number) => {
         initCameraController(state, dirtyIndex, PerspectiveCameraData, CameraData);
     });
