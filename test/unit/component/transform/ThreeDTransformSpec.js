@@ -33,7 +33,7 @@ describe("ThreeDTransform", function () {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
-        testTool.openContractCheck(sandbox);
+        testTool.clearAndOpenContractCheck(sandbox);
 
         testTool.stubGetter(sinon, ThreeDTransformData, "count", function () {
             return 10;

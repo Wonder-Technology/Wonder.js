@@ -11,7 +11,7 @@ describe("Material", function() {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
-        testTool.openContractCheck(sandbox);
+        testTool.clearAndOpenContractCheck(sandbox);
 
         var data = sceneTool.prepareGameObjectAndAddToScene();
         obj = data.gameObject;
@@ -103,7 +103,7 @@ describe("Material", function() {
 
             expect(function(){
                 directorTool.init(sandbox);
-            }).toThrow("index should === count");
+            }).toThrow("ComponentData.index should === ComponentData.count");
         });
         it("shader should only be init once", function () {
             var mat2 = basicMaterialTool.create();

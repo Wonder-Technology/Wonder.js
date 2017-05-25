@@ -58,8 +58,15 @@ export {main_begin,main_end,setPos_mvp} from "./renderer/shader/snippet/ShaderSn
 export {Color} from "./structure/Color";
 export {RectRegion} from "./structure/RectRegion";
 export {View} from "./structure/View";
-export {initThreeDTransformData,DomQuery,fromArray,initTagData,initGeometryData,initMaterialData,initShaderData,initMeshRendererData,initArrayBufferData,initIndexBufferData,initDeviceManagerData,createState,useProgram,sendAttributeData,sendUniformData,disableVertexAttribArray,DataUtils} from "./test/forUnitTest";
+export {initThreeDTransformData,DomQuery,fromArray,initTagData,initGeometryData,initMaterialData,initShaderData,initMeshRendererData,initArrayBufferData,initIndexBufferData,initDeviceManagerData,initCameraControllerData,createState,useProgram,sendAttributeData,sendUniformData,disableVertexAttribArray,DataUtils} from "./test/forUnitTest";
 export {Log,error} from "./utils/Log";
 export {CommonTimeController} from "./utils/time/CommonTimeController";
 export {DirectorTimeController} from "./utils/time/DirectorTimeController";
 export {TimeController} from "./utils/time/TimeController";
+export {getCameraPMatrix,getCameraNear,setCameraNear,getCameraFar,setCameraFar} from "./component/camera/Camera";
+export {CameraController,createCameraController,getCameraControllerGameObject} from "./component/camera/CameraController";
+export {CameraControllerData} from "./component/camera/CameraControllerData";
+export {CameraData} from "./component/camera/CameraData";
+export {PerspectiveCameraData} from "./component/camera/PerspectiveCameraData";
+export {SceneData} from "./core/entityObject/scene/SceneData";
+export {getPerspectiveCameraFovy,setPerspectiveCameraFovy,getPerspectiveCameraAspect,setPerspectiveCameraAspect} from "./component/camera/PerspectiveCamera";

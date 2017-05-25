@@ -25,7 +25,7 @@ import { Map } from "immutable";
 import { GlobalTempData } from "../definition/GlobalTempData";
 import { Scene } from "./entityObject/scene/Scene";
 import { GameObjectData } from "./entityObject/gameObject/GameObjectData";
-import { create } from "./entityObject/scene/SceneSystem";
+import { create, initData as initSceneData } from "./entityObject/scene/SceneSystem";
 import { addAddComponentHandle as addGeometryAddComponentHandle, addDisposeHandle as addGeometryDisposeHandle, init as initGeometry, initData as initGeometryData } from "../component/geometry/GeometrySystem";
 import { clear, init as initRenderer, render } from "../renderer/render/WebGLRenderSystem";
 import { GeometryData } from "../component/geometry/GeometryData";
@@ -54,6 +54,16 @@ import { initData as initArrayBufferData } from "../renderer/buffer/ArrayBufferS
 import { ArrayBufferData } from "../renderer/buffer/ArrayBufferData";
 import { Material } from "../component/material/Material";
 import { MeshRenderer } from "../component/renderer/MeshRenderer";
+import {
+    addAddComponentHandle as addCameraControllerAddComponentHandle, addDisposeHandle as addCameraControllerDisposeHandle, init as initCameraController,
+    update as updateCameraController
+} from "../component/camera/CameraControllerSystem";
+import { PerspectiveCameraData } from "../component/camera/PerspectiveCameraData";
+import { CameraData } from "../component/camera/CameraData";
+import { CameraControllerData } from "../component/camera/CameraControllerData";
+import { SceneData } from "./entityObject/scene/SceneData";
+import { initData as initCameraControllerData } from "../component/camera/CameraControllerSystem";
+import { CameraController } from "../component/camera/CameraController";
 
 @singleton(true)
 @registerClass("Director")
@@ -139,6 +149,8 @@ export class Director {
 
         resultState = initGeometry(GeometryData, state);
 
+        resultState = initCameraController(PerspectiveCameraData, CameraData, CameraControllerData, state);
+
         return resultState;
     }
 
@@ -208,6 +220,8 @@ export class Director {
     private _updateSystem(elapsed: number, state: Map<any, any>) {
         var resultState = updateTransform(elapsed, GlobalTempData, ThreeDTransformData, state);
 
+        resultState = updateCameraController(PerspectiveCameraData, CameraData, CameraControllerData);
+
         return resultState;
     }
 }
@@ -237,3 +251,9 @@ addThreeDTransformDisposeHandle(ThreeDTransform, GlobalTempData, ThreeDTransform
 initArrayBufferData(ArrayBufferData);
 
 initIndexBufferData(IndexBufferData);
+
+initSceneData(SceneData);
+
+initCameraControllerData(CameraControllerData, PerspectiveCameraData, CameraData);
+addCameraControllerAddComponentHandle(CameraController, CameraControllerData);
+addCameraControllerDisposeHandle(CameraController, PerspectiveCameraData, CameraData, CameraControllerData);

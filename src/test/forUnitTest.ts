@@ -21,6 +21,7 @@ import { initData as initIndexBufferDataSystem } from "../renderer/buffer/IndexB
 import { RenderCommand } from "../renderer/command/RenderCommand";
 import { DataUtils as DataUtilsUtils } from "../utils/DataUtils";
 import { initData as initDeviceManagerDataSystem } from "../device/DeviceManagerSystem";
+import { initData as initCameraControllerDataSystem } from "../component/camera/CameraControllerSystem";
 
 export var initThreeDTransformData = initThreeDTransformDataSystem;
 
@@ -43,6 +44,8 @@ export var initArrayBufferData = initArrayBufferDataSystem;
 export var initIndexBufferData = initIndexBufferDataSystem;
 
 export var initDeviceManagerData = initDeviceManagerDataSystem;
+
+export var initCameraControllerData = initCameraControllerDataSystem;
 
 export var createState = createStateUtils;
 

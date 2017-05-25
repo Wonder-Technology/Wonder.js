@@ -8,7 +8,7 @@ describe("WebGLRenderer", function() {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
-        testTool.openContractCheck(sandbox);
+        testTool.clearAndOpenContractCheck(sandbox);
 
         var data = sceneTool.prepareGameObjectAndAddToScene();
 

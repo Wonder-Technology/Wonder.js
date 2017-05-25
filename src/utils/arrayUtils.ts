@@ -37,13 +37,37 @@ var _contain = (arr: Array<any>, item: any): boolean => {
     for (let i = 0, len = arr.length; i < len; i++) {
         c = arr[i];
 
-        if (item.uid && c.uid && item.uid == c.uid) {
-            return true;
-        }
-        else if (item === c) {
+        // if (item.uid && c.uid && item.uid == c.uid) {
+        //     return true;
+        // }
+        // else if (item === c) {
+        if (item === c) {
             return true;
         }
     }
 
     return false;
+}
+
+export var removeDuplicateItems = (arr: Array<any>) => {
+    var resultArr = [];
+
+    for(let ele of arr){
+        // if (_contain(resultArr, function(val) {
+        //         return isEqual(val, ele);
+        //     })) {
+        if(_contain(resultArr, ele)){
+            continue;
+        }
+
+        resultArr.push(ele);
+    };
+
+    return resultArr;
+}
+
+export var removeItem = (arr:Array<any>, item:any) => {
+    return arr.filter((ele) => {
+        return ele !== item;
+    });
 }

@@ -86,14 +86,19 @@ var testTool = (function () {
             arrayBufferTool.resetData();
             indexBufferTool.resetData();
             deviceManagerTool.resetData();
+            cameraControllerTool.resetData();
         },
 
-        openContractCheck: function (sandbox, isInit) {
-            Main.isTest = true;
+        clearAndOpenContractCheck: function (sandbox, isInit) {
+            var isInit$ = isInit === false ? false : true;
 
-            if(isInit){
+            if(isInit$){
                 this.initForTest(sandbox);
             }
+
+            this.clear(sandbox);
+
+            Main.isTest = true;
         },
 
         initForTest: function(sandbox){
@@ -103,6 +108,9 @@ var testTool = (function () {
             //
             //
             // sandbox.stub(wd.GPUDetector.getInstance(), "maxTextureUnit", 16);
+            this.stubGetter(sinon, wd.ThreeDTransformData, "count", function () {
+                return 10;
+            });
         },
 
         closeContractCheck: function () {

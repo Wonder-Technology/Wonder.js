@@ -14,6 +14,7 @@ import curry from "wonder-lodash/curry";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 import { deleteVal, isValidMapValue } from "../../utils/objectUtils";
 import { MaterialClassNameMap } from "./MaterialData";
+import { checkIndexShouldEqualCount } from "../utils/contractUtils";
 
 export var addAddComponentHandle = (_class: any, MaterialData:any) => {
     addAddComponentHandleToMap(_class, addComponent(MaterialData));
@@ -46,9 +47,7 @@ export var create = requireCheckFunc((material:Material, className:string, Mater
 })
 
 export var init = requireCheckFunc((state: Map<any, any>, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, ShaderData:any, MaterialData:any) => {
-    it("index should === count", () => {
-        expect(MaterialData.index).equal(MaterialData.count);
-    })
+    checkIndexShouldEqualCount(MaterialData);
 }, (state: Map<any, any>, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, ShaderData:any, MaterialData:any) => {
     var materialClassNameMap = MaterialData.materialClassNameMap;
 

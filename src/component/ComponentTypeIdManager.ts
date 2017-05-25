@@ -33,3 +33,4 @@ _addTypeID(["Geometry", "BoxGeometry"], _table);
 _addTypeID(["Material", "BasicMaterial"], _table);
 _addTypeID(["MeshRenderer"], _table);
 _addTypeID(["Tag"], _table);
+_addTypeID(["CameraController"], _table);

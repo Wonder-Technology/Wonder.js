@@ -13,7 +13,7 @@ describe("Scene", function() {
     beforeEach(function(){
         sandbox = sinon.sandbox.create();
 
-        testTool.openContractCheck(sandbox);
+        testTool.clearAndOpenContractCheck(sandbox);
     });
     afterEach(function() {
         sandbox.restore();

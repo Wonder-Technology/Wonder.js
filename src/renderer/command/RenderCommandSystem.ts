@@ -4,14 +4,21 @@ import { Map } from "immutable";
 import map from "wonder-lodash/map";
 import forEach from "wonder-lodash/forEach";
 import { RenderCommand } from "./RenderCommand";
-import { getGeometry, getMaterial, getTransform } from "../../core/entityObject/gameObject/GameObjectSystem";
+import {
+    getComponent, getGeometry, getMaterial,
+    getTransform
+} from "../../core/entityObject/gameObject/GameObjectSystem";
 import { it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { getShader } from "../../component/material/MaterialSystem";
 import { getDrawMode } from "../../component/geometry/GeometrySystem";
 import { getLocalToWorldMatrix, getTempLocalToWorldMatrix } from "../../component/transform/ThreeDTransformSystem";
+import { getCurrentCamera } from "../../core/entityObject/scene/SceneSystem";
+import { getPMatrix, getWorldToCameraMatrix } from "../../component/camera/CameraControllerSystem";
+import { getTypeIDFromClass } from "../../component/ComponentTypeIdManager";
+import { CameraController } from "../../component/camera/CameraController";
 
-export var createRenderCommands = requireCheckFunc(curry((state:Map<any, any>, GameObjectData:any, ThreeDTransformData:any, MaterialData:any, GeometryData:any, renderGameObjectArray:Array<GameObject>) => {
+export var createRenderCommands = requireCheckFunc(curry((state:Map<any, any>, GameObjectData:any, ThreeDTransformData:any, CameraControllerData:any, CameraData:any, MaterialData:any, GeometryData:any, SceneData:any, renderGameObjectArray:Array<GameObject>) => {
     forEach(renderGameObjectArray, (gameObject:GameObject) => {
         var geometry = getGeometry(gameObject, GameObjectData),
             material = getMaterial(gameObject, GameObjectData);
@@ -23,9 +30,11 @@ export var createRenderCommands = requireCheckFunc(curry((state:Map<any, any>, G
             expect(material).exist;
         });
     });
-}), curry((state:Map<any, any>, GameObjectData:any, ThreeDTransformData:any, MaterialData:any, GeometryData:any, renderGameObjectArray:Array<GameObject>) => {
+}), curry((state:Map<any, any>, GameObjectData:any, ThreeDTransformData:any, CameraControllerData:any, CameraData:any, MaterialData:any, GeometryData:any, SceneData:any, renderGameObjectArray:Array<GameObject>) => {
     return map(renderGameObjectArray, (gameObject:GameObject) => {
         var command = new RenderCommand(),
+            currentCamera = getComponent(getCurrentCamera(SceneData), getTypeIDFromClass(CameraController), GameObjectData),
+            currentCameraIndex = currentCamera.index,
             geometry = getGeometry(gameObject, GameObjectData),
             material = getMaterial(gameObject, GameObjectData),
             transform = getTransform(gameObject, GameObjectData),
@@ -34,9 +43,8 @@ export var createRenderCommands = requireCheckFunc(curry((state:Map<any, any>, G
 
         command.mMatrix = getLocalToWorldMatrix(transform, getTempLocalToWorldMatrix(transform, ThreeDTransformData), ThreeDTransformData);
 
-        //todo get camera and set vMatrix/pMatrix
-        command.vMatrix = null;
-        command.pMatrix = null;
+        command.vMatrix = getWorldToCameraMatrix(currentCameraIndex, ThreeDTransformData, GameObjectData, CameraControllerData, CameraData);
+        command.pMatrix = getPMatrix(currentCameraIndex, CameraData);
 
         command.drawMode = getDrawMode(geometry, GeometryData);
 

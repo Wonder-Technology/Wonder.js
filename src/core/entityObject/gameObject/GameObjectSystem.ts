@@ -162,6 +162,10 @@ export var getMaterial = (gameObject:GameObject, GameObjectData:any) => {
     return getComponent(gameObject, getTypeIDFromClass(Material), GameObjectData);
 }
 
+export var getCamera = (gameObject:GameObject, GameObjectData:any) => {
+    return getComponent(gameObject, getTypeIDFromClass(Material), GameObjectData);
+}
+
 var _isParentExist = (parent:GameObject) => isNotUndefined(parent);
 
 var _isChildrenExist = (children:Array<GameObject>) => isNotUndefined(children);

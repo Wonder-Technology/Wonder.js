@@ -974,7 +974,7 @@ var _addDefaultTransformData = (GlobalTempData: any, ThreeDTransformData: any) =
 }
 
 export var getTempLocalToWorldMatrix = (transform:ThreeDTransform, ThreeDTransformData:any) => {
-    return ThreeDTransformData.tempLocalToWorldMatrixMap[String(transform.uid)];
+    return ThreeDTransformData.tempLocalToWorldMatrixMap[transform.uid];
 }
 
 /*!

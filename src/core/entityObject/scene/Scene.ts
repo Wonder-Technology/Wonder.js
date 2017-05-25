@@ -5,6 +5,7 @@ import { GameObjectData } from "../gameObject/GameObjectData";
 import { addChild, removeChild } from "./SceneSystem";
 import { expect } from "wonder-expect.js";
 import { ThreeDTransformData } from "../../../component/transform/ThreeDTransformData";
+import { SceneData } from "./SceneData";
 
 export class Scene extends GameObject{
 }
@@ -14,7 +15,7 @@ export var addSceneChild = requireCheckFunc((scene:Scene, gameObject:GameObject)
         expect(isAlive(scene, GameObjectData)).true;
     });
 }, (scene:Scene, gameObject:GameObject) => {
-    addChild(scene, gameObject, GameObjectData);
+    addChild(scene, gameObject, GameObjectData, SceneData);
 })
 
 export var removeSceneChild = requireCheckFunc((scene:Scene, gameObject:GameObject) => {

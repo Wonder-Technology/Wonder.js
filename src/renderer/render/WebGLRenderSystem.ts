@@ -18,6 +18,9 @@ import { clear as clearGL, getGL } from "../../device/DeviceManagerSystem";
 import { render_config } from "../data/render_config";
 import { DeviceManagerData } from "../../device/DeviceManagerData";
 import { ThreeDTransformData } from "../../component/transform/ThreeDTransformData";
+import { SceneData } from "../../core/entityObject/scene/SceneData";
+import { CameraControllerData } from "../../component/camera/CameraControllerData";
+import { CameraData } from "../../component/camera/CameraData";
 
 export var init = (state: Map<any, any>) => {
     initMaterial(state, material_config, shaderLib_generator as any, ShaderData, MaterialData);
@@ -35,7 +38,7 @@ export var render = (state: Map<any, any>) => {
     return compose(
         draw(state, MaterialData, ShaderData, GeometryData, ArrayBufferData, IndexBufferData),
         sortRenderCommands(state),
-        createRenderCommands(state, GameObjectData, ThreeDTransformData, MaterialData, GeometryData),
+        createRenderCommands(state, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData),
         getRenderList(state)
     )(MeshRendererData)
 }

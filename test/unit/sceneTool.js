@@ -24,6 +24,20 @@ var sceneTool = (function () {
 
             sceneTool.addGameObject(obj);
 
+
+            var cameraObj = gameObjectTool.create();
+            var cameraController = cameraControllerTool.create();
+
+            cameraControllerTool.setCameraNear(cameraController, 0.1);
+            cameraControllerTool.setCameraFar(cameraController, 1000);
+            cameraControllerTool.setPerspectiveCameraFovy(cameraController, 60);
+            cameraControllerTool.setPerspectiveCameraAspect(cameraController, 1);
+
+            gameObjectTool.addComponent(cameraObj, cameraController);
+
+            sceneTool.addGameObject(cameraObj);
+
+
             return {
                 gameObject:obj,
                 geometry:geo,
