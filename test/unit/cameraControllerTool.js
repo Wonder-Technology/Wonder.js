@@ -10,6 +10,7 @@ var cameraControllerTool = (function () {
         getPerspectiveCameraAspect: wd.getPerspectiveCameraAspect,
         setPerspectiveCameraAspect: wd.setPerspectiveCameraAspect,
         getCameraPMatrix: wd.getCameraPMatrix,
+        getGameObject: wd.getCameraControllerGameObject,
 
         resetData: function(){
             wd.initCameraControllerData(wd.CameraControllerData, wd.PerspectiveCameraData, wd.CameraData);

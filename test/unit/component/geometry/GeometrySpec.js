@@ -2,7 +2,6 @@ describe("Geometry", function () {
     var sandbox = null;
     var gameObject;
     var geo;
-    var director;
 
     var EDrawMode = wd.EDrawMode;
 
@@ -14,8 +13,6 @@ describe("Geometry", function () {
         sandbox = sinon.sandbox.create();
 
         testTool.clearAndOpenContractCheck(sandbox);
-
-        director = directorTool.getDirector();
 
         geo = boxGeometryTool.create();
 
@@ -50,14 +47,14 @@ describe("Geometry", function () {
         });
 
         it("save vertices to map", function () {
-            director._init();
+            directorTool.init(sandbox);
 
             expect(testTool.getValues(
                 geometryTool.getVertices(geo)
             )).toEqual([-10, -20, 30, -10, 20, 30, 10, -20, 30, 10, 20, 30, 10, -20, -30, 10, 20, -30, -10, -20, -30, -10, 20, -30, -10, 20, 30, -10, 20, -30, 10, 20, 30, 10, 20, -30, 10, -20, 30, 10, -20, -30, -10, -20, 30, -10, -20, -30, 10, -20, 30, 10, 20, 30, 10, -20, -30, 10, 20, -30, -10, -20, -30, -10, 20, -30, -10, -20, 30, -10, 20, 30]);
         });
         it("save indices to map", function () {
-            director._init();
+            directorTool.init(sandbox);
 
             expect(testTool.getValues(
                 geometryTool.getIndices(geo)
@@ -69,7 +66,7 @@ describe("Geometry", function () {
             var gl = glslTool.buildFakeGl(sandbox);
             deviceManagerTool.setGL(gl);
 
-            director._init();
+            directorTool.init(sandbox);
 
             expect(gl.createBuffer).not.toCalled();
         });
@@ -99,7 +96,7 @@ describe("Geometry", function () {
 
     describe("disposeComponent", function () {
         beforeEach(function () {
-            director._init();
+            directorTool.init(sandbox);
 
             gameObjectTool.disposeComponent(gameObject, geo);
         });
