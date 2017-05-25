@@ -3,7 +3,7 @@ describe("BasicMaterial", function () {
     var material = null;
     var obj;
     var geo;
-    var director;
+    var cameraGameObject;
 
     var gl;
     var state;
@@ -20,6 +20,7 @@ describe("BasicMaterial", function () {
         obj = data.gameObject;
         geo = data.geometry;
         material = data.material;
+        cameraGameObject = data.cameraGameObject;
 
         state = stateTool.createAndSetFakeGLState(sandbox);
 
@@ -94,7 +95,36 @@ describe("BasicMaterial", function () {
 
                 expect(gl.uniformMatrix4fv).toCalledWith(pos, false, mat.values);
             });
-            //todo send u_vMatrix, u_pMatrix
+            it("send u_vMatrix", function () {
+                var transform = gameObjectTool.getTransform(cameraGameObject),
+                    mat = Matrix4.create().setTranslate(1,2,3),
+                    position = mat.getTranslation(),
+                    pos = 0;
+
+
+                threeDTransformTool.setPosition(transform, position);
+                gl.getUniformLocation.withArgs(sinon.match.any, "u_vMatrix").returns(pos);
+
+
+                directorTool.init(state);
+                directorTool.loopBody(state);
+
+                expect(gl.uniformMatrix4fv).toCalledWith(pos, false, mat.clone().invert().values);
+            });
+            it("send u_pMatrix", function () {
+                var cameraController = gameObjectTool.getComponent(cameraGameObject, wd.CameraController);
+                var pos = 0;
+
+                gl.getUniformLocation.withArgs(sinon.match.any, "u_pMatrix").returns(pos);
+
+
+                directorTool.init(state);
+                directorTool.loopBody(state);
+
+                var pMatrix = cameraControllerTool.getCameraPMatrix(cameraController);
+
+                expect(gl.uniformMatrix4fv).toCalledWith(pos, false, pMatrix.values);
+            });
 
             describe("test glsl", function () {
                 beforeEach(function () {

@@ -3,6 +3,7 @@ import { expect } from "wonder-expect.js";
 import { deleteVal, isValidMapValue } from "../../utils/objectUtils";
 import { addToDirtyList } from "./CameraControllerSystem";
 import { Matrix4 } from "../../math/Matrix4";
+import { setPMatrix } from "./CameraSystem";
 
 export var updateProjectionMatrix = requireCheckFunc((index:number, PerspectiveCameraData:any, CameraData:any) => {
     it("fovy should exist", () => {
@@ -18,10 +19,10 @@ export var updateProjectionMatrix = requireCheckFunc((index:number, PerspectiveC
         expect(isValidMapValue(CameraData.farMap[index])).true;
     });
 }, (index:number, PerspectiveCameraData:any, CameraData:any) => {
-    _getPMatrix(index, CameraData).setPerspective(PerspectiveCameraData.fovyMap[index], PerspectiveCameraData.aspectMap[index], CameraData.nearMap[index], CameraData.farMap[index]);
+    setPMatrix(index, _getOrCreatePMatrix(index, CameraData).setPerspective(PerspectiveCameraData.fovyMap[index], PerspectiveCameraData.aspectMap[index], CameraData.nearMap[index], CameraData.farMap[index]), CameraData);
 })
 
-var _getPMatrix = (index:number, CameraData:any) => {
+var _getOrCreatePMatrix = (index:number, CameraData:any) => {
     var mat = CameraData.pMatrixMap[index];
 
     if(isValidMapValue(mat)){

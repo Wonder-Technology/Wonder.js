@@ -40,6 +40,7 @@ var sceneTool = (function () {
 
             return {
                 gameObject:obj,
+                cameraGameObject: cameraObj,
                 geometry:geo,
                 material:material
             }

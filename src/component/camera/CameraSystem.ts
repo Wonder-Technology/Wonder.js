@@ -31,6 +31,10 @@ export var getPMatrix = (index:number, CameraData:any) => {
     return CameraData.pMatrixMap[index];
 }
 
+export var setPMatrix = (index:number, pMatrix:Matrix4, CameraData:any) => {
+    CameraData.pMatrixMap[index] = pMatrix;
+}
+
 // export var setPMatrix = (index:number, pMatrix:Matrix4, CameraControllerData:any, CameraData:any) => {
 //     CameraData.pMatrixMap[index] = pMatrix;
 //
