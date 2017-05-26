@@ -49,10 +49,11 @@ export var create = (ThreeDTransformData:any) => {
     transform.index = index;
     transform.uid = uid;
 
-    return compose(
-        _setTransformMap(index, transform),
-        _createTempData(uid)
-    )(ThreeDTransformData)
+
+    _createTempData(uid, ThreeDTransformData);
+    _setTransformMap(index, transform, ThreeDTransformData);
+
+    return transform;
 }
 
 var _buildUID = (ThreeDTransformData:any) => {
@@ -64,13 +65,13 @@ var _generateIndexInArrayBuffer = (ThreeDTransformData:any) => {
 }
 
 
-var _createTempData = curry((uid:number, ThreeDTransformData:any,) => {
+var _createTempData = (uid:number, ThreeDTransformData:any,) => {
     ThreeDTransformData.tempPositionMap[uid] = Vector3.create();
     ThreeDTransformData.tempLocalPositionMap[uid] = Vector3.create();
     ThreeDTransformData.tempLocalToWorldMatrixMap[uid] = Matrix4.create();
 
     return ThreeDTransformData;
-})
+}
 
 export var init = (GlobalTempData: any, ThreeDTransformData: any, state: Map<any, any>) => {
     return update(null, GlobalTempData, ThreeDTransformData, state);
@@ -93,7 +94,7 @@ export var disposeComponent = curry((GlobalTempData:any, ThreeDTransformData:any
         return _disposeFromNormalList(indexInArrayBuffer, uid, GlobalTempData, ThreeDTransformData);
     }
 
-    return _disposeFromDirtyList(indexInArrayBuffer, uid, GlobalTempData, ThreeDTransformData);
+    _disposeFromDirtyList(indexInArrayBuffer, uid, GlobalTempData, ThreeDTransformData);
 })
 
 export var getGameObject = (index:number, Data:any) => {
@@ -141,11 +142,9 @@ export var getPosition = requireCheckFunc((transform:ThreeDTransform, ThreeTrans
     return ThreeTransformData.tempPositionMap[transform.uid].set(localToWorldMatrices[indexInArrayBuffer + 12], localToWorldMatrices[indexInArrayBuffer + 13], localToWorldMatrices[indexInArrayBuffer + 14]);
 }))
 
-var _setTransformMap = curry((indexInArrayBuffer:number, transform:ThreeDTransform, ThreeDTransformData:any) => {
+var _setTransformMap = (indexInArrayBuffer:number, transform:ThreeDTransform, ThreeDTransformData:any) => {
     ThreeDTransformData.transformMap[indexInArrayBuffer] = transform;
-
-    return transform;
-})
+}
 
 export var setPosition = requireCheckFunc((transform:ThreeDTransform, position: Vector3, GlobalTempData: any, ThreeTransformData: any) => {
     checkTransformShouldAlive(transform, ThreeTransformData);
@@ -196,7 +195,7 @@ export var update = (elapsed: number, GlobalTempData: any, ThreeDTransformData: 
     return updateSystem(elapsed, GlobalTempData, ThreeDTransformData, state);
 }
 
-var _disposeItemInDataContainer = curry((indexInArrayBuffer: number, uid:number, GlobalTempData: any, ThreeDTransformData: any) => {
+var _disposeItemInDataContainer = (indexInArrayBuffer: number, uid:number, GlobalTempData: any, ThreeDTransformData: any) => {
     var mat = GlobalTempData.matrix4_1.setIdentity(),
         positionVec = GlobalTempData.vector3_1.set(0, 0, 0),
         qua = GlobalTempData.quaternion_1.set(0, 0, 0, 1),
@@ -208,7 +207,7 @@ var _disposeItemInDataContainer = curry((indexInArrayBuffer: number, uid:number,
     _disposeMapDatas(indexInArrayBuffer, uid, ThreeDTransformData);
 
     return ThreeDTransformData;
-})
+}
 
 var _disposeMapDatas = (indexInArrayBuffer:number, uid:number, ThreeDTransformData:any) => {
     deleteVal(uid, ThreeDTransformData.isTranslateMap);
@@ -234,12 +233,10 @@ var _disposeFromDirtyList = (indexInArrayBuffer: number, uid:number, GlobalTempD
 
     swap(indexInArrayBuffer, firstDirtyIndex, ThreeDTransformData);
 
-    return compose(
-        (ThreeDTransformData) => {
-            ThreeDTransformData.firstDirtyIndex = addFirstDirtyIndex(ThreeDTransformData);
-        },
-        _disposeItemInDataContainer(firstDirtyIndex, uid, GlobalTempData)
-    )(ThreeDTransformData)
+
+    _disposeItemInDataContainer(firstDirtyIndex, uid, GlobalTempData, ThreeDTransformData);
+
+    ThreeDTransformData.firstDirtyIndex = addFirstDirtyIndex(ThreeDTransformData);
 }
 
 var _addDefaultTransformData = (GlobalTempData: any, ThreeDTransformData: any) => {

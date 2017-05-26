@@ -7,7 +7,7 @@ import { expect } from "wonder-expect.js";
 import { Map } from "immutable";
 import {
     addAddComponentHandle as addAddComponentHandleToMap, addComponentToGameObjectMap,
-    addDisposeHandle as addDisposeHandleToMap, generateComponentIndex, getComponentGameObject
+    addDisposeHandle as addDisposeHandleToMap, deleteComponentBySwap, generateComponentIndex, getComponentGameObject
 } from "../ComponentSystem";
 import { deleteBySwap as deleteObjectBySwap, deleteVal } from "../../utils/objectUtils";
 import { checkIndexShouldEqualCount } from "../utils/contractUtils";
@@ -51,24 +51,19 @@ export var addComponent = curry((MeshRendererData:any, component:MeshRenderer, g
 
 export var disposeComponent = curry((MeshRendererData:any, component:MeshRenderer) => {
     var sourceIndex = component.index,
-        lastComponentIndex = deleteBySwap(MeshRendererData.renderGameObjectArray, sourceIndex);
+        lastComponentIndex = null;
+
+    deleteBySwap(MeshRendererData.renderGameObjectArray, sourceIndex);
 
     MeshRendererData.count -= 1;
     MeshRendererData.index -= 1;
 
+    lastComponentIndex = MeshRendererData.count;
+
     deleteObjectBySwap(sourceIndex, lastComponentIndex, MeshRendererData.gameObjectMap);
 
-    _deleteMeshRendererBySwap(sourceIndex, lastComponentIndex, MeshRendererData);
+    deleteComponentBySwap(sourceIndex, lastComponentIndex, MeshRendererData.meshRendererMap);
 })
-
-var _deleteMeshRendererBySwap = (sourceIndex:number, targetIndex:number, MeshRendererData:any) => {
-    var meshRendererMap = MeshRendererData.meshRendererMap;
-
-    meshRendererMap[targetIndex].index = sourceIndex;
-    meshRendererMap[sourceIndex].index = targetIndex;
-
-    deleteObjectBySwap(sourceIndex, targetIndex, meshRendererMap);
-}
 
 export var getGameObject = (index:number, Data:any) => {
     return getComponentGameObject(Data.gameObjectMap, index);

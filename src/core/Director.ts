@@ -26,7 +26,10 @@ import { GlobalTempData } from "../definition/GlobalTempData";
 import { Scene } from "./entityObject/scene/Scene";
 import { GameObjectData } from "./entityObject/gameObject/GameObjectData";
 import { create, initData as initSceneData } from "./entityObject/scene/SceneSystem";
-import { addAddComponentHandle as addGeometryAddComponentHandle, addDisposeHandle as addGeometryDisposeHandle, init as initGeometry, initData as initGeometryData } from "../component/geometry/GeometrySystem";
+import {
+    addAddComponentHandle as addGeometryAddComponentHandle, addDisposeHandle as addGeometryDisposeHandle, addInitHandle as addGeometryInitHandle,
+    init as initGeometry, initData as initGeometryData, isIndicesBufferNeed32BitsByData
+} from "../component/geometry/GeometrySystem";
 import { clear, init as initRenderer, render } from "../renderer/render/WebGLRenderSystem";
 import { GeometryData } from "../component/geometry/GeometryData";
 import { initData as initShaderData } from "../renderer/shader/ShaderSystem";
@@ -34,7 +37,7 @@ import { ShaderData } from "../renderer/shader/ShaderData";
 import { Geometry } from "../component/geometry/Geometry";
 import { DataBufferConfig } from "../config/DataBufferConfig";
 import {
-    addAddComponentHandle as addMaterialAddComponentHandle, addDisposeHandle as addMaterialDisposeHandle,
+    addAddComponentHandle as addMaterialAddComponentHandle, addDisposeHandle as addMaterialDisposeHandle, addInitHandle as addMaterialInitHandle,
     initData as initMaterialData
 } from "../component/material/MaterialSystem";
 import { MaterialData } from "../component/material/MaterialData";
@@ -65,6 +68,9 @@ import { SceneData } from "./entityObject/scene/SceneData";
 import { initData as initCameraControllerData } from "../component/camera/CameraControllerSystem";
 import { CameraController } from "../component/camera/CameraController";
 import { DeviceManager } from "../device/DeviceManager";
+import { addAddComponentHandle, addDisposeHandle, addInitHandle } from "../component/ComponentSystem";
+import { material_config } from "../renderer/data/material_config";
+import { shaderLib_generator } from "../renderer/data/shaderLib_generator";
 
 @singleton(true)
 @registerClass("Director")
@@ -236,10 +242,12 @@ initShaderData(ShaderData);
 initGeometryData(DataBufferConfig, GeometryData);
 addGeometryAddComponentHandle(Geometry, GeometryData);
 addGeometryDisposeHandle(Geometry, GeometryData);
+addGeometryInitHandle(Geometry, GeometryData);
 
 initMaterialData(MaterialData);
 addMaterialAddComponentHandle(Material, MaterialData);
 addMaterialDisposeHandle(Material, MaterialData);
+addMaterialInitHandle(Material, material_config, shaderLib_generator as any, ShaderData, MaterialData);
 
 initMeshRendererData(MeshRendererData);
 addMeshRendererAddComponentHandle(MeshRenderer, MeshRendererData);
@@ -262,3 +270,24 @@ initSceneData(SceneData);
 initCameraControllerData(CameraControllerData, PerspectiveCameraData, CameraData);
 addCameraControllerAddComponentHandle(CameraController, CameraControllerData);
 addCameraControllerDisposeHandle(CameraController, PerspectiveCameraData, CameraData, CameraControllerData);
+
+// export var initComponent = () => {
+//     const initData = {
+//         "geometry":{
+//             "initData": GeometryData,
+//
+//             "addHandle": {
+//                 "addComponent": GeometryData,
+//                 "disposeComponent": GeometryData,
+//                 "initGeometry": (geometry:Geometry) => [geometry.index, isIndicesBufferNeed32BitsByData(GeometryData), GeometryData.computeDataFuncMap, GeometryData.verticesMap, GeometryData.indicesMap, GeometryData]
+//             }
+//         }
+//     }
+//
+//
+//     initGeometryData(DataBufferConfig, GeometryData);
+//     addAddComponentHandle(Geometry, GeometryData);
+//     addDisposeHandle(Geometry, GeometryData);
+//     addInitHandle(Geometry)
+//
+// }

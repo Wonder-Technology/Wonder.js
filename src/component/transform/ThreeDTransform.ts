@@ -16,7 +16,6 @@ import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 @registerClass("ThreeDTransform")
 export class ThreeDTransform extends Component implements IThreeDTransform{
     public uid:number = null;
-    public index:number = null;
 }
 
 export interface IThreeDTransform{

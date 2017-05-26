@@ -3,15 +3,16 @@ import { Component } from "../../../component/Component";
 import { getTypeIDFromClass, getTypeIDFromComponent } from "../../../component/ComponentTypeIDManager";
 import { deleteVal, isValidMapValue } from "../../../utils/objectUtils";
 import { create as createThreeDTransform, setParent } from "../../../component/transform/ThreeDTransformSystem";
-import { GameObjectData, GameObjectParentMap } from "./GameObjectData";
+import { GameObjectComponentData } from "./GameObjectData";
 import { it, requireCheckFunc } from "../../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { ThreeDTransform } from "../../../component/transform/ThreeDTransform";
 import { isNotUndefined } from "../../../utils/JudgeUtils";
-import { execHandle } from "../../../component/ComponentSystem";
+import { execHandle, execInitHandle } from "../../../component/ComponentSystem";
 import { Geometry } from "../../../component/geometry/Geometry";
 import { Material } from "../../../component/material/Material";
 import { filter, forEach } from "../../../utils/arrayUtils";
+import { Map } from "immutable";
 
 export var create = (transform:ThreeDTransform, GameObjectData:any) => {
     var gameObject:GameObject = new GameObject(),
@@ -34,6 +35,17 @@ var _buildUID = (GameObjectData:any) => {
 
 export var isAlive = (entity:IUIDEntity, GameObjectData:any) => {
     return GameObjectData.isAliveMap[entity.uid] === true;
+}
+
+export var initGameObject = (gameObject:GameObject, state:Map<any, any>, GameObjectData:any) => {
+    var uid = gameObject.uid,
+        componentData:GameObjectComponentData = _getComponentData(uid, GameObjectData);
+
+    for(let typeID in componentData){
+        if(componentData.hasOwnProperty(typeID)){
+            execInitHandle(typeID, componentData[typeID].index, state);
+        }
+    }
 }
 
 export var dispose = requireCheckFunc((entity:IUIDEntity, GameObjectData:any) => {
@@ -147,6 +159,8 @@ export var getComponent = (gameObject:GameObject, componentTypeID:string, GameOb
     return null;
 }
 
+var _getComponentData = (uid:number, GameObjectData:any) => GameObjectData.componentMap[uid];
+
 export var hasComponent = (gameObject:GameObject, componentTypeID:string, GameObjectData:any) => {
     return getComponent(gameObject, componentTypeID, GameObjectData) !== null;
 }
@@ -192,7 +206,7 @@ var _addChild = (uid:number, child:GameObject, GameObjectData:any) => {
     }
 }
 
-var _setChildren = (uid:number, children:Array<GameObject>, GameObject:any) => {
+var _setChildren = (uid:number, children:Array<GameObject>, GameObjectData:any) => {
     GameObjectData.childrenMap[uid] = children;
 }
 

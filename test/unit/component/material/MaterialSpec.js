@@ -147,7 +147,7 @@ describe("Material", function() {
 
             gameObjectTool.addComponent(obj, mat2);
 
-            basicMaterialTool.initMaterial(mat2);
+            materialTool.initMaterial(mat2);
 
 
             expect(materialTool.getColor(material)).toBeUndefined();

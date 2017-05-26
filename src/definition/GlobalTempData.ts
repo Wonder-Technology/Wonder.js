@@ -8,6 +8,8 @@ export class GlobalTempData {
     public static matrix4_3 = Matrix4.create();
     public static vector3_1 = Vector3.create();
     public static vector3_2 = Vector3.create();
+    public static vector3_3 = Vector3.create();
+    public static vector3_4 = Vector3.create();
     public static quaternion_1 = Quaternion.create();
 }
 

@@ -9,7 +9,6 @@ import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 
 @registerClass("Tag")
 export class Tag extends Component{
-    public index:number = null;
 }
 
 export var createTag = (slotCount:number = 4) => {

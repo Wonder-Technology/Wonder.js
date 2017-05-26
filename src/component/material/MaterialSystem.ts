@@ -8,7 +8,7 @@ import { expect } from "wonder-expect.js";
 import { Material } from "./Material";
 import {
     addAddComponentHandle as addAddComponentHandleToMap, addComponentToGameObjectMap,
-    addDisposeHandle as addDisposeHandleToMap, generateComponentIndex, getComponentGameObject
+    addDisposeHandle as addDisposeHandleToMap, addInitHandle as addInitHandleToMap, generateComponentIndex, getComponentGameObject
 } from "../ComponentSystem";
 import curry from "wonder-lodash/curry";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
@@ -22,6 +22,10 @@ export var addAddComponentHandle = (_class: any, MaterialData:any) => {
 
 export var addDisposeHandle = (_class: any, MaterialData:any) => {
     addDisposeHandleToMap(_class, disposeComponent(MaterialData));
+}
+
+export var addInitHandle = (_class: any, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, ShaderData:any, MaterialData:any) => {
+    addInitHandleToMap(_class, initMaterial(material_config, shaderLib_generator, ShaderData, MaterialData));
 }
 
 export var create = requireCheckFunc((material:Material, className:string, MaterialData: any) => {
@@ -49,14 +53,12 @@ export var create = requireCheckFunc((material:Material, className:string, Mater
 export var init = requireCheckFunc((state: Map<any, any>, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, ShaderData:any, MaterialData:any) => {
     checkIndexShouldEqualCount(MaterialData);
 }, (state: Map<any, any>, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, ShaderData:any, MaterialData:any) => {
-    var materialClassNameMap = MaterialData.materialClassNameMap;
-
     for(let i = 0, count = MaterialData.count; i < count; i++){
-        initMaterial(state, i, material_config, shaderLib_generator, materialClassNameMap, ShaderData, MaterialData);
+        initMaterial(material_config, shaderLib_generator, ShaderData, MaterialData, i, state);
     }
 })
 
-export var initMaterial = (state: Map<any, any>, index:number, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, materialClassNameMap:MaterialClassNameMap, ShaderData:any, MaterialData:any) => {
+export var initMaterial = curry((material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, ShaderData:any, MaterialData:any, index:number, state: Map<any, any>) => {
     var shader = getShader(index, MaterialData),
         isInitMap = ShaderData.isInitMap,
         shaderIndex = shader.index;
@@ -67,8 +69,8 @@ export var initMaterial = (state: Map<any, any>, index:number, material_config:I
 
     isInitMap[shaderIndex] = true;
 
-    initShader(state, index, shaderIndex, materialClassNameMap[index], material_config, shaderLib_generator, ShaderData);
-}
+    initShader(state, index, shaderIndex, MaterialData.materialClassNameMap[index], material_config, shaderLib_generator, ShaderData);
+})
 
 export var getShader = (materialIndex:number, MaterialData:any) => {
     return MaterialData.shaderMap[materialIndex];

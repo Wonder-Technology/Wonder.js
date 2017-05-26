@@ -1,7 +1,7 @@
 import { registerClass } from "../../../definition/typescript/decorator/registerClass";
 import {
     addChild,
-    addComponent, create, dispose, disposeComponent, getComponent, getTransform, hasChild, hasComponent,
+    addComponent, create, dispose, disposeComponent, getComponent, getTransform, hasChild, hasComponent, initGameObject as initGameObjectSystem,
     isAlive, removeChild
 } from "./GameObjectSystem";
 import { GameObjectData } from "./GameObjectData";
@@ -11,6 +11,8 @@ import { ThreeDTransformData } from "../../../component/transform/ThreeDTransfor
 import { create as createThreeDTransform } from "../../../component/transform/ThreeDTransformSystem";
 import { requireCheckFunc } from "../../../definition/typescript/decorator/contract";
 import { checkGameObjectShouldAlive } from "../../../utils/contractUtils";
+import { getState } from "../../DirectorSystem";
+import { DirectorData } from "../../DirectorData";
 
 @registerClass("GameObject")
 export class GameObject implements IUIDEntity{
@@ -29,6 +31,12 @@ export var disposeGameObject = requireCheckFunc((gameObject:GameObject) => {
     checkGameObjectShouldAlive(gameObject, GameObjectData);
 },(gameObject:GameObject) => {
     dispose(gameObject, ThreeDTransformData, GameObjectData);
+})
+
+export var initGameObject = requireCheckFunc((gameObject:GameObject, component: Component) => {
+    checkGameObjectShouldAlive(gameObject, GameObjectData);
+},(gameObject:GameObject, component: Component) => {
+    initGameObjectSystem(gameObject, getState(DirectorData), GameObjectData);
 })
 
 export var disposeGameObjectComponent = requireCheckFunc((gameObject:GameObject, component: Component) => {

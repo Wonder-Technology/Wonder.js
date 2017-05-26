@@ -29,7 +29,7 @@ var _typeID = 1;
 const _table = {};
 
 _addTypeID(["ThreeDTransform"], _table);
-_addTypeID(["Geometry", "BoxGeometry"], _table);
+_addTypeID(["Geometry", "BoxGeometry", "CustomGeometry"], _table);
 _addTypeID(["Material", "BasicMaterial"], _table);
 _addTypeID(["MeshRenderer"], _table);
 _addTypeID(["Tag"], _table);

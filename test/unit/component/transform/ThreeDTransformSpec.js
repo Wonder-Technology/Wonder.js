@@ -581,7 +581,7 @@ describe("ThreeDTransform", function () {
                         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
                     ])
                 });
-                it("the dispose of one transform shouldn't affect other transform data", function () {
+                it("the dispose of one transform shouldn\t affect other transform data", function () {
                     var pos2 = Vector3.create(10,2,3);
                     updateSystem(null, null);
                     threeDTransformTool.setLocalPosition(tra1, pos.clone());

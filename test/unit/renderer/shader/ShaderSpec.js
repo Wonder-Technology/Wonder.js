@@ -75,7 +75,7 @@ describe("Shader", function() {
 
                 expect(gl.attachShader).toCalledTwice();
             });
-            it("to avoid 'Attribute 0 is disabled.'. This has significant performance penalty", function () {
+            it("to avoid \"Attribute 0 is disabled.\". This has significant performance penalty", function () {
                 directorTool.init(state);
 
                 expect(gl.bindAttribLocation.withArgs(sinon.match.any, 0, "a_position")).toCalledOnce();

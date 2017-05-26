@@ -2,8 +2,9 @@ import { BoxGeometry, BoxGeometryConfigData } from "./BoxGeometry";
 import { ensureFunc, it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { Vector3 } from "../../math/Vector3";
-import { create as createGeometry } from "./GeometrySystem";
+import { create as createGeometry, isIndicesBufferNeed32BitsByData } from "./GeometrySystem";
 import { ExtendUtils } from "wonder-commonlib/dist/es2015/utils/ExtendUtils";
+import { GlobalTempData } from "../../definition/GlobalTempData";
 
 export var create = (GeometryData: any) => {
     var geometry = new BoxGeometry(),
@@ -36,7 +37,12 @@ var _computeData = (index: number, GeometryData: any) => {
             BOTTOM: 3,
             RIGHT: 4,
             LEFT: 5
-        };
+        },
+        vertices = [],
+        // var normals = [];
+        // var texCoords = [];
+        indices = [];
+
     var faceAxes = [
         [0, 1, 3], // FRONT
         [4, 5, 7], // BACK
@@ -65,11 +71,6 @@ var _computeData = (index: number, GeometryData: any) => {
         Vector3.create(width, height, -depth)
     ];
 
-    var vertices = [];
-    // var normals = [];
-    // var texCoords = [];
-    var indices = [];
-
     function generateFace(side, uSegments, vSegments) {
         var x, y, z, u, v;
         var i, j;
@@ -77,10 +78,11 @@ var _computeData = (index: number, GeometryData: any) => {
 
         for (i = 0; i <= uSegments; i++) {
             for (j = 0; j <= vSegments; j++) {
-                let temp1 = Vector3.create()
-                var temp2 = Vector3.create();
-                var temp3 = Vector3.create();
-                var r = Vector3.create();
+                let temp1 = GlobalTempData.vector3_1,
+                    temp2 = GlobalTempData.vector3_2,
+                    temp3 = GlobalTempData.vector3_3,
+                    r = GlobalTempData.vector3_4;
+
                 temp1.lerp(corners[faceAxes[side][0]], corners[faceAxes[side][1]], i / uSegments);
                 temp2.lerp(corners[faceAxes[side][0]], corners[faceAxes[side][2]], j / vSegments);
                 temp3.sub2(temp2, corners[faceAxes[side][0]]);
@@ -109,8 +111,8 @@ var _computeData = (index: number, GeometryData: any) => {
     generateFace(sides.LEFT, depthSegments, heightSegments);
 
     return {
-        vertices: vertices,
-        indices: indices
+        vertices: new Float32Array(vertices),
+        indices: isIndicesBufferNeed32BitsByData(GeometryData) ? new Uint32Array(indices) : new Uint16Array(indices)
     };
 }
 

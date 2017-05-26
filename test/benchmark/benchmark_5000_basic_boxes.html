@@ -9,6 +9,8 @@
     <script src="../../examples/js/tool/materialTool.js"></script>
     <script src="../../examples/js/tool/basicMaterialTool.js"></script>
     <script src="../../examples/js/tool/boxGeometryTool.js"></script>
+    <script src="../../examples/js/tool/geometryTool.js"></script>
+    <script src="../../examples/js/tool/customGeometryTool.js"></script>
     <script src="../../examples/js/tool/gameObjectTool.js"></script>
     <script src="../../examples/js/tool/cameraControllerTool.js"></script>
     <script src="../../examples/js/tool/meshRendererTool.js"></script>
@@ -149,20 +151,82 @@
             }, 30)
         }
 
+        function createAndDisposeGameObjects() {
+            setInterval(function() {
+                var box = boxes[0];
+                var geo = gameObjectTool.getComponent(box, wd.Geometry);
+
+                var vertices = geometryTool.getVertices(geo),
+                    indices = geometryTool.getIndices(geo);
+
+                boxes.forEach(function (box) {
+                    gameObjectTool.dispose(box);
+                })
+
+
+                boxes = createCustomGeometryBoxes(vertices, indices);
+
+                boxes.forEach(function(box){
+                    sceneTool.addGameObject(box);
+                    gameObjectTool.init(box);
+                })
+            }, 30);
+        }
 
 //        setData();
-        setParent();
+//        setParent();
 //        batchSet();
+
+        createAndDisposeGameObjects();
 
 
         director.start();
+
+
+
+        function createCustomGeometryBoxes(vertices, indices){
+            var resultArr = [],
+                playgroundSize = 500;
+
+            for (var index = 0; index < 1000; index++) {
+                var customGeo = customGeometryTool.create();
+                customGeometryTool.setVertices(customGeo, vertices);
+                customGeometryTool.setIndices(customGeo, indices);
+
+                var box = createCustomGeometryBox(customGeo);
+
+                var transform = gameObjectTool.getTransform(box);
+                threeDTransformTool.setPosition(transform, wd.Vector3.create(Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize));
+
+                resultArr.push(box);
+            }
+
+            return resultArr;
+        }
+
+        function createCustomGeometryBox(geo){
+            var material = basicMaterialTool.create();
+
+            materialTool.setColor(material, wd.Color.create("rgb(1.0,0.0,1.0)"));
+
+            var obj = gameObjectTool.create();
+
+            gameObjectTool.addComponent(obj, material);
+            gameObjectTool.addComponent(obj, meshRendererTool.create());
+
+
+            gameObjectTool.addComponent(obj, geo);
+
+
+            return obj;
+        }
 
 
         function createBoxes(){
             var resultArr = [],
                 playgroundSize = 500;
 
-            for (var index = 0; index < 3000; index++) {
+            for (var index = 0; index < 1000; index++) {
                 var box = createBox();
 
 //                var scale = Math.random() * 0.8 + 0.6;
@@ -177,6 +241,8 @@
 
             return resultArr;
         }
+
+
 
         function createBox(){
             var material = basicMaterialTool.create();

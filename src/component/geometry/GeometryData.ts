@@ -1,6 +1,8 @@
 import { EDrawMode } from "../../renderer/enum/EDrawMode";
 import { EBufferType } from "../../renderer/enum/EBufferType";
 import { ComponentGameObjectMap } from "../ComponentData";
+import { Geometry } from "./Geometry";
+import { ComponentMap } from "../ComponentSystem";
 
 export class GeometryData{
     public static index:number = null;
@@ -17,6 +19,8 @@ export class GeometryData{
     public static computeDataFuncMap:GeometryComputeDataFuncMap = null;
 
     public static gameObjectMap:ComponentGameObjectMap = null;
+
+    public static geometryMap:ComponentMap = null;
 }
 
 export type GeometryVerticesMap = Array<Float32Array>
@@ -28,6 +32,6 @@ export type GeometryComputeDataFuncMap = {
 }
 
 export type GeometryComputeData = {
-    vertices: Array<number>;
-    indices: Array<number>;
+    vertices: Float32Array;
+    indices: Uint16Array | Uint32Array;
 }

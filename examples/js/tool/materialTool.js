@@ -7,6 +7,7 @@ var materialTool = (function () {
         getGameObject:wd.getMaterialGameObject,
         getAlphaTest: wd.getMaterialAlphaTest,
         setAlphaTest: wd.setMaterialAlphaTest,
+        initMaterial: wd.initMaterial,
 
         resetData: function(){
             wd.initMaterialData(wd.MaterialData);

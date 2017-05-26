@@ -10,7 +10,11 @@ var sceneTool = (function () {
         removeGameObject: function(gameObj){
             wd.removeSceneChild(_getScene(), gameObj);
         },
-        prepareGameObjectAndAddToScene: function() {
+        prepareGameObjectAndAddToScene: function(isNotAddCamera, geometry) {
+            var isNotAddCamera$ = isNotAddCamera === true ? true : false;
+            var geo = null;
+
+
             var material = basicMaterialTool.create();
 
             var obj = gameObjectTool.create();
@@ -19,23 +23,33 @@ var sceneTool = (function () {
             gameObjectTool.addComponent(obj, meshRendererTool.create());
 
 
-            var geo = boxGeometryTool.create();
+            if(!!geometry){
+                geo = geometry;
+            }
+            else{
+                geo = boxGeometryTool.create();
+            }
+
             gameObjectTool.addComponent(obj, geo);
 
             sceneTool.addGameObject(obj);
 
+            var cameraObj = null;
+            var cameraController = null;
 
-            var cameraObj = gameObjectTool.create();
-            var cameraController = cameraControllerTool.create();
+            if(!isNotAddCamera){
+                var cameraObj = gameObjectTool.create();
+                var cameraController = cameraControllerTool.create();
 
-            cameraControllerTool.setCameraNear(cameraController, 0.1);
-            cameraControllerTool.setCameraFar(cameraController, 1000);
-            cameraControllerTool.setPerspectiveCameraFovy(cameraController, 60);
-            cameraControllerTool.setPerspectiveCameraAspect(cameraController, 1);
+                cameraControllerTool.setCameraNear(cameraController, 0.1);
+                cameraControllerTool.setCameraFar(cameraController, 1000);
+                cameraControllerTool.setPerspectiveCameraFovy(cameraController, 60);
+                cameraControllerTool.setPerspectiveCameraAspect(cameraController, 1);
 
-            gameObjectTool.addComponent(cameraObj, cameraController);
+                gameObjectTool.addComponent(cameraObj, cameraController);
 
-            sceneTool.addGameObject(cameraObj);
+                sceneTool.addGameObject(cameraObj);
+            }
 
 
             return {

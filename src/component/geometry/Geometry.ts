@@ -5,12 +5,14 @@ import {
     getIndices as getGeometryIndices, getConfigData, initGeometry as initGeometrySystem,
     isIndicesBufferNeed32BitsByData, getGameObject,
 } from "./GeometrySystem";
-import { EDrawMode } from "../../renderer/enum/EDrawMode";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
+import { Component } from "../Component";
+import { EDrawMode } from "../../renderer/enum/EDrawMode";
+import { getState } from "../../core/DirectorSystem";
+import { DirectorData } from "../../core/DirectorData";
 
 @registerClass("Geometry")
-export abstract class Geometry{
-    public index:number = null;
+export abstract class Geometry extends Component{
 }
 
 export var getDrawMode = (geometry:Geometry) => {
@@ -30,7 +32,7 @@ export var getGeometryConfigData = (geometry:Geometry) => {
 }
 
 export var initGeometry = (geometry:Geometry) => {
-    initGeometrySystem(geometry.index, isIndicesBufferNeed32BitsByData(GeometryData), GeometryData.computeDataFuncMap, GeometryData.verticesMap, GeometryData.indicesMap, GeometryData);
+    initGeometrySystem(GeometryData, geometry.index, getState(DirectorData));
 }
 
 export var getGeometryGameObject = (geometry:Geometry) => {

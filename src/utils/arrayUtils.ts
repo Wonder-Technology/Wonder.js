@@ -1,13 +1,17 @@
 export var deleteBySwap = (array:Array<any>, index:number) => {
     var last = array.length - 1,
-        temp = array[last];
+        temp = null;
+
+    if(last === -1){
+        return null;
+    }
+
+    temp = array[last];
 
     array[last] = array[index];
     array[index] = temp;
 
     array.pop();
-
-    return last;
 }
 
 export var hasDuplicateItems = (arr: Array<any>) => {

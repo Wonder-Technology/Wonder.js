@@ -10,7 +10,7 @@ export class GameObjectData{
     public static parentMap:GameObjectParentMap = {};
     public static childrenMap:GameObjectChildrenMap = {};
 
-    //todo add name,tag map
+    //todo add name map
 }
 
 export type GameObjectIsAliveMap = {
@@ -18,9 +18,11 @@ export type GameObjectIsAliveMap = {
 }
 
 export type GameObjectComponentMap = {
-    [uid:string]:{
-        [typeId:string]:Component;
-    }
+    [uid:string]:GameObjectComponentData
+}
+
+export type GameObjectComponentData = {
+    [typeId:number]:Component;
 }
 
 export type GameObjectParentMap = {

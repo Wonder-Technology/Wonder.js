@@ -6,7 +6,6 @@ import { Component } from "../Component";
 
 @registerClass("MeshRenderer")
 export class MeshRenderer extends Component{
-    public index:number = null;
 }
 
 export var createMeshRenderer = () => {

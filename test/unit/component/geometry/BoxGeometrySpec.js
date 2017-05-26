@@ -7,6 +7,8 @@ describe("BoxGeometry", function () {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
+        testTool.clearAndOpenContractCheck(sandbox);
+
         director = directorTool.getDirector();
 
         geo = boxGeometryTool.create();
