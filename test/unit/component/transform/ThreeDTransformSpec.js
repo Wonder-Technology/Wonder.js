@@ -471,6 +471,18 @@ describe("ThreeDTransform", function () {
         it("default value should be vec3(0,0,0)", function(){
             expect(threeDTransformTool.getLocalPosition(tra1)).toEqual(Vector3.create());
         });
+
+        describe("fix bug", function () {
+            it("test get after get localToWorldMatrix", function () {
+                var pos = Vector3.create(1,2,3);
+                threeDTransformTool.setLocalPosition(tra1, pos);
+
+                var mat = threeDTransformTool.getLocalToWorldMatrix(tra1)
+                var localPos = threeDTransformTool.getLocalPosition(tra1)
+
+                expect(localPos).toEqual(pos);
+            });
+        });
     });
 
     describe("init", function () {

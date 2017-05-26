@@ -117,11 +117,11 @@ export var setParent = (transform: ThreeDTransform, parent: ThreeDTransform, Thr
 export var getLocalToWorldMatrix = requireCheckFunc((transform: IThreeDTransform, mat:Matrix4, ThreeTransformData: any) => {
     checkTransformShouldAlive(transform, ThreeTransformData);
 }, cacheFunc((transform: IThreeDTransform, mat:Matrix4, ThreeTransformData: any) => {
-    return isValidMapValue(ThreeTransformData.localPositionCacheMap[transform.uid]);
+    return isValidMapValue(ThreeTransformData.localToWorldMatrixCacheMap[transform.uid]);
 }, (transform:IThreeDTransform, mat:Matrix4, ThreeTransformData: any) => {
-    return ThreeTransformData.localPositionCacheMap[transform.uid];
+    return ThreeTransformData.localToWorldMatrixCacheMap[transform.uid];
 }, (transform: IThreeDTransform, mat:Matrix4, ThreeTransformData: any, returnedMat:Matrix4) => {
-    ThreeTransformData.localPositionCacheMap[transform.uid] = returnedMat;
+    ThreeTransformData.localToWorldMatrixCacheMap[transform.uid] = returnedMat;
 }, (transform: IThreeDTransform, mat:Matrix4, ThreeTransformData: any) => {
     return DataUtils.createMatrix4ByIndex(mat, ThreeDTransformData.localToWorldMatrices, getMatrix4DataIndexInArrayBuffer(transform.index));
 }))
