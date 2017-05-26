@@ -11,9 +11,14 @@ import { it, requireCheckFunc } from "../../definition/typescript/decorator/cont
 import { expect } from "wonder-expect.js";
 import { getShader } from "../../component/material/MaterialSystem";
 import { getDrawMode } from "../../component/geometry/GeometrySystem";
-import { getLocalToWorldMatrix, getTempLocalToWorldMatrix } from "../../component/transform/ThreeDTransformSystem";
+import {
+    getLocalToWorldMatrix,
+    getTempLocalToWorldMatrix
+} from "../../component/transform/ThreeDTransformSystem";
 import { getCurrentCamera } from "../../core/entityObject/scene/SceneSystem";
-import { getPMatrix, getWorldToCameraMatrix } from "../../component/camera/CameraControllerSystem";
+import {
+    getPMatrix, getWorldToCameraMatrix
+} from "../../component/camera/CameraControllerSystem";
 import { getTypeIDFromClass } from "../../component/ComponentTypeIdManager";
 import { CameraController } from "../../component/camera/CameraController";
 
@@ -42,10 +47,10 @@ export var createRenderCommands = requireCheckFunc(curry((state:Map<any, any>, G
             materialIndex = material.index,
             shader = getShader(materialIndex, MaterialData);
 
-        command.mMatrix = getLocalToWorldMatrix(transform, getTempLocalToWorldMatrix(transform, ThreeDTransformData), ThreeDTransformData);
+        command.mMatrix = getLocalToWorldMatrix(transform, getTempLocalToWorldMatrix(transform, ThreeDTransformData), ThreeDTransformData).values;
+        command.vMatrix = getWorldToCameraMatrix(currentCameraIndex, ThreeDTransformData, GameObjectData, CameraControllerData, CameraData).values;
+        command.pMatrix = getPMatrix(currentCameraIndex, CameraData).values;
 
-        command.vMatrix = getWorldToCameraMatrix(currentCameraIndex, ThreeDTransformData, GameObjectData, CameraControllerData, CameraData);
-        command.pMatrix = getPMatrix(currentCameraIndex, CameraData);
 
         command.drawMode = getDrawMode(geometry, GeometryData);
 

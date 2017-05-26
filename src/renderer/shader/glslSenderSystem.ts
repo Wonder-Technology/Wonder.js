@@ -74,9 +74,9 @@ export var sendBuffer = (gl: WebGLRenderingContext, pos: number, buffer: WebGLBu
     }
 }
 
-export var sendMatrix4 = (gl:WebGLRenderingContext, name: string, data: Matrix4, uniformLocationMap:UniformShaderLocationMap) => {
-    _sendUniformData<Matrix4>(gl, name, data, uniformLocationMap, (pos, data) => {
-        gl.uniformMatrix4fv(pos, false, data.values);
+export var sendMatrix4 = (gl:WebGLRenderingContext, name: string, data: Float32Array, uniformLocationMap:UniformShaderLocationMap) => {
+    _sendUniformData<Float32Array>(gl, name, data, uniformLocationMap, (pos, data) => {
+        gl.uniformMatrix4fv(pos, false, data);
     })
 }
 

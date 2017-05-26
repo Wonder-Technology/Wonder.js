@@ -40,14 +40,24 @@
 
         function _setData() {
             boxes.forEach(function(box){
-                var pos = box.transform.position;
-                var localPos = box.transform.localPosition;
+//                var pos = box.transform.position;
+//                var localPos = box.transform.localPosition;
+
+                var transform = gameObjectTool.getTransform(box);
+
+                var pos = threeDTransformTool.getPosition(transform);
+                var localPos = threeDTransformTool.getLocalPosition(transform);
+
 
                 if(pos.x >= 500){
-                    box.transform.localPosition = wd.Vector3.create(100,localPos.y,localPos.z);
+//                    box.transform.localPosition = wd.Vector3.create(100,localPos.y,localPos.z);
+
+                        threeDTransformTool.setLocalPosition(transform, wd.Vector3.create(100,localPos.y,localPos.z));
+
                 }
                 else if(pos.x < 500){
-                    box.transform.position = pos.add(wd.Vector3.create(10,0,0));
+//                    box.transform.position = pos.add(wd.Vector3.create(10,0,0));
+                    threeDTransformTool.setPosition(transform, wd.Vector3.create(10,0,0));
                 }
             })
         }
@@ -111,7 +121,6 @@
                     if(pos.x >= 500){
                         data.localPosition = wd.Vector3.create(100,localPos.y,localPos.z);
 
-//                        threeDTransformTool.setLocalPosition(transform, wd.Vector3.create(Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize));
                     }
                     else if(pos.x < 500){
                         data.position = pos.add(wd.Vector3.create(10,0,0));
@@ -121,22 +130,22 @@
                 }
 
                 threeDTransformTool.setBatchTransformDatas(batchTransformDatas);
-                threeDTransformTool.setBatchTransformDatas(batchTransformDatas);
-                threeDTransformTool.setBatchTransformDatas(batchTransformDatas);
-                threeDTransformTool.setBatchTransformDatas(batchTransformDatas);
-                threeDTransformTool.setBatchTransformDatas(batchTransformDatas);
-                threeDTransformTool.setBatchTransformDatas(batchTransformDatas);
-                threeDTransformTool.setBatchTransformDatas(batchTransformDatas);
-                threeDTransformTool.setBatchTransformDatas(batchTransformDatas);
-                threeDTransformTool.setBatchTransformDatas(batchTransformDatas);
-                threeDTransformTool.setBatchTransformDatas(batchTransformDatas);
+//                threeDTransformTool.setBatchTransformDatas(batchTransformDatas);
+//                threeDTransformTool.setBatchTransformDatas(batchTransformDatas);
+//                threeDTransformTool.setBatchTransformDatas(batchTransformDatas);
+//                threeDTransformTool.setBatchTransformDatas(batchTransformDatas);
+//                threeDTransformTool.setBatchTransformDatas(batchTransformDatas);
+//                threeDTransformTool.setBatchTransformDatas(batchTransformDatas);
+//                threeDTransformTool.setBatchTransformDatas(batchTransformDatas);
+//                threeDTransformTool.setBatchTransformDatas(batchTransformDatas);
+//                threeDTransformTool.setBatchTransformDatas(batchTransformDatas);
             }, 30)
         }
 
 
 //        setData();
 //        setParent();
-//        batchSet();
+        batchSet();
 
 
         director.start();
@@ -146,7 +155,7 @@
             var resultArr = [],
                 playgroundSize = 500;
 
-            for (var index = 0; index < 5000; index++) {
+            for (var index = 0; index < 3000; index++) {
                 var box = createBox();
 
 //                var scale = Math.random() * 0.8 + 0.6;
