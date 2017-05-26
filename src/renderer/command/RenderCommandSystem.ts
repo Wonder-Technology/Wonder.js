@@ -1,7 +1,6 @@
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 import curry from "wonder-lodash/curry";
 import { Map } from "immutable";
-import map from "wonder-lodash/map";
 import forEach from "wonder-lodash/forEach";
 import { RenderCommand } from "./RenderCommand";
 import {
@@ -31,8 +30,10 @@ export var createRenderCommands = requireCheckFunc(curry((state:Map<any, any>, G
         });
     });
 }), curry((state:Map<any, any>, GameObjectData:any, ThreeDTransformData:any, CameraControllerData:any, CameraData:any, MaterialData:any, GeometryData:any, SceneData:any, renderGameObjectArray:Array<GameObject>) => {
-    return map(renderGameObjectArray, (gameObject:GameObject) => {
-        var command = new RenderCommand(),
+    var commandArr:Array<RenderCommand> = [];
+
+    for(let gameObject of renderGameObjectArray){
+        let command = new RenderCommand(),
             currentCamera = getComponent(getCurrentCamera(SceneData), getTypeIDFromClass(CameraController), GameObjectData),
             currentCameraIndex = currentCamera.index,
             geometry = getGeometry(gameObject, GameObjectData),
@@ -53,6 +54,8 @@ export var createRenderCommands = requireCheckFunc(curry((state:Map<any, any>, G
 
         command.geometryIndex = geometry.index;
 
-        return command;
-    });
+        commandArr.push(command);
+    }
+
+    return commandArr;
 }))

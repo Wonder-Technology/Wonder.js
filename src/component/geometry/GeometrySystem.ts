@@ -69,7 +69,8 @@ export var initGeometry = (index:number, isIndicesBufferNeed32Bits:boolean, comp
 }
 
 export var getDrawMode = (index:number, GeometryData:any) => {
-    return GeometryData.drawModeMap[index];
+    // return GeometryData.drawModeMap[index];
+    return EDrawMode.TRIANGLES;
 }
 
 export var setDrawMode = (index:number, drawMode:EDrawMode, GeometryData:any) => {

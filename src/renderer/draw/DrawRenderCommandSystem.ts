@@ -8,7 +8,7 @@ import { getGL } from "../../device/DeviceManagerSystem";
 import { getDrawMode, getIndicesCount, getVerticesCount, hasIndices } from "../../component/geometry/GeometrySystem";
 
 export var draw = curry((state:Map<any, any>, MaterialData:any, ShaderData:any, GeometryData:any, ArrayBufferData:any, IndexBufferData:any, renderCommandArray:Array<RenderCommand>) => {
-    forEach(renderCommandArray, (renderCommand:RenderCommand) => {
+    for(let renderCommand of renderCommandArray){
         var shaderIndex = renderCommand.shaderIndex,
             geometryIndex = renderCommand.geometryIndex,
             gl = getGL(state);
@@ -28,7 +28,7 @@ export var draw = curry((state:Map<any, any>, MaterialData:any, ShaderData:any, 
         else{
             _drawArray(gl, geometryIndex, GeometryData);
         }
-    })
+    }
 
     return state;
 })

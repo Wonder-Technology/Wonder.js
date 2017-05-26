@@ -191,7 +191,7 @@ export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, Ma
         uniformLocationMap = ShaderData.uniformLocationMap[shaderIndex],
         uniformCacheMap = ShaderData.uniformCacheMap;
 
-    forEach(sendDataArr, (sendData: ISendUniformConfig) => {
+    for(let sendData of sendDataArr){
         var name = sendData.name,
             field = sendData.field,
             type = sendData.type as any,
@@ -212,5 +212,5 @@ export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, Ma
                 Log.error(true, Log.info.FUNC_INVALID("EVariableType:", type));
                 break;
         }
-    })
+    }
 }
