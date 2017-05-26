@@ -1,4 +1,3 @@
-import forEach from "wonder-lodash/forEach";
 import curry from "wonder-lodash/curry";
 import { RenderCommand } from "../command/RenderCommand";
 import { Map } from "immutable";

@@ -71,8 +71,11 @@
         function setParent() {
             for (var i = 1, len = 10; i < len; i++) {
                 var box = boxes[i];
+                var transform = gameObjectTool.getTransform(box);
+                var parentTransform = gameObjectTool.getTransform(boxes[i - 1]);
 
-                box.transform.parent = boxes[i - 1].transform;
+                threeDTransformTool.setParent(transform, parentTransform);
+//                box.transform.parent = boxes[i - 1].transform;
             }
 
             function getRandomParentIndex(num) {
@@ -83,7 +86,11 @@
                 for (var i = 11, len = boxes.length - 1; i < len; i++) {
                     var box = boxes[i];
 
-                    box.transform.parent = boxes[getRandomParentIndex(10)].transform;
+//                    box.transform.parent = boxes[getRandomParentIndex(10)].transform;
+                    var transform = gameObjectTool.getTransform(box);
+                    var parentTransform = gameObjectTool.getTransform(boxes[getRandomParentIndex(10)]);
+
+                    threeDTransformTool.setParent(transform, parentTransform);
                 }
 
                 _setData();
@@ -144,8 +151,8 @@
 
 
 //        setData();
-//        setParent();
-        batchSet();
+        setParent();
+//        batchSet();
 
 
         director.start();

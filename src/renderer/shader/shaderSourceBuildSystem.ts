@@ -9,9 +9,9 @@ import { ExtendUtils } from "wonder-commonlib/dist/es2015/utils/ExtendUtils";
 import { EGPUPrecision, GPUDetector } from "../../device/GPUDetector";
 import { it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { MaterialShaderLibConfig } from "../data/material_config";
-import forEach from "wonder-lodash/forEach";
 import { expect } from "wonder-expect.js";
 import { compose, filterArray, forEachArray } from "../../utils/functionalUtils";
+import { forEach } from "../../utils/arrayUtils";
 
 export var buildGLSLSource = requireCheckFunc((materialIndex:number, materialShaderLibConfig: MaterialShaderLibConfig, shaderLibData: IShaderLibContentGenerator) => {
     it("shaderLib should be defined", () => {

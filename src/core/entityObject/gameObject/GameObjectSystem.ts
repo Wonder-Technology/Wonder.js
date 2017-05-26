@@ -7,12 +7,11 @@ import { GameObjectData, GameObjectParentMap } from "./GameObjectData";
 import { it, requireCheckFunc } from "../../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { ThreeDTransform } from "../../../component/transform/ThreeDTransform";
-import filter from "wonder-lodash/filter";
-import forEach from "wonder-lodash/forEach";
 import { isNotUndefined } from "../../../utils/JudgeUtils";
 import { execHandle } from "../../../component/ComponentSystem";
 import { Geometry } from "../../../component/geometry/Geometry";
 import { Material } from "../../../component/material/Material";
+import { filter, forEach } from "../../../utils/arrayUtils";
 
 export var create = (transform:ThreeDTransform, GameObjectData:any) => {
     var gameObject:GameObject = new GameObject(),

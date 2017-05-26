@@ -67,7 +67,25 @@ export var removeDuplicateItems = (arr: Array<any>) => {
 }
 
 export var removeItem = (arr:Array<any>, item:any) => {
-    return arr.filter((ele) => {
+    return filter(arr, (ele) => {
         return ele !== item;
     });
+}
+
+export var filter = (arr:Array<any>, func:Function) => {
+    let result = [];
+
+    for(let ele of arr){
+        if(func(ele)){
+            result.push(ele);
+        }
+    }
+
+    return result;
+}
+
+export var forEach = (arr:Array<any>, func:Function) => {
+    for(let ele of arr){
+        func(ele);
+    }
 }

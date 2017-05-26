@@ -1,4 +1,3 @@
-import forEach from "wonder-lodash/forEach";
 import { isConfigDataExist } from "../utils/renderConfigUtils";
 import { ensureFunc, it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { MaterialShaderLibConfig } from "../data/material_config";
@@ -9,6 +8,7 @@ import {
 import { isValidMapValue } from "../../utils/objectUtils";
 import { AttributeLocationMap, UniformLocationMap } from "./ShaderData";
 import { expect } from "wonder-expect.js";
+import { forEach } from "../../utils/arrayUtils";
 
 export var setLocationMap = ensureFunc((returnVal, gl: WebGLRenderingContext, shaderIndex:number, program: WebGLProgram, materialShaderLibConfig: MaterialShaderLibConfig, shaderLibData: IShaderLibContentGenerator, ShaderData:any) => {
     it("attribute should contain position at least", () => {
@@ -27,23 +27,33 @@ export var setLocationMap = ensureFunc((returnVal, gl: WebGLRenderingContext, sh
         uniformName:string = null;
 
     forEach(materialShaderLibConfig, (shaderLibName: string) => {
+        var attribute:Array<ISendAttributeConfig> = null,
+            uniform:Array<ISendUniformConfig> = null;
+
         sendData = shaderLibData[shaderLibName].send;
 
         if(!isConfigDataExist(sendData)){
             return;
         }
 
-        forEach(sendData.attribute, (data:ISendAttributeConfig) => {
-            attributeName = data.name;
+        attribute = sendData.attribute;
+        uniform = sendData.uniform;
 
-            attributeLocationMap[attributeName] = gl.getAttribLocation(program, attributeName);
-        })
+        if(isConfigDataExist(attribute)){
+            forEach(attribute, (data:ISendAttributeConfig) => {
+                attributeName = data.name;
 
-        forEach(sendData.uniform, (data:ISendUniformConfig) => {
-            uniformName = data.name;
+                attributeLocationMap[attributeName] = gl.getAttribLocation(program, attributeName);
+            })
+        }
 
-            uniformLocationMap[uniformName] = gl.getUniformLocation(program, uniformName);
-        })
+        if(isConfigDataExist(uniform)){
+            forEach(uniform, (data:ISendUniformConfig) => {
+                uniformName = data.name;
+
+                uniformLocationMap[uniformName] = gl.getUniformLocation(program, uniformName);
+            })
+        }
     })
 
     ShaderData.attributeLocationMap[shaderIndex] = attributeLocationMap;

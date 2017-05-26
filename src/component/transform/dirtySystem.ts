@@ -1,11 +1,11 @@
-import forEach from "wonder-lodash/forEach";
 import { ensureFunc, it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { getStartIndexInArrayBuffer, isIndexUsed } from "./utils";
 import { isNotUndefined } from "../../utils/JudgeUtils";
-import { getChildren } from "./hierarchySystem";
+import { getChildren, isChildrenExist } from "./hierarchySystem";
 import { ThreeDTransform } from "./ThreeDTransform";
 import { moveToIndex, swap } from "./operateDataSystem";
+import { forEach } from "../../utils/arrayUtils";
 
 export var addFirstDirtyIndex = ensureFunc((firstDirtyIndex: number, ThreeDTransformData: any) => {
     it("firstDirtyIndex should <= count", () => {
@@ -109,15 +109,18 @@ export var isNotDirty = (indexInArrayBuffer: number, firstDirtyIndex: number) =>
 }
 
 export var addItAndItsChildrenToDirtyList = (rootIndexInArrayBuffer: number, uid:number, ThreeDTransformData: any) => {
-    var indexInArraybuffer: number = rootIndexInArrayBuffer;
+    var indexInArraybuffer: number = rootIndexInArrayBuffer,
+        children = getChildren(uid, ThreeDTransformData);
 
     if (isNotDirty(indexInArraybuffer, ThreeDTransformData.firstDirtyIndex)) {
         addToDirtyList(indexInArraybuffer, ThreeDTransformData);
     }
 
-    forEach(getChildren(uid, ThreeDTransformData), (child: ThreeDTransform) => {
-        addItAndItsChildrenToDirtyList(child.index, child.uid, ThreeDTransformData);
-    });
+    if(isChildrenExist(children)){
+        forEach(children, (child: ThreeDTransform) => {
+            addItAndItsChildrenToDirtyList(child.index, child.uid, ThreeDTransformData);
+        });
+    }
 
     return ThreeDTransformData;
 }

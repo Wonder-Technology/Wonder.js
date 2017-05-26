@@ -1,7 +1,6 @@
 import { ensureFunc, it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { IMaterialConfig } from "../data/material_config";
-import forEach from "wonder-lodash/forEach";
 import {
     ISendAttributeConfig, ISendUniformConfig
 } from "../data/shaderLib_generator";
@@ -14,6 +13,7 @@ import { Log } from "../../utils/Log";
 import { getOrCreateBuffer as getOrCreateArrayBuffer } from "../buffer/ArrayBufferSystem";
 import { isValidMapValue } from "../../utils/objectUtils";
 import { getUniformData, sendBuffer, sendFloat1, sendMatrix4, sendVector3 } from "./glslSenderSystem";
+import { forEach } from "../../utils/arrayUtils";
 
 export var use = requireCheckFunc((gl: WebGLRenderingContext, shaderIndex: number, ShaderData: any) => {
     it("program should exist", () => {

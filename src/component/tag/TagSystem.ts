@@ -7,9 +7,9 @@ import {
     addDisposeHandle as addDisposeHandleToMap,
     checkComponentShouldAlive, generateComponentIndex, getComponentGameObject
 } from "../ComponentSystem";
-import forEach from "wonder-lodash/forEach";
 import curry from "wonder-lodash/curry";
 import { deleteVal, isValidMapValue } from "../../utils/objectUtils";
+import { forEach } from "../../utils/arrayUtils";
 
 export var addAddComponentHandle = (_class: any, TagData:any) => {
     addAddComponentHandleToMap(_class, addComponent(TagData));

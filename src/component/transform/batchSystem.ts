@@ -1,5 +1,4 @@
 import curry from "wonder-lodash/curry";
-import forEach from "wonder-lodash/forEach";
 import { getChildren, getParent } from "./hierarchySystem";
 import { BatchTransformData, ThreeDTransform } from "./ThreeDTransform";
 import {
@@ -13,6 +12,7 @@ import { isIndexUsed } from "./utils";
 import { requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { compose } from "../../utils/functionalUtils";
 import { checkTransformShouldAlive } from "./contractUtils";
+import { forEach } from "../../utils/arrayUtils";
 
 export var setBatchDatas = requireCheckFunc((batchData:Array<BatchTransformData>, GlobalTempData: any, ThreeTransformData: any) => {
     for(let data of batchData) {

@@ -1,7 +1,6 @@
 import curry from "wonder-lodash/curry";
 import flowRight from "wonder-lodash/flowRight";
-import forEach from "wonder-lodash/forEach";
-import filter from "wonder-lodash/filter";
+import { filter, forEach } from "./arrayUtils";
 
 export var compose = flowRight;
 

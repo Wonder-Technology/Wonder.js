@@ -1,10 +1,10 @@
 import { it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
-import filter from "wonder-lodash/filter";
 import { expect } from "wonder-expect.js";
-import { deleteVal, isValidMapValue } from "../../utils/objectUtils";
+import { deleteVal, isNotValidMapValue, isValidMapValue } from "../../utils/objectUtils";
 import { isNotUndefined } from "../../utils/JudgeUtils";
 import { ThreeDTransform } from "./ThreeDTransform";
 import { addItAndItsChildrenToDirtyList } from "./dirtySystem";
+import { filter } from "../../utils/arrayUtils";
 
 export var getParent = requireCheckFunc ((uid: string, ThreeDTransformData:any) => {
     it("uid should exist", () => {
@@ -50,8 +50,6 @@ export var setParent = requireCheckFunc((transform: ThreeDTransform, parent: Thr
     _addToParent(uid, transform, parent, ThreeDTransformData);
 
     addItAndItsChildrenToDirtyList(indexInArrayBuffer, uid, ThreeDTransformData);
-
-
 })
 
 var _isTransformEqual = (tra1:ThreeDTransform, tra2:ThreeDTransform) => tra1.uid === tra2.uid;
@@ -61,6 +59,8 @@ export var getChildren = (uid:number, ThreeDTransformData:any) => {
 }
 
 export var isParentExist = (parent:ThreeDTransform) => isNotUndefined(parent);
+
+export var isChildrenExist = (children:Array<ThreeDTransform>) => isNotUndefined(children);
 
 export var isNotChangeParent = (currentParentIndexInArrayBuffer: number, newParentIndexInArrayBuffer: number) => {
     return currentParentIndexInArrayBuffer === newParentIndexInArrayBuffer;
@@ -82,7 +82,7 @@ var _removeHierarchyFromParent = (parent: ThreeDTransform, targetUID: number, Th
 
     deleteVal(targetUID, ThreeDTransformData.parentMap);
 
-    if (!isValidMapValue(children)) {
+    if (isNotValidMapValue(children)) {
         return;
     }
 
