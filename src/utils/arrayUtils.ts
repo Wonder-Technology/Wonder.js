@@ -72,7 +72,7 @@ export var removeItem = (arr:Array<any>, item:any) => {
     });
 }
 
-export var filter = (arr:Array<any>, func:Function) => {
+export var filter = (arr:Array<any>, func:(item:any) => boolean) => {
     let result = [];
 
     for(let ele of arr){
@@ -84,8 +84,8 @@ export var filter = (arr:Array<any>, func:Function) => {
     return result;
 }
 
-export var forEach = (arr:Array<any>, func:Function) => {
-    for(let ele of arr){
-        func(ele);
+export var forEach = (arr:Array<any>, func:(item:any, index:number) => void) => {
+    for(let i = 0, len = arr.length; i < len; i++){
+        func(arr[i], i);
     }
 }

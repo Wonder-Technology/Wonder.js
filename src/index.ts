@@ -8,7 +8,7 @@ export {Component} from "./component/Component";
 export {ComponentData} from "./component/ComponentData";
 export {getTypeIDFromClass,getTypeIDFromComponent} from "./component/ComponentTypeIdManager";
 export {BoxGeometry,createBoxGeometry,setBoxGeometryConfigData} from "./component/geometry/BoxGeometry";
-export {Geometry,getDrawMode,setDrawMode,getVertices,getIndices,getGeometryConfigData,initGeometry,getGeometryGameObject} from "./component/geometry/Geometry";
+export {Geometry,getDrawMode,getVertices,getIndices,getGeometryConfigData,initGeometry,getGeometryGameObject} from "./component/geometry/Geometry";
 export {GeometryData} from "./component/geometry/GeometryData";
 export {BasicMaterial,createBasicMaterial,initBasicMaterial} from "./component/material/BasicMaterial";
 export {Material,getMaterialColor,setMaterialColor,getMaterialOpacity,setMaterialOpacity,getMaterialAlphaTest,setMaterialAlphaTest,getMaterialGameObject,getMaterialShader} from "./component/material/Material";

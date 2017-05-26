@@ -76,23 +76,23 @@ describe("Geometry", function () {
         beforeEach(function () {
         });
 
-        it("default is TRIANGLES", function () {
+        it("return TRIANGLES", function () {
             expect(geometryTool.getDrawMode(geo)).toEqual(EDrawMode.TRIANGLES);
         });
     });
 
-    describe("setDrawMode", function () {
-        beforeEach(function () {
-        });
-
-        it("default is TRIANGLES", function () {
-            var drawMode = EDrawMode.LINE_LOOP;
-
-            geometryTool.setDrawMode(geo, drawMode);
-
-            expect(geometryTool.getDrawMode(geo)).toEqual(drawMode);
-        });
-    });
+    // describe("setDrawMode", function () {
+    //     beforeEach(function () {
+    //     });
+    //
+    //     it("default is TRIANGLES", function () {
+    //         var drawMode = EDrawMode.LINE_LOOP;
+    //
+    //         geometryTool.setDrawMode(geo, drawMode);
+    //
+    //         expect(geometryTool.getDrawMode(geo)).toEqual(drawMode);
+    //     });
+    // });
 
     describe("disposeComponent", function () {
         beforeEach(function () {
@@ -110,9 +110,9 @@ describe("Geometry", function () {
         it("remove config data", function () {
             expect(geometryTool.getConfigData(geo)).toBeUndefined();
         });
-        it("remove draw mode", function () {
-            expect(geometryTool.getDrawMode(geo)).toBeUndefined();
-        });
+        // it("remove draw mode", function () {
+        //     expect(geometryTool.getDrawMode(geo)).toBeUndefined();
+        // });
         it("remove from gameObject", function () {
             expect(gameObjectTool.hasComponent(gameObject, wd.Geometry)).toBeFalsy();
             expect(geometryTool.getGameObject(geo)).toBeUndefined();

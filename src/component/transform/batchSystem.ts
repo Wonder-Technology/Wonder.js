@@ -1,5 +1,5 @@
 import curry from "wonder-lodash/curry";
-import { getChildren, getParent } from "./hierarchySystem";
+import { getChildren, getParent, isChildrenExist } from "./hierarchySystem";
 import { BatchTransformData, ThreeDTransform } from "./ThreeDTransform";
 import {
     getVector3DataIndexInArrayBuffer, moveMapDataToIndex, moveTypeArrDataToIndex, setLocalPositionData, setPositionData,
@@ -57,6 +57,8 @@ var _getAllTransfomrsNotDirtyIndexArrAndMarkTransform = curry((batchData:Array<B
     var notDirtyIndexArr = [],
         firstDirtyIndex = ThreeDTransformData.firstDirtyIndex;
     var _getNotDirtyIndex = (indexInArrayBuffer, uid, notDirtyIndexArr, isTranslate:boolean, ThreeDTransformData) => {
+        var children = getChildren(uid, ThreeDTransformData);
+
         if(isTranslate){
             setIsTranslate(uid, true, ThreeDTransformData);
         }
@@ -67,9 +69,11 @@ var _getAllTransfomrsNotDirtyIndexArrAndMarkTransform = curry((batchData:Array<B
             firstDirtyIndex = minusFirstDirtyIndex(firstDirtyIndex);
         }
 
-        forEach(getChildren(uid, ThreeDTransformData), (child: ThreeDTransform) => {
-            _getNotDirtyIndex(child.index, child.uid, notDirtyIndexArr, isTranslate, ThreeDTransformData)
-        })
+        if(isChildrenExist(children)){
+            forEach(children, (child: ThreeDTransform) => {
+                _getNotDirtyIndex(child.index, child.uid, notDirtyIndexArr, isTranslate, ThreeDTransformData)
+            })
+        }
     }
 
     for(let data of batchData){

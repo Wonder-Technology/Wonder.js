@@ -64,9 +64,11 @@ var _diposeAllDatas = (gameObject:GameObject, GameObjectData:any) => {
     _disposeAllComponents(gameObject, GameObjectData);
     _disposeMapDatas(uid, GameObjectData);
 
-    forEach(children, (child:GameObject) => {
-        _diposeAllDatas(child, GameObjectData);
-    })
+    if(_isChildrenExist(children)){
+        forEach(children, (child:GameObject) => {
+            _diposeAllDatas(child, GameObjectData);
+        })
+    }
 }
 
 var _disposeMapDatas = (uid:number, GameObjectData:any) => {

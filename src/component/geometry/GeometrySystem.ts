@@ -33,8 +33,6 @@ export var create = requireCheckFunc((geometry:Geometry, GeometryData: any) => {
 
     GeometryData.count += 1;
 
-    setDrawMode(geometry.index, EDrawMode.TRIANGLES, GeometryData);
-
     return geometry;
 })
 
@@ -69,12 +67,7 @@ export var initGeometry = (index:number, isIndicesBufferNeed32Bits:boolean, comp
 }
 
 export var getDrawMode = (index:number, GeometryData:any) => {
-    // return GeometryData.drawModeMap[index];
     return EDrawMode.TRIANGLES;
-}
-
-export var setDrawMode = (index:number, drawMode:EDrawMode, GeometryData:any) => {
-    GeometryData.drawModeMap[index] = drawMode;
 }
 
 export var getVerticesCount = (index:number, GeometryData:any) => {
@@ -128,7 +121,6 @@ export var disposeComponent = ensureFunc(curry((returnVal, GeometryData:any, geo
 
     deleteVal(index, GeometryData.configDataMap);
     deleteVal(index, GeometryData.computeDataFuncMap);
-    deleteVal(index, GeometryData.drawModeMap);
     deleteVal(index, GeometryData.gameObjectMap);
 }))
 
@@ -164,8 +156,6 @@ export var initData = (DataBufferConfig: any, GeometryData: any) => {
     GeometryData.indicesMap = [];
 
     GeometryData.computeDataFuncMap = {};
-
-    GeometryData.drawModeMap = {};
 
     GeometryData.gameObjectMap = {};
 

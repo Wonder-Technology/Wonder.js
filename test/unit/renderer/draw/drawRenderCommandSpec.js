@@ -477,7 +477,7 @@ describe("draw render command", function () {
             var indexBuffer = {a:1};
             IndexBufferData.buffers = [indexBuffer];
 
-            geometryTool.setDrawMode({index:0}, "TRIANGLES");
+            // geometryTool.setDrawMode({index:0}, "TRIANGLES");
 
             var indices = [1,2,3];
             geometryTool.setIndices(0, indices);

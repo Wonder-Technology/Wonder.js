@@ -1,7 +1,7 @@
 import { registerClass } from "../../definition/typescript/decorator/registerClass";
 import { GeometryData } from "./GeometryData";
 import {
-    getDrawMode as getGeometryDrawMode, setDrawMode as setGeometryDrawMode, getVertices as getGeometryVertices,
+    getDrawMode as getGeometryDrawMode, getVertices as getGeometryVertices,
     getIndices as getGeometryIndices, getConfigData, initGeometry as initGeometrySystem,
     isIndicesBufferNeed32BitsByData, getGameObject,
 } from "./GeometrySystem";
@@ -15,10 +15,6 @@ export abstract class Geometry{
 
 export var getDrawMode = (geometry:Geometry) => {
     return getGeometryDrawMode(geometry.index, GeometryData);
-}
-
-export var setDrawMode = (geometry:Geometry, drawMode:EDrawMode) => {
-    setGeometryDrawMode(geometry.index, drawMode, GeometryData);
 }
 
 export var getVertices = (geometry:Geometry) => {

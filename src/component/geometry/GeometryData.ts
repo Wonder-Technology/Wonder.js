@@ -17,8 +17,6 @@ export class GeometryData{
     public static computeDataFuncMap:GeometryComputeDataFuncMap = null;
 
     public static gameObjectMap:ComponentGameObjectMap = null;
-
-    public static drawModeMap:DrawModeMap = null;
 }
 
 export type GeometryVerticesMap = Array<Float32Array>
@@ -32,8 +30,4 @@ export type GeometryComputeDataFuncMap = {
 export type GeometryComputeData = {
     vertices: Array<number>;
     indices: Array<number>;
-}
-
-export type DrawModeMap = {
-    [index:number]: EDrawMode
 }

@@ -2,7 +2,7 @@ import { BoxGeometry, BoxGeometryConfigData } from "./BoxGeometry";
 import { ensureFunc, it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { Vector3 } from "../../math/Vector3";
-import { create as createGeometry, setDrawMode } from "./GeometrySystem";
+import { create as createGeometry } from "./GeometrySystem";
 import { ExtendUtils } from "wonder-commonlib/dist/es2015/utils/ExtendUtils";
 
 export var create = (GeometryData: any) => {
