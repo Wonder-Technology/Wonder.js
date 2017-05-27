@@ -6,6 +6,9 @@ import { ThreeDTransform } from "./ThreeDTransform";
 import { addItAndItsChildrenToDirtyList } from "./dirtySystem";
 import { deleteMapVal } from "../../utils/mapUtils";
 import { removeChildEntity } from "../../utils/entityUtils";
+import { chrome, firefox } from "bowser";
+import { error, Log } from "../../utils/Log";
+import { filter } from "../../utils/arrayUtils";
 
 export var getParent = requireCheckFunc ((uid: string, ThreeDTransformData:any) => {
     it("uid should exist", () => {
@@ -94,7 +97,25 @@ var _removeHierarchyFromParent = (parent: ThreeDTransform, targetUID: number, Th
         }
     }
 
-    removeChildEntity(children, targetUID);
+    _removeChild(parentUID, children, targetUID, ThreeDTransformData);
+}
+
+var _removeChild = null;
+
+if(chrome){
+    _removeChild = (parentUID:number, targetUID:number, children:Array<ThreeDTransform>, ThreeDTransformData:any) => {
+        _setChildren(parentUID, filter(children, (transform:ThreeDTransform) => {
+            return transform.uid !== targetUID;
+        }), ThreeDTransformData);
+    }
+}
+else if(firefox){
+    _removeChild = (parentUID:number, targetUID:number, children:Array<ThreeDTransform>, ThreeDTransformData:any) => {
+        removeChildEntity(children, targetUID);
+    }
+}
+else{
+    error(true, Log.info.FUNC_NOT_SUPPORT("browser"));
 }
 
 var _addChild = (uid:number, child:ThreeDTransform, ThreeDTransformData:any) => {

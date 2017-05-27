@@ -15,6 +15,8 @@ import { filter, forEach } from "../../../utils/arrayUtils";
 import { Map as MapImmutable } from "immutable";
 import { deleteMapVal } from "../../../utils/mapUtils";
 import { removeChildEntity } from "../../../utils/entityUtils";
+import { chrome, firefox } from "bowser";
+import { error, Log } from "../../../utils/Log";
 
 export var create = (transform:ThreeDTransform, GameObjectData:any) => {
     var gameObject:GameObject = new GameObject(),
@@ -189,8 +191,22 @@ export var dispose = requireCheckFunc((entity:IUIDEntity, GameObjectData:any) =>
 //     return newMap;
 // }
 
-var _removeFromChildrenMap = (parentUID:number, childUID:number, GameObjectData:any) => {
-    removeChildEntity(_getChildren(parentUID, GameObjectData), childUID);
+var _removeFromChildrenMap = null;
+
+if(chrome){
+    _removeFromChildrenMap = (parentUID:number, childUID:number, GameObjectData:any) => {
+        _setChildren(parentUID, filter(_getChildren(parentUID, GameObjectData), (gameObject:GameObject) => {
+            return gameObject.uid !== childUID;
+        }), GameObjectData);
+    }
+}
+else if(firefox){
+    _removeFromChildrenMap = (parentUID:number, childUID:number, GameObjectData:any) => {
+        removeChildEntity(_getChildren(parentUID, GameObjectData), childUID);
+    }
+}
+else{
+    error(true, Log.info.FUNC_NOT_SUPPORT("browser"));
 }
 
 var _diposeAllDatas = (gameObject:GameObject, GameObjectData:any) => {
