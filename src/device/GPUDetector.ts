@@ -4,6 +4,7 @@ import { singleton } from "../definition/typescript/decorator/singleton";
 import { Log } from "../utils/Log";
 import { getGL } from "./DeviceManagerSystem";
 import { Map } from "immutable";
+import { DeviceManagerData } from "./DeviceManagerData";
 
 @singleton()
 @registerClass("GPUDetector")
@@ -49,7 +50,7 @@ export class GPUDetector {
     }
 
     private _detectCapabilty(state: Map<any, any>) {
-        var gl = getGL(state);
+        var gl = getGL(DeviceManagerData, state);
 
         this.maxTextureUnit = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
         this.maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);
@@ -66,7 +67,7 @@ export class GPUDetector {
 
     private _getExtension(name: string, state: Map<any, any>) {
         var extension,
-            gl = getGL(state);
+            gl = getGL(DeviceManagerData, state);
 
         switch (name) {
             case "EXT_texture_filter_anisotropic":
@@ -102,7 +103,7 @@ export class GPUDetector {
     }
 
     private _getMaxBoneCount(state: Map<any, any>) {
-        var gl = getGL(state),
+        var gl = getGL(DeviceManagerData, state),
             numUniforms: number = null,
             maxBoneCount: number = null;
 
@@ -126,13 +127,13 @@ export class GPUDetector {
 
     private _getMaxAnisotropy(state: Map<any, any>) {
         var extension = this.extensionTextureFilterAnisotropic,
-            gl = getGL(state);
+            gl = getGL(DeviceManagerData, state);
 
         return extension !== null ? gl.getParameter(extension.MAX_TEXTURE_MAX_ANISOTROPY_EXT) : 0;
     }
 
     private _detectPrecision(state: Map<any, any>) {
-        var gl = getGL(state);
+        var gl = getGL(DeviceManagerData, state);
 
         if (!gl.getShaderPrecisionFormat) {
             this.precision = EGPUPrecision.HIGHP;

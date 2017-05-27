@@ -29,7 +29,7 @@ export var create = (ShaderData: any) => {
     return shader;
 }
 
-export var init = (state: Map<any, any>, materialIndex:number, shaderIndex: number, materialClassName: string, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, ShaderData: any) => {
+export var init = (state: Map<any, any>, materialIndex:number, shaderIndex: number, materialClassName: string, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DeviceManagerData:any, ShaderData: any) => {
     var materialShaderLibConfig = getMaterialShaderLibConfig(materialClassName, material_config),
         shaderLibData = shaderLib_generator.shaderLibs,
         {
@@ -37,7 +37,7 @@ export var init = (state: Map<any, any>, materialIndex:number, shaderIndex: numb
             fsSource
         } = buildGLSLSource(materialIndex, materialShaderLibConfig, shaderLibData),
         program = getProgram(shaderIndex, ShaderData),
-        gl = getGL(state);
+        gl = getGL(DeviceManagerData, state);
 
     if (!isProgramExist(program)) {
         program = gl.createProgram();

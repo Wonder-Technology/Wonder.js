@@ -6,11 +6,11 @@ import { getType, getTypeSize } from "../buffer/IndexBufferSystem";
 import { getGL } from "../../device/DeviceManagerSystem";
 import { getDrawMode, getIndicesCount, getVerticesCount, hasIndices } from "../../component/geometry/GeometrySystem";
 
-export var draw = curry((state:Map<any, any>, MaterialData:any, ShaderData:any, GeometryData:any, ArrayBufferData:any, IndexBufferData:any, renderCommandArray:Array<RenderCommand>) => {
+export var draw = curry((state:Map<any, any>, DeviceManagerData:any, MaterialData:any, ShaderData:any, GeometryData:any, ArrayBufferData:any, IndexBufferData:any, renderCommandArray:Array<RenderCommand>) => {
     for(let renderCommand of renderCommandArray){
         var shaderIndex = renderCommand.shaderIndex,
             geometryIndex = renderCommand.geometryIndex,
-            gl = getGL(state);
+            gl = getGL(DeviceManagerData, state);
 
         use(gl, shaderIndex, ShaderData);
 

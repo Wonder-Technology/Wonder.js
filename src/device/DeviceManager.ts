@@ -10,6 +10,7 @@ import { expect } from "wonder-expect.js";
 import { getCanvas } from "../structure/ViewSystem";
 import { fromJS } from "immutable";
 import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
+import { DeviceManagerData } from "./DeviceManagerData";
 
 //todo change to function
 
@@ -22,7 +23,7 @@ export class DeviceManager {
     public static getInstance(): any { }
 
     get gl() {
-        return getGL(getState(DirectorData));
+        return getGL(DeviceManagerData, getState(DirectorData));
     }
     // set gl(gl: WebGLRenderingContext) {
     //     setGL(gl, getState(DirectorData));
@@ -46,10 +47,10 @@ export class DeviceManager {
         });
     })
     public setScreen() {
-        return setScreen(getState(DirectorData));
+        return setScreen(DeviceManagerData, getState(DirectorData));
     }
 }
 
 export var setDeviceManagerGL = (gl:WebGLRenderingContext) => {
-    return setGL(gl, getState(DirectorData));
+    return setGL(gl, DeviceManagerData, getState(DirectorData));
 }

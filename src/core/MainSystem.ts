@@ -86,12 +86,12 @@ export var setConfig = (closeContractTest: boolean, MainData:any, {
     });
 }
 
-export var init = requireCheckFunc((gameState: Map<string, any>, configState: Map<any, any>) => {
+export var init = requireCheckFunc((gameState: Map<string, any>, configState: Map<any, any>, DeviceManagerData:any) => {
     it("should set config before", () => {
         expect(configState.get("useDevicePixelRatio")).exist;
     })
-}, (gameState: Map<string, any>, configState: Map<any, any>) => {
-    return compose(map(detect), chain(setPixelRatioAndCanvas(configState.get("useDevicePixelRatio"))), chain(setScreen), createGL, )(configState.get("canvasId"), configState.get("contextConfig"), gameState);
+}, (gameState: Map<string, any>, configState: Map<any, any>, DeviceManagerData:any) => {
+    return compose(map(detect), chain(setPixelRatioAndCanvas(configState.get("useDevicePixelRatio"))), chain(setScreen(DeviceManagerData)), createGL)(configState.get("canvasId"), configState.get("contextConfig"), DeviceManagerData, gameState);
 });
 
 

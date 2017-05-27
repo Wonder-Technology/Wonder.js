@@ -23,20 +23,20 @@ import { CameraControllerData } from "../../component/camera/CameraControllerDat
 import { CameraData } from "../../component/camera/CameraData";
 
 export var init = (state: Map<any, any>) => {
-    initMaterial(state, material_config, shaderLib_generator as any, ShaderData, MaterialData);
+    initMaterial(state, material_config, shaderLib_generator as any, DeviceManagerData, ShaderData, MaterialData);
 
     return state;
 }
 
 export var clear = (state: Map<any, any>) => {
-    clearGL(getGL(state), render_config.render_setting.clearColor, DeviceManagerData);
+    clearGL(getGL(DeviceManagerData, state), render_config.render_setting.clearColor, DeviceManagerData);
 
     return state;
 }
 
 export var render = (state: Map<any, any>) => {
     return compose(
-        draw(state, MaterialData, ShaderData, GeometryData, ArrayBufferData, IndexBufferData),
+        draw(state, DeviceManagerData, MaterialData, ShaderData, GeometryData, ArrayBufferData, IndexBufferData),
         sortRenderCommands(state),
         createRenderCommands(state, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData),
         getRenderList(state)

@@ -18,12 +18,16 @@ import { trace } from "../utils/debugUtils";
 import { isValueExist } from "../utils/stateUtils";
 import { Color } from "../structure/Color";
 
-export var getGL = (state: Map<any, any>): WebGLRenderingContext => {
-    return state.getIn(["DeviceManager", "gl"]);
+export var getGL = (DeviceManagerData:any, state: Map<any, any>): WebGLRenderingContext => {
+    // return state.getIn(["DeviceManager", "gl"]);
+    return DeviceManagerData.gl;
 }
 
-export var setGL = curry((gl: WebGLRenderingContext, state: Map<any, any>) => {
-    return state.setIn(["DeviceManager", "gl"], gl);
+export var setGL = curry((gl: WebGLRenderingContext, DeviceManagerData:any, state: Map<any, any>) => {
+    // return state.setIn(["DeviceManager", "gl"], gl);
+    DeviceManagerData.gl = gl;
+
+    return state;
 })
 
 export var setContextConfig = curry((contextConfig: Map<string, any>, state: Map<any, any>) => {
@@ -78,7 +82,7 @@ export var setPixelRatioAndCanvas = curry((useDevicePixelRatio: boolean, state: 
     });
 })
 
-export var createGL = (canvasId: string, contextConfig: Map<string, any>, state: Map<any, any>) => {
+export var createGL = curry((canvasId: string, contextConfig: Map<string, any>, DeviceManagerData:any, state: Map<any, any>) => {
     return IO.of(() => {
         var dom = _getCanvas(DomQuery, canvasId),
             gl = getContext(contextConfig, dom);
@@ -86,9 +90,9 @@ export var createGL = (canvasId: string, contextConfig: Map<string, any>, state:
         if (!gl) {
             DomQuery.create("<p class='not-support-webgl'></p>").prependTo("body").text("Your device doesn't support WebGL");
         }
-        return compose(setCanvas(dom), setContextConfig(contextConfig), setGL(gl))(state);
+        return compose(setCanvas(dom), setContextConfig(contextConfig), setGL(gl, DeviceManagerData))(state);
     });
-}
+})
 
 /**
  * @function
@@ -99,9 +103,9 @@ export var createGL = (canvasId: string, contextConfig: Map<string, any>, state:
  * @param {Number} w The width of the viewport in pixels.
  * @param {Number} h The height of the viewport in pixels.
  */
-export var setViewportOfGL = curry((x: number, y: number, width: number, height: number, state: Map<any, any>) => {
+export var setViewportOfGL = curry((x: number, y: number, width: number, height: number, DeviceManagerData:any, state: Map<any, any>) => {
     return IO.of(() => {
-        var gl = getGL(state),
+        var gl = getGL(DeviceManagerData, state),
             viewport = getViewport(state);
 
         if (isValueExist(viewport) && viewport.x === x && viewport.y === y && viewport.width === width && viewport.height === height) {
@@ -161,7 +165,7 @@ var _getScreenData = (screenSize: EScreenSize | RectRegion) => {
     });
 }
 
-var _setScreenData = curry((state: Map<any, any>, {
+var _setScreenData = curry((DeviceManagerData:any, state: Map<any, any>, {
     x,
     y,
     width,
@@ -172,11 +176,11 @@ var _setScreenData = curry((state: Map<any, any>, {
     return IO.of(() => {
         compose(chain(setStyleWidth(styleWidth)), chain(setStyleHeight(styleHeight)), chain(setHeight(height)), chain(setWidth(width)), chain(setY(y)), setX(x))(getCanvas(state)).run();
 
-        return setViewportOfGL(0, 0, width, height, state).run();
+        return setViewportOfGL(0, 0, width, height, DeviceManagerData, state).run();
     });
 })
 
-export var setScreen = (state: Map<any, any>) => {
+export var setScreen = curry((DeviceManagerData:any, state: Map<any, any>) => {
     return IO.of(requireCheckFunc((state: Map<any, any>) => {
         it("should exist MainData.screenSize", () => {
             expect(getScreenSize(DirectorData.state)).exist;
@@ -186,9 +190,9 @@ export var setScreen = (state: Map<any, any>) => {
 
         initCanvas(dom).run();
 
-        return compose(chain(_setScreenData(state)), chain(_getScreenData), _setBodyByScreenSize)(getScreenSize(state)).run()
+        return compose(chain(_setScreenData(DeviceManagerData, state)), chain(_getScreenData), _setBodyByScreenSize)(getScreenSize(state)).run()
     }));
-};
+});
 
 
 export var clear = (gl:WebGLRenderingContext, color:Color, DeviceManagerData:any) => {

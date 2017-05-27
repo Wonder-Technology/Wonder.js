@@ -72,6 +72,7 @@ import { addAddComponentHandle, addDisposeHandle, addInitHandle } from "../compo
 import { material_config } from "../renderer/data/material_config";
 import { shaderLib_generator } from "../renderer/data/shaderLib_generator";
 import { initData as initGameObjectData } from "./entityObject/gameObject/GameObjectSystem";
+import { DeviceManagerData } from "../device/DeviceManagerData";
 
 @singleton(true)
 @registerClass("Director")
@@ -248,7 +249,7 @@ addGeometryInitHandle(Geometry, GeometryData);
 initMaterialData(MaterialData);
 addMaterialAddComponentHandle(Material, MaterialData);
 addMaterialDisposeHandle(Material, MaterialData);
-addMaterialInitHandle(Material, material_config, shaderLib_generator as any, ShaderData, MaterialData);
+addMaterialInitHandle(Material, material_config, shaderLib_generator as any, DeviceManagerData, ShaderData, MaterialData);
 
 initMeshRendererData(MeshRendererData);
 addMeshRendererAddComponentHandle(MeshRenderer, MeshRendererData);

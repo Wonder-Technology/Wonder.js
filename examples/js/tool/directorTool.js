@@ -16,7 +16,8 @@ var directorTool = (function(){
                 director._init(state);
             }
 
-            return state.getIn(["DeviceManager", "gl"]);
+            // return state.getIn(["DeviceManager", "gl"]);
+            return wd.DeviceManager.getInstance().gl;
         },
         loopBody: function (state, time) {
             var director = this.getDirector();

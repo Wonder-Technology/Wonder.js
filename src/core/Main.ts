@@ -6,6 +6,7 @@ import { getState, setState } from "./DirectorSystem";
 import { it, requireCheck } from "../definition/typescript/decorator/contract";
 import { MainData } from "./MainData";
 import { expect } from "wonder-expect.js";
+import { DeviceManagerData } from "../device/DeviceManagerData";
 
 export class Main {
     static get isTest() {
@@ -33,7 +34,7 @@ export class Main {
         });
     })
     public static init() {
-        setState(init(getState(DirectorData), this._configState.get("config")).run(), DirectorData).run();
+        setState(init(getState(DirectorData), this._configState.get("config"), DeviceManagerData).run(), DirectorData).run();
 
         return this;
     }

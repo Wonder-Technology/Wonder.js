@@ -26,8 +26,8 @@ export var addDisposeHandle = (_class: any, MaterialData:any) => {
     addDisposeHandleToMap(_class, disposeComponent(MaterialData));
 }
 
-export var addInitHandle = (_class: any, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, ShaderData:any, MaterialData:any) => {
-    addInitHandleToMap(_class, initMaterial(material_config, shaderLib_generator, ShaderData, MaterialData));
+export var addInitHandle = (_class: any, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DeviceManagerData:any, ShaderData:any, MaterialData:any) => {
+    addInitHandleToMap(_class, initMaterial(material_config, shaderLib_generator, DeviceManagerData, ShaderData, MaterialData));
 }
 
 export var create = requireCheckFunc((material:Material, className:string, MaterialData: any) => {
@@ -52,15 +52,15 @@ export var create = requireCheckFunc((material:Material, className:string, Mater
     return material;
 })
 
-export var init = requireCheckFunc((state: MapImmutable<any, any>, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, ShaderData:any, MaterialData:any) => {
+export var init = requireCheckFunc((state: MapImmutable<any, any>, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DeviceManagerData:any, ShaderData:any, MaterialData:any) => {
     checkIndexShouldEqualCount(MaterialData);
-}, (state: MapImmutable<any, any>, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, ShaderData:any, MaterialData:any) => {
+}, (state: MapImmutable<any, any>, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DeviceManagerData:any, ShaderData:any, MaterialData:any) => {
     for(let i = 0, count = MaterialData.count; i < count; i++){
-        initMaterial(material_config, shaderLib_generator, ShaderData, MaterialData, i, state);
+        initMaterial(material_config, shaderLib_generator, DeviceManagerData, ShaderData, MaterialData, i, state);
     }
 })
 
-export var initMaterial = curry((material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, ShaderData:any, MaterialData:any, index:number, state: MapImmutable<any, any>) => {
+export var initMaterial = curry((material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DeviceManagerData:any, ShaderData:any, MaterialData:any, index:number, state: MapImmutable<any, any>) => {
     var shader = getShader(index, MaterialData),
         isInitMap = ShaderData.isInitMap,
         shaderIndex = shader.index;
@@ -71,7 +71,7 @@ export var initMaterial = curry((material_config:IMaterialConfig, shaderLib_gene
 
     isInitMap[shaderIndex] = true;
 
-    initShader(state, index, shaderIndex, MaterialData.materialClassNameMap.get(index), material_config, shaderLib_generator, ShaderData);
+    initShader(state, index, shaderIndex, MaterialData.materialClassNameMap.get(index), material_config, shaderLib_generator, DeviceManagerData, ShaderData);
 })
 
 export var getShader = (materialIndex:number, MaterialData:any) => {
