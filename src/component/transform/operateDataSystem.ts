@@ -97,7 +97,7 @@ var _changeMapData = (sourceIndex: number, targetIndex: number, changeFunc:(tran
 //     dataArr[index] = void 0;
 // }
 
-var _moveToTypeArr = (dataArr: Uint16Array, sourceIndex: number, targetIndex: number, length: number
+var _moveToTypeArr = (dataArr: Float32Array, sourceIndex: number, targetIndex: number, length: number
 ) => {
     for (let i = 0; i < length; i++) {
         let newIndex1 = sourceIndex + i,

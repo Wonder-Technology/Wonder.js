@@ -1,7 +1,7 @@
 import { GameObject, IUIDEntity } from "./GameObject";
 import { Component } from "../../../component/Component";
 import { getTypeIDFromClass, getTypeIDFromComponent } from "../../../component/ComponentTypeIDManager";
-import { deleteVal, isValidMapValue } from "../../../utils/objectUtils";
+import { deleteVal, isNotValidMapValue, isValidMapValue } from "../../../utils/objectUtils";
 import { create as createThreeDTransform, setParent } from "../../../component/transform/ThreeDTransformSystem";
 import { GameObjectComponentData } from "./GameObjectData";
 import { it, requireCheckFunc } from "../../../definition/typescript/decorator/contract";
@@ -12,7 +12,8 @@ import { execHandle, execInitHandle } from "../../../component/ComponentSystem";
 import { Geometry } from "../../../component/geometry/Geometry";
 import { Material } from "../../../component/material/Material";
 import { filter, forEach } from "../../../utils/arrayUtils";
-import { Map } from "immutable";
+import { Map as MapImmutable } from "immutable";
+import { deleteMapVal } from "../../../utils/mapUtils";
 
 export var create = (transform:ThreeDTransform, GameObjectData:any) => {
     var gameObject:GameObject = new GameObject(),
@@ -20,7 +21,9 @@ export var create = (transform:ThreeDTransform, GameObjectData:any) => {
 
     gameObject.uid = uid;
 
-    GameObjectData.isAliveMap[uid] = true;
+    // GameObjectData.isAliveMap[uid] = true;
+    GameObjectData.isAliveMap.set(uid, true);
+    // GameObjectData.uidMap.set(uid, true);
 
     if(!!transform){
         addComponent(gameObject, transform, GameObjectData);
@@ -34,10 +37,11 @@ var _buildUID = (GameObjectData:any) => {
 }
 
 export var isAlive = (entity:IUIDEntity, GameObjectData:any) => {
-    return GameObjectData.isAliveMap[entity.uid] === true;
+    // return GameObjectData.isAliveMap[entity.uid] === true;
+    return GameObjectData.isAliveMap.get(entity.uid) === true;
 }
 
-export var initGameObject = (gameObject:GameObject, state:Map<any, any>, GameObjectData:any) => {
+export var initGameObject = (gameObject:GameObject, state:MapImmutable<any, any>, GameObjectData:any) => {
     var uid = gameObject.uid,
         componentData:GameObjectComponentData = _getComponentData(uid, GameObjectData);
 
@@ -52,7 +56,7 @@ export var dispose = requireCheckFunc((entity:IUIDEntity, GameObjectData:any) =>
 }, (entity:IUIDEntity, ThreeDTransformData:any, GameObjectData:any) => {
     var uid = entity.uid;
 
-    deleteVal(uid, GameObjectData.isAliveMap);
+    deleteMapVal(uid, GameObjectData.isAliveMap);
 
     let parent = _getParent(uid, GameObjectData);
 
@@ -61,7 +65,128 @@ export var dispose = requireCheckFunc((entity:IUIDEntity, GameObjectData:any) =>
     }
 
     _diposeAllDatas(entity, GameObjectData);
+
+
+    // GameObjectData.uidMap.delete(uid);
+
+
+    // if(isDisposeTooManyComponents(GameObjectData.disposeCount)){
+    //     let val:any = null,
+    //         newParentMap = {},
+    //         newChildrenMap = {},
+    //         newComponentMap = {},
+    //         // newIsAliveMap = {},
+    //         // newIsAliveMap = new Map<string, boolean>(),
+    //         parentMap = GameObjectData.parentMap,
+    //         childrenMap = GameObjectData.childrenMap,
+    //         componentMap = GameObjectData.componentMap,
+    //         isAliveMap = GameObjectData.isAliveMap;
+    //
+    //
+    //     // if(GameObjectData.lastUID === null)
+    //     let currentUid = GameObjectData.uid;
+    //     // for(let uid in isAliveMap){
+    //     // for(let uid = GameObjectData.lastUID; uid < currentUid; uid++){
+    //     // for(let uid = 0; uid < currentUid; uid++){
+    //     // for (let value of isAliveMap.values()) {
+    //         GameObjectData.isAliveMap.forEach(function(value, uid) {
+    //             // console.log(key + ' = ' + value);
+    //         // });
+    //         // for(let uid = 0, len = 0; len < 10000; uid++){
+    //         // len++;
+    //         // val = isAliveMap[uid];
+    //         // val = isAliveMap.get(uid);
+    //         // val = value;
+    //         // _setMapVal(newIsAliveMap, uid, val);
+    //         // newIsAliveMap.set(uid, val);
+    //
+    //         val = parentMap[uid];
+    //         _setMapVal(newParentMap, uid, val);
+    //
+    //         val = childrenMap[uid];
+    //         _setMapVal(newChildrenMap, uid, val);
+    //
+    //         val = componentMap[uid];
+    //         _setMapVal(newComponentMap, uid, val);
+    //     })
+    //
+    //     // for(let uid = 10000000, len = 0; len < 1000; uid++){
+    //     //     // for(let uid = 0, len = 0; len < 10000; uid++){
+    //     //     len++;
+    //     //     // val = isAliveMap[uid];
+    //     //     val = isAliveMap.get(uid);
+    //     //     _setMapVal(newIsAliveMap, uid, val);
+    //     //
+    //     //     val = parentMap[uid];
+    //     //     _setMapVal(newParentMap, uid, val);
+    //     //
+    //     //     val = childrenMap[uid];
+    //     //     _setMapVal(newChildrenMap, uid, val);
+    //     //
+    //     //     val = componentMap[uid];
+    //     //     _setMapVal(newComponentMap, uid, val);
+    //     // }
+    //
+    //     // GameObjectData.lastUID = currentUid;
+    //
+    //     GameObjectData.parentMap = newParentMap;
+    //     GameObjectData.childrenMap = newChildrenMap;
+    //     GameObjectData.componentMap = newComponentMap;
+    //     // GameObjectData.isAliveMap = newIsAliveMap;
+    //     // GameObjectData.isAliveMap = new Map(newIsAliveMap);
+    //     // GameObjectData.isAliveMap = newIsAliveMap;
+    //     // GameObjectData.parentMap = _getNewReallocatedMap(GameObjectData.parentMap);
+    //     // GameObjectData.childrenMap = _getNewReallocatedMap(GameObjectData.childrenMap);
+    //     // GameObjectData.componentMap = _getNewReallocatedMap(GameObjectData.componentMap);
+    //     // GameObjectData.isAliveMap = _getNewReallocatedMap(GameObjectData.isAliveMap);
+    //
+    //     GameObjectData.disposeCount = 0;
+    //
+    //     // console.log("dispose gameObject")
+    // }
+    // else{
+    //     GameObjectData.disposeCount += 1;
+    // }
 })
+
+// var _setMapVal = (map:object, uid:any, val:any) => {
+//     if(isValidMapValue(val)){
+//         map[uid] = val;
+//     }
+// }
+
+// var _getNewReallocatedMap = (mapNameArr:Array<string>, GameObjectData:any) => {
+//     var map = GameObjectData[mapNameArr[0]];
+//     var newMap = {},
+//         val = null;
+//
+//     for(let index in map){
+//         for(let mapName of mapNameArr){
+//             val = GameObjectData[mapName][index];
+//
+//             if(isValidMapValue(val)){
+//                 newMap[index] = val;
+//             }
+//         }
+//     }
+//
+//     return newMap;
+// }
+
+// var _getNewReallocatedMap = (map:object) => {
+//     var newMap = {},
+//         val = null;
+//
+//     for(let index in map){
+//         val = map[index];
+//
+//         if(isValidMapValue(val)){
+//             newMap[index] = val;
+//         }
+//     }
+//
+//     return newMap;
+// }
 
 var _removeFromChildrenMap = (parentUID:number, childUID:number, GameObjectData:any) => {
     _setChildren(parentUID, filter(_getChildren(parentUID, GameObjectData), (gameObject:GameObject) => {
@@ -84,13 +209,13 @@ var _diposeAllDatas = (gameObject:GameObject, GameObjectData:any) => {
 }
 
 var _disposeMapDatas = (uid:number, GameObjectData:any) => {
-    deleteVal(uid, GameObjectData.childrenMap);
-    deleteVal(uid, GameObjectData.parentMap);
-    deleteVal(uid, GameObjectData.componentMap);
+    deleteMapVal(uid, GameObjectData.childrenMap);
+    deleteMapVal(uid, GameObjectData.parentMap);
+    deleteMapVal(uid, GameObjectData.componentMap);
 }
 
 var _disposeAllComponents = (gameObject:GameObject, GameObjectData:any) => {
-    var components = GameObjectData.componentMap[gameObject.uid];
+    var components = _getComponentData(gameObject.uid, GameObjectData);
 
     //todo optimize?
     for(let typeID in components){
@@ -109,7 +234,7 @@ export var addComponent = requireCheckFunc((gameObject:GameObject, component: Co
 }, (gameObject:GameObject, component: Component, GameObjectData:any) => {
     var uid = gameObject.uid,
         typeID = getTypeIDFromComponent(component),
-        data = GameObjectData.componentMap[uid];
+        data = _getComponentData(uid, GameObjectData);
 
     execHandle(component, "addComponentHandleMap", [component, gameObject]);
 
@@ -117,7 +242,7 @@ export var addComponent = requireCheckFunc((gameObject:GameObject, component: Co
         let d = {};
 
         d[typeID] = component;
-        GameObjectData.componentMap[uid] = d;
+        _setComponentData(uid, d, GameObjectData);
 
         return;
     }
@@ -127,7 +252,7 @@ export var addComponent = requireCheckFunc((gameObject:GameObject, component: Co
 
 var _removeComponent = (typeID:string, gameObject:GameObject, component: Component, GameObjectData:any) => {
     var uid = gameObject.uid,
-        data = GameObjectData.componentMap[uid];
+        data = _getComponentData(uid, GameObjectData);
 
     if(isValidMapValue(data)){
         deleteVal(typeID, data);
@@ -148,7 +273,7 @@ export var disposeComponent = (gameObject:GameObject, component: Component, Game
 
 export var getComponent = (gameObject:GameObject, componentTypeID:string, GameObjectData:any) => {
     var uid = gameObject.uid,
-        data = GameObjectData.componentMap[uid];
+        data = _getComponentData(uid, GameObjectData);
 
     if(isValidMapValue(data)){
         let component = data[componentTypeID];
@@ -159,7 +284,9 @@ export var getComponent = (gameObject:GameObject, componentTypeID:string, GameOb
     return null;
 }
 
-var _getComponentData = (uid:number, GameObjectData:any) => GameObjectData.componentMap[uid];
+var _getComponentData = (uid:number, GameObjectData:any) => GameObjectData.componentMap.get(uid);
+
+var _setComponentData = (uid:number, data:GameObjectComponentData, GameObjectData:any) => GameObjectData.componentMap.set(uid, data);
 
 export var hasComponent = (gameObject:GameObject, componentTypeID:string, GameObjectData:any) => {
     return getComponent(gameObject, componentTypeID, GameObjectData) !== null;
@@ -185,14 +312,15 @@ var _isComponentExist = (component:Component) => component !== null;
 
 var _isGameObjectEqual = (gameObject1:GameObject, gameObject2:GameObject) => gameObject1.uid === gameObject2.uid;
 
-var _getParent = (uid:number, GameObjectData:any) => GameObjectData.parentMap[uid];
+var _getParent = (uid:number, GameObjectData:any) => GameObjectData.parentMap.get(uid);
 
 var _setParent = (uid:number, parent:GameObject, GameObjectData:any) => {
-    GameObjectData.parentMap[uid] = parent;
+    GameObjectData.parentMap.set(uid, parent);
 }
 
 var _getChildren = (uid:number, GameObjectData:any) => {
-    return GameObjectData.childrenMap[uid];
+    // return GameObjectData.childrenMap[uid];
+    return GameObjectData.childrenMap.get(uid);
 }
 
 var _addChild = (uid:number, child:GameObject, GameObjectData:any) => {
@@ -207,7 +335,8 @@ var _addChild = (uid:number, child:GameObject, GameObjectData:any) => {
 }
 
 var _setChildren = (uid:number, children:Array<GameObject>, GameObjectData:any) => {
-    GameObjectData.childrenMap[uid] = children;
+    // GameObjectData.childrenMap[uid] = children;
+    GameObjectData.childrenMap.set(uid, children);
 }
 
 export var addChild = requireCheckFunc ((gameObject:GameObject, child:GameObject, ThreeDTransformData:any, GameObjectData:any) => {
@@ -238,7 +367,7 @@ export var removeChild = requireCheckFunc((gameObject:GameObject, child:GameObje
     var uid = gameObject.uid,
         childUID = child.uid;
 
-    deleteVal(childUID, GameObjectData.parentMap);
+    deleteMapVal(childUID, GameObjectData.parentMap);
 
     setParent(getTransform(child, GameObjectData), null, ThreeDTransformData);
 
@@ -255,3 +384,11 @@ export var hasChild = (gameObject:GameObject, child:GameObject, GameObjectData:a
     return _isGameObjectEqual(parent, gameObject);
 }
 
+export var initData = (GameObjectData:any) => {
+    GameObjectData.uid = 0;
+
+    GameObjectData.isAliveMap = new Map();
+    GameObjectData.componentMap = new Map();
+    GameObjectData.parentMap = new Map();
+    GameObjectData.childrenMap = new Map();
+}

@@ -2,7 +2,7 @@ import { requireCheckFunc } from "../../definition/typescript/decorator/contract
 import { BatchTransformData } from "./ThreeDTransform";
 
 export var getIsTranslate = (uid:number, ThreeDTransformData:any) => {
-    return ThreeDTransformData.isTranslateMap[uid];
+    return ThreeDTransformData.isTranslateMap.get(uid);
 }
 
 export var setIsTranslate = requireCheckFunc ((uid:number, isTranslate:boolean, ThreeDTransformData:any) => {
@@ -10,7 +10,7 @@ export var setIsTranslate = requireCheckFunc ((uid:number, isTranslate:boolean, 
     //     expect(_isIndexUsed(indexInArrayBuffer)).true;
     // });
 }, (uid:number, isTranslate:boolean, ThreeDTransformData:any) => {
-    ThreeDTransformData.isTranslateMap[uid] = isTranslate;
+    ThreeDTransformData.isTranslateMap.set(uid, isTranslate);
 })
 
 export var isTranslate = (data:BatchTransformData) => {

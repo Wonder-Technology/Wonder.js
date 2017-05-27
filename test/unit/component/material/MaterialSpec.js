@@ -80,11 +80,9 @@ describe("Material", function() {
             var shader = new Shader();
             shader.index = 0;
 
-            expect(MaterialData.shaderMap).toEqual({
-                0:shader,
-                1:shader,
-                2:shader
-            })
+            expect(materialTool.getShader({index:0})).toEqual(shader);
+            expect(materialTool.getShader({index:1})).toEqual(shader);
+            expect(materialTool.getShader({index:2})).toEqual(shader);
         });
     });
 

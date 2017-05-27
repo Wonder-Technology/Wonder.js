@@ -1,11 +1,11 @@
-import { ComponentData, ComponentGameObjectMap } from "./ComponentData";
+import { ComponentData, ComponentGameObjectMap, ComponentGameObjectMapMap } from "./ComponentData";
 import { Component } from "./Component";
 import { getTypeIDFromClass, getTypeIDFromComponent } from "./ComponentTypeIDManager";
 import { GameObject } from "../core/entityObject/gameObject/GameObject";
 import { expect } from "wonder-expect.js";
 import { it, requireCheckFunc } from "../definition/typescript/decorator/contract";
 import { deleteBySwap, isNotValidMapValue } from "../utils/objectUtils";
-import { Map } from "immutable";
+import { Map as MapImmutable } from "immutable";
 
 var _addHandle = (_class:any, handleMap:object, handle:(...args) => void) => {
     var typeID = getTypeIDFromClass(_class);
@@ -21,7 +21,7 @@ export var addDisposeHandle = (_class:any, handle:(component:Component) => void)
     _addHandle(_class, ComponentData.disposeHandleMap, handle);
 }
 
-export var addInitHandle = (_class:any, handle:(index:number, state:Map<any, any>) => void) => {
+export var addInitHandle = (_class:any, handle:(index:number, state:MapImmutable<any, any>) => void) => {
     _addHandle(_class, ComponentData.initHandleMap, handle);
 }
 
@@ -40,7 +40,7 @@ export var execHandle = (component:Component, handleMapName:string, args?:Array<
     }
 }
 
-export var execInitHandle = (typeID:string, index:number, state:Map<any, any>) => {
+export var execInitHandle = (typeID:string, index:number, state:MapImmutable<any, any>) => {
     var handle = ComponentData.initHandleMap[typeID];
 
     if(_isHandleNotExist(handle)) {
@@ -66,8 +66,24 @@ export var addComponentToGameObjectMap = requireCheckFunc((gameObjectMap:Compone
     gameObjectMap[index] = gameObject;
 })
 
+export var addComponentToGameObjectMapMap = requireCheckFunc((gameObjectMap:ComponentGameObjectMapMap, index:number, gameObject:GameObject) => {
+    it("component should not exist in gameObject", () => {
+        expect(gameObjectMap.get(index)).not.exist;
+    });
+}, (gameObjectMap:ComponentGameObjectMapMap, index:number, gameObject:GameObject) => {
+    gameObjectMap.set(index, gameObject);
+})
+
 export var getComponentGameObject = (gameObjectMap:ComponentGameObjectMap, index:number) => {
     return gameObjectMap[index];
+}
+
+export var getComponentGameObjectByMap = (gameObjectMap:ComponentGameObjectMapMap, uid:number) => {
+    return gameObjectMap.get(uid);
+}
+
+export var setComponentGameObjectByMap = (gameObjectMap:ComponentGameObjectMapMap, uid:number, gameObject:GameObject) => {
+    return gameObjectMap.set(uid, gameObject);
 }
 
 export var generateComponentIndex = (ComponentData: any) => {

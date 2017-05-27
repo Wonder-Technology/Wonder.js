@@ -22,6 +22,7 @@ import { RenderCommand } from "../renderer/command/RenderCommand";
 import { DataUtils as DataUtilsUtils } from "../utils/DataUtils";
 import { initData as initDeviceManagerDataSystem } from "../device/DeviceManagerSystem";
 import { initData as initCameraControllerDataSystem } from "../component/camera/CameraControllerSystem";
+import { initData as initGameObjectDataSystem } from "../core/entityObject/gameObject/GameObjectSystem";
 
 export var initThreeDTransformData = initThreeDTransformDataSystem;
 
@@ -46,6 +47,8 @@ export var initIndexBufferData = initIndexBufferDataSystem;
 export var initDeviceManagerData = initDeviceManagerDataSystem;
 
 export var initCameraControllerData = initCameraControllerDataSystem;
+
+export var initGameObjectData = initGameObjectDataSystem;
 
 export var createState = createStateUtils;
 

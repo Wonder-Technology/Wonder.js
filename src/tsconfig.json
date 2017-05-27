@@ -12,6 +12,10 @@
       "../node_modules/@types/",
       "../types"
     ],
+    "lib": [
+      "es6",
+      "dom"
+    ],
     "removeComments": true,
     "experimentalDecorators": true
   },

@@ -1,5 +1,6 @@
 var materialTool = (function () {
     return {
+        getShader:wd.getMaterialShader,
         getColor:wd.getMaterialColor,
         setColor:wd.setMaterialColor,
         getOpacity:wd.getMaterialOpacity,

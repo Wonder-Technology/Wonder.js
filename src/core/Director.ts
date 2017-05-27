@@ -71,6 +71,7 @@ import { DeviceManager } from "../device/DeviceManager";
 import { addAddComponentHandle, addDisposeHandle, addInitHandle } from "../component/ComponentSystem";
 import { material_config } from "../renderer/data/material_config";
 import { shaderLib_generator } from "../renderer/data/shaderLib_generator";
+import { initData as initGameObjectData } from "./entityObject/gameObject/GameObjectSystem";
 
 @singleton(true)
 @registerClass("Director")
@@ -270,6 +271,8 @@ initSceneData(SceneData);
 initCameraControllerData(CameraControllerData, PerspectiveCameraData, CameraData);
 addCameraControllerAddComponentHandle(CameraController, CameraControllerData);
 addCameraControllerDisposeHandle(CameraController, PerspectiveCameraData, CameraData, CameraControllerData);
+
+initGameObjectData(GameObjectData);
 
 // export var initComponent = () => {
 //     const initData = {

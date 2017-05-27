@@ -8,6 +8,7 @@ export {Component} from "./component/Component";
 export {ComponentData} from "./component/ComponentData";
 export {getTypeIDFromClass,getTypeIDFromComponent} from "./component/ComponentTypeIdManager";
 export {BoxGeometry,createBoxGeometry,setBoxGeometryConfigData} from "./component/geometry/BoxGeometry";
+export {CustomGeometry,createCustomGeometry,setCustomGeometryVertices,setCustomGeometryIndices} from "./component/geometry/CustomGeometry";
 export {Geometry,getDrawMode,getVertices,getIndices,getGeometryConfigData,initGeometry,getGeometryGameObject} from "./component/geometry/Geometry";
 export {GeometryData} from "./component/geometry/GeometryData";
 export {BasicMaterial,createBasicMaterial} from "./component/material/BasicMaterial";
@@ -66,9 +67,8 @@ export {main_begin,main_end,setPos_mvp} from "./renderer/shader/snippet/ShaderSn
 export {Color} from "./structure/Color";
 export {RectRegion} from "./structure/RectRegion";
 export {View} from "./structure/View";
-export {initThreeDTransformData,DomQuery,fromArray,initTagData,initGeometryData,initMaterialData,initShaderData,initMeshRendererData,initArrayBufferData,initIndexBufferData,initDeviceManagerData,initCameraControllerData,createState,useProgram,sendAttributeData,sendUniformData,disableVertexAttribArray,DataUtils} from "./test/forUnitTest";
+export {initThreeDTransformData,DomQuery,fromArray,initTagData,initGeometryData,initMaterialData,initShaderData,initMeshRendererData,initArrayBufferData,initIndexBufferData,initDeviceManagerData,initCameraControllerData,initGameObjectData,createState,useProgram,sendAttributeData,sendUniformData,disableVertexAttribArray,DataUtils} from "./test/forUnitTest";
 export {Log,error} from "./utils/Log";
 export {CommonTimeController} from "./utils/time/CommonTimeController";
 export {DirectorTimeController} from "./utils/time/DirectorTimeController";
 export {TimeController} from "./utils/time/TimeController";
-export {CustomGeometry,createCustomGeometry,setCustomGeometryVertices,setCustomGeometryIndices} from "./component/geometry/CustomGeometry";

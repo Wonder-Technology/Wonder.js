@@ -68,6 +68,7 @@ export var setThreeDTransformParent = (transform:ThreeDTransform, parent:ThreeDT
     setParent(transform, parent, ThreeDTransformData);
 }
 
+//todo unit test
 export var getThreeDTransformGameObject = (component:ThreeDTransform) => {
-    return getGameObject(component.index, ThreeDTransformData);
+    return getGameObject(component.uid, ThreeDTransformData);
 }

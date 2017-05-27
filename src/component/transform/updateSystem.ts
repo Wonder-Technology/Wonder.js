@@ -10,42 +10,18 @@ import {
     swap
 } from "./operateDataSystem";
 import { DataUtils } from "../../utils/DataUtils";
-import { deleteVal } from "../../utils/objectUtils";
-import { getIsTranslate, setIsTranslate } from "./isTransformSystem";
 import { Map } from "immutable";
+import { clearCache } from "./cacheSystem";
 
 export var update = (elapsed: number, GlobalTempData: any, ThreeDTransformData: any, state: Map<any, any>) => {
     return compose(
         _cleanDirtyList(ThreeDTransformData),
         _updateDirtyList(GlobalTempData, ThreeDTransformData),
-        _clearCache(ThreeDTransformData)
+        clearCache(ThreeDTransformData)
     )(state);
 }
 
-var _clearCache = curry((ThreeDTransformData: any, state: Map<any, any>) => {
-    var count = ThreeDTransformData.count,
-        positionCacheMap = ThreeDTransformData.positionCacheMap,
-        localPositionCacheMap = ThreeDTransformData.localPositionCacheMap,
-        localToWorldMatrixCacheMap = ThreeDTransformData.localToWorldMatrixCacheMap;
-
-    for (let i = ThreeDTransformData.firstDirtyIndex; i < count; i++) {
-        let uid = getUID(i, ThreeDTransformData),
-            isTranslate = getIsTranslate(uid, ThreeDTransformData);
-
-        if(isTranslate){
-            deleteVal(uid, positionCacheMap);
-            deleteVal(uid, localPositionCacheMap);
-            deleteVal(uid, localToWorldMatrixCacheMap);
-
-            setIsTranslate(uid, false, ThreeDTransformData);
-        }
-
-        //todo clean more cache!
-    }
-})
-
 var _updateDirtyList = curry((GlobalTempData: any, ThreeDTransformData: any, state: Map<any, any>) => {
-    //todo test:ensure parent before child
     _sortParentBeforeChildInDirtyList(ThreeDTransformData);
 
     let count = ThreeDTransformData.count;

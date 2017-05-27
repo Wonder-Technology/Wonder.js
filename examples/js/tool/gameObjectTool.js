@@ -14,18 +14,7 @@ var gameObjectTool = (function () {
         remove: wd.removeGameObject,
 
         resetData: function(){
-            var GameObjectData = wd.GameObjectData;
-
-            // GameObjectData.freeIndiceQueue = [];
-            // GameObjectData.generationArr = [];
-
-            GameObjectData.uid = 0;
-
-            GameObjectData.isAliveMap = {};
-
-            GameObjectData.componentMap = {};
-            GameObjectData.parentMap = {};
-            GameObjectData.childrenMap = {};
+            wd.initGameObjectData(wd.GameObjectData);
         }
     }
 })()
