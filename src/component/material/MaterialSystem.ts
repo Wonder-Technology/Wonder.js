@@ -46,11 +46,17 @@ export var create = requireCheckFunc((material:Material, className:string, Mater
 
     MaterialData.materialClassNameMap.set(index, className);
 
-    setColor(index, Color.create("#ffffff"), MaterialData);
+    setColor(index, _createDefaultColor(), MaterialData);
     setOpacity(index, 1, MaterialData);
 
     return material;
 })
+
+var _createDefaultColor = () => {
+    var color = Color.create();
+
+    return color.setColorByNum("#ffffff");
+}
 
 export var init = requireCheckFunc((state: MapImmutable<any, any>, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DeviceManagerData:any, ShaderData:any, MaterialData:any) => {
     checkIndexShouldEqualCount(MaterialData);
