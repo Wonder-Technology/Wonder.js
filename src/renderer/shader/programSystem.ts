@@ -166,8 +166,8 @@ export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, 
         attributeLocationMap = ShaderData.attributeLocationMap[shaderIndex],
         lastBindedArrayBuffer = ShaderData.lastBindedArrayBuffer;
 
-    forEach(sendDataArr, (sendData: ISendAttributeConfig) => {
-        var buffer = getOrCreateArrayBuffer(gl, geometryIndex, sendData.buffer, GeometryData, ArrayBufferData),
+    for(let sendData of sendDataArr) {
+        let buffer = getOrCreateArrayBuffer(gl, geometryIndex, sendData.buffer, GeometryData, ArrayBufferData),
             pos = getAttribLocation(sendData.name, attributeLocationMap);
 
         if (isAttributeLocationNotExist(pos)) {
@@ -181,7 +181,7 @@ export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, 
         lastBindedArrayBuffer = buffer;
 
         sendBuffer(gl, pos, buffer, geometryIndex, ShaderData, ArrayBufferData);
-    })
+    }
 
     ShaderData.lastBindedArrayBuffer = lastBindedArrayBuffer;
 }
@@ -192,7 +192,7 @@ export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, Ma
         uniformCacheMap = ShaderData.uniformCacheMap;
 
     for(let sendData of sendDataArr){
-        var name = sendData.name,
+        let name = sendData.name,
             field = sendData.field,
             type = sendData.type as any,
             from = sendData.from || "cmd",

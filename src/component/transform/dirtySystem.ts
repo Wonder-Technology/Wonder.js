@@ -95,9 +95,11 @@ var _getNotUsedIndexFromArr = (ThreeDTransformData:any) => {
 
 var _getNotUsedIndex = (notUsedIndexArray: Array<number>) => {
     /*!
-     optimize: return the first one to ensure that the result index be as much remote from firDirtyIndex as possible(so that it can reduce swap when add to dirty list)
+    not shift! because it's too slow in firefox!
+     //optimize: return the first one to ensure that the result index be as much remote from firDirtyIndex as possible(so that it can reduce swap when add to dirty list)
      */
-    return notUsedIndexArray.shift();
+    // return notUsedIndexArray.shift();
+    return notUsedIndexArray.pop();
 };
 
 export var addNotUsedIndex = (index: number, notUsedIndexArray: Array<number>) => {
