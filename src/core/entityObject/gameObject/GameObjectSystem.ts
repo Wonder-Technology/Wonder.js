@@ -14,6 +14,7 @@ import { Material } from "../../../component/material/Material";
 import { filter, forEach } from "../../../utils/arrayUtils";
 import { Map as MapImmutable } from "immutable";
 import { deleteMapVal } from "../../../utils/mapUtils";
+import { removeChildEntity } from "../../../utils/entityUtils";
 
 export var create = (transform:ThreeDTransform, GameObjectData:any) => {
     var gameObject:GameObject = new GameObject(),
@@ -189,9 +190,7 @@ export var dispose = requireCheckFunc((entity:IUIDEntity, GameObjectData:any) =>
 // }
 
 var _removeFromChildrenMap = (parentUID:number, childUID:number, GameObjectData:any) => {
-    _setChildren(parentUID, filter(_getChildren(parentUID, GameObjectData), (gameObject:GameObject) => {
-        return gameObject.uid !== childUID;
-    }), GameObjectData);
+    removeChildEntity(_getChildren(parentUID, GameObjectData), childUID);
 }
 
 var _diposeAllDatas = (gameObject:GameObject, GameObjectData:any) => {
@@ -388,6 +387,7 @@ export var initData = (GameObjectData:any) => {
     GameObjectData.uid = 0;
 
     GameObjectData.isAliveMap = new Map();
+    // GameObjectData.componentMap = new Map();
     GameObjectData.componentMap = new Map();
     GameObjectData.parentMap = new Map();
     GameObjectData.childrenMap = new Map();

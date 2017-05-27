@@ -4,8 +4,8 @@ import { isNotValidMapValue, isValidMapValue } from "../../utils/objectUtils";
 import { isNotUndefined } from "../../utils/JudgeUtils";
 import { ThreeDTransform } from "./ThreeDTransform";
 import { addItAndItsChildrenToDirtyList } from "./dirtySystem";
-import { filter } from "../../utils/arrayUtils";
 import { deleteMapVal } from "../../utils/mapUtils";
+import { removeChildEntity } from "../../utils/entityUtils";
 
 export var getParent = requireCheckFunc ((uid: string, ThreeDTransformData:any) => {
     it("uid should exist", () => {
@@ -87,9 +87,14 @@ var _removeHierarchyFromParent = (parent: ThreeDTransform, targetUID: number, Th
         return;
     }
 
-    _setChildren(parentUID, filter(children, (transform:ThreeDTransform) => {
-        return transform.uid !== targetUID;
-    }), ThreeDTransformData);
+    for (var i = 0, len = children.length; i < len; ++i) {
+        if (children[i].uid === targetUID) {
+            children.splice(i, 1);
+            break;
+        }
+    }
+
+    removeChildEntity(children, targetUID);
 }
 
 var _addChild = (uid:number, child:ThreeDTransform, ThreeDTransformData:any) => {
