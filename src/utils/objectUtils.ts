@@ -21,3 +21,5 @@ export var isValidMapValue = (val:any) => {
 export var isNotValidMapValue = (val:any) => {
     return isUndefined(val);
 }
+
+export var createMap = () => Object.create(null);

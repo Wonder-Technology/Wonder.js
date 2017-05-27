@@ -1,6 +1,8 @@
 import { DataBufferConfig } from "../../config/DataBufferConfig";
 import { ThreeDTransform } from "./ThreeDTransform";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
+import { Vector3 } from "../../math/Vector3";
+import { Matrix4 } from "../../math/Matrix4";
 
 export class ThreeDTransformData {
     static get count() {
@@ -20,23 +22,22 @@ export class ThreeDTransformData {
 
     public static isTranslateMap = null;
 
-    // public static relationMap: object = null;
     public static parentMap: ParentMap = null;
     public static childrenMap: ChildrenMap = null;
 
-    public static positionCacheMap:object = null;
-    public static localPositionCacheMap:object = null;
-    public static localToWorldMatrixCacheMap:object = null;
+    public static positionCacheMap:ThreeDTransformPositionCacheMap = null;
+    public static localPositionCacheMap:ThreeDTransformLocalPositionCacheMap = null;
+    public static localToWorldMatrixCacheMap:ThreeDTransformLocalToWorldMatrixCacheMap = null;
 
     public static tempLocalToWorldMatrixMap:object = null;
     public static tempPositionMap:object = null;
     public static tempLocalPositionMap:object = null;
 
-    // public static uidMap:object = null;
     public static transformMap:TransformMap = null;
 
     public static uid:number = null;
     public static disposeCount:number = null;
+    public static isClearCacheMap:boolean = null;
 
     public static gameObjectMap:ThreeDTransformGameObjectMap = null;
 
@@ -55,12 +56,28 @@ export class ThreeDTransformRelationData{
     public children:Array<ThreeDTransformRelationData> = null;
 }
 
-export type ParentMap = Map<number, ThreeDTransform>
+export type ParentMap = {
+    [uid:number]: ThreeDTransform
+}
 
-export type ChildrenMap = Map<number, Array<ThreeDTransform>>
+export type ChildrenMap = {
+    [uid:number]: Array<ThreeDTransform>
+}
 
 export type ThreeDTransformGameObjectMap = Map<number, GameObject>
 
 export type TransformMap = {
     [index:number]: ThreeDTransform
+}
+
+export type ThreeDTransformPositionCacheMap = {
+    [uid:number]: Vector3
+}
+
+export type ThreeDTransformLocalPositionCacheMap = {
+    [uid:number]: Vector3
+}
+
+export type ThreeDTransformLocalToWorldMatrixCacheMap = {
+    [uid:number]: Matrix4
 }

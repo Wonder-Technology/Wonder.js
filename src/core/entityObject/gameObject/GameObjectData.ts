@@ -3,16 +3,19 @@ import { Component } from "../../../component/Component";
 
 export class GameObjectData{
     public static uid:number = null;
-    // public static disposeCount:number = null;
+    public static disposeCount:number = null;
 
     // public static isAliveMap:GameObjectIsAliveMap = {};
     public static isAliveMap:GameObjectIsAliveMap = null;
 
     // public static uidMap = new Map<number, boolean>();
 
-    public static componentMap:GameObjectComponentMap = null;
-    public static parentMap:GameObjectParentMap = null;
-    public static childrenMap:GameObjectChildrenMap = null;
+    // public static componentMap:GameObjectComponentMap = null;
+    // public static parentMap:GameObjectParentMap = null;
+    // public static childrenMap:GameObjectChildrenMap = null;
+    public static componentMap = null;
+    public static parentMap = null;
+    public static childrenMap = null;
 
     //todo add name map
 }

@@ -5,6 +5,7 @@ import { ComponentGameObjectMap } from "../ComponentData";
 export class MaterialData{
     public static index:number = null;
     public static count:number = null;
+    public static disposeCount:number = null;
 
     public static shaderMap:ShaderMap = null;
     public static materialClassNameMap:MaterialClassNameMap = null;

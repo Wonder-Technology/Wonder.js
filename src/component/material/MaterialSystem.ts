@@ -7,16 +7,17 @@ import { Color } from "../../structure/Color";
 import { expect } from "wonder-expect.js";
 import { Material } from "./Material";
 import {
-    addAddComponentHandle as addAddComponentHandleToMap, addComponentToGameObjectMap, addComponentToGameObjectMapMap,
+    addAddComponentHandle as addAddComponentHandleToMap, addComponentToGameObjectMapMap,
     addDisposeHandle as addDisposeHandleToMap, addInitHandle as addInitHandleToMap, generateComponentIndex,
     getComponentGameObject
 } from "../ComponentSystem";
 import curry from "wonder-lodash/curry";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
-import { isValidMapValue } from "../../utils/objectUtils";
+import { createMap, deleteVal, isValidMapValue } from "../../utils/objectUtils";
 import { checkIndexShouldEqualCount } from "../utils/contractUtils";
 import { deleteMapVal } from "../../utils/mapUtils";
 import { Shader } from "../../renderer/shader/Shader";
+import { isDisposeTooManyComponents, setMapVal } from "../../utils/memoryUtils";
 
 export var addAddComponentHandle = (_class: any, MaterialData:any) => {
     addAddComponentHandleToMap(_class, addComponent(MaterialData));
@@ -44,7 +45,7 @@ export var create = requireCheckFunc((material:Material, className:string, Mater
 
     MaterialData.count += 1;
 
-    MaterialData.materialClassNameMap.set(index, className);
+    _setMaterialClassName(index, className, MaterialData);
 
     setColor(index, _createDefaultColor(), MaterialData);
     setOpacity(index, 1, MaterialData);
@@ -77,39 +78,47 @@ export var initMaterial = curry((material_config:IMaterialConfig, shaderLib_gene
 
     isInitMap[shaderIndex] = true;
 
-    initShader(state, index, shaderIndex, MaterialData.materialClassNameMap.get(index), material_config, shaderLib_generator, DeviceManagerData, ShaderData);
+    initShader(state, index, shaderIndex, _getMaterialClassName(index, MaterialData), material_config, shaderLib_generator, DeviceManagerData, ShaderData);
 })
 
+var _getMaterialClassName = (materialIndex:number, MaterialData:any) => {
+    return MaterialData.materialClassNameMap[materialIndex];
+}
+
+var _setMaterialClassName = (materialIndex:number, className:string, MaterialData:any) => {
+    MaterialData.materialClassNameMap[materialIndex] = className;
+}
+
 export var getShader = (materialIndex:number, MaterialData:any) => {
-    return MaterialData.shaderMap.get(materialIndex);
+    return MaterialData.shaderMap[materialIndex];
 }
 
 export var setShader = (materialIndex:number, shader:Shader, MaterialData:any) => {
-    return MaterialData.shaderMap.set(materialIndex, shader);
+    MaterialData.shaderMap[materialIndex] = shader;
 }
 
 export var getColor = (materialIndex:number, MaterialData:any) => {
-    return MaterialData.colorMap.get(materialIndex);
+    return MaterialData.colorMap[materialIndex];
 }
 
 export var setColor = (materialIndex:number, color:Color, MaterialData:any) => {
-    MaterialData.colorMap.set(materialIndex, color);
+    MaterialData.colorMap[materialIndex] = color;
 }
 
 export var getOpacity = (materialIndex:number, MaterialData:any) => {
-    return MaterialData.opacityMap.get(materialIndex);
+    return MaterialData.opacityMap[materialIndex];
 }
 
 export var setOpacity = (materialIndex:number, opacity:number, MaterialData:any) => {
-    MaterialData.opacityMap.set(materialIndex, opacity);
+    MaterialData.opacityMap[materialIndex] = opacity;
 }
 
 export var getAlphaTest = (materialIndex:number, MaterialData:any) => {
-    return MaterialData.alphaTestMap.get(materialIndex);
+    return MaterialData.alphaTestMap[materialIndex];
 }
 
 export var setAlphaTest = (materialIndex:number, alphaTest:number, MaterialData:any) => {
-    MaterialData.alphaTestMap.set(materialIndex, alphaTest);
+    MaterialData.alphaTestMap[materialIndex] = alphaTest;
 }
 
 export var isPropertyExist = (propertyVal:any) => {
@@ -132,14 +141,57 @@ export var disposeComponent = ensureFunc(curry((returnVal, MaterialData:any, com
 
     MaterialData.count -= 1;
 
-    deleteMapVal(index, MaterialData.shaderMap);
-    deleteMapVal(index, MaterialData.materialClassNameMap);
-    deleteMapVal(index, MaterialData.colorMap);
-    deleteMapVal(index, MaterialData.opacityMap);
-    deleteMapVal(index, MaterialData.alphaTestMap);
+    deleteVal(index, MaterialData.shaderMap);
+    deleteVal(index, MaterialData.materialClassNameMap);
+    deleteVal(index, MaterialData.colorMap);
+    deleteVal(index, MaterialData.opacityMap);
+    deleteVal(index, MaterialData.alphaTestMap);
+
     deleteMapVal(index, MaterialData.gameObjectMap);
 
     //not dispose shader(for reuse shader)
+
+    if(isDisposeTooManyComponents(MaterialData.disposeCount)){
+        let val:any = null,
+            newShaderMap = {},
+            newMaterialClassNameMap = {},
+            newColorMap = {},
+            newOpacityMap = {},
+            newAlphaTestMap = {},
+            shaderMap = MaterialData.shaderMap,
+            materialClassNameMap = MaterialData.materialClassNameMap,
+            colorMap = MaterialData.colorMap,
+            opacityMap = MaterialData.opacityMap,
+            alphaTestMap = MaterialData.alphaTestMap;
+
+        MaterialData.gameObjectMap.forEach(function(value, uid) {
+            val = shaderMap[uid];
+            setMapVal(newShaderMap, uid, val);
+
+            val = materialClassNameMap[uid];
+            setMapVal(newMaterialClassNameMap, uid, val);
+
+            val = colorMap[uid];
+            setMapVal(newColorMap, uid, val);
+
+            val = opacityMap[uid];
+            setMapVal(newOpacityMap, uid, val);
+
+            val = alphaTestMap[uid];
+            setMapVal(newAlphaTestMap, uid, val);
+        });
+
+        MaterialData.shaderMap = newShaderMap;
+        MaterialData.materialClassNameMap = newMaterialClassNameMap;
+        MaterialData.colorMap = newColorMap;
+        MaterialData.opacityMap = newOpacityMap;
+        MaterialData.alphaTestMap = newAlphaTestMap;
+
+        MaterialData.disposeCount = 0;
+    }
+    else{
+        MaterialData.disposeCount += 1;
+    }
 }))
 
 export var getGameObject = (index:number, Data:any) => {
@@ -147,14 +199,16 @@ export var getGameObject = (index:number, Data:any) => {
 }
 
 export var initData = (MaterialData:any) => {
-    MaterialData.shaderMap = new Map();
-    MaterialData.materialClassNameMap = new Map();
-    MaterialData.colorMap = new Map();
-    MaterialData.opacityMap = new Map();
-    MaterialData.alphaTestMap = new Map();
+    MaterialData.shaderMap = createMap();
+    MaterialData.materialClassNameMap = createMap();
+    MaterialData.colorMap = createMap();
+    MaterialData.opacityMap = createMap();
+    MaterialData.alphaTestMap = createMap();
+
     MaterialData.gameObjectMap = new Map();
 
     MaterialData.index = 0;
     MaterialData.count = 0;
+    MaterialData.disposeCount = 0;
 }
 

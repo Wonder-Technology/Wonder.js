@@ -1,18 +1,22 @@
 import { it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
-import { isNotValidMapValue, isValidMapValue } from "../../utils/objectUtils";
+import { deleteVal, isNotValidMapValue, isValidMapValue } from "../../utils/objectUtils";
 import { isNotUndefined } from "../../utils/JudgeUtils";
 import { ThreeDTransform } from "./ThreeDTransform";
 import { addItAndItsChildrenToDirtyList } from "./dirtySystem";
 import { deleteMapVal } from "../../utils/mapUtils";
 import { removeChildEntity } from "../../utils/entityUtils";
+import { chrome, firefox } from "bowser";
+import { error, Log } from "../../utils/Log";
+import { filter } from "../../utils/arrayUtils";
 
 export var getParent = requireCheckFunc ((uid: string, ThreeDTransformData:any) => {
     it("uid should exist", () => {
         expect(uid).exist;
     });
 }, (uid: string, ThreeDTransformData:any) => {
-    return ThreeDTransformData.parentMap.get(uid);
+    // return ThreeDTransformData.parentMap.get(uid);
+    return ThreeDTransformData.parentMap[uid];
 })
 
 export var setParent = requireCheckFunc((transform: ThreeDTransform, parent: ThreeDTransform, ThreeDTransformData: any) => {
@@ -56,7 +60,8 @@ export var setParent = requireCheckFunc((transform: ThreeDTransform, parent: Thr
 var _isTransformEqual = (tra1:ThreeDTransform, tra2:ThreeDTransform) => tra1.uid === tra2.uid;
 
 export var getChildren = (uid:number, ThreeDTransformData:any) => {
-    return ThreeDTransformData.childrenMap.get(uid);
+    // return ThreeDTransformData.childrenMap.get(uid);
+    return ThreeDTransformData.childrenMap[uid];
 }
 
 export var isParentExist = (parent:ThreeDTransform) => isNotUndefined(parent);
@@ -68,7 +73,8 @@ export var isNotChangeParent = (currentParentIndexInArrayBuffer: number, newPare
 }
 
 export var removeHierarchyData = (uid:number, ThreeDTransformData: any) => {
-    deleteMapVal(uid, ThreeDTransformData.childrenMap);
+    // deleteMapVal(uid, ThreeDTransformData.childrenMap);
+    deleteVal(uid, ThreeDTransformData.childrenMap);
 
     let parent = getParent(uid, ThreeDTransformData);
 
@@ -81,7 +87,8 @@ var _removeHierarchyFromParent = (parent: ThreeDTransform, targetUID: number, Th
     var parentUID = parent.uid,
         children = getChildren(parentUID, ThreeDTransformData);
 
-    deleteMapVal(targetUID, ThreeDTransformData.parentMap);
+    // deleteMapVal(targetUID, ThreeDTransformData.parentMap);
+    deleteVal(targetUID, ThreeDTransformData.parentMap);
 
     if (isNotValidMapValue(children)) {
         return;
@@ -94,7 +101,25 @@ var _removeHierarchyFromParent = (parent: ThreeDTransform, targetUID: number, Th
         }
     }
 
-    removeChildEntity(children, targetUID);
+    _removeChild(parentUID, children, targetUID, ThreeDTransformData);
+}
+
+var _removeChild = null;
+
+if(chrome){
+    _removeChild = (parentUID:number, targetUID:number, children:Array<ThreeDTransform>, ThreeDTransformData:any) => {
+        _setChildren(parentUID, filter(children, (transform:ThreeDTransform) => {
+            return transform.uid !== targetUID;
+        }), ThreeDTransformData);
+    }
+}
+else if(firefox){
+    _removeChild = (parentUID:number, targetUID:number, children:Array<ThreeDTransform>, ThreeDTransformData:any) => {
+        removeChildEntity(children, targetUID);
+    }
+}
+else{
+    error(true, Log.info.FUNC_NOT_SUPPORT("browser"));
 }
 
 var _addChild = (uid:number, child:ThreeDTransform, ThreeDTransformData:any) => {
@@ -109,11 +134,13 @@ var _addChild = (uid:number, child:ThreeDTransform, ThreeDTransformData:any) => 
 }
 
 var _setChildren = (uid:number, children:Array<ThreeDTransform>, ThreeDTransformData:any) => {
-    ThreeDTransformData.childrenMap.set(uid, children);
+    // ThreeDTransformData.childrenMap.set(uid, children);
+    ThreeDTransformData.childrenMap[uid] = children;
 }
 
 var _setParent = (uid:number, parent:ThreeDTransform, ThreeDTransformData:any) => {
-    ThreeDTransformData.parentMap.set(uid, parent);
+    // ThreeDTransformData.parentMap.set(uid, parent);
+    ThreeDTransformData.parentMap[uid] = parent;
 }
 
 var _addToParent = requireCheckFunc((targetUID:number, target:ThreeDTransform, parent:ThreeDTransform, ThreeDTransformData: any) => {

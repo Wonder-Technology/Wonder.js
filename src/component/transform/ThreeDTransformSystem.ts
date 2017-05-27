@@ -12,7 +12,7 @@ import {
     addAddComponentHandle as addAddComponentHandleToMap, addDisposeHandle as addDisposeHandleToMap,
     getComponentGameObject, getComponentGameObjectByMap, setComponentGameObjectByMap
 } from "../ComponentSystem";
-import { deleteVal, isValidMapValue } from "../../utils/objectUtils";
+import { createMap, deleteVal, isValidMapValue } from "../../utils/objectUtils";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 import { update as updateSystem } from "./updateSystem";
 import {
@@ -34,7 +34,8 @@ import { getStartIndexInArrayBuffer } from "./utils";
 import { checkTransformShouldAlive } from "./contractUtils";
 import { setBatchDatas as setBatchDatasSystem } from "./batchSystem";
 import { deleteMapVal } from "../../utils/mapUtils";
-import { getCache, setCache } from "./cacheSystem";
+import { clearCacheMap, getCache, setCache } from "./cacheSystem";
+import { isDisposeTooManyComponents, setMapVal } from "../../utils/memoryUtils";
 
 export var addAddComponentHandle = (_class: any, ThreeDTransformData:any) => {
     addAddComponentHandleToMap(_class, addComponent(ThreeDTransformData));
@@ -69,9 +70,12 @@ var _generateIndexInArrayBuffer = (ThreeDTransformData:any) => {
 
 
 var _createTempData = (uid:number, ThreeDTransformData:any,) => {
-    ThreeDTransformData.tempPositionMap.set(uid, Vector3.create());
-    ThreeDTransformData.tempLocalPositionMap.set(uid, Vector3.create());
-    ThreeDTransformData.tempLocalToWorldMatrixMap.set(uid, Matrix4.create());
+    // ThreeDTransformData.tempPositionMap.set(uid, Vector3.create());
+    // ThreeDTransformData.tempLocalPositionMap.set(uid, Vector3.create());
+    // ThreeDTransformData.tempLocalToWorldMatrixMap.set(uid, Matrix4.create());
+    ThreeDTransformData.tempPositionMap[uid] = Vector3.create();
+    ThreeDTransformData.tempLocalPositionMap[uid] = Vector3.create();
+    ThreeDTransformData.tempLocalToWorldMatrixMap[uid] = Matrix4.create();
 
     return ThreeDTransformData;
 }
@@ -93,25 +97,76 @@ export var disposeComponent = curry((GlobalTempData:any, ThreeDTransformData:any
     var indexInArrayBuffer = transform.index,
         uid = transform.uid;
 
-    // if(isDisposeTooManyComponents(ThreeDTransformData.disposeCount)){
-    //     clearCacheMap(ThreeDTransformData);
-    //
-    //     ThreeDTransformData.parentMap = _getNewReallocatedMap(ThreeDTransformData.parentMap);
-    //     ThreeDTransformData.childrenMap = _getNewReallocatedMap(ThreeDTransformData.childrenMap);
-    //     ThreeDTransformData.isTranslateMap    = _getNewReallocatedMap(ThreeDTransformData.isTranslateMap);
-    //     ThreeDTransformData.tempPositionMap = _getNewReallocatedMap(ThreeDTransformData.tempPositionMap);
-    //     ThreeDTransformData.tempLocalPositionMap = _getNewReallocatedMap(ThreeDTransformData.tempLocalPositionMap);
-    //     ThreeDTransformData.tempLocalToWorldMatrixMap = _getNewReallocatedMap(ThreeDTransformData.tempLocalToWorldMatrixMap);
-    //     ThreeDTransformData.transformMap = _getNewReallocatedMap(ThreeDTransformData.transformMap);
-    //     ThreeDTransformData.gameObjectMap = _getNewReallocatedMap(ThreeDTransformData.gameObjectMap);
-    //
-    //
-    //
-    //     ThreeDTransformData.disposeCount = 0;
-    // }
-    // else{
-    //     ThreeDTransformData.disposeCount += 1;
-    // }
+    if(isDisposeTooManyComponents(ThreeDTransformData.disposeCount)){
+        clearCacheMap(ThreeDTransformData);
+
+        let val:any = null,
+            newParentMap = {},
+            newChildrenMap = {},
+            newIsTranslateMap = {},
+            // newPositionCacheMap = {},
+            // newLocalPositionCacheMap = {},
+            // newLocalToWorldMatrixCacheMap = {},
+            newTempPositionMap = {},
+            newTempLocalPositionMap = {},
+            newTempLocalToWorldMatrixMap = {},
+            // newIsAliveMap = {},
+            // newIsAliveMap = new Map<string, boolean>(),
+            parentMap = ThreeDTransformData.parentMap,
+            childrenMap = ThreeDTransformData.childrenMap,
+            isTranslateMap = ThreeDTransformData.isTranslateMap,
+            // positionCacheMap = ThreeDTransformData.positionCacheMap,
+            // localPositionCacheMap = ThreeDTransformData.localPositionCacheMap,
+            // localToWorldMatrixCacheMap = ThreeDTransformData.localToWorldMatrixCacheMap,
+            tempPositionMap = ThreeDTransformData.tempPositionMap,
+            tempLocalPositionMap = ThreeDTransformData.tempLocalPositionMap,
+            tempLocalToWorldMatrixMap = ThreeDTransformData.tempLocalToWorldMatrixMap;
+
+        ThreeDTransformData.gameObjectMap.forEach(function(value, uid) {
+            val = parentMap[uid];
+            setMapVal(newParentMap, uid, val);
+
+            val = childrenMap[uid];
+            setMapVal(newChildrenMap, uid, val);
+
+            val = isTranslateMap[uid];
+            setMapVal(newIsTranslateMap, uid, val);
+
+            val = tempPositionMap[uid];
+            setMapVal(newTempLocalPositionMap, uid, val);
+
+            val = tempLocalPositionMap[uid];
+            setMapVal(newTempLocalPositionMap, uid, val);
+
+            val = tempLocalToWorldMatrixMap[uid];
+            setMapVal(newTempLocalToWorldMatrixMap, uid, val);
+
+            // val = positionCacheMap[uid];
+            // _setMapVal(newPositionCacheMap, uid, val);
+            //
+            // val = localPositionCacheMap[uid];
+            // _setMapVal(newLocalPositionCacheMap, uid, val);
+            //
+            // val = localToWorldMatrixCacheMap[uid];
+            // _setMapVal(newLocalToWorldMatrixCacheMap, uid, val);
+        })
+
+        ThreeDTransformData.parentMap = newParentMap;
+        ThreeDTransformData.childrenMap = newChildrenMap;
+        ThreeDTransformData.isTranslateMap = newIsTranslateMap;
+        // ThreeDTransformData.positionCacheMap = newPositionCacheMap;
+        // ThreeDTransformData.localPositionCacheMap = newLocalPositionCacheMap;
+        // ThreeDTransformData.localToWorldMatrixCacheMap = newLocalToWorldMatrixCacheMap;
+        ThreeDTransformData.tempPositionMap = newTempPositionMap;
+        ThreeDTransformData.tempLocalPositionMap = newTempLocalPositionMap;
+        ThreeDTransformData.tempLocalToWorldMatrixMap = newTempLocalToWorldMatrixMap;
+
+
+        ThreeDTransformData.disposeCount = 0;
+    }
+    else{
+        ThreeDTransformData.disposeCount += 1;
+    }
 
 
     if (isNotDirty(indexInArrayBuffer, ThreeDTransformData.firstDirtyIndex)) {
@@ -120,21 +175,6 @@ export var disposeComponent = curry((GlobalTempData:any, ThreeDTransformData:any
 
     _disposeFromDirtyList(indexInArrayBuffer, uid, GlobalTempData, ThreeDTransformData);
 })
-
-// var _getNewReallocatedMap = (map:object) => {
-//     var newMap = {},
-//         val = null;
-//
-//     for(let index in map){
-//         val = map[index];
-//
-//         if(isValidMapValue(val)){
-//             newMap[index] = val;
-//         }
-//     }
-//
-//     return newMap;
-// }
 
 export var getGameObject = (uid:number, ThreeDTransformData:any) => {
     return getComponentGameObjectByMap(ThreeDTransformData.gameObjectMap, uid);
@@ -178,7 +218,8 @@ export var getPosition = requireCheckFunc((transform:ThreeDTransform, ThreeTrans
     var indexInArrayBuffer = getMatrix4DataIndexInArrayBuffer(transform.index),
         localToWorldMatrices = ThreeTransformData.localToWorldMatrices;
 
-    return ThreeTransformData.tempPositionMap.get(transform.uid).set(localToWorldMatrices[indexInArrayBuffer + 12], localToWorldMatrices[indexInArrayBuffer + 13], localToWorldMatrices[indexInArrayBuffer + 14]);
+    // return ThreeTransformData.tempPositionMap.get(transform.uid).set(localToWorldMatrices[indexInArrayBuffer + 12], localToWorldMatrices[indexInArrayBuffer + 13], localToWorldMatrices[indexInArrayBuffer + 14]);
+    return ThreeTransformData.tempPositionMap[transform.uid].set(localToWorldMatrices[indexInArrayBuffer + 12], localToWorldMatrices[indexInArrayBuffer + 13], localToWorldMatrices[indexInArrayBuffer + 14]);
 }))
 
 var _setTransformMap = (indexInArrayBuffer:number, transform:ThreeDTransform, ThreeDTransformData:any) => {
@@ -213,7 +254,8 @@ export var getLocalPosition = requireCheckFunc((transform:ThreeDTransform, Three
 }, (transform:ThreeDTransform, ThreeTransformData: any, position:Vector3) => {
     setCache(ThreeTransformData.localPositionCacheMap, transform.uid, position);
 }, (transform:ThreeDTransform, ThreeTransformData: any) => {
-    return DataUtils.createVector3ByIndex(ThreeTransformData.tempLocalPositionMap.get(transform.uid), ThreeDTransformData.localPositions, getVector3DataIndexInArrayBuffer(transform.index));
+    // return DataUtils.createVector3ByIndex(ThreeTransformData.tempLocalPositionMap.get(transform.uid), ThreeDTransformData.localPositions, getVector3DataIndexInArrayBuffer(transform.index));
+    return DataUtils.createVector3ByIndex(ThreeTransformData.tempLocalPositionMap[transform.uid], ThreeDTransformData.localPositions, getVector3DataIndexInArrayBuffer(transform.index));
 }))
 
 export var setLocalPosition = requireCheckFunc((transform:ThreeDTransform, position: Vector3, ThreeTransformData: any) => {
@@ -249,14 +291,22 @@ var _disposeItemInDataContainer = (indexInArrayBuffer: number, uid:number, Globa
 }
 
 var _disposeMapDatas = (indexInArrayBuffer:number, uid:number, ThreeDTransformData:any) => {
-    deleteMapVal(uid, ThreeDTransformData.isTranslateMap);
-    deleteMapVal(uid, ThreeDTransformData.positionCacheMap);
-    deleteMapVal(uid, ThreeDTransformData.localPositionCacheMap);
-    deleteMapVal(uid, ThreeDTransformData.localToWorldMatrixCacheMap);
-    deleteMapVal(uid, ThreeDTransformData.tempLocalToWorldMatrixMap);
-    deleteMapVal(uid, ThreeDTransformData.tempPositionMap);
-    deleteMapVal(uid, ThreeDTransformData.tempLocalPositionMap);
+    // deleteMapVal(uid, ThreeDTransformData.isTranslateMap);
+    // deleteMapVal(uid, ThreeDTransformData.positionCacheMap);
+    // deleteMapVal(uid, ThreeDTransformData.localPositionCacheMap);
+    // deleteMapVal(uid, ThreeDTransformData.localToWorldMatrixCacheMap);
+    // deleteMapVal(uid, ThreeDTransformData.tempLocalToWorldMatrixMap);
+    // deleteMapVal(uid, ThreeDTransformData.tempPositionMap);
+    // deleteMapVal(uid, ThreeDTransformData.tempLocalPositionMap);
     deleteMapVal(uid, ThreeDTransformData.gameObjectMap);
+
+    deleteVal(uid, ThreeDTransformData.isTranslateMap);
+    deleteVal(uid, ThreeDTransformData.positionCacheMap);
+    deleteVal(uid, ThreeDTransformData.localPositionCacheMap);
+    deleteVal(uid, ThreeDTransformData.localToWorldMatrixCacheMap);
+    deleteVal(uid, ThreeDTransformData.tempLocalToWorldMatrixMap);
+    deleteVal(uid, ThreeDTransformData.tempPositionMap);
+    deleteVal(uid, ThreeDTransformData.tempLocalPositionMap);
 
     deleteVal(indexInArrayBuffer, ThreeDTransformData.transformMap);
 }
@@ -292,7 +342,8 @@ var _addDefaultTransformData = (GlobalTempData: any, ThreeDTransformData: any) =
 }
 
 export var getTempLocalToWorldMatrix = (transform:ThreeDTransform, ThreeDTransformData:any) => {
-    return ThreeDTransformData.tempLocalToWorldMatrixMap.get(transform.uid);
+    // return ThreeDTransformData.tempLocalToWorldMatrixMap.get(transform.uid);
+    return ThreeDTransformData.tempLocalToWorldMatrixMap[transform.uid];
 }
 
 export var initData = (GlobalTempData: any, ThreeDTransformData: any) => {
@@ -313,18 +364,31 @@ export var initData = (GlobalTempData: any, ThreeDTransformData: any) => {
     ThreeDTransformData.notUsedIndexArray = [];
 
 
-    ThreeDTransformData.parentMap = new Map();
-    ThreeDTransformData.childrenMap = new Map();
+    // ThreeDTransformData.parentMap = new Map();
+    // ThreeDTransformData.childrenMap = new Map();
+    //
+    // ThreeDTransformData.isTranslateMap = new Map();
+    //
+    // ThreeDTransformData.positionCacheMap = new Map();
+    // ThreeDTransformData.localPositionCacheMap = new Map();
+    // ThreeDTransformData.localToWorldMatrixCacheMap = new Map();
+    //
+    // ThreeDTransformData.tempPositionMap = new Map();
+    // ThreeDTransformData.tempLocalPositionMap = new Map();
+    // ThreeDTransformData.tempLocalToWorldMatrixMap = new Map();
 
-    ThreeDTransformData.isTranslateMap = new Map();
+    ThreeDTransformData.parentMap = createMap();
+    ThreeDTransformData.childrenMap = createMap();
 
-    ThreeDTransformData.positionCacheMap = new Map();
-    ThreeDTransformData.localPositionCacheMap = new Map();
-    ThreeDTransformData.localToWorldMatrixCacheMap = new Map();
+    ThreeDTransformData.isTranslateMap = createMap();
 
-    ThreeDTransformData.tempPositionMap = new Map();
-    ThreeDTransformData.tempLocalPositionMap = new Map();
-    ThreeDTransformData.tempLocalToWorldMatrixMap = new Map();
+    ThreeDTransformData.positionCacheMap = createMap();
+    ThreeDTransformData.localPositionCacheMap = createMap();
+    ThreeDTransformData.localToWorldMatrixCacheMap = createMap();
+
+    ThreeDTransformData.tempPositionMap = createMap();
+    ThreeDTransformData.tempLocalPositionMap = createMap();
+    ThreeDTransformData.tempLocalToWorldMatrixMap = createMap();
 
     ThreeDTransformData.transformMap = {};
 
@@ -334,6 +398,8 @@ export var initData = (GlobalTempData: any, ThreeDTransformData: any) => {
     ThreeDTransformData.indexInArrayBuffer = getStartIndexInArrayBuffer();
 
     ThreeDTransformData.uid = 0;
+    ThreeDTransformData.disposeCount = 0;
+    ThreeDTransformData.isClearCacheMap = false;
 
     _addDefaultTransformData(GlobalTempData, ThreeDTransformData);
 }
