@@ -11,13 +11,14 @@ import {
 } from "../ComponentSystem";
 import { createMap, deleteBySwap as deleteObjectBySwap, deleteVal } from "../../utils/objectUtils";
 import { checkIndexShouldEqualCount } from "../utils/contractUtils";
+import { MeshRendererData } from "./MeshRendererData";
 
-export var addAddComponentHandle = (_class: any, MaterialData:any) => {
-    addAddComponentHandleToMap(_class, addComponent(MaterialData));
+export var addAddComponentHandle = (_class: any) => {
+    addAddComponentHandleToMap(_class, addComponent);
 }
 
-export var addDisposeHandle = (_class: any, MaterialData:any) => {
-    addDisposeHandleToMap(_class, disposeComponent(MaterialData));
+export var addDisposeHandle = (_class: any) => {
+    addDisposeHandleToMap(_class, disposeComponent);
 }
 
 export var create = requireCheckFunc((MeshRendererData: any) => {
@@ -43,13 +44,13 @@ var _setRenderGameObjectArray = requireCheckFunc((index:number, gameObject:GameO
     renderGameObjectArray[index] = gameObject;
 })
 
-export var addComponent = curry((MeshRendererData:any, component:MeshRenderer, gameObject:GameObject) => {
+export var addComponent = (component:MeshRenderer, gameObject:GameObject) => {
     _setRenderGameObjectArray(component.index, gameObject, MeshRendererData.renderGameObjectArray);
 
     addComponentToGameObjectMap(MeshRendererData.gameObjectMap, component.index, gameObject);
-})
+}
 
-export var disposeComponent = curry((MeshRendererData:any, component:MeshRenderer) => {
+export var disposeComponent = (component:MeshRenderer) => {
     var sourceIndex = component.index,
         lastComponentIndex = null;
 
@@ -63,7 +64,7 @@ export var disposeComponent = curry((MeshRendererData:any, component:MeshRendere
     deleteObjectBySwap(sourceIndex, lastComponentIndex, MeshRendererData.gameObjectMap);
 
     deleteComponentBySwap(sourceIndex, lastComponentIndex, MeshRendererData.meshRendererMap);
-})
+}
 
 export var getGameObject = (index:number, Data:any) => {
     return getComponentGameObject(Data.gameObjectMap, index);

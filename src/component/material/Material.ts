@@ -50,5 +50,5 @@ export var getMaterialShader = (material:Material) => {
 }
 
 export var initMaterial = (material:Material) => {
-    initMaterialSystem(material_config, shaderLib_generator as any, ShaderData, MaterialData, material.index, getState(DirectorData));
+    initMaterialSystem(material.index, getState(DirectorData));
 }

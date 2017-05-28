@@ -10,13 +10,14 @@ import {
 import curry from "wonder-lodash/curry";
 import { createMap, deleteVal, isValidMapValue } from "../../utils/objectUtils";
 import { forEach } from "../../utils/arrayUtils";
+import { TagData } from "./TagData";
 
-export var addAddComponentHandle = (_class: any, TagData:any) => {
-    addAddComponentHandleToMap(_class, addComponent(TagData));
+export var addAddComponentHandle = (_class: any) => {
+    addAddComponentHandleToMap(_class, addComponent);
 }
 
-export var addDisposeHandle = (_class: any, TagData:any) => {
-    addDisposeHandleToMap(_class, disposeComponent(TagData));
+export var addDisposeHandle = (_class: any) => {
+    addDisposeHandleToMap(_class, disposeComponent);
 }
 
 export var create = ensureFunc((tag:Tag, slotCount:number, TagData:any) => {
@@ -158,9 +159,9 @@ export var removeTag = requireCheckFunc((tagComponent:Tag, tag:string, TagData:a
     _setUsedSlotCount(index, newUsedSlotCount, usedSlotCountMap);
 })
 
-export var addComponent = curry((TagData:any, component:Tag, gameObject:GameObject) => {
+export var addComponent = (component:Tag, gameObject:GameObject) => {
     addComponentToGameObjectMap(TagData.gameObjectMap, component.index, gameObject);
-})
+}
 
 var _getSlotCount = (index:number, slotCountMap:Array<number>) => {
     return slotCountMap[index];
@@ -214,11 +215,11 @@ export var checkTagShouldAlive = (tag:Tag, TagData:any) => {
 }
 
 //todo optimize: if there are too many tagArray->holes, pack tagArray to remove holes
-export var disposeComponent = ensureFunc(curry((returnVal, TagData:any, tag:Tag) => {
+export var disposeComponent = ensureFunc((returnVal, tag:Tag) => {
     it("count should >= 0", () => {
         expect(TagData.count).gte(0);
     });
-}), curry((TagData:any, tag:Tag) => {
+}, (tag:Tag) => {
     var index = tag.index,
         indexInArrayBuffer = _convertTagIndexToIndexInArray(index, TagData),
         currentSlotCount = _getSlotCount(index, TagData.slotCountMap),
@@ -234,7 +235,7 @@ export var disposeComponent = ensureFunc(curry((returnVal, TagData:any, tag:Tag)
 
     deleteVal(index, TagData.usedSlotCountMap);
     deleteVal(index, TagData.gameObjectMap);
-}))
+})
 
 export var getGameObject = (index:number, Data:any) => {
     return getComponentGameObject(Data.gameObjectMap, index);

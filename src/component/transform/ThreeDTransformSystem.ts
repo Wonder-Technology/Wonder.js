@@ -39,13 +39,14 @@ import {
 } from "./cacheSystem";
 import { isDisposeTooManyComponents, reAllocateThreeDTransformMap } from "../../utils/memoryUtils";
 import { LinkList } from "./LinkList";
+import { GlobalTempData } from "../../definition/GlobalTempData";
 
-export var addAddComponentHandle = (_class: any, ThreeDTransformData:any) => {
-    addAddComponentHandleToMap(_class, addComponent(ThreeDTransformData));
+export var addAddComponentHandle = (_class: any) => {
+    addAddComponentHandleToMap(_class, addComponent);
 }
 
-export var addDisposeHandle = (_class: any, GlobalTempData:any, ThreeDTransformData:any) => {
-    addDisposeHandleToMap(_class, disposeComponent(GlobalTempData, ThreeDTransformData));
+export var addDisposeHandle = (_class: any) => {
+    addDisposeHandleToMap(_class, disposeComponent);
 }
 
 export var create = (ThreeDTransformData:any) => {
@@ -84,16 +85,16 @@ export var init = (GlobalTempData: any, ThreeDTransformData: any, state: MapImmu
     return update(null, GlobalTempData, ThreeDTransformData, state);
 }
 
-export var addComponent = curry((ThreeDTransformData: any, transform: ThreeDTransform, gameObject:GameObject) => {
+export var addComponent = (transform: ThreeDTransform, gameObject:GameObject) => {
     var indexInArrayBuffer = transform.index,
         uid = transform.uid;
 
     setComponentGameObjectByMap(ThreeDTransformData.gameObjectMap, uid, gameObject);
 
     return addItAndItsChildrenToDirtyList(indexInArrayBuffer, uid, ThreeDTransformData);
-})
+}
 
-export var disposeComponent = curry((GlobalTempData:any, ThreeDTransformData:any, transform: ThreeDTransform) => {
+export var disposeComponent = (transform: ThreeDTransform) => {
     var indexInArrayBuffer = transform.index,
         uid = transform.uid;
 
@@ -111,7 +112,7 @@ export var disposeComponent = curry((GlobalTempData:any, ThreeDTransformData:any
     }
 
     _disposeFromDirtyList(indexInArrayBuffer, uid, GlobalTempData, ThreeDTransformData);
-})
+}
 
 export var getGameObject = (uid:number, ThreeDTransformData:any) => getComponentGameObjectByMap(ThreeDTransformData.gameObjectMap, uid);
 

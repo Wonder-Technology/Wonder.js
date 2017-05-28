@@ -17,13 +17,16 @@ import { removeDuplicateItems, removeItem } from "../../utils/arrayUtils";
 import { createMap, deleteVal, isValidMapValue } from "../../utils/objectUtils";
 import { cacheFunc } from "../../utils/cacheUtils";
 import { Matrix4 } from "../../math/Matrix4";
+import { CameraControllerData } from "./CameraControllerData";
+import { PerspectiveCameraData } from "./PerspectiveCameraData";
+import { CameraData } from "./CameraData";
 
-export var addAddComponentHandle = (_class: any, CameraControllerData:any) => {
-    addAddComponentHandleToMap(_class, addComponent(CameraControllerData));
+export var addAddComponentHandle = (_class: any) => {
+    addAddComponentHandleToMap(_class, addComponent);
 }
 
-export var addDisposeHandle = (_class: any, PerspectiveCameraData:any, CameraData:any, CameraControllerData:any) => {
-    addDisposeHandleToMap(_class, disposeComponent(PerspectiveCameraData, CameraData, CameraControllerData));
+export var addDisposeHandle = (_class: any) => {
+    addDisposeHandleToMap(_class, disposeComponent);
 }
 
 export var create = requireCheckFunc((CameraControllerData: any) => {
@@ -84,11 +87,11 @@ export var update = (PerspectiveCameraData:any, CameraData:any, CameraController
     _clearCache(CameraControllerData);
 }
 
-export var addComponent = curry((CameraControllerData:any, component:CameraController, gameObject:GameObject) => {
+export var addComponent = (component:CameraController, gameObject:GameObject) => {
     addComponentToGameObjectMap(CameraControllerData.gameObjectMap, component.index, gameObject);
-})
+}
 
-export var disposeComponent = curry((PerspectiveCameraData:any, CameraData:any, CameraControllerData:any, component:CameraController) => {
+export var disposeComponent = (component:CameraController) => {
     var index = component.index;
 
     deleteVal(index, CameraControllerData.gameObjectMap);
@@ -99,7 +102,7 @@ export var disposeComponent = curry((PerspectiveCameraData:any, CameraData:any, 
     CameraControllerData.dirtyIndexArray = removeItem(CameraControllerData.dirtyIndexArray, index);
 
     dispose(index, PerspectiveCameraData, CameraData);
-})
+}
 
 export var getGameObject = (index:number, CameraControllerData:any) => {
     return getComponentGameObject(CameraControllerData.gameObjectMap, index);

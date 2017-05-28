@@ -1,6 +1,6 @@
 import { init as initShader } from "../../renderer/shader/ShaderSystem";
-import { IMaterialConfig } from "../../renderer/data/material_config";
-import { IShaderLibGenerator } from "../../renderer/data/shaderLib_generator";
+import { IMaterialConfig, material_config } from "../../renderer/data/material_config";
+import { IShaderLibGenerator, shaderLib_generator } from "../../renderer/data/shaderLib_generator";
 import { Map as MapImmutable } from "immutable";
 import { ensureFunc, it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { Color } from "../../structure/Color";
@@ -18,17 +18,20 @@ import { createMap, deleteBySwap, isValidMapValue } from "../../utils/objectUtil
 import { checkIndexShouldEqualCount } from "../utils/contractUtils";
 import { deleteBySwap as deleteMapBySwap } from "../../utils/mapUtils";
 import { Shader } from "../../renderer/shader/Shader";
+import { MaterialData } from "./MaterialData";
+import { ShaderData } from "../../renderer/shader/ShaderData";
+import { DeviceManagerData } from "../../device/DeviceManagerData";
 
-export var addAddComponentHandle = (_class: any, MaterialData:any) => {
-    addAddComponentHandleToMap(_class, addComponent(MaterialData));
+export var addAddComponentHandle = (_class: any) => {
+    addAddComponentHandleToMap(_class, addComponent);
 }
 
-export var addDisposeHandle = (_class: any, MaterialData:any) => {
-    addDisposeHandleToMap(_class, disposeComponent(MaterialData));
+export var addDisposeHandle = (_class: any) => {
+    addDisposeHandleToMap(_class, disposeComponent);
 }
 
-export var addInitHandle = (_class: any, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DeviceManagerData:any, ShaderData:any, MaterialData:any) => {
-    addInitHandleToMap(_class, initMaterial(material_config, shaderLib_generator, DeviceManagerData, ShaderData, MaterialData));
+export var addInitHandle = (_class: any) => {
+    addInitHandleToMap(_class, initMaterial);
 }
 
 export var create = requireCheckFunc((material:Material, className:string, MaterialData: any) => {
@@ -65,11 +68,11 @@ export var init = requireCheckFunc((state: MapImmutable<any, any>, material_conf
     // checkIndexShouldEqualCount(MaterialData);
 }, (state: MapImmutable<any, any>, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DeviceManagerData:any, ShaderData:any, MaterialData:any) => {
     for(let i = 0, count = MaterialData.count; i < count; i++){
-        initMaterial(material_config, shaderLib_generator, DeviceManagerData, ShaderData, MaterialData, i, state);
+        initMaterial(i, state);
     }
 })
 
-export var initMaterial = curry((material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DeviceManagerData:any, ShaderData:any, MaterialData:any, index:number, state: MapImmutable<any, any>) => {
+export var initMaterial = (index:number, state: MapImmutable<any, any>) => {
     var shader = getShader(index, MaterialData),
         isInitMap = ShaderData.isInitMap,
         shaderIndex = shader.index;
@@ -80,8 +83,8 @@ export var initMaterial = curry((material_config:IMaterialConfig, shaderLib_gene
 
     isInitMap[shaderIndex] = true;
 
-    initShader(state, index, shaderIndex, _getMaterialClassName(index, MaterialData), material_config, shaderLib_generator, DeviceManagerData, ShaderData);
-})
+    initShader(state, index, shaderIndex, _getMaterialClassName(index, MaterialData), material_config, shaderLib_generator as any, DeviceManagerData, ShaderData);
+}
 
 var _getMaterialClassName = (materialIndex:number, MaterialData:any) => {
     return MaterialData.materialClassNameMap[materialIndex];
@@ -127,13 +130,13 @@ export var isPropertyExist = (propertyVal:any) => {
     return isValidMapValue(propertyVal);
 }
 
-export var addComponent = curry((MaterialData:any, component:Material, gameObject:GameObject) => {
+export var addComponent = (component:Material, gameObject:GameObject) => {
     addComponentToGameObjectMapMap(MaterialData.gameObjectMap, component.index, gameObject);
-})
+}
 
-export var disposeComponent = ensureFunc(curry((returnVal, MaterialData:any, component:Material) => {
+export var disposeComponent = ensureFunc((returnVal, component:Material) => {
     checkIndexShouldEqualCount(MaterialData);
-}), curry((MaterialData:any, component:Material) => {
+}, (component:Material) => {
     var sourceIndex = component.index,
         lastComponentIndex:number = null;
 
@@ -153,7 +156,7 @@ export var disposeComponent = ensureFunc(curry((returnVal, MaterialData:any, com
     deleteComponentBySwap(sourceIndex, lastComponentIndex, MaterialData.materialMap);
 
     //not dispose shader(for reuse shader)
-}))
+})
 
 export var getGameObject = (index:number, Data:any) => {
     return getComponentGameObject(Data.gameObjectMap, index);

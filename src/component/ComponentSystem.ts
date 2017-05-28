@@ -7,17 +7,17 @@ import { it, requireCheckFunc } from "../definition/typescript/decorator/contrac
 import { deleteBySwap, isNotValidMapValue } from "../utils/objectUtils";
 import { Map as MapImmutable } from "immutable";
 
-var _addHandle = (_class:any, handleMap:object, handle:(...args) => void) => {
+var _addHandle = (_class:any, handleMap:object, handle:Function) => {
     var typeID = getTypeIDFromClass(_class);
 
     handleMap[typeID] = handle;
 }
 
-export var addAddComponentHandle = (_class:any, handle:(component:Component, gameObject:GameObject) => void) => {
+export var addAddComponentHandle = (_class:any, handle:Function) => {
     _addHandle(_class, ComponentData.addComponentHandleMap, handle);
 }
 
-export var addDisposeHandle = (_class:any, handle:(component:Component) => void) => {
+export var addDisposeHandle = (_class:any, handle:Function) => {
     _addHandle(_class, ComponentData.disposeHandleMap, handle);
 }
 

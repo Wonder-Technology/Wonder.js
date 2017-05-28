@@ -32,7 +32,7 @@ export var getGeometryConfigData = (geometry:Geometry) => {
 }
 
 export var initGeometry = (geometry:Geometry) => {
-    initGeometrySystem(GeometryData, geometry.index, getState(DirectorData));
+    initGeometrySystem(geometry.index, getState(DirectorData));
 }
 
 export var getGeometryGameObject = (geometry:Geometry) => {

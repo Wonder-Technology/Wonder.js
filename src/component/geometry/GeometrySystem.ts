@@ -15,17 +15,18 @@ import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 import { EDrawMode } from "../../renderer/enum/EDrawMode";
 import { checkIndexShouldEqualCount } from "../utils/contractUtils";
 import { expect } from "wonder-expect.js";
+import { GeometryData } from "./GeometryData";
 
-export var addAddComponentHandle = (_class: any, GeometryData:any) => {
-    addAddComponentHandleToMap(_class, addComponent(GeometryData));
+export var addAddComponentHandle = (_class: any) => {
+    addAddComponentHandleToMap(_class, addComponent);
 }
 
-export var addDisposeHandle = (_class: any, GeometryData:any) => {
-    addDisposeHandleToMap(_class, disposeComponent(GeometryData));
+export var addDisposeHandle = (_class: any) => {
+    addDisposeHandleToMap(_class, disposeComponent);
 }
 
-export var addInitHandle = (_class: any, GeometryData:any) => {
-    addInitHandleToMap(_class, initGeometry(GeometryData));
+export var addInitHandle = (_class: any) => {
+    addInitHandleToMap(_class, initGeometry);
 }
 
 export var create = requireCheckFunc((geometry:Geometry, GeometryData: any) => {
@@ -44,13 +45,13 @@ export var create = requireCheckFunc((geometry:Geometry, GeometryData: any) => {
 
 export var init = (GeometryData: any, state:Map<any, any>) => {
     for (let i = 0, count = GeometryData.count; i < count; i++) {
-        initGeometry(GeometryData, i, state);
+        initGeometry(i, state);
     }
 
     return state;
 }
 
-export var initGeometry = curry((GeometryData: any, index: number, state: Map<any, any>) => {
+export var initGeometry = (index: number, state: Map<any, any>) => {
     var computeDataFunc = GeometryData.computeDataFuncMap[index];
 
     if(_isComputeDataFuncNotExist(computeDataFunc)){
@@ -65,7 +66,7 @@ export var initGeometry = curry((GeometryData: any, index: number, state: Map<an
     setVertices(index, vertices, GeometryData);
 
     setIndices(index, indices, GeometryData);
-})
+}
 
 var _isComputeDataFuncNotExist = (func:Function) => isNotValidMapValue(func);
 
@@ -123,13 +124,13 @@ export var hasIndices = (index:number, GeometryData:any) => {
     return indices.length > 0;
 }
 
-export var addComponent = curry((GeometryData:any, component:Geometry, gameObject:GameObject) => {
+export var addComponent = (component:Geometry, gameObject:GameObject) => {
     addComponentToGameObjectMap(GeometryData.gameObjectMap, component.index, gameObject);
-})
+}
 
-export var disposeComponent = ensureFunc(curry((returnVal, GeometryData:any, component:Geometry) => {
+export var disposeComponent = ensureFunc((returnVal, component:Geometry) => {
     checkIndexShouldEqualCount(GeometryData);
-}), curry((GeometryData:any, component:Geometry) => {
+}, (component:Geometry) => {
     var sourceIndex = component.index,
         lastComponentIndex:number = null;
 
@@ -147,7 +148,7 @@ export var disposeComponent = ensureFunc(curry((returnVal, GeometryData:any, com
     deleteObjectBySwap(sourceIndex, lastComponentIndex, GeometryData.gameObjectMap);
 
     deleteComponentBySwap(sourceIndex, lastComponentIndex, GeometryData.geometryMap);
-}))
+})
 
 export var getGameObject = (index:number, Data:any) => {
     return getComponentGameObject(Data.gameObjectMap, index);

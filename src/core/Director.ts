@@ -242,26 +242,26 @@ export class Director {
 initShaderData(ShaderData);
 
 initGeometryData(DataBufferConfig, GeometryData);
-addGeometryAddComponentHandle(Geometry, GeometryData);
-addGeometryDisposeHandle(Geometry, GeometryData);
-addGeometryInitHandle(Geometry, GeometryData);
+addGeometryAddComponentHandle(Geometry);
+addGeometryDisposeHandle(Geometry);
+addGeometryInitHandle(Geometry);
 
 initMaterialData(MaterialData);
-addMaterialAddComponentHandle(Material, MaterialData);
-addMaterialDisposeHandle(Material, MaterialData);
-addMaterialInitHandle(Material, material_config, shaderLib_generator as any, DeviceManagerData, ShaderData, MaterialData);
+addMaterialAddComponentHandle(Material);
+addMaterialDisposeHandle(Material);
+addMaterialInitHandle(Material);
 
 initMeshRendererData(MeshRendererData);
-addMeshRendererAddComponentHandle(MeshRenderer, MeshRendererData);
-addMeshRendererDisposeHandle(MeshRenderer, MeshRendererData);
+addMeshRendererAddComponentHandle(MeshRenderer);
+addMeshRendererDisposeHandle(MeshRenderer);
 
 initTagData(TagData);
-addTagAddComponentHandle(Tag, TagData);
-addTagDisposeHandle(Tag, TagData);
+addTagAddComponentHandle(Tag);
+addTagDisposeHandle(Tag);
 
 initThreeDTransformData(GlobalTempData, ThreeDTransformData);
-addThreeDTransformAddComponentHandle(ThreeDTransform, ThreeDTransformData);
-addThreeDTransformDisposeHandle(ThreeDTransform, GlobalTempData, ThreeDTransformData);
+addThreeDTransformAddComponentHandle(ThreeDTransform);
+addThreeDTransformDisposeHandle(ThreeDTransform);
 
 initArrayBufferData(ArrayBufferData);
 
@@ -270,28 +270,8 @@ initIndexBufferData(IndexBufferData);
 initSceneData(SceneData);
 
 initCameraControllerData(CameraControllerData, PerspectiveCameraData, CameraData);
-addCameraControllerAddComponentHandle(CameraController, CameraControllerData);
-addCameraControllerDisposeHandle(CameraController, PerspectiveCameraData, CameraData, CameraControllerData);
+addCameraControllerAddComponentHandle(CameraController);
+addCameraControllerDisposeHandle(CameraController);
 
 initGameObjectData(GameObjectData);
 
-// export var initComponent = () => {
-//     const initData = {
-//         "geometry":{
-//             "initData": GeometryData,
-//
-//             "addHandle": {
-//                 "addComponent": GeometryData,
-//                 "disposeComponent": GeometryData,
-//                 "initGeometry": (geometry:Geometry) => [geometry.index, isIndicesBufferNeed32BitsByData(GeometryData), GeometryData.computeDataFuncMap, GeometryData.verticesMap, GeometryData.indicesMap, GeometryData]
-//             }
-//         }
-//     }
-//
-//
-//     initGeometryData(DataBufferConfig, GeometryData);
-//     addAddComponentHandle(Geometry, GeometryData);
-//     addDisposeHandle(Geometry, GeometryData);
-//     addInitHandle(Geometry)
-//
-// }
