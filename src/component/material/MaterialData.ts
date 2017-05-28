@@ -15,13 +15,23 @@ export class MaterialData{
     public static alphaTestMap:MaterialAlphaTestMap = null;
 }
 
-export type MaterialClassNameMap = Map<number, string>;
+export type MaterialClassNameMap = {
+    [index:number]: string
+}
 
-export type ShaderMap = Map<number, Shader>;
+export type ShaderMap = {
+    [index:number]: Shader
+}
 
-export type MaterialColorMap = Map<number, Color>;
+export type MaterialColorMap = {
+    [index:number]: Color
+}
 
-export type MaterialOpacityMap = Map<number, number>;
+export type MaterialOpacityMap = {
+    [index:number]: number
+}
 
-export type MaterialAlphaTestMap = Map<number, number>;
+export type MaterialAlphaTestMap = {
+    [index:number]: number
+}
 

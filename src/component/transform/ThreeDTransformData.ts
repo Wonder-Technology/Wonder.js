@@ -9,8 +9,6 @@ export class ThreeDTransformData {
         return DataBufferConfig.transformDataBufferCount;
     }
 
-    // public static transforms: Array<ThreeDTransform> = null;
-    // public static transformIndexInArrayBufferTable: Array<number> = null;
     public static localToWorldMatrices: Float32Array = null;
     public static localPositions: Float32Array = null;
     public static localRotations: Float32Array = null;
@@ -25,13 +23,13 @@ export class ThreeDTransformData {
     public static parentMap: ParentMap = null;
     public static childrenMap: ChildrenMap = null;
 
-    public static positionCacheMap:ThreeDTransformPositionCacheMap = null;
-    public static localPositionCacheMap:ThreeDTransformLocalPositionCacheMap = null;
-    public static localToWorldMatrixCacheMap:ThreeDTransformLocalToWorldMatrixCacheMap = null;
+    public static positionCacheMap:ThreeDTransformPositionMap = null;
+    public static localPositionCacheMap:ThreeDTransformLocalPositionMap = null;
+    public static localToWorldMatrixCacheMap:ThreeDTransformLocalToWorldMatrixMap = null;
 
-    public static tempLocalToWorldMatrixMap:object = null;
-    public static tempPositionMap:object = null;
-    public static tempLocalPositionMap:object = null;
+    public static tempLocalToWorldMatrixMap:ThreeDTransformLocalToWorldMatrixMap = null;
+    public static tempPositionMap:ThreeDTransformPositionMap = null;
+    public static tempLocalPositionMap:ThreeDTransformLocalPositionMap = null;
 
     public static transformMap:TransformMap = null;
 
@@ -70,14 +68,14 @@ export type TransformMap = {
     [index:number]: ThreeDTransform
 }
 
-export type ThreeDTransformPositionCacheMap = {
+export type ThreeDTransformPositionMap = {
     [uid:number]: Vector3
 }
 
-export type ThreeDTransformLocalPositionCacheMap = {
+export type ThreeDTransformLocalPositionMap = {
     [uid:number]: Vector3
 }
 
-export type ThreeDTransformLocalToWorldMatrixCacheMap = {
+export type ThreeDTransformLocalToWorldMatrixMap = {
     [uid:number]: Matrix4
 }

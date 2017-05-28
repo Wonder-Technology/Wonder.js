@@ -5,17 +5,11 @@ export class GameObjectData{
     public static uid:number = null;
     public static disposeCount:number = null;
 
-    // public static isAliveMap:GameObjectIsAliveMap = {};
     public static isAliveMap:GameObjectIsAliveMap = null;
 
-    // public static uidMap = new Map<number, boolean>();
-
-    // public static componentMap:GameObjectComponentMap = null;
-    // public static parentMap:GameObjectParentMap = null;
-    // public static childrenMap:GameObjectChildrenMap = null;
-    public static componentMap = null;
-    public static parentMap = null;
-    public static childrenMap = null;
+    public static componentMap:GameObjectComponentMap = null;
+    public static parentMap:GameObjectParentMap = null;
+    public static childrenMap:GameObjectChildrenMap = null;
 
     //todo add name map
 }
@@ -28,6 +22,10 @@ export type GameObjectComponentData = {
     [typeId:number]:Component;
 }
 
-export type GameObjectParentMap = Map<number, GameObject>;
+export type GameObjectParentMap = {
+    [uid:number]: GameObject
+}
 
-export type GameObjectChildrenMap = Map<number, Array<GameObject>>;
+export type GameObjectChildrenMap = {
+    [uid:number]: Array<GameObject>
+}
