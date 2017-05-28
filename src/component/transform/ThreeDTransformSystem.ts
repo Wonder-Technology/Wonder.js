@@ -35,7 +35,7 @@ import { checkTransformShouldAlive } from "./contractUtils";
 import { setBatchDatas as setBatchDatasSystem } from "./batchSystem";
 import { deleteMapVal } from "../../utils/mapUtils";
 import { clearCacheMap, getCache, setCache } from "./cacheSystem";
-import { isDisposeTooManyComponents, setMapVal } from "../../utils/memoryUtils";
+import { isDisposeTooManyComponents, reAllocateThreeDTransformMap, setMapVal } from "../../utils/memoryUtils";
 
 export var addAddComponentHandle = (_class: any, ThreeDTransformData:any) => {
     addAddComponentHandleToMap(_class, addComponent(ThreeDTransformData));
@@ -98,69 +98,7 @@ export var disposeComponent = curry((GlobalTempData:any, ThreeDTransformData:any
         uid = transform.uid;
 
     if(isDisposeTooManyComponents(ThreeDTransformData.disposeCount)){
-        clearCacheMap(ThreeDTransformData);
-
-        let val:any = null,
-            newParentMap = {},
-            newChildrenMap = {},
-            newIsTranslateMap = {},
-            // newPositionCacheMap = {},
-            // newLocalPositionCacheMap = {},
-            // newLocalToWorldMatrixCacheMap = {},
-            newTempPositionMap = {},
-            newTempLocalPositionMap = {},
-            newTempLocalToWorldMatrixMap = {},
-            // newIsAliveMap = {},
-            // newIsAliveMap = new Map<string, boolean>(),
-            parentMap = ThreeDTransformData.parentMap,
-            childrenMap = ThreeDTransformData.childrenMap,
-            isTranslateMap = ThreeDTransformData.isTranslateMap,
-            // positionCacheMap = ThreeDTransformData.positionCacheMap,
-            // localPositionCacheMap = ThreeDTransformData.localPositionCacheMap,
-            // localToWorldMatrixCacheMap = ThreeDTransformData.localToWorldMatrixCacheMap,
-            tempPositionMap = ThreeDTransformData.tempPositionMap,
-            tempLocalPositionMap = ThreeDTransformData.tempLocalPositionMap,
-            tempLocalToWorldMatrixMap = ThreeDTransformData.tempLocalToWorldMatrixMap;
-
-        ThreeDTransformData.gameObjectMap.forEach(function(value, uid) {
-            val = parentMap[uid];
-            setMapVal(newParentMap, uid, val);
-
-            val = childrenMap[uid];
-            setMapVal(newChildrenMap, uid, val);
-
-            val = isTranslateMap[uid];
-            setMapVal(newIsTranslateMap, uid, val);
-
-            val = tempPositionMap[uid];
-            setMapVal(newTempLocalPositionMap, uid, val);
-
-            val = tempLocalPositionMap[uid];
-            setMapVal(newTempLocalPositionMap, uid, val);
-
-            val = tempLocalToWorldMatrixMap[uid];
-            setMapVal(newTempLocalToWorldMatrixMap, uid, val);
-
-            // val = positionCacheMap[uid];
-            // _setMapVal(newPositionCacheMap, uid, val);
-            //
-            // val = localPositionCacheMap[uid];
-            // _setMapVal(newLocalPositionCacheMap, uid, val);
-            //
-            // val = localToWorldMatrixCacheMap[uid];
-            // _setMapVal(newLocalToWorldMatrixCacheMap, uid, val);
-        })
-
-        ThreeDTransformData.parentMap = newParentMap;
-        ThreeDTransformData.childrenMap = newChildrenMap;
-        ThreeDTransformData.isTranslateMap = newIsTranslateMap;
-        // ThreeDTransformData.positionCacheMap = newPositionCacheMap;
-        // ThreeDTransformData.localPositionCacheMap = newLocalPositionCacheMap;
-        // ThreeDTransformData.localToWorldMatrixCacheMap = newLocalToWorldMatrixCacheMap;
-        ThreeDTransformData.tempPositionMap = newTempPositionMap;
-        ThreeDTransformData.tempLocalPositionMap = newTempLocalPositionMap;
-        ThreeDTransformData.tempLocalToWorldMatrixMap = newTempLocalToWorldMatrixMap;
-
+        reAllocateThreeDTransformMap(ThreeDTransformData.gameObjectMap, ThreeDTransformData);
 
         ThreeDTransformData.disposeCount = 0;
     }

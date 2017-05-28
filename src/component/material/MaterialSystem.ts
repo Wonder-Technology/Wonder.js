@@ -17,7 +17,7 @@ import { createMap, deleteVal, isValidMapValue } from "../../utils/objectUtils";
 import { checkIndexShouldEqualCount } from "../utils/contractUtils";
 import { deleteMapVal } from "../../utils/mapUtils";
 import { Shader } from "../../renderer/shader/Shader";
-import { isDisposeTooManyComponents, setMapVal } from "../../utils/memoryUtils";
+import { isDisposeTooManyComponents, reAllocateMaterialMap, setMapVal } from "../../utils/memoryUtils";
 
 export var addAddComponentHandle = (_class: any, MaterialData:any) => {
     addAddComponentHandleToMap(_class, addComponent(MaterialData));
@@ -152,40 +152,7 @@ export var disposeComponent = ensureFunc(curry((returnVal, MaterialData:any, com
     //not dispose shader(for reuse shader)
 
     if(isDisposeTooManyComponents(MaterialData.disposeCount)){
-        let val:any = null,
-            newShaderMap = {},
-            newMaterialClassNameMap = {},
-            newColorMap = {},
-            newOpacityMap = {},
-            newAlphaTestMap = {},
-            shaderMap = MaterialData.shaderMap,
-            materialClassNameMap = MaterialData.materialClassNameMap,
-            colorMap = MaterialData.colorMap,
-            opacityMap = MaterialData.opacityMap,
-            alphaTestMap = MaterialData.alphaTestMap;
-
-        MaterialData.gameObjectMap.forEach(function(value, uid) {
-            val = shaderMap[uid];
-            setMapVal(newShaderMap, uid, val);
-
-            val = materialClassNameMap[uid];
-            setMapVal(newMaterialClassNameMap, uid, val);
-
-            val = colorMap[uid];
-            setMapVal(newColorMap, uid, val);
-
-            val = opacityMap[uid];
-            setMapVal(newOpacityMap, uid, val);
-
-            val = alphaTestMap[uid];
-            setMapVal(newAlphaTestMap, uid, val);
-        });
-
-        MaterialData.shaderMap = newShaderMap;
-        MaterialData.materialClassNameMap = newMaterialClassNameMap;
-        MaterialData.colorMap = newColorMap;
-        MaterialData.opacityMap = newOpacityMap;
-        MaterialData.alphaTestMap = newAlphaTestMap;
+        reAllocateMaterialMap(MaterialData.gameObjectMap, MaterialData);
 
         MaterialData.disposeCount = 0;
     }

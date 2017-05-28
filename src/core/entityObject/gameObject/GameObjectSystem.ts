@@ -17,7 +17,7 @@ import { deleteMapVal } from "../../../utils/mapUtils";
 import { removeChildEntity } from "../../../utils/entityUtils";
 import { chrome, firefox } from "bowser";
 import { error, Log } from "../../../utils/Log";
-import { isDisposeTooManyComponents, setMapVal } from "../../../utils/memoryUtils";
+import { isDisposeTooManyComponents, reAllocateGameObjectMap, setMapVal } from "../../../utils/memoryUtils";
 
 export var create = (transform:ThreeDTransform, GameObjectData:any) => {
     var gameObject:GameObject = new GameObject(),
@@ -54,8 +54,7 @@ export var initGameObject = (gameObject:GameObject, state:MapImmutable<any, any>
     }
 }
 
-export var dispose = requireCheckFunc((entity:IUIDEntity, GameObjectData:any) => {
-}, (entity:IUIDEntity, ThreeDTransformData:any, GameObjectData:any) => {
+export var dispose = (entity:IUIDEntity, ThreeDTransformData:any, GameObjectData:any) => {
     var uid = entity.uid;
 
     deleteMapVal(uid, GameObjectData.isAliveMap);
@@ -68,73 +67,15 @@ export var dispose = requireCheckFunc((entity:IUIDEntity, GameObjectData:any) =>
 
     _diposeAllDatas(entity, GameObjectData);
 
-
-    // GameObjectData.uidMap.delete(uid);
-
-
     if(isDisposeTooManyComponents(GameObjectData.disposeCount)){
-        let val:any = null,
-            newParentMap = {},
-            newChildrenMap = {},
-            newComponentMap = {},
-            parentMap = GameObjectData.parentMap,
-            childrenMap = GameObjectData.childrenMap,
-            componentMap = GameObjectData.componentMap;
-
-        GameObjectData.isAliveMap.forEach(function(value, uid) {
-            val = parentMap[uid];
-            setMapVal(newParentMap, uid, val);
-
-            val = childrenMap[uid];
-            setMapVal(newChildrenMap, uid, val);
-
-            val = componentMap[uid];
-            setMapVal(newComponentMap, uid, val);
-        })
-
-        GameObjectData.parentMap = newParentMap;
-        GameObjectData.childrenMap = newChildrenMap;
-        GameObjectData.componentMap = newComponentMap;
+        reAllocateGameObjectMap(GameObjectData.isAliveMap, GameObjectData);
 
         GameObjectData.disposeCount = 0;
     }
     else{
         GameObjectData.disposeCount += 1;
     }
-})
-
-// var _getNewReallocatedMap = (mapNameArr:Array<string>, GameObjectData:any) => {
-//     var map = GameObjectData[mapNameArr[0]];
-//     var newMap = {},
-//         val = null;
-//
-//     for(let index in map){
-//         for(let mapName of mapNameArr){
-//             val = GameObjectData[mapName][index];
-//
-//             if(isValidMapValue(val)){
-//                 newMap[index] = val;
-//             }
-//         }
-//     }
-//
-//     return newMap;
-// }
-
-// var _getNewReallocatedMap = (map:object) => {
-//     var newMap = {},
-//         val = null;
-//
-//     for(let index in map){
-//         val = map[index];
-//
-//         if(isValidMapValue(val)){
-//             newMap[index] = val;
-//         }
-//     }
-//
-//     return newMap;
-// }
+}
 
 var _removeFromChildrenMap = null;
 
@@ -351,11 +292,8 @@ export var hasChild = (gameObject:GameObject, child:GameObject, GameObjectData:a
 export var initData = (GameObjectData:any) => {
     GameObjectData.uid = 0;
 
+    //todo compatible with mobile: mobile not support Map, should use object fallback
     GameObjectData.isAliveMap = new Map();
-    // GameObjectData.componentMap = new Map();
-    // GameObjectData.componentMap = new Map();
-    // GameObjectData.parentMap = new Map();
-    // GameObjectData.childrenMap = new Map();
     GameObjectData.componentMap = createMap();
     GameObjectData.parentMap = createMap();
     GameObjectData.childrenMap = createMap();
