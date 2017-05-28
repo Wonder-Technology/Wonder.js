@@ -39,7 +39,6 @@ var _buildUID = (GameObjectData:any) => {
 }
 
 export var isAlive = (entity:IUIDEntity, GameObjectData:any) => {
-    // return GameObjectData.isAliveMap[entity.uid] === true;
     return GameObjectData.isAliveMap.get(entity.uid) === true;
 }
 
@@ -185,10 +184,8 @@ export var getComponent = (gameObject:GameObject, componentTypeID:string, GameOb
     return null;
 }
 
-// var _getComponentData = (uid:number, GameObjectData:any) => GameObjectData.componentMap.get(uid);
 var _getComponentData = (uid:number, GameObjectData:any) => GameObjectData.componentMap[uid];
 
-// var _setComponentData = (uid:number, data:GameObjectComponentData, GameObjectData:any) => GameObjectData.componentMap.set(uid, data);
 var _setComponentData = (uid:number, data:GameObjectComponentData, GameObjectData:any) => GameObjectData.componentMap[uid] = data;
 
 export var hasComponent = (gameObject:GameObject, componentTypeID:string, GameObjectData:any) => {
@@ -215,17 +212,14 @@ var _isComponentExist = (component:Component) => component !== null;
 
 var _isGameObjectEqual = (gameObject1:GameObject, gameObject2:GameObject) => gameObject1.uid === gameObject2.uid;
 
-// var _getParent = (uid:number, GameObjectData:any) => GameObjectData.parentMap.get(uid);
 var _getParent = (uid:number, GameObjectData:any) => GameObjectData.parentMap[uid];
 
 var _setParent = (uid:number, parent:GameObject, GameObjectData:any) => {
-    // GameObjectData.parentMap.set(uid, parent);
     GameObjectData.parentMap[uid] = parent;
 }
 
 var _getChildren = (uid:number, GameObjectData:any) => {
     return GameObjectData.childrenMap[uid];
-    // return GameObjectData.childrenMap.get(uid);
 }
 
 var _addChild = (uid:number, child:GameObject, GameObjectData:any) => {
@@ -241,7 +235,6 @@ var _addChild = (uid:number, child:GameObject, GameObjectData:any) => {
 
 var _setChildren = (uid:number, children:Array<GameObject>, GameObjectData:any) => {
     GameObjectData.childrenMap[uid] = children;
-    // GameObjectData.childrenMap.set(uid, children);
 }
 
 export var addChild = requireCheckFunc ((gameObject:GameObject, child:GameObject, ThreeDTransformData:any, GameObjectData:any) => {

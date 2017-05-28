@@ -1,5 +1,4 @@
-import { ThreeDTransformData, ThreeDTransformGameObjectMap } from "./ThreeDTransformData";
-import { compose } from "../../utils/functionalUtils";
+import { ThreeDTransformData } from "./ThreeDTransformData";
 import curry from "wonder-lodash/curry";
 import { requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { BatchTransformData, IThreeDTransform, ThreeDTransform } from "./ThreeDTransform";
@@ -10,7 +9,7 @@ import { Vector3 } from "../../math/Vector3";
 import { cacheFunc } from "../../utils/cacheUtils";
 import {
     addAddComponentHandle as addAddComponentHandleToMap, addDisposeHandle as addDisposeHandleToMap,
-    getComponentGameObject, getComponentGameObjectByMap, setComponentGameObjectByMap
+    getComponentGameObjectByMap, setComponentGameObjectByMap
 } from "../ComponentSystem";
 import { createMap, deleteVal, isValidMapValue } from "../../utils/objectUtils";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
@@ -34,8 +33,8 @@ import { getStartIndexInArrayBuffer } from "./utils";
 import { checkTransformShouldAlive } from "./contractUtils";
 import { setBatchDatas as setBatchDatasSystem } from "./batchSystem";
 import { deleteMapVal } from "../../utils/mapUtils";
-import { clearCacheMap, getCache, setCache } from "./cacheSystem";
-import { isDisposeTooManyComponents, reAllocateThreeDTransformMap, setMapVal } from "../../utils/memoryUtils";
+import { getCache, setCache } from "./cacheSystem";
+import { isDisposeTooManyComponents, reAllocateThreeDTransformMap } from "../../utils/memoryUtils";
 
 export var addAddComponentHandle = (_class: any, ThreeDTransformData:any) => {
     addAddComponentHandleToMap(_class, addComponent(ThreeDTransformData));
@@ -70,9 +69,6 @@ var _generateIndexInArrayBuffer = (ThreeDTransformData:any) => {
 
 
 var _createTempData = (uid:number, ThreeDTransformData:any,) => {
-    // ThreeDTransformData.tempPositionMap.set(uid, Vector3.create());
-    // ThreeDTransformData.tempLocalPositionMap.set(uid, Vector3.create());
-    // ThreeDTransformData.tempLocalToWorldMatrixMap.set(uid, Matrix4.create());
     ThreeDTransformData.tempPositionMap[uid] = Vector3.create();
     ThreeDTransformData.tempLocalPositionMap[uid] = Vector3.create();
     ThreeDTransformData.tempLocalToWorldMatrixMap[uid] = Matrix4.create();
@@ -114,9 +110,7 @@ export var disposeComponent = curry((GlobalTempData:any, ThreeDTransformData:any
     _disposeFromDirtyList(indexInArrayBuffer, uid, GlobalTempData, ThreeDTransformData);
 })
 
-export var getGameObject = (uid:number, ThreeDTransformData:any) => {
-    return getComponentGameObjectByMap(ThreeDTransformData.gameObjectMap, uid);
-}
+export var getGameObject = (uid:number, ThreeDTransformData:any) => getComponentGameObjectByMap(ThreeDTransformData.gameObjectMap, uid);
 
 export var getParent = (transform: ThreeDTransform, ThreeDTransformData: any) => {
     var parent = getThreeDTransformDataParent(transform.uid, ThreeDTransformData);
@@ -128,9 +122,7 @@ export var getParent = (transform: ThreeDTransform, ThreeDTransformData: any) =>
     return null;
 }
 
-export var setParent = (transform: ThreeDTransform, parent: ThreeDTransform, ThreeDTransformData: any) => {
-    setParentHierarchy(transform, parent, ThreeDTransformData);
-}
+export var setParent = (transform: ThreeDTransform, parent: ThreeDTransform, ThreeDTransformData: any) => setParentHierarchy(transform, parent, ThreeDTransformData);
 
 export var getLocalToWorldMatrix = requireCheckFunc((transform: IThreeDTransform, mat:Matrix4, ThreeTransformData: any) => {
     checkTransformShouldAlive(transform, ThreeTransformData);
@@ -156,13 +148,10 @@ export var getPosition = requireCheckFunc((transform:ThreeDTransform, ThreeTrans
     var indexInArrayBuffer = getMatrix4DataIndexInArrayBuffer(transform.index),
         localToWorldMatrices = ThreeTransformData.localToWorldMatrices;
 
-    // return ThreeTransformData.tempPositionMap.get(transform.uid).set(localToWorldMatrices[indexInArrayBuffer + 12], localToWorldMatrices[indexInArrayBuffer + 13], localToWorldMatrices[indexInArrayBuffer + 14]);
     return ThreeTransformData.tempPositionMap[transform.uid].set(localToWorldMatrices[indexInArrayBuffer + 12], localToWorldMatrices[indexInArrayBuffer + 13], localToWorldMatrices[indexInArrayBuffer + 14]);
 }))
 
-var _setTransformMap = (indexInArrayBuffer:number, transform:ThreeDTransform, ThreeDTransformData:any) => {
-    ThreeDTransformData.transformMap[indexInArrayBuffer] = transform;
-}
+var _setTransformMap = (indexInArrayBuffer:number, transform:ThreeDTransform, ThreeDTransformData:any) => ThreeDTransformData.transformMap[indexInArrayBuffer] = transform;
 
 export var setPosition = requireCheckFunc((transform:ThreeDTransform, position: Vector3, GlobalTempData: any, ThreeTransformData: any) => {
     checkTransformShouldAlive(transform, ThreeTransformData);
@@ -179,9 +168,7 @@ export var setPosition = requireCheckFunc((transform:ThreeDTransform, position: 
     return addItAndItsChildrenToDirtyList(indexInArrayBuffer, uid, ThreeTransformData);
 })
 
-export var setBatchDatas = (batchData:Array<BatchTransformData>, GlobalTempData: any, ThreeTransformData: any) => {
-    setBatchDatasSystem(batchData, GlobalTempData, ThreeDTransformData);
-}
+export var setBatchDatas = (batchData:Array<BatchTransformData>, GlobalTempData: any, ThreeTransformData: any) => setBatchDatasSystem(batchData, GlobalTempData, ThreeDTransformData);
 
 export var getLocalPosition = requireCheckFunc((transform:ThreeDTransform, ThreeTransformData: any) => {
     checkTransformShouldAlive(transform, ThreeTransformData);
@@ -192,7 +179,6 @@ export var getLocalPosition = requireCheckFunc((transform:ThreeDTransform, Three
 }, (transform:ThreeDTransform, ThreeTransformData: any, position:Vector3) => {
     setCache(ThreeTransformData.localPositionCacheMap, transform.uid, position);
 }, (transform:ThreeDTransform, ThreeTransformData: any) => {
-    // return DataUtils.createVector3ByIndex(ThreeTransformData.tempLocalPositionMap.get(transform.uid), ThreeDTransformData.localPositions, getVector3DataIndexInArrayBuffer(transform.index));
     return DataUtils.createVector3ByIndex(ThreeTransformData.tempLocalPositionMap[transform.uid], ThreeDTransformData.localPositions, getVector3DataIndexInArrayBuffer(transform.index));
 }))
 
@@ -229,13 +215,6 @@ var _disposeItemInDataContainer = (indexInArrayBuffer: number, uid:number, Globa
 }
 
 var _disposeMapDatas = (indexInArrayBuffer:number, uid:number, ThreeDTransformData:any) => {
-    // deleteMapVal(uid, ThreeDTransformData.isTranslateMap);
-    // deleteMapVal(uid, ThreeDTransformData.positionCacheMap);
-    // deleteMapVal(uid, ThreeDTransformData.localPositionCacheMap);
-    // deleteMapVal(uid, ThreeDTransformData.localToWorldMatrixCacheMap);
-    // deleteMapVal(uid, ThreeDTransformData.tempLocalToWorldMatrixMap);
-    // deleteMapVal(uid, ThreeDTransformData.tempPositionMap);
-    // deleteMapVal(uid, ThreeDTransformData.tempLocalPositionMap);
     deleteMapVal(uid, ThreeDTransformData.gameObjectMap);
 
     deleteVal(uid, ThreeDTransformData.isTranslateMap);
@@ -279,10 +258,7 @@ var _addDefaultTransformData = (GlobalTempData: any, ThreeDTransformData: any) =
     }
 }
 
-export var getTempLocalToWorldMatrix = (transform:ThreeDTransform, ThreeDTransformData:any) => {
-    // return ThreeDTransformData.tempLocalToWorldMatrixMap.get(transform.uid);
-    return ThreeDTransformData.tempLocalToWorldMatrixMap[transform.uid];
-}
+export var getTempLocalToWorldMatrix = (transform:ThreeDTransform, ThreeDTransformData:any) => ThreeDTransformData.tempLocalToWorldMatrixMap[transform.uid];
 
 export var initData = (GlobalTempData: any, ThreeDTransformData: any) => {
     var buffer: ArrayBuffer = null,
@@ -300,20 +276,6 @@ export var initData = (GlobalTempData: any, ThreeDTransformData: any) => {
 
 
     ThreeDTransformData.notUsedIndexArray = [];
-
-
-    // ThreeDTransformData.parentMap = new Map();
-    // ThreeDTransformData.childrenMap = new Map();
-    //
-    // ThreeDTransformData.isTranslateMap = new Map();
-    //
-    // ThreeDTransformData.positionCacheMap = new Map();
-    // ThreeDTransformData.localPositionCacheMap = new Map();
-    // ThreeDTransformData.localToWorldMatrixCacheMap = new Map();
-    //
-    // ThreeDTransformData.tempPositionMap = new Map();
-    // ThreeDTransformData.tempLocalPositionMap = new Map();
-    // ThreeDTransformData.tempLocalToWorldMatrixMap = new Map();
 
     ThreeDTransformData.parentMap = createMap();
     ThreeDTransformData.childrenMap = createMap();
