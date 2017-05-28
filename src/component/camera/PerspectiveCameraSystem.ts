@@ -1,6 +1,6 @@
 import { it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
-import { deleteVal, isValidMapValue } from "../../utils/objectUtils";
+import { createMap, deleteVal, isValidMapValue } from "../../utils/objectUtils";
 import { addToDirtyList } from "./CameraControllerSystem";
 import { Matrix4 } from "../../math/Matrix4";
 import { setPMatrix } from "./CameraSystem";
@@ -58,6 +58,6 @@ export var dispose = (index:number, PerspectiveCameraData:any) => {
 }
 
 export var initData = (PerspectiveCameraData: any) => {
-    PerspectiveCameraData.fovyMap = {};
-    PerspectiveCameraData.aspectMap = {};
+    PerspectiveCameraData.fovyMap = createMap();
+    PerspectiveCameraData.aspectMap = createMap();
 }

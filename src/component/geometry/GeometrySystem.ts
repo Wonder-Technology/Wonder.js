@@ -3,7 +3,7 @@ import { ensureFunc, it, requireCheckFunc } from "../../definition/typescript/de
 import { Geometry } from "./Geometry";
 import { Map } from "immutable";
 import { EBufferType } from "../../renderer/enum/EBufferType";
-import { deleteBySwap as deleteObjectBySwap, isNotValidMapValue } from "../../utils/objectUtils";
+import { createMap, deleteBySwap as deleteObjectBySwap, isNotValidMapValue } from "../../utils/objectUtils";
 import {
     addAddComponentHandle as addAddComponentHandleToMap, addComponentToGameObjectMap,
     addDisposeHandle as addDisposeHandleToMap, addInitHandle as addInitHandleToMap, deleteComponentBySwap,
@@ -174,16 +174,16 @@ export var initData = (DataBufferConfig: any, GeometryData: any) => {
 
     GeometryData.indexTypeSize = indicesArrayBytes;
 
-    GeometryData.configDataMap = {};
+    GeometryData.configDataMap = createMap();
 
     GeometryData.verticesMap = [];
     GeometryData.indicesMap = [];
 
-    GeometryData.computeDataFuncMap = {};
+    GeometryData.computeDataFuncMap = createMap();
 
-    GeometryData.gameObjectMap = {};
+    GeometryData.gameObjectMap = createMap();
 
-    GeometryData.geometryMap = {};
+    GeometryData.geometryMap = createMap();
 
     GeometryData.index = 0;
     GeometryData.count = 0;

@@ -8,7 +8,7 @@ import {
     checkComponentShouldAlive, generateComponentIndex, getComponentGameObject
 } from "../ComponentSystem";
 import curry from "wonder-lodash/curry";
-import { deleteVal, isValidMapValue } from "../../utils/objectUtils";
+import { createMap, deleteVal, isValidMapValue } from "../../utils/objectUtils";
 import { forEach } from "../../utils/arrayUtils";
 
 export var addAddComponentHandle = (_class: any, TagData:any) => {
@@ -259,7 +259,7 @@ export var initData = (TagData:any) => {
     TagData.usedSlotCountMap = [];
     TagData.indexMap = [];
     TagData.indexInArrayBufferMap = [0];
-    TagData.gameObjectMap = {};
+    TagData.gameObjectMap = createMap();
 
     TagData.lastIndexInArrayBuffer = 0;
     TagData.index = 0;

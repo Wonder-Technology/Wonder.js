@@ -14,7 +14,7 @@ import curry from "wonder-lodash/curry";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 import { Map } from "immutable";
 import { removeDuplicateItems, removeItem } from "../../utils/arrayUtils";
-import { deleteVal, isValidMapValue } from "../../utils/objectUtils";
+import { createMap, deleteVal, isValidMapValue } from "../../utils/objectUtils";
 import { cacheFunc } from "../../utils/cacheUtils";
 import { Matrix4 } from "../../math/Matrix4";
 
@@ -126,9 +126,9 @@ var _clearCache = (CameraControllerData:any) => {
 export var initData = (CameraControllerData: any, PerspectiveCameraData:any, CameraData:any) => {
     CameraControllerData.index = 0;
     CameraControllerData.count = 0;
-    CameraControllerData.gameObjectMap = {};
+    CameraControllerData.gameObjectMap = createMap();
     CameraControllerData.dirtyIndexArray = [];
-    CameraControllerData.worldToCameraMatrixCacheMap = {};
+    CameraControllerData.worldToCameraMatrixCacheMap = createMap();
 
     initDataCamera(PerspectiveCameraData, CameraData);
 }

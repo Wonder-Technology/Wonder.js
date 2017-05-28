@@ -1,6 +1,7 @@
 import { getVertices } from "../../component/geometry/GeometrySystem";
 import { EBufferType } from "../enum/EBufferType";
 import { isBufferExist } from "./bufferUtils";
+import { createMap } from "../../utils/objectUtils";
 
 export var getOrCreateBuffer = (gl:WebGLRenderingContext, geometryIndex:number, bufferType:string, GeometryData:any, ArrayBufferData:any) => {
     var buffers = ArrayBufferData.buffers,
@@ -38,5 +39,5 @@ var _resetBindedBuffer = (gl:WebGLRenderingContext, ArrayBufferData:any) => {
 
 export var initData = (ArrayBufferData:any) => {
     ArrayBufferData.buffers = [];
-    ArrayBufferData.bufferDataMap = {};
+    ArrayBufferData.bufferDataMap = createMap();
 }

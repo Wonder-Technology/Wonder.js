@@ -5,7 +5,7 @@ import {
 import { Map } from "immutable";
 import { addToDirtyList, getGameObject } from "./CameraControllerSystem";
 import { Matrix4 } from "../../math/Matrix4";
-import { deleteVal } from "../../utils/objectUtils";
+import { createMap, deleteVal } from "../../utils/objectUtils";
 import { getTransform } from "../../core/entityObject/gameObject/GameObjectSystem";
 import { getLocalToWorldMatrix, getTempLocalToWorldMatrix } from "../transform/ThreeDTransformSystem";
 
@@ -71,10 +71,10 @@ export var dispose = (index:number, PerspectiveCameraData:any, CameraData:any) =
 }
 
 export var initData = (PerspectiveCameraData:any, CameraData: any) => {
-    CameraData.nearMap = {};
-    CameraData.farMap = {};
-    CameraData.worldToCameraMatrixMap = {};
-    CameraData.pMatrixMap = {};
+    CameraData.nearMap = createMap();
+    CameraData.farMap = createMap();
+    CameraData.worldToCameraMatrixMap = createMap();
+    CameraData.pMatrixMap = createMap();
 
     initDataPerspectiveCamera(PerspectiveCameraData);
 }

@@ -296,7 +296,7 @@ export var initData = (GlobalTempData: any, ThreeDTransformData: any) => {
     ThreeDTransformData.cacheMap = createMap();
     ThreeDTransformData.tempMap = createMap();
 
-    ThreeDTransformData.transformMap = {};
+    ThreeDTransformData.transformMap = createMap();
 
     ThreeDTransformData.gameObjectMap = new Map();
 

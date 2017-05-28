@@ -15,6 +15,7 @@ import {
 import { RenderCommand } from "../command/RenderCommand";
 import { addSendAttributeConfig, addSendUniformConfig } from "./glslSenderSystem";
 import { generateComponentIndex } from "../../component/ComponentSystem";
+import { createMap } from "../../utils/objectUtils";
 
 export var create = (ShaderData: any) => {
     var shader = new Shader(),
@@ -100,13 +101,13 @@ export var initData = (ShaderData: any) => {
     ShaderData.index = 0;
     ShaderData.count = 0;
 
-    ShaderData.programMap = {};
-    ShaderData.attributeLocationMap = {};
-    ShaderData.uniformLocationMap = {};
-    ShaderData.sendAttributeConfigMap = {};
-    ShaderData.sendUniformConfigMap = {};
+    ShaderData.programMap = createMap();
+    ShaderData.attributeLocationMap = createMap();
+    ShaderData.uniformLocationMap = createMap();
+    ShaderData.sendAttributeConfigMap = createMap();
+    ShaderData.sendUniformConfigMap = createMap();
     ShaderData.vertexAttribHistory = [];
-    ShaderData.uniformCacheMap = {};
-    ShaderData.shaderMap = {};
-    ShaderData.isInitMap = {};
+    ShaderData.uniformCacheMap = createMap();
+    ShaderData.shaderMap = createMap();
+    ShaderData.isInitMap = createMap();
 }

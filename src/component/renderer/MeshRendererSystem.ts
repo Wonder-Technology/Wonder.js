@@ -9,7 +9,7 @@ import {
     addAddComponentHandle as addAddComponentHandleToMap, addComponentToGameObjectMap,
     addDisposeHandle as addDisposeHandleToMap, deleteComponentBySwap, generateComponentIndex, getComponentGameObject
 } from "../ComponentSystem";
-import { deleteBySwap as deleteObjectBySwap, deleteVal } from "../../utils/objectUtils";
+import { createMap, deleteBySwap as deleteObjectBySwap, deleteVal } from "../../utils/objectUtils";
 import { checkIndexShouldEqualCount } from "../utils/contractUtils";
 
 export var addAddComponentHandle = (_class: any, MaterialData:any) => {
@@ -75,8 +75,8 @@ export var getRenderList = curry((state:Map<any, any>, MeshRendererData:any) => 
 
 export var initData = (MeshRendererData: any) => {
     MeshRendererData.renderGameObjectArray = [];
-    MeshRendererData.gameObjectMap = {};
-    MeshRendererData.meshRendererMap = {};
+    MeshRendererData.gameObjectMap = createMap();
+    MeshRendererData.meshRendererMap = createMap();
     MeshRendererData.index = 0;
     MeshRendererData.count = 0;
 }
