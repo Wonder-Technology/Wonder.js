@@ -1,4 +1,4 @@
-export var deleteBySwap = (array:Array<any>, index:number) => {
+export var deleteBySwap = (index:number, array:Array<any>) => {
     var last = array.length - 1,
         temp = null;
 

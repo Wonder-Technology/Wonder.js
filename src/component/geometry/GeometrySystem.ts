@@ -133,9 +133,9 @@ export var disposeComponent = ensureFunc(curry((returnVal, GeometryData:any, com
     var sourceIndex = component.index,
         lastComponentIndex:number = null;
 
-    deleteBySwap(GeometryData.verticesMap, sourceIndex);
+    deleteBySwap(sourceIndex, GeometryData.verticesMap);
 
-    deleteBySwap(GeometryData.indicesMap, sourceIndex);
+    deleteBySwap(sourceIndex, GeometryData.indicesMap);
 
     GeometryData.count -= 1;
     GeometryData.index -= 1;

@@ -53,7 +53,7 @@ export var disposeComponent = curry((MeshRendererData:any, component:MeshRendere
     var sourceIndex = component.index,
         lastComponentIndex = null;
 
-    deleteBySwap(MeshRendererData.renderGameObjectArray, sourceIndex);
+    deleteBySwap(sourceIndex, MeshRendererData.renderGameObjectArray);
 
     MeshRendererData.count -= 1;
     MeshRendererData.index -= 1;
