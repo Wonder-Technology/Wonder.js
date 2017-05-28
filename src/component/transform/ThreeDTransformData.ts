@@ -23,13 +23,17 @@ export class ThreeDTransformData {
     public static parentMap: ParentMap = null;
     public static childrenMap: ChildrenMap = null;
 
-    public static positionCacheMap:ThreeDTransformPositionMap = null;
-    public static localPositionCacheMap:ThreeDTransformLocalPositionMap = null;
-    public static localToWorldMatrixCacheMap:ThreeDTransformLocalToWorldMatrixMap = null;
+    // public static positionCacheMap:ThreeDTransformPositionMap = null;
+    // public static localPositionCacheMap:ThreeDTransformLocalPositionMap = null;
+    // public static localToWorldMatrixCacheMap:ThreeDTransformLocalToWorldMatrixMap = null;
+    // public static localPositionCacheMap:ThreeDTransformLocalPositionMap = null;
+    // public static localToWorldMatrixCacheMap:ThreeDTransformLocalToWorldMatrixMap = null;
+    public static cacheMap:ThreeDTransformCacheMap = null;
 
-    public static tempLocalToWorldMatrixMap:ThreeDTransformLocalToWorldMatrixMap = null;
-    public static tempPositionMap:ThreeDTransformPositionMap = null;
-    public static tempLocalPositionMap:ThreeDTransformLocalPositionMap = null;
+    // public static tempLocalToWorldMatrixMap:ThreeDTransformLocalToWorldMatrixMap = null;
+    // public static tempPositionMap:ThreeDTransformPositionMap = null;
+    // public static tempLocalPositionMap:ThreeDTransformLocalPositionMap = null;
+    public static tempMap:ThreeDTransformTempMap = null;
 
     public static transformMap:TransformMap = null;
 
@@ -66,6 +70,26 @@ export type ThreeDTransformGameObjectMap = Map<number, GameObject>
 
 export type TransformMap = {
     [index:number]: ThreeDTransform
+}
+
+export type ThreeDTransformCacheMap = {
+    [uid:number]: ThreeDTransformCacheData
+}
+
+export type ThreeDTransformCacheData = {
+    position:Vector3;
+    localPosition:Vector3;
+    localToWorldMatrix:Matrix4;
+}
+
+export type ThreeDTransformTempMap = {
+    [uid:number]: ThreeDTransformTempData
+}
+
+export type ThreeDTransformTempData = {
+    position:Vector3;
+    localPosition:Vector3;
+    localToWorldMatrix:Matrix4;
 }
 
 export type ThreeDTransformPositionMap = {

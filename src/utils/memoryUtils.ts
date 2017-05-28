@@ -17,15 +17,11 @@ export var reAllocateThreeDTransformMap = (forEachMap:Map<number, GameObject>, T
         newParentMap = {},
         newChildrenMap = {},
         newIsTranslateMap = {},
-        newTempPositionMap = {},
-        newTempLocalPositionMap = {},
-        newTempLocalToWorldMatrixMap = {},
+        newTempMap = {},
         parentMap = ThreeDTransformData.parentMap,
         childrenMap = ThreeDTransformData.childrenMap,
         isTranslateMap = ThreeDTransformData.isTranslateMap,
-        tempPositionMap = ThreeDTransformData.tempPositionMap,
-        tempLocalPositionMap = ThreeDTransformData.tempLocalPositionMap,
-        tempLocalToWorldMatrixMap = ThreeDTransformData.tempLocalToWorldMatrixMap;
+        tempMap = ThreeDTransformData.tempMap;
 
     clearCacheMap(ThreeDTransformData);
 
@@ -39,22 +35,14 @@ export var reAllocateThreeDTransformMap = (forEachMap:Map<number, GameObject>, T
         val = isTranslateMap[uid];
         setMapVal(newIsTranslateMap, uid, val);
 
-        val = tempPositionMap[uid];
-        setMapVal(newTempLocalPositionMap, uid, val);
-
-        val = tempLocalPositionMap[uid];
-        setMapVal(newTempLocalPositionMap, uid, val);
-
-        val = tempLocalToWorldMatrixMap[uid];
-        setMapVal(newTempLocalToWorldMatrixMap, uid, val);
+        val = tempMap[uid];
+        setMapVal(newTempMap, uid, val);
     })
 
     ThreeDTransformData.parentMap = newParentMap;
     ThreeDTransformData.childrenMap = newChildrenMap;
     ThreeDTransformData.isTranslateMap = newIsTranslateMap;
-    ThreeDTransformData.tempPositionMap = newTempPositionMap;
-    ThreeDTransformData.tempLocalPositionMap = newTempLocalPositionMap;
-    ThreeDTransformData.tempLocalToWorldMatrixMap = newTempLocalToWorldMatrixMap;
+    ThreeDTransformData.tempMap = newTempMap;
 }
 
 export var reAllocateGameObjectMap = (forEachMap:Map<number, boolean>, GameObjectData:any) => {

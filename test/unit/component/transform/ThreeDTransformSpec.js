@@ -528,12 +528,8 @@ describe("ThreeDTransform", function () {
                 var uid = tra1.uid,
                     index = tra1.index;
                 expect(ThreeDTransformData.isTranslateMap[uid]).toBeUndefined();
-                expect(ThreeDTransformData.positionCacheMap[uid]).toBeUndefined();
-                expect(ThreeDTransformData.localPositionCacheMap[uid]).toBeUndefined();
-                expect(ThreeDTransformData.localToWorldMatrixCacheMap[uid]).toBeUndefined();
-                expect(ThreeDTransformData.tempLocalToWorldMatrixMap[uid]).toBeUndefined();
-                expect(ThreeDTransformData.tempPositionMap[uid]).toBeUndefined();
-                expect(ThreeDTransformData.tempLocalPositionMap[uid]).toBeUndefined();
+                expect(ThreeDTransformData.cacheMap[uid]).toBeUndefined();
+                expect(ThreeDTransformData.tempMap[uid]).toBeUndefined();
                 expect(ThreeDTransformData.transformMap[index]).toBeUndefined();
                 expect(ThreeDTransformData.gameObjectMap[uid]).toBeUndefined();
             });
