@@ -6,6 +6,7 @@ import { getChildren, isChildrenExist } from "./hierarchySystem";
 import { ThreeDTransform } from "./ThreeDTransform";
 import { moveToIndex, swap } from "./operateDataSystem";
 import { forEach } from "../../utils/arrayUtils";
+import { LinkList, LinkNode } from "./LinkList";
 
 export var addFirstDirtyIndex = ensureFunc((firstDirtyIndex: number, ThreeDTransformData: any) => {
     it("firstDirtyIndex should <= count", () => {
@@ -39,6 +40,10 @@ export var generateNotUsedIndexInArrayBuffer = ensureFunc((indexInArrayBuffer:nu
 
 var _isValidArrayValue = (val: any) => {
     return isNotUndefined(val);
+}
+
+var _isValidLinkNode = (node:LinkNode<number>) => {
+    return node !== null;
 }
 
 export var generateNotUsedIndexInNormalList = ensureFunc((indexInArrayBuffer:number, ThreeDTransformData: any) => {
@@ -82,28 +87,28 @@ export var addToDirtyList = requireCheckFunc((indexInArrayBuffer: number, ThreeD
 })
 
 var _getNotUsedIndexFromArr = (ThreeDTransformData:any) => {
-    var notUsedIndexArray = ThreeDTransformData.notUsedIndexArray,
-        i = null;
+    var notUsedIndexLinkList = ThreeDTransformData.notUsedIndexLinkList,
+        node:LinkNode<number> = null;
 
     do{
-        i = _getNotUsedIndex(notUsedIndexArray);
+        node = _getNotUsedIndexNode(notUsedIndexLinkList);
     }
-    while(_isValidArrayValue(i) && isIndexUsed(i, ThreeDTransformData))
+    while(_isValidLinkNode(node) && isIndexUsed(node.val, ThreeDTransformData))
 
-    return i;
+    return node.val;
 }
 
-var _getNotUsedIndex = (notUsedIndexArray: Array<number>) => {
+var _getNotUsedIndexNode = (notUsedIndexLinkList: LinkList<number>) => {
     /*!
     not shift! because it's too slow in firefox!
      //optimize: return the first one to ensure that the result index be as much remote from firDirtyIndex as possible(so that it can reduce swap when add to dirty list)
      */
-    // return notUsedIndexArray.shift();
-    return notUsedIndexArray.pop();
+    // return notUsedIndexLinkList.shift();
+    return notUsedIndexLinkList.shift();
 };
 
-export var addNotUsedIndex = (index: number, notUsedIndexArray: Array<number>) => {
-    notUsedIndexArray.push(index);
+export var addNotUsedIndex = (index: number, notUsedIndexLinkList: LinkList<number>) => {
+    notUsedIndexLinkList.push(LinkNode.create(index));
 };
 
 export var isNotDirty = (indexInArrayBuffer: number, firstDirtyIndex: number) => {
@@ -128,8 +133,8 @@ export var addItAndItsChildrenToDirtyList = (rootIndexInArrayBuffer: number, uid
 }
 
 var _checkGeneratedNotUsedIndex = (ThreeDTransformData: any, indexInArrayBuffer: number) => {
-    // it("notUsedIndexArray shouldn't contain the index", () => {
-    //     expect(ThreeDTransformData.notUsedIndexArray.indexOf(indexInArrayBuffer)).equal(-1);
+    // it("notUsedIndexLinkList shouldn't contain the index", () => {
+    //     expect(ThreeDTransformData.notUsedIndexLinkList.indexOf(indexInArrayBuffer)).equal(-1);
     // });
     it("indexInArrayBuffer should < firstDirtyIndex", () => {
         expect(indexInArrayBuffer).exist;

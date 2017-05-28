@@ -38,6 +38,7 @@ import {
     setLocalToWorldMatrixCache, setPositionCache
 } from "./cacheSystem";
 import { isDisposeTooManyComponents, reAllocateThreeDTransformMap } from "../../utils/memoryUtils";
+import { LinkList } from "./LinkList";
 
 export var addAddComponentHandle = (_class: any, ThreeDTransformData:any) => {
     addAddComponentHandleToMap(_class, addComponent(ThreeDTransformData));
@@ -228,7 +229,7 @@ var _disposeMapDatas = (indexInArrayBuffer:number, uid:number, ThreeDTransformDa
 }
 
 var _disposeFromNormalList = (indexInArrayBuffer: number, uid:number, GlobalTempData: any, ThreeDTransformData: any) => {
-    addNotUsedIndex(indexInArrayBuffer, ThreeDTransformData.notUsedIndexArray);
+    addNotUsedIndex(indexInArrayBuffer, ThreeDTransformData.notUsedIndexLinkList);
 
     return _disposeItemInDataContainer(indexInArrayBuffer, uid, GlobalTempData, ThreeDTransformData);
 }
@@ -285,7 +286,7 @@ export var initData = (GlobalTempData: any, ThreeDTransformData: any) => {
     ThreeDTransformData.localScales = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * (getMatrix4DataSize() + getVector3DataSize() + getQuaternionDataSize()), count * getVector3DataSize());
 
 
-    ThreeDTransformData.notUsedIndexArray = [];
+    ThreeDTransformData.notUsedIndexLinkList = LinkList.create();
 
     ThreeDTransformData.parentMap = createMap();
     ThreeDTransformData.childrenMap = createMap();

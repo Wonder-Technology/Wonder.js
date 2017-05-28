@@ -112,7 +112,7 @@ var _addBatchToDirtyListByChangeTypeArrData = curry((ThreeDTransformData: any, t
 var _addBatchToDirtyListByChangeMapData = curry((ThreeDTransformData: any, targetDirtyIndex:number, notDirtyIndexArr:Array<number>) => {
     return _addBatchToDirtyList(ThreeDTransformData,targetDirtyIndex, swapTransformMapData, (sourceIndex: number, targetIndex: number, ThreeDTransformData: any) => {
         moveMapDataToIndex(sourceIndex, targetIndex, ThreeDTransformData);
-        addNotUsedIndex(sourceIndex, ThreeDTransformData.notUsedIndexArray);
+        addNotUsedIndex(sourceIndex, ThreeDTransformData.notUsedIndexLinkList);
     }, notDirtyIndexArr);
 })
 

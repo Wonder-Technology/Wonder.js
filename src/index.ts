@@ -18,6 +18,7 @@ export {MeshRenderer,createMeshRenderer,getMeshRendererGameObject,getMeshRendere
 export {MeshRendererData} from "./component/renderer/MeshRendererData";
 export {Tag,createTag,addTag,removeTag,findGameObjectsByTag,getTagGameObject} from "./component/tag/Tag";
 export {TagData} from "./component/tag/TagData";
+export {LinkList,LinkNode} from "./component/transform/LinkList";
 export {ThreeDTransform,createThreeDTransform,getThreeDTransformPosition,setThreeDTransformPosition,getThreeDTransformLocalToWorldMatrix,getThreeDTransformLocalPosition,setThreeDTransformLocalPosition,setThreeDTransformBatchTransformDatas,getThreeDTransformParent,setThreeDTransformParent,getThreeDTransformGameObject} from "./component/transform/ThreeDTransform";
 export {ThreeDTransformData,ThreeDTransformRelationData} from "./component/transform/ThreeDTransformData";
 export {getUID,isIndexUsed,getStartIndexInArrayBuffer} from "./component/transform/utils";

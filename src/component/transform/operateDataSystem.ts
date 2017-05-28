@@ -134,7 +134,7 @@ export var moveToIndex = ensureFunc((returnVal, sourceIndex: number, targetIndex
     moveTypeArrDataToIndex(sourceIndex, targetIndex, ThreeDTransformData);
     moveMapDataToIndex(sourceIndex, targetIndex, ThreeDTransformData);
 
-    addNotUsedIndex(sourceIndex, ThreeDTransformData.notUsedIndexArray);
+    addNotUsedIndex(sourceIndex, ThreeDTransformData.notUsedIndexLinkList);
 
     return ThreeDTransformData;
 }))

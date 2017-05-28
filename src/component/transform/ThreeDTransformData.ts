@@ -3,6 +3,7 @@ import { ThreeDTransform } from "./ThreeDTransform";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 import { Vector3 } from "../../math/Vector3";
 import { Matrix4 } from "../../math/Matrix4";
+import { LinkList } from "./LinkList";
 
 export class ThreeDTransformData {
     static get count() {
@@ -16,7 +17,7 @@ export class ThreeDTransformData {
 
     public static firstDirtyIndex: number = null;
     public static indexInArrayBuffer: number = null;
-    public static notUsedIndexArray: Array<number> = null;
+    public static notUsedIndexLinkList: LinkList<number> = null;
 
     public static isTranslateMap = null;
 
