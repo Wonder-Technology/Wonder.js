@@ -16,7 +16,9 @@ export class GameObjectData{
 
 export type GameObjectIsAliveMap = Map<number, boolean>;
 
-export type GameObjectComponentMap = Map<number, GameObjectComponentData>;
+export type GameObjectComponentMap = {
+    [uid:number]: GameObjectComponentData
+}
 
 export type GameObjectComponentData = {
     [typeId:number]:Component;
