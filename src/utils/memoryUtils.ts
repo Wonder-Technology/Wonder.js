@@ -12,43 +12,6 @@ export var setMapVal = (map:object, uid:number, val:any) => {
     }
 }
 
-export var reAllocateMaterialMap = (forEachMap:Map<number, GameObject>, MaterialData:any) => {
-    let val:any = null,
-        newShaderMap = {},
-        newMaterialClassNameMap = {},
-        newColorMap = {},
-        newOpacityMap = {},
-        newAlphaTestMap = {},
-        shaderMap = MaterialData.shaderMap,
-        materialClassNameMap = MaterialData.materialClassNameMap,
-        colorMap = MaterialData.colorMap,
-        opacityMap = MaterialData.opacityMap,
-        alphaTestMap = MaterialData.alphaTestMap;
-
-    forEachMap.forEach(function(value, uid) {
-        val = shaderMap[uid];
-        setMapVal(newShaderMap, uid, val);
-
-        val = materialClassNameMap[uid];
-        setMapVal(newMaterialClassNameMap, uid, val);
-
-        val = colorMap[uid];
-        setMapVal(newColorMap, uid, val);
-
-        val = opacityMap[uid];
-        setMapVal(newOpacityMap, uid, val);
-
-        val = alphaTestMap[uid];
-        setMapVal(newAlphaTestMap, uid, val);
-    });
-
-    MaterialData.shaderMap = newShaderMap;
-    MaterialData.materialClassNameMap = newMaterialClassNameMap;
-    MaterialData.colorMap = newColorMap;
-    MaterialData.opacityMap = newOpacityMap;
-    MaterialData.alphaTestMap = newAlphaTestMap;
-}
-
 export var reAllocateThreeDTransformMap = (forEachMap:Map<number, GameObject>, ThreeDTransformData:any) => {
     var val:any = null,
         newParentMap = {},

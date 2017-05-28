@@ -91,7 +91,8 @@ describe("Material", function() {
             
         });
         
-        it("should not dispose any material before init", function(){
+        // it("should not dispose any material before init", function(){
+        it("can dispose any material before init", function(){
             var mat2 = basicMaterialTool.create();
 
             var obj2 = gameObjectTool.create();
@@ -101,7 +102,7 @@ describe("Material", function() {
 
             expect(function(){
                 directorTool.init(sandbox);
-            }).toThrow("ComponentData.index should === ComponentData.count");
+            }).not.toThrow();
         });
         it("shader should only be init once", function () {
             var mat2 = basicMaterialTool.create();
@@ -120,27 +121,46 @@ describe("Material", function() {
 
         beforeEach(function(){
             count = MaterialData.count;
-            gameObjectTool.disposeComponent(obj, material);
         });
 
-        it("remove from gameObject", function () {
-            expect(gameObjectTool.hasComponent(obj, wd.Material)).toBeFalsy();
-            expect(materialTool.getGameObject(material)).toBeUndefined();
-        });
-        it("remove from shaderMap", function () {
-            expect(MaterialData.shaderMap[material.index]).toBeUndefined();
-        });
-        it("remove from materialClassNameMap", function () {
-            expect(MaterialData.materialClassNameMap[material.index]).toBeUndefined();
-        });
-        it("remove from colorMap", function () {
+        it("remove data by swap", function () {
+            var mat2 = basicMaterialTool.create();
+            var obj2 = gameObjectTool.create();
+            gameObjectTool.addComponent(obj2, mat2);
+            sceneTool.addGameObject(obj2);
+
+            gameObjectTool.disposeComponent(obj, material);
+
             expect(materialTool.getColor(material)).toBeUndefined();
+            expect(materialTool.getColor(mat2)).toBeExist();
         });
-        it("count - 1", function () {
-            expect(MaterialData.count).toEqual(count - 1);
+
+        describe("test remove data", function() {
+            beforeEach(function(){
+                gameObjectTool.disposeComponent(obj, material);
+            });
+
+            it("remove from gameObject", function () {
+                expect(gameObjectTool.hasComponent(obj, wd.Material)).toBeFalsy();
+                expect(materialTool.getGameObject(material)).toBeUndefined();
+            });
+            it("remove from shaderMap", function () {
+                expect(MaterialData.shaderMap[material.index]).toBeUndefined();
+            });
+            it("remove from materialClassNameMap", function () {
+                expect(MaterialData.materialClassNameMap[material.index]).toBeUndefined();
+            });
+            it("remove from colorMap", function () {
+                expect(materialTool.getColor(material)).toBeUndefined();
+            });
+            it("count - 1", function () {
+                expect(MaterialData.count).toEqual(count - 1);
+            });
         });
+
         it("test gameObject add new material after dispose old one", function () {
-            stateTool.setState(stateTool.createFakeGLState(sandbox));
+            gameObjectTool.disposeComponent(obj, material);
+
             var mat2 = basicMaterialTool.create();
 
             gameObjectTool.addComponent(obj, mat2);

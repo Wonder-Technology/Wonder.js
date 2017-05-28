@@ -96,7 +96,7 @@ export var deleteComponentBySwap = requireCheckFunc ((sourceIndex:number, target
     });
 }, (sourceIndex:number, targetIndex:number, componentMap:ComponentMap) => {
     componentMap[targetIndex].index = sourceIndex;
-    componentMap[sourceIndex].index = targetIndex;
+    componentMap[sourceIndex].index = -1;
 
     deleteBySwap(sourceIndex, targetIndex, componentMap);
 })

@@ -8,16 +8,16 @@ import { expect } from "wonder-expect.js";
 import { Material } from "./Material";
 import {
     addAddComponentHandle as addAddComponentHandleToMap, addComponentToGameObjectMapMap,
-    addDisposeHandle as addDisposeHandleToMap, addInitHandle as addInitHandleToMap, generateComponentIndex,
+    addDisposeHandle as addDisposeHandleToMap, addInitHandle as addInitHandleToMap, deleteComponentBySwap,
+    generateComponentIndex,
     getComponentGameObject
 } from "../ComponentSystem";
 import curry from "wonder-lodash/curry";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
-import { createMap, deleteVal, isValidMapValue } from "../../utils/objectUtils";
+import { createMap, deleteBySwap, isValidMapValue } from "../../utils/objectUtils";
 import { checkIndexShouldEqualCount } from "../utils/contractUtils";
-import { deleteMapVal } from "../../utils/mapUtils";
+import { deleteBySwap as deleteMapBySwap } from "../../utils/mapUtils";
 import { Shader } from "../../renderer/shader/Shader";
-import { isDisposeTooManyComponents, reAllocateMaterialMap, setMapVal } from "../../utils/memoryUtils";
 
 export var addAddComponentHandle = (_class: any, MaterialData:any) => {
     addAddComponentHandleToMap(_class, addComponent(MaterialData));
@@ -50,6 +50,8 @@ export var create = requireCheckFunc((material:Material, className:string, Mater
     setColor(index, _createDefaultColor(), MaterialData);
     setOpacity(index, 1, MaterialData);
 
+    MaterialData.materialMap[index] = material;
+
     return material;
 })
 
@@ -60,7 +62,7 @@ var _createDefaultColor = () => {
 }
 
 export var init = requireCheckFunc((state: MapImmutable<any, any>, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DeviceManagerData:any, ShaderData:any, MaterialData:any) => {
-    checkIndexShouldEqualCount(MaterialData);
+    // checkIndexShouldEqualCount(MaterialData);
 }, (state: MapImmutable<any, any>, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DeviceManagerData:any, ShaderData:any, MaterialData:any) => {
     for(let i = 0, count = MaterialData.count; i < count; i++){
         initMaterial(material_config, shaderLib_generator, DeviceManagerData, ShaderData, MaterialData, i, state);
@@ -130,35 +132,27 @@ export var addComponent = curry((MaterialData:any, component:Material, gameObjec
 })
 
 export var disposeComponent = ensureFunc(curry((returnVal, MaterialData:any, component:Material) => {
-    it("count should >= 0", () => {
-        expect(MaterialData.count).gte(0);
-    });
-    it("index should >= 0", () => {
-        expect(MaterialData.index).gte(0);
-    });
+    checkIndexShouldEqualCount(MaterialData);
 }), curry((MaterialData:any, component:Material) => {
-    var index = component.index;
+    var sourceIndex = component.index,
+        lastComponentIndex:number = null;
 
     MaterialData.count -= 1;
+    MaterialData.index -= 1;
 
-    deleteVal(index, MaterialData.shaderMap);
-    deleteVal(index, MaterialData.materialClassNameMap);
-    deleteVal(index, MaterialData.colorMap);
-    deleteVal(index, MaterialData.opacityMap);
-    deleteVal(index, MaterialData.alphaTestMap);
+    lastComponentIndex = MaterialData.count;
 
-    deleteMapVal(index, MaterialData.gameObjectMap);
+    deleteBySwap(sourceIndex, lastComponentIndex, MaterialData.shaderMap);
+    deleteBySwap(sourceIndex, lastComponentIndex, MaterialData.materialClassNameMap);
+    deleteBySwap(sourceIndex, lastComponentIndex, MaterialData.colorMap);
+    deleteBySwap(sourceIndex, lastComponentIndex, MaterialData.opacityMap);
+    deleteBySwap(sourceIndex, lastComponentIndex, MaterialData.alphaTestMap);
+
+    deleteMapBySwap(sourceIndex, lastComponentIndex, MaterialData.gameObjectMap);
+
+    deleteComponentBySwap(sourceIndex, lastComponentIndex, MaterialData.materialMap);
 
     //not dispose shader(for reuse shader)
-
-    if(isDisposeTooManyComponents(MaterialData.disposeCount)){
-        reAllocateMaterialMap(MaterialData.gameObjectMap, MaterialData);
-
-        MaterialData.disposeCount = 0;
-    }
-    else{
-        MaterialData.disposeCount += 1;
-    }
 }))
 
 export var getGameObject = (index:number, Data:any) => {
@@ -172,10 +166,11 @@ export var initData = (MaterialData:any) => {
     MaterialData.opacityMap = createMap();
     MaterialData.alphaTestMap = createMap();
 
+    MaterialData.materialMap = createMap();
+
     MaterialData.gameObjectMap = new Map();
 
     MaterialData.index = 0;
     MaterialData.count = 0;
-    MaterialData.disposeCount = 0;
 }
 

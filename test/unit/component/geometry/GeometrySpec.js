@@ -135,18 +135,20 @@ describe("Geometry", function () {
                 expect(geometryTool.getGameObject(geo)).toBeUndefined();
             });
         });
+
         it("test gameObject add new geometry after dispose old one", function () {
             directorTool.init(sandbox);
 
             gameObjectTool.disposeComponent(gameObject, geo);
 
-            geo = boxGeometryTool.create();
+            var geo2 = boxGeometryTool.create();
 
-            gameObjectTool.addComponent(gameObject, geo);
+            gameObjectTool.addComponent(gameObject, geo2);
 
-            geometryTool.initGeometry(geo);
+            geometryTool.initGeometry(geo2);
 
-            expect(testTool.getValues(geometryTool.getVertices(geo))).toEqual(defaultVerticesData);
+            expect(testTool.getValues(geometryTool.getVertices(geo))).toBeUndefined();
+            expect(testTool.getValues(geometryTool.getVertices(geo2))).toEqual(defaultVerticesData);
         });
     });
 
