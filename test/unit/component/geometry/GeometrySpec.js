@@ -95,29 +95,51 @@ describe("Geometry", function () {
     // });
 
     describe("disposeComponent", function () {
-        beforeEach(function () {
+        describe("test dispose array data", function() {
+            var geo2;
+
+            beforeEach(function(){
+                geo2 = boxGeometryTool.create();
+                var gameObject2 = gameObjectTool.create();
+                gameObjectTool.addComponent(gameObject2, geo2);
+                sceneTool.addGameObject(gameObject2);
+                directorTool.init(sandbox);
+            });
+
+            it("remove vertices", function () {
+                gameObjectTool.disposeComponent(gameObject, geo);
+
+                expect(geometryTool.getVertices(geo)).toBeUndefined();
+                expect(geometryTool.getVertices(geo2)).toBeExist();
+            });
+            it("remove indices", function () {
+                gameObjectTool.disposeComponent(gameObject, geo);
+
+                expect(geometryTool.getIndices(geo)).toBeUndefined();
+                expect(geometryTool.getIndices(geo2)).toBeExist();
+            });
+        });
+
+        describe("test dispose map data", function() {
+            beforeEach(function () {
+                directorTool.init(sandbox);
+
+                gameObjectTool.disposeComponent(gameObject, geo);
+            });
+
+            it("remove config data", function () {
+                expect(geometryTool.getConfigData(geo)).toBeUndefined();
+            });
+            it("remove from gameObject", function () {
+                expect(gameObjectTool.hasComponent(gameObject, wd.Geometry)).toBeFalsy();
+                expect(geometryTool.getGameObject(geo)).toBeUndefined();
+            });
+        });
+        it("test gameObject add new geometry after dispose old one", function () {
             directorTool.init(sandbox);
 
             gameObjectTool.disposeComponent(gameObject, geo);
-        });
 
-        it("remove vertices", function () {
-            expect(geometryTool.getVertices(geo)).toBeUndefined();
-        });
-        it("remove indices", function () {
-            expect(geometryTool.getIndices(geo)).toBeUndefined();
-        });
-        it("remove config data", function () {
-            expect(geometryTool.getConfigData(geo)).toBeUndefined();
-        });
-        // it("remove draw mode", function () {
-        //     expect(geometryTool.getDrawMode(geo)).toBeUndefined();
-        // });
-        it("remove from gameObject", function () {
-            expect(gameObjectTool.hasComponent(gameObject, wd.Geometry)).toBeFalsy();
-            expect(geometryTool.getGameObject(geo)).toBeUndefined();
-        });
-        it("test gameObject add new geometry after dispose old one", function () {
             geo = boxGeometryTool.create();
 
             gameObjectTool.addComponent(gameObject, geo);

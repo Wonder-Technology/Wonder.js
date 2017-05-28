@@ -131,7 +131,7 @@ export var disposeComponent = ensureFunc(curry((returnVal, GeometryData:any, com
     checkIndexShouldEqualCount(GeometryData);
 }), curry((GeometryData:any, component:Geometry) => {
     var sourceIndex = component.index,
-        lastComponentIndex = null;
+        lastComponentIndex:number = null;
 
     deleteBySwap(GeometryData.verticesMap, sourceIndex);
 
@@ -142,8 +142,6 @@ export var disposeComponent = ensureFunc(curry((returnVal, GeometryData:any, com
 
     lastComponentIndex = GeometryData.count;
 
-    deleteObjectBySwap(sourceIndex, lastComponentIndex, GeometryData.verticesMap);
-    deleteObjectBySwap(sourceIndex, lastComponentIndex, GeometryData.indicesMap);
     deleteObjectBySwap(sourceIndex, lastComponentIndex, GeometryData.configDataMap);
     deleteObjectBySwap(sourceIndex, lastComponentIndex, GeometryData.computeDataFuncMap);
     deleteObjectBySwap(sourceIndex, lastComponentIndex, GeometryData.gameObjectMap);
