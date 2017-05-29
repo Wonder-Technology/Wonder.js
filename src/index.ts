@@ -73,3 +73,4 @@ export {Log,error} from "./utils/Log";
 export {CommonTimeController} from "./utils/time/CommonTimeController";
 export {DirectorTimeController} from "./utils/time/DirectorTimeController";
 export {TimeController} from "./utils/time/TimeController";
+export {MemoryConfig} from "./config/MemoryConfig";

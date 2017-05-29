@@ -1,9 +1,12 @@
-import { isValidMapValue } from "./objectUtils";
+import { createMap, isValidMapValue } from "./objectUtils";
 import { GameObject } from "../core/entityObject/gameObject/GameObject";
 import { clearCacheMap } from "../component/transform/cacheSystem";
+import { getSlotCount, getUsedSlotCount, setNextIndexInTagArrayMap } from "../component/tag/TagSystem";
+import { isNotValidVal } from "./arrayUtils";
+import { MemoryConfig } from "../config/MemoryConfig";
 
 export var isDisposeTooManyComponents = (disposeCount:number) => {
-    return disposeCount > 1000;
+    return disposeCount >= MemoryConfig.maxComponentDisposeCount;
 }
 
 export var setMapVal = (map:object, uid:number, val:any) => {
@@ -68,4 +71,87 @@ export var reAllocateGameObjectMap = (forEachMap:Map<number, boolean>, GameObjec
     GameObjectData.parentMap = newParentMap;
     GameObjectData.childrenMap = newChildrenMap;
     GameObjectData.componentMap = newComponentMap;
+};
+
+export var reAllocateTagMap = (TagData:any) => {
+    var usedSlotCountMap = TagData.usedSlotCountMap,
+        slotCountMap = TagData.slotCountMap,
+        indexMap = TagData.indexMap,
+        tagArray = TagData.tagArray,
+        gameObjectMap = TagData.gameObjectMap,
+        indexInTagArrayMap = TagData.indexInTagArrayMap,
+        tagMap = TagData.tagMap,
+        newIndexInTagArrayMap:Array<number> = [0],
+        newTagArray = [],
+        newGameObjectMap = createMap(),
+        newUsedSlotCountMap = [],
+        newSlotCountMap = [],
+        newIndexMap = [],
+        newTagMap = createMap(),
+        newIndexInTagArray = 0,
+        newIndexInTagArrayInMap = null,
+        newIndex = 0,
+        newLastIndexInTagArray = 0,
+        hasNewData = false,
+        tagIndex:number = null;
+
+    for(let indexInTagArray of indexInTagArrayMap){
+        let index = indexMap[indexInTagArray];
+
+        if(isNotValidVal(index)){
+            continue;
+        }
+
+        hasNewData = true;
+
+        let currentUsedSlotCount = getUsedSlotCount(index, usedSlotCountMap),
+            tag = tagMap[index];
+
+        newGameObjectMap[newIndex] = gameObjectMap[index];
+        newSlotCountMap[newIndex] = getSlotCount(index, slotCountMap);
+        newUsedSlotCountMap[newIndex] = currentUsedSlotCount;
+
+        newIndexInTagArrayInMap = newIndexInTagArray;
+        newIndexInTagArrayMap[newIndex] = newIndexInTagArrayInMap;
+
+        tag.index = newIndex;
+        newTagMap[newIndex] = tag;
+
+        for(let i = indexInTagArray, count = indexInTagArray + currentUsedSlotCount; i < count; i++){
+            newTagArray[newIndexInTagArray] = tagArray[i];
+
+            newIndexMap[newIndexInTagArray] = newIndex;
+
+            newIndexInTagArray += 1;
+        }
+
+        newIndex += 1;
+    }
+
+    if(hasNewData){
+        newIndex -= 1;
+
+        newLastIndexInTagArray = newIndexInTagArrayInMap + getSlotCount(newIndex, newSlotCountMap);
+
+        tagIndex = newIndex + 1;
+    }
+    else{
+        tagIndex = 0;
+    }
+
+    setNextIndexInTagArrayMap(newIndex, newSlotCountMap[newIndex], newIndexInTagArrayMap);
+
+    TagData.slotCountMap = newSlotCountMap;
+    TagData.usedSlotCountMap = newUsedSlotCountMap;
+    TagData.gameObjectMap = newGameObjectMap;
+    TagData.tagMap = newTagMap;
+
+    TagData.indexMap = newIndexMap;
+
+    TagData.indexInTagArrayMap = newIndexInTagArrayMap;
+
+    TagData.lastIndexInTagArray = newLastIndexInTagArray;
+    TagData.tagArray = newTagArray;
+
+    TagData.index = tagIndex;
 };

@@ -1,3 +1,8 @@
+import { isUndefined } from "./JudgeUtils";
+export var deleteVal = (key:number, arr:Array<number>) => arr[key] = void 0;
+
+export var isNotValidVal = (val:any) => isUndefined(val);
+
 export var deleteBySwap = (index:number, array:Array<any>) => {
     var last = array.length - 1,
         temp = null;

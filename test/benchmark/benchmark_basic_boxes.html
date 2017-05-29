@@ -13,6 +13,7 @@
     <script src="../../examples/js/tool/customGeometryTool.js"></script>
     <script src="../../examples/js/tool/gameObjectTool.js"></script>
     <script src="../../examples/js/tool/cameraControllerTool.js"></script>
+    <script src="../../examples/js/tool/tagTool.js"></script>
     <script src="../../examples/js/tool/meshRendererTool.js"></script>
     <script src="../../examples/js/tool/sceneTool.js"></script>
 </head>
@@ -173,6 +174,29 @@
             }, 30);
         }
 
+        function addTag() {
+            setInterval(function() {
+                var box = boxes[0];
+                var geo = gameObjectTool.getComponent(box, wd.Geometry);
+
+                var vertices = geometryTool.getVertices(geo),
+                    indices = geometryTool.getIndices(geo);
+
+                boxes.forEach(function (box) {
+                    gameObjectTool.dispose(box);
+                })
+
+
+                boxes = createCustomGeometryBoxes(vertices, indices);
+
+                boxes.forEach(function(box){
+                    sceneTool.addGameObject(box);
+                    gameObjectTool.init(box);
+                })
+            }, 30);
+        }
+
+
 //        setData();
 //        setParent();
 //        batchSet();
@@ -216,6 +240,12 @@
 
 
             gameObjectTool.addComponent(obj, geo);
+
+            var tag = tagTool.create();
+            tagTool.addTag(tag, "box1");
+            tagTool.addTag(tag, "box2");
+
+            gameObjectTool.addComponent(obj, tag);
 
 
             return obj;
