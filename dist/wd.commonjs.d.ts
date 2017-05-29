@@ -15,7 +15,7 @@ declare module 'wonder.js/dist/commonjs' {
     export { PerspectiveCameraData } from "wonder.js/dist/commonjs/component/camera/PerspectiveCameraData";
     export { Component } from "wonder.js/dist/commonjs/component/Component";
     export { ComponentData } from "wonder.js/dist/commonjs/component/ComponentData";
-    export { getTypeIDFromClass, getTypeIDFromComponent } from "wonder.js/dist/commonjs/component/ComponentTypeIdManager";
+    export { getTypeIDFromClass, getTypeIDFromComponent } from "wonder.js/dist/commonjs/component/ComponentTypeIDManager";
     export { BoxGeometry, createBoxGeometry, setBoxGeometryConfigData } from "wonder.js/dist/commonjs/component/geometry/BoxGeometry";
     export { CustomGeometry, createCustomGeometry, setCustomGeometryVertices, setCustomGeometryIndices } from "wonder.js/dist/commonjs/component/geometry/CustomGeometry";
     export { Geometry, getDrawMode, getVertices, getIndices, getGeometryConfigData, initGeometry, getGeometryGameObject } from "wonder.js/dist/commonjs/component/geometry/Geometry";
@@ -190,9 +190,11 @@ declare module 'wonder.js/dist/commonjs/component/ComponentData' {
     };
 }
 
-import { Component } from "wonder.js/dist/commonjs/component/Component";
-export declare var getTypeIDFromClass: (_class: any) => any;
-export declare var getTypeIDFromComponent: (component: Component) => any;
+declare module 'wonder.js/dist/commonjs/component/ComponentTypeIDManager' {
+    import { Component } from "wonder.js/dist/commonjs/component/Component";
+    export var getTypeIDFromClass: (_class: any) => any;
+    export var getTypeIDFromComponent: (component: Component) => any;
+}
 
 declare module 'wonder.js/dist/commonjs/component/geometry/BoxGeometry' {
     import { Geometry } from "wonder.js/dist/commonjs/component/geometry/Geometry";

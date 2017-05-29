@@ -14495,33 +14495,6 @@
 	    setAspect(cameraController.index, aspect, PerspectiveCameraData, CameraControllerData);
 	};
 
-	var _generateTypeID$1 = function () {
-	    var result = _typeID$1;
-	    _typeID$1 += 1;
-	    return String(result);
-	};
-	var getTypeIDFromClass$1 = function (_class) {
-	    return _table$1[ClassUtils.getClassNameByClass(_class)];
-	};
-	var getTypeIDFromComponent$1 = function (component) {
-	    return _table$1[ClassUtils.getClassNameByInstance(component)];
-	};
-	var _addTypeID$1 = function (componentClassNameArr, table) {
-	    var id = _generateTypeID$1();
-	    for (var _i = 0, componentClassNameArr_1 = componentClassNameArr; _i < componentClassNameArr_1.length; _i++) {
-	        var className = componentClassNameArr_1[_i];
-	        table[className] = id;
-	    }
-	};
-	var _typeID$1 = 1;
-	var _table$1 = {};
-	_addTypeID$1(["ThreeDTransform"], _table$1);
-	_addTypeID$1(["Geometry", "BoxGeometry", "CustomGeometry"], _table$1);
-	_addTypeID$1(["Material", "BasicMaterial"], _table$1);
-	_addTypeID$1(["MeshRenderer"], _table$1);
-	_addTypeID$1(["Tag"], _table$1);
-	_addTypeID$1(["CameraController"], _table$1);
-
 	var create$7 = function (GeometryData) {
 	    var geometry = new exports.BoxGeometry(), index = null;
 	    geometry = create$4(geometry, GeometryData);
@@ -16601,6 +16574,31 @@
 	    registerClass("DirectorTimeController")
 	], exports.DirectorTimeController);
 
+	var _generateTypeID$1 = function () {
+	    var result = _typeID$1;
+	    _typeID$1 += 1;
+	    return String(result);
+	};
+	var getTypeIDFromClass$1 = function (_class) {
+	    return _table$1[ClassUtils.getClassNameByClass(_class)];
+	};
+
+	var _addTypeID$1 = function (componentClassNameArr, table) {
+	    var id = _generateTypeID$1();
+	    for (var _i = 0, componentClassNameArr_1 = componentClassNameArr; _i < componentClassNameArr_1.length; _i++) {
+	        var className = componentClassNameArr_1[_i];
+	        table[className] = id;
+	    }
+	};
+	var _typeID$1 = 1;
+	var _table$1 = {};
+	_addTypeID$1(["ThreeDTransform"], _table$1);
+	_addTypeID$1(["Geometry", "BoxGeometry", "CustomGeometry"], _table$1);
+	_addTypeID$1(["Material", "BasicMaterial"], _table$1);
+	_addTypeID$1(["MeshRenderer"], _table$1);
+	_addTypeID$1(["Tag"], _table$1);
+	_addTypeID$1(["CameraController"], _table$1);
+
 	var create$11 = function (GameObjectData) {
 	    return create$1(null, GameObjectData);
 	};
@@ -17107,8 +17105,8 @@
 	exports.setPerspectiveCameraAspect = setPerspectiveCameraAspect;
 	exports.PerspectiveCameraData = PerspectiveCameraData;
 	exports.ComponentData = ComponentData;
-	exports.getTypeIDFromClass = getTypeIDFromClass$1;
-	exports.getTypeIDFromComponent = getTypeIDFromComponent$1;
+	exports.getTypeIDFromClass = getTypeIDFromClass;
+	exports.getTypeIDFromComponent = getTypeIDFromComponent;
 	exports.createBoxGeometry = createBoxGeometry;
 	exports.setBoxGeometryConfigData = setBoxGeometryConfigData;
 	exports.createCustomGeometry = createCustomGeometry;

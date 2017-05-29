@@ -14494,33 +14494,6 @@ var setPerspectiveCameraAspect = function (cameraController, aspect) {
     setAspect(cameraController.index, aspect, PerspectiveCameraData, CameraControllerData);
 };
 
-var _generateTypeID$1 = function () {
-    var result = _typeID$1;
-    _typeID$1 += 1;
-    return String(result);
-};
-var getTypeIDFromClass$1 = function (_class) {
-    return _table$1[ClassUtils.getClassNameByClass(_class)];
-};
-var getTypeIDFromComponent$1 = function (component) {
-    return _table$1[ClassUtils.getClassNameByInstance(component)];
-};
-var _addTypeID$1 = function (componentClassNameArr, table) {
-    var id = _generateTypeID$1();
-    for (var _i = 0, componentClassNameArr_1 = componentClassNameArr; _i < componentClassNameArr_1.length; _i++) {
-        var className = componentClassNameArr_1[_i];
-        table[className] = id;
-    }
-};
-var _typeID$1 = 1;
-var _table$1 = {};
-_addTypeID$1(["ThreeDTransform"], _table$1);
-_addTypeID$1(["Geometry", "BoxGeometry", "CustomGeometry"], _table$1);
-_addTypeID$1(["Material", "BasicMaterial"], _table$1);
-_addTypeID$1(["MeshRenderer"], _table$1);
-_addTypeID$1(["Tag"], _table$1);
-_addTypeID$1(["CameraController"], _table$1);
-
 var create$7 = function (GeometryData) {
     var geometry = new BoxGeometry(), index = null;
     geometry = create$4(geometry, GeometryData);
@@ -16600,6 +16573,31 @@ DirectorTimeController = __decorate([
     registerClass("DirectorTimeController")
 ], DirectorTimeController);
 
+var _generateTypeID$1 = function () {
+    var result = _typeID$1;
+    _typeID$1 += 1;
+    return String(result);
+};
+var getTypeIDFromClass$1 = function (_class) {
+    return _table$1[ClassUtils.getClassNameByClass(_class)];
+};
+
+var _addTypeID$1 = function (componentClassNameArr, table) {
+    var id = _generateTypeID$1();
+    for (var _i = 0, componentClassNameArr_1 = componentClassNameArr; _i < componentClassNameArr_1.length; _i++) {
+        var className = componentClassNameArr_1[_i];
+        table[className] = id;
+    }
+};
+var _typeID$1 = 1;
+var _table$1 = {};
+_addTypeID$1(["ThreeDTransform"], _table$1);
+_addTypeID$1(["Geometry", "BoxGeometry", "CustomGeometry"], _table$1);
+_addTypeID$1(["Material", "BasicMaterial"], _table$1);
+_addTypeID$1(["MeshRenderer"], _table$1);
+_addTypeID$1(["Tag"], _table$1);
+_addTypeID$1(["CameraController"], _table$1);
+
 var create$11 = function (GameObjectData) {
     return create$1(null, GameObjectData);
 };
@@ -17091,5 +17089,5 @@ CommonTimeController = __decorate([
     registerClass("CommonTimeController")
 ], CommonTimeController);
 
-export { getCameraPMatrix, getCameraNear, setCameraNear, getCameraFar, setCameraFar, CameraController, createCameraController, getCameraControllerGameObject, CameraControllerData, CameraData, getPerspectiveCameraFovy, setPerspectiveCameraFovy, getPerspectiveCameraAspect, setPerspectiveCameraAspect, PerspectiveCameraData, Component, ComponentData, getTypeIDFromClass$1 as getTypeIDFromClass, getTypeIDFromComponent$1 as getTypeIDFromComponent, BoxGeometry, createBoxGeometry, setBoxGeometryConfigData, CustomGeometry, createCustomGeometry, setCustomGeometryVertices, setCustomGeometryIndices, Geometry, getDrawMode$$1 as getDrawMode, getVertices$$1 as getVertices, getIndices$$1 as getIndices, getGeometryConfigData, initGeometry$$1 as initGeometry, getGeometryGameObject, GeometryData, BasicMaterial, createBasicMaterial, Material, getMaterialColor, setMaterialColor, getMaterialOpacity, setMaterialOpacity, getMaterialAlphaTest, setMaterialAlphaTest, getMaterialGameObject, getMaterialShader, initMaterial$$1 as initMaterial, MaterialData, MeshRenderer, createMeshRenderer, getMeshRendererGameObject, getMeshRendererRenderList, MeshRendererData, Tag, createTag, addTag$1 as addTag, removeTag$1 as removeTag, findGameObjectsByTag$1 as findGameObjectsByTag, getTagGameObject, TagData, LinkList, LinkNode, ThreeDTransform, createThreeDTransform, getThreeDTransformPosition, setThreeDTransformPosition, getThreeDTransformLocalToWorldMatrix, getThreeDTransformLocalPosition, setThreeDTransformLocalPosition, setThreeDTransformBatchTransformDatas, getThreeDTransformParent, setThreeDTransformParent, getThreeDTransformGameObject, ThreeDTransformData, ThreeDTransformRelationData, getUID, isIndexUsed, getStartIndexInArrayBuffer, CompileConfig, DataBufferConfig, DebugConfig, MemoryConfig, Director, DirectorData, GameObject, createGameObject, addGameObjectComponent, disposeGameObject, initGameObject$1 as initGameObject, disposeGameObjectComponent, getGameObjectComponent, getGameObjectTransform, hasGameObjectComponent, isGameObjectAlive, addGameObject, removeGameObject, hasGameObject, GameObjectData, Scene, addSceneChild, removeSceneChild, SceneData, Main$1 as Main, MainData, GlobalTempData, cache, assert, describe, it$1 as it, requireCheck, requireCheckFunc, ensure, ensureFunc, requireGetterAndSetter, requireGetter, requireSetter, ensureGetterAndSetter, ensureGetter, ensureSetter, invariant, execOnlyOnce, registerClass, singleton, virtual, root$1 as root, DeviceManager, setDeviceManagerGL, DeviceManagerData, EScreenSize, GPUDetector, EGPUPrecision, DEG_TO_RAD, RAD_TO_DEG, Matrix3, Matrix4, Quaternion, Vector2, Vector3, Vector4, ArrayBufferData, IndexBufferData, RenderCommand, material_config, render_config, shaderLib_generator, EBufferType, EDrawMode, EVariableType, empty, NULL, basic_materialColor_fragment, end_basic_fragment, common_define, common_fragment, common_function, common_vertex, highp_fragment, lowp_fragment, mediump_fragment, Shader, ShaderData, main_begin, main_end, setPos_mvp, Color, RectRegion, View, initThreeDTransformData, DomQuery$1 as DomQuery, fromArray$1 as fromArray, initTagData, initGeometryData, initMaterialData, initShaderData, initMeshRendererData, initArrayBufferData, initIndexBufferData, initDeviceManagerData, initCameraControllerData, initGameObjectData, createState$1 as createState, useProgram, sendAttributeData$2 as sendAttributeData, sendUniformData$2 as sendUniformData, disableVertexAttribArray$1 as disableVertexAttribArray, DataUtils$1 as DataUtils, Log$$1 as Log, error$1 as error, CommonTimeController, DirectorTimeController, TimeController };
+export { getCameraPMatrix, getCameraNear, setCameraNear, getCameraFar, setCameraFar, CameraController, createCameraController, getCameraControllerGameObject, CameraControllerData, CameraData, getPerspectiveCameraFovy, setPerspectiveCameraFovy, getPerspectiveCameraAspect, setPerspectiveCameraAspect, PerspectiveCameraData, Component, ComponentData, getTypeIDFromClass, getTypeIDFromComponent, BoxGeometry, createBoxGeometry, setBoxGeometryConfigData, CustomGeometry, createCustomGeometry, setCustomGeometryVertices, setCustomGeometryIndices, Geometry, getDrawMode$$1 as getDrawMode, getVertices$$1 as getVertices, getIndices$$1 as getIndices, getGeometryConfigData, initGeometry$$1 as initGeometry, getGeometryGameObject, GeometryData, BasicMaterial, createBasicMaterial, Material, getMaterialColor, setMaterialColor, getMaterialOpacity, setMaterialOpacity, getMaterialAlphaTest, setMaterialAlphaTest, getMaterialGameObject, getMaterialShader, initMaterial$$1 as initMaterial, MaterialData, MeshRenderer, createMeshRenderer, getMeshRendererGameObject, getMeshRendererRenderList, MeshRendererData, Tag, createTag, addTag$1 as addTag, removeTag$1 as removeTag, findGameObjectsByTag$1 as findGameObjectsByTag, getTagGameObject, TagData, LinkList, LinkNode, ThreeDTransform, createThreeDTransform, getThreeDTransformPosition, setThreeDTransformPosition, getThreeDTransformLocalToWorldMatrix, getThreeDTransformLocalPosition, setThreeDTransformLocalPosition, setThreeDTransformBatchTransformDatas, getThreeDTransformParent, setThreeDTransformParent, getThreeDTransformGameObject, ThreeDTransformData, ThreeDTransformRelationData, getUID, isIndexUsed, getStartIndexInArrayBuffer, CompileConfig, DataBufferConfig, DebugConfig, MemoryConfig, Director, DirectorData, GameObject, createGameObject, addGameObjectComponent, disposeGameObject, initGameObject$1 as initGameObject, disposeGameObjectComponent, getGameObjectComponent, getGameObjectTransform, hasGameObjectComponent, isGameObjectAlive, addGameObject, removeGameObject, hasGameObject, GameObjectData, Scene, addSceneChild, removeSceneChild, SceneData, Main$1 as Main, MainData, GlobalTempData, cache, assert, describe, it$1 as it, requireCheck, requireCheckFunc, ensure, ensureFunc, requireGetterAndSetter, requireGetter, requireSetter, ensureGetterAndSetter, ensureGetter, ensureSetter, invariant, execOnlyOnce, registerClass, singleton, virtual, root$1 as root, DeviceManager, setDeviceManagerGL, DeviceManagerData, EScreenSize, GPUDetector, EGPUPrecision, DEG_TO_RAD, RAD_TO_DEG, Matrix3, Matrix4, Quaternion, Vector2, Vector3, Vector4, ArrayBufferData, IndexBufferData, RenderCommand, material_config, render_config, shaderLib_generator, EBufferType, EDrawMode, EVariableType, empty, NULL, basic_materialColor_fragment, end_basic_fragment, common_define, common_fragment, common_function, common_vertex, highp_fragment, lowp_fragment, mediump_fragment, Shader, ShaderData, main_begin, main_end, setPos_mvp, Color, RectRegion, View, initThreeDTransformData, DomQuery$1 as DomQuery, fromArray$1 as fromArray, initTagData, initGeometryData, initMaterialData, initShaderData, initMeshRendererData, initArrayBufferData, initIndexBufferData, initDeviceManagerData, initCameraControllerData, initGameObjectData, createState$1 as createState, useProgram, sendAttributeData$2 as sendAttributeData, sendUniformData$2 as sendUniformData, disableVertexAttribArray$1 as disableVertexAttribArray, DataUtils$1 as DataUtils, Log$$1 as Log, error$1 as error, CommonTimeController, DirectorTimeController, TimeController };
 //# sourceMappingURL=wd.module.js.map

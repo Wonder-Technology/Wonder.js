@@ -78,8 +78,8 @@ export var dispose = (entity: IUIDEntity, ThreeDTransformData: any, GameObjectDa
 }
 
 var _removeFromChildrenMap = (parentUID: number, childUID: number, GameObjectData: any) => {
-        removeChildEntity(_getChildren(parentUID, GameObjectData), childUID);
-    };
+    removeChildEntity(_getChildren(parentUID, GameObjectData), childUID);
+};
 
 var _diposeAllDatas = (gameObject: GameObject, GameObjectData: any) => {
     let uid = gameObject.uid,

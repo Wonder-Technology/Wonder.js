@@ -6,7 +6,7 @@ export {getPerspectiveCameraFovy,setPerspectiveCameraFovy,getPerspectiveCameraAs
 export {PerspectiveCameraData} from "./component/camera/PerspectiveCameraData";
 export {Component} from "./component/Component";
 export {ComponentData} from "./component/ComponentData";
-export {getTypeIDFromClass,getTypeIDFromComponent} from "./component/ComponentTypeIdManager";
+export {getTypeIDFromClass,getTypeIDFromComponent} from "./component/ComponentTypeIDManager";
 export {BoxGeometry,createBoxGeometry,setBoxGeometryConfigData} from "./component/geometry/BoxGeometry";
 export {CustomGeometry,createCustomGeometry,setCustomGeometryVertices,setCustomGeometryIndices} from "./component/geometry/CustomGeometry";
 export {Geometry,getDrawMode,getVertices,getIndices,getGeometryConfigData,initGeometry,getGeometryGameObject} from "./component/geometry/Geometry";
