@@ -245,6 +245,8 @@ describe("Tag", function() {
         });
 
         it("remove from gameObject", function () {
+            testTool.closeContractCheck();
+
             gameObjectTool.disposeComponent(gameObject1, tag1);
 
             expect(gameObjectTool.hasComponent(gameObject1, wd.Tag)).toBeFalsy();
@@ -296,7 +298,7 @@ describe("Tag", function() {
             });
         });
 
-        it("if tag is disposed, removeTag/addTag should error", function () {
+        it("if tag is disposed, removeTag/addTag/getTagGameObject should error", function () {
             var errMsg = "component should alive";
 
             gameObjectTool.disposeComponent(gameObject1, tag1);
@@ -307,6 +309,10 @@ describe("Tag", function() {
 
             expect(function () {
                 tagTool.addTag(tag1, "aaa");
+            }).toThrow(errMsg);
+
+            expect(function () {
+                tagTool.getGameObject(tag1);
             }).toThrow(errMsg);
         });
     });

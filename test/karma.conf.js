@@ -33,7 +33,7 @@
         // 'test/unit/**/*Camera*',
         // 'test/unit/**/WebGLRenderer*',
         // 'test/unit/**/renderer/**',
-        // 'test/unit/**/Tag*',
+        'test/unit/**/Tag*',
         // 'test/unit/**/*Geometry*',
         // 'test/unit/**/*Material*',
         // 'test/unit/**/Main*',

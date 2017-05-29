@@ -7,9 +7,8 @@ import {
     addDisposeHandle as addDisposeHandleToMap,
     checkComponentShouldAlive, generateComponentIndex, getComponentGameObject, markComponentIndexRemoved
 } from "../ComponentSystem";
-import curry from "wonder-lodash/curry";
 import { createMap, deleteVal, isValidMapValue } from "../../utils/objectUtils";
-import { deleteVal as deleteArrayVal, forEach } from "../../utils/arrayUtils";
+import { forEach } from "../../utils/arrayUtils";
 import { TagData } from "./TagData";
 import { isDisposeTooManyComponents, reAllocateTagMap } from "../../utils/memoryUtils";
 
@@ -72,8 +71,6 @@ var _initIndexMap = (index:number, slotCount:number, TagData:any) => {
 }
 
 export var addTag = requireCheckFunc((tagComponent:Tag, tag:string, TagData:any) => {
-    checkTagShouldAlive(tagComponent, TagData);
-
     it("tag should not already be added", () => {
         var index = tagComponent.index,
             indexInArray = _convertTagIndexToIndexInArray(index, TagData),
@@ -134,8 +131,6 @@ var _updateIndexMap = (indexInArray:number, index:number, increasedSlotCount:num
 
 //todo optimize: collect redundant allocated slot count
 export var removeTag = requireCheckFunc((tagComponent:Tag, tag:string, TagData:any) => {
-    checkTagShouldAlive(tagComponent, TagData);
-
     it("current used slot count should >= 0", () => {
         var index = tagComponent.index,
             usedSlotCountMap = TagData.usedSlotCountMap;
