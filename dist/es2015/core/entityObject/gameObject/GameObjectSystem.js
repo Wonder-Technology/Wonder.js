@@ -9,10 +9,8 @@ import { isNotUndefined } from "../../../utils/JudgeUtils";
 import { execHandle, execInitHandle } from "../../../component/ComponentSystem";
 import { Geometry } from "../../../component/geometry/Geometry";
 import { Material } from "../../../component/material/Material";
-import { filter, forEach } from "../../../utils/arrayUtils";
+import { forEach } from "../../../utils/arrayUtils";
 import { removeChildEntity } from "../../../utils/entityUtils";
-import { chrome, firefox } from "bowser";
-import { error, Log } from "../../../utils/Log";
 import { isDisposeTooManyComponents, reAllocateGameObjectMap } from "../../../utils/memoryUtils";
 export var create = ensureFunc(function (gameObject, transform, GameObjectData) {
     it("componentMap should has data", function () {
@@ -57,22 +55,9 @@ export var dispose = function (entity, ThreeDTransformData, GameObjectData) {
         GameObjectData.disposeCount = 0;
     }
 };
-var _removeFromChildrenMap = null;
-if (chrome) {
-    _removeFromChildrenMap = function (parentUID, childUID, GameObjectData) {
-        _setChildren(parentUID, filter(_getChildren(parentUID, GameObjectData), function (gameObject) {
-            return gameObject.uid !== childUID;
-        }), GameObjectData);
-    };
-}
-else if (firefox) {
-    _removeFromChildrenMap = function (parentUID, childUID, GameObjectData) {
-        removeChildEntity(_getChildren(parentUID, GameObjectData), childUID);
-    };
-}
-else {
-    error(true, Log.info.FUNC_NOT_SUPPORT("browser"));
-}
+var _removeFromChildrenMap = function (parentUID, childUID, GameObjectData) {
+    removeChildEntity(_getChildren(parentUID, GameObjectData), childUID);
+};
 var _diposeAllDatas = function (gameObject, GameObjectData) {
     var uid = gameObject.uid, children = _getChildren(uid, GameObjectData);
     _disposeAllComponents(gameObject, GameObjectData);

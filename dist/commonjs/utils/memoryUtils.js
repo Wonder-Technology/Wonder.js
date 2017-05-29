@@ -12,7 +12,7 @@ var _setMapVal = function (map, uid, val) {
     map[uid] = val;
 };
 exports.reAllocateThreeDTransformMap = function (ThreeDTransformData) {
-    var val = null, newParentMap = {}, newChildrenMap = {}, newIsTranslateMap = {}, newTempMap = {}, newAliveUIDArray = [], aliveUIDArray = ThreeDTransformData.aliveUIDArray, parentMap = ThreeDTransformData.parentMap, childrenMap = ThreeDTransformData.childrenMap, isTranslateMap = ThreeDTransformData.isTranslateMap, tempMap = ThreeDTransformData.tempMap;
+    var val = null, newParentMap = {}, newChildrenMap = {}, newIsTranslateMap = {}, newGameObjectMap = {}, newTempMap = {}, newAliveUIDArray = [], aliveUIDArray = ThreeDTransformData.aliveUIDArray, parentMap = ThreeDTransformData.parentMap, childrenMap = ThreeDTransformData.childrenMap, isTranslateMap = ThreeDTransformData.isTranslateMap, gameObjectMap = ThreeDTransformData.gameObjectMap, tempMap = ThreeDTransformData.tempMap;
     cacheSystem_1.clearCacheMap(ThreeDTransformData);
     for (var _i = 0, aliveUIDArray_1 = aliveUIDArray; _i < aliveUIDArray_1.length; _i++) {
         var uid = aliveUIDArray_1[_i];
@@ -28,11 +28,14 @@ exports.reAllocateThreeDTransformMap = function (ThreeDTransformData) {
         _setMapVal(newParentMap, uid, val);
         val = isTranslateMap[uid];
         _setMapVal(newIsTranslateMap, uid, val);
+        val = gameObjectMap[uid];
+        _setMapVal(newGameObjectMap, uid, val);
     }
     ThreeDTransformData.parentMap = newParentMap;
     ThreeDTransformData.childrenMap = newChildrenMap;
     ThreeDTransformData.isTranslateMap = newIsTranslateMap;
     ThreeDTransformData.tempMap = newTempMap;
+    ThreeDTransformData.gameObjectMap = newGameObjectMap;
     ThreeDTransformData.aliveUIDArray = newAliveUIDArray;
 };
 exports.reAllocateGameObjectMap = function (GameObjectData) {

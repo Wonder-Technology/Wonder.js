@@ -24,12 +24,14 @@ export var reAllocateThreeDTransformMap = (ThreeDTransformData: any) => {
         newParentMap = {},
         newChildrenMap = {},
         newIsTranslateMap = {},
+        newGameObjectMap = {},
         newTempMap = {},
         newAliveUIDArray: Array<number> = [],
         aliveUIDArray = ThreeDTransformData.aliveUIDArray,
         parentMap = ThreeDTransformData.parentMap,
         childrenMap = ThreeDTransformData.childrenMap,
         isTranslateMap = ThreeDTransformData.isTranslateMap,
+        gameObjectMap = ThreeDTransformData.gameObjectMap,
         tempMap = ThreeDTransformData.tempMap;
 
     clearCacheMap(ThreeDTransformData);
@@ -53,12 +55,16 @@ export var reAllocateThreeDTransformMap = (ThreeDTransformData: any) => {
 
         val = isTranslateMap[uid];
         _setMapVal(newIsTranslateMap, uid, val);
+
+        val = gameObjectMap[uid];
+        _setMapVal(newGameObjectMap, uid, val);
     }
 
     ThreeDTransformData.parentMap = newParentMap;
     ThreeDTransformData.childrenMap = newChildrenMap;
     ThreeDTransformData.isTranslateMap = newIsTranslateMap;
     ThreeDTransformData.tempMap = newTempMap;
+    ThreeDTransformData.gameObjectMap = newGameObjectMap;
 
     ThreeDTransformData.aliveUIDArray = newAliveUIDArray;
 }

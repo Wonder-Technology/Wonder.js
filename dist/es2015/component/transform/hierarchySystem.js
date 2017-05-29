@@ -4,9 +4,6 @@ import { deleteVal, isNotValidMapValue, isValidMapValue } from "../../utils/obje
 import { isNotUndefined } from "../../utils/JudgeUtils";
 import { addItAndItsChildrenToDirtyList } from "./dirtySystem";
 import { removeChildEntity } from "../../utils/entityUtils";
-import { chrome, firefox } from "bowser";
-import { error, Log } from "../../utils/Log";
-import { filter } from "../../utils/arrayUtils";
 export var getParent = requireCheckFunc(function (uid, ThreeDTransformData) {
     it("uid should exist", function () {
         expect(uid).exist;
@@ -63,22 +60,9 @@ var _removeHierarchyFromParent = function (parent, targetUID, ThreeDTransformDat
     }
     _removeChild(parentUID, targetUID, children, ThreeDTransformData);
 };
-var _removeChild = null;
-if (chrome) {
-    _removeChild = function (parentUID, targetUID, children, ThreeDTransformData) {
-        setChildren(parentUID, filter(children, function (transform) {
-            return transform.uid !== targetUID;
-        }), ThreeDTransformData);
-    };
-}
-else if (firefox) {
-    _removeChild = function (parentUID, targetUID, children, ThreeDTransformData) {
-        removeChildEntity(children, targetUID);
-    };
-}
-else {
-    error(true, Log.info.FUNC_NOT_SUPPORT("browser"));
-}
+var _removeChild = function (parentUID, targetUID, children, ThreeDTransformData) {
+    removeChildEntity(children, targetUID);
+};
 var _addChild = requireCheckFunc(function (uid, child, ThreeDTransformData) {
     it("children should be empty array if has no child", function () {
         expect(getChildren(uid, ThreeDTransformData)).be.a("array");

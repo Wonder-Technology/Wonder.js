@@ -6,9 +6,6 @@ var objectUtils_1 = require("../../utils/objectUtils");
 var JudgeUtils_1 = require("../../utils/JudgeUtils");
 var dirtySystem_1 = require("./dirtySystem");
 var entityUtils_1 = require("../../utils/entityUtils");
-var bowser_1 = require("bowser");
-var Log_1 = require("../../utils/Log");
-var arrayUtils_1 = require("../../utils/arrayUtils");
 exports.getParent = contract_1.requireCheckFunc(function (uid, ThreeDTransformData) {
     contract_1.it("uid should exist", function () {
         wonder_expect_js_1.expect(uid).exist;
@@ -65,22 +62,9 @@ var _removeHierarchyFromParent = function (parent, targetUID, ThreeDTransformDat
     }
     _removeChild(parentUID, targetUID, children, ThreeDTransformData);
 };
-var _removeChild = null;
-if (bowser_1.chrome) {
-    _removeChild = function (parentUID, targetUID, children, ThreeDTransformData) {
-        exports.setChildren(parentUID, arrayUtils_1.filter(children, function (transform) {
-            return transform.uid !== targetUID;
-        }), ThreeDTransformData);
-    };
-}
-else if (bowser_1.firefox) {
-    _removeChild = function (parentUID, targetUID, children, ThreeDTransformData) {
-        entityUtils_1.removeChildEntity(children, targetUID);
-    };
-}
-else {
-    Log_1.error(true, Log_1.Log.info.FUNC_NOT_SUPPORT("browser"));
-}
+var _removeChild = function (parentUID, targetUID, children, ThreeDTransformData) {
+    entityUtils_1.removeChildEntity(children, targetUID);
+};
 var _addChild = contract_1.requireCheckFunc(function (uid, child, ThreeDTransformData) {
     contract_1.it("children should be empty array if has no child", function () {
         wonder_expect_js_1.expect(exports.getChildren(uid, ThreeDTransformData)).be.a("array");

@@ -13,8 +13,6 @@ var Geometry_1 = require("../../../component/geometry/Geometry");
 var Material_1 = require("../../../component/material/Material");
 var arrayUtils_1 = require("../../../utils/arrayUtils");
 var entityUtils_1 = require("../../../utils/entityUtils");
-var bowser_1 = require("bowser");
-var Log_1 = require("../../../utils/Log");
 var memoryUtils_1 = require("../../../utils/memoryUtils");
 exports.create = contract_1.ensureFunc(function (gameObject, transform, GameObjectData) {
     contract_1.it("componentMap should has data", function () {
@@ -59,22 +57,9 @@ exports.dispose = function (entity, ThreeDTransformData, GameObjectData) {
         GameObjectData.disposeCount = 0;
     }
 };
-var _removeFromChildrenMap = null;
-if (bowser_1.chrome) {
-    _removeFromChildrenMap = function (parentUID, childUID, GameObjectData) {
-        _setChildren(parentUID, arrayUtils_1.filter(_getChildren(parentUID, GameObjectData), function (gameObject) {
-            return gameObject.uid !== childUID;
-        }), GameObjectData);
-    };
-}
-else if (bowser_1.firefox) {
-    _removeFromChildrenMap = function (parentUID, childUID, GameObjectData) {
-        entityUtils_1.removeChildEntity(_getChildren(parentUID, GameObjectData), childUID);
-    };
-}
-else {
-    Log_1.error(true, Log_1.Log.info.FUNC_NOT_SUPPORT("browser"));
-}
+var _removeFromChildrenMap = function (parentUID, childUID, GameObjectData) {
+    entityUtils_1.removeChildEntity(_getChildren(parentUID, GameObjectData), childUID);
+};
 var _diposeAllDatas = function (gameObject, GameObjectData) {
     var uid = gameObject.uid, children = _getChildren(uid, GameObjectData);
     _disposeAllComponents(gameObject, GameObjectData);

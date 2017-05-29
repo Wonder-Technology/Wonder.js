@@ -91,8 +91,8 @@ var _removeHierarchyFromParent = (parent: ThreeDTransform, targetUID: number, Th
 }
 
 var _removeChild = (parentUID: number, targetUID: number, children: Array<ThreeDTransform>, ThreeDTransformData: any) => {
-        removeChildEntity(children, targetUID);
-    };
+    removeChildEntity(children, targetUID);
+};
 
 var _addChild = requireCheckFunc((uid: number, child: ThreeDTransform, ThreeDTransformData: any) => {
     it("children should be empty array if has no child", () => {
