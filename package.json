@@ -11,6 +11,7 @@
     "codecov": "cat test/coverage/*/lcov.info | codecov"
   },
   "devDependencies": {
+
     "@types/jquery": "^2.0.41",
     "codecov.io": "^0.1.6",
     "del": "^2.2.2",
@@ -65,6 +66,6 @@
     "wonder-expect.js": "^0.1.5",
     "wonder-fantasy-land": "^0.1.1",
     "wonder-frp": "^0.1.17",
-    "wonder-lodash": "^0.1.2"
+    "wonder-lodash": "^0.1.3"
   }
 }
