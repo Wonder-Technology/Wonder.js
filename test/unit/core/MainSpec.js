@@ -184,6 +184,11 @@ describe("Main", function() {
             });
 
             it("if true, set pixelRatio", function(){
+                if(bowser.firefox){
+                    expect().toPass();
+                    return;
+                }
+
                 Main.setConfig({
                     screenSize:RectRegion.create(0,0,screenWidth,screenHeight),
                     canvasId:"a",
